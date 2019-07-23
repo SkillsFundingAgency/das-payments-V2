@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -34,7 +35,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         {
             mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<DataLocksProfile>()));
             repositoryMock = new Mock<IDataLockFailureRepository>(MockBehavior.Strict);
+
             dataLockStatusServiceMock = new Mock<IDataLockStatusService>(MockBehavior.Strict);
+            //dataLockStatusServiceMock.Setup(s => s.GetStatusChange(null, null)).Returns(DataLockStatusChange.NoChange);
+            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(null, It.Is<List<DataLockFailure>>(f => f == null || f.Count == 0))).Returns(DataLockStatusChange.NoChange);
+
             processor = new DataLockEventProcessor(repositoryMock.Object, dataLockStatusServiceMock.Object, mapper, new Mock<IPaymentLogger>().Object);
         }
 
@@ -74,7 +79,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var dbFailures = new List<DataLockFailureEntity>();
 
             repositoryMock.Setup(r => r.GetFailures(1, "2", 4, 7, 8, 5, "6", 1819)).ReturnsAsync(dbFailures).Verifiable();
-            repositoryMock.Setup(r => r.ReplaceFailures(It.Is<List<long>>(old => old.Count == 0), It.Is<List<DataLockFailureEntity>>(newF => newF.Count == 1))).Returns(Task.CompletedTask).Verifiable();
+            repositoryMock.Setup(r => r.ReplaceFailures(It.Is<List<long>>(old => old.Count == 0), It.Is<List<DataLockFailureEntity>>(newF => newF.Count == 1), It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.CompletedTask).Verifiable();
             dataLockStatusServiceMock.Setup(s => s.GetStatusChange(null, dataLockEvent.OnProgrammeEarnings[0].Periods[0].DataLockFailures)).Returns(DataLockStatusChange.ChangedToFailed).Verifiable();
 
             // act
@@ -104,6 +109,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             // no new - changed to pass
             var oldTT3p3 = new DataLockFailureEntity {Id = 2, DeliveryPeriod = 3, TransactionType = TransactionType.Balancing, EarningPeriod = new EarningPeriod { Period = 3, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_06}}}};
+            var newTT3p3 = new EarningPeriod {Period = 3, Amount = 1, ApprenticeshipId = 4, ApprenticeshipPriceEpisodeId = 4};
 
             // no change
             var oldTT2p6 = new DataLockFailureEntity {Id = 3, DeliveryPeriod = 6, TransactionType = TransactionType.Completion, EarningPeriod = new EarningPeriod { Period = 6, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_04}}}};
@@ -115,6 +121,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             // no new - change to pass
             var oldTT10p3 = new DataLockFailureEntity {Id = 5, DeliveryPeriod = 3, TransactionType = TransactionType.Balancing16To18FrameworkUplift, EarningPeriod = new EarningPeriod { Period = 3, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_06}}}};
+            var newTT10p3 = new EarningPeriod {Period = 3, Amount = 1, ApprenticeshipId = 10, ApprenticeshipPriceEpisodeId = 10, DataLockFailures = new List<DataLockFailure>() };
 
             // no change
             var oldTT16p6 = new DataLockFailureEntity {Id = 6, DeliveryPeriod = 6, TransactionType = TransactionType.CareLeaverApprenticePayment, EarningPeriod = new EarningPeriod { Period = 6, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_04}}}};
@@ -148,7 +155,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                             newTT2p5,
                             // no change
                             newTT2p6,
+                            newTT10p3
                         })
+                    },
+                    new OnProgrammeEarning
+                    {
+                        Type = OnProgrammeEarningType.Balancing,
+                        Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod> { newTT3p3 })
                     }
                 },
                 IncentiveEarnings = new List<IncentiveEarning>
@@ -167,6 +180,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                             // no change
                             newTT16p6,
                         })
+                    },
+                    new IncentiveEarning
+                    {
+                        Type = IncentiveEarningType.Balancing16To18FrameworkUplift,
+                        Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod> { newTT10p3 })
                     }
                 }
             };
@@ -178,11 +196,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 oldTT2p6,
                 oldTT16p5,
                 oldTT10p3,
-                oldTT16p6
+                oldTT16p6,
             };
 
             repositoryMock.Setup(r => r.GetFailures(1, "2", 4, 7, 8, 5, "6", 1819)).ReturnsAsync(oldFailures).Verifiable();
-            repositoryMock.Setup(r => r.ReplaceFailures(It.Is<List<long>>(old => old.Count == 4), It.Is<List<DataLockFailureEntity>>(newF => newF.Count == 4))).Returns(Task.CompletedTask).Verifiable();
+            repositoryMock.Setup(r => r.ReplaceFailures(It.Is<List<long>>(old => old.Count == 4), It.Is<List<DataLockFailureEntity>>(newF => newF.Count == 4), It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.CompletedTask).Verifiable();
             // TT2
             // P1
             dataLockStatusServiceMock.Setup(s => s.GetStatusChange(null, newTT2p1.DataLockFailures)).Returns(DataLockStatusChange.ChangedToFailed).Verifiable();
@@ -195,10 +213,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
 
             // TT3 P3
-            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT3p3.EarningPeriod.DataLockFailures, null)).Returns(DataLockStatusChange.ChangedToPassed).Verifiable();
+            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT3p3.EarningPeriod.DataLockFailures, newTT3p3.DataLockFailures)).Returns(DataLockStatusChange.ChangedToPassed).Verifiable();
 
             // TT10 P3
-            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT10p3.EarningPeriod.DataLockFailures, null)).Returns(DataLockStatusChange.ChangedToPassed).Verifiable();
+            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT10p3.EarningPeriod.DataLockFailures, newTT10p3.DataLockFailures)).Returns(DataLockStatusChange.ChangedToPassed).Verifiable();
 
             // TT16
             // P1

@@ -57,8 +57,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 await PopulateApprenticeshipCache(batch, cancellationToken).ConfigureAwait(false);
 
-            using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
-            {
+                using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
+                {
                     foreach (var dataLockStatusChangedEvent in batch)
                     {
                         int savedEvents = 0, savedCommitmentVersions = 0, savedPeriods = 0, savedErrors = 0;
@@ -96,20 +96,20 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                                 {
                                     if (isError)
                                     {
-                                        var writtentVersions = new HashSet<(long apprenticeshipId, long apprenticeshipPriceEpisodeId)>();
+                                        var writtenVersions = new HashSet<(long apprenticeshipId, long apprenticeshipPriceEpisodeId)>();
 
                                         foreach (var dataLockFailure in earningPeriod.DataLockFailures.Where(f => f.ApprenticeshipId == apprenticeshipId))
                                         {
                                             foreach (var apprenticeshipPriceEpisodeId in dataLockFailure.ApprenticeshipPriceEpisodeIds)
                                             {
                                                 // there are multiple errors recorded for the same apprenticeship episode
-                                                if (writtentVersions.Contains((apprenticeshipId.Value, apprenticeshipPriceEpisodeId)))
+                                                if (writtenVersions.Contains((apprenticeshipId.Value, apprenticeshipPriceEpisodeId)))
                                                     continue;
 
                                                 savedPeriods += await SaveCommitmentVersionAndPeriods(dataLockStatusChangedEvent, dataLockFailure.ApprenticeshipId.Value, apprenticeshipPriceEpisodeId, isError, cancellationToken);
                                                 savedCommitmentVersions++;
 
-                                                writtentVersions.Add((apprenticeshipId.Value, apprenticeshipPriceEpisodeId));
+                                                writtenVersions.Add((apprenticeshipId.Value, apprenticeshipPriceEpisodeId));
                                             }
                                         }
                                     }
@@ -139,11 +139,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     scope.Complete();
                 }
             }
-                catch (Exception e)
-                {
-                    logger.LogError($"Error saving batch of DataLockStatusChanged events. Error: {e.Message}", e);
-                    throw;
-                }
+            catch (Exception e)
+            {
+                logger.LogError($"Error saving batch of DataLockStatusChanged events. Error: {e.Message}", e);
+                throw;
+            }
 
             return batch.Count;
         }
