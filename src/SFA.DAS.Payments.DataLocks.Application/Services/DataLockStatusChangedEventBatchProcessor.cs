@@ -64,10 +64,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                         int savedEvents = 0, savedCommitmentVersions = 0, savedPeriods = 0, savedErrors = 0;
                         var isError = dataLockStatusChangedEvent is DataLockStatusChangedToFailed || dataLockStatusChangedEvent is DataLockFailureChanged;
                         var flatPeriodList = dataLockStatusChangedEvent.TransactionTypesAndPeriods.SelectMany(tp => tp.Value).ToList();
+                        var writtenErrors = new HashSet<DataLockErrorCode>();
 
                         // there may be multiple commitment IDs when employer changes or separate errors against two employers
                         var apprenticeshipIds = flatPeriodList.Select(p => p.ApprenticeshipId)
-                            .Concat(flatPeriodList.SelectMany(p => p.DataLockFailures.Select(f => f.ApprenticeshipId)))
+                            .Concat(flatPeriodList.Where(p => p.DataLockFailures != null).SelectMany(p => p.DataLockFailures.Select(f => f.ApprenticeshipId)))
                             .Distinct()
                             .ToList();
 
@@ -76,7 +77,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                             // v1 doesn't use delivery period, get one earning period for each price episode
                             var earningPeriodsByPriceEpisode = flatPeriodList
                                 .GroupBy(p => p.PriceEpisodeIdentifier)
-                                .Select(g => g.FirstOrDefault(p => p.ApprenticeshipId == apprenticeshipId || p.DataLockFailures.Any(f => f.ApprenticeshipId == apprenticeshipId)))
+                                .Select(g => g.FirstOrDefault(p => p.ApprenticeshipId == apprenticeshipId || (p.DataLockFailures != null && p.DataLockFailures.Any(f => f.ApprenticeshipId == apprenticeshipId))))
                                 .Where(g => g != null)
                                 .ToList();
 
@@ -122,7 +123,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                                 if (earningPeriod.DataLockFailures?.Count > 0)
                                 {
-                                    await SaveErrorCodes(dataLockStatusChangedEvent, earningPeriod.DataLockFailures, cancellationToken).ConfigureAwait(false);
+                                    await SaveErrorCodes(dataLockStatusChangedEvent, earningPeriod.DataLockFailures, writtenErrors, cancellationToken).ConfigureAwait(false);
                                     savedErrors += earningPeriod.DataLockFailures.Count;
                                 }
                             }
@@ -164,10 +165,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             return savedPeriods;
         }
 
-        private async Task SaveErrorCodes(DataLockStatusChanged dataLockStatusChangedEvent, List<DataLockFailure> dataLockFailures, CancellationToken cancellationToken)
+        private async Task SaveErrorCodes(DataLockStatusChanged dataLockStatusChangedEvent, List<DataLockFailure> dataLockFailures, HashSet<DataLockErrorCode> writtenCodes, CancellationToken cancellationToken)
         {
             foreach (var dataLockFailure in dataLockFailures)
             {
+                if (writtenCodes.Contains(dataLockFailure.DataLockError))
+                    continue;
+
                 var dataLockEventError = new LegacyDataLockEventError
                 {
                     DataLockEventId = dataLockStatusChangedEvent.EventId,
@@ -178,6 +182,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 logger.LogVerbose($"Saving DataLockEventError {dataLockFailure.DataLockError} for legacy DataLockEvent {dataLockStatusChangedEvent.EventId} for UKPRN {dataLockStatusChangedEvent.Ukprn}");
 
                 await dataLockEventErrorWriter.Write(dataLockEventError, cancellationToken).ConfigureAwait(false);
+
+                writtenCodes.Add(dataLockFailure.DataLockError);
             }
         }
 

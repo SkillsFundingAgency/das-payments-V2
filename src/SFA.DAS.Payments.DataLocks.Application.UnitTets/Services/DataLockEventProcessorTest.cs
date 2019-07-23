@@ -37,7 +37,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             repositoryMock = new Mock<IDataLockFailureRepository>(MockBehavior.Strict);
 
             dataLockStatusServiceMock = new Mock<IDataLockStatusService>(MockBehavior.Strict);
-            //dataLockStatusServiceMock.Setup(s => s.GetStatusChange(null, null)).Returns(DataLockStatusChange.NoChange);
             dataLockStatusServiceMock.Setup(s => s.GetStatusChange(null, It.Is<List<DataLockFailure>>(f => f == null || f.Count == 0))).Returns(DataLockStatusChange.NoChange);
 
             processor = new DataLockEventProcessor(repositoryMock.Object, dataLockStatusServiceMock.Object, mapper, new Mock<IPaymentLogger>().Object);
