@@ -219,6 +219,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.DataLocks.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.DataLocks.Messages.Internal", "SFA.DAS.Payments.DataLocks.Messages.Internal\SFA.DAS.Payments.DataLocks.Messages.Internal.csproj", "{71BB0D59-A659-44D5-B835-1D06FCCC865D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.FundingSource.LevyAccountBalanceService", "SFA.DAS.Payments.FundingSource.LevyAccountBalanceService\SFA.DAS.Payments.FundingSource.LevyAccountBalanceService.csproj", "{F8065168-5AB6-4154-B24B-189AE9882CE7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -981,6 +983,12 @@ Global
 		{71BB0D59-A659-44D5-B835-1D06FCCC865D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{71BB0D59-A659-44D5-B835-1D06FCCC865D}.Release|x64.ActiveCfg = Release|Any CPU
 		{71BB0D59-A659-44D5-B835-1D06FCCC865D}.Release|x64.Build.0 = Release|Any CPU
+		{F8065168-5AB6-4154-B24B-189AE9882CE7}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{F8065168-5AB6-4154-B24B-189AE9882CE7}.Debug|x64.ActiveCfg = Debug|x64
+		{F8065168-5AB6-4154-B24B-189AE9882CE7}.Debug|x64.Build.0 = Debug|x64
+		{F8065168-5AB6-4154-B24B-189AE9882CE7}.Release|Any CPU.ActiveCfg = Release|x64
+		{F8065168-5AB6-4154-B24B-189AE9882CE7}.Release|x64.ActiveCfg = Release|x64
+		{F8065168-5AB6-4154-B24B-189AE9882CE7}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1080,6 +1088,7 @@ Global
 		{37BE2A88-61FA-4C09-A3CB-00A4BCB39EA1} = {0DBC1A28-3662-42C3-81D9-9080FFCF9F88}
 		{B85480D3-6B5D-4EF8-85AD-4333353212CE} = {45300BA0-FCE3-41CA-8BC0-FDBFF89352F3}
 		{71BB0D59-A659-44D5-B835-1D06FCCC865D} = {45300BA0-FCE3-41CA-8BC0-FDBFF89352F3}
+		{F8065168-5AB6-4154-B24B-189AE9882CE7} = {205CA299-AED1-4F0B-971A-15CCD398A597}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E9E6D1E-3C3C-41C9-AED4-9B6DC9118F1F}
