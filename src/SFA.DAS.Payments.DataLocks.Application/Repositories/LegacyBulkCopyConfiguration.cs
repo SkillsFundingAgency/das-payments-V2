@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
 
         public string TableName { get; }
 
-        public string ConnectionString => configurationHelper.GetConnectionString("PaymentsConnectionStringV1");
+        public string ConnectionString => configurationHelper.GetConnectionString("ProviderEventsConnectionString");
     }
 
 
