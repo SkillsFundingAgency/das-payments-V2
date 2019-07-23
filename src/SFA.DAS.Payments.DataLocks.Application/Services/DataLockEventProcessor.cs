@@ -190,7 +190,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 foreach (var period in onProgrammeEarning.Periods)
                 {
-                    result.Add(((TransactionType) onProgrammeEarning.Type, period.Period), period);
+                    var key = ((TransactionType) onProgrammeEarning.Type, period.Period);
+                    if (!result.ContainsKey(key))
+                        result.Add(key, period);
                 }
             }
 
@@ -198,7 +200,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 foreach (var period in incentiveEarning.Periods)
                 {
-                    result.Add(((TransactionType) incentiveEarning.Type, period.Period), period);
+                    var key = ((TransactionType) incentiveEarning.Type, period.Period);
+                    if (!result.ContainsKey(key))
+                        result.Add(key, period);
                 }
             }
 
