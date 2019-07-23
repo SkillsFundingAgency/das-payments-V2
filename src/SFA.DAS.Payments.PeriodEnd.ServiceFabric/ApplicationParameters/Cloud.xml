@@ -1,4 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.PeriodEnd.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
-  <Parameters />
+  <Parameters>
+    <Parameter Name="PeriodEndService_InstanceCount" Value="__PeriodEndService_InstanceCount__" />
+    <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
+    <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
+    <Parameter Name="DCServiceBusConnectionString" Value="__DCServiceBusConnectionString__" />
+    <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
+    <Parameter Name="DcStorageConnectionString" Value="__DcStorageConnectionString__" />
+    <Parameter Name="PaymentsConnectionString" Value="__PaymentsConnectionString__" />
+    <Parameter Name="PeriodEndService_EndpointName" Value="__PeriodEndService_EndpointName__" />
+    <Parameter Name="PeriodEndService_FailedMessagesQueue" Value="__PeriodEndService_FailedMessagesQueue__" />
+    <Parameter Name="TopicName" Value="__PeriodEnd_TopicName__" />
+    <Parameter Name="SubscriptionName" Value="__PeriodEnd_SubscriptionName__" />
+    <Parameter Name="JobStatusQueueName" Value="__JobStatusQueue__" />
+    <Parameter Name="AuditQueueName" Value="__AuditQueue__" />
+    <Parameter Name="TimeToPauseBetweenChecks" Value="__PeriodEnd_TimeToPauseBetweenChecks__" />
+    <Parameter Name="TimeToWaitForJobToComplete" Value="__PeriodEnd_TimeToWaitForJobToComplete__" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
+    <Parameter Name="ProcessMessageSequentially" Value="false" />
+    <Parameter Name="LogLevel" Value="__LogLevel__" />
+  </Parameters>
 </Application>

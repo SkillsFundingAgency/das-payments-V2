@@ -35,7 +35,12 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.Infrastructure.Ioc
             builder.Register(c =>
             {
                 var configHelper = c.Resolve<IConfigurationHelper>();
-                return new TopicConfiguration(configHelper.GetConnectionString("DCServiceBusConnectionString"), configHelper.GetSetting("TopicName"), configHelper.GetSetting("SubscriptionName"), 1, maximumCallbackTimeSpan: TimeSpan.FromMinutes(40));
+                return new TopicConfiguration(
+                    configHelper.GetConnectionString("DCServiceBusConnectionString"), 
+                    configHelper.GetSetting("TopicName"), 
+                    configHelper.GetSetting("SubscriptionName"), 
+                    1, 
+                    maximumCallbackTimeSpan: TimeSpan.FromMinutes(40));
             }
                 )
                 .As<ITopicConfiguration>();
