@@ -18,13 +18,39 @@
     <Parameter Name="LevyFundedServiceActorService_PartitionCount" DefaultValue="10" />
     <Parameter Name="LevyFundedServiceActorService_MinReplicaSetSize" DefaultValue="3" />
     <Parameter Name="LevyFundedServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="AccountApiApiBaseUrl" DefaultValue="" />
+    <Parameter Name="AccountApiClientId" DefaultValue="" />
+    <Parameter Name="AccountApiClientSecret" DefaultValue="" />
+    <Parameter Name="AccountApiIdentifierUri" DefaultValue="" />
+    <Parameter Name="AccountApiTenant" DefaultValue="" />
+    <Parameter Name="BatchSize" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
        ServiceManifest.xml file. -->
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.FundingSource.LevyAccountBalanceServicePkg" ServiceManifestVersion="1.0.0" />
-    <ConfigOverrides />
+    <ConfigOverrides>
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="ConnectionStringsSection">
+            <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+          </Section>
+          <Section Name="Settings">
+            <Parameter Name="AccountApiApiBaseUrl" Value="[AccountApiApiBaseUrl]" />
+            <Parameter Name="AccountApiClientId" Value="[AccountApiClientId]" />
+            <Parameter Name="AccountApiClientSecret" Value="[AccountApiClientSecret]" />
+            <Parameter Name="AccountApiIdentifierUri" Value="[AccountApiIdentifierUri]" />
+            <Parameter Name="AccountApiTenant" Value="[AccountApiTenant]" />
+            <Parameter Name="BatchSize" Value="[BatchSize]" />
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+    </ConfigOverrides>
   </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.FundingSource.NonLevyFundedServicePkg" ServiceManifestVersion="1.0.0" />
