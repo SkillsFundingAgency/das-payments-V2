@@ -132,7 +132,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                     if (!aimSpec.IsMainAim && functionalSkillEarnings.Any())
                     {
-                        var functionalSkillEarning = new ApprenticeshipContractType2FunctionalSkillEarningsEvent
+                        var functionalSkillEarning = new Act2FunctionalSkillEarningsEvent
                         {
                             CollectionPeriod = collectionPeriod,
                             Ukprn = provider.Ukprn,

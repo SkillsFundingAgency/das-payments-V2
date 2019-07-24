@@ -6,9 +6,9 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
     /// Earning events for sub aims such as Maths & English
     /// </summary>
     /// <seealso cref="EarningEvent" />
-    public class ApprenticeshipContractType2FunctionalSkillEarningsEvent : ApprenticeshipContractTypeFunctionalSkillEarningsEvent
+    public class Act2FunctionalSkillEarningsEvent : FunctionalSkillEarningsEvent
     {
-        public ApprenticeshipContractType2FunctionalSkillEarningsEvent()
+        public Act2FunctionalSkillEarningsEvent()
         {
             ContractType = ContractType.Act2;
         }

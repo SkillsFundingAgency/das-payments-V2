@@ -17,6 +17,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
     public class MapperConfigurationTest
     {
         private ApprenticeshipContractType1EarningEvent earningEventPayment;
+        private Act1FunctionalSkillEarningsEvent functionalSkillEarningEvent;
 
         [OneTimeSetUp]
         public void Initialise()
@@ -118,6 +119,54 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
                 })
             };
 
+            var functionalSkillEarnings = new List<FunctionalSkillEarning>
+            {
+                new FunctionalSkillEarning
+                {
+                    Type = FunctionalSkillType.OnProgrammeMathsAndEnglish,
+                    Periods = earnings.AsReadOnly()
+                }
+            };
+
+            functionalSkillEarningEvent = new Act1FunctionalSkillEarningsEvent
+            {
+                Ukprn = 12345,
+                JobId = 123,
+                CollectionPeriod = new CollectionPeriod {Period = 12, AcademicYear = 1819},
+                Learner = new Learner {ReferenceNumber = "1234-ref", Uln = 123456},
+                CollectionYear = 2019,
+                LearningAim = new LearningAim
+                {
+                    PathwayCode = 12,
+                    FrameworkCode = 1245,
+                    FundingLineType = "Non-DAS 16-18 Learner",
+                    StandardCode = 1209,
+                    ProgrammeType = 7890,
+                    Reference = "ZPROG001"
+                },
+                IlrSubmissionDateTime = DateTime.MaxValue,
+                EventTime = DateTimeOffset.MaxValue,
+                Earnings = functionalSkillEarnings.AsReadOnly(),
+                PriceEpisodes = new List<PriceEpisode>
+                {
+                    new PriceEpisode
+                    {
+                        ActualEndDate = DateTime.MaxValue,
+                        Completed = true,
+                        CompletionAmount = 300m,
+                        Identifier = "p-1",
+                        EffectiveTotalNegotiatedPriceStartDate = DateTime.MinValue,
+                        InstalmentAmount = 100m,
+                        NumberOfInstalments = 12,
+                        PlannedEndDate = DateTime.MaxValue,
+                        TotalNegotiatedPrice1 = 25.0m,
+                        TotalNegotiatedPrice2 = 25.0m,
+                        TotalNegotiatedPrice3 = 25.0m,
+                        TotalNegotiatedPrice4 = 25.0m
+                    }
+
+                }
+            };
         }
 
 
@@ -209,6 +258,32 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
             priceEpisode.TotalNegotiatedPrice3.Should().Be(earningEventPayment.PriceEpisodes.First().TotalNegotiatedPrice3);
             priceEpisode.TotalNegotiatedPrice4.Should().Be(earningEventPayment.PriceEpisodes.First().TotalNegotiatedPrice4);
 
+        }
+
+        [Test]
+        public void CanMapFunctionalSkillEarningToFunctionalSkillDataLockEvent()
+        {
+            var dataLockEvent =
+                Mapper.Map<Act1FunctionalSkillEarningsEvent, PayableFunctionalSkillEarningEvent>(
+                    functionalSkillEarningEvent);
+
+            dataLockEvent.Should().NotBeNull();
+
+            dataLockEvent.CollectionYear.Should().Be(functionalSkillEarningEvent.CollectionYear);
+            dataLockEvent.Earnings.Should().NotBeNull();
+        }
+
+        [Test]
+        public void CanMapFunctionalSkillEarningToFailedFunctionalSkillDataLockEvent()
+        {
+            var dataLockEvent =
+                Mapper.Map<Act1FunctionalSkillEarningsEvent, FunctionalSkillEarningFailedDataLockMatching>(
+                    functionalSkillEarningEvent);
+
+            dataLockEvent.Should().NotBeNull();
+
+            dataLockEvent.CollectionYear.Should().Be(functionalSkillEarningEvent.CollectionYear);
+            dataLockEvent.Earnings.Should().NotBeNull();
         }
 
         private static Array GetIncentives()

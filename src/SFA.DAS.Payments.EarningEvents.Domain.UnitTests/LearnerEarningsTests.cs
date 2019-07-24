@@ -77,10 +77,10 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
                 new ApprenticeshipContractType2EarningEvent()
             };
 
-            var functionalSkillEarnings = new List<ApprenticeshipContractTypeFunctionalSkillEarningsEvent>
+            var functionalSkillEarnings = new List<FunctionalSkillEarningsEvent>
             {
-                new ApprenticeshipContractType2FunctionalSkillEarningsEvent(),
-                new ApprenticeshipContractType1FunctionalSkillEarningsEvent()
+                new Act2FunctionalSkillEarningsEvent(),
+                new Act1FunctionalSkillEarningsEvent()
             };
 
             actBuilder.Setup(b => b.Build(learnerSubmission)).Returns(actEarnings).Verifiable();

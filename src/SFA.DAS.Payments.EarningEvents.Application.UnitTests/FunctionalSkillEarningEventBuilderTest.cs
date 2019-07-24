@@ -25,11 +25,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         {
             // arrange
             var mockMapper = new Mock<IMapper>(MockBehavior.Loose);
-            var expectedResult = new ApprenticeshipContractType1FunctionalSkillEarningsEvent
+            var expectedResult = new Act1FunctionalSkillEarningsEvent
             {
                 Earnings = new List<FunctionalSkillEarning>().AsReadOnly()
             };
-            mockMapper.Setup(m => m.Map<ApprenticeshipContractType1FunctionalSkillEarningsEvent>(It.IsAny<IntermediateLearningAim>())).Returns(expectedResult).Verifiable();
+            mockMapper.Setup(m => m.Map<Act1FunctionalSkillEarningsEvent>(It.IsAny<IntermediateLearningAim>())).Returns(expectedResult).Verifiable();
             var builder = new FunctionalSkillEarningEventBuilder(mockMapper.Object);
             var learnerSubmission = new ProcessLearnerCommand
             {
@@ -142,12 +142,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                 }
             };
 
-            var expectedResult = new ApprenticeshipContractType1FunctionalSkillEarningsEvent
+            var expectedResult = new Act1FunctionalSkillEarningsEvent
             {
                 Earnings = earnings.AsReadOnly()
             };
 
-            mockMapper.Setup(m => m.Map<ApprenticeshipContractType1FunctionalSkillEarningsEvent>(It.IsAny<IntermediateLearningAim>())).Returns(expectedResult).Verifiable();
+            mockMapper.Setup(m => m.Map<Act1FunctionalSkillEarningsEvent>(It.IsAny<IntermediateLearningAim>())).Returns(expectedResult).Verifiable();
             var builder = new FunctionalSkillEarningEventBuilder(mockMapper.Object);
             var learnerSubmission = new ProcessLearnerCommand
             {
@@ -241,8 +241,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             // arrange
             var mockMapper = new Mock<IMapper>(MockBehavior.Loose);
 
-            mockMapper.Setup(m => m.Map<ApprenticeshipContractType1FunctionalSkillEarningsEvent>(It.IsAny<IntermediateLearningAim>())).Returns(GetFunctionalSkillEarningsEvent<ApprenticeshipContractType1FunctionalSkillEarningsEvent>()).Verifiable();
-            mockMapper.Setup(m => m.Map<ApprenticeshipContractType2FunctionalSkillEarningsEvent>(It.IsAny<IntermediateLearningAim>())).Returns(GetFunctionalSkillEarningsEvent<ApprenticeshipContractType2FunctionalSkillEarningsEvent>()).Verifiable();
+            mockMapper.Setup(m => m.Map<Act1FunctionalSkillEarningsEvent>(It.IsAny<IntermediateLearningAim>())).Returns(GetFunctionalSkillEarningsEvent<Act1FunctionalSkillEarningsEvent>()).Verifiable();
+            mockMapper.Setup(m => m.Map<Act2FunctionalSkillEarningsEvent>(It.IsAny<IntermediateLearningAim>())).Returns(GetFunctionalSkillEarningsEvent<Act2FunctionalSkillEarningsEvent>()).Verifiable();
             var builder = new FunctionalSkillEarningEventBuilder(mockMapper.Object);
             var learnerSubmission = new ProcessLearnerCommand
             {
@@ -326,13 +326,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             events.Should().HaveCount(2);
 
             var nonLevyContractTypeEarning = events.Single(x => x.ContractType == ContractType.Act2);
-            nonLevyContractTypeEarning.Should().BeOfType<ApprenticeshipContractType2FunctionalSkillEarningsEvent>();
+            nonLevyContractTypeEarning.Should().BeOfType<Act2FunctionalSkillEarningsEvent>();
             nonLevyContractTypeEarning.Should().NotBeNull();
             nonLevyContractTypeEarning.Earnings.Count.Should().Be(1);
             nonLevyContractTypeEarning.Earnings.First().Periods.Count.Should().Be(6);
 
             var levyContractTypeEarning = events.Single(x => x.ContractType == ContractType.Act1);
-            levyContractTypeEarning.Should().BeOfType<ApprenticeshipContractType1FunctionalSkillEarningsEvent>();
+            levyContractTypeEarning.Should().BeOfType<Act1FunctionalSkillEarningsEvent>();
             levyContractTypeEarning.Should().NotBeNull();
             levyContractTypeEarning.Earnings.Count.Should().Be(1);
             levyContractTypeEarning.Earnings.First().Periods.Count.Should().Be(6);
@@ -340,7 +340,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             mockMapper.Verify();
         }
 
-        private static T GetFunctionalSkillEarningsEvent<T>() where T: ApprenticeshipContractTypeFunctionalSkillEarningsEvent, new()
+        private static T GetFunctionalSkillEarningsEvent<T>() where T: FunctionalSkillEarningsEvent, new()
         {
             var earningPeriods = new List<EarningPeriod>
             {

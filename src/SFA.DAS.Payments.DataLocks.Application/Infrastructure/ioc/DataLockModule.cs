@@ -26,9 +26,18 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
 
             builder.RegisterType<EarningPeriodsValidationProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<CourseValidationProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<DataLockProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
             builder.RegisterType<CalculatePeriodStartAndEndDate>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
+            builder.Register(ctx => new FunctionalSkillValidationProcessor(new List<ICourseValidator>
+            {
+                new CompletionStoppedValidator(),
+                new OnProgrammeAndIncentiveStoppedValidator(ctx.Resolve<ICalculatePeriodStartAndEndDate>()),
+                new ApprenticeshipPauseValidator()
+            })).AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            builder.RegisterType<DataLockProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
+          
             builder.RegisterType<ApprenticeshipProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ApprenticeshipService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ApprenticeshipUpdatedProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
