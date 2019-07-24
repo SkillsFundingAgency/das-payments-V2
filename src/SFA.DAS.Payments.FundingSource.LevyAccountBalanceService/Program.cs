@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Fabric;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Services.Runtime;
@@ -14,7 +13,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyAccountBalanceService
         {
             try
             {
-                using (ServiceFabricContainerFactory.CreateContainerForStatelessService<LevyAccountBalanceService>())
+                using (ServiceFabricContainerFactory.CreateContainerForStatefulService<LevyAccountBalanceService>())
                 {
                     Thread.Sleep(Timeout.Infinite);
                 }

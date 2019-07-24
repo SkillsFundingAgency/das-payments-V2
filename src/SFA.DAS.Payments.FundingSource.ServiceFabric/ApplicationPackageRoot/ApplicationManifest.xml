@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.FundingSource.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="SFA.DAS.Payments.FundingSource.LevyAccountBalanceService_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="LevyAccountBalanceService_MinReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="LevyAccountBalanceService_PartitionCount" DefaultValue="1" />
+    <Parameter Name="LevyAccountBalanceService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="NonLevyFundedService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="LevyFundedProxyService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
@@ -24,6 +26,7 @@
     <Parameter Name="AccountApiIdentifierUri" DefaultValue="" />
     <Parameter Name="AccountApiTenant" DefaultValue="" />
     <Parameter Name="BatchSize" DefaultValue="" />
+    <Parameter Name="LevyAccountBalanceService_EndpointName" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -39,6 +42,7 @@
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
           </Section>
           <Section Name="Settings">
+            <Parameter Name="EndpointName" Value="[LevyAccountBalanceService_EndpointName]" />
             <Parameter Name="AccountApiApiBaseUrl" Value="[AccountApiApiBaseUrl]" />
             <Parameter Name="AccountApiClientId" Value="[AccountApiClientId]" />
             <Parameter Name="AccountApiClientSecret" Value="[AccountApiClientSecret]" />
@@ -115,9 +119,9 @@
   </ServiceManifestImport>
   <DefaultServices>
     <Service Name="SFA.DAS.Payments.FundingSource.LevyAccountBalanceService" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="SFA.DAS.Payments.FundingSource.LevyAccountBalanceServiceType" InstanceCount="[SFA.DAS.Payments.FundingSource.LevyAccountBalanceService_InstanceCount]">
-        <SingletonPartition />
-      </StatelessService>
+      <StatefulService ServiceTypeName="SFA.DAS.Payments.FundingSource.LevyAccountBalanceServiceType" TargetReplicaSetSize="[LevyAccountBalanceService_TargetReplicaSetSize]" MinReplicaSetSize="[LevyAccountBalanceService_MinReplicaSetSize]">
+        <UniformInt64Partition PartitionCount="[LevyAccountBalanceService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+      </StatefulService>
     </Service>
     <Service Name="SFA.DAS.Payments.FundingSource.NonLevyFundedService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.FundingSource.NonLevyFundedServiceType" InstanceCount="[NonLevyFundedService_InstanceCount]">
