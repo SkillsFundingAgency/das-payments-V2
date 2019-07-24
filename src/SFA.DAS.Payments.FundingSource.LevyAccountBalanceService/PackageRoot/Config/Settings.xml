@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Settings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <!-- This is used by the StateManager's replicator. -->
   <Section Name="ReplicatorConfig">
@@ -7,23 +7,23 @@
   <!-- This is used for securing StateManager's replication traffic. -->
   <Section Name="ReplicatorSecurityConfig" />
 
-  <!-- Add your custom configuration sections and parameters here. -->
   <Section Name="ConnectionStringsSection">
-    <Parameter Name="LoggingConnectionString" Value=""/>
-    <Parameter Name="PaymentsConnectionString" Value=""/>
-    <Parameter Name="ServiceBusConnectionString" Value=""/>
+    <Parameter Name="LoggingConnectionString" Value="" />
+    <Parameter Name="ServiceBusConnectionString" Value="" />
+    <Parameter Name="PaymentsConnectionString" Value="" />
+    <Parameter Name="StorageConnectionString" Value="" />
   </Section>
-
   <Section Name="Settings">
-    <Parameter Name="EndpointName" Value="sfa-das-payments-levyaccountbalance" />
-    <Parameter Name="AccountApiApiBaseUrl" Value=""/>
-    <Parameter Name="AccountApiClientId" Value=""/>
-    <Parameter Name="AccountApiClientSecret" Value="" />
+    <Parameter Name="AccountApiApiBaseUrl"  Value="" />
+    <Parameter Name="AccountApiClientId"  Value="" />
+    <Parameter Name="AccountApiClientSecret"  Value="" />
     <Parameter Name="AccountApiIdentifierUri" Value="" />
     <Parameter Name="AccountApiTenant" Value="" />
-    <Parameter Name="BatchSize" Value="" />
+    <Parameter Name="BatchSize" Value="1000" />
     <Parameter Name="LogLevel" Value="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+    <Parameter Name="EndpointName" Value="sfa-das-payments-levyaccountbalance" />
+    <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-levyaccountbalance-errors" />
   </Section>
 
 </Settings>

@@ -2,7 +2,7 @@
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.FundingSource.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="LevyAccountBalanceService_MinReplicaSetSize" DefaultValue="3" />
-    <Parameter Name="LevyAccountBalanceService_PartitionCount" DefaultValue="1" />
+    <Parameter Name="LevyAccountBalanceService_PartitionCount" DefaultValue="10" />
     <Parameter Name="LevyAccountBalanceService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="NonLevyFundedService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="LevyFundedProxyService_InstanceCount" DefaultValue="-1" />
@@ -27,6 +27,7 @@
     <Parameter Name="AccountApiTenant" DefaultValue="" />
     <Parameter Name="BatchSize" DefaultValue="" />
     <Parameter Name="LevyAccountBalanceService_EndpointName" DefaultValue="" />
+    <Parameter Name="LevyAccountBalanceService_FailedMessagesQueue" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -40,6 +41,7 @@
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[LevyAccountBalanceService_EndpointName]" />
@@ -51,6 +53,7 @@
             <Parameter Name="BatchSize" Value="[BatchSize]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+            <Parameter Name="FailedMessagesQueue" Value="[LevyAccountBalanceService_FailedMessagesQueue]" />
           </Section>
         </Settings>
       </ConfigOverride>

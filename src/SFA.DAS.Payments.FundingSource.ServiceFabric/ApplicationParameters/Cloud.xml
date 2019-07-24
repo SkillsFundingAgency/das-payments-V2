@@ -26,5 +26,6 @@
     <Parameter Name="AccountApiIdentifierUri" Value="__AccountApiIdentifierUri__" />
     <Parameter Name="AccountApiTenant" Value="__AccountApiTenant__" />
     <Parameter Name="LevyAccountBalanceService_EndpointName" Value="__LevyAccountBalanceService_EndpointName__" />
+    <Parameter Name="LevyAccountBalanceService_FailedMessagesQueue" Value="__LevyAccountBalanceService_FailedMessagesQueue__" />
   </Parameters>
 </Application>
