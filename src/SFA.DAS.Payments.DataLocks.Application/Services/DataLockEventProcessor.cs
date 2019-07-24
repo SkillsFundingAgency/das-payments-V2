@@ -66,7 +66,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                     if (!newFailuresGroupedByTypeAndPeriod.TryGetValue(key, out var newPeriod))
                     {
-                        paymentLogger.LogWarning($"Earning does not have TT {transactionType} for period {period} which is present in DataLockFailure. UKPRN {dataLockEvent.Ukprn}, LearnRefNumber: {dataLockEvent.Learner.ReferenceNumber}");
+                        paymentLogger.LogWarning($"Earning does not have transaction type {transactionType} for period {period} which is present in DataLockFailure. UKPRN {dataLockEvent.Ukprn}, LearnRefNumber: {dataLockEvent.Learner.ReferenceNumber}");
                         continue;
                     }
 
@@ -101,9 +101,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 if (changedToPassed.TransactionTypesAndPeriods.Count > 0)
                     result.Add(changedToPassed);
 
-                if (changedToPassed.TransactionTypesAndPeriods.Count > 0)
+                if (failureChanged.TransactionTypesAndPeriods.Count > 0)
                     result.Add(failureChanged);
-
+                
                 foreach (var dataLockStatusChanged in result)
                 {
                     mapper.Map(dataLockEvent, dataLockStatusChanged);
@@ -150,11 +150,14 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 statusChangedEvent.TransactionTypesAndPeriods.Add(transactionType, new List<EarningPeriod> {period});
             }
 
-            if (statusChangedEvent is DataLockStatusChangedToPassed && period.DataLockFailures?.Count > 0)
-                throw new ApplicationException("DataLockStatusChangedToPassed has data lock failures");
+            if (statusChangedEvent is DataLockStatusChangedToPassed)
+            {
+                if (period.DataLockFailures?.Count > 0)
+                    throw new ApplicationException("DataLockStatusChangedToPassed has data lock failures");
 
-            if (statusChangedEvent is DataLockStatusChangedToPassed && (!period.ApprenticeshipId.HasValue || !period.ApprenticeshipPriceEpisodeId.HasValue))
-                throw new ApplicationException("DataLockStatusChangedToPassed has no apprenticeship ID");
+                if (!period.ApprenticeshipId.HasValue || !period.ApprenticeshipPriceEpisodeId.HasValue)
+                    throw new ApplicationException("DataLockStatusChangedToPassed has no apprenticeship ID");
+            }
         }
 
         private static Dictionary<(TransactionType type, byte period), EarningPeriod> GetFailuresGroupedByTypeAndPeriod(DataLockEvent dataLockEvent)
