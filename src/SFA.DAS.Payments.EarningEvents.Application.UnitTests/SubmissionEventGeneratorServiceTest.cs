@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         private List<LegacySubmissionEvent> writtenEvents;
         private Mock<IBulkWriter<LegacySubmissionEvent>> bulkWriterMock;
         private Mock<ISubmissionEventProcessor> submissionEventProcessorMock;
-        private Mock<IPaymentLogger> loggerMock = new Mock<IPaymentLogger>(MockBehavior.Loose);
+        private readonly Mock<IPaymentLogger> loggerMock = new Mock<IPaymentLogger>(MockBehavior.Loose);
 
         [SetUp]
         public void SetUp()
@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                 .Returns(Task.CompletedTask);
 
             submittedPriceEpisodeRepoMock = new Mock<ISubmittedPriceEpisodeRepository>(MockBehavior.Strict);
-            service = new SubmissionEventGeneratorService();
+            service = new SubmissionEventGeneratorService(submittedPriceEpisodeRepoMock.Object, bulkWriterMock.Object, loggerMock.Object, submissionEventProcessorMock.Object);
         }
 
         [TearDown]
@@ -60,7 +60,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var newEvent = new ApprenticeshipContractType1EarningEvent
             {
                 Ukprn = 1,
-                Learner = new Learner {ReferenceNumber = "2"}
+                Learner = new Learner {ReferenceNumber = "2"},
+                LearningAim = new LearningAim(),
+                PriceEpisodes = new List<PriceEpisode>{new PriceEpisode()},
+                CollectionPeriod = new CollectionPeriod()
             };
 
             // act

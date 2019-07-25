@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.EarningEvents.Application.Repositories;
+using SFA.DAS.Payments.EarningEvents.Domain;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Model.Entities;
 using SFA.DAS.Payments.Messages.Core.Events;
@@ -18,14 +20,17 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Interfaces
 
     public class SubmissionEventGeneratorService : ISubmissionEventGeneratorService
     {
-        private ISubmittedPriceEpisodeRepository submittedPriceEpisodeRepository;
+        private readonly ISubmittedPriceEpisodeRepository submittedPriceEpisodeRepository;
         private IBulkWriter<LegacySubmissionEvent> submissionEventWriter;
         private readonly IPaymentLogger logger;
+        private ISubmissionEventProcessor submissionEventProcessor;
 
-        public SubmissionEventGeneratorService(ISubmittedPriceEpisodeRepository submittedPriceEpisodeRepository, IBulkWriter<LegacySubmissionEvent> submissionEventWriter)
+        public SubmissionEventGeneratorService(ISubmittedPriceEpisodeRepository submittedPriceEpisodeRepository, IBulkWriter<LegacySubmissionEvent> submissionEventWriter, IPaymentLogger logger, ISubmissionEventProcessor submissionEventProcessor)
         {
             this.submittedPriceEpisodeRepository = submittedPriceEpisodeRepository;
             this.submissionEventWriter = submissionEventWriter;
+            this.logger = logger;
+            this.submissionEventProcessor = submissionEventProcessor;
         }
 
         public async Task ProcessEarningEvent(IContractTypeEarningEvent earningEvent, CancellationToken cancellationToken)
@@ -68,6 +73,17 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Interfaces
                         //OnProgrammeTotalPrice = e.TotalNegotiatedPrice1
                     }
                 });
+
+                var submissionEvents = new List<LegacySubmissionEvent>();
+
+                foreach (var currentEpisode in currentEpisodes)
+                {
+                    var submissionEvent = submissionEventProcessor.ProcessSubmission(currentEpisode, lastSeenEpisodes.FirstOrDefault(e => e.PriceEpisodeIdentifier == currentEpisode.PriceEpisodeIdentifier));
+                    if (submissionEvent != null)
+                        await submissionEventWriter.Write(submissionEvent, cancellationToken).ConfigureAwait(false);
+                }
+
+                await submissionEventWriter.Flush(cancellationToken).ConfigureAwait(false);
 
                 logger.LogVerbose($"Processed earning event for UKPRN {earningEvent.Ukprn} LearnRefNumber {earningEvent.Learner.ReferenceNumber}");
             }

@@ -58,6 +58,7 @@
   <ItemGroup>
     <Folder Include="Properties" />
     <Folder Include="DataLock" />
+    <Folder Include="Submissions" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="DataLock\DataLockEvents.sql" />
@@ -65,7 +66,7 @@
     <Build Include="DataLock\DataLockEventPeriods.sql" />
     <Build Include="DataLock\DataLockEventCommitmentVersions.sql" />
     <Build Include="DataLock\DataLockEventErrors.sql" />
-    <Build Include="DataLock\Submissions.sql" />
-    <Build Include="DataLock\SubmissionEvents.sql" />
+    <Build Include="Submissions\Submissions.sql" />
+    <Build Include="Submissions\SubmissionEvents.sql" />
   </ItemGroup>
 </Project>
