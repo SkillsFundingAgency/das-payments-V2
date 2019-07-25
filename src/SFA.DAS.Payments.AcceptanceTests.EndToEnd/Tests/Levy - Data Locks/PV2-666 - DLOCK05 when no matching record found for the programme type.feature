@@ -3,9 +3,8 @@ Feature: DLOCK05 - When no matching record found in an employer digital account 
  		As a Provider,
  		I want to be notified with a DLOCK05 when no matching record found in an employer digital account for the Programme Type
  		So that I can correct the data mis-match between the Commitment and ILR PV2-666
- 
-Scenario outline: DLOCK05 - When no matching record found in an employer digital account for for the framework code then datalock DLOCK_05 will be produced PV2-666
- 
+
+Scenario Outline: DLOCK05 - When no matching record found in an employer digital account for for the framework code then datalock DLOCK_05 will be produced PV2-666
  	Given the employer levy account balance in collection period R12/Current Academic Year is 11000 
 	And the following commitments exist
  		| Identifier       | framework code | programme type | pathway code | agreed price | start date                   | end date                  | status | effective from               |
