@@ -369,7 +369,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 .Verifiable();
 
             var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object);
-            var actualDataLockEvents = await dataLockProcessor.GetFunctionalSkillPaymentEvents(testEarningEvent, default)
+            var actualDataLockEvents = await dataLockProcessor.GetFunctionalSkillPaymentEvents(testEarningEvent, default(CancellationToken))
                 .ConfigureAwait(false);
 
             var payableEarnings = actualDataLockEvents.OfType<PayableFunctionalSkillEarningEvent>().ToList();
