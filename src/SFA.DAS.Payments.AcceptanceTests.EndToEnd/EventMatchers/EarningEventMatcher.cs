@@ -132,25 +132,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                     if (!aimSpec.IsMainAim && functionalSkillEarnings.Any())
                     {
-                        var functionalSkillEarning = new Act2FunctionalSkillEarningsEvent
-                        {
-                            CollectionPeriod = collectionPeriod,
-                            Ukprn = provider.Ukprn,
-                            Earnings = functionalSkillEarnings.Select(tt => new FunctionalSkillEarning
-                            {
-                                Type = (FunctionalSkillType)(int)tt,
-                                Periods = aimEarningSpecs.Select(e => new EarningPeriod
-                                {
-                                    Amount = e.Values[tt],
-                                    Period = e.DeliveryCalendarPeriod,
-                                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
-                                }).ToList().AsReadOnly()
-                            }).ToList().AsReadOnly(),
-                            JobId = provider.JobId,
-                            Learner = learner,
-                            LearningAim = learningAim
-                        };
-                        result.Add(functionalSkillEarning);
+                        var functionalSkillEarningsEvents = CreateFunctionalSkillEarningEvents(functionalSkillEarnings, aimEarningSpecs, fm36Learner, learner, learningAim);
+                        result.AddRange(functionalSkillEarningsEvents);
                     }
 
                     if (!aimSpec.IsMainAim && incentiveEarnings.Any())
@@ -175,6 +158,66 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             }
 
             return result;
+        }
+
+        private List<FunctionalSkillEarningsEvent> CreateFunctionalSkillEarningEvents(List<TransactionType> functionalSkillEarnings,
+            List<Earning> aimEarningSpecs, FM36Learner fm36Learner, Learner learner, LearningAim learningAim)
+        {
+            var contractTypes = EnumHelper.GetContractTypes(currentIlr, currentPriceEpisodes);
+
+            var events = new List<FunctionalSkillEarningsEvent>();
+
+            contractTypes?.ForEach(c =>
+            {
+                switch (c)
+                {
+                    case ContractType.Act1:
+                        events.Add(new Act1FunctionalSkillEarningsEvent
+                        {
+                            CollectionPeriod = collectionPeriod,
+                            Ukprn = provider.Ukprn,
+                            Earnings = functionalSkillEarnings.Select(tt => new FunctionalSkillEarning
+                            {
+                                Type = (FunctionalSkillType)(int)tt,
+                                Periods = aimEarningSpecs.Select(e => new EarningPeriod
+                                {
+                                    Amount = e.Values[tt],
+                                    Period = e.DeliveryCalendarPeriod,
+                                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
+                                }).ToList().AsReadOnly()
+                            }).ToList().AsReadOnly(),
+                            JobId = provider.JobId,
+                            Learner = learner,
+                            LearningAim = learningAim
+                        });
+                        break;
+                    case ContractType.Act2:
+                        events.Add(new Act2FunctionalSkillEarningsEvent
+                        {
+                            CollectionPeriod = collectionPeriod,
+                            Ukprn = provider.Ukprn,
+                            Earnings = functionalSkillEarnings.Select(tt => new FunctionalSkillEarning
+                            {
+                                Type = (FunctionalSkillType)(int)tt,
+                                Periods = aimEarningSpecs.Select(e => new EarningPeriod
+                                {
+                                    Amount = e.Values[tt],
+                                    Period = e.DeliveryCalendarPeriod,
+                                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
+                                }).ToList().AsReadOnly()
+                            }).ToList().AsReadOnly(),
+                            JobId = provider.JobId,
+                            Learner = learner,
+                            LearningAim = learningAim
+                        });
+                        break;
+                    default:
+                        throw new InvalidOperationException(
+                            "Cannot create the EarningEventMatcher invalid contract type ");
+                }
+            });
+
+            return events;
         }
 
         private List<EarningPeriod> GetEarningPeriods(List<Earning> aimEarningSpecs, Aim aimSpec, ApprenticeshipContractTypeEarningsEvent onProgEarning, TransactionType tt, FM36Learner fm36Learner)

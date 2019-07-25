@@ -19,16 +19,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             var actualPayments = GetActualEvents();
 
-            actualPayments = actualPayments.Where(x => (x is Act2FunctionalSkillEarningsEvent &&
-                                                        (x as Act2FunctionalSkillEarningsEvent).Earnings.Any()) ||
-                                                       (x as Act2FunctionalSkillEarningsEvent) == null)
+            actualPayments = actualPayments.Where(x => (x is FunctionalSkillEarningsEvent &&
+                                                        (x as FunctionalSkillEarningsEvent).Earnings.Any()) ||
+                                                       (x as FunctionalSkillEarningsEvent) == null)
                 .ToList();
 
 
             var expectedPayments = GetExpectedEvents();
 
             //remove any FunctionalSkillEarningsEvent when we are not expecting any(only if they have all 0 values)
-            if (expectedPayments.All(x => x.GetType() != typeof(Act2FunctionalSkillEarningsEvent)))
+            if (expectedPayments.All(x => x.GetType() != typeof(FunctionalSkillEarningsEvent)))
             {
                 actualPayments = RemoveEmptyFunctionSkillEarningEvent(actualPayments);
             }
@@ -64,8 +64,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         private IList<T> RemoveEmptyFunctionSkillEarningEvent(IList<T> actualPayments)
         {
             return actualPayments.Except(actualPayments
-                .Where(actualPayment => actualPayment.GetType() == typeof(Act2FunctionalSkillEarningsEvent) && 
-                                          (actualPayment as Act2FunctionalSkillEarningsEvent).Earnings.All(e=>e.Periods.All(p=>p.Amount == 0)))).ToList();
+                .Where(actualPayment => actualPayment.GetType() == typeof(FunctionalSkillEarningsEvent) && 
+                                          (actualPayment as FunctionalSkillEarningsEvent).Earnings.All(e=>e.Periods.All(p=>p.Amount == 0)))).ToList();
         }
     }
 }
