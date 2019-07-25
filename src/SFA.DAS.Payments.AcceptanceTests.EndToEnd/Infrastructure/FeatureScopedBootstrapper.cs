@@ -1,11 +1,15 @@
 ﻿using System;
 using Autofac;
+using Autofac.Core;
+using ESFA.DC.Data.AppsEarningsHistory.Model;
+using Microsoft.EntityFrameworkCore;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure.IoC;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators;
+using SFA.DAS.Payments.AcceptanceTests.Services.Interfaces;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
@@ -38,6 +42,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
                 return new PaymentsDataContext(configHelper.PaymentsConnectionString);
             }).As<IPaymentsDataContext>().InstancePerLifetimeScope();
             DcHelper.AddDcConfig(Builder);
+
+            Builder.Register(ctx =>
+                             {
+                                 var configHelper = ctx.Resolve<TestsConfiguration>();
+                                 var builder = new DbContextOptionsBuilder<AppEarnHistoryContext>()
+                                     .UseSqlServer(configHelper.AppEarnHistoryConnectionString);
+                                 return new AppEarnHistoryContext(builder.Options);
+                             })
+                   .OnlyIf(x => x.IsRegistered(new TypedService(typeof(IApprenticeshipEarningsHistoryService))))
+                   .InstancePerLifetimeScope();
 
             Builder.RegisterType<IlrDcService>()
                    .As<IIlrService>()
