@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ESFA.DC.JobStatus.Interface;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
 {
     public interface IJobService
     {
-        Task<JobStatusType> GetJobStatus(long jobId);
+        Task<ESFA.DC.JobStatus.Interface.JobStatusType> GetJobStatus(long jobId);
 
-        Task<string> UpdateJobStatus(long jobId, JobStatusType status);
+        Task<string> UpdateJobStatus(long jobId, ESFA.DC.JobStatus.Interface.JobStatusType status);
 
         Task<long> SubmitJob(SubmissionModel submissionMessage);
 
