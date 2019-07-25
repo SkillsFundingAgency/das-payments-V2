@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,21 +8,20 @@ using SFA.DAS.Payments.EarningEvents.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Domain;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Model.Entities;
-using SFA.DAS.Payments.Messages.Core.Events;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Interfaces
 {
     public interface ISubmissionEventGeneratorService
     {
-        Task ProcessEarningEvent(IContractTypeEarningEvent earningEvent, CancellationToken cancellationToken);
+        Task ProcessEarningEvent(ApprenticeshipContractTypeEarningsEvent earningEvent, CancellationToken cancellationToken);
     }
 
     public class SubmissionEventGeneratorService : ISubmissionEventGeneratorService
     {
         private readonly ISubmittedPriceEpisodeRepository submittedPriceEpisodeRepository;
-        private IBulkWriter<LegacySubmissionEvent> submissionEventWriter;
+        private readonly IBulkWriter<LegacySubmissionEvent> submissionEventWriter;
         private readonly IPaymentLogger logger;
-        private ISubmissionEventProcessor submissionEventProcessor;
+        private readonly ISubmissionEventProcessor submissionEventProcessor;
 
         public SubmissionEventGeneratorService(ISubmittedPriceEpisodeRepository submittedPriceEpisodeRepository, IBulkWriter<LegacySubmissionEvent> submissionEventWriter, IPaymentLogger logger, ISubmissionEventProcessor submissionEventProcessor)
         {
@@ -33,7 +31,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Interfaces
             this.submissionEventProcessor = submissionEventProcessor;
         }
 
-        public async Task ProcessEarningEvent(IContractTypeEarningEvent earningEvent, CancellationToken cancellationToken)
+        public async Task ProcessEarningEvent(ApprenticeshipContractTypeEarningsEvent earningEvent, CancellationToken cancellationToken)
         {
             try
             {
@@ -73,8 +71,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Interfaces
                         //OnProgrammeTotalPrice = e.TotalNegotiatedPrice1
                     }
                 });
-
-                var submissionEvents = new List<LegacySubmissionEvent>();
 
                 foreach (var currentEpisode in currentEpisodes)
                 {

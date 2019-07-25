@@ -7,7 +7,7 @@ using SFA.DAS.Payments.Messages.Core.Events;
 
 namespace SFA.DAS.Payments.EarningEvents.SubmissionEventsService.Handlers
 {
-    public class EarningEventHandler : IHandleMessages<IContractTypeEarningEvent>
+    public class EarningEventHandler : IHandleMessages<ApprenticeshipContractTypeEarningsEvent>
     {
         private readonly ISubmissionEventGeneratorService submissionEventGeneratorService;
 
@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.EarningEvents.SubmissionEventsService.Handlers
             this.submissionEventGeneratorService = submissionEventGeneratorService;
         }
 
-        public async Task Handle(IContractTypeEarningEvent message, IMessageHandlerContext context)
+        public async Task Handle(ApprenticeshipContractTypeEarningsEvent message, IMessageHandlerContext context)
         {
             await submissionEventGeneratorService.ProcessEarningEvent(message, CancellationToken.None).ConfigureAwait(false);
         }
