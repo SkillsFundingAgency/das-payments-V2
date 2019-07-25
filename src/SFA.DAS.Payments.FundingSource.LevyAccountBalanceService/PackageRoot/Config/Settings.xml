@@ -14,7 +14,7 @@
     <Parameter Name="StorageConnectionString" Value="" />
   </Section>
   <Section Name="Settings">
-    <Parameter Name="AccountApiApiBaseUrl"  Value="" />
+    <Parameter Name="AccountApiBaseUrl"  Value="" />
     <Parameter Name="AccountApiClientId"  Value="" />
     <Parameter Name="AccountApiClientSecret"  Value="" />
     <Parameter Name="AccountApiIdentifierUri" Value="" />
@@ -24,6 +24,7 @@
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
     <Parameter Name="EndpointName" Value="sfa-das-payments-levyaccountbalance" />
     <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-levyaccountbalance-errors" />
+    <Parameter Name="LevyAccountRefreshIntervalInHours" Value="23" />
   </Section>
 
 </Settings>

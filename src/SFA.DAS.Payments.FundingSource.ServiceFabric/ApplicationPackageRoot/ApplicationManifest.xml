@@ -20,14 +20,15 @@
     <Parameter Name="LevyFundedServiceActorService_PartitionCount" DefaultValue="10" />
     <Parameter Name="LevyFundedServiceActorService_MinReplicaSetSize" DefaultValue="3" />
     <Parameter Name="LevyFundedServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
-    <Parameter Name="AccountApiApiBaseUrl" DefaultValue="" />
+    <Parameter Name="AccountApiBaseUrl" DefaultValue="" />
     <Parameter Name="AccountApiClientId" DefaultValue="" />
     <Parameter Name="AccountApiClientSecret" DefaultValue="" />
     <Parameter Name="AccountApiIdentifierUri" DefaultValue="" />
     <Parameter Name="AccountApiTenant" DefaultValue="" />
-    <Parameter Name="BatchSize" DefaultValue="" />
+    <Parameter Name="LevyAccountBalanceService_BatchSize" DefaultValue="" />
     <Parameter Name="LevyAccountBalanceService_EndpointName" DefaultValue="" />
     <Parameter Name="LevyAccountBalanceService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="LevyAccountRefreshIntervalInHours" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -45,15 +46,16 @@
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[LevyAccountBalanceService_EndpointName]" />
-            <Parameter Name="AccountApiApiBaseUrl" Value="[AccountApiApiBaseUrl]" />
+            <Parameter Name="AccountApiBaseUrl" Value="[AccountApiBaseUrl]" />
             <Parameter Name="AccountApiClientId" Value="[AccountApiClientId]" />
             <Parameter Name="AccountApiClientSecret" Value="[AccountApiClientSecret]" />
             <Parameter Name="AccountApiIdentifierUri" Value="[AccountApiIdentifierUri]" />
             <Parameter Name="AccountApiTenant" Value="[AccountApiTenant]" />
-            <Parameter Name="BatchSize" Value="[BatchSize]" />
+            <Parameter Name="BatchSize" Value="[LevyAccountBalanceService_BatchSize]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="FailedMessagesQueue" Value="[LevyAccountBalanceService_FailedMessagesQueue]" />
+            <Parameter Name="LevyAccountRefreshIntervalInHours" Value="[LevyAccountRefreshIntervalInHours]" />
           </Section>
         </Settings>
       </ConfigOverride>

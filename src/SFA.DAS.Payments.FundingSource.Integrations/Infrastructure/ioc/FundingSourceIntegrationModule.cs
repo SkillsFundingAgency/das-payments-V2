@@ -20,11 +20,11 @@ namespace SFA.DAS.Payments.FundingSource.Integrations.Infrastructure.Ioc
                     var configHelper = c.Resolve<IConfigurationHelper>();
                     var accountApiConfig = new AccountApiConfiguration
                     {
-                        ApiBaseUrl = configHelper.GetConnectionString("AccountApiApiBaseUrl"),
-                        ClientId = configHelper.GetConnectionString("AccountApiClientId"),
-                        ClientSecret = configHelper.GetConnectionString("AccountApiClientSecret"),
-                        IdentifierUri = configHelper.GetConnectionString("AccountApiIdentifierUri"),
-                        Tenant = configHelper.GetConnectionString("AccountApiTenant")
+                        ApiBaseUrl = configHelper.GetSetting("AccountApiBaseUrl"),
+                        ClientId = configHelper.GetSetting("AccountApiClientId"),
+                        ClientSecret = configHelper.GetSetting("AccountApiClientSecret"),
+                        IdentifierUri = configHelper.GetSetting("AccountApiIdentifierUri"),
+                        Tenant = configHelper.GetSetting("AccountApiTenant")
                     };
 
                     return accountApiConfig;
@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.FundingSource.Integrations.Infrastructure.Ioc
             builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
-                    var batchSize = configHelper.GetSettingOrDefault("BatchSize",2000);
+                    var batchSize = configHelper.GetSettingOrDefault("BatchSize",1000);
                     var repository = c.Resolve<ILevyFundingSourceIntegrationRepository>();
                     var accountApiClient = c.Resolve<IAccountApiClient>();
                     var logger = c.Resolve<IPaymentLogger>();

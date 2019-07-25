@@ -62,7 +62,6 @@ namespace SFA.DAS.Payments.FundingSource.Integrations.Services
                         {
                             AccountId = accountId,
                             IsLevyPayer = true,  // TODO confirm 
-                            AccountHashId = accountDetail.HashedAccountId,
                             AccountName = accountDetail.DasAccountName,
                             Balance = accountDetail.Balance,
                             TransferAllowance = accountDetail.RemainingTransferAllowance
@@ -73,7 +72,6 @@ namespace SFA.DAS.Payments.FundingSource.Integrations.Services
                     else
                     {
                         currentLevyAccount.IsLevyPayer = true;  // TODO confirm 
-                        currentLevyAccount.AccountHashId = accountDetail.HashedAccountId;
                         currentLevyAccount.AccountName = accountDetail.DasAccountName;
                         currentLevyAccount.Balance = accountDetail.Balance;
                         currentLevyAccount.TransferAllowance = accountDetail.RemainingTransferAllowance;

@@ -45,7 +45,6 @@ namespace SFA.DAS.Payments.FundingSource.Integrations.UnitTests
                 new AccountDetailViewModel
                 {
                     AccountId = 1,
-                    HashedAccountId = "1xxx",
                     Balance = 100m,
                     RemainingTransferAllowance = 50m,
                     DasAccountName = "Test Ltd"
@@ -54,7 +53,6 @@ namespace SFA.DAS.Payments.FundingSource.Integrations.UnitTests
                 {
                     AccountId = 2,
                     Balance = 200m,
-                    HashedAccountId = "2xxx",
                     RemainingTransferAllowance = 20m,
                     DasAccountName = "Test 2 Ltd"
                 }
@@ -70,7 +68,7 @@ namespace SFA.DAS.Payments.FundingSource.Integrations.UnitTests
                 .ReturnsAsync(accountDetails[1]);
 
             LevyAccountModel nullLevyAccountModel = null;
-            
+
             repository
                 .SetupSequence(x => x.GetLevyAccount(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LevyAccountModel
@@ -79,16 +77,26 @@ namespace SFA.DAS.Payments.FundingSource.Integrations.UnitTests
                     Balance = 400,
                     AccountName = "Old Ltd"
                 })
-                 .ReturnsAsync(nullLevyAccountModel);
+                .ReturnsAsync(nullLevyAccountModel);
 
             repository
-                .Setup(x => x.AddLevyAccounts(It.IsAny<List<LevyAccountModel>>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
+                .Setup(x => x.AddLevyAccounts(
+                    It.Is<List<LevyAccountModel>>(o => o[1].AccountId == accountDetails[1].AccountId &&
+                                                       o[1].Balance == accountDetails[1].Balance &&
+                                                       o[1].TransferAllowance == accountDetails[1].RemainingTransferAllowance ),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
 
             repository
-                .Setup(x => x.UpdateLevyAccounts(It.IsAny<List<LevyAccountModel>>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-            
+                .Setup(x => x.UpdateLevyAccounts(
+                    It.Is<List<LevyAccountModel>>(o => o[0].AccountId == accountDetails[0].AccountId &&
+                                                       o[0].Balance == accountDetails[0].Balance &&
+                                                       o[0].TransferAllowance == accountDetails[0].RemainingTransferAllowance ),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+
             var service = new ManageLevyAccountBalanceService
             (
                 repository.Object,

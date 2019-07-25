@@ -20,12 +20,14 @@
     <Parameter Name="ProcessMessageSequentially" Value="false" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
     <Parameter Name="PaymentsConnectionString" Value="__DasPaymentsConnectionStringRO__" />
-    <Parameter Name="AccountApiApiBaseUrl" Value="__AccountApiApiBaseUrl__" />
+    <Parameter Name="AccountApiBaseUrl" Value="__AccountApiBaseUrl__" />
     <Parameter Name="AccountApiClientId" Value="__AccountApiClientId__" />
     <Parameter Name="AccountApiClientSecret" Value="__AccountApiClientSecret__" />
     <Parameter Name="AccountApiIdentifierUri" Value="__AccountApiIdentifierUri__" />
     <Parameter Name="AccountApiTenant" Value="__AccountApiTenant__" />
     <Parameter Name="LevyAccountBalanceService_EndpointName" Value="__LevyAccountBalanceService_EndpointName__" />
     <Parameter Name="LevyAccountBalanceService_FailedMessagesQueue" Value="__LevyAccountBalanceService_FailedMessagesQueue__" />
+    <Parameter Name="LevyAccountRefreshIntervalInHours" Value="__LevyAccountRefreshIntervalInHours__" />
+    <Parameter Name="LevyAccountBalanceService_BatchSize" Value="__LevyAccountBalanceService_BatchSize__" />
   </Parameters>
 </Application>
