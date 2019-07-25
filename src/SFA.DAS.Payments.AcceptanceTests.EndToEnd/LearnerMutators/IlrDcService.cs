@@ -132,7 +132,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             XNamespace xsdns = tdgService.IlrNamespace;
             var xDoc = XDocument.Parse(ilrFile);
             var learnerDescendants = xDoc.Descendants(xsdns + "Learner");
-
             var learnersEnumeration = learners as Learner[] ?? learners.ToArray();
             for (var i = 0; i < learnersEnumeration.Count(); i++)
             {

@@ -1,10 +1,8 @@
-﻿using ESFA.DC.Jobs.Model.Enums;
-
-namespace SFA.DAS.Payments.AcceptanceTests.Services
+﻿namespace SFA.DAS.Payments.AcceptanceTests.Services
 {
     public class SubmissionModel
     {
-        public SubmissionModel(EnumJobType jobType, long ukprn)
+        public SubmissionModel(ESFA.DC.Jobs.Model.Enums.EnumJobType jobType, long ukprn)
         {
             JobType = jobType;
             Ukprn = ukprn;
@@ -24,7 +22,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
 
         public string NotifyEmail { get; set; }
 
-        public EnumJobType JobType { get; set; }
+        public ESFA.DC.Jobs.Model.Enums.EnumJobType JobType { get; set; }
 
         public string StorageReference { get; set; }
 
