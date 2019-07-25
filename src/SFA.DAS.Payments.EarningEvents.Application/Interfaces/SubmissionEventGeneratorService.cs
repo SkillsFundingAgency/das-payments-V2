@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Internal;
 using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.EarningEvents.Application.Repositories;
@@ -66,7 +68,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Interfaces
                         ProgrammeType = earningEvent.LearningAim.ProgrammeType,
                         StandardCode = earningEvent.LearningAim.StandardCode,
                         Uln = earningEvent.Learner.Uln,
-                        //FileDateTime = earningEvent.IlrSubmissionDateTime,
+                        FileDateTime = ExtractFileDateFromName(earningEvent.IlrFileName, earningEvent.CollectionPeriod.AcademicYear, earningEvent.IlrSubmissionDateTime),
                         SubmittedDateTime = earningEvent.IlrSubmissionDateTime,
                         //OnProgrammeTotalPrice = e.TotalNegotiatedPrice1
                     }
@@ -88,6 +90,22 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Interfaces
                 logger.LogError($"Error processing earning event for UKPRN {earningEvent.Ukprn} LearnRefNumber {earningEvent.Learner.ReferenceNumber}. {ex.Message}");
                 throw;
             }
+        }
+
+        private static DateTime ExtractFileDateFromName(string fileName, int academicYear, DateTime defaultDate) // borrowed from v1
+        {
+            if (string.IsNullOrEmpty(fileName) || fileName.Length < 30 || !fileName.Contains("-"))
+                return defaultDate;
+
+            var bits = fileName.Split('-');
+            var index = Array.IndexOf(bits, academicYear.ToString());
+            if (index >= 0 && bits.Length > index)
+            {
+                if (DateTime.TryParseExact(bits[index + 1], "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var dateTime))
+                    return dateTime;
+            }
+
+            return defaultDate;
         }
     }
 }

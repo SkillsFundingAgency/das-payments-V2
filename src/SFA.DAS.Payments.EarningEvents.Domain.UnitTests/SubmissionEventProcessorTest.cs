@@ -55,8 +55,8 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
             Assert.AreEqual(event1.FileDateTime, ilrForFirstSubmission.IlrDetails.FileDateTime);
             Assert.AreEqual(event1.SubmittedDateTime, ilrForFirstSubmission.IlrDetails.SubmittedDateTime);
             Assert.AreEqual(event1.ComponentVersionNumber, 2);
-            Assert.AreEqual(event1.Ukprn, ilrForFirstSubmission.Ukprn);
-            Assert.AreEqual(event1.Uln, ilrForFirstSubmission.IlrDetails.Uln);
+            Assert.AreEqual(event1.UKPRN, ilrForFirstSubmission.Ukprn);
+            Assert.AreEqual(event1.ULN, ilrForFirstSubmission.IlrDetails.Uln);
             Assert.AreEqual(event1.LearnRefNumber, ilrForFirstSubmission.LearnRefNumber);
             Assert.AreEqual(event1.AimSeqNumber, ilrForFirstSubmission.IlrDetails.AimSeqNumber);
             Assert.AreEqual(event1.PriceEpisodeIdentifier, ilrForFirstSubmission.PriceEpisodeIdentifier);
@@ -69,7 +69,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
             Assert.AreEqual(event1.ActualEndDate, ilrForFirstSubmission.IlrDetails.ActualEndDate);
             Assert.AreEqual(event1.OnProgrammeTotalPrice, ilrForFirstSubmission.IlrDetails.OnProgrammeTotalPrice);
             Assert.AreEqual(event1.CompletionTotalPrice, ilrForFirstSubmission.IlrDetails.CompletionTotalPrice);
-            Assert.AreEqual(event1.NiNumber, ilrForFirstSubmission.IlrDetails.NiNumber);
+            Assert.AreEqual(event1.NINumber, ilrForFirstSubmission.IlrDetails.NiNumber);
             Assert.AreEqual(event1.CommitmentId, ilrForFirstSubmission.IlrDetails.CommitmentId);
             Assert.AreEqual(event1.EPAOrgId, ilrForFirstSubmission.IlrDetails.EPAOrgId);
             Assert.AreEqual(event1.GivenNames, ilrForFirstSubmission.IlrDetails.GivenNames);
@@ -147,8 +147,8 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
             Assert.AreEqual(event2.FileDateTime, updatedSubmissionChanged.IlrDetails.FileDateTime);
             Assert.AreEqual(event2.SubmittedDateTime, updatedSubmissionChanged.IlrDetails.SubmittedDateTime);
             Assert.AreEqual(event2.ComponentVersionNumber, 2);
-            Assert.AreEqual(event2.Ukprn, updatedSubmissionChanged.Ukprn);
-            Assert.AreEqual(event2.Uln, updatedSubmissionChanged.IlrDetails.Uln);
+            Assert.AreEqual(event2.UKPRN, updatedSubmissionChanged.Ukprn);
+            Assert.AreEqual(event2.ULN, updatedSubmissionChanged.IlrDetails.Uln);
             Assert.AreEqual(event2.LearnRefNumber, updatedSubmissionChanged.LearnRefNumber);
             Assert.AreEqual(event2.AimSeqNumber, updatedSubmissionChanged.IlrDetails.AimSeqNumber);
             Assert.AreEqual(event2.PriceEpisodeIdentifier, updatedSubmissionChanged.PriceEpisodeIdentifier);
@@ -161,7 +161,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
             Assert.AreEqual(event2.ActualEndDate, null);
             Assert.AreEqual(event2.OnProgrammeTotalPrice, updatedSubmissionChanged.IlrDetails.OnProgrammeTotalPrice);
             Assert.AreEqual(event2.CompletionTotalPrice, updatedSubmissionChanged.IlrDetails.CompletionTotalPrice);
-            Assert.AreEqual(event2.NiNumber, null);
+            Assert.AreEqual(event2.NINumber, null);
             Assert.AreEqual(event2.GivenNames, updatedSubmissionChanged.IlrDetails.GivenNames);
             Assert.AreEqual(event2.FamilyName, updatedSubmissionChanged.IlrDetails.FamilyName);
             Assert.AreEqual(event2.CompStatus, updatedSubmissionChanged.IlrDetails.CompStatus);
@@ -208,8 +208,8 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
             Assert.AreEqual(@event.IlrFileName, ilrForFirstSubmission.IlrDetails.IlrFileName);
             Assert.AreEqual(@event.FileDateTime, ilrForFirstSubmission.IlrDetails.FileDateTime);
             Assert.AreEqual(@event.SubmittedDateTime, ilrForFirstSubmission.IlrDetails.SubmittedDateTime);
-            Assert.AreEqual(@event.Ukprn, ilrForFirstSubmission.Ukprn);
-            Assert.AreEqual(@event.Uln, ilrForFirstSubmission.IlrDetails.Uln);
+            Assert.AreEqual(@event.UKPRN, ilrForFirstSubmission.Ukprn);
+            Assert.AreEqual(@event.ULN, ilrForFirstSubmission.IlrDetails.Uln);
             Assert.AreEqual(@event.LearnRefNumber, ilrForFirstSubmission.LearnRefNumber);
             Assert.AreEqual(@event.AimSeqNumber, ilrForFirstSubmission.IlrDetails.AimSeqNumber);
             Assert.AreEqual(@event.PriceEpisodeIdentifier, ilrForFirstSubmission.PriceEpisodeIdentifier);
@@ -221,7 +221,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
             Assert.AreEqual(@event.PlannedEndDate, ilrForFirstSubmission.IlrDetails.PlannedEndDate);
             Assert.AreEqual(@event.OnProgrammeTotalPrice, ilrForFirstSubmission.IlrDetails.OnProgrammeTotalPrice);
             Assert.AreEqual(@event.CompletionTotalPrice, ilrForFirstSubmission.IlrDetails.CompletionTotalPrice);
-            Assert.AreEqual(@event.NiNumber, ilrForFirstSubmission.IlrDetails.NiNumber);
+            Assert.AreEqual(@event.NINumber, ilrForFirstSubmission.IlrDetails.NiNumber);
             Assert.AreEqual(@event.CommitmentId, ilrForFirstSubmission.IlrDetails.CommitmentId);
             Assert.AreEqual(@event.EPAOrgId, ilrForFirstSubmission.IlrDetails.EPAOrgId);
             Assert.AreEqual(@event.GivenNames, ilrForFirstSubmission.IlrDetails.GivenNames);

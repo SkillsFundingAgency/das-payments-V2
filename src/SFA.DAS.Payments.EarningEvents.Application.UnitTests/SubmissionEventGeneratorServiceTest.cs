@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Castle.Components.DictionaryAdapter;
@@ -63,7 +64,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                 Learner = new Learner {ReferenceNumber = "2"},
                 LearningAim = new LearningAim(),
                 PriceEpisodes = new List<PriceEpisode>{new PriceEpisode()},
-                CollectionPeriod = new CollectionPeriod()
+                CollectionPeriod = new CollectionPeriod { AcademicYear = 1617 },
+                IlrFileName = "ILR-123456-1617-20170101-000000-01.xml"
             };
 
             // act

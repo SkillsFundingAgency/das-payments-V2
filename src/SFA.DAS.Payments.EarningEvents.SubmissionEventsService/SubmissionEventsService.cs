@@ -8,7 +8,7 @@ using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.EarningEvents.SubmissionEventsService
 {
-    internal sealed class SubmissionEventsService : StatelessService
+    public class SubmissionEventsService : StatelessService
     {
         private IStatelessEndpointCommunicationListener listener;
         private readonly ILifetimeScope lifetimeScope;

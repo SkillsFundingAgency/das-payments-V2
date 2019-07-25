@@ -1,10 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.EarningEvents.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="SFA.DAS.Payments.EarningEvents.SubmissionEventsService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="EarningEventsService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="EarningEventsService_EndpointName" DefaultValue="" />
     <Parameter Name="EarningEventsService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="SubmissionEventsService_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="SubmissionEventsService_EndpointName" DefaultValue="" />
+    <Parameter Name="SubmissionEventsService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="SubscriptionName" DefaultValue="" />
     <Parameter Name="JobStatusQueueName" DefaultValue="" />
     <Parameter Name="AuditQueueName" DefaultValue="" />
@@ -14,6 +16,7 @@
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="DcStorageConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
+    <Parameter Name="ProviderEventsConnectionString" DefaultValue="" />
     <Parameter Name="TopicName" DefaultValue="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
@@ -24,7 +27,26 @@
        ServiceManifest.xml file. -->
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.EarningEvents.SubmissionEventsServicePkg" ServiceManifestVersion="1.0.0" />
-    <ConfigOverrides />
+    <ConfigOverrides>
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="ConnectionStringsSection">
+            <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
+            <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="ProviderEventsConnectionString" Value="[ProviderEventsConnectionString]" />
+          </Section>
+          <Section Name="Settings">
+            <Parameter Name="EndpointName" Value="[SubmissionEventsService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[SubmissionEventsService_FailedMessagesQueue]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+    </ConfigOverrides>
   </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.EarningEvents.EarningEventsServicePkg" ServiceManifestVersion="1.0.0" />
@@ -61,7 +83,7 @@
          
          The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
     <Service Name="SFA.DAS.Payments.EarningEvents.SubmissionEventsService" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="SFA.DAS.Payments.EarningEvents.SubmissionEventsServiceType" InstanceCount="[SFA.DAS.Payments.EarningEvents.SubmissionEventsService_InstanceCount]">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.EarningEvents.SubmissionEventsServiceType" InstanceCount="[SubmissionEventsService_InstanceCount]">
         <SingletonPartition />
       </StatelessService>
     </Service>

@@ -231,8 +231,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.EarningEve
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SFA.DAS.Payments.ProviderEvents", "SFA.DAS.Payments.ProviderEvents\SFA.DAS.Payments.ProviderEvents.sqlproj", "{7B6A90B7-E524-471E-BA4E-2B1AC34A3397}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProviderEvents", "ProviderEvents", "{5DC6AABC-BFCD-42A2-BB62-F24187B19EF1}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
