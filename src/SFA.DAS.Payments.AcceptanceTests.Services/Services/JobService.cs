@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 using SFA.DAS.Payments.AcceptanceTests.Services.BespokeHttpClient;
 using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using JobStatusDto = ESFA.DC.Jobs.Model.JobStatusDto;
-using ESFA.DC.JobStatus.Interface;
 using Enums = ESFA.DC.Jobs.Model.Enums;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Services
@@ -24,7 +23,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
         public async Task<Enums.JobStatusType> GetJobStatus(long jobId)
         {
             var data = await httpClient.GetDataAsync($"job/{jobId}/status");
-            return JsonConvert.DeserializeObject<ESFA.DC.JobStatus.Interface.JobStatusType>(data);
+            return JsonConvert.DeserializeObject<Enums.JobStatusType>(data);
         }
 
         public async Task<string> UpdateJobStatus(long jobId, Enums.JobStatusType status)
