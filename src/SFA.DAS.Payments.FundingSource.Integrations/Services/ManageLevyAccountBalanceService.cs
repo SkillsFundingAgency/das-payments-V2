@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.FundingSource.Integrations.Services
                 {
                     logger.LogInfo($"Now trying to retrieve Account Balance Details for AccountId {accountId}");
 
-                    var accountDetail = accountApiClient.GetAccount(accountId).Result;
+                    var accountDetail = await accountApiClient.GetAccount(accountId).ConfigureAwait(false);
 
                     var currentLevyAccount = await repository.GetLevyAccount(accountId, cancellationToken).ConfigureAwait(false);
 
