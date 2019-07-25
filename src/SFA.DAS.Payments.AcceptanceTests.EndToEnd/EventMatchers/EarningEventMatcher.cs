@@ -49,8 +49,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                        .Where(e => e.JobId == provider.JobId
                                    && e.CollectionPeriod.Period == collectionPeriod.Period
                                    && e.CollectionYear == collectionPeriod.AcademicYear
-                                   && e.Ukprn == provider.Ukprn
-                                   )
+                                   && e.Ukprn == provider.Ukprn)
                 .ToList();
         }
 
