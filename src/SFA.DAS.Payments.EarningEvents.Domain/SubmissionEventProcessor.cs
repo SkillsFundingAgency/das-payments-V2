@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain
 
             if (currentIlr.NiNumber != lastSeenIlr?.NiNumber)
             {
-                (@event = @event ?? new LegacySubmissionEvent()).NiNumber = currentIlr.NiNumber;
+                (@event = @event ?? new LegacySubmissionEvent()).NINumber = currentIlr.NiNumber;
             }
 
             // any difference in these fields should mean an event is created, but as we always set these fields there's no need to set them here
@@ -87,8 +87,8 @@ namespace SFA.DAS.Payments.EarningEvents.Domain
             @event.FileDateTime = currentIlr.FileDateTime;
             @event.SubmittedDateTime = currentIlr.SubmittedDateTime;
             @event.ComponentVersionNumber = 2;
-            @event.Ukprn = currentEpisode.Ukprn;
-            @event.Uln = currentIlr.Uln;
+            @event.UKPRN = currentEpisode.Ukprn;
+            @event.ULN = currentIlr.Uln;
             @event.LearnRefNumber = currentEpisode.LearnRefNumber;
             @event.AimSeqNumber = currentIlr.AimSeqNumber;
             @event.PriceEpisodeIdentifier = currentEpisode.PriceEpisodeIdentifier;

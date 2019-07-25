@@ -28,5 +28,9 @@
     [DelLocPostCode] VARCHAR(8) NULL, 
     [LearnActEndDate] DATE NULL, 
     [WithdrawReason] SMALLINT NULL, 
-    [Outcome] TINYINT NULL
+    [Outcome] TINYINT NULL, 
+    [EPAOrgId] NVARCHAR(7) NULL, 
+    [GivenNames] NVARCHAR(100) NULL, 
+    [FamilyName] NVARCHAR(100) NULL, 
+    [CompStatus] TINYINT NULL
 )
