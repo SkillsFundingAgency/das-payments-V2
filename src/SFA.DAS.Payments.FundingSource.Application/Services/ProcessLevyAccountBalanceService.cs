@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 
-namespace SFA.DAS.Payments.FundingSource.Integrations.Services
+namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
     public interface IProcessLevyAccountBalanceService
     {

@@ -1,26 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Core.Configuration;
-using SFA.DAS.Payments.FundingSource.Application.Repositories;
-using SFA.DAS.Payments.FundingSource.Integrations.Services;
+using SFA.DAS.Payments.FundingSource.Application.Interfaces;
+using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.Model.Core.Entities;
 
-namespace SFA.DAS.Payments.FundingSource.Integrations.UnitTests
+namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 {
     [TestFixture]
     public class ManageLevyAccountBalanceServiceTests
     {
-        private  Mock<ILevyFundingSourceIntegrationRepository> repository;
+        private  Mock<ILevyFundingSourceRepository> repository;
         private Mock<IAccountApiClient> accountApiClient;
         private IPaymentLogger logger;
         private Mock<IConfigurationHelper> configurationHelper;
@@ -28,7 +24,7 @@ namespace SFA.DAS.Payments.FundingSource.Integrations.UnitTests
         [SetUp]
         public void Setup()
         {
-            repository = new Mock<ILevyFundingSourceIntegrationRepository>(MockBehavior.Strict);
+            repository = new Mock<ILevyFundingSourceRepository>(MockBehavior.Strict);
             accountApiClient = new Mock<IAccountApiClient>(MockBehavior.Strict);
             logger = Mock.Of<IPaymentLogger>();
             configurationHelper = new Mock<IConfigurationHelper>();

@@ -11,7 +11,7 @@ using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Core.Configuration;
-using SFA.DAS.Payments.FundingSource.Integrations.Services;
+using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.FundingSource.LevyAccountBalanceService

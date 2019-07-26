@@ -5,6 +5,9 @@ using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Services;
 using System.Collections.Generic;
 using Autofac.Integration.ServiceFabric;
+using SFA.DAS.EAS.Account.Api.Client;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.FundingSource.Application.Repositories;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
@@ -42,6 +45,43 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
                 },
                 c.Resolve<ICoInvestedFundingSourcePaymentEventMapper>()
             )).As<ICoInvestedFundingSourceService>().InstancePerLifetimeScope();
+
+
+            builder.Register((c, p) =>
+                {
+                    var configHelper = c.Resolve<IConfigurationHelper>();
+                    var accountApiConfig = new AccountApiConfiguration
+                    {
+                        ApiBaseUrl = configHelper.GetSetting("AccountApiBaseUrl"),
+                        ClientId = configHelper.GetSetting("AccountApiClientId"),
+                        ClientSecret = configHelper.GetSetting("AccountApiClientSecret"),
+                        IdentifierUri = configHelper.GetSetting("AccountApiIdentifierUri"),
+                        Tenant = configHelper.GetSetting("AccountApiTenant")
+                    };
+
+                    return accountApiConfig;
+                })
+                .As<IAccountApiConfiguration>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<AccountApiClient>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            builder.Register((c, p) =>
+                {
+                    var configHelper = c.Resolve<IConfigurationHelper>();
+                    var batchSize = configHelper.GetSettingOrDefault("BatchSize", 1000);
+                    var repository = c.Resolve<ILevyFundingSourceRepository>();
+                    var accountApiClient = c.Resolve<IAccountApiClient>();
+                    var logger = c.Resolve<IPaymentLogger>();
+
+                    return new ManageLevyAccountBalanceService(repository, accountApiClient, logger, batchSize);
+                })
+                .As<IManageLevyAccountBalanceService>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<ProcessLevyAccountBalanceService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+
 
             builder.RegisterServiceFabricSupport();
         }

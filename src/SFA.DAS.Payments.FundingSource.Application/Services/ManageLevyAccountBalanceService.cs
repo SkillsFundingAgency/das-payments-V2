@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Polly;
 using SFA.DAS.EAS.Account.Api.Client;
-using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Core.Configuration;
-using SFA.DAS.Payments.FundingSource.Application.Repositories;
+using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.Model.Core.Entities;
 
-namespace SFA.DAS.Payments.FundingSource.Integrations.Services
+namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
     public interface IManageLevyAccountBalanceService
     {
@@ -19,12 +16,12 @@ namespace SFA.DAS.Payments.FundingSource.Integrations.Services
 
     public class ManageLevyAccountBalanceService : IManageLevyAccountBalanceService
     {
-        private readonly ILevyFundingSourceIntegrationRepository repository;
+        private readonly ILevyFundingSourceRepository repository;
         private readonly IAccountApiClient accountApiClient;
         private readonly IPaymentLogger logger;
         private readonly int batchSize;
 
-        public ManageLevyAccountBalanceService(ILevyFundingSourceIntegrationRepository repository, IAccountApiClient accountApiClient, IPaymentLogger logger, int batchSize)
+        public ManageLevyAccountBalanceService(ILevyFundingSourceRepository repository, IAccountApiClient accountApiClient, IPaymentLogger logger, int batchSize)
         {
             this.repository = repository;
             this.accountApiClient = accountApiClient;
