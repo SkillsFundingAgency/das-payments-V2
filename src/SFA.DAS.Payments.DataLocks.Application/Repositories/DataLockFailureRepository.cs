@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -25,13 +25,18 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             short academicYear
         );
 
-        Task ReplaceFailures(List<long> oldFailureIds, List<DataLockFailureEntity> newFailures);
+        Task ReplaceFailures(
+            List<long> oldFailureIds,
+            List<DataLockFailureEntity> newFailures,
+            Guid earningEventId,
+            Guid dataLockEventId
+        );
     }
 
     public class DataLockFailureRepository : IDataLockFailureRepository
     {
         private readonly IPaymentsDataContext paymentsDataContext;
-        private IPaymentLogger logger;
+        private readonly IPaymentLogger logger;
 
         public DataLockFailureRepository(IPaymentsDataContext paymentsDataContext, IPaymentLogger logger)
         {
@@ -54,6 +59,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
                 .Select(model => new DataLockFailureEntity
                 {
                     Ukprn = model.Ukprn,
+                    EarningEventId = model.EarningEventId,
+                    DataLockEventId = model.DataLockEventId,
                     AcademicYear = model.AcademicYear,
                     TransactionType = model.TransactionType,
                     DeliveryPeriod = model.DeliveryPeriod,
@@ -65,6 +72,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
                     LearningAimProgrammeType = model.LearningAimProgrammeType,
                     LearningAimReference = model.LearningAimReference,
                     LearningAimStandardCode = model.LearningAimStandardCode,
+                    Amount = model.Amount,
                     EarningPeriod = JsonConvert.DeserializeObject<EarningPeriod>(model.EarningPeriod)
                 })
                 .ToListAsync()
@@ -75,7 +83,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             return entities;
         }
 
-        public async Task ReplaceFailures(List<long> oldFailureIds, List<DataLockFailureEntity> newFailures)
+        public async Task ReplaceFailures(List<long> oldFailureIds, List<DataLockFailureEntity> newFailures, Guid earningEventId, Guid dataLockEventId)
         {
             if (oldFailureIds.Count > 0)
                 logger.LogDebug($"deleting {oldFailureIds.Count} errors");
@@ -86,6 +94,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
 
             await paymentsDataContext.DataLockFailure.AddRangeAsync(newFailures.Select(f => new DataLockFailureModel
             {
+                EarningEventId = earningEventId,
+                DataLockEventId = dataLockEventId,
                 CollectionPeriod = f.CollectionPeriod,
                 AcademicYear = f.AcademicYear,
                 Ukprn = f.Ukprn,
@@ -98,6 +108,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
                 LearningAimProgrammeType = f.LearningAimProgrammeType,
                 LearningAimReference = f.LearningAimReference,
                 LearningAimStandardCode = f.LearningAimStandardCode,
+                Amount = f.EarningPeriod.Amount,
                 EarningPeriod = JsonConvert.SerializeObject(f.EarningPeriod)
             })).ConfigureAwait(false);
 
