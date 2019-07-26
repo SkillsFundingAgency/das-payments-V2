@@ -84,18 +84,18 @@ Scenario Outline: Non-levy learner taking single Level 1 aim, progressing to and
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Aim Sequence Number | Price Episode Identifier | Contract Type |
 		# Maths/Eng - Level 1
-		| Aug/Last Academic Year    | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act2          |
-		| Sep/Last Academic Year    | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act2          |
-		| Oct/Last Academic Year    | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act2          |
-		| Nov/Last Academic Year    | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act2          |
-		| Dec/Last Academic Year    | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act2          |
-		| Jan/Last Academic Year    | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act2          |
-		| Feb/Last Academic Year    | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act2          |
-		| Mar/Last Academic Year    | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act2          |
-		| Apr/Last Academic Year    | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act2          |
-		| May/Last Academic Year    | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act2          |
-		| Jun/Last Academic Year    | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act2          |
-		| Jul/Last Academic Year    | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act2          |
+		| Aug/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          | Act2          |
+		| Sep/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          | Act2          |
+		| Oct/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          | Act2          |
+		| Nov/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          | Act2          |
+		| Dec/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          | Act2          |
+		| Jan/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          | Act2          |
+		| Feb/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          | Act2          |
+		| Mar/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          | Act2          |
+		| Apr/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          | Act2          |
+		| May/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          | Act2          |
+		| Jun/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          | Act2          |
+		| Jul/Last Academic Year    | 0            | 0          | 0         | 0                          | 1                   |                          | Act2          |
 		# Maths/Eng - Level 2
 		| Aug/Current Academic Year | 0            | 0          | 0         | 39.25                      | 3                   |                          | Act2          |
 		| Sep/Current Academic Year | 0            | 0          | 0         | 39.25                      | 3                   |                          | Act2          |
