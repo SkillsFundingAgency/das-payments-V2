@@ -19,21 +19,22 @@ namespace SFA.DAS.Payments.FundingSource.LevyAccountBalanceService
     [StatePersistence(StatePersistence.Persisted)]
     public class LevyAccountBalanceService : StatefulService
     {
+        private readonly IProcessLevyAccountBalanceService processLevyAccountBalanceService;
         private readonly IPaymentLogger logger;
         private readonly ILifetimeScope lifetimeScope;
-        private readonly IManageLevyAccountBalanceService accountBalanceService;
         private IStatefulEndpointCommunicationListener listener;
         private readonly TimeSpan refreshInterval;
 
         protected LevyAccountBalanceService(StatefulServiceContext context,
-            IPaymentLogger logger, 
+            IPaymentLogger logger,
             ILifetimeScope lifetimeScope,
-            IManageLevyAccountBalanceService accountBalanceService,
+            IProcessLevyAccountBalanceService processLevyAccountBalanceService,
             IConfigurationHelper configurationHelper) : base(context)
         {
+            this.processLevyAccountBalanceService = processLevyAccountBalanceService ?? throw new ArgumentNullException(nameof(processLevyAccountBalanceService));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
-            this.accountBalanceService = accountBalanceService ?? throw new ArgumentNullException(nameof(accountBalanceService));
+            this.processLevyAccountBalanceService = processLevyAccountBalanceService;
             var intervalInHours = double.Parse(configurationHelper.GetSetting("LevyAccountRefreshIntervalInHours"));
             refreshInterval = TimeSpan.FromHours(intervalInHours);
         }
@@ -47,18 +48,10 @@ namespace SFA.DAS.Payments.FundingSource.LevyAccountBalanceService
             };
         }
 
-        protected override async Task RunAsync(CancellationToken cancellationToken)
+        protected override  Task RunAsync(CancellationToken cancellationToken)
         {
             logger.LogInfo("Running Levy Account Balance Service");
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            await listener.RunAsync().ConfigureAwait(false);
-            while (true)
-            {
-                await accountBalanceService.RefreshLevyAccountDetails(cancellationToken);
-                await Task.Delay(refreshInterval, cancellationToken);
-            }
+            return  Task.WhenAll(listener.RunAsync(), processLevyAccountBalanceService.RunAsync(refreshInterval, cancellationToken));
         }
     }
 }

@@ -191,6 +191,7 @@
   <ItemGroup>
     <Compile Include="Infrastructure\ioc\FundingSourceIntegrationModule.cs" />
     <Compile Include="Repositories\LevyFundingSourceRepository.cs" />
+    <Compile Include="Services\ProcessLevyAccountBalanceService.cs" />
     <Compile Include="Services\ManageLevyAccountBalanceService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

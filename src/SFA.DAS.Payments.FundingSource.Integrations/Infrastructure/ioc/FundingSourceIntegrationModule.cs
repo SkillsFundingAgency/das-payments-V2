@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.FundingSource.Integrations.Infrastructure.Ioc
             builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
-                    var batchSize = configHelper.GetSettingOrDefault("BatchSize",1000);
+                    var batchSize = configHelper.GetSettingOrDefault("BatchSize", 1000);
                     var repository = c.Resolve<ILevyFundingSourceIntegrationRepository>();
                     var accountApiClient = c.Resolve<IAccountApiClient>();
                     var logger = c.Resolve<IPaymentLogger>();
@@ -46,6 +46,9 @@ namespace SFA.DAS.Payments.FundingSource.Integrations.Infrastructure.Ioc
                 })
                 .As<IManageLevyAccountBalanceService>()
                 .InstancePerLifetimeScope();
-            }
+            
+            builder.RegisterType<ProcessLevyAccountBalanceService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+        }
     }
 }

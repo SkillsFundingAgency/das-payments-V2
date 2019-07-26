@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
 
             var transferAccountIds = await dataContext
                 .Apprenticeship
-                .Where(o => o.TransferSendingEmployerAccountId.HasValue)
+                .Where(o => o.TransferSendingEmployerAccountId.HasValue && o.TransferSendingEmployerAccountId.Value != 0)
                 .Select(o => o.TransferSendingEmployerAccountId.Value)
                 .Distinct()
                 .ToListAsync(cancellationToken)
