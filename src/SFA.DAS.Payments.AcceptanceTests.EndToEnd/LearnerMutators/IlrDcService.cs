@@ -53,17 +53,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 // convert to TestSession.Learners
                 learners = new List<Learner>();
 
-                learners.AddRange(currentIlr.DistinctBy(ilr => ilr.LearnerId).Select(dist => new Learner()
+                foreach (var learner in currentIlr.DistinctBy(ilr => ilr.LearnerId))
                 {
-                    Ukprn = dist.Ukprn, Uln = dist.Uln, LearnerIdentifier = dist.LearnerId,
-                    PostcodePrior = dist.PostcodePrior, EefCode = dist.EefCode,
-                    EmploymentStatusMonitoring = CreateLearnerEmploymentStatusMonitoringFromTraining(previousIlr?.Single(p=>p.LearnerId == dist.LearnerId), dist)
-                }));
+                    var testSessionLearner = testSession.GetLearner(learner.Ukprn, learner.LearnerId);
+                    learners.Add(testSessionLearner);
 
-                foreach (var learner in learners)
-                {
-                    CreateAimsForIlrLearner(learner, currentIlr.SingleOrDefault(c=>c.LearnerId == learner.LearnerIdentifier));
+                    testSessionLearner.Uln = learner.Uln;
+                    testSessionLearner.PostcodePrior = learner.PostcodePrior;
+                    testSessionLearner.EefCode = learner.EefCode;
+                    testSessionLearner.EmploymentStatusMonitoring = CreateLearnerEmploymentStatusMonitoringFromTraining(previousIlr?.Single(p => p.LearnerId == learner.LearnerId), learner);
+
+                    CreateAimsForIlrLearner(testSessionLearner, learner);
                 }
+
+                testSession.ClearLearnersExcept(learners);
             }
 
             var learnerMutator = LearnerMutatorFactory.Create(featureNumber, learners);
