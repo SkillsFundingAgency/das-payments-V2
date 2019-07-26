@@ -71,7 +71,6 @@ namespace SFA.DAS.Payments.FundingSource.Integrations.Services
                     }
                     else
                     {
-                        currentLevyAccount.IsLevyPayer = true;  // TODO confirm 
                         currentLevyAccount.AccountName = accountDetail.DasAccountName;
                         currentLevyAccount.Balance = accountDetail.Balance;
                         currentLevyAccount.TransferAllowance = accountDetail.RemainingTransferAllowance;
