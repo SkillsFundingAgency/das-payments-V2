@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services.Services
         {
             this.appEarnHistoryContext = appEarnHistoryContext ?? throw new ArgumentNullException(nameof(appEarnHistoryContext));
         }
-        public void DeleteHistoryAsync(long ukprn)
+        public void DeleteHistory(long ukprn)
         {
             appEarnHistoryContext.Database.ExecuteSqlCommand(@"delete from dbo.AppsEarningsHistory where UKPRN = {0}", ukprn);
         }

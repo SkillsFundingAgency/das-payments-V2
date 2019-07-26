@@ -44,7 +44,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
                     }
 
                     dataContext.ClearPaymentsData(provider.Ukprn);
-                    appEarnHistoryService.DeleteHistoryAsync(provider.Ukprn);
+                    appEarnHistoryService.DeleteHistory(provider.Ukprn);
                     mutex.ReleaseMutex();
                 }
                 else

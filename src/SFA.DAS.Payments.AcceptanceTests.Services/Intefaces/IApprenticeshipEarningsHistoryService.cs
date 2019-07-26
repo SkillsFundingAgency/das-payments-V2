@@ -2,6 +2,6 @@
 {
     public interface IApprenticeshipEarningsHistoryService
     {
-        void DeleteHistoryAsync(long ukprn);
+        void DeleteHistory(long ukprn);
     }
 }
