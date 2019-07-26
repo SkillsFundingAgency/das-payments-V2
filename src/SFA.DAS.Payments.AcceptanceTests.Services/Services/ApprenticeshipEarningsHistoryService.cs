@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services.Services
         }
         public void DeleteHistoryAsync(long ukprn)
         {
-            appEarnHistoryContext.Database.ExecuteSqlCommandAsync(@"delete from dbo.AppsEarningsHistory where UKPRN = {0}", ukprn);
+            appEarnHistoryContext.Database.ExecuteSqlCommand(@"delete from dbo.AppsEarningsHistory where UKPRN = {0}", ukprn);
         }
     }
 }
