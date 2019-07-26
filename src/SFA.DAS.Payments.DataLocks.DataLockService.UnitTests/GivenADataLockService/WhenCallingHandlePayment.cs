@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
             var paymentLoggerMock = Mock.Of<IPaymentLogger>();
             var commitmentRepositoryMock = new Mock<IApprenticeshipRepository>();
             var dataCacheMock = Mock.Of<IActorDataCache<List<ApprenticeshipModel>>>();
-
+            var providersCache = Mock.Of<IActorDataCache<List<long>>>();
             var testEarning = new ApprenticeshipContractType1EarningEvent
             {
                 Learner = new Learner
@@ -66,12 +66,12 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
                     new EarningFailedDataLockMatching()
                 });
 
-            commitmentRepositoryMock
-                .Setup(o => o.ApprenticeshipsForProvider(It.IsAny<long>()))
-                .ReturnsAsync(new List<ApprenticeshipModel>());
+            //commitmentRepositoryMock
+            //    .Setup(o => o.ApprenticeshipUlnsByProvider(It.IsAny<long>()))
+            //    .ReturnsAsync(new List<ApprenticeshipModel>());
 
             var actuals = await new DataLockService(actorService, new ActorId(1000),
-                    paymentLoggerMock,
+                    paymentLoggerMock,() =>
                     commitmentRepositoryMock.Object, dataCacheMock,
                     dataLockProcessor.Object,
                     Mock.Of<IApprenticeshipUpdatedProcessor>())
