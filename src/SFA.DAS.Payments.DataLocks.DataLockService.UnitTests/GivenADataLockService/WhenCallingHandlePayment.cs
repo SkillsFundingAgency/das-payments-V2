@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac.Extras.Moq;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.ServiceFabric.Actors;
@@ -26,6 +27,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
     public class WhenCallingHandlePayment
     {
         private IMapper mapper;
+        private AutoMock mocker; 
         
         [OneTimeSetUp]
         public void Initialise()
@@ -36,14 +38,16 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
             });
             configuration.AssertConfigurationIsValid();
             mapper = configuration.CreateMapper();
+            mocker = AutoMock.GetLoose();
         }
 
         [Test]
         public async Task TheReturnedObjectIsOfTheCorrectType()
         {
             var actorService = MockActorServiceFactory.CreateActorServiceForActor<DataLockService>();
+            mocker.Provide()
             var paymentLoggerMock = Mock.Of<IPaymentLogger>();
-            var commitmentRepositoryMock = new Mock<IApprenticeshipRepository>();
+            var apprenticeshipRepositoryMock = new Mock<IApprenticeshipRepository>();
             var dataCacheMock = Mock.Of<IActorDataCache<List<ApprenticeshipModel>>>();
             var providersCache = Mock.Of<IActorDataCache<List<long>>>();
             var testEarning = new ApprenticeshipContractType1EarningEvent
@@ -58,8 +62,8 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
 
             };
 
-            var dataLockProcessor = new Mock<IDataLockProcessor>();
-            dataLockProcessor.Setup(x => x.GetPaymentEvents(It.IsAny<ApprenticeshipContractType1EarningEvent>(), It.IsAny<CancellationToken>()))
+            mocker.Mock<IDataLockProcessor>()
+                .Setup(x => x.GetPaymentEvents(It.IsAny<ApprenticeshipContractType1EarningEvent>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(() => new List<DataLockEvent>
                 {
                     new PayableEarningEvent(),
@@ -70,9 +74,12 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
             //    .Setup(o => o.ApprenticeshipUlnsByProvider(It.IsAny<long>()))
             //    .ReturnsAsync(new List<ApprenticeshipModel>());
 
-            var actuals = await new DataLockService(actorService, new ActorId(1000),
+            var actuals = await new DataLockService(
+                    actorService,
+                    new ActorId(1000),
                     paymentLoggerMock,() =>
-                    commitmentRepositoryMock.Object, dataCacheMock,
+                    apprenticeshipRepositoryMock.Object, 
+                    dataCacheMock,
                     dataLockProcessor.Object,
                     Mock.Of<IApprenticeshipUpdatedProcessor>())
                 .HandleEarning(testEarning, default(CancellationToken));
