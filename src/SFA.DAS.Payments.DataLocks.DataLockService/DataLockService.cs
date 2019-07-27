@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         {
             using (var operation = telemetry.StartOperation("DataLockService.HandleEarning", message.EventId.ToString()))
             {
-                var stopwatch = StartStopwatch();
+                var stopwatch = Stopwatch.StartNew();
                 await Initialise().ConfigureAwait(false);
                 var dataLockEvents = await dataLockProcessor.GetPaymentEvents(message, cancellationToken);
                 telemetry.TrackDuration("DataLockService.HandleEarning", stopwatch, message);
@@ -72,7 +72,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         {
             using (var operation = telemetry.StartOperation("DataLockService.HandleApprenticeshipUpdated", message.EventId.ToString()))
             {
-                var stopwatch = StartStopwatch();
+                var stopwatch = Stopwatch.StartNew();
                 await Initialise().ConfigureAwait(false);
                 await apprenticeshipUpdatedProcessor.ProcessApprenticeshipUpdate(message);
                 TrackInfrastructureEvent("DataLockService.HandleApprenticeshipUpdated", stopwatch);
@@ -91,7 +91,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         {
             using (var operation = telemetry.StartOperation("DataLockService.OnActivateAsync", $"{Id}_{Guid.NewGuid():N}"))
             {
-                var stopwatch = StartStopwatch();
+                var stopwatch = Stopwatch.StartNew();
                 await Initialise().ConfigureAwait(false);
                 await base.OnActivateAsync().ConfigureAwait(false);
                 TrackInfrastructureEvent("DataLockService.HandleEarning", stopwatch);
@@ -106,7 +106,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
                 paymentLogger.LogVerbose($"Actor already initialised for apprenticeship {Id}");
                 return;
             }
-            var stopwatch = StartStopwatch();
+            var stopwatch = Stopwatch.StartNew();
 
             paymentLogger.LogInfo($"Initialising actor for provider {Id}");
 
@@ -133,12 +133,6 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             TrackInfrastructureEvent("DataLockService.Initialise", stopwatch);
         }
 
-        private Stopwatch StartStopwatch()
-        {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            return stopwatch;
-        }
 
         private void TrackInfrastructureEvent(string eventName, Stopwatch stopwatch)
         {

@@ -69,7 +69,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 
             using (var operation = telemetry.StartOperation("RequiredPaymentsService.HandleApprenticeship2ContractTypeEarningsEvent", earningEvent.EventId.ToString()))
             {
-                var stopwatch = StartStopwatch();
+                var stopwatch = Stopwatch.StartNew();
                 await Initialise().ConfigureAwait(false);
                 var requiredPaymentEvents = await contractType2EarningsEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
                 Log(requiredPaymentEvents);
@@ -85,7 +85,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 
             using (var operation = telemetry.StartOperation("RequiredPaymentsService.HandleFunctionalSkillEarningsEvent", earningEvent.EventId.ToString()))
             {
-                var stopwatch = StartStopwatch();
+                var stopwatch = Stopwatch.StartNew();
                 await Initialise().ConfigureAwait(false);
                 var requiredPaymentEvents = await functionalSkillEarningsEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
                 Log(requiredPaymentEvents);
@@ -95,13 +95,6 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             }
         }
 
-        private Stopwatch StartStopwatch()
-        {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            return stopwatch;
-        }
-
         public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandlePayableEarningEvent(PayableEarningEvent earningEvent, CancellationToken cancellationToken)
         {
             paymentLogger.LogVerbose($"Handling PayableEarningEvent for {apprenticeshipKeyString}");
@@ -109,7 +102,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             {
                 using (var operation = telemetry.StartOperation("RequiredPaymentsService.HandlePayableEarningEvent", earningEvent.EventId.ToString()))
                 {
-                    var stopwatch = StartStopwatch();
+                    var stopwatch = Stopwatch.StartNew();
                     await Initialise().ConfigureAwait(false);
                     var requiredPaymentEvents = await payableEarningEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
                     Log(requiredPaymentEvents);
@@ -130,7 +123,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             paymentLogger.LogDebug($"Handling identified removed learning aim for {apprenticeshipKeyString}.");
             using (var operation = telemetry.StartOperation("RequiredPaymentsService.RefundRemovedLearningAim", removedLearningAim.EventId.ToString()))
             {
-                var stopwatch = StartStopwatch();
+                var stopwatch = Stopwatch.StartNew();
                 await Initialise().ConfigureAwait(false);
                 var requiredPaymentEvents = await refundRemovedLearningAimProcessor.RefundLearningAim(removedLearningAim, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
                 Log(requiredPaymentEvents);
@@ -152,7 +145,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         {
             using (var operation = telemetry.StartOperation("RequiredPaymentsService.RefundRemovedLearningAim",$"{apprenticeshipKeyString}_{Guid.NewGuid():N}"))
             {
-                var stopwatch = StartStopwatch();
+                var stopwatch = Stopwatch.StartNew();
                 //TODO: why are we still doing this?  We are supposed to be resolving this from the container.
                 paymentHistoryCache = new ReliableCollectionCache<PaymentHistoryEntity[]>(StateManager);
 
@@ -187,7 +180,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
                 paymentLogger.LogVerbose($"Actor already initialised for apprenticeship {apprenticeshipKeyString}");
                 return;
             }
-            var stopwatch = StartStopwatch();
+            var stopwatch = Stopwatch.StartNew();
             paymentLogger.LogDebug($"Initialising actor for apprenticeship {apprenticeshipKeyString}");
             var paymentHistory = await paymentHistoryRepository.GetPaymentHistory(apprenticeshipKey, CancellationToken.None).ConfigureAwait(false);
             await paymentHistoryCache.AddOrReplace(CacheKeys.PaymentHistoryKey, paymentHistory.ToArray(), CancellationToken.None).ConfigureAwait(false);
