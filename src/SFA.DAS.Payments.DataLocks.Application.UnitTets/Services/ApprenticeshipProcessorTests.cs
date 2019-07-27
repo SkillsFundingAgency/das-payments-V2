@@ -391,5 +391,24 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
         }
 
+        [Test]
+        public async Task Process_Payment_Order_Change_Correctly()
+        {
+            var paymentOrderChangedEvent = new PaymentOrderChangedEvent()
+            {
+              AccountId = 1,
+              PaymentOrder = new int[]{100, 200, 300}
+            };
+            
+            var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
+            await apprenticeshipProcessor.ProcessPaymentOrderChange(paymentOrderChangedEvent);
+
+            mocker.Mock<IEndpointInstance>()
+                .Verify(svc => svc.Publish(It.Is<EmployerChangedProviderPriority>(ev => ev.EmployerAccountId == paymentOrderChangedEvent.AccountId),
+                    It.IsAny<PublishOptions>()),
+                    Times.Once);
+            
+        }
+
     }
 }
