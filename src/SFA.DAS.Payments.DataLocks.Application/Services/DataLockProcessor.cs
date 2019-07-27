@@ -73,7 +73,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             foreach (var onProgrammeEarning in earningEvent.OnProgrammeEarnings)
             {
                 var validationResult = earningPeriodsValidationProcessor
-                    .ValidatePeriods(earningEvent.Learner.Uln, 
+                    .ValidatePeriods(
+                        earningEvent.Ukprn,
+                        earningEvent.Learner.Uln, 
                         earningEvent.PriceEpisodes,
                         onProgrammeEarning.Periods.ToList(),
                         (TransactionType)onProgrammeEarning.Type,
@@ -105,7 +107,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             foreach (var incentiveEarning in earningEvent.IncentiveEarnings)
             {
                 var validationResult = earningPeriodsValidationProcessor
-                    .ValidatePeriods(earningEvent.Learner.Uln,
+                    .ValidatePeriods(
+                        earningEvent.Ukprn,
+                        earningEvent.Learner.Uln,
                         earningEvent.PriceEpisodes,
                         incentiveEarning.Periods.ToList(),
                         (TransactionType)incentiveEarning.Type,

@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             this.courseValidationProcessor = courseValidationProcessor ?? throw new ArgumentNullException(nameof(courseValidationProcessor));
         }
 
-        public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(
+        public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(long ukprn,
             long uln,
             List<PriceEpisode> priceEpisodes,
             List<EarningPeriod> periods,
@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                     continue;
                 }
 
-                foreach (var apprenticeship in apprenticeships)
+                foreach (var apprenticeship in apprenticeships.Where(apprenticeship => apprenticeship.Ukprn == ukprn))
                 {
                     var validationModel = new DataLockValidationModel
                     {
