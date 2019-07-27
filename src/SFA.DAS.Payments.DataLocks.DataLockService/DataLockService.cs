@@ -94,7 +94,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
                 var stopwatch = Stopwatch.StartNew();
                 await Initialise().ConfigureAwait(false);
                 await base.OnActivateAsync().ConfigureAwait(false);
-                TrackInfrastructureEvent("DataLockService.HandleEarning", stopwatch);
+                TrackInfrastructureEvent("DataLockService.OnActivateAsync", stopwatch);
                 telemetry.StopOperation(operation);
             }
         }
