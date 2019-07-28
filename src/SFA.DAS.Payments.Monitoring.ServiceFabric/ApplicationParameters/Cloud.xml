@@ -13,5 +13,6 @@
     <Parameter Name="Monitoring_JobsService_FailureTimeoutInSeconds" Value="__Monitoring_JobsService_FailureTimeoutInSeconds__" />
     <Parameter Name="Monitoring_JobsService_IntervalInSeconds" Value="__Monitoring_JobsService_IntervalInSeconds__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
+    <Parameter Name="ConsoleLogLevel" Value="__ConsoleLogLevel__" />
   </Parameters>
 </Application>
