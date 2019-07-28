@@ -112,7 +112,7 @@ namespace SFA.DAS.Payments.PerformanceTests
         }
 
 
-        [TestCase(1, 100, 0, 1, 60)]
+        [TestCase(1, 50, 0, 1, 30)]
         public async Task Repeatable_Ukprn_And_Uln(int providerCount, int providerLearnerAct1Count, int providerLearnerAct2Count, byte collectionPeriod, int secondsToWaitForPeriodEnd)
         {
             Randomizer.Seed = new Random(8675309);
@@ -169,6 +169,10 @@ namespace SFA.DAS.Payments.PerformanceTests
             }).ToList(), collectionPeriod, JobType.MonthEndJob);
             var monthEndTasks = commands.Select(MessageSession.Send);
             await Task.WhenAll(monthEndTasks);
+            foreach (var testSession in sessions)
+            {
+                await ResetDataLockActors(testSession.Learners).ConfigureAwait(false);
+            }
         }
 
         private async Task AddApprenticeships(TestSession session, List<Learner> learners, DateTime startDate)
@@ -209,12 +213,18 @@ namespace SFA.DAS.Payments.PerformanceTests
             await dataContext.Database.ExecuteSqlCommandAsync(sql);
             dataContext.Apprenticeship.AddRange(apprenticeships);
             await dataContext.SaveChangesAsync();
+            await ResetDataLockActors(learners).ConfigureAwait(false);
+        }
 
+        private async Task ResetDataLockActors(List<Learner> learners)
+        {
             await MessageSession.Send(new ResetActorsCommand
                 {
                     Ulns = learners.Select(learner => learner.Uln).ToList()
                 })
                 .ConfigureAwait(false);
+            await Task.Delay(2000).ConfigureAwait(false);
+
         }
 
         private async Task AddEmployerAccount(TestSession session)
