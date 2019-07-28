@@ -22,7 +22,11 @@ namespace SFA.DAS.Payments.Tests.Core
             }
             return ParseTwoPartDescription(dateText);
         }
-
+        
+        public static DateTime? ToNullableDate(this string dateText)
+        {
+           return string.IsNullOrWhiteSpace(dateText) ? default(DateTime?) : dateText.ToDate();
+        }
         private static DateTime ParseTwoPartDescription(string dateText)
         {
             switch (dateText.ToLower())

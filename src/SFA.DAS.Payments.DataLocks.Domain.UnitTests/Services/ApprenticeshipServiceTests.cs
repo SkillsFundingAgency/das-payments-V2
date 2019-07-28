@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
 using Autofac.Extras.Moq;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
+using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.Model.Core.Entities;
 
@@ -27,7 +29,17 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 .Returns(Task.CompletedTask);
             mocker.Mock<IApprenticeshipRepository>()
                 .Setup(x => x.GetDuplicates(It.IsAny<long>()))
-                .ReturnsAsync(new List<ApprenticeshipDuplicateModel> { new ApprenticeshipDuplicateModel { ApprenticeshipId = 321, Ukprn = 5678, Uln = 54321, Id = 1} });
+                .ReturnsAsync(new List<ApprenticeshipDuplicateModel>
+                    {new ApprenticeshipDuplicateModel {ApprenticeshipId = 321, Ukprn = 5678, Uln = 54321, Id = 1}});
+
+            mocker.Mock<IApprenticeshipApprovedUpdatedService>()
+                .Setup(x => x.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipApprovedModel>()))
+                .ReturnsAsync(new ApprenticeshipModel());
+
+            mocker.Mock<IApprenticeshipDataLockTriageService>()
+                .Setup(x => x.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipDataLockTriageModel>()))
+                .ReturnsAsync(new ApprenticeshipModel());
+
             apprenticeship = new ApprenticeshipModel
             {
                 Id = 1234,
@@ -78,10 +90,10 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 .Setup(x => x.GetDuplicates(It.IsAny<long>()))
                 .ReturnsAsync(new List<ApprenticeshipDuplicateModel>
                 {
-                    new ApprenticeshipDuplicateModel { ApprenticeshipId = 321, Ukprn = 5678, Uln = 54321, Id = 1 },
-                    new ApprenticeshipDuplicateModel { ApprenticeshipId = 654, Ukprn = 5678, Uln = 54321, Id = 2 },
-                    new ApprenticeshipDuplicateModel { ApprenticeshipId = 321, Ukprn = 9012, Uln = 54321, Id = 3 },
-                    new ApprenticeshipDuplicateModel { ApprenticeshipId = 654, Ukprn = 9012, Uln = 54321, Id = 4 },
+                    new ApprenticeshipDuplicateModel {ApprenticeshipId = 321, Ukprn = 5678, Uln = 54321, Id = 1},
+                    new ApprenticeshipDuplicateModel {ApprenticeshipId = 654, Ukprn = 5678, Uln = 54321, Id = 2},
+                    new ApprenticeshipDuplicateModel {ApprenticeshipId = 321, Ukprn = 9012, Uln = 54321, Id = 3},
+                    new ApprenticeshipDuplicateModel {ApprenticeshipId = 654, Ukprn = 9012, Uln = 54321, Id = 4},
                 });
 
             var service = mocker.Create<ApprenticeshipService>();
@@ -89,23 +101,31 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             mocker.Mock<IApprenticeshipRepository>()
                 .Verify(x => x.StoreDuplicates(It.Is<List<ApprenticeshipDuplicateModel>>(duplicates =>
-                    duplicates.Any(duplicate => duplicate.Ukprn == apprenticeship.Ukprn && duplicate.ApprenticeshipId == apprenticeship.Id))), Times.Once);
-
-            mocker.Mock<IApprenticeshipRepository>()
-                .Verify(x => x.StoreDuplicates(It.Is<List<ApprenticeshipDuplicateModel>>(duplicates => 
-                    duplicates.Any(duplicate => duplicate.Ukprn == 5678 && duplicate.ApprenticeshipId == apprenticeship.Id))), Times.Once);
-
-            mocker.Mock<IApprenticeshipRepository>()
-                .Verify(x => x.StoreDuplicates(It.Is<List<ApprenticeshipDuplicateModel>>(duplicates =>
-                    duplicates.Any(duplicate => duplicate.Ukprn == 9012 && duplicate.ApprenticeshipId == apprenticeship.Id))), Times.Once);
+                        duplicates.Any(duplicate =>
+                            duplicate.Ukprn == apprenticeship.Ukprn &&
+                            duplicate.ApprenticeshipId == apprenticeship.Id))),
+                    Times.Once);
 
             mocker.Mock<IApprenticeshipRepository>()
                 .Verify(x => x.StoreDuplicates(It.Is<List<ApprenticeshipDuplicateModel>>(duplicates =>
-                    duplicates.Any(duplicate => duplicate.Ukprn == apprenticeship.Ukprn && duplicate.ApprenticeshipId == 321))), Times.Once);
+                    duplicates.Any(duplicate =>
+                        duplicate.Ukprn == 5678 && duplicate.ApprenticeshipId == apprenticeship.Id))), Times.Once);
 
             mocker.Mock<IApprenticeshipRepository>()
                 .Verify(x => x.StoreDuplicates(It.Is<List<ApprenticeshipDuplicateModel>>(duplicates =>
-                    duplicates.Any(duplicate => duplicate.Ukprn == apprenticeship.Ukprn && duplicate.ApprenticeshipId == 654))), Times.Once);
+                    duplicates.Any(duplicate =>
+                        duplicate.Ukprn == 9012 && duplicate.ApprenticeshipId == apprenticeship.Id))), Times.Once);
+
+            mocker.Mock<IApprenticeshipRepository>()
+                .Verify(x => x.StoreDuplicates(It.Is<List<ApprenticeshipDuplicateModel>>(duplicates =>
+                    duplicates.Any(duplicate =>
+                        duplicate.Ukprn == apprenticeship.Ukprn && duplicate.ApprenticeshipId == 321))), Times.Once);
+
+            mocker.Mock<IApprenticeshipRepository>()
+                .Verify(x => x.StoreDuplicates(It.Is<List<ApprenticeshipDuplicateModel>>(duplicates =>
+                    duplicates.Any(duplicate =>
+                        duplicate.Ukprn == apprenticeship.Ukprn && duplicate.ApprenticeshipId == 654))), Times.Once);
         }
+
     }
 }
