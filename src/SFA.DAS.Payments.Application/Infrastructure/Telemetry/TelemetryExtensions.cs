@@ -35,7 +35,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
         public static void TrackDuration(this ITelemetry telemetry, string eventName, Stopwatch stopwatch, IPaymentsEvent paymentEvent, long? employerAccountId = null)
         {
             stopwatch.Stop();
-            TrackDuration(telemetry, eventName, stopwatch.Elapsed, paymentEvent);
+            TrackDuration(telemetry, eventName, stopwatch.Elapsed, paymentEvent, employerAccountId);
         }
 
         public static void TrackDuration(this ITelemetry telemetry, string eventName, TimeSpan duration, IPaymentsEvent paymentEvent, long? employerAccountId = null)
@@ -57,21 +57,6 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
                 {
                     { TelemetryKeys.Duration, duration.TotalMilliseconds }
                 });
-        }
-
-        public static async Task TrackDuration(this ITelemetry telemetry, string eventName, IPaymentsEvent paymentEvent, Func<Task> action)
-        {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            try
-            {
-                await action();
-            }
-            finally
-            {
-                stopwatch.Stop();
-                TrackDuration(telemetry, eventName, stopwatch.Elapsed, paymentEvent);
-            }
         }
     }
 }

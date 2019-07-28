@@ -68,7 +68,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
 
         public IOperationHolder<RequestTelemetry> StartOperation(string operationName = "PaymentMessageProcessing", string operationId = null)
         {
-            return telemetryClient.StartOperation<RequestTelemetry>(operationName,operationId);
+            return telemetryClient.StartOperation<RequestTelemetry>(operationName, operationId);
         }
 
         public void StopOperation(IOperationHolder<RequestTelemetry> operation)

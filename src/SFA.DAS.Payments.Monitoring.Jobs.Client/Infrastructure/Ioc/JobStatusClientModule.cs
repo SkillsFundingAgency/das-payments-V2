@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
                     var logger = c.Resolve<IPaymentLogger>();
                     var factory = c.Resolve<IMonitoringMessageSessionFactory>();
                     var dataContext = c.Resolve<IJobsDataContext>();
-                    return new EarningsJobClient(factory.Create(), logger, dataContext, c.Resolve<Application.Infrastructure.Telemetry.ITelemetry>());
+                    return new EarningsJobClient(logger, dataContext, c.Resolve<Application.Infrastructure.Telemetry.ITelemetry>());
                 })
                 .As<IEarningsJobClient>()
                 .InstancePerDependency();

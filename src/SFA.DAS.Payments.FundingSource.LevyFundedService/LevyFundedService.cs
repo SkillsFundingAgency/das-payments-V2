@@ -68,7 +68,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             {
                 using (var operation = telemetry.StartOperation("LevyFundedService.HandleRequiredPayment", message.EventId.ToString()))
                 {
-                    var stopwatch = StartStopwatch();
+                    var stopwatch = Stopwatch.StartNew();
                     paymentLogger.LogVerbose($"Handling RequiredPayment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.AccountId}");
                     await fundingSourceService.AddRequiredPayment(message).ConfigureAwait(false);
                     paymentLogger.LogInfo($"Finished handling required payment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.AccountId}");
@@ -89,7 +89,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             {
                 using (var operation = telemetry.StartOperation("LevyFundedService.HandleEmployerProviderPriorityChange", message.EventId.ToString()))
                 {
-                    var stopwatch = StartStopwatch();
+                    var stopwatch = Stopwatch.StartNew();
                     paymentLogger.LogDebug($"Storing EmployerChangedProviderPriority event for {Id},  Account Id: {message.EmployerAccountId}");
                     await fundingSourceService.StoreEmployerProviderPriority(message).ConfigureAwait(false);
                     paymentLogger.LogInfo($"Finished Storing EmployerChangedProviderPriority event for {Id},  Account Id: {message.EmployerAccountId}");
@@ -110,7 +110,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             {
                 using (var operation = telemetry.StartOperation("LevyFundedService.UnableToFundTransfer", message.EventId.ToString()))
                 {
-                    var stopwatch = StartStopwatch();
+                    var stopwatch = Stopwatch.StartNew();
                     paymentLogger.LogDebug($"Handling UnableToFundTransfer for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Receiver Account: {message.AccountId}, Sender Account: {message.TransferSenderAccountId}");
                     var fundingSourcePayments = await fundingSourceService.ProcessReceiverTransferPayment(message).ConfigureAwait(false);
                     paymentLogger.LogInfo($"Finished handling required payment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.AccountId}");
@@ -134,7 +134,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             {
                 using (var operation = telemetry.StartOperation())
                 {
-                    var stopwatch = StartStopwatch();
+                    var stopwatch = Stopwatch.StartNew();
                     var fundingSourceEvents = await fundingSourceService.HandleMonthEnd(command.AccountId, command.JobId);
                     telemetry.StopOperation(operation);
                     return fundingSourceEvents;
@@ -151,7 +151,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         {
             using (var operation = telemetry.StartOperation("LevyFundedService.OnActivateAsync", $"{Id}_{Guid.NewGuid():N}"))
             {
-                var stopwatch = StartStopwatch();
+                var stopwatch = Stopwatch.StartNew();
                 //TODO: Use DI
                 actorCache = new ActorReliableCollectionCache<bool>(StateManager);
                 employerProviderPriorities = new ReliableCollectionCache<List<EmployerProviderPriorityModel>>(StateManager);
@@ -200,7 +200,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 return;
             }
 
-            var stopwatch = StartStopwatch();
+            var stopwatch = Stopwatch.StartNew();
             paymentLogger.LogInfo($"Initialising actor for employer {Id.GetLongId()}");
 
             var paymentPriorities = await levyFundingSourceRepository.GetPaymentPriorities(Id.GetLongId()).ConfigureAwait(false);
@@ -219,12 +219,6 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             await actorCache.ResetInitialiseFlag().ConfigureAwait(false);
         }
 
-        private Stopwatch StartStopwatch()
-        {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            return stopwatch;
-        }
 
         private void TrackInfrastructureEvent(string eventName, Stopwatch stopwatch)
         {

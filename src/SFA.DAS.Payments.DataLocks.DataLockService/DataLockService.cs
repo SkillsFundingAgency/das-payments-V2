@@ -60,7 +60,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         {
             using (var operation = telemetry.StartOperation("DataLockService.HandleEarning", message.EventId.ToString()))
             {
-                var stopwatch = StartStopwatch();
+                var stopwatch = Stopwatch.StartNew();
                 await Initialise().ConfigureAwait(false);
                 var dataLockEvents = await dataLockProcessor.GetPaymentEvents(message, cancellationToken);
                 telemetry.TrackDuration("DataLockService.HandleEarning", stopwatch, message);
@@ -73,7 +73,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         {
             using (var operation = telemetry.StartOperation("DataLockService.HandleApprenticeshipUpdated", message.EventId.ToString()))
             {
-                var stopwatch = StartStopwatch();
+                var stopwatch = Stopwatch.StartNew();
                 await Initialise().ConfigureAwait(false);
                 await apprenticeshipUpdatedProcessor.ProcessApprenticeshipUpdate(message);
                 TrackInfrastructureEvent("DataLockService.HandleApprenticeshipUpdated", stopwatch);
@@ -92,10 +92,10 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         {
             using (var operation = telemetry.StartOperation("DataLockService.OnActivateAsync", $"{Id}_{Guid.NewGuid():N}"))
             {
-                var stopwatch = StartStopwatch();
+                var stopwatch = Stopwatch.StartNew();
                 await Initialise().ConfigureAwait(false);
                 await base.OnActivateAsync().ConfigureAwait(false);
-                TrackInfrastructureEvent("DataLockService.HandleEarning", stopwatch);
+                TrackInfrastructureEvent("DataLockService.OnActivateAsync", stopwatch);
                 telemetry.StopOperation(operation);
             }
         }
@@ -104,12 +104,10 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         {
             try
             {
-                if (await apprenticeships.IsInitialiseFlagIsSet().ConfigureAwait(false))
-                {
-                    paymentLogger.LogVerbose($"Actor already initialised for uln {Id.ToString().Substring(0, 4)}****");
-                    return;
-                }
-                var stopwatch = StartStopwatch();
+                paymentLogger.LogVerbose($"Actor already initialised for apprenticeship {Id}");
+                return;
+            }
+            var stopwatch = Stopwatch.StartNew();
 
                 paymentLogger.LogInfo($"Initialising actor for provider {Id}");
                 var uln = long.Parse(Id.ToString());
@@ -133,13 +131,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
                 throw;
             }
         }
-        
-        private Stopwatch StartStopwatch()
-        {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            return stopwatch;
-        }
+
 
         private void TrackInfrastructureEvent(string eventName, Stopwatch stopwatch)
         {
