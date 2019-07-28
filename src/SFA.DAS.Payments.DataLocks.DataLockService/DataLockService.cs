@@ -83,9 +83,9 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
 
         public async Task Reset()
         {
-            paymentLogger.LogVerbose($"Resetting actor for uln {Id.ToString().Substring(0, 4)}****");
+            paymentLogger.LogVerbose($"Resetting actor for id {Id}");
             await apprenticeships.ResetInitialiseFlag().ConfigureAwait(false);
-            paymentLogger.LogInfo($"Reset actor for uln {Id.ToString().Substring(0, 4)}****");
+            paymentLogger.LogInfo($"Reset actor for Id {Id}");
         }
 
         protected override async Task OnActivateAsync()
@@ -105,11 +105,10 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             try
             {
                 paymentLogger.LogVerbose($"Actor already initialised for apprenticeship {Id}");
-                return;
-            }
-            var stopwatch = Stopwatch.StartNew();
-
-                paymentLogger.LogInfo($"Initialising actor for provider {Id}");
+                if (await this.apprenticeships.IsInitialiseFlagIsSet())
+                    return;
+                var stopwatch = Stopwatch.StartNew();
+                paymentLogger.LogInfo($"Initialising actor {Id}");
                 var uln = long.Parse(Id.ToString());
                 using (var repository = apprenticeshipRepository())
                 {
@@ -120,10 +119,9 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
                     await this.providers.AddOrReplace(CacheKeys.ProvidersKey, providerIds).ConfigureAwait(false);
                 }
                 await apprenticeships.SetInitialiseFlag().ConfigureAwait(false);
-                paymentLogger.LogInfo($"Initialised actor for uln {Id.ToString().Substring(0, 4)}****");
+                paymentLogger.LogInfo($"Initialised actor for Id {Id}");
                 stopwatch.Stop();
                 TrackInfrastructureEvent("DataLockService.Initialise", stopwatch);
-
             }
             catch (Exception e)
             {
