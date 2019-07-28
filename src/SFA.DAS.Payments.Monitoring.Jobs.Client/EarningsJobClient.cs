@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -62,24 +63,34 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 MessageName = msg.MessageName,
                 Status = JobStepStatus.Queued
             }).ToList();
+            var stopwatch = Stopwatch.StartNew();
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 await dataContext.SaveNewJob(jobDetails, jobSteps);
                 scope.Complete();
             }
-            //SendTelemetry(jobId, ukprn, ilrSubmissionTime, collectionYear, collectionPeriod, generatedMessages.Count, jobDetails);
+            SendTelemetry(jobId, ukprn, ilrSubmissionTime, collectionYear, collectionPeriod, generatedMessages.Count, jobDetails, stopwatch);
             logger.LogInfo($"Finished saving the job to the db.  Job id: {jobDetails.Id}, DC Job Id: {jobId}, Ukprn: {ukprn}.");
         }
 
-        private void SendTelemetry(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod, int learnerCount, JobModel jobDetails)
+        private void SendTelemetry(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod, int learnerCount, JobModel jobDetails, Stopwatch stopwatch)
         {
-            telemetry.AddProperty("JobType", JobType.EarningsJob.ToString("G"));
-            telemetry.AddProperty("Ukprn", ukprn.ToString());
-            telemetry.AddProperty("Id", jobDetails.Id.ToString());
-            telemetry.AddProperty("ExternalJobId", jobId.ToString());
-            telemetry.AddProperty("CollectionPeriod", collectionPeriod.ToString());
-            telemetry.AddProperty("CollectionYear", collectionYear.ToString());
-            telemetry.TrackEvent("Started Earnings Job Job", learnerCount);
+            stopwatch.Stop();
+            var properties = new Dictionary<string, string>
+            {
+                {"JobType", JobType.EarningsJob.ToString("G")},
+                {"Ukprn", ukprn.ToString()},
+                {"Id", jobDetails.Id.ToString()},
+                {"ExternalJobId", jobId.ToString()},
+                {"CollectionPeriod", collectionPeriod.ToString()},
+                {"CollectionYear", collectionYear.ToString()}
+            };
+            var metrics = new Dictionary<string, double>
+            {
+                { TelemetryKeys.Duration, stopwatch.ElapsedMilliseconds },
+                { TelemetryKeys.Count, learnerCount }
+            };
+            telemetry.TrackEvent("Saved New Earnings Job", properties, metrics);
         }
     }
 }
