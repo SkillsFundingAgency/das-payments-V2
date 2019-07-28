@@ -20,14 +20,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 
     public class EarningsJobClient : IEarningsJobClient
     {
-        private readonly IMessageSession messageSession;
         private readonly IPaymentLogger logger;
         private readonly IJobsDataContext dataContext;
         private readonly ITelemetry telemetry;
 
-        public EarningsJobClient(IMessageSession messageSession, IPaymentLogger logger, IJobsDataContext dataContext, ITelemetry telemetry)
+        public EarningsJobClient(IPaymentLogger logger, IJobsDataContext dataContext, ITelemetry telemetry)
         {
-            this.messageSession = messageSession ?? throw new ArgumentNullException(nameof(messageSession));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
