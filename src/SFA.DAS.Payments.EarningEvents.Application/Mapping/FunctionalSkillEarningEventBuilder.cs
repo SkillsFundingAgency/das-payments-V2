@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                     {
                         earning.Periods = GetEarningPeriodsMatchingContractType(contractTypes, distinctContractType, earning.Periods.ToList());
                     }
-                    if (functionalSkillEarning.Earnings.All(earning => earning.Periods.Any()))
+                    if (functionalSkillEarning.Earnings.Any(earning => earning.Periods.Any()))
                         results.Add(functionalSkillEarning);
                 }
             }
