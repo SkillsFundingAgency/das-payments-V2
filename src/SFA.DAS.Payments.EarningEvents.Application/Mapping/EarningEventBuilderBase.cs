@@ -47,28 +47,29 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         private static List<IntermediateLearningAim> GetMathsAndEnglishAim(ProcessLearnerCommand learnerSubmission,
             LearningDelivery learningDelivery)
         {
-            var results = new List<IntermediateLearningAim>();
+            return new List<IntermediateLearningAim> { new IntermediateLearningAim(learnerSubmission, new List<PriceEpisode>(), learningDelivery) };
+            //var results = new List<IntermediateLearningAim>();
 
-            var intermediateLearningAim =
-                new IntermediateLearningAim(learnerSubmission, new List<PriceEpisode>(), learningDelivery);
+            //var intermediateLearningAim =
+            //    new IntermediateLearningAim(learnerSubmission, new List<PriceEpisode>(), learningDelivery);
 
-            var contractTypes =
-                intermediateLearningAim.Learner.LearningDeliveries.GetContractTypesForLearningDeliveries();
+            //var contractTypes =
+            //    intermediateLearningAim.Learner.LearningDeliveries.GetContractTypesForLearningDeliveries();
 
-            var distinctContractTypes = contractTypes.Distinct().ToList();
+            //var distinctContractTypes = contractTypes.Distinct().ToList();
 
-            distinctContractTypes.ForEach(c =>
-            {
-                var mathsAndEnglishAim =
-                    new IntermediateLearningAim(learnerSubmission, new List<PriceEpisode>(), learningDelivery)
-                    {
-                        ContractType = c
-                    };
+            //distinctContractTypes.ForEach(c =>
+            //{
+            //    var mathsAndEnglishAim =
+            //        new IntermediateLearningAim(learnerSubmission, new List<PriceEpisode>(), learningDelivery)
+            //        {
+            //            ContractType = c
+            //        };
 
-                results.Add(mathsAndEnglishAim);
-            });
+            //    results.Add(mathsAndEnglishAim);
+            //});
 
-            return results;
+            //return results;
         }
     }
 }
