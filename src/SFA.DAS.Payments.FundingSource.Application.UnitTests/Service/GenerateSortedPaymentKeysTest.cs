@@ -83,7 +83,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                                 Id = requiredPaymentKey,
                                 Ukprn =  2,
                                 Uln = 2,
-                                StarDate = DateTime.Today
+                                AgreedOnDate = DateTime.Today
                             }
                         })).Verifiable();
 
@@ -138,28 +138,28 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                     Id = "1",
                     Ukprn = 4,
                     Uln = 1,
-                    StarDate = DateTime.Today
+                    AgreedOnDate = DateTime.Today
                 },
                 new RequiredPaymentSortKeyModel
                 {
                     Id = "2",
                     Ukprn = 2,
                     Uln = 2,
-                    StarDate = DateTime.Today
+                    AgreedOnDate = DateTime.Today
                 },
                 new RequiredPaymentSortKeyModel
                 {
                     Id = "3",
                     Ukprn = 3,
                     Uln = 3,
-                    StarDate = DateTime.Today
+                    AgreedOnDate = DateTime.Today
                 },
                 new RequiredPaymentSortKeyModel
                 {
                     Id = "4",
                     Ukprn = 1,
                     Uln = 4,
-                    StarDate = DateTime.Today.AddDays(-1)
+                    AgreedOnDate = DateTime.Today.AddDays(-1)
                 },
 
                 new RequiredPaymentSortKeyModel
@@ -167,14 +167,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                     Id = "5",
                     Ukprn = 1,
                     Uln = 6,
-                    StarDate = DateTime.Today
+                    AgreedOnDate = DateTime.Today
                 },
                 new RequiredPaymentSortKeyModel
                 {
                     Id = "6",
                     Ukprn = 1,
                     Uln = 5,
-                    StarDate = DateTime.Today
+                    AgreedOnDate = DateTime.Today
                 }
             };
 
@@ -229,14 +229,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                     Id = "2",
                     Ukprn = 2,
                     Uln = 2,
-                    StarDate = DateTime.Today
+                    AgreedOnDate = DateTime.Today
                 },
                 new RequiredPaymentSortKeyModel
                 {
                     Id = "4",
                     Ukprn = 1,
                     Uln = 4,
-                    StarDate = DateTime.Today.AddDays(-1)
+                    AgreedOnDate = DateTime.Today.AddDays(-1)
                 },
 
                 new RequiredPaymentSortKeyModel
@@ -244,14 +244,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                     Id = "5",
                     Ukprn = 1,
                     Uln = 6,
-                    StarDate = DateTime.Today
+                    AgreedOnDate = DateTime.Today
                 },
                 new RequiredPaymentSortKeyModel
                 {
                     Id = "6",
                     Ukprn = 1,
                     Uln = 5,
-                    StarDate = DateTime.Today
+                    AgreedOnDate = DateTime.Today
                 }
             };
 
