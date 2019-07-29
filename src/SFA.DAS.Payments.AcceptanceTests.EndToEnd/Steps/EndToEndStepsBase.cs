@@ -1098,8 +1098,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             if (ProvidersWithCacheCleared == null)
             {
                 ProvidersWithCacheCleared = new HashSet<(byte period, int academicYear, long)>();
-                await RequiredPaymentsCacheCleaner.ClearCaches(provider, TestSession, collectionPeriod.AcademicYear).ConfigureAwait(false);
-                ProvidersWithCacheCleared.Add((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn));
+
+                foreach (var testSessionProvider in TestSession.Providers)
+                {
+                    if (Config.ValidateDcAndDasServices)
+                    {
+                        await RequiredPaymentsCacheCleaner.ClearCaches(testSessionProvider, TestSession, collectionPeriod.AcademicYear).ConfigureAwait(false);
+                    }
+
+                    ProvidersWithCacheCleared.Add((collectionPeriod.Period, collectionPeriod.AcademicYear, testSessionProvider.Ukprn));
+                }
             }
 
             if (!ProvidersWithCacheCleared.Contains((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn)))
