@@ -28,10 +28,10 @@ namespace SFA.DAS.Payments.JobContextMessageHandling
             var initialised = false;
             try
             {
-                logger.LogDebug("Starting the Earning Events service.");
+                logger.LogDebug("Starting the Job Context Manager service.");
                 jobContextManager.OpenAsync(cancellationToken);
                 initialised = true;
-                logger.LogInfo("Started the Period End service.");
+                logger.LogInfo("Started the Job Context Manager service.");
                 await Task.Delay(Timeout.Infinite, cancellationToken);
             }
             catch (Exception exception) when (!(exception is TaskCanceledException))
