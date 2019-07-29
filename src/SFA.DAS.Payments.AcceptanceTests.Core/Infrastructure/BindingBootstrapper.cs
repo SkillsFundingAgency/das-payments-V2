@@ -25,6 +25,8 @@ using SFA.DAS.Payments.AcceptanceTests.Services;
 using SFA.DAS.Payments.AcceptanceTests.Services.BespokeHttpClient;
 using SFA.DAS.Payments.AcceptanceTests.Services.Configuration;
 using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
+using SFA.DAS.Payments.AcceptanceTests.Services.Interfaces;
+using SFA.DAS.Payments.AcceptanceTests.Services.Services;
 using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
 using TechTalk.SpecFlow;
@@ -55,6 +57,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
 
             if (config.ValidateDcAndDasServices)
             {
+                Builder.RegisterType<ApprenticeshipEarningsHistoryService>().As<IApprenticeshipEarningsHistoryService>().InstancePerLifetimeScope();
                 Builder.RegisterType<UkprnService>().As<IUkprnService>().InstancePerLifetimeScope();
                 Builder.RegisterType<UlnService>().As<IUlnService>().InstancePerLifetimeScope();
                 Builder.RegisterType<DcNullHelper>().As<IDcHelper>().InstancePerLifetimeScope();
