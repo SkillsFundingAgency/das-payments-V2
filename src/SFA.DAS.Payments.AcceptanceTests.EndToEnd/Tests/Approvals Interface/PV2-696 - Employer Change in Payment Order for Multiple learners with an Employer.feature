@@ -1,3 +1,4 @@
+@ignore
 Feature: PV2-696 - Employer Change in Payment Order for Multiple learners with an Employer
 		As an Employer,
 		I want to be able to make changes to the payment order for learners
