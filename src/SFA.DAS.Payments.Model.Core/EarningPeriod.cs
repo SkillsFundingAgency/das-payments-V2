@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.Model.Core
 {
@@ -14,5 +15,6 @@ namespace SFA.DAS.Payments.Model.Core
         public long? TransferSenderAccountId { get; set; }
         public int? Priority { get; set; }
         public List<DataLockFailure> DataLockFailures { get; set; }
+        public DateTime? AgreedOnDate { get; set; }
     }
 }

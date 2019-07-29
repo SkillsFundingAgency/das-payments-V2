@@ -9,6 +9,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure.IoC;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators;
+using SFA.DAS.Payments.AcceptanceTests.Services.Interfaces;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
@@ -42,10 +43,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
             }).As<IPaymentsDataContext>().InstancePerLifetimeScope();
             DcHelper.AddDcConfig(Builder);
 
-            Builder.RegisterType<ApprenticeshipEarningsHistoryService>()
-                   .As<IApprenticeshipEarningsHistoryService>()
-                   .InstancePerLifetimeScope()
-                   .IfNotRegistered(typeof(IIlrService));
             Builder.Register(ctx =>
                              {
                                  var configHelper = ctx.Resolve<TestsConfiguration>();
@@ -53,7 +50,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
                                      .UseSqlServer(configHelper.AppEarnHistoryConnectionString);
                                  return new AppEarnHistoryContext(builder.Options);
                              })
-                   .OnlyIf(x => x.IsRegistered(new TypedService(typeof(IApprenticeshipEarningsHistoryService))));
+                   .OnlyIf(x => x.IsRegistered(new TypedService(typeof(IApprenticeshipEarningsHistoryService))))
+                   .InstancePerLifetimeScope();
+
             Builder.RegisterType<IlrDcService>()
                    .As<IIlrService>()
                    .InstancePerLifetimeScope()
