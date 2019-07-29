@@ -9,6 +9,7 @@
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
+    <Parameter Name="ConsoleLogLevel" DefaultValue="" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
     <Parameter Name="NonLevyFundedService_EndpointName" DefaultValue="" />
     <Parameter Name="LevyFundedService_EndpointName" DefaultValue="" />
@@ -37,6 +38,7 @@
             <Parameter Name="EndpointName" Value="[NonLevyFundedService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[NonLevyFundedService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
           </Section>
@@ -59,6 +61,7 @@
             <Parameter Name="EndpointName" Value="[LevyFundedService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[LevyFundedService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
           </Section>
@@ -81,6 +84,7 @@
           <Section Name="Settings">
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
           </Section>
         </Settings>
       </ConfigOverride>

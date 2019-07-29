@@ -10,6 +10,7 @@
     <Parameter Name="ProviderPaymentsService_FailedMessagesQueue" Value="__ProviderPaymentsService_FailedMessagesQueue__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
+    <Parameter Name="ConsoleLogLevel" Value="__ConsoleLogLevel__" />
     <Parameter Name="ProcessMessageSequentially" Value="false" />
     <Parameter Name="PaymentsConnectionString" Value="__PaymentsConnectionString__" />
     <Parameter Name="ProviderPaymentsService_EndpointName" Value="__ProviderPaymentsService_EndpointName__" />

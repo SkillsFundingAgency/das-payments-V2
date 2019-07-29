@@ -11,6 +11,7 @@
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
+    <Parameter Name="ConsoleLogLevel" DefaultValue="" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
     <Parameter Name="ProviderPaymentsService_EndpointName" DefaultValue="" />
     <Parameter Name="ProviderPaymentsService_FailedMessagesQueue" DefaultValue="" />
@@ -36,6 +37,7 @@
             <Parameter Name="BatchFailureTimeoutInSeconds" Value="[Audit_BatchFailureTimeoutInSeconds]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="BatchIntervalInSeconds" Value="[BatchIntervalInSeconds]" />
           </Section>
         </Settings>

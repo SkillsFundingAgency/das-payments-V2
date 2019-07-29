@@ -13,6 +13,7 @@
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
+    <Parameter Name="ConsoleLogLevel" DefaultValue="Fatal" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
     <Parameter Name="ApprovalsService_EndpointName" DefaultValue="" />
     <Parameter Name="ApprovalsService_FailedMessagesQueue" DefaultValue="" />
@@ -40,6 +41,7 @@
             <Parameter Name="EndpointName" Value="[ApprovalsService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[ApprovalsService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
           </Section>
@@ -63,6 +65,7 @@
             <Parameter Name="EndpointName" Value="[DataLockService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[DataLockService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
           </Section>
@@ -86,6 +89,7 @@
             <Parameter Name="EndpointName" Value="[DataLockService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[DataLockService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
           </Section>

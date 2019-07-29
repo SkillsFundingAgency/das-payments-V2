@@ -11,6 +11,7 @@
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
+    <Parameter Name="ConsoleLogLevel" DefaultValue="" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
     <Parameter Name="RequiredPaymentsService_EndpointName" DefaultValue="" />
     <Parameter Name="RequiredPaymentsService_FailedMessagesQueue" DefaultValue="" />
@@ -38,6 +39,7 @@
             <Parameter Name="EndpointName" Value="[RequiredPaymentsService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[RequiredPaymentsService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
           </Section>
@@ -61,6 +63,7 @@
             <Parameter Name="EndpointName" Value="[RequiredPaymentsService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[RequiredPaymentsService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
           </Section>
@@ -77,7 +80,11 @@
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
           </Section>
-          <Section Name="Settings" />
+          <Section Name="Settings">
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+          </Section>
         </Settings>
       </ConfigOverride>
     </ConfigOverrides>
