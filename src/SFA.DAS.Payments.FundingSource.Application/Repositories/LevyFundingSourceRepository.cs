@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -39,15 +40,15 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
             var paymentPriorities = await dataContext.EmployerProviderPriority.AsNoTracking()
                 .Where(paymentPriority => paymentPriority.EmployerAccountId == employerAccountId)
                 .ToListAsync(cancellationToken);
-            
+
             return paymentPriorities;
         }
 
         public async Task AddEmployerProviderPriorities(List<EmployerProviderPriorityModel> paymentPriorityModels, CancellationToken cancellationToken = default(CancellationToken))
         {
-             await dataContext.EmployerProviderPriority
-                .AddRangeAsync(paymentPriorityModels, cancellationToken)
-                .ConfigureAwait(false);
+            await dataContext.EmployerProviderPriority
+               .AddRangeAsync(paymentPriorityModels, cancellationToken)
+               .ConfigureAwait(false);
         }
         public async Task<List<long>> GetAccountIds(CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -71,19 +72,31 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
             return accountIds;
         }
 
-        public async Task AddLevyAccounts(List<LevyAccountModel> levyAccounts, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeletedLevyAccountByIdsAsync(List<long> accountIds, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await dataContext.LevyAccount
-                 .AddRangeAsync(levyAccounts, cancellationToken)
-                 .ConfigureAwait(false);
+            var accounts = await dataContext.LevyAccount
+                .Where(x => accountIds.Contains(x.AccountId))
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            dataContext.LevyAccount.RemoveRange(accounts);
 
             await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task UpdateLevyAccounts(List<LevyAccountModel> levyAccounts, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<long>> GetLevyPayerAccountIds(CancellationToken cancellationToken = default(CancellationToken))
         {
-            dataContext.LevyAccount.UpdateRange(levyAccounts);
-            await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            var accountIds = await dataContext
+                .LevyAccount
+                .Where(a => a.IsLevyPayer)
+                .Select(x => x.AccountId)
+                .Distinct()
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+            
+            return accountIds;
         }
+
+
     }
 }
