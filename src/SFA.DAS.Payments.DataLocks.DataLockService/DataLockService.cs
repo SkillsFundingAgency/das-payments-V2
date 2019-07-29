@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
@@ -10,7 +9,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
-using SFA.DAS.Payments.DataLocks.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Application.Services;
 using SFA.DAS.Payments.DataLocks.DataLockService.Interfaces;
 using SFA.DAS.Payments.DataLocks.Domain.Infrastructure;
@@ -28,17 +26,19 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         private readonly ActorId actorId;
         private readonly IPaymentLogger paymentLogger;
         private readonly IActorDataCache<List<ApprenticeshipModel>> apprenticeships;
+        private readonly IActorDataCache<List<long>> providers;
         private readonly IDataLockProcessor dataLockProcessor;
         private readonly IApprenticeshipUpdatedProcessor apprenticeshipUpdatedProcessor;
         private readonly ITelemetry telemetry;
-        private readonly IApprenticeshipRepository apprenticeshipRepository;
+        private readonly Func<IApprenticeshipRepository> apprenticeshipRepository;
 
         public DataLockService(
             ActorService actorService,
             ActorId actorId,
             IPaymentLogger paymentLogger,
-            IApprenticeshipRepository apprenticeshipRepository,
+            Func<IApprenticeshipRepository> apprenticeshipRepository,
             IActorDataCache<List<ApprenticeshipModel>> apprenticeships,
+            IActorDataCache<List<long>> providers,
             IDataLockProcessor dataLockProcessor,
             IApprenticeshipUpdatedProcessor apprenticeshipUpdatedProcessor,
             ITelemetry telemetry
@@ -50,6 +50,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             this.paymentLogger = paymentLogger;
             this.apprenticeshipRepository = apprenticeshipRepository;
             this.apprenticeships = apprenticeships;
+            this.providers = providers ?? throw new ArgumentNullException(nameof(providers));
             this.dataLockProcessor = dataLockProcessor;
             this.apprenticeshipUpdatedProcessor = apprenticeshipUpdatedProcessor ?? throw new ArgumentNullException(nameof(apprenticeshipUpdatedProcessor));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
@@ -82,9 +83,9 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
 
         public async Task Reset()
         {
-            paymentLogger.LogDebug($"Resetting actor for provider {Id}");
+            paymentLogger.LogVerbose($"Resetting actor for id {Id}");
             await apprenticeships.ResetInitialiseFlag().ConfigureAwait(false);
-            paymentLogger.LogInfo($"Reset actor for provider {Id}");
+            paymentLogger.LogInfo($"Reset actor for Id {Id}");
         }
 
         protected override async Task OnActivateAsync()
@@ -101,36 +102,32 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
 
         private async Task Initialise()
         {
-            if (await apprenticeships.IsInitialiseFlagIsSet().ConfigureAwait(false))
+            try
             {
                 paymentLogger.LogVerbose($"Actor already initialised for apprenticeship {Id}");
-                return;
-            }
-            var stopwatch = Stopwatch.StartNew();
-
-            paymentLogger.LogInfo($"Initialising actor for provider {Id}");
-
-            var providerApprenticeships = await apprenticeshipRepository.ApprenticeshipsForProvider(long.Parse(Id.ToString())).ConfigureAwait(false);
-
-            if (providerApprenticeships.Any())
-            {
-                var groupedApprenticeships = providerApprenticeships.ToLookup(x => x.Uln);
-
-                foreach (var group in groupedApprenticeships)
+                if (await this.apprenticeships.IsInitialiseFlagIsSet())
+                    return;
+                var stopwatch = Stopwatch.StartNew();
+                paymentLogger.LogInfo($"Initialising actor {Id}");
+                var uln = long.Parse(Id.ToString());
+                using (var repository = apprenticeshipRepository())
                 {
-                    await this.apprenticeships.AddOrReplace(group.Key.ToString(), group.ToList()).ConfigureAwait(false);
+                    var providerApprenticeships = await repository.ApprenticeshipsByUln(uln).ConfigureAwait(false);
+                    await this.apprenticeships.AddOrReplace(uln.ToString(), providerApprenticeships).ConfigureAwait(false);
+                    await this.apprenticeships.AddOrReplace(CacheKeys.DuplicateApprenticeshipsKey, providerApprenticeships).ConfigureAwait(false); //TODO: no need for this anymore
+                    var providerIds = await repository.GetProviderIds();
+                    await this.providers.AddOrReplace(CacheKeys.ProvidersKey, providerIds).ConfigureAwait(false);
                 }
-
-                var providerDuplicateApprenticeships = await apprenticeshipRepository
-                    .DuplicateApprenticeshipsForProvider(long.Parse(Id.ToString()))
-                    .ConfigureAwait(false);
-
-                await this.apprenticeships.AddOrReplace(CacheKeys.DuplicateApprenticeshipsKey, providerDuplicateApprenticeships).ConfigureAwait(false);
+                await apprenticeships.SetInitialiseFlag().ConfigureAwait(false);
+                paymentLogger.LogInfo($"Initialised actor for Id {Id}");
+                stopwatch.Stop();
+                TrackInfrastructureEvent("DataLockService.Initialise", stopwatch);
             }
-            await apprenticeships.SetInitialiseFlag().ConfigureAwait(false);
-            paymentLogger.LogInfo($"Initialised actor for provider {Id}");
-            stopwatch.Stop();
-            TrackInfrastructureEvent("DataLockService.Initialise", stopwatch);
+            catch (Exception e)
+            {
+                paymentLogger.LogError($"Error initialising the actor: {Id}. Error: {e.Message}", e);
+                throw;
+            }
         }
 
 

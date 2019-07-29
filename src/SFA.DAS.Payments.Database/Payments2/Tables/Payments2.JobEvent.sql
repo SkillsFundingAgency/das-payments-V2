@@ -16,6 +16,7 @@ GO
 CREATE INDEX [IX_JobEvent__Search] ON [Payments2].[JobEvent](
 	JobEventId,
 	JobId,
+	EventId,
 	[Status],
 	EndTime
 )

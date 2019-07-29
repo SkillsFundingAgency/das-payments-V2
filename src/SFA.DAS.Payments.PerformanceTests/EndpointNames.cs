@@ -6,6 +6,7 @@
         public static readonly string EarningEvents = "sfa-das-payments-earningevents";
         public static readonly string JobMonitoring = "sfa-das-payments-monitoring-jobs";
         public static string FundingSource = "sfa-das-payments-fundingsource-levy";
+        public static readonly string DataLocks = "sfa-das-payments-datalock";
 
     }
 }

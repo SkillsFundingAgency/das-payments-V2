@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         private readonly IPaymentLogger paymentLogger;
         private readonly ApprenticeshipKey apprenticeshipKey;
         private readonly string apprenticeshipKeyString;
-        private readonly IPaymentHistoryRepository paymentHistoryRepository;
+        private readonly Func<IPaymentHistoryRepository> paymentHistoryRepositoryFactory;
         private readonly IApprenticeshipContractType2EarningsEventProcessor contractType2EarningsEventProcessor;
         private readonly IFunctionalSkillEarningsEventProcessor functionalSkillEarningsEventProcessor;
         private readonly IPayableEarningEventProcessor payableEarningEventProcessor;
@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             ActorId actorId,
             IPaymentLogger paymentLogger,
             IApprenticeshipKeyService apprenticeshipKeyService,
-            IPaymentHistoryRepository paymentHistoryRepository,
+            Func<IPaymentHistoryRepository> paymentHistoryRepositoryFactory,
             IPaymentKeyService paymentKeyService,
             IApprenticeshipContractType2EarningsEventProcessor contractType2EarningsEventProcessor,
             IFunctionalSkillEarningsEventProcessor functionalSkillEarningsEventProcessor,
@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             : base(actorService, actorId)
         {
             this.paymentLogger = paymentLogger;
-            this.paymentHistoryRepository = paymentHistoryRepository;
+            this.paymentHistoryRepositoryFactory = paymentHistoryRepositoryFactory;
             this.contractType2EarningsEventProcessor = contractType2EarningsEventProcessor;
             this.functionalSkillEarningsEventProcessor = functionalSkillEarningsEventProcessor;
             this.payableEarningEventProcessor = payableEarningEventProcessor;
@@ -182,8 +182,11 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             }
             var stopwatch = Stopwatch.StartNew();
             paymentLogger.LogDebug($"Initialising actor for apprenticeship {apprenticeshipKeyString}");
-            var paymentHistory = await paymentHistoryRepository.GetPaymentHistory(apprenticeshipKey, CancellationToken.None).ConfigureAwait(false);
-            await paymentHistoryCache.AddOrReplace(CacheKeys.PaymentHistoryKey, paymentHistory.ToArray(), CancellationToken.None).ConfigureAwait(false);
+            using (var paymentHistoryRepository = paymentHistoryRepositoryFactory())
+            {
+                var paymentHistory = await paymentHistoryRepository.GetPaymentHistory(apprenticeshipKey, CancellationToken.None).ConfigureAwait(false);
+                await paymentHistoryCache.AddOrReplace(CacheKeys.PaymentHistoryKey, paymentHistory.ToArray(), CancellationToken.None).ConfigureAwait(false);
+            }
             await StateManager.TryAddStateAsync(CacheKeys.InitialisedKey, true).ConfigureAwait(false);
             paymentLogger.LogInfo($"Initialised actor for apprenticeship {apprenticeshipKeyString}");
             stopwatch.Stop();

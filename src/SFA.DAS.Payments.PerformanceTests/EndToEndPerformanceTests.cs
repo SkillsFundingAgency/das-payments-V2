@@ -15,6 +15,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.DataLocks.Messages.Internal;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
 using SFA.DAS.Payments.Messages.Core;
@@ -72,6 +73,7 @@ namespace SFA.DAS.Payments.PerformanceTests
             routing.RouteToEndpoint(typeof(ProcessProviderMonthEndCommand), EndpointNames.ProviderPayments);
             routing.RouteToEndpoint(typeof(RecordStartedProcessingEarningsJob), EndpointNames.JobMonitoring);
             routing.RouteToEndpoint(typeof(ProcessLevyPaymentsOnMonthEndCommand).Assembly, EndpointNames.FundingSource);
+            routing.RouteToEndpoint(typeof(ResetActorsCommand).Assembly, EndpointNames.DataLocks);
 
             var sanitization = transportConfig.Sanitization();
             var strategy = sanitization.UseStrategy<ValidateAndHashIfNeeded>();
@@ -79,8 +81,6 @@ namespace SFA.DAS.Payments.PerformanceTests
                 ruleNameSanitizer: ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
             EndpointConfiguration.UseSerialization<NewtonsoftSerializer>();
             EndpointConfiguration.EnableInstallers();
-
-
 
             Builder.RegisterType<EarningsJobClient>()
                 .As<IEarningsJobClient>()
@@ -112,7 +112,7 @@ namespace SFA.DAS.Payments.PerformanceTests
         }
 
 
-        [TestCase(1, 100, 0, 1, 60)]
+        [TestCase(1, 50, 0, 1, 30)]
         public async Task Repeatable_Ukprn_And_Uln(int providerCount, int providerLearnerAct1Count, int providerLearnerAct2Count, byte collectionPeriod, int secondsToWaitForPeriodEnd)
         {
             Randomizer.Seed = new Random(8675309);
@@ -169,6 +169,10 @@ namespace SFA.DAS.Payments.PerformanceTests
             }).ToList(), collectionPeriod, JobType.MonthEndJob);
             var monthEndTasks = commands.Select(MessageSession.Send);
             await Task.WhenAll(monthEndTasks);
+            foreach (var testSession in sessions)
+            {
+                await ResetDataLockActors(testSession.Learners).ConfigureAwait(false);
+            }
         }
 
         private async Task AddApprenticeships(TestSession session, List<Learner> learners, DateTime startDate)
@@ -209,6 +213,18 @@ namespace SFA.DAS.Payments.PerformanceTests
             await dataContext.Database.ExecuteSqlCommandAsync(sql);
             dataContext.Apprenticeship.AddRange(apprenticeships);
             await dataContext.SaveChangesAsync();
+            await ResetDataLockActors(learners).ConfigureAwait(false);
+        }
+
+        private async Task ResetDataLockActors(List<Learner> learners)
+        {
+            await MessageSession.Send(new ResetActorsCommand
+                {
+                    Ulns = learners.Select(learner => learner.Uln).ToList()
+                })
+                .ConfigureAwait(false);
+            await Task.Delay(2000).ConfigureAwait(false);
+
         }
 
         private async Task AddEmployerAccount(TestSession session)
@@ -222,8 +238,6 @@ namespace SFA.DAS.Payments.PerformanceTests
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        protected DateTimeOffset? DeliveryTime;
-
         protected async Task SubmitIlr(TestSession session, int collectionPeriod, DateTime startDate)
         {
             var ilrLearners = session.Learners
@@ -232,12 +246,6 @@ namespace SFA.DAS.Payments.PerformanceTests
             session.IlrSubmissionTime = DateTime.UtcNow;
             var startTime = DateTimeOffset.UtcNow;
             var sendOptions = new SendOptions();
-            if (DeliveryTime.HasValue)
-            {
-                sendOptions.DoNotDeliverBefore(DeliveryTime.Value);
-                startTime = DeliveryTime.Value;
-            }
-
             var commands = ilrLearners.Select(learner => new ProcessLearnerCommand
             {
                 JobId = session.JobId,
