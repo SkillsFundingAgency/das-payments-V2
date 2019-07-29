@@ -48,6 +48,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
              await dataContext.EmployerProviderPriority
                 .AddRangeAsync(paymentPriorityModels, cancellationToken)
                 .ConfigureAwait(false);
+
+            await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
     }
