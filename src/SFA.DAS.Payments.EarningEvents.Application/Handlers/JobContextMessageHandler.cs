@@ -130,8 +130,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         {
             FM36Global fm36Output;
             var fileReference = message.Topics.Any(topic => topic.Tasks.Any(task => task.Tasks.Any(taskName => taskName.Equals(JobContextMessageConstants.Tasks.ProcessPeriodEndSubmission))))
-            ? message.KeyValuePairs[JobContextMessageConstants.KeyValuePairs.FundingFm36OutputPeriodEnd].ToString()
-            : message.KeyValuePairs[JobContextMessageConstants.KeyValuePairs.FundingFm36Output].ToString();
+                ? message.KeyValuePairs[JobContextMessageConstants.KeyValuePairs.FundingFm36OutputPeriodEnd].ToString()
+                : message.KeyValuePairs[JobContextMessageConstants.KeyValuePairs.FundingFm36Output].ToString();
             var container = message.KeyValuePairs[JobContextMessageConstants.KeyValuePairs.Container].ToString();
             logger.LogDebug($"Deserialising FM36Output for job: {message.JobId}, using file reference: {fileReference}, container: {container}");
             var stopwatch = new Stopwatch();

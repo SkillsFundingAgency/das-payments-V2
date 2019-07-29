@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
                 foreach (var processLevyPaymentsOnMonthEndCommand in employerPeriodEndCommands)
                 {
                     logger.LogInfo($"Sending period end command for employer '{processLevyPaymentsOnMonthEndCommand.AccountId}'");
-                    await context.SendLocal(processLevyPaymentsOnMonthEndCommand);
+                    await context.SendLocal(processLevyPaymentsOnMonthEndCommand).ConfigureAwait(false);
                 }
                 logger.LogInfo($"Finished sending employer period end commands for collection: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}.");
             }

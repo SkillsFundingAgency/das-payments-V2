@@ -49,12 +49,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
             builder.RegisterType<BulkWriter<SubmittedLearnerAimModel>>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
-            //builder.Register(c => new ApprenticeshipContractType2EarningEventsService
-            //(
-            //    c.Resolve<IPaymentLogger>(),
-            //    c.Resolve<IEarningEventMapper>()
-            //)).As<IEarningEventsProcessingService>();
-            builder.RegisterType<JobContextMessageHandler>().As<IMessageHandler<JobContextMessage>>();
+            builder.RegisterType<JobContextMessageHandler>()
+                .As<IMessageHandler<JobContextMessage>>();
 
         }
     }

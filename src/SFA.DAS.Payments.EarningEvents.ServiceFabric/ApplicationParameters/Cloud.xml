@@ -17,5 +17,7 @@
     <Parameter Name="LogLevel" Value="__LogLevel__" />
     <Parameter Name="ProcessMessageSequentially" Value="false" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
+    <Parameter Name="TimeToPauseBetweenChecks" Value="__TimeToPauseBetweenChecks__" />
+    <Parameter Name="TimeToWaitForJobToComplete" Value="__TimeToWaitForJobToComplete__" />
   </Parameters>
 </Application>
