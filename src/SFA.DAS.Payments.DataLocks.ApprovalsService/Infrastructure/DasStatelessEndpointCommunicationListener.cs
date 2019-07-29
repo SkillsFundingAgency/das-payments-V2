@@ -76,12 +76,23 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Infrastructure
             conventions
                 .DefiningMessagesAs(t =>
                     t.IsAssignableTo<ApprenticeshipCreatedEvent>() ||
-                    t.IsAssignableTo<ApprenticeshipUpdatedApprovedEvent>())
+                    t.IsAssignableTo<ApprenticeshipUpdatedApprovedEvent>() ||
+                    t.IsAssignableTo<DataLockTriageApprovedEvent>() ||
+                    t.IsAssignableTo<ApprenticeshipStoppedEvent>() ||
+                    t.IsAssignableTo<ApprenticeshipStopDateChangedEvent>() ||
+                    t.IsAssignableTo<ApprenticeshipPausedEvent>() ||
+                    t.IsAssignableTo<ApprenticeshipResumedEvent>()
+                    )
                 .DefiningEventsAs(t =>
                     t.IsAssignableTo<ApprenticeshipCreatedEvent>() ||
-                    t.IsAssignableTo<ApprenticeshipUpdatedApprovedEvent>());
+                    t.IsAssignableTo<ApprenticeshipUpdatedApprovedEvent>() ||
+                    t.IsAssignableTo<DataLockTriageApprovedEvent>() ||
+                    t.IsAssignableTo<ApprenticeshipStoppedEvent>() ||
+                    t.IsAssignableTo<ApprenticeshipStopDateChangedEvent>() ||
+                    t.IsAssignableTo<ApprenticeshipPausedEvent>() ||
+                    t.IsAssignableTo<ApprenticeshipResumedEvent>()
+                );
                 
-
             var persistence = endpointConfiguration.UsePersistence<AzureStoragePersistence>();
             persistence.ConnectionString(config.StorageConnectionString);
 
