@@ -187,8 +187,14 @@
     <Reference Include="NServiceBus.Core, Version=7.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
       <HintPath>..\packages\NServiceBus.7.1.5\lib\net452\NServiceBus.Core.dll</HintPath>
     </Reference>
+    <Reference Include="NServiceBus.Newtonsoft.Json, Version=2.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NServiceBus.Newtonsoft.Json.2.2.0\lib\net452\NServiceBus.Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NServiceBus.ObjectBuilder.Autofac, Version=7.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
       <HintPath>..\packages\NServiceBus.Autofac.7.0.0\lib\net452\NServiceBus.ObjectBuilder.Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="NServiceBus.Persistence.AzureStorage, Version=2.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NServiceBus.Persistence.AzureStorage.2.3.0\lib\net452\NServiceBus.Persistence.AzureStorage.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=3.11.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.11.0\lib\net45\nunit.framework.dll</HintPath>
@@ -198,6 +204,12 @@
     </Reference>
     <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="SFA.DAS.CommitmentsV2.Messages, Version=2.1.1494.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.CommitmentsV2.Messages.2.1.1494\lib\netstandard2.0\SFA.DAS.CommitmentsV2.Messages.dll</HintPath>
+    </Reference>
+    <Reference Include="SFA.DAS.CommitmentsV2.Types, Version=2.1.1494.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.CommitmentsV2.Types.2.1.1494\lib\netstandard2.0\SFA.DAS.CommitmentsV2.Types.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -317,10 +329,13 @@
   <ItemGroup>
     <Compile Include="Data\Apprenticeship.cs" />
     <Compile Include="Data\ApprenticeshipStatusPeriod.cs" />
+    <Compile Include="Data\Approvals\ApprovalsApprenticeship.cs" />
     <Compile Include="Data\Earning.cs" />
     <Compile Include="Data\DataLockError.cs" />
+    <Compile Include="Data\Approvals\ApprovalsEmployer.cs" />
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
+    <Compile Include="Data\ProviderPriority.cs" />
     <Compile Include="EventMatchers\BaseMatcher.cs" />
     <Compile Include="EventMatchers\EarningFailedDataLockMatcher.cs" />
     <Compile Include="EventMatchers\PayableEarningEventMatcher.cs" />
@@ -353,6 +368,7 @@
     <Compile Include="LearnerMutators\NonLevy\SmallEmployer\Framework403LearnerWithEHCPlanAndSmallEmployer.cs" />
     <Compile Include="LearnerMutators\Standard57Learner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Steps\ApprovalsInterfaceSteps.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
     <Compile Include="Extensions\FeatureInfoNumberExtractor.cs" />
@@ -416,6 +432,41 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-688 - New Apprenticeship Approved.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-688 - New Apprenticeship Approved.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature.cs">
+      <DependentUpon>PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-694_Apprenticeship_Is_Paused_By_The_Employer.feature.cs">
+      <DependentUpon>PV2-694_Apprenticeship_Is_Paused_By_The_Employer.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-693 - Learners apprenticeship Stop Date is Changed by the Employer.feature.cs">
+      <DependentUpon>PV2-693 - Learners apprenticeship Stop Date is Changed by the Employer.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-692 - Apprenticeship Is Stopped by the Employer without completing.feature.cs">
+      <DependentUpon>PV2-692 - Apprenticeship Is Stopped by the Employer without completing.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-689 - Update Existing Apprenticeship.feature.cs">
+      <DependentUpon>PV2-689 - Update Existing Apprenticeship.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-690 - Data Lock resolved for a learners with a Commitment in a state of approved and a data-lock recorded against it.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-690 - Data Lock resolved for a learners with a Commitment in a state of approved and a data-lock recorded against it.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Capping\Levy learner over funding band cap - PV2-528.feature.cs">
       <AutoGen>True</AutoGen>
@@ -522,6 +573,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>16-18 Levy Learner, changes employer, earns incentive in the transfer month and is recorded retrospectively_PV2-373 .feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\PV2-378- No payment if commitment has gap and while changing employers no change in employment status specified.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-378- No payment if commitment has gap and while changing employers no change in employment status specified.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -537,15 +593,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Earnings and payments for a levy learner,Negotiated price is changed in the middle of the month- PV2-360.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Employer Change of Circumstances\Learner changes employer and there is a gap between commitments - provider receives payment during the gap - PV2-375.feature.cs">
+    <Compile Include="Tests\Employer Change of Circumstances\PV2-375 Learner changes employer and there is a gap between commitments - provider receives payment during the gap.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Learner changes employer and there is a gap between commitments - provider receives payment during the gap - PV2-375.feature</DependentUpon>
+      <DependentUpon>PV2-375 Learner changes employer and there is a gap between commitments - provider receives payment during the gap.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Employer Change of Circumstances\Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap - PV2-621.feature.cs">
+    <Compile Include="Tests\Employer Change of Circumstances\PV2-621 Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap - PV2-621.feature</DependentUpon>
+      <DependentUpon>PV2-621 Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer break in learning at the end of a month and return at the start of a later month- PV2-368.feature.cs">
       <AutoGen>True</AutoGen>
@@ -577,11 +633,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>No payment if commitment has gap and while changing employers no change in ACT code or employment status specified_PV2-377.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Employer Change of Circumstances\No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature</DependentUpon>
-    </Compile>
     <Compile Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available PV2-366.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -611,6 +662,31 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>E2E -PV2-943 - Levy learner, Employer stops commitment day after course completed, completion payment paid.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Stops\E2E -PV2-944 - Levy learner, Employer stops commitment on day the course is completed, completion payment paid .feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E -PV2-944 - Levy learner, Employer stops commitment on day the course is completed, completion payment paid .feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Stops\E2E -PV2-945 - Levy learner, Employer stops commitment before the day the course is completed, completion payment not paid .feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E -PV2-945 - Levy learner, Employer stops commitment before the day the course is completed, completion payment not paid .feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Stops\E2E -PV2-946 - Levy learner, Employer stops commitment after the day the course is completes, completion and balancing payment is paid .feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E -PV2-946 - Levy learner, Employer stops commitment after the day the course is completes, completion and balancing payment is paid .feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Stops\E2E -PV2-947 - Levy learner, Employer stops commitment on the day the course completes, completion and balancing payment is paid .feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E -PV2-947 - Levy learner, Employer stops commitment on the day the course completes, completion and balancing payment is paid .feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Stops\E2E -PV2-948 - Levy learner, Employer stops commitment before the day the course completes, completion and balancing payment is not paid .feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E -PV2-948 - Levy learner, Employer stops commitment before the day the course completes, completion and balancing payment is not paid .feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\English and Maths\PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1088,6 +1164,26 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-713- DLOCK12 when the employer pauses payments for a learner on a commitment.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Levy - Payment Priority\PV2-602 - Payment Priority for 2 providers levy spent in priority order and sufficient levy available.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-602 - Payment Priority for 2 providers levy spent in priority order and sufficient levy available.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Payment Priority\PV2-603 - Two providers, levy spent in priority order, enough to fund only one provider.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-603 - Two providers, levy spent in priority order, enough to fund only one provider.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Payment Priority\PV2-604 - Two providers, levy spent in priority order, enough to fund 1 provider fully but half for another provider.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-604 - Two providers, levy spent in priority order, enough to fund 1 provider fully but half for another provider.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Payment Priority\PV2-656 - two providers where levy spent in priority order and the priority is changed in R04.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-656 - two providers where levy spent in priority order and the priority is changed in R04.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1338,26 +1434,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Tests\Payment Priority\Two levy learners paid in priority order enough levy to fund one learner_PV2-603.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Two levy learners paid in priority order enough levy to fund one learner_PV2-603.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and enough levy for both learners_PV2-602.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Two Levy learners where levy spent in priority order and enough levy for both learners_PV2-602.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and is available for only 1 and half learners_PV2-604.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Two Levy learners where levy spent in priority order and is available for only 1 and half learners_PV2-604.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and the priority is changed in R04_PV2-656.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Two Levy learners where levy spent in priority order and the priority is changed in R04_PV2-656.feature</DependentUpon>
-    </Compile>
     <Compile Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer and ILR changes after the new commitment_PV2-321.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1547,6 +1623,34 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Approvals Interface\PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-694_Apprenticeship_Is_Paused_By_The_Employer.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-694_Apprenticeship_Is_Paused_By_The_Employer.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-693 - Learners apprenticeship Stop Date is Changed by the Employer.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-693 - Learners apprenticeship Stop Date is Changed by the Employer.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-692 - Apprenticeship Is Stopped by the Employer without completing.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-692 - Apprenticeship Is Stopped by the Employer without completing.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-689 - Update Existing Apprenticeship.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-689 - Update Existing Apprenticeship.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-690 - Data Lock resolved for a learners with a Commitment in a state of approved and a data-lock recorded against it.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-690 - Data Lock resolved for a learners with a Commitment in a state of approved and a data-lock recorded against it.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-688 - New Apprenticeship Approved.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-688 - New Apprenticeship Approved.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Capping\Levy learner over funding band cap - PV2-528.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner over funding band cap - PV2-528.feature.cs</LastGenOutput>
@@ -1631,6 +1735,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>16-18 Levy Learner, changes employer, earns incentive in the transfer month and is recorded retrospectively_PV2-373 .feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Employer Change of Circumstances\PV2-378- No payment if commitment has gap and while changing employers no change in employment status specified.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-378- No payment if commitment has gap and while changing employers no change in employment status specified.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Employer Change of Circumstances\Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362.feature.cs</LastGenOutput>
@@ -1643,13 +1751,13 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Earnings and payments for a levy learner,Negotiated price is changed in the middle of the month- PV2-360.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Employer Change of Circumstances\Learner changes employer and there is a gap between commitments - provider receives payment during the gap - PV2-375.feature">
+    <None Include="Tests\Employer Change of Circumstances\PV2-375 Learner changes employer and there is a gap between commitments - provider receives payment during the gap.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Learner changes employer and there is a gap between commitments - provider receives payment during the gap - PV2-375.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-375 Learner changes employer and there is a gap between commitments - provider receives payment during the gap.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Employer Change of Circumstances\Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap - PV2-621.feature">
+    <None Include="Tests\Employer Change of Circumstances\PV2-621 Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap - PV2-621.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-621 Learner changes employer,16wk gap between commitments, provider is paid for the first 12wk of gap.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Employer Change of Circumstances\Levy learner changes employer break in learning at the end of a month and return at the start of a later month- PV2-368.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1675,10 +1783,6 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>No payment if commitment has gap and while changing employers no change in ACT code or employment status specified_PV2-377.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Employer Change of Circumstances\No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>No payment if commitment has gap and while changing employers no change in employment status specified_PV2-378.feature.cs</LastGenOutput>
-    </None>
     <None Include="Tests\Employer Change of Circumstances\Non-Levy learner changes to Levy employer Levy available PV2-366.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy learner changes to Levy employer Levy available PV2-366.feature.cs</LastGenOutput>
@@ -1702,6 +1806,26 @@
     <None Include="Tests\Employer Stops\E2E -PV2-943 - Levy learner, Employer stops commitment day after course completed, completion payment paid.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>E2E -PV2-943 - Levy learner, Employer stops commitment day after course completed, completion payment paid.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Stops\E2E -PV2-944 - Levy learner, Employer stops commitment on day the course is completed, completion payment paid .feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E -PV2-944 - Levy learner, Employer stops commitment on day the course is completed, completion payment paid .feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Stops\E2E -PV2-945 - Levy learner, Employer stops commitment before the day the course is completed, completion payment not paid .feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E -PV2-945 - Levy learner, Employer stops commitment before the day the course is completed, completion payment not paid .feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Stops\E2E -PV2-946 - Levy learner, Employer stops commitment after the day the course is completes, completion and balancing payment is paid .feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E -PV2-946 - Levy learner, Employer stops commitment after the day the course is completes, completion and balancing payment is paid .feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Stops\E2E -PV2-947 - Levy learner, Employer stops commitment on the day the course completes, completion and balancing payment is paid .feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E -PV2-947 - Levy learner, Employer stops commitment on the day the course completes, completion and balancing payment is paid .feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Stops\E2E -PV2-948 - Levy learner, Employer stops commitment before the day the course completes, completion and balancing payment is not paid .feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E -PV2-948 - Levy learner, Employer stops commitment before the day the course completes, completion and balancing payment is not paid .feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\English and Maths\PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2079,6 +2203,22 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-713- DLOCK12 when the employer pauses payments for a learner on a commitment.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Levy - Payment Priority\PV2-602 - Payment Priority for 2 providers levy spent in priority order and sufficient levy available.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-602 - Payment Priority for 2 providers levy spent in priority order and sufficient levy available.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Payment Priority\PV2-603 - Two providers, levy spent in priority order, enough to fund only one provider.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-603 - Two providers, levy spent in priority order, enough to fund only one provider.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Payment Priority\PV2-604 - Two providers, levy spent in priority order, enough to fund 1 provider fully but half for another provider.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-604 - Two providers, levy spent in priority order, enough to fund 1 provider fully but half for another provider.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Payment Priority\PV2-656 - two providers where levy spent in priority order and the priority is changed in R04.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-656 - two providers where levy spent in priority order and the priority is changed in R04.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>2 learners 2 employers 1 provider enough levy - PV2-267.feature.cs</LastGenOutput>
@@ -2149,7 +2289,7 @@
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner withdraws after planned end date PV2-278.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Non-levy learner withdraws after planned end date PV2-2781.feature.cs</LastGenOutput>
+      <LastGenOutput>Non-levy learner withdraws after planned end date PV2-278.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2282,22 +2422,6 @@
     <None Include="Tests\Non-Levy Learner\Small Employer\Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Payment Priority\Two levy learners paid in priority order enough levy to fund one learner_PV2-603.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Two levy learners paid in priority order enough levy to fund one learner_PV2-603.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and enough levy for both learners_PV2-602.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Two Levy learners where levy spent in priority order and enough levy for both learners_PV2-602.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and is available for only 1 and half learners_PV2-604.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Two Levy learners where levy spent in priority order and is available for only 1 and half learners_PV2-604.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and the priority is changed in R04_PV2-656.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Two Levy learners where levy spent in priority order and the priority is changed in R04_PV2-656.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer and ILR changes after the new commitment_PV2-321.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

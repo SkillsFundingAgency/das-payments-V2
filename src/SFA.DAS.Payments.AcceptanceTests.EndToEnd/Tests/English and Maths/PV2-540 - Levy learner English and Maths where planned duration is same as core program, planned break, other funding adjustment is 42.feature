@@ -121,33 +121,33 @@ Scenario Outline: Levy learner with English & Maths and prior funding adjustment
 
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
     Then the following learner earnings should be generated
-        | Delivery Period        | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Aim Sequence Number | Price Episode Identifier |
+        | Delivery Period        | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Aim Sequence Number | Price Episode Identifier | Contract Type |
 		#p3
-        | Aug/Next Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-3                     |
-        | Sep/Next Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-3                     |
-        | Oct/Next Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-3                     |
-        | Nov/Next Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-3                     |
-        | Dec/Next Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-3                     |
-        | Jan/Next Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-3                     |
-        | Feb/Next Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-3                     |
-        | Mar/Next Academic Year | 0            | 0          | 0         | 0                          | 1                   | pe-3                     |
-        | Apr/Next Academic Year | 0            | 0          | 0         | 0                          | 1                   | pe-3                     |
-        | May/Next Academic Year | 0            | 0          | 0         | 0                          | 1                   | pe-3                     |
-        | Jun/Next Academic Year | 0            | 0          | 0         | 0                          | 1                   | pe-3                     |
-        | Jul/Next Academic Year | 0            | 0          | 0         | 0                          | 1                   | pe-3                     |
+        | Aug/Next Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-3                     | Act1          |
+        | Sep/Next Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-3                     | Act1          |
+        | Oct/Next Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-3                     | Act1          |
+        | Nov/Next Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-3                     | Act1          |
+        | Dec/Next Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-3                     | Act1          |
+        | Jan/Next Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-3                     | Act1          |
+        | Feb/Next Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-3                     | Act1          |
+        | Mar/Next Academic Year | 0            | 0          | 0         | 0                          | 1                   | pe-3                     | Act1          |
+        | Apr/Next Academic Year | 0            | 0          | 0         | 0                          | 1                   | pe-3                     | Act1          |
+        | May/Next Academic Year | 0            | 0          | 0         | 0                          | 1                   | pe-3                     | Act1          |
+        | Jun/Next Academic Year | 0            | 0          | 0         | 0                          | 1                   | pe-3                     | Act1          |
+        | Jul/Next Academic Year | 0            | 0          | 0         | 0                          | 1                   | pe-3                     | Act1          |
 		#p4
-        | Aug/Next Academic Year | 0            | 0          | 0         | 28.26                      | 2                   |                          |
-        | Sep/Next Academic Year | 0            | 0          | 0         | 28.26                      | 2                   |                          |
-        | Oct/Next Academic Year | 0            | 0          | 0         | 28.26                      | 2                   |                          |
-        | Nov/Next Academic Year | 0            | 0          | 0         | 28.26                      | 2                   |                          |
-        | Dec/Next Academic Year | 0            | 0          | 0         | 28.26                      | 2                   |                          |
-        | Jan/Next Academic Year | 0            | 0          | 0         | 28.26                      | 2                   |                          |
-        | Feb/Next Academic Year | 0            | 0          | 0         | 28.26                      | 2                   |                          |
-        | Mar/Next Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          |
-        | Apr/Next Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          |
-        | May/Next Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          |
-        | Jun/Next Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          |
-        | Jul/Next Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          |
+        | Aug/Next Academic Year | 0            | 0          | 0         | 28.26                      | 2                   |                          | Act1          |
+        | Sep/Next Academic Year | 0            | 0          | 0         | 28.26                      | 2                   |                          | Act1          |
+        | Oct/Next Academic Year | 0            | 0          | 0         | 28.26                      | 2                   |                          | Act1          |
+        | Nov/Next Academic Year | 0            | 0          | 0         | 28.26                      | 2                   |                          | Act1          |
+        | Dec/Next Academic Year | 0            | 0          | 0         | 28.26                      | 2                   |                          | Act1          |
+        | Jan/Next Academic Year | 0            | 0          | 0         | 28.26                      | 2                   |                          | Act1          |
+        | Feb/Next Academic Year | 0            | 0          | 0         | 28.26                      | 2                   |                          | Act1          |
+        | Mar/Next Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act1          |
+        | Apr/Next Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act1          |
+        | May/Next Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act1          |
+        | Jun/Next Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act1          |
+        | Jul/Next Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act1          |
     And at month end only the following payments will be calculated
         | Collection Period      | Delivery Period        | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish |
         | R01/Next Academic Year | Aug/Next Academic Year | 1000         | 0          | 0         | 28.26                      |

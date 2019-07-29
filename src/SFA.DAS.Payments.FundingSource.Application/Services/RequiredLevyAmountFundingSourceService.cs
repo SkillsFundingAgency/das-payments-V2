@@ -16,6 +16,8 @@ using SFA.DAS.Payments.FundingSource.Domain.Models;
 using SFA.DAS.Payments.FundingSource.Messages.Commands;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.FundingSource.Model;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
@@ -24,46 +26,87 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly IPaymentProcessor processor;
         private readonly IMapper mapper;
         private readonly IDataCache<CalculatedRequiredLevyAmount> requiredPaymentsCache;
-        private readonly IDataCache<List<string>> requiredPaymentKeys;
-        private readonly ILevyAccountRepository levyAccountRepository;
+        private readonly ILevyFundingSourceRepository levyFundingSourceRepository;
         private readonly ILevyBalanceService levyBalanceService;
         private readonly IPaymentLogger paymentLogger;
-        private readonly ISortableKeyGenerator sortableKeys;
         private readonly IDataCache<bool> monthEndCache;
         private readonly IDataCache<LevyAccountModel> levyAccountCache;
+        private readonly IDataCache<List<EmployerProviderPriorityModel>> employerProviderPriorities;
+        private readonly IDataCache<List<string>> refundSortKeysCache;
+        private readonly IDataCache<List<TransferPaymentSortKeyModel>> transferPaymentSortKeysCache;
+        private readonly IDataCache<List<RequiredPaymentSortKeyModel>> requiredPaymentSortKeysCache;
+        private readonly IGenerateSortedPaymentKeys generateSortedPaymentKeys;
 
         public RequiredLevyAmountFundingSourceService(
             IPaymentProcessor processor,
             IMapper mapper,
             IDataCache<CalculatedRequiredLevyAmount> requiredPaymentsCache,
-            IDataCache<List<string>> requiredPaymentKeys,
-            ILevyAccountRepository levyAccountRepository,
+            ILevyFundingSourceRepository levyFundingSourceRepository,
             ILevyBalanceService levyBalanceService,
             IPaymentLogger paymentLogger,
-            ISortableKeyGenerator sortableKeys,
             IDataCache<bool> monthEndCache,
-            IDataCache<LevyAccountModel> levyAccountCache)
+            IDataCache<LevyAccountModel> levyAccountCache,
+            IDataCache<List<EmployerProviderPriorityModel>> employerProviderPriorities,
+            IDataCache<List<string>> refundSortKeysCache,
+            IDataCache<List<TransferPaymentSortKeyModel>> transferPaymentSortKeysCache,
+            IDataCache<List<RequiredPaymentSortKeyModel>> requiredPaymentSortKeysCache,
+            IGenerateSortedPaymentKeys generateSortedPaymentKeys)
         {
             this.processor = processor ?? throw new ArgumentNullException(nameof(processor));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.requiredPaymentsCache = requiredPaymentsCache ?? throw new ArgumentNullException(nameof(requiredPaymentsCache));
-            this.requiredPaymentKeys = requiredPaymentKeys ?? throw new ArgumentNullException(nameof(requiredPaymentKeys));
-            this.levyAccountRepository = levyAccountRepository ?? throw new ArgumentNullException(nameof(levyAccountRepository));
+            this.levyFundingSourceRepository = levyFundingSourceRepository ?? throw new ArgumentNullException(nameof(levyFundingSourceRepository));
             this.levyBalanceService = levyBalanceService ?? throw new ArgumentNullException(nameof(levyBalanceService));
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
-            this.sortableKeys = sortableKeys ?? throw new ArgumentNullException(nameof(sortableKeys));
             this.monthEndCache = monthEndCache ?? throw new ArgumentNullException(nameof(monthEndCache));
             this.levyAccountCache = levyAccountCache ?? throw new ArgumentNullException(nameof(levyAccountCache));
+            this.employerProviderPriorities = employerProviderPriorities ?? throw new ArgumentNullException(nameof(employerProviderPriorities));
+            this.refundSortKeysCache = refundSortKeysCache ?? throw new ArgumentNullException(nameof(refundSortKeysCache));
+            this.transferPaymentSortKeysCache = transferPaymentSortKeysCache ?? throw new ArgumentNullException(nameof(transferPaymentSortKeysCache));
+            this.requiredPaymentSortKeysCache = requiredPaymentSortKeysCache ?? throw new ArgumentNullException(nameof(requiredPaymentSortKeysCache));
+            this.generateSortedPaymentKeys = generateSortedPaymentKeys ?? throw new ArgumentNullException(nameof(generateSortedPaymentKeys));
         }
 
         public async Task AddRequiredPayment(CalculatedRequiredLevyAmount paymentEvent)
         {
-            var keys = await GetKeys().ConfigureAwait(false);
-            var key = sortableKeys.Generate(paymentEvent.AmountDue, paymentEvent.Priority,
-                paymentEvent.Learner.Uln, paymentEvent.StartDate, paymentEvent.IsTransfer(), paymentEvent.EventId);
-            keys.Add(key);
-            await requiredPaymentsCache.AddOrReplace(key, paymentEvent).ConfigureAwait(false);
-            await requiredPaymentKeys.AddOrReplace(CacheKeys.KeyListKey, keys).ConfigureAwait(false);
+            if (paymentEvent.AmountDue < 0)
+            {
+                await AddRefundPaymentToCache(paymentEvent);
+                return;
+            }
+
+            if (paymentEvent.IsTransfer())
+            {
+                await AddTransferPaymentToCache(paymentEvent);
+                return;
+            }
+
+            await AddRequiredPaymentToCache(paymentEvent);
+        }
+
+        public async Task StoreEmployerProviderPriority(EmployerChangedProviderPriority providerPriorityEvent)
+        {
+            int order = 1;
+            var paymentPriorities = new List<EmployerProviderPriorityModel>();
+            foreach (var providerUkprn in providerPriorityEvent.OrderedProviders)
+            {
+                paymentPriorities.Add(new EmployerProviderPriorityModel
+                {
+                    Ukprn = providerUkprn,
+                    EmployerAccountId = providerPriorityEvent.EmployerAccountId,
+                    Order = order
+                });
+
+                order++;
+            }
+
+            paymentLogger.LogDebug($"Adding EmployerProviderPriority to Database for Account Id {providerPriorityEvent.EmployerAccountId}");
+            await levyFundingSourceRepository.AddEmployerProviderPriorities(paymentPriorities);
+            paymentLogger.LogInfo($"Successfully Add EmployerProviderPriority to Database for Account Id {providerPriorityEvent.EmployerAccountId}");
+
+            paymentLogger.LogDebug($"Adding EmployerProviderPriority to Cache for Account Id {providerPriorityEvent.EmployerAccountId}");
+            await employerProviderPriorities.AddOrReplace(CacheKeys.EmployerPaymentPriorities, paymentPriorities).ConfigureAwait(false);
+            paymentLogger.LogInfo($"Successfully Add EmployerProviderPriority to Cache for Account Id {providerPriorityEvent.EmployerAccountId}");
         }
 
         public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> ProcessReceiverTransferPayment(ProcessUnableToFundTransferFundingSourcePayment message)
@@ -100,15 +143,13 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             return payments.AsReadOnly();
         }
 
-
         public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(long employerAccountId, long jobId)
         {
             var fundingSourceEvents = new List<FundingSourcePaymentEvent>();
 
-            var keys = await GetKeys().ConfigureAwait(false);
-            keys.Sort();
-
-            var levyAccount = await levyAccountRepository.GetLevyAccount(employerAccountId);
+            var keys = await generateSortedPaymentKeys.GeyKeys().ConfigureAwait(false);
+   
+            var levyAccount = await levyFundingSourceRepository.GetLevyAccount(employerAccountId);
             levyBalanceService.Initialise(levyAccount.Balance, levyAccount.TransferAllowance);
 
             paymentLogger.LogDebug($"Processing {keys.Count} required payments, levy balance {levyAccount.Balance}, account {employerAccountId}, job id {jobId}");
@@ -126,7 +167,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             levyAccount.TransferAllowance = levyBalanceService.RemainingTransferAllowance;
             await levyAccountCache.AddOrReplace(CacheKeys.LevyBalanceKey, levyAccount);
 
-            await requiredPaymentKeys.Clear(CacheKeys.KeyListKey).ConfigureAwait(false);
+            await refundSortKeysCache.Clear(CacheKeys.RefundPaymentsKeyListKey).ConfigureAwait(false);
+            await transferPaymentSortKeysCache.Clear(CacheKeys.SenderTransferKeyListKey).ConfigureAwait(false);
+            await requiredPaymentSortKeysCache.Clear(CacheKeys.RequiredPaymentKeyListKey).ConfigureAwait(false);
+
             await monthEndCache.AddOrReplace(CacheKeys.MonthEndCacheKey, true, CancellationToken.None);
             paymentLogger.LogInfo($"Finished generating levy and/or co-invested payments for the account: {employerAccountId}, number of payments: {fundingSourceEvents.Count}.");
             return fundingSourceEvents.AsReadOnly();
@@ -168,11 +212,53 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             }
         }
 
-        private async Task<List<string>> GetKeys()
+        private async Task AddRefundPaymentToCache(CalculatedRequiredLevyAmount paymentEvent)
         {
-            var keysValue = await requiredPaymentKeys.TryGet(CacheKeys.KeyListKey).ConfigureAwait(false);
-            var keys = keysValue.HasValue ? keysValue.Value : new List<string>();
-            return keys;
+            var keysValue = await refundSortKeysCache.TryGet(CacheKeys.RefundPaymentsKeyListKey).ConfigureAwait(false);
+            var refundKeysList = keysValue.HasValue ? keysValue.Value : new List<string>();
+
+            refundKeysList.Add(paymentEvent.EventId.ToString());
+            await requiredPaymentsCache.AddOrReplace(paymentEvent.EventId.ToString(), paymentEvent).ConfigureAwait(false);
+            await refundSortKeysCache.AddOrReplace(CacheKeys.RefundPaymentsKeyListKey, refundKeysList).ConfigureAwait(false);
         }
+
+        private async Task AddTransferPaymentToCache(CalculatedRequiredLevyAmount paymentEvent)
+        {
+            var keysValue = await transferPaymentSortKeysCache.TryGet(CacheKeys.SenderTransferKeyListKey)
+                .ConfigureAwait(false);
+            var transferKeysList = keysValue.HasValue ? keysValue.Value : new List<TransferPaymentSortKeyModel>();
+
+            var newTransferKey = new TransferPaymentSortKeyModel
+            {
+                Id = paymentEvent.EventId.ToString(),
+                Uln = paymentEvent.Learner.Uln,
+                AgreedOnDate = paymentEvent.AgreedOnDate ?? DateTime.MinValue
+            };
+
+            transferKeysList.Add(newTransferKey);
+
+            await requiredPaymentsCache.AddOrReplace(newTransferKey.Id, paymentEvent).ConfigureAwait(false);
+            await transferPaymentSortKeysCache.AddOrReplace(CacheKeys.SenderTransferKeyListKey, transferKeysList).ConfigureAwait(false);
+        }
+
+        private async Task AddRequiredPaymentToCache(CalculatedRequiredLevyAmount paymentEvent)
+        {
+            var keysValue = await requiredPaymentSortKeysCache.TryGet(CacheKeys.RequiredPaymentKeyListKey).ConfigureAwait(false);
+            var requiredPaymentKeysList = keysValue.HasValue ? keysValue.Value : new List<RequiredPaymentSortKeyModel>();
+
+            var newRequiredPaymentSortKey = new RequiredPaymentSortKeyModel
+            {
+                Id = paymentEvent.EventId.ToString(),
+                Uln = paymentEvent.Learner.Uln,
+                Ukprn = paymentEvent.Ukprn,
+                AgreedOnDate = paymentEvent.AgreedOnDate ?? DateTime.MinValue
+            };
+
+            requiredPaymentKeysList.Add(newRequiredPaymentSortKey);
+
+            await requiredPaymentsCache.AddOrReplace(newRequiredPaymentSortKey.Id, paymentEvent).ConfigureAwait(false);
+            await requiredPaymentSortKeysCache.AddOrReplace(CacheKeys.RequiredPaymentKeyListKey, requiredPaymentKeysList).ConfigureAwait(false);
+        }
+
     }
 }

@@ -13,6 +13,8 @@ using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Application.Mapping;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
+using SFA.DAS.Payments.DataLocks.Application.Services;
+using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -24,7 +26,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
     public class WhenCallingHandlePayment
     {
         private IMapper mapper;
-
+        
         [OneTimeSetUp]
         public void Initialise()
         {
@@ -41,7 +43,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
         {
             var actorService = MockActorServiceFactory.CreateActorServiceForActor<DataLockService>();
             var paymentLoggerMock = Mock.Of<IPaymentLogger>();
-            var commitmentRepositoryMock = Mock.Of<IApprenticeshipRepository>();
+            var commitmentRepositoryMock = new Mock<IApprenticeshipRepository>();
             var dataCacheMock = Mock.Of<IActorDataCache<List<ApprenticeshipModel>>>();
 
             var testEarning = new ApprenticeshipContractType1EarningEvent
@@ -60,8 +62,15 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.UnitTests.GivenADataLockSer
                     new EarningFailedDataLockMatching()
                 });
 
-            var actuals = await new DataLockService(actorService, new ActorId(Guid.Empty), paymentLoggerMock,
-                    commitmentRepositoryMock, dataCacheMock, dataLockProcessor.Object)
+            commitmentRepositoryMock
+                .Setup(o => o.ApprenticeshipsForProvider(It.IsAny<long>()))
+                .ReturnsAsync(new List<ApprenticeshipModel>());
+
+            var actuals = await new DataLockService(actorService, new ActorId(1000),
+                    paymentLoggerMock,
+                    commitmentRepositoryMock.Object, dataCacheMock,
+                    dataLockProcessor.Object,
+                    Mock.Of<IApprenticeshipUpdatedProcessor>())
                 .HandleEarning(testEarning, default(CancellationToken));
 
             actuals.Should().HaveCount(2);

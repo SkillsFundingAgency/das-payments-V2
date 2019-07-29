@@ -7,7 +7,6 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
@@ -80,11 +79,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
                 LegalEntityName = "Test SFA",
                 EstimatedStartDate = apprenticeshipSpec.StartDate.ToDate(),
                 EstimatedEndDate = apprenticeshipSpec.EndDate.ToDate(),
-                AgreedOnDate = DateTime.UtcNow,
+                AgreedOnDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.AgreedOnDate)?
+                                DateTime.UtcNow :
+                                apprenticeshipSpec.AgreedOnDate.ToDate(),
                 StopDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.StopEffectiveFrom) ?
                            default(DateTime?) :
                           apprenticeshipSpec.StopEffectiveFrom.ToDate(),
-                IsLevyPayer = employer.IsLevyPayer
+                IsLevyPayer = employer.IsLevyPayer,
             };
 
             return apprenticeshipModel;
@@ -127,9 +128,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
             await dataContext.ApprenticeshipDuplicate.AddAsync(apprenticeshipDuplicate).ConfigureAwait(false);
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
-
-
     }
-
-
 }
