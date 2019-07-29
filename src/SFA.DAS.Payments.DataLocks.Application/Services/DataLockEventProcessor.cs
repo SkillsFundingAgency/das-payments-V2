@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -63,25 +64,31 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     var transactionType = key.Item1;
                     var period = key.Item2;
 
+                    if (!newFailuresGroupedByTypeAndPeriod.TryGetValue(key, out var newPeriod))
+                    {
+                        paymentLogger.LogWarning($"Earning does not have transaction type {transactionType} for period {period} which is present in DataLockFailure. UKPRN {dataLockEvent.Ukprn}, LearnRefNumber: {dataLockEvent.Learner.ReferenceNumber}");
+                        continue;
+                    }
+
                     var oldFailureEntity = oldFailures.FirstOrDefault(f => f.TransactionType == transactionType && f.DeliveryPeriod == period);
                     var oldFailure = oldFailureEntity?.EarningPeriod.DataLockFailures;
-                    var newFailure = newFailuresGroupedByTypeAndPeriod.ContainsKey(key) ? newFailuresGroupedByTypeAndPeriod[key].DataLockFailures : null;
+                    var newFailure = newPeriod?.DataLockFailures;
 
                     var statusChange = dataLockStatusService.GetStatusChange(oldFailure, newFailure);
 
                     switch (statusChange)
                     {
                         case DataLockStatusChange.ChangedToFailed:
-                            AddTypeAndPeriodToEvent(changedToFailed, transactionType, newFailuresGroupedByTypeAndPeriod[key]);
-                            failuresToRecord.Add(CreateEntity(dataLockEvent, transactionType, period, newFailuresGroupedByTypeAndPeriod[key]));
+                            AddTypeAndPeriodToEvent(changedToFailed, transactionType, newPeriod);
+                            failuresToRecord.Add(CreateEntity(dataLockEvent, transactionType, period, newPeriod));
                             break;
                         case DataLockStatusChange.ChangedToPassed:
-                            AddTypeAndPeriodToEvent(changedToPassed, transactionType, oldFailureEntity.EarningPeriod);
+                            AddTypeAndPeriodToEvent(changedToPassed, transactionType, newPeriod);
                             failuresToDelete.Add(oldFailureEntity.Id);
                             break;
                         case DataLockStatusChange.FailureChanged:
-                            AddTypeAndPeriodToEvent(failureChanged, transactionType, newFailuresGroupedByTypeAndPeriod[key]);
-                            failuresToRecord.Add(CreateEntity(dataLockEvent, transactionType, period, newFailuresGroupedByTypeAndPeriod[key]));
+                            AddTypeAndPeriodToEvent(failureChanged, transactionType, newPeriod);
+                            failuresToRecord.Add(CreateEntity(dataLockEvent, transactionType, period, newPeriod));
                             failuresToDelete.Add(oldFailureEntity.Id);
                             break;
                     }
@@ -94,15 +101,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 if (changedToPassed.TransactionTypesAndPeriods.Count > 0)
                     result.Add(changedToPassed);
 
-                if (changedToPassed.TransactionTypesAndPeriods.Count > 0)
+                if (failureChanged.TransactionTypesAndPeriods.Count > 0)
                     result.Add(failureChanged);
-
+                
                 foreach (var dataLockStatusChanged in result)
                 {
                     mapper.Map(dataLockEvent, dataLockStatusChanged);
                 }
 
-                await dataLockFailureRepository.ReplaceFailures(failuresToDelete, failuresToRecord).ConfigureAwait(false);
+                await dataLockFailureRepository.ReplaceFailures(failuresToDelete, failuresToRecord, dataLockEvent.EarningEventId, dataLockEvent.EventId).ConfigureAwait(false);
 
                 scope.Complete();
 
@@ -142,6 +149,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 statusChangedEvent.TransactionTypesAndPeriods.Add(transactionType, new List<EarningPeriod> {period});
             }
+
+            if (statusChangedEvent is DataLockStatusChangedToPassed)
+            {
+                if (period.DataLockFailures?.Count > 0)
+                    throw new ApplicationException("DataLockStatusChangedToPassed has data lock failures");
+
+                if (!period.ApprenticeshipId.HasValue || !period.ApprenticeshipPriceEpisodeId.HasValue)
+                    throw new ApplicationException("DataLockStatusChangedToPassed has no apprenticeship ID");
+            }
         }
 
         private static Dictionary<(TransactionType type, byte period), EarningPeriod> GetFailuresGroupedByTypeAndPeriod(DataLockEvent dataLockEvent)
@@ -152,7 +168,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 foreach (var period in onProgrammeEarning.Periods)
                 {
-                    if (!(period.DataLockFailures?.Count > 0)) continue;
                     if (period.Amount == 0 && period.PriceEpisodeIdentifier == null) continue; // DataLocks are generated for all periods, event irrelevant, ignore until fixed
                     result.Add(((TransactionType) onProgrammeEarning.Type, period.Period), period);
                 }
@@ -162,7 +177,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 foreach (var period in incentiveEarning.Periods)
                 {
-                    if (!(period.DataLockFailures?.Count > 0)) continue;
                     if (period.Amount == 0 && period.PriceEpisodeIdentifier == null) continue; // DataLocks are generated for all periods, event irrelevant, ignore until fixed
                     result.Add(((TransactionType) incentiveEarning.Type, period.Period), period);
                 }
@@ -179,7 +193,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 foreach (var period in onProgrammeEarning.Periods)
                 {
-                    result.Add(((TransactionType) onProgrammeEarning.Type, period.Period), period);
+                    var key = ((TransactionType) onProgrammeEarning.Type, period.Period);
+                    if (!result.ContainsKey(key))
+                        result.Add(key, period);
                 }
             }
 
@@ -187,7 +203,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 foreach (var period in incentiveEarning.Periods)
                 {
-                    result.Add(((TransactionType) incentiveEarning.Type, period.Period), period);
+                    var key = ((TransactionType) incentiveEarning.Type, period.Period);
+                    if (!result.ContainsKey(key))
+                        result.Add(key, period);
                 }
             }
 
@@ -217,9 +235,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                 foreach (var oldFailure in oldFailures)
                 {
-                    if (newPassesGroupedByTypeAndPeriod.ContainsKey((oldFailure.TransactionType, oldFailure.DeliveryPeriod)))
+                    if (newPassesGroupedByTypeAndPeriod.TryGetValue((oldFailure.TransactionType, oldFailure.DeliveryPeriod), out var newPass))
                     {
-                        AddTypeAndPeriodToEvent(changedToPassed, oldFailure.TransactionType, oldFailure.EarningPeriod);
+                        AddTypeAndPeriodToEvent(changedToPassed, oldFailure.TransactionType, newPass);
                         failuresToDelete.Add(oldFailure.Id);
                     }
                 }
@@ -232,7 +250,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     mapper.Map(payableEarningEvent, dataLockStatusChanged);
                 }
 
-                await dataLockFailureRepository.ReplaceFailures(failuresToDelete, new List<DataLockFailureEntity>()).ConfigureAwait(false);
+                await dataLockFailureRepository.ReplaceFailures(failuresToDelete, new List<DataLockFailureEntity>(), payableEarningEvent.EarningEventId, payableEarningEvent.EventId).ConfigureAwait(false);
 
                 scope.Complete();
 

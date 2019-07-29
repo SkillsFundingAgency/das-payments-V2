@@ -1,6 +1,8 @@
 ﻿CREATE TABLE [Payments2].[DataLockFailure]
 (
 	[Id] BIGINT NOT NULL CONSTRAINT PK_DataLockFailure PRIMARY KEY IDENTITY, 
+	[DataLockEventId] UNIQUEIDENTIFIER,
+	[EarningEventId] UNIQUEIDENTIFIER NOT NULL,
     [Ukprn] BIGINT NOT NULL, 
     [LearnerUln] BIGINT NOT NULL, 
     [LearnerReferenceNumber] NVARCHAR(50) NOT NULL, 
@@ -14,7 +16,8 @@
     [DeliveryPeriod] TINYINT NOT NULL, 
     [CollectionPeriod] TINYINT NOT NULL, 
     [EarningPeriod] NVARCHAR(MAX) NOT NULL, 
-    [CreationDate] DATETIME2 NOT NULL DEFAULT getutcdate()
+    [Amount] DECIMAL(15, 5) NOT NULL,
+    [CreationDate] DATETIME2 NOT NULL DEFAULT sysutcdatetime()
 )
 
 GO
