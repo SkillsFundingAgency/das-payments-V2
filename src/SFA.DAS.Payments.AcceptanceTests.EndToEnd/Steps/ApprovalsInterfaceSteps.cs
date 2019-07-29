@@ -48,6 +48,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             set => Set(value, "PreviousApprovalsApprenticeships");
         }
 
+        private List<ProviderPriority> ProviderPaymentPriorities
+        {
+            get => Get<List<ProviderPriority>>();
+            set => Set(value);
+        }
+
         public static IMessageSession DasMessageSession { get; set; }
         private static EndpointConfiguration dasEndpointConfiguration;
         protected TestPaymentsDataContext TestDataContext => Scope.Resolve<TestPaymentsDataContext>();
@@ -93,6 +99,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipStopDateChangedEvent).Assembly, EndpointNames.DataLocksApprovals);
             routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipPausedEvent).Assembly, EndpointNames.DataLocksApprovals);
             routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipResumedEvent).Assembly, EndpointNames.DataLocksApprovals);
+            routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.PaymentOrderChangedEvent).Assembly, EndpointNames.DataLocksApprovals);
 
             var sanitization = transportConfig.Sanitization();
             var strategy = sanitization.UseStrategy<ValidateAndHashIfNeeded>();
@@ -379,12 +386,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ApprovalsApprenticeships.FirstOrDefault(x => x.Identifier == changedApprenticeshipSpec.Identifier) ??
                     throw new InvalidOperationException("Can't find changed apprenticeship");
 
-              if(!string.IsNullOrWhiteSpace(changedApprenticeshipSpec.Status))
-                changedApprenticeship.Status = changedApprenticeshipSpec.Status;
+                if (!string.IsNullOrWhiteSpace(changedApprenticeshipSpec.Status))
+                    changedApprenticeship.Status = changedApprenticeshipSpec.Status;
 
-              if (!string.IsNullOrWhiteSpace(changedApprenticeshipSpec.StoppedOnDate))
+                if (!string.IsNullOrWhiteSpace(changedApprenticeshipSpec.StoppedOnDate))
                     changedApprenticeship.StoppedOnDate = changedApprenticeshipSpec.StoppedOnDate;
-              
+
                 if (!string.IsNullOrWhiteSpace(changedApprenticeshipSpec.PausedOnDate))
                     changedApprenticeship.PauseOnDate = changedApprenticeshipSpec.PausedOnDate;
 
@@ -430,7 +437,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
             {
-              var createdMessage = new CommitmentsV2.Messages.Events.ApprenticeshipPausedEvent()
+                var createdMessage = new CommitmentsV2.Messages.Events.ApprenticeshipPausedEvent()
                 {
                     PausedOn = approvalsApprenticeship.PauseOnDate.ToDate(),
                     ApprenticeshipId = approvalsApprenticeship.Id,
@@ -466,7 +473,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         continue;
                     }
 
-                    if (approvalsApprenticeship.PauseOnDate.ToDate() == apprenticeshipPause.PauseDate  &&
+                    if (approvalsApprenticeship.PauseOnDate.ToDate() == apprenticeshipPause.PauseDate &&
                         approvalsApprenticeship.ResumedOnDate.ToNullableDate() == apprenticeshipPause.ResumeDate)
                     {
                         Console.WriteLine(
@@ -527,6 +534,71 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
+        [Given(@"the employers provider priority order is as follows")]
+        public void GivenTheEmployersProviderPriorityOrderIsAsFollows(Table table)
+        {
+            ProviderPaymentPriorities = table.CreateSet<ProviderPriority>().ToList();
+        }
+
+        [When(@"the Approvals service notifies the Payments service of Employer Provider Payment Priority Change")]
+        public void WhenTheApprovalsServiceNotifiesThePaymentsServiceOfEmployerProviderPaymentPriorityChange()
+        {
+            var createdMessage = new CommitmentsV2.Messages.Events.PaymentOrderChangedEvent
+            {
+                AccountId = Employers.Single().AccountId,
+                PaymentOrder = ProviderPaymentPriorities
+                    .Select(x => (int)TestSession.GetProviderByIdentifier(x.ProviderIdentifier).Ukprn)
+                    .ToArray()
+            };
+
+            Console.WriteLine($"Sending PaymentOrderChangedEvent message: {createdMessage.ToJson()}");
+            DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+        }
+
+        [Then(@"the Payments service should record the Employer Provider Priority")]
+        public async Task ThenThePaymentsServiceShouldRecordTheEmployerProviderPriority()
+        {
+            await WaitForIt(async () =>
+            {
+                var employer = Employers.Single();
+                var savedProviderPriorities = await TestDataContext.EmployerProviderPriority.AsNoTracking()
+                    .Where(o => o.EmployerAccountId == employer.AccountId)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                var notFound = new List<ProviderPriority>();
+                foreach (var expectedProviderPriority in ProviderPaymentPriorities)
+                {
+                    var provider = TestSession.GetProviderByIdentifier(expectedProviderPriority.ProviderIdentifier);
+
+                    var actualProviderPriority = savedProviderPriorities.FirstOrDefault(o => o.Ukprn == provider.Ukprn);
+
+                    if (actualProviderPriority == null)
+                    {
+                        Console.WriteLine($"Failed to find Employer Provider Priority  for Ukprn Id: {provider.Ukprn},Employer : {employer.Identifier} Account Id {employer.AccountId}.");
+                        notFound.Add(expectedProviderPriority);
+                        continue;
+                    }
+
+                    if (actualProviderPriority.Order == expectedProviderPriority.Priority)
+                    {
+                        Console.WriteLine($"Matched Employer Provider Priority  for Ukprn Id: {provider.Ukprn}, Employer : {employer.Identifier} Account Id {employer.AccountId}.");
+                    }
+                    else
+                    {
+                        Console.WriteLine(
+                            $"Failed to validate stored Employer Provider Priority details. Expected Provider Priority details: {expectedProviderPriority.ToJson()}, saved details: {actualProviderPriority.ToJson()}.");
+                        notFound.Add(expectedProviderPriority);
+                    }
+                }
+
+                if (!notFound.Any())
+                    return true;
+                notFound.ForEach(apprenticeship => Console.WriteLine($"Failed to find and/or validate employer provider priority: {apprenticeship.ToJson()}"));
+                return false;
+            }, "Failed to find all the stored employer payemnt provider priority details.");
+        }
+
         private ApprenticeshipModel CreateApprenticeshipModel(ApprovalsApprenticeship apprenticeshipSpec)
         {
             var (employer, sendingEmployer, provider, learner) = GetApprovalsReferenceData(apprenticeshipSpec);
@@ -541,7 +613,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 ProgrammeType = apprenticeshipSpec.ProgrammeType,
                 PathwayCode = apprenticeshipSpec.PathwayCode,
                 StandardCode = apprenticeshipSpec.StandardCode,
-                Status  = string.IsNullOrWhiteSpace(apprenticeshipSpec.Status)
+                Status = string.IsNullOrWhiteSpace(apprenticeshipSpec.Status)
                     ? ApprenticeshipStatus.Active
                     : apprenticeshipSpec.Status.ToApprenticeshipPaymentStatus(),
                 LegalEntityName = employer.Name,
