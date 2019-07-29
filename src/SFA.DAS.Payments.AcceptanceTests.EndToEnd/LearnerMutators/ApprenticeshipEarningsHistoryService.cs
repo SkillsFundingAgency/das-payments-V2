@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ESFA.DC.Data.AppsEarningsHistory.Model;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using SFA.DAS.Payments.Tests.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators {
@@ -63,6 +64,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators {
                 }
             }
             await appEarnHistoryContext.SaveChangesAsync();
+        }
+
+        public void DeleteHistory(long ukprn)
+        {
+            appEarnHistoryContext.Database.ExecuteSqlCommand(@"delete from dbo.AppsEarningsHistory where UKPRN = {0}", ukprn);
         }
 
         public async Task DeleteHistoryAsync(long ukprn)

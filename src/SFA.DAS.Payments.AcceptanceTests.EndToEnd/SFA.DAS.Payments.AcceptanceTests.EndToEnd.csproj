@@ -334,7 +334,6 @@
     <Compile Include="Data\Apprenticeship.cs" />
     <Compile Include="Data\ApprenticeshipStatusPeriod.cs" />
     <Compile Include="Data\Approvals\ApprovalsApprenticeship.cs" />
-    <Compile Include="Data\Earning.cs" />
     <Compile Include="Data\DataLockError.cs" />
     <Compile Include="Data\Approvals\ApprovalsEmployer.cs" />
     <Compile Include="Data\Payment.cs" />
@@ -364,7 +363,6 @@
     <Compile Include="LearnerMutators\ApprenticeshipEarningsHistoryService.cs" />
     <Compile Include="LearnerMutators\Fm36Base.cs" />
     <Compile Include="LearnerMutators\Framework403Learner.cs" />
-    <Compile Include="LearnerMutators\IApprenticeshipEarningsHistoryService.cs" />
     <Compile Include="LearnerMutators\NonLevy\BasicDay\Framework593LearnerWithdrawsAfterQualifyingPeriod.cs" />
     <Compile Include="LearnerMutators\NonLevy\BasicDay\Framework593LearnerWithdrawsAfterPlannedEndDate.cs" />
     <Compile Include="LearnerMutators\IlrDcService.cs" />

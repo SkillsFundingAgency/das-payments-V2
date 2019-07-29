@@ -407,6 +407,7 @@
     <Compile Include="Data\Course.cs" />
     <Compile Include="Infrastructure\TestsConfiguration.cs" />
     <Compile Include="Infrastructure\TestSessionBase.cs" />
+    <Compile Include="Services\IApprenticeshipEarningsHistoryService.cs" />
     <Compile Include="Services\IIlrService.cs" />
     <Compile Include="Services\IlrNullService.cs" />
     <Compile Include="Services\IUlnService.cs" />
