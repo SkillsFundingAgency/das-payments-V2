@@ -17,8 +17,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Approvals
         public int FrameworkCode { get; set; }
         public int PathwayCode { get; set; }
         public string StartDate { get; set; }
+        public string PauseOnDate { get; set; }
         public string EndDate { get; set; }
         public string StoppedOnDate { get; set; }
+        public string ResumedOnDate { get; set; }
 
         public string Status { get; set; }
         public class PriceEpisode
@@ -37,11 +39,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Approvals
         }
     }
 
-    public class ApprovalsApprenticeshipStop
+    public class ApprovalsApprenticeshipChangeModel
     {
         public long Id { get; set; }
         public string Identifier { get; set; }
         public string StoppedOnDate { get; set; }
+        public string PausedOnDate { get; set; }
+        public string ResumedOnDate { get; set; }
         public string Status { get; set; }
+    }
+
+    public class ApprovalsApprenticeshipPausedModel
+    {
+        public long Id { get; set; }
+        public string Apprenticeship { get; set; }
+        public string PausedOnDate { get; set; }
+     
     }
 }
