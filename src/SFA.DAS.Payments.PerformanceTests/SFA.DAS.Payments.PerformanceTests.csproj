@@ -282,6 +282,10 @@
       <Project>{f6e38368-c397-488b-b041-d3e8423c1ce1}</Project>
       <Name>SFA.DAS.Payments.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Messages.Internal\SFA.DAS.Payments.DataLocks.Messages.Internal.csproj">
+      <Project>{71BB0D59-A659-44D5-B835-1D06FCCC865D}</Project>
+      <Name>SFA.DAS.Payments.DataLocks.Messages.Internal</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages.Internal\SFA.DAS.Payments.EarningEvents.Messages.Internal.csproj">
       <Project>{b5ff4d1a-925d-4979-9363-4c8298c483b8}</Project>
       <Name>SFA.DAS.Payments.EarningEvents.Messages.Internal</Name>
@@ -289,6 +293,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj">
       <Project>{07a36781-d09b-4cf9-8d0b-80bb929fe535}</Project>
       <Name>SFA.DAS.Payments.EarningEvents.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages.Internal\SFA.DAS.Payments.FundingSource.Messages.Internal.csproj">
+      <Project>{95F83345-7AD6-477C-A271-3C7F8CA0529B}</Project>
+      <Name>SFA.DAS.Payments.FundingSource.Messages.Internal</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages\SFA.DAS.Payments.FundingSource.Messages.csproj">
       <Project>{43861469-71a2-4128-b35a-fb680f1e8bca}</Project>

@@ -3,6 +3,7 @@ using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
+using SFA.DAS.Payments.EarningEvents.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Application.Services;
 using SFA.DAS.Payments.EarningEvents.Domain;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
@@ -44,6 +45,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
             builder.RegisterType<BulkWriter<SubmittedLearnerAimModel>>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<SubmittedLearnerAimRepository>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
             //builder.Register(c => new ApprenticeshipContractType2EarningEventsService

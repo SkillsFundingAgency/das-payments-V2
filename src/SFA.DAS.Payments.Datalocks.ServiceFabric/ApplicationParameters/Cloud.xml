@@ -8,10 +8,12 @@
     <Parameter Name="DataLockServiceActorService_TargetReplicaSetSize" Value="__DataLockServiceActorService_TargetReplicaSetSize__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
     <Parameter Name="DASServiceBusConnectionString" Value="__DASServiceBusConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="PaymentsConnectionString" Value="__DasPaymentsConnectionStringRO__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
+    <Parameter Name="ConsoleLogLevel" Value="__ConsoleLogLevel__" />
     <Parameter Name="ProcessMessageSequentially" Value="false" />
     <Parameter Name="ApprovalsService_EndpointName" Value="__ApprovalsService_EndpointName__" />
     <Parameter Name="ApprovalsService_FailedMessagesQueue" Value="__ApprovalsService_FailedMessagesQueue__" />

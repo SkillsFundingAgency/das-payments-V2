@@ -41,6 +41,7 @@
     ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL,
 	ReportingAimFundingLineType NVARCHAR(100) NULL,
+
 );
 GO
 
@@ -49,11 +50,13 @@ CREATE INDEX [IX_Payment__ApprenticeshipKey] ON [Payments2].[Payment]
 	Ukprn,
 	LearnerUln, 
 	LearnerReferenceNumber,
-	LearningAimReference ,
+	LearningAimReference,
 	LearningAimProgrammeType,
 	LearningAimStandardCode,
-	LearningAimFrameworkCode ,
-	LearningAimPathwayCode 
+	LearningAimFrameworkCode,
+	LearningAimPathwayCode, 
+	AcademicYear,
+	ContractType
 )
 
 GO
@@ -65,7 +68,14 @@ CREATE INDEX [IX_Payment__UkprnPeriodSearch] ON [Payments2].[Payment]
   AcademicYear,
   DeliveryPeriod,
   JobId
-) 
- 
+)  
+
+GO
+
+CREATE INDEX [IX_Payment__Audit] ON [Payments2].[Payment]
+(
+  [EarningEventId],
+  FundingSourceEventId
+)  
 
 GO

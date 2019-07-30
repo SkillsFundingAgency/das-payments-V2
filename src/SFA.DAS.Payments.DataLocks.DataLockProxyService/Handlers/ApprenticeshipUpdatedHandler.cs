@@ -25,17 +25,22 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
         {
             try
             {
-                logger.LogDebug($"Now handling the apprenticeship updated event.  Apprenticeship: {message.Id}, employer: {message.EmployerAccountId}, provider: {message.Ukprn}");
+                if (message.Uln == 0)
+                {
+                    throw new InvalidOperationException("Invalid 'ApprenticeshipUpdated' received. Uln was 0.");
+                }
+                
+                logger.LogDebug($"Now handling the apprenticeship updated event.  Apprenticeship: {message.Id}, employer: {message.EmployerAccountId}, ukprn: {message.Ukprn}, learner with ULN {message.Uln.ToString().Substring(0, 4)}");
                 var actorId = new ActorId(message.Ukprn);
-                logger.LogVerbose($"Creating actor proxy for provider with UKPRN {message.Ukprn}");
+                logger.LogVerbose($"Creating actor proxy for provider with ULN {message.Uln.ToString().Substring(0,4)}");
                 var actor = actorProxyFactory.CreateActorProxy<IDataLockService>(new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/DataLockServiceActorService"), actorId);
-                logger.LogDebug($"Actor proxy created for UKPRN {message.Ukprn}");
+                logger.LogDebug($"Actor proxy created for ULN {message.Uln.ToString().Substring(0, 4)}");
                 await actor.HandleApprenticeshipUpdated(message, CancellationToken.None).ConfigureAwait(false);
-                logger.LogInfo($"Finished handling the apprenticeship updated event.  Apprenticeship: {message.Id}, employer: {message.EmployerAccountId}, provider: {message.Ukprn}");
+                logger.LogInfo($"Finished handling the apprenticeship updated event.  Apprenticeship: {message.Id}, employer: {message.EmployerAccountId}, provider: {message.Ukprn}, ULN {message.Uln.ToString().Substring(0, 4)}");
             }
             catch (Exception ex)
             {
-                logger.LogError($"Failed to handle the apprenticeship updated event. Apprenticeship: {message.Id}, employer: {message.EmployerAccountId}, provider: {message.Ukprn}. Error: {ex}", ex);
+                logger.LogError($"Failed to handle the apprenticeship updated event. Apprenticeship: {message.Id}, employer: {message.EmployerAccountId}, provider: {message.Ukprn}, ULN: {message.Uln.ToString().Substring(0, 4)}. Error: {ex}", ex);
                 throw;
             }
         }
