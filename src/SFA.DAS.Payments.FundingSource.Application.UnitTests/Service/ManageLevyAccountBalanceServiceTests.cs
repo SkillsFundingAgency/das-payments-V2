@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         private Mock<ILevyFundingSourceRepository> repository;
         private Mock<IAccountApiClient> accountApiClient;
         private IPaymentLogger logger;
-        private Mock<IBulkWriter<LevyAccountModel>> bulkWriter;
+        private Mock<IBulkDeleteAndWriter<LevyAccountModel>> bulkWriter;
 
         [SetUp]
         public void Setup()
@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             repository = new Mock<ILevyFundingSourceRepository>(MockBehavior.Strict);
             accountApiClient = new Mock<IAccountApiClient>(MockBehavior.Strict);
             logger = Mock.Of<IPaymentLogger>();
-            bulkWriter = new Mock<IBulkWriter<LevyAccountModel>>(MockBehavior.Strict);
+            bulkWriter = new Mock<IBulkDeleteAndWriter<LevyAccountModel>>(MockBehavior.Strict);
         }
 
 
@@ -76,11 +76,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Setup(x => x.GetNonLevyPayersAccountIds(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<long> {3})
                 .Verifiable();
-
-            repository
-                .Setup(x => x.DeleteLevyAccountByIdsAsync(It.IsAny<List<long>>(),It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-           
+            
             bulkWriter
                 .Setup(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
@@ -150,10 +146,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Setup(x => x.GetNonLevyPayersAccountIds(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<long> { 1 })
                 .Verifiable();
-
-            repository
-                .Setup(x => x.DeleteLevyAccountByIdsAsync(It.IsAny<List<long>>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
 
             bulkWriter
                 .Setup(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()))
@@ -230,10 +222,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             accountApiClient
                 .SetupSequence(x => x.GetAccount(It.IsAny<long>()))
                 .ReturnsAsync(accountDetails[0]);
-            
-            repository
-                .Setup(x => x.DeleteLevyAccountByIdsAsync(It.IsAny<List<long>>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
 
             bulkWriter
                 .Setup(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()))

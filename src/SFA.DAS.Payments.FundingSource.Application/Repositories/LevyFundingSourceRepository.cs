@@ -72,13 +72,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
             return accountIds;
         }
 
-        public async Task DeleteLevyAccountByIdsAsync(List<long> accountIds, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var accounts =  dataContext.LevyAccount.Where(x => accountIds.Contains(x.AccountId));
-            dataContext.LevyAccount.RemoveRange(accounts);
-            await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-        }
-
         public async Task<List<long>> GetNonLevyPayersAccountIds(CancellationToken cancellationToken = default(CancellationToken))
         {
             var accountIds = await dataContext

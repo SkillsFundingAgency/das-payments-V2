@@ -16,15 +16,21 @@ namespace SFA.DAS.Payments.Application.Repositories
         Task Flush(CancellationToken cancellationToken);
     }
 
+    public interface IBulkDeleteAndWriter<TEntity> : IBulkWriter<TEntity> where TEntity : class
+    {
+        Task DeleteAndFlush(List<long> existingRecordIds, CancellationToken cancellationToken);
+    }
+    
     public class BulkWriter<TEntity> : IBulkWriter<TEntity> where TEntity : class
     {
         private readonly int batchSize;
-        private readonly ConcurrentQueue<TEntity> queue = new ConcurrentQueue<TEntity>();
-        private readonly string connectionString;
-        private readonly IPaymentLogger logger;
-        private readonly IBulkCopyConfiguration<TEntity> bulkCopyConfig;
+        protected readonly ConcurrentQueue<TEntity> queue = new ConcurrentQueue<TEntity>();
+        protected readonly string connectionString;
+        protected readonly IPaymentLogger logger;
+        protected readonly IBulkCopyConfiguration<TEntity> bulkCopyConfig;
 
-        public BulkWriter(IConfigurationHelper configurationHelper, IPaymentLogger logger, IBulkCopyConfiguration<TEntity> bulkCopyConfig)
+        public BulkWriter(IConfigurationHelper configurationHelper, IPaymentLogger logger,
+            IBulkCopyConfiguration<TEntity> bulkCopyConfig)
         {
             this.logger = logger;
             this.bulkCopyConfig = bulkCopyConfig;
@@ -56,23 +62,30 @@ namespace SFA.DAS.Payments.Application.Repositories
             {
                 await sqlConnection.OpenAsync(cancellationToken).ConfigureAwait(false);
 
-                using (var bulkCopy = new SqlBulkCopy(sqlConnection))
-                using (var reader = ObjectReader.Create(list))
-                {
-                    foreach (var columnMap in bulkCopyConfig.Columns)
-                    {
-                        bulkCopy.ColumnMappings.Add(columnMap.Key, columnMap.Value);
-                    }
-
-                    bulkCopy.BulkCopyTimeout = 0;
-                    bulkCopy.BatchSize = batchSize;
-                    bulkCopy.DestinationTableName = bulkCopyConfig.TableName;
-
-                    await bulkCopy.WriteToServerAsync(reader, cancellationToken).ConfigureAwait(false);
-                }
-
-                logger.LogDebug($"Saved {list.Count} records of type {typeof(TEntity).Name}");
+                using (var bulkCopy = new SqlBulkCopy(sqlConnection)) await HandleBulkCopy(cancellationToken, list, bulkCopy);
+             
+                
             }
         }
+
+        protected async Task HandleBulkCopy(CancellationToken cancellationToken, List<TEntity> list, SqlBulkCopy bulkCopy)
+        {
+            using (var reader = ObjectReader.Create(list))
+            {
+                foreach (var columnMap in bulkCopyConfig.Columns)
+                {
+                    bulkCopy.ColumnMappings.Add(columnMap.Key, columnMap.Value);
+                }
+
+                bulkCopy.BulkCopyTimeout = 0;
+                bulkCopy.BatchSize = batchSize;
+                bulkCopy.DestinationTableName = bulkCopyConfig.TableName;
+
+                await bulkCopy.WriteToServerAsync(reader, cancellationToken).ConfigureAwait(false);
+            }
+
+            logger.LogDebug($"Saved {list.Count} records of type {typeof(TEntity).Name}");
+        }
+        
     }
 }
