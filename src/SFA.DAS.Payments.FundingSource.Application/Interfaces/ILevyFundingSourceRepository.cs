@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Interfaces
         Task<List<EmployerProviderPriorityModel>> GetPaymentPriorities(long employerAccountId, CancellationToken cancellationToken = default(CancellationToken));
         Task AddEmployerProviderPriorities(List<EmployerProviderPriorityModel> paymentPriorityModels, CancellationToken cancellationToken = default(CancellationToken));
         Task<List<long>> GetAccountIds(CancellationToken cancellationToken = default(CancellationToken));
-        Task DeletedLevyAccountByIdsAsync(List<long>  accountIds, CancellationToken cancellationToken = default(CancellationToken));
-        Task<List<long>> GetLevyPayerAccountIds( CancellationToken cancellationToken = default(CancellationToken));
+        Task DeleteLevyAccountByIdsAsync(List<long>  accountIds, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<long>> GetNonLevyPayersAccountIds( CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         {
             logger.LogInfo($"Now Trying to Refresh All Accounts Balance Details");
 
-            var levyPayerAccountIds = await repository.GetLevyPayerAccountIds(cancellationToken).ConfigureAwait(false);
+            var nonLevyPayersAccountIds = await repository.GetNonLevyPayersAccountIds(cancellationToken).ConfigureAwait(false);
 
             var accountIds = await repository.GetAccountIds(cancellationToken).ConfigureAwait(false);
 
@@ -50,18 +50,23 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
             for (var i = 0; i < accountIds.Count - 1; i++)
             {
-                var levyAccountsToUpdate = accountIds.Skip(i).Take(batchSize).ToList();
+                try
+                {
+                    var levyAccountsToUpdate = accountIds.Skip(i).Take(batchSize).ToList();
 
-                logger.LogVerbose($"Processing {batchSize} Batch of Levy Accounts Details. Account Ids {string.Join(",",levyAccountsToUpdate)}");
+                    logger.LogVerbose($"Processing {batchSize} Batch of Levy Accounts Details. Account Ids {string.Join(",", levyAccountsToUpdate)}");
 
-                var levyAccountModels = await GetLevyAccountsBalance(levyAccountsToUpdate);
-                
-                await BatchUpdateLevyAccounts(cancellationToken, levyAccountModels);
-                
+                    var levyAccountModels = await GetLevyAccountsBalance(nonLevyPayersAccountIds, levyAccountsToUpdate).ConfigureAwait(false);
+                    await BatchUpdateLevyAccounts(cancellationToken, levyAccountModels).ConfigureAwait(false);
+                }
+                catch (Exception e)
+                {
+                    logger.LogError($"Error while while updating Levy Accounts Details", e);
+                }
 
                 i += batchSize;
             }
-            
+
         }
 
         private async Task BatchUpdateLevyAccounts(CancellationToken cancellationToken, List<LevyAccountModel> levyAccountModels)
@@ -71,7 +76,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 using (var scope = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled))
                 {
                     await repository
-                        .DeletedLevyAccountByIdsAsync(levyAccountModels.Select(x => x.AccountId).ToList(), cancellationToken)
+                        .DeleteLevyAccountByIdsAsync(levyAccountModels.Select(x => x.AccountId).ToList(), cancellationToken)
                         .ConfigureAwait(false);
 
                     await Task.WhenAll(levyAccountModels.Select(x => bulkWriter.Write(x, cancellationToken)))
@@ -90,7 +95,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             }
         }
 
-        private async Task<List<LevyAccountModel>> GetLevyAccountsBalance(List<long> levyPayingAccountIds, List<long> levyAccountsToUpdate)
+        private async Task<List<LevyAccountModel>> GetLevyAccountsBalance(List<long> nonLevyPayersAccountIds, List<long> levyAccountsToUpdate)
         {
             var levyAccountModels = new List<LevyAccountModel>();
 
@@ -104,7 +109,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                     var newLevyAccountModel = new LevyAccountModel
                     {
                         AccountId = accountId,
-                        IsLevyPayer = levyPayingAccountIds.Contains(accountId) , // TODO confirm 
+                        IsLevyPayer = !nonLevyPayersAccountIds.Contains(accountId),
                         AccountName = accountDetail.DasAccountName,
                         Balance = accountDetail.Balance,
                         TransferAllowance = accountDetail.RemainingTransferAllowance
@@ -118,7 +123,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                     logger.LogError($"Error while retrieving Account Balance Details for AccountId {accountId}", e);
                 }
 
-                logger.LogInfo($"Successfully Refreshed All Accounts Balance Details");
+                logger.LogInfo("Successfully Refreshed Accounts Balance Details");
             }
 
             return levyAccountModels;
