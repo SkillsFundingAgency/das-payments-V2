@@ -397,14 +397,19 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var paymentOrderChangedEvent = new PaymentOrderChangedEvent()
             {
               AccountId = 1,
-              PaymentOrder = new int[]{100, 200, 300}
+              PaymentOrder = new int[]{300, 100, 200}
             };
             
             var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
             await apprenticeshipProcessor.ProcessPaymentOrderChange(paymentOrderChangedEvent);
 
             mocker.Mock<IEndpointInstance>()
-                .Verify(svc => svc.Publish(It.Is<EmployerChangedProviderPriority>(ev => ev.EmployerAccountId == paymentOrderChangedEvent.AccountId),
+                .Verify(svc => svc.Publish(
+                        It.Is<EmployerChangedProviderPriority>(ev => ev.EmployerAccountId == paymentOrderChangedEvent.AccountId &&
+                                                                     ev.OrderedProviders.Count == 3 &&
+                                                                     ev.OrderedProviders[0] == paymentOrderChangedEvent.PaymentOrder[0] &&
+                                                                     ev.OrderedProviders[1] == paymentOrderChangedEvent.PaymentOrder[1] &&
+                                                                     ev.OrderedProviders[2] == paymentOrderChangedEvent.PaymentOrder[2] ),
                     It.IsAny<PublishOptions>()),
                     Times.Once);
             
