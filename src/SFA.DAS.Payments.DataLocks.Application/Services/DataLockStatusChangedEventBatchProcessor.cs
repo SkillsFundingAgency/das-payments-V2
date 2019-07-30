@@ -156,9 +156,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             // collection periods (and transaction types) are recorded per commitment version
             // v1 does not record delivery periods so we only need to create a record per transaction type for current collection period
-            foreach (var transactionTypesAndPeriod in dataLockStatusChangedEvent.TransactionTypesAndPeriods)
+            // and they don't need transaction types, only flags
+            var periodsGroupedByFlag = dataLockStatusChangedEvent.TransactionTypesAndPeriods.GroupBy(kvp => GetTransactionTypeFlag(kvp.Key));
+
+            foreach (var group in periodsGroupedByFlag)
             {
-                await SaveEventPeriods(cancellationToken, dataLockStatusChangedEvent, transactionTypesAndPeriod, isError, apprenticeshipPriceEpisodeId).ConfigureAwait(false);
+                await SaveEventPeriods(cancellationToken, dataLockStatusChangedEvent, group.Key, isError, string.Concat(apprenticeshipId, "-", apprenticeshipPriceEpisodeId)).ConfigureAwait(false);
                 savedPeriods++;
             }
 
@@ -187,20 +190,19 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
         }
 
-        private async Task SaveEventPeriods(CancellationToken cancellationToken, DataLockStatusChanged dataLockStatusChangedEvent, KeyValuePair<TransactionType, List<EarningPeriod>> transactionTypesAndPeriod, bool isError, long commitmentVersionId)
+        private async Task SaveEventPeriods(CancellationToken cancellationToken, DataLockStatusChanged dataLockStatusChangedEvent, int transactionTypeFlag, bool isError, string commitmentVersionId)
         {
             var collectionPeriod = dataLockStatusChangedEvent.CollectionPeriod.Period;
 
             var dataLockEventPeriod = new LegacyDataLockEventPeriod
             {
                 DataLockEventId = dataLockStatusChangedEvent.EventId,
-                TransactionType = (int) transactionTypesAndPeriod.Key,
-                TransactionTypesFlag = GetTransactionTypeFlag(transactionTypesAndPeriod.Key),
+                TransactionTypesFlag = transactionTypeFlag,
                 CollectionPeriodYear = dataLockStatusChangedEvent.CollectionPeriod.AcademicYear,
                 CollectionPeriodName = $"{dataLockStatusChangedEvent.CollectionPeriod.AcademicYear}-{collectionPeriod:D2}",
                 CollectionPeriodMonth = (collectionPeriod < 6) ? collectionPeriod + 7 : collectionPeriod - 5,
                 IsPayable = !isError,
-                CommitmentVersion = commitmentVersionId.ToString()
+                CommitmentVersion = commitmentVersionId
             };
 
             logger.LogVerbose($"Saving DataLockEventPeriod {dataLockEventPeriod.CollectionPeriodName} for legacy DataLockEvent {dataLockStatusChangedEvent.EventId} for UKPRN {dataLockStatusChangedEvent.Ukprn}");
