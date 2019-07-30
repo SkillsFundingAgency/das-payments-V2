@@ -19,5 +19,6 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         public decimal CompletionAmount { get; set; }
         public decimal InstalmentAmount { get; set; }
         public short NumberOfInstalments { get; set; }
+        public DateTime? LearningStartDate { get; set; }
     }
 }
