@@ -93,8 +93,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             }
             catch (Exception ex)
             {
-                logger.LogError("Error while handling EarningService event", ex);
-                throw;
+                logger.LogFatal($"Error while handling EarningService event.  Error: {ex.Message}", ex);
+                return false; //TODO: change back to throw when DC code is a little more defensive
             }
         }
 
@@ -139,6 +139,27 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             }
             stopwatch.Stop();
             logger.LogDebug($"Finished getting FM36Output for Job: {message.JobId}, took {stopwatch.ElapsedMilliseconds}ms.");
+
+            if (fm36Output == null)
+            {
+                throw new InvalidOperationException($"No FM36Global data found for job: {message.JobId}, file reference: {fileReference}, container: {container}");
+            }
+
+            if (fm36Output.UKPRN == 0)
+            {
+                throw new InvalidOperationException($"FM36LGlobal for job: {message.JobId}, file reference: {fileReference}, container: {container} contains no Ukprn property");
+            }
+
+            if (string.IsNullOrWhiteSpace(fm36Output.Year))
+            {
+                throw new InvalidOperationException($"FM36LGlobal for job: {message.JobId}, file reference: {fileReference}, container: {container} contains no Year property");
+            }
+
+            if (fm36Output.Learners == null)
+            {
+                fm36Output.Learners = new List<FM36Learner>();
+            }
+
             telemetry.TrackEvent("Deserialize FM36Global",
                 new Dictionary<string, string>
                 {
