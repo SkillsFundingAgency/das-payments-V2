@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
         public async Task RefreshLevyAccountDetails(CancellationToken cancellationToken = default(CancellationToken))
         {
-            logger.LogInfo($"Now Trying to Refresh All Accounts Balance Details");
+            logger.LogInfo("Now Trying to Refresh All Accounts Balance Details");
 
             var nonLevyPayersAccountIds = await repository.GetNonLevyPayersAccountIds(cancellationToken).ConfigureAwait(false);
 

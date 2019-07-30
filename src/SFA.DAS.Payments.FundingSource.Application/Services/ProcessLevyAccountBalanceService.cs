@@ -23,28 +23,44 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
         public async Task RunAsync(TimeSpan refreshInterval, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var isPeriodStarted = true; //TODO  read value from cache
-
-            while (isPeriodStarted)
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
 
-                paymentLogger.LogInfo("Starting to refresh all Levy Accounts Details");
+                var isPeriodStarted = true; //TODO  read value from cache
 
-                try
+                while (isPeriodStarted)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                    await accountBalanceService.RefreshLevyAccountDetails(cancellationToken);
+                    paymentLogger.LogInfo("Starting to refresh all Levy Accounts Details");
+
+                    try
+                    {
+
+                        await accountBalanceService.RefreshLevyAccountDetails(cancellationToken);
+                    }
+                    catch (Exception e)
+                    {
+                        paymentLogger.LogError("Error While trying to refresh all Levy Accounts Details", e);
+                    }
+
+                    // isPeriodStarted = true //TODO  read value from cache
+
+                    await Task.Delay(refreshInterval, cancellationToken);
                 }
-                catch (Exception e)
-                {
-                    paymentLogger.LogError("Error While trying to refresh all Levy Accounts Details", e);
-                }
-
-                // isPeriodStarted = true //TODO  read value from cache
-
-                await Task.Delay(refreshInterval, cancellationToken);
             }
+            catch (TaskCanceledException e)
+            {
+                paymentLogger.LogError("Levy Accounts Refresh Task was Canceled", e);
+                throw;
+            }
+            catch (Exception e)
+            {
+                paymentLogger.LogError("Error While trying to refresh all Levy Accounts Details", e);
+                throw;
+            }
+
+
         }
     }
 }
