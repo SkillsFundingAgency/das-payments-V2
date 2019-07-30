@@ -6,6 +6,7 @@ using NUnit.Framework;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Application.Services;
@@ -16,10 +17,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
     [TestFixture]
     public class ManageLevyAccountBalanceServiceTests
     {
-        private  Mock<ILevyFundingSourceRepository> repository;
+        private Mock<ILevyFundingSourceRepository> repository;
         private Mock<IAccountApiClient> accountApiClient;
         private IPaymentLogger logger;
-        private Mock<IConfigurationHelper> configurationHelper;
+        private Mock<IBulkWriter<LevyAccountModel>> bulkWriter;
 
         [SetUp]
         public void Setup()
@@ -27,22 +28,22 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             repository = new Mock<ILevyFundingSourceRepository>(MockBehavior.Strict);
             accountApiClient = new Mock<IAccountApiClient>(MockBehavior.Strict);
             logger = Mock.Of<IPaymentLogger>();
-            configurationHelper = new Mock<IConfigurationHelper>();
+            bulkWriter = new Mock<IBulkWriter<LevyAccountModel>>(MockBehavior.Strict);
         }
 
-    
+
         [Test]
-        public async Task Refresh_Levy_Account_Details_Correctly()
+        public async Task Refresh_All_Levy_Account_Details_Correctly()
         {
-            var accountIds = new List<long> {1, 2};
-            int batchSize = 1;
+            var accountIds = new List<long> { 1, 2, 3 };
+            int batchSize = 2;
             var accountDetails = new List<AccountDetailViewModel>
             {
                 new AccountDetailViewModel
                 {
                     AccountId = 1,
                     Balance = 100m,
-                    RemainingTransferAllowance = 50m,
+                    RemainingTransferAllowance = 10m,
                     DasAccountName = "Test Ltd"
                 },
                 new AccountDetailViewModel
@@ -51,71 +52,219 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                     Balance = 200m,
                     RemainingTransferAllowance = 20m,
                     DasAccountName = "Test 2 Ltd"
+                },
+                new AccountDetailViewModel
+                {
+                    AccountId = 3,
+                    Balance = 300m,
+                    RemainingTransferAllowance = 30m,
+                    DasAccountName = "Test 3 Ltd",
                 }
             };
 
             repository
                 .Setup(x => x.GetAccountIds(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(accountIds);
-            
+
             accountApiClient
                 .SetupSequence(x => x.GetAccount(It.IsAny<long>()))
                 .ReturnsAsync(accountDetails[0])
-                .ReturnsAsync(accountDetails[1]);
-
-            LevyAccountModel nullLevyAccountModel = null;
-
+                .ReturnsAsync(accountDetails[1])
+                .ReturnsAsync(accountDetails[2]);
+            
             repository
-                .SetupSequence(x => x.GetLevyAccount(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new LevyAccountModel
-                {
-                    AccountId = 1,
-                    Balance = 400,
-                    AccountName = "Old Ltd"
-                })
-                .ReturnsAsync(nullLevyAccountModel);
-
-            repository
-                .Setup(x => x.AddLevyAccounts(
-                    It.Is<List<LevyAccountModel>>(o => o[1].AccountId == accountDetails[1].AccountId &&
-                                                       o[1].Balance == accountDetails[1].Balance &&
-                                                       o[1].TransferAllowance == accountDetails[1].RemainingTransferAllowance ),
-                    It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask)
+                .Setup(x => x.GetNonLevyPayersAccountIds(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<long> {3})
                 .Verifiable();
 
             repository
-                .Setup(x => x.UpdateLevyAccounts(
-                    It.Is<List<LevyAccountModel>>(o => o[0].AccountId == accountDetails[0].AccountId &&
-                                                       o[0].Balance == accountDetails[0].Balance &&
-                                                       o[0].TransferAllowance == accountDetails[0].RemainingTransferAllowance ),
-                    It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask)
-                .Verifiable();
+                .Setup(x => x.DeleteLevyAccountByIdsAsync(It.IsAny<List<long>>(),It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+           
+            bulkWriter
+                .Setup(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            bulkWriter
+                .Setup(x => x.Flush(It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            
 
             var service = new ManageLevyAccountBalanceService
             (
                 repository.Object,
                 accountApiClient.Object,
                 logger,
+                bulkWriter.Object,
                 batchSize
             );
 
             await service.RefreshLevyAccountDetails(new CancellationToken()).ConfigureAwait(false);
-            
-            repository
-                .Verify(x => x.GetAccountIds(It.IsAny<CancellationToken>()), Times.Once);
-            
-            accountApiClient
-                .Verify(x => x.GetAccount(It.IsAny<long>()), Times.Exactly(2));
 
             repository
-                .Verify(x => x.UpdateLevyAccounts (It.IsAny<List<LevyAccountModel>>(), It.IsAny<CancellationToken>()), Times.Once);
-                
+                .Verify(x => x.GetNonLevyPayersAccountIds(It.IsAny<CancellationToken>()), Times.Once);
+
             repository
-                .Verify(x => x.AddLevyAccounts(It.IsAny<List<LevyAccountModel>>(), It.IsAny<CancellationToken>()), Times.Once);
+                .Verify(x => x.GetAccountIds(It.IsAny<CancellationToken>()), Times.Once);
+
+            accountApiClient
+                .Verify(x => x.GetAccount(It.IsAny<long>()), Times.Exactly(3));
+
+            repository
+                .Verify(x => x.DeleteLevyAccountByIdsAsync(It.IsAny<List<long>>(), It.IsAny<CancellationToken>()),
+                    Times.Exactly(2));
+            
+            bulkWriter
+                .Verify(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
+            
+            bulkWriter
+                .Verify(x => x.Flush(It.IsAny<CancellationToken>()), Times.Exactly(2));
             
         }
         
+        [Test]
+        public async Task Update_Levy_Account_Details_Correctly()
+        {
+            var accountIds = new List<long> { 1 };
+            int batchSize = 2;
+            var accountDetails = new List<AccountDetailViewModel>
+            {
+                new AccountDetailViewModel
+                {
+                    AccountId = 1,
+                    Balance = 100m,
+                    RemainingTransferAllowance = 10m,
+                    DasAccountName = "Test 1 Ltd"
+                }
+            };
+
+            repository
+                .Setup(x => x.GetAccountIds(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(accountIds);
+
+            accountApiClient
+                .SetupSequence(x => x.GetAccount(It.IsAny<long>()))
+                .ReturnsAsync(accountDetails[0]);
+            
+            repository
+                .Setup(x => x.GetNonLevyPayersAccountIds(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<long> { 1 })
+                .Verifiable();
+
+            repository
+                .Setup(x => x.DeleteLevyAccountByIdsAsync(It.IsAny<List<long>>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            bulkWriter
+                .Setup(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            bulkWriter
+                .Setup(x => x.Flush(It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+
+            var service = new ManageLevyAccountBalanceService
+            (
+                repository.Object,
+                accountApiClient.Object,
+                logger,
+                bulkWriter.Object,
+                batchSize
+            );
+
+            await service.RefreshLevyAccountDetails(new CancellationToken()).ConfigureAwait(false);
+
+            repository
+                .Verify(x => x.GetNonLevyPayersAccountIds(It.IsAny<CancellationToken>()), Times.Once);
+
+            repository
+                .Verify(x => x.GetAccountIds(It.IsAny<CancellationToken>()), Times.Once);
+
+            accountApiClient
+                .Verify(x => x.GetAccount(accountIds[0]), Times.Once);
+
+            repository
+                .Verify(o => o.DeleteLevyAccountByIdsAsync(It.Is<List<long>>(deletedAccountIds => deletedAccountIds.Count == 1 && deletedAccountIds[0] == accountDetails[0].AccountId),
+                    It.IsAny<CancellationToken>()),
+                    Times.Once);
+
+            bulkWriter
+                .Verify(o => o.Write(It.Is<LevyAccountModel>(x => x.AccountId == accountDetails[0].AccountId &&
+                                                                  x.IsLevyPayer == false &&
+                                                                  x.AccountName == accountDetails[0].DasAccountName &&
+                                                                  x.Balance == accountDetails[0].Balance &&
+                                                                  x.TransferAllowance  == accountDetails[0].RemainingTransferAllowance),
+                    It.IsAny<CancellationToken>()),
+                    Times.Once);
+
+            bulkWriter
+                .Verify(x => x.Flush(It.IsAny<CancellationToken>()), Times.Once);
+
+        }
+
+        [Test]
+        public async Task Update_IsLevyPayer_Flag_Correctly()
+        {
+            var accountIds = new List<long> { 1 };
+            int batchSize = 2;
+            var accountDetails = new List<AccountDetailViewModel>
+            {
+                new AccountDetailViewModel
+                {
+                    AccountId = 1,
+                    Balance = 100m,
+                    RemainingTransferAllowance = 10m,
+                    DasAccountName = "Test 1 Ltd"
+                }
+            };
+
+            repository
+                .Setup(x => x.GetNonLevyPayersAccountIds(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<long>());
+
+            repository
+                .Setup(x => x.GetAccountIds(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(accountIds);
+
+            accountApiClient
+                .SetupSequence(x => x.GetAccount(It.IsAny<long>()))
+                .ReturnsAsync(accountDetails[0]);
+            
+            repository
+                .Setup(x => x.DeleteLevyAccountByIdsAsync(It.IsAny<List<long>>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            bulkWriter
+                .Setup(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            bulkWriter
+                .Setup(x => x.Flush(It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+
+            var service = new ManageLevyAccountBalanceService
+            (
+                repository.Object,
+                accountApiClient.Object,
+                logger,
+                bulkWriter.Object,
+                batchSize
+            );
+
+            await service.RefreshLevyAccountDetails(new CancellationToken()).ConfigureAwait(false);
+
+            bulkWriter
+                .Verify(o => o.Write(It.Is<LevyAccountModel>(x => x.AccountId == accountDetails[0].AccountId &&
+                                                                  x.IsLevyPayer == true &&
+                                                                  x.AccountName == accountDetails[0].DasAccountName &&
+                                                                  x.Balance == accountDetails[0].Balance &&
+                                                                  x.TransferAllowance == accountDetails[0].RemainingTransferAllowance),
+                    It.IsAny<CancellationToken>()),
+                    Times.Once);
+
+
+        }
     }
 }

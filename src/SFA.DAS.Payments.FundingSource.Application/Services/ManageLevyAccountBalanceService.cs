@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
             logger.LogInfo($"Retrieving Account Balance Details for  {accountIds.Count} Account Ids");
 
-            for (var i = 0; i < accountIds.Count - 1; i++)
+            for (var i = 0; i < accountIds.Count ; i += batchSize)
             {
                 try
                 {
@@ -64,7 +64,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                     logger.LogError($"Error while while updating Levy Accounts Details", e);
                 }
 
-                i += batchSize;
+               
             }
 
         }
