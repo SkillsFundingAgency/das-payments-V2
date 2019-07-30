@@ -90,7 +90,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                                         continue;
                                 }
 
-                                await SaveDataLockEvent(cancellationToken, dataLockStatusChangedEvent, earningPeriod).ConfigureAwait(false);
+                                await SaveDataLockEvent(cancellationToken, dataLockStatusChangedEvent, earningPeriod, apprenticeshipId).ConfigureAwait(false);
                                 savedEvents++;
 
                                 if (apprenticeshipId.HasValue)
@@ -268,9 +268,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             await dataLockEventCommitmentVersionWriter.Write(commitmentVersion, cancellationToken).ConfigureAwait(false);
         }
 
-        private async Task<LegacyDataLockEvent> SaveDataLockEvent(CancellationToken cancellationToken, DataLockStatusChanged dataLockStatusChangedEvent, EarningPeriod earningPeriod)
+        private async Task<LegacyDataLockEvent> SaveDataLockEvent(CancellationToken cancellationToken, DataLockStatusChanged dataLockStatusChangedEvent, EarningPeriod earningPeriod, long? apprenticeshipId)
         {
             var priceEpisode = dataLockStatusChangedEvent.PriceEpisodes.Single(e => e.Identifier == earningPeriod.PriceEpisodeIdentifier);
+            var hasTnp3 = priceEpisode.TotalNegotiatedPrice3.GetValueOrDefault(0) > 0;
 
             var dataLockEvent = new LegacyDataLockEvent // commitment ID
             {
@@ -290,16 +291,16 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 SubmittedDateTime = dataLockStatusChangedEvent.IlrSubmissionDateTime,
 
                 PriceEpisodeIdentifier = earningPeriod.PriceEpisodeIdentifier,
-                CommitmentId = earningPeriod.ApprenticeshipId ?? 0,
+                CommitmentId = apprenticeshipId.GetValueOrDefault(0),
                 EmployerAccountId = earningPeriod.AccountId.GetValueOrDefault(0),
 
                 AimSeqNumber = dataLockStatusChangedEvent.LearningAim.SequenceNumber,
                 IlrPriceEffectiveFromDate = priceEpisode.EffectiveTotalNegotiatedPriceStartDate,
                 IlrPriceEffectiveToDate = priceEpisode.ActualEndDate.GetValueOrDefault(priceEpisode.PlannedEndDate),
-                IlrEndpointAssessorPrice = priceEpisode.TotalNegotiatedPrice3.HasValue ? priceEpisode.TotalNegotiatedPrice4 : priceEpisode.TotalNegotiatedPrice2,
+                IlrEndpointAssessorPrice = hasTnp3 ? priceEpisode.TotalNegotiatedPrice4 : priceEpisode.TotalNegotiatedPrice2,
                 IlrFileName = dataLockStatusChangedEvent.IlrFileName,
                 IlrStartDate = priceEpisode.CourseStartDate,
-                IlrTrainingPrice = priceEpisode.TotalNegotiatedPrice3 ?? priceEpisode.TotalNegotiatedPrice1,
+                IlrTrainingPrice = hasTnp3 ? priceEpisode.TotalNegotiatedPrice3 : priceEpisode.TotalNegotiatedPrice1,
             };
 
             logger.LogVerbose($"Saving legacy DataLockEvent {dataLockStatusChangedEvent.EventId} for UKPRN {dataLockStatusChangedEvent.Ukprn}");
