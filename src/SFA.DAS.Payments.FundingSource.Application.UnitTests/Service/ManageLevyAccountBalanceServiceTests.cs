@@ -105,10 +105,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 
             accountApiClient
                 .Verify(x => x.GetAccount(It.IsAny<long>()), Times.Exactly(3));
-
-            repository
-                .Verify(x => x.DeleteLevyAccountByIdsAsync(It.IsAny<List<long>>(), It.IsAny<CancellationToken>()),
-                    Times.Exactly(2));
             
             bulkWriter
                 .Verify(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
@@ -175,11 +171,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 
             accountApiClient
                 .Verify(x => x.GetAccount(accountIds[0]), Times.Once);
-
-            repository
-                .Verify(o => o.DeleteLevyAccountByIdsAsync(It.Is<List<long>>(deletedAccountIds => deletedAccountIds.Count == 1 && deletedAccountIds[0] == accountDetails[0].AccountId),
-                    It.IsAny<CancellationToken>()),
-                    Times.Once);
 
             bulkWriter
                 .Verify(o => o.Write(It.Is<LevyAccountModel>(x => x.AccountId == accountDetails[0].AccountId &&
