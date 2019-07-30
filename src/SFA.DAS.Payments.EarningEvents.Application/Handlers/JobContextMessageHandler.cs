@@ -93,8 +93,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             }
             catch (Exception ex)
             {
-                logger.LogError("Error while handling EarningService event", ex);
-                throw;
+                logger.LogFatal($"Error while handling EarningService event.  Error: {ex.Message}", ex);
+                return false; //TODO: change back to throw when DC code is a little more defensive
             }
         }
 
