@@ -27,7 +27,7 @@
 		| Jan/Current Academic Year | 0            | 0          | 0         |
 		| Feb/Current Academic Year | 0            | 0          | 0         |
 		| Mar/Current Academic Year | 0            | 0          | 0         |
-		| Apr/Current Academic Year | 0            | 0          | 0         |
+		| Apr/Current Academic Year | 1000         | 0          | 0         |
 		| May/Current Academic Year | 1000         | 0          | 0         |
 		| Jun/Current Academic Year | 1000         | 0          | 0         |
 		| Jul/Current Academic Year | 1000         | 0          | 0         |
@@ -57,23 +57,20 @@
 		| Jan/Current Academic Year | 0            | 0          | 0         | pe-1                     |
 		| Feb/Current Academic Year | 0            | 0          | 0         | pe-1                     |
 		| Mar/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-		| Apr/Current Academic Year | -1000        | 0          | 0         | pe-1                     |
+		| Apr/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
 		| May/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
 		| Jun/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
 		| Jul/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
     And at month end only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
-        | R10/Current Academic Year | Apr/Current Academic Year | -1000        | 0          | 0         |
         | R10/Current Academic Year | May/Current Academic Year | 1000         | 0          | 0         |
 
 	And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
-        | R10/Current Academic Year | Apr/Current Academic Year | -950                   | -50                         | Learning         |
         | R10/Current Academic Year | May/Current Academic Year | 950                    | 50                          | Learning         |
 
 	And only the following provider payments will be generated
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
-        | R10/Current Academic Year | Apr/Current Academic Year | 950                    | 50                          | Learning         |
         | R10/Current Academic Year | May/Current Academic Year | 950                    | 50                          | Learning         |
 
 #Feature: 5% Contribution from April 2019
