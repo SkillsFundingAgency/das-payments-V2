@@ -327,6 +327,58 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             invalidIncentiveEarningPeriod.DataLockFailures[0].DataLockError.Should().Be(DataLockErrorCode.DLOCK_09);
         }
 
+        [Test]
+        public async Task CourseValidationForFunctionalSkillMapsValidAndInvalidPeriods()
+        {
+            learnerMatcherMock
+                .Setup(x => x.MatchLearner(apprenticeships[0].Uln))
+                .ReturnsAsync(() => new LearnerMatchResult
+                {
+                    DataLockErrorCode = null,
+                    Apprenticeships = new List<ApprenticeshipModel>(apprenticeships)
+
+                }).Verifiable();
+
+            var testEarningEvent = CreateTestFunctionalSkillEarningEvent(2, 100m, aim);
+
+            var periodExpected = testEarningEvent.Earnings[0].Periods[1];
+            periodExpected.DataLockFailures = new List<DataLockFailure>
+            {
+                new DataLockFailure
+                {
+                    DataLockError = DataLockErrorCode.DLOCK_09,
+                    ApprenticeshipPriceEpisodeIds = new List<long>()
+                }
+            };
+
+            onProgValidationMock
+                .Setup(x => x.ValidateFunctionalSkillPeriods(apprenticeships[0].Uln,
+                    It.IsAny<List<PriceEpisode>>(),
+                    It.IsAny<List<EarningPeriod>>(),
+                    It.IsAny<TransactionType>(),
+                    It.IsAny<List<ApprenticeshipModel>>(),
+                    aim,
+                    AcademicYear))
+                .Returns(() => (new List<EarningPeriod>
+                {
+                    testEarningEvent.Earnings[0].Periods[0]
+                }, new List<EarningPeriod>
+                {
+                    periodExpected
+                }))
+                .Verifiable();
+
+            var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object);
+            var actualDataLockEvents = await dataLockProcessor.GetFunctionalSkillPaymentEvents(testEarningEvent, default(CancellationToken))
+                .ConfigureAwait(false);
+
+            var payableEarnings = actualDataLockEvents.OfType<PayableFunctionalSkillEarningEvent>().ToList();
+            payableEarnings.Should().HaveCount(1);
+
+            var failedDataLockEarnings = actualDataLockEvents.OfType<FunctionalSkillEarningFailedDataLockMatching>().ToList();
+            failedDataLockEarnings.Should().HaveCount(1);
+        }
+
 
         private ApprenticeshipContractType1EarningEvent CreateTestEarningEvent(byte periodsToCreate, decimal earningPeriodAmount, LearningAim testAim)
         {
@@ -358,7 +410,54 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             return testEarningEvent;
         }
 
-        private List<EarningPeriod> GenerateEarningPeriod(byte periodsToCreate, decimal earningPeriodAmount, ApprenticeshipContractType1EarningEvent testEarningEvent)
+        private Act1FunctionalSkillEarningsEvent CreateTestFunctionalSkillEarningEvent(byte periodsToCreate, decimal earningPeriodAmount, LearningAim testAim)
+        {
+            var testEarningEvent = new Act1FunctionalSkillEarningsEvent
+            {
+                Learner = new Learner { Uln = Uln, },
+                PriceEpisodes = new List<PriceEpisode>(),
+                CollectionYear = AcademicYear
+            };
+
+            var functionalSkillEarnings = new List<FunctionalSkillEarning>
+            {
+                new FunctionalSkillEarning
+                {
+                    Periods = new ReadOnlyCollection<EarningPeriod>(GenerateEarningPeriod(periodsToCreate, earningPeriodAmount, testEarningEvent) )
+                }
+            };
+
+            testEarningEvent.Earnings = functionalSkillEarnings.AsReadOnly();
+
+            testEarningEvent.LearningAim = testAim;
+
+            return testEarningEvent;
+        }
+
+        private static List<EarningPeriod> GenerateEarningPeriod(byte periodsToCreate, decimal earningPeriodAmount, ApprenticeshipContractType1EarningEvent testEarningEvent)
+        {
+            var earningPeriods = new List<EarningPeriod>();
+
+            for (byte i = 1; i <= periodsToCreate; i++)
+            {
+                testEarningEvent.PriceEpisodes.Add(new PriceEpisode
+                {
+                    EffectiveTotalNegotiatedPriceStartDate = DateTime.UtcNow.AddDays(1),
+                    Identifier = $"pe-{i}"
+                });
+
+                earningPeriods.Add(new EarningPeriod
+                {
+                    Amount = earningPeriodAmount,
+                    Period = i,
+                    PriceEpisodeIdentifier = $"pe-{i}"
+                });
+            }
+
+            return earningPeriods;
+        }
+
+        private static List<EarningPeriod> GenerateEarningPeriod(byte periodsToCreate, decimal earningPeriodAmount, Act1FunctionalSkillEarningsEvent testEarningEvent)
         {
             var earningPeriods = new List<EarningPeriod>();
 

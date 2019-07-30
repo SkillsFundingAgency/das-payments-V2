@@ -56,6 +56,13 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             return await dataLockProcessor.GetPaymentEvents(message, cancellationToken);
         }
 
+        public async Task<List<FunctionalSkillDataLockEvent>> HandleFunctionalSkillEarning(
+            Act1FunctionalSkillEarningsEvent message, CancellationToken cancellationToken)
+        {
+            await Initialise().ConfigureAwait(false);
+            return await dataLockProcessor.GetFunctionalSkillPaymentEvents(message, cancellationToken);
+        }
+
         public async Task HandleApprenticeshipUpdated(ApprenticeshipUpdated message, CancellationToken none)
         {
             await Initialise().ConfigureAwait(false);

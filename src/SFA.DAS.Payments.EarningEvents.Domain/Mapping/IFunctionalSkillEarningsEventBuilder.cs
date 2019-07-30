@@ -6,6 +6,6 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.Mapping
 {
     public interface IFunctionalSkillEarningsEventBuilder
     {
-        List<ApprenticeshipContractTypeFunctionalSkillEarningsEvent> Build(ProcessLearnerCommand learnerSubmission);
+        List<FunctionalSkillEarningsEvent> Build(ProcessLearnerCommand learnerSubmission);
     }
 }

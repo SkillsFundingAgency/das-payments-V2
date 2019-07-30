@@ -13,7 +13,9 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
             CreateMap<EarningEvent, EarningEventModel>()
                 .Include<ApprenticeshipContractType2EarningEvent, EarningEventModel>()
                 .Include<ApprenticeshipContractType1EarningEvent, EarningEventModel>()
-                .Include<ApprenticeshipContractType2FunctionalSkillEarningsEvent, EarningEventModel>()
+                .Include<FunctionalSkillEarningsEvent, EarningEventModel>()
+                .Include<Act1FunctionalSkillEarningsEvent, EarningEventModel>()
+                .Include<Act2FunctionalSkillEarningsEvent, EarningEventModel>()
                 .MapCommon()
                 .ForMember(dest => dest.ContractType, opt => opt.Ignore())
                 .ForMember(dest => dest.AgreementId, opt => opt.Ignore())
@@ -29,8 +31,14 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                 .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2))
                 .ForMember(dest => dest.Periods,opt => opt.ResolveUsing<ApprenticeshipContractTypeEarningPeriodResolver>());
 
-            CreateMap<ApprenticeshipContractType2FunctionalSkillEarningsEvent, EarningEventModel>()
-                .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2))  //TODO: fix for ACT1 events
+            CreateMap<Act1FunctionalSkillEarningsEvent, EarningEventModel>()
+                .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act1));
+            CreateMap<Act2FunctionalSkillEarningsEvent, EarningEventModel>()
+                .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2));
+
+            CreateMap<FunctionalSkillEarningsEvent, EarningEventModel>()
+                .Include<Act1FunctionalSkillEarningsEvent, EarningEventModel>()
+                .Include<Act2FunctionalSkillEarningsEvent, EarningEventModel>()
                 .ForMember(dest => dest.Periods, opt => opt.ResolveUsing<FunctionalSkillEarningResolver>());
 
             CreateMap<PriceEpisode, EarningEventPriceEpisodeModel>()

@@ -412,7 +412,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         public void TestFunctionalSkillsEarningMap()
         {
             learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries[1]);
-            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2FunctionalSkillEarningsEvent>(learningAim);
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, Act2FunctionalSkillEarningsEvent>(learningAim);
             earningEvent.Should().NotBeNull();
             earningEvent.LearningAim.Reference.Should().Be("M&E");
             earningEvent.Earnings.Should().HaveCount(3);
@@ -1033,7 +1033,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             });
 
             learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries[0]);
-            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2FunctionalSkillEarningsEvent>(learningAim);
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, Act2FunctionalSkillEarningsEvent>(learningAim);
             earningEvent.Should().NotBeNull();
 
             var balancing = earningEvent.Earnings.Where(e => e.Type == FunctionalSkillType.BalancingMathsAndEnglish).ToArray();

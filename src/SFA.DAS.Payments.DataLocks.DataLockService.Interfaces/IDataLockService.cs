@@ -15,5 +15,8 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService.Interfaces
         Task<List<DataLockEvent>> HandleEarning(ApprenticeshipContractType1EarningEvent message,  CancellationToken cancellationToken);
         Task HandleApprenticeshipUpdated(ApprenticeshipUpdated message, CancellationToken none);
         Task Reset();
+
+        Task<List<FunctionalSkillDataLockEvent>> HandleFunctionalSkillEarning(
+            Act1FunctionalSkillEarningsEvent message, CancellationToken cancellationToken);
     }
 }

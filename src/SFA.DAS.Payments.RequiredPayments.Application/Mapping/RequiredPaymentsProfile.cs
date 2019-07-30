@@ -56,10 +56,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.CompletionAmount)
                 .Ignore(x => x.InstalmentAmount)
                 .Ignore(x => x.NumberOfInstalments);
-         
+
             CreateMap<IEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<PayableEarningEvent, CalculatedRequiredOnProgrammeAmount>()
-                .Include<ApprenticeshipContractType2FunctionalSkillEarningsEvent, CalculatedRequiredOnProgrammeAmount>()
+                .Include<FunctionalSkillEarningsEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<ApprenticeshipContractType2EarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .ForMember(requiredPayment => requiredPayment.OnProgrammeEarningType, opt => opt.Ignore())
                 .ForMember(requiredPayment => requiredPayment.SfaContributionPercentage, opt => opt.Ignore())
@@ -67,7 +67,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
             CreateMap<IEarningEvent, CalculatedRequiredIncentiveAmount>()
                 .Include<PayableEarningEvent, CalculatedRequiredIncentiveAmount>()
                 .Include<ApprenticeshipContractType2EarningEvent, CalculatedRequiredIncentiveAmount>()
-                .Include<ApprenticeshipContractType2FunctionalSkillEarningsEvent, CalculatedRequiredIncentiveAmount>()
+                .Include<FunctionalSkillEarningsEvent, CalculatedRequiredIncentiveAmount>()
                 .Ignore(x => x.Type)
                 .Ignore(x => x.EarningEventId)
                 .Ignore(x => x.PriceEpisodeIdentifier)
@@ -89,7 +89,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(x => x.EarningEventId, opt => opt.MapFrom(source => source.EarningEventId))
                 .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act1))
                 ;
-            CreateMap<ApprenticeshipContractType2FunctionalSkillEarningsEvent, CalculatedRequiredOnProgrammeAmount>()
+            CreateMap<FunctionalSkillEarningsEvent, CalculatedRequiredOnProgrammeAmount>()
                 .ForMember(x => x.StartDate, opt => opt.MapFrom(source => source.StartDate))
                 .ForMember(x => x.ContractType, opt => opt.MapFrom(x => x.ContractType))
                 ;
@@ -105,10 +105,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
             CreateMap<ApprenticeshipContractType2EarningEvent, CalculatedRequiredIncentiveAmount>()
                 .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act2))
                 ;
-            CreateMap<ApprenticeshipContractType2FunctionalSkillEarningsEvent, CalculatedRequiredIncentiveAmount>()
+            CreateMap<FunctionalSkillEarningsEvent, CalculatedRequiredIncentiveAmount>()
                 .ForMember(x => x.StartDate, opt => opt.MapFrom(source => source.StartDate))
                 .ForMember(x => x.ContractType, opt => opt.MapFrom(x => x.ContractType))
                 ;
+
+            CreateMap<PayableFunctionalSkillEarningEvent, CalculatedRequiredIncentiveAmount>()
+                .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act1));
 
             CreateMap<PayableEarningEvent, CalculatedRequiredLevyAmount>()
                 .ForMember(x => x.EarningEventId, opt => opt.MapFrom(source => source.EarningEventId))
@@ -215,16 +218,16 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.InstalmentAmount)
                 .Ignore(x => x.NumberOfInstalments)
                 ;
-                            
+
             CreateMap<IdentifiedRemovedLearningAim, CalculatedRequiredCoInvestedAmount>()
                 .Ignore(x => x.SfaContributionPercentage)
                 .Ignore(x => x.OnProgrammeEarningType)
                 ;
-            
+
             CreateMap<IdentifiedRemovedLearningAim, CalculatedRequiredIncentiveAmount>()
                 .Ignore(x => x.Type)
                 ;
-            
+
             CreateMap<IdentifiedRemovedLearningAim, CalculatedRequiredLevyAmount>()
                 .Ignore(x => x.Priority)
                 .Ignore(x => x.ApprenticeshipId)
@@ -239,9 +242,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Include<PaymentHistoryEntity, CalculatedRequiredCoInvestedAmount>()
                 .Include<PaymentHistoryEntity, CalculatedRequiredIncentiveAmount>()
                 .Include<PaymentHistoryEntity, CalculatedRequiredLevyAmount>()
-                .ForMember(x => x.AccountId,opt => opt.MapFrom(src => src.AccountId))
+                .ForMember(x => x.AccountId, opt => opt.MapFrom(src => src.AccountId))
                 .ForMember(x => x.TransferSenderAccountId, opt => opt.MapFrom(src => src.TransferSenderAccountId))
-                .ForMember(x => x.CompletionAmount,opt => opt.MapFrom(src => src.CompletionAmount))
+                .ForMember(x => x.CompletionAmount, opt => opt.MapFrom(src => src.CompletionAmount))
                 //.ForMember(x => x.StartDate,opt => opt.MapFrom(src => src.StartDate))
                 .Ignore(x => x.EventId)
                 .Ignore(x => x.AmountDue)
@@ -254,7 +257,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.LearningAim)
                 .Ignore(x => x.IlrSubmissionDateTime)
                 ;
-            
+
             CreateMap<PaymentHistoryEntity, CalculatedRequiredCoInvestedAmount>()
                 .Ignore(x => x.OnProgrammeEarningType)
                 ;
