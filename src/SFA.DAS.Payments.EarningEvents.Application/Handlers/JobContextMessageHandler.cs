@@ -145,6 +145,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 throw new InvalidOperationException($"No FM36Global data found for job: {message.JobId}, file reference: {fileReference}, container: {container}");
             }
 
+            if (fm36Output.UKPRN == 0)
+            {
+                throw new InvalidOperationException($"FM36LGlobal for job: {message.JobId}, file reference: {fileReference}, container: {container} contains no Ukprn property");
+            }
+
             if (string.IsNullOrWhiteSpace(fm36Output.Year))
             {
                 throw new InvalidOperationException($"FM36LGlobal for job: {message.JobId}, file reference: {fileReference}, container: {container} contains no Year property");
