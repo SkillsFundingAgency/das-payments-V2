@@ -41,10 +41,6 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                 .Include<Act2FunctionalSkillEarningsEvent, EarningEventModel>()
                 .ForMember(dest => dest.Periods, opt => opt.ResolveUsing<FunctionalSkillEarningResolver>());
 
-            //CreateMap<Act2FunctionalSkillEarningsEvent, EarningEventModel>()
-            //    .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2))  //TODO: fix for ACT1 events
-            //   // .ForMember(dest => dest.Periods, opt => opt.ResolveUsing<FunctionalSkillEarningResolver>());
-
             CreateMap<PriceEpisode, EarningEventPriceEpisodeModel>()
                 .ForMember(dest => dest.SfaContributionPercentage, opt => opt.Ignore())
                 .ForMember(dest => dest.ActualEndDate, opt => opt.MapFrom(source => source.ActualEndDate))
