@@ -178,7 +178,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 var dataLockEventError = new LegacyDataLockEventError
                 {
                     DataLockEventId = dataLockStatusChangedEvent.EventId,
-                    SystemDescription = dataLockFailure.DataLockError.ToString(),
+                    SystemDescription = GetDataLockDescription(dataLockFailure.DataLockError),
                     ErrorCode = dataLockFailure.DataLockError.ToString()
                 };
 
@@ -242,6 +242,25 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                 default:
                     throw new ArgumentException($"Transaction Type {transactionType} not supported.", nameof(transactionType));
+            }
+        }
+
+        private string GetDataLockDescription(DataLockErrorCode dlockCode)
+        {
+            switch (dlockCode)
+            {
+                case DataLockErrorCode.DLOCK_01: return "No matching record found in an employer digital account for the UKPRN";
+                case DataLockErrorCode.DLOCK_03: return "No matching record found in the employer digital account for the standard code";
+                case DataLockErrorCode.DLOCK_04: return "No matching record found in the employer digital account for the framework code";
+                case DataLockErrorCode.DLOCK_05: return "No matching record found in the employer digital account for the programme type";
+                case DataLockErrorCode.DLOCK_06: return "No matching record found in the employer digital account for the pathway code";
+                case DataLockErrorCode.DLOCK_07: return "No matching record found in the employer digital account for the negotiated cost of training";
+                case DataLockErrorCode.DLOCK_08: return "Multiple matching records found in the employer digital account";
+                case DataLockErrorCode.DLOCK_09: return "The start date for this negotiated price is before the corresponding price start date in the employer digital account";
+                case DataLockErrorCode.DLOCK_10: return "The employer has stopped payments for this apprentice";
+                case DataLockErrorCode.DLOCK_11: return "The employer is not currently a levy payer";
+                case DataLockErrorCode.DLOCK_12: return "DLOCK_12";
+                default: return dlockCode.ToString();
             }
         }
 
