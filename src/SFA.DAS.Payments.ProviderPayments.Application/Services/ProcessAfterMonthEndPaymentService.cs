@@ -4,6 +4,7 @@ using SFA.DAS.Payments.Audit.Application;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.Messages;
 using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
@@ -14,6 +15,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
         private readonly IMapper mapper;
         private readonly IMonthEndService monthEndService;
 
+        private static readonly ConcurrentDictionary<(long ukprn, short academicYear, byte period), bool> LocalMonthEndCache =
+            new ConcurrentDictionary<(long ukprn, short academicYear, byte period), bool>();
+
         public ProcessAfterMonthEndPaymentService(IPaymentLogger paymentLogger, IMapper mapper, IMonthEndService monthEndService)
         {
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
@@ -23,9 +27,25 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 
         public async Task<ProviderPaymentEvent> GetPaymentEvent(FundingSourcePaymentEvent message)
         {
-            var isMonthEnd = await monthEndService
-                .MonthEndStarted(message.Ukprn, message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period)
-                .ConfigureAwait(false);
+            bool isMonthEnd;
+            if (LocalMonthEndCache.TryGetValue(
+                (message.Ukprn, message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period),
+                out var result))
+            {
+                isMonthEnd = result;
+            }
+            else
+            {
+                isMonthEnd = await monthEndService
+                    .MonthEndStarted(message.Ukprn, message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period)
+                    .ConfigureAwait(false);
+                if (isMonthEnd)
+                {
+                    LocalMonthEndCache.TryAdd(
+                        (message.Ukprn, message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period), true);
+                }
+            }
+            
 
             if (!isMonthEnd) return null;
 
