@@ -66,6 +66,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             {
                 dataRow["EarningsActualEndDate"] = eventModel.ActualEndDate;
             }
+
             return dataRow;
         }
     }

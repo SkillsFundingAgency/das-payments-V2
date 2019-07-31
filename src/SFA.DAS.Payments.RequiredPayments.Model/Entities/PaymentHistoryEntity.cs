@@ -28,5 +28,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Model.Entities
         public decimal CompletionAmount { get; set; }
         public decimal InstalmentAmount { get; set; }
         public short NumberOfInstalments { get; set; }
+
+        public DateTime? LearningStartDate { get; set; }
     }
 }

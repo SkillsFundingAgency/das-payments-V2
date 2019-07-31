@@ -38,6 +38,6 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public decimal InstalmentAmount { get; set; }
         public short NumberOfInstalments { get; set; }
 
-        public DateTime LearningStartDate { get; set; }
+        public DateTime? LearningStartDate { get; set; }
     }
 }
