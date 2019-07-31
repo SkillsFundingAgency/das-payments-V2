@@ -15,11 +15,6 @@ namespace SFA.DAS.Payments.Application.Repositories
         Task Write(TEntity entity, CancellationToken cancellationToken);
         Task Flush(CancellationToken cancellationToken);
     }
-
-    public interface IBulkDeleteAndWriter<TEntity> : IBulkWriter<TEntity> where TEntity : class
-    {
-        Task DeleteAndFlush(List<long> existingRecordIds, CancellationToken cancellationToken);
-    }
     
     public class BulkWriter<TEntity> : IBulkWriter<TEntity> where TEntity : class
     {

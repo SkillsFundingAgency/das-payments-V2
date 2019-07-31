@@ -23,19 +23,19 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly ILevyFundingSourceRepository repository;
         private readonly IAccountApiClient accountApiClient;
         private readonly IPaymentLogger logger;
-        private readonly IBulkDeleteAndWriter<LevyAccountModel> bulkWriter;
+        private readonly ILevyAccountBulkCopyRepository levyAccountBulkWriter;
         private readonly int batchSize;
 
         public ManageLevyAccountBalanceService(ILevyFundingSourceRepository repository,
             IAccountApiClient accountApiClient,
             IPaymentLogger logger,
-            IBulkDeleteAndWriter<LevyAccountModel> bulkWriter,
+            ILevyAccountBulkCopyRepository levyAccountBulkWriter,
             int batchSize)
         {
             this.repository = repository;
             this.accountApiClient = accountApiClient;
             this.logger = logger;
-            this.bulkWriter = bulkWriter;
+            this.levyAccountBulkWriter = levyAccountBulkWriter;
             this.batchSize = batchSize;
         }
 
@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
             logger.LogInfo($"Retrieving Account Balance Details for  {accountIds.Count} Account Ids");
 
-            for (var i = 0; i < accountIds.Count ; i += batchSize)
+            for (var i = 0; i < accountIds.Count; i += batchSize)
             {
                 try
                 {
@@ -64,7 +64,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 {
                     logger.LogError($"Error while while updating Levy Accounts Details", e);
                 }
-                
+
             }
 
         }
@@ -73,12 +73,12 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         {
             try
             {
-                await Task.WhenAll(levyAccountModels.Select(x => bulkWriter.Write(x, cancellationToken)))
+                await Task.WhenAll(levyAccountModels.Select(x => levyAccountBulkWriter.Write(x, cancellationToken)))
                         .ConfigureAwait(false);
 
-                    await bulkWriter.DeleteAndFlush(levyAccountModels.Select(x => x.AccountId).ToList(),  cancellationToken).ConfigureAwait(false);
+                await levyAccountBulkWriter.DeleteAndFlush(levyAccountModels.Select(x => x.AccountId).ToList(), cancellationToken).ConfigureAwait(false);
 
-                    logger.LogVerbose($"Successfully Added  {levyAccountModels.Count} Batch of Levy Accounts Details");
+                logger.LogVerbose($"Successfully Added  {levyAccountModels.Count} Batch of Levy Accounts Details");
             }
             catch (Exception e)
             {

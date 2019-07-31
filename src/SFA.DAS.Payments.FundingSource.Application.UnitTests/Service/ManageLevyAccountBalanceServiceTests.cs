@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         private Mock<ILevyFundingSourceRepository> repository;
         private Mock<IAccountApiClient> accountApiClient;
         private IPaymentLogger logger;
-        private Mock<IBulkDeleteAndWriter<LevyAccountModel>> bulkWriter;
+        private Mock<ILevyAccountBulkCopyRepository<LevyAccountModel>> bulkWriter;
 
         [SetUp]
         public void Setup()
@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             repository = new Mock<ILevyFundingSourceRepository>(MockBehavior.Strict);
             accountApiClient = new Mock<IAccountApiClient>(MockBehavior.Strict);
             logger = Mock.Of<IPaymentLogger>();
-            bulkWriter = new Mock<IBulkDeleteAndWriter<LevyAccountModel>>(MockBehavior.Strict);
+            bulkWriter = new Mock<ILevyAccountBulkCopyRepository<LevyAccountModel>>(MockBehavior.Strict);
         }
 
 

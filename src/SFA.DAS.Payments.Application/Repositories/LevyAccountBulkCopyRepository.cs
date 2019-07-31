@@ -2,29 +2,35 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Core.Configuration;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Application.Repositories
 {
-    public class BulkDeleteAndWriter<TEntity> : BulkWriter<TEntity>, IBulkDeleteAndWriter<TEntity> where TEntity : class
-    {
-        private readonly IBulkDeleteAndCopyConfiguration<TEntity> bulkDeleteAndCopyConfig;
 
-        public BulkDeleteAndWriter(IConfigurationHelper configurationHelper, IPaymentLogger logger, IBulkDeleteAndCopyConfiguration<TEntity> bulkDeleteAndCopyConfig) 
-            : base(configurationHelper, logger, bulkDeleteAndCopyConfig )
+    public interface ILevyAccountBulkCopyRepository : IBulkWriter<LevyAccountModel>
+    {
+        Task DeleteAndFlush(List<long> existingRecordIds, CancellationToken cancellationToken);
+    }
+
+    public class LevyAccountBulkCopyRepository : BulkWriter<LevyAccountModel>, ILevyAccountBulkCopyRepository
+    {
+        public LevyAccountBulkCopyRepository(IConfigurationHelper configurationHelper,
+            IPaymentLogger logger, 
+            IBulkCopyConfiguration<LevyAccountModel> bulkCopyConfig) : base(configurationHelper, logger, bulkCopyConfig )
         {
-            this.bulkDeleteAndCopyConfig = bulkDeleteAndCopyConfig;
         }
 
         public async Task DeleteAndFlush(List<long> existingRecordIds, CancellationToken cancellationToken)
         {
-            logger.LogVerbose($"Saving {queue.Count} records of type {typeof(TEntity).Name}");
+            logger.LogVerbose($"Saving {queue.Count} records to LevyAccount Table");
 
-            var list = new List<TEntity>();
+            var list = new List<LevyAccountModel>();
             while (queue.TryDequeue(out var item))
             {
                 list.Add(item);
@@ -43,7 +49,7 @@ namespace SFA.DAS.Payments.Application.Repositories
                         sqlCommand.Connection = sqlConnection;
                         sqlCommand.Transaction = transaction;
 
-                        sqlCommand.CommandText = $@"delete from {bulkCopyConfig.TableName} Where {bulkDeleteAndCopyConfig.BulkDeleteFilterColumnName} in ({string.Join(",", existingRecordIds)})";
+                        sqlCommand.CommandText = $@"delete from [Payments2].[LevyAccount] Where AccountId in ({string.Join(",", existingRecordIds)})";
                         sqlCommand.ExecuteNonQuery();
 
                         using (var bulkCopy = new SqlBulkCopy(sqlConnection, SqlBulkCopyOptions.Default, transaction)) await HandleBulkCopy(cancellationToken, list, bulkCopy);
@@ -53,17 +59,15 @@ namespace SFA.DAS.Payments.Application.Repositories
                     catch (Exception e)
                     {
                         transaction.Rollback();
-                        logger.LogError(
-                            $"Error while trying to bulk Add or Update {list.Count} records of type {typeof(TEntity).Name}",
-                            e);
+                        logger.LogError($"Error while trying to bulk Add or Update {list.Count} records of type LevyAccountModel", e);
+
                         throw;
                     }
                 }
 
-                logger.LogDebug($"Saved {list.Count} records of type {typeof(TEntity).Name}");
+                logger.LogDebug($"Saved {list.Count} records of type LevyAccountModel");
             }
         }
-
-
+        
     }
 }

@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
             builder.RegisterType<RequiredLevyAmountFundingSourceService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<LevyMessageRoutingService>().AsImplementedInterfaces();
             builder.RegisterType<LevyAccountBulkCopyConfiguration>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<BulkDeleteAndWriter<LevyAccountModel>>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<LevyAccountBulkCopyRepository>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.Register(c => new CoInvestedFundingSourceService
             (
@@ -78,7 +78,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
                     var repository = c.Resolve<ILevyFundingSourceRepository>();
                     var accountApiClient = c.Resolve<IAccountApiClient>();
                     var logger = c.Resolve<IPaymentLogger>();
-                    var bulkWriter = c.Resolve<IBulkDeleteAndWriter<LevyAccountModel>>();
+                    var bulkWriter = c.Resolve<ILevyAccountBulkCopyRepository>();
 
                     return new ManageLevyAccountBalanceService(repository, accountApiClient, logger, bulkWriter, batchSize);
                 })
