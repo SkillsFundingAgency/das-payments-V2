@@ -22,8 +22,6 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
     [StatePersistence(StatePersistence.Volatile)]
     public class DataLockService : Actor, IDataLockService
     {
-        private readonly ActorService actorService;
-        private readonly ActorId actorId;
         private readonly IPaymentLogger paymentLogger;
         private readonly IActorDataCache<List<ApprenticeshipModel>> apprenticeships;
         private readonly IActorDataCache<List<long>> providers;
@@ -45,8 +43,6 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             )
             : base(actorService, actorId)
         {
-            this.actorService = actorService;
-            this.actorId = actorId;
             this.paymentLogger = paymentLogger;
             this.apprenticeshipRepository = apprenticeshipRepository;
             this.apprenticeships = apprenticeships;
@@ -92,11 +88,13 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         {
             using (var operation = telemetry.StartOperation("DataLockService.OnActivateAsync", $"{Id}_{Guid.NewGuid():N}"))
             {
+                paymentLogger.LogDebug($"Activating data-lock actor: {Id}");
                 var stopwatch = Stopwatch.StartNew();
                 await Initialise().ConfigureAwait(false);
                 await base.OnActivateAsync().ConfigureAwait(false);
                 TrackInfrastructureEvent("DataLockService.OnActivateAsync", stopwatch);
                 telemetry.StopOperation(operation);
+                paymentLogger.LogInfo($"Finished activating data-lock actor: {Id}");
             }
         }
 
