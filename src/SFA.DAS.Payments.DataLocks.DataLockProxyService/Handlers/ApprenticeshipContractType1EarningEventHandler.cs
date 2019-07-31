@@ -33,23 +33,23 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
                 }
                 var uln = message.Learner.Uln;
                 var learnerRef = message.Learner.ReferenceNumber;
-                logger.LogDebug($"Processing DataLockProxyProxyService event for learner with learn ref {learnerRef}");
+                logger.LogDebug($"Processing DataLockProxyProxyService event for learner with learner ref {learnerRef}");
                 var actorId = new ActorId(uln);
 
                 logger.LogVerbose($"Creating actor proxy for learner with leearner ref {learnerRef}");
                 var actor = proxyFactory.CreateActorProxy<IDataLockService>(new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/DataLockServiceActorService"), actorId);
                 logger.LogDebug($"Actor proxy created for learner with ULN {uln}");
 
-                logger.LogVerbose($"Calling actor proxy to handle earning for learner with leearner ref {learnerRef}");
+                logger.LogVerbose($"Calling actor proxy to handle earning for learner with learner ref {learnerRef}");
                 var dataLockEvents = await actor.HandleEarning(message, CancellationToken.None).ConfigureAwait(false);
-                logger.LogDebug($"Earning handled for learner with leearner ref {learnerRef}");
+                logger.LogDebug($"Earning handled for learner with learner ref {learnerRef}");
 
                 if (dataLockEvents != null)
                 {
                     var summary = string.Join(", ", dataLockEvents.GroupBy(e => e.GetType().Name).Select(g => $"{g.Key}: {g.Count()}"));
-                    logger.LogVerbose($"Publishing data lock event for learner with leearner ref {learnerRef}: {summary}");
+                    logger.LogVerbose($"Publishing data lock event for learner with learner ref {learnerRef}: {summary}");
                     await Task.WhenAll(dataLockEvents.Select(context.Publish)).ConfigureAwait(false);
-                    logger.LogDebug($"Data lock event published for learner with leearner ref {learnerRef}");
+                    logger.LogDebug($"Data lock event published for learner with learner ref {learnerRef}");
                 }
 
                 logger.LogInfo($"Successfully processed DataLockProxyProxyService event for Actor Id {actorId}");
@@ -59,8 +59,6 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
                 logger.LogError($"Error handling ApprenticeshipContractType1EarningEvent message. Error: {ex.Message}.", ex);
                 throw;
             }
-
-
         }
     }
 }
