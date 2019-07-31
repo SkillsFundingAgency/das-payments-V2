@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         private Mock<ILevyFundingSourceRepository> repository;
         private Mock<IAccountApiClient> accountApiClient;
         private IPaymentLogger logger;
-        private Mock<ILevyAccountBulkCopyRepository<LevyAccountModel>> bulkWriter;
+        private Mock<ILevyAccountBulkCopyRepository> bulkWriter;
 
         [SetUp]
         public void Setup()
@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             repository = new Mock<ILevyFundingSourceRepository>(MockBehavior.Strict);
             accountApiClient = new Mock<IAccountApiClient>(MockBehavior.Strict);
             logger = Mock.Of<IPaymentLogger>();
-            bulkWriter = new Mock<ILevyAccountBulkCopyRepository<LevyAccountModel>>(MockBehavior.Strict);
+            bulkWriter = new Mock<ILevyAccountBulkCopyRepository>(MockBehavior.Strict);
         }
 
 
@@ -82,7 +82,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Returns(Task.CompletedTask);
 
             bulkWriter
-                .Setup(x => x.Flush(It.IsAny<CancellationToken>()))
+                .Setup(x => x.DeleteAndFlush(It.IsAny<List<long>>(),It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
             
 
@@ -110,7 +110,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Verify(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
             
             bulkWriter
-                .Verify(x => x.Flush(It.IsAny<CancellationToken>()), Times.Exactly(2));
+                .Verify(x => x.DeleteAndFlush(It.IsAny<List<long>>(),It.IsAny<CancellationToken>()), Times.Exactly(2));
             
         }
         
@@ -148,10 +148,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Returns(Task.CompletedTask);
 
             bulkWriter
-                .Setup(x => x.Flush(It.IsAny<CancellationToken>()))
+                .Setup(x => x.DeleteAndFlush(It.IsAny<List<long>>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
-
-
+            
             var service = new ManageLevyAccountBalanceService
             (
                 repository.Object,
@@ -182,7 +181,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                     Times.Once);
 
             bulkWriter
-                .Verify(x => x.Flush(It.IsAny<CancellationToken>()), Times.Once);
+                .Verify(x => x.DeleteAndFlush(It.IsAny<List<long>>(), It.IsAny<CancellationToken>()), Times.Once);
 
         }
 
@@ -219,10 +218,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Returns(Task.CompletedTask);
 
             bulkWriter
-                .Setup(x => x.Flush(It.IsAny<CancellationToken>()))
+                .Setup(x => x.DeleteAndFlush(It.IsAny<List<long>>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
-
-
+            
             var service = new ManageLevyAccountBalanceService
             (
                 repository.Object,
