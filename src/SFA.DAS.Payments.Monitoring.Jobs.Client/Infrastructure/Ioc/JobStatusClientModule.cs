@@ -105,7 +105,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
             endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
             endpointConfiguration.EnableInstallers();
 
-            endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton((IPaymentLogger)logger));
+            endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton(logger));
             endpointConfiguration.SendOnly();
             return endpointConfiguration;
         }
