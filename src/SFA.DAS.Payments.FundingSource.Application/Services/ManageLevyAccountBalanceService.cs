@@ -96,7 +96,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 {
                     logger.LogInfo($"Now trying to retrieve Account Balance Details for AccountId {accountId}");
 
-                    var accountDetail = await accountApiClient.GetAccount(accountId).ConfigureAwait(false);
+                     var accountDetail = await accountApiClient.GetAccount(accountId).ConfigureAwait(false);
 
                     var newLevyAccountModel = new LevyAccountModel
                     {

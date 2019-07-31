@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Data.Configurations;
@@ -21,8 +22,8 @@ namespace SFA.DAS.Payments.Application.Repositories
     public class LevyAccountBulkCopyRepository : BulkWriter<LevyAccountModel>, ILevyAccountBulkCopyRepository
     {
         public LevyAccountBulkCopyRepository(IConfigurationHelper configurationHelper,
-            IPaymentLogger logger, 
-            IBulkCopyConfiguration<LevyAccountModel> bulkCopyConfig) : base(configurationHelper, logger, bulkCopyConfig )
+            IPaymentLogger logger,
+            IBulkCopyConfiguration<LevyAccountModel> bulkCopyConfig) : base(configurationHelper, logger, bulkCopyConfig)
         {
         }
 
@@ -48,8 +49,7 @@ namespace SFA.DAS.Payments.Application.Repositories
                     {
                         sqlCommand.Connection = sqlConnection;
                         sqlCommand.Transaction = transaction;
-
-                        sqlCommand.CommandText = $@"delete from [Payments2].[LevyAccount] Where AccountId in ({string.Join(",", existingRecordIds)})";
+                        sqlCommand.CommandText = SplitDeleteQueryToBatch(existingRecordIds);
                         sqlCommand.ExecuteNonQuery();
 
                         using (var bulkCopy = new SqlBulkCopy(sqlConnection, SqlBulkCopyOptions.Default, transaction)) await HandleBulkCopy(cancellationToken, list, bulkCopy);
@@ -68,6 +68,23 @@ namespace SFA.DAS.Payments.Application.Repositories
                 logger.LogDebug($"Saved {list.Count} records of type LevyAccountModel");
             }
         }
-        
+
+        private string SplitDeleteQueryToBatch(List<long> existingRecordIds)
+        {
+            var queryBuilder = new StringBuilder();
+            const int queryParametersBatchSize = 17;
+
+            for (var i = 0; i < existingRecordIds.Count; i += queryParametersBatchSize)
+            {
+                var batchAccountIds = existingRecordIds.Skip(i).Take(queryParametersBatchSize).ToList();
+                queryBuilder.AppendLine($"delete from [Payments2].[LevyAccount] Where AccountId in ({string.Join(",", batchAccountIds)}) ;");
+            }
+
+            return queryBuilder.ToString();
+        }
+
+
+
+
     }
 }
