@@ -90,7 +90,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                                         continue;
                                 }
 
-                                await SaveDataLockEvent(cancellationToken, dataLockStatusChangedEvent, earningPeriod).ConfigureAwait(false);
+                                await SaveDataLockEvent(cancellationToken, dataLockStatusChangedEvent, earningPeriod, apprenticeshipId).ConfigureAwait(false);
                                 savedEvents++;
 
                                 if (apprenticeshipId.HasValue)
@@ -156,9 +156,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             // collection periods (and transaction types) are recorded per commitment version
             // v1 does not record delivery periods so we only need to create a record per transaction type for current collection period
-            foreach (var transactionTypesAndPeriod in dataLockStatusChangedEvent.TransactionTypesAndPeriods)
+            // and they don't need transaction types, only flags
+            var periodsGroupedByFlag = dataLockStatusChangedEvent.TransactionTypesAndPeriods.GroupBy(kvp => GetTransactionTypeFlag(kvp.Key));
+
+            foreach (var group in periodsGroupedByFlag)
             {
-                await SaveEventPeriods(cancellationToken, dataLockStatusChangedEvent, transactionTypesAndPeriod, isError, apprenticeshipPriceEpisodeId).ConfigureAwait(false);
+                await SaveEventPeriods(cancellationToken, dataLockStatusChangedEvent, group.Key, isError, string.Concat(apprenticeshipId, "-", apprenticeshipPriceEpisodeId)).ConfigureAwait(false);
                 savedPeriods++;
             }
 
@@ -175,7 +178,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 var dataLockEventError = new LegacyDataLockEventError
                 {
                     DataLockEventId = dataLockStatusChangedEvent.EventId,
-                    SystemDescription = dataLockFailure.DataLockError.ToString(),
+                    SystemDescription = GetDataLockDescription(dataLockFailure.DataLockError),
                     ErrorCode = dataLockFailure.DataLockError.ToString()
                 };
 
@@ -187,20 +190,19 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
         }
 
-        private async Task SaveEventPeriods(CancellationToken cancellationToken, DataLockStatusChanged dataLockStatusChangedEvent, KeyValuePair<TransactionType, List<EarningPeriod>> transactionTypesAndPeriod, bool isError, long commitmentVersionId)
+        private async Task SaveEventPeriods(CancellationToken cancellationToken, DataLockStatusChanged dataLockStatusChangedEvent, int transactionTypeFlag, bool isError, string commitmentVersionId)
         {
             var collectionPeriod = dataLockStatusChangedEvent.CollectionPeriod.Period;
 
             var dataLockEventPeriod = new LegacyDataLockEventPeriod
             {
                 DataLockEventId = dataLockStatusChangedEvent.EventId,
-                TransactionType = (int) transactionTypesAndPeriod.Key,
-                TransactionTypesFlag = GetTransactionTypeFlag(transactionTypesAndPeriod.Key),
+                TransactionTypesFlag = transactionTypeFlag,
                 CollectionPeriodYear = dataLockStatusChangedEvent.CollectionPeriod.AcademicYear,
                 CollectionPeriodName = $"{dataLockStatusChangedEvent.CollectionPeriod.AcademicYear}-{collectionPeriod:D2}",
                 CollectionPeriodMonth = (collectionPeriod < 6) ? collectionPeriod + 7 : collectionPeriod - 5,
                 IsPayable = !isError,
-                CommitmentVersion = commitmentVersionId.ToString()
+                CommitmentVersion = commitmentVersionId
             };
 
             logger.LogVerbose($"Saving DataLockEventPeriod {dataLockEventPeriod.CollectionPeriodName} for legacy DataLockEvent {dataLockStatusChangedEvent.EventId} for UKPRN {dataLockStatusChangedEvent.Ukprn}");
@@ -243,6 +245,25 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
         }
 
+        private string GetDataLockDescription(DataLockErrorCode dlockCode)
+        {
+            switch (dlockCode)
+            {
+                case DataLockErrorCode.DLOCK_01: return "No matching record found in an employer digital account for the UKPRN";
+                case DataLockErrorCode.DLOCK_03: return "No matching record found in the employer digital account for the standard code";
+                case DataLockErrorCode.DLOCK_04: return "No matching record found in the employer digital account for the framework code";
+                case DataLockErrorCode.DLOCK_05: return "No matching record found in the employer digital account for the programme type";
+                case DataLockErrorCode.DLOCK_06: return "No matching record found in the employer digital account for the pathway code";
+                case DataLockErrorCode.DLOCK_07: return "No matching record found in the employer digital account for the negotiated cost of training";
+                case DataLockErrorCode.DLOCK_08: return "Multiple matching records found in the employer digital account";
+                case DataLockErrorCode.DLOCK_09: return "The start date for this negotiated price is before the corresponding price start date in the employer digital account";
+                case DataLockErrorCode.DLOCK_10: return "The employer has stopped payments for this apprentice";
+                case DataLockErrorCode.DLOCK_11: return "The employer is not currently a levy payer";
+                case DataLockErrorCode.DLOCK_12: return "DLOCK_12";
+                default: return dlockCode.ToString();
+            }
+        }
+
         private async Task SaveCommitmentVersion(CancellationToken cancellationToken, DataLockStatusChanged dataLockStatusChangedEvent, long apprenticeshipId, long apprenticeshipPriceEpisodeId)
         {
             var apprenticeship = apprenticeshipCache[apprenticeshipId];
@@ -266,9 +287,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             await dataLockEventCommitmentVersionWriter.Write(commitmentVersion, cancellationToken).ConfigureAwait(false);
         }
 
-        private async Task<LegacyDataLockEvent> SaveDataLockEvent(CancellationToken cancellationToken, DataLockStatusChanged dataLockStatusChangedEvent, EarningPeriod earningPeriod)
+        private async Task<LegacyDataLockEvent> SaveDataLockEvent(CancellationToken cancellationToken, DataLockStatusChanged dataLockStatusChangedEvent, EarningPeriod earningPeriod, long? apprenticeshipId)
         {
             var priceEpisode = dataLockStatusChangedEvent.PriceEpisodes.Single(e => e.Identifier == earningPeriod.PriceEpisodeIdentifier);
+            var hasTnp3 = priceEpisode.TotalNegotiatedPrice3.GetValueOrDefault(0) > 0;
 
             var dataLockEvent = new LegacyDataLockEvent // commitment ID
             {
@@ -288,16 +310,16 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 SubmittedDateTime = dataLockStatusChangedEvent.IlrSubmissionDateTime,
 
                 PriceEpisodeIdentifier = earningPeriod.PriceEpisodeIdentifier,
-                CommitmentId = earningPeriod.ApprenticeshipId ?? 0,
+                CommitmentId = apprenticeshipId.GetValueOrDefault(0),
                 EmployerAccountId = earningPeriod.AccountId.GetValueOrDefault(0),
 
                 AimSeqNumber = dataLockStatusChangedEvent.LearningAim.SequenceNumber,
                 IlrPriceEffectiveFromDate = priceEpisode.EffectiveTotalNegotiatedPriceStartDate,
                 IlrPriceEffectiveToDate = priceEpisode.ActualEndDate.GetValueOrDefault(priceEpisode.PlannedEndDate),
-                IlrEndpointAssessorPrice = priceEpisode.TotalNegotiatedPrice3.HasValue ? priceEpisode.TotalNegotiatedPrice4 : priceEpisode.TotalNegotiatedPrice2,
+                IlrEndpointAssessorPrice = hasTnp3 ? priceEpisode.TotalNegotiatedPrice4 : priceEpisode.TotalNegotiatedPrice2,
                 IlrFileName = dataLockStatusChangedEvent.IlrFileName,
                 IlrStartDate = priceEpisode.CourseStartDate,
-                IlrTrainingPrice = priceEpisode.TotalNegotiatedPrice3 ?? priceEpisode.TotalNegotiatedPrice1,
+                IlrTrainingPrice = hasTnp3 ? priceEpisode.TotalNegotiatedPrice3 : priceEpisode.TotalNegotiatedPrice1,
             };
 
             logger.LogVerbose($"Saving legacy DataLockEvent {dataLockStatusChangedEvent.EventId} for UKPRN {dataLockStatusChangedEvent.Ukprn}");
