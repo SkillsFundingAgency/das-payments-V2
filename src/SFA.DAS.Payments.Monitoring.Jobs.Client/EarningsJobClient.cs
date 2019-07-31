@@ -67,11 +67,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 await dataContext.SaveNewJob(jobDetails, jobSteps);
                 scope.Complete();
             }
-            SendTelemetry(jobId, ukprn, ilrSubmissionTime, collectionYear, collectionPeriod, generatedMessages.Count, jobDetails, stopwatch);
+            SendTelemetry(jobId, ukprn, collectionYear, collectionPeriod, generatedMessages.Count, jobDetails, stopwatch);
             logger.LogInfo($"Finished saving the job to the db.  Job id: {jobDetails.Id}, DC Job Id: {jobId}, Ukprn: {ukprn}.");
         }
 
-        private void SendTelemetry(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod, int learnerCount, JobModel jobDetails, Stopwatch stopwatch)
+        private void SendTelemetry(long jobId, long ukprn, short collectionYear, byte collectionPeriod, int learnerCount, JobModel jobDetails, Stopwatch stopwatch)
         {
             stopwatch.Stop();
             var properties = new Dictionary<string, string>

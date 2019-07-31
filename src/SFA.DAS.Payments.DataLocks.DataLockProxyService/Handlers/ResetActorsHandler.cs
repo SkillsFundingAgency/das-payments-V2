@@ -23,19 +23,19 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
 
         public async Task Handle(ResetActorsCommand message, IMessageHandlerContext context)
         {
-            logger.LogDebug("Resetting cache for list of ULNs.");
+            logger.LogDebug("Resetting datalock actors.");
             var resetTasks = new List<Task>();
             foreach (var uln in message.Ulns)
             {
                 var actorId = new ActorId(uln);
-                logger.LogVerbose($"Creating actor proxy for actor id: {uln}.");
+                logger.LogVerbose($"Creating actor proxy, actor id: {uln}.");
                 var actor = proxyFactory.CreateActorProxy<IDataLockService>(new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/DataLockServiceActorService"), actorId);
-                logger.LogVerbose($"Actor proxy created for actor id {uln}, now resetting the cache.");
+                logger.LogVerbose($"Actor proxy created. Actor id: {uln}, now resetting the cache.");
                 resetTasks.Add(actor.Reset());
             }
 
             await Task.WhenAll(resetTasks).ConfigureAwait(false);
-            logger.LogInfo("Finished resetting the cache for ulns");
+            logger.LogInfo("Finished resetting the datalock actors");
         }
     }
 }

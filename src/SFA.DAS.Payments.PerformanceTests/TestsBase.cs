@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.PerformanceTests
         public static TestsConfiguration Config => new TestsConfiguration();
         protected FM36Learner CreateFM36Learner(TestSession session, Learner testLearner, DateTime startDate)
         {
-            var learner = new FM36Learner { LearnRefNumber = testLearner.LearnRefNumber, ULN = testLearner.Uln};
+            var learner = new FM36Learner { LearnRefNumber = testLearner.LearnRefNumber, ULN = testLearner.Uln };
             var priceEpisode = new ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode
             {
                 PriceEpisodeIdentifier = "pe-1",

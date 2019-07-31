@@ -13,7 +13,7 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 {
     [TestFixture]
-    public class EarningPeriodsValidationProcessorTest
+    public class EarningPeriodsValidationProcessorTests
     {
         private AutoMock mocker;
         private List<PriceEpisode> priceEpisodes;

@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.Logging.Interfaces;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
@@ -27,7 +26,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
         {
             try
             {
-                if (message.Learner== null || message.Learner?.Uln == 0)
+                if (message.Learner == null || message.Learner?.Uln == 0)
                 {
                     throw new InvalidOperationException("Invalid 'ApprenticeshipContractType1EarningEvent' received. Learner was null or Uln was 0.");
                 }
@@ -36,7 +35,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
                 logger.LogDebug($"Processing DataLockProxyProxyService event for learner with learner ref {learnerRef}");
                 var actorId = new ActorId(uln);
 
-                logger.LogVerbose($"Creating actor proxy for learner with leearner ref {learnerRef}");
+                logger.LogVerbose($"Creating actor proxy for learner with learner ref {learnerRef}");
                 var actor = proxyFactory.CreateActorProxy<IDataLockService>(new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/DataLockServiceActorService"), actorId);
                 logger.LogDebug($"Actor proxy created for learner with ULN {uln}");
 

@@ -44,7 +44,6 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             IPaymentLogger paymentLogger,
             IApprenticeshipKeyService apprenticeshipKeyService,
             Func<IPaymentHistoryRepository> paymentHistoryRepositoryFactory,
-            IPaymentKeyService paymentKeyService,
             IApprenticeshipContractType2EarningsEventProcessor contractType2EarningsEventProcessor,
             IFunctionalSkillEarningsEventProcessor functionalSkillEarningsEventProcessor,
             IPayableEarningEventProcessor payableEarningEventProcessor,
