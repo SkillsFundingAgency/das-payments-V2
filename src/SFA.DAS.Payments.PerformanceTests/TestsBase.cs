@@ -6,12 +6,6 @@ using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
-using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Model.Core.OnProgramme;
-using SFA.DAS.Payments.Monitoring.Jobs.Data;
-using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
-using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
@@ -22,8 +16,7 @@ namespace SFA.DAS.Payments.PerformanceTests
         public static TestsConfiguration Config => new TestsConfiguration();
         protected FM36Learner CreateFM36Learner(TestSession session, Learner testLearner, DateTime startDate)
         {
-            var learner = new FM36Learner { LearnRefNumber = testLearner.LearnRefNumber, ULN = testLearner.Uln};
-            //var startDate = new DateTime(DateTime.Today.Year + (DateTime.Today.Month < 8 ? -1 : 0), 8, 1);
+            var learner = new FM36Learner { LearnRefNumber = testLearner.LearnRefNumber, ULN = testLearner.Uln };
             var priceEpisode = new ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode
             {
                 PriceEpisodeIdentifier = "pe-1",
@@ -43,7 +36,7 @@ namespace SFA.DAS.Payments.PerformanceTests
                     PriceEpisodeFundLineType = testLearner.Course.FundingLineType,
                     PriceEpisodeBalanceValue = 0,
                     PriceEpisodeCompletionPayment = 3000,
-                    PriceEpisodeContractType = testLearner.IsLevyLearner ? "Levy Contract" : "Non-Levy Contract", //ContractType.Act2.ToString("G"),
+                    PriceEpisodeContractType = testLearner.IsLevyLearner ? "Levy Contract" : "Non-Levy Contract",
                     PriceEpisodeOnProgPayment = 1000,
                     PriceEpisodePlannedEndDate = startDate.AddMonths(12),
                     PriceEpisodeSFAContribPct = .9M,
