@@ -50,9 +50,13 @@ namespace SFA.DAS.Payments.Application.Repositories
                         sqlCommand.Connection = sqlConnection;
                         sqlCommand.Transaction = transaction;
                         sqlCommand.CommandText = SplitDeleteQueryToBatch(existingRecordIds);
-                        sqlCommand.ExecuteNonQuery();
 
-                        using (var bulkCopy = new SqlBulkCopy(sqlConnection, SqlBulkCopyOptions.Default, transaction)) await HandleBulkCopy(cancellationToken, list, bulkCopy);
+                      await sqlCommand.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+
+                        using (var bulkCopy = new SqlBulkCopy(sqlConnection, SqlBulkCopyOptions.Default, transaction))
+                        {
+                            await HandleBulkCopy(cancellationToken, list, bulkCopy).ConfigureAwait(false);
+                        }
 
                         transaction.Commit();
                     }
@@ -72,7 +76,7 @@ namespace SFA.DAS.Payments.Application.Repositories
         private string SplitDeleteQueryToBatch(List<long> existingRecordIds)
         {
             var queryBuilder = new StringBuilder();
-            const int queryParametersBatchSize = 17;
+            const int queryParametersBatchSize = 1000;
 
             for (var i = 0; i < existingRecordIds.Count; i += queryParametersBatchSize)
             {

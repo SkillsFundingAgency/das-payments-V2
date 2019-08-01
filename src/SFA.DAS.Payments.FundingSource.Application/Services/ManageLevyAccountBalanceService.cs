@@ -41,35 +41,44 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
         public async Task RefreshLevyAccountDetails(CancellationToken cancellationToken = default(CancellationToken))
         {
+            logger.LogInfo($"Retrieving Non Levy Payers AccountIds");
+           
             logger.LogInfo("Now Trying to Refresh All Accounts Balance Details");
+            var page = 1;
+            int? totalPageSize = null;
 
-            var nonLevyPayersAccountIds = await repository.GetNonLevyPayersAccountIds(cancellationToken).ConfigureAwait(false);
-
-            var accountIds = await repository.GetAccountIds(cancellationToken).ConfigureAwait(false);
-
-            logger.LogInfo($"Retrieving Account Balance Details for  {accountIds.Count} Account Ids");
-
-            for (var i = 0; i < accountIds.Count; i += batchSize)
+            while (totalPageSize == null || page <= totalPageSize)
             {
                 try
                 {
-                    var levyAccountsToUpdate = accountIds.Skip(i).Take(batchSize).ToList();
+                    var pagedAccountsRecords = await accountApiClient.GetPageOfAccounts(page, batchSize).ConfigureAwait(false);
 
-                    logger.LogVerbose($"Processing {batchSize} Batch of Levy Accounts Details. Account Ids {string.Join(",", levyAccountsToUpdate)}");
+                    if (totalPageSize == null)
+                    {
+                        totalPageSize = pagedAccountsRecords.TotalPages;
+                        logger.LogInfo($"Total Levy Account Page Size : {totalPageSize.Value}  for Batch Size :{batchSize}");
+                    }
+                
+                    await UpdateLevyAccountDetails(pagedAccountsRecords, cancellationToken);
 
-                    var levyAccountModels = await GetLevyAccountsBalance(nonLevyPayersAccountIds, levyAccountsToUpdate).ConfigureAwait(false);
-                    await BatchUpdateLevyAccounts(cancellationToken, levyAccountModels).ConfigureAwait(false);
+                    logger.LogInfo($"Successfully retrieved Account Balance Details for Page {page} of Levy Accounts");
                 }
                 catch (Exception e)
                 {
-                    logger.LogError($"Error while while updating Levy Accounts Details", e);
+                    logger.LogError($"Error while retrieving Account Balance Details for Page {page} of Levy Accounts",e);
                 }
 
+                page++;
             }
-
         }
 
-        private async Task BatchUpdateLevyAccounts(CancellationToken cancellationToken, List<LevyAccountModel> levyAccountModels)
+        private async Task UpdateLevyAccountDetails(PagedApiResponseViewModel<AccountWithBalanceViewModel> pagedAccountsRecords, CancellationToken cancellationToken)
+        {
+            var pagedLevyAccountModels = MapToLevyAccountModel(pagedAccountsRecords);
+            await BatchUpdateLevyAccounts(pagedLevyAccountModels, cancellationToken).ConfigureAwait(false);
+        }
+
+        private async Task BatchUpdateLevyAccounts(List<LevyAccountModel> levyAccountModels, CancellationToken cancellationToken)
         {
             try
             {
@@ -86,39 +95,19 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             }
         }
 
-        private async Task<List<LevyAccountModel>> GetLevyAccountsBalance(List<long> nonLevyPayersAccountIds, List<long> levyAccountsToUpdate)
+        private List<LevyAccountModel> MapToLevyAccountModel(PagedApiResponseViewModel<AccountWithBalanceViewModel> pagedAccountWithBalanceViewModel)
         {
-            var levyAccountModels = new List<LevyAccountModel>();
-
-            foreach (var accountId in levyAccountsToUpdate)
+            var levyAccountModels = pagedAccountWithBalanceViewModel.Data.Select(accountDetail => new LevyAccountModel
             {
-                try
-                {
-                    logger.LogInfo($"Now trying to retrieve Account Balance Details for AccountId {accountId}");
-
-                     var accountDetail = await accountApiClient.GetAccount(accountId).ConfigureAwait(false);
-
-                    var newLevyAccountModel = new LevyAccountModel
-                    {
-                        AccountId = accountId,
-                        IsLevyPayer = !nonLevyPayersAccountIds.Contains(accountId),
-                        AccountName = accountDetail.DasAccountName,
-                        Balance = accountDetail.Balance,
-                        TransferAllowance = accountDetail.RemainingTransferAllowance
-                    };
-                    levyAccountModels.Add(newLevyAccountModel);
-
-                    logger.LogInfo($"Successfully retrieved Account Balance Details for AccountId {accountId}");
-                }
-                catch (Exception e)
-                {
-                    logger.LogError($"Error while retrieving Account Balance Details for AccountId {accountId}", e);
-                }
-
-                logger.LogInfo("Successfully Refreshed Accounts Balance Details");
-            }
+                AccountId = accountDetail.AccountId,
+                IsLevyPayer = accountDetail.IsLevyPayer,
+                AccountName = accountDetail.AccountName,
+                Balance = accountDetail.Balance,
+                TransferAllowance = accountDetail.RemainingTransferAllowance,
+            }).ToList();
 
             return levyAccountModels;
+
         }
     }
 }

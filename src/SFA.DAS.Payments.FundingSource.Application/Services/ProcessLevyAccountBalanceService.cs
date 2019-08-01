@@ -36,7 +36,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
                     try
                     {
-
                         await accountBalanceService.RefreshLevyAccountDetails(cancellationToken);
                     }
                     catch (Exception e)
@@ -52,7 +51,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             catch (TaskCanceledException e)
             {
                 paymentLogger.LogError("Levy Accounts Refresh Task was Canceled", e);
-                throw;
             }
             catch (Exception e)
             {

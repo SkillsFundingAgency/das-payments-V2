@@ -57,9 +57,10 @@ namespace SFA.DAS.Payments.Application.Repositories
             {
                 await sqlConnection.OpenAsync(cancellationToken).ConfigureAwait(false);
 
-                using (var bulkCopy = new SqlBulkCopy(sqlConnection)) await HandleBulkCopy(cancellationToken, list, bulkCopy);
-             
-                
+                using (var bulkCopy = new SqlBulkCopy(sqlConnection))
+                {
+                    await HandleBulkCopy(cancellationToken, list, bulkCopy).ConfigureAwait(false);
+                }
             }
         }
 

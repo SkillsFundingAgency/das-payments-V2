@@ -49,42 +49,5 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
             await dataContext.EmployerProviderPriority
                .AddRangeAsync(paymentPriorityModels, cancellationToken)
                .ConfigureAwait(false);
-        }
-        public async Task<List<long>> GetAccountIds(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var accountIds = await dataContext
-                .Apprenticeship
-                .Select(x => x.AccountId)
-                .Distinct()
-                .ToListAsync(cancellationToken)
-                .ConfigureAwait(false);
-
-            var transferAccountIds = await dataContext
-                .Apprenticeship
-                .Where(o => o.TransferSendingEmployerAccountId.HasValue && o.TransferSendingEmployerAccountId.Value != 0)
-                .Select(o => o.TransferSendingEmployerAccountId.Value)
-                .Distinct()
-                .ToListAsync(cancellationToken)
-                .ConfigureAwait(false);
-
-            accountIds.AddRange(transferAccountIds);
-
-            return accountIds;
-        }
-
-        public async Task<List<long>> GetNonLevyPayersAccountIds(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var accountIds = await dataContext
-                .LevyAccount
-                .Where(a => !a.IsLevyPayer)
-                .Select(x => x.AccountId)
-                .Distinct()
-                .ToListAsync(cancellationToken)
-                .ConfigureAwait(false);
-            
-            return accountIds;
-        }
-
-
-    }
+        } }
 }
