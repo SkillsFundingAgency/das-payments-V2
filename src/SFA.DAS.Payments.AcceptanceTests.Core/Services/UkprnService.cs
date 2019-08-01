@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
+using SFA.DAS.Payments.AcceptanceTests.Services.Interfaces;
 using Provider = SFA.DAS.Payments.AcceptanceTests.Core.TestModels.Provider;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
@@ -13,11 +14,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
     {
         private readonly TestPaymentsDataContext dataContext;
         private readonly IJobService jobService;
+        private readonly IApprenticeshipEarningsHistoryService appEarnHistoryService;
 
-        public UkprnService(TestPaymentsDataContext dataContext, IJobService jobService)
+        public UkprnService(TestPaymentsDataContext dataContext, IJobService jobService, IApprenticeshipEarningsHistoryService appEarnHistoryService)
         {
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
             this.jobService = jobService;
+            this.appEarnHistoryService = appEarnHistoryService;
         }
 
         public int GenerateUkprn()
@@ -41,6 +44,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
                     }
 
                     dataContext.ClearPaymentsData(provider.Ukprn);
+                    appEarnHistoryService.DeleteHistory(provider.Ukprn);
                     mutex.ReleaseMutex();
                 }
                 else

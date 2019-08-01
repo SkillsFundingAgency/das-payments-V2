@@ -97,7 +97,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private List<string> SortRequiredPaymentKeys(List<RequiredPaymentSortKeyModel> requiredPaymentSortKeyModels)
         {
             return requiredPaymentSortKeyModels
-                  .OrderBy(x => x.StarDate)
+                  .OrderBy(x => x.AgreedOnDate)
                   .ThenBy(x => x.Uln)
                   .Select(x => x.Id)
                   .ToList();

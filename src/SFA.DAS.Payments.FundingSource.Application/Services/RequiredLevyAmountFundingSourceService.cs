@@ -232,7 +232,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             {
                 Id = paymentEvent.EventId.ToString(),
                 Uln = paymentEvent.Learner.Uln,
-                AgreedOnDate = DateTime.MinValue //ToDo get AgreedOnDate from Apprenticeship Model
+                AgreedOnDate = paymentEvent.AgreedOnDate ?? DateTime.MinValue
             };
 
             transferKeysList.Add(newTransferKey);
@@ -251,7 +251,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 Id = paymentEvent.EventId.ToString(),
                 Uln = paymentEvent.Learner.Uln,
                 Ukprn = paymentEvent.Ukprn,
-                StarDate = paymentEvent.StartDate
+                AgreedOnDate = paymentEvent.AgreedOnDate ?? DateTime.MinValue
             };
 
             requiredPaymentKeysList.Add(newRequiredPaymentSortKey);
