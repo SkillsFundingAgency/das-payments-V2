@@ -22,34 +22,23 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.FundingSourceId, opt => opt.MapFrom(source => source.EventId))
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => source.CollectionPeriod.Period))
-                .ForMember(dest => dest.AcademicYear,
-                    opt => opt.MapFrom(source => source.CollectionPeriod.AcademicYear))
+                .ForMember(dest => dest.AcademicYear, opt => opt.MapFrom(source => source.CollectionPeriod.AcademicYear))
                 .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => source.DeliveryPeriod))
                 .ForMember(dest => dest.Amount, opt => opt.MapFrom(source => source.AmountDue))
                 .ForMember(dest => dest.ContractType, opt => opt.MapFrom(source => source.ContractType))
                 .ForMember(dest => dest.FundingSource, opt => opt.MapFrom(source => source.FundingSourceType))
-                .ForMember(dest => dest.IlrSubmissionDateTime,
-                    opt => opt.MapFrom(source => source.IlrSubmissionDateTime))
+                .ForMember(dest => dest.IlrSubmissionDateTime, opt => opt.MapFrom(source => source.IlrSubmissionDateTime))
                 .ForMember(dest => dest.JobId, opt => opt.MapFrom(source => source.JobId))
                 .ForMember(dest => dest.LearnerUln, opt => opt.MapFrom(source => source.Learner.Uln))
-                .ForMember(dest => dest.LearnerReferenceNumber,
-                    opt => opt.MapFrom(source => source.Learner.ReferenceNumber))
-                .ForMember(dest => dest.LearningAimFrameworkCode,
-                    opt => opt.MapFrom(source => source.LearningAim.FrameworkCode))
-                .ForMember(dest => dest.LearningAimFundingLineType,
-                    opt => opt.MapFrom(source => source.LearningAim.FundingLineType))
-                .ForMember(dest => dest.LearningAimPathwayCode,
-                    opt => opt.MapFrom(source => source.LearningAim.PathwayCode))
-                .ForMember(dest => dest.LearningAimProgrammeType,
-                    opt => opt.MapFrom(source => source.LearningAim.ProgrammeType))
-                .ForMember(dest => dest.LearningAimReference,
-                    opt => opt.MapFrom(source => source.LearningAim.Reference))
-                .ForMember(dest => dest.LearningAimStandardCode,
-                    opt => opt.MapFrom(source => source.LearningAim.StandardCode))
-                .ForMember(dest => dest.PriceEpisodeIdentifier,
-                    opt => opt.MapFrom(source => source.PriceEpisodeIdentifier))
-                .ForMember(dest => dest.SfaContributionPercentage,
-                    opt => opt.MapFrom(source => source.SfaContributionPercentage))
+                .ForMember(dest => dest.LearnerReferenceNumber, opt => opt.MapFrom(source => source.Learner.ReferenceNumber))
+                .ForMember(dest => dest.LearningAimFrameworkCode, opt => opt.MapFrom(source => source.LearningAim.FrameworkCode))
+                .ForMember(dest => dest.LearningAimFundingLineType, opt => opt.MapFrom(source => source.LearningAim.FundingLineType))
+                .ForMember(dest => dest.LearningAimPathwayCode, opt => opt.MapFrom(source => source.LearningAim.PathwayCode))
+                .ForMember(dest => dest.LearningAimProgrammeType, opt => opt.MapFrom(source => source.LearningAim.ProgrammeType))
+                .ForMember(dest => dest.LearningAimReference, opt => opt.MapFrom(source => source.LearningAim.Reference))
+                .ForMember(dest => dest.LearningAimStandardCode, opt => opt.MapFrom(source => source.LearningAim.StandardCode))
+                .ForMember(dest => dest.PriceEpisodeIdentifier, opt => opt.MapFrom(source => source.PriceEpisodeIdentifier))
+                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(source => source.SfaContributionPercentage))
                 .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => source.TransactionType))
                 .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
                 .ForMember(dest => dest.AgreementId, opt => opt.Ignore())
@@ -60,7 +49,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.CompletionAmount, opt => opt.MapFrom(source => source.CompletionAmount))
                 .ForMember(dest => dest.InstalmentAmount, opt => opt.MapFrom(source => source.InstalmentAmount))
                 .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(source => source.NumberOfInstalments))
-                .ForMember(dest => dest.LearningStartDate, opt => opt.MapFrom(source => source.LearningStartDate));
+                .ForMember(dest => dest.LearningStartDate, opt => opt.MapFrom(source => source.LearningStartDate))
+                .ForMember(dest => dest.ApprenticeshipId, opt => opt.MapFrom(source => source.ApprenticeshipId))
+                .ForMember(dest => dest.ApprenticeshipPriceEpisodeId, opt => opt.MapFrom(source => source.ApprenticeshipPriceEpisodeId));
 
 
             CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
@@ -104,7 +95,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.CompletionAmount, opt => opt.MapFrom(source => source.CompletionAmount))
                 .ForMember(dest => dest.InstalmentAmount, opt => opt.MapFrom(source => source.InstalmentAmount))
                 .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(source => source.NumberOfInstalments))
-                .ForMember(dest => dest.LearningStartDate, opt => opt.MapFrom(source => source.LearningStartDate));
+                .ForMember(dest => dest.LearningStartDate, opt => opt.MapFrom(source => source.LearningStartDate))
+                .ForMember(dest => dest.ApprenticeshipId, opt => opt.MapFrom(source => source.ApprenticeshipId))
+                .ForMember(dest => dest.ApprenticeshipPriceEpisodeId, opt => opt.MapFrom(source => source.ApprenticeshipPriceEpisodeId));
 
             CreateMap<PaymentModel, EmployerCoInvestedProviderPaymentEvent>();
             CreateMap<PaymentModel, SfaCoInvestedProviderPaymentEvent>();

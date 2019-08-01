@@ -30,5 +30,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Model.Entities
         public short NumberOfInstalments { get; set; }
 
         public DateTime? LearningStartDate { get; set; }
+
+        public long? ApprenticeshipId { get; set; }
+
+        public long? ApprenticeshipPriceEpisodeId { get; set; }
     }
 }
