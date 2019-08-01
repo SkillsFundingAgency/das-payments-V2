@@ -1,4 +1,4 @@
-﻿using Autofac;
+using Autofac;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using Microsoft.EntityFrameworkCore;
@@ -1099,10 +1099,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 ProvidersWithCacheCleared = new HashSet<(byte period, int academicYear, long)>();
 
-                TestSession.Providers.ForEach(p =>
+                foreach (var testSessionProvider in TestSession.Providers)
                 {
-                    ProvidersWithCacheCleared.Add((collectionPeriod.Period, collectionPeriod.AcademicYear, p.Ukprn));
-                });
+                    if (Config.ValidateDcAndDasServices)
+                    {
+                        await RequiredPaymentsCacheCleaner.ClearCaches(testSessionProvider, TestSession, collectionPeriod.AcademicYear).ConfigureAwait(false);
+                    }
+
+                    ProvidersWithCacheCleared.Add((collectionPeriod.Period, collectionPeriod.AcademicYear, testSessionProvider.Ukprn));
+                }
             }
 
             if (!ProvidersWithCacheCleared.Contains((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn)))

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,8 +9,10 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
+using SFA.DAS.Payments.DataLocks.Application.Services;
 using SFA.DAS.Payments.DataLocks.DataLockService.Interfaces;
 using SFA.DAS.Payments.DataLocks.Domain.Infrastructure;
+using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -24,6 +27,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         private readonly IPaymentLogger paymentLogger;
         private readonly IActorDataCache<List<ApprenticeshipModel>> apprenticeships;
         private readonly IDataLockProcessor dataLockProcessor;
+        private readonly IApprenticeshipUpdatedProcessor apprenticeshipUpdatedProcessor;
         private readonly IApprenticeshipRepository apprenticeshipRepository;
 
         public DataLockService(
@@ -32,7 +36,9 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             IPaymentLogger paymentLogger,
             IApprenticeshipRepository apprenticeshipRepository,
             IActorDataCache<List<ApprenticeshipModel>> apprenticeships,
-            IDataLockProcessor dataLockProcessor)
+            IDataLockProcessor dataLockProcessor,
+            IApprenticeshipUpdatedProcessor apprenticeshipUpdatedProcessor
+            )
             : base(actorService, actorId)
         {
             this.actorService = actorService;
@@ -41,23 +47,31 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             this.apprenticeshipRepository = apprenticeshipRepository;
             this.apprenticeships = apprenticeships;
             this.dataLockProcessor = dataLockProcessor;
+            this.apprenticeshipUpdatedProcessor = apprenticeshipUpdatedProcessor ?? throw new ArgumentNullException(nameof(apprenticeshipUpdatedProcessor));
         }
 
         public async Task<List<DataLockEvent>> HandleEarning(ApprenticeshipContractType1EarningEvent message, CancellationToken cancellationToken)
         {
+            await Initialise().ConfigureAwait(false);
             return await dataLockProcessor.GetPaymentEvents(message, cancellationToken);
+        }
+
+        public async Task HandleApprenticeshipUpdated(ApprenticeshipUpdated message, CancellationToken none)
+        {
+            await Initialise().ConfigureAwait(false);
+            await apprenticeshipUpdatedProcessor.ProcessApprenticeshipUpdate(message);
         }
 
         public async Task Reset()
         {
-            paymentLogger.LogInfo($"Resetting actor for provider {Id}");
+            paymentLogger.LogDebug($"Resetting actor for provider {Id}");
             await apprenticeships.ResetInitialiseFlag().ConfigureAwait(false);
+            paymentLogger.LogInfo($"Reset actor for provider {Id}");
         }
 
         protected override async Task OnActivateAsync()
         {
             await Initialise().ConfigureAwait(false);
-
             await base.OnActivateAsync().ConfigureAwait(false);
         }
 
@@ -86,7 +100,6 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             }
 
             paymentLogger.LogInfo($"Initialised actor for provider {Id}");
-
 
             await apprenticeships.SetInitialiseFlag().ConfigureAwait(false);
         }
