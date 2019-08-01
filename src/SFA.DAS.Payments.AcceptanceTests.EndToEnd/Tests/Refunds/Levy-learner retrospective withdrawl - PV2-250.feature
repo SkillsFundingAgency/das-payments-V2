@@ -1,4 +1,5 @@
-﻿Feature: Levy Learner is withdrawn retrospectively PV2-250
+﻿@supports_dc_e2e
+Feature: Levy Learner is withdrawn retrospectively PV2-250
 	As a provider,
 	I want a levy learner, where levy is available the provider retrospectively notifies a withdrawal and previously paid monthly instalments are refunded
 	So that I am accurately paid my apprenticeship provision.
@@ -10,11 +11,11 @@ Given the employer levy account balance in collection period R06/Current Academi
 And the following commitments exist
 
 	| start date                   | end date                     | agreed price |Standard Code | Programme Type |
-	| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 11250        |17            | 25             |
+	| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 11250        |52            | 25             |
 
 And the provider previously submitted the following learner details
-    | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assesment Price | Total Assesment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
-    | 04/Aug/Current Academic Year | 12 months        | 9000                 | 01/Aug/Current Academic Year        | 2250                  | 01/Aug/Current Academic Year         |                 | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 17            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |
+    | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assesment Price | Total Assesment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                |
+    | 04/Aug/Current Academic Year | 12 months        | 9000                 | 04/Aug/Current Academic Year        | 2250                  | 01/Aug/Current Academic Year         |                 | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 52            | 25             | 19+ Apprenticeship (From May 2017) Levy Contract |
 
 And the following earnings had been generated for the learner
     | Delivery Period           | On-Programme | Completion | Balancing |
@@ -40,12 +41,12 @@ And the following provider payments had been generated
     | R05/Current Academic Year | Dec/Current Academic Year | 750           | Learning         |
         
 But the Provider now changes the Learner details as follows
-    | Start Date                   | Planned Duration | Total Training Price | Total Assessment Price | Total Training Price Effective Date | Total Assesment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
-    | 04/Aug/Current Academic Year | 12 months        | 9000                 | 2250                   | 01/Aug/Current Academic Year        | 01/Aug/Current Academic Year         | 3 months        | withdrawn         | 90%                         | Act1          | 1                   | ZPROG001      | 17            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |
+    | Start Date                   | Planned Duration | Total Training Price | Total Assessment Price | Total Training Price Effective Date | Total Assessment Price Effective Date | Actual Duration | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                |
+    | 04/Aug/Current Academic Year | 12 months        | 9000                 | 2250                   | 04/Aug/Current Academic Year        | 01/Aug/Current Academic Year         | 3 months        | withdrawn         | 90%                         | Act1          | 1                   | ZPROG001      | 52            | 25             | 19+ Apprenticeship (From May 2017) Levy Contract |
 
 And price details as follows
     | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-    | pe-1             | 9000                 | 01/Aug/Current Academic Year        | 2250                   | 01/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | Act1          | 1                   | 90%                         |
+    | pe-1             | 9000                 | 04/Aug/Current Academic Year        | 2250                   | 01/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | Act1          | 1                   | 90%                         |
 		 
 When the amended ILR file is re-submitted for the learners in collection period R06/Current Academic Year
 
