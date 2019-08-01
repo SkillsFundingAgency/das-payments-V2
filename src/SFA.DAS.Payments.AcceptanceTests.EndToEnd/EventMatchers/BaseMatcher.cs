@@ -64,8 +64,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         private IList<T> RemoveEmptyFunctionSkillEarningEvent(IList<T> actualPayments)
         {
             return actualPayments.Except(actualPayments
-                .Where(actualPayment => actualPayment.GetType() == typeof(FunctionalSkillEarningsEvent) && 
-                                          (actualPayment as FunctionalSkillEarningsEvent).Earnings.All(e=>e.Periods.All(p=>p.Amount == 0)))).ToList();
+                  .Where(actualPayment => actualPayment.GetType() == typeof(FunctionalSkillEarningsEvent) && 
+                                          (actualPayment as FunctionalSkillEarningsEvent).Earnings.All(e=> e.Periods == null  || e.Periods.All(p=>p == null)|| e.Periods.All(p=>p.Amount == 0)))).ToList();
+
         }
     }
 }
