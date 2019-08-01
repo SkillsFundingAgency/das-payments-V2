@@ -66,6 +66,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return actualPayments.Except(actualPayments
                 .Where(actualPayment => actualPayment.GetType() == typeof(FunctionalSkillEarningsEvent) && 
                                           (actualPayment as FunctionalSkillEarningsEvent).Earnings.All(e=> e.Periods == null  || e.Periods.All(p=>p == null)|| e.Periods.All(p=>p.Amount == 0)))).ToList();
+
         }
     }
 }

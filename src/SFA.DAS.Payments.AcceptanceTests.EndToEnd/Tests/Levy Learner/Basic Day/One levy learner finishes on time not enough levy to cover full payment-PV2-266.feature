@@ -1,3 +1,4 @@
+@supports_dc_e2e
 Feature:One levy learner finishes on time not enough levy to cover full payment-PV2-266
 
 Scenario Outline: One levy learner, not enough levy available to cover full payment, finished on time PV2-266
