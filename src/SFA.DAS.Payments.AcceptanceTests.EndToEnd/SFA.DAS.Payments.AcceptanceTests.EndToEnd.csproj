@@ -46,6 +46,9 @@
     <Reference Include="ESFA.DC.CollectionsManagement.Models, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.CollectionsManagement.Models.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.CollectionsManagement.Models.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.Data.AppsEarningsHistory.Model, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Data.AppsEarningsHistory.Model.0.2.0-alpha0009\lib\netstandard2.0\ESFA.DC.Data.AppsEarningsHistory.Model.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model, Version=0.1.320.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.0.1.320\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.dll</HintPath>
     </Reference>
@@ -106,17 +109,17 @@
     <Reference Include="Microsoft.Azure.Services.AppAuthentication, Version=1.0.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.3\lib\net452\Microsoft.Azure.Services.AppAuthentication.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.EntityFrameworkCore, Version=2.2.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.EntityFrameworkCore.2.2.1\lib\netstandard2.0\Microsoft.EntityFrameworkCore.dll</HintPath>
+    <Reference Include="Microsoft.EntityFrameworkCore, Version=2.2.3.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.EntityFrameworkCore.2.2.3\lib\netstandard2.0\Microsoft.EntityFrameworkCore.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.EntityFrameworkCore.Abstractions, Version=2.2.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.EntityFrameworkCore.Abstractions.2.2.1\lib\netstandard2.0\Microsoft.EntityFrameworkCore.Abstractions.dll</HintPath>
+    <Reference Include="Microsoft.EntityFrameworkCore.Abstractions, Version=2.2.3.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.EntityFrameworkCore.Abstractions.2.2.3\lib\netstandard2.0\Microsoft.EntityFrameworkCore.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.EntityFrameworkCore.Relational, Version=2.2.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.EntityFrameworkCore.Relational.2.2.1\lib\netstandard2.0\Microsoft.EntityFrameworkCore.Relational.dll</HintPath>
+    <Reference Include="Microsoft.EntityFrameworkCore.Relational, Version=2.2.3.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.EntityFrameworkCore.Relational.2.2.3\lib\netstandard2.0\Microsoft.EntityFrameworkCore.Relational.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.EntityFrameworkCore.SqlServer, Version=2.2.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.EntityFrameworkCore.SqlServer.2.2.1\lib\netstandard2.0\Microsoft.EntityFrameworkCore.SqlServer.dll</HintPath>
+    <Reference Include="Microsoft.EntityFrameworkCore.SqlServer, Version=2.2.3.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.EntityFrameworkCore.SqlServer.2.2.3\lib\netstandard2.0\Microsoft.EntityFrameworkCore.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Caching.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Caching.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Caching.Abstractions.dll</HintPath>
@@ -188,8 +191,14 @@
     <Reference Include="NServiceBus.Core, Version=7.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
       <HintPath>..\packages\NServiceBus.7.1.5\lib\net452\NServiceBus.Core.dll</HintPath>
     </Reference>
+    <Reference Include="NServiceBus.Newtonsoft.Json, Version=2.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NServiceBus.Newtonsoft.Json.2.2.0\lib\net452\NServiceBus.Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NServiceBus.ObjectBuilder.Autofac, Version=7.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
       <HintPath>..\packages\NServiceBus.Autofac.7.0.0\lib\net452\NServiceBus.ObjectBuilder.Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="NServiceBus.Persistence.AzureStorage, Version=2.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NServiceBus.Persistence.AzureStorage.2.3.0\lib\net452\NServiceBus.Persistence.AzureStorage.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=3.11.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.11.0\lib\net45\nunit.framework.dll</HintPath>
@@ -199,6 +208,12 @@
     </Reference>
     <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="SFA.DAS.CommitmentsV2.Messages, Version=2.1.1494.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.CommitmentsV2.Messages.2.1.1494\lib\netstandard2.0\SFA.DAS.CommitmentsV2.Messages.dll</HintPath>
+    </Reference>
+    <Reference Include="SFA.DAS.CommitmentsV2.Types, Version=2.1.1494.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.CommitmentsV2.Types.2.1.1494\lib\netstandard2.0\SFA.DAS.CommitmentsV2.Types.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -318,8 +333,10 @@
   <ItemGroup>
     <Compile Include="Data\Apprenticeship.cs" />
     <Compile Include="Data\ApprenticeshipStatusPeriod.cs" />
+    <Compile Include="Data\Approvals\ApprovalsApprenticeship.cs" />
     <Compile Include="Data\Earning.cs" />
     <Compile Include="Data\DataLockError.cs" />
+    <Compile Include="Data\Approvals\ApprovalsEmployer.cs" />
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
     <Compile Include="Data\ProviderPriority.cs" />
@@ -356,6 +373,7 @@
     <Compile Include="LearnerMutators\NonLevy\SmallEmployer\Framework403Learner19PlusWithEHCPlanAndSmallEmployer.cs" />
     <Compile Include="LearnerMutators\NonLevy\Framework593LearnerRestarts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Steps\ApprovalsInterfaceSteps.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
     <Compile Include="Extensions\FeatureInfoNumberExtractor.cs" />
@@ -419,6 +437,26 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-688 - New Apprenticeship Approved.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-688 - New Apprenticeship Approved.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-692 - Apprenticeship Is Stopped by the Employer without completing.feature.cs">
+      <DependentUpon>PV2-692 - Apprenticeship Is Stopped by the Employer without completing.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-689 - Update Existing Apprenticeship.feature.cs">
+      <DependentUpon>PV2-689 - Update Existing Apprenticeship.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-690 - Data Lock resolved for a learners with a Commitment in a state of approved and a data-lock recorded against it.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-690 - Data Lock resolved for a learners with a Commitment in a state of approved and a data-lock recorded against it.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Capping\Levy learner over funding band cap - PV2-528.feature.cs">
       <AutoGen>True</AutoGen>
@@ -614,6 +652,31 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>E2E -PV2-943 - Levy learner, Employer stops commitment day after course completed, completion payment paid.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Stops\E2E -PV2-944 - Levy learner, Employer stops commitment on day the course is completed, completion payment paid .feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E -PV2-944 - Levy learner, Employer stops commitment on day the course is completed, completion payment paid .feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Stops\E2E -PV2-945 - Levy learner, Employer stops commitment before the day the course is completed, completion payment not paid .feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E -PV2-945 - Levy learner, Employer stops commitment before the day the course is completed, completion payment not paid .feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Stops\E2E -PV2-946 - Levy learner, Employer stops commitment after the day the course is completes, completion and balancing payment is paid .feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E -PV2-946 - Levy learner, Employer stops commitment after the day the course is completes, completion and balancing payment is paid .feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Stops\E2E -PV2-947 - Levy learner, Employer stops commitment on the day the course completes, completion and balancing payment is paid .feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E -PV2-947 - Levy learner, Employer stops commitment on the day the course completes, completion and balancing payment is paid .feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Stops\E2E -PV2-948 - Levy learner, Employer stops commitment before the day the course completes, completion and balancing payment is not paid .feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E -PV2-948 - Levy learner, Employer stops commitment before the day the course completes, completion and balancing payment is not paid .feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\English and Maths\PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1550,6 +1613,22 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Approvals Interface\PV2-692 - Apprenticeship Is Stopped by the Employer without completing.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-692 - Apprenticeship Is Stopped by the Employer without completing.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-689 - Update Existing Apprenticeship.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-689 - Update Existing Apprenticeship.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-690 - Data Lock resolved for a learners with a Commitment in a state of approved and a data-lock recorded against it.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-690 - Data Lock resolved for a learners with a Commitment in a state of approved and a data-lock recorded against it.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-688 - New Apprenticeship Approved.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-688 - New Apprenticeship Approved.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Capping\Levy learner over funding band cap - PV2-528.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner over funding band cap - PV2-528.feature.cs</LastGenOutput>
@@ -1705,6 +1784,26 @@
     <None Include="Tests\Employer Stops\E2E -PV2-943 - Levy learner, Employer stops commitment day after course completed, completion payment paid.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>E2E -PV2-943 - Levy learner, Employer stops commitment day after course completed, completion payment paid.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Stops\E2E -PV2-944 - Levy learner, Employer stops commitment on day the course is completed, completion payment paid .feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E -PV2-944 - Levy learner, Employer stops commitment on day the course is completed, completion payment paid .feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Stops\E2E -PV2-945 - Levy learner, Employer stops commitment before the day the course is completed, completion payment not paid .feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E -PV2-945 - Levy learner, Employer stops commitment before the day the course is completed, completion payment not paid .feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Stops\E2E -PV2-946 - Levy learner, Employer stops commitment after the day the course is completes, completion and balancing payment is paid .feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E -PV2-946 - Levy learner, Employer stops commitment after the day the course is completes, completion and balancing payment is paid .feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Stops\E2E -PV2-947 - Levy learner, Employer stops commitment on the day the course completes, completion and balancing payment is paid .feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E -PV2-947 - Levy learner, Employer stops commitment on the day the course completes, completion and balancing payment is paid .feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Stops\E2E -PV2-948 - Levy learner, Employer stops commitment before the day the course completes, completion and balancing payment is not paid .feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E -PV2-948 - Levy learner, Employer stops commitment before the day the course completes, completion and balancing payment is not paid .feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\English and Maths\PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
