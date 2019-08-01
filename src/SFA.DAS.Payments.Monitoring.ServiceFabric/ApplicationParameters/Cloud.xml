@@ -7,6 +7,7 @@
     <Parameter Name="ServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="PaymentsConnectionString" Value="__PaymentsConnectionString__" />
+    <Parameter Name="PaymentsMonitoringConnectionString" Value="__PaymentsMonitoringConnectionString__" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
     <Parameter Name="Monitoring_JobsService_EndpointName" Value="__Monitoring_JobsService_EndpointName__" />
     <Parameter Name="Monitoring_JobsService_FailedMessagesQueue" Value="__Monitoring_JobsService_FailedMessagesQueue__" />

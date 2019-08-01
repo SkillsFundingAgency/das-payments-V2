@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Autofac;
-using Microsoft.ApplicationInsights.Channel;
 using NServiceBus;
 using NServiceBus.Features;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -18,7 +17,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
             builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
-                    return new JobsDataContext(configHelper.GetConnectionString("PaymentsConnectionString"));
+                    return new JobsDataContext(configHelper.GetConnectionString("PaymentsMonitoringConnectionString"));
                 })
                 .As<IJobsDataContext>()
                 .InstancePerDependency();

@@ -13,6 +13,7 @@
     <Parameter Name="LoggingConnectionString" Value="Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;" />
     <Parameter Name="ServiceBusConnectionString" Value="" />
     <Parameter Name="PaymentsConnectionString" Value="" />
+    <Parameter Name="PaymentsMonitoringConnectionString" Value="" />
   </Section>
   <Section Name="Settings">
     <Parameter Name="EndpointName" Value="sfa-das-payments-monitoring-jobsstatus" />
