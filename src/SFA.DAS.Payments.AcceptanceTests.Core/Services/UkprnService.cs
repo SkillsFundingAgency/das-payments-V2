@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
-using SFA.DAS.Payments.AcceptanceTests.Services.Interfaces;
 using Provider = SFA.DAS.Payments.AcceptanceTests.Core.TestModels.Provider;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Services

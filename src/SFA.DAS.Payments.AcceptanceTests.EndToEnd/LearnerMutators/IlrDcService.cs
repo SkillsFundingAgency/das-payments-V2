@@ -20,7 +20,7 @@ using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
-using JobStatusType = ESFA.DC.JobStatus.Interface.JobStatusType;
+using Enums = ESFA.DC.Jobs.Model.Enums;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
@@ -33,7 +33,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         private readonly IStreamableKeyValuePersistenceService storageService;
         private readonly IPaymentsDataContext dataContext;
 
-        public IlrDcService(ITdgService tdgService, TestSession testSession, IJobService jobService, IAzureStorageKeyValuePersistenceServiceConfig storageServiceConfig, IStreamableKeyValuePersistenceService storageService, IPaymentsDataContext dataContext)
+        private readonly IApprenticeshipEarningsHistoryService appEarnHistoryService;
+
+        public IlrDcService(ITdgService tdgService,
+                            TestSession testSession,
+                            IJobService jobService,
+                            IAzureStorageKeyValuePersistenceServiceConfig storageServiceConfig,
+                            IStreamableKeyValuePersistenceService storageService,
+                            IPaymentsDataContext dataContext,
+                            IApprenticeshipEarningsHistoryService appEarnHistoryService)
         {
             this.tdgService = tdgService;
             this.testSession = testSession;
@@ -41,6 +49,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             this.storageServiceConfig = storageServiceConfig;
             this.storageService = storageService;
             this.dataContext = dataContext;
+            this.appEarnHistoryService = appEarnHistoryService;
         }
 
         public async Task PublishLearnerRequest(List<Training> previousIlr, List<Training> currentIlr, List<Learner> learners, string collectionPeriodText, string featureNumber, Func<Task> clearCache)
@@ -71,6 +80,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             var ilrFile = await tdgService.GenerateIlrTestData(learnerMutator, (int)testSession.Provider.Ukprn);
 
             await RefreshTestSessionLearnerFromIlr(ilrFile.Value, learners);
+
+            if (learners.Any(l => l.EarningsHistory != null) && !testSession.AtLeastOneScenarioCompleted)
+            {
+                await appEarnHistoryService.DeleteHistoryAsync(testSession.Provider.Ukprn);
+                await appEarnHistoryService.AddHistoryAsync(learners);
+            }
 
             // this needs to be called here as the LearnRefNumber is updated to match the ILR in RefreshTestSessionLearnerFromIlr above
             await clearCache();
@@ -190,7 +205,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             }
 
             var retryPolicy = Policy
-                .HandleResult<JobStatusType>(r => r != JobStatusType.Waiting)
+                .HandleResult<Enums.JobStatusType>(r => r != JobStatusType.Waiting)
                 .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
             var jobStatusResult = await retryPolicy.ExecuteAndCaptureAsync(async () => await jobService.GetJobStatus(jobId));
