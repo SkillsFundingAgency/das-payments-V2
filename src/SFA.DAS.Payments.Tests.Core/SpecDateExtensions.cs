@@ -1,10 +1,19 @@
 ﻿using System;
+using System.Configuration;
 using System.Globalization;
 
 namespace SFA.DAS.Payments.Tests.Core
 {
     public static class SpecDateExtensions
     {
+        private static readonly DateTime TodayInAcademicYear;
+
+        static SpecDateExtensions()
+        {
+            var yearStart = int.Parse(ConfigurationManager.AppSettings["AcademicYearStart"] ?? DateTime.Today.Year.ToString());
+            TodayInAcademicYear = new DateTime(yearStart, DateTime.Today.Month, DateTime.Today.Day);
+        }
+
         public static DateTime ToDate(this string dateText)
         {
             var parts = dateText.Split('/');
@@ -27,24 +36,25 @@ namespace SFA.DAS.Payments.Tests.Core
         {
            return string.IsNullOrWhiteSpace(dateText) ? default(DateTime?) : dateText.ToDate();
         }
+
         private static DateTime ParseTwoPartDescription(string dateText)
         {
             switch (dateText.ToLower())
             {
                 case "today":
-                    return DateTime.Today;
+                    return TodayInAcademicYear;
                 case "yesterday":
-                    return DateTime.Today.AddDays(-1);
+                    return TodayInAcademicYear.AddDays(-1);
                 case "tomorrow":
-                    return DateTime.Today.AddDays(1);
+                    return TodayInAcademicYear.AddDays(1);
                 case "last year":
-                    return DateTime.Today.AddYears(-1);
+                    return TodayInAcademicYear.AddYears(-1);
                 case "next year":
-                    return DateTime.Today.AddYears(1);
+                    return TodayInAcademicYear.AddYears(1);
                 case "start of academic year":
-                    return new DateTime(DateTime.Today.Month >= 8 ? DateTime.Today.Year : DateTime.Today.Year - 1, 8, 1);
+                    return new DateTime(TodayInAcademicYear.Month >= 8 ? TodayInAcademicYear.Year : TodayInAcademicYear.Year - 1, 8, 1);
                 case "start of last academic year":
-                    return new DateTime(DateTime.Today.Month >= 8 ? DateTime.Today.Year - 1 : DateTime.Today.Year - 2, 8, 1);
+                    return new DateTime(TodayInAcademicYear.Month >= 8 ? TodayInAcademicYear.Year - 1 : TodayInAcademicYear.Year - 2, 8, 1);
                 default:
                     var parts = dateText.Split('/');
                     if (parts.Length != 2)
@@ -62,7 +72,7 @@ namespace SFA.DAS.Payments.Tests.Core
                         period = parts[0].ToMonthPeriod();
                     }
 
-                    var date = new DateTime(DateTime.Today.Month >= 8 ? DateTime.Today.Year : DateTime.Today.Year - 1, 8, 1);
+                    var date = new DateTime(TodayInAcademicYear.Month >= 8 ? TodayInAcademicYear.Year : TodayInAcademicYear.Year - 1, 8, 1);
                     date = date.AddMonths(period - 1);
                     var yearText = parts[1].ToLower();
                     if (yearText.Equals("last academic year"))
@@ -128,10 +138,10 @@ namespace SFA.DAS.Payments.Tests.Core
             switch (yearName)
             {
                 case "Current Academic Year":
-                    year = DateTime.Today.Month < 8 ? DateTime.Today.Year - 1 : DateTime.Today.Year;
+                    year = TodayInAcademicYear.Month < 8 ? TodayInAcademicYear.Year - 1 : TodayInAcademicYear.Year;
                     break;
                 case "Last Academic Year":
-                    year = DateTime.Today.Month < 8 ? DateTime.Today.Year - 2 : DateTime.Today.Year - 1;
+                    year = TodayInAcademicYear.Month < 8 ? TodayInAcademicYear.Year - 2 : TodayInAcademicYear.Year - 1;
                     break;
                 default:
                     throw new NotImplementedException("if it was meant to be anything other than Current/Last Academic Year, it needs to be implemented");
