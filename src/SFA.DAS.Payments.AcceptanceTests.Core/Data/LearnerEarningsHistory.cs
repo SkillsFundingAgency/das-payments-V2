@@ -11,6 +11,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 
         private readonly List<Earning> previousEarnings;
 
+       
+
         public LearnerEarningsHistory(AdditionalIlrData additionalIlrData, IEnumerable<Earning> previousEarnings)
         {
             this.additionalIlrData = additionalIlrData ?? new AdditionalIlrData();
@@ -27,14 +29,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         {
             get
             {
-                var previouslyPaidEarnings =
-                    previousEarnings?.Where(pe =>
-                        pe.DeliveryPeriod.ToDate().Year <= Convert.ToInt32(CollectionYear) &&
-                        pe.DeliveryPeriod.ToMonthPeriod() <= CollectionPeriod).ToList() ?? new List<Earning>();
-
-                var onProgrammeEarningsToDate = previouslyPaidEarnings.Sum(x => x.OnProgramme);
-
-                return onProgrammeEarningsToDate; 
+                return additionalIlrData.CapPreviousEarningsToHistoryPeriod ? CappedPreviousEarnings.Sum(x=>x.OnProgramme) : previousEarnings.Sum(x=>x.OnProgramme); 
             }
         }
 
@@ -42,12 +37,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 
         public decimal? BalancingEarningsToDate
         {
-            get { return previousEarnings.Sum(x => x.Balancing); }
+            get { return additionalIlrData.CapPreviousEarningsToHistoryPeriod ? CappedPreviousEarnings.Sum(x => x.Balancing) : previousEarnings.Sum(x => x.Balancing); }
         }
 
         public decimal? CompletionEarningsToDate
         {
-            get { return previousEarnings.Sum(x => x.Completion); }
+            get { return additionalIlrData.CapPreviousEarningsToHistoryPeriod ? CappedPreviousEarnings.Sum(x => x.Completion) : previousEarnings.Sum(x => x.Completion); }
         }
 
         public DateTime? UpToEndDate(string originalStartDate)
@@ -71,5 +66,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
                        ? additionalIlrData.ActualDuration.ToTimeSpan(originalStartDate).Value
                        : new TimeSpan();
         }
+
+        private List<Earning> CappedPreviousEarnings => previousEarnings?.Where(pe =>
+                                                                             pe.DeliveryPeriod.ToDate().Year <= Convert.ToInt32(CollectionYear) &&
+                                                                             pe.DeliveryPeriod.ToMonthPeriod() <= CollectionPeriod).ToList();
     }
 }

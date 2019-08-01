@@ -59,8 +59,8 @@ Scenario Outline: Non-levy learner, requires english or maths at level 2 with pr
         | R04/Last Academic Year | Nov/Last Academic Year | 0                      | 0                           | 39.25                     | OnProgrammeMathsAndEnglish |
         | R05/Last Academic Year | Dec/Last Academic Year | 0                      | 0                           | 39.25                     | OnProgrammeMathsAndEnglish |
    And appEarnHistory is required as follows
-		| Employer   | Actual Duration | Completion Status | History Period            |
-		| employer 1 |                 | continuing        | Dec/Last Academic Year |
+		| Employer   | Actual Duration | Completion Status | History Period         | Cap Previous Earnings To History Period |
+		| employer 1 |                 | continuing        | Dec/Last Academic Year | true                           |
    But aims details are changed as follows
 		| Aim Type         | Aim Reference | Original Start Date       | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                   | Completion Status | Restart | Funding Adjustment For Prior Learning |
 		| Maths or English | 50089638      | 06/Aug/Last Academic Year | 06/Aug/Current Academic Year | 7 months         |                 | 1                   | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured)                     | continuing        | True    | 42%                                   |
