@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -8,10 +7,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Model.Core.Entities;
 
-namespace SFA.DAS.Payments.Application.Repositories
+namespace SFA.DAS.Payments.FundingSource.Application.Repositories
 {
 
     public interface ILevyAccountBulkCopyRepository : IBulkWriter<LevyAccountModel>
