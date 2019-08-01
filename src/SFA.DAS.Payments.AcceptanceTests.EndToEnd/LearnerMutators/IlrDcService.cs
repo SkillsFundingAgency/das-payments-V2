@@ -9,7 +9,6 @@ using ESFA.DC.ILR.TestDataGenerator.Interfaces;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Jobs.Model.Enums;
-using ESFA.DC.JobStatus.Interface;
 using MoreLinq;
 using Polly;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
@@ -21,6 +20,7 @@ using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
+using Enums = ESFA.DC.Jobs.Model.Enums;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
@@ -147,10 +147,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             XNamespace xsdns = tdgService.IlrNamespace;
             var xDoc = XDocument.Parse(ilrFile);
             var learnerDescendants = xDoc.Descendants(xsdns + "Learner");
-
-            for (var i = 0; i < learners.Count(); i++)
+            var learnersEnumeration = learners as Learner[] ?? learners.ToArray();
+            for (var i = 0; i < learnersEnumeration.Count(); i++)
             {
-                var request = learners.Skip(i).Take(1).First();
+                var request = learnersEnumeration.Skip(i).Take(1).First();
                 var testSessionLearner = testSession.GetLearner(testSession.Provider.Ukprn, request.LearnerIdentifier);
                 var originalUln = testSessionLearner.Uln;
                 var learner = learnerDescendants.Skip(i).Take(1).First();
@@ -184,11 +184,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private async Task PublishIlrFile(int ukprn, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
         {
-            var submission = new SubmissionModel(JobType.IlrSubmission, ukprn)
+            var submission = new SubmissionModel(EnumJobType.IlrSubmission, ukprn)
             {
                 FileName = $"{ukprn}/{ilrFileName}",
                 FileSizeBytes = ilrFile.Length,
-                SubmittedBy = "System",
+                CreatedBy = "System",
                 CollectionName = $"ILR{ilrFileName.Split('-')[2]}",
                 Period = collectionPeriod,
                 NotifyEmail = "dcttestemail@gmail.com",
@@ -205,7 +205,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             }
 
             var retryPolicy = Policy
-                .HandleResult<JobStatusType>(r => r != JobStatusType.Waiting)
+                .HandleResult<Enums.JobStatusType>(r => r != JobStatusType.Waiting)
                 .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
             var jobStatusResult = await retryPolicy.ExecuteAndCaptureAsync(async () => await jobService.GetJobStatus(jobId));

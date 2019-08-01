@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ESFA.DC.Data.AppsEarningsHistory.Model;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using SFA.DAS.Payments.Tests.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators {
@@ -27,12 +28,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators {
                               {
                                   AppIdentifier = AppIdentifier(learnerAim),
                                   AppProgCompletedInTheYearInput = learnerAim.CompletionStatus == CompletionStatus.Completed,
-                                  BalancingProgAimPaymentsInTheYear = 0,
+                                  BalancingProgAimPaymentsInTheYear = learner.EarningsHistory.BalancingEarningsToDate,
                                   CollectionYear = learner.EarningsHistory.CollectionYear,
                                   CollectionReturnCode = $"R{learner.EarningsHistory.CollectionPeriod}",
-                                  CompletionProgaimPaymentsInTheYear = 0,
+                                  CompletionProgaimPaymentsInTheYear = learner.EarningsHistory.CompletionEarningsToDate,
                                   DaysInYear = learner.EarningsHistory.TrainingDaysCompleted(OriginalStartDate(learnerAim)),
-                                  FworkCode = learnerAim.FrameworkCode,
+                                  FworkCode = learnerAim.ProgrammeType == 25 ? default(int?) : learnerAim.FrameworkCode,
                                   HistoricEffectiveTnpstartDateInput = OriginalStartDate(learnerAim).ToDate(),
                                   HistoricLearner1618StartInput = false,
                                   HistoricTotal1618UpliftPaymentsInTheYearInput = 0,
@@ -48,9 +49,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators {
                                   ProgrammeStartDateIgnorePathway = OriginalStartDate(learnerAim).ToDate(),
                                   ProgrammeStartDateMatchPathway = OriginalStartDate(learnerAim).ToDate(),
                                   ProgType = learnerAim.ProgrammeType,
-                                  PwayCode = learnerAim.PathwayCode,
-                                  Stdcode = null,
-                                  TotalProgAimPaymentsInTheYear = learner.EarningsHistory.OnProgrammeEarningsToDate,
+                                  PwayCode = learnerAim.ProgrammeType == 25 ? default(int?) : learnerAim.PathwayCode,
+                                  Stdcode = learnerAim.ProgrammeType == 25 ? learnerAim.StandardCode : default(int?),
+                                  TotalProgAimPaymentsInTheYear = learner.EarningsHistory.TotalEarningsToDate,
                                   UptoEndDate = learner.EarningsHistory.UpToEndDate(OriginalStartDate(learnerAim)),
                                   Ukprn = (int) learner.Ukprn,
                                   Uln = learner.Uln,
@@ -63,6 +64,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators {
                 }
             }
             await appEarnHistoryContext.SaveChangesAsync();
+        }
+
+        public void DeleteHistory(long ukprn)
+        {
+            appEarnHistoryContext.Database.ExecuteSqlCommand(@"delete from dbo.AppsEarningsHistory where UKPRN = {0}", ukprn);
         }
 
         public async Task DeleteHistoryAsync(long ukprn)

@@ -170,7 +170,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
                 Priority = 104,
                 SfaContributionPercentage = 1m,
                 PriceEpisodeIdentifier = "123-01",
-                Amount = 1000000
+                Amount = 1000000,
+                AgreedOnDate = DateTime.Today
             };
             var requiredPayment = new CalculatedRequiredLevyAmount
             {
@@ -186,7 +187,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             Assert.AreEqual(earningPeriod.Period, act1RequiredPayment.DeliveryPeriod);
             Assert.AreEqual(earningPeriod.ApprenticeshipId, act1RequiredPayment.ApprenticeshipId);
             Assert.AreEqual(earningPeriod.ApprenticeshipPriceEpisodeId, act1RequiredPayment.ApprenticeshipPriceEpisodeId);
-            //Assert.AreEqual(earningPeriod.AgreementId, act1RequiredPayment.AgreementId);
+            Assert.AreEqual(earningPeriod.AgreedOnDate, act1RequiredPayment.AgreedOnDate);
             Assert.AreEqual(earningPeriod.Priority, act1RequiredPayment.Priority);
             Assert.AreEqual(earningPeriod.SfaContributionPercentage, act1RequiredPayment.SfaContributionPercentage);
             Assert.AreEqual(OnProgrammeEarningType.Balancing, act1RequiredPayment.OnProgrammeEarningType);
@@ -354,18 +355,18 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
                     {
                         Type = OnProgrammeEarningType.Learning, Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod>
                         {
-                            new EarningPeriod {Period = 1, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104},
-                            new EarningPeriod {Period = 2, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104},
-                            new EarningPeriod {Period = 3, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104},
-                            new EarningPeriod {Period = 4, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104},
-                            new EarningPeriod {Period = 5, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104},
-                            new EarningPeriod {Period = 6, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104},
-                            new EarningPeriod {Period = 7, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104},
-                            new EarningPeriod {Period = 8, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104},
-                            new EarningPeriod {Period = 9, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104},
-                            new EarningPeriod {Period = 10, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104},
-                            new EarningPeriod {Period = 11, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104},
-                            new EarningPeriod {Period = 12, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104},
+                            new EarningPeriod {Period = 1, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104, AgreedOnDate = DateTime.Today},
+                            new EarningPeriod {Period = 2, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104, AgreedOnDate = DateTime.Today},
+                            new EarningPeriod {Period = 3, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104, AgreedOnDate = DateTime.Today},
+                            new EarningPeriod {Period = 4, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104, AgreedOnDate = DateTime.Today},
+                            new EarningPeriod {Period = 5, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104, AgreedOnDate = DateTime.Today},
+                            new EarningPeriod {Period = 6, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104, AgreedOnDate = DateTime.Today},
+                            new EarningPeriod {Period = 7, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104, AgreedOnDate = DateTime.Today},
+                            new EarningPeriod {Period = 8, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104, AgreedOnDate = DateTime.Today},
+                            new EarningPeriod {Period = 9, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104, AgreedOnDate = DateTime.Today},
+                            new EarningPeriod {Period = 10, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104, AgreedOnDate = DateTime.Today},
+                            new EarningPeriod {Period = 11, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104, AgreedOnDate = DateTime.Today},
+                            new EarningPeriod {Period = 12, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104, AgreedOnDate = DateTime.Today},
                         })
                     }
                 }

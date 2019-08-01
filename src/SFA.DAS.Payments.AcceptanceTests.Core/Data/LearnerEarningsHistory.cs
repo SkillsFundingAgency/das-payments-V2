@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Tests.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
@@ -37,6 +36,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 
                 return onProgrammeEarningsToDate; 
             }
+        }
+
+        public decimal? TotalEarningsToDate => OnProgrammeEarningsToDate + BalancingEarningsToDate + CompletionEarningsToDate;
+
+        public decimal? BalancingEarningsToDate
+        {
+            get { return previousEarnings.Sum(x => x.Balancing); }
+        }
+
+        public decimal? CompletionEarningsToDate
+        {
+            get { return previousEarnings.Sum(x => x.Completion); }
         }
 
         public DateTime? UpToEndDate(string originalStartDate)

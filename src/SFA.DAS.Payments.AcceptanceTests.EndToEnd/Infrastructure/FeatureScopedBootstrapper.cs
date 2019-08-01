@@ -53,7 +53,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
                                      .UseSqlServer(configHelper.AppEarnHistoryConnectionString);
                                  return new AppEarnHistoryContext(builder.Options);
                              })
-                   .OnlyIf(x => x.IsRegistered(new TypedService(typeof(IApprenticeshipEarningsHistoryService))));
+                   .OnlyIf(x => x.IsRegistered(new TypedService(typeof(IApprenticeshipEarningsHistoryService))))
+                   .InstancePerLifetimeScope();
+
             Builder.RegisterType<IlrDcService>()
                    .As<IIlrService>()
                    .InstancePerLifetimeScope()
