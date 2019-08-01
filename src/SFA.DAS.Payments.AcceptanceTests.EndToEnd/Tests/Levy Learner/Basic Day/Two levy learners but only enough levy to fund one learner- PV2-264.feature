@@ -1,12 +1,11 @@
-@ignore
 Feature: Two levy learners but only enough levy to fund one learner- PV2-264
 
 Scenario Outline: Two levy learners, levy available but for only one learner, both finished on time PV2-264
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
-		| Identifier       | Learner ID | priority | start date                | end date                     | agreed price | Framework Code | Pathway Code | Programme Type |
-		| Apprenticeship 1 | learner a  | 1        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 7500         | 593            | 1            | 20             |
-		| Apprenticeship 2 | learner b  | 2        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        | 593            | 1            | 20             |
+		| Identifier       | Learner ID | priority | start date                | end date                     | agreed price | Framework Code | Pathway Code | Programme Type | Agreed On Date            |
+		| Apprenticeship 1 | learner a  | 1        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 7500         | 593            | 1            | 20             | 30/Aug/Last Academic Year |
+		| Apprenticeship 2 | learner b  | 2        | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        | 593            | 1            | 20             | 31/Aug/Last Academic Year |
 	
 	And the provider previously submitted the following learner details
 		| Learner ID | Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                | SFA Contribution Percentage |
