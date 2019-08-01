@@ -23,6 +23,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 case "261":
                 case "262":
                 case "267":
+                case "268":
+                case "266":
+                case "274":
                 case "282":
                 case "283":
                 case "334":
