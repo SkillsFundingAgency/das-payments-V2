@@ -20,7 +20,7 @@ using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
-using JobStatusType = ESFA.DC.JobStatus.Interface.JobStatusType;
+using Enums = ESFA.DC.Jobs.Model.Enums;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
@@ -205,7 +205,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             }
 
             var retryPolicy = Policy
-                .HandleResult<JobStatusType>(r => r != JobStatusType.Waiting)
+                .HandleResult<Enums.JobStatusType>(r => r != JobStatusType.Waiting)
                 .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
             var jobStatusResult = await retryPolicy.ExecuteAndCaptureAsync(async () => await jobService.GetJobStatus(jobId));
