@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Globalization;
 
 namespace SFA.DAS.Payments.Tests.Core
@@ -9,7 +10,8 @@ namespace SFA.DAS.Payments.Tests.Core
 
         static SpecDateExtensions()
         {
-            TodayInAcademicYear = new DateTime(2018, DateTime.Today.Month, DateTime.Today.Day);
+            var yearStart = int.Parse(ConfigurationManager.AppSettings["AcademicYearStart"] ?? DateTime.Today.Year.ToString());
+            TodayInAcademicYear = new DateTime(yearStart, DateTime.Today.Month, DateTime.Today.Day);
         }
 
         public static DateTime ToDate(this string dateText)
