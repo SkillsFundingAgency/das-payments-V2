@@ -1,4 +1,4 @@
-﻿#@supports_dc_e2e
+﻿@supports_dc_e2e
 Feature: Levy learner over funding band cap - PV2-528
 	As a provider,
 	I want a levy learner, where the negotiated total price for the learner is more than the maximum allowed for that funding band

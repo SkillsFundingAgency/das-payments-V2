@@ -1,4 +1,5 @@
-﻿Feature: 2 learners 2 employers 1 provider enough levy - PV2-267
+﻿@supports_dc_e2e
+Feature: 2 learners 2 employers 1 provider enough levy - PV2-267
 Scenario Outline: 2 levy learners 2 employers 1 provider and enough levy PV2-267
 	# levy balance is enough for both employers
 	Given the "employer 1" levy account balance in collection period <Collection_Period> is <Levy Balance for employer 1>
