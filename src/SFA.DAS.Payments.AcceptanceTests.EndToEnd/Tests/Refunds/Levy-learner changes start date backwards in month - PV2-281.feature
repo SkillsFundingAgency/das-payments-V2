@@ -1,4 +1,5 @@
-﻿#Scenario: DAS Learner - Change to start date within calendar month, backwards in month		
+﻿@supports_dc_e2e
+#Scenario: DAS Learner - Change to start date within calendar month, backwards in month		
 #	Given The learner is programme only DAS
 #	And levy balance > agreed price for all months
 #    And the apprenticeship funding band maximum is 9000
@@ -41,11 +42,11 @@ Given the employer levy account balance in collection period R06/Current Academi
 
 And the following commitments exist
 	| start date                   | end date                     | agreed price | framework code | programme type | pathway code | 
-	| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 9000         | 403            | 2              | 1            | 
+	| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 9000         | 593            | 20             | 1            | 
 
 And the provider previously submitted the following learner details
-    | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | framework code | programme type | pathway code | Funding Line Type                                  |
-    | 15/Aug/Current Academic Year | 12 months        | 9000                 | Aug/Current Academic Year           | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 403            | 2              | 1            | 16-18 Apprenticeship (From May 2017) Levy Contract |
+    | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | framework code | programme type | pathway code | Funding Line Type                                |
+    | 15/Aug/Current Academic Year | 12 months        | 9000                 | Aug/Current Academic Year           | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 593            | 20             | 1            | 19+ Apprenticeship (From May 2017) Levy Contract |
 
 And the following earnings had been generated for the learner
     | Delivery Period           | On-Programme | Completion | Balancing |
@@ -71,12 +72,12 @@ And the following provider payments had been generated
     | R05/Current Academic Year | Dec/Current Academic Year | 600           | Learning         |
         
 But the Provider now changes the Learner details as follows
-    | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | framework code | programme type | pathway code | Funding Line Type                                  |
-    | 15/Aug/Current Academic Year | 12 months        | 9000                 | Aug/Current Academic Year           | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 403            | 2              | 1            | 16-18 Apprenticeship (From May 2017) Levy Contract |
+    | Start Date                  | Planned Duration | Total Training Price | Total Training Price Effective Date | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | framework code | programme type | pathway code | Funding Line Type                                |
+    | 4/Aug/Current Academic Year | 12 months        | 9000                 | 4/Aug/Current Academic Year           | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 593            | 20             | 1            | 19+ Apprenticeship (From May 2017) Levy Contract |
 		 
 And price details as follows
 	| Price Episode Id | Total Training Price | Total Training Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-	| pe-1             | 9000                 | 04/Aug/Current Academic Year        | Act1          | 1                   | 90%                         |
+	| pe-1             | 9000                 | 4/Aug/Current Academic Year        | Act1          | 1                   | 90%                         |
 When the amended ILR file is re-submitted for the learners in collection period R06/Current Academic Year
 Then the following learner earnings should be generated
     | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
