@@ -1,11 +1,12 @@
-﻿Feature:Levy standard learner, price is changed, originally mix funded and a negative amount is left to be paid - results in a refund PV2-256
+﻿@ignore
+Feature:Levy standard learner, price is changed, originally mix funded and a negative amount is left to be paid - results in a refund PV2-256
 	As a provider,
     I want a levy learner, where price is changed, originally mix funded and a negative amount is left to be paid - results in a refund
 	So that I am accurately paid my apprenticeship provision. PV2-256a
 
 	Scenario Outline: Levy standard learner, price is changed, orginally mix funded and a negative amount is left to be paid PV2-256a
 
-	Given The employers levy balance in collection period <Collection_Period> is <Levy Balance>
+	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 
 	And the following commitments exist
 		| start date                   | end date                     | agreed price |

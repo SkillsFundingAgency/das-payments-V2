@@ -18,7 +18,9 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                 .ForMember(dest => dest.ContractType, opt => opt.Ignore())
                 .ForMember(dest => dest.AgreementId, opt => opt.Ignore())
                 .ForMember(dest => dest.PriceEpisodes,
-                    opt => opt.ResolveUsing<EarningEventPriceEpisodeModelListResolver>());
+                    opt => opt.ResolveUsing<EarningEventPriceEpisodeModelListResolver>())
+                .ForMember(dest => dest.LearningAimSequenceNumber, opt => opt.MapFrom(x => x.LearningAim.SequenceNumber))
+                ;
 
             CreateMap<ApprenticeshipContractType1EarningEvent, EarningEventModel>()
                 .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act1))

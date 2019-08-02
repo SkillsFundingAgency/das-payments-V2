@@ -54,6 +54,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.ActualEndDate)
                 .Ignore(x => x.CompletionStatus)
                 .Ignore(x => x.CompletionAmount)
+                .Ignore(x => x.IlrFileName)
                 .Ignore(x => x.InstalmentAmount)
                 .Ignore(x => x.NumberOfInstalments);
          
@@ -168,6 +169,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.Learner)
                 .Ignore(x => x.LearningAim)
                 .Ignore(x => x.IlrSubmissionDateTime)
+                .Ignore(x => x.IlrFileName)
                 .Ignore(x => x.CollectionPeriod)
                 .Ignore(x => x.ContractType)
                 .Ignore(x => x.StartDate)
@@ -214,6 +216,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.CompletionAmount)
                 .Ignore(x => x.InstalmentAmount)
                 .Ignore(x => x.NumberOfInstalments)
+                .Ignore(x => x.IlrFileName)
                 ;
                             
             CreateMap<IdentifiedRemovedLearningAim, CalculatedRequiredCoInvestedAmount>()
@@ -253,6 +256,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.Learner)
                 .Ignore(x => x.LearningAim)
                 .Ignore(x => x.IlrSubmissionDateTime)
+                .Ignore(x => x.IlrFileName)
                 ;
             
             CreateMap<PaymentHistoryEntity, CalculatedRequiredCoInvestedAmount>()
@@ -294,6 +298,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.Learner)
                 .Ignore(x => x.LearningAim)
                 .Ignore(x => x.IlrSubmissionDateTime)
+                .Ignore(x => x.IlrFileName)
                 .Ignore(x => x.CollectionPeriod)
                 ;
             // End Required Payment --> RequiredPaymentEvent
