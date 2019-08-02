@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
-using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Repositories
@@ -58,6 +56,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             return await dataContext.Apprenticeship
                 .Include(x => x.ApprenticeshipPriceEpisodes)
                 .FirstOrDefaultAsync(apprenticeship => apprenticeship.Id == apprenticeshipId)
+                .ConfigureAwait(false);
+        }
+
+        public async Task<List<ApprenticeshipModel>> Get(List<long> apprenticeshipIds, CancellationToken cancellationToken)
+        {
+            return await dataContext.Apprenticeship
+                .Include(x => x.ApprenticeshipPriceEpisodes)
+                .Where(apprenticeship => apprenticeshipIds.Contains(apprenticeship.Id))
+                .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
         }
 

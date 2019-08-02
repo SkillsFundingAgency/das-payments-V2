@@ -3,9 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Data.Collections;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.ServiceFabric.Core;
+using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
 {
@@ -19,7 +19,11 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
             if (stateManagerProvider == null) throw new ArgumentNullException(nameof(stateManagerProvider));
             this.transactionProvider = transactionProvider ?? throw new ArgumentNullException(nameof(transactionProvider));
 
-            state = stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary<string, ReceivedProviderEarningsEvent>>(transactionProvider.Current, "SubmissionCache").Result;
+            using (var transaction = stateManagerProvider.Current.CreateTransaction())
+            {
+                state = stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary<string, ReceivedProviderEarningsEvent>>(transaction, "SubmissionCache").Result;
+                transaction.CommitAsync().GetAwaiter().GetResult();
+            }
         }
 
         public async Task<bool> Contains(string key, CancellationToken cancellationToken = default(CancellationToken))
