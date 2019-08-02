@@ -1,9 +1,9 @@
 ﻿using Autofac;
 using NServiceBus.UnitOfWork;
+using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
-using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 using SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventModelCache;
-using SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventProcessing;
+using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 
 namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure.Ioc
 {
@@ -11,12 +11,6 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure.Ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<StateManagerUnitOfWork>()
-                .As<IManageUnitsOfWork>()
-                .InstancePerLifetimeScope();
-            builder.RegisterType<ReliableStateManagerTransactionProvider>()
-                .As<IReliableStateManagerTransactionProvider>()
-                .InstancePerLifetimeScope();
             builder.RegisterGeneric(typeof(PaymentsEventModelCache<>))
                 .As(typeof(IPaymentsEventModelCache<>))
                 .InstancePerLifetimeScope();
