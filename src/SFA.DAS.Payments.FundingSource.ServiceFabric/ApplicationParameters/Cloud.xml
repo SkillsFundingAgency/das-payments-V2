@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
+    <Parameter Name="LevyAccountBalanceService_PartitionCount" Value="__LevyAccountBalanceService_PartitionCount__" />
+    <Parameter Name="LevyAccountBalanceService_MinReplicaSetSize" Value="__LevyAccountBalanceService_MinReplicaSetSize__" />
+    <Parameter Name="LevyAccountBalanceService_TargetReplicaSetSize" Value="__LevyAccountBalanceService_TargetReplicaSetSize__" />
     <Parameter Name="NonLevyFundedService_InstanceCount" Value="__NonLevyFundedService_InstanceCount__" />
     <Parameter Name="LevyFundedProxyService_InstanceCount" Value="__LevyFundedProxyService_InstanceCount__" />
     <Parameter Name="LevyFundedServiceActorService_PartitionCount" Value="__LevyFundedServiceActorService_PartitionCount__" />
@@ -17,5 +20,14 @@
     <Parameter Name="ProcessMessageSequentially" Value="false" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
     <Parameter Name="PaymentsConnectionString" Value="__DasPaymentsConnectionStringRO__" />
+    <Parameter Name="AccountApiBaseUrl" Value="__AccountsApiBaseUrl__" />
+    <Parameter Name="AccountApiClientId" Value="__AccountsApiClientId__" />
+    <Parameter Name="AccountApiClientSecret" Value="__AccountsApiClientSecret__" />
+    <Parameter Name="AccountApiIdentifierUri" Value="__AccountsApiIdentifierUri__" />
+    <Parameter Name="AccountApiTenant" Value="__AccountsApiTenantId__" />
+    <Parameter Name="LevyAccountBalanceService_EndpointName" Value="__LevyAccountBalanceService_EndpointName__" />
+    <Parameter Name="LevyAccountBalanceService_FailedMessagesQueue" Value="__LevyAccountBalanceService_FailedMessagesQueue__" />
+    <Parameter Name="LevyAccountRefreshIntervalInHours" Value="__LevyAccountRefreshIntervalInHours__" />
+    <Parameter Name="LevyAccountBalanceService_BatchSize" Value="__LevyAccountBalanceService_BatchSize__" />
   </Parameters>
 </Application>

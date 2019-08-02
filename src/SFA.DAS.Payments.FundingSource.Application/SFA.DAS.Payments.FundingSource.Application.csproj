@@ -11,6 +11,8 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.0.5" />
+    <PackageReference Include="SFA.DAS.Account.Api.Client" Version="1.6.1469" />
   </ItemGroup>
 
   <ItemGroup>
