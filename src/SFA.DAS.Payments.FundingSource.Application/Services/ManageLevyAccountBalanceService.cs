@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
+using Polly;
+using Polly.CircuitBreaker;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -26,6 +28,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly IPaymentLogger logger;
         private readonly ILevyAccountBulkCopyRepository levyAccountBulkWriter;
         private readonly int batchSize;
+        private int totalPageSize ;
+        private readonly AsyncCircuitBreakerPolicy policy;
 
         public ManageLevyAccountBalanceService(ILevyFundingSourceRepository repository,
             IAccountApiClient accountApiClient,
@@ -38,28 +42,23 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.logger = logger;
             this.levyAccountBulkWriter = levyAccountBulkWriter;
             this.batchSize = batchSize;
+            policy = Policy.Handle<Exception>().CircuitBreakerAsync(5, TimeSpan.FromSeconds(10));
         }
 
         public async Task RefreshLevyAccountDetails(CancellationToken cancellationToken = default(CancellationToken))
         {
-            logger.LogInfo($"Retrieving Non Levy Payers AccountIds");
-           
             logger.LogInfo("Now Trying to Refresh All Accounts Balance Details");
-            var page = 1;
-            int? totalPageSize = null;
 
-            while (totalPageSize == null || page <= totalPageSize)
+            var page = 1;
+            
+            await policy.ExecuteAsync(GetTotalPageSize).ConfigureAwait(false);
+
+            while (page <= totalPageSize)
             {
                 try
                 {
                     var pagedAccountsRecords = await accountApiClient.GetPageOfAccounts(page, batchSize).ConfigureAwait(false);
-
-                    if (totalPageSize == null)
-                    {
-                        totalPageSize = pagedAccountsRecords.TotalPages;
-                        logger.LogInfo($"Total Levy Account Page Size : {totalPageSize.Value}  for Batch Size :{batchSize}");
-                    }
-                
+                    
                     await UpdateLevyAccountDetails(pagedAccountsRecords, cancellationToken);
 
                     logger.LogInfo($"Successfully retrieved Account Balance Details for Page {page} of Levy Accounts");
@@ -110,5 +109,25 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             return levyAccountModels;
 
         }
+
+        private async Task GetTotalPageSize()
+        {
+            try
+            {
+
+                throw  new Exception();
+                var pagedAccountsRecord = await accountApiClient.GetPageOfAccounts(1, 1).ConfigureAwait(false);
+                totalPageSize = pagedAccountsRecord.TotalPages;
+
+                logger.LogInfo($"Total Levy Account to process {totalPageSize} ");
+            }
+            catch (Exception e)
+            {
+                logger.LogError("Error while trying to get Total number of Levy Accounts", e);
+                throw;
+            }
+
+        }
+
     }
 }
