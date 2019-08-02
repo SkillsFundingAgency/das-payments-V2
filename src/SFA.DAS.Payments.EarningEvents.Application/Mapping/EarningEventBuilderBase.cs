@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 if (!priceEpisodes.Any())
                 {
                     // Maths & English
-                    var mathsAndEnglishAims = GetMathsAndEnglishAim(learnerSubmission, learningDelivery, !mainAim.HasValue);
+                    var mathsAndEnglishAims = GetMathsAndEnglishAim(learnerSubmission, learningDelivery, mainAim.HasValue);
                     results.AddRange(mathsAndEnglishAims);
 
                     continue;
@@ -45,9 +45,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         }
 
         private static List<IntermediateLearningAim> GetMathsAndEnglishAim(ProcessLearnerCommand learnerSubmission,
-            LearningDelivery learningDelivery, bool groupByContractType)
+            LearningDelivery learningDelivery, bool singleContractType)
         {
-            if (!groupByContractType)
+            if (singleContractType)
                 return new List<IntermediateLearningAim> { new IntermediateLearningAim(learnerSubmission, new List<PriceEpisode>(), learningDelivery) };
 
             var results = new List<IntermediateLearningAim>();
