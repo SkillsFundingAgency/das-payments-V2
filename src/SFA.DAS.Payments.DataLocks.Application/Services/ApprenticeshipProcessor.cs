@@ -22,6 +22,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         Task ProcessStopDateChange(ApprenticeshipStopDateChangedEvent stopDateChangedEvent);
         Task ProcessPausedApprenticeship(ApprenticeshipPausedEvent pausedEvent);
         Task ProcessResumedApprenticeship(ApprenticeshipResumedEvent resumedEvent);
+        Task ProcessPaymentOrderChange(PaymentOrderChangedEvent paymentOrderChangedEvent);
     }
 
     public class ApprenticeshipProcessor : IApprenticeshipProcessor
@@ -188,6 +189,30 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
         }
 
+        public async Task ProcessPaymentOrderChange(PaymentOrderChangedEvent paymentOrderChangedEvent)
+        {
+            try
+            {
+                logger.LogDebug($"Now processing Payment Order Changed Event for Account id: {paymentOrderChangedEvent.AccountId}");
+
+                var priorityEvent = new EmployerChangedProviderPriority
+                {
+                    EmployerAccountId = paymentOrderChangedEvent.AccountId,
+                    OrderedProviders = paymentOrderChangedEvent.PaymentOrder.Select(x => (long)x).ToList()
+                };
+
+                var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
+                await endpointInstance.Publish(priorityEvent).ConfigureAwait(false);
+
+                logger.LogDebug($"Finished processing Payment Order Changed Event for Account id: {paymentOrderChangedEvent.AccountId}");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error processing Payment Order Changed Event. Error: {ex.Message}", ex);
+                throw;
+            }
+        }
+        
         private async Task PublishApprenticeshipUpdate(ApprenticeshipModel updatedApprenticeship)
         {
             var updatedEvent = mapper.Map<ApprenticeshipUpdated>(updatedApprenticeship);

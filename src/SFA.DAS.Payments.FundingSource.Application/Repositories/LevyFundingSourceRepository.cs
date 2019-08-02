@@ -46,8 +46,12 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
 
         public async Task AddEmployerProviderPriorities(List<EmployerProviderPriorityModel> paymentPriorityModels, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await dataContext.EmployerProviderPriority
-               .AddRangeAsync(paymentPriorityModels, cancellationToken)
-               .ConfigureAwait(false);
-        } }
+             await dataContext.EmployerProviderPriority
+                .AddRangeAsync(paymentPriorityModels, cancellationToken)
+                .ConfigureAwait(false);
+
+            await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+    }
 }
