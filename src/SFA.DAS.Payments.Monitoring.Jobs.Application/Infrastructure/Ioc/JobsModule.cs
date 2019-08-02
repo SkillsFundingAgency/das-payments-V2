@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
-                    return new JobsDataContext(configHelper.GetConnectionString("PaymentsConnectionString"));
+                    return new JobsDataContext(configHelper.GetConnectionString("PaymentsMonitoringConnectionString"));
                 })
                 .As<IJobsDataContext>()
                 .InstancePerLifetimeScope();

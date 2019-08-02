@@ -98,7 +98,7 @@ namespace SFA.DAS.Payments.PerformanceTests
             Builder.Register((c, p) =>
             {
                 var configHelper = c.Resolve<TestsConfiguration>();
-                return new JobsDataContext(configHelper.PaymentsConnectionString);
+                return new JobsDataContext(configHelper.PaymentsMonitoringConnectionString);
             }).InstancePerDependency();
             DcHelper.AddDcConfig(Builder);
             Builder.RegisterType<EndpointInstanceFactory>()

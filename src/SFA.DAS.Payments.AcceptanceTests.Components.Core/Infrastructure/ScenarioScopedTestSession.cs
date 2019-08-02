@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Components.Core.Infrastructure
             Builder.Register(c =>
             {
                 var configHelper = c.Resolve<TestsConfiguration>();
-                var dataContext = new JobsDataContext(configHelper.PaymentsConnectionString);
+                var dataContext = new JobsDataContext(configHelper.PaymentsMonitoringConnectionString);
                 return dataContext;
             }).InstancePerLifetimeScope();
         }
