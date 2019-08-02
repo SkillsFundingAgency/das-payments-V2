@@ -62,25 +62,5 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             }
             return outputEarnings.AsReadOnly();
         }
-
-        private static readonly Dictionary<string, FunctionalSkillType> TypeMap =
-            new Dictionary<string, FunctionalSkillType>
-            {
-                {"MathEngBalPayment", FunctionalSkillType.BalancingMathsAndEnglish},
-                {"MathEngOnProgPayment", FunctionalSkillType.OnProgrammeMathsAndEnglish},
-                {"PriceEpisodeLSFCash", FunctionalSkillType.LearningSupport},
-            };
-
-
-        private static Dictionary<FunctionalSkillType, string> MathsAndEnglishAttributes()
-        {
-            return new Dictionary<FunctionalSkillType, string>
-            {
-                {FunctionalSkillType.OnProgrammeMathsAndEnglish, "MathEngOnProgPayment"},
-                {FunctionalSkillType.BalancingMathsAndEnglish, "MathEngBalPayment"},
-                {FunctionalSkillType.LearningSupport, "PriceEpisodeLSFCash" },
-            };
-        }
-
     }
 }
