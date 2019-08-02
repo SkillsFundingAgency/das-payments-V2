@@ -51,6 +51,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 IlrSubmissionDateTime = DateTime.Today,
                 EarningEventId = Guid.NewGuid(),
                 ContractType = ContractType.Act1,
+                ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
             };
             mapperConfiguration = AutoMapperConfigurationFactory.CreateMappingConfig();
             autoMapper = mapperConfiguration.CreateMapper();
@@ -177,6 +178,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             expectedEvent.CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 1);
             expectedEvent.AccountId = 1000000;
             expectedEvent.EarningEventId = requiredPaymentEvent.EarningEventId;
+            expectedEvent.ApprenticeshipEmployerType = requiredPaymentEvent.ApprenticeshipEmployerType;
         }
     }
 }
