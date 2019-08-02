@@ -13,6 +13,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
             {
                 new DataColumn("FundingSourceEventId", typeof(Guid)),
                 new DataColumn("FundingSource"),
+                new DataColumn("ApprenticeshipEmployerType", typeof(byte)),
             });
         }
 
@@ -21,6 +22,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
             var dataRow = base.CreateDataRow(eventModel);
             dataRow["FundingSourceEventId"] = eventModel.FundingSourceId;
             dataRow["FundingSource"] = (byte)eventModel.FundingSource;
+            dataRow["ApprenticeshipEmployerType"] = eventModel.ApprenticeshipEmployerType;
             return dataRow;
         }
 
