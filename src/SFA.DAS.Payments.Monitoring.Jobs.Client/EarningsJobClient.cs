@@ -41,34 +41,37 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 
         private async Task SaveNewJob(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages, DateTimeOffset startTime)
         {
-            logger.LogDebug($"Now recording new provider earnings job.  Job Id: {jobId}, Ukprn: {ukprn}.");
-            var jobDetails = new JobModel
-            {
-                JobType = JobType.EarningsJob,
-                StartTime = startTime,
-                CollectionPeriod = collectionPeriod,
-                AcademicYear = collectionYear,
-                Ukprn = ukprn,
-                DcJobId = jobId,
-                IlrSubmissionTime = ilrSubmissionTime,
-                Status = JobStatus.InProgress,
-                LearnerCount = generatedMessages.Count
-            };
-            var jobSteps = generatedMessages.Select(msg => new JobStepModel
-            {
-                MessageId = msg.MessageId,
-                StartTime = msg.StartTime,
-                MessageName = msg.MessageName,
-                Status = JobStepStatus.Queued
-            }).ToList();
-            var stopwatch = Stopwatch.StartNew();
-            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-            {
-                await dataContext.SaveNewJob(jobDetails, jobSteps);
-                scope.Complete();
-            }
-            SendTelemetry(jobId, ukprn, collectionYear, collectionPeriod, generatedMessages.Count, jobDetails, stopwatch);
-            logger.LogInfo($"Finished saving the job to the db.  Job id: {jobDetails.Id}, DC Job Id: {jobId}, Ukprn: {ukprn}.");
+            //TODO: re-enable
+            logger.LogDebug($"Monitoring disabled.  Job Id: {jobId}, Ukprn: {ukprn}.");
+
+            //logger.LogDebug($"Now recording new provider earnings job.  Job Id: {jobId}, Ukprn: {ukprn}.");
+            //var jobDetails = new JobModel
+            //{
+            //    JobType = JobType.EarningsJob,
+            //    StartTime = startTime,
+            //    CollectionPeriod = collectionPeriod,
+            //    AcademicYear = collectionYear,
+            //    Ukprn = ukprn,
+            //    DcJobId = jobId,
+            //    IlrSubmissionTime = ilrSubmissionTime,
+            //    Status = JobStatus.InProgress,
+            //    LearnerCount = generatedMessages.Count
+            //};
+            //var jobSteps = generatedMessages.Select(msg => new JobStepModel
+            //{
+            //    MessageId = msg.MessageId,
+            //    StartTime = msg.StartTime,
+            //    MessageName = msg.MessageName,
+            //    Status = JobStepStatus.Queued
+            //}).ToList();
+            //var stopwatch = Stopwatch.StartNew();
+            //using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            //{
+            //    await dataContext.SaveNewJob(jobDetails, jobSteps);
+            //    scope.Complete();
+            //}
+            //SendTelemetry(jobId, ukprn, collectionYear, collectionPeriod, generatedMessages.Count, jobDetails, stopwatch);
+            //logger.LogInfo($"Finished saving the job to the db.  Job id: {jobDetails.Id}, DC Job Id: {jobId}, Ukprn: {ukprn}.");
         }
 
         private void SendTelemetry(long jobId, long ukprn, short collectionYear, byte collectionPeriod, int learnerCount, JobModel jobDetails, Stopwatch stopwatch)
