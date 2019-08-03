@@ -95,6 +95,7 @@
     <Build Include="Payments2\Tables\Payments2.TestingProvider.sql" />
     <Build Include="Payments2\Tables\SubmittedLearnerAim.sql" />
     <Build Include="Payments2\Tables\Payments2.ApprenticeshipDuplicate.sql" />
+    <Build Include="Payments2\Tables\Payments2.DataLockFailure.sql" />
     <Build Include="Payments2\Tables\Payments2.EmployerProviderPriority.sql" />
     <Build Include="Payments2\Tables\Payments2.DataLockEvent.sql" />
     <Build Include="Payments2\Tables\Payments2.DataLockEventPriceEpisode.sql" />

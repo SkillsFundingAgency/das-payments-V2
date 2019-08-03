@@ -11,6 +11,7 @@ using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
 using ESFA.DC.Serialization.Interfaces;
 using NServiceBus;
+using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
@@ -67,9 +68,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 using (var operation = telemetry.StartOperation("FM36Processing"))
                 {
                     var collectionPeriod = int.Parse(message.KeyValuePairs[JobContextMessageKey.ReturnPeriod].ToString());
+                    var fileName = message.KeyValuePairs[JobContextMessageKey.Filename]?.ToString();
                     var fm36Output = await GetFm36Global(message, collectionPeriod, cancellationToken).ConfigureAwait(false);
                     await ClearSubmittedLearnerAims(collectionPeriod, fm36Output.Year, message.SubmissionDateTimeUtc, fm36Output.UKPRN, cancellationToken).ConfigureAwait(false);
-                    var duration = await ProcessFm36Global(message, collectionPeriod, fm36Output, cancellationToken).ConfigureAwait(false);
+                    var duration = await ProcessFm36Global(message, collectionPeriod, fm36Output, fileName, cancellationToken).ConfigureAwait(false);
                     await SendReceivedEarningsEvent(message.JobId, message.SubmissionDateTimeUtc, fm36Output.Year, collectionPeriod, fm36Output.UKPRN).ConfigureAwait(false);
 
                     telemetry.TrackEvent("Sent All ProcessLearnerCommand Messages",
@@ -175,7 +177,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             return fm36Output;
         }
 
-        private static ProcessLearnerCommand Build(FM36Learner learner, long jobId, DateTime ilrSubmissionDateTime, short academicYear, int collectionPeriod, long ukprn)
+        private static ProcessLearnerCommand Build(FM36Learner learner, long jobId, DateTime ilrSubmissionDateTime, short academicYear, int collectionPeriod, long ukprn, string fileName)
         {
             return new ProcessLearnerCommand
             {
@@ -183,19 +185,20 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 Learner = learner,
                 RequestTime = DateTimeOffset.UtcNow,
                 IlrSubmissionDateTime = ilrSubmissionDateTime,
+                IlrFileName = fileName,
                 CollectionYear = academicYear,
                 CollectionPeriod = collectionPeriod,
                 Ukprn = ukprn
             };
         }
 
-        private async Task<double> ProcessFm36Global(JobContextMessage message, int collectionPeriod, FM36Global fm36Output, CancellationToken cancellationToken)
+        private async Task<double> ProcessFm36Global(JobContextMessage message, int collectionPeriod, FM36Global fm36Output, string ilrFileName, CancellationToken cancellationToken)
         {
             logger.LogVerbose("Now building commands.");
             var startTime = DateTimeOffset.UtcNow;
-            var commands = fm36Output
-                .Learners
-                .Select(learner => Build(learner, message.JobId, message.SubmissionDateTimeUtc, short.Parse(fm36Output.Year), collectionPeriod, fm36Output.UKPRN))
+            var learners = fm36Output.Learners ?? new List<FM36Learner>();
+            var commands = learners
+                .Select(learner => Build(learner, message.JobId, message.SubmissionDateTimeUtc, short.Parse(fm36Output.Year), collectionPeriod, fm36Output.UKPRN, ilrFileName))
                 .ToList();
 
             var jobStatusClient = jobClientFactory.Create();
