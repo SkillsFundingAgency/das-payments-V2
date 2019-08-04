@@ -233,7 +233,7 @@ namespace SFA.DAS.Payments.PerformanceTests
             dataContext.LevyAccount.Add(new LevyAccountModel
             {
                 AccountId = session.Ukprn, Balance = 1000000, TransferAllowance = 0, IsLevyPayer = true,
-                 AccountName = $"Test Account: {session.Ukprn}", 
+                AccountHashId = session.Ukprn.ToString(), AccountName = $"Test Account: {session.Ukprn}", SequenceId = 1
             });
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
