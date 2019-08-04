@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
+using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.Application.Data;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
@@ -14,9 +15,8 @@ using SFA.DAS.Payments.Core.Configuration;
 
 namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
 {
-    public interface IPaymentsEventModelBatchProcessor<T> where T : IPaymentsEventModel
+    public interface IPaymentsEventModelBatchProcessor<T> : IBatchProcessor<T> where T : IPaymentsEventModel
     {
-        Task<int> Process(int batchSize, CancellationToken cancellationToken);
     }
 
     public class PaymentsEventModelBatchProcessor<T> : IPaymentsEventModelBatchProcessor<T> where T : IPaymentsEventModel
@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
         public async Task<int> Process(int batchSize, CancellationToken cancellationToken)
         {
             logger.LogVerbose("Processing batch.");
-            var batch = await cache.GetPayments(batchSize);
+            var batch = await cache.GetPayments(batchSize, cancellationToken);
             if (batch.Count < 1)
             {
                 logger.LogVerbose("No records found to process.");
