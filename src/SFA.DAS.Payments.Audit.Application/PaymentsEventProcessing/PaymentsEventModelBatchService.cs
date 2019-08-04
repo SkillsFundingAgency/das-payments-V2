@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
             batchInterval = TimeSpan.FromSeconds(intervalInSeconds);
             batchSize = int.Parse(configurationHelper.GetSetting("BatchSize"));
             policy = Policy.Handle<Exception>()
-                .CircuitBreakerAsync(5, TimeSpan.FromSeconds(int.Parse(configurationHelper.GetSetting("BatchFailureTimeoutInSeconds"))));
+                .CircuitBreakerAsync(10, TimeSpan.FromSeconds(int.Parse(configurationHelper.GetSetting("BatchFailureTimeoutInSeconds"))));
         }
 
         public async Task RunAsync(CancellationToken cancellationToken)

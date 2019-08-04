@@ -16,7 +16,7 @@
     <Parameter Name="RequiredPaymentsService_EndpointName" DefaultValue="" />
     <Parameter Name="RequiredPaymentsService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
-    <Parameter Name="RemovedLearnerServiceActorService_PartitionCount" DefaultValue="10" />
+    <Parameter Name="RemovedLearnerServiceActorService_PartitionCount" DefaultValue="1" />
     <Parameter Name="RemovedLearnerServiceActorService_MinReplicaSetSize" DefaultValue="1" />
     <Parameter Name="RemovedLearnerServiceActorService_TargetReplicaSetSize" DefaultValue="1" />
   </Parameters>

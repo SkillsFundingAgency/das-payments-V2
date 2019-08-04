@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Audit.Application.Data;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
 using SFA.DAS.Payments.Audit.Model;
@@ -24,17 +27,20 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
         private readonly IPaymentsEventModelCache<T> cache;
         private readonly IPaymentsEventModelDataTable<T> dataTable;
         private readonly IPaymentLogger logger;
+        private readonly ITelemetry telemetry;
         private readonly string connectionString;
 
         public PaymentsEventModelBatchProcessor(
             IPaymentsEventModelCache<T> cache,
-            IPaymentsEventModelDataTable<T> dataTable, 
+            IPaymentsEventModelDataTable<T> dataTable,
             IConfigurationHelper configurationHelper,
-            IPaymentLogger logger)
+            IPaymentLogger logger,
+            ITelemetry telemetry)
         {
             this.cache = cache ?? throw new ArgumentNullException(nameof(cache));
             this.dataTable = dataTable ?? throw new ArgumentNullException(nameof(dataTable));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
             connectionString = configurationHelper.GetConnectionString("PaymentsConnectionString") ?? throw new ArgumentException("Failed to find the PaymentsConnectionString in the ConnectionStrings section.");
         }
 
@@ -61,7 +67,23 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
             {
                 try
                 {
-                    await sqlConnection.OpenAsync(cancellationToken);
+                    var stopwatch = Stopwatch.StartNew();
+                    try
+                    {
+                        logger.LogDebug("opening connection to sql.");
+                        await sqlConnection.OpenAsync(cancellationToken);
+                        stopwatch.Stop();
+                        logger.LogDebug($"Opened connection to sql. Time taken: {stopwatch.ElapsedMilliseconds}");
+                        telemetry.TrackEvent($"ProcessBatch.OpenedSqlConnection", new Dictionary<string, double> { { TelemetryKeys.Duration, stopwatch.ElapsedMilliseconds }, { "BatchSize", batch.Count } });
+                    }
+                    catch (Exception ex)
+                    {
+                        stopwatch.Stop();
+                        telemetry.TrackEvent($"ProcessBatch.FailedSqlConnection", new Dictionary<string, double> { { TelemetryKeys.Duration, stopwatch.ElapsedMilliseconds }, { "BatchSize", batch.Count } });
+                        logger.LogError($"Failed to open the sql connection. Time taken: {stopwatch.ElapsedMilliseconds}.  Error: {ex.Message}, inner ex: {ex.InnerException?.Message}.");
+                        throw;
+                    }
+
                     using (var bulkCopy = new SqlBulkCopy(sqlConnection))
                     {
                         foreach (var table in data)
@@ -121,7 +143,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                 var dataSchema = dataReader.GetSchemaTable();
                 foreach (DataRow row in dataSchema.Rows)
                 {
-                    singleRecordTable.Columns.Add(new DataColumn(row["ColumnName"].ToString(), (Type) row["DataType"]));
+                    singleRecordTable.Columns.Add(new DataColumn(row["ColumnName"].ToString(), (Type)row["DataType"]));
                 }
 
                 while (dataReader.Read())

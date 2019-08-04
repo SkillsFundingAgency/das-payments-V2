@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Audit.Application.Data;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
@@ -17,8 +18,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 
         public ProviderPaymentsEventModelBatchProcessor(IPaymentsEventModelCache<ProviderPaymentEventModel> cache, 
             IPaymentsEventModelDataTable<ProviderPaymentEventModel> dataTable, IConfigurationHelper configurationHelper, 
-            IPaymentLogger logger, IDataCache<ReceivedProviderEarningsEvent> ilrSubmittedEventCache) 
-            : base(cache, dataTable, configurationHelper, logger)
+            IPaymentLogger logger, IDataCache<ReceivedProviderEarningsEvent> ilrSubmittedEventCache,
+            ITelemetry telemetry) 
+            : base(cache, dataTable, configurationHelper, logger, telemetry)
         {
             this.ilrSubmittedEventCache = ilrSubmittedEventCache ?? throw new ArgumentNullException(nameof(ilrSubmittedEventCache));
         }
