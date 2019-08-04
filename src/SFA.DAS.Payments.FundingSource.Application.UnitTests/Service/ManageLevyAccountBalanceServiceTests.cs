@@ -83,6 +83,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 
             accountApiClient
                 .SetupSequence(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()))
+                .ReturnsAsync(new PagedApiResponseViewModel<AccountWithBalanceViewModel>
+                {
+                    TotalPages = 2
+                })
                 .ReturnsAsync(pagedOneApiResponseViewModel)
                 .ReturnsAsync(pagedTwoApiResponseViewModel);
 
@@ -107,7 +111,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             await service.RefreshLevyAccountDetails(new CancellationToken()).ConfigureAwait(false);
 
             accountApiClient
-                .Verify(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()), Times.Exactly(2));
+                .Verify(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()), Times.Exactly(3));
 
             bulkWriter
                 .Verify(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
@@ -140,6 +144,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 
             accountApiClient
                 .SetupSequence(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()))
+                .ReturnsAsync(new PagedApiResponseViewModel<AccountWithBalanceViewModel>
+                {
+                    TotalPages = 1
+                })
                 .ReturnsAsync(pagedApiResponseViewModel);
 
             bulkWriter
@@ -162,7 +170,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             await service.RefreshLevyAccountDetails(new CancellationToken()).ConfigureAwait(false);
 
             accountApiClient
-                .Verify(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()), Times.Once);
+                .Verify(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()), Times.Exactly(2));
 
             bulkWriter
                 .Verify(o => o.Write(It.Is<LevyAccountModel>(x => x.AccountId == pagedApiResponseViewModel.Data[0].AccountId &&
