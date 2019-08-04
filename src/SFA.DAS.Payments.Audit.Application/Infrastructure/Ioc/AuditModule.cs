@@ -32,11 +32,11 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
                 .As<IPaymentsEventModelDataTable<EarningEventModel>>();
 
             builder.RegisterGeneric(typeof(PaymentsEventModelBatchService<>))
-                .AsImplementedInterfaces()
+                .As(typeof(IPaymentsEventModelBatchService<>))
                 .SingleInstance();
 
             builder.RegisterGeneric(typeof(PaymentsEventModelBatchProcessor<>))
-                .AsImplementedInterfaces()
+                .As(typeof(IPaymentsEventModelBatchProcessor<>))
                 .InstancePerLifetimeScope();
         }
     }

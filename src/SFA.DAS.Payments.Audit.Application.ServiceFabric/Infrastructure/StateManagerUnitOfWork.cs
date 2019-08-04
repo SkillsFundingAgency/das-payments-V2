@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Data;
 using NServiceBus.UnitOfWork;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.ServiceFabric.Core;
 
-namespace SFA.DAS.Payments.ServiceFabric.Core.Batch
+namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure
 {
     public class StateManagerUnitOfWork : IManageUnitsOfWork
     {

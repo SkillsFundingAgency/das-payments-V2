@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
@@ -21,10 +20,10 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task ProcessPaymentsEvent(TPaymentsEvent message, CancellationToken cancellationToken)
+        public async Task ProcessPaymentsEvent(TPaymentsEvent message)
         {
             var model = mapper.Map<TPaymentsEventModel>(message);  
-            await cache.AddPayment(model, cancellationToken);
+            await cache.AddPayment(model);
         }
     }
 }

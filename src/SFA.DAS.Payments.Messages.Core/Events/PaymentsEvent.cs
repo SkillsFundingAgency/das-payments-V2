@@ -12,7 +12,6 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         public Learner Learner { get; set; }
         public LearningAim LearningAim { get; set; }
         public DateTime IlrSubmissionDateTime { get; set; }
-        public string IlrFileName { get; set; }
         public CollectionPeriod CollectionPeriod { get; set; }
         protected PaymentsEvent()
         {

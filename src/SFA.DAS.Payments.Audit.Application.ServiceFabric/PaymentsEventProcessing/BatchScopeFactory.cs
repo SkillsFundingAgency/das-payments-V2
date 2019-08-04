@@ -1,7 +1,8 @@
-﻿using SFA.DAS.Payments.Application.Batch;
+﻿using Autofac;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
+using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 
-namespace SFA.DAS.Payments.ServiceFabric.Core.Batch
+namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventProcessing
 {
     public class BatchScopeFactory: IBatchScopeFactory
     {

@@ -17,8 +17,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                     continue;
 
                 var priceEpisodes = learnerSubmission.Learner.PriceEpisodes
-                    .Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learningDelivery.AimSeqNumber)
-                    .ToList();
+                    .Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learningDelivery.AimSeqNumber);
 
                 if (!priceEpisodes.Any())
                 {

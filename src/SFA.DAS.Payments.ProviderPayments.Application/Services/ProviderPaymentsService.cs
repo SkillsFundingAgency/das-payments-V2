@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             }
 
             paymentLogger.LogVerbose($"Received valid payment with Job Id {payment.JobId} for Ukprn {payment.Ukprn} ");
-            await paymentCache.AddPayment(payment, cancellationToken);
+            await paymentCache.AddPayment(payment);
             stopwatch.Stop();
             telemetry.TrackDuration(GetType().FullName + ".ProcessPayment", stopwatch.Elapsed);
             paymentLogger.LogInfo($"Finished adding the payment to the cache. EventId: {payment.EventId}, FundingSourceId: {payment.FundingSourceId}, UKPRN: {payment.Ukprn}");

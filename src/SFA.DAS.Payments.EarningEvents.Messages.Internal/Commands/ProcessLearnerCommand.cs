@@ -12,6 +12,5 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands
         public int CollectionPeriod { get; set; }
         public FM36Learner Learner { get; set; }
         public DateTime IlrSubmissionDateTime { get; set; }
-        public string IlrFileName { get; set; }
     }
 }

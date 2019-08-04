@@ -14,18 +14,4 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="AccountId" />
   </Operation>
-  <Operation Name="Rename Refactor" Key="8d5cc18c-0be2-4ec5-a0a5-e95a81abda17" ChangeDateTime="07/10/2019 13:44:29">
-    <Property Name="ElementName" Value="[Payments2].[DataLockFailure].[Errors]" />
-    <Property Name="ElementType" Value="SqlSimpleColumn" />
-    <Property Name="ParentElementName" Value="[Payments2].[DataLockFailure]" />
-    <Property Name="ParentElementType" Value="SqlTable" />
-    <Property Name="NewName" Value="EarningPeriod" />
-  </Operation>
-  <Operation Name="Rename Refactor" Key="efc796dd-32a0-468a-a54d-3891510442a2" ChangeDateTime="07/22/2019 14:00:05">
-    <Property Name="ElementName" Value="[Payments2].[DataLockFailure].[EarningFailedDataLockMatchingEventId]" />
-    <Property Name="ElementType" Value="SqlSimpleColumn" />
-    <Property Name="ParentElementName" Value="[Payments2].[DataLockFailure]" />
-    <Property Name="ParentElementType" Value="SqlTable" />
-    <Property Name="NewName" Value="DataLockEventId" />
-  </Operation>
 </Operations>

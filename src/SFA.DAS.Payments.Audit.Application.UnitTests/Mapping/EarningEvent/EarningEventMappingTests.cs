@@ -39,7 +39,8 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
                 }
             };
         }
-        
+
+
         [Test]
         public void Maps_PriceEpisodes()
         {
@@ -47,12 +48,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
             model.PriceEpisodes.Count.Should().Be(PaymentEvent.PriceEpisodes.Count());
         }
 
-        [Test]
-        public void Maps_AimSeqNumber()
-        {
-            PaymentEvent.LearningAim.SequenceNumber = 101;
-            var model = Mapper.Map<EarningEventModel>(PaymentEvent);
-            model.LearningAimSequenceNumber.Should().Be(101);
-        }
+
+
     }
 }

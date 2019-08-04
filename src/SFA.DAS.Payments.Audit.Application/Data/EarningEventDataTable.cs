@@ -18,7 +18,6 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             {
                 new DataColumn("ContractType"),
                 new DataColumn("AgreementId"),
-                new DataColumn("LearningAimSequenceNumber"), 
             });
             periods = new DataTable("Payments2.EarningEventPeriod");
             periods.Columns.AddRange(new[]
@@ -55,7 +54,6 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             var dataRow = base.CreateDataRow(eventModel);
             dataRow["ContractType"] = (byte)eventModel.ContractType;
             dataRow["AgreementId"] = eventModel.AgreementId;
-            dataRow["LearningAimSequenceNumber"] = eventModel.LearningAimSequenceNumber;
             eventModel.Periods.ForEach(period => periods.Rows.Add(CreatePeriodDataRow(period)));
             eventModel.PriceEpisodes.ForEach(priceEpisode => priceEpisodes.Rows.Add(CreatePriceEpisodeDataRow(priceEpisode)));
             return dataRow;

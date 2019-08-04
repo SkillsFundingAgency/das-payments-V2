@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;

@@ -102,7 +102,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Returns(true);
 
             mocker.Mock<IPaymentsEventModelCache<ProviderPaymentEventModel>>()
-                .Setup(x => x.AddPayment(It.IsAny<ProviderPaymentEventModel>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.AddPayment(It.IsAny<ProviderPaymentEventModel>()))
                 .Returns(Task.CompletedTask);
 
             providerPaymentsService = mocker.Create<ProviderPaymentsService>();
@@ -114,7 +114,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
             await providerPaymentsService.ProcessPayment(payments.First(), default(CancellationToken));
             
             mocker.Mock<IPaymentsEventModelCache<ProviderPaymentEventModel>>()
-                .Verify(x => x.AddPayment(It.IsAny<ProviderPaymentEventModel>(), It.IsAny<CancellationToken>()),Times.Once);
+                .Verify(x => x.AddPayment(It.IsAny<ProviderPaymentEventModel>()),Times.Once);
         }
     }
 }

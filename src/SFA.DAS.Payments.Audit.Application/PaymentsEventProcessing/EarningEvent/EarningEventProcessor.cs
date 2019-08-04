@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
 using SFA.DAS.Payments.Audit.Model;
@@ -8,7 +7,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEven
 {
     public interface IEarningEventProcessor
     {
-        Task ProcessPaymentsEvent(EarningEvents.Messages.Events.EarningEvent message, CancellationToken cancellationToken);
+        Task ProcessPaymentsEvent(EarningEvents.Messages.Events.EarningEvent message);
     }
 
     public class EarningEventProcessor : PaymentsEventProcessor<EarningEvents.Messages.Events.EarningEvent, EarningEventModel>, IEarningEventProcessor
