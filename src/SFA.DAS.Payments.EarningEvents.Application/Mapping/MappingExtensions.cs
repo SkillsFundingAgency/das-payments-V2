@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             return contractTypes;
         }
-
+        
         public static ContractType GetContractType(string priceEpisodeContractType)
         {
             switch (priceEpisodeContractType)

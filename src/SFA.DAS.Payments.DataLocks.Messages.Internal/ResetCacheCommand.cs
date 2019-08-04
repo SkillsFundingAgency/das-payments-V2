@@ -7,3 +7,5 @@ namespace SFA.DAS.Payments.DataLocks.Messages.Internal
         public long Ukprn { get; set; }
     }
 }
+
+

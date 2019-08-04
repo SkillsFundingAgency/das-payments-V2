@@ -165,5 +165,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                 })
                 .ToList();
         }
+
+        public void Dispose()
+        {
+            (dataContext as PaymentsDataContext)?.Dispose();
+        }
     }
 }

@@ -3,10 +3,8 @@ using System;
 
 namespace SFA.DAS.Payments.Messages.Core.Events
 {
-    public interface IPaymentsEvent : IPaymentsMessage
+    public interface IPaymentsEvent : IJobMessage, IEvent
     {
-        DateTimeOffset EventTime { get; }
-        Guid EventId { get; }
         long Ukprn { get; }
         Learner Learner { get; }
         LearningAim LearningAim { get; }

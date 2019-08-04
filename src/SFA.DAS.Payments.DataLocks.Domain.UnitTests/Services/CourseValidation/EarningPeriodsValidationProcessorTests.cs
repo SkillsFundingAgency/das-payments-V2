@@ -13,7 +13,7 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 {
     [TestFixture]
-    public class EarningPeriodsValidationProcessorTest
+    public class EarningPeriodsValidationProcessorTests
     {
         private AutoMock mocker;
         private List<PriceEpisode> priceEpisodes;
@@ -21,6 +21,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         private List<DataLockFailure> dataLockFailures;
         private LearningAim aim;
         private const int AcademicYear = 1819;
+        private readonly int ukprn = 123;
 
         [SetUp]
         public void SetUp()
@@ -38,6 +39,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 {
                     Id = 1,
                     AccountId = 21,
+                    Ukprn = ukprn,
                     ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                     {
                         new ApprenticeshipPriceEpisodeModel{Id = 90},
@@ -50,6 +52,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 {
                     Id = 2,
                     AccountId = 22,
+                    Ukprn = ukprn,
                     ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                     {
                         new ApprenticeshipPriceEpisodeModel{Id = 94},
@@ -87,6 +90,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 .Returns(() => new CourseValidationResult { DataLockFailures = dataLockFailures });
 
             var periods = mocker.Create<EarningPeriodsValidationProcessor>().ValidatePeriods(
+                ukprn,
                 1,
                 priceEpisodes, 
                 earning.Periods.ToList(),
@@ -117,7 +121,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 2)))
                 .Returns(() => new CourseValidationResult { MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel { Id = 96 } });
 
-            var periods = mocker.Create<EarningPeriodsValidationProcessor>().ValidatePeriods(1, 
+            var periods = mocker.Create<EarningPeriodsValidationProcessor>().ValidatePeriods(
+                ukprn,
+                1, 
                 priceEpisodes,
                 earning.Periods.ToList(),
                 (TransactionType) earning.Type,
@@ -143,7 +149,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 2)))
                 .Returns(() => new CourseValidationResult { DataLockFailures = dataLockFailures });
 
-            var periods = mocker.Create<EarningPeriodsValidationProcessor>().ValidatePeriods(1, 
+            var periods = mocker.Create<EarningPeriodsValidationProcessor>().ValidatePeriods(
+                ukprn,
+                1, 
                 priceEpisodes,
                 earning.Periods.ToList(),
                 (TransactionType) earning.Type,
@@ -169,7 +177,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 2)))
                 .Returns(() => new CourseValidationResult { DataLockFailures = dataLockFailures });
 
-            var periods = mocker.Create<EarningPeriodsValidationProcessor>().ValidatePeriods(1,
+            var periods = mocker.Create<EarningPeriodsValidationProcessor>().ValidatePeriods(
+                ukprn,
+                1,
                 priceEpisodes,
                 earning.Periods.ToList(), 
                 (TransactionType) earning.Type,
@@ -200,6 +210,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 
             apprenticeships.FirstOrDefault().TransferSendingEmployerAccountId = 999;
             var periods = mocker.Create<EarningPeriodsValidationProcessor>().ValidatePeriods(
+                ukprn,
                 1, priceEpisodes,
                 earning.Periods.ToList(),
                 (TransactionType) earning.Type,

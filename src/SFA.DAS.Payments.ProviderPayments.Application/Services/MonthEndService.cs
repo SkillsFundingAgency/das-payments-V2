@@ -53,7 +53,5 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             var monthEndData =  await monthEndCache.GetMonthEndDetails(ukprn, academicYear, collectionPeriod).ConfigureAwait(false);
             return monthEndData.JobId;
         }
-
-       
     }
 }

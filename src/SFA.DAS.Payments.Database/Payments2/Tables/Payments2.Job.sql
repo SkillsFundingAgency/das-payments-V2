@@ -13,3 +13,14 @@
 	CollectionPeriod TINYINT NOT NULL,
 	INDEX IX_Job__DCJobId_Ukprn NONCLUSTERED (DCJobId, Ukprn)
 )
+
+GO
+
+CREATE INDEX [IX_Job__Search] ON [Payments2].[Job](
+	JobId,
+	JobType,
+	DCJobId,
+	Ukprn,
+	[Status]
+)
+GO

@@ -6,6 +6,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching
 {
     public interface IUkprnMatcher
     {
-        Task<DataLockErrorCode?> MatchUkprn();
+        Task<DataLockErrorCode?> MatchUkprn(long ukprn);
     }
 }
