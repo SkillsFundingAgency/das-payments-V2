@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Transactions;
 using Polly;
 using Polly.CircuitBreaker;
+using Polly.Retry;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -29,7 +30,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly ILevyAccountBulkCopyRepository levyAccountBulkWriter;
         private readonly int batchSize;
         private int totalPageSize ;
-        private readonly AsyncCircuitBreakerPolicy policy;
+        private readonly AsyncRetryPolicy retryPolicy;
 
         public ManageLevyAccountBalanceService(ILevyFundingSourceRepository repository,
             IAccountApiClient accountApiClient,
@@ -42,7 +43,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.logger = logger;
             this.levyAccountBulkWriter = levyAccountBulkWriter;
             this.batchSize = batchSize;
-            policy = Policy.Handle<Exception>().CircuitBreakerAsync(5, TimeSpan.FromSeconds(10));
+           
+             retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(5, i => TimeSpan.FromMinutes(1));
         }
 
         public async Task RefreshLevyAccountDetails(CancellationToken cancellationToken = default(CancellationToken))
@@ -51,7 +53,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
             var page = 1;
             
-            await policy.ExecuteAsync(GetTotalPageSize).ConfigureAwait(false);
+            await retryPolicy.ExecuteAsync(GetTotalPageSize).ConfigureAwait(false);
 
             while (page <= totalPageSize)
             {
@@ -114,8 +116,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         {
             try
             {
-
-                throw  new Exception();
                 var pagedAccountsRecord = await accountApiClient.GetPageOfAccounts(1, 1).ConfigureAwait(false);
                 totalPageSize = pagedAccountsRecord.TotalPages;
 
