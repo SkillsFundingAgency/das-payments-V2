@@ -14,7 +14,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.Messages.Core.Events;
-using Earning = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Earning;
+using Earning = SFA.DAS.Payments.AcceptanceTests.Core.Data.Earning;
 using FunctionalSkillEarning = SFA.DAS.Payments.Model.Core.Incentives.FunctionalSkillEarning;
 using Learner = SFA.DAS.Payments.Model.Core.Learner;
 

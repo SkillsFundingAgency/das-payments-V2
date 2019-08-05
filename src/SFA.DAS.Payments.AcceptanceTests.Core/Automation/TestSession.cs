@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public LearnRefNumberGenerator LearnRefNumberGenerator { get; }
         public string SessionId { get; }
-        public List<Learner> Learners { get; }
+        public List<Learner> Learners { get; private set; }
         public Learner Learner => GetLearner(Provider.Ukprn, LearnerIdentifierA);
         public Employer Employer => GetEmployer(TestEmployer);
 
@@ -78,6 +78,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
             Employers = new List<Employer>();
 
+        }
+
+        public void ClearLearnersExcept(List<Learner> learners)
+        {
+            Learners = Learners.Where(l => learners.Exists(e => e.Ukprn == l.Ukprn && e.LearnerIdentifier == l.LearnerIdentifier)).ToList();
         }
 
         public long GenerateId(int maxValue = 1000000)

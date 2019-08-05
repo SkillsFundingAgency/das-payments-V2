@@ -85,8 +85,8 @@
     <Reference Include="ESFA.DC.Jobs.Model, Version=0.2.9.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Jobs.Model.0.2.9-beta0001\lib\netstandard2.0\ESFA.DC.Jobs.Model.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.JobStatus.Interface, Version=0.2.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.JobStatus.Interface.0.2.5-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Interface.dll</HintPath>
+    <Reference Include="ESFA.DC.JobStatus.Interface, Version=0.2.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.JobStatus.Interface.0.2.8-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Interface.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.Serialization.Interfaces, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Serialization.Interfaces.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.Serialization.Interfaces.dll</HintPath>
@@ -179,8 +179,8 @@
       <HintPath>..\packages\morelinq.3.1.1\lib\net451\MoreLinq.dll</HintPath>
     </Reference>
     <Reference Include="netstandard" />
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NServiceBus.Azure.Transports.WindowsAzureServiceBus, Version=9.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
       <HintPath>..\packages\NServiceBus.Azure.Transports.WindowsAzureServiceBus.9.0.3\lib\net46\NServiceBus.Azure.Transports.WindowsAzureServiceBus.dll</HintPath>
@@ -192,7 +192,7 @@
       <HintPath>..\packages\NServiceBus.7.1.5\lib\net452\NServiceBus.Core.dll</HintPath>
     </Reference>
     <Reference Include="NServiceBus.Newtonsoft.Json, Version=2.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NServiceBus.Newtonsoft.Json.2.2.0\lib\net452\NServiceBus.Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\NServiceBus.Newtonsoft.Json.2.1.0\lib\net452\NServiceBus.Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NServiceBus.ObjectBuilder.Autofac, Version=7.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
       <HintPath>..\packages\NServiceBus.Autofac.7.0.0\lib\net452\NServiceBus.ObjectBuilder.Autofac.dll</HintPath>
@@ -203,8 +203,8 @@
     <Reference Include="nunit.framework, Version=3.11.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.11.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="Polly, Version=5.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Polly.5.9.0\lib\net45\Polly.dll</HintPath>
+    <Reference Include="Polly, Version=6.0.0.0, Culture=neutral, PublicKeyToken=c8a3ffc3f8f825cc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Polly.6.1.2\lib\netstandard2.0\Polly.dll</HintPath>
     </Reference>
     <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
@@ -334,7 +334,6 @@
     <Compile Include="Data\Apprenticeship.cs" />
     <Compile Include="Data\ApprenticeshipStatusPeriod.cs" />
     <Compile Include="Data\Approvals\ApprovalsApprenticeship.cs" />
-    <Compile Include="Data\Earning.cs" />
     <Compile Include="Data\DataLockError.cs" />
     <Compile Include="Data\Approvals\ApprovalsEmployer.cs" />
     <Compile Include="Data\Payment.cs" />
@@ -361,6 +360,7 @@
     <Compile Include="Infrastructure\IoC\AutoMapperModule.cs" />
     <Compile Include="Infrastructure\MetricsBindings.cs" />
     <Compile Include="Infrastructure\TestConfigurationHelper.cs" />
+    <Compile Include="LearnerMutators\ApprenticeshipEarningsHistoryService.cs" />
     <Compile Include="LearnerMutators\Fm36Base.cs" />
     <Compile Include="LearnerMutators\Framework403Learner.cs" />
     <Compile Include="LearnerMutators\NonLevy\BasicDay\Framework593LearnerWithdrawsAfterQualifyingPeriod.cs" />
@@ -371,7 +371,7 @@
     <Compile Include="LearnerMutators\Framework593Learner.cs" />
     <Compile Include="LearnerMutators\StandardLearner.cs" />
     <Compile Include="LearnerMutators\NonLevy\SmallEmployer\Framework403Learner19PlusWithEHCPlanAndSmallEmployer.cs" />
-    <Compile Include="LearnerMutators\NonLevy\Framework593LearnerRestarts.cs" />
+    <Compile Include="LearnerMutators\NonLevy\Framework593LearnerWithNewFilePreparationDate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\ApprovalsInterfaceSteps.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />
@@ -442,6 +442,21 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-688 - New Apprenticeship Approved.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature.cs">
+      <DependentUpon>PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-694_Apprenticeship_Is_Paused_By_The_Employer.feature.cs">
+      <DependentUpon>PV2-694_Apprenticeship_Is_Paused_By_The_Employer.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-693 - Learners apprenticeship Stop Date is Changed by the Employer.feature.cs">
+      <DependentUpon>PV2-693 - Learners apprenticeship Stop Date is Changed by the Employer.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Tests\Approvals Interface\PV2-692 - Apprenticeship Is Stopped by the Employer without completing.feature.cs">
       <DependentUpon>PV2-692 - Apprenticeship Is Stopped by the Employer without completing.feature</DependentUpon>
@@ -1612,6 +1627,18 @@
     <None Include="Tests\Additional Payments Incentives\PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-694_Apprenticeship_Is_Paused_By_The_Employer.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-694_Apprenticeship_Is_Paused_By_The_Employer.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-693 - Learners apprenticeship Stop Date is Changed by the Employer.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-693 - Learners apprenticeship Stop Date is Changed by the Employer.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Approvals Interface\PV2-692 - Apprenticeship Is Stopped by the Employer without completing.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

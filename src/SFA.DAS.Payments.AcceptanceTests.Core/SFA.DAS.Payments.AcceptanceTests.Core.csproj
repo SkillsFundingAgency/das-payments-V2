@@ -230,8 +230,8 @@
     <Reference Include="nunit.framework, Version=3.11.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.11.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="Polly, Version=5.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Polly.5.9.0\lib\net45\Polly.dll</HintPath>
+    <Reference Include="Polly, Version=6.0.0.0, Culture=neutral, PublicKeyToken=c8a3ffc3f8f825cc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Polly.6.1.2\lib\netstandard2.0\Polly.dll</HintPath>
     </Reference>
     <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
@@ -386,7 +386,9 @@
     <Compile Include="Automation\RequiredPaymentsCacheCleaner.cs" />
     <Compile Include="Automation\TestSession.cs" />
     <Compile Include="BindingsBase.cs" />
+    <Compile Include="Data\AdditionalIlrData.cs" />
     <Compile Include="Data\Configurations\ProviderModelConfiguration.cs" />
+    <Compile Include="Data\Earning.cs" />
     <Compile Include="Data\Employer.cs" />
     <Compile Include="Data\EmploymentStatusMonitoring.cs" />
     <Compile Include="Data\EnumHelper.cs" />
@@ -394,6 +396,7 @@
     <Compile Include="Data\CompletionStatus.cs" />
     <Compile Include="Data\Learner.cs" />
     <Compile Include="Data\DataExtensions.cs" />
+    <Compile Include="Data\LearnerEarningsHistory.cs" />
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\Price.cs" />
     <Compile Include="Data\Provider.cs" />
@@ -404,6 +407,7 @@
     <Compile Include="Data\Course.cs" />
     <Compile Include="Infrastructure\TestsConfiguration.cs" />
     <Compile Include="Infrastructure\TestSessionBase.cs" />
+    <Compile Include="Services\IApprenticeshipEarningsHistoryService.cs" />
     <Compile Include="Services\IIlrService.cs" />
     <Compile Include="Services\IlrNullService.cs" />
     <Compile Include="Services\IUlnService.cs" />
