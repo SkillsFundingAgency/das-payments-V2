@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Transactions;
 using Autofac;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
+using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
-using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
-using SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure;
-using SFA.DAS.Payments.Audit.Model;
-using SFA.DAS.Payments.ServiceFabric.Core;
 
-namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventProcessing
+namespace SFA.DAS.Payments.ServiceFabric.Core.Batch
 {
     public class BatchScope: IBatchScope
     {
@@ -37,9 +33,9 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.PaymentsEventProcessi
             lifetimeScope?.Dispose();
         }
 
-        public IPaymentsEventModelBatchProcessor<T> GetBatchProcessor<T>() where T: IPaymentsEventModel
+        public IBatchProcessor<T> GetBatchProcessor<T>()
         {
-            return lifetimeScope.Resolve<IPaymentsEventModelBatchProcessor<T>>();
+            return lifetimeScope.Resolve<IBatchProcessor<T>>();
         }
 
         public void Abort()

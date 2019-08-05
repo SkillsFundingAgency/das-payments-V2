@@ -1,7 +1,9 @@
 ﻿using Autofac;
 using Autofac.Integration.ServiceFabric;
 using Microsoft.ServiceFabric.Actors.Client;
+using NServiceBus.UnitOfWork;
 using SFA.DAS.Payments.Core.Configuration;
+using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Configuration;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc.Modules
@@ -16,6 +18,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc.Modules
             builder.RegisterType<ReliableStateManagerProvider>().As<IReliableStateManagerProvider>().SingleInstance();
             builder.RegisterType<ActorStateManagerProvider>().As<IActorStateManagerProvider>().InstancePerLifetimeScope();
             builder.RegisterType<ActorIdProvider>().As<IActorIdProvider>().InstancePerLifetimeScope();
+            builder.RegisterType<ReliableStateManagerTransactionProvider>().As<IReliableStateManagerTransactionProvider>().InstancePerLifetimeScope();
         }
     }
 }

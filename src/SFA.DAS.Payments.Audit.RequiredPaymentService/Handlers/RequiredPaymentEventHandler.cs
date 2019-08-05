@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -22,7 +23,7 @@ namespace SFA.DAS.Payments.Audit.RequiredPaymentService.Handlers
         public async Task Handle(PeriodisedRequiredPaymentEvent message, IMessageHandlerContext context)
         {
             logger.LogDebug($"Adding required payment to audit cache. Payment: {message.ToDebug()}");
-            await processor.ProcessPaymentsEvent(message);
+            await processor.ProcessPaymentsEvent(message, CancellationToken.None);
         }
     }
 }
