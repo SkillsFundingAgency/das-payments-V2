@@ -415,5 +415,19 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             
         }
 
+        [Test]
+        public async Task Process_Apprenticeship_For_NonLevyPayer_Employer_Correctly()
+        {
+            var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
+            await apprenticeshipProcessor.ProcessApprenticeshipForNonLevyPayerEmployer(1);
+
+            mocker.Mock<IEndpointInstance>()
+                .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev => ev.Id == apprenticeshipResumedEvent.ApprenticeshipId),
+                    It.IsAny<PublishOptions>()),
+                    Times.Once);
+
+
+        }
+
     }
 }
