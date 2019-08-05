@@ -112,7 +112,7 @@ namespace SFA.DAS.Payments.PerformanceTests
         }
 
 
-        [TestCase(1, 50, 0, 1, 30)]
+        [TestCase(1, 2, 0, 1, 5)]
         public async Task Repeatable_Ukprn_And_Uln(int providerCount, int providerLearnerAct1Count, int providerLearnerAct2Count, byte collectionPeriod, int secondsToWaitForPeriodEnd)
         {
             Randomizer.Seed = new Random(8675309);

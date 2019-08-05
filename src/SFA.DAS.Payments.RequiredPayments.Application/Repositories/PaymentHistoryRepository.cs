@@ -54,10 +54,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     StartDate = payment.StartDate,
                     PlannedEndDate = payment.PlannedEndDate,
                     ActualEndDate = payment.ActualEndDate,
-                    CompletionStatus = payment.CompletionStatus,
-                    CompletionAmount = payment.CompletionAmount,
-                    InstalmentAmount = payment.InstalmentAmount,
-                    NumberOfInstalments = payment.NumberOfInstalments,
+                    CompletionStatus = payment.CompletionStatus ?? 0,
+                    CompletionAmount = payment.CompletionAmount ?? 0,
+                    InstalmentAmount = payment.InstalmentAmount ?? 0,
+                    NumberOfInstalments = payment.NumberOfInstalments ?? 0,
                 })
             .ToListAsync(cancellationToken);
         }
