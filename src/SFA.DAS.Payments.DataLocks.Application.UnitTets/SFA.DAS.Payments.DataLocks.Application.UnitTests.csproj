@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Application\SFA.DAS.Payments.DataLocks.Application.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Model\SFA.DAS.Payments.DataLocks.Model.csproj" />
   </ItemGroup>
 
 </Project>
