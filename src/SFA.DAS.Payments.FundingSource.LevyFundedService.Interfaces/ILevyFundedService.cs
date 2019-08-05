@@ -23,5 +23,6 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces
         Task<ReadOnlyCollection<FundingSourcePaymentEvent>> UnableToFundTransfer(ProcessUnableToFundTransferFundingSourcePayment message);
         Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(ProcessLevyPaymentsOnMonthEndCommand command);
         Task HandleEmployerProviderPriorityChange(EmployerChangedProviderPriority message);
+        Task RemovePreviousSubmissions(ProcessPreviousSubmissionDeletionCommand command);
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Linq;
 using System.Threading;
 using Autofac;
 using AutoMapper;
@@ -138,6 +137,24 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             catch (Exception ex)
             {
                 paymentLogger.LogError($"Failed to get levy or co-invested month end payments. Error: {ex.Message}", ex);
+                throw;
+            }
+        }
+
+        public async Task RemovePreviousSubmissions(ProcessPreviousSubmissionDeletionCommand command)
+        {
+            paymentLogger.LogVerbose($"Handling ProcessPreviousSubmissionDeletionCommand for {Id}, Job: {command.JobId}, Account: {command.AccountId}");
+            try
+            {
+                using (var operation = telemetry.StartOperation())
+                {
+                    await fundingSourceService.RemovePreviousSubmissions(command.AccountId, command.JobId, command.CollectionPeriod, command.SubmissionDate);
+                    telemetry.StopOperation(operation);
+                }
+            }
+            catch (Exception ex)
+            {
+                paymentLogger.LogError($"Failed to remove previous submission required payments. Error: {ex.Message}", ex);
                 throw;
             }
         }
