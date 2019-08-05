@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using AutoMapper;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
 using SFA.DAS.Payments.Audit.Model;
@@ -8,7 +9,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.RequiredPay
 {
     public interface IRequiredPaymentEventProcessor
     {
-        Task ProcessPaymentsEvent(PeriodisedRequiredPaymentEvent message);
+        Task ProcessPaymentsEvent(PeriodisedRequiredPaymentEvent message, CancellationToken cancellationToken);
     }
 
     public class RequiredPaymentEventProcessor : PaymentsEventProcessor<PeriodisedRequiredPaymentEvent, RequiredPaymentEventModel>, IRequiredPaymentEventProcessor
