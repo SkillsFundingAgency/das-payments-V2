@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators {
         {
             foreach (var learner in learners)
             {
-                foreach (var learnerAim in learner.Aims)
+                foreach (var learnerAim in learner.Aims.Where(a=>a.IsMainAim))
                 {
                     var aeh = new AppsEarningsHistory
                               {
