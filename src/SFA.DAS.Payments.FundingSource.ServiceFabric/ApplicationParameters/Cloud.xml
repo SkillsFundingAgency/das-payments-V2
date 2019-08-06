@@ -11,12 +11,14 @@
     <Parameter Name="LevyFundedServiceActorService_MinReplicaSetSize" Value="__LevyFundedServiceActorService_MinReplicaSetSize__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="NonLevyFundedService_EndpointName" Value="__NonLevyFundedService_EndpointName__" />
     <Parameter Name="LevyFundedService_EndpointName" Value="__LevyFundedService_EndpointName__" />
     <Parameter Name="NonLevyFundedService_FailedMessagesQueue" Value="__NonLevyFundedService_FailedMessagesQueue__" />
     <Parameter Name="LevyFundedService_FailedMessagesQueue" Value="__LevyFundedService_FailedMessagesQueue__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
+    <Parameter Name="ConsoleLogLevel" Value="__ConsoleLogLevel__" />
     <Parameter Name="ProcessMessageSequentially" Value="false" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
     <Parameter Name="PaymentsConnectionString" Value="__DasPaymentsConnectionStringRO__" />

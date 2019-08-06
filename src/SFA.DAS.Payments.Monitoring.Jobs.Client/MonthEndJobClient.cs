@@ -26,18 +26,20 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
         }
         public async Task StartJob(long jobId, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages)
         {
-            logger.LogVerbose($"Sending request to record start of month end job. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
-            generatedMessages.ForEach(message => logger.LogVerbose($"Learner command event id: {message.MessageId}"));
+            logger.LogVerbose($"Monitoring disabled for period end job. Job id: {jobId}, collection: {collectionPeriod}-{collectionYear}");
 
-            var providerEarningsEvent = new RecordStartedProcessingMonthEndJob
-            {
-                JobId = jobId,
-                CollectionYear = collectionYear,
-                CollectionPeriod = collectionPeriod,
-                GeneratedMessages = generatedMessages
-            };
-            await messageSession.Send(providerEarningsEvent).ConfigureAwait(false);
-            logger.LogDebug($"Sent request to record start of month end job. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
+            //logger.LogVerbose($"Sending request to record start of month end job. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
+            //generatedMessages.ForEach(message => logger.LogVerbose($"Learner command event id: {message.MessageId}"));
+
+            //var providerEarningsEvent = new RecordStartedProcessingMonthEndJob
+            //{
+            //    JobId = jobId,
+            //    CollectionYear = collectionYear,
+            //    CollectionPeriod = collectionPeriod,
+            //    GeneratedMessages = generatedMessages
+            //};
+            //await messageSession.Send(providerEarningsEvent).ConfigureAwait(false);
+            //logger.LogDebug($"Sent request to record start of month end job. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
         }
     }
 }
