@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
         private readonly IMonthEndService monthEndService;
         private readonly IMapper mapper;
         private readonly IProviderPaymentFactory paymentFactory;
-        private readonly IEarningsJobClient jobClient;
+        private readonly IJobMessageClient jobClient;
 
 
         public ProcessProviderMonthEndCommandHandler(IPaymentLogger paymentLogger,
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
             IMonthEndService monthEndService,
             IMapper mapper,
             IProviderPaymentFactory paymentFactory, 
-            IEarningsJobClient jobClient)
+            IJobMessageClient jobClient)
         {
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
             this.executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));

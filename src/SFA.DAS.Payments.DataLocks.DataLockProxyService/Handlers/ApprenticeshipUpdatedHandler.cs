@@ -25,11 +25,16 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
         {
             try
             {
-                logger.LogDebug($"Now handling the apprenticeship updated event.  Apprenticeship: {message.Id}, employer: {message.EmployerAccountId}, provider: {message.Ukprn}");
+                if (message.Uln == 0)
+                {
+                    throw new InvalidOperationException("Invalid 'ApprenticeshipUpdated' received. Uln was 0.");
+                }
+
+                logger.LogDebug($"Now handling the apprenticeship updated event.  Apprenticeship: {message.Id}, employer: {message.EmployerAccountId}, ukprn: {message.Ukprn}");
                 var actorId = new ActorId(message.Ukprn);
-                logger.LogVerbose($"Creating actor proxy for provider with UKPRN {message.Ukprn}");
+                logger.LogVerbose($"Creating actor proxy.");
                 var actor = actorProxyFactory.CreateActorProxy<IDataLockService>(new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/DataLockServiceActorService"), actorId);
-                logger.LogDebug($"Actor proxy created for UKPRN {message.Ukprn}");
+                logger.LogDebug($"Actor proxy created for actor id {message.Uln}");
                 await actor.HandleApprenticeshipUpdated(message, CancellationToken.None).ConfigureAwait(false);
                 logger.LogInfo($"Finished handling the apprenticeship updated event.  Apprenticeship: {message.Id}, employer: {message.EmployerAccountId}, provider: {message.Ukprn}");
             }

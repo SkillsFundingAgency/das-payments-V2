@@ -20,5 +20,7 @@
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
     <Parameter Name="FailureTimeoutInSeconds" Value="150" />
     <Parameter Name="IntervalInSeconds" Value="10" />
+    <Parameter Name="LogLevel" Value="" />
+    <Parameter Name="ConsoleLogLevel" Value="" />
   </Section>
 </Settings>
