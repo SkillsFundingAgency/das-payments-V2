@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Application\SFA.DAS.Payments.DataLocks.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.DataLockService.Interfaces\SFA.DAS.Payments.DataLocks.DataLockService.Interfaces.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Messages.Internal\SFA.DAS.Payments.DataLocks.Messages.Internal.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj" />

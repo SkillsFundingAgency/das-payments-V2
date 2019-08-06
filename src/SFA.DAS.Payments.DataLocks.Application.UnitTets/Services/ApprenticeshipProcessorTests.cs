@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
 using AutoMapper;
@@ -418,15 +419,31 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         [Test]
         public async Task Process_Apprenticeship_For_NonLevyPayer_Employer_Correctly()
         {
+            var apprenticeships = new List<ApprenticeshipModel>
+            {
+                new ApprenticeshipModel
+                {
+                    Id =100,
+                    AccountId = 1,
+                    IsLevyPayer =  false
+                }
+            };
+
+            mocker.Mock<IApprenticeshipService>()
+                .Setup(svc => svc.UpdateApprenticeshipEmployerIsLevyPayerFlag(apprenticeships[0].AccountId, 
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(apprenticeships);
+            
             var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
             await apprenticeshipProcessor.ProcessApprenticeshipForNonLevyPayerEmployer(1);
-
+            
             mocker.Mock<IEndpointInstance>()
-                .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev => ev.Id == apprenticeshipResumedEvent.ApprenticeshipId),
+                .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev => ev.Id == apprenticeships[0].Id &&
+                                                                              ev.EmployerAccountId == apprenticeships[0].AccountId &&
+                                                                              ev.IsLevyPayer == apprenticeships[0].IsLevyPayer),
                     It.IsAny<PublishOptions>()),
                     Times.Once);
-
-
+            
         }
 
     }
