@@ -25,7 +25,6 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Audit.Application.ServiceFabric\SFA.DAS.Payments.Audit.Application.ServiceFabric.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Model\SFA.DAS.Payments.EarningEvents.Model.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.ServiceFabric.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj" />

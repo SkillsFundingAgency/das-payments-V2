@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
+﻿namespace SFA.DAS.Payments.Application.Batch
 {
     public interface IBatchScopeFactory
     {

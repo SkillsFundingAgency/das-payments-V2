@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using SFA.DAS.Payments.Application.Batch;
 using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
 using SFA.DAS.Payments.Application.Data.Configurations;
