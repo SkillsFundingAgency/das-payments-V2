@@ -3,7 +3,9 @@ using Autofac.Integration.ServiceFabric;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 using NServiceBus;
+using NServiceBus.UnitOfWork;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
+using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
 {
@@ -25,6 +27,9 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
         public static IContainer CreateContainerForStatefulService<TStatefulService>() where TStatefulService : StatefulService
         {
             var builder = ContainerFactory.CreateBuilder();
+
+            builder.RegisterType<StateManagerUnitOfWork>().As<IManageUnitsOfWork>().InstancePerLifetimeScope();
+
             builder.RegisterStatefulService<TStatefulService>(typeof(TStatefulService).Namespace + "Type")
                 .OnActivating(e =>
                 {

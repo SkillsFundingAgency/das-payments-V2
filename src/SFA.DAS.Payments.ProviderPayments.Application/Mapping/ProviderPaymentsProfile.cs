@@ -74,6 +74,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.ContractType, opt => opt.MapFrom(source => source.ContractType))
                 .ForMember(dest => dest.FundingSourceType, opt => opt.MapFrom(source => source.FundingSource))
                 .ForMember(dest => dest.IlrSubmissionDateTime, opt => opt.MapFrom(source => source.IlrSubmissionDateTime))
+                .ForMember(dest => dest.IlrFileName, opt => opt.Ignore())
                 .ForMember(dest => dest.JobId, opt => opt.MapFrom(source => source.JobId))
                 .ForPath(dest => dest.Learner.Uln, opt => opt.MapFrom(source => source.LearnerUln))
                 .ForPath(dest => dest.Learner.ReferenceNumber, opt => opt.MapFrom(source => source.LearnerReferenceNumber))
