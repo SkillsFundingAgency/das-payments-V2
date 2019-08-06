@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Internal;
 using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.EarningEvents.Application.Repositories;
@@ -39,7 +38,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Interfaces
             {
                 logger.LogDebug($"Processing earning event for UKPRN {earningEvent.Ukprn} LearnRefNumber {earningEvent.Learner.ReferenceNumber}");
 
-                var lastSeenEpisodes = await submittedPriceEpisodeRepository.GetLastSubmittedPriceEpisodes(earningEvent.Ukprn, earningEvent.Learner.ReferenceNumber, cancellationToken).ConfigureAwait(false);
+                var lastSeenEpisodes = await submittedPriceEpisodeRepository.GetSubmittedPriceEpisodes(earningEvent.Ukprn, earningEvent.Learner.ReferenceNumber, cancellationToken).ConfigureAwait(false);
 
                 var currentEpisodes = earningEvent.PriceEpisodes.Select(e => new SubmittedPriceEpisodeEntity
                 {
@@ -54,15 +53,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Interfaces
                         PlannedEndDate = e.PlannedEndDate,
                         ActualEndDate = e.ActualEndDate,
                         AimSeqNumber = earningEvent.LearningAim.SequenceNumber,
-                        //CommitmentId = 
-                        //CompStatus = earningEvent.CompletionStatus,
                         CompletionTotalPrice = e.CompletionAmount,
                         ComponentVersionNumber = 2,
-                        //EPAOrgId = earningEvent.EpaOrgId,
-                        //EmployerReferenceNumber = earningEvent.EmployerReferenceNumber,
-                        //FamilyName = earningEvent.FamilyName,
-                        //NiNumber = earningEvent.NiNumber,
-                        //GivenNames = earningEvent.GivenNames,
                         FrameworkCode = earningEvent.LearningAim.FrameworkCode,
                         PathwayCode = earningEvent.LearningAim.PathwayCode,
                         ProgrammeType = earningEvent.LearningAim.ProgrammeType,
@@ -70,7 +62,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Interfaces
                         Uln = earningEvent.Learner.Uln,
                         FileDateTime = ExtractFileDateFromName(earningEvent.IlrFileName, earningEvent.CollectionPeriod.AcademicYear, earningEvent.IlrSubmissionDateTime),
                         SubmittedDateTime = earningEvent.IlrSubmissionDateTime,
-                        //OnProgrammeTotalPrice = e.TotalNegotiatedPrice1
                     }
                 });
 

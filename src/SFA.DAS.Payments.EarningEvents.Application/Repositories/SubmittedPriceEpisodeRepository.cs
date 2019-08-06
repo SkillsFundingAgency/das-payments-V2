@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Repositories
 {
     public interface ISubmittedPriceEpisodeRepository
     {
-        Task<List<SubmittedPriceEpisodeEntity>> GetLastSubmittedPriceEpisodes(long ukprn, string learnRefNumber, CancellationToken cancellationToken);
+        Task<List<SubmittedPriceEpisodeEntity>> GetSubmittedPriceEpisodes(long ukprn, string learnRefNumber, CancellationToken cancellationToken);
     }
 
     public class SubmittedPriceEpisodeRepository : ISubmittedPriceEpisodeRepository
@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Repositories
             this.logger = logger;
         }
 
-        public async Task<List<SubmittedPriceEpisodeEntity>> GetLastSubmittedPriceEpisodes(long ukprn, string learnRefNumber, CancellationToken cancellationToken)
+        public async Task<List<SubmittedPriceEpisodeEntity>> GetSubmittedPriceEpisodes(long ukprn, string learnRefNumber, CancellationToken cancellationToken)
         {
             var entities = await paymentsDataContext.SubmittedPriceEpisode.Where(e => e.Ukprn == ukprn && e.LearnerReferenceNumber == learnRefNumber)
                 .Select(e => new SubmittedPriceEpisodeEntity

@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var generatedEvent = new LegacySubmissionEvent();
 
             submissionEventProcessorMock.Setup(p => p.ProcessSubmission(It.IsAny<SubmittedPriceEpisodeEntity>(), null)).Returns(generatedEvent).Verifiable();
-            submittedPriceEpisodeRepoMock.Setup(r => r.GetLastSubmittedPriceEpisodes(1, "2", ct)).ReturnsAsync(new List<SubmittedPriceEpisodeEntity>()).Verifiable();
+            submittedPriceEpisodeRepoMock.Setup(r => r.GetSubmittedPriceEpisodes(1, "2", ct)).ReturnsAsync(new List<SubmittedPriceEpisodeEntity>()).Verifiable();
 
             var newEvent = new ApprenticeshipContractType1EarningEvent
             {
