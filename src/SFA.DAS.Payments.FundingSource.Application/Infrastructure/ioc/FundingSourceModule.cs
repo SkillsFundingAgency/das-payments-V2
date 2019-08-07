@@ -8,6 +8,7 @@ using Autofac.Integration.ServiceFabric;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.FundingSource.Application.Repositories;
@@ -79,8 +80,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
                     var accountApiClient = c.Resolve<IAccountApiClient>();
                     var logger = c.Resolve<IPaymentLogger>();
                     var bulkWriter = c.Resolve<ILevyAccountBulkCopyRepository>();
+                    var endpointInstanceFactory = c.Resolve<IEndpointInstanceFactory>();
 
-                    return new ManageLevyAccountBalanceService(repository, accountApiClient, logger, bulkWriter, batchSize);
+                    return new ManageLevyAccountBalanceService(repository, accountApiClient, logger, bulkWriter, batchSize, endpointInstanceFactory);
                 })
                 .As<IManageLevyAccountBalanceService>()
                 .InstancePerLifetimeScope();

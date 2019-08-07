@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
+using NServiceBus;
 using NUnit.Framework;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core.Configuration;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.Application.Services;
@@ -23,6 +26,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         private Mock<IAccountApiClient> accountApiClient;
         private IPaymentLogger logger;
         private Mock<ILevyAccountBulkCopyRepository> bulkWriter;
+        private  Mock<IEndpointInstanceFactory> endpointInstanceFactory;
+        private Mock<IEndpointInstance> endpointInstance;
 
         [SetUp]
         public void Setup()
@@ -31,6 +36,16 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             accountApiClient = new Mock<IAccountApiClient>(MockBehavior.Strict);
             logger = Mock.Of<IPaymentLogger>();
             bulkWriter = new Mock<ILevyAccountBulkCopyRepository>(MockBehavior.Strict);
+            endpointInstanceFactory = new Mock<IEndpointInstanceFactory>(MockBehavior.Strict);
+            endpointInstance = new Mock<IEndpointInstance>(MockBehavior.Strict);
+
+            endpointInstance
+                 .Setup(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()))
+                .Returns(Task.CompletedTask);
+            
+            endpointInstanceFactory
+                .Setup(x => x.GetEndpointInstance())
+                .ReturnsAsync(endpointInstance.Object);
         }
 
 
@@ -105,7 +120,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 accountApiClient.Object,
                 logger,
                 bulkWriter.Object,
-                batchSize
+                batchSize,
+                endpointInstanceFactory.Object
             );
 
             await service.RefreshLevyAccountDetails(new CancellationToken()).ConfigureAwait(false);
@@ -164,7 +180,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 accountApiClient.Object,
                 logger,
                 bulkWriter.Object,
-                batchSize
+                batchSize,
+                endpointInstanceFactory.Object
             );
 
             await service.RefreshLevyAccountDetails(new CancellationToken()).ConfigureAwait(false);
@@ -186,6 +203,61 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 
         }
 
+        [Test]
+        public async Task Publish_FoundNotLevyPayerEmployerAccount_Correctly()
+        {
+            int batchSize = 5;
+            var pagedOneApiResponseViewModel = new PagedApiResponseViewModel<AccountWithBalanceViewModel>
+            {
+                TotalPages = 1,
+                Data = new List<AccountWithBalanceViewModel>
+                {
+                    new AccountWithBalanceViewModel
+                    {
+                        AccountId = 1,
+                        Balance = 100m,
+                        RemainingTransferAllowance = 10m,
+                        AccountName = "Test Ltd",
+                        IsLevyPayer = false
+                    }
+                }
+            };
+
+            accountApiClient
+                .SetupSequence(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()))
+                .ReturnsAsync(new PagedApiResponseViewModel<AccountWithBalanceViewModel>
+                {
+                    TotalPages = pagedOneApiResponseViewModel.TotalPages
+                })
+                .ReturnsAsync(pagedOneApiResponseViewModel);
+            
+            bulkWriter
+                .Setup(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            bulkWriter
+                .Setup(x => x.DeleteAndFlush(It.IsAny<List<long>>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+
+            var service = new ManageLevyAccountBalanceService
+            (
+                repository.Object,
+                accountApiClient.Object,
+                logger,
+                bulkWriter.Object,
+                batchSize,
+                endpointInstanceFactory.Object
+            );
+
+            await service.RefreshLevyAccountDetails(CancellationToken.None).ConfigureAwait(false);
+
+            endpointInstance
+                .Verify(svc => svc.Publish(It.Is<FoundNotLevyPayerEmployerAccount>( x => x.AccountId == 1),
+                    It.IsAny<PublishOptions>()), 
+                    Times.Once);
+
+        }
 
     }
 }
