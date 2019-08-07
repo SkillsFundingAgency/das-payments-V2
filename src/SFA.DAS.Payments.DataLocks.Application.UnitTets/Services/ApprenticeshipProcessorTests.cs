@@ -446,5 +446,22 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             
         }
 
+        [Test]
+        public async Task Apprenticeship_Update_Message_Is_Not_Published_If_No_Apprenticeship_Is_Found()
+        {
+            var apprenticeships = new List<ApprenticeshipModel>();
+         
+            mocker.Mock<IApprenticeshipService>()
+                .Setup(svc => svc.UpdateApprenticeshipEmployerIsLevyPayerFlag(1,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(apprenticeships);
+
+            var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
+            await apprenticeshipProcessor.ProcessApprenticeshipForNonLevyPayerEmployer(1);
+
+            mocker.Mock<IEndpointInstance>()
+                .Verify(svc => svc.Publish(It.IsAny<ApprenticeshipUpdated>(), It.IsAny<PublishOptions>()), Times.Never);
+        }
+
     }
 }
