@@ -25,13 +25,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         {
             try
             {
-
                 var isPeriodStarted = true; //TODO  read value from cache
 
                 while (isPeriodStarted)
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
-
                     paymentLogger.LogInfo("Starting to refresh all Levy Accounts Details");
 
                     try

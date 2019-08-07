@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly IPaymentLogger logger;
         private readonly ILevyAccountBulkCopyRepository levyAccountBulkWriter;
         private readonly int batchSize;
-        private int totalPageSize ;
+        private int totalPageSize;
         private readonly AsyncRetryPolicy retryPolicy;
 
         public ManageLevyAccountBalanceService(ILevyFundingSourceRepository repository,
@@ -43,8 +43,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.logger = logger;
             this.levyAccountBulkWriter = levyAccountBulkWriter;
             this.batchSize = batchSize;
-           
-             retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(5, i => TimeSpan.FromMinutes(1));
+
+            retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(5, i => TimeSpan.FromMinutes(1));
         }
 
         public async Task RefreshLevyAccountDetails(CancellationToken cancellationToken = default(CancellationToken))
@@ -52,22 +52,24 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             logger.LogInfo("Now Trying to Refresh All Accounts Balance Details");
 
             var page = 1;
-            
+
             await retryPolicy.ExecuteAsync(GetTotalPageSize).ConfigureAwait(false);
 
             while (page <= totalPageSize)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 try
                 {
                     var pagedAccountsRecords = await accountApiClient.GetPageOfAccounts(page, batchSize).ConfigureAwait(false);
-                    
+
                     await UpdateLevyAccountDetails(pagedAccountsRecords, cancellationToken);
 
                     logger.LogInfo($"Successfully retrieved Account Balance Details for Page {page} of Levy Accounts");
                 }
                 catch (Exception e)
                 {
-                    logger.LogError($"Error while retrieving Account Balance Details for Page {page} of Levy Accounts",e);
+                    logger.LogError($"Error while retrieving Account Balance Details for Page {page} of Levy Accounts", e);
                 }
 
                 page++;

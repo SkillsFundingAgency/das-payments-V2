@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.UnitTests
                 .ReturnsAsync(mocker.Mock<IEndpointInstance>().Object);
         }
 
-        [Test]
+        [Test,Ignore("Client doesn't use message session.")]
         public async Task Batches_Earnings_Jobs()
         {
             var messages = new List<GeneratedMessage>();

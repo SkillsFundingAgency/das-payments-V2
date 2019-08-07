@@ -7,7 +7,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<ApprenticeshipRepository>().AsImplementedInterfaces();
+            builder.RegisterType<ApprenticeshipRepository>()
+                .AsImplementedInterfaces()
+                .InstancePerDependency();
             builder.RegisterType<DataLockFailureRepository>().AsImplementedInterfaces();
         }
     }
