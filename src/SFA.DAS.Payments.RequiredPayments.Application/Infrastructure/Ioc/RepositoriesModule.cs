@@ -7,7 +7,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<PaymentHistoryRepository>().AsImplementedInterfaces();
+            builder.RegisterType<PaymentHistoryRepository>()
+                .AsImplementedInterfaces()
+                .InstancePerDependency();
         }
     }
 }

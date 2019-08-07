@@ -17,6 +17,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.EarningEvents.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
@@ -82,6 +83,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     telemetry.TrackEvent("Sent All ProcessLearnerCommand Messages",
                         new Dictionary<string, string>
                         {
+                            { TelemetryKeys.Count, fm36Output.Learners.Count.ToString()},
                             { TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
                             { TelemetryKeys.AcademicYear, fm36Output.Year},
                             { TelemetryKeys.ExternalJobId, message.JobId.ToString()},
@@ -89,7 +91,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                         },
                         new Dictionary<string, double>
                         {
-                            { TelemetryKeys.Duration, duration}
+                            { TelemetryKeys.Duration, duration},
+                            { TelemetryKeys.Count, fm36Output.Learners.Count},
                         });
                     telemetry.StopOperation(operation);
                     await jobStatusService.WaitForJobToFinish(message.JobId);
@@ -99,8 +102,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             }
             catch (Exception ex)
             {
-                logger.LogError("Error while handling EarningService event", ex);
-                throw;
+                logger.LogFatal($"Error while handling EarningService event.  Error: {ex.Message}", ex);
+                return false; //TODO: change back to throw when DC code is a little more defensive
             }
         }
 
@@ -147,6 +150,27 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             }
             stopwatch.Stop();
             logger.LogDebug($"Finished getting FM36Output for Job: {message.JobId}, took {stopwatch.ElapsedMilliseconds}ms.");
+
+            if (fm36Output == null)
+            {
+                throw new InvalidOperationException($"No FM36Global data found for job: {message.JobId}, file reference: {fileReference}, container: {container}");
+            }
+
+            if (fm36Output.UKPRN == 0)
+            {
+                throw new InvalidOperationException($"FM36LGlobal for job: {message.JobId}, file reference: {fileReference}, container: {container} contains no Ukprn property");
+            }
+
+            if (string.IsNullOrWhiteSpace(fm36Output.Year))
+            {
+                throw new InvalidOperationException($"FM36LGlobal for job: {message.JobId}, file reference: {fileReference}, container: {container} contains no Year property");
+            }
+
+            if (fm36Output.Learners == null)
+            {
+                fm36Output.Learners = new List<FM36Learner>();
+            }
+
             telemetry.TrackEvent("Deserialize FM36Global",
                 new Dictionary<string, string>
                 {

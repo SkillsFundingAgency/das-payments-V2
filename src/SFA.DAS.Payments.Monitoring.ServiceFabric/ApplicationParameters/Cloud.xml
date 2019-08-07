@@ -4,7 +4,7 @@
     <Parameter Name="Monitoring_JobsService_InstanceCount" Value="__Monitoring_JobsService_InstanceCount__" />
     <Parameter Name="Monitoring_JobsStatusService_InstanceCount" Value="__Monitoring_JobsStatusService_InstanceCount__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
-    <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
+    <Parameter Name="ServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="PaymentsConnectionString" Value="__PaymentsConnectionString__" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
@@ -13,5 +13,6 @@
     <Parameter Name="Monitoring_JobsService_FailureTimeoutInSeconds" Value="__Monitoring_JobsService_FailureTimeoutInSeconds__" />
     <Parameter Name="Monitoring_JobsService_IntervalInSeconds" Value="__Monitoring_JobsService_IntervalInSeconds__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
+    <Parameter Name="ConsoleLogLevel" Value="__ConsoleLogLevel__" />
   </Parameters>
 </Application>

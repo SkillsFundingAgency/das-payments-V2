@@ -7,6 +7,7 @@ using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Application.Handlers;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
+using SFA.DAS.Payments.EarningEvents.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Application.Services;
 using SFA.DAS.Payments.EarningEvents.Domain;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
@@ -53,6 +54,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
             builder.RegisterType<JobContextMessageHandler>()
                 .As<IMessageHandler<JobContextMessage>>();
 
+
+            builder.RegisterType<SubmittedLearnerAimRepository>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
         }
     }
 }
