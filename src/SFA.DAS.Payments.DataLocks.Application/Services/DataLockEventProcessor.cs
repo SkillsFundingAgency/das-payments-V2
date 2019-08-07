@@ -32,8 +32,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         public async Task<List<DataLockStatusChanged>> ProcessDataLockFailure(EarningFailedDataLockMatching dataLockEvent)
         {
-            using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
-            {
+            //using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
+            //{
                 var result = new List<DataLockStatusChanged>();
                 var changedToFailed = new DataLockStatusChangedToFailed {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
                 var changedToPassed = new DataLockStatusChangedToPassed {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
@@ -111,12 +111,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                 await dataLockFailureRepository.ReplaceFailures(failuresToDelete, failuresToRecord, dataLockEvent.EarningEventId, dataLockEvent.EventId).ConfigureAwait(false);
 
-                scope.Complete();
+              //  scope.Complete();
 
                 paymentLogger.LogDebug($"Deleted {failuresToDelete.Count} old DL failures, created {failuresToRecord.Count} new for UKPRN {dataLockEvent.Ukprn} Learner Ref {dataLockEvent.Learner.ReferenceNumber} on R{dataLockEvent.CollectionPeriod.Period:00}");
 
                 return result;
-            }
+            //}
         }
 
         private static DataLockFailureEntity CreateEntity(DataLockEvent dataLockEvent, TransactionType transactionType, byte deliveryPeriod, EarningPeriod period)

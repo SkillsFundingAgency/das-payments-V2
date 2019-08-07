@@ -55,9 +55,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
                     f.LearningAimStandardCode == standardCode &&
                     f.LearningAimReference == learnAimRef &&
                     f.AcademicYear == academicYear
-                )
-                    .ToListAsync()
-                    .ConfigureAwait(false);
+                ) .ToListAsync().ConfigureAwait(false);
 
           var dataLockFailureEntities =  entities.Select(model => new DataLockFailureEntity
             {
@@ -93,7 +91,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
 
             paymentsDataContext.DataLockFailure.RemoveRange(paymentsDataContext.DataLockFailure.Where(f => oldFailureIds.Contains(f.Id)));
 
-            await paymentsDataContext.DataLockFailure.AddRangeAsync(newFailures.Select(f => new DataLockFailureModel
+            var dataLockFailureModels = newFailures.Select(f => new DataLockFailureModel
             {
                 EarningEventId = earningEventId,
                 DataLockEventId = dataLockEventId,
@@ -111,8 +109,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
                 LearningAimStandardCode = f.LearningAimStandardCode,
                 Amount = f.EarningPeriod.Amount,
                 EarningPeriod = JsonConvert.SerializeObject(f.EarningPeriod)
-            })).ConfigureAwait(false);
-
+            }).ToList();
+            
+            await paymentsDataContext.DataLockFailure.AddRangeAsync(dataLockFailureModels).ConfigureAwait(false);
             await paymentsDataContext.SaveChangesAsync().ConfigureAwait(false);
         }
     }
