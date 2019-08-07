@@ -119,6 +119,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                     { JobContextMessageConstants.KeyValuePairs.FundingFm36Output, "valid path" },
                     { JobContextMessageConstants.KeyValuePairs.FundingFm36OutputPeriodEnd, "invalid path" },
                     { JobContextMessageConstants.KeyValuePairs.Container, "container" },
+                    { JobContextMessageConstants.KeyValuePairs.Filename, "filename" },
                 }
             };
 
@@ -172,6 +173,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                     { JobContextMessageConstants.KeyValuePairs.FundingFm36Output, "invalid path" },
                     { JobContextMessageConstants.KeyValuePairs.FundingFm36OutputPeriodEnd, "valid path" },
                     { JobContextMessageConstants.KeyValuePairs.Container, "container" },
+                    { JobContextMessageConstants.KeyValuePairs.Filename, "filename" },
                 }
             };
 

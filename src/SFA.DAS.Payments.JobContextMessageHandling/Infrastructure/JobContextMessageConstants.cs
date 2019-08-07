@@ -20,6 +20,7 @@
             public static readonly string FundingFm36Output = "FundingFm36Output";
             public static readonly string FundingFm36OutputPeriodEnd = "FundingFm36OutputPeriodEnd";
             public static readonly string Username = "Username";
+            public static readonly string Filename = "Filename";
         }
     }
 }
