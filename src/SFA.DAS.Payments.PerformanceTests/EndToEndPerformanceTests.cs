@@ -232,8 +232,11 @@ namespace SFA.DAS.Payments.PerformanceTests
             var dataContext = Container.Resolve<IPaymentsDataContext>();
             dataContext.LevyAccount.Add(new LevyAccountModel
             {
-                AccountId = session.Ukprn, Balance = 1000000, TransferAllowance = 0, IsLevyPayer = true,
-                AccountHashId = session.Ukprn.ToString(), AccountName = $"Test Account: {session.Ukprn}", SequenceId = 1
+                AccountId = session.Ukprn,
+                Balance = 1000000,
+                TransferAllowance = 0,
+                IsLevyPayer = true,
+                AccountName = $"Test Account: {session.Ukprn}"
             });
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }

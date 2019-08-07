@@ -13,10 +13,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions
             return new LevyAccountModel
             {
                 AccountId = source.AccountId,
-                AccountHashId = source.AccountHashId,
                 AccountName = source.AccountName,
                 Balance = source.Balance,
-                SequenceId = source.SequenceId,
                 IsLevyPayer = source.IsLevyPayer,
                 TransferAllowance = source.TransferAllowance
             };
