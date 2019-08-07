@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
 
         public PaymentsEventModelBatchProcessor(
             IPaymentsEventModelCache<T> cache,
-            IPaymentsEventModelDataTable<T> dataTable, 
+            IPaymentsEventModelDataTable<T> dataTable,
             IConfigurationHelper configurationHelper,
             IPaymentLogger logger)
         {
@@ -57,8 +57,8 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
 
             var data = dataTable.GetDataTable(batch);
             using (var sqlConnection = new SqlConnection(connectionString))
-            using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
-            {
+                //using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
+                //{
                 try
                 {
                     await sqlConnection.OpenAsync(cancellationToken);
@@ -97,14 +97,14 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                         logger.LogDebug($"Finished bulk copying {batch.Count} of {typeof(T).Name} records.");
                     }
 
-                    scope.Complete();
+                    // scope.Complete();
                 }
                 catch (Exception e)
                 {
                     logger.LogError($"Error performing bulk copy for model type: {typeof(T).Name}. Error: {e.Message}", e);
                     throw;
                 }
-            }
+            //  }
 
             return batch.Count;
         }
@@ -121,7 +121,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                 var dataSchema = dataReader.GetSchemaTable();
                 foreach (DataRow row in dataSchema.Rows)
                 {
-                    singleRecordTable.Columns.Add(new DataColumn(row["ColumnName"].ToString(), (Type) row["DataType"]));
+                    singleRecordTable.Columns.Add(new DataColumn(row["ColumnName"].ToString(), (Type)row["DataType"]));
                 }
 
                 while (dataReader.Read())
