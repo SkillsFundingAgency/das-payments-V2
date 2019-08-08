@@ -158,6 +158,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
                 var stopwatch = Stopwatch.StartNew();
                 //TODO: why are we still doing this?  We are supposed to be resolving this from the container.
                 paymentHistoryCache = new ReliableCollectionCache<PaymentHistoryEntity[]>(StateManager);
+                collectionPeriodCache = new ReliableCollectionCache<CollectionPeriod>(StateManager);
 
                 await Initialise().ConfigureAwait(false);
 
