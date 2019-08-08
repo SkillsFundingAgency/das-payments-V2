@@ -388,7 +388,10 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
         }
 
         [Test]
-        public async Task Waits_For_Job_To_Complete()
+        [TestCase("PeriodEndStart", 0)]
+        [TestCase("PeriodEndRun", 1)]
+        [TestCase("PeriodEndStop", 0)]
+        public async Task Waits_For_Job_To_Complete(string task, int numberOfTimes)
         {
             var jobContextMessage = new JobContextMessage
             {
@@ -403,7 +406,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
                             new TaskItem
                             {
                                 SupportsParallelExecution = false,
-                                Tasks = new List<string>{"PeriodEndStop"}
+                                Tasks = new List<string>{task}
                             }
                         }
                     }
@@ -415,7 +418,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
             var handler = mocker.Create<PeriodEndJobContextMessageHandler>();
             var completed = await handler.HandleAsync(jobContextMessage, CancellationToken.None);
             mocker.Mock<IJobStatusService>()
-                .Verify(svc => svc.WaitForJobToFinish(It.Is<long>(jobId => jobId == 1)),Times.Once);
+                .Verify(svc => svc.WaitForJobToFinish(It.Is<long>(jobId => jobId == 1)),Times.Exactly(numberOfTimes));
         }
 
         [Test]
