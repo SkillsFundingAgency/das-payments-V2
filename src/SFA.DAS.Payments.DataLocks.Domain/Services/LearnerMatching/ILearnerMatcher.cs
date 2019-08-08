@@ -5,6 +5,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching
 {
     public interface ILearnerMatcher
     {
-        Task<LearnerMatchResult> MatchLearner(long uln);
+        Task<LearnerMatchResult> MatchLearner(long ukprn, long uln);
     }
 }
