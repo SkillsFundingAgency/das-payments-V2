@@ -56,6 +56,19 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 var endpointInstance = await endpointInstanceFactory.GetEndpointInstance();
                 await endpointInstance.Publish(periodEndEvent);
                 logger.LogInfo($"Finished publishing the period end event. Name: {periodEndEvent.GetType().Name}, JobId: {periodEndEvent.JobId}, Collection Period: {periodEndEvent.CollectionPeriod.Period}-{periodEndEvent.CollectionPeriod.AcademicYear}.");
+
+                // TODO: This is a temporary workaround to enable the PeriodEndStart and PeriodEndStop messages to return true as otherwise the service will
+                // TODO: just hang as there is nothing implemented to handle the Start and Stop events and so the job status service will never get a completion and so this will never return true.
+                // PV2-1345 will handle PeriodEndStart
+                // PeriodEndStoppedEvent will be handled by the PeriodEndStoppedEventHandler which in turn is handled by the ProcessProviderMonthEndCommandHandler but we don't want to wait for it
+
+
+                if (periodEndEvent is PeriodEndStartedEvent || periodEndEvent is PeriodEndStoppedEvent)
+                {
+                    logger.LogDebug("Returning as this is either a PeriodEndStart or PeriodEndStop event");
+                    return true;
+                }
+
                 await jobStatusService.WaitForJobToFinish(message.JobId);
                 return true;
             }
