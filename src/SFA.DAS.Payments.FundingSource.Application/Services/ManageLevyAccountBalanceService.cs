@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         {
             logger.LogInfo("Now Trying to Refresh All Accounts Balance Details");
 
-            var page = 0;
+            var page = 1;
 
             await retryPolicy.ExecuteAsync(GetTotalPageSize).ConfigureAwait(false);
 
