@@ -2,8 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using SFA.DAS.Payments.Application.Repositories;
 
-namespace SFA.DAS.Payments.Application.Repositories
+namespace SFA.DAS.Payments.EarningEvents.Application.Repositories
 {
     public interface ISubmittedLearnerAimRepository
     {

@@ -21,6 +21,8 @@
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
+    <Parameter Name="LogLevel" DefaultValue="" />
+    <Parameter Name="ConsoleLogLevel" DefaultValue="" />
     <Parameter Name="Audit_EarningEvents_EndpointName" DefaultValue="" />
     <Parameter Name="Audit_EarningEvents_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="Audit_FundingSource_EndpointName" DefaultValue="" />
@@ -60,6 +62,8 @@
             <Parameter Name="FailedMessagesQueue" Value="[Audit_RequiredPayments_FailedMessagesQueue]" />
             <Parameter Name="BatchFailureTimeoutInSeconds" Value="[Audit_BatchFailureTimeoutInSeconds]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -81,6 +85,8 @@
             <Parameter Name="FailedMessagesQueue" Value="[Audit_FundingSource_FailedMessagesQueue]" />
             <Parameter Name="BatchFailureTimeoutInSeconds" Value="[Audit_BatchFailureTimeoutInSeconds]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -102,6 +108,8 @@
             <Parameter Name="FailedMessagesQueue" Value="[Audit_EarningEvents_FailedMessagesQueue]" />
             <Parameter Name="BatchFailureTimeoutInSeconds" Value="[Audit_BatchFailureTimeoutInSeconds]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
           </Section>
         </Settings>
       </ConfigOverride>
