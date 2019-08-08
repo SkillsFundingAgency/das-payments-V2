@@ -236,7 +236,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         [Test]
         public async Task Process_Apprenticeship_DataLock_Triage()
         {
-            var approvalsEvent = new DataLockTriageApprovedEvent()
+            var dataLockTriageApprovedEvent = new DataLockTriageApprovedEvent()
             {
                 ApprenticeshipId = 1,
                 ApprovedOn = DateTime.Today,
@@ -265,15 +265,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 .Setup(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipDataLockTriageModel>()))
                 .ReturnsAsync(() => new ApprenticeshipModel
                 {
-                    Id = approvalsEvent.ApprenticeshipId
+                    Id = dataLockTriageApprovedEvent.ApprenticeshipId
                 });
 
             var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
-            await apprenticeshipProcessor.ProcessApprenticeshipDataLockTriage(approvalsEvent);
+            await apprenticeshipProcessor.ProcessApprenticeshipDataLockTriage(dataLockTriageApprovedEvent);
 
             mocker.Mock<IEndpointInstance>()
                 .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev =>
-                        ev.Id == approvalsEvent.ApprenticeshipId),
+                        ev.Id == dataLockTriageApprovedEvent.ApprenticeshipId),
                     It.IsAny<PublishOptions>()), Times.Once);
 
         }
@@ -281,7 +281,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         [Test]
         public async Task Process_Apprenticeship_Stopped_Correctly()
         {
-            var approvalsEvent = new ApprenticeshipStoppedEvent()
+            var stoppedEvent = new ApprenticeshipStoppedEvent()
             {
                 ApprenticeshipId = 1,
                 AppliedOn = DateTime.Today,
@@ -292,20 +292,127 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 .Setup(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipStoppedModel>()))
                 .ReturnsAsync(() => new ApprenticeshipModel
                 {
-                    Id = approvalsEvent.ApprenticeshipId,
+                    Id = stoppedEvent.ApprenticeshipId,
                 });
 
             var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
-            await apprenticeshipProcessor.ProcessStoppedApprenticeship(approvalsEvent);
+            await apprenticeshipProcessor.ProcessStoppedApprenticeship(stoppedEvent);
 
             mocker.Mock<IEndpointInstance>()
                 .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev =>
-                        ev.Id == approvalsEvent.ApprenticeshipId),
+                        ev.Id == stoppedEvent.ApprenticeshipId),
                     It.IsAny<PublishOptions>()), Times.Once);
 
             mocker.Mock<IApprenticeshipStoppedService>()
                 .Verify(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipStoppedModel>()), Times.Once);
 
+        }
+
+
+        [Test]
+        public async Task Process_Apprenticeship_Stop_Date_Changed_Correctly()
+        {
+            var stopDateChangedEvent = new ApprenticeshipStopDateChangedEvent()
+            {
+                ApprenticeshipId = 1,
+                ChangedOn = DateTime.Today,
+                StopDate = DateTime.Today
+            };
+
+            mocker.Mock<IApprenticeshipStoppedService>()
+                .Setup(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipStoppedModel>()))
+                .ReturnsAsync(() => new ApprenticeshipModel
+                {
+                    Id = stopDateChangedEvent.ApprenticeshipId,
+                });
+
+            var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
+            await apprenticeshipProcessor.ProcessStopDateChange(stopDateChangedEvent);
+
+            mocker.Mock<IEndpointInstance>()
+                .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev => ev.Id == stopDateChangedEvent.ApprenticeshipId), It.IsAny<PublishOptions>()), Times.Once);
+
+            mocker.Mock<IApprenticeshipStoppedService>()
+                .Verify(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipStoppedModel>()), Times.Once);
+
+        }
+
+        [Test]
+        public async Task Process_Apprenticeship_Paused_Correctly()
+        {
+            var apprenticeshipPausedEvent = new ApprenticeshipPausedEvent()
+            {
+                ApprenticeshipId = 1,
+                PausedOn = DateTime.Today
+            };
+
+            mocker.Mock<IApprenticeshipPauseService>()
+                .Setup(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipPausedModel>()))
+                .ReturnsAsync(() => new ApprenticeshipModel
+                {
+                    Id = apprenticeshipPausedEvent.ApprenticeshipId,
+                });
+
+            var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
+            await apprenticeshipProcessor.ProcessPausedApprenticeship(apprenticeshipPausedEvent);
+
+            mocker.Mock<IEndpointInstance>()
+                .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev => ev.Id == apprenticeshipPausedEvent.ApprenticeshipId), It.IsAny<PublishOptions>()), Times.Once);
+
+            mocker.Mock<IApprenticeshipPauseService>()
+                .Verify(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipPausedModel>()), Times.Once);
+
+        }
+
+        [Test]
+        public async Task Process_Apprenticeship_Resumed_Correctly()
+        {
+            var apprenticeshipResumedEvent = new ApprenticeshipResumedEvent()
+            {
+                ApprenticeshipId = 1,
+                ResumedOn = DateTime.Today
+            };
+
+            mocker.Mock<IApprenticeshipResumedService>()
+                .Setup(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipResumedModel>()))
+                .ReturnsAsync(() => new ApprenticeshipModel
+                {
+                    Id = apprenticeshipResumedEvent.ApprenticeshipId,
+                });
+
+            var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
+            await apprenticeshipProcessor.ProcessResumedApprenticeship(apprenticeshipResumedEvent);
+
+            mocker.Mock<IEndpointInstance>()
+                .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev => ev.Id == apprenticeshipResumedEvent.ApprenticeshipId), It.IsAny<PublishOptions>()), Times.Once);
+
+            mocker.Mock<IApprenticeshipResumedService>()
+                .Verify(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipResumedModel>()), Times.Once);
+
+        }
+
+        [Test]
+        public async Task Process_Payment_Order_Change_Correctly()
+        {
+            var paymentOrderChangedEvent = new PaymentOrderChangedEvent()
+            {
+              AccountId = 1,
+              PaymentOrder = new int[]{300, 100, 200}
+            };
+            
+            var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
+            await apprenticeshipProcessor.ProcessPaymentOrderChange(paymentOrderChangedEvent);
+
+            mocker.Mock<IEndpointInstance>()
+                .Verify(svc => svc.Publish(
+                        It.Is<EmployerChangedProviderPriority>(ev => ev.EmployerAccountId == paymentOrderChangedEvent.AccountId &&
+                                                                     ev.OrderedProviders.Count == 3 &&
+                                                                     ev.OrderedProviders[0] == paymentOrderChangedEvent.PaymentOrder[0] &&
+                                                                     ev.OrderedProviders[1] == paymentOrderChangedEvent.PaymentOrder[1] &&
+                                                                     ev.OrderedProviders[2] == paymentOrderChangedEvent.PaymentOrder[2] ),
+                    It.IsAny<PublishOptions>()),
+                    Times.Once);
+            
         }
 
     }

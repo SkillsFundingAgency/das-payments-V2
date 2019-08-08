@@ -13,6 +13,7 @@
         public int PathwayCode { get; set; }
 
         public string FundingLineType { get; set; }
+        public int SequenceNumber { get; set; }
 
         public LearningAim Clone()
         {

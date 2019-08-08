@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ESFA.DC.JobStatus.Interface;
+using Enums = ESFA.DC.Jobs.Model.Enums;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
 {
     public interface IJobService
     {
-        Task<JobStatusType> GetJobStatus(long jobId);
+        Task<Enums.JobStatusType> GetJobStatus(long jobId);
 
-        Task<string> UpdateJobStatus(long jobId, JobStatusType status);
+        Task<string> UpdateJobStatus(long jobId, Enums.JobStatusType status);
 
         Task<long> SubmitJob(SubmissionModel submissionMessage);
 

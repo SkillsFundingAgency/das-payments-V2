@@ -16,10 +16,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 
         public int? EefCode { get; set; }
         public string PostcodePrior { get; set; }
+        public bool IsLevyLearner { get; set; }
 
         public List<EmploymentStatusMonitoring> EmploymentStatusMonitoring { get; set; } = new List<EmploymentStatusMonitoring>();
 
         public bool Restart { get; set; }
+
+        public LearnerEarningsHistory EarningsHistory { get; set; }
 
         public override string ToString()
         {

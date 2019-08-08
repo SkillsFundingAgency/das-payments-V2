@@ -1,6 +1,8 @@
-﻿using SFA.DAS.Payments.Application.Repositories;
+﻿using System;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Entities;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.DataLocks.Domain.Infrastructure;
 using SFA.DAS.Payments.DataLocks.Domain.Services;
@@ -10,16 +12,18 @@ namespace SFA.DAS.Payments.DataLocks.Application.Cache
     public class DataLockLearnerCache : IDataLockLearnerCache
     {
         private readonly IActorDataCache<List<ApprenticeshipModel>> dataCache;
+        private readonly IActorDataCache<List<long>> ukprnCache;
 
-        public DataLockLearnerCache(IActorDataCache<List<ApprenticeshipModel>> dataCache)
+        public DataLockLearnerCache(IActorDataCache<List<ApprenticeshipModel>> dataCache, IActorDataCache<List<long>> ukprnCache)
         {
-            this.dataCache = dataCache;
+            this.dataCache = dataCache ?? throw new ArgumentNullException(nameof(dataCache));
+            this.ukprnCache = ukprnCache ?? throw new ArgumentNullException(nameof(ukprnCache));
         }
 
-        public async Task<bool> HasLearnerRecords()
+        public async Task<bool> UkprnExists(long ukprn)
         {
-            var isEmpty = await dataCache.IsEmpty().ConfigureAwait(false);
-            return !isEmpty;
+            var providersCacheItem = await ukprnCache.TryGet(CacheKeys.ProvidersKey).ConfigureAwait(false);
+            return providersCacheItem.HasValue && providersCacheItem.Value.Contains(ukprn);
         }
 
         public async Task<List<ApprenticeshipModel>> GetLearnerApprenticeships(long uln)
