@@ -7,9 +7,11 @@
     <Parameter Name="ProviderPaymentsService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
+    <Parameter Name="MonitoringServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
+    <Parameter Name="ConsoleLogLevel" DefaultValue="" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
     <Parameter Name="ProviderPaymentsService_EndpointName" DefaultValue="" />
     <Parameter Name="ProviderPaymentsService_FailedMessagesQueue" DefaultValue="" />
@@ -25,6 +27,7 @@
           <Section Name="ConnectionStringsSection">
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
           </Section>
@@ -34,6 +37,7 @@
             <Parameter Name="BatchFailureTimeoutInSeconds" Value="[Audit_BatchFailureTimeoutInSeconds]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="BatchIntervalInSeconds" Value="[BatchIntervalInSeconds]" />
           </Section>
         </Settings>

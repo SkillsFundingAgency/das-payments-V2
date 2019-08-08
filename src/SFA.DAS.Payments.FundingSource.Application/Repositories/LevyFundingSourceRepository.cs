@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -39,15 +40,20 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
             var paymentPriorities = await dataContext.EmployerProviderPriority.AsNoTracking()
                 .Where(paymentPriority => paymentPriority.EmployerAccountId == employerAccountId)
                 .ToListAsync(cancellationToken);
-            
+
             return paymentPriorities;
         }
 
-        public async Task AddEmployerProviderPriorities(List<EmployerProviderPriorityModel> paymentPriorityModels, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task ReplaceEmployerProviderPriorities(long employerAccountId, List<EmployerProviderPriorityModel> paymentPriorityModels, CancellationToken cancellationToken = default(CancellationToken))
         {
-             await dataContext.EmployerProviderPriority
+            var previousEmployerPriorities = await GetPaymentPriorities(employerAccountId, cancellationToken).ConfigureAwait(false);
+            dataContext.EmployerProviderPriority.RemoveRange(previousEmployerPriorities);
+
+            await dataContext.EmployerProviderPriority
                 .AddRangeAsync(paymentPriorityModels, cancellationToken)
                 .ConfigureAwait(false);
+
+            await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
     }

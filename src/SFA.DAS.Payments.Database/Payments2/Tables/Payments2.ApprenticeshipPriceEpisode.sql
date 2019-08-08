@@ -8,3 +8,10 @@
 	Removed BIT NOT NULL CONSTRAINT DF_ApprenticeshipPriceEpisode__Removed DEFAULT (0),
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_ApprenticeshipPriceEpisode__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
 )
+GO
+
+CREATE INDEX [IX_ApprenticeshipPriceEpisode__ApprenticeshipId] ON [Payments2].[ApprenticeshipPriceEpisode]
+(
+  ApprenticeshipId
+) 
+GO

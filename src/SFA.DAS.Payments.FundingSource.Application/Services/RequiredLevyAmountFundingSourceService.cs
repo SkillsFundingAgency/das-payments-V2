@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using AutoMapper;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
@@ -86,27 +87,41 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
         public async Task StoreEmployerProviderPriority(EmployerChangedProviderPriority providerPriorityEvent)
         {
-            int order = 1;
-            var paymentPriorities = new List<EmployerProviderPriorityModel>();
-            foreach (var providerUkprn in providerPriorityEvent.OrderedProviders)
+            try
             {
-                paymentPriorities.Add(new EmployerProviderPriorityModel
+                int order = 1;
+                var paymentPriorities = new List<EmployerProviderPriorityModel>();
+                foreach (var providerUkprn in providerPriorityEvent.OrderedProviders)
                 {
-                    Ukprn = providerUkprn,
-                    EmployerAccountId = providerPriorityEvent.EmployerAccountId,
-                    Order = order
-                });
+                    paymentPriorities.Add(new EmployerProviderPriorityModel
+                    {
+                        Ukprn = providerUkprn,
+                        EmployerAccountId = providerPriorityEvent.EmployerAccountId,
+                        Order = order
+                    });
 
-                order++;
+                    order++;
+                }
+
+                using (var scope = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled))
+                {
+                    paymentLogger.LogDebug($"Replacing Previous EmployerProviderPriority for Account Id {providerPriorityEvent.EmployerAccountId}");
+                    await levyFundingSourceRepository.ReplaceEmployerProviderPriorities(providerPriorityEvent.EmployerAccountId, paymentPriorities).ConfigureAwait(false);
+                    paymentLogger.LogDebug($"Successfully Replaced Previous EmployerProviderPriority for Account Id {providerPriorityEvent.EmployerAccountId}");
+
+                    paymentLogger.LogDebug($"Adding EmployerProviderPriority to Cache for Account Id {providerPriorityEvent.EmployerAccountId}");
+                    await employerProviderPriorities.AddOrReplace(CacheKeys.EmployerPaymentPriorities, paymentPriorities).ConfigureAwait(false);
+                    paymentLogger.LogInfo($"Successfully Add EmployerProviderPriority to Cache for Account Id {providerPriorityEvent.EmployerAccountId}");
+
+                    scope.Complete();
+                }
+            }
+            catch (Exception e)
+            {
+                paymentLogger.LogError($"Error while updating  EmployerProviderPriority for Account Id {providerPriorityEvent.EmployerAccountId}", e);
+                throw;
             }
 
-            paymentLogger.LogDebug($"Adding EmployerProviderPriority to Database for Account Id {providerPriorityEvent.EmployerAccountId}");
-            await levyFundingSourceRepository.AddEmployerProviderPriorities(paymentPriorities);
-            paymentLogger.LogInfo($"Successfully Add EmployerProviderPriority to Database for Account Id {providerPriorityEvent.EmployerAccountId}");
-
-            paymentLogger.LogDebug($"Adding EmployerProviderPriority to Cache for Account Id {providerPriorityEvent.EmployerAccountId}");
-            await employerProviderPriorities.AddOrReplace(CacheKeys.EmployerPaymentPriorities, paymentPriorities).ConfigureAwait(false);
-            paymentLogger.LogInfo($"Successfully Add EmployerProviderPriority to Cache for Account Id {providerPriorityEvent.EmployerAccountId}");
         }
 
         public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> ProcessReceiverTransferPayment(ProcessUnableToFundTransferFundingSourcePayment message)
@@ -148,7 +163,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             var fundingSourceEvents = new List<FundingSourcePaymentEvent>();
 
             var keys = await generateSortedPaymentKeys.GeyKeys().ConfigureAwait(false);
-   
+
             var levyAccount = await levyFundingSourceRepository.GetLevyAccount(employerAccountId);
             levyBalanceService.Initialise(levyAccount.Balance, levyAccount.TransferAllowance);
 

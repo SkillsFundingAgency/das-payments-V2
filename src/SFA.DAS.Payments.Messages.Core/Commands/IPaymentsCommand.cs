@@ -2,10 +2,8 @@
 
 namespace SFA.DAS.Payments.Messages.Core.Commands
 {
-    public interface IPaymentsCommand: IPaymentsMessage
+    public interface IPaymentsCommand: IJobMessage, ICommand
     {
-        Guid CommandId { get; set; }
-        DateTimeOffset RequestTime { get; set; }
-
+        DateTimeOffset RequestTime { get; }
     }
 }

@@ -39,3 +39,12 @@
     ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL,
 )
+
+GO
+
+CREATE INDEX [IX_RequiredPaymentEvent__Audit] ON [Payments2].[RequiredPaymentEvent]
+(
+  [EarningEventId]
+)  
+
+GO
