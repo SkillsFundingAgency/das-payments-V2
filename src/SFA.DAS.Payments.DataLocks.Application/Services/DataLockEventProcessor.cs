@@ -214,8 +214,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         public async Task<List<DataLockStatusChanged>> ProcessPayableEarning(PayableEarningEvent payableEarningEvent)
         {
-            using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
-            {
+            //using (var scope = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled))
+            //{
                 var result = new List<DataLockStatusChanged>();
                 var changedToPassed = new DataLockStatusChangedToPassed {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
                 var failuresToDelete = new List<long>();
@@ -252,12 +252,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                 await dataLockFailureRepository.ReplaceFailures(failuresToDelete, new List<DataLockFailureEntity>(), payableEarningEvent.EarningEventId, payableEarningEvent.EventId).ConfigureAwait(false);
 
-                scope.Complete();
+            //    scope.Complete();
 
                 paymentLogger.LogDebug($"Deleted {failuresToDelete.Count} old DL failures for UKPRN {payableEarningEvent.Ukprn} Learner Ref {payableEarningEvent.Learner.ReferenceNumber} on R{payableEarningEvent.CollectionPeriod.Period:00}");
 
                 return result;
-            }
+            //}
         }
     }
 }
