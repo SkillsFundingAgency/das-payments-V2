@@ -55,9 +55,29 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
                     f.LearningAimStandardCode == standardCode &&
                     f.LearningAimReference == learnAimRef &&
                     f.AcademicYear == academicYear
-                ) .ToListAsync().ConfigureAwait(false);
+                )
+                .Select(x => new
+                {
+                    x.Ukprn,
+                    x.AcademicYear,
+                    x.Amount,
+                    x.CollectionPeriod,
+                    x.DataLockEventId,
+                    x.DeliveryPeriod,
+                    x.EarningEventId,
+                    x.LearnerReferenceNumber,
+                    x.LearnerUln,
+                    x.LearningAimFrameworkCode,
+                    x.LearningAimPathwayCode,
+                    x.LearningAimProgrammeType,
+                    x.LearningAimStandardCode,
+                    x.LearningAimReference,
+                    x.Id,
+                    x.TransactionType,
+                })
+                .ToListAsync().ConfigureAwait(false);
 
-          var dataLockFailureEntities =  entities.Select(model => new DataLockFailureEntity
+            var dataLockFailureEntities =  entities.Select(model => new DataLockFailureEntity
             {
                 Ukprn = model.Ukprn,
                 EarningEventId = model.EarningEventId,
@@ -74,7 +94,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
                 LearningAimReference = model.LearningAimReference,
                 LearningAimStandardCode = model.LearningAimStandardCode,
                 Amount = model.Amount,
-                EarningPeriod = JsonConvert.DeserializeObject<EarningPeriod>(model.EarningPeriod)
+                EarningPeriod = new EarningPeriod(),
             }).ToList();
 
             logger.LogDebug($"retrieved {entities.Count} errors for UKPRN {ukprn}");
