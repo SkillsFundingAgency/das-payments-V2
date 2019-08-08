@@ -317,7 +317,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 IlrPriceEffectiveFromDate = priceEpisode.EffectiveTotalNegotiatedPriceStartDate,
                 IlrPriceEffectiveToDate = priceEpisode.ActualEndDate.GetValueOrDefault(priceEpisode.PlannedEndDate),
                 IlrEndpointAssessorPrice = hasTnp3 ? priceEpisode.TotalNegotiatedPrice4 : priceEpisode.TotalNegotiatedPrice2,
-                IlrFileName = dataLockStatusChangedEvent.IlrFileName.Substring(0, 50),
+                IlrFileName = dataLockStatusChangedEvent.IlrFileName.Substring(9),
                 IlrStartDate = priceEpisode.CourseStartDate,
                 IlrTrainingPrice = hasTnp3 ? priceEpisode.TotalNegotiatedPrice3 : priceEpisode.TotalNegotiatedPrice1,
             };
