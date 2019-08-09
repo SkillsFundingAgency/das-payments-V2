@@ -86,11 +86,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         {
             try
             {
-                await Task.WhenAll(levyAccountModels.Select(x => levyAccountBulkWriter.Write(x, cancellationToken)))
-                        .ConfigureAwait(false);
-
-                await levyAccountBulkWriter.DeleteAndFlush(levyAccountModels.Select(x => x.AccountId).ToList(), cancellationToken).ConfigureAwait(false);
-
+                await Task.WhenAll(levyAccountModels.Select(x => levyAccountBulkWriter.Write(x, cancellationToken))).ConfigureAwait(false);
+                await levyAccountBulkWriter.DeleteAndFlush(cancellationToken).ConfigureAwait(false);
                 logger.LogVerbose($"Successfully Added  {levyAccountModels.Count} Batch of Levy Accounts Details");
             }
             catch (Exception e)

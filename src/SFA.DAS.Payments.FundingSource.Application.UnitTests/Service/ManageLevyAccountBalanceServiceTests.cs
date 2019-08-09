@@ -110,7 +110,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Returns(Task.CompletedTask);
 
             bulkWriter
-                .Setup(x => x.DeleteAndFlush(It.IsAny<List<long>>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.DeleteAndFlush( It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
 
@@ -133,7 +133,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Verify(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
 
             bulkWriter
-                .Verify(x => x.DeleteAndFlush(It.IsAny<List<long>>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
+                .Verify(x => x.DeleteAndFlush(It.IsAny<CancellationToken>()), Times.Exactly(2));
 
         }
 
@@ -171,7 +171,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Returns(Task.CompletedTask);
 
             bulkWriter
-                .Setup(x => x.DeleteAndFlush(It.IsAny<List<long>>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.DeleteAndFlush( It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
             var service = new ManageLevyAccountBalanceService
@@ -199,7 +199,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                     Times.Once);
 
             bulkWriter
-                .Verify(x => x.DeleteAndFlush(It.IsAny<List<long>>(), It.IsAny<CancellationToken>()), Times.Once);
+                .Verify(x => x.DeleteAndFlush(It.IsAny<CancellationToken>()), Times.Once);
 
         }
 
@@ -236,7 +236,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Returns(Task.CompletedTask);
 
             bulkWriter
-                .Setup(x => x.DeleteAndFlush(It.IsAny<List<long>>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.DeleteAndFlush(It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
 
@@ -259,5 +259,61 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 
         }
 
+
+        [Test]
+        public async Task FoundNotLevyPayerEmployerAccount_Event_Is_Not_Published_If_All_Employer_Is_Marked_As_IsLevyPayer()
+        {
+            int batchSize = 5;
+            var pagedOneApiResponseViewModel = new PagedApiResponseViewModel<AccountWithBalanceViewModel>
+            {
+                TotalPages = 1,
+                Data = new List<AccountWithBalanceViewModel>
+                {
+                    new AccountWithBalanceViewModel
+                    {
+                        AccountId = 1,
+                        Balance = 100m,
+                        RemainingTransferAllowance = 10m,
+                        AccountName = "Test Ltd",
+                        IsLevyPayer = true
+                    }
+                }
+            };
+
+            accountApiClient
+                .SetupSequence(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()))
+                .ReturnsAsync(new PagedApiResponseViewModel<AccountWithBalanceViewModel>
+                {
+                    TotalPages = pagedOneApiResponseViewModel.TotalPages
+                })
+                .ReturnsAsync(pagedOneApiResponseViewModel);
+
+            bulkWriter
+                .Setup(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            bulkWriter
+                .Setup(x => x.DeleteAndFlush(It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+
+            var service = new ManageLevyAccountBalanceService
+            (
+                repository.Object,
+                accountApiClient.Object,
+                logger,
+                bulkWriter.Object,
+                batchSize,
+                endpointInstanceFactory.Object
+            );
+
+            await service.RefreshLevyAccountDetails(CancellationToken.None).ConfigureAwait(false);
+
+            endpointInstance
+                .Verify(svc => svc.Publish(It.Is<FoundNotLevyPayerEmployerAccount>(x => x.AccountId == 1),
+                    It.IsAny<PublishOptions>()),
+                    Times.Never);
+
+        }
     }
 }
