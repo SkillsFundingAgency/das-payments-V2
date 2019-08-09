@@ -28,13 +28,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
         {
         }
 
-        public override async Task Write(LevyAccountModel entity, CancellationToken cancellationToken)
+        public override async Task Flush(CancellationToken cancellationToken)
         {
-            queue.Enqueue(entity);
             await Task.CompletedTask;
         }
-
-
+        
         public async Task DeleteAndFlush(List<long> existingRecordIds, CancellationToken cancellationToken)
         {
             logger.LogVerbose($"Saving {queue.Count} records to LevyAccount Table");
