@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NServiceBus;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
@@ -74,6 +75,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                             academicYear, c));
                     });
                 }
+            }
+
+            if (!keys.Any())
+            {
+                throw new ApplicationException("Cache will not be cleared as no keys created.");
             }
 
             var startedEvent = new CollectionStartedEvent
