@@ -55,32 +55,31 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
                     f.LearningAimStandardCode == standardCode &&
                     f.LearningAimReference == learnAimRef &&
                     f.AcademicYear == academicYear
-                )
-                .Select(model => new DataLockFailureEntity
-                {
-                    Ukprn = model.Ukprn,
-                    EarningEventId = model.EarningEventId,
-                    DataLockEventId = model.DataLockEventId,
-                    AcademicYear = model.AcademicYear,
-                    TransactionType = model.TransactionType,
-                    DeliveryPeriod = model.DeliveryPeriod,
-                    Id = model.Id,
-                    LearnerReferenceNumber = model.LearnerReferenceNumber,
-                    LearnerUln = model.LearnerUln,
-                    LearningAimFrameworkCode = model.LearningAimFrameworkCode,
-                    LearningAimPathwayCode = model.LearningAimPathwayCode,
-                    LearningAimProgrammeType = model.LearningAimProgrammeType,
-                    LearningAimReference = model.LearningAimReference,
-                    LearningAimStandardCode = model.LearningAimStandardCode,
-                    Amount = model.Amount,
-                    EarningPeriod = JsonConvert.DeserializeObject<EarningPeriod>(model.EarningPeriod)
-                })
-                .ToListAsync()
-                .ConfigureAwait(false);
+                ) .ToListAsync().ConfigureAwait(false);
+
+          var dataLockFailureEntities =  entities.Select(model => new DataLockFailureEntity
+            {
+                Ukprn = model.Ukprn,
+                EarningEventId = model.EarningEventId,
+                DataLockEventId = model.DataLockEventId,
+                AcademicYear = model.AcademicYear,
+                TransactionType = model.TransactionType,
+                DeliveryPeriod = model.DeliveryPeriod,
+                Id = model.Id,
+                LearnerReferenceNumber = model.LearnerReferenceNumber,
+                LearnerUln = model.LearnerUln,
+                LearningAimFrameworkCode = model.LearningAimFrameworkCode,
+                LearningAimPathwayCode = model.LearningAimPathwayCode,
+                LearningAimProgrammeType = model.LearningAimProgrammeType,
+                LearningAimReference = model.LearningAimReference,
+                LearningAimStandardCode = model.LearningAimStandardCode,
+                Amount = model.Amount,
+                EarningPeriod = JsonConvert.DeserializeObject<EarningPeriod>(model.EarningPeriod)
+            }).ToList();
 
             logger.LogDebug($"retrieved {entities.Count} errors for UKPRN {ukprn}");
 
-            return entities;
+            return dataLockFailureEntities;
         }
 
         public async Task ReplaceFailures(List<long> oldFailureIds, List<DataLockFailureEntity> newFailures, Guid earningEventId, Guid dataLockEventId)
@@ -92,7 +91,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
 
             paymentsDataContext.DataLockFailure.RemoveRange(paymentsDataContext.DataLockFailure.Where(f => oldFailureIds.Contains(f.Id)));
 
-            await paymentsDataContext.DataLockFailure.AddRangeAsync(newFailures.Select(f => new DataLockFailureModel
+            var dataLockFailureModels = newFailures.Select(f => new DataLockFailureModel
             {
                 EarningEventId = earningEventId,
                 DataLockEventId = dataLockEventId,
@@ -110,8 +109,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
                 LearningAimStandardCode = f.LearningAimStandardCode,
                 Amount = f.EarningPeriod.Amount,
                 EarningPeriod = JsonConvert.SerializeObject(f.EarningPeriod)
-            })).ConfigureAwait(false);
-
+            }).ToList();
+            
+            await paymentsDataContext.DataLockFailure.AddRangeAsync(dataLockFailureModels).ConfigureAwait(false);
             await paymentsDataContext.SaveChangesAsync().ConfigureAwait(false);
         }
     }

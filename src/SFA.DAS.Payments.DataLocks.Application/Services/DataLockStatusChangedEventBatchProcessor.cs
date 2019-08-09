@@ -317,15 +317,45 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 IlrPriceEffectiveFromDate = priceEpisode.EffectiveTotalNegotiatedPriceStartDate,
                 IlrPriceEffectiveToDate = priceEpisode.ActualEndDate.GetValueOrDefault(priceEpisode.PlannedEndDate),
                 IlrEndpointAssessorPrice = hasTnp3 ? priceEpisode.TotalNegotiatedPrice4 : priceEpisode.TotalNegotiatedPrice2,
-                IlrFileName = dataLockStatusChangedEvent.IlrFileName,
+                IlrFileName = TrimUkprn(dataLockStatusChangedEvent.IlrFileName),
                 IlrStartDate = priceEpisode.CourseStartDate,
                 IlrTrainingPrice = hasTnp3 ? priceEpisode.TotalNegotiatedPrice3 : priceEpisode.TotalNegotiatedPrice1,
             };
+
+            if (dataLockStatusChangedEvent.IlrFileName?.Length > 50)
+            {
+                logger.LogError($"Ilr Filename length overflow: {dataLockStatusChangedEvent.IlrFileName}");
+            }
+
+            if (dataLockStatusChangedEvent.Learner.ReferenceNumber?.Length > 12)
+            {
+                logger.LogError($"Learn Ref Number size overflow: {dataLockStatusChangedEvent.Learner.ReferenceNumber}");
+            }
+
+            if (earningPeriod.PriceEpisodeIdentifier?.Length > 25)
+            {
+                logger.LogError($"Price Episode Identifier size overflow: {earningPeriod.PriceEpisodeIdentifier}");
+            }
 
             logger.LogVerbose($"Saving legacy DataLockEvent {dataLockStatusChangedEvent.EventId} for UKPRN {dataLockStatusChangedEvent.Ukprn}");
 
             await dataLockEventWriter.Write(dataLockEvent, cancellationToken).ConfigureAwait(false);
             return dataLockEvent;
+        }
+
+        public static string TrimUkprn(string input)
+        {
+            if (input == null)
+            {
+                return string.Empty;
+            }
+
+            if (input.Length > 9)
+            {
+                return input.Substring(9);
+            }
+
+            return input;
         }
 
         private async Task PopulateApprenticeshipCache(List<DataLockStatusChanged> statusChangeEvents, CancellationToken cancellationToken)
