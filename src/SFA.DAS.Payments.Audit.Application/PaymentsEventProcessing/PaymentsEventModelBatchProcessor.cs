@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using SFA.DAS.Payments.Application.Batch;
+using SFA.DAS.Payments.Application.Data;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.Application.Data;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
@@ -56,9 +57,10 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
             logger.LogDebug($"Processing {batch.Count} records: {string.Join(", ", batch.Select(m => m.EventId))}");
 
             var data = dataTable.GetDataTable(batch);
+            
+            using (var scope = TransactionScopeFactory.CreateWriteOnlyTransaction())
             using (var sqlConnection = new SqlConnection(connectionString))
-                //using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
-                //{
+            {
                 try
                 {
                     await sqlConnection.OpenAsync(cancellationToken);
@@ -97,14 +99,14 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                         logger.LogDebug($"Finished bulk copying {batch.Count} of {typeof(T).Name} records.");
                     }
 
-                    // scope.Complete();
+                    scope.Complete();
                 }
                 catch (Exception e)
                 {
                     logger.LogError($"Error performing bulk copy for model type: {typeof(T).Name}. Error: {e.Message}", e);
                     throw;
                 }
-            //  }
+            }
 
             return batch.Count;
         }
