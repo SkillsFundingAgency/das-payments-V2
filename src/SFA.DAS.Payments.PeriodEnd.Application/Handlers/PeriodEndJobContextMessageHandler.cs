@@ -52,16 +52,6 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                     Period = Convert.ToByte(GetMessageValue(message, JobContextMessageConstants.KeyValuePairs.ReturnPeriod))
                 };
 
-
-                if (periodEndEvent.CollectionPeriod.AcademicYear == 0) // TODO HACK PLEASE DELETE ME
-                {
-                    periodEndEvent.CollectionPeriod.AcademicYear = 1819;
-                }
-
-
-
-
-
                 logger.LogDebug($"Got period end event: {periodEndEvent.ToJson()}");
                 await RecordPeriodEndJob(taskType, periodEndEvent).ConfigureAwait(false);
                 var endpointInstance = await endpointInstanceFactory.GetEndpointInstance();
