@@ -5,14 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
 using SFA.DAS.Payments.Application.Batch;
-using SFA.DAS.Payments.Application.Data;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.Application.Data;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.Core.Configuration;
+using IsolationLevel = System.Data.IsolationLevel;
 
 namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
 {
@@ -57,14 +56,15 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
             logger.LogDebug($"Processing {batch.Count} records: {string.Join(", ", batch.Select(m => m.EventId))}");
 
             var data = dataTable.GetDataTable(batch);
-            
-            using (var scope = TransactionScopeFactory.CreateWriteOnlyTransaction())
+
             using (var sqlConnection = new SqlConnection(connectionString))
             {
-                try
+                sqlConnection.Open();
+
+                using (var transaction = sqlConnection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                using (var bulkCopy = new SqlBulkCopy(sqlConnection, SqlBulkCopyOptions.Default, transaction))
                 {
-                    await sqlConnection.OpenAsync(cancellationToken);
-                    using (var bulkCopy = new SqlBulkCopy(sqlConnection))
+                    try
                     {
                         foreach (var table in data)
                         {
@@ -73,7 +73,8 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
 
                             foreach (DataRow tableRow in table.Rows)
                             {
-                                logger.LogVerbose($"Saving row to table: {bulkCopy.DestinationTableName}, Row: {ToLogString(tableRow)}");
+                                logger.LogVerbose(
+                                    $"Saving row to table: {bulkCopy.DestinationTableName}, Row: {ToLogString(tableRow)}");
                             }
 
                             foreach (DataColumn dataColumn in table.Columns)
@@ -81,7 +82,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
 
                             try
                             {
-                                await bulkCopy.WriteToServerAsync(table, cancellationToken).ConfigureAwait(false);
+                                bulkCopy.WriteToServer(table);
                             }
                             catch (SystemException ex)
                             {
@@ -96,18 +97,18 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                             }
                         }
 
+                        transaction.Commit();
                         logger.LogDebug($"Finished bulk copying {batch.Count} of {typeof(T).Name} records.");
                     }
-
-                    scope.Complete();
-                }
-                catch (Exception e)
-                {
-                    logger.LogError($"Error performing bulk copy for model type: {typeof(T).Name}. Error: {e.Message}", e);
-                    throw;
+                    catch (Exception e)
+                    {
+                        logger.LogError($"Error performing bulk copy for model type: {typeof(T).Name}. Error: {e.Message}", e);
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
-
+            
             return batch.Count;
         }
 
