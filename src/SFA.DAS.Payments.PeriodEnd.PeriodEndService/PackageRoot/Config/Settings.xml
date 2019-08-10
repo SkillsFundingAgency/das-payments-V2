@@ -7,6 +7,7 @@
     <Parameter Name="DCServiceBusConnectionString" Value=""/>
     <Parameter Name="DcStorageConnectionString" Value=""/>
     <Parameter Name="PaymentsConnectionString" Value=""/>
+    <Parameter Name="MonitoringServiceBusConnectionString" Value=""/>
   </Section>
 
   <Section Name="Settings">

@@ -19,6 +19,7 @@
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
     <Parameter Name="TimeToPauseBetweenChecks" DefaultValue="00:00:10" />
     <Parameter Name="TimeToWaitForJobToComplete" DefaultValue="00:02:00" />
+    <Parameter Name="MonitoringServiceBusConnectionString" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -35,6 +36,7 @@
             <Parameter Name="DCServiceBusConnectionString" Value="[DCServiceBusConnectionString]" />
             <Parameter Name="DcStorageConnectionString" Value="[DcStorageConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="TimeToPauseBetweenChecks" Value="[TimeToPauseBetweenChecks]" />

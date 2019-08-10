@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Client
@@ -24,10 +25,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
         private readonly IMessageSession messageSession;
         private readonly IPaymentLogger logger;
 
-        public PeriodEndJobClient(IEndpointInstanceFactory factory, IPaymentLogger logger)
+        public PeriodEndJobClient(IMonitoringMessageSessionFactory factory, IPaymentLogger logger)
         {
 
-            messageSession = factory?.GetEndpointInstance().Result ?? throw new ArgumentNullException();
+            messageSession = factory?.Create() ?? throw new ArgumentNullException();
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
         protected async Task StartJob<T>(long jobId, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages) where T: RecordPeriodEndJob, new()

@@ -19,5 +19,6 @@
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
     <Parameter Name="ProcessMessageSequentially" Value="false" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
   </Parameters>
 </Application>
