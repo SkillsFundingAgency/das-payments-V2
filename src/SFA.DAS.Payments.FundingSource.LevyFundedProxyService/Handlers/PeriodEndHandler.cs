@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
             try
             {
                 logger.LogInfo($"Received Period End event. Now getting employer period end commands for collection: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}.");
-                var employerPeriodEndCommands = await periodEndService.GenerateEmployerPeriodEndCommands(message);
+                var employerPeriodEndCommands = await periodEndService.GenerateEmployerPeriodEndCommands(message).ConfigureAwait(false);
                 logger.LogDebug($"Got {employerPeriodEndCommands.Count} employer period end commands.");
                 foreach (var processLevyPaymentsOnMonthEndCommand in employerPeriodEndCommands)
                 {
