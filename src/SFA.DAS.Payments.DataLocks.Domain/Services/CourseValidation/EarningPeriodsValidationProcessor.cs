@@ -4,7 +4,6 @@ using System.Linq;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
@@ -20,6 +19,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
         }
 
         public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidateFunctionalSkillPeriods(
+            long ukprn,
             long uln,
             List<PriceEpisode> priceEpisodes,
             List<EarningPeriod> periods,
@@ -28,10 +28,12 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             LearningAim aim,
             int academicYear)
         {
-            return ValidateEarningPeriods(uln, priceEpisodes, periods, transactionType, apprenticeships, aim, academicYear, functionalSkillValidationProcessor);
+            return ValidateEarningPeriods(ukprn, uln, priceEpisodes, periods, transactionType, apprenticeships, aim, academicYear, functionalSkillValidationProcessor);
         }
 
-        public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(long uln,
+        public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(
+            long ukprn,
+            long uln,
             List<PriceEpisode> priceEpisodes,
             List<EarningPeriod> periods,
             TransactionType transactionType,
@@ -39,10 +41,12 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             LearningAim aim,
             int academicYear)
         {
-            return ValidateEarningPeriods(uln, priceEpisodes, periods, transactionType, apprenticeships, aim, academicYear, courseValidationProcessor);
+            return ValidateEarningPeriods(ukprn, uln, priceEpisodes, periods, transactionType, apprenticeships, aim, academicYear, courseValidationProcessor);
         }
 
-        private (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidateEarningPeriods(long uln,
+        private (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidateEarningPeriods(
+            long ukprn,
+            long uln,
             List<PriceEpisode> priceEpisodes,
             List<EarningPeriod> periods,
             TransactionType transactionType,
@@ -61,7 +65,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                     continue;
                 }
 
-                foreach (var apprenticeship in apprenticeships)
+                foreach (var apprenticeship in apprenticeships.Where(apprenticeship => apprenticeship.Ukprn == ukprn))
                 {
                     var validationModel = new DataLockValidationModel
                     {

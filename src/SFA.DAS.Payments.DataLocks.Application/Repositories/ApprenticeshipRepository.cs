@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
-using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Repositories
@@ -20,11 +18,30 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             this.dataContext = dataContext;
         }
 
-        public async Task<List<ApprenticeshipModel>> ApprenticeshipsForProvider(long ukprn)
+        public async Task<List<long>> GetProviderIds()
+        {
+            return await dataContext.Apprenticeship
+                .Where(x => x.Ukprn != 0)
+                .Select(x => x.Ukprn)
+                .Distinct()
+                .ToListAsync();
+        }
+
+        public async Task<List<long>> ApprenticeshipUlnsByProvider(long ukprn)
+        {
+            var apprenticeships = await dataContext.Apprenticeship
+                .Where(x => x.Ukprn == ukprn)
+                .Select(x => x.Uln)
+                .ToListAsync()
+                .ConfigureAwait(false);
+            return apprenticeships;
+        }
+
+        public async Task<List<ApprenticeshipModel>> ApprenticeshipsByUln(long uln)
         {
             var apprenticeships = await dataContext.Apprenticeship
                 .Include(x => x.ApprenticeshipPriceEpisodes)
-                .Where(x => x.Ukprn == ukprn)
+                .Where(x => x.Uln == uln)
                 .ToListAsync()
                 .ConfigureAwait(false);
 
@@ -58,6 +75,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             return await dataContext.Apprenticeship
                 .Include(x => x.ApprenticeshipPriceEpisodes)
                 .FirstOrDefaultAsync(apprenticeship => apprenticeship.Id == apprenticeshipId)
+                .ConfigureAwait(false);
+        }
+
+        public async Task<List<ApprenticeshipModel>> Get(List<long> apprenticeshipIds, CancellationToken cancellationToken)
+        {
+            return await dataContext.Apprenticeship
+                .Include(x => x.ApprenticeshipPriceEpisodes)
+                .Where(apprenticeship => apprenticeshipIds.Contains(apprenticeship.Id))
+                .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
         }
 
@@ -116,5 +142,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
+
+        public void Dispose()
+        {
+            (dataContext as PaymentsDataContext)?.Dispose();
+        }
     }
 }

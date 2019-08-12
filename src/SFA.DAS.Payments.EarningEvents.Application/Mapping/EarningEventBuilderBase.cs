@@ -17,12 +17,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                     continue;
 
                 var priceEpisodes = learnerSubmission.Learner.PriceEpisodes
-                    .Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learningDelivery.AimSeqNumber);
+                    .Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learningDelivery.AimSeqNumber)
+                    .ToList();
 
                 if (!priceEpisodes.Any())
                 {
                     // Maths & English
-                    var mathsAndEnglishAims = GetMathsAndEnglishAim(learnerSubmission, learningDelivery);
+                    var mathsAndEnglishAims = GetMathsAndEnglishAim(learnerSubmission, learningDelivery, mainAim.HasValue);
                     results.AddRange(mathsAndEnglishAims);
 
                     continue;
@@ -45,8 +46,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         }
 
         private static List<IntermediateLearningAim> GetMathsAndEnglishAim(ProcessLearnerCommand learnerSubmission,
-            LearningDelivery learningDelivery)
+            LearningDelivery learningDelivery, bool singleContractType)
         {
+            if (singleContractType)
+                return new List<IntermediateLearningAim> { new IntermediateLearningAim(learnerSubmission, new List<PriceEpisode>(), learningDelivery) };
+
             var results = new List<IntermediateLearningAim>();
 
             var intermediateLearningAim =

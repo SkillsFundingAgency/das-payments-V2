@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
     public interface IEarningPeriodsValidationProcessor
     {
-        (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(long uln,
+        (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(long ukprn, long uln,
             List<PriceEpisode> priceEpisodes,
             List<EarningPeriod> periods,
             TransactionType transactionType,
@@ -16,6 +16,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             int academicYear);
 
         (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidateFunctionalSkillPeriods(
+            long ukprn,
             long uln,
             List<PriceEpisode> priceEpisodes,
             List<EarningPeriod> periods,

@@ -7,6 +7,7 @@ namespace SFA.DAS.Payments.Audit.Model
     {
         public ContractType ContractType { get; set; }
         public string AgreementId { get; set; }
+        public int LearningAimSequenceNumber { get; set; }
         public List<EarningEventPeriodModel> Periods { get; set; }
         public List<EarningEventPriceEpisodeModel> PriceEpisodes { get; set; }
     }

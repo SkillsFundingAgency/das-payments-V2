@@ -20,6 +20,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
     [TestFixture]
     public class FunctionalSkillEarningEventBuilderTest
     {
+        private IMapper mapper;
+
+        [OneTimeSetUp]
+        public void InitialiseMapper()
+        {
+            mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<EarningsEventProfile>()));
+        }
+        
         [Test]
         public void TestBuild()
         {
@@ -33,6 +41,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var builder = new FunctionalSkillEarningEventBuilder(mockMapper.Object);
             var learnerSubmission = new ProcessLearnerCommand
             {
+                CollectionPeriod = 1,
+                CollectionYear = 1920,
                 Learner = new FM36Learner
                 {
                     LearningDeliveries = new EditableList<LearningDelivery>
@@ -40,7 +50,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                         new LearningDelivery {AimSeqNumber = 1, LearningDeliveryValues = new LearningDeliveryValues {LearnAimRef = "ZPROG001"}},
                         new LearningDelivery
                         {
-                            AimSeqNumber = 1, 
+                            AimSeqNumber = 2, 
                             LearningDeliveryValues = new LearningDeliveryValues {LearnAimRef = "M&E"},
                             LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
                             {
@@ -102,9 +112,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             // assert
             events.Should().NotBeNull();
             events.Should().HaveCount(1);
-            events[0].Should().BeSameAs(expectedResult);
 
-            mockMapper.Verify();
         }
 
         [Test]

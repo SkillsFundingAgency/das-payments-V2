@@ -1,8 +1,5 @@
-﻿using System;
-using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using SFA.DAS.CommitmentsV2.Messages.Events;
-using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
@@ -85,6 +82,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.Uln, opt => opt.MapFrom(source => source.Uln))
                 .ForMember(dest => dest.ApprenticeshipPriceEpisodes, opt => opt.MapFrom(source => source.ApprenticeshipPriceEpisodes))
                 .ForMember(dest => dest.Duplicates, opt => opt.Ignore())
+                .ForMember(dest => dest.EventId, opt => opt.Ignore())
+                .ForMember(dest => dest.EventTime, opt => opt.Ignore())
                 ;
 
             CreateMap<ApprenticeshipUpdated, ApprenticeshipModel>()
@@ -108,6 +107,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.IsLevyPayer, opt => opt.Ignore())
                 ;
 
+            CreateMap<DataLockEvent, DataLockStatusChanged>()
+                .ForMember(destinationMember => destinationMember.TransactionTypesAndPeriods, opt => opt.Ignore());
+
             CreateMap<ApprenticeshipUpdatedApprovedEvent, UpdatedApprenticeshipApprovedModel>()
                 .ForMember(dest => dest.ApprenticeshipId, opt => opt.MapFrom(source => source.ApprenticeshipId))
                 .ForMember(dest => dest.StandardCode, opt => opt.MapFrom(source => source.TrainingCode.ToStandardCode(source.TrainingType)))
@@ -115,7 +117,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.ProgrammeType, opt => opt.MapFrom(source => source.TrainingCode.ToProgrammeType(source.TrainingType)))
                 .ForMember(dest => dest.PathwayCode, opt => opt.MapFrom(source => source.TrainingCode.ToPathwayCode(source.TrainingType)))
                 .ForMember(dest => dest.Uln, opt => opt.MapFrom(source => source.Uln))
-               .ForMember(dest => dest.ApprenticeshipPriceEpisodes, opt => opt.MapFrom(source => source.PriceEpisodes))
+                .ForMember(dest => dest.ApprenticeshipPriceEpisodes, opt => opt.MapFrom(source => source.PriceEpisodes))
                 .ForMember(dest => dest.AgreedOnDate, opt => opt.MapFrom(source => source.ApprovedOn))
                 .ForMember(dest => dest.EstimatedEndDate, opt => opt.MapFrom(source => source.EndDate))
                 .ForMember(dest => dest.EstimatedStartDate, opt => opt.MapFrom(source => source.StartDate))

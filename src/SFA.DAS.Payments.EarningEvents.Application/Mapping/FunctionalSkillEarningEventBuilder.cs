@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
                     foreach (var earning in functionalSkillEarning.Earnings)
                     {
-                        earning.Periods =  GetEarningPeriodsMatchingContractType(contractTypes, contractType, earning.Periods.ToList());
+                        earning.Periods = GetEarningPeriodsMatchingContractType(contractTypes, contractType, earning.Periods.ToList());
                     }
 
                     results.Add(functionalSkillEarning);
@@ -64,8 +64,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             return null;
         }
 
-        private ReadOnlyCollection<EarningPeriod> GetEarningPeriodsMatchingContractType(ContractType[] contractTypes, 
-            ContractType learningDeliveryPeriodContractType, 
+        private ReadOnlyCollection<EarningPeriod> GetEarningPeriodsMatchingContractType(ContractType[] contractTypes,
+            ContractType learningDeliveryPeriodContractType,
             List<EarningPeriod> earningPeriods)
         {
             const byte periods = 12;
@@ -73,13 +73,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             var outputEarnings = new List<EarningPeriod>();
             for (byte i = 1; i <= periods; i++)
             {
-                if (contractTypes[i - 1] == learningDeliveryPeriodContractType)
-                {
-                    outputEarnings.Add(earningPeriods.SingleOrDefault(m => m.Period == i));
-                }
+                if (contractTypes[i - 1] != learningDeliveryPeriodContractType) continue;
+                var earningPeriod = earningPeriods.SingleOrDefault(m => m.Period == i);
+                if (earningPeriod != null)
+                    outputEarnings.Add(earningPeriod);
             }
-            return  outputEarnings.AsReadOnly();
+            return outputEarnings.AsReadOnly();
         }
-      
     }
 }
