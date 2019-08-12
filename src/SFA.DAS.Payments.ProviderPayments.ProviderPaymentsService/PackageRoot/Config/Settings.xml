@@ -12,6 +12,7 @@
     <Parameter Name="PaymentsConnectionString" Value="" />
     <Parameter Name="ServiceBusConnectionString" Value="" />
     <Parameter Name="MonitoringServiceBusConnectionString" Value="" />
+    <Parameter Name="DasPeriodEndConnectionString" Value=""/>
   </Section>
   <Section Name="Settings">
     <Parameter Name="EndpointName" Value="sfa-das-payments-providerpayments" />

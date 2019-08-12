@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Payments.ProviderPayments.Model.V1
 {
-    public class PaymentModel
+    public class LegacyPaymentModel
     {
         public Guid PaymentId { get; set; }
         public Guid RequiredPaymentId { get; set; }
