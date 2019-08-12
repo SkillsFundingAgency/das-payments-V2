@@ -3,8 +3,10 @@
     public enum JobType : byte
     {
         EarningsJob = 1,
-        MonthEndJob, 
+        PeriodEndStartJob, 
         ComponentAcceptanceTestEarningsJob,
-        ComponentAcceptanceTestMonthEndJob
+        ComponentAcceptanceTestMonthEndJob,
+        PeriodEndRunJob,
+        PeriodEndStopJob
     }
 }

@@ -26,7 +26,8 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
         public FundingSourcePaymentEventHandler(IPaymentLogger paymentLogger,
          IProviderPaymentsService paymentsService,
             IMapper mapper,
-            IMonthEndService monthEndService,
+            IProviderPeriodEndService providerPeriodEndService,
+            IEarningsJobClient earningsJobClient,
             IJobMessageClient jobClient,
             IProcessAfterMonthEndPaymentService afterMonthEndPaymentService)
         {

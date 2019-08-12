@@ -12,18 +12,18 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
     {
         private readonly IPaymentLogger paymentLogger;
         private readonly IMapper mapper;
-        private readonly IMonthEndService monthEndService;
+        private readonly IProviderPeriodEndService providerPeriodEndService;
 
-        public ProcessAfterMonthEndPaymentService(IPaymentLogger paymentLogger, IMapper mapper, IMonthEndService monthEndService)
+        public ProcessAfterMonthEndPaymentService(IPaymentLogger paymentLogger, IMapper mapper, IProviderPeriodEndService providerPeriodEndService)
         {
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
             this.mapper = mapper;
-            this.monthEndService = monthEndService;
+            this.providerPeriodEndService = providerPeriodEndService;
         }
 
         public async Task<ProviderPaymentEvent> GetPaymentEvent(FundingSourcePaymentEvent message)
         {
-            var isMonthEnd = await monthEndService
+            var isMonthEnd = await providerPeriodEndService
                 .MonthEndStarted(message.Ukprn, message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period)
                 .ConfigureAwait(false);
 
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 
             paymentLogger.LogVerbose($"Processing Month End for {message.GetType().Name} Ukprn {message.Ukprn} - AcademicYear {message.CollectionPeriod.AcademicYear} - Period {message.CollectionPeriod.Period}");
 
-            var monthEndJobId = await monthEndService.GetMonthEndJobId(message.Ukprn,
+            var monthEndJobId = await providerPeriodEndService.GetMonthEndJobId(message.Ukprn,
                     message.CollectionPeriod.AcademicYear,
                     message.CollectionPeriod.Period)
                 .ConfigureAwait(false);

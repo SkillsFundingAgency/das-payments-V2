@@ -21,3 +21,21 @@ Scenario: Provider Earnings Job Finished With Errors
 	Given a provider earnings job has already been recorded		
 	When the final messages for the job are failed to be processed
 	Then the job monitoring service should update the status of the job to show that it has completed with errors
+		
+Scenario: Period End Started Job
+	Given the period end service has received a period end start job
+	When the earnings event service notifies the job monitoring service to record the job
+	Then the job monitoring service should record the job
+	And the job monitoring service should also record the period end job messages
+
+Scenario: Period End Running Job
+	Given the period end service has received a period end run job
+	When the earnings event service notifies the job monitoring service to record the job
+	Then the job monitoring service should record the job
+	And the job monitoring service should also record the period end job messages
+
+Scenario: Period End Stopped Job
+	Given the period end service has received a period end stop job
+	When the earnings event service notifies the job monitoring service to record the job
+	Then the job monitoring service should record the job
+	And the job monitoring service should also record the period end job messages

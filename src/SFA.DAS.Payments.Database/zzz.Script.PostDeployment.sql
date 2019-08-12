@@ -40,7 +40,9 @@ IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 1)
 GO 
 
 IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 2)
-	INSERT INTO [Payments2].[JobType] values (2,'Month end job')
+	INSERT INTO [Payments2].[JobType] values (2,'Period end start job')
+else 
+	UPDATE [Payments2].[JobType] SET [Description] = 'Period end start job' WHERE [Id] = 2
 GO 
 
 IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 3)
@@ -49,6 +51,14 @@ GO
 
 IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 4)
 	INSERT INTO [Payments2].[JobType] VALUES (4,'Component test month end job')
+GO 
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 5)
+	INSERT INTO [Payments2].[JobType] values (5,'Period end run job')
+GO 
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 6)
+	INSERT INTO [Payments2].[JobType] values (6,'Period end stop job')
 GO 
 
 MERGE INTO [Payments2].[ApprenticeshipStatus]	 AS Target

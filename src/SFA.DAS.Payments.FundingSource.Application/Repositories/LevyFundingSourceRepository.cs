@@ -56,5 +56,29 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
             await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task AddEmployerProviderPriorities(List<EmployerProviderPriorityModel> paymentPriorityModels, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await dataContext.EmployerProviderPriority
+                .AddRangeAsync(paymentPriorityModels, cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        public async Task<List<long>> GetEmployerAccounts(CancellationToken cancellationToken)
+        {
+            var transferSenders = (await dataContext.Apprenticeship
+                .Where(apprenticeship => apprenticeship.TransferSendingEmployerAccountId != null && apprenticeship.TransferSendingEmployerAccountId != 0)
+                .Select(apprenticeship => apprenticeship.TransferSendingEmployerAccountId)
+                .Distinct()
+                .ToListAsync(cancellationToken))
+                .Select(accountId => accountId.Value)
+                .ToList();
+            var accounts = await dataContext.Apprenticeship
+                .Select(apprenticeship => apprenticeship.AccountId)
+                .Distinct()
+                .ToListAsync(cancellationToken);
+
+            accounts.AddRange(transferSenders);
+            return accounts.Distinct().ToList();
+        }
     }
 }
