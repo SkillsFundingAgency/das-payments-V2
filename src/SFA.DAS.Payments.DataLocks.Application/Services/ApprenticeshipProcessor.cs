@@ -220,7 +220,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 logger.LogDebug($"Processing the apprenticeship Employer Is Non Levy Payer event for Account id: {accountId}");
                
-                var updatedApprenticeships = await apprenticeshipService.UpdateApprenticeshipEmployerIsLevyPayerFlag(accountId).ConfigureAwait(false);
+                var updatedApprenticeships = await apprenticeshipService.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(accountId).ConfigureAwait(false);
 
                 if (!updatedApprenticeships.Any())
                 {

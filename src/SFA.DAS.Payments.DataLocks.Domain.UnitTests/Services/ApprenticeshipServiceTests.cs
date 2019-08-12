@@ -149,7 +149,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
 
             var service = mocker.Create<ApprenticeshipService>();
-          var expectedUpdatedApprenticeships =  await service.UpdateApprenticeshipEmployerIsLevyPayerFlag(1);
+          var expectedUpdatedApprenticeships =  await service.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(1);
 
             mocker.Mock<IApprenticeshipRepository>()
                 .Verify(x => x.UpdateApprenticeships(It.Is<List<ApprenticeshipModel>>(o => o.Count == 1 && o[0].IsLevyPayer == false)),Times.Once);

@@ -430,7 +430,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             };
 
             mocker.Mock<IApprenticeshipService>()
-                .Setup(svc => svc.UpdateApprenticeshipEmployerIsLevyPayerFlag(apprenticeships[0].AccountId, 
+                .Setup(svc => svc.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(apprenticeships[0].AccountId, 
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(apprenticeships);
             
@@ -452,7 +452,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var apprenticeships = new List<ApprenticeshipModel>();
          
             mocker.Mock<IApprenticeshipService>()
-                .Setup(svc => svc.UpdateApprenticeshipEmployerIsLevyPayerFlag(1,
+                .Setup(svc => svc.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(1,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(apprenticeships);
 

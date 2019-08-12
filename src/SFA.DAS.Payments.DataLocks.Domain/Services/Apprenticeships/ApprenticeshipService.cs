@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
     public interface IApprenticeshipService
     {
         Task<List<ApprenticeshipDuplicateModel>> NewApprenticeship(ApprenticeshipModel apprenticeship);
-        Task<List<ApprenticeshipModel>> UpdateApprenticeshipEmployerIsLevyPayerFlag(long accountId, CancellationToken cancellation = default(CancellationToken));
+        Task<List<ApprenticeshipModel>> GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(long accountId, CancellationToken cancellation = default(CancellationToken));
     }
 
     public class ApprenticeshipService : IApprenticeshipService
@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
             }
         }
 
-        public async Task<List<ApprenticeshipModel>> UpdateApprenticeshipEmployerIsLevyPayerFlag(long accountId,CancellationToken cancellation = default(CancellationToken))
+        public async Task<List<ApprenticeshipModel>> GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(long accountId,CancellationToken cancellation = default(CancellationToken))
         {
             var apprenticeships = await repository.GetEmployerApprenticeships(accountId, cancellation).ConfigureAwait(false);
 
