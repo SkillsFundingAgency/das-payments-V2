@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
                 new CompletionStoppedValidator(),
                 new OnProgrammeAndIncentiveStoppedValidator(ctx.Resolve<ICalculatePeriodStartAndEndDate>()),
                 new ApprenticeshipPauseValidator()
-            })).AsImplementedInterfaces().InstancePerLifetimeScope();
+            })).As<IFunctionalSkillValidationProcessor>().InstancePerLifetimeScope();
 
             builder.RegisterType<DataLockProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
           
