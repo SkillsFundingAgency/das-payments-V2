@@ -22,7 +22,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
     [TestFixture]
     public class EarningEventMappingTest
     {
+        public EarningEventMappingTest()
+        {
+            ukprn = 123L;
+            uln = 456L;
+        }
+
         private IMapper mapper;
+        private static long ukprn;
+        private static long uln;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -119,6 +127,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
         public void ContractTypeIsCorrectForFunctionalSkills(Type requiredPaymentEventType, ContractType expectedContractType)
         {
             var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
+            requiredPaymentEvent.ContractType = expectedContractType;
 
             IFunctionalSkillEarningEvent earningEvent = null;
 
@@ -186,7 +195,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             // act
             mapper.Map(earningPeriod, requiredPayment);
 
-            var act1RequiredPayment = (CalculatedRequiredLevyAmount)requiredPayment;
+            var act1RequiredPayment = requiredPayment;
 
             Assert.AreEqual(earningPeriod.Period, act1RequiredPayment.DeliveryPeriod);
             Assert.AreEqual(earningPeriod.ApprenticeshipId, act1RequiredPayment.ApprenticeshipId);
@@ -205,6 +214,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             // arrange
             PeriodisedRequiredPaymentEvent requiredPayment = new CalculatedRequiredIncentiveAmount
             {
+                Ukprn = ukprn,
+                Learner = new Learner { ReferenceNumber = "R", Uln = uln },
                 StartDate = DateTime.Today.AddDays(-10)
             };
 
@@ -267,19 +278,16 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             payment.CompletionStatus.Should().Be(0);
             payment.CompletionAmount.Should().Be(paymentHistoryEntity.CompletionAmount);
             payment.InstalmentAmount.Should().Be(paymentHistoryEntity.InstalmentAmount);
-            payment.NumberOfInstalments.Should().Be((short)paymentHistoryEntity.NumberOfInstalments);
+            payment.NumberOfInstalments.Should().Be(paymentHistoryEntity.NumberOfInstalments);
         }
 
         private static void AssertCommonProperties(PeriodisedRequiredPaymentEvent requiredPayment, IEarningEvent earning)
         {
-            Assert.AreNotSame(requiredPayment.Learner, earning.Learner);
             Assert.AreEqual(requiredPayment.Learner.Uln, earning.Learner.Uln);
             Assert.AreEqual(requiredPayment.Learner.ReferenceNumber, earning.Learner.ReferenceNumber);
             Assert.AreEqual(requiredPayment.Ukprn, earning.Ukprn);
-            Assert.AreNotSame(requiredPayment.CollectionPeriod, earning.CollectionPeriod);
             Assert.AreEqual(requiredPayment.CollectionPeriod.Period, earning.CollectionPeriod.Period);
             Assert.AreEqual(requiredPayment.CollectionPeriod.AcademicYear, earning.CollectionPeriod.AcademicYear);
-            Assert.AreNotSame(requiredPayment.LearningAim, earning.LearningAim);
             Assert.AreEqual(requiredPayment.LearningAim.PathwayCode, earning.LearningAim.PathwayCode);
             Assert.AreEqual(requiredPayment.LearningAim.FrameworkCode, earning.LearningAim.FrameworkCode);
             Assert.AreEqual(requiredPayment.LearningAim.FundingLineType, earning.LearningAim.FundingLineType);
@@ -300,8 +308,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             return new Act2FunctionalSkillEarningsEvent
             {
                 CollectionYear = 1819,
-                Learner = new Learner { ReferenceNumber = "R", Uln = 10 },
-                Ukprn = 20,
+                Learner = new Learner { ReferenceNumber = "R", Uln = uln },
+                Ukprn = ukprn,
                 CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 7),
                 LearningAim = new LearningAim
                 {
@@ -310,7 +318,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
                     StandardCode = 4,
                     ProgrammeType = 5,
                     FrameworkCode = 6,
-                    Reference = "7"
+                    Reference = "7",
+                    SequenceNumber = 1
                 },
                 JobId = 8,
                 IlrSubmissionDateTime = DateTime.Today,
@@ -344,8 +353,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             return new PayableFunctionalSkillEarningEvent
             {
                 CollectionYear = 1819,
-                Learner = new Learner { ReferenceNumber = "R", Uln = 10 },
-                Ukprn = 20,
+                Learner = new Learner { ReferenceNumber = "R", Uln = uln },
+                Ukprn = ukprn,
                 CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 7),
                 LearningAim = new LearningAim
                 {

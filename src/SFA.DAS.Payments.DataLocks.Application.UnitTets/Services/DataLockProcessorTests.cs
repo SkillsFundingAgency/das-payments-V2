@@ -416,6 +416,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         {
             var testEarningEvent = new Act1FunctionalSkillEarningsEvent
             {
+                Ukprn = Ukprn,
                 Learner = new Learner { Uln = Uln, },
                 PriceEpisodes = new List<PriceEpisode>(),
                 CollectionYear = AcademicYear
