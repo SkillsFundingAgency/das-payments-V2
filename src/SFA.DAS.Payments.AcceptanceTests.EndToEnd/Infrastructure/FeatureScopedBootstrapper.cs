@@ -76,6 +76,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
             routing.RouteToEndpoint(typeof(ProcessProviderMonthEndCommand), EndpointNames.ProviderPayments);
             routing.RouteToEndpoint(typeof(ProcessLevyPaymentsOnMonthEndCommand).Assembly, EndpointNames.FundingSource);
             routing.RouteToEndpoint(typeof(EmployerChangedProviderPriority).Assembly, EndpointNames.FundingSource);
+            routing.RouteToEndpoint(typeof(RecordPeriodEndStartJob).Assembly, EndpointNames.JobMonitoring);
+            routing.RouteToEndpoint(typeof(RecordPeriodEndStopJob).Assembly, EndpointNames.JobMonitoring);
             transportConfig.Queues().LockDuration(TimeSpan.FromMinutes(5));
             endpointConfiguration.MakeInstanceUniquelyAddressable("reply");
             endpointConfiguration.EnableCallbacks();
