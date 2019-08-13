@@ -276,11 +276,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         protected void SetFrameworkComponentAimDetails(MessageLearner messageLearner, Learner learner,
             string learnAimRef)
         {
-            var programmeAim = messageLearner.LearningDelivery.Single(ld => ld.AimType == 1);
+            var programmeAim = messageLearner.LearningDelivery.Last(ld => ld.AimType == 1);
             var componentAim = messageLearner.LearningDelivery.First(ld => ld.AimType == 3);
-            componentAim.LearnAimRef = learner.Aims.Count == 1
-                ? learnAimRef
-                : learner.Aims.First(x => !x.IsMainAim).AimReference;
+            componentAim.LearnAimRef = learner.Aims.All(x => x.IsMainAim)
+                                           ? learnAimRef
+                                           : learner.Aims.First(x => !x.IsMainAim).AimReference;
             componentAim.FundModel = programmeAim.FundModel;
             componentAim.ProgType = programmeAim.ProgType;
             componentAim.FworkCode = programmeAim.FworkCode;

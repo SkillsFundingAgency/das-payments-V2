@@ -100,11 +100,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("the Provider now changes the Learner's ULN to \"(.*)\"")]
         public void TheProviderChangesTheLearnersUln(long newUln)
         {
-            CurrentIlr = PreviousIlr;
+            CurrentIlr = PreviousIlr; 
             if (Config.ValidateDcAndDasServices)
             {
-                TestSession.Learner.Uln = Scope.Resolve<IUlnService>().GenerateUln(TestSession.Learner.Ukprn);
-                CurrentIlr.ForEach(x => x.Uln = TestSession.Learner.Uln);
+                var learner = TestSession.GetLearner(TestSession.Ukprn, PreviousIlr.Single().LearnerId);
+                learner.OriginalUln = learner.Uln;
+                learner.Uln = Scope.Resolve<IUlnService>().GenerateUln(learner.Ukprn);
+                CurrentIlr.ForEach(x => x.Uln = learner.Uln);
             }
             else
             {
