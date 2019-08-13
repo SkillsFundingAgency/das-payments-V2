@@ -2,7 +2,6 @@
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -18,8 +17,12 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
         private readonly IPaymentsEventModelBatchService<ProviderPaymentEventModel> batchService;
         private readonly IMonthEndCache monthEndCache;
         private readonly IPaymentLogger logger;
-
-        public MonthEndService(IProviderPaymentsRepository providerPaymentsRepository, IMonthEndCache monthEndCache, IPaymentLogger logger, IPaymentsEventModelBatchService<ProviderPaymentEventModel> batchService)
+        
+        public MonthEndService(
+            IProviderPaymentsRepository providerPaymentsRepository, 
+            IMonthEndCache monthEndCache, 
+            IPaymentLogger logger, 
+            IPaymentsEventModelBatchService<ProviderPaymentEventModel> batchService)
         {
             this.providerPaymentsRepository = providerPaymentsRepository;
             this.monthEndCache = monthEndCache ?? throw new ArgumentNullException(nameof(monthEndCache));

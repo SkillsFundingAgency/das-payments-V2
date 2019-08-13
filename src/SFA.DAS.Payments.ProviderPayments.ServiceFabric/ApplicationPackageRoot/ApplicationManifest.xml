@@ -18,7 +18,8 @@
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="Audit_BatchFailureTimeoutInSeconds" DefaultValue="60" />
     <Parameter Name="BatchIntervalInSeconds" DefaultValue="10" />
-    <Parameter Name="DasPeriodEndConnectionString" DefaultValue=""/>
+    <Parameter Name="DasPeriodEndConnectionString" DefaultValue="" />
+    <Parameter Name="ExportBatchSize" DefaultValue="10000" />
   </Parameters>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.ProviderPayments.ProviderPaymentsServicePkg" ServiceManifestVersion="1.0.0" />
@@ -31,7 +32,7 @@
             <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
-            <Parameter Name="DasPeriodEndConnectionString" Value="[DasPeriodEndConnectionString]"/>
+            <Parameter Name="DasPeriodEndConnectionString" Value="[DasPeriodEndConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[ProviderPaymentsService_EndpointName]" />

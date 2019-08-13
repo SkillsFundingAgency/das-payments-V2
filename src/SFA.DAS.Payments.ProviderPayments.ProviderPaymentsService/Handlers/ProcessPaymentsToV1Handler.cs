@@ -7,14 +7,11 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 {
     public class ProcessPaymentsToV1Handler : IHandleMessages<ProcessProviderMonthEndCommand>
     {
-        public IMonthEndService MonthEndService { get; set; }
-
+        public IPaymentExportService PaymentExportTest { get; set; }
+        
         public async Task Handle(ProcessProviderMonthEndCommand message, IMessageHandlerContext context)
         {
-            var payments = await MonthEndService.GetMonthEndPayments(message.CollectionPeriod, message.Ukprn)
-                .ConfigureAwait(false);
-
-            
+            await PaymentExportTest.PerformExportPaymentsToV1(message.CollectionPeriod).ConfigureAwait(false);
         }
     }
 }

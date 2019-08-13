@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Data.Configurations;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.ProviderPayments.Application.Data;
 
 namespace SFA.DAS.Payments.Application.Repositories
 {
@@ -17,6 +17,7 @@ namespace SFA.DAS.Payments.Application.Repositories
         public virtual DbSet<DataLockFailureModel> DataLockFailure { get; protected set; }
         public virtual DbSet<EmployerProviderPriorityModel> EmployerProviderPriority { get; protected set; }
         public virtual DbSet<ApprenticeshipPauseModel> ApprenticeshipPause { get; protected set; }
+        public virtual DbSet<PaymentModelWithRequiredPaymentId> PaymentsWithRequiredPayments { get; protected set; }
 
         public PaymentsDataContext(string connectionString)
         {

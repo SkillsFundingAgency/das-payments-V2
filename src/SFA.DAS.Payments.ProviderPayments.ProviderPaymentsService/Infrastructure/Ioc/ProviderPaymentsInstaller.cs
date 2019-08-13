@@ -23,6 +23,8 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Infrastructu
                     .Recoverability();
                 recoverability.Immediate(immediate => immediate.NumberOfRetries(3));
             });
+
+            builder.RegisterType<PaymentExportProgressCache>().AsImplementedInterfaces();
         }
     }
 }
