@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         [SetUp]
         public void SetUp()
         {
-            mocker = AutoMock.GetStrict();
+            mocker = AutoMock.GetLoose();
             requiredPaymentsService = mocker.Mock<IRequiredPaymentProcessor>();
             paymentHistoryCacheMock = mocker.Mock<IDataCache<PaymentHistoryEntity[]>>();
             paymentHistoryRepositoryMock = mocker.Mock<IPaymentHistoryRepository>();

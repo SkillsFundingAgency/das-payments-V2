@@ -8,4 +8,5 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
         IDictionary<string, string> Columns { get; }        
         string ConnectionString { get; }
     }
+    
 }

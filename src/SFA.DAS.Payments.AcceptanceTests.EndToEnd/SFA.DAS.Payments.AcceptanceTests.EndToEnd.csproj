@@ -199,7 +199,7 @@
     <Reference Include="nunit.framework, Version=3.11.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.11.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="Polly, Version=6.0.0.0, Culture=neutral, PublicKeyToken=c8a3ffc3f8f825cc, processorArchitecture=MSIL">
+	<Reference Include="Polly, Version=6.0.0.0, Culture=neutral, PublicKeyToken=c8a3ffc3f8f825cc, processorArchitecture=MSIL">
       <HintPath>..\packages\Polly.6.1.2\lib\netstandard2.0\Polly.dll</HintPath>
     </Reference>
     <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
@@ -437,6 +437,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-688 - New Apprenticeship Approved.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-696 - Employer Change in Payment Order for Multiple learners with an Employer.feature.cs">
+      <DependentUpon>PV2-696 - Employer Change in Payment Order for Multiple learners with an Employer.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Tests\Approvals Interface\PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature.cs">
       <DependentUpon>PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature</DependentUpon>
@@ -1622,6 +1627,10 @@
     <None Include="Tests\Additional Payments Incentives\PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-696 - Employer Change in Payment Order for Multiple learners with an Employer.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-696 - Employer Change in Payment Order for Multiple learners with an Employer.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Approvals Interface\PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

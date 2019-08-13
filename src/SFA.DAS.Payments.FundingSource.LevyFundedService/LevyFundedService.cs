@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Linq;
 using System.Threading;
 using Autofac;
 using AutoMapper;
@@ -39,14 +39,14 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         private IDataCache<bool> monthEndCache;
         private IDataCache<LevyAccountModel> levyAccountCache;
         private IDataCache<List<EmployerProviderPriorityModel>> employerProviderPriorities;
-        private  IDataCache<List<string>> refundSortKeysCache;
-        private  IDataCache<List<TransferPaymentSortKeyModel>> transferPaymentSortKeysCache;
-        private  IDataCache<List<RequiredPaymentSortKeyModel>> requiredPaymentSortKeysCache;
+        private IDataCache<List<string>> refundSortKeysCache;
+        private IDataCache<List<TransferPaymentSortKeyModel>> transferPaymentSortKeysCache;
+        private IDataCache<List<RequiredPaymentSortKeyModel>> requiredPaymentSortKeysCache;
 
         private IActorDataCache<bool> actorCache;
         private readonly ILifetimeScope lifetimeScope;
         private readonly ILevyFundingSourceRepository levyFundingSourceRepository;
-        
+
         public LevyFundedService(
             ActorService actorService,
             ActorId actorId,
@@ -66,14 +66,15 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         {
             try
             {
-                using (var operation = telemetry.StartOperation())
+                using (var operation = telemetry.StartOperation("LevyFundedService.HandleRequiredPayment", message.EventId.ToString()))
                 {
+                    var stopwatch = Stopwatch.StartNew();
                     paymentLogger.LogVerbose($"Handling RequiredPayment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.AccountId}");
                     await fundingSourceService.AddRequiredPayment(message).ConfigureAwait(false);
                     paymentLogger.LogInfo($"Finished handling required payment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.AccountId}");
+                    telemetry.TrackDuration("LevyFundedService.HandleRequiredPayment", stopwatch, message);
                     telemetry.StopOperation(operation);
                 }
-
             }
             catch (Exception e)
             {
@@ -86,14 +87,15 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         {
             try
             {
-                using (var operation = telemetry.StartOperation())
+                using (var operation = telemetry.StartOperation("LevyFundedService.HandleEmployerProviderPriorityChange", message.EventId.ToString()))
                 {
+                    var stopwatch = Stopwatch.StartNew();
                     paymentLogger.LogDebug($"Storing EmployerChangedProviderPriority event for {Id},  Account Id: {message.EmployerAccountId}");
                     await fundingSourceService.StoreEmployerProviderPriority(message).ConfigureAwait(false);
                     paymentLogger.LogInfo($"Finished Storing EmployerChangedProviderPriority event for {Id},  Account Id: {message.EmployerAccountId}");
+                    TrackInfrastructureEvent("LevyFundedService.HandleEmployerProviderPriorityChange", stopwatch);
                     telemetry.StopOperation(operation);
                 }
-
             }
             catch (Exception ex)
             {
@@ -106,11 +108,13 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         {
             try
             {
-                using (var operation = telemetry.StartOperation())
+                using (var operation = telemetry.StartOperation("LevyFundedService.UnableToFundTransfer", message.EventId.ToString()))
                 {
+                    var stopwatch = Stopwatch.StartNew();
                     paymentLogger.LogDebug($"Handling UnableToFundTransfer for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Receiver Account: {message.AccountId}, Sender Account: {message.TransferSenderAccountId}");
                     var fundingSourcePayments = await fundingSourceService.ProcessReceiverTransferPayment(message).ConfigureAwait(false);
                     paymentLogger.LogInfo($"Finished handling required payment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.AccountId}");
+                    telemetry.TrackDuration("LevyFundedService.UnableToFundTransfer", stopwatch, message);
                     telemetry.StopOperation(operation);
                     return fundingSourcePayments;
                 }
@@ -130,6 +134,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             {
                 using (var operation = telemetry.StartOperation())
                 {
+                    var stopwatch = Stopwatch.StartNew();
                     var fundingSourceEvents = await fundingSourceService.HandleMonthEnd(command.AccountId, command.JobId);
                     telemetry.StopOperation(operation);
                     return fundingSourceEvents;
@@ -144,62 +149,90 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
 
         protected override async Task OnActivateAsync()
         {
-            //TODO: Use DI
-            actorCache = new ActorReliableCollectionCache<bool>(StateManager);
-            employerProviderPriorities = new ReliableCollectionCache<List<EmployerProviderPriorityModel>>(StateManager);
-            requiredPaymentsCache = new ReliableCollectionCache<CalculatedRequiredLevyAmount>(StateManager);
-            monthEndCache = new ReliableCollectionCache<bool>(StateManager);
-            levyAccountCache = new ReliableCollectionCache<LevyAccountModel>(StateManager);
-            refundSortKeysCache = new ReliableCollectionCache<List<string>>(StateManager);
-            transferPaymentSortKeysCache = new ReliableCollectionCache<List<TransferPaymentSortKeyModel>>(StateManager);
-            requiredPaymentSortKeysCache = new ReliableCollectionCache<List<RequiredPaymentSortKeyModel>>(StateManager);
+            using (var operation = telemetry.StartOperation("LevyFundedService.OnActivateAsync", $"{Id}_{Guid.NewGuid():N}"))
+            {
+                var stopwatch = Stopwatch.StartNew();
+                //TODO: Use DI
+                actorCache = new ActorReliableCollectionCache<bool>(StateManager);
+                employerProviderPriorities = new ReliableCollectionCache<List<EmployerProviderPriorityModel>>(StateManager);
+                requiredPaymentsCache = new ReliableCollectionCache<CalculatedRequiredLevyAmount>(StateManager);
+                monthEndCache = new ReliableCollectionCache<bool>(StateManager);
+                levyAccountCache = new ReliableCollectionCache<LevyAccountModel>(StateManager);
+                refundSortKeysCache = new ReliableCollectionCache<List<string>>(StateManager);
+                transferPaymentSortKeysCache = new ReliableCollectionCache<List<TransferPaymentSortKeyModel>>(StateManager);
+                requiredPaymentSortKeysCache = new ReliableCollectionCache<List<RequiredPaymentSortKeyModel>>(StateManager);
 
-            generateSortedPaymentKeys = new GenerateSortedPaymentKeys(
-                employerProviderPriorities,
-                refundSortKeysCache,
-                transferPaymentSortKeysCache,
-                requiredPaymentSortKeysCache
-            );
+                generateSortedPaymentKeys = new GenerateSortedPaymentKeys(
+                    employerProviderPriorities,
+                    refundSortKeysCache,
+                    transferPaymentSortKeysCache,
+                    requiredPaymentSortKeysCache
+                );
 
-            fundingSourceService = new RequiredLevyAmountFundingSourceService(
-                lifetimeScope.Resolve<IPaymentProcessor>(),
-                lifetimeScope.Resolve<IMapper>(),
-                requiredPaymentsCache,
-                lifetimeScope.Resolve<ILevyFundingSourceRepository>(),
-                lifetimeScope.Resolve<ILevyBalanceService>(),
-                lifetimeScope.Resolve<IPaymentLogger>(),
-                monthEndCache,
-                levyAccountCache,
-                employerProviderPriorities,
-                refundSortKeysCache,
-                transferPaymentSortKeysCache,
-                requiredPaymentSortKeysCache,
-                generateSortedPaymentKeys
-            );
-            
-            await Initialise().ConfigureAwait(false);
-            await base.OnActivateAsync().ConfigureAwait(false);
+                fundingSourceService = new RequiredLevyAmountFundingSourceService(
+                    lifetimeScope.Resolve<IPaymentProcessor>(),
+                    lifetimeScope.Resolve<IMapper>(),
+                    requiredPaymentsCache,
+                    lifetimeScope.Resolve<ILevyFundingSourceRepository>(),
+                    lifetimeScope.Resolve<ILevyBalanceService>(),
+                    lifetimeScope.Resolve<IPaymentLogger>(),
+                    monthEndCache,
+                    levyAccountCache,
+                    employerProviderPriorities,
+                    refundSortKeysCache,
+                    transferPaymentSortKeysCache,
+                    requiredPaymentSortKeysCache,
+                    generateSortedPaymentKeys
+                );
+
+                await Initialise().ConfigureAwait(false);
+                await base.OnActivateAsync().ConfigureAwait(false);
+                TrackInfrastructureEvent("LevyFundedService.OnActivateAsync", stopwatch);
+                telemetry.StopOperation(operation);
+            }
         }
 
         private async Task Initialise()
         {
-            if (await actorCache.IsInitialiseFlagIsSet().ConfigureAwait(false)) return;
+            if (await actorCache.IsInitialiseFlagIsSet().ConfigureAwait(false))
+            {
+                paymentLogger.LogVerbose($"Actor already initialised for employer {Id}");
+                return;
+            }
 
+            var stopwatch = Stopwatch.StartNew();
             paymentLogger.LogInfo($"Initialising actor for employer {Id.GetLongId()}");
 
             var paymentPriorities = await levyFundingSourceRepository.GetPaymentPriorities(Id.GetLongId()).ConfigureAwait(false);
             await employerProviderPriorities
                     .AddOrReplace(CacheKeys.EmployerPaymentPriorities, paymentPriorities, default(CancellationToken))
                     .ConfigureAwait(false);
-        
-            paymentLogger.LogInfo($"Initialised actor for employer {Id.GetLongId()}");
+
             await actorCache.SetInitialiseFlag().ConfigureAwait(false);
+            paymentLogger.LogInfo($"Initialised actor for employer {Id.GetLongId()}");
+            TrackInfrastructureEvent("LevyFundedService.Initialise", stopwatch);
         }
 
         public async Task Reset()
         {
             paymentLogger.LogInfo($"Resetting actor for employer {Id.GetLongId()}");
             await actorCache.ResetInitialiseFlag().ConfigureAwait(false);
+        }
+
+
+        private void TrackInfrastructureEvent(string eventName, Stopwatch stopwatch)
+        {
+            stopwatch.Stop();
+            telemetry.TrackEvent(eventName,
+                new Dictionary<string, string>
+                {
+                    { "ActorId",Id.ToString()},
+                    { "Employer", Id.ToString()},
+                },
+                new Dictionary<string, double>
+                {
+                    { TelemetryKeys.Duration, stopwatch.ElapsedMilliseconds }
+                });
         }
 
     }
