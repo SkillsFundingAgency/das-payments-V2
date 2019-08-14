@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators.NonLevy
 
         public override FilePreparationDateRequired FilePreparationDate()
         {
-            return FilePreparationDateRequired.NextYear;
+            return FilePreparationDateRequired.July;
         }
     }
 }

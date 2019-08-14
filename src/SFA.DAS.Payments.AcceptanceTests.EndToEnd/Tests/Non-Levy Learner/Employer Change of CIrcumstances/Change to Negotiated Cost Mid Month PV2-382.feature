@@ -14,10 +14,10 @@ Scenario Outline: Non-levy learner changes employer with change to negotiated pr
 		| abc123                   |
 	And the following aims
 		| Aim Type  | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage |
-		| Programme | 04/Aug/Current Academic Year | 12 months        | 15000                | 04/Aug/Current Academic Year        | 0                      | 04/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
+		| Programme | 04/Aug/Current Academic Year | 12 months        | 15000                | 04/Aug/Current Academic Year        |                        |                                       |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
 	And price details as follows
 		| Price Episode Id | Aim Sequence Number | Contract Type | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage |
-		| pe-1             | 1                   | Act2          | 15000                | 04/Aug/Current Academic Year        | 0                      | 04/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         |
+		| pe-1             | 1                   | Act2          | 15000                | 04/Aug/Current Academic Year        |                        |                                       | 0                       |                                        | 0                         |                                          | 90%                         |
 	And the employment status in the ILR is
 		| Employer   | Employment Status  | Employment Status Applies    |
 		| employer 1 | in paid employment | 01/Aug/Current Academic Year |
@@ -46,8 +46,8 @@ Scenario Outline: Non-levy learner changes employer with change to negotiated pr
 	# additional residual fields
 	And price details as follows
 		| Price Episode Id | Aim Sequence Number | Contract Type | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage |
-		| pe-1             | 1                   | Act2          | 15000                | 04/Aug/Current Academic Year        | 0                      | 04/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         |
-		| pe-2             | 1                   | Act2          | 15000                | 04/Aug/Current Academic Year        | 0                      | 04/Aug/Current Academic Year          | 5625                    | 10/Nov/Current Academic Year           | 0                         | 10/Nov/Current Academic Year             | 90%                         |
+#		| pe-1             | 1                   | Act2          | 15000                | 04/Aug/Current Academic Year        | 0                      | 04/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         |
+		| pe-2             | 1                   | Act2          | 15000                | 04/Aug/Current Academic Year        |                       |         | 5625                    | 10/Nov/Current Academic Year           |                          |              | 90%                         |
 	And the employment status in the ILR is now
 		| Employer   | Employment Status  | Employment Status Applies    |
 		| employer 1 | in paid employment | 01/Aug/Current Academic Year |
@@ -55,9 +55,9 @@ Scenario Outline: Non-levy learner changes employer with change to negotiated pr
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | Aim Sequence Number | Price Episode Identifier |
-		| Aug/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     |
-		| Sep/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     |
-		| Oct/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     |
+		| Aug/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-2                     |
+		| Sep/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-2                     |
+		| Oct/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-2                     |
 		| Nov/Current Academic Year | 500          | 0          | 0         | 1                   | pe-2                     |
 		| Dec/Current Academic Year | 500          | 0          | 0         | 1                   | pe-2                     |
 		| Jan/Current Academic Year | 500          | 0          | 0         | 1                   | pe-2                     |
