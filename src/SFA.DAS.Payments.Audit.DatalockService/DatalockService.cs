@@ -12,9 +12,9 @@ namespace SFA.DAS.Payments.Audit.DatalockService
     /// An instance of this class is created for each service replica by the Service Fabric runtime.
     /// </summary>
     [StatePersistence(StatePersistence.Persisted)]
-    internal sealed class DatalockService : AuditStatefulService<EarningEventModel>
+    internal sealed class DatalockService : AuditStatefulService<DataLockEventModel>
     {
-        public DatalockService(StatefulServiceContext context, IPaymentLogger logger, ILifetimeScope lifetimeScope, IPaymentsEventModelBatchService<EarningEventModel> batchService) : base(context, logger, lifetimeScope, batchService)
+        public DatalockService(StatefulServiceContext context, IPaymentLogger logger, ILifetimeScope lifetimeScope, IPaymentsEventModelBatchService<DataLockEventModel> batchService) : base(context, logger, lifetimeScope, batchService)
         {
         }
     }

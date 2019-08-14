@@ -14,5 +14,7 @@ namespace SFA.DAS.Payments.Audit.Model
         public string AgreementId { get; set; }
         public List<OnProgrammeEarning> OnProgrammeEarnings { get; set; }
         public List<IncentiveEarning> IncentiveEarnings { get; set; }
+        public bool IsPayable { get; set; }
+        public DateTime CreationDate { get; set; }
     }
 }
