@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using SFA.DAS.Payments.Application.Batch;
+using SFA.DAS.Payments.Application.Data;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.Application.Data;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
@@ -28,7 +29,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
 
         public PaymentsEventModelBatchProcessor(
             IPaymentsEventModelCache<T> cache,
-            IPaymentsEventModelDataTable<T> dataTable, 
+            IPaymentsEventModelDataTable<T> dataTable,
             IConfigurationHelper configurationHelper,
             IPaymentLogger logger)
         {
@@ -56,8 +57,8 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
             logger.LogDebug($"Processing {batch.Count} records: {string.Join(", ", batch.Select(m => m.EventId))}");
 
             var data = dataTable.GetDataTable(batch);
+            using (var scope = TransactionScopeFactory.CreateWriteOnlyTransaction())
             using (var sqlConnection = new SqlConnection(connectionString))
-            using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
                 {
@@ -121,7 +122,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                 var dataSchema = dataReader.GetSchemaTable();
                 foreach (DataRow row in dataSchema.Rows)
                 {
-                    singleRecordTable.Columns.Add(new DataColumn(row["ColumnName"].ToString(), (Type) row["DataType"]));
+                    singleRecordTable.Columns.Add(new DataColumn(row["ColumnName"].ToString(), (Type)row["DataType"]));
                 }
 
                 while (dataReader.Read())

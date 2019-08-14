@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
     {
         private readonly IPaymentLogger paymentLogger;
         private readonly IExecutionContext executionContext;
-        private readonly IMonthEndService monthEndService;
+        private readonly IProviderPeriodEndService providerPeriodEndService;
         private readonly IMapper mapper;
         private readonly IProviderPaymentFactory paymentFactory;
         private readonly IJobMessageClient jobClient;
@@ -28,14 +28,14 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 
         public ProcessProviderMonthEndCommandHandler(IPaymentLogger paymentLogger,
             IExecutionContext executionContext,
-            IMonthEndService monthEndService,
+            IProviderPeriodEndService providerPeriodEndService,
             IMapper mapper,
             IProviderPaymentFactory paymentFactory, 
             IJobMessageClient jobClient)
         {
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
             this.executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
-            this.monthEndService = monthEndService ?? throw new ArgumentNullException(nameof(monthEndService));
+            this.providerPeriodEndService = providerPeriodEndService ?? throw new ArgumentNullException(nameof(providerPeriodEndService));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.paymentFactory = paymentFactory ?? throw new ArgumentNullException(nameof(paymentFactory));
             this.jobClient = jobClient ?? throw new ArgumentNullException(nameof(jobClient));
@@ -48,8 +48,8 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
             currentExecutionContext.JobId = message.JobId.ToString();
             try
             {
-                await monthEndService.StartMonthEnd(message.Ukprn, message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period, message.JobId).ConfigureAwait(false);
-                var payments = await monthEndService.GetMonthEndPayments(message.CollectionPeriod, message.Ukprn).ConfigureAwait(false);
+                await providerPeriodEndService.StartMonthEnd(message.Ukprn, message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period, message.JobId).ConfigureAwait(false);
+                var payments = await providerPeriodEndService.GetMonthEndPayments(message.CollectionPeriod, message.Ukprn).ConfigureAwait(false);
 
                 foreach (var paymentEvent in payments.Select(payment => MapToProviderPaymentEvent(payment, message.JobId)))
                 {

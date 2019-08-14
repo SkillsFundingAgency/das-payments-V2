@@ -46,7 +46,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
 
             Builder.RegisterType<ApprenticeshipKeyService>().AsImplementedInterfaces();
 
-            Builder.Register((c, p) => new RequiredPaymentsCacheCleaner(c.Resolve<IApprenticeshipKeyService>(), MessageSession)).AsSelf();
             Builder.RegisterModule<AutoMapperModule>();
         }
 
@@ -75,10 +74,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
             var routing = transportConfig.Routing();
             routing.RouteToEndpoint(typeof(ProcessLearnerCommand), EndpointNames.EarningEvents);
             routing.RouteToEndpoint(typeof(ProcessProviderMonthEndCommand), EndpointNames.ProviderPayments);
-            routing.RouteToEndpoint(typeof(CollectionStartedEvent), EndpointNames.RequiredPayments);
-            routing.RouteToEndpoint(typeof(RecordStartedProcessingMonthEndJob).Assembly, EndpointNames.JobMonitoring);
             routing.RouteToEndpoint(typeof(ProcessLevyPaymentsOnMonthEndCommand).Assembly, EndpointNames.FundingSource);
             routing.RouteToEndpoint(typeof(EmployerChangedProviderPriority).Assembly, EndpointNames.FundingSource);
+            routing.RouteToEndpoint(typeof(RecordPeriodEndStartJob).Assembly, EndpointNames.JobMonitoring);
+            routing.RouteToEndpoint(typeof(RecordPeriodEndStopJob).Assembly, EndpointNames.JobMonitoring);
             transportConfig.Queues().LockDuration(TimeSpan.FromMinutes(5));
             endpointConfiguration.MakeInstanceUniquelyAddressable("reply");
             endpointConfiguration.EnableCallbacks();
