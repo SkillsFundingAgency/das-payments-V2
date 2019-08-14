@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
     public class MonthEndServiceTests
     {
         private AutoMock mocker;
-        private MonthEndService monthEndService;
+        private ProviderPeriodEndService providerPeriodEndService;
 
         private Mock<IProviderPaymentsRepository> providerPaymentsRepository;
         private Mock<IDataCache<ReceivedProviderEarningsEvent>> ilrSubmittedEventCache;
@@ -127,7 +127,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                     It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
-            monthEndService = mocker.Create<MonthEndService>();
+            providerPeriodEndService = mocker.Create<ProviderPeriodEndService>();
         }
 
         [Test]
@@ -135,7 +135,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         {
             var cancellationToken = new CancellationToken();
 
-            var results = await monthEndService.GetMonthEndPayments(new CollectionPeriod{Period = 2, AcademicYear = 1819}, ukprn, cancellationToken);
+            var results = await providerPeriodEndService.GetMonthEndPayments(new CollectionPeriod{Period = 2, AcademicYear = 1819}, ukprn, cancellationToken);
 
             Assert.IsNotNull(results);
             providerPaymentsRepository.Verify(o => o.GetMonthEndPayments(It.Is<CollectionPeriod>(cp => cp.AcademicYear == 1819 && cp.Period == 2),
@@ -146,7 +146,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         [Test]
         public async Task RecordMonthEndStoresMonthEndInfoInCache()
         {
-            await monthEndService.StartMonthEnd(ukprn, 1819, 2,jobId);
+            await providerPeriodEndService.StartMonthEnd(ukprn, 1819, 2,jobId);
             mocker.Mock<IMonthEndCache>()
                 .Verify(cache => cache.AddOrReplace(It.Is<long>(expectedUkprn => expectedUkprn == ukprn),
                     It.Is<short>(academicYear => academicYear == 1819),
@@ -162,7 +162,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Setup(cache => cache.Exists(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(true));
-            var started = await monthEndService.MonthEndStarted(ukprn, 1819, 2);
+            var started = await providerPeriodEndService.MonthEndStarted(ukprn, 1819, 2);
             started.Should().BeTrue();
         }
 
@@ -173,7 +173,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .Setup(cache => cache.Exists(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(false));
-            var started = await monthEndService.MonthEndStarted(ukprn, 1819, 2);
+            var started = await providerPeriodEndService.MonthEndStarted(ukprn, 1819, 2);
             started.Should().BeFalse();
         }
 
@@ -190,7 +190,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                     JobId = jobId
                 }));
                 
-          var actual =  await monthEndService.GetMonthEndJobId(ukprn,1819, 2);
+          var actual =  await providerPeriodEndService.GetMonthEndJobId(ukprn,1819, 2);
             actual.Should().Be(jobId);
         }
 

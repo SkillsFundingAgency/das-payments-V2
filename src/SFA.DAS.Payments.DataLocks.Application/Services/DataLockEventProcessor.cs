@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Transactions;
 using AutoMapper;
+using SFA.DAS.Payments.Application.Data;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
@@ -32,17 +32,17 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         public async Task<List<DataLockStatusChanged>> ProcessDataLockFailure(EarningFailedDataLockMatching dataLockEvent)
         {
-            using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
+            var result = new List<DataLockStatusChanged>();
+            var changedToFailed = new DataLockStatusChangedToFailed { TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>() };
+            var changedToPassed = new DataLockStatusChangedToPassed { TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>() };
+            var failureChanged = new DataLockFailureChanged { TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>() };
+            var failuresToDelete = new List<long>();
+            var failuresToRecord = new List<DataLockFailureEntity>();
+
+            var newFailuresGroupedByTypeAndPeriod = GetFailuresGroupedByTypeAndPeriod(dataLockEvent);
+            
+            using (var scope = TransactionScopeFactory.CreateRepeatableReadTransaction())
             {
-                var result = new List<DataLockStatusChanged>();
-                var changedToFailed = new DataLockStatusChangedToFailed {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
-                var changedToPassed = new DataLockStatusChangedToPassed {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
-                var failureChanged = new DataLockFailureChanged {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
-                var failuresToDelete = new List<long>();
-                var failuresToRecord = new List<DataLockFailureEntity>();
-
-                var newFailuresGroupedByTypeAndPeriod = GetFailuresGroupedByTypeAndPeriod(dataLockEvent);
-
                 var oldFailures = await dataLockFailureRepository.GetFailures(
                     dataLockEvent.Ukprn,
                     dataLockEvent.Learner.ReferenceNumber,
@@ -92,7 +92,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                             failuresToDelete.Add(oldFailureEntity.Id);
                             break;
                     }
-
                 }
 
                 if (changedToFailed.TransactionTypesAndPeriods.Count > 0)
@@ -214,14 +213,14 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         public async Task<List<DataLockStatusChanged>> ProcessPayableEarning(PayableEarningEvent payableEarningEvent)
         {
-            using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
+            var result = new List<DataLockStatusChanged>();
+            var changedToPassed = new DataLockStatusChangedToPassed { TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>() };
+            var failuresToDelete = new List<long>();
+
+            var newPassesGroupedByTypeAndPeriod = GetPassesGroupedByTypeAndPeriod(payableEarningEvent);
+
+            using (var scope = TransactionScopeFactory.CreateRepeatableReadTransaction())
             {
-                var result = new List<DataLockStatusChanged>();
-                var changedToPassed = new DataLockStatusChangedToPassed {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
-                var failuresToDelete = new List<long>();
-
-                var newPassesGroupedByTypeAndPeriod = GetPassesGroupedByTypeAndPeriod(payableEarningEvent);
-
                 var oldFailures = await dataLockFailureRepository.GetFailures(
                     payableEarningEvent.Ukprn,
                     payableEarningEvent.Learner.ReferenceNumber,
