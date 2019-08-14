@@ -267,6 +267,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             fundingSourceEvent.CompletionAmount = 100M;
             fundingSourceEvent.InstalmentAmount = 200M;
             fundingSourceEvent.NumberOfInstalments = 5;
+            fundingSourceEvent.ApprenticeshipId = 800L;
+            fundingSourceEvent.ApprenticeshipPriceEpisodeId = 1600L;
 
             var providerPayment = Mapper.Map<ProviderPaymentEventModel>(fundingSourceEvent);
 
@@ -277,6 +279,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             providerPayment.CompletionAmount.Should().Be(fundingSourceEvent.CompletionAmount);
             providerPayment.InstalmentAmount.Should().Be(fundingSourceEvent.InstalmentAmount);
             providerPayment.NumberOfInstalments.Should().Be(fundingSourceEvent.NumberOfInstalments);
+            providerPayment.ApprenticeshipId.Should().Be(fundingSourceEvent.ApprenticeshipId);
+            providerPayment.ApprenticeshipPriceEpisodeId.Should().Be(fundingSourceEvent.ApprenticeshipPriceEpisodeId);
         }
 
         [TestCase(typeof(EmployerCoInvestedProviderPaymentEvent))]
