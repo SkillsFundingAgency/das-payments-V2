@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Data.Collections;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
@@ -48,7 +49,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
                 using (var transaction = stateManagerProvider.Current.CreateTransaction())
                 {
                     var currentValue = await state.TryGetValueAsync(transaction, key, LockMode.Update,
-                            TimeSpan.FromSeconds(10), default)
+                            TimeSpan.FromSeconds(10), default(CancellationToken))
                         .ConfigureAwait(false);
                     if (currentValue.HasValue)
                     {
