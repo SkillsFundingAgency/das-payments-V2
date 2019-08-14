@@ -66,12 +66,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 {
                     var testSessionLearner = testSession.GetLearner(learner.Ukprn, learner.LearnerId);
                     learners.Add(testSessionLearner);
-
                     testSessionLearner.Uln = learner.Uln;
                     testSessionLearner.PostcodePrior = learner.PostcodePrior;
                     testSessionLearner.EefCode = learner.EefCode;
                     testSessionLearner.EmploymentStatusMonitoring = CreateLearnerEmploymentStatusMonitoringFromTraining(previousIlr?.Single(p => p.LearnerId == learner.LearnerId), learner);
-
                     CreateAimsForIlrLearner(testSessionLearner, learner);
                 }
 
@@ -102,13 +100,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             if (!string.IsNullOrWhiteSpace(previousIlr?.Employer) || !string.IsNullOrWhiteSpace(previousIlr?.SmallEmployer))
             {
                 employmentStatusMonitoringList.Add(new EmploymentStatusMonitoring()
-                                                   {
-                                                       LearnerId = previousIlr.LearnerId,
-                                                       EmploymentStatusApplies = !string.IsNullOrWhiteSpace(previousIlr.EmploymentStatusApplies) ? previousIlr.EmploymentStatusApplies : previousIlr.StartDate.ToDate().AddMonths(-6).ToString(),
-                                                       EmploymentStatus = !string.IsNullOrWhiteSpace(previousIlr.EmploymentStatus) ? previousIlr.EmploymentStatus : "in paid employment",
-                                                       Employer = previousIlr.Employer,
-                                                       SmallEmployer = previousIlr.SmallEmployer
-                                                   });
+                {
+                    LearnerId = previousIlr.LearnerId,
+                    EmploymentStatusApplies = !string.IsNullOrWhiteSpace(previousIlr.EmploymentStatusApplies) ? previousIlr.EmploymentStatusApplies : previousIlr.StartDate.ToDate().AddMonths(-6).ToString(),
+                    EmploymentStatus = !string.IsNullOrWhiteSpace(previousIlr.EmploymentStatus) ? previousIlr.EmploymentStatus : "in paid employment",
+                    Employer = previousIlr.Employer,
+                    SmallEmployer = previousIlr.SmallEmployer
+                });
             }
 
             if (previousIlr?.EmploymentStatusApplies != currentIlr.EmploymentStatusApplies)
@@ -129,20 +127,28 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         private void CreateAimsForIlrLearner(Learner learner, Training currentIlr)
         {
             var aim = new Aim(currentIlr);
-            aim.PriceEpisodes.Add(new Price()
+            if (!learner.Aims.Any())
             {
-                TotalTrainingPriceEffectiveDate = currentIlr.TotalTrainingPriceEffectiveDate,
-                TotalTrainingPrice = currentIlr.TotalTrainingPrice,
-                TotalAssessmentPriceEffectiveDate = currentIlr.TotalAssessmentPriceEffectiveDate,
-                TotalAssessmentPrice = currentIlr.TotalAssessmentPrice,
-                ContractType = currentIlr.ContractType,
-                AimSequenceNumber = currentIlr.AimSequenceNumber,
-                SfaContributionPercentage = currentIlr.SfaContributionPercentage,
-                CompletionHoldBackExemptionCode = currentIlr.CompletionHoldBackExemptionCode,
-                Pmr = currentIlr.Pmr
-            });
+                aim.PriceEpisodes.Add(new Price()
+                {
+                    TotalTrainingPriceEffectiveDate = currentIlr.TotalTrainingPriceEffectiveDate,
+                    TotalTrainingPrice = currentIlr.TotalTrainingPrice,
+                    TotalAssessmentPriceEffectiveDate = currentIlr.TotalAssessmentPriceEffectiveDate,
+                    TotalAssessmentPrice = currentIlr.TotalAssessmentPrice,
+                    ContractType = currentIlr.ContractType,
+                    AimSequenceNumber = currentIlr.AimSequenceNumber,
+                    SfaContributionPercentage = currentIlr.SfaContributionPercentage,
+                    CompletionHoldBackExemptionCode = currentIlr.CompletionHoldBackExemptionCode,
+                    Pmr = currentIlr.Pmr
+                });
+            }
+            else
+            {
+                var priceEpisode = learner.Aims.Single().PriceEpisodes.Single();
+                aim.PriceEpisodes.Add(priceEpisode);
+            }
 
-            learner.Aims.Add(aim);
+            learner.Aims = new List<Aim> { aim };
         }
 
         private async Task RefreshTestSessionLearnerFromIlr(string ilrFile, IEnumerable<Learner> learners)
@@ -155,7 +161,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             {
                 var request = learnersEnumeration.Skip(i).Take(1).First();
                 var testSessionLearner = testSession.GetLearner(testSession.Provider.Ukprn, request.LearnerIdentifier);
-                var originalUln = testSessionLearner.Uln;
+                var originalUln = testSessionLearner.OriginalUln ?? testSessionLearner.Uln;
                 var learner = learnerDescendants.Skip(i).Take(1).First();
                 testSessionLearner.LearnRefNumber = learner.Elements(xsdns + "LearnRefNumber").First().Value;
                 testSessionLearner.Uln = long.Parse(learner.Elements(xsdns + "ULN").First().Value);
@@ -164,6 +170,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                     testSessionLearner.LearnRefNumber);
             }
         }
+
 
         private async Task UpdatePaymentHistoryTables(long ukprn, long originalUln, long newUln, string learnRefNumber)
         {

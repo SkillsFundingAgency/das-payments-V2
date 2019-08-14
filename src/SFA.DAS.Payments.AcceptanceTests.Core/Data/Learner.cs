@@ -20,6 +20,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 
         public List<EmploymentStatusMonitoring> EmploymentStatusMonitoring { get; set; } = new List<EmploymentStatusMonitoring>();
 
+        public long? OriginalUln { get; set; }
+
         public bool Restart { get; set; }
 
         public LearnerEarningsHistory EarningsHistory { get; set; }

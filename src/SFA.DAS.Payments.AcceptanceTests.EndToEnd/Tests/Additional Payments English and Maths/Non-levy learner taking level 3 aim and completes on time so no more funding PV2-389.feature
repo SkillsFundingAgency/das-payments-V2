@@ -6,13 +6,13 @@ Scenario Outline: Non-levy learner taking level 3 aim and completes on time so n
         | Learner Reference Number | Uln |
         | abc123                   |     |
 	And the following aims
-		| Aim Type         | Aim Reference | Start Date                | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | Completion Status |
-		| Programme        | ZPROG001      | 06/Aug/Last Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | continuing        |
-		| Maths or English | 50093186      | 06/Aug/Last Academic Year | 12 months        |                 | 2                   | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | continuing        |
+		| Aim Type         | Aim Reference | Start Date                | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                   | Completion Status |
+		| Programme        | ZPROG001      | 01/Aug/Last Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | continuing        |
+		| Maths or English | 50093186      | 01/Aug/Last Academic Year | 12 months        |                 | 2                   | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | continuing        |
 	And price details as follows		
-        | Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-        | 1st price details | 15000                | 06/Aug/Last Academic Year           |                        |                                       | Act2          | 1                   | 90%                         |
-        |                   | 0                    | 06/Aug/Last Academic Year           | 0                      | 06/Aug/Last Academic Year             | Act2          | 2                   | 100%                        |
+        | Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
+        | 1st price details | 15000                | 01/Aug/Last Academic Year           |                        |                                       | Act2          | 1                   | 90%                         |
+        |                   | 0                    | 01/Aug/Last Academic Year           | 0                      | 01/Aug/Last Academic Year             | Act2          | 2                   | 100%                        |
     And the following earnings had been generated for the learner
         | Delivery Period        | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Price Episode Identifier |
         | Aug/Last Academic Year | 1000         | 0          | 0         | 0                          | 1st price details        |
@@ -66,12 +66,108 @@ Scenario Outline: Non-levy learner taking level 3 aim and completes on time so n
         | R11/Last Academic Year | Jun/Last Academic Year | 0                      | 0                           | 39.25                     | OnProgrammeMathsAndEnglish |
         | R12/Last Academic Year | Jul/Last Academic Year | 0                      | 0                           | 39.25                     | OnProgrammeMathsAndEnglish |
     But aims details are changed as follows
-		| Aim Type         | Aim Reference | Start Date                | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | Completion Status |
-		| Programme        | ZPROG001      | 06/Aug/Last Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | continuing        |
-		| Maths or English | 50093186      | 06/Aug/Last Academic Year | 12 months        | 12 months       | 2                   | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | completed         |
+		| Aim Type         | Aim Reference | Start Date                | Planned Duration  | Actual Duration   | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                   | Completion Status | Contract Type |
+		| Programme        | ZPROG001      | 01/Aug/Last Academic Year | 12 months - 1 day |                   | 1                   | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | continuing        | Act2          |
+		| Maths or English | 50093186      | 01/Aug/Last Academic Year | 12 months - 1 day | 12 months - 1 day | 2                   | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | completed         | Act2          |
+	And price details as follows		
+        | Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
+        | 1st price details | 15000                | 01/Aug/Last Academic Year           |                        |                                       | Act2          | 1                   | 90%                         |
+        |                   | 0                    | 01/Aug/Last Academic Year           |                        |                                       | Act2          | 2                   | 100%                        |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
-	Then no learner earnings should be generated
-	And no provider payments will be recorded
+	Then the following learner earnings should be generated
+		| Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Aim Sequence Number | Price Episode Identifier | Contract Type |
+		# Maths/Eng - Level 2
+		| Aug/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act2          |
+		| Sep/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act2          |
+		| Oct/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act2          |
+		| Nov/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act2          |
+		| Dec/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act2          |
+		| Jan/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act2          |
+		| Feb/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act2          |
+		| Mar/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act2          |
+		| Apr/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act2          |
+		| May/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act2          |
+		| Jun/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act2          |
+		| Jul/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act2          |
+		#pe-1																													            		   
+		| Aug/Current Academic Year | 0            | 0          | 0         | 0                          | 1                   | 1st price details        | Act2          |
+		| Sep/Current Academic Year | 0            | 0          | 0         | 0                          | 1                   | 1st price details        | Act2          |
+		| Oct/Current Academic Year | 0            | 0          | 0         | 0                          | 1                   | 1st price details        | Act2          |
+		| Nov/Current Academic Year | 0            | 0          | 0         | 0                          | 1                   | 1st price details        | Act2          |
+		| Dec/Current Academic Year | 0            | 0          | 0         | 0                          | 1                   | 1st price details        | Act2          |
+		| Jan/Current Academic Year | 0            | 0          | 0         | 0                          | 1                   | 1st price details        | Act2          |
+		| Feb/Current Academic Year | 0            | 0          | 0         | 0                          | 1                   | 1st price details        | Act2          |
+		| Mar/Current Academic Year | 0            | 0          | 0         | 0                          | 1                   | 1st price details        | Act2          |
+		| Apr/Current Academic Year | 0            | 0          | 0         | 0                          | 1                   | 1st price details        | Act2          |
+		| May/Current Academic Year | 0            | 0          | 0         | 0                          | 1                   | 1st price details        | Act2          |
+		| Jun/Current Academic Year | 0            | 0          | 0         | 0                          | 1                   | 1st price details        | Act2          |
+		| Jul/Current Academic Year | 0            | 0          | 0         | 0                          | 1                   | 1st price details        | Act2          |
+	And only the following payments will be calculated													                     							    
+		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish |
+		| R01/Current Academic Year | Aug/Current Academic Year | 0            | 0          | 0         | 0                          |
+		| R02/Current Academic Year | Sep/Current Academic Year | 0            | 0          | 0         | 0                          |
+		| R03/Current Academic Year | Oct/Current Academic Year | 0            | 0          | 0         | 0                          |
+		| R04/Current Academic Year | Nov/Current Academic Year | 0            | 0          | 0         | 0                          |
+		| R05/Current Academic Year | Dec/Current Academic Year | 0            | 0          | 0         | 0                          |
+		| R06/Current Academic Year | Jan/Current Academic Year | 0            | 0          | 0         | 0                          |
+		| R07/Current Academic Year | Feb/Current Academic Year | 0            | 0          | 0         | 0                          |
+		| R08/Current Academic Year | Mar/Current Academic Year | 0            | 0          | 0         | 0                          |
+		| R09/Current Academic Year | Apr/Current Academic Year | 0            | 0          | 0         | 0                          |
+		| R10/Current Academic Year | May/Current Academic Year | 0            | 0          | 0         | 0                          |
+		| R11/Current Academic Year | Jun/Current Academic Year | 0            | 0          | 0         | 0                          |
+		| R12/Current Academic Year | Jul/Current Academic Year | 0            | 0          | 0         | 0                          |
+	And only the following provider payments will be recorded
+		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully-Funded Payments | Transaction Type           |
+		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R02/Current Academic Year | Sep/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R03/Current Academic Year | Oct/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R04/Current Academic Year | Nov/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R05/Current Academic Year | Dec/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R06/Current Academic Year | Jan/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R07/Current Academic Year | Feb/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R08/Current Academic Year | Mar/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R09/Current Academic Year | Apr/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R10/Current Academic Year | May/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R11/Current Academic Year | Jun/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R12/Current Academic Year | Jul/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R02/Current Academic Year | Sep/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R03/Current Academic Year | Oct/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R04/Current Academic Year | Nov/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R05/Current Academic Year | Dec/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R06/Current Academic Year | Jan/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R07/Current Academic Year | Feb/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R08/Current Academic Year | Mar/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R09/Current Academic Year | Apr/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R10/Current Academic Year | May/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R11/Current Academic Year | Jun/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R12/Current Academic Year | Jul/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+	And at month end only the following provider payments will be generated
+		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully-Funded Payments | Transaction Type           |
+		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R02/Current Academic Year | Sep/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R03/Current Academic Year | Oct/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R04/Current Academic Year | Nov/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R05/Current Academic Year | Dec/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R06/Current Academic Year | Jan/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R07/Current Academic Year | Feb/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R08/Current Academic Year | Mar/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R09/Current Academic Year | Apr/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R10/Current Academic Year | May/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R11/Current Academic Year | Jun/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R12/Current Academic Year | Jul/Current Academic Year | 0                      | 0                           | 0                         | Learning                   |
+		| R01/Current Academic Year | Aug/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R02/Current Academic Year | Sep/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R03/Current Academic Year | Oct/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R04/Current Academic Year | Nov/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R05/Current Academic Year | Dec/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R06/Current Academic Year | Jan/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R07/Current Academic Year | Feb/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R08/Current Academic Year | Mar/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R09/Current Academic Year | Apr/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R10/Current Academic Year | May/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R11/Current Academic Year | Jun/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
+		| R12/Current Academic Year | Jul/Current Academic Year | 0                      | 0                           | 0                         | OnProgrammeMathsAndEnglish |
 
 Examples: 
         | Collection_Period         |
