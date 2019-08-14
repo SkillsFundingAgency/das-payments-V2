@@ -337,6 +337,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 SetCourseCodes(otherAim, otherLearningDelivery);
 
                 SetPriorLearnFundingAdjustment(otherAim, otherLearningDelivery);
+
+                if (otherAim.Restart)
+                {
+                    DCT.TestDataGenerator.Helpers.AddLearningDeliveryRestartFAM(otherLearningDelivery);
+                }
             }
         }
 

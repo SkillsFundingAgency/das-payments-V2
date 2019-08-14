@@ -70,6 +70,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                     testSessionLearner.PostcodePrior = learner.PostcodePrior;
                     testSessionLearner.EefCode = learner.EefCode;
                     testSessionLearner.EmploymentStatusMonitoring = CreateLearnerEmploymentStatusMonitoringFromTraining(previousIlr?.Single(p => p.LearnerId == learner.LearnerId), learner);
+                    testSessionLearner.Restart = learner.Restart;
                     CreateAimsForIlrLearner(testSessionLearner, learner);
                 }
 

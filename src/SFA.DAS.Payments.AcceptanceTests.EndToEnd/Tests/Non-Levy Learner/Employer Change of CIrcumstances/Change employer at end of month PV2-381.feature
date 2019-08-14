@@ -19,10 +19,10 @@ Scenario Outline: Non-levy learner changes employer with change to negotiated pr
 		| abc123                   |
 	And the following aims
 		| Aim Type  | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage |
-		| Programme | 06/Aug/Current Academic Year | 12 months        | 15000                | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
+		| Programme | 06/Aug/Current Academic Year | 12 months        | 15000                | 06/Aug/Current Academic Year        |                        |                                       |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
 	And price details as follows
 		| Price Episode Id | Aim Sequence Number | Contract Type | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage |
-		| pe-1             | 1                   | Act2          | 15000                | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         |
+		| pe-1             | 1                   | Act2          | 15000                | 06/Aug/Current Academic Year        |                        |                                       | 0                       |                                        | 0                         |                                          | 90%                         |
 	And the employment status in the ILR is
 		| Employer   | Employment Status  | Employment Status Applies    |
 		| employer 1 | in paid employment | 01/Aug/Current Academic Year |
@@ -47,12 +47,11 @@ Scenario Outline: Non-levy learner changes employer with change to negotiated pr
 		| R03/Current Academic Year | Oct/Current Academic Year | 900                    | 100                         | Learning         | employer 1 |
 	But aims details are changed as follows
 		| Aim Type  | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               |
-		| Programme | 06/Aug/Current Academic Year | 12 months        | 15000                | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 
+		| Programme | 06/Aug/Current Academic Year | 12 months        | 15000                | 06/Aug/Current Academic Year        |                        |                                       |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 
 	# additional residual fields
 	And price details as follows
 		| Price Episode Id | Aim Sequence Number | Contract Type | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage |
-		| pe-1             | 1                   | Act2          | 15000                | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         |
-		| pe-2             | 1                   | Act2          | 15000                | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          | 5625                    | 01/Nov/Current Academic Year           | 0                         | 01/Nov/Current Academic Year             | 90%                         |
+		| pe-1             | 1                   | Act2          | 15000                | 06/Aug/Current Academic Year        |                        |                                       | 5625                    | 01/Nov/Current Academic Year           | 0                         | 01/Nov/Current Academic Year             | 90%                         |
 	And the employment status in the ILR is now
 		| Employer   | Employment Status  | Employment Status Applies    |
 		| employer 1 | in paid employment | 01/Aug/Current Academic Year |
@@ -63,15 +62,15 @@ Scenario Outline: Non-levy learner changes employer with change to negotiated pr
 		| Aug/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     |
 		| Sep/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     |
 		| Oct/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     |
-		| Nov/Current Academic Year | 500          | 0          | 0         | 1                   | pe-2                     |
-		| Dec/Current Academic Year | 500          | 0          | 0         | 1                   | pe-2                     |
-		| Jan/Current Academic Year | 500          | 0          | 0         | 1                   | pe-2                     |
-		| Feb/Current Academic Year | 500          | 0          | 0         | 1                   | pe-2                     |
-		| Mar/Current Academic Year | 500          | 0          | 0         | 1                   | pe-2                     |
-		| Apr/Current Academic Year | 500          | 0          | 0         | 1                   | pe-2                     |
-		| May/Current Academic Year | 500          | 0          | 0         | 1                   | pe-2                     |
-		| Jun/Current Academic Year | 500          | 0          | 0         | 1                   | pe-2                     |
-		| Jul/Current Academic Year | 500          | 0          | 0         | 1                   | pe-2                     |
+		| Nov/Current Academic Year | 500          | 0          | 0         | 1                   | pe-1                     |
+		| Dec/Current Academic Year | 500          | 0          | 0         | 1                   | pe-1                     |
+		| Jan/Current Academic Year | 500          | 0          | 0         | 1                   | pe-1                     |
+		| Feb/Current Academic Year | 500          | 0          | 0         | 1                   | pe-1                     |
+		| Mar/Current Academic Year | 500          | 0          | 0         | 1                   | pe-1                     |
+		| Apr/Current Academic Year | 500          | 0          | 0         | 1                   | pe-1                     |
+		| May/Current Academic Year | 500          | 0          | 0         | 1                   | pe-1                     |
+		| Jun/Current Academic Year | 500          | 0          | 0         | 1                   | pe-1                     |
+		| Jul/Current Academic Year | 500          | 0          | 0         | 1                   | pe-1                     |
 	And only the following payments will be calculated
 		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
 		| R04/Current Academic Year | Nov/Current Academic Year | 500          | 0          | 0         |
