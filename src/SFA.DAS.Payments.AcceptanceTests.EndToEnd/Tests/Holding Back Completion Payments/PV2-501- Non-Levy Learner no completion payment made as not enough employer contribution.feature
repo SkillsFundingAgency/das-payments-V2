@@ -8,7 +8,7 @@ Scenario Outline: Non-Levy Learner-in co-funding no completion payment made as n
 	
 	Given the provider previously submitted the following learner details
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage |
-		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 06/Jun/Last Academic Year           | 0                      | 06/Jun/Last Academic Year             |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
+		| 01/Jun/Last Academic Year | 12 months        | 9000                 | 01/Jun/Last Academic Year           |                        |                                       |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
 	
 	And the following earnings had been generated for the learner
         | Delivery Period        | On-Programme | Completion | Balancing |
@@ -36,7 +36,7 @@ Scenario Outline: Non-Levy Learner-in co-funding no completion payment made as n
 	
 	And price details as follows
 		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage | Employer Contribution |
-		| pe-1             | 9000                 | 06/Jun/Last Academic Year           | 0                      | 06/Jun/Last Academic Year             | 0                       |                                        | 0                         |                                          | Act2          | 1                   | 90%                         | 719                   |
+		| pe-1             | 9000                 | 01/Jun/Last Academic Year           |                        |                                       | 0                       |                                        | 0                         |                                          | Act2          | 1                   | 90%                         | 719                   |
 
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	
