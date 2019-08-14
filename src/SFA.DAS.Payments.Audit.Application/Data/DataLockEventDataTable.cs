@@ -1,12 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using SFA.DAS.Payments.Audit.Model;
 
 namespace SFA.DAS.Payments.Audit.Application.Data
 {
-    class DataLockEventDataTable : PaymentsEventModelDataTable<DataLockEventModel>
+    class DataLockEventDataTable : IPaymentsEventModelDataTable<DataLockEventModel>
     {
-        public override string TableName => "Payments2.DataLockEvent";
+        public string TableName => "Payments2.DataLockEvent";
+
+        public List<DataTable> GetDataTable(List<DataLockEventModel> events)
+        {
+                
+        }
+
+        private readonly DataTable dataLockEvents;
         private readonly DataTable payablePeriods;
         private readonly DataTable nonPayablePeriods;
         private readonly DataTable nonPayablePeriodFailures;
@@ -15,21 +23,17 @@ namespace SFA.DAS.Payments.Audit.Application.Data
 
         public DataLockEventDataTable()
         {
-            DataTable.Columns.AddRange(new[]
+            dataLockEvents.Columns.AddRange(new[]
             {
                 new DataColumn("EventId", typeof(Guid)),
                 new DataColumn("EarningEventId", typeof(Guid)),
-                new DataColumn("FundingSourceEventId", typeof(Guid)),
                 new DataColumn("EventTime", typeof(DateTimeOffset)),
                 new DataColumn("JobId"),
-                new DataColumn("DeliveryPeriod"),
                 new DataColumn("CollectionPeriod"),
                 new DataColumn("AcademicYear"),
                 new DataColumn("Ukprn"),
                 new DataColumn("LearnerReferenceNumber"),
                 new DataColumn("LearnerUln"),
-                new DataColumn("PriceEpisodeIdentifier"),
-                new DataColumn("Amount"),
                 new DataColumn("LearningAimReference"),
                 new DataColumn("LearningAimProgrammeType"),
                 new DataColumn("LearningAimStandardCode"),
@@ -37,27 +41,13 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 new DataColumn("LearningAimPathwayCode"),
                 new DataColumn("LearningAimFundingLineType"),
                 new DataColumn("ContractType"),
-                new DataColumn("TransactionType"),
-                new DataColumn("FundingSource"),
                 new DataColumn("IlrSubmissionDateTime", typeof(DateTime)),
 
-                new DataColumn("SfaContributionPercentage"),
                 new DataColumn("AgreementId"),
-                new DataColumn("AccountId"),
-                new DataColumn("TransferSenderAccountId"),
                 new DataColumn("CreationDate"),
-                new DataColumn("EarningsStartDate"),
-                new DataColumn("EarningsPlannedEndDate"),
-                new DataColumn("EarningsActualEndDate"),
-                new DataColumn("EarningsCompletionStatus"),
-                new DataColumn("EarningsCompletionAmount"),
-                new DataColumn("EarningsInstalmentAmount"),
-                new DataColumn("EarningsNumberOfInstalments"),
                 new DataColumn("LearningStartDate"),
-                new DataColumn("ApprenticeshipId"),
-                new DataColumn("ApprenticeshipPriceEpisodeId"),
-                new DataColumn("ApprenticeshipEmployerType"),
-                new DataColumn("ReportingAimFundingLineType"),
+                new DataColumn("IsPayable"), 
+                new DataColumn("DataLockSourceId"), 
             });
 
             priceEpisodes = new DataTable("Payments2.DataLockEventPriceEpisode");
@@ -131,7 +121,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 new DataColumn("ApprenticeshipId") {AllowDBNull = true},
             });
 
-            nonPayablePeriods = new DataTable("Payments2.DataLockEventPayablePeriod");
+            nonPayablePeriods = new DataTable("Payments2.DataLockEventNonPayablePeriod");
             nonPayablePeriods.Columns.AddRange(new[]
             {
                 new DataColumn("DataLockEventId", typeof(Guid)),
