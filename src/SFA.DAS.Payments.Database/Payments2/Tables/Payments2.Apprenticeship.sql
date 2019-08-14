@@ -33,3 +33,12 @@ CREATE INDEX [IX_Apprenticeship__Id_Ukprn_Uln_Account] ON [Payments2].[Apprentic
 )
 
 GO
+
+CREATE INDEX [IX_Apprenticeship__AccountSearch] ON [Payments2].[Apprenticeship]
+(
+  [Ukprn],
+  AccountId,
+  TransferSendingEmployerAccountId,
+  IsLevyPayer
+) 
+GO

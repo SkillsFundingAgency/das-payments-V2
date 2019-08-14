@@ -37,6 +37,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
                         p.CollectionPeriod.Period == collectionPeriod.Period &&
                         p.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear)
                    .Select(o => o.Ukprn)
+                   .Distinct()
                    .ToListAsync(cancellationToken);
         }
 

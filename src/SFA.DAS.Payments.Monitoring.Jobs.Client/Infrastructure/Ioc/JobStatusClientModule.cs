@@ -46,6 +46,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
                 .As<IEarningsJobClientFactory>()
                 .SingleInstance();
 
+            builder.RegisterType<PeriodEndJobClient>()
+                .As<IPeriodEndJobClient>()
+                .SingleInstance();
+
             builder.Register((c, p) =>
                 {
                     var logger = c.Resolve<IPaymentLogger>();
