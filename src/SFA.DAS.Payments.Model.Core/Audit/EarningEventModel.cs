@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.Payments.Model.Core.Entities;
 
-namespace SFA.DAS.Payments.Audit.Model
+namespace SFA.DAS.Payments.Model.Core.Audit
 {
     public class EarningEventModel: PaymentsEventModel
     {
@@ -10,5 +10,5 @@ namespace SFA.DAS.Payments.Audit.Model
         public int LearningAimSequenceNumber { get; set; }
         public List<EarningEventPeriodModel> Periods { get; set; }
         public List<EarningEventPriceEpisodeModel> PriceEpisodes { get; set; }
-    }
+    } 
 }

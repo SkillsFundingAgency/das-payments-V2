@@ -1,7 +1,7 @@
 ﻿using System;
 using SFA.DAS.Payments.Model.Core.Entities;
 
-namespace SFA.DAS.Payments.Audit.Model
+namespace SFA.DAS.Payments.Model.Core.Audit
 {
     public class EarningEventPeriodModel
     {

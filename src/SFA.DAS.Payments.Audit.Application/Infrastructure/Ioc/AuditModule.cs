@@ -5,6 +5,7 @@ using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEvent;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.FundingSource;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.RequiredPayment;
 using SFA.DAS.Payments.Audit.Model;
+using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
 {

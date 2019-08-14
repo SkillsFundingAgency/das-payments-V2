@@ -3,7 +3,10 @@ using SFA.DAS.CommitmentsV2.Messages.Events;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.Factories;
+using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Mapping
 {
@@ -119,6 +122,33 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.AgreedOnDate, opt => opt.MapFrom(source => source.ApprovedOn))
                 .ForMember(dest => dest.ApprenticeshipPriceEpisodes, opt => opt.MapFrom(source => source.PriceEpisodes))
                 ;
+
+            CreateMap<EarningEventModel, ApprenticeshipContractType1EarningEvent>()
+                .ForMember(dest => dest.AgreementId, opt => opt.MapFrom(source => source.AgreementId))
+                .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
+                .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(source.AcademicYear, source.CollectionPeriod)))
+                .ForMember(dest => dest.CollectionYear, opt => opt.MapFrom(source => source.AcademicYear))
+                .ForMember(dest => dest.EventId, opt => opt.MapFrom(source => source.EventId))
+                .ForMember(dest => dest.EventTime, opt => opt.MapFrom(source => source.EventTime))
+                //.ForMember(dest => dest.IlrFileName, opt => opt.MapFrom(source => source.IlrFileName))
+                .ForMember(dest => dest.IlrSubmissionDateTime, opt => opt.MapFrom(source => source.IlrSubmissionDateTime))
+                //.ForMember(dest => dest.IncentiveEarnings, opt => opt.MapFrom(source => source.IncentiveEarnings))
+                .ForMember(dest => dest.JobId, opt => opt.MapFrom(source => source.JobId))
+                // .ForMember(dest => dest.Learner, opt => opt.MapFrom(source => source.Learner))
+                // .ForMember(dest => dest.LearningAim, opt => opt.MapFrom(source => source.LearningAim))
+                // .ForMember(dest => dest.OnProgrammeEarnings, opt => opt.MapFrom(source => source.OnProgrammeEarnings))
+                .ForMember(dest => dest.PriceEpisodes, opt => opt.MapFrom(source => source.PriceEpisodes));
+            // .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(source => source.SfaContributionPercentage))
+
+            CreateMap<EarningEventPeriodModel, IncentiveEarning>()
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(source => (int) source.TransactionType));
+            // .ForMember(dest => dest.CensusDate, opt => opt.MapFrom(source => source.CensusDate))
+            // .ForMember(dest => dest.Periods, opt => opt.MapFrom(source => source.Periods))
+
+            CreateMap<EarningEventPeriodModel, >()
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(source => (int)source.TransactionType));
+            // .ForMember(dest => dest.CensusDate, opt => opt.MapFrom(source => source.CensusDate))
+            // .ForMember(dest => dest.Periods, opt => opt.MapFrom(source => source.Periods))
 
 
         }

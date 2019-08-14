@@ -15,13 +15,14 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         Task ProcessApprenticeshipUpdate(ApprenticeshipUpdated updatedApprenticeship);
     }
 
-    public class ApprenticeshipUpdatedProcessor: IApprenticeshipUpdatedProcessor
+    public class ApprenticeshipUpdatedProcessor : IApprenticeshipUpdatedProcessor
     {
         private readonly IPaymentLogger logger;
         private readonly IActorDataCache<List<ApprenticeshipModel>> cache;
         private readonly IMapper mapper;
 
-        public ApprenticeshipUpdatedProcessor(IPaymentLogger logger, IActorDataCache<List<ApprenticeshipModel>> cache, IMapper mapper)
+        public ApprenticeshipUpdatedProcessor(IPaymentLogger logger, IActorDataCache<List<ApprenticeshipModel>> cache,
+            IMapper mapper)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.cache = cache ?? throw new ArgumentNullException(nameof(cache));
@@ -30,7 +31,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         public async Task ProcessApprenticeshipUpdate(ApprenticeshipUpdated updatedApprenticeship)
         {
-            logger.LogDebug($"Getting apprenticeships cache item using uln for apprenticeship id: {updatedApprenticeship.Id}");
+            logger.LogDebug(
+                $"Getting apprenticeships cache item using uln for apprenticeship id: {updatedApprenticeship.Id}");
             var cacheItem = await cache.TryGet(updatedApprenticeship.Uln.ToString(), CancellationToken.None);
             logger.LogDebug(cacheItem.HasValue
                 ? "Item found in the cache."
@@ -43,7 +45,14 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             logger.LogDebug("Finished mapping the apprenticeship model, now adding to the cache.");
             apprenticeships.Add(model);
             await cache.AddOrReplace(model.Uln.ToString(), apprenticeships, CancellationToken.None);
-            logger.LogInfo($"Finished storing the apprenticeship details in the cache. Apprenticeship id: {model.Id}, Account: {model.AccountId}, Provider: {model.Ukprn}");
+            logger.LogInfo(
+                $"Finished storing the apprenticeship details in the cache. Apprenticeship id: {model.Id}, Account: {model.AccountId}, Provider: {model.Ukprn}");
+        }
+
+        public async Task GetDataLockEarningsToReprocessed(ApprenticeshipUpdated updatedApprenticeship)
+        {
+
+            await Task.CompletedTask;
         }
     }
 }

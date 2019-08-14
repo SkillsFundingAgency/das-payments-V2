@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.Factories;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Repositories
 {
@@ -140,6 +145,37 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
         {
             dataContext.ApprenticeshipPause.Update(apprenticeshipPauseModel);
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
+        }
+
+
+        public async Task<List<EarningEventModel>> GetProviderApprenticeshipEarnings(long uln, long ukprn)
+        {
+
+            var earningDbModel = new EarningEventModel();
+
+            var earningModel = new ApprenticeshipContractType1EarningEvent
+            {
+                Ukprn = earningDbModel.Ukprn,
+                AgreementId = earningDbModel.AgreementId,
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(earningDbModel.AcademicYear, earningDbModel.CollectionPeriod),
+                CollectionYear = earningDbModel.AcademicYear,
+                EventId = earningDbModel.EventId,
+                EventTime = earningDbModel.EventTime,
+                // IlrFileName =  earningDbModel.
+                IlrSubmissionDateTime = DateTime.UtcNow,
+                JobId = earningDbModel.JobId,
+                // SfaContributionPercentage = earningDbModel.s
+                PriceEpisodes = earningDbModel.PriceEpisodes.Select(x => new PriceEpisode
+                {
+                    Identifier = x.PriceEpisodeIdentifier,
+                   // AgreedPrice = 
+                    TotalNegotiatedPrice1 = x.TotalNegotiatedPrice1
+                }).ToList()
+            };
+
+
+
+
         }
 
 

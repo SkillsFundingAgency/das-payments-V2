@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.Payments.Audit.Model
+namespace SFA.DAS.Payments.Model.Core.Audit
 {
     public class EarningEventPriceEpisodeModel
     {
@@ -18,5 +18,8 @@ namespace SFA.DAS.Payments.Audit.Model
         public decimal InstalmentAmount { get; set; }
         public decimal CompletionAmount { get; set; }
         public bool Completed { get; set; }
+        public DateTime? EffectiveTotalNegotiatedPriceStartDate { get; set; }
+        public decimal? EmployerContribution { get; set; }
+        public int? CompletionHoldBackExemptionCode { get; set; }
     }
 }

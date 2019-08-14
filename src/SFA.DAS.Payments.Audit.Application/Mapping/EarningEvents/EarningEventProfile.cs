@@ -2,6 +2,7 @@
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
