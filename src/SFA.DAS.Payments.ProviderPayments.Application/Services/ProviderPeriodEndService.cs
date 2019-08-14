@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
         private readonly IMonthEndCache monthEndCache;
         private readonly IPaymentLogger logger;
         
-        public MonthEndService(
+        public ProviderPeriodEndService(
             IProviderPaymentsRepository providerPaymentsRepository, 
             IMonthEndCache monthEndCache, 
             IPaymentLogger logger, 
