@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             IBulkWriter<LegacyDataLockEvent> dataLockEventWriter,
             IBulkWriter<LegacyDataLockEventCommitmentVersion> dataLockEventCommitmentVersionWriter,
             IBulkWriter<LegacyDataLockEventError> dataLockEventErrorWriter,
-            IBulkWriter<LegacyDataLockEventPeriod> dataLockEventPeriodWriter, 
+            IBulkWriter<LegacyDataLockEventPeriod> dataLockEventPeriodWriter,
             IApprenticeshipRepository apprenticeshipRepository)
         {
             this.cache = cache;
@@ -317,10 +317,25 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 IlrPriceEffectiveFromDate = priceEpisode.EffectiveTotalNegotiatedPriceStartDate,
                 IlrPriceEffectiveToDate = priceEpisode.ActualEndDate.GetValueOrDefault(priceEpisode.PlannedEndDate),
                 IlrEndpointAssessorPrice = hasTnp3 ? priceEpisode.TotalNegotiatedPrice4 : priceEpisode.TotalNegotiatedPrice2,
-                IlrFileName = dataLockStatusChangedEvent.IlrFileName,
+                IlrFileName = TrimUkprnFromIlrFileNameLimitToValidLength(dataLockStatusChangedEvent.IlrFileName),
                 IlrStartDate = priceEpisode.CourseStartDate,
                 IlrTrainingPrice = hasTnp3 ? priceEpisode.TotalNegotiatedPrice3 : priceEpisode.TotalNegotiatedPrice1,
             };
+
+            if (dataLockStatusChangedEvent.IlrFileName?.Length > 50)
+            {
+                logger.LogError($"Ilr Filename length overflow: {dataLockStatusChangedEvent.IlrFileName}");
+            }
+
+            if (dataLockStatusChangedEvent.Learner.ReferenceNumber?.Length > 12)
+            {
+                logger.LogError($"Learn Ref Number size overflow: {dataLockStatusChangedEvent.Learner.ReferenceNumber}");
+            }
+
+            if (earningPeriod.PriceEpisodeIdentifier?.Length > 25)
+            {
+                logger.LogError($"Price Episode Identifier size overflow: {earningPeriod.PriceEpisodeIdentifier}");
+            }
 
             logger.LogVerbose($"Saving legacy DataLockEvent {dataLockStatusChangedEvent.EventId} for UKPRN {dataLockStatusChangedEvent.Ukprn}");
 
@@ -328,11 +343,33 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             return dataLockEvent;
         }
 
+        public static string TrimUkprnFromIlrFileNameLimitToValidLength(string input)
+        {
+            const int validLength = 50;
+
+            if (input == null)
+            {
+                return string.Empty;
+            }
+
+            if (input.Length > 9)
+            {
+                input = input.Substring(9);
+
+                if (input.Length > validLength)
+                {
+                    return input.Substring(0, validLength);
+                }
+            }
+
+            return input;
+        }
+
         private async Task PopulateApprenticeshipCache(List<DataLockStatusChanged> statusChangeEvents, CancellationToken cancellationToken)
         {
             var allPeriods = statusChangeEvents.SelectMany(e => e.TransactionTypesAndPeriods.SelectMany(p => p.Value)).ToList();
             var allApprenticeshipIds = allPeriods.Select(p => p.ApprenticeshipId)
-                .Concat(allPeriods.Where(p => p.DataLockFailures != null).SelectMany(p => p.DataLockFailures.Select(f => f.ApprenticeshipId)))                
+                .Concat(allPeriods.Where(p => p.DataLockFailures != null).SelectMany(p => p.DataLockFailures.Select(f => f.ApprenticeshipId)))
                 .Distinct()
                 .Where(id => id.HasValue)
                 .Select(id => id.Value)
@@ -340,6 +377,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             var apprenticeshipModels = await apprenticeshipRepository.Get(allApprenticeshipIds, cancellationToken).ConfigureAwait(false);
             apprenticeshipCache = apprenticeshipModels.ToDictionary(m => m.Id, m => m);
+        }
     }
-}
 }
