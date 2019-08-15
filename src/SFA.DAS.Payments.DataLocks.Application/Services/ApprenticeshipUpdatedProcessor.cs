@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
     public interface IApprenticeshipUpdatedProcessor
     {
         Task ProcessApprenticeshipUpdate(ApprenticeshipUpdated updatedApprenticeship);
-        Task<List<DataLockEvent>> GetAfterApprenticeshipUpdatePayments(ApprenticeshipUpdated updatedApprenticeship);
+        Task<List<DataLockEvent>> GetApprenticeshipUpdatePayments(ApprenticeshipUpdated updatedApprenticeship);
     }
 
     public class ApprenticeshipUpdatedProcessor : IApprenticeshipUpdatedProcessor
@@ -66,9 +66,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 $"Finished storing the apprenticeship details in the cache. Apprenticeship id: {model.Id}, Account: {model.AccountId}, Provider: {model.Ukprn}");
         }
 
-        public async Task<List<DataLockEvent>> GetAfterApprenticeshipUpdatePayments(ApprenticeshipUpdated updatedApprenticeship)
+        public async Task<List<DataLockEvent>> GetApprenticeshipUpdatePayments(ApprenticeshipUpdated updatedApprenticeship)
         {
-            var apprenticeshipEarning = await GetApprenticeshipEarningsToReProcess(updatedApprenticeship)
+            var apprenticeshipEarning = await GetApprenticeshipEarningsToReProcess(updatedApprenticeship.Uln, updatedApprenticeship.Ukprn)
                 .ConfigureAwait(false);
 
             var payments = await dataLockProcessor.GetPaymentEvents(apprenticeshipEarning, default(CancellationToken))
@@ -77,59 +77,58 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             return payments;
         }
 
-        private async Task<ApprenticeshipContractType1EarningEvent> GetApprenticeshipEarningsToReProcess(ApprenticeshipUpdated updatedApprenticeship)
+        private async Task<ApprenticeshipContractType1EarningEvent> GetApprenticeshipEarningsToReProcess(long uln, long ukprn)
         {
             var apprenticeshipEarnings = await repository
-                        .GetProviderApprenticeshipEarnings(updatedApprenticeship.Uln, updatedApprenticeship.Ukprn, default(CancellationToken))
+                        .GetProviderApprenticeshipEarnings(uln, ukprn, default(CancellationToken))
                         .ConfigureAwait(false);
 
             var onProgEarningTypes = Enum.GetValues(typeof(OnProgrammeEarningType)).Cast<OnProgrammeEarningType>();
             var incentiveEarningTypes = Enum.GetValues(typeof(IncentiveEarningType)).Cast<IncentiveEarningType>();
 
-            var act1EarningEvent = mapper.Map<ApprenticeshipContractType1EarningEvent>(apprenticeshipEarnings);
+            var onProgAndIncentiveEarning = apprenticeshipEarnings.FirstOrDefault(x => x.Periods.Any(p => onProgEarningTypes.Cast<int>().Contains((int)p.TransactionType)));
+
+            var act1EarningEvent = mapper.Map<ApprenticeshipContractType1EarningEvent>(onProgAndIncentiveEarning);
             act1EarningEvent.OnProgrammeEarnings = new List<OnProgrammeEarning>();
             act1EarningEvent.IncentiveEarnings = new List<IncentiveEarning>();
             
-            var onProgEarning = apprenticeshipEarnings.FirstOrDefault(x => x.Periods.Any(p => onProgEarningTypes.Cast<int>().Contains((int)p.TransactionType)));
-            if (onProgEarning == null) throw new ArgumentNullException($"Unable to find On Programme Earnings from Event Id {apprenticeshipEarnings[0].EventId}");
-         
+            if (onProgAndIncentiveEarning == null) throw new ArgumentNullException($"Unable to find On Programme Earnings from Event Id {apprenticeshipEarnings[0].EventId}");
+
             foreach (var onProgrammeEarningType in onProgEarningTypes)
             {
-                var earningPeriodData = GetEarningsPeriodsAndCensusDate(onProgEarning, (int)onProgrammeEarningType);
+                var earningPeriodData = GetEarningsPeriodsAndCensusDate(onProgAndIncentiveEarning, (int)onProgrammeEarningType);
                 var onProgrammeEarning = new OnProgrammeEarning
                 {
                     Type = onProgrammeEarningType,
                     CensusDate = earningPeriodData.censusDate,
-                    Periods = new ReadOnlyCollection<EarningPeriod>(earningPeriodData.pariods)
+                    Periods = new ReadOnlyCollection<EarningPeriod>(earningPeriodData.periods)
                 };
 
                 act1EarningEvent.OnProgrammeEarnings.Add(onProgrammeEarning);
             }
 
-            var incentiveEarningModel = apprenticeshipEarnings.FirstOrDefault(x => x.Periods.Any(p => incentiveEarningTypes.Cast<int>().Contains((int)p.TransactionType)));
-            if (onProgEarning == null) throw new ArgumentNullException($"Unable to find On Programme Earnings from Event Id {apprenticeshipEarnings[0].EventId}");
+            if (onProgAndIncentiveEarning == null) throw new ArgumentNullException($"Unable to find On Programme Earnings from Event Id {apprenticeshipEarnings[0].EventId}");
 
             foreach (var incentiveEarningType in incentiveEarningTypes)
             {
-                var earningPeriodData = GetEarningsPeriodsAndCensusDate(incentiveEarningModel, (int)incentiveEarningType);
+                var earningPeriodData = GetEarningsPeriodsAndCensusDate(onProgAndIncentiveEarning, (int)incentiveEarningType);
                 var incentiveEarning = new IncentiveEarning
                 {
                     Type = incentiveEarningType,
                     CensusDate = earningPeriodData.censusDate,
-                    Periods = new ReadOnlyCollection<EarningPeriod>(earningPeriodData.pariods)
+                    Periods = new ReadOnlyCollection<EarningPeriod>(earningPeriodData.periods)
                 };
 
                 act1EarningEvent.IncentiveEarnings.Add(incentiveEarning);
             }
 
-            act1EarningEvent.Learner = mapper.Map<Learner>(onProgEarning);
-            act1EarningEvent.LearningAim = mapper.Map<LearningAim>(onProgEarning);
-            
+            act1EarningEvent.Learner = mapper.Map<Learner>(onProgAndIncentiveEarning);
+            act1EarningEvent.LearningAim = mapper.Map<LearningAim>(onProgAndIncentiveEarning);
+
             return act1EarningEvent;
         }
-
-
-        private (List<EarningPeriod> pariods, DateTime censusDate) GetEarningsPeriodsAndCensusDate(EarningEventModel earning, int earningType)
+        
+        private (List<EarningPeriod> periods, DateTime censusDate) GetEarningsPeriodsAndCensusDate(EarningEventModel earning, int earningType)
         {
             var earningPeriods = earning.Periods.Where(x => (int)x.TransactionType == (int)earningType).ToList();
             if (earningPeriods == null || !earningPeriods.Any())

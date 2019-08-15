@@ -83,9 +83,11 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             {
                 var stopwatch = Stopwatch.StartNew();
                 await Initialise().ConfigureAwait(false);
-                await apprenticeshipUpdatedProcessor.GetAfterApprenticeshipUpdatePayments(message);
+                var payments = await apprenticeshipUpdatedProcessor.GetApprenticeshipUpdatePayments(message).ConfigureAwait(false);
                 TrackInfrastructureEvent("DataLockService.GetApprenticeshipUpdatedPayments", stopwatch);
                 telemetry.StopOperation(operation);
+
+                return payments;
             }
         }
 
@@ -139,8 +141,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
                 throw;
             }
         }
-
-
+        
         private void TrackInfrastructureEvent(string eventName, Stopwatch stopwatch)
         {
             telemetry.TrackEvent(eventName,

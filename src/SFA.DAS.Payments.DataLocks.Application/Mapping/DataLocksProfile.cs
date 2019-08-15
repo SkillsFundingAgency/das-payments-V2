@@ -141,17 +141,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.LearningAim, opt => opt.Ignore())
                 .ForMember(dest => dest.IncentiveEarnings, opt => opt.Ignore())
                 .ForMember(dest => dest.OnProgrammeEarnings, opt => opt.Ignore());
-            
-            //CreateMap<EarningEventPeriodModel, IncentiveEarning>()
-            //    .ForMember(dest => dest.Type, opt => opt.MapFrom(source => (int)source.TransactionType))
-            //    .ForMember(dest => dest.CensusDate, opt => opt.MapFrom(source => source.CensusDate))
-            //    .ForMember(dest => dest.Periods, opt => opt.Ignore());
-
-            //CreateMap<EarningEventPeriodModel, OnProgrammeEarning>()
-            //    .ForMember(dest => dest.Type, opt => opt.MapFrom(source => (int) source.TransactionType))
-            //    .ForMember(dest => dest.CensusDate, opt => opt.MapFrom(source => source.CensusDate))
-            //    .ForMember(dest => dest.Periods, opt => opt.Ignore());
-
+          
             CreateMap<EarningEventPeriodModel, EarningPeriod>()
                 .ForMember(dest => dest.PriceEpisodeIdentifier, opt => opt.MapFrom(source => source.PriceEpisodeIdentifier))
                 .ForMember(dest => dest.Period, opt => opt.MapFrom(source => source.DeliveryPeriod))

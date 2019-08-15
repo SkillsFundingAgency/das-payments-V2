@@ -4,10 +4,12 @@ using System.Linq;
 using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
+using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Payments.DataLocks.Application.Mapping;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
@@ -120,7 +122,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
             };
 
         }
-
 
         [Test]
         public void CanMapUkprn()
@@ -243,6 +244,100 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
             changedToFailEvent.TransactionTypesAndPeriods.Should().NotBeEmpty();
         }
 
+        [Test]
+        public void CanMapEarningEventModelToApprenticeshipContractType1EarningEvent()
+        {
+            var earningEventModel = new EarningEventModel
+            {
+                AgreementId = "1",
+                Ukprn = 100,
+                AcademicYear = 1819,
+                EventId = Guid.NewGuid(),
+                EventTime = DateTime.Today,
+                IlrSubmissionDateTime = DateTime.Today,
+                JobId = 1,
+                IlrFileName = "100.xml",
+                SfaContributionPercentage = 0.5m,
+                CollectionPeriod = 1,
+                PriceEpisodes = new List<EarningEventPriceEpisodeModel>
+                {
+                    new EarningEventPriceEpisodeModel
+                    {
+                        PriceEpisodeIdentifier = "1",
+                        TotalNegotiatedPrice1= 10m,
+                        TotalNegotiatedPrice2 = 20m,
+                        TotalNegotiatedPrice3 = 30m,
+                        TotalNegotiatedPrice4 = 40m,
+                        AgreedPrice = 100m,
+                        CourseStartDate = DateTime.Today,
+                        StartDate = DateTime.Today,
+                        PlannedEndDate = DateTime.Today,
+                        ActualEndDate = DateTime.Today,
+                        NumberOfInstalments = 1,
+                        InstalmentAmount = 100m,
+                        CompletionAmount = 20m,
+                        Completed = true,
+                        EmployerContribution = 10m,
+                        CompletionHoldBackExemptionCode = 10
+                    }
+                },
+                LearnerReferenceNumber = "20",
+                LearnerUln = 1000,
+                LearningAimReference = "30",
+                LearningAimProgrammeType = (int)ProgrammeType.Standard,
+                LearningAimStandardCode = 25,
+                LearningAimFrameworkCode = 402,
+                LearningAimPathwayCode = 103,
+                LearningAimFundingLineType = "18-19",
+                LearningAimSequenceNumber = 1
+            };
+
+            var act1EarningEvent = Mapper.Map<ApprenticeshipContractType1EarningEvent>(earningEventModel);
+            act1EarningEvent.Learner = Mapper.Map<Learner>(earningEventModel);
+            act1EarningEvent.LearningAim = Mapper.Map<LearningAim>(earningEventModel);
+
+            act1EarningEvent.AgreementId.Should().Be(earningEventModel.AgreementId);
+            act1EarningEvent.Ukprn.Should().Be(earningEventModel.Ukprn);
+            act1EarningEvent.CollectionPeriod.Period.Should().Be(earningEventModel.CollectionPeriod);
+            act1EarningEvent.CollectionPeriod.AcademicYear.Should().Be(earningEventModel.AcademicYear);
+            act1EarningEvent.CollectionYear.Should().Be(earningEventModel.AcademicYear);
+            act1EarningEvent.EventId.Should().Be(earningEventModel.EventId);
+            act1EarningEvent.EventTime.Should().Be(earningEventModel.EventTime);
+            act1EarningEvent.IlrSubmissionDateTime.Should().Be(earningEventModel.IlrSubmissionDateTime);
+            act1EarningEvent.JobId.Should().Be(earningEventModel.JobId);
+            act1EarningEvent.IlrFileName.Should().Be(earningEventModel.IlrFileName);
+            act1EarningEvent.SfaContributionPercentage.Should().Be(earningEventModel.SfaContributionPercentage);
+
+            act1EarningEvent.PriceEpisodes[0].Identifier.Should().Be(earningEventModel.PriceEpisodes[0].PriceEpisodeIdentifier);
+            act1EarningEvent.PriceEpisodes[0].TotalNegotiatedPrice1.Should().Be(earningEventModel.PriceEpisodes[0].TotalNegotiatedPrice1);
+            act1EarningEvent.PriceEpisodes[0].TotalNegotiatedPrice2.Should().Be(earningEventModel.PriceEpisodes[0].TotalNegotiatedPrice2);
+            act1EarningEvent.PriceEpisodes[0].TotalNegotiatedPrice3.Should().Be(earningEventModel.PriceEpisodes[0].TotalNegotiatedPrice3);
+            act1EarningEvent.PriceEpisodes[0].TotalNegotiatedPrice4.Should().Be(earningEventModel.PriceEpisodes[0].TotalNegotiatedPrice4);
+            act1EarningEvent.PriceEpisodes[0].AgreedPrice.Should().Be(earningEventModel.PriceEpisodes[0].AgreedPrice);
+            act1EarningEvent.PriceEpisodes[0].CourseStartDate.Should().Be(earningEventModel.PriceEpisodes[0].CourseStartDate);
+            act1EarningEvent.PriceEpisodes[0].PlannedEndDate.Should().Be(earningEventModel.PriceEpisodes[0].PlannedEndDate);
+            act1EarningEvent.PriceEpisodes[0].ActualEndDate.Should().Be(earningEventModel.PriceEpisodes[0].ActualEndDate);
+            act1EarningEvent.PriceEpisodes[0].NumberOfInstalments.Should().Be(earningEventModel.PriceEpisodes[0].NumberOfInstalments);
+            act1EarningEvent.PriceEpisodes[0].InstalmentAmount.Should().Be(earningEventModel.PriceEpisodes[0].InstalmentAmount);
+            act1EarningEvent.PriceEpisodes[0].CompletionAmount.Should().Be(earningEventModel.PriceEpisodes[0].CompletionAmount);
+            act1EarningEvent.PriceEpisodes[0].Completed.Should().Be(earningEventModel.PriceEpisodes[0].Completed);
+            act1EarningEvent.PriceEpisodes[0].EmployerContribution.Should().Be(earningEventModel.PriceEpisodes[0].EmployerContribution);
+            act1EarningEvent.PriceEpisodes[0].CompletionHoldBackExemptionCode.Should().Be(earningEventModel.PriceEpisodes[0].CompletionHoldBackExemptionCode);
+            
+            act1EarningEvent.Learner.Uln.Should().Be(earningEventModel.LearnerUln);
+            act1EarningEvent.Learner.ReferenceNumber.Should().Be(earningEventModel.LearnerReferenceNumber);
+            
+            act1EarningEvent.LearningAim.Reference.Should().Be(earningEventModel.LearningAimReference);
+            act1EarningEvent.LearningAim.ProgrammeType.Should().Be(earningEventModel.LearningAimProgrammeType);
+            act1EarningEvent.LearningAim.StandardCode.Should().Be(earningEventModel.LearningAimStandardCode );
+            act1EarningEvent.LearningAim.FrameworkCode.Should().Be(earningEventModel.LearningAimFrameworkCode);
+            act1EarningEvent.LearningAim.PathwayCode.Should().Be(earningEventModel.LearningAimPathwayCode);
+            act1EarningEvent.LearningAim.FundingLineType.Should().Be(earningEventModel.LearningAimFundingLineType);
+            act1EarningEvent.LearningAim.SequenceNumber.Should().Be(earningEventModel.LearningAimSequenceNumber);
+         
+        }
+
+
         private static Array GetIncentives()
         {
             return Enum.GetValues(typeof(IncentiveEarningType));
@@ -252,6 +347,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
         {
             return Enum.GetValues(typeof(OnProgrammeEarningType));
         }
+
+
 
     }
 }
