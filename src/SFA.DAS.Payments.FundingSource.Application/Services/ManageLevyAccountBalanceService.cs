@@ -118,7 +118,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         {
             try
             {
-                var pagedAccountsRecord = await accountApiClient.GetPageOfAccounts(1, 1).ConfigureAwait(false);
+                var pagedAccountsRecord = await accountApiClient.GetPageOfAccounts(1, batchSize).ConfigureAwait(false);
                 totalPageSize = pagedAccountsRecord.TotalPages;
 
                 logger.LogInfo($"Total Levy Account to process {totalPageSize} ");

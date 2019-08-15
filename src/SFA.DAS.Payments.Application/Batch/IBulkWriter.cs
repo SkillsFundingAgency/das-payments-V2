@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.Application.Batch
             await Flush(cancellationToken);
         }
 
-        public async Task Flush(CancellationToken cancellationToken)
+        public virtual async Task Flush(CancellationToken cancellationToken)
         {
             logger.LogVerbose($"Saving {queue.Count} records of type {typeof(TEntity).Name}");
 

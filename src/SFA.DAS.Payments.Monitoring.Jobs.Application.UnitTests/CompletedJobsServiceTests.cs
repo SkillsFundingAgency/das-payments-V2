@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                     AcademicYear = 1819,
                     Ukprn = 1000,
                     Status = JobStatus.InProgress,
-                    JobType = JobType.MonthEndJob,
+                    JobType = JobType.PeriodEndStartJob,
                     DcJobId = 100,
                 },
             };

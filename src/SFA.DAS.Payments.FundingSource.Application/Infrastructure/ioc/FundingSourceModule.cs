@@ -38,6 +38,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
             builder.RegisterType<ReliableCollectionCache<List<string>>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<RequiredLevyAmountFundingSourceService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<LevyMessageRoutingService>().AsImplementedInterfaces();
+            builder.RegisterType<PeriodEndService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<LevyAccountBulkCopyConfiguration>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<LevyAccountBulkCopyRepository>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
