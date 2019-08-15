@@ -1099,11 +1099,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 foreach (var testSessionProvider in TestSession.Providers)
                 {
-                    if (Config.ValidateDcAndDasServices)
-                    {
-                        await RequiredPaymentsCacheCleaner.ClearCaches(testSessionProvider, TestSession, collectionPeriod.AcademicYear).ConfigureAwait(false);
-                    }
-
                     ProvidersWithCacheCleared.Add((collectionPeriod.Period, collectionPeriod.AcademicYear, testSessionProvider.Ukprn));
                 }
             }
