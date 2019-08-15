@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
@@ -9,8 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac.Extras.Moq" Version="4.3.0" />
     <PackageReference Include="AutoMapper" Version="7.0.1" />
-    <PackageReference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model" Version="0.1.320" />
+    <PackageReference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model" Version="0.1.446" />
     <PackageReference Include="FluentAssertions" Version="5.6.0" />
     <PackageReference Include="Castle.Core" Version="4.3.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
@@ -25,6 +26,7 @@
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Application\SFA.DAS.Payments.EarningEvents.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Domain\SFA.DAS.Payments.EarningEvents.Domain.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.JobContextMessageHandling\SFA.DAS.Payments.JobContextMessageHandling.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,6 +7,7 @@
         public static string MessageCount = "MessageCount";
         public static string Status = "Status";
 
+        public static string LearnerRef = "LearnerRef";
         public static string CollectionPeriod = "CollectionPeriod";
         public static string AcademicYear = "AcademicYear";
         public static string ExternalJobId = "ExternalJobId";

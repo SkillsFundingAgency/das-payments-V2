@@ -11,14 +11,20 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.0.5" />
+    <PackageReference Include="Polly" Version="7.1.0" />
+    <PackageReference Include="SFA.DAS.Account.Api.Client" Version="1.6.1469" />
+    <PackageReference Include="ESFA.DC.Logging.Interfaces" Version="0.1.4-beta0001" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Messages\SFA.DAS.Payments.DataLocks.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Domain\SFA.DAS.Payments.FundingSource.Domain.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages.Internal\SFA.DAS.Payments.FundingSource.Messages.Internal.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages\SFA.DAS.Payments.FundingSource.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Model\SFA.DAS.Payments.FundingSource.Model.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.PeriodEnd.Messages\SFA.DAS.Payments.PeriodEnd.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Messages\SFA.DAS.Payments.RequiredPayments.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.ServiceFabric.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj" />
   </ItemGroup>

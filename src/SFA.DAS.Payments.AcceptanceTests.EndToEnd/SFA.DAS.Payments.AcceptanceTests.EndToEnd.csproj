@@ -85,6 +85,12 @@
     <Reference Include="ESFA.DC.JobStatus.Interface, Version=0.2.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.JobStatus.Interface.0.2.5-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Interface.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.Logging, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Logging.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.Logging.Interfaces, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Logging.Interfaces.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.Logging.Interfaces.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.Serialization.Interfaces, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Serialization.Interfaces.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.Serialization.Interfaces.dll</HintPath>
     </Reference>
@@ -199,7 +205,7 @@
     <Reference Include="nunit.framework, Version=3.11.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.11.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="Polly, Version=6.0.0.0, Culture=neutral, PublicKeyToken=c8a3ffc3f8f825cc, processorArchitecture=MSIL">
+	<Reference Include="Polly, Version=6.0.0.0, Culture=neutral, PublicKeyToken=c8a3ffc3f8f825cc, processorArchitecture=MSIL">
       <HintPath>..\packages\Polly.6.1.2\lib\netstandard2.0\Polly.dll</HintPath>
     </Reference>
     <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
@@ -210,6 +216,27 @@
     </Reference>
     <Reference Include="SFA.DAS.CommitmentsV2.Types, Version=2.1.1494.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.CommitmentsV2.Types.2.1.1494\lib\netstandard2.0\SFA.DAS.CommitmentsV2.Types.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.2.6.0\lib\net46\Serilog.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Enrichers.Environment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Enrichers.Environment.2.1.2\lib\net45\Serilog.Enrichers.Environment.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Enrichers.Process, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Enrichers.Process.2.0.1\lib\net45\Serilog.Enrichers.Process.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Enrichers.Thread, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Enrichers.Thread.3.0.0\lib\net45\Serilog.Enrichers.Thread.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.Console, Version=3.1.1.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.Console.3.1.1\lib\net45\Serilog.Sinks.Console.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.MSSqlServer, Version=5.1.1.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.MSSqlServer.5.1.1\lib\net452\Serilog.Sinks.MSSqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.PeriodicBatching, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.PeriodicBatching.2.1.1\lib\net45\Serilog.Sinks.PeriodicBatching.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -437,6 +464,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-688 - New Apprenticeship Approved.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-696 - Employer Change in Payment Order for Multiple learners with an Employer.feature.cs">
+      <DependentUpon>PV2-696 - Employer Change in Payment Order for Multiple learners with an Employer.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Tests\Approvals Interface\PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature.cs">
       <DependentUpon>PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature</DependentUpon>
@@ -1622,6 +1654,10 @@
     <None Include="Tests\Additional Payments Incentives\PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-696 - Employer Change in Payment Order for Multiple learners with an Employer.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-696 - Employer Change in Payment Order for Multiple learners with an Employer.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Approvals Interface\PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

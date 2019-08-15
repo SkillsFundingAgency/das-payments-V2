@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Messages.Events
 {
-    public class ApprenticeshipUpdated
+    public class ApprenticeshipUpdated: IEvent
     {
+        
         public long Id { get; set; }
         public long EmployerAccountId { get; set; }
         public string AgreementId { get; set; }
@@ -25,11 +27,15 @@ namespace SFA.DAS.Payments.DataLocks.Messages.Events
         public List<ApprenticeshipPriceEpisodeModel> ApprenticeshipPriceEpisodes { get; set; }
         public List<ApprenticeshipDuplicate> Duplicates { get; set; }
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
+        public Guid EventId { get; set; }
+        public DateTimeOffset EventTime { get; set; }
 
         public ApprenticeshipUpdated()
         {
+            EventId = Guid.NewGuid();
+            EventTime = DateTimeOffset.UtcNow;
             ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>();
-            Duplicates= new List<ApprenticeshipDuplicate>();
+            Duplicates = new List<ApprenticeshipDuplicate>();
         }
     }
 }

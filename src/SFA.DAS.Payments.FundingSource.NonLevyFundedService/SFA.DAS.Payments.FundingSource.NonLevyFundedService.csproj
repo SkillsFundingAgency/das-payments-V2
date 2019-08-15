@@ -11,7 +11,9 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="Autofac.ServiceFabric" Version="2.0.0" />
-    <PackageReference Include="ESFA.DC.Logging" Version="0.1.1-beta0001" />
+    <PackageReference Include="ESFA.DC.Logging.Interfaces" Version="0.1.4-beta0001" />
+    <PackageReference Include="ESFA.DC.Logging" Version="0.1.4-beta0001" />
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.0.5" />
     <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.2.162" />
     <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.2.162" />
     <PackageReference Include="NServiceBus" Version="7.1.5" />
