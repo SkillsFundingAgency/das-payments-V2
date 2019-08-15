@@ -146,46 +146,23 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             dataContext.ApprenticeshipPause.Update(apprenticeshipPauseModel);
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
-
-
-        public async Task<List<EarningEventModel>> GetProviderApprenticeshipEarnings(long uln, long ukprn)
+        
+        public async Task<List<EarningEventModel>> GetProviderApprenticeshipEarnings(long uln, long ukprn, CancellationToken cancellationToken)
         {
+            var latestIlrSubmissionDateTime = await dataContext.EarningEvent
+                .MaxAsync(x => x.IlrSubmissionDateTime,cancellationToken)
+                .ConfigureAwait(false);
 
-            var earningDbModel = new EarningEventModel();
+            var apprenticeshipEarnings = await dataContext.EarningEvent
+                .Include(x => x.Periods)
+                .Include(x => x.PriceEpisodes)
+                .Where(x => x.Ukprn == ukprn && x.LearnerUln == uln && x.IlrSubmissionDateTime == latestIlrSubmissionDateTime)
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
 
-            var earningModel = new ApprenticeshipContractType1EarningEvent
-            {
-                Ukprn = earningDbModel.Ukprn,
-                AgreementId = earningDbModel.AgreementId,
-                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(earningDbModel.AcademicYear, earningDbModel.CollectionPeriod),
-                CollectionYear = earningDbModel.AcademicYear,
-                EventId = earningDbModel.EventId,
-                EventTime = earningDbModel.EventTime,
-                // IlrFileName =  earningDbModel.
-                IlrSubmissionDateTime = DateTime.UtcNow,
-                JobId = earningDbModel.JobId,
-                // SfaContributionPercentage = earningDbModel.s
-                PriceEpisodes = earningDbModel.PriceEpisodes.Select(x => new PriceEpisode
-                {
-                    Identifier = x.PriceEpisodeIdentifier,
-                   // AgreedPrice =
-                   TotalNegotiatedPrice1 = x.TotalNegotiatedPrice1,
-                   TotalNegotiatedPrice2 = x.TotalNegotiatedPrice2,
-                   TotalNegotiatedPrice3 = x.TotalNegotiatedPrice3,
-                   TotalNegotiatedPrice4 = x.TotalNegotiatedPrice4,
-                   ActualEndDate = x.ActualEndDate
-                }).ToList(),
-               // IncentiveEarnings =  
-              Learner = earningDbModel.
-              //LearningAim = earningDbModel
-            };
-
-
-
-
+            return apprenticeshipEarnings;
         }
-
-
+        
         public void Dispose()
         {
             (dataContext as PaymentsDataContext)?.Dispose();

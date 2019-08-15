@@ -77,6 +77,18 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             }
         }
 
+        public async Task<List<DataLockEvent>> GetApprenticeshipUpdatedPayments(ApprenticeshipUpdated message, CancellationToken none)
+        {
+            using (var operation = telemetry.StartOperation("DataLockService.HandleApprenticeshipUpdated", message.EventId.ToString()))
+            {
+                var stopwatch = Stopwatch.StartNew();
+                await Initialise().ConfigureAwait(false);
+                await apprenticeshipUpdatedProcessor.GetAfterApprenticeshipUpdatePayments(message);
+                TrackInfrastructureEvent("DataLockService.GetApprenticeshipUpdatedPayments", stopwatch);
+                telemetry.StopOperation(operation);
+            }
+        }
+
         public async Task Reset()
         {
             paymentLogger.LogVerbose($"Resetting actor for id {Id}");

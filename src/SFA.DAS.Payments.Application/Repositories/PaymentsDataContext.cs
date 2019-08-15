@@ -18,7 +18,6 @@ namespace SFA.DAS.Payments.Application.Repositories
         public virtual DbSet<DataLockFailureModel> DataLockFailure { get; protected set; }
         public virtual DbSet<EmployerProviderPriorityModel> EmployerProviderPriority { get; protected set; }
         public virtual DbSet<ApprenticeshipPauseModel> ApprenticeshipPause { get; protected set; }
-
         public virtual DbSet<EarningEventModel> EarningEvent { get; protected set; }
         public virtual DbSet<EarningEventPeriodModel> EarningEventPeriod { get; protected set; }
         public virtual DbSet<EarningEventPriceEpisodeModel> EarningEventPriceEpisode { get; protected set; }

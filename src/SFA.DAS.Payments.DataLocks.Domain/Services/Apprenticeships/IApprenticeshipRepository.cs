@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
+using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
@@ -22,5 +23,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
         Task AddApprenticeshipPause(ApprenticeshipPauseModel pauseModel);
         Task<ApprenticeshipPauseModel> GetCurrentApprenticeshipPausedModel(long apprenticeshipId);
         Task UpdateCurrentlyPausedApprenticeship(ApprenticeshipPauseModel apprenticeshipPauseModel);
+        Task<List<EarningEventModel>> GetProviderApprenticeshipEarnings(long uln, long ukprn, CancellationToken cancellationToken);
     }
 }

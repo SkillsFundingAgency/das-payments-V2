@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
@@ -36,6 +37,18 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
                 var actor = actorProxyFactory.CreateActorProxy<IDataLockService>(new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/DataLockServiceActorService"), actorId);
                 logger.LogDebug($"Actor proxy created for actor id {message.Uln}");
                 await actor.HandleApprenticeshipUpdated(message, CancellationToken.None).ConfigureAwait(false);
+
+                var dataLockEvents = await actor.GetApprenticeshipUpdatedPayments( message, CancellationToken.None).ConfigureAwait(false);
+
+                logger.LogDebug($"Earning handled for learner with learner uln {message.Uln}");
+                if (dataLockEvents != null)
+                {
+                    var summary = string.Join(", ", dataLockEvents.GroupBy(e => e.GetType().Name).Select(g => $"{g.Key}: {g.Count()}"));
+                    logger.LogVerbose($"Publishing data lock event for learner with learner uln {message.Uln}: {summary}");
+                    await Task.WhenAll(dataLockEvents.Select(context.Publish)).ConfigureAwait(false);
+                    logger.LogDebug($"Data lock event published for learner with learner uln {message.Uln}");
+                }
+
                 logger.LogInfo($"Finished handling the apprenticeship updated event.  Apprenticeship: {message.Id}, employer: {message.EmployerAccountId}, provider: {message.Ukprn}");
             }
             catch (Exception ex)
