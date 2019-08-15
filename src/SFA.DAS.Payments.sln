@@ -225,7 +225,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.DataLocks.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.DataLocks.Model", "SFA.DAS.Payments.DataLocks.Model\SFA.DAS.Payments.DataLocks.Model.csproj", "{C44F65D2-34FC-4AF3-B272-56CBA07E0E1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Audit.DatalockService", "SFA.DAS.Payments.Audit.DatalockService\SFA.DAS.Payments.Audit.DatalockService.csproj", "{0C5D5012-D2B2-49F7-90CA-BDE8D8BA57F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Audit.DataLockService", "SFA.DAS.Payments.Audit.DatalockService\SFA.DAS.Payments.Audit.DataLockService.csproj", "{0C5D5012-D2B2-49F7-90CA-BDE8D8BA57F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

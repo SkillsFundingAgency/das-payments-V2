@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ServiceManifest Name="SFA.DAS.Payments.Audit.DatalockServicePkg"
+<ServiceManifest Name="SFA.DAS.Payments.Audit.DataLockServicePkg"
                  Version="1.0.0"
                  xmlns="http://schemas.microsoft.com/2011/01/fabric"
                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
@@ -7,14 +7,14 @@
   <ServiceTypes>
     <!-- This is the name of your ServiceType. 
          This name must match the string used in RegisterServiceType call in Program.cs. -->
-    <StatefulServiceType ServiceTypeName="SFA.DAS.Payments.Audit.DatalockServiceType" HasPersistedState="true" />
+    <StatefulServiceType ServiceTypeName="SFA.DAS.Payments.Audit.DataLockServiceType" HasPersistedState="true" />
   </ServiceTypes>
 
   <!-- Code package is your service executable. -->
   <CodePackage Name="Code" Version="1.0.0">
     <EntryPoint>
       <ExeHost>
-        <Program>SFA.DAS.Payments.Audit.DatalockService.exe</Program>
+        <Program>SFA.DAS.Payments.Audit.DataLockService.exe</Program>
       </ExeHost>
     </EntryPoint>
   </CodePackage>

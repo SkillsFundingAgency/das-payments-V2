@@ -1,12 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.Audit.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="SFA.DAS.Payments.Audit.DatalockService_PartitionCount" Value="1" />
-    <Parameter Name="SFA.DAS.Payments.Audit.DatalockService_MinReplicaSetSize" Value="3" />
-    <Parameter Name="SFA.DAS.Payments.Audit.DatalockService_TargetReplicaSetSize" Value="3" />
-    <Parameter Name="SFA.DAS.Payments.Audit.DatalockService_PartitionCount" Value="1" />
-    <Parameter Name="SFA.DAS.Payments.Audit.DatalockService_MinReplicaSetSize" Value="3" />
-    <Parameter Name="SFA.DAS.Payments.Audit.DatalockService_TargetReplicaSetSize" Value="3" />
     <Parameter Name="Audit_RequiredPaymentService_MinReplicaSetSize" Value="__Audit_RequiredPaymentService_MinReplicaSetSize__" />
     <Parameter Name="Audit_RequiredPaymentService_PartitionCount" Value="__Audit_RequiredPaymentService_PartitionCount__" />
     <Parameter Name="Audit_RequiredPaymentService_TargetReplicaSetSize" Value="__Audit_RequiredPaymentService_TargetReplicaSetSize__" />
@@ -29,5 +23,8 @@
     <Parameter Name="PaymentsConnectionString" Value="__PaymentsConnectionString__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
     <Parameter Name="ConsoleLogLevel" Value="__ConsoleLogLevel__" />
+    <Parameter Name="Audit_DataLockService_MinReplicaSetSize" Value="__Audit_DataLockService_MinReplicaSetSize__" />
+    <Parameter Name="Audit_DataLockService_PartitionCount" Value="__Audit_DataLockService_PartitionCount__" />
+    <Parameter Name="Audit_DataLockService_TargetReplicaSetSize" Value="__Audit_DataLockService_TargetReplicaSetSize__" />
   </Parameters>
 </Application>

@@ -6,6 +6,8 @@
     <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
     <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
     <TargetLatestRuntimePatch>False</TargetLatestRuntimePatch>
+    <AssemblyName>SFA.DAS.Payments.Audit.DataLockService</AssemblyName>
+    <RootNamespace>SFA.DAS.Payments.Audit.DataLockService</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

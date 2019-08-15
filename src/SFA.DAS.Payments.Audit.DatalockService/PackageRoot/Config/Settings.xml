@@ -15,8 +15,8 @@
   </Section>
 
   <Section Name="Settings">
-    <Parameter Name="EndpointName" Value="sfa-das-payments-audit-earningevents"/>
-    <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-audit-earningevents-errors"/>
+    <Parameter Name="EndpointName" Value="sfa-das-payments-audit-datalock"/>
+    <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-audit-datalock-errors"/>
     <Parameter Name="BatchIntervalInSeconds" Value="10"/>
     <Parameter Name="BatchSize" Value="500"/>
     <Parameter Name="BatchFailureTimeoutInSeconds" Value="60"/>

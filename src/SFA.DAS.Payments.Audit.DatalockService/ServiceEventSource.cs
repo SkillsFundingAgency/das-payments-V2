@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Services.Runtime;
 
-namespace SFA.DAS.Payments.Audit.DatalockService
+namespace SFA.DAS.Payments.Audit.DataLockService
 {
-    [EventSource(Name = "MyCompany-SFA.DAS.Payments.Audit.ServiceFabric-SFA.DAS.Payments.Audit.DatalockService")]
+    [EventSource(Name = "MyCompany-SFA.DAS.Payments.Audit.ServiceFabric-SFA.DAS.Payments.Audit.DataLockService")]
     internal sealed class ServiceEventSource : EventSource
     {
         public static readonly ServiceEventSource Current = new ServiceEventSource();

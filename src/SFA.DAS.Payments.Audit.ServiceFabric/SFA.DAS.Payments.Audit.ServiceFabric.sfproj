@@ -32,7 +32,7 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Payments.Audit.DatalockService\SFA.DAS.Payments.Audit.DatalockService.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Audit.DatalockService\SFA.DAS.Payments.Audit.DataLockService.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Audit.EarningEventsService\SFA.DAS.Payments.Audit.EarningEventsService.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Audit.FundingSourceService\SFA.DAS.Payments.Audit.FundingSourceService.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Audit.RequiredPaymentService\SFA.DAS.Payments.Audit.RequiredPaymentService.csproj" />
