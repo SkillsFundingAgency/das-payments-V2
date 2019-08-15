@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.Priority, opt => opt.Ignore())
                 .ForMember(dest => dest.IsLevyPayer, opt => opt.UseValue(true))
                 .ForMember(dest => dest.StopDate, dest => dest.Ignore())
-                .ForMember(dest => dest.ApprenticeshipEmployerType, dest => dest.UseValue(ApprenticeshipEmployerType.Levy)) // this defaults to Levy until Approvals send value
+                .ForMember(dest => dest.ApprenticeshipEmployerType, opt => opt.ResolveUsing<ApprenticeshipEmployerTypeResolver>())
                 ;
 
             CreateMap<PriceEpisode, ApprenticeshipPriceEpisodeModel>()

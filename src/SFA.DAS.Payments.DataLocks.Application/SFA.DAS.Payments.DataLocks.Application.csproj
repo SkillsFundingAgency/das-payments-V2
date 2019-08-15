@@ -11,6 +11,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
 
     <PackageReference Include="SFA.DAS.CommitmentsV2.Messages" Version="4.1.70" />
+
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Types" Version="4.1.70" />
   </ItemGroup>
 
   <ItemGroup>
