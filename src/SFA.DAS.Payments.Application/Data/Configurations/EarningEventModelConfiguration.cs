@@ -29,6 +29,8 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.JobId).HasColumnName(@"JobId").IsRequired();
             builder.Property(x => x.EventTime).HasColumnName(@"EventTime").IsRequired();
             builder.Property(x => x.LearningAimSequenceNumber).HasColumnName(@"LearningAimSequenceNumber");
+            builder.Property(x => x.SfaContributionPercentage).HasColumnName(@"SfaContributionPercentage");
+            builder.Property(x => x.IlrFileName).HasColumnName(@"IlrFileName");
         }
     }
 }

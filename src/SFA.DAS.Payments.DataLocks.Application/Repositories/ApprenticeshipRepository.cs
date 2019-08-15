@@ -168,9 +168,16 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
                 PriceEpisodes = earningDbModel.PriceEpisodes.Select(x => new PriceEpisode
                 {
                     Identifier = x.PriceEpisodeIdentifier,
-                   // AgreedPrice = 
-                    TotalNegotiatedPrice1 = x.TotalNegotiatedPrice1
-                }).ToList()
+                   // AgreedPrice =
+                   TotalNegotiatedPrice1 = x.TotalNegotiatedPrice1,
+                   TotalNegotiatedPrice2 = x.TotalNegotiatedPrice2,
+                   TotalNegotiatedPrice3 = x.TotalNegotiatedPrice3,
+                   TotalNegotiatedPrice4 = x.TotalNegotiatedPrice4,
+                   ActualEndDate = x.ActualEndDate
+                }).ToList(),
+               // IncentiveEarnings =  
+              Learner = earningDbModel.
+              //LearningAim = earningDbModel
             };
 
 

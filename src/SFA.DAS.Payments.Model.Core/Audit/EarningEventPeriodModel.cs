@@ -11,5 +11,6 @@ namespace SFA.DAS.Payments.Model.Core.Audit
         public byte DeliveryPeriod { get; set; }
         public decimal Amount { get; set; }
         public decimal? SfaContributionPercentage { get; set; }
+        public DateTime? CensusDate { get; set; }
     }
 }

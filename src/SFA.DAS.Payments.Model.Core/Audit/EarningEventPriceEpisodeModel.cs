@@ -21,5 +21,8 @@ namespace SFA.DAS.Payments.Model.Core.Audit
         public DateTime? EffectiveTotalNegotiatedPriceStartDate { get; set; }
         public decimal? EmployerContribution { get; set; }
         public int? CompletionHoldBackExemptionCode { get; set; }
+        public decimal AgreedPrice { get; set; }
+        public DateTime CourseStartDate { get; set; }
+
     }
 }

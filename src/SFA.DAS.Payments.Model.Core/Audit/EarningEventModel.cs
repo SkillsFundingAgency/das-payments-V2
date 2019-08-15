@@ -10,5 +10,9 @@ namespace SFA.DAS.Payments.Model.Core.Audit
         public int LearningAimSequenceNumber { get; set; }
         public List<EarningEventPeriodModel> Periods { get; set; }
         public List<EarningEventPriceEpisodeModel> PriceEpisodes { get; set; }
+
+        public string IlrFileName { get; set; }
+        public decimal? SfaContributionPercentage { get; set; }
+
     } 
 }
