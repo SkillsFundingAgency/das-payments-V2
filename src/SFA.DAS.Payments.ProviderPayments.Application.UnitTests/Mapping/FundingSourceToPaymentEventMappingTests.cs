@@ -276,6 +276,15 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             fundingSourceEvent.InstalmentAmount = 200M;
             fundingSourceEvent.NumberOfInstalments = 5;
             fundingSourceEvent.ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy;
+            fundingSourceEvent.LearningAim = new LearningAim
+            {
+                PathwayCode = 12,
+                FrameworkCode = 1245,
+                FundingLineType = "Non-DAS 16-18 Learner",
+                StandardCode = 1209,
+                ProgrammeType = 7890,
+                Reference = "1234567-aim-ref"
+            };
 
             var providerPayment = Mapper.Map<ProviderPaymentEventModel>(fundingSourceEvent);
 
