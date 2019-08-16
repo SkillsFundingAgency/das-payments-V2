@@ -20,6 +20,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                 .ForMember(dest => dest.PriceEpisodes,
                     opt => opt.ResolveUsing<EarningEventPriceEpisodeModelListResolver>())
                 .ForMember(dest => dest.LearningAimSequenceNumber, opt => opt.MapFrom(x => x.LearningAim.SequenceNumber))
+                .ForMember(dest => dest.LearningStartDate, opt => opt.MapFrom(src => src.LearningAim.StartDate))
                 ;
 
             CreateMap<ApprenticeshipContractType1EarningEvent, EarningEventModel>()

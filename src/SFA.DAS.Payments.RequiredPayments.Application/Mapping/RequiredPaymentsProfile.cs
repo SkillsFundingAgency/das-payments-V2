@@ -46,6 +46,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(requiredPayment => requiredPayment.Learner, opt => opt.MapFrom(earning => earning.Learner.Clone()))
                 .ForMember(requiredPayment => requiredPayment.LearningAim, opt => opt.MapFrom(earning => earning.LearningAim.Clone()))
                 .ForMember(requiredPayment => requiredPayment.EventId, opt => opt.Ignore())
+                .ForMember(requiredPayment => requiredPayment.LearningStartDate, opt => opt.MapFrom(earning => earning.LearningAim.StartDate))
+                .Ignore(x => x.ApprenticeshipId)
+                .Ignore(x => x.ApprenticeshipPriceEpisodeId)
                 .Ignore(x => x.ContractType)
                 .Ignore(x => x.AccountId)
                 .Ignore(x => x.TransferSenderAccountId)
@@ -127,6 +130,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Include<EarningPeriod, CalculatedRequiredLevyAmount>()
                 .Include<EarningPeriod, CalculatedRequiredIncentiveAmount>()
                 .ForMember(requiredPayment => requiredPayment.DeliveryPeriod, opt => opt.MapFrom(period => period.Period))
+                .ForMember(requiredPayment => requiredPayment.ApprenticeshipId, opt => opt.MapFrom(period => period.ApprenticeshipId))
+                .ForMember(requiredPayment => requiredPayment.ApprenticeshipPriceEpisodeId, opt => opt.MapFrom(period => period.ApprenticeshipPriceEpisodeId))
                 .ForAllOtherMembers(opt => opt.Ignore())
                 ;
 
@@ -178,7 +183,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.CompletionStatus)
                 .Ignore(x => x.CompletionAmount)
                 .Ignore(x => x.InstalmentAmount)
-                .Ignore(x => x.NumberOfInstalments);
+                .Ignore(x => x.NumberOfInstalments)
+                .Ignore(x => x.LearningStartDate);
 
             CreateMap<RequiredPayment, CalculatedRequiredCoInvestedAmount>()
                 .ForMember(x => x.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage))
@@ -216,6 +222,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.CompletionAmount)
                 .Ignore(x => x.InstalmentAmount)
                 .Ignore(x => x.NumberOfInstalments)
+                .Ignore(x => x.LearningStartDate)
                 .Ignore(x => x.IlrFileName)
                 ;
                             
@@ -245,7 +252,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(x => x.AccountId,opt => opt.MapFrom(src => src.AccountId))
                 .ForMember(x => x.TransferSenderAccountId, opt => opt.MapFrom(src => src.TransferSenderAccountId))
                 .ForMember(x => x.CompletionAmount,opt => opt.MapFrom(src => src.CompletionAmount))
-                //.ForMember(x => x.StartDate,opt => opt.MapFrom(src => src.StartDate))
+                .ForMember(x => x.LearningStartDate,opt => opt.MapFrom(src => src.LearningStartDate))
                 .Ignore(x => x.EventId)
                 .Ignore(x => x.AmountDue)
                 .Ignore(x => x.EarningEventId)
@@ -300,6 +307,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.IlrSubmissionDateTime)
                 .Ignore(x => x.IlrFileName)
                 .Ignore(x => x.CollectionPeriod)
+                .Ignore(x => x.LearningStartDate)
                 ;
             // End Required Payment --> RequiredPaymentEvent
         }
