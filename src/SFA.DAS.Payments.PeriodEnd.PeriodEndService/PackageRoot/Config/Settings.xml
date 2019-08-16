@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Settings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <Section Name="ConnectionStringsSection">
+    <Parameter Name="StorageConnectionString" Value="" />
+    <Parameter Name="LoggingConnectionString" Value=""/>
+    <Parameter Name="ServiceBusConnectionString" Value=""/>
+    <Parameter Name="DCServiceBusConnectionString" Value=""/>
+    <Parameter Name="DcStorageConnectionString" Value=""/>
+    <Parameter Name="PaymentsConnectionString" Value=""/>
+    <Parameter Name="MonitoringServiceBusConnectionString" Value=""/>
+  </Section>
+
+  <Section Name="Settings">
+    <Parameter Name="TimeToPauseBetweenChecks" Value=""/>
+    <Parameter Name="TimeToWaitForJobToComplete" Value=""/>
+    <Parameter Name="EndpointName" Value=""/>
+    <Parameter Name="FailedMessagesQueue" Value=""/>
+    <Parameter Name="AuditQueueName" Value="" />
+    <Parameter Name="SubscriptionName" Value="" />
+    <Parameter Name="JobStatusQueueName" Value="" />
+    <Parameter Name="TopicName" Value="" />
+    <Parameter Name="LogLevel" Value="" />
+    <Parameter Name="ProcessMessageSequentially" Value="" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+  </Section>
+</Settings>

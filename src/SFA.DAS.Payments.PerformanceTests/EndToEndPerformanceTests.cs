@@ -166,7 +166,7 @@ namespace SFA.DAS.Payments.PerformanceTests
                 MessageId = command.CommandId,
                 StartTime = DateTimeOffset.UtcNow,
                 MessageName = command.GetType().FullName
-            }).ToList(), collectionPeriod, JobType.MonthEndJob);
+            }).ToList(), collectionPeriod, JobType.ComponentAcceptanceTestMonthEndJob);
             var monthEndTasks = commands.Select(MessageSession.Send);
             await Task.WhenAll(monthEndTasks);
             foreach (var testSession in sessions)

@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
     {
         private IPaymentLogger paymentLogger;
         private Mock<IMapper> mapper;
-        private Mock<IMonthEndService> monthEndService;
+        private Mock<IProviderPeriodEndService> monthEndService;
         private EmployerCoInvestedFundingSourcePaymentEvent fundingSourcePaymentEvent;
         private ProviderPaymentEvent providerPaymentEvent;
 
@@ -84,7 +84,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
             mapper.Setup(o => o.Map<ProviderPaymentEvent>(It.IsAny<FundingSourcePaymentEvent>()))
                 .Returns(providerPaymentEvent);
 
-            monthEndService = new Mock<IMonthEndService>();
+            monthEndService = new Mock<IProviderPeriodEndService>();
             monthEndService
                 .Setup(o => o.MonthEndStarted(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>()))
                 .ReturnsAsync(true);
