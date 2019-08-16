@@ -23,6 +23,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
     {
         Task ProcessApprenticeshipUpdate(ApprenticeshipUpdated updatedApprenticeship);
         Task<List<DataLockEvent>> GetApprenticeshipUpdatePayments(ApprenticeshipUpdated updatedApprenticeship);
+        Task<List<FunctionalSkillDataLockEvent>> GetApprenticeshipUpdateFunctionalSkillPayments(ApprenticeshipUpdated updatedApprenticeship);
     }
 
     public class ApprenticeshipUpdatedProcessor : IApprenticeshipUpdatedProcessor
@@ -68,53 +69,120 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         public async Task<List<DataLockEvent>> GetApprenticeshipUpdatePayments(ApprenticeshipUpdated updatedApprenticeship)
         {
-            var apprenticeshipEarning = await GetApprenticeshipEarningsToReProcess(updatedApprenticeship.Uln, updatedApprenticeship.Ukprn)
+            var apprenticeshipAct1Earning = await GetApprenticeshipAct1EarningsToReProcess(updatedApprenticeship.Uln, updatedApprenticeship.Ukprn)
                 .ConfigureAwait(false);
 
-            var payments = await dataLockProcessor.GetPaymentEvents(apprenticeshipEarning, default(CancellationToken))
-                .ConfigureAwait(false);
+            if (apprenticeshipAct1Earning == null) return null;
 
+            var payments = await dataLockProcessor.GetPaymentEvents(apprenticeshipAct1Earning, default(CancellationToken))
+                .ConfigureAwait(false);
             return payments;
+
+        }
+        
+        public async Task<List<FunctionalSkillDataLockEvent>> GetApprenticeshipUpdateFunctionalSkillPayments(ApprenticeshipUpdated updatedApprenticeship)
+        {
+            var apprenticeshipAct1FunctionalSkillEarning = await GetApprenticeshipFunctionalSkillEarningsToReProcess(updatedApprenticeship.Uln, updatedApprenticeship.Ukprn)
+                .ConfigureAwait(false);
+
+            if (apprenticeshipAct1FunctionalSkillEarning == null) return null;
+            
+            var functionalSkillPayments = await dataLockProcessor.GetFunctionalSkillPaymentEvents(apprenticeshipAct1FunctionalSkillEarning, default(CancellationToken))
+                .ConfigureAwait(false);
+            return functionalSkillPayments;
+
         }
 
-        private async Task<ApprenticeshipContractType1EarningEvent> GetApprenticeshipEarningsToReProcess(long uln, long ukprn)
+        private async Task<ApprenticeshipContractType1EarningEvent> GetApprenticeshipAct1EarningsToReProcess(long uln, long ukprn)
         {
-            var apprenticeshipEarnings = await repository
-                        .GetProviderApprenticeshipEarnings(uln, ukprn, default(CancellationToken))
+            var onProgAndIncentiveEarning = await repository
+                        .GetLatestProviderApprenticeshipEarnings(uln, ukprn, typeof(ApprenticeshipContractType1EarningEvent).FullName, default(CancellationToken))
                         .ConfigureAwait(false);
 
-            var onProgEarningTypes = Enum.GetValues(typeof(OnProgrammeEarningType)).Cast<OnProgrammeEarningType>();
-            var allIncentiveEarningTypes = Enum.GetValues(typeof(IncentiveEarningType)).Cast<IncentiveEarningType>();
-            
-            var onProgAndIncentiveEarning = apprenticeshipEarnings.FirstOrDefault(x => x.Periods.Any(p => onProgEarningTypes.Cast<int>().Contains((int)p.TransactionType)));
+            var onProgEarningTypes = Enum.GetValues(typeof(OnProgrammeEarningType)).Cast<OnProgrammeEarningType>().ToList();
 
-            var act1EarningEvent = mapper.Map<ApprenticeshipContractType1EarningEvent>(onProgAndIncentiveEarning);
-            act1EarningEvent.OnProgrammeEarnings = new List<OnProgrammeEarning>();
-            act1EarningEvent.IncentiveEarnings = new List<IncentiveEarning>();
-            
-            if (onProgAndIncentiveEarning == null) throw new ArgumentNullException($"Unable to find On Programme Earnings from Event Id {apprenticeshipEarnings[0].EventId}");
-
-            foreach (var onProgrammeEarningType in onProgEarningTypes)
+            if (onProgAndIncentiveEarning != null)
             {
-                var earningPeriodData = GetEarningsPeriodsAndCensusDate(onProgAndIncentiveEarning, (int)onProgrammeEarningType);
-                var onProgrammeEarning = new OnProgrammeEarning
+                var act1EarningEvent = mapper.Map<ApprenticeshipContractType1EarningEvent>(onProgAndIncentiveEarning);
+                act1EarningEvent.OnProgrammeEarnings = new List<OnProgrammeEarning>();
+                act1EarningEvent.IncentiveEarnings = new List<IncentiveEarning>();
+
+                AddOnProgEarnings(onProgEarningTypes, onProgAndIncentiveEarning, act1EarningEvent);
+                AddIncentiveEarnings(onProgAndIncentiveEarning, act1EarningEvent);
+
+                act1EarningEvent.Learner = mapper.Map<Learner>(onProgAndIncentiveEarning);
+                act1EarningEvent.LearningAim = mapper.Map<LearningAim>(onProgAndIncentiveEarning);
+
+                return act1EarningEvent;
+            }
+            else
+            {
+                logger.LogWarning($"Can't find any ACT1 OnProg Earnings to Re-Process After Apprenticeship Update For Uln {uln} from Provider {ukprn}");
+            }
+
+            return null;
+        }
+
+        private async Task<Act1FunctionalSkillEarningsEvent> GetApprenticeshipFunctionalSkillEarningsToReProcess(long uln, long ukprn)
+        {
+            var functionalSkillEarning = await repository
+                .GetLatestProviderApprenticeshipEarnings(uln, ukprn, typeof(Act1FunctionalSkillEarningsEvent).FullName, default(CancellationToken))
+                .ConfigureAwait(false);
+
+            if (functionalSkillEarning != null)
+            {
+                var functionalSkillEarningEvent = mapper.Map<Act1FunctionalSkillEarningsEvent>(functionalSkillEarning);
+                AddFunctionalSkillEarnings(functionalSkillEarning, functionalSkillEarningEvent);
+                functionalSkillEarningEvent.Learner = mapper.Map<Learner>(functionalSkillEarning);
+                functionalSkillEarningEvent.LearningAim = mapper.Map<LearningAim>(functionalSkillEarning);
+
+                return functionalSkillEarningEvent;
+            }
+            else
+            {
+                logger.LogWarning($"Can't find any ACT1 Functional Skill Earnings to Re-Process After Apprenticeship Update For Uln {uln} from Provider {ukprn}");
+            }
+
+            return null;
+        }
+
+        private void AddFunctionalSkillEarnings(EarningEventModel functionalSkillEarning, Act1FunctionalSkillEarningsEvent functionalSkillEarningEvent)
+        {
+            var allFunctionalSkillTypes = Enum.GetValues(typeof(FunctionalSkillType)).Cast<FunctionalSkillType>().ToList();
+
+            var functionalSkillTypes = functionalSkillEarning.Periods
+                .Where(x => allFunctionalSkillTypes.Cast<int>().Contains((int)x.TransactionType))
+                .Select(x => (int)x.TransactionType)
+                .Cast<FunctionalSkillType>()
+                .ToList();
+
+            var functionalSkillEarnings = new List<FunctionalSkillEarning>();
+
+            foreach (var functionalSkillType in functionalSkillTypes)
+            {
+                var earningPeriodData = GetEarningsPeriodsAndCensusDate(functionalSkillEarning, (int)functionalSkillType);
+                var newFunctionalSkillEarning = new FunctionalSkillEarning
                 {
-                    Type = onProgrammeEarningType,
-                    CensusDate = earningPeriodData.censusDate,
+                    Type = functionalSkillType,
                     Periods = new ReadOnlyCollection<EarningPeriod>(earningPeriodData.periods)
                 };
 
-                act1EarningEvent.OnProgrammeEarnings.Add(onProgrammeEarning);
+                functionalSkillEarnings.Add(newFunctionalSkillEarning);
             }
 
+            functionalSkillEarningEvent.Earnings = new ReadOnlyCollection<FunctionalSkillEarning>(functionalSkillEarnings);
+        }
+
+
+        private void AddIncentiveEarnings(EarningEventModel onProgAndIncentiveEarning, ApprenticeshipContractType1EarningEvent act1EarningEvent)
+        {
+            var allIncentiveEarningTypes = Enum.GetValues(typeof(IncentiveEarningType)).Cast<IncentiveEarningType>().ToList();
+
             var incentiveEarningTypes = onProgAndIncentiveEarning.Periods
-                .Where(x => allIncentiveEarningTypes.Cast<int>().Contains((int) x.TransactionType))
-                .Select(x => (int) x.TransactionType)
+                .Where(x => allIncentiveEarningTypes.Cast<int>().Contains((int)x.TransactionType))
+                .Select(x => (int)x.TransactionType)
                 .Cast<IncentiveEarningType>()
                 .ToList();
-
-
-            if (onProgAndIncentiveEarning == null) throw new ArgumentNullException($"Unable to find On Programme Earnings from Event Id {apprenticeshipEarnings[0].EventId}");
 
             foreach (var incentiveEarningType in incentiveEarningTypes)
             {
@@ -128,13 +196,23 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                 act1EarningEvent.IncentiveEarnings.Add(incentiveEarning);
             }
-
-            act1EarningEvent.Learner = mapper.Map<Learner>(onProgAndIncentiveEarning);
-            act1EarningEvent.LearningAim = mapper.Map<LearningAim>(onProgAndIncentiveEarning);
-
-            return act1EarningEvent;
         }
-        
+
+        private void AddOnProgEarnings(List<OnProgrammeEarningType> onProgEarningTypes, EarningEventModel onProgAndIncentiveEarning, ApprenticeshipContractType1EarningEvent act1EarningEvent)
+        {
+            foreach (var onProgrammeEarningType in onProgEarningTypes)
+            {
+                var earningPeriodData = GetEarningsPeriodsAndCensusDate(onProgAndIncentiveEarning, (int)onProgrammeEarningType);
+                var onProgrammeEarning = new OnProgrammeEarning
+                {
+                    Type = onProgrammeEarningType,
+                    CensusDate = earningPeriodData.censusDate,
+                    Periods = new ReadOnlyCollection<EarningPeriod>(earningPeriodData.periods)
+                };
+                act1EarningEvent.OnProgrammeEarnings.Add(onProgrammeEarning);
+            }
+        }
+
         private (List<EarningPeriod> periods, DateTime censusDate) GetEarningsPeriodsAndCensusDate(EarningEventModel earning, int earningType)
         {
             var earningPeriods = earning.Periods.Where(x => (int)x.TransactionType == (int)earningType).ToList();

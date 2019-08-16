@@ -22,6 +22,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 new DataColumn("LearningAimSequenceNumber"),
                 new DataColumn("SfaContributionPercentage",typeof(decimal)){AllowDBNull = true},
                 new DataColumn("IlrFileName"),
+                new DataColumn("EventType"),
             });
             periods = new DataTable("Payments2.EarningEventPeriod");
             periods.Columns.AddRange(new[]
@@ -64,7 +65,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             dataRow["LearningAimSequenceNumber"] = eventModel.LearningAimSequenceNumber;
             dataRow["SfaContributionPercentage"] = (object)eventModel.SfaContributionPercentage?? DBNull.Value;
             dataRow["IlrFileName"] = eventModel.IlrFileName;
-            
+            dataRow["EventType"] = eventModel.EventType;
+
             eventModel.Periods.ForEach(period => periods.Rows.Add(CreatePeriodDataRow(period)));
             eventModel.PriceEpisodes.ForEach(priceEpisode => priceEpisodes.Rows.Add(CreatePriceEpisodeDataRow(priceEpisode)));
             return dataRow;

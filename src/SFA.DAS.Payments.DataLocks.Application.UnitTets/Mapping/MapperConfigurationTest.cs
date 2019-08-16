@@ -413,6 +413,62 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
         }
 
 
+        [Test]
+        public void CanMapEarningEventModelToFunctionalSkillAct1EarningEvent()
+        {
+            var earningEventModel = new EarningEventModel
+            {
+                AgreementId = "1",
+                Ukprn = 100,
+                AcademicYear = 1819,
+                EventId = Guid.NewGuid(),
+                EventTime = DateTime.Today,
+                IlrSubmissionDateTime = DateTime.Today,
+                JobId = 1,
+                IlrFileName = "100.xml",
+                SfaContributionPercentage = 0.5m,
+                CollectionPeriod = 1,
+                LearnerReferenceNumber = "20",
+                LearnerUln = 1000,
+                LearningAimReference = "30",
+                LearningAimProgrammeType = (int)ProgrammeType.Standard,
+                LearningAimStandardCode = 25,
+                LearningAimFrameworkCode = 402,
+                LearningAimPathwayCode = 103,
+                LearningAimFundingLineType = "18-19",
+                LearningAimSequenceNumber = 1,
+                StartDate = DateTime.Today
+            };
+
+            var act1EarningEvent = Mapper.Map<Act1FunctionalSkillEarningsEvent>(earningEventModel);
+            act1EarningEvent.Learner = Mapper.Map<Learner>(earningEventModel);
+            act1EarningEvent.LearningAim = Mapper.Map<LearningAim>(earningEventModel);
+            
+            act1EarningEvent.Ukprn.Should().Be(earningEventModel.Ukprn);
+            act1EarningEvent.CollectionPeriod.Period.Should().Be(earningEventModel.CollectionPeriod);
+            act1EarningEvent.CollectionPeriod.AcademicYear.Should().Be(earningEventModel.AcademicYear);
+            act1EarningEvent.CollectionYear.Should().Be(earningEventModel.AcademicYear);
+            act1EarningEvent.EventId.Should().Be(earningEventModel.EventId);
+            act1EarningEvent.EventTime.Should().Be(earningEventModel.EventTime);
+            act1EarningEvent.IlrSubmissionDateTime.Should().Be(earningEventModel.IlrSubmissionDateTime);
+            act1EarningEvent.JobId.Should().Be(earningEventModel.JobId);
+            act1EarningEvent.IlrFileName.Should().Be(earningEventModel.IlrFileName);
+            act1EarningEvent.StartDate.Should().Be(earningEventModel.StartDate);
+
+            act1EarningEvent.Learner.Uln.Should().Be(earningEventModel.LearnerUln);
+            act1EarningEvent.Learner.ReferenceNumber.Should().Be(earningEventModel.LearnerReferenceNumber);
+
+            act1EarningEvent.LearningAim.Reference.Should().Be(earningEventModel.LearningAimReference);
+            act1EarningEvent.LearningAim.ProgrammeType.Should().Be(earningEventModel.LearningAimProgrammeType);
+            act1EarningEvent.LearningAim.StandardCode.Should().Be(earningEventModel.LearningAimStandardCode);
+            act1EarningEvent.LearningAim.FrameworkCode.Should().Be(earningEventModel.LearningAimFrameworkCode);
+            act1EarningEvent.LearningAim.PathwayCode.Should().Be(earningEventModel.LearningAimPathwayCode);
+            act1EarningEvent.LearningAim.FundingLineType.Should().Be(earningEventModel.LearningAimFundingLineType);
+            act1EarningEvent.LearningAim.SequenceNumber.Should().Be(earningEventModel.LearningAimSequenceNumber);
+
+        }
+
+
         private static Array GetIncentives()
         {
             return Enum.GetValues(typeof(IncentiveEarningType));

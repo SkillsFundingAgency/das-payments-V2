@@ -22,5 +22,6 @@
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_EarningEvent__CreationDate DEFAULT (SYSDATETIMEOFFSET()), 
     [LearningAimSequenceNumber] BIGINT NULL,
 	[SfaContributionPercentage] [decimal](15, 5) NULL,
-	IlrFileName  NVARCHAR(400) NULL
+	IlrFileName  NVARCHAR(400) NULL,
+	EventType VARCHAR(MAX) NULL,
 )

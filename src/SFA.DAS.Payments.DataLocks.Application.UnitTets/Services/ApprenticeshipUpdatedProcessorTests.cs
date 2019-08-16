@@ -88,29 +88,29 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             var eventId = Guid.NewGuid();
 
-            var earningModels = new List<EarningEventModel>
+            var earningModel = new EarningEventModel
             {
-                new EarningEventModel
-                {
-                    Ukprn = updatedApprenticeship.Ukprn ,
-                    LearnerUln = updatedApprenticeship.Uln,
-                    Periods = new List<EarningEventPeriodModel>(),
-                    StartDate =  DateTime.Today,
-                    EventId = eventId,
-                    AcademicYear = 1819,
-                    CollectionPeriod = 1,
-                    AgreementId = "1",
-                    PriceEpisodes = new List<EarningEventPriceEpisodeModel>(),
-                }
+                Ukprn = updatedApprenticeship.Ukprn,
+                LearnerUln = updatedApprenticeship.Uln,
+                Periods = new List<EarningEventPeriodModel>(),
+                StartDate = DateTime.Today,
+                EventId = eventId,
+                AcademicYear = 1819,
+                CollectionPeriod = 1,
+                AgreementId = "1",
+                PriceEpisodes = new List<EarningEventPriceEpisodeModel>(),
             };
 
-            var transactionTypes = Enum.GetValues(typeof(TransactionType)).Cast<TransactionType>().ToList();
+            var onProgTransactionTypes = Enum.GetValues(typeof(OnProgrammeEarningType)).Cast<int>().ToList();
+            var incentiveTransactionTypes = Enum.GetValues(typeof(IncentiveEarningType)).Cast<int>().ToList();
+            onProgTransactionTypes.AddRange(incentiveTransactionTypes);
+            var transactionTypes = onProgTransactionTypes;
 
             foreach (var transactionType in transactionTypes)
             {
-                earningModels[0].Periods.Add(new EarningEventPeriodModel
+                earningModel.Periods.Add(new EarningEventPeriodModel
                 {
-                    TransactionType = transactionType,
+                    TransactionType = (TransactionType)transactionType,
                     CensusDate = DateTime.Today,
                     Amount = 100m,
                     PriceEpisodeIdentifier = "1",
@@ -119,30 +119,96 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     EarningEventId = eventId
                 });
             }
-           
+
             mocker.Mock<IApprenticeshipRepository>()
-                .Setup(x => x.GetProviderApprenticeshipEarnings(updatedApprenticeship.Uln, updatedApprenticeship.Ukprn, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(earningModels)
+                .Setup(x => x.GetLatestProviderApprenticeshipEarnings(updatedApprenticeship.Uln, updatedApprenticeship.Ukprn, It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(earningModel)
                 .Verifiable();
 
             mocker.Mock<IDataLockProcessor>()
                 .Setup(x => x.GetPaymentEvents(It.IsAny<ApprenticeshipContractType1EarningEvent>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<DataLockEvent>())
                 .Verifiable();
-            
+
             var processor = mocker.Create<ApprenticeshipUpdatedProcessor>();
-            
+
             await processor.GetApprenticeshipUpdatePayments(updatedApprenticeship);
 
             mocker.Mock<IApprenticeshipRepository>()
-                .Verify(x => x.GetProviderApprenticeshipEarnings(updatedApprenticeship.Uln , updatedApprenticeship.Ukprn, It.IsAny<CancellationToken>()),
+                .Verify(x => x.GetLatestProviderApprenticeshipEarnings(updatedApprenticeship.Uln, updatedApprenticeship.Ukprn, It.IsAny<string>(), It.IsAny<CancellationToken>()),
                     Times.Once);
-            
+
             mocker.Mock<IDataLockProcessor>()
                 .Verify(x => x.GetPaymentEvents(It.IsAny<ApprenticeshipContractType1EarningEvent>(), It.IsAny<CancellationToken>()),
                     Times.Once);
-            
+
         }
 
+
+        [Test]
+        public async Task Get_Apprenticeship_Update_FunctionalSkill_Payments_Correctly()
+        {
+            mocker.Mock<IActorDataCache<List<ApprenticeshipModel>>>()
+                .Setup(x => x.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ConditionalValue<List<ApprenticeshipModel>>(false, null));
+
+            //Arrange
+            updatedApprenticeship.Ukprn = 100;
+            updatedApprenticeship.Uln = 200;
+
+            var eventId = Guid.NewGuid();
+
+            var earningModel = new EarningEventModel
+            {
+                Ukprn = updatedApprenticeship.Ukprn,
+                LearnerUln = updatedApprenticeship.Uln,
+                Periods = new List<EarningEventPeriodModel>(),
+                StartDate = DateTime.Today,
+                EventId = eventId,
+                AcademicYear = 1819,
+                CollectionPeriod = 1,
+                AgreementId = "1",
+                PriceEpisodes = new List<EarningEventPriceEpisodeModel>(),
+            };
+
+            var transactionTypes = Enum.GetValues(typeof(FunctionalSkillType)).Cast<int>().ToList(); ;
+
+            foreach (var transactionType in transactionTypes)
+            {
+                earningModel.Periods.Add(new EarningEventPeriodModel
+                {
+                    TransactionType = (TransactionType)transactionType,
+                    CensusDate = DateTime.Today,
+                    Amount = 100m,
+                    PriceEpisodeIdentifier = "1",
+                    SfaContributionPercentage = 0.5m,
+                    DeliveryPeriod = 1,
+                    EarningEventId = eventId
+                });
+            }
+
+            mocker.Mock<IApprenticeshipRepository>()
+                .Setup(x => x.GetLatestProviderApprenticeshipEarnings(updatedApprenticeship.Uln, updatedApprenticeship.Ukprn, It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(earningModel)
+                .Verifiable();
+
+            mocker.Mock<IDataLockProcessor>()
+                .Setup(x => x.GetFunctionalSkillPaymentEvents(It.IsAny<Act1FunctionalSkillEarningsEvent>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<FunctionalSkillDataLockEvent>())
+                .Verifiable();
+
+            var processor = mocker.Create<ApprenticeshipUpdatedProcessor>();
+
+            await processor.GetApprenticeshipUpdateFunctionalSkillPayments(updatedApprenticeship);
+
+            mocker.Mock<IApprenticeshipRepository>()
+                .Verify(x => x.GetLatestProviderApprenticeshipEarnings(updatedApprenticeship.Uln, updatedApprenticeship.Ukprn, It.IsAny<string>(), It.IsAny<CancellationToken>()),
+                    Times.Once);
+
+            mocker.Mock<IDataLockProcessor>()
+                .Verify(x => x.GetFunctionalSkillPaymentEvents(It.IsAny<Act1FunctionalSkillEarningsEvent>(), It.IsAny<CancellationToken>()),
+                    Times.Once);
+
+        }
     }
 }

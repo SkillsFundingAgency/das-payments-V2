@@ -140,18 +140,21 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
         
-        public async Task<List<EarningEventModel>> GetProviderApprenticeshipEarnings(long uln, long ukprn, CancellationToken cancellationToken)
+        public async Task<EarningEventModel> GetLatestProviderApprenticeshipEarnings(long uln, long ukprn, String eventType, CancellationToken cancellationToken)
         {
-            var apprenticeshipEarnings = await dataContext.EarningEvent
+            var apprenticeshipEarning = await dataContext.EarningEvent
                 .Include(x => x.Periods)
                 .Include(x => x.PriceEpisodes)
-                .Where(x => x.Ukprn == ukprn && x.LearnerUln == uln && x.ContractType == ContractType.Act1)
+                .Where(x => x.Ukprn == ukprn && 
+                            x.LearnerUln == uln && 
+                            x.ContractType == ContractType.Act1 &&
+                            x.EventType == eventType)
                 .OrderByDescending(x => x.Id)
-                .Take(2)
-                .ToListAsync(cancellationToken)
+                .Take(1)
+                .FirstOrDefaultAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            return apprenticeshipEarnings;
+            return apprenticeshipEarning;
         }
         
         public async Task<List<ApprenticeshipModel>> GetEmployerApprenticeships(long accountId, CancellationToken cancellationToken)

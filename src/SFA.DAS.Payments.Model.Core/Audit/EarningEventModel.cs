@@ -14,6 +14,6 @@ namespace SFA.DAS.Payments.Model.Core.Audit
 
         public string IlrFileName { get; set; }
         public decimal? SfaContributionPercentage { get; set; }
-
+        public string EventType { get; set; }
     } 
 }

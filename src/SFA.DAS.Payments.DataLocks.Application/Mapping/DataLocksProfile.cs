@@ -188,8 +188,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.TotalNegotiatedPrice2, opt => opt.MapFrom(source => source.TotalNegotiatedPrice2))
                 .ForMember(dest => dest.TotalNegotiatedPrice3, opt => opt.MapFrom(source => source.TotalNegotiatedPrice3))
                 .ForMember(dest => dest.TotalNegotiatedPrice4, opt => opt.MapFrom(source => source.TotalNegotiatedPrice4))
-                 .ForMember(dest => dest.AgreedPrice, opt => opt.MapFrom(source => source.AgreedPrice))
-                 .ForMember(dest => dest.CourseStartDate, opt => opt.MapFrom(source => source.CourseStartDate))
+                .ForMember(dest => dest.AgreedPrice, opt => opt.MapFrom(source => source.AgreedPrice))
+                .ForMember(dest => dest.CourseStartDate, opt => opt.MapFrom(source => source.CourseStartDate))
                 .ForMember(dest => dest.EffectiveTotalNegotiatedPriceStartDate, opt => opt.MapFrom(source => source.StartDate))
                 .ForMember(dest => dest.PlannedEndDate, opt => opt.MapFrom(source => source.PlannedEndDate))
                 .ForMember(dest => dest.ActualEndDate, opt => opt.MapFrom(source => source.ActualEndDate))
@@ -200,6 +200,22 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.EmployerContribution, opt => opt.MapFrom(source => source.EmployerContribution))
                 .ForMember(dest => dest.CompletionHoldBackExemptionCode, opt => opt.MapFrom(source => source.CompletionHoldBackExemptionCode));
             
+            CreateMap<EarningEventModel, Act1FunctionalSkillEarningsEvent>()
+                .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
+                .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(source.AcademicYear, source.CollectionPeriod)))
+                .ForMember(dest => dest.CollectionYear, opt => opt.MapFrom(source => source.AcademicYear))
+                .ForMember(dest => dest.EventId, opt => opt.MapFrom(source => source.EventId))
+                .ForMember(dest => dest.EventTime, opt => opt.MapFrom(source => source.EventTime))
+                .ForMember(dest => dest.IlrSubmissionDateTime, opt => opt.MapFrom(source => source.IlrSubmissionDateTime))
+                .ForMember(dest => dest.JobId, opt => opt.MapFrom(source => source.JobId))
+                .ForMember(dest => dest.IlrFileName, opt => opt.MapFrom(source => source.IlrFileName))
+                .ForMember(dest => dest.PriceEpisodes, opt => opt.MapFrom(source => source.PriceEpisodes))
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(source => source.StartDate))
+                .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act1))
+                .ForMember(dest => dest.Learner, opt => opt.Ignore())
+                .ForMember(dest => dest.LearningAim, opt => opt.Ignore())
+                .ForMember(dest => dest.Earnings, opt => opt.Ignore());
+
         }
     }
 }
