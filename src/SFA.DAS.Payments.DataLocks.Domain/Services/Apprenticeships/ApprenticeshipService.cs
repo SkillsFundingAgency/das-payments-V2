@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
@@ -12,6 +14,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
     public interface IApprenticeshipService
     {
         Task<List<ApprenticeshipDuplicateModel>> NewApprenticeship(ApprenticeshipModel apprenticeship);
+        Task<List<ApprenticeshipModel>> GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(long accountId, CancellationToken cancellation = default(CancellationToken));
     }
 
     public class ApprenticeshipService : IApprenticeshipService
@@ -66,6 +69,22 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
                 return duplicates;
             }
         }
-        
+
+        public async Task<List<ApprenticeshipModel>> GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(long accountId,CancellationToken cancellation = default(CancellationToken))
+        {
+            var apprenticeships = await repository.GetEmployerApprenticeships(accountId, cancellation).ConfigureAwait(false);
+
+            if (apprenticeships == null || apprenticeships.Count == 0)
+            {
+                return  new List<ApprenticeshipModel>();
+            }
+
+            apprenticeships.ForEach(x => x.IsLevyPayer = false);
+            await  repository.UpdateApprenticeships(apprenticeships).ConfigureAwait(false);
+
+            return apprenticeships;
+        }
+
+
     }
 }
