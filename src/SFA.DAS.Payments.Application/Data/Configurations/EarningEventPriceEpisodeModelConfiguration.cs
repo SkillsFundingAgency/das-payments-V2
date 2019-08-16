@@ -11,6 +11,8 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
         public void Configure(EntityTypeBuilder<EarningEventPriceEpisodeModel> builder)
         {
             builder.ToTable("EarningEventPriceEpisodeModel", "Payments2");
+            builder.HasKey(x => x.Id);
+            builder.Property(x => x.Id).HasColumnName(@"Id").IsRequired();
             builder.Property(x => x.EarningEventId).HasColumnName(@"EarningEventId").IsRequired();
             builder.Property(x => x.PriceEpisodeIdentifier).HasColumnName(@"PriceEpisodeIdentifier").IsRequired();
             builder.Property(x => x.SfaContributionPercentage).HasColumnName(@"SfaContributionPercentage").IsRequired();

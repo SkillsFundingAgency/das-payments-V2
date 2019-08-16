@@ -10,6 +10,8 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
         public void Configure(EntityTypeBuilder<EarningEventModel> builder)
         {
             builder.ToTable("EarningEvent", "Payments2");
+            builder.HasKey(x =>  x.EventId);
+            builder.Property(x => x.Id).HasColumnName(@"Id").IsRequired();
             builder.Property(x => x.EventId).HasColumnName(@"EventId").IsRequired();
             builder.Property(x => x.Ukprn).HasColumnName(@"Ukprn").IsRequired();
             builder.Property(x => x.ContractType).HasColumnName(@"ContractType").IsRequired();

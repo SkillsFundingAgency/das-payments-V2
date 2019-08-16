@@ -4,6 +4,7 @@ namespace SFA.DAS.Payments.Model.Core.Audit
 {
     public class EarningEventPriceEpisodeModel
     {
+        public long Id { get; set; }
         public Guid EarningEventId { get; set; }
         public string PriceEpisodeIdentifier { get; set; }
         public decimal SfaContributionPercentage { get; set; }
