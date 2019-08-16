@@ -22,5 +22,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
         Task AddApprenticeshipPause(ApprenticeshipPauseModel pauseModel);
         Task<ApprenticeshipPauseModel> GetCurrentApprenticeshipPausedModel(long apprenticeshipId);
         Task UpdateCurrentlyPausedApprenticeship(ApprenticeshipPauseModel apprenticeshipPauseModel);
+        Task<List<ApprenticeshipModel>> GetEmployerApprenticeships(long accountId, CancellationToken cancellationToken);
+        Task UpdateApprenticeships(List<ApprenticeshipModel> updatedApprenticeships);
     }
 }

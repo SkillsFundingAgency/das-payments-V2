@@ -81,6 +81,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
                 .ForMember(dest => dest.Uln, opt => opt.MapFrom(source => source.Uln))
                 .ForMember(dest => dest.ApprenticeshipPriceEpisodes, opt => opt.MapFrom(source => source.ApprenticeshipPriceEpisodes))
+                .ForMember(dest => dest.IsLevyPayer, opt => opt.MapFrom(source => source.IsLevyPayer))
                 .ForMember(dest => dest.Duplicates, opt => opt.Ignore())
                 .ForMember(dest => dest.EventId, opt => opt.Ignore())
                 .ForMember(dest => dest.EventTime, opt => opt.Ignore())
@@ -103,8 +104,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
                 .ForMember(dest => dest.Uln, opt => opt.MapFrom(source => source.Uln))
                 .ForMember(dest => dest.ApprenticeshipPriceEpisodes, opt => opt.MapFrom(source => source.ApprenticeshipPriceEpisodes))
+                .ForMember(dest => dest.IsLevyPayer, opt => opt.MapFrom(source => source.IsLevyPayer))
                 .ForMember(dest => dest.Priority, opt => opt.Ignore())
-                .ForMember(dest => dest.IsLevyPayer, opt => opt.Ignore())
                 ;
 
             CreateMap<DataLockEvent, DataLockStatusChanged>()
