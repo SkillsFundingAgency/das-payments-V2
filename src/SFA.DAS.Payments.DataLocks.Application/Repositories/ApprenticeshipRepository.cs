@@ -149,14 +149,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
         
         public async Task<List<EarningEventModel>> GetProviderApprenticeshipEarnings(long uln, long ukprn, CancellationToken cancellationToken)
         {
-            var latestIlrSubmissionDateTime = await dataContext.EarningEvent
-                .MaxAsync(x => x.IlrSubmissionDateTime,cancellationToken)
-                .ConfigureAwait(false);
-
             var apprenticeshipEarnings = await dataContext.EarningEvent
                 .Include(x => x.Periods)
                 .Include(x => x.PriceEpisodes)
-                .Where(x => x.Ukprn == ukprn && x.LearnerUln == uln && x.IlrSubmissionDateTime == latestIlrSubmissionDateTime)
+                .Where(x => x.Ukprn == ukprn && x.LearnerUln == uln && x.ContractType == ContractType.Act1)
+                .OrderByDescending(x => x.Id)
+                .Take(2)
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
 
