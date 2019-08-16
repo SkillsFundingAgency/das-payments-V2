@@ -7,6 +7,7 @@ using SFA.DAS.CommitmentsV2.Messages.Events;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Payments.DataLocks.Application.Mapping;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
@@ -216,6 +217,28 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
             approvalsEvent.PriceEpisodes
                 .All(pe => model.ApprenticeshipPriceEpisodes.Any(ape => ape.StartDate == pe.FromDate && ape.Cost == pe.Cost && ape.EndDate == pe.ToDate))
                 .Should().BeTrue();
+        }
+        
+        [Test]
+        public void Maps_IsLevyPayer_From_ApprenticeshipUpdated_To_ApprenticeshipModel_Correctly()
+        {
+            var approvalsEvent = new ApprenticeshipUpdated
+            {
+               IsLevyPayer = true
+            };
+            var model = Mapper.Map<ApprenticeshipModel>(approvalsEvent);
+            model.IsLevyPayer.Should().BeTrue();
+        }
+
+        [Test]
+        public void Maps_IsLevyPayer_From_ApprenticeshipModel_To_ApprenticeshipUpdated_Correctly()
+        {
+            var apprenticeship = new ApprenticeshipModel
+            {
+                IsLevyPayer = true
+            };
+            var model = Mapper.Map<ApprenticeshipUpdated>(apprenticeship);
+            model.IsLevyPayer.Should().BeTrue();
         }
 
     }

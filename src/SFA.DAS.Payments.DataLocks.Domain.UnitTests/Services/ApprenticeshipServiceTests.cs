@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extras.Moq;
@@ -125,6 +126,38 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 .Verify(x => x.StoreDuplicates(It.Is<List<ApprenticeshipDuplicateModel>>(duplicates =>
                     duplicates.Any(duplicate =>
                         duplicate.Ukprn == apprenticeship.Ukprn && duplicate.ApprenticeshipId == 654))), Times.Once);
+        }
+
+        [Test]
+        public async Task Update_Apprenticeship_Employer_IsLevyPayer_Flag_Correctly()
+        {
+            mocker.Mock<IApprenticeshipRepository>()
+                .Setup(x => x.GetEmployerApprenticeships(1, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<ApprenticeshipModel>
+                {
+                    new ApprenticeshipModel
+                    {
+                        IsLevyPayer = true
+                    }
+                });
+
+
+            mocker.Mock<IApprenticeshipRepository>()
+                .Setup(x => x.UpdateApprenticeships(It.IsAny<List<ApprenticeshipModel>>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+
+
+            var service = mocker.Create<ApprenticeshipService>();
+          var expectedUpdatedApprenticeships =  await service.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(1);
+
+            mocker.Mock<IApprenticeshipRepository>()
+                .Verify(x => x.UpdateApprenticeships(It.Is<List<ApprenticeshipModel>>(o => o.Count == 1 && o[0].IsLevyPayer == false)),Times.Once);
+
+            expectedUpdatedApprenticeships.Should().NotBeNull();
+            expectedUpdatedApprenticeships.Should().HaveCount(1);
+            expectedUpdatedApprenticeships[0].IsLevyPayer.Should().BeFalse();
+
         }
 
     }

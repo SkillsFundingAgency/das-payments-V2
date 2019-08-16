@@ -4,10 +4,13 @@ using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Services;
 using System.Collections.Generic;
+using System.Linq;
 using Autofac.Integration.ServiceFabric;
+using NServiceBus;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.FundingSource.Application.Repositories;
@@ -80,8 +83,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
                     var accountApiClient = c.Resolve<IAccountApiClient>();
                     var logger = c.Resolve<IPaymentLogger>();
                     var bulkWriter = c.Resolve<ILevyAccountBulkCopyRepository>();
+                    var endpointInstanceFactory = new EndpointInstanceFactory(CreateEndpointConfiguration(c));
 
-                    return new ManageLevyAccountBalanceService(repository, accountApiClient, logger, bulkWriter, batchSize);
+                    return new ManageLevyAccountBalanceService(repository, accountApiClient, logger, bulkWriter, batchSize, endpointInstanceFactory);
                 })
                 .As<IManageLevyAccountBalanceService>()
                 .InstancePerLifetimeScope();
@@ -92,5 +96,35 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
 
             builder.RegisterServiceFabricSupport();
         }
+
+
+        private EndpointConfiguration CreateEndpointConfiguration(IComponentContext container)
+        {
+            var config = container.Resolve<IApplicationConfiguration>();
+           
+            var endpointConfiguration = new EndpointConfiguration(config.EndpointName);
+
+            var conventions = endpointConfiguration.Conventions();
+            conventions.DefiningMessagesAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages") ?? false));
+            conventions.DefiningCommandsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages.Commands") ?? false));
+            conventions.DefiningEventsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages.Events") ?? false));
+
+            var persistence = endpointConfiguration.UsePersistence<AzureStoragePersistence>();
+            persistence.ConnectionString(config.StorageConnectionString);
+
+            endpointConfiguration.DisableFeature<NServiceBus.Features.TimeoutManager>();
+            var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
+            transport.ConnectionString(config.ServiceBusConnectionString)
+                .Transactions(TransportTransactionMode.ReceiveOnly)
+                .RuleNameShortener(ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
+
+            EndpointConfigurationEvents.OnConfiguringTransport(transport);
+            endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
+            endpointConfiguration.EnableInstallers();
+            endpointConfiguration.EnableCallbacks(makesRequests: false);
+            return endpointConfiguration;
+
+        }
+
     }
 }

@@ -110,14 +110,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             dataContext.ApprenticeshipDuplicate.AddRange(duplicates);
             await dataContext.SaveChangesAsync();
         }
-
-        private static void RemoveNonActivePriceEpisodes(List<ApprenticeshipModel> apprenticeships)
-        {
-            apprenticeships.ForEach(x => x.ApprenticeshipPriceEpisodes = x.ApprenticeshipPriceEpisodes?
-                .Where(o => !o.Removed)
-                .ToList());
-        }
-
+        
         public async Task UpdateApprenticeship(ApprenticeshipModel updatedApprenticeship)
         {
             dataContext.Apprenticeship.Update(updatedApprenticeship);
@@ -161,6 +154,35 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             return apprenticeshipEarnings;
         }
         
+        public async Task<List<ApprenticeshipModel>> GetEmployerApprenticeships(long accountId, CancellationToken cancellationToken)
+        {
+            var employerApprenticeships = await dataContext.Apprenticeship
+                .Where(x => x.AccountId == accountId)
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            return employerApprenticeships;
+        }
+
+        public async Task UpdateApprenticeships(List<ApprenticeshipModel> updatedApprenticeships)
+        {
+            foreach (var updatedApprenticeship in updatedApprenticeships)
+            {
+               dataContext.Apprenticeship.Update(updatedApprenticeship);
+            }
+            
+            await dataContext.SaveChangesAsync().ConfigureAwait(false);
+        }
+
+        private static void RemoveNonActivePriceEpisodes(List<ApprenticeshipModel> apprenticeships)
+        {
+            apprenticeships.ForEach(x => x.ApprenticeshipPriceEpisodes = x.ApprenticeshipPriceEpisodes?
+                .Where(o => !o.Removed)
+                .ToList());
+        }
+
+
+
         public void Dispose()
         {
             (dataContext as PaymentsDataContext)?.Dispose();
