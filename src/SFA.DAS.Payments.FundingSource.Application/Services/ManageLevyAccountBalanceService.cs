@@ -4,13 +4,16 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
+using NServiceBus;
 using Polly;
 using Polly.CircuitBreaker;
 using Polly.Retry;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -31,18 +34,21 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly int batchSize;
         private int totalPageSize;
         private readonly AsyncRetryPolicy retryPolicy;
+        private readonly IEndpointInstanceFactory endpointInstanceFactory;
 
         public ManageLevyAccountBalanceService(ILevyFundingSourceRepository repository,
             IAccountApiClient accountApiClient,
             IPaymentLogger logger,
             ILevyAccountBulkCopyRepository levyAccountBulkWriter,
-            int batchSize)
+            int batchSize,
+            IEndpointInstanceFactory endpointInstanceFactory)
         {
             this.repository = repository;
             this.accountApiClient = accountApiClient;
             this.logger = logger;
             this.levyAccountBulkWriter = levyAccountBulkWriter;
             this.batchSize = batchSize;
+            this.endpointInstanceFactory = endpointInstanceFactory;
 
             retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(5, i => TimeSpan.FromMinutes(1));
         }
@@ -62,8 +68,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 try
                 {
                     var pagedAccountsRecords = await accountApiClient.GetPageOfAccounts(page, batchSize).ConfigureAwait(false);
-
-                    await UpdateLevyAccountDetails(pagedAccountsRecords, cancellationToken);
+                    var pagedLevyAccountModels = MapToLevyAccountModel(pagedAccountsRecords);
+                    await BatchUpdateLevyAccounts(pagedLevyAccountModels, cancellationToken).ConfigureAwait(false);
+                    await PublishNotLevyPayerEmployerEvents(pagedLevyAccountModels).ConfigureAwait(false);
 
                     logger.LogInfo($"Successfully retrieved Account Balance Details for Page {page} of Levy Accounts");
                 }
@@ -75,22 +82,12 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 page++;
             }
         }
-
-        private async Task UpdateLevyAccountDetails(PagedApiResponseViewModel<AccountWithBalanceViewModel> pagedAccountsRecords, CancellationToken cancellationToken)
-        {
-            var pagedLevyAccountModels = MapToLevyAccountModel(pagedAccountsRecords);
-            await BatchUpdateLevyAccounts(pagedLevyAccountModels, cancellationToken).ConfigureAwait(false);
-        }
-
         private async Task BatchUpdateLevyAccounts(List<LevyAccountModel> levyAccountModels, CancellationToken cancellationToken)
         {
             try
             {
-                await Task.WhenAll(levyAccountModels.Select(x => levyAccountBulkWriter.Write(x, cancellationToken)))
-                        .ConfigureAwait(false);
-
-                await levyAccountBulkWriter.DeleteAndFlush(levyAccountModels.Select(x => x.AccountId).ToList(), cancellationToken).ConfigureAwait(false);
-
+                await Task.WhenAll(levyAccountModels.Select(x => levyAccountBulkWriter.Write(x, cancellationToken))).ConfigureAwait(false);
+                await levyAccountBulkWriter.DeleteAndFlush(cancellationToken).ConfigureAwait(false);
                 logger.LogVerbose($"Successfully Added  {levyAccountModels.Count} Batch of Levy Accounts Details");
             }
             catch (Exception e)
@@ -118,7 +115,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         {
             try
             {
-                var pagedAccountsRecord = await accountApiClient.GetPageOfAccounts(1, 1).ConfigureAwait(false);
+                var pagedAccountsRecord = await accountApiClient.GetPageOfAccounts(1, batchSize).ConfigureAwait(false);
                 totalPageSize = pagedAccountsRecord.TotalPages;
 
                 logger.LogInfo($"Total Levy Account to process {totalPageSize} ");
@@ -129,6 +126,20 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 throw;
             }
 
+        }
+
+        private async Task PublishNotLevyPayerEmployerEvents(List<LevyAccountModel> accountModels)
+        {
+            var notLevyPayingEmployerIds = accountModels.Where(x => !x.IsLevyPayer).Select(x => x.AccountId).ToList();
+
+            if (!notLevyPayingEmployerIds.Any()) return;
+            logger.LogInfo($"Trying to Publish FoundNotLevyPayerEmployerAccount event for  Account Ids: {string.Join(",", notLevyPayingEmployerIds)}");
+
+            var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
+            var publishMessageTasks = notLevyPayingEmployerIds.Select(accountId => endpointInstance.Publish(new FoundNotLevyPayerEmployerAccount { AccountId = accountId }));
+            await Task.WhenAll(publishMessageTasks).ConfigureAwait(false);
+
+            logger.LogInfo($"Successfully Published FoundNotLevyPayerEmployerAccount event for  Account Ids: {string.Join(",", notLevyPayingEmployerIds)}");
         }
 
     }

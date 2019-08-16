@@ -21,6 +21,8 @@
     <Parameter Name="LogLevel" Value="" />
     <Parameter Name="ProcessMessageSequentially" Value="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+    <Parameter Name="TimeToPauseBetweenChecks" Value=""/>
+    <Parameter Name="TimeToWaitForJobToComplete" Value=""/>
   </Section>
 
 </Settings>

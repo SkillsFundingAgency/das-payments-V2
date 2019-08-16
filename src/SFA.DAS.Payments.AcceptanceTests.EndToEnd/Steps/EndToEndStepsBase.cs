@@ -44,8 +44,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             set => Set(value, "new_feature");
         }
 
-        protected RequiredPaymentsCacheCleaner RequiredPaymentsCacheCleaner => Container.Resolve<RequiredPaymentsCacheCleaner>();
-
         protected IPaymentsDataContext DataContext => Scope.Resolve<IPaymentsDataContext>();
 
         protected IMapper Mapper => Scope.Resolve<IMapper>();
@@ -795,7 +793,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             };
 
             //TODO: remove when DC have implemented the Month End Task
-            var dcStartedMonthEndJobCommand = new RecordStartedProcessingMonthEndJob
+            var dcStartedMonthEndJobCommand = new RecordPeriodEndStartJob
             {
                 JobId = provider.JobId,
                 CollectionPeriod = CollectionPeriod,
@@ -1101,9 +1099,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 });
             }
 
+            //TODO: Is this still required?
             if (!ProvidersWithCacheCleared.Contains((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn)))
             {
-                await RequiredPaymentsCacheCleaner.ClearCaches(provider, TestSession, collectionPeriod.AcademicYear).ConfigureAwait(false);
+
                 ProvidersWithCacheCleared.Add((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn));
             }
 

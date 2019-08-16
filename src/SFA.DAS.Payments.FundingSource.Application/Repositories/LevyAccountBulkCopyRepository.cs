@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
 
     public interface ILevyAccountBulkCopyRepository : IBulkWriter<LevyAccountModel>
     {
-        Task DeleteAndFlush(List<long> existingRecordIds, CancellationToken cancellationToken);
+        Task DeleteAndFlush(CancellationToken cancellationToken);
     }
 
     public class LevyAccountBulkCopyRepository : BulkWriter<LevyAccountModel>, ILevyAccountBulkCopyRepository
@@ -28,7 +28,12 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
         {
         }
 
-        public async Task DeleteAndFlush(List<long> existingRecordIds, CancellationToken cancellationToken)
+        public override async Task Flush(CancellationToken cancellationToken)
+        {
+            await Task.CompletedTask;
+        }
+        
+        public async Task DeleteAndFlush(CancellationToken cancellationToken)
         {
             logger.LogVerbose($"Saving {queue.Count} records to LevyAccount Table");
 
@@ -50,7 +55,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
                     {
                         sqlCommand.Connection = sqlConnection;
                         sqlCommand.Transaction = transaction;
-                        sqlCommand.CommandText = SplitDeleteQueryToBatch(existingRecordIds);
+                        sqlCommand.CommandText = SplitDeleteQueryToBatch(list.Select(x => x.AccountId).ToList());
 
                       await sqlCommand.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
 

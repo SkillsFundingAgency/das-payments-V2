@@ -22,4 +22,4 @@
 
 GO
 
-CREATE UNIQUE INDEX [IX_DataLockFailure_Key] ON [Payments2].[DataLockFailure] ([Ukprn], [LearnerReferenceNumber], [LearningAimFrameworkCode], [LearningAimPathwayCode], [LearningAimProgrammeType], [LearningAimReference], [LearningAimStandardCode], [AcademicYear], [DeliveryPeriod], [TransactionType])
+CREATE UNIQUE INDEX [IX_DataLockFailure_Key] ON [Payments2].[DataLockFailure] ([Ukprn], [LearningAimFrameworkCode], [LearningAimPathwayCode], [LearningAimProgrammeType], [LearningAimStandardCode], [LearningAimReference], [LearnerReferenceNumber], [AcademicYear], [DeliveryPeriod], [TransactionType])
