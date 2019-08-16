@@ -84,8 +84,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                         .ConfigureAwait(false);
 
             var onProgEarningTypes = Enum.GetValues(typeof(OnProgrammeEarningType)).Cast<OnProgrammeEarningType>();
-            var incentiveEarningTypes = Enum.GetValues(typeof(IncentiveEarningType)).Cast<IncentiveEarningType>();
-
+            var allIncentiveEarningTypes = Enum.GetValues(typeof(IncentiveEarningType)).Cast<IncentiveEarningType>();
+            
             var onProgAndIncentiveEarning = apprenticeshipEarnings.FirstOrDefault(x => x.Periods.Any(p => onProgEarningTypes.Cast<int>().Contains((int)p.TransactionType)));
 
             var act1EarningEvent = mapper.Map<ApprenticeshipContractType1EarningEvent>(onProgAndIncentiveEarning);
@@ -106,6 +106,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                 act1EarningEvent.OnProgrammeEarnings.Add(onProgrammeEarning);
             }
+
+            var incentiveEarningTypes = onProgAndIncentiveEarning.Periods
+                .Where(x => allIncentiveEarningTypes.Cast<int>().Contains((int) x.TransactionType))
+                .Select(x => (int) x.TransactionType)
+                .Cast<IncentiveEarningType>()
+                .ToList();
+
 
             if (onProgAndIncentiveEarning == null) throw new ArgumentNullException($"Unable to find On Programme Earnings from Event Id {apprenticeshipEarnings[0].EventId}");
 

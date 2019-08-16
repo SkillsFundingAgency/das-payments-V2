@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<EarningEventPriceEpisodeModel> builder)
         {
-            builder.ToTable("EarningEventPriceEpisodeModel", "Payments2");
+            builder.ToTable("EarningEventPriceEpisode", "Payments2");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).HasColumnName(@"Id").IsRequired();
             builder.Property(x => x.EarningEventId).HasColumnName(@"EarningEventId").IsRequired();
@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.TotalNegotiatedPrice4).HasColumnName(@"TotalNegotiatedPrice4");
             builder.Property(x => x.StartDate).HasColumnName(@"StartDate").IsRequired();
             builder.Property(x => x.EffectiveTotalNegotiatedPriceStartDate).HasColumnName(@"EffectiveTotalNegotiatedPriceStartDate");
-            builder.Property(x => x.PlannedEndDate).HasColumnName(@"[PlannedEndDate]").IsRequired();
+            builder.Property(x => x.PlannedEndDate).HasColumnName(@"PlannedEndDate").IsRequired();
             builder.Property(x => x.ActualEndDate).HasColumnName(@"ActualEndDate");
             builder.Property(x => x.NumberOfInstalments).HasColumnName(@"NumberOfInstalments").IsRequired();
             builder.Property(x => x.InstalmentAmount).HasColumnName(@"InstalmentAmount").IsRequired();

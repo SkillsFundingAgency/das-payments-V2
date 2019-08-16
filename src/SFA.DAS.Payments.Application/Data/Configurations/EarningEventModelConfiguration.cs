@@ -25,7 +25,6 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.LearningAimFrameworkCode).HasColumnName(@"LearningAimFrameworkCode").IsRequired();
             builder.Property(x => x.LearningAimPathwayCode).HasColumnName(@"LearningAimPathwayCode").IsRequired();
             builder.Property(x => x.LearningAimFundingLineType).HasColumnName(@"LearningAimFundingLineType").IsRequired();
-           // builder.Property(x => x.StartDate).HasColumnName(@"LearningStartDate").IsRequired();
             builder.Property(x => x.AgreementId).HasColumnName(@"AgreementId");
             builder.Property(x => x.IlrSubmissionDateTime).HasColumnName(@"IlrSubmissionDateTime").IsRequired();
             builder.Property(x => x.JobId).HasColumnName(@"JobId").IsRequired();
@@ -33,6 +32,13 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.LearningAimSequenceNumber).HasColumnName(@"LearningAimSequenceNumber");
             builder.Property(x => x.SfaContributionPercentage).HasColumnName(@"SfaContributionPercentage");
             builder.Property(x => x.IlrFileName).HasColumnName(@"IlrFileName");
+            builder.Ignore(x => x.ActualEndDate);
+            builder.Ignore(x => x.CompletionAmount);
+            builder.Ignore(x => x.CompletionStatus);
+            builder.Ignore(x => x.InstalmentAmount);
+            builder.Ignore(x => x.PlannedEndDate);
+            builder.Ignore(x => x.StartDate);
+            builder.Ignore(x => x.NumberOfInstalments);
 
             builder.HasMany<EarningEventPeriodModel>(x => x.Periods).WithOne().HasForeignKey(p => p.EarningEventId);
             builder.HasMany<EarningEventPriceEpisodeModel>(x => x.PriceEpisodes).WithOne().HasForeignKey(p => p.EarningEventId);
