@@ -276,3 +276,4 @@ App.Debug.config
 *.feature.cs
 src/SFA.DAS.Payments.AcceptanceTests.EndToEnd/App.Debug.config-sit
 src/SFA.DAS.Payments.AcceptanceTests.EndToEnd/App.Debug.config-das
+*.DotSettings
