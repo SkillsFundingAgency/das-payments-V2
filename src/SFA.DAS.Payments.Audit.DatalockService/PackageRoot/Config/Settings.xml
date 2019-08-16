@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Settings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <!-- This is used by the StateManager's replicator. -->
+  <Section Name="ReplicatorConfig">
+    <Parameter Name="ReplicatorEndpoint" Value="ReplicatorEndpoint" />
+  </Section>
+  <!-- This is used for securing StateManager's replication traffic. -->
+  <Section Name="ReplicatorSecurityConfig" />
+
+  <Section Name="ConnectionStringsSection">
+    <Parameter Name="StorageConnectionString" Value="UseDevelopmentStorage=true" />
+    <Parameter Name="LoggingConnectionString" Value="Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;"/>
+    <Parameter Name="ServiceBusConnectionString" Value=""/>
+    <Parameter Name="PaymentsConnectionString" Value="" />
+  </Section>
+
+  <Section Name="Settings">
+    <Parameter Name="EndpointName" Value="sfa-das-payments-audit-datalock"/>
+    <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-audit-datalock-errors"/>
+    <Parameter Name="BatchIntervalInSeconds" Value="10"/>
+    <Parameter Name="BatchSize" Value="500"/>
+    <Parameter Name="BatchFailureTimeoutInSeconds" Value="60"/>
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+  </Section>
+</Settings>
