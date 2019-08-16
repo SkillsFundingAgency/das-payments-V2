@@ -184,7 +184,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.CompletionAmount)
                 .Ignore(x => x.InstalmentAmount)
                 .Ignore(x => x.NumberOfInstalments)
-                .Ignore(x => x.LearningStartDate);
+                .Ignore(x => x.LearningStartDate)
+                .Ignore(x => x.ApprenticeshipId)
+                .Ignore(x => x.ApprenticeshipPriceEpisodeId);
 
             CreateMap<RequiredPayment, CalculatedRequiredCoInvestedAmount>()
                 .ForMember(x => x.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage))
@@ -224,6 +226,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.NumberOfInstalments)
                 .Ignore(x => x.LearningStartDate)
                 .Ignore(x => x.IlrFileName)
+                .Ignore(x => x.ApprenticeshipId)
+                .Ignore(x => x.ApprenticeshipPriceEpisodeId)
                 ;
                             
             CreateMap<IdentifiedRemovedLearningAim, CalculatedRequiredCoInvestedAmount>()
@@ -253,11 +257,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(x => x.TransferSenderAccountId, opt => opt.MapFrom(src => src.TransferSenderAccountId))
                 .ForMember(x => x.CompletionAmount,opt => opt.MapFrom(src => src.CompletionAmount))
                 .ForMember(x => x.LearningStartDate,opt => opt.MapFrom(src => src.LearningStartDate))
+                .ForMember(x => x.ApprenticeshipId,opt => opt.MapFrom(src => src.ApprenticeshipId))
+                .ForMember(x => x.ApprenticeshipPriceEpisodeId,opt => opt.MapFrom(src => src.ApprenticeshipPriceEpisodeId))
                 .Ignore(x => x.EventId)
                 .Ignore(x => x.AmountDue)
                 .Ignore(x => x.EarningEventId)
-                //.Ignore(x => x.AccountId)
-                //.Ignore(x => x.ContractType)
                 .Ignore(x => x.JobId)
                 .Ignore(x => x.EventTime)
                 .Ignore(x => x.Learner)
@@ -308,6 +312,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.IlrFileName)
                 .Ignore(x => x.CollectionPeriod)
                 .Ignore(x => x.LearningStartDate)
+                .Ignore(x => x.ApprenticeshipId)
+                .Ignore(x => x.ApprenticeshipPriceEpisodeId)
                 ;
             // End Required Payment --> RequiredPaymentEvent
         }

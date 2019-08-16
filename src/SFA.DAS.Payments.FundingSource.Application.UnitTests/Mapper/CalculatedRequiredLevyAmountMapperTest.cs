@@ -155,6 +155,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
         private void PopulateCommonProperties(FundingSourcePaymentEvent expectedEvent)
         {
             expectedEvent.FundingSourceType = FundingSourceType.Levy;
+            expectedEvent.ApprenticeshipId = 12;
             expectedEvent.Learner = new Learner
             {
                 ReferenceNumber = "001",
