@@ -33,6 +33,50 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             this.azureFileService = azureFileService ?? throw new ArgumentNullException(nameof(azureFileService));
         }
 
+        public async Task SendPeriodEndTask(short collectionYear, byte collectionPeriod, long jobId, string taskName)
+        {
+            try
+            {
+                var messagePointer = Guid.NewGuid().ToString().Replace("-", string.Empty);
+                var dto = new JobContextDto
+                {
+                    JobId = jobId,
+                    KeyValuePairs = new Dictionary<string, object>
+                    {
+                        {JobContextMessageKey.UkPrn, 0 },
+                        {JobContextMessageKey.Filename, string.Empty },
+                        {JobContextMessageKey.CollectionYear, collectionYear },
+                        {JobContextMessageKey.ReturnPeriod, collectionPeriod },
+                        {JobContextMessageKey.Username, "PV2-Automated" }
+                    },
+                    SubmissionDateTimeUtc = DateTime.UtcNow,
+                    TopicPointer = 0,
+                    Topics = new List<TopicItemDto>
+                    {
+                        new TopicItemDto
+                        {
+                            SubscriptionName = "Payments",
+                            Tasks = new List<TaskItemDto>
+                            {
+                                new TaskItemDto
+                                {
+                                    SupportsParallelExecution = false,
+                                    Tasks = new List<string> { taskName }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                await topicPublishingService.PublishAsync(dto, new Dictionary<string, object> { { "To", "Payments" } }, $"Payments_{taskName}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
         public async Task SendIlrSubmission(List<FM36Learner> learners, long ukprn, short collectionYear, byte collectionPeriod, long jobId)
         {
             try

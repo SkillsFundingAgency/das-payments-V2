@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService, ISerializationService>();
+            //builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService, ISerializationService>();
             builder.RegisterType<XmlSerializationService>().As<IXmlSerializationService>();
         }
     }
