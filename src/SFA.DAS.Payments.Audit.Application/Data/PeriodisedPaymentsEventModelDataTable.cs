@@ -43,13 +43,13 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             dataRow["SfaContributionPercentage"] = eventModel.SfaContributionPercentage;
             dataRow["AccountId"] = eventModel.AccountId;
             dataRow["TransferSenderAccountId"] = eventModel.TransferSenderAccountId;
-            dataRow["EarningsStartDate"] = eventModel.StartDate;
+            dataRow["EarningsStartDate"] = eventModel.StartDate == DateTime.MinValue ? DateTime.Today:eventModel.StartDate;
             dataRow["EarningsCompletionStatus"] = eventModel.CompletionStatus;
             dataRow["EarningsCompletionAmount"] = eventModel.CompletionAmount;
             dataRow["EarningsInstalmentAmount"] = eventModel.InstalmentAmount;
             dataRow["EarningsNumberOfInstalments"] = eventModel.NumberOfInstalments;
 
-            if (eventModel.PlannedEndDate == DateTime.MinValue)
+            if (!eventModel.PlannedEndDate.HasValue || eventModel.PlannedEndDate == DateTime.MinValue)
             {
                 dataRow["EarningsPlannedEndDate"] = DBNull.Value;
             }
@@ -66,6 +66,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             {
                 dataRow["EarningsActualEndDate"] = eventModel.ActualEndDate;
             }
+
             return dataRow;
         }
     }

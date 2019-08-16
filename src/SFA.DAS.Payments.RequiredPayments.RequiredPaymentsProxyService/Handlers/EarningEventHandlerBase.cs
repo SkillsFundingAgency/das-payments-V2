@@ -45,8 +45,8 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             {
                 var contractType = message is PayableEarningEvent ? ContractType.Act1 :
                     message is ApprenticeshipContractType2EarningEvent ? ContractType.Act2 :
-                    message is FunctionalSkillEarningsEvent ? (message as FunctionalSkillEarningsEvent).ContractType :
-                    throw new InvalidOperationException($"Cannot resolve contract type for {typeof(T).FullName}");
+                    (message as IFunctionalSkillEarningEvent)?.ContractType 
+                    ?? throw new InvalidOperationException($"Cannot resolve contract type for {typeof(T).FullName}");
 
                 var key = apprenticeshipKeyService.GenerateApprenticeshipKey(
                     message.Ukprn,

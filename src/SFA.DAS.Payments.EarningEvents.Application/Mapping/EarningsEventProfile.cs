@@ -14,6 +14,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             CreateMap<IntermediateLearningAim, EarningEvent>()
                 .Include<IntermediateLearningAim, ApprenticeshipContractTypeEarningsEvent>()
                 .Include<IntermediateLearningAim, FunctionalSkillEarningsEvent>()
+                .Include<IntermediateLearningAim, Act1FunctionalSkillEarningsEvent>()
+                .Include<IntermediateLearningAim, Act2FunctionalSkillEarningsEvent>()
                 .ForMember(destinationMember => destinationMember.PriceEpisodes, opt => opt.MapFrom(source => source.PriceEpisodes))
                 .ForMember(destinationMember => destinationMember.LearningAim, opt => opt.MapFrom(source => source.Aim))
                 .ForMember(destinationMember => destinationMember.CollectionYear, opt => opt.MapFrom(source => source.AcademicYear))
@@ -40,7 +42,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             CreateMap<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>();
 
+            CreateMap<IntermediateLearningAim, Act1FunctionalSkillEarningsEvent>();
+            CreateMap<IntermediateLearningAim, Act2FunctionalSkillEarningsEvent>();
+
             CreateMap<IntermediateLearningAim, FunctionalSkillEarningsEvent>()
+                .Include<IntermediateLearningAim, Act1FunctionalSkillEarningsEvent>()
+                .Include<IntermediateLearningAim, Act2FunctionalSkillEarningsEvent>()
                 .ForMember(destinationMember => destinationMember.Earnings, opt => opt.ResolveUsing<FunctionalSkillsEarningValueResolver>())
                 .ForMember(destinationMember => destinationMember.StartDate, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.LearnStartDate))
                 .Ignore(x => x.ContractType)

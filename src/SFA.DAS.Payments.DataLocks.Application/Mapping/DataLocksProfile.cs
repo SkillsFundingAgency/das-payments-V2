@@ -25,6 +25,19 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(destinationMember => destinationMember.EarningEventId, opt => opt.MapFrom(source => source.EventId))
                 .ForMember(destinationMember => destinationMember.EventId, opt => opt.Ignore());
 
+            CreateMap<Act1FunctionalSkillEarningsEvent, PayableFunctionalSkillEarningEvent>();
+            CreateMap<Act1FunctionalSkillEarningsEvent, FunctionalSkillEarningFailedDataLockMatching>();
+
+            CreateMap<FunctionalSkillEarningsEvent, FunctionalSkillDataLockEvent>()
+                .Include<Act1FunctionalSkillEarningsEvent, PayableFunctionalSkillEarningEvent>()
+                .Include<Act1FunctionalSkillEarningsEvent,
+                    FunctionalSkillEarningFailedDataLockMatching>()
+                .ForMember(dest => dest.ContractType, opt => opt.MapFrom(src => src.ContractType))
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate))
+                .ForMember(dest => dest.AgreementId, opt => opt.Ignore())
+                .ForMember(dest => dest.EarningEventId, opt => opt.Ignore())
+                .ForMember(dest => dest.OnProgrammeEarnings, opt => opt.Ignore())
+                .ForMember(dest => dest.IncentiveEarnings, opt => opt.Ignore());
 
             CreateMap<ApprenticeshipCreatedEvent, ApprenticeshipModel>()
                 .ForMember(dest => dest.AccountId, opt => opt.MapFrom(source => source.AccountId))

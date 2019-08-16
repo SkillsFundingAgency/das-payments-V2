@@ -11,11 +11,11 @@ using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
 {
-    public class FunctionalSkillMappingTests: EarningEventMappingTests<FunctionalSkillEarningsEvent>
+    public abstract class FunctionalSkillMappingTests<T>: EarningEventMappingTests<T> where T: FunctionalSkillEarningsEvent, new()
     {
-        protected override FunctionalSkillEarningsEvent CreatePaymentEvent()
+        protected override T CreatePaymentEvent()
         {
-            return new FunctionalSkillEarningsEvent
+            return new T
             {
                 Earnings = new List<FunctionalSkillEarning>
                 {
@@ -39,10 +39,10 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
         }
 
 
-        [TestCaseSource(nameof(GetContractTypes))]
-        public void Maps_ContractType(ContractType contractType)
+        [Test]
+        public void MapsContractType()
         {
-            Mapper.Map<EarningEventModel>(PaymentEvent).ContractType.Should().Be(ContractType.Act2);
+            Mapper.Map<EarningEventModel>(PaymentEvent).ContractType.Should().Be(PaymentEvent.ContractType);
         }
 
     }
