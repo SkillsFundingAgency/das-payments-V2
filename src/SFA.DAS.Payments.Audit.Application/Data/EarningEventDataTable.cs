@@ -114,8 +114,6 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             return value.HasValue && value.Value == DateTime.MinValue ? null : value;
         }
 
-
-
         public override List<DataTable> GetDataTable(List<EarningEventModel> events)
         {
             periods.Rows.Clear();
