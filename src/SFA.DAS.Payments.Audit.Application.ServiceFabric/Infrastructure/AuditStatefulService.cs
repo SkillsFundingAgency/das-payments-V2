@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure
 
         protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
         {
-            logger.LogInfo("Creating Service Replica Listeners For Datalock Audit Service");
+            logger.LogInfo("Creating Service Replica Listeners For Audit Services");
             var serviceListener = new ServiceReplicaListener(context =>
                 listener = lifetimeScope.Resolve<IStatefulEndpointCommunicationListener>());
 

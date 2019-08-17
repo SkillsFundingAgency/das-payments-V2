@@ -43,8 +43,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data
 
                 new DataColumn("AgreementId"),
                 new DataColumn("LearningStartDate"),
-                new DataColumn("IsPayable"), 
-                new DataColumn("DataLockSourceId"), 
+                new DataColumn("IsPayable"),
+                new DataColumn("DataLockSourceId"),
             });
 
             priceEpisodes = new DataTable("Payments2.DataLockEventPriceEpisode");
@@ -130,7 +130,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
         private void PopulateDataLockEvent(DataLockEventModel model)
         {
             var row = dataLockEvents.NewRow();
-            
+
             row["EventId"] = model.EventId;
             row["EarningEventId"] = model.EarningEventId;
             row["EventTime"] = model.EventTime;
@@ -159,51 +159,86 @@ namespace SFA.DAS.Payments.Audit.Application.Data
 
         private void PopulateNonPayablePeriods(DataLockEventModel model)
         {
-            foreach (var onProgrammeEarning in model.OnProgrammeEarnings)
+            if (model.OnProgrammeEarnings != null)
             {
-                foreach (var earningPeriod in onProgrammeEarning.Periods)
+                foreach (var onProgrammeEarning in model.OnProgrammeEarnings)
                 {
-                    var row = nonPayablePeriods.NewRow();
-                    var id = Guid.NewGuid();
+                    foreach (var earningPeriod in onProgrammeEarning.Periods)
+                    {
+                        var row = nonPayablePeriods.NewRow();
+                        var id = Guid.NewGuid();
 
-                    row["DataLockEventId"] = model.EventId;
-                    row["DataLockEventNonPayablePeriodId"] = id;
-                    row["PriceEpisodeIdentifier"] = earningPeriod.PriceEpisodeIdentifier;
-                    row["TransactionType"] = (int)onProgrammeEarning.Type;
-                    row["DeliveryPeriod"] = earningPeriod.Period;
-                    row["Amount"] = earningPeriod.Amount;
-                    row["SfaContributionPercentage"] = earningPeriod.SfaContributionPercentage ?? (object)DBNull.Value;
-                    row["LearningStartDate"] = model.StartDate;
+                        row["DataLockEventId"] = model.EventId;
+                        row["DataLockEventNonPayablePeriodId"] = id;
+                        row["PriceEpisodeIdentifier"] = earningPeriod.PriceEpisodeIdentifier;
+                        row["TransactionType"] = (int)onProgrammeEarning.Type;
+                        row["DeliveryPeriod"] = earningPeriod.Period;
+                        row["Amount"] = earningPeriod.Amount;
+                        row["SfaContributionPercentage"] = earningPeriod.SfaContributionPercentage ?? (object)DBNull.Value;
+                        row["LearningStartDate"] = model.StartDate;
 
-                    nonPayablePeriods.Rows.Add(row);
+                        nonPayablePeriods.Rows.Add(row);
 
-                    PopulateNonPayablePeriodFailures(earningPeriod, id);
-                    PopulateDataLockFailure(model, earningPeriod, (int)onProgrammeEarning.Type);
+                        PopulateNonPayablePeriodFailures(earningPeriod, id);
+                        PopulateDataLockFailure(model, earningPeriod, (int)onProgrammeEarning.Type);
+                    }
                 }
             }
 
-            foreach (var incentiveEarning in model.IncentiveEarnings)
+            if (model.IncentiveEarnings != null)
             {
-                foreach (var earningPeriod in incentiveEarning.Periods)
+                foreach (var incentiveEarning in model.IncentiveEarnings)
                 {
-                    var row = nonPayablePeriods.NewRow();
-                    var id = Guid.NewGuid();
+                    foreach (var earningPeriod in incentiveEarning.Periods)
+                    {
+                        var row = nonPayablePeriods.NewRow();
+                        var id = Guid.NewGuid();
 
-                    row["DataLockEventId"] = model.EventId;
-                    row["DataLockEventNonPayablePeriodId"] = id;
-                    row["PriceEpisodeIdentifier"] = earningPeriod.PriceEpisodeIdentifier;
-                    row["TransactionType"] = (int)incentiveEarning.Type;
-                    row["DeliveryPeriod"] = earningPeriod.Period;
-                    row["Amount"] = earningPeriod.Amount;
-                    row["SfaContributionPercentage"] = earningPeriod.SfaContributionPercentage;
-                    row["LearningStartDate"] = model.StartDate;
+                        row["DataLockEventId"] = model.EventId;
+                        row["DataLockEventNonPayablePeriodId"] = id;
+                        row["PriceEpisodeIdentifier"] = earningPeriod.PriceEpisodeIdentifier;
+                        row["TransactionType"] = (int)incentiveEarning.Type;
+                        row["DeliveryPeriod"] = earningPeriod.Period;
+                        row["Amount"] = earningPeriod.Amount;
+                        row["SfaContributionPercentage"] = earningPeriod.SfaContributionPercentage;
+                        row["LearningStartDate"] = model.StartDate;
 
-                    nonPayablePeriods.Rows.Add(row);
+                        nonPayablePeriods.Rows.Add(row);
 
-                    PopulateNonPayablePeriodFailures(earningPeriod, id);
-                    PopulateDataLockFailure(model, earningPeriod, (int)incentiveEarning.Type);
+                        PopulateNonPayablePeriodFailures(earningPeriod, id);
+                        PopulateDataLockFailure(model, earningPeriod, (int)incentiveEarning.Type);
+                    }
                 }
             }
+
+            if (model.Earnings != null)
+            {
+                foreach (var functionalSkillEarning in model.Earnings)
+                {
+                    foreach (var earningPeriod in functionalSkillEarning.Periods)
+                    {
+                        var row = nonPayablePeriods.NewRow();
+                        var id = Guid.NewGuid();
+
+                        row["DataLockEventId"] = model.EventId;
+                        row["DataLockEventNonPayablePeriodId"] = id;
+                        row["PriceEpisodeIdentifier"] = earningPeriod.PriceEpisodeIdentifier;
+                        row["TransactionType"] = (int)functionalSkillEarning.Type;
+                        row["DeliveryPeriod"] = earningPeriod.Period;
+                        row["Amount"] = earningPeriod.Amount;
+                        row["SfaContributionPercentage"] = earningPeriod.SfaContributionPercentage;
+                        row["LearningStartDate"] = model.StartDate;
+
+                        nonPayablePeriods.Rows.Add(row);
+
+                        PopulateNonPayablePeriodFailures(earningPeriod, id);
+                        PopulateDataLockFailure(model, earningPeriod, (int)functionalSkillEarning.Type);
+                    }
+                }
+            }
+
+
+
         }
 
         private void PopulateNonPayablePeriodFailures(EarningPeriod model, Guid parentId)
@@ -242,12 +277,12 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 row["CollectionPeriod"] = model.CollectionPeriod;
                 row["EarningPeriod"] = string.Empty;
                 row["Amount"] = earningPeriod.Amount;
-                
+
                 dataLockFailures.Rows.Add(row);
 
-                foreach (var apprenticeshipPriceEpisodeId in dataLockFailure.ApprenticeshipPriceEpisodeIds??new List<long>())
+                foreach (var apprenticeshipPriceEpisodeId in dataLockFailure.ApprenticeshipPriceEpisodeIds ?? new List<long>())
                 {
-                    
+
                 }
             }
         }
@@ -320,7 +355,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 row["Completed"] = priceEpisode.Completed;
                 row["EmployerContribution"] = priceEpisode.EmployerContribution ?? (object)DBNull.Value;
                 row["CompletionHoldBackExemptionCode"] = priceEpisode.CompletionHoldBackExemptionCode ?? (object)DBNull.Value;
-                
+
                 priceEpisodes.Rows.Add(row);
             }
         }

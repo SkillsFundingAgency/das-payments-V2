@@ -98,16 +98,14 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             var onProgAndIncentiveEarning = await repository
                         .GetLatestProviderApprenticeshipEarnings(uln, ukprn, typeof(ApprenticeshipContractType1EarningEvent).FullName, default(CancellationToken))
                         .ConfigureAwait(false);
-
-            var onProgEarningTypes = Enum.GetValues(typeof(OnProgrammeEarningType)).Cast<OnProgrammeEarningType>().ToList();
-
+            
             if (onProgAndIncentiveEarning != null)
             {
                 var act1EarningEvent = mapper.Map<ApprenticeshipContractType1EarningEvent>(onProgAndIncentiveEarning);
                 act1EarningEvent.OnProgrammeEarnings = new List<OnProgrammeEarning>();
                 act1EarningEvent.IncentiveEarnings = new List<IncentiveEarning>();
 
-                AddOnProgEarnings(onProgEarningTypes, onProgAndIncentiveEarning, act1EarningEvent);
+                AddOnProgEarnings( onProgAndIncentiveEarning, act1EarningEvent);
                 AddIncentiveEarnings(onProgAndIncentiveEarning, act1EarningEvent);
 
                 act1EarningEvent.Learner = mapper.Map<Learner>(onProgAndIncentiveEarning);
@@ -198,8 +196,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
         }
 
-        private void AddOnProgEarnings(List<OnProgrammeEarningType> onProgEarningTypes, EarningEventModel onProgAndIncentiveEarning, ApprenticeshipContractType1EarningEvent act1EarningEvent)
+        private void AddOnProgEarnings( EarningEventModel onProgAndIncentiveEarning, ApprenticeshipContractType1EarningEvent act1EarningEvent)
         {
+            var onProgEarningTypes = Enum.GetValues(typeof(OnProgrammeEarningType)).Cast<OnProgrammeEarningType>().ToList();
             foreach (var onProgrammeEarningType in onProgEarningTypes)
             {
                 var earningPeriodData = GetEarningsPeriodsAndCensusDate(onProgAndIncentiveEarning, (int)onProgrammeEarningType);

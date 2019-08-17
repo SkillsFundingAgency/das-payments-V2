@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Audit;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
@@ -16,5 +18,9 @@ namespace SFA.DAS.Payments.Audit.Model
         public List<IncentiveEarning> IncentiveEarnings { get; set; }
         public bool IsPayable { get; set; }
         public DateTime CreationDate { get; set; }
+        
+        public List<FunctionalSkillEarning> Earnings { get; set; }
+        public ContractType ContractType { get; } = ContractType.Act1;
+
     }
 }

@@ -45,10 +45,12 @@
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
           </Section>
           <Section Name="Settings">
-            <Parameter Name="EndpointName" Value="[Audit_EarningEvents_EndpointName]" />
-            <Parameter Name="FailedMessagesQueue" Value="[Audit_EarningEvents_FailedMessagesQueue]" />
+            <Parameter Name="EndpointName" Value="[Audit_DataLock_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[Audit_DataLock_FailedMessagesQueue]" />
             <Parameter Name="BatchFailureTimeoutInSeconds" Value="[Audit_BatchFailureTimeoutInSeconds]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
           </Section>
         </Settings>
       </ConfigOverride>

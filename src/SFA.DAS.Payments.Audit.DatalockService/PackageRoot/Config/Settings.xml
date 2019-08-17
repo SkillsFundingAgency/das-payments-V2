@@ -21,5 +21,7 @@
     <Parameter Name="BatchSize" Value="500"/>
     <Parameter Name="BatchFailureTimeoutInSeconds" Value="60"/>
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+    <Parameter Name="LogLevel" Value="Information" />
+    <Parameter Name="ConsoleLogLevel" Value="Information" />
   </Section>
 </Settings>
