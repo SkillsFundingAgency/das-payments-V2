@@ -4,6 +4,8 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
 using SFA.DAS.Payments.ProviderPayments.Domain;
 using SFA.DAS.Payments.ProviderPayments.Domain.Models;
@@ -58,6 +60,27 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
                 cancellationToken);
 
             logger.LogInfo($"Successfully Deleted Old Month End Payment for Ukprn {message.Ukprn} and Job Id {message.JobId}");
+        }
+
+        public async Task HandleSubmissionSucceeded(SubmissionSucceededEvent message, CancellationToken cancellationToken)
+        {
+            logger.LogVerbose($"Handling Submission Succeeded. Data: {message.ToJson()}");
+            await providerPaymentsRepository.DeleteOldMonthEndPayment(new CollectionPeriod { AcademicYear = message.AcademicYear, Period = message.CollectionPeriod},
+                message.Ukprn,
+                message.IlrSubmissionDateTime,
+                cancellationToken);
+
+            logger.LogInfo($"Successfully Deleted Old Month End Payment for Ukprn {message.Ukprn} and Job Id {message.JobId}");
+        }
+
+        public async Task HandleSubmissionFailed(SubmissionFailedEvent message, CancellationToken cancellationToken)
+        {
+            logger.LogVerbose($"Handling Submission Failed. Data: {message.ToJson()}");
+            await providerPaymentsRepository.DeleteCurrentMonthEndPayment(new CollectionPeriod { AcademicYear = message.AcademicYear, Period = message.CollectionPeriod },
+                message.Ukprn,
+                message.IlrSubmissionDateTime,
+                cancellationToken);
+            logger.LogInfo($"Successfully Deleted Current Month End Payment for Ukprn {message.Ukprn} and Job Id {message.JobId}");
         }
 
         private async Task<ReceivedProviderEarningsEvent> GetCurrentIlrSubmissionEvent(long ukprn, CancellationToken cancellationToken)
