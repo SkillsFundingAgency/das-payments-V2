@@ -198,6 +198,28 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             paymentLogger.LogInfo("Finished removing previous submission payments.");
         }
 
+        public async Task RemoveCurrentSubmission(long employerAccountId, long jobId, CollectionPeriod collectionPeriod,
+            DateTime submissionDate)
+        {
+            var keys = await generateSortedPaymentKeys.GeyKeys().ConfigureAwait(false);
+
+            paymentLogger.LogDebug($"Processing {keys.Count} required payments, account {employerAccountId}, job id {jobId}");
+
+            foreach (var key in keys)
+            {
+                var requiredPaymentEvent = await requiredPaymentsCache.TryGet(key).ConfigureAwait(false);
+
+                if (requiredPaymentEvent.Value.CollectionPeriod == collectionPeriod &&
+                    requiredPaymentEvent.Value.IlrSubmissionDateTime == submissionDate)
+                {
+                    await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
+                    break;
+                }
+            }
+
+            paymentLogger.LogInfo("Finished removing current submission payments.");
+        }
+
         private List<FundingSourcePaymentEvent> CreateFundingSourcePaymentsForRequiredPayment(CalculatedRequiredLevyAmount requiredPaymentEvent, long employerAccountId, long jobId)
         {
             var fundingSourceEvents = new List<FundingSourcePaymentEvent>();

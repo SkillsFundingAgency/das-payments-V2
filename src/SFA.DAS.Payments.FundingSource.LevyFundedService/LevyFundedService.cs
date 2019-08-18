@@ -159,6 +159,24 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             }
         }
 
+        public async Task RemoveCurrentSubmission(ProcessCurrentSubmissionDeletionCommand command)
+        {
+            paymentLogger.LogVerbose($"Handling ProcessCurrentSubmissionDeletionCommand for {Id}, Job: {command.JobId}, Account: {command.AccountId}");
+            try
+            {
+                using (var operation = telemetry.StartOperation())
+                {
+                    await fundingSourceService.RemovePreviousSubmissions(command.AccountId, command.JobId, command.CollectionPeriod, command.SubmissionDate);
+                    telemetry.StopOperation(operation);
+                }
+            }
+            catch (Exception ex)
+            {
+                paymentLogger.LogError($"Failed to remove current submission required payments. Error: {ex.Message}", ex);
+                throw;
+            }
+        }
+
         protected override async Task OnActivateAsync()
         {
             //TODO: Use DI
