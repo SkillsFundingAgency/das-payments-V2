@@ -18,11 +18,30 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             this.dataContext = dataContext;
         }
 
-        public async Task<List<ApprenticeshipModel>> ApprenticeshipsForProvider(long ukprn)
+        public async Task<List<long>> GetProviderIds()
+        {
+            return await dataContext.Apprenticeship
+                .Where(x => x.Ukprn != 0)
+                .Select(x => x.Ukprn)
+                .Distinct()
+                .ToListAsync();
+        }
+
+        public async Task<List<long>> ApprenticeshipUlnsByProvider(long ukprn)
+        {
+            var apprenticeships = await dataContext.Apprenticeship
+                .Where(x => x.Ukprn == ukprn)
+                .Select(x => x.Uln)
+                .ToListAsync()
+                .ConfigureAwait(false);
+            return apprenticeships;
+        }
+
+        public async Task<List<ApprenticeshipModel>> ApprenticeshipsByUln(long uln)
         {
             var apprenticeships = await dataContext.Apprenticeship
                 .Include(x => x.ApprenticeshipPriceEpisodes)
-                .Where(x => x.Ukprn == ukprn)
+                .Where(x => x.Uln == uln)
                 .ToListAsync()
                 .ConfigureAwait(false);
 
@@ -86,14 +105,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             dataContext.ApprenticeshipDuplicate.AddRange(duplicates);
             await dataContext.SaveChangesAsync();
         }
-
-        private static void RemoveNonActivePriceEpisodes(List<ApprenticeshipModel> apprenticeships)
-        {
-            apprenticeships.ForEach(x => x.ApprenticeshipPriceEpisodes = x.ApprenticeshipPriceEpisodes?
-                .Where(o => !o.Removed)
-                .ToList());
-        }
-
+        
         public async Task UpdateApprenticeship(ApprenticeshipModel updatedApprenticeship)
         {
             dataContext.Apprenticeship.Update(updatedApprenticeship);
@@ -123,5 +135,38 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
+        public async Task<List<ApprenticeshipModel>> GetEmployerApprenticeships(long accountId, CancellationToken cancellationToken)
+        {
+            var employerApprenticeships = await dataContext.Apprenticeship
+                .Where(x => x.AccountId == accountId)
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            return employerApprenticeships;
+        }
+
+        public async Task UpdateApprenticeships(List<ApprenticeshipModel> updatedApprenticeships)
+        {
+            foreach (var updatedApprenticeship in updatedApprenticeships)
+            {
+               dataContext.Apprenticeship.Update(updatedApprenticeship);
+            }
+            
+            await dataContext.SaveChangesAsync().ConfigureAwait(false);
+        }
+
+        private static void RemoveNonActivePriceEpisodes(List<ApprenticeshipModel> apprenticeships)
+        {
+            apprenticeships.ForEach(x => x.ApprenticeshipPriceEpisodes = x.ApprenticeshipPriceEpisodes?
+                .Where(o => !o.Removed)
+                .ToList());
+        }
+
+
+
+        public void Dispose()
+        {
+            (dataContext as PaymentsDataContext)?.Dispose();
+        }
     }
 }

@@ -16,6 +16,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
         {
             this.scope = scope ?? throw new ArgumentNullException(nameof(scope));
         }
+
         public IEarningsJobClient Create()
         {
             return scope.Resolve<IEarningsJobClient>();

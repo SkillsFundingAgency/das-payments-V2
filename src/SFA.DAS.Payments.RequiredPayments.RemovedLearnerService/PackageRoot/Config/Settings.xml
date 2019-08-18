@@ -4,7 +4,11 @@
     <Parameter Name="LoggingConnectionString" Value="" />
     <Parameter Name="PaymentsConnectionString" Value="" />
   </Section>
-  <Section Name="Settings" />
+  <Section Name="Settings">
+    <Parameter Name="LogLevel" Value="" />
+    <Parameter Name="ConsoleLogLevel" Value="" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+  </Section>
   <Section Name="RemovedLearnerServiceActorServiceReplicatorConfig">
     <Parameter Name="ReplicatorEndpoint" Value="RemovedLearnerServiceActorServiceReplicatorEndpoint" />
     <Parameter Name="BatchAcknowledgementInterval" Value="0.005" />

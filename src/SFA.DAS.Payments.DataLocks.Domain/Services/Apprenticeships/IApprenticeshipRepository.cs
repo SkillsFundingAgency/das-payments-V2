@@ -7,9 +7,11 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
 {
-    public interface IApprenticeshipRepository
+    public interface IApprenticeshipRepository: IDisposable
     {
-        Task<List<ApprenticeshipModel>> ApprenticeshipsForProvider(long ukprn);
+        Task<List<long>> GetProviderIds();
+        Task<List<long>> ApprenticeshipUlnsByProvider(long ukprn);
+        Task<List<ApprenticeshipModel>> ApprenticeshipsByUln(long uln);
         Task<List<ApprenticeshipModel>> DuplicateApprenticeshipsForProvider(long ukprn);
         Task<ApprenticeshipModel> Get(long apprenticeshipId);
         Task<List<ApprenticeshipModel>> Get(List<long> apprenticeshipIds, CancellationToken cancellationToken);
@@ -20,5 +22,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
         Task AddApprenticeshipPause(ApprenticeshipPauseModel pauseModel);
         Task<ApprenticeshipPauseModel> GetCurrentApprenticeshipPausedModel(long apprenticeshipId);
         Task UpdateCurrentlyPausedApprenticeship(ApprenticeshipPauseModel apprenticeshipPauseModel);
+        Task<List<ApprenticeshipModel>> GetEmployerApprenticeships(long accountId, CancellationToken cancellationToken);
+        Task UpdateApprenticeships(List<ApprenticeshipModel> updatedApprenticeships);
     }
 }
