@@ -24,6 +24,7 @@ namespace SFA.DAS.Payments.DataLocks.Messages.Events
         public long? TransferSendingEmployerAccountId { get; set; }
         public DateTime? StopDate { get; set; }
         public ApprenticeshipStatus Status { get; set; }
+        public bool IsLevyPayer { get; set; }
         public List<ApprenticeshipPriceEpisodeModel> ApprenticeshipPriceEpisodes { get; set; }
         public List<ApprenticeshipDuplicate> Duplicates { get; set; }
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
@@ -37,5 +38,6 @@ namespace SFA.DAS.Payments.DataLocks.Messages.Events
             ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>();
             Duplicates = new List<ApprenticeshipDuplicate>();
         }
+
     }
 }

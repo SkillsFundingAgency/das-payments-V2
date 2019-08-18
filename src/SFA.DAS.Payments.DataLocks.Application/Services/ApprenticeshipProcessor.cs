@@ -23,6 +23,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         Task ProcessPausedApprenticeship(ApprenticeshipPausedEvent pausedEvent);
         Task ProcessResumedApprenticeship(ApprenticeshipResumedEvent resumedEvent);
         Task ProcessPaymentOrderChange(PaymentOrderChangedEvent paymentOrderChangedEvent);
+        Task ProcessApprenticeshipForNonLevyPayerEmployer(long accountId);
     }
 
     public class ApprenticeshipProcessor : IApprenticeshipProcessor
@@ -212,7 +213,35 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 throw;
             }
         }
-        
+
+        public async Task ProcessApprenticeshipForNonLevyPayerEmployer(long accountId)
+        {
+            try
+            {
+                logger.LogDebug($"Processing the apprenticeship Employer Is Non Levy Payer event for Account id: {accountId}");
+               
+                var updatedApprenticeships = await apprenticeshipService.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(accountId).ConfigureAwait(false);
+
+                if (!updatedApprenticeships.Any())
+                {
+                    logger.LogInfo($"Unable to update IsLevyPayerFlag no Apprenticeships found for Account id: {accountId}");
+                    return;
+                }
+
+                var updatedEvents = updatedApprenticeships.Select(x => mapper.Map<ApprenticeshipUpdated>(x));
+                
+                var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
+                await Task.WhenAll(updatedEvents.Select(message => endpointInstance.Publish(message))).ConfigureAwait(false);
+                
+                logger.LogInfo($"Finished Processing the apprenticeship Employer Is Non Levy Payer event for Account id: {accountId}");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error while processing apprenticeship Employer Is Non Levy Payer event . Error: {ex.Message}", ex);
+                throw;
+            }
+        }
+
         private async Task PublishApprenticeshipUpdate(ApprenticeshipModel updatedApprenticeship)
         {
             var updatedEvent = mapper.Map<ApprenticeshipUpdated>(updatedApprenticeship);
@@ -237,6 +266,5 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 throw;
             }
         }
-
     }
 }
