@@ -10,6 +10,15 @@ namespace SFA.DAS.Payments.Audit.Model
 {
     public class DataLockEventModel : PaymentsEventModel
     {
+
+        public DataLockEventModel()
+        {
+            PriceEpisodes = new List<PriceEpisode>();
+            OnProgrammeEarnings = new List<OnProgrammeEarning>();
+            IncentiveEarnings = new List<IncentiveEarning>();
+            Earnings = new List<FunctionalSkillEarning>();
+        }
+
         public Guid EarningEventId { get; set; }
         public List<PriceEpisode> PriceEpisodes { get; set; }
         public short CollectionYear { get; set; }
