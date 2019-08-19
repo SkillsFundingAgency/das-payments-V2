@@ -1,25 +1,19 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 {
-    public class SubmissionSucceededEventHandler: SubmissionEventHandler, IHandleMessages<SubmissionSucceededEvent>
+    public class SubmissionSucceededEventHandler: SubmissionEventHandler<SubmissionSucceededEvent>
     {
         public SubmissionSucceededEventHandler(IPaymentLogger paymentLogger,
             IHandleIlrSubmissionService submissionService): base(paymentLogger, submissionService)
         {
         }
-
-        public async Task Handle(SubmissionSucceededEvent message, IMessageHandlerContext context)
-        {
-            await base.Handle(message, context);
-        }
-
-        protected override async Task HandleSubmission(IHandleIlrSubmissionService service, SubmissionEvent message)
+       
+        protected override async Task HandleSubmission(SubmissionSucceededEvent message, IHandleIlrSubmissionService service)
         {
             await service.HandleSubmissionSucceeded(message.AcademicYear, message.CollectionPeriod, message.Ukprn, message.IlrSubmissionDateTime, message.JobId, default(CancellationToken));
         }

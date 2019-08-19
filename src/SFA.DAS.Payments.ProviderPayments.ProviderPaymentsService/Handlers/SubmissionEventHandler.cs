@@ -7,7 +7,8 @@ using SFA.DAS.Payments.ProviderPayments.Application.Services;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 {
-    public abstract class SubmissionEventHandler
+    public abstract class SubmissionEventHandler<T> : IHandleMessages<T> 
+        where T: SubmissionEvent
     {
         private readonly IPaymentLogger paymentLogger;
         private readonly IHandleIlrSubmissionService submissionService;
@@ -19,7 +20,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
             this.submissionService = submissionService;
         }
 
-        public async Task Handle(SubmissionEvent message, IMessageHandlerContext context)
+        public async Task Handle(T message, IMessageHandlerContext context)
         {
             var messageType = message.GetType().Name;
 
@@ -27,7 +28,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
             {
                 paymentLogger.LogDebug($"Processing {messageType} for Message Id : {context.MessageId}");
 
-                await HandleSubmission(submissionService, message);
+                await HandleSubmission(message, submissionService);
             }
             catch (Exception ex)
             {
@@ -38,10 +39,6 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
             paymentLogger.LogDebug($"Finished processing {messageType} for Message Id : {context.MessageId}. ");
         }
 
-        protected virtual Task HandleSubmission(IHandleIlrSubmissionService service,
-            SubmissionEvent submissionEvent)
-        {
-            return Task.CompletedTask;
-        }
+        protected abstract Task HandleSubmission(T submissionEvent, IHandleIlrSubmissionService service);
     }
 }

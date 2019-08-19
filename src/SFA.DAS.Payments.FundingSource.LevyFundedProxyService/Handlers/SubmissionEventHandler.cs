@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
+using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces;
@@ -12,7 +13,7 @@ using SFA.DAS.Payments.Model.Core.Factories;
 
 namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
 {
-    public abstract class SubmissionEventHandler
+    public abstract class SubmissionEventHandler<T>: IHandleMessages<T> where T: SubmissionEvent
     {
         private readonly IActorProxyFactory proxyFactory;
         private readonly ILevyFundingSourceRepository repository;
@@ -28,7 +29,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
             this.executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
         }
 
-        public async Task Handle(SubmissionEvent message)
+        public async Task Handle(T message, IMessageHandlerContext context)
         {
             var messageType = message.GetType().Name;
             logger.LogInfo($"Processing {messageType} event. Ukprn: {message.Ukprn}");
@@ -56,7 +57,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
                     SubmissionDate = message.IlrSubmissionDateTime
                 };
 
-                await RemoveSubmissions(actor, previousSubmissionDeletion); 
+                await RemoveSubmissions(previousSubmissionDeletion, actor); 
                 logger.LogInfo($"Successfully processed {messageType} event for Actor Id {actorId}, Job: {message.JobId}, UKPRN: {message.Ukprn}");
             }
             catch (Exception ex)
@@ -66,9 +67,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
             }
         }
 
-        protected virtual Task RemoveSubmissions(ILevyFundedService fundingService, ProcessSubmissionDeletion submission)
-        {
-            return Task.CompletedTask;
-        }
+        protected abstract Task RemoveSubmissions(ProcessSubmissionDeletion submission,
+            ILevyFundedService fundingService);
     }
 }
