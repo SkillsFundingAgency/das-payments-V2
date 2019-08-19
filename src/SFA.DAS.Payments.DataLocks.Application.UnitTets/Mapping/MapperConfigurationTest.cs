@@ -119,7 +119,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
                         TotalNegotiatedPrice4 = 25.0m
                     }
 
-                })
+                }),
+                EventId =  Guid.NewGuid()
             };
 
             var functionalSkillEarnings = new List<FunctionalSkillEarning>
@@ -133,6 +134,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
 
             functionalSkillEarningEvent = new Act1FunctionalSkillEarningsEvent
             {
+                EventId = Guid.NewGuid(),
                 Ukprn = 12345,
                 JobId = 123,
                 CollectionPeriod = new CollectionPeriod {Period = 12, AcademicYear = 1819},
@@ -195,8 +197,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
             var payableEarning = Mapper.Map<ApprenticeshipContractType1EarningEvent, PayableEarningEvent>(earningEventPayment);
             payableEarning.JobId.Should().Be(earningEventPayment.JobId);
         }
-
-
+        
         [Test]
         public void CanMapIlrSubmissionDateTime()
         {
@@ -468,6 +469,37 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
 
         }
 
+        [Test]
+        public void CanMapAct1PayableEarningEventIdAndDataLockEventIdCorrectly()
+        {
+            var payableEarning = Mapper.Map<ApprenticeshipContractType1EarningEvent, PayableEarningEvent>(earningEventPayment);
+            payableEarning.EarningEventId.Should().Be(earningEventPayment.EventId);
+            payableEarning.EventId.Should().NotBe(default(Guid));
+        }
+
+        [Test]
+        public void CanMapAct1NonPayableEarningEventIdAndDataLockEventIdCorrectly()
+        {
+            var nonPayableEarning = Mapper.Map<ApprenticeshipContractType1EarningEvent, EarningFailedDataLockMatching>(earningEventPayment);
+            nonPayableEarning.EarningEventId.Should().Be(earningEventPayment.EventId);
+            nonPayableEarning.EventId.Should().NotBe(default(Guid));
+        }
+
+        [Test]
+        public void CanMapAct1PayableFunctionalSkillEarningEventEarningEventIdAndDataLockEventIdCorrectly()
+        {
+            var payableFunctionalSkillEarning = Mapper.Map<Act1FunctionalSkillEarningsEvent, PayableFunctionalSkillEarningEvent>(functionalSkillEarningEvent);
+            payableFunctionalSkillEarning.EarningEventId.Should().Be(functionalSkillEarningEvent.EventId);
+            payableFunctionalSkillEarning.EventId.Should().NotBe(default(Guid));
+        }
+
+        [Test]
+        public void CanMapAct1FunctionalSkillEarningFailedDataLockMatchingEventIdAndDataLockEventIdCorrectly()
+        {
+            var nonFunctionalSkillPayableEarning = Mapper.Map<Act1FunctionalSkillEarningsEvent, FunctionalSkillEarningFailedDataLockMatching>(functionalSkillEarningEvent);
+            nonFunctionalSkillPayableEarning.EarningEventId.Should().Be(functionalSkillEarningEvent.EventId);
+            nonFunctionalSkillPayableEarning.EventId.Should().NotBe(default(Guid));
+        }
 
         private static Array GetIncentives()
         {

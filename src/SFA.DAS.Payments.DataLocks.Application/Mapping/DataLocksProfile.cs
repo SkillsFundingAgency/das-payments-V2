@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using SFA.DAS.CommitmentsV2.Messages.Events;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
@@ -19,24 +20,27 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
         {
             CreateMap<ApprenticeshipContractType1EarningEvent, PayableEarningEvent>()
                 .ForMember(destinationMember => destinationMember.EarningEventId, opt => opt.MapFrom(source => source.EventId))
-                .ForMember(destinationMember => destinationMember.EventId, opt => opt.Ignore());
+                .ForMember(destinationMember => destinationMember.EventId, opt => opt.UseValue(Guid.NewGuid()));
 
             CreateMap<ApprenticeshipContractType1EarningEvent, EarningFailedDataLockMatching>()
                 .ForMember(destinationMember => destinationMember.EarningEventId, opt => opt.MapFrom(source => source.EventId))
-                .ForMember(destinationMember => destinationMember.EventId, opt => opt.Ignore());
+                .ForMember(destinationMember => destinationMember.EventId, opt => opt.UseValue(Guid.NewGuid()));
 
             CreateMap<Act1FunctionalSkillEarningsEvent, PayableFunctionalSkillEarningEvent>();
             CreateMap<Act1FunctionalSkillEarningsEvent, FunctionalSkillEarningFailedDataLockMatching>();
+               
 
             CreateMap<FunctionalSkillEarningsEvent, FunctionalSkillDataLockEvent>()
                 .Include<Act1FunctionalSkillEarningsEvent, PayableFunctionalSkillEarningEvent>()
-                .Include<Act1FunctionalSkillEarningsEvent,
-                    FunctionalSkillEarningFailedDataLockMatching>()
+                .Include<Act1FunctionalSkillEarningsEvent, FunctionalSkillEarningFailedDataLockMatching>()
                 .ForMember(dest => dest.ContractType, opt => opt.MapFrom(src => src.ContractType))
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate))
+
+                .ForMember(destinationMember => destinationMember.EarningEventId, opt => opt.MapFrom(source => source.EventId))
+                .ForMember(destinationMember => destinationMember.EventId, opt => opt.UseValue(Guid.NewGuid()))
+                
                 .ForMember(dest => dest.AgreementId, opt => opt.Ignore())
-                .ForMember(dest => dest.EarningEventId, opt => opt.Ignore())
-                .ForMember(dest => dest.OnProgrammeEarnings, opt => opt.Ignore())
+               .ForMember(dest => dest.OnProgrammeEarnings, opt => opt.Ignore())
                 .ForMember(dest => dest.IncentiveEarnings, opt => opt.Ignore());
 
             CreateMap<ApprenticeshipCreatedEvent, ApprenticeshipModel>()
