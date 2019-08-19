@@ -203,7 +203,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             {
                 var requiredPaymentEvent = await requiredPaymentsCache.TryGet(key).ConfigureAwait(false);
 
-                if (requiredPaymentEvent.Value.CollectionPeriod == collectionPeriod &&
+                if (requiredPaymentEvent.Value.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
+                requiredPaymentEvent.Value.CollectionPeriod.Period == collectionPeriod.Period &&
                     requiredPaymentEvent.Value.IlrSubmissionDateTime < submissionDate)
                 {
                     await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
@@ -224,8 +225,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             {
                 var requiredPaymentEvent = await requiredPaymentsCache.TryGet(key).ConfigureAwait(false);
 
-                if (requiredPaymentEvent.Value.CollectionPeriod == collectionPeriod &&
-                    requiredPaymentEvent.Value.IlrSubmissionDateTime == submissionDate)
+                if (requiredPaymentEvent.Value.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
+                    requiredPaymentEvent.Value.CollectionPeriod.Period == collectionPeriod.Period &&
+                     requiredPaymentEvent.Value.IlrSubmissionDateTime == submissionDate)
                 {
                     await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
                     break;

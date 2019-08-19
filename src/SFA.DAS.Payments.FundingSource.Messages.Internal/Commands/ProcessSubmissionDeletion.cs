@@ -3,7 +3,7 @@ using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.FundingSource.Messages.Internal.Commands
 {
-    public class ProcessPreviousSubmissionDeletionCommand: PaymentsCommand
+    public class ProcessSubmissionDeletion: PaymentsCommand
     {
         public CollectionPeriod CollectionPeriod { get; set; }
 

@@ -73,25 +73,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             logger.LogDebug($"Processing Earning Event Service event for Job Id : {message.JobId}");
             try
             {
-                if (message.Topics.Any())
-                {
-                    var subscriptionMessage = message.Topics.SingleOrDefault(m => m.SubscriptionName == "GenerateFM36Payments");
-
-                    if (subscriptionMessage != null && subscriptionMessage.Tasks.Any())
-                    {
-                        if (subscriptionMessage.Tasks.Any(t => t.Tasks.Contains("JobSuccess")))
-                        {
-                            await HandleSubmissionEvent<SubmissionSucceededEvent>(message);
-                            return true;
-                        }
-
-                        if (subscriptionMessage.Tasks.Any(t => t.Tasks.Contains("JobFailure")))
-                        {
-                            await HandleSubmissionEvent<SubmissionFailedEvent>(message);
-                            return true;
-                        }
-                    }
-                }
+                if (await HandleSubmissionEvents(message)) return true;
 
                 using (var operation = telemetry.StartOperation("FM36Processing"))
                 {
@@ -127,6 +109,31 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 logger.LogFatal($"Error while handling EarningService event.  Error: {ex.Message}", ex);
                 return false; //TODO: change back to throw when DC code is a little more defensive
             }
+        }
+
+        private async Task<bool> HandleSubmissionEvents(JobContextMessage message)
+        {
+            if (message.Topics.Any())
+            {
+                var subscriptionMessage = message.Topics.SingleOrDefault(m => m.SubscriptionName == "GenerateFM36Payments");
+
+                if (subscriptionMessage != null && subscriptionMessage.Tasks.Any())
+                {
+                    if (subscriptionMessage.Tasks.Any(t => t.Tasks.Contains(SubmissionJob.JobSuccess)))
+                    {
+                        await HandleSubmissionEvent<SubmissionSucceededEvent>(message);
+                        return true;
+                    }
+
+                    if (subscriptionMessage.Tasks.Any(t => t.Tasks.Contains(SubmissionJob.JobFailure)))
+                    {
+                        await HandleSubmissionEvent<SubmissionFailedEvent>(message);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         private async Task HandleSubmissionEvent<T>(JobContextMessage message) where T: SubmissionEvent, new()

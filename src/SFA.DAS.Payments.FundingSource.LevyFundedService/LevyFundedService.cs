@@ -147,9 +147,9 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             }
         }
 
-        public async Task RemovePreviousSubmissions(ProcessPreviousSubmissionDeletionCommand command)
+        public async Task RemovePreviousSubmissions(ProcessSubmissionDeletion command)
         {
-            paymentLogger.LogVerbose($"Handling ProcessPreviousSubmissionDeletionCommand for {Id}, Job: {command.JobId}, Account: {command.AccountId}");
+            paymentLogger.LogVerbose($"Handling ProcessSubmissionDeletion for {Id}, Job: {command.JobId}, Account: {command.AccountId}");
             try
             {
                 using (var operation = telemetry.StartOperation())
@@ -165,7 +165,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             }
         }
 
-        public async Task RemoveCurrentSubmission(ProcessCurrentSubmissionDeletionCommand command)
+        public async Task RemoveCurrentSubmission(ProcessSubmissionDeletion command)
         {
             paymentLogger.LogVerbose($"Handling ProcessCurrentSubmissionDeletionCommand for {Id}, Job: {command.JobId}, Account: {command.AccountId}");
             try
