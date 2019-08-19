@@ -50,6 +50,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 var payableEarningEvent = mapper.Map<PayableEarningEvent>(earningEvent);
                 payableEarningEvent.OnProgrammeEarnings = onProgrammeEarning.validOnProgEarnings;
                 payableEarningEvent.IncentiveEarnings = incentiveEarnings.validIncentiveEarnings;
+                payableEarningEvent.EventId = Guid.NewGuid();
                 dataLockEvents.Add(payableEarningEvent);
             }
 
@@ -58,6 +59,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 var earningFailedDataLockEvent = mapper.Map<EarningFailedDataLockMatching>(earningEvent);
                 earningFailedDataLockEvent.OnProgrammeEarnings = onProgrammeEarning.invalidOnProgEarnings;
                 earningFailedDataLockEvent.IncentiveEarnings = incentiveEarnings.invalidIncentiveEarning;
+                earningFailedDataLockEvent.EventId = Guid.NewGuid();
                 dataLockEvents.Add(earningFailedDataLockEvent);
             }
 
@@ -83,6 +85,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 var payableEarningEvent = mapper.Map<PayableFunctionalSkillEarningEvent>(earningEvent);
                 payableEarningEvent.Earnings = functionalSkillEarnings.validEarnings.AsReadOnly();
+                payableEarningEvent.EventId = Guid.NewGuid();
                 dataLockEvents.Add(payableEarningEvent);
             }
 
@@ -90,6 +93,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 var earningFailedDataLockEvent = mapper.Map<FunctionalSkillEarningFailedDataLockMatching>(earningEvent);
                 earningFailedDataLockEvent.Earnings = functionalSkillEarnings.invalidEarnings.AsReadOnly();
+                earningFailedDataLockEvent.EventId = Guid.NewGuid();
                 dataLockEvents.Add(earningFailedDataLockEvent);
             }
 
