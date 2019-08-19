@@ -9,6 +9,7 @@ using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
+using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Batch;
@@ -20,6 +21,7 @@ using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
+using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
 using SFA.DAS.Payments.JobContextMessageHandling.JobStatus;
 using SFA.DAS.Payments.Model.Core;
@@ -71,6 +73,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             logger.LogDebug($"Processing Earning Event Service event for Job Id : {message.JobId}");
             try
             {
+                if (await HandleSubmissionEvents(message)) return true;
+
                 using (var operation = telemetry.StartOperation("FM36Processing"))
                 {
                     var collectionPeriod = int.Parse(message.KeyValuePairs[JobContextMessageKey.ReturnPeriod].ToString());
@@ -107,6 +111,72 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             }
         }
 
+        private async Task<bool> HandleSubmissionEvents(JobContextMessage message)
+        {
+            if (message.Topics.Any())
+            {
+                var subscriptionMessage = message.Topics.SingleOrDefault(m => m.SubscriptionName == "GenerateFM36Payments");
+
+                if (subscriptionMessage != null && subscriptionMessage.Tasks.Any())
+                {
+                    if (subscriptionMessage.Tasks.Any(t => t.Tasks.Contains(SubmissionJob.JobSuccess)))
+                    {
+                        await HandleSubmissionEvent<SubmissionSucceededEvent>(message);
+                        return true;
+                    }
+
+                    if (subscriptionMessage.Tasks.Any(t => t.Tasks.Contains(SubmissionJob.JobFailure)))
+                    {
+                        await HandleSubmissionEvent<SubmissionFailedEvent>(message);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private async Task HandleSubmissionEvent<T>(JobContextMessage message) where T: SubmissionEvent, new()
+        {
+            var eventType = typeof(T).FullName;
+
+            using (var operation = telemetry.StartOperation(eventType))
+            {
+              
+                var submissionEvent = GetSubmissionEvent<T>(message);
+                await SendSubmissionEvent(submissionEvent).ConfigureAwait(false);
+
+                telemetry.TrackEvent($"Sent {eventType}",
+                    new Dictionary<string, string>
+                    {
+                        { TelemetryKeys.CollectionPeriod, submissionEvent.CollectionPeriod.ToString()},
+                        { TelemetryKeys.AcademicYear, submissionEvent.AcademicYear.ToString()},
+                        { TelemetryKeys.ExternalJobId, submissionEvent.JobId.ToString()},
+                        { TelemetryKeys.Ukprn, submissionEvent.Ukprn.ToString()},
+                    },
+                    new Dictionary<string, double>
+                    {
+                        { TelemetryKeys.Duration, 0}
+                    });
+                telemetry.StopOperation(operation);
+                logger.LogInfo($"Successfully sent {eventType}. Job Id: {message.JobId}, Ukprn: {submissionEvent.Ukprn}, Submission Time: {submissionEvent.IlrSubmissionDateTime}");
+            }
+        }
+
+        private static SubmissionEvent GetSubmissionEvent<T>(IJobContextMessage message) where T: SubmissionEvent, new()
+        {
+            return new T
+            {
+                AcademicYear = short.Parse(message.KeyValuePairs[JobContextMessageKey.CollectionYear].ToString()),
+                CollectionPeriod = byte.Parse(message.KeyValuePairs[JobContextMessageKey.ReturnPeriod].ToString()),
+                IlrSubmissionDateTime = message.SubmissionDateTimeUtc,
+                JobId = message.JobId,
+                Ukprn = long.Parse(message.KeyValuePairs[JobContextMessageKey.UkPrn].ToString()),
+                EventTime = DateTimeOffset.UtcNow
+            };
+
+        }
+
         private async Task ClearSubmittedLearnerAims(int period, string academicYear, DateTime newIlrSubmissionDateTime, long ukprn, CancellationToken cancellationToken)
         {
             logger.LogDebug($"Deleting aims for UKPRN {ukprn} {academicYear}-{period} submitted before {newIlrSubmissionDateTime}");
@@ -131,7 +201,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             await endpointInstance.Publish(message).ConfigureAwait(false);
         }
 
-        private async Task<FM36Global> GetFm36Global(JobContextMessage message, int collectionPeriod, CancellationToken cancellationToken)
+        private async Task SendSubmissionEvent(SubmissionEvent submissionEvent)
+        {
+            var endpointInstance = await factory.GetEndpointInstance().ConfigureAwait(false);
+            await endpointInstance.Publish(submissionEvent).ConfigureAwait(false);
+        }
+
+        private async Task<FM36Global> GetFm36Global(JobContextMessage message, int collectionPeriod, CancellationToken cancellationToken )
         {
             FM36Global fm36Output;
             var fileReference = message.Topics.Any(topic => topic.Tasks.Any(task => task.Tasks.Any(taskName => taskName.Equals(JobContextMessageConstants.Tasks.ProcessPeriodEndSubmission))))
