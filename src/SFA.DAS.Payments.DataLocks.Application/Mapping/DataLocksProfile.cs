@@ -168,6 +168,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.Period, opt => opt.MapFrom(source => source.DeliveryPeriod))
                 .ForMember(dest => dest.Amount, opt => opt.MapFrom(source => source.Amount))
                 .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(source => source.SfaContributionPercentage))
+                .ForMember(dest => dest.ApprenticeshipEmployerType, opt => opt.Ignore())
                 .ForMember(dest => dest.AccountId, opt => opt.Ignore())
                 .ForMember(dest => dest.ApprenticeshipId, opt => opt.Ignore())
                 .ForMember(dest => dest.ApprenticeshipPriceEpisodeId, opt => opt.Ignore())
