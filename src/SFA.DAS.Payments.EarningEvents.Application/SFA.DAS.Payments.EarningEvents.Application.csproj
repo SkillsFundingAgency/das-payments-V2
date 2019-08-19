@@ -43,6 +43,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
   <!--<ItemGroup>
     <Reference Include="ESFA.DC.FileService">
       <HintPath>..\packages\ESFA.DC.FileService.0.1.15-beta0001\lib\netstandard2.0\ESFA.DC.FileService.dll</HintPath>

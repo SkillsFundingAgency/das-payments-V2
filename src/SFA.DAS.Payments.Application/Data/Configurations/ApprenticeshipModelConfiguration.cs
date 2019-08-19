@@ -28,6 +28,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.StopDate).HasColumnName(@"StopDate");
             builder.Property(x => x.Status).HasColumnName(@"Status").IsRequired();
             builder.Property(x => x.IsLevyPayer).HasColumnName(@"IsLevyPayer").IsRequired();
+            builder.Property(x => x.ApprenticeshipEmployerType).HasColumnName(@"ApprenticeshipEmployerType").IsRequired();
 
             builder.HasMany<ApprenticeshipPriceEpisodeModel>(x => x.ApprenticeshipPriceEpisodes).WithOne().HasForeignKey(p => p.ApprenticeshipId);
         }

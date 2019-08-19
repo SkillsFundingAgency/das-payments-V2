@@ -63,6 +63,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.Priority, opt => opt.Ignore())
                 .ForMember(dest => dest.IsLevyPayer, opt => opt.UseValue(true))
                 .ForMember(dest => dest.StopDate, dest => dest.Ignore())
+                .ForMember(dest => dest.ApprenticeshipEmployerType, opt => opt.ResolveUsing<ApprenticeshipEmployerTypeResolver>())
                 ;
 
             CreateMap<PriceEpisode, ApprenticeshipPriceEpisodeModel>()
@@ -95,6 +96,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.Duplicates, opt => opt.Ignore())
                 .ForMember(dest => dest.EventId, opt => opt.Ignore())
                 .ForMember(dest => dest.EventTime, opt => opt.Ignore())
+                .ForMember(dest => dest.ApprenticeshipEmployerType, opt => opt.MapFrom(source => source.ApprenticeshipEmployerType))
                 ;
 
             CreateMap<ApprenticeshipUpdated, ApprenticeshipModel>()
@@ -116,6 +118,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.ApprenticeshipPriceEpisodes, opt => opt.MapFrom(source => source.ApprenticeshipPriceEpisodes))
                 .ForMember(dest => dest.IsLevyPayer, opt => opt.MapFrom(source => source.IsLevyPayer))
                 .ForMember(dest => dest.Priority, opt => opt.Ignore())
+                .ForMember(dest => dest.ApprenticeshipEmployerType, opt => opt.MapFrom(source => source.ApprenticeshipEmployerType))
                 ;
 
             CreateMap<DataLockEvent, DataLockStatusChanged>()

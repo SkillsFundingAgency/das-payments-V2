@@ -56,8 +56,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.CompletionAmount)
                 .Ignore(x => x.IlrFileName)
                 .Ignore(x => x.InstalmentAmount)
-                .Ignore(x => x.NumberOfInstalments);
-
+                .Ignore(x => x.NumberOfInstalments)
+                .Ignore(x => x.ApprenticeshipEmployerType)
+                .Ignore(x => x.ReportingAimFundingLineType);
+         
             CreateMap<IEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<PayableEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<FunctionalSkillEarningsEvent, CalculatedRequiredOnProgrammeAmount>()
@@ -162,6 +164,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
             CreateMap<EarningPeriod, CalculatedRequiredLevyAmount>()
                 .ForMember(requiredPayment => requiredPayment.ApprenticeshipId, opt => opt.MapFrom(period => period.ApprenticeshipId))
                 .ForMember(requiredPayment => requiredPayment.ApprenticeshipPriceEpisodeId, opt => opt.MapFrom(period => period.ApprenticeshipPriceEpisodeId))
+                .ForMember(requiredPayment => requiredPayment.ApprenticeshipEmployerType, opt => opt.MapFrom(period => period.ApprenticeshipEmployerType))
                 .ForMember(requiredPayment => requiredPayment.Priority, opt => opt.MapFrom(period => period.Priority))
                 .ForMember(requiredPayment => requiredPayment.AgreedOnDate, opt => opt.MapFrom(period => period.AgreedOnDate))
                 .ForMember(x => x.AgreementId, opt => opt.Ignore());
@@ -196,7 +199,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.CompletionStatus)
                 .Ignore(x => x.CompletionAmount)
                 .Ignore(x => x.InstalmentAmount)
-                .Ignore(x => x.NumberOfInstalments);
+                .Ignore(x => x.NumberOfInstalments)
+                .Ignore(x => x.ApprenticeshipEmployerType)
+                .Ignore(x => x.ReportingAimFundingLineType);
 
             CreateMap<RequiredPayment, CalculatedRequiredCoInvestedAmount>()
                 .ForMember(x => x.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage))
@@ -234,6 +239,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.CompletionAmount)
                 .Ignore(x => x.InstalmentAmount)
                 .Ignore(x => x.NumberOfInstalments)
+                .Ignore(x => x.ApprenticeshipEmployerType)
+                .Ignore(x => x.ReportingAimFundingLineType)
                 .Ignore(x => x.IlrFileName)
                 ;
 
@@ -262,13 +269,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Include<PaymentHistoryEntity, CalculatedRequiredLevyAmount>()
                 .ForMember(x => x.AccountId, opt => opt.MapFrom(src => src.AccountId))
                 .ForMember(x => x.TransferSenderAccountId, opt => opt.MapFrom(src => src.TransferSenderAccountId))
-                .ForMember(x => x.CompletionAmount, opt => opt.MapFrom(src => src.CompletionAmount))
-                //.ForMember(x => x.StartDate,opt => opt.MapFrom(src => src.StartDate))
+                .ForMember(x => x.CompletionAmount,opt => opt.MapFrom(src => src.CompletionAmount))
+                .ForMember(x => x.ApprenticeshipEmployerType,opt => opt.MapFrom(src => src.ApprenticeshipEmployerType))
+                .ForMember(x => x.ReportingAimFundingLineType,opt => opt.MapFrom(src => src.ReportingAimFundingLineType))
                 .Ignore(x => x.EventId)
                 .Ignore(x => x.AmountDue)
                 .Ignore(x => x.EarningEventId)
-                //.Ignore(x => x.AccountId)
-                //.Ignore(x => x.ContractType)
                 .Ignore(x => x.JobId)
                 .Ignore(x => x.EventTime)
                 .Ignore(x => x.Learner)
@@ -318,6 +324,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.IlrSubmissionDateTime)
                 .Ignore(x => x.IlrFileName)
                 .Ignore(x => x.CollectionPeriod)
+                .Ignore(x => x.ApprenticeshipEmployerType)
+                .Ignore(x => x.ReportingAimFundingLineType)
                 ;
             // End Required Payment --> RequiredPaymentEvent
         }

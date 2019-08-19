@@ -107,6 +107,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                         newEarningPeriod.TransferSenderAccountId = apprenticeship.TransferSendingEmployerAccountId;
                         newEarningPeriod.Priority = apprenticeship.Priority;
                         newEarningPeriod.AgreedOnDate = apprenticeship.AgreedOnDate;
+                        newEarningPeriod.ApprenticeshipEmployerType = apprenticeship.ApprenticeshipEmployerType;
                         validPeriods.Add(newEarningPeriod);
                     }
                 }

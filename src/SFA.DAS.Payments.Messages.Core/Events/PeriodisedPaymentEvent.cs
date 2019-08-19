@@ -19,5 +19,7 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         public decimal CompletionAmount { get; set; }
         public decimal InstalmentAmount { get; set; }
         public short NumberOfInstalments { get; set; }
+        public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
+        public string ReportingAimFundingLineType { get; set; }
     }
 }
