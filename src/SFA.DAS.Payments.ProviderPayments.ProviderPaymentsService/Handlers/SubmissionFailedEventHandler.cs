@@ -10,7 +10,7 @@ using SFA.DAS.Payments.ProviderPayments.Application.Services;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 {
-    public class SubmissionSucceededEventHandler:IHandleMessages<SubmissionSucceededEvent>
+    public class SubmissionFailedEventHandler : IHandleMessages<SubmissionFailedEvent>
     {
         private readonly IPaymentLogger paymentLogger;
         private readonly IHandleIlrSubmissionService submissionService;
@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
         private readonly IEarningsJobClient earningsJobClient;
         private readonly IProcessAfterMonthEndPaymentService afterMonthEndPaymentService;
 
-        public SubmissionSucceededEventHandler(IPaymentLogger paymentLogger,
+        public SubmissionFailedEventHandler(IPaymentLogger paymentLogger,
             IHandleIlrSubmissionService submissionService,
             IMapper mapper,
             IEarningsJobClient earningsJobClient,
@@ -31,13 +31,13 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
             this.afterMonthEndPaymentService = afterMonthEndPaymentService;
         }
 
-        public async Task Handle(SubmissionSucceededEvent message, IMessageHandlerContext context)
+        public async Task Handle(SubmissionFailedEvent message, IMessageHandlerContext context)
         {
             try
             {
                 paymentLogger.LogDebug($"Processing Submission Succeeded Event for Message Id : {context.MessageId}");
 
-                await submissionService.HandleSubmissionSucceeded(message, default(CancellationToken));
+                await submissionService.HandleSubmissionFailed(message, default(CancellationToken));
             }
             catch (Exception ex)
             {
