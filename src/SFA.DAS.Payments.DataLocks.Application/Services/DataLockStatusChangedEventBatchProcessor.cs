@@ -259,7 +259,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 case DataLockErrorCode.DLOCK_09: return "The start date for this negotiated price is before the corresponding price start date in the employer digital account";
                 case DataLockErrorCode.DLOCK_10: return "The employer has stopped payments for this apprentice";
                 case DataLockErrorCode.DLOCK_11: return "The employer is not currently a levy payer";
-                case DataLockErrorCode.DLOCK_12: return "The record found in the employer digital account is paused";
+                case DataLockErrorCode.DLOCK_12: return "DLOCK_12";
                 default: return dlockCode.ToString();
             }
         }
