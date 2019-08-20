@@ -159,6 +159,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                         row["LearningStartDate"] = model.StartDate;
 
                         nonPayablePeriods.Rows.Add(row);
+
+                        PopulateNonPayablePeriodFailures(earningPeriod, id);
                     }
                 }
             }
@@ -182,6 +184,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                         row["LearningStartDate"] = model.StartDate;
 
                         nonPayablePeriods.Rows.Add(row);
+
+                        PopulateNonPayablePeriodFailures(earningPeriod, id);
                     }
                 }
             }
@@ -205,6 +209,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                         row["LearningStartDate"] = model.StartDate;
 
                         nonPayablePeriods.Rows.Add(row);
+
+                        PopulateNonPayablePeriodFailures(earningPeriod, id);
                     }
                 }
             }
@@ -264,6 +270,20 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                     priceEpisode.CompletionHoldBackExemptionCode ?? (object)DBNull.Value;
 
                 priceEpisodes.Rows.Add(row);
+            }
+        }
+
+        private void PopulateNonPayablePeriodFailures(EarningPeriod model, Guid parentId)
+        {
+            foreach (var modelDataLockFailure in model.DataLockFailures)
+            {
+                var row = nonPayablePeriodFailures.NewRow();
+
+                row["DataLockEventNonPayablePeriodId"] = parentId;
+                row["DataLockFailureId"] = (byte)modelDataLockFailure.DataLockError;
+                row["ApprenticeshipId"] = modelDataLockFailure.ApprenticeshipId ?? (object)DBNull.Value;
+
+                nonPayablePeriodFailures.Rows.Add(row);
             }
         }
 
