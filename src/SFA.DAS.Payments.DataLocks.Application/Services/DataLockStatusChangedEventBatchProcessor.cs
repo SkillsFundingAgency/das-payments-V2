@@ -259,7 +259,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 case DataLockErrorCode.DLOCK_09: return "The start date for this negotiated price is before the corresponding price start date in the employer digital account";
                 case DataLockErrorCode.DLOCK_10: return "The employer has stopped payments for this apprentice";
                 case DataLockErrorCode.DLOCK_11: return "The employer is not currently a levy payer";
-                case DataLockErrorCode.DLOCK_12: return "DLOCK_12";
+                case DataLockErrorCode.DLOCK_12: return "The record found in the employer digital account is paused";
                 default: return dlockCode.ToString();
             }
         }
@@ -321,21 +321,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 IlrStartDate = priceEpisode.CourseStartDate,
                 IlrTrainingPrice = hasTnp3 ? priceEpisode.TotalNegotiatedPrice3 : priceEpisode.TotalNegotiatedPrice1,
             };
-
-            if (dataLockStatusChangedEvent.IlrFileName?.Length > 50)
-            {
-                logger.LogError($"Ilr Filename length overflow: {dataLockStatusChangedEvent.IlrFileName}");
-            }
-
-            if (dataLockStatusChangedEvent.Learner.ReferenceNumber?.Length > 12)
-            {
-                logger.LogError($"Learn Ref Number size overflow: {dataLockStatusChangedEvent.Learner.ReferenceNumber}");
-            }
-
-            if (earningPeriod.PriceEpisodeIdentifier?.Length > 25)
-            {
-                logger.LogError($"Price Episode Identifier size overflow: {earningPeriod.PriceEpisodeIdentifier}");
-            }
 
             logger.LogVerbose($"Saving legacy DataLockEvent {dataLockStatusChangedEvent.EventId} for UKPRN {dataLockStatusChangedEvent.Ukprn}");
 
