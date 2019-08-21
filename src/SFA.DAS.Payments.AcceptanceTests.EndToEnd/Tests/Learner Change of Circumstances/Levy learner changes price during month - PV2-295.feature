@@ -17,9 +17,9 @@ Scenario Outline: Levy learner changes to the agreed price during the month PV2-
 		| Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type                                | Completion Status |
 		| ZPROG001      | 01/Aug/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | continuing        |
 	And price details as follows		
-        | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-        | pe-1             | 15000                | 01/Aug/Current Academic Year        | 3000                   | 01/Aug/Current Academic Year          | Act1          | 1                   | 90%                         |
-        | pe-2             | 9375                 | 10/Nov/Current Academic Year        | 1875                   | 10/Nov/Current Academic Year          | Act1          | 1                   | 90%                         |
+        | Price Episode Id | Total Training Price | Total Training Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
+        | pe-1             | 15000                | 01/Aug/Current Academic Year        | Act1          | 1                   | 90%                         |
+        | pe-2             | 9375                 | 10/Nov/Current Academic Year        | Act1          | 1                   | 90%                         |
     When the ILR file is submitted for the learners for collection period <Collection_Period>
     Then the following learner earnings should be generated
         | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
