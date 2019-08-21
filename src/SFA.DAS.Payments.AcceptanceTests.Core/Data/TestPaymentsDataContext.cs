@@ -65,6 +65,8 @@ delete from Payments2.EarningEventPriceEpisode where EarningEventId in
 
 delete from Payments2.EarningEvent where Ukprn = {0}
 
+delete from Payments2.EmployerProviderPriority where Ukprn = {0}
+
 delete from Payments2.FundingSourceEvent where Ukprn = {0}
 
 delete from Payments2.RequiredPaymentEvent where Ukprn = {0}
