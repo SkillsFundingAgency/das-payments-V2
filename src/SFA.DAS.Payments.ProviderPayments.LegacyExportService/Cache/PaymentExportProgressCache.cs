@@ -6,7 +6,7 @@ using SFA.DAS.Payments.ProviderPayments.Application.Services;
 using SFA.DAS.Payments.ServiceFabric.Core;
 using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 
-namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
+namespace SFA.DAS.Payments.ProviderPayments.LegacyExportService.Cache
 {
     public class PaymentExportProgressCache : IPaymentExportProgressCache
     {
