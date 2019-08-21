@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
 using AutoMapper;
+using Newtonsoft.Json;
 using SFA.DAS.Payments.Application.Data;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
@@ -223,7 +224,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
         }
 
-        private static Dictionary<(TransactionType type, byte period), EarningPeriod> GetFailuresGroupedByTypeAndPeriod(
+        private Dictionary<(TransactionType type, byte period), EarningPeriod> GetFailuresGroupedByTypeAndPeriod(
             DataLockEvent dataLockEvent)
         {
             var result = new Dictionary<(TransactionType type, byte period), EarningPeriod>();
@@ -236,7 +237,14 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     {
                         if (period.Amount == 0 && period.PriceEpisodeIdentifier == null)
                             continue; // DataLocks are generated for all periods, event irrelevant, ignore until fixed
-                        result.Add(((TransactionType) onProgrammeEarning.Type, period.Period), period);
+                        if (result.ContainsKey(((TransactionType) onProgrammeEarning.Type, period.Period)))
+                        {
+                            paymentLogger.LogWarning($"DataLockEvent trying to add duplicate key with period: {JsonConvert.SerializeObject(period)}");
+                        }
+                        else
+                        {
+                            result.Add(((TransactionType)onProgrammeEarning.Type, period.Period), period);
+                        }
                     }
                 }
             }
@@ -249,7 +257,14 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     {
                         if (period.Amount == 0 && period.PriceEpisodeIdentifier == null)
                             continue; // DataLocks are generated for all periods, event irrelevant, ignore until fixed
-                        result.Add(((TransactionType) incentiveEarning.Type, period.Period), period);
+                        if (result.ContainsKey(((TransactionType)incentiveEarning.Type, period.Period)))
+                        {
+                            paymentLogger.LogWarning($"DataLockEvent trying to add duplicate key with period: {JsonConvert.SerializeObject(period)}");
+                        }
+                        else
+                        {
+                            result.Add(((TransactionType)incentiveEarning.Type, period.Period), period);
+                        }
                     }
                 }
             }
