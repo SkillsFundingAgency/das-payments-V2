@@ -1271,6 +1271,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Two levy learners one employer but two providers not enough levy_PV2-270.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Levy Submission Events\One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature.cs">
+      <DependentUpon>One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Non-Levy - Care Bursary\E2E - PV2-925 - Non-Levy learner starts 1st day of month receives care leaver payment after 60 days.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2282,6 +2287,10 @@
     <None Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finishes two months early PV2-276.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy Learner, levy available, finishes two months early PV2-276.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Submission Events\One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

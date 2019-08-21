@@ -113,9 +113,16 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 
         private async Task<bool> HandleSubmissionEvents(JobContextMessage message)
         {
-            if (message.Topics.Any())
+            if (message.Topics != null && message.Topics.Any())
             {
-                var subscriptionMessage = message.Topics.SingleOrDefault(m => m.SubscriptionName == "GenerateFM36Payments");
+                if (message.TopicPointer > message.Topics.Count - 1)
+                {
+                    logger.LogError(
+                        $"Topic Pointer points outside the number of items in the collection of Topics. JobId: {message.JobId}");
+                    return true;
+                }
+
+                var subscriptionMessage = message.Topics[message.TopicPointer];
 
                 if (subscriptionMessage != null && subscriptionMessage.Tasks.Any())
                 {
