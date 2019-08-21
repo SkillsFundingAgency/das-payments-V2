@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
         public long GenerateUln(long index)
         {
             if (usedIndices.Contains(index))
-                index = index + (index - 10_000_000);
+                index = index % 10_000_000 * new Random().Next();
             else
                 usedIndices.Add(index);
 
@@ -27,12 +27,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
 
         private int RoundUpToMultipleOfTen(long index)
         {
-            var normalisedValue = index;
-            if (normalisedValue >= 10000000)
-            {
-                normalisedValue = index - 10000000;
-            }
-
+            var normalisedValue = index % 10_000_000;
             return (int)(Math.Ceiling((normalisedValue) / 10d) * 10);
         }
 
