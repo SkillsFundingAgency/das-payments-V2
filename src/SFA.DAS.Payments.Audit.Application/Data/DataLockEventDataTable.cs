@@ -5,7 +5,6 @@ using System.Data;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.Audit.Application.Data
 {
@@ -132,7 +131,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             row["AgreementId"] = model.AgreementId;
             row["LearningStartDate"] = model.StartDate;
             row["IsPayable"] = model.IsPayable;
-            row["DataLockSourceId"] = 0; // Not sure what this is
+            row["DataLockSourceId"] = 1; // This should be changed when the commitment validation is in place
 
             dataLockEvents.Rows.Add(row);
         }
