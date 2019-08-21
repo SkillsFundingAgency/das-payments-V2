@@ -9,6 +9,8 @@
             public static readonly string PeriodEndStop = "PeriodEndStop";
             public static readonly string ProcessPeriodEndSubmission = "ProcessPeriodEnd";
             public static readonly string ProcessSubmission = "Process";
+            public static readonly string JobSuccess = "JobSuccess";
+            public static readonly string JobFailure = "JobFailure";
         }
 
         public class KeyValuePairs

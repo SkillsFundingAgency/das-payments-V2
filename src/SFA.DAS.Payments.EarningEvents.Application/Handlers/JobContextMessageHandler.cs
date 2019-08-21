@@ -115,7 +115,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         {
             if (message.Topics.Any())
             {
-                var subscriptionMessage = message.Topics.SingleOrDefault(m => m.SubscriptionName == "GenerateFM36Payments");
+                var subscriptionMessage = message.Topics[message.TopicPointer];
 
                 if (subscriptionMessage != null && subscriptionMessage.Tasks.Any())
                 {
