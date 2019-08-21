@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             var newFailuresGroupedByTypeAndPeriod = GetFailuresGroupedByTypeAndPeriod(dataLockEvent);
 
-            using (var scope = TransactionScopeFactory.CreateRepeatableReadTransaction())
+            using (var scope = TransactionScopeFactory.CreateSerialisableTransaction())
             {
                 var oldFailures = await dataLockFailureRepository.GetFailures(
                     dataLockEvent.Ukprn,
@@ -283,50 +283,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
 
             return result;
-        }
-
-        public async Task<List<DataLockStatusChanged>> ProcessPayableEarning(PayableEarningEvent payableEarningEvent)
-        {
-            var result = new List<DataLockStatusChanged>();
-            var changedToPassed = new DataLockStatusChangedToPassed
-                {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
-            var failuresToDelete = new List<long>();
-
-            var newPassesGroupedByTypeAndPeriod = GetPassesGroupedByTypeAndPeriod(payableEarningEvent);
-
-            using (var scope = TransactionScopeFactory.CreateRepeatableReadTransaction())
-            {
-                var oldFailures = await dataLockFailureRepository.GetFailures(
-                    payableEarningEvent.Ukprn,
-                    payableEarningEvent.Learner.ReferenceNumber,
-                    payableEarningEvent.LearningAim.FrameworkCode,
-                    payableEarningEvent.LearningAim.PathwayCode,
-                    payableEarningEvent.LearningAim.ProgrammeType,
-                    payableEarningEvent.LearningAim.StandardCode,
-                    payableEarningEvent.LearningAim.Reference,
-                    payableEarningEvent.CollectionYear
-                ).ConfigureAwait(false);
-
-                foreach (var oldFailure in oldFailures)
-                {
-                    if (newPassesGroupedByTypeAndPeriod.TryGetValue(
-                        (oldFailure.TransactionType, oldFailure.DeliveryPeriod), out var newPass))
-                    {
-                        AddTypeAndPeriodToEvent(changedToPassed, oldFailure.TransactionType, newPass);
-                        failuresToDelete.Add(oldFailure.Id);
-                    }
-                }
-
-                if (changedToPassed.TransactionTypesAndPeriods.Count > 0)
-                    result.Add(changedToPassed);
-
-                foreach (var dataLockStatusChanged in result)
-                {
-                    mapper.Map(payableEarningEvent, dataLockStatusChanged);
-                }
-
-                return result;
-            }
         }
     }
 }
