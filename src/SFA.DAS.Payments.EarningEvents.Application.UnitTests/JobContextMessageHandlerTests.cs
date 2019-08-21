@@ -9,7 +9,6 @@ using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.JobContextManager.Model;
 using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Serialization.Interfaces;
-using Microsoft.ApplicationInsights.Channel;
 using Moq;
 using NServiceBus;
 using NUnit.Framework;
@@ -398,5 +397,56 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             mocker.Mock<ITelemetry>().Verify(x => x.TrackEvent("Sent All ProcessLearnerCommand Messages", It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, double>>()));
         }
 
+        [Test]
+        public async Task HandlesSubmissionTopicPointerIncorrect()
+        {
+            var jobContextMessage = new JobContextMessage
+            {
+                JobId = 1,
+                TopicPointer = 5,
+                Topics = new List<ITopicItem>
+                {
+                    new TopicItem
+                    {
+                        SubscriptionName = "GenerateFM36Payments",
+                        Tasks = new List<ITaskItem>
+                        {
+                            new TaskItem
+                            {
+                                SupportsParallelExecution = false,
+                                Tasks = new List<string>{ JobContextMessageConstants.Tasks.JobSuccess }
+                            }
+                        }
+                    },
+                    new TopicItem
+                    {
+                        SubscriptionName = "Other Task",
+                        Tasks = new List<ITaskItem>
+                        {
+                            new TaskItem
+                            {
+                                SupportsParallelExecution = false,
+                                Tasks = new List<string>{"Something else"}
+                            }
+                        }
+                    }
+                },
+                KeyValuePairs = new Dictionary<string, object> {
+                    { JobContextMessageConstants.KeyValuePairs.ReturnPeriod, 10 },
+                    { JobContextMessageConstants.KeyValuePairs.CollectionYear, 1819 },
+                    { JobContextMessageConstants.KeyValuePairs.Ukprn, 2123 },
+                    { JobContextMessageConstants.KeyValuePairs.FundingFm36Output, "invalid path" },
+                    { JobContextMessageConstants.KeyValuePairs.FundingFm36OutputPeriodEnd, "valid path" },
+                    { JobContextMessageConstants.KeyValuePairs.Container, "container" },
+                    { JobContextMessageConstants.KeyValuePairs.Filename, "filename" },
+                }
+            };
+
+            var handler = mocker.Create<JobContextMessageHandler>();
+            await handler.HandleAsync(jobContextMessage, CancellationToken.None);
+
+            mocker.Mock<IEndpointInstance>()
+                .Verify(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()), Times.Never);
+        }
     }
 }
