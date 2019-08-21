@@ -300,6 +300,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var jobContextMessage = new JobContextMessage
             {
                 JobId = 1,
+                TopicPointer = 0,
                 Topics = new List<ITopicItem>
                 {
                     new TopicItem
