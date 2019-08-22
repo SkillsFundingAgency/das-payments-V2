@@ -56,6 +56,21 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             await paymentsDataContext.SaveChangesAsync(cancellationToken);
         }
 
+        public async Task DeleteCurrentMonthEndPayment(CollectionPeriod collectionPeriod,
+            long ukprn,
+            DateTime currentIlrSubmissionDateTime,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var oldSubmittedIlrPayments = paymentsDataContext.Payment
+                .Where(p => p.Ukprn == ukprn &&
+                            p.CollectionPeriod.Period == collectionPeriod.Period &&
+                            p.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
+                            p.IlrSubmissionDateTime == currentIlrSubmissionDateTime);
+
+            paymentsDataContext.Payment.RemoveRange(oldSubmittedIlrPayments);
+            await paymentsDataContext.SaveChangesAsync(cancellationToken);
+        }
+
         public async Task SavePayment(PaymentModel paymentData, CancellationToken cancellationToken)
         {
             await paymentsDataContext.Payment.AddAsync(paymentData, cancellationToken);

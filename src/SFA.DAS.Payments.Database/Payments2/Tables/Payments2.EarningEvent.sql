@@ -20,5 +20,17 @@
 	JobId  BIGINT NOT NULL,
 	EventTime DATETIMEOFFSET NOT NULL,
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_EarningEvent__CreationDate DEFAULT (SYSDATETIMEOFFSET()), 
-    [LearningAimSequenceNumber] BIGINT NULL
+    [LearningAimSequenceNumber] BIGINT NULL,
+	[SfaContributionPercentage] [decimal](15, 5) NULL,
+	IlrFileName  NVARCHAR(400) NULL,
+	EventType NVARCHAR(4000) NULL,
 )
+GO
+
+CREATE INDEX IX_EarningEvent_ApprenticeshipEarningQuery ON [Payments2].[EarningEvent]
+(
+   Ukprn,
+   LearnerUln,
+   EventType
+)
+GO

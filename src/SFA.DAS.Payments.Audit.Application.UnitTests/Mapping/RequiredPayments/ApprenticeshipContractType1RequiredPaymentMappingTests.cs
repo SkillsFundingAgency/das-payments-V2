@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.Audit.Model;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.RequiredPayments
@@ -19,7 +20,8 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.RequiredPayments
             return new CalculatedRequiredLevyAmount
             {
                 AgreementId = ExpectedAgreementId,
-                AccountId = ExpectedAccountId
+                AccountId = ExpectedAccountId,
+                ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy
             };
         }
 
@@ -33,6 +35,12 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.RequiredPayments
         public void Maps_AccountId()
         {
             Mapper.Map<RequiredPaymentEventModel>(PaymentEvent).AccountId.Should().Be(ExpectedAccountId);
+        }
+
+        [Test]
+        public void Maps_EmployerApprenticeshipType()
+        {
+            Mapper.Map<RequiredPaymentEventModel>(PaymentEvent).ApprenticeshipEmployerType.Should().Be(ApprenticeshipEmployerType.Levy);
         }
     }
 }

@@ -322,21 +322,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 IlrTrainingPrice = hasTnp3 ? priceEpisode.TotalNegotiatedPrice3 : priceEpisode.TotalNegotiatedPrice1,
             };
 
-            if (dataLockStatusChangedEvent.IlrFileName?.Length > 50)
-            {
-                logger.LogError($"Ilr Filename length overflow: {dataLockStatusChangedEvent.IlrFileName}");
-            }
-
-            if (dataLockStatusChangedEvent.Learner.ReferenceNumber?.Length > 12)
-            {
-                logger.LogError($"Learn Ref Number size overflow: {dataLockStatusChangedEvent.Learner.ReferenceNumber}");
-            }
-
-            if (earningPeriod.PriceEpisodeIdentifier?.Length > 25)
-            {
-                logger.LogError($"Price Episode Identifier size overflow: {earningPeriod.PriceEpisodeIdentifier}");
-            }
-
             logger.LogVerbose($"Saving legacy DataLockEvent {dataLockStatusChangedEvent.EventId} for UKPRN {dataLockStatusChangedEvent.Ukprn}");
 
             await dataLockEventWriter.Write(dataLockEvent, cancellationToken).ConfigureAwait(false);

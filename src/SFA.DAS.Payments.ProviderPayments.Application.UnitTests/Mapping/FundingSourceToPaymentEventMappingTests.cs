@@ -51,7 +51,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 IlrSubmissionDateTime = DateTime.UtcNow,
                 EventTime = DateTimeOffset.UtcNow,
                 RequiredPaymentEventId = Guid.NewGuid(),
-                AccountId = 123456789
+                AccountId = 123456789,
+                ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
             };
             var payment = Mapper.Map<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>(employerCoInvested);
             payment.Ukprn.Should().Be(employerCoInvested.Ukprn);
@@ -66,6 +67,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.JobId.Should().Be(employerCoInvested.JobId);
             payment.IlrSubmissionDateTime.Should().Be(employerCoInvested.IlrSubmissionDateTime);
             payment.AccountId.Should().Be(employerCoInvested.AccountId);
+            payment.ApprenticeshipEmployerType.Should().Be(employerCoInvested.ApprenticeshipEmployerType);
         }
 
         [Test]
@@ -100,7 +102,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 EventTime = DateTimeOffset.UtcNow,
                 AgreementId = agreementId,
                 RequiredPaymentEventId = Guid.NewGuid(),
-                AccountId = 123456789
+                AccountId = 123456789,
+                ApprenticeshipEmployerType = ApprenticeshipEmployerType.NonLevy,
             };
 
             var payment = Mapper.Map<ProviderPaymentEventModel>(levy);
@@ -116,6 +119,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.JobId.Should().Be(levy.JobId);
             payment.IlrSubmissionDateTime.Should().Be(levy.IlrSubmissionDateTime);
             payment.AccountId.Should().Be(levy.AccountId);
+            payment.ApprenticeshipEmployerType.Should().Be(levy.ApprenticeshipEmployerType);
         }
 
         [Test]
@@ -150,7 +154,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 EventTime = DateTimeOffset.UtcNow,
                 AgreementId = agreementId,
                 RequiredPaymentEventId = Guid.NewGuid(),
-                AccountId = 123456789
+                AccountId = 123456789,
+                ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
             };
 
             var payment = Mapper.Map<ProviderPaymentEventModel>(transfer);
@@ -166,6 +171,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.JobId.Should().Be(transfer.JobId);
             payment.IlrSubmissionDateTime.Should().Be(transfer.IlrSubmissionDateTime);
             payment.AccountId.Should().Be(transfer.AccountId);
+            payment.ApprenticeshipEmployerType.Should().Be(transfer.ApprenticeshipEmployerType);
 
         }
 
@@ -198,7 +204,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 IlrSubmissionDateTime = DateTime.UtcNow,
                 EventTime = DateTimeOffset.UtcNow,
                 RequiredPaymentEventId = Guid.NewGuid(),
-                AccountId = 123456789
+                AccountId = 123456789,
+                ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
         };
             var payment = Mapper.Map<EmployerCoInvestedFundingSourcePaymentEvent, EmployerCoInvestedProviderPaymentEvent>(employerCoInvested);
             payment.Ukprn.Should().Be(employerCoInvested.Ukprn);
@@ -211,6 +218,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.FundingSourceType.Should().Be(employerCoInvested.FundingSourceType);
             payment.JobId.Should().Be(employerCoInvested.JobId);
             payment.IlrSubmissionDateTime.Should().Be(employerCoInvested.IlrSubmissionDateTime);
+            payment.ApprenticeshipEmployerType.Should().Be(employerCoInvested.ApprenticeshipEmployerType);
         }
 
         [TestCase(typeof(EmployerCoInvestedFundingSourcePaymentEvent),typeof(EmployerCoInvestedProviderPaymentEvent))]
@@ -267,6 +275,16 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             fundingSourceEvent.CompletionAmount = 100M;
             fundingSourceEvent.InstalmentAmount = 200M;
             fundingSourceEvent.NumberOfInstalments = 5;
+            fundingSourceEvent.ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy;
+            fundingSourceEvent.LearningAim = new LearningAim
+            {
+                PathwayCode = 12,
+                FrameworkCode = 1245,
+                FundingLineType = "Non-DAS 16-18 Learner",
+                StandardCode = 1209,
+                ProgrammeType = 7890,
+                Reference = "1234567-aim-ref"
+            };
 
             var providerPayment = Mapper.Map<ProviderPaymentEventModel>(fundingSourceEvent);
 
@@ -277,6 +295,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             providerPayment.CompletionAmount.Should().Be(fundingSourceEvent.CompletionAmount);
             providerPayment.InstalmentAmount.Should().Be(fundingSourceEvent.InstalmentAmount);
             providerPayment.NumberOfInstalments.Should().Be(fundingSourceEvent.NumberOfInstalments);
+            providerPayment.ApprenticeshipEmployerType.Should().Be(fundingSourceEvent.ApprenticeshipEmployerType);
         }
 
         [TestCase(typeof(EmployerCoInvestedProviderPaymentEvent))]

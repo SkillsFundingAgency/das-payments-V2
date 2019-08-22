@@ -18,5 +18,7 @@
 	Completed BIT NOT NULL,
     EmployerContribution DECIMAL(15,5) NULL,
     CompletionHoldBackExemptionCode INT NULL,
-	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_EarningEventPriceEpisode__CreationDate DEFAULT (SYSDATETIMEOFFSET())	
+	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_EarningEventPriceEpisode__CreationDate DEFAULT (SYSDATETIMEOFFSET())	,
+	AgreedPrice DECIMAL(15, 5) NULL,
+	CourseStartDate DATETIME2  NULL,
 )

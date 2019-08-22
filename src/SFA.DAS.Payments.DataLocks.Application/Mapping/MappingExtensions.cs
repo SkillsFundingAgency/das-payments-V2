@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using SFA.DAS.CommitmentsV2.Types;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Mapping
 {
     public static class MappingExtensions
     {
-
         public static int? ToStandardCode(this string apprenticeshipTrainingCode, ProgrammeType trainingType)
         {
             return trainingType == ProgrammeType.Standard ? int.Parse(apprenticeshipTrainingCode) : 0;
         }
+
         public static int? ToFrameworkCode(this string apprenticeshipTrainingCode, ProgrammeType trainingType)
         {
             return trainingType == ProgrammeType.Framework
@@ -43,6 +40,5 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
 
             return trainingCodes[trainingCodeSegment];
         }
-
     }
 }

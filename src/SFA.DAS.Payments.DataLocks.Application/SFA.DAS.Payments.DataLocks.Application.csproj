@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -10,7 +10,9 @@
 
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
 
-    <PackageReference Include="SFA.DAS.CommitmentsV2.Messages" Version="2.1.1494" />
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Messages" Version="4.1.70" />
+
+    <PackageReference Include="SFA.DAS.CommitmentsV2.Types" Version="4.1.70" />
   </ItemGroup>
 
   <ItemGroup>

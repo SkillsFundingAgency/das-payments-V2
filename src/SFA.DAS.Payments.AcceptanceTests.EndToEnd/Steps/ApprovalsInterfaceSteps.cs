@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
-using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NServiceBus;
 using NServiceBus.Features;
@@ -11,7 +10,6 @@ using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
-using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Approvals;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
@@ -22,6 +20,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
+using ApprenticeshipEmployerType = SFA.DAS.CommitmentsV2.Types.ApprenticeshipEmployerType;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -126,6 +125,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             });
         }
 
+        [Given(@"the following apprenticeships have been approved with Employer Type ""(.*)""")]
+        public void GivenTheFollowingApprenticeshipsHaveBeenApprovedWithEmployerType(string employerType, Table table)
+        {
+            GivenTheFollowingApprenticeshipsHaveBeenApproved(table);
+
+            ApprovalsApprenticeships.ForEach(appr => appr.EmployerType = employerType);
+        }
+
+
+
         [Given(@"the following apprenticeships have been approved")]
         public void GivenTheFollowingApprenticeshipsHaveBeenApproved(Table table)
         {
@@ -201,7 +210,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             FromDate = pp.EffectiveFrom.ToDate(),
                             ToDate = pp.EffectiveTo?.ToDate(),
                             Cost = pp.AgreedPrice
-                        }).ToArray()
+                        }).ToArray(),
+                    ApprenticeshipEmployerTypeOnApproval = GetApprenticeshipEmployerTypeOnApproval(approvalsApprenticeship.EmployerType)
                 };
                 Console.WriteLine($"Sending CreatedApprenticeship message: {createdMessage.ToJson()}");
                 DasMessageSession.Send(createdMessage).ConfigureAwait(false);
@@ -241,13 +251,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         ? savedApprenticeship.Status
                         : approvalsApprenticeship.Status.ToApprenticeshipPaymentStatus();
 
+                    var employerTypeOnApproval =
+                        GetApprenticeshipEmployerTypeOnApproval(approvalsApprenticeship.EmployerType);
 
                     if (MatchesTrainingCode(approvalsApprenticeship, savedApprenticeship) &&
                         MatchPriceEpisodes(approvalsApprenticeship.PriceEpisodes, savedApprenticeship.ApprenticeshipPriceEpisodes) &&
                         provider.Ukprn == savedApprenticeship.Ukprn &&
                         employer.AccountId == savedApprenticeship.AccountId &&
                         learner.Uln == savedApprenticeship.Uln &&
-                        expectedStatus == savedApprenticeship.Status)
+                        expectedStatus == savedApprenticeship.Status &&
+                        (!employerTypeOnApproval.HasValue || (int)employerTypeOnApproval.Value == (int)savedApprenticeship.ApprenticeshipEmployerType))
                     {
                         Console.WriteLine(
                             $"Matched apprenticeship: {approvalsApprenticeship.Identifier}, leaner: {approvalsApprenticeship.Learner}, Employer: {approvalsApprenticeship.Employer}");
@@ -268,11 +281,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }, "Failed to find all the stored apprenticeships.");
         }
 
+        [Given(@"the following apprenticeships already exist with Employer Type ""(.*)""")]
+        public async void GivenTheFollowingApprenticeshipsAlreadyExistWithEmployerType(string employerType, Table table)
+        {
+            PreviousApprovalsApprenticeships = table.CreateSet<ApprovalsApprenticeship>().ToList();
+            PreviousApprovalsApprenticeships.ForEach(appr => appr.EmployerType = employerType);
+            await SavePreviousApprenticeships();
+        }
+
+
         [Given(@"the following apprenticeships already exist")]
         public async Task GivenTheFollowingApprenticeshipsAlreadyExist(Table table)
         {
             PreviousApprovalsApprenticeships = table.CreateSet<ApprovalsApprenticeship>().ToList();
+            await SavePreviousApprenticeships();
+        }
 
+        private async Task SavePreviousApprenticeships()
+        {
             foreach (var apprenticeshipSpec in PreviousApprovalsApprenticeships)
             {
                 apprenticeshipSpec.Id = TestSession.GenerateId();
@@ -334,6 +360,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             ToDate = pp.EffectiveTo?.ToNullableDate(),
                             Cost = pp.AgreedPrice
                         }).ToArray(),
+                    
                 };
                 Console.WriteLine($"Sending ApprenticeshipUpdatedApprovedEvent message: {createdMessage.ToJson()}");
                 DasMessageSession.Send(createdMessage).ConfigureAwait(false);
@@ -623,10 +650,35 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ? DateTime.UtcNow
                     : apprenticeshipSpec.AgreedOnDate.ToDate(),
                 IsLevyPayer = true,
-                StopDate = apprenticeshipSpec.StoppedOnDate.ToNullableDate()
+                StopDate = apprenticeshipSpec.StoppedOnDate.ToNullableDate(),
+                ApprenticeshipEmployerType = GetNonNullableApprenticeshipEmployerTypeOnApproval(apprenticeshipSpec.EmployerType)
             };
 
             return apprenticeshipModel;
+        }
+
+        private static ApprenticeshipEmployerType? GetApprenticeshipEmployerTypeOnApproval(string employerType)
+        {
+            switch (employerType)
+            {
+                case "Levy":
+                    return ApprenticeshipEmployerType.Levy;
+                case "Non-Levy":
+                    return ApprenticeshipEmployerType.NonLevy;
+                default:
+                    return default(ApprenticeshipEmployerType?);
+            }
+        }
+
+        private static Model.Core.Entities.ApprenticeshipEmployerType GetNonNullableApprenticeshipEmployerTypeOnApproval(string employerType)
+        {
+            switch (employerType)
+            {
+                case "Levy":
+                    return Model.Core.Entities.ApprenticeshipEmployerType.Levy;
+                default:
+                    return Model.Core.Entities.ApprenticeshipEmployerType.NonLevy;
+            }
         }
 
         private static bool MatchesTrainingCode(ApprovalsApprenticeship approvalsApprenticeship, ApprenticeshipModel savedApprenticeship)

@@ -49,6 +49,8 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.InstalmentAmount).HasColumnName(@"EarningsInstalmentAmount");
             builder.Property(x => x.NumberOfInstalments).HasColumnName(@"EarningsNumberOfInstalments");
             builder.Property(x => x.AgreementId).HasColumnName(@"AgreementId");
+            builder.Property(x => x.ApprenticeshipEmployerType).HasColumnName(@"ApprenticeshipEmployerType").IsRequired();
+            builder.Property(x => x.ReportingAimFundingLineType).HasColumnName(@"ReportingAimFundingLineType").IsRequired();
         }
     }
 }
