@@ -127,12 +127,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             return string.IsNullOrEmpty(learnerId) ? Learner.LearnRefNumber : LearnRefNumberGenerator.Generate(Ukprn, learnerId);
         }
 
-        public Learner GenerateLearner(long ukprn, long uln = 0)
+        public Learner GenerateLearner(long ukprn, long uln = 0, string identifier = null)
         {
             return new Learner
             {
                 Ukprn = ukprn,
-                Uln = uln != 0 ? uln : ulnService.GenerateUln(Provider.Ukprn),
+                Uln = uln != 0 ? uln : ulnService.GenerateUln(Provider.Ukprn, identifier),
                 LearnRefNumber = GenerateId().ToString(),
                 Course = CourseFaker.Generate(1).FirstOrDefault()
             };
@@ -145,7 +145,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
             if (learner == null)
             {
-                learner = GenerateLearner(ukprn, learnerUln?? 0);
+                learner = GenerateLearner(ukprn, learnerUln?? 0, learnerIdentifier);
                 learner.LearnerIdentifier = learnerIdentifier;
                 Learners.Add(learner);
             }
