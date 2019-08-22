@@ -41,31 +41,41 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             var historicPayments = cacheItem.Value.Select(mapper.Map<PaymentHistoryEntity, Payment>).ToList();
             logger.LogDebug($"Got {historicPayments.Count} historic payments. Now generating refunds per transaction type.");
 
+            // Now restricted the historic payments from the cache to those for the transaction type in that particular group.
             var requiredPaymentEvents = historicPayments.GroupBy(historicPayment => historicPayment.TransactionType)
-                .SelectMany(group => CreateRefundPayments(identifiedRemovedLearningAim, historicPayments, group.Key, cacheItem))
+                .SelectMany(group => CreateRefundPayments(
+                    identifiedRemovedLearningAim, 
+                    historicPayments.Where(h => h.TransactionType == group.Key).ToList(), 
+                    group.Key, 
+                    cacheItem.Value.Where(c => c.TransactionType == group.Key).ToList()))
                 .ToList();
 
             return requiredPaymentEvents.AsReadOnly();
         }
 
-        private IList<PeriodisedRequiredPaymentEvent> CreateRefundPayments(IdentifiedRemovedLearningAim identifiedRemovedLearningAim, List<Payment> historicPayments, int transactionType, ConditionalValue<PaymentHistoryEntity[]> cacheItem)
+        private IList<PeriodisedRequiredPaymentEvent> CreateRefundPayments(IdentifiedRemovedLearningAim identifiedRemovedLearningAim, List<Payment> historicPayments, int transactionType, List<PaymentHistoryEntity> cacheItem)
         {
             var refundPaymentsAndPeriods = refundRemovedLearningAimService.RefundLearningAim(historicPayments);
 
-            return refundPaymentsAndPeriods
+            return refundPaymentsAndPeriods.Where(r => r.payment.TransactionType == transactionType)
                 .Select(refund =>
                 {
                     logger.LogVerbose("Now mapping the required payment to a PeriodisedRequiredPaymentEvent.");
 
-                    var historicPayment = cacheItem.Value.FirstOrDefault(payment =>
+                    var historicPayment = cacheItem.FirstOrDefault(payment =>
                         payment.PriceEpisodeIdentifier == refund.payment.PriceEpisodeIdentifier &&
-                        payment.DeliveryPeriod == refund.deliveryPeriod);
+                        payment.DeliveryPeriod == refund.deliveryPeriod
+                        && payment.TransactionType == transactionType);
 
                     if (historicPayment == null)
                         throw new InvalidOperationException($"Cannot find historic payment with price episode identifier: {refund.payment.PriceEpisodeIdentifier} for period {refund.deliveryPeriod}.");
                     
                     var requiredPaymentEvent = requiredPaymentEventFactory.Create(refund.payment.EarningType, transactionType);
-
+                    if (requiredPaymentEvent == null)
+                    {
+                        // This shouldn't now happen as the transaction type in the history should match the one in the cache
+                        return null;
+                    }
                     mapper.Map(refund.payment, requiredPaymentEvent);
                     mapper.Map(historicPayment, requiredPaymentEvent);
                     mapper.Map(identifiedRemovedLearningAim, requiredPaymentEvent);
@@ -75,6 +85,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
                     logger.LogDebug("Finished mapping");
                     return requiredPaymentEvent;
+                }).Where(x =>
+                {
+                    // Just in case the null is hit above, remove any nulls
+                    return x != null;
                 }).ToList();
         }
     }

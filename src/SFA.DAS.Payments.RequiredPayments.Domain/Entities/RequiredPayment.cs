@@ -8,6 +8,7 @@
         public string PriceEpisodeIdentifier { get; set; }
         public long? AccountId { get; set; }
         public long? TransferSenderAccountId { get; set; }
+        public int TransactionType { get; set; }
 
     }
 }

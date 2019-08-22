@@ -31,7 +31,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                     EarningType = ToEarningType(x.FundingSource),
                     PriceEpisodeIdentifier = x.PriceEpisodeIdentifier,
                     AccountId = x.AccountId,
-                    TransferSenderAccountId = x.TransferSenderAccountId
+                    TransferSenderAccountId = x.TransferSenderAccountId,
+                    TransactionType = x.TransactionType
             })
                 .Select(group =>
                 {
@@ -43,8 +44,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                         SfaContributionPercentage = group.Key.SfaContributionPercentage,
                         PriceEpisodeIdentifier = group.Key.PriceEpisodeIdentifier,
                         AccountId = group.Key.AccountId,
-                        TransferSenderAccountId = group.Key.TransferSenderAccountId
-
+                        TransferSenderAccountId = group.Key.TransferSenderAccountId,
+                        TransactionType = group.Key.TransactionType
                     };
                 })
                 .Where(x => x.Amount < 0)
