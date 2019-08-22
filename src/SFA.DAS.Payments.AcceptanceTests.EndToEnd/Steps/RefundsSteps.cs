@@ -104,7 +104,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 var learner = TestSession.GetLearner(TestSession.Ukprn, PreviousIlr.Single().LearnerId);
                 learner.OriginalUln = learner.Uln;
-                learner.Uln = Scope.Resolve<IUlnService>().GenerateUln(learner.Ukprn);
+                learner.Uln = Scope.Resolve<IUlnService>().GenerateUln(learner.Ukprn, learner.LearnerIdentifier);
                 CurrentIlr.ForEach(x => x.Uln = learner.Uln);
             }
             else

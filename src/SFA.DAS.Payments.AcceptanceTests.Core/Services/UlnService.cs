@@ -1,20 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
 {
     public class UlnService : IUlnService
     {
-        private static readonly HashSet<long> usedIndices = new HashSet<long>();
+        private static readonly Dictionary<long, List<(string identifier, long uln)>> UsedIndices =
+            new Dictionary<long, List<(string, long)>>();
 
-        public long GenerateUln(long index)
+        public long GenerateUln(long ukPrn, string identifier)
         {
-            if (usedIndices.Contains(index))
-                index = index % 10_000_000 * new Random().Next();
-            else
-                usedIndices.Add(index);
+            var index = ukPrn;
+            if (UsedIndices.ContainsKey(index))
+            {
+                var learners = UsedIndices[index];
+                if (learners.Any(x => x.identifier == identifier))
+                {
+                    return learners.Single(l => l.identifier == identifier).uln;
+                }
 
-            int roundedIndex = RoundUpToMultipleOfTen(index);
+                index += (index % 10_000_000) * learners.Count;
+                var computedUln = GenerateUln(index);
+                learners.Add((identifier, computedUln));
+                return computedUln;
+            }
+            else
+            {
+                var computedUln = GenerateUln(index);
+                var learners = new List<(string, long)> { (identifier, computedUln) };
+                UsedIndices.Add(ukPrn, learners);
+                return computedUln;
+            }
+        }
+
+        private long GenerateUln(long index)
+        {
+            var roundedIndex = RoundUpToMultipleOfTen(index);
             try
             {
                 return ComputeUln(roundedIndex);
