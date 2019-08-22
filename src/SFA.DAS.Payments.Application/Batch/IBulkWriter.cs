@@ -1,6 +1,8 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FastMember;
@@ -77,11 +79,52 @@ namespace SFA.DAS.Payments.Application.Batch
                 bulkCopy.BatchSize = batchSize;
                 bulkCopy.DestinationTableName = bulkCopyConfig.TableName;
 
-                await bulkCopy.WriteToServerAsync(reader, cancellationToken).ConfigureAwait(false);
+                try
+                {
+                    await bulkCopy.WriteToServerAsync(reader, cancellationToken).ConfigureAwait(false);
+                }
+                catch (SystemException)
+                {
+                    logger.LogWarning("Error bulk writing to server. Processing single records.");
+                    await TrySingleRecord(bulkCopy, list, cancellationToken);
+                }
             }
 
             logger.LogDebug($"Saved {list.Count} records of type {typeof(TEntity).Name}");
         }
-        
+
+        private async Task<int> TrySingleRecord(SqlBulkCopy bulkCopy, List<TEntity> list, CancellationToken cancellationToken)
+        {
+            var errors = 0;
+
+            foreach (var entity in list)
+            {
+                try
+                {
+                    using (var reader = ObjectReader.Create(new List<TEntity> {entity}))
+                    {
+                        await bulkCopy.WriteToServerAsync(reader, cancellationToken);
+                    }
+                }
+                catch (SystemException ex)
+                {
+                    logger.LogError($"Single record failure: {LogProperties(entity)}", ex);
+                    errors++;
+                }
+            }
+
+            return errors;
+        }
+
+        private string LogProperties(TEntity entity)
+        {
+            var builder = new StringBuilder($"Entity type: {typeof(TEntity).Name}");
+            foreach (var propertyInfo in typeof(TEntity).GetProperties())
+            {
+                builder.AppendLine($"{propertyInfo.Name}: {propertyInfo.GetValue(entity)}");
+            }
+
+            return builder.ToString();
+        }
     }
 }

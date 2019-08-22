@@ -10,13 +10,16 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
     public class EarningPeriodsValidationProcessor : IEarningPeriodsValidationProcessor
     {
         private readonly ICourseValidationProcessor courseValidationProcessor;
+        private readonly IFunctionalSkillValidationProcessor functionalSkillValidationProcessor;
 
-        public EarningPeriodsValidationProcessor(ICourseValidationProcessor courseValidationProcessor)
+        public EarningPeriodsValidationProcessor(ICourseValidationProcessor courseValidationProcessor, IFunctionalSkillValidationProcessor functionalSkillValidationProcessor)
         {
             this.courseValidationProcessor = courseValidationProcessor ?? throw new ArgumentNullException(nameof(courseValidationProcessor));
+            this.functionalSkillValidationProcessor = functionalSkillValidationProcessor?? throw new ArgumentNullException(nameof(functionalSkillValidationProcessor));
         }
 
-        public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(long ukprn,
+        public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidateFunctionalSkillPeriods(
+            long ukprn,
             long uln,
             List<PriceEpisode> priceEpisodes,
             List<EarningPeriod> periods,
@@ -24,6 +27,32 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             List<ApprenticeshipModel> apprenticeships,
             LearningAim aim,
             int academicYear)
+        {
+            return ValidateEarningPeriods(ukprn, uln, priceEpisodes, periods, transactionType, apprenticeships, aim, academicYear, functionalSkillValidationProcessor);
+        }
+
+        public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(
+            long ukprn,
+            long uln,
+            List<PriceEpisode> priceEpisodes,
+            List<EarningPeriod> periods,
+            TransactionType transactionType,
+            List<ApprenticeshipModel> apprenticeships,
+            LearningAim aim,
+            int academicYear)
+        {
+            return ValidateEarningPeriods(ukprn, uln, priceEpisodes, periods, transactionType, apprenticeships, aim, academicYear, courseValidationProcessor);
+        }
+
+        private (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidateEarningPeriods(
+            long ukprn,
+            long uln,
+            List<PriceEpisode> priceEpisodes,
+            List<EarningPeriod> periods,
+            TransactionType transactionType,
+            List<ApprenticeshipModel> apprenticeships,
+            LearningAim aim,
+            int academicYear, ICourseValidationProcessor processor)
         {
             var validPeriods = new List<EarningPeriod>();
             var invalidPeriods = new List<EarningPeriod>();
@@ -42,14 +71,19 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                     {
                         EarningPeriod = period,
                         Apprenticeship = apprenticeship,
-                        PriceEpisode = priceEpisodes.SingleOrDefault(o => o.Identifier.Equals(period.PriceEpisodeIdentifier, StringComparison.OrdinalIgnoreCase))
-                                       ?? throw new InvalidOperationException($"Failed to find price episode: {period.PriceEpisodeIdentifier} for uln: {uln}, earning: {transactionType:G}, period: {period.Period}"),
+                        PriceEpisode = IsFunctionalSkillTransactionType(transactionType)
+                            ? null
+                            : priceEpisodes.SingleOrDefault(o =>
+                                  o.Identifier.Equals(period.PriceEpisodeIdentifier,
+                                      StringComparison.OrdinalIgnoreCase))
+                              ?? throw new InvalidOperationException(
+                                  $"Failed to find price episode: {period.PriceEpisodeIdentifier} for uln: {uln}, earning: {transactionType:G}, period: {period.Period}"),
                         TransactionType = transactionType,
                         Aim = aim,
                         AcademicYear = academicYear
                     };
 
-                    var validationResult = courseValidationProcessor.ValidateCourse(validationModel);
+                    var validationResult = processor.ValidateCourse(validationModel);
                     var newEarningPeriod = CreateEarningPeriod(period);
                     if (validationResult.DataLockFailures.Any())
                     {
@@ -73,12 +107,21 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                         newEarningPeriod.TransferSenderAccountId = apprenticeship.TransferSendingEmployerAccountId;
                         newEarningPeriod.Priority = apprenticeship.Priority;
                         newEarningPeriod.AgreedOnDate = apprenticeship.AgreedOnDate;
+                        newEarningPeriod.ApprenticeshipEmployerType = apprenticeship.ApprenticeshipEmployerType;
                         validPeriods.Add(newEarningPeriod);
                     }
                 }
             }
-            
+
             return (validPeriods, invalidPeriods);
+        }
+
+        private bool IsFunctionalSkillTransactionType(TransactionType transactionType)
+        {
+            var functionalSkillTransactionTypes = new List<TransactionType>
+                {TransactionType.OnProgrammeMathsAndEnglish, TransactionType.BalancingMathsAndEnglish};
+
+            return functionalSkillTransactionTypes.Contains(transactionType);
         }
 
         private EarningPeriod CreateEarningPeriod(EarningPeriod period)

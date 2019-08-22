@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.Payments.Audit.Model
+namespace SFA.DAS.Payments.Model.Core.Audit
 {
     public interface IPaymentsEventModel
     {

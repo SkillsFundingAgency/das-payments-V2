@@ -7,6 +7,7 @@ using NUnit.Framework;
 using SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
 {

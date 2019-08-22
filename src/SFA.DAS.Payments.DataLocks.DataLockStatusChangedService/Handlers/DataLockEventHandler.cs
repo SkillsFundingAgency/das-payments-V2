@@ -23,12 +23,17 @@ namespace SFA.DAS.Payments.DataLocks.DataLockStatusChangedService.Handlers
         {
             paymentLogger.LogVerbose($"Processing {message.GetType().Name} event for UKPRN {message.Ukprn}");
 
-            List<DataLockStatusChanged> dataLockStatusChangeMessages;
+            var dataLockStatusChangeMessages = new List<DataLockStatusChanged>();
 
-            if (message is PayableEarningEvent)
-                dataLockStatusChangeMessages = await dataLockEventProcessor.ProcessPayableEarning((PayableEarningEvent)message).ConfigureAwait(false);
-            else
-                dataLockStatusChangeMessages = await dataLockEventProcessor.ProcessDataLockFailure((EarningFailedDataLockMatching)message).ConfigureAwait(false);
+            switch (message)
+            {
+                case PayableEarningEvent _:
+                    dataLockStatusChangeMessages = await dataLockEventProcessor.ProcessPayableEarning(message).ConfigureAwait(false);
+                    break;
+                case EarningFailedDataLockMatching _:
+                    dataLockStatusChangeMessages = await dataLockEventProcessor.ProcessDataLockFailure(message).ConfigureAwait(false);
+                    break;
+            }
 
             await Task.WhenAll(dataLockStatusChangeMessages.Select(context.Publish)).ConfigureAwait(false);
 

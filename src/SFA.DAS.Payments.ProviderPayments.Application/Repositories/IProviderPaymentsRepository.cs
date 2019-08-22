@@ -19,5 +19,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             long ukprn,
             DateTime currentIlrSubmissionDateTime,
             CancellationToken cancellationToken = default(CancellationToken));
+
+        Task DeleteCurrentMonthEndPayment(CollectionPeriod collectionPeriod,
+            long ukprn,
+            DateTime currentIlrSubmissionDateTime,
+            CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -6,7 +6,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Interfaces
 {
     public interface IDataLockEventProcessor
     {
-        Task<List<DataLockStatusChanged>> ProcessPayableEarning(PayableEarningEvent dataLockEvent);
-        Task<List<DataLockStatusChanged>> ProcessDataLockFailure(EarningFailedDataLockMatching dataLockEvent);
+        Task<List<DataLockStatusChanged>> ProcessPayableEarning(DataLockEvent dataLockEvent);
+        Task<List<DataLockStatusChanged>> ProcessDataLockFailure(DataLockEvent dataLockEvent);
     }
 }

@@ -22,6 +22,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Approvals
         public string StoppedOnDate { get; set; }
         public string ResumedOnDate { get; set; }
 
+        public string EmployerType { get; set; }
+
         public string Status { get; set; }
         public class PriceEpisode
         {
