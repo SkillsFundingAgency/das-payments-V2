@@ -1,4 +1,4 @@
-﻿Feature: Levy - Learner change of circumstances - change in aim sequence number PV2-339
+﻿@supports_dc_e2e
 As a provider,
 I want a levy learner, where provider changes aim sequence number after payments have occurred, to be paid the correct amount
 So that I am accurately paid my apprenticeship provision.PV2-339
@@ -13,7 +13,7 @@ Scenario Outline: Levy apprentice, provider changes aim sequence numbers in ILR 
 
 	And the following aims
 		| Aim Type  | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status |
-		| Programme | ZPROG001      | 06/Aug/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 16-18 Apprenticeship Levy | continuing        |      
+		| Programme | ZPROG001      | 06/Aug/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | continuing        |      
 	And price details as follows	
 	# Price details
         | Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
@@ -41,8 +41,8 @@ Scenario Outline: Levy apprentice, provider changes aim sequence numbers in ILR 
 
 	But aims details are changed as follows
 		| Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status |
-		| Maths or English | 12345         | 06/Aug/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 16-18 Apprenticeship Levy | continuing        |
-		| Programme        | ZPROG001      | 06/Aug/Current Academic Year | 12 months        |                 | 2                   | 593            | 1            | 20             | 16-18 Apprenticeship Levy | continuing        |
+		| Maths or English | 50114979         | 06/Aug/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | continuing        |
+		| Programme        | ZPROG001      | 06/Aug/Current Academic Year | 12 months        |                 | 2                   | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | continuing        |
 
 	And price details are changed as follows		
         | Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
