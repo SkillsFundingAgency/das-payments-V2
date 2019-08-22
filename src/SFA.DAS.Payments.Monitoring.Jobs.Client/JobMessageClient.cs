@@ -26,20 +26,18 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 
         public async Task ProcessedJobMessage(long jobId, Guid messageId, string messageName, List<GeneratedMessage> generatedMessages)
         {
-            logger.LogVerbose($"Monitoring disabled for job message. Job id: {jobId}, message id:{messageId}");
-
-            //logger.LogVerbose($"Sending request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
-            //var itemProcessedEvent = new RecordJobMessageProcessingStatus
-            //{
-            //    JobId = jobId,
-            //    Id = messageId,
-            //    MessageName = messageName,
-            //    EndTime = DateTimeOffset.UtcNow,
-            //    GeneratedMessages = generatedMessages ?? new List<GeneratedMessage>(),
-            //    Succeeded = true
-            //};
-            //await messageSession.Send(itemProcessedEvent).ConfigureAwait(false);
-            //logger.LogDebug($"Sent request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
+            logger.LogVerbose($"Sending request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
+            var itemProcessedEvent = new RecordJobMessageProcessingStatus
+            {
+                JobId = jobId,
+                Id = messageId,
+                MessageName = messageName,
+                EndTime = DateTimeOffset.UtcNow,
+                GeneratedMessages = generatedMessages ?? new List<GeneratedMessage>(),
+                Succeeded = true
+            };
+            await messageSession.Send(itemProcessedEvent).ConfigureAwait(false);
+            logger.LogDebug($"Sent request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
         }
     }
 }
