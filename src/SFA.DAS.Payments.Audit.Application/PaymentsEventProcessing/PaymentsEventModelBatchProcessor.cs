@@ -69,7 +69,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                             bulkCopy.ColumnMappings.Clear();
                             bulkCopy.DestinationTableName = data.Count > 1 ? table.TableName : dataTable.TableName;
                             bulkCopy.BulkCopyTimeout = 0;
-                            bulkCopy.BatchSize = 1000;
+                            bulkCopy.BatchSize = batchSize;
 
                             foreach (DataRow tableRow in table.Rows)
                             {
