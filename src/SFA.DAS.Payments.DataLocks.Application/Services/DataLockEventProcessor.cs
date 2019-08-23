@@ -235,7 +235,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 {
                     foreach (var period in onProgrammeEarning.Periods)
                     {
-                        if (period.Amount == 0 && period.PriceEpisodeIdentifier == null)
+                        if (period.Amount == 0 && string.IsNullOrWhiteSpace(period.PriceEpisodeIdentifier))
                             continue; // DataLocks are generated for all periods, event irrelevant, ignore until fixed
 
                         var key = ((TransactionType) onProgrammeEarning.Type, period.Period);
@@ -259,7 +259,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 {
                     foreach (var period in incentiveEarning.Periods)
                     {
-                        if (period.Amount == 0 && period.PriceEpisodeIdentifier == null)
+                        if (period.Amount == 0 && string.IsNullOrWhiteSpace(period.PriceEpisodeIdentifier))
                             continue; // DataLocks are generated for all periods, event irrelevant, ignore until fixed
 
                         var key = ((TransactionType) incentiveEarning.Type, period.Period);
