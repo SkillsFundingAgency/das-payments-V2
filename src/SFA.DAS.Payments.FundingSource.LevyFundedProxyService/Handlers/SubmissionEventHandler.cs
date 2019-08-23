@@ -42,12 +42,19 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
             {
                 logger.LogDebug($"Getting AccountId for Ukprn: {message.Ukprn}.");
                 var accountId = await repository.GetLevyAccountId(message.Ukprn).ConfigureAwait(false);
-                var actorId = new ActorId(accountId);
+
+                if (!accountId.HasValue)
+                {
+                    logger.LogInfo($"Successfully processed {messageType} for Job: {message.JobId}, UKPRN: {message.Ukprn}. Skipped submission removing as no account ID found.");
+                    return;
+                }
+
+                var actorId = new ActorId(accountId.Value);
                 var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
 
                 var previousSubmissionDeletion = new ProcessSubmissionDeletion
                 {
-                    AccountId = accountId,
+                    AccountId = accountId.Value,
                     CollectionPeriod =
                         CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(message.AcademicYear,
                             message.CollectionPeriod),
