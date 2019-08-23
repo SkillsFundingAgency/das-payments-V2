@@ -11,11 +11,15 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
     {
         private readonly ICourseValidationProcessor courseValidationProcessor;
         private readonly IFunctionalSkillValidationProcessor functionalSkillValidationProcessor;
+        private readonly ICalculatePeriodStartAndEndDate calculatePeriodStartAndEndDate;
 
-        public EarningPeriodsValidationProcessor(ICourseValidationProcessor courseValidationProcessor, IFunctionalSkillValidationProcessor functionalSkillValidationProcessor)
+        public EarningPeriodsValidationProcessor(ICourseValidationProcessor courseValidationProcessor, 
+            IFunctionalSkillValidationProcessor functionalSkillValidationProcessor,
+            ICalculatePeriodStartAndEndDate calculatePeriodStartAndEndDate)
         {
             this.courseValidationProcessor = courseValidationProcessor ?? throw new ArgumentNullException(nameof(courseValidationProcessor));
             this.functionalSkillValidationProcessor = functionalSkillValidationProcessor?? throw new ArgumentNullException(nameof(functionalSkillValidationProcessor));
+            this.calculatePeriodStartAndEndDate = calculatePeriodStartAndEndDate;
         }
 
         public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidateFunctionalSkillPeriods(
@@ -67,6 +71,12 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 
                 foreach (var apprenticeship in apprenticeships.Where(apprenticeship => apprenticeship.Ukprn == ukprn))
                 {
+
+                    if (!IsApprenticeshipRelevantForPeriod(apprenticeship, period.Period, academicYear))
+                    {
+                        continue;
+                    }
+                    
                     var validationModel = new DataLockValidationModel
                     {
                         EarningPeriod = period,
@@ -134,6 +144,35 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                 SfaContributionPercentage = period.SfaContributionPercentage
             };
         }
+
+        private bool IsApprenticeshipRelevantForPeriod(ApprenticeshipModel apprenticeship, byte deliveryPeriod , int academicYear)
+        {
+            var periodDates = calculatePeriodStartAndEndDate.GetPeriodDate(deliveryPeriod, academicYear);
+
+            if (apprenticeship.EstimatedStartDate > periodDates.periodEndDate)
+            {
+                return false;
+            }
+
+            if (apprenticeship.StopDate.HasValue && (apprenticeship.StopDate.Value < periodDates.periodStartDate))
+            {
+                return false;
+            }
+            
+            var latestApprenticeshipPriceEpisode = apprenticeship
+                .ApprenticeshipPriceEpisodes
+                .Where(x => !x.Removed)
+                .OrderByDescending(x => x.EndDate)
+                .First();
+
+            if (latestApprenticeshipPriceEpisode.EndDate.HasValue && latestApprenticeshipPriceEpisode.EndDate.Value < periodDates.periodStartDate)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
 
     }
 }

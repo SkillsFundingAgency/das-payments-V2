@@ -6,7 +6,9 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
-    public class CompletionStoppedValidator : BaseCourseValidator, ICourseValidator
+    public interface ICompletionStoppedValidator : ICourseValidator { }
+
+    public class CompletionStoppedValidator : BaseCourseValidator, ICompletionStoppedValidator
     {
         protected override DataLockErrorCode DataLockerErrorCode { get; } = DataLockErrorCode.DLOCK_10;
 
