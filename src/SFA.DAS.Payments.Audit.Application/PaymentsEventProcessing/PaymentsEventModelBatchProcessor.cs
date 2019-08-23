@@ -83,14 +83,10 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                             }
                             catch (SystemException ex)
                             {
-                                if (batch.Count == 1)
-                                    throw;
-
-                                logger.LogError("Error bulk writing to server. Processing single records.", ex);
-                                var errors = TrySingleRecord(bulkCopy, table);
-
-                                if (errors == batch.Count) // fallback to retry if all records fail
-                                    throw;
+                                logger.LogWarning($"Error bulk writing to server. Processing single records. \n\n" +
+                                                  $"{ex.Message}\n\n" +
+                                                  $"{ex.StackTrace}");
+                                TrySingleRecord(bulkCopy, table);
                             }
                         }
 
@@ -136,7 +132,8 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                     }
                     catch (SystemException ex)
                     {
-                        logger.LogError($"Single record failure: {ToLogString(singleRecordTable.Rows[0])}", ex);
+                        logger.LogError($"Single record failure with {bulkCopy.DestinationTableName}:\n\n" +
+                                        $" {ToLogString(singleRecordTable.Rows[0])}", ex);
                         errors++;
                     }
                 }
