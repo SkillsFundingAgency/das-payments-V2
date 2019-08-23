@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 MessageName = "Message1",
                 MessageId = jobMessageStatus.Id,
                 Id = 2,
-                Status = JobStepStatus.Queued,
+                Status = JobMessageStatus.Queued,
             };
             mocker = AutoMock.GetLoose();
             var mockDataContext = mocker.Mock<IJobsDataContext>();
@@ -122,7 +122,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .Verify(dc => dc.SaveJobSteps(It.Is<List<JobStepModel>>(list =>
                     list.Any(item =>
                         item.MessageId == generatedMessage.MessageId &&
-                        item.Status == JobStepStatus.Queued &&
+                        item.Status == JobMessageStatus.Queued &&
                         item.StartTime == generatedMessage.StartTime))), Times.Once);
         }
 
@@ -141,7 +141,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                     list.Any(item =>
                         item.Id == jobStep.Id &&
                         item.MessageId == jobMessageStatus.Id &&
-                        item.Status == JobStepStatus.Completed &&
+                        item.Status == JobMessageStatus.Completed &&
                         item.EndTime == jobMessageStatus.EndTime))), Times.Once);
         }
 
@@ -155,7 +155,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                     list.Any(item =>
                         item.Id == 0 &&
                         item.MessageId == jobMessageStatus.Id &&
-                        item.Status == JobStepStatus.Completed &&
+                        item.Status == JobMessageStatus.Completed &&
                         item.EndTime == jobMessageStatus.EndTime))), Times.Once);
         }
 
@@ -175,7 +175,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .Verify(dc => dc.SaveJobSteps(It.Is<List<JobStepModel>>(list =>
                     list.Any(item =>
                         item.MessageId == generatedMessage.MessageId &&
-                        item.Status == JobStepStatus.Queued &&
+                        item.Status == JobMessageStatus.Queued &&
                         item.StartTime == generatedMessage.StartTime))), Times.Once);
         }
 
@@ -194,7 +194,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 JobId = jobStep.JobId,
                 Id = 1002,
                 EndTime = DateTimeOffset.UtcNow,
-                Status = JobStepStatus.Completed,
+                Status = JobMessageStatus.Completed,
                 MessageId = generatedMessage.MessageId,
                 MessageName = generatedMessage.MessageName,
 
@@ -205,7 +205,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                     list.Any(item =>
                         item.ParentMessageId == jobMessageStatus.Id &&
                         item.MessageId == generatedMessage.MessageId &&
-                        item.Status == JobStepStatus.Completed &&
+                        item.Status == JobMessageStatus.Completed &&
                         item.StartTime == generatedMessage.StartTime))), Times.Once);
 
         }

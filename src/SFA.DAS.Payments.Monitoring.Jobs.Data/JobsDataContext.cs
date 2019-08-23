@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task<JobModel> GetJobByDcJobId(long dcJobId);
         Task SaveJobSteps(List<JobStepModel> jobSteps);
         Task<List<JobStepModel>> GetJobSteps(List<Guid> messageIds);
-        Task<Dictionary<JobStepStatus, int>> GetJobStepsStatus(long jobId);
+        Task<Dictionary<JobMessageStatus, int>> GetJobStepsStatus(long jobId);
         Task<DateTimeOffset?> GetLastJobStepEndTime(long jobId);
         Task<JobModel> GetJob(long jobId);
         Task SaveJobStatus(long jobId, JobStatus status, DateTimeOffset endTime);
@@ -39,9 +39,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.HasDefaultSchema("Payments2");
+            modelBuilder.HasDefaultSchema("Jobs");
             modelBuilder.ApplyConfiguration(new JobModelConfiguration());
-            modelBuilder.ApplyConfiguration(new JobStepModelConfiguration());
+            modelBuilder.ApplyConfiguration(new JobMessageStartedModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -85,7 +85,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             return await JobSteps.Where(step => messageIds.Contains(step.MessageId)).ToListAsync();
         }
 
-        public async Task<Dictionary<JobStepStatus, int>> GetJobStepsStatus(long jobId)
+        public async Task<Dictionary<JobMessageStatus, int>> GetJobStepsStatus(long jobId)
         {
             return await JobSteps.Where(step => step.JobId == jobId)
                 .GroupBy(step => step.Status)

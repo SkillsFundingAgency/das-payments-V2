@@ -32,9 +32,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
         {
             logger.LogDebug($"Now getting job steps status for job: {job.Id}");
             var stepsStatus = await dataContext.GetJobStepsStatus(job.Id);
-            if (stepsStatus.ContainsKey(JobStepStatus.Queued) || stepsStatus.ContainsKey(JobStepStatus.Processing))
+            if (stepsStatus.ContainsKey(JobMessageStatus.Queued) || stepsStatus.ContainsKey(JobMessageStatus.Processing))
             {
-                logger.LogDebug($"Not all job steps have finished processing for job: {job.Id}.  There are still {stepsStatus.Keys.Count(key => key == JobStepStatus.Processing || key == JobStepStatus.Queued)} steps currently in progress.");
+                logger.LogDebug($"Not all job steps have finished processing for job: {job.Id}.  There are still {stepsStatus.Keys.Count(key => key == JobMessageStatus.Processing || key == JobMessageStatus.Queued)} steps currently in progress.");
                 return;
             }
 
@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             }
             if (cancellationToken.IsCancellationRequested)
                 return;
-            var status = stepsStatus.Keys.Any(key => key == JobStepStatus.Failed)
+            var status = stepsStatus.Keys.Any(key => key == JobMessageStatus.Failed)
                 ? JobStatus.CompletedWithErrors
                 : JobStatus.Completed;
             logger.LogDebug($"Got end time of last step for job: {job.Id}, time: {endTime}. Status: {status}");

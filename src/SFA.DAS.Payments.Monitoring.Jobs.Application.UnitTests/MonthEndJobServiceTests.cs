@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 MessageName = "Message1",
                 MessageId = jobMessageStatus.Id,
                 Id = 2,
-                Status = JobStepStatus.Queued,
+                Status = JobMessageStatus.Queued,
             };
             mocker = AutoMock.GetLoose();
             var mockDataContext = mocker.Mock<IJobsDataContext>();

@@ -182,7 +182,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 StartTime = msg.StartTime,
                 MessageName = msg.MessageName,
                 MessageId = msg.MessageId,
-                Status = JobStepStatus.Queued
+                Status = JobMessageStatus.Queued
             }));
             await dataContext.SaveChangesAsync();
             Console.WriteLine($"Finished creating job and generated messages. Job id: {job.Id}, Test DC Job id: {job.DcJobId}");

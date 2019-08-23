@@ -121,7 +121,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                         StartTime = msg.StartTime,
                         MessageName = msg.MessageName,
                         MessageId = msg.MessageId,
-                        Status = JobStepStatus.Queued
+                        Status = JobMessageStatus.Queued
                     }));
             await DataContext.SaveChangesAsync();
         }

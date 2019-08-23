@@ -8,7 +8,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<JobModel> builder)
         {
-            builder.ToTable("Job", "Payments2");
+            builder.ToTable("Job", "Jobs");
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id).HasColumnName(@"JobId").IsRequired();

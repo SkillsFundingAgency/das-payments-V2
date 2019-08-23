@@ -16,16 +16,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
     public class JobStatusServiceTests
     {
         private AutoMock mocker;
-        private Dictionary<JobStepStatus, int> stepsStatuses;
+        private Dictionary<JobMessageStatus, int> stepsStatuses;
         private DateTimeOffset? lastJobStepEndTime;
         private JobModel job;
 
         [SetUp]
         public void SetUp()
         {
-            stepsStatuses = new Dictionary<JobStepStatus, int>()
+            stepsStatuses = new Dictionary<JobMessageStatus, int>()
             {
-                {JobStepStatus.Completed, 10 }
+                {JobMessageStatus.Completed, 10 }
             };
             mocker = AutoMock.GetLoose();
             lastJobStepEndTime = DateTimeOffset.UtcNow;
@@ -62,7 +62,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         [Test]
         public async Task Records_Job_Completed_With_Errors_If_Some_Steps_Failed()
         {
-            stepsStatuses.Add(JobStepStatus.Failed, 1);
+            stepsStatuses.Add(JobMessageStatus.Failed, 1);
             var service = mocker.Create<JobStatusService>();
             await service.UpdateStatus(job, default(CancellationToken));
             mocker.Mock<IJobsDataContext>()
@@ -73,7 +73,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         [Test]
         public async Task Does_Not_Save_Job_Status_If_Steps_Are_Still_Queued()
         {
-            stepsStatuses.Add(JobStepStatus.Queued, 1);
+            stepsStatuses.Add(JobMessageStatus.Queued, 1);
             var service = mocker.Create<JobStatusService>();
             await service.UpdateStatus(job, default(CancellationToken));
             mocker.Mock<IJobsDataContext>()
@@ -86,7 +86,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         [Test]
         public async Task Does_Not_Save_Job_Status_If_Steps_Are_Still_Processing()
         {
-            stepsStatuses.Add(JobStepStatus.Processing, 1);
+            stepsStatuses.Add(JobMessageStatus.Processing, 1);
             var service = mocker.Create<JobStatusService>();
             await service.UpdateStatus(job, default(CancellationToken));
             mocker.Mock<IJobsDataContext>()

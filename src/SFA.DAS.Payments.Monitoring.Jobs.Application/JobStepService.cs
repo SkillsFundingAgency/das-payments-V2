@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 };
                 jobSteps.Add(completedStep);
             }
-            completedStep.Status = jobMessageStatus.Succeeded ? JobStepStatus.Completed : JobStepStatus.Failed;
+            completedStep.Status = jobMessageStatus.Succeeded ? JobMessageStatus.Completed : JobMessageStatus.Failed;
             completedStep.EndTime = jobMessageStatus.EndTime;
 
             foreach (var generatedMessage in jobMessageStatus.GeneratedMessages)
@@ -66,7 +66,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                         JobId = jobId,
                         MessageId = generatedMessage.MessageId,
                         MessageName = generatedMessage.MessageName,
-                        Status = JobStepStatus.Queued
+                        Status = JobMessageStatus.Queued
                     };
                     jobSteps.Add(jobStep);
                 }

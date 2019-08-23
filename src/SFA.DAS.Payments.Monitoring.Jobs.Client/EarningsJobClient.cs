@@ -111,7 +111,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
         //        MessageId = msg.MessageId,
         //        StartTime = msg.StartTime,
         //        MessageName = msg.MessageName,
-        //        Status = JobStepStatus.Queued
+        //        Status = JobMessageStatus.Queued
         //    }).ToList();
         //    var stopwatch = Stopwatch.StartNew();
         //    using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))

@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 MessageId = msg.MessageId,
                 StartTime = msg.StartTime,
                 MessageName = msg.MessageName,
-                Status = JobStepStatus.Queued,
+                Status = JobMessageStatus.Queued,
 
             }).ToList();
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
@@ -91,7 +91,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                         MessageId = generatedMessage.MessageId,
                         MessageName = generatedMessage.MessageName,
                         StartTime = generatedMessage.StartTime,
-                        Status = JobStepStatus.Queued
+                        Status = JobMessageStatus.Queued
                     };
                     jobSteps.Add(jobStep);
                 }
