@@ -17,7 +17,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
@@ -80,6 +79,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     var collectionPeriod = int.Parse(message.KeyValuePairs[JobContextMessageKey.ReturnPeriod].ToString());
                     var fileName = message.KeyValuePairs[JobContextMessageKey.Filename]?.ToString();
                     var fm36Output = await GetFm36Global(message, collectionPeriod, cancellationToken).ConfigureAwait(false);
+
+                    if (fm36Output == null)
+                    {
+                        return true;
+                    }
+
                     await ClearSubmittedLearnerAims(collectionPeriod, fm36Output.Year, message.SubmissionDateTimeUtc, fm36Output.UKPRN, cancellationToken).ConfigureAwait(false);
                     var duration = await ProcessFm36Global(message, collectionPeriod, fm36Output, fileName, cancellationToken).ConfigureAwait(false);
                     await SendReceivedEarningsEvent(message.JobId, message.SubmissionDateTimeUtc, fm36Output.Year, collectionPeriod, fm36Output.UKPRN).ConfigureAwait(false);
@@ -224,6 +229,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             logger.LogDebug($"Deserialising FM36Output for job: {message.JobId}, using file reference: {fileReference}, container: {container}");
             var stopwatch = new Stopwatch();
             stopwatch.Start();
+
             using (var stream = await azureFileService.OpenReadStreamAsync(
                 fileReference,
                 container,
@@ -236,22 +242,20 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 
             if (fm36Output == null)
             {
-                throw new InvalidOperationException($"No FM36Global data found for job: {message.JobId}, file reference: {fileReference}, container: {container}");
-            }
+                logger.LogWarning($"No FM36Global data found for job: {message.JobId}, file reference: {fileReference}, container: {container}");
 
-            if (fm36Output.UKPRN == 0)
-            {
-                throw new InvalidOperationException($"FM36LGlobal for job: {message.JobId}, file reference: {fileReference}, container: {container} contains no Ukprn property");
-            }
+                telemetry.TrackEvent("Deserialize FM36Global",
+                    new Dictionary<string, string>
+                    {
+                        { TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
+                        { TelemetryKeys.ExternalJobId, message.JobId.ToString()},
+                    },
+                    new Dictionary<string, double>
+                    {
+                        { TelemetryKeys.Duration, stopwatch.ElapsedMilliseconds}
+                    });
 
-            if (string.IsNullOrWhiteSpace(fm36Output.Year))
-            {
-                throw new InvalidOperationException($"FM36LGlobal for job: {message.JobId}, file reference: {fileReference}, container: {container} contains no Year property");
-            }
-
-            if (fm36Output.Learners == null)
-            {
-                fm36Output.Learners = new List<FM36Learner>();
+                return null;
             }
 
             telemetry.TrackEvent("Deserialize FM36Global",
@@ -266,6 +270,25 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 {
                     { TelemetryKeys.Duration, stopwatch.ElapsedMilliseconds}
                 });
+
+            if (fm36Output.UKPRN == 0)
+            {
+                logger.LogWarning($"FM36LGlobal for job: {message.JobId}, file reference: {fileReference}, container: {container} contains no Ukprn property");
+                return null;
+            }
+
+            if (string.IsNullOrWhiteSpace(fm36Output.Year))
+            {
+                logger.LogWarning($"FM36LGlobal for job: {message.JobId}, file reference: {fileReference}, container: {container} contains no Year property");
+                return null;
+            }
+
+            if (fm36Output.Learners == null)
+            {
+                fm36Output.Learners = new List<FM36Learner>();
+            }
+
+            
             return fm36Output;
         }
 
