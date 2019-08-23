@@ -68,26 +68,37 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                     validPeriods.Add(period);
                     continue;
                 }
+                
+                var apprenticeshipsWithinPeriod = apprenticeships
+                    .Where(a => a.Ukprn == ukprn && ApprenticeshipIsWithinPeriod(a, period.Period, academicYear))
+                    .ToList();
 
-                foreach (var apprenticeship in apprenticeships.Where(apprenticeship => apprenticeship.Ukprn == ukprn))
+                if (!apprenticeshipsWithinPeriod.Any())
                 {
-
-                    if (!IsApprenticeshipRelevantForPeriod(apprenticeship, period.Period, academicYear))
+                    period.DataLockFailures = new List<DataLockFailure>
                     {
-                        continue;
-                    }
-                    
+                        new DataLockFailure
+                        {
+                            DataLockError = DataLockErrorCode.DLOCK_02
+                        }
+                    };
+
+                    invalidPeriods.Add(period);
+                    continue;
+                }
+
+                
+                foreach (var apprenticeship in apprenticeshipsWithinPeriod)
+                {
                     var validationModel = new DataLockValidationModel
                     {
                         EarningPeriod = period,
                         Apprenticeship = apprenticeship,
-                        PriceEpisode = IsFunctionalSkillTransactionType(transactionType)
+                        PriceEpisode = IsFunctionalSkillTransactionType(transactionType) 
                             ? null
                             : priceEpisodes.SingleOrDefault(o =>
-                                  o.Identifier.Equals(period.PriceEpisodeIdentifier,
-                                      StringComparison.OrdinalIgnoreCase))
-                              ?? throw new InvalidOperationException(
-                                  $"Failed to find price episode: {period.PriceEpisodeIdentifier} for uln: {uln}, earning: {transactionType:G}, period: {period.Period}"),
+                                  o.Identifier.Equals(period.PriceEpisodeIdentifier, StringComparison.OrdinalIgnoreCase))
+                                 ?? throw new InvalidOperationException($"Failed to find price episode: {period.PriceEpisodeIdentifier} for uln: {uln}, earning: {transactionType:G}, period: {period.Period}"),
                         TransactionType = transactionType,
                         Aim = aim,
                         AcademicYear = academicYear
@@ -145,7 +156,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             };
         }
 
-        private bool IsApprenticeshipRelevantForPeriod(ApprenticeshipModel apprenticeship, byte deliveryPeriod , int academicYear)
+        private bool ApprenticeshipIsWithinPeriod(ApprenticeshipModel apprenticeship, byte deliveryPeriod , int academicYear)
         {
             var periodDates = calculatePeriodStartAndEndDate.GetPeriodDate(deliveryPeriod, academicYear);
 
