@@ -1,15 +1,14 @@
-@ignore
 Feature: PV2-689 - Update Existing Apprenticeship
 	As an Employer
 	I want the Payments Calc Data-Locks process to be made aware f updated commitments
 	So that they can be matched to the ILR Learner and allow payments to be made for the learner
 
-Scenario: PV2-689 - Update Existing Apprenticeship
+Scenario Outline: PV2-689 - Update Existing Apprenticeship
 	Given the following employers
 		| Identifier       | Legal Entity Name | Agreement Id |
 		| Employer A       | Test Employer     | 12345        |
 
-	And the following apprenticeships already exist
+	And the following apprenticeships already exist with Employer Type "<Employer Type>"
 		| Identifier       | Created On Date              | Agreed On Date               | Learner   | Provider   | Employer   | Standard Code | Programme Type | Framework Code | Pathway Code | Start date                   | End date                  |
 		| Apprenticeship A | 01/Aug/Current Academic Year | 01/Aug/Current Academic Year | Learner A | Provider A | Employer A | 20            | 20             | 593            | 1            | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year |
 	
@@ -30,3 +29,7 @@ Scenario: PV2-689 - Update Existing Apprenticeship
 
 	When the Approvals service notifies the Payments service of the apprenticeships changes
 	Then the Payments service should record the apprenticeships
+Examples:
+	| Employer Type |
+	| Non-Levy      |
+	| Levy          |

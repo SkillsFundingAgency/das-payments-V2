@@ -10,6 +10,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Interfaces
         Task<LevyAccountModel> GetLevyAccount(long employerAccountId, CancellationToken cancellationToken = default(CancellationToken));
         Task<List<EmployerProviderPriorityModel>> GetPaymentPriorities(long employerAccountId, CancellationToken cancellationToken = default(CancellationToken));
         Task AddEmployerProviderPriorities(List<EmployerProviderPriorityModel> paymentPriorityModels, CancellationToken cancellationToken = default(CancellationToken));
+        Task<long> GetLevyAccountId(long ukprn, CancellationToken cancellationToken = default(CancellationToken));
         Task<List<long>> GetEmployerAccounts(CancellationToken cancellationToken);
        Task ReplaceEmployerProviderPriorities(long employerAccountId,
             List<EmployerProviderPriorityModel> paymentPriorityModels,

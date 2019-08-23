@@ -50,39 +50,50 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         }
 
         [Test]
-        public async Task TestCreatesDataLockChangedEventWhenNewFailure()
+        [TestCaseSource(nameof(GetFailureEvents))]
+        public async Task TestCreatesDataLockChangedEventWhenNewFailure(DataLockEvent failureEvent)
         {
             // arrange
-            var dataLockEvent = new EarningFailedDataLockMatching()
+            failureEvent.Ukprn = 1;
+            failureEvent.Learner = new Learner { ReferenceNumber = "2", Uln = 3 };
+            failureEvent.LearningAim = new LearningAim
             {
-                Ukprn = 1,
-                Learner = new Learner {ReferenceNumber = "2", Uln = 3},
-                LearningAim = new LearningAim {FrameworkCode = 4, StandardCode = 5, Reference = "6", PathwayCode = 7, ProgrammeType = 8, FundingLineType = "9"},
-                CollectionYear = 1819,
-                CollectionPeriod = new CollectionPeriod {AcademicYear = 7, Period = 8},
-                OnProgrammeEarnings = new List<OnProgrammeEarning>
-                {
-                    new OnProgrammeEarning
-                    {
-                        Type = OnProgrammeEarningType.Learning,
-                        Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod>
-                        {
-                            new EarningPeriod {Period = 1, Amount = 1, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_03}}},
-                            new EarningPeriod {Period = 2, Amount = 1 }
-                        })
-                    }
-                },
-                IncentiveEarnings = new List<IncentiveEarning>()
+                FrameworkCode = 4,
+                StandardCode = 5,
+                Reference = "6",
+                PathwayCode = 7,
+                ProgrammeType = 8,
+                FundingLineType = "9"
             };
+            failureEvent.CollectionYear = 1819;
+            failureEvent.CollectionPeriod = new CollectionPeriod { AcademicYear = 7, Period = 8 };
+            failureEvent.OnProgrammeEarnings = new List<OnProgrammeEarning>
+            {
+                new OnProgrammeEarning
+                {
+                    Type = OnProgrammeEarningType.Learning,
+                    Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod>
+                    {
+                        new EarningPeriod
+                        {
+                            Period = 1, Amount = 1,
+                            DataLockFailures = new List<DataLockFailure>
+                                {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_03}}
+                        },
+                        new EarningPeriod {Period = 2, Amount = 1}
+                    })
+                }
+            };
+            failureEvent.IncentiveEarnings = new List<IncentiveEarning>();
 
             var dbFailures = new List<DataLockFailureEntity>();
 
             repositoryMock.Setup(r => r.GetFailures(1, "2", 4, 7, 8, 5, "6", 1819)).ReturnsAsync(dbFailures).Verifiable();
             repositoryMock.Setup(r => r.ReplaceFailures(It.Is<List<long>>(old => old.Count == 0), It.Is<List<DataLockFailureEntity>>(newF => newF.Count == 1), It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.CompletedTask).Verifiable();
-            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(null, dataLockEvent.OnProgrammeEarnings[0].Periods[0].DataLockFailures)).Returns(DataLockStatusChange.ChangedToFailed).Verifiable();
+            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(null, failureEvent.OnProgrammeEarnings[0].Periods[0].DataLockFailures)).Returns(DataLockStatusChange.ChangedToFailed).Verifiable();
 
             // act
-            var statusChangedEvents = await processor.ProcessDataLockFailure(dataLockEvent).ConfigureAwait(false);
+            var statusChangedEvents = await processor.ProcessDataLockFailure(failureEvent).ConfigureAwait(false);
 
             // assert
             statusChangedEvents.Should().NotBeNull();
@@ -96,50 +107,57 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         }
 
         [Test]
-        public async Task TestCreatesMultipleEventsForPeriodsAndTypes()
+        [TestCaseSource(nameof(GetFailureEvents))]
+        public async Task TestCreatesMultipleEventsForPeriodsAndTypes(DataLockEvent failureEvent)
         {
             // arrange
 
 
 
             // change of dlock code
-            var oldTT2P5 = new DataLockFailureEntity {Id = 1, DeliveryPeriod = 5, TransactionType = TransactionType.Completion, EarningPeriod = new EarningPeriod { Period = 5, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_06}}}};
-            var newTT2p5 = new EarningPeriod {Period = 5, Amount = 1, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_04}}};
+            var oldTT2P5 = new DataLockFailureEntity { Id = 1, DeliveryPeriod = 5, TransactionType = TransactionType.Completion, EarningPeriod = new EarningPeriod { Period = 5, DataLockFailures = new List<DataLockFailure> { new DataLockFailure { DataLockError = DataLockErrorCode.DLOCK_06 } } } };
+            var newTT2p5 = new EarningPeriod { Period = 5, Amount = 1, DataLockFailures = new List<DataLockFailure> { new DataLockFailure { DataLockError = DataLockErrorCode.DLOCK_04 } } };
 
             // no new - changed to pass
-            var oldTT3p3 = new DataLockFailureEntity {Id = 2, DeliveryPeriod = 3, TransactionType = TransactionType.Balancing, EarningPeriod = new EarningPeriod { Period = 3, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_06}}}};
-            var newTT3p3 = new EarningPeriod {Period = 3, Amount = 1, ApprenticeshipId = 4, ApprenticeshipPriceEpisodeId = 4};
+            var oldTT3p3 = new DataLockFailureEntity { Id = 2, DeliveryPeriod = 3, TransactionType = TransactionType.Balancing, EarningPeriod = new EarningPeriod { Period = 3, DataLockFailures = new List<DataLockFailure> { new DataLockFailure { DataLockError = DataLockErrorCode.DLOCK_06 } } } };
+            var newTT3p3 = new EarningPeriod { Period = 3, Amount = 1, ApprenticeshipId = 4, ApprenticeshipPriceEpisodeId = 4 };
 
             // no change
-            var oldTT2p6 = new DataLockFailureEntity {Id = 3, DeliveryPeriod = 6, TransactionType = TransactionType.Completion, EarningPeriod = new EarningPeriod { Period = 6, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_04}}}};
-            var newTT2p6 = new EarningPeriod {Period = 6, Amount = 1, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_04}}};
+            var oldTT2p6 = new DataLockFailureEntity { Id = 3, DeliveryPeriod = 6, TransactionType = TransactionType.Completion, EarningPeriod = new EarningPeriod { Period = 6, DataLockFailures = new List<DataLockFailure> { new DataLockFailure { DataLockError = DataLockErrorCode.DLOCK_04 } } } };
+            var newTT2p6 = new EarningPeriod { Period = 6, Amount = 1, DataLockFailures = new List<DataLockFailure> { new DataLockFailure { DataLockError = DataLockErrorCode.DLOCK_04 } } };
 
             // change of dlock code
-            var oldTT16p5 = new DataLockFailureEntity {Id = 4, DeliveryPeriod = 5, TransactionType = TransactionType.CareLeaverApprenticePayment, EarningPeriod = new EarningPeriod { Period = 5, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_06}}}};
-            var newTT16p5 = new EarningPeriod {Period = 5, Amount = 1, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_04}}};
+            var oldTT16p5 = new DataLockFailureEntity { Id = 4, DeliveryPeriod = 5, TransactionType = TransactionType.CareLeaverApprenticePayment, EarningPeriod = new EarningPeriod { Period = 5, DataLockFailures = new List<DataLockFailure> { new DataLockFailure { DataLockError = DataLockErrorCode.DLOCK_06 } } } };
+            var newTT16p5 = new EarningPeriod { Period = 5, Amount = 1, DataLockFailures = new List<DataLockFailure> { new DataLockFailure { DataLockError = DataLockErrorCode.DLOCK_04 } } };
 
             // no new - change to pass
-            var oldTT10p3 = new DataLockFailureEntity {Id = 5, DeliveryPeriod = 3, TransactionType = TransactionType.Balancing16To18FrameworkUplift, EarningPeriod = new EarningPeriod { Period = 3, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_06}}}};
-            var newTT10p3 = new EarningPeriod {Period = 3, Amount = 1, ApprenticeshipId = 10, ApprenticeshipPriceEpisodeId = 10, DataLockFailures = new List<DataLockFailure>() };
+            var oldTT10p3 = new DataLockFailureEntity { Id = 5, DeliveryPeriod = 3, TransactionType = TransactionType.Balancing16To18FrameworkUplift, EarningPeriod = new EarningPeriod { Period = 3, DataLockFailures = new List<DataLockFailure> { new DataLockFailure { DataLockError = DataLockErrorCode.DLOCK_06 } } } };
+            var newTT10p3 = new EarningPeriod { Period = 3, Amount = 1, ApprenticeshipId = 10, ApprenticeshipPriceEpisodeId = 10, DataLockFailures = new List<DataLockFailure>() };
 
             // no change
-            var oldTT16p6 = new DataLockFailureEntity {Id = 6, DeliveryPeriod = 6, TransactionType = TransactionType.CareLeaverApprenticePayment, EarningPeriod = new EarningPeriod { Period = 6, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_04}}}};
-            var newTT16p6 = new EarningPeriod {Period = 6, Amount = 1, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_04}}};
+            var oldTT16p6 = new DataLockFailureEntity { Id = 6, DeliveryPeriod = 6, TransactionType = TransactionType.CareLeaverApprenticePayment, EarningPeriod = new EarningPeriod { Period = 6, DataLockFailures = new List<DataLockFailure> { new DataLockFailure { DataLockError = DataLockErrorCode.DLOCK_04 } } } };
+            var newTT16p6 = new EarningPeriod { Period = 6, Amount = 1, DataLockFailures = new List<DataLockFailure> { new DataLockFailure { DataLockError = DataLockErrorCode.DLOCK_04 } } };
 
             // no old - change to fail
-            var newTT2p1 = new EarningPeriod {Period = 1, Amount = 1, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_03}}};
-            var newTT2p2 = new EarningPeriod {Period = 2, Amount = 1};
-            var newTT16p1 = new EarningPeriod {Period = 1, Amount = 1, DataLockFailures = new List<DataLockFailure> {new DataLockFailure {DataLockError = DataLockErrorCode.DLOCK_03}}};
-            var newTT16p2 = new EarningPeriod {Period = 2, Amount = 1};
+            var newTT2p1 = new EarningPeriod { Period = 1, Amount = 1, DataLockFailures = new List<DataLockFailure> { new DataLockFailure { DataLockError = DataLockErrorCode.DLOCK_03 } } };
+            var newTT2p2 = new EarningPeriod { Period = 2, Amount = 1 };
+            var newTT16p1 = new EarningPeriod { Period = 1, Amount = 1, DataLockFailures = new List<DataLockFailure> { new DataLockFailure { DataLockError = DataLockErrorCode.DLOCK_03 } } };
+            var newTT16p2 = new EarningPeriod { Period = 2, Amount = 1 };
 
-            var dataLockEvent = new EarningFailedDataLockMatching()
+            failureEvent.Ukprn = 1;
+            failureEvent.Learner = new Learner { ReferenceNumber = "2", Uln = 3 };
+            failureEvent.LearningAim = new LearningAim
             {
-                Ukprn = 1,
-                Learner = new Learner {ReferenceNumber = "2", Uln = 3},
-                LearningAim = new LearningAim {FrameworkCode = 4, StandardCode = 5, Reference = "6", PathwayCode = 7, ProgrammeType = 8, FundingLineType = "9"},
-                CollectionYear = 1819,
-                CollectionPeriod = new CollectionPeriod {AcademicYear = 7, Period = 8},
-                OnProgrammeEarnings = new List<OnProgrammeEarning>
+                FrameworkCode = 4,
+                StandardCode = 5,
+                Reference = "6",
+                PathwayCode = 7,
+                ProgrammeType = 8,
+                FundingLineType = "9"
+            };
+            failureEvent.CollectionYear = 1819;
+            failureEvent.CollectionPeriod = new CollectionPeriod { AcademicYear = 7, Period = 8 };
+            failureEvent.OnProgrammeEarnings = new List<OnProgrammeEarning>
                 {
                     new OnProgrammeEarning
                     {
@@ -160,10 +178,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     new OnProgrammeEarning
                     {
                         Type = OnProgrammeEarningType.Balancing,
-                        Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod> { newTT3p3 })
+                        Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod> {newTT3p3})
                     }
-                },
-                IncentiveEarnings = new List<IncentiveEarning>
+                };
+            failureEvent.IncentiveEarnings = new List<IncentiveEarning>
                 {
                     new IncentiveEarning
                     {
@@ -183,10 +201,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     new IncentiveEarning
                     {
                         Type = IncentiveEarningType.Balancing16To18FrameworkUplift,
-                        Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod> { newTT10p3 })
+                        Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod> {newTT10p3})
                     }
-                }
-            };
+                };
 
             var oldFailures = new List<DataLockFailureEntity>
             {
@@ -227,7 +244,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             // P6
             dataLockStatusServiceMock.Setup(s => s.GetStatusChange(oldTT16p6.EarningPeriod.DataLockFailures, newTT16p6.DataLockFailures)).Returns(DataLockStatusChange.NoChange).Verifiable();
 
-            var statusChangedEvents = await processor.ProcessDataLockFailure(dataLockEvent).ConfigureAwait(false);
+            var statusChangedEvents = await processor.ProcessDataLockFailure(failureEvent).ConfigureAwait(false);
 
             // assert
             statusChangedEvents.Should().NotBeNull();
@@ -269,6 +286,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             changedCode.TransactionTypesAndPeriods.Should().ContainKey(TransactionType.CareLeaverApprenticePayment);
             changedCode.TransactionTypesAndPeriods[TransactionType.CareLeaverApprenticePayment].Should().HaveCount(1);
             changedCode.TransactionTypesAndPeriods[TransactionType.CareLeaverApprenticePayment][0].Period.Should().Be(5);
+        }
+
+        private static IEnumerable<DataLockEvent> GetFailureEvents()
+        {
+            yield return new EarningFailedDataLockMatching();
+            yield return new FunctionalSkillEarningFailedDataLockMatching();
         }
     }
 }

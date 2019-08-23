@@ -9,6 +9,7 @@ using Microsoft.ServiceFabric.Services.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 using SFA.DAS.Payments.Audit.Model;
+using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure
@@ -29,10 +30,13 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure
 
         protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
         {
-            logger.LogInfo("Creating Service Replica Listeners For Audit EarningEvents Service");
+            logger.LogInfo("Creating Service Replica Listeners For Audit Services");
+            var serviceListener = new ServiceReplicaListener(context =>
+                listener = lifetimeScope.Resolve<IStatefulEndpointCommunicationListener>());
+
             return new List<ServiceReplicaListener>
             {
-                new ServiceReplicaListener(context => listener = lifetimeScope.Resolve<IStatefulEndpointCommunicationListener>())
+                serviceListener,
             };
         }
 

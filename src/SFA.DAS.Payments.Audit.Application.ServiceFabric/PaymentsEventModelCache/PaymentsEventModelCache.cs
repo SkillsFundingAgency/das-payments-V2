@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
 using SFA.DAS.Payments.Audit.Model;
+using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.ServiceFabric.Core;
 using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 

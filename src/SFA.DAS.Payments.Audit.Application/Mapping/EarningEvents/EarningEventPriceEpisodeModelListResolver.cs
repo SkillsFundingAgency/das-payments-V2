@@ -3,6 +3,7 @@ using System.Linq;
 using AutoMapper;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
 {

@@ -13,11 +13,13 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         public long? TransferSenderAccountId { get; set; }
         public ContractType ContractType { get; set; }
         public DateTime StartDate { get; set; }
-        public DateTime PlannedEndDate { get; set; }
+        public DateTime? PlannedEndDate { get; set; }
         public DateTime? ActualEndDate { get; set; }
         public byte CompletionStatus { get; set; }
         public decimal CompletionAmount { get; set; }
         public decimal InstalmentAmount { get; set; }
         public short NumberOfInstalments { get; set; }
+        public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
+        public string ReportingAimFundingLineType { get; set; }
     }
 }

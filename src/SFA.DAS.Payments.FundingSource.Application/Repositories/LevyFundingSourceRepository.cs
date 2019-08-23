@@ -80,5 +80,15 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
             accounts.AddRange(transferSenders);
             return accounts.Distinct().ToList();
         }
+        public async Task<long> GetLevyAccountId(long ukprn, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var levyAccounts = await dataContext.Payment.AsNoTracking()
+                .Where(payment => payment.Ukprn == ukprn)
+                .Where(payment => payment.AccountId.HasValue)
+                .Distinct()
+                .ToListAsync(cancellationToken);
+
+            return levyAccounts.Select(x => x.AccountId.Value).First();
+        }
     }
 }
