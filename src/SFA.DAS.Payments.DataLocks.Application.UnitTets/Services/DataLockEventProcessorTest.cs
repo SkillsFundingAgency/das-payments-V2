@@ -288,6 +288,96 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             changedCode.TransactionTypesAndPeriods[TransactionType.CareLeaverApprenticePayment][0].Period.Should().Be(5);
         }
 
+        [Test]
+        public async Task TestDataLockStatusChangedToPassedWithNonPayablePeriods()
+        {
+            // arrange
+            var dataLockEvent = new EarningFailedDataLockMatching()
+            {
+                Ukprn = 1,
+                Learner = new Learner {ReferenceNumber = "2", Uln = 3},
+                LearningAim = new LearningAim
+                {
+                    FrameworkCode = 4, StandardCode = 5, Reference = "6", PathwayCode = 7, ProgrammeType = 8,
+                    FundingLineType = "9"
+                },
+                CollectionYear = 1819,
+                CollectionPeriod = new CollectionPeriod {AcademicYear = 7, Period = 8},
+                OnProgrammeEarnings = new List<OnProgrammeEarning>
+                {
+                    new OnProgrammeEarning
+                    {
+                        Type = OnProgrammeEarningType.Learning,
+                        Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod>
+                        {
+                            new EarningPeriod {Period = 1, Amount = 0m, DataLockFailures = null},
+                            new EarningPeriod
+                            {
+                                Period = 2, Amount = 0m, ApprenticeshipId = null, ApprenticeshipPriceEpisodeId = null,
+                                PriceEpisodeIdentifier = string.Empty, DataLockFailures = null
+                            },
+                            new EarningPeriod
+                            {
+                                Period = 3,
+                                Amount = 1m,
+                                PriceEpisodeIdentifier = "pe-1",
+                                ApprenticeshipId = 5,
+                                ApprenticeshipPriceEpisodeId = 12
+                            }
+                        })
+                    }
+                },
+                IncentiveEarnings = new List<IncentiveEarning>()
+                {
+                    new IncentiveEarning
+                    {
+                        Type = IncentiveEarningType.Balancing16To18FrameworkUplift,
+                        Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod>
+                        {
+                            new EarningPeriod {Period = 1, Amount = 0m, DataLockFailures = null},
+                            new EarningPeriod
+                            {
+                                Period = 2, Amount = 0m, PriceEpisodeIdentifier = " ", ApprenticeshipId = null,
+                                ApprenticeshipPriceEpisodeId = null
+                            },
+                            new EarningPeriod
+                            {
+                                Period = 3, Amount = 0m, PriceEpisodeIdentifier = string.Empty, ApprenticeshipId = null,
+                                ApprenticeshipPriceEpisodeId = null
+                            }
+                        })
+
+                    }
+                }
+            };
+
+            var dbFailures = new List<DataLockFailureEntity>
+            {
+                new DataLockFailureEntity {Id = 100, TransactionType = TransactionType.Learning, DeliveryPeriod = 1,EarningPeriod = new EarningPeriod()},
+                new DataLockFailureEntity {Id = 100, TransactionType = TransactionType.Learning, DeliveryPeriod = 2,EarningPeriod = new EarningPeriod()},
+                new DataLockFailureEntity {Id = 100, TransactionType = TransactionType.Learning, DeliveryPeriod = 3,EarningPeriod = new EarningPeriod()},
+                new DataLockFailureEntity {Id = 100, TransactionType = TransactionType.Balancing16To18FrameworkUplift, DeliveryPeriod = 1,EarningPeriod = new EarningPeriod()},
+                new DataLockFailureEntity {Id = 100, TransactionType = TransactionType.Balancing16To18FrameworkUplift, DeliveryPeriod = 2,EarningPeriod = new EarningPeriod()},
+                new DataLockFailureEntity {Id = 100, TransactionType = TransactionType.Balancing16To18FrameworkUplift, DeliveryPeriod = 3,EarningPeriod = new EarningPeriod()},
+            };
+
+            repositoryMock.Setup(r => r.GetFailures(1, "2", 4, 7, 8, 5, "6", 1819)).ReturnsAsync(dbFailures).Verifiable();
+            repositoryMock.Setup(r => r.ReplaceFailures(It.Is<List<long>>(old => old.Count == 1), It.Is<List<DataLockFailureEntity>>(newF => newF.Count == 0), It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.CompletedTask).Verifiable();
+            dataLockStatusServiceMock.Setup(s => s.GetStatusChange(null, dataLockEvent.OnProgrammeEarnings[0].Periods[0].DataLockFailures)).Returns(DataLockStatusChange.ChangedToPassed).Verifiable();
+
+            // act
+            var statusChangedEvents = await processor.ProcessDataLockFailure(dataLockEvent).ConfigureAwait(false);
+
+            // assert
+            statusChangedEvents.Should().NotBeNull();
+            statusChangedEvents.Should().HaveCount(1);
+            statusChangedEvents[0].Should().BeOfType<DataLockStatusChangedToPassed>();
+            statusChangedEvents[0].TransactionTypesAndPeriods.Should().HaveCount(1);
+            statusChangedEvents[0].TransactionTypesAndPeriods.First().Key.Should().Be(1);
+            statusChangedEvents[0].TransactionTypesAndPeriods.First().Value.Should().HaveCount(1);
+            statusChangedEvents[0].TransactionTypesAndPeriods.First().Value[0].Period.Should().Be(3);
+        }
+
         private static IEnumerable<DataLockEvent> GetFailureEvents()
         {
             yield return new EarningFailedDataLockMatching();
