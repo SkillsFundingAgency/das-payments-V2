@@ -1,0 +1,4 @@
+﻿CREATE TABLE [Jobs].[JobMessageStatus] (
+	Id TINYINT NOT NULL CONSTRAINT PK_JobMessageStatus PRIMARY KEY CLUSTERED,
+	[Description] VARCHAR(255) NOT NULL
+)
