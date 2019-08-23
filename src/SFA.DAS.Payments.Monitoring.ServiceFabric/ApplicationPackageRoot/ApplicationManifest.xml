@@ -7,6 +7,7 @@
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
+    <Parameter Name="PaymentsMonitoringConnectionString" DefaultValue="" />
     <Parameter Name="Monitoring_JobsService_EndpointName" DefaultValue="" />
     <Parameter Name="Monitoring_JobsService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="Monitoring_JobsService_FailureTimeoutInSeconds" DefaultValue="150" />
@@ -29,6 +30,7 @@
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="PaymentsMonitoringConnectionString" Value="[PaymentsMonitoringConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[Monitoring_JobsService_EndpointName]" />
@@ -53,6 +55,7 @@
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="PaymentsMonitoringConnectionString" Value="[PaymentsMonitoringConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[Monitoring_JobsService_EndpointName]" />

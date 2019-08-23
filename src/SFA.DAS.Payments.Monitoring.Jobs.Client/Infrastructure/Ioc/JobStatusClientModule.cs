@@ -11,7 +11,6 @@ using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
-using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
 {
@@ -41,7 +40,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
                     var logger = c.Resolve<IPaymentLogger>();
                     var factory = c.Resolve<IMonitoringMessageSessionFactory>();
                     var dataContext = c.Resolve<IJobsDataContext>();
-                    return new EarningsJobClient(logger, dataContext, c.Resolve<Application.Infrastructure.Telemetry.ITelemetry>());
+                    //                    return new EarningsJobClient(logger, dataContext, c.Resolve<Application.Infrastructure.Telemetry.ITelemetry>());
+                    return new EarningsJobClient(factory.Create(), logger);
                 })
                 .As<IEarningsJobClient>()
                 .InstancePerDependency();
@@ -80,7 +80,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
                     "Job Status Incoming message behaviour");
                 endpointConfig.Pipeline.Register(typeof(JobStatusOutgoingMessageBehaviour),
                     "Job Status Outgoing message behaviour");
-                endpointConfig.Notifications.Errors.MessageSentToErrorQueue += (sender,failedMessage)=>
+                endpointConfig.Notifications.Errors.MessageSentToErrorQueue += (sender, failedMessage) =>
                 {
                     var factory = c.Resolve<IJobMessageClientFactory>();
                     var client = factory.Create();
