@@ -341,6 +341,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 EventId = Guid.NewGuid(),
                 Amount = amount,
                 LearningAimFundingLineType = learnerTraining.FundingLineType,
+                ReportingAimFundingLineType = learnerTraining.FundingLineType,
                 LearnerUln = providerPayment.Uln,
                 LearningAimFrameworkCode = learnerTraining.FrameworkCode,
                 LearningAimProgrammeType = learnerTraining.ProgrammeType,
