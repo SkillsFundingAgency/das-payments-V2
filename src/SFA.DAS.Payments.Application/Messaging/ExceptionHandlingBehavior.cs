@@ -22,7 +22,21 @@ namespace SFA.DAS.Payments.Application.Messaging
             }
             catch (Exception ex)
             {
-                logger.LogError($"Message handling failed. Error: {ex.Message}", ex);
+                var messageType = "No enclosed messages";
+                if (context.Message.Headers.ContainsKey("NServiceBus.EnclosedMessageTypes"))
+                {
+                    messageType = context.Message.Headers["NServiceBus.EnclosedMessageTypes"];
+                }
+
+                var sendingEndpoint = "No sending endpoint";
+                if (context.Message.Headers.ContainsKey("NServiceBus.OriginatingEndpoint"))
+                {
+                    sendingEndpoint = context.Message.Headers["NServiceBus.OriginatingEndpoint"];
+                }
+
+                logger.LogError($"Message handling failed. Error: {ex.Message}\n\n" +
+                                $"Message type: {messageType}\n\n" +
+                                $"Sending Endpoint: {sendingEndpoint}\n\n", ex);
                 throw;
             }
         }
