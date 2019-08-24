@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -8,7 +7,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
-namespace SFA.DAS.Payments.Monitoring.Jobs.Application
+namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Services.Earnings
 {
     public interface IEarningsJobService
     {
@@ -33,16 +32,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             var jobDetails = await dataContext.GetJobByDcJobId(startedEvent.JobId);
             if (jobDetails == null)
             {
-                await SaveNewJob(startedEvent).ConfigureAwait(false);
-            }
-            else
-            {
-                await SaveJobSteps(startedEvent, jobDetails).ConfigureAwait(false);
+                jobDetails = await SaveNewJob(startedEvent).ConfigureAwait(false);
             }
 
         }
 
-        private async Task SaveNewJob(RecordStartedProcessingEarningsJob startedEvent)
+        private async Task<JobModel> SaveNewJob(RecordStartedProcessingEarningsJob startedEvent)
         {
             logger.LogDebug($"Now recording new provider earnings job.  Job Id: {startedEvent.JobId}, Ukprn: {startedEvent.Ukprn}.");
 
@@ -58,51 +53,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 Status = JobStatus.InProgress,
                 LearnerCount = startedEvent.LearnerCount
             };
-            var jobSteps = startedEvent.GeneratedMessages.Select(msg => new JobStepModel
-            {
-                MessageId = msg.MessageId,
-                StartTime = msg.StartTime,
-                MessageName = msg.MessageName,
-                Status = JobMessageStatus.Queued,
-
-            }).ToList();
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                await dataContext.SaveNewJob(jobDetails, jobSteps);
+                await dataContext.SaveNewJob(jobDetails);
                 scope.Complete();
             }
             SendTelemetry(startedEvent, jobDetails);
             logger.LogInfo($"Finished saving the job to the db.  Job id: {jobDetails.Id}, DC Job Id: {startedEvent.JobId}, Ukprn: {startedEvent.Ukprn}.");
+            return jobDetails;
         }
 
-        private async Task SaveJobSteps(RecordStartedProcessingEarningsJob startedEvent, JobModel jobDetails)
-        {
-            var jobStepIds = startedEvent.GeneratedMessages.Select(generatedMessage => generatedMessage.MessageId)
-                .ToList();
-            var jobSteps = await dataContext.GetJobSteps(jobStepIds).ConfigureAwait(false);
-            startedEvent.GeneratedMessages.ForEach(generatedMessage =>
-            {
-                var jobStep = jobSteps.FirstOrDefault(step => step.MessageId == generatedMessage.MessageId);
-                if (jobStep == null)
-                {
-                    jobStep = new JobStepModel
-                    {
-                        JobId = jobDetails.Id,
-                        MessageId = generatedMessage.MessageId,
-                        MessageName = generatedMessage.MessageName,
-                        StartTime = generatedMessage.StartTime,
-                        Status = JobMessageStatus.Queued
-                    };
-                    jobSteps.Add(jobStep);
-                }
-
-                jobStep.StartTime = generatedMessage.StartTime;
-            });
-
-            await dataContext.SaveJobSteps(jobSteps).ConfigureAwait(false);
-            logger.LogInfo($"Finished saving the job steps to the db.  Job id: {jobDetails.Id}, DC Job Id: {startedEvent.JobId}, Ukprn: {startedEvent.Ukprn}.");
-
-        }
 
         private void SendTelemetry(RecordStartedProcessingEarningsJob startedEvent, JobModel jobDetails)
         {

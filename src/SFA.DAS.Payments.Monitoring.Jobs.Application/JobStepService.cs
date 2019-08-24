@@ -34,55 +34,55 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         public async Task JobStepCompleted(RecordJobMessageProcessingStatus jobMessageStatus)
         {
-            logger.LogVerbose($"Now recording completion of message processing.  Job Id: {jobMessageStatus.JobId}, Message id: {jobMessageStatus.Id}.");
-            var messageIds = new List<Guid> { jobMessageStatus.Id };
-            messageIds.AddRange(jobMessageStatus.GeneratedMessages.Select(msg => msg.MessageId));
-            var jobSteps = await dataContext.GetJobSteps(messageIds);
-            var job = await GetJob(jobMessageStatus.JobId);
-            var jobId = job.Id;
-            var completedStep = jobSteps.FirstOrDefault(step => step.MessageId == jobMessageStatus.Id);
-            if (completedStep == null)
-            {
-                logger.LogDebug($"Recording completion of job step before the start time of the step has been recorded. Job: {jobId}, Message Id: {jobMessageStatus.Id}");
-                completedStep = new JobStepModel
-                {
-                    JobId = jobId,
-                    MessageId = jobMessageStatus.Id,
-                    MessageName = jobMessageStatus.MessageName,
+            //logger.LogVerbose($"Now recording completion of message processing.  Job Id: {jobMessageStatus.JobId}, Message id: {jobMessageStatus.Id}.");
+            //var messageIds = new List<Guid> { jobMessageStatus.Id };
+            //messageIds.AddRange(jobMessageStatus.GeneratedMessages.Select(msg => msg.MessageId));
+            //var jobSteps = await dataContext.GetJobSteps(messageIds);
+            //var job = await GetJob(jobMessageStatus.JobId);
+            //var jobId = job.Id;
+            //var completedStep = jobSteps.FirstOrDefault(step => step.MessageId == jobMessageStatus.Id);
+            //if (completedStep == null)
+            //{
+            //    logger.LogDebug($"Recording completion of job step before the start time of the step has been recorded. Job: {jobId}, Message Id: {jobMessageStatus.Id}");
+            //    completedStep = new JobStepModel
+            //    {
+            //        JobId = jobId,
+            //        MessageId = jobMessageStatus.Id,
+            //        MessageName = jobMessageStatus.MessageName,
 
-                };
-                jobSteps.Add(completedStep);
-            }
-            completedStep.Status = jobMessageStatus.Succeeded ? JobMessageStatus.Completed : JobMessageStatus.Failed;
-            completedStep.EndTime = jobMessageStatus.EndTime;
+            //    };
+            //    jobSteps.Add(completedStep);
+            //}
+            //completedStep.Status = jobMessageStatus.Succeeded ? JobMessageStatus.Completed : JobMessageStatus.Failed;
+            //completedStep.EndTime = jobMessageStatus.EndTime;
 
-            foreach (var generatedMessage in jobMessageStatus.GeneratedMessages)
-            {
-                var jobStep = jobSteps.FirstOrDefault(step => step.MessageId == generatedMessage.MessageId);
-                if (jobStep == null)
-                {
-                    jobStep = new JobStepModel
-                    {
-                        JobId = jobId,
-                        MessageId = generatedMessage.MessageId,
-                        MessageName = generatedMessage.MessageName,
-                        Status = JobMessageStatus.Queued
-                    };
-                    jobSteps.Add(jobStep);
-                }
-                else
-                {
-                    logger.LogDebug($"Updating job step to record the start time. Job id: {jobId}, Message id: {generatedMessage.MessageId}");
-                }
+            //foreach (var generatedMessage in jobMessageStatus.GeneratedMessages)
+            //{
+            //    var jobStep = jobSteps.FirstOrDefault(step => step.MessageId == generatedMessage.MessageId);
+            //    if (jobStep == null)
+            //    {
+            //        jobStep = new JobStepModel
+            //        {
+            //            JobId = jobId,
+            //            MessageId = generatedMessage.MessageId,
+            //            MessageName = generatedMessage.MessageName,
+            //            Status = JobMessageStatus.Queued
+            //        };
+            //        jobSteps.Add(jobStep);
+            //    }
+            //    else
+            //    {
+            //        logger.LogDebug($"Updating job step to record the start time. Job id: {jobId}, Message id: {generatedMessage.MessageId}");
+            //    }
 
-                jobStep.StartTime = generatedMessage.StartTime;
-                jobStep.ParentMessageId = jobMessageStatus.Id;
-            }
-            logger.LogVerbose("Now saving updated job steps.");
-            await dataContext.SaveJobSteps(jobSteps);
-            logger.LogDebug("Finished saving updated job steps to db.");
-            SendTelemetry(job, jobSteps);
-            logger.LogInfo($"Recorded completion of message processing.  Job Id: {jobMessageStatus.JobId}, Message id: {jobMessageStatus.Id}.");
+            //    jobStep.StartTime = generatedMessage.StartTime;
+            //    jobStep.ParentMessageId = jobMessageStatus.Id;
+            //}
+            //logger.LogVerbose("Now saving updated job steps.");
+            //await dataContext.SaveJobSteps(jobSteps);
+            //logger.LogDebug("Finished saving updated job steps to db.");
+            //SendTelemetry(job, jobSteps);
+            //logger.LogInfo($"Recorded completion of message processing.  Job Id: {jobMessageStatus.JobId}, Message id: {jobMessageStatus.Id}.");
         }
 
         private async Task<JobModel> GetJob(long dcJobId)

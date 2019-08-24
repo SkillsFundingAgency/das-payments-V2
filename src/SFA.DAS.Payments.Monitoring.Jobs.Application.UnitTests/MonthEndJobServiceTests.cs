@@ -48,9 +48,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             mockDataContext.Setup(x => x.GetJobByDcJobId(It.IsAny<long>()))
                 .Returns(Task.FromResult<JobModel>(new JobModel { Id = jobStep.JobId, DcJobId = jobMessageStatus.JobId }));
             jobSteps = new List<JobStepModel> { jobStep };
-            mockDataContext
-                .Setup(dc => dc.GetJobSteps(It.IsAny<List<Guid>>()))
-                .Returns(Task.FromResult<List<JobStepModel>>(jobSteps));
+            //mockDataContext
+            //    .Setup(dc => dc.GetJobSteps(It.IsAny<List<Guid>>()))
+            //    .Returns(Task.FromResult<List<JobStepModel>>(jobSteps));
             mockDataContext.Setup(dc => dc.GetJobIdFromDcJobId(It.IsAny<long>()))
                 .Returns(Task.FromResult<long>(1));
             object job = new JobModel { Id = jobStep.JobId, DcJobId = jobMessageStatus.JobId };
@@ -81,8 +81,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                         && job.CollectionPeriod == jobStarted.CollectionPeriod
                         && job.AcademicYear == jobStarted.CollectionYear
                         && job.IlrSubmissionTime == null
-                        && job.Ukprn == null),
-                    It.IsAny<List<JobStepModel>>(), 
+                        && job.Ukprn == null), 
                     It.IsAny<CancellationToken>()), 
                     Times.Once);
         }

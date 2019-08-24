@@ -33,41 +33,41 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         public async Task UpdateCompletedJobs(CancellationToken cancellationToken)
         {
-            logger.LogVerbose($"Getting jobs still in progress.");
-            var jobs = await dataContext.GetInProgressJobs();
-            if (jobs.Count == 0)
-            {
-                logger.LogDebug($"No in-progress jobs found.");
-                telemetry.TrackEvent("InProgress Jobs", 0); //TODO: maybe this should be a metric rather than an event
-                return;
-            }
-            logger.LogVerbose($"Got {jobs.Count} in-progress jobs.");
-            foreach (var job in jobs)
-            {
-                try
-                {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        logger.LogInfo("Stopping job completion run. Cancellation requested.");
-                        return;
-                    }
-                    logger.LogVerbose($"Attempting to update job status for job: {job.Id}");
-                    using (var scope = scopeFactory.CreateScope())
-                    {
-                        var jobStatusService = scope.Resolve<IJobStatusService>();
-                        await jobStatusService.UpdateStatus(job, cancellationToken);
-                    }
-                    logger.LogDebug($"Finished attempting to update job status for job: {job.Id}");
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError($"Failed to update the status of job: {job.Id}. Error: {ex.Message}", ex);
-                    throw;
-                }
-            }
+            //logger.LogVerbose($"Getting jobs still in progress.");
+            //var jobs = await dataContext.GetInProgressJobs();
+            //if (jobs.Count == 0)
+            //{
+            //    logger.LogDebug($"No in-progress jobs found.");
+            //    telemetry.TrackEvent("InProgress Jobs", 0); //TODO: maybe this should be a metric rather than an event
+            //    return;
+            //}
+            //logger.LogVerbose($"Got {jobs.Count} in-progress jobs.");
+            //foreach (var job in jobs)
+            //{
+            //    try
+            //    {
+            //        if (cancellationToken.IsCancellationRequested)
+            //        {
+            //            logger.LogInfo("Stopping job completion run. Cancellation requested.");
+            //            return;
+            //        }
+            //        logger.LogVerbose($"Attempting to update job status for job: {job.Id}");
+            //        using (var scope = scopeFactory.CreateScope())
+            //        {
+            //            var jobStatusService = scope.Resolve<IJobStatusService>();
+            //            await jobStatusService.UpdateStatus(job, cancellationToken);
+            //        }
+            //        logger.LogDebug($"Finished attempting to update job status for job: {job.Id}");
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        logger.LogError($"Failed to update the status of job: {job.Id}. Error: {ex.Message}", ex);
+            //        throw;
+            //    }
+            //}
 
-            var inProgressCount = jobs.Count(job => job.Status == JobStatus.InProgress);
-            telemetry.TrackEvent("InProgress Jobs", inProgressCount); //TODO: maybe this should be a metric rather than an event
+            //var inProgressCount = jobs.Count(job => job.Status == JobStatus.InProgress);
+            //telemetry.TrackEvent("InProgress Jobs", inProgressCount); //TODO: maybe this should be a metric rather than an event
         }
     }
 }

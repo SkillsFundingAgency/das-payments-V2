@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core.Configuration;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.Services.Earnings;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 

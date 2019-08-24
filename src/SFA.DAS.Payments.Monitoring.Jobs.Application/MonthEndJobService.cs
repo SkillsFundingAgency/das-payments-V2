@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 MessageName = msg.MessageName,
                 Status = JobMessageStatus.Queued,
             }).ToList();
-            await dataContext.SaveNewJob(jobDetails, jobSteps);
+            await dataContext.SaveNewJob(jobDetails);
             telemetry.AddProperty("JobType", jobDetails.JobType.ToString("G"));
             telemetry.AddProperty("JobId", periodEndJob.JobId.ToString());
             telemetry.AddProperty("CollectionPeriod", periodEndJob.CollectionPeriod.ToString());

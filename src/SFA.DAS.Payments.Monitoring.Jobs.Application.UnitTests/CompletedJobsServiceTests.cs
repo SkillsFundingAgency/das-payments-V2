@@ -49,9 +49,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                     DcJobId = 100,
                 },
             };
-            mocker.Mock<IJobsDataContext>()
-                .Setup(dc => dc.GetInProgressJobs())
-                .Returns(Task.FromResult(jobs));
+            //mocker.Mock<IJobsDataContext>()
+            //    .Setup(dc => dc.GetInProgressJobs())
+            //    .Returns(Task.FromResult(jobs));
             
             var builder = new ContainerBuilder();
             builder.RegisterInstance<IJobStatusService>(mocker.Mock<IJobStatusService>().Object);

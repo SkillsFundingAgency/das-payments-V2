@@ -113,17 +113,17 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             };
             DataContext.Jobs.Add(Job);
             await DataContext.SaveChangesAsync();
-            DataContext.JobSteps.AddRange(
-                GeneratedMessages.Select(msg => 
-                    new JobStepModel
-                    {
-                        JobId = Job.Id,
-                        StartTime = msg.StartTime,
-                        MessageName = msg.MessageName,
-                        MessageId = msg.MessageId,
-                        Status = JobMessageStatus.Queued
-                    }));
-            await DataContext.SaveChangesAsync();
+            //DataContext.JobSteps.AddRange(
+            //    GeneratedMessages.Select(msg => 
+            //        new JobStepModel
+            //        {
+            //            JobId = Job.Id,
+            //            StartTime = msg.StartTime,
+            //            MessageName = msg.MessageName,
+            //            MessageId = msg.MessageId,
+            //            Status = JobMessageStatus.Queued
+            //        }));
+            //await DataContext.SaveChangesAsync();
         }
 
         [Given(@"the period end service has received a period end start job")]
@@ -231,13 +231,13 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             {
                 foreach (var generatedMessage in GeneratedMessages)
                 {
-                    if (!DataContext.JobSteps.Any(step => step.JobId == Job.Id && step.MessageId == generatedMessage.MessageId))
+                    if (!DataContext.JobMessagesFinished.Any(step => step.JobId == Job.Id && step.MessageId == generatedMessage.MessageId))
                     {
                         Console.WriteLine($"Failed to find job step {generatedMessage.MessageId} for job: {Job.Id}");
                         return false;
                     }
 
-                    Console.WriteLine($"Found job step: {generatedMessage.MessageId}");
+                    Console.WriteLine($"Found job messages: {generatedMessage.MessageId}");
                 }
                 Console.WriteLine($"Found all expected job steps for job : {Job.Id}, dc job id: {JobDetails.JobId}");
                 return true;

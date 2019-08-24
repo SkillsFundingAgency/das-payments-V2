@@ -176,14 +176,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             dataContext.Jobs.Add(job);
             await dataContext.SaveChangesAsync();
             Console.WriteLine($"Saved new test job to database. Job Id: {job.Id}");
-            dataContext.JobSteps.AddRange(generatedMessages.Select(msg => new JobStepModel
-            {
-                JobId = job.Id,
-                StartTime = msg.StartTime,
-                MessageName = msg.MessageName,
-                MessageId = msg.MessageId,
-                Status = JobMessageStatus.Queued
-            }));
+            //dataContext.JobSteps.AddRange(generatedMessages.Select(msg => new JobStepModel
+            //{
+            //    JobId = job.Id,
+            //    StartTime = msg.StartTime,
+            //    MessageName = msg.MessageName,
+            //    MessageId = msg.MessageId,
+            //    Status = JobMessageStatus.Queued
+            //}));
             await dataContext.SaveChangesAsync();
             Console.WriteLine($"Finished creating job and generated messages. Job id: {job.Id}, Test DC Job id: {job.DcJobId}");
         }
