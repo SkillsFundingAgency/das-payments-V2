@@ -33,7 +33,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.JobsProxyService\SFA.DAS.Payments.Monitoring.JobsProxyService.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.JobsStatusService\SFA.DAS.Payments.Monitoring.JobsStatusService.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <PropertyGroup>
