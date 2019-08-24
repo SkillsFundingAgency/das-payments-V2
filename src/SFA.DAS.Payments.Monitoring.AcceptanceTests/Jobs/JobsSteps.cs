@@ -62,7 +62,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 new GeneratedMessage {StartTime = DateTimeOffset.UtcNow, MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand", MessageId = Guid.NewGuid()},
                 new GeneratedMessage {StartTime = DateTimeOffset.UtcNow, MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand", MessageId = Guid.NewGuid()},
             };
-            JobDetails = new RecordStartedProcessingEarningsJob
+            JobDetails = new RecordEarningsJob
             {
                 JobId = TestSession.JobId,
                 CollectionPeriod = CollectionPeriod,
@@ -87,7 +87,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 new GeneratedMessage {StartTime = DateTimeOffset.UtcNow, MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand", MessageId = Guid.NewGuid()},
             };
 
-            var earningsJob = new RecordStartedProcessingEarningsJob
+            var earningsJob = new RecordEarningsJob
             {
                 JobId = TestSession.JobId,
                 CollectionPeriod = CollectionPeriod,

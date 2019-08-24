@@ -110,7 +110,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
                 .Transactions(TransportTransactionMode.ReceiveOnly)
                 .RuleNameShortener(ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
 
-            transport.Routing().RouteToEndpoint(typeof(RecordStartedProcessingEarningsJob).Assembly, jobsEndpointName);
+            transport.Routing().RouteToEndpoint(typeof(RecordEarningsJob).Assembly, jobsEndpointName);
             endpointConfiguration.SendFailedMessagesTo(config.FailedMessagesQueue);
             endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
             endpointConfiguration.EnableInstallers();

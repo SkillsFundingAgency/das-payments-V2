@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 {
     public interface IEarningsJobService
     {
-        Task JobStarted(RecordStartedProcessingEarningsJob startedEvent);
+        Task JobStarted(RecordEarningsJob startedEvent);
     }
 
     public class EarningsJobService : IEarningsJobService
@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
-        public async Task JobStarted(RecordStartedProcessingEarningsJob startedEvent)
+        public async Task JobStarted(RecordEarningsJob startedEvent)
         {
             var jobDetails = await dataContext.GetJobByDcJobId(startedEvent.JobId);
             if (jobDetails == null)
@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         }
 
-        private async Task SaveNewJob(RecordStartedProcessingEarningsJob startedEvent)
+        private async Task SaveNewJob(RecordEarningsJob startedEvent)
         {
             logger.LogDebug($"Now recording new provider earnings job.  Job Id: {startedEvent.JobId}, Ukprn: {startedEvent.Ukprn}.");
 
@@ -75,7 +75,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             logger.LogInfo($"Finished saving the job to the db.  Job id: {jobDetails.Id}, DC Job Id: {startedEvent.JobId}, Ukprn: {startedEvent.Ukprn}.");
         }
 
-        private async Task SaveJobSteps(RecordStartedProcessingEarningsJob startedEvent, JobModel jobDetails)
+        private async Task SaveJobSteps(RecordEarningsJob startedEvent, JobModel jobDetails)
         {
             var jobStepIds = startedEvent.GeneratedMessages.Select(generatedMessage => generatedMessage.MessageId)
                 .ToList();
@@ -104,7 +104,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         }
 
-        private void SendTelemetry(RecordStartedProcessingEarningsJob startedEvent, JobModel jobDetails)
+        private void SendTelemetry(RecordEarningsJob startedEvent, JobModel jobDetails)
         {
             telemetry.AddProperty("JobType", JobType.EarningsJob.ToString("G"));
             telemetry.AddProperty("Ukprn", startedEvent.Ukprn.ToString());

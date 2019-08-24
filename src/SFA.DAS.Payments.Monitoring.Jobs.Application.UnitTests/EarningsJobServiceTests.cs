@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         [Test]
         public async Task Stores_New_Jobs()
         {
-            var jobStarted = new RecordStartedProcessingEarningsJob
+            var jobStarted = new RecordEarningsJob
             {
                 CollectionPeriod = 1,
                 CollectionYear = 1819,
@@ -106,7 +106,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 MessageId = Guid.NewGuid(),
                 MessageName = "MessageA",
             };
-            var jobStarted = new RecordStartedProcessingEarningsJob
+            var jobStarted = new RecordEarningsJob
             {
                 CollectionPeriod = 1,
                 CollectionYear = 1819,

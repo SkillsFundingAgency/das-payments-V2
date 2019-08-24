@@ -6,7 +6,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Handlers
 {
-    public class StartedProcessingEarningsEventHandler : IHandleMessages<RecordStartedProcessingEarningsJob>
+    public class StartedProcessingEarningsEventHandler : IHandleMessages<RecordEarningsJob>
     {
         private readonly IPaymentLogger logger;
         private readonly IEarningsJobService earningsService;
@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Handlers
             this.earningsService = earningsService ?? throw new ArgumentNullException(nameof(earningsService));
         }
 
-        public async Task Handle(RecordStartedProcessingEarningsJob message, IMessageHandlerContext context)
+        public async Task Handle(RecordEarningsJob message, IMessageHandlerContext context)
         {
             try
             {
