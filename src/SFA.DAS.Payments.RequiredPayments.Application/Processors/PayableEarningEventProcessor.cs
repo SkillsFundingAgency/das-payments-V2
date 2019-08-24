@@ -1,5 +1,6 @@
 ﻿using System;
 using AutoMapper;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Domain;
@@ -15,14 +16,16 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             IHoldingBackCompletionPaymentService holdingBackCompletionPaymentService,
             IPaymentHistoryRepository paymentHistoryRepository,
             IApprenticeshipKeyProvider apprenticeshipKeyProvider,
-            INegativeEarningService negativeEarningService
+            INegativeEarningService negativeEarningService,
+            IPaymentLogger paymentLogger
         ) : base(
             mapper,
             requiredPaymentProcessor,
             holdingBackCompletionPaymentService,
             paymentHistoryRepository,
             apprenticeshipKeyProvider,
-            negativeEarningService
+            negativeEarningService,
+            paymentLogger
         )
         {
         }
