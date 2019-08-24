@@ -173,7 +173,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             var latestApprenticeshipPriceEpisode = apprenticeship
                 .ApprenticeshipPriceEpisodes
                 .Where(x => !x.Removed)
-                .OrderByDescending(x => x.EndDate)
+                .OrderByDescending(x => x.StartDate)
                 .First();
 
             if (latestApprenticeshipPriceEpisode.EndDate.HasValue && latestApprenticeshipPriceEpisode.EndDate.Value < periodDates.periodStartDate)
