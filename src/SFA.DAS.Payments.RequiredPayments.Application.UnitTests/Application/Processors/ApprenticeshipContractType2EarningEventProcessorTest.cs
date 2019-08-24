@@ -11,6 +11,7 @@ using AutoMapper;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -36,6 +37,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         private Mock<IDataCache<PaymentHistoryEntity[]>> paymentHistoryCacheMock;
         private Mock<IRequiredPaymentProcessor> requiredPaymentService;
         private Mock<INegativeEarningService> negativeEarningsService;
+        private Mock<IPaymentLogger> paymentLogger;
 
         private Mapper mapper;
 
@@ -54,6 +56,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             paymentHistoryCacheMock = mocker.Mock<IDataCache<PaymentHistoryEntity[]>>();
             requiredPaymentService = mocker.Mock<IRequiredPaymentProcessor>();
             negativeEarningsService = mocker.Mock<INegativeEarningService>();
+           paymentLogger = mocker.Mock<IPaymentLogger>();
 
             act2EarningEventProcessor = mocker.Create<ApprenticeshipContractType2EarningEventProcessor>(
                 new NamedParameter("apprenticeshipKey", "key"), 
