@@ -45,55 +45,6 @@
       </ConfigOverride>
     </ConfigOverrides>
   </ServiceManifestImport>
-  <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.Monitoring.JobsStatusServicePkg" ServiceManifestVersion="1.0.0" />
-    <ConfigOverrides>
-      <ConfigOverride Name="Config">
-        <Settings>
-          <Section Name="ConnectionStringsSection">
-            <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
-            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
-            <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
-            <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
-            <Parameter Name="PaymentsMonitoringConnectionString" Value="[PaymentsMonitoringConnectionString]" />
-          </Section>
-          <Section Name="Settings">
-            <Parameter Name="EndpointName" Value="[Monitoring_JobsService_EndpointName]" />
-            <Parameter Name="FailedMessagesQueue" Value="[Monitoring_JobsService_FailedMessagesQueue]" />
-            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
-            <Parameter Name="FailureTimeoutInSeconds" Value="[Monitoring_JobsService_FailureTimeoutInSeconds]" />
-            <Parameter Name="IntervalInSeconds" Value="[Monitoring_JobsService_IntervalInSeconds]" />
-            <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
-          </Section>
-        </Settings>
-      </ConfigOverride>
-    </ConfigOverrides>
-  </ServiceManifestImport>
-  <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.Monitoring.JobsServicePkg" ServiceManifestVersion="1.0.0" />
-    <ConfigOverrides>
-      <ConfigOverride Name="Config">
-        <Settings>
-          <Section Name="ConnectionStringsSection">
-            <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
-            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
-            <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
-            <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
-            <Parameter Name="PaymentsMonitoringConnectionString" Value="[PaymentsMonitoringConnectionString]" />
-          </Section>
-          <Section Name="Settings">
-            <Parameter Name="EndpointName" Value="[Monitoring_JobsService_EndpointName]" />
-            <Parameter Name="FailedMessagesQueue" Value="[Monitoring_JobsService_FailedMessagesQueue]" />
-            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
-            <Parameter Name="DelayedRetryTimeInSeconds" Value="[DelayedRetryTimeInSeconds]" />
-            <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
-          </Section>
-        </Settings>
-      </ConfigOverride>
-    </ConfigOverrides>
-  </ServiceManifestImport>
   <DefaultServices>
     <!-- The section below creates instances of service types, when an instance of this 
          application type is created. You can also create one or more instances of service type using the 
@@ -102,16 +53,6 @@
          The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
     <Service Name="SFA.DAS.Payments.Monitoring.JobsProxyService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.Monitoring.JobsProxyServiceType" InstanceCount="[JobsProxyService_InstanceCount]">
-        <SingletonPartition />
-      </StatelessService>
-    </Service>
-    <Service Name="SFA.DAS.Payments.Monitoring.JobsService" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="SFA.DAS.Payments.Monitoring.JobsServiceType" InstanceCount="[Monitoring_JobsService_InstanceCount]">
-        <SingletonPartition />
-      </StatelessService>
-    </Service>
-    <Service Name="SFA.DAS.Payments.Monitoring.JobsStatusService" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="SFA.DAS.Payments.Monitoring.JobsStatusServiceType" InstanceCount="[Monitoring_JobsStatusService_InstanceCount]">
         <SingletonPartition />
       </StatelessService>
     </Service>
