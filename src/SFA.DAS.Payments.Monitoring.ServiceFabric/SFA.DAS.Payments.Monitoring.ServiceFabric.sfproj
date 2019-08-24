@@ -32,8 +32,8 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.JobsProxyService\SFA.DAS.Payments.Monitoring.JobsProxyService.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.JobsStatusService\SFA.DAS.Payments.Monitoring.JobsStatusService.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.JobsService\SFA.DAS.Payments.Monitoring.JobsService.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <PropertyGroup>

@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.Monitoring.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
+    <Parameter Name="JobsProxyService_InstanceCount" Value="__JobsProxyService_InstanceCount__" />
     <Parameter Name="Monitoring_JobsService_InstanceCount" Value="__Monitoring_JobsService_InstanceCount__" />
     <Parameter Name="Monitoring_JobsStatusService_InstanceCount" Value="__Monitoring_JobsStatusService_InstanceCount__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
