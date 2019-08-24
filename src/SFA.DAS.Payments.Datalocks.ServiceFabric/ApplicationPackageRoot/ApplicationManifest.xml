@@ -46,6 +46,7 @@
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[DataLockEventService_EndpointName]" />
@@ -95,6 +96,7 @@
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[DataLockStatusChangedService_EndpointName]" />

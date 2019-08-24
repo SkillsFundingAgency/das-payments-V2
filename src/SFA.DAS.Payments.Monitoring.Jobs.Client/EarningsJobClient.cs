@@ -41,7 +41,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 
         private async Task SaveNewJob(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages, DateTimeOffset startTime)
         {
-            logger.LogVerbose($"Monitoring disabled. Job id: {jobId}");
             //logger.LogDebug($"Now recording new provider earnings job.  Job Id: {jobId}, Ukprn: {ukprn}.");
             //var jobDetails = new JobModel
             //{
