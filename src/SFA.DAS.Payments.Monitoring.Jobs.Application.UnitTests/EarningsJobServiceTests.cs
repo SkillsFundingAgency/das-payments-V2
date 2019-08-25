@@ -71,6 +71,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             mocker.Mock<IMemoryCache>()
                 .Setup(cache => cache.TryGetValue(It.IsAny<string>(), out job))
                 .Returns(true);
+            mocker.Mock<IJobStorageService>()
+                .Setup(x => x.GetInProgressMessageIdentifiers(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Guid>());
+            mocker.Mock<IJobStorageService>()
+                .Setup(x => x.GetJobStatus(It.IsAny<CancellationToken>()))
+                .ReturnsAsync((JobStepStatus.Completed, DateTimeOffset.UtcNow));
         }
 
         [Test]
@@ -141,7 +147,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 StartTime = DateTimeOffset.UtcNow,
                 MessageId = Guid.NewGuid(),
                 MessageName = "MessageA",
-                
+
             };
             var jobStarted = new RecordEarningsJob
             {

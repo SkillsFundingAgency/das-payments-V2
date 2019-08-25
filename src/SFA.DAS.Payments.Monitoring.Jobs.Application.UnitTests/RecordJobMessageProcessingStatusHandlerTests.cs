@@ -36,6 +36,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             mocker.Mock<IJobStorageService>()
                 .Setup(x => x.GetJobMessages(It.IsAny<List<Guid>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(jobSteps);
+            mocker.Mock<IJobStorageService>()
+                .Setup(x => x.GetInProgressMessageIdentifiers(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Guid> ());
+            mocker.Mock<IJobStorageService>()
+                .Setup(x => x.GetJobStatus(It.IsAny<CancellationToken>()))
+                .ReturnsAsync((JobStepStatus.Completed,DateTimeOffset.UtcNow));
+
         }
 
         [Test]
