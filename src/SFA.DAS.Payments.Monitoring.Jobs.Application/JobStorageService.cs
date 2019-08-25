@@ -71,7 +71,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
         {
             cancellationToken.ThrowIfCancellationRequested();
             await jobCache.AddOrReplace(JobCacheKey, job, cancellationToken).ConfigureAwait(false);
-            await dataContext.SaveNewJob(job, cancellationToken).ConfigureAwait(false);
+            await dataContext.SaveJobStatus(job.Id, job.Status, job.EndTime.Value, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<JobModel> GetJob(CancellationToken cancellationToken)

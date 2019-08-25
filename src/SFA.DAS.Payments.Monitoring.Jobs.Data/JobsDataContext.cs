@@ -19,10 +19,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task<Dictionary<JobStepStatus, int>> GetJobStepsStatus(long jobId);
         Task<DateTimeOffset?> GetLastJobStepEndTime(long jobId);
         Task<JobModel> GetJob(long jobId);
-        Task SaveJobStatus(long jobId, JobStatus status, DateTimeOffset endTime);
+        Task SaveJobStatus(long jobId, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken = default(CancellationToken));
         Task<List<JobModel>> GetInProgressJobs();
-        Task UpdateJob(JobModel job, CancellationToken cancellationToken = default(CancellationToken));
-
     }
 
     public class JobsDataContext : DbContext, IJobsDataContext
@@ -120,12 +118,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             return await Jobs.FirstOrDefaultAsync(job => job.DcJobId == dcJobId);
         }
 
-        public async Task SaveJobStatus(long jobId, JobStatus status, DateTimeOffset endTime)
+        public async Task SaveJobStatus(long jobId, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken = default(CancellationToken))
         {
             var job = await GetJob(jobId) ?? throw new ArgumentException($"Job not found: {jobId}");
             job.EndTime = endTime;
             job.Status = status;
-            await SaveChangesAsync();
+            await SaveChangesAsync(cancellationToken);
         }
     }
 }
