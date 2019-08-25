@@ -165,7 +165,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         [When(@"the final messages for the job are sucessfully processed")]
         public async Task WhenTheFinalMessagesForTheJobAreSucessfullyProcessed()
         {
-            await Task.Delay(1000);
+            await Task.Delay(5000);
             //GeneratedMessages = new List<GeneratedMessage>
             //{
             //    new GeneratedMessage {StartTime = DateTimeOffset.UtcNow, MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand", MessageId = Guid.NewGuid()},
@@ -176,8 +176,11 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             {
                 await MessageSession.Send(new RecordJobMessageProcessingStatus
                 {
-                    JobId = JobDetails.JobId, MessageName = generatedMessage.MessageName,
-                    EndTime = DateTimeOffset.UtcNow, Succeeded = true, Id = generatedMessage.MessageId
+                    JobId = JobDetails.JobId,
+                    MessageName = generatedMessage.MessageName,
+                    EndTime = DateTimeOffset.UtcNow,
+                    Succeeded = true,
+                    Id = generatedMessage.MessageId
                 });
             }
         }
