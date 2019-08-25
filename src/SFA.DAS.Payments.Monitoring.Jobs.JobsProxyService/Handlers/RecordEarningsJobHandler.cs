@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService.Handlers
             {
                 logger.LogVerbose($"Getting actor for job: {message.JobId}");
                 var actorId = new ActorId(message.JobId.ToString());
-                var actor = proxyFactory.CreateActorProxy<IJobsService>(actorId);
+                var actor = proxyFactory.CreateActorProxy<IJobsService>(new Uri("fabric:/SFA.DAS.Payments.Monitoring.ServiceFabric/JobsServiceActorService"), actorId);
                 await actor.RecordEarningsJob(message).ConfigureAwait(false);
             }
             catch (Exception ex)
