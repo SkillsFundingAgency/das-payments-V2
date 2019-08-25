@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using AutoMapper;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -16,14 +17,16 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             IHoldingBackCompletionPaymentService holdingBackCompletionPaymentService,
             IPaymentHistoryRepository paymentHistoryRepository,
             IApprenticeshipKeyProvider apprenticeshipKeyProvider,
-            INegativeEarningService negativeEarningService
+            INegativeEarningService negativeEarningService,
+            IPaymentLogger paymentLogger
         ) : base(
             mapper,
             requiredPaymentProcessor,
             holdingBackCompletionPaymentService,
             paymentHistoryRepository,
             apprenticeshipKeyProvider,
-            negativeEarningService
+            negativeEarningService,
+            paymentLogger
         )
         {
         }
