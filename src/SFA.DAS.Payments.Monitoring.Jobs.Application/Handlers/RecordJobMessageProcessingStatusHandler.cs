@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Handlers
             {
                 logger.LogVerbose(
                     $"Handling job message processed. DC Job Id: {message.JobId}, message name: {message.MessageName}, id: {message.Id}");
-                await jobMessageService.JobStepCompleted(message);
+                await jobMessageService.JobMessageCompleted(message);
                 logger.LogDebug(
                     $"Finished handling job message processed. DC Job Id: {message.JobId}, message name: {message.MessageName}, id: {message.Id}");
             }

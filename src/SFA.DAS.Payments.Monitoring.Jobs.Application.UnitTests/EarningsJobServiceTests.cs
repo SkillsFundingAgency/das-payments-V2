@@ -130,6 +130,44 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .Verify(x => x.StoreJobMessages(It.Is<List<JobStepModel>>(lst => lst.Count == 1 && lst.All(item => item.MessageId == generatedMessage.MessageId && item.StartTime == generatedMessage.StartTime && item.MessageName.Equals(generatedMessage.MessageName))), It.IsAny<CancellationToken>()), Times.Once);
         }
 
+
+
+        [Test]
+        public async Task Updates_Start_Time_For_Job_Messages()
+        {
+            var generatedMessage = new GeneratedMessage
+            {
+
+                StartTime = DateTimeOffset.UtcNow,
+                MessageId = Guid.NewGuid(),
+                MessageName = "MessageA",
+                
+            };
+            var jobStarted = new RecordEarningsJob
+            {
+                CollectionPeriod = 1,
+                CollectionYear = 1819,
+                JobId = 1,
+                Ukprn = 9999,
+                IlrSubmissionTime = DateTime.UtcNow.AddMinutes(-20),
+                StartTime = DateTimeOffset.UtcNow,
+                GeneratedMessages = new List<GeneratedMessage> { generatedMessage }
+            };
+            var jobMessage = new JobStepModel
+            {
+                MessageId = generatedMessage.MessageId,
+                EndTime = DateTimeOffset.UtcNow
+            };
+
+            jobSteps.Add(jobMessage);
+
+            var service = mocker.Create<EarningsJobService>();
+            await service.JobStarted(jobStarted);
+
+            mocker.Mock<IJobStorageService>()
+                .Verify(svc => svc.StoreJobMessages(It.Is<List<JobStepModel>>(lst => lst.Count == 1 && lst.All(item => item.MessageId == generatedMessage.MessageId &&
+                                                                                                                       item.StartTime == generatedMessage.StartTime)), It.IsAny<CancellationToken>()), Times.Once);
+        }
         //[Test]
         //public async Task RecordStartedProcessingEarningsJob_Updates_Existing_Job()
         //{
@@ -165,16 +203,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         //                item.StartTime == generatedMessage.StartTime))), Times.Once);
         //}
 
-        //private async Task JobStepCompleted()
+        //private async Task JobMessageCompleted()
         //{
         //    var service = mocker.Create<JobMessageService>();
-        //    await service.JobStepCompleted(jobMessageStatus);
+        //    await service.JobMessageCompleted(jobMessageStatus);
         //}
 
         //[Test]
         //public async Task Records_Status_Of_Completed_JobStep()
         //{
-        //    await JobStepCompleted();
+        //    await JobMessageCompleted();
         //    mocker.Mock<IJobsDataContext>()
         //        .Verify(dc => dc.SaveJobSteps(It.Is<List<JobStepModel>>(list =>
         //            list.Any(item =>
@@ -188,7 +226,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         //public async Task Creates_New_Completed_Step_Model_If_Not_Found()
         //{
         //    jobSteps.Clear();
-        //    await JobStepCompleted();
+        //    await JobMessageCompleted();
         //    mocker.Mock<IJobsDataContext>()
         //        .Verify(dc => dc.SaveJobSteps(It.Is<List<JobStepModel>>(list =>
         //            list.Any(item =>
@@ -209,7 +247,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         //        MessageName = "MessageA",
         //    };
         //    jobMessageStatus.GeneratedMessages.Add(generatedMessage);
-        //    await JobStepCompleted();
+        //    await JobMessageCompleted();
         //    mocker.Mock<IJobsDataContext>()
         //        .Verify(dc => dc.SaveJobSteps(It.Is<List<JobStepModel>>(list =>
         //            list.Any(item =>
@@ -238,7 +276,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         //        MessageName = generatedMessage.MessageName,
 
         //    });
-        //    await JobStepCompleted();
+        //    await JobMessageCompleted();
         //    mocker.Mock<IJobsDataContext>()
         //        .Verify(dc => dc.SaveJobSteps(It.Is<List<JobStepModel>>(list =>
         //            list.Any(item =>

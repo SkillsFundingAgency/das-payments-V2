@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 {
     public interface IJobsDataContext
     {
-        Task SaveNewJob(JobModel jobDetails, List<JobStepModel> jobSteps, CancellationToken cancellationToken = default(CancellationToken));
+        Task SaveNewJob(JobModel jobDetails, CancellationToken cancellationToken = default(CancellationToken));
         Task<long> GetJobIdFromDcJobId(long dcJobId);
         Task<JobModel> GetJobByDcJobId(long dcJobId);
         Task SaveJobSteps(List<JobStepModel> jobSteps);
@@ -49,12 +49,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             optionsBuilder.UseSqlServer(connectionString);
         }
 
-        public async Task SaveNewJob(JobModel jobDetails, List<JobStepModel> jobSteps, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task SaveNewJob(JobModel jobDetails, CancellationToken cancellationToken = default(CancellationToken))
         {
             Jobs.Add(jobDetails);
-            await SaveChangesAsync(cancellationToken);
-            jobSteps.ForEach(step => step.JobId = jobDetails.Id);
-            JobSteps.AddRange(jobSteps);
             await SaveChangesAsync(cancellationToken);
         }
 
