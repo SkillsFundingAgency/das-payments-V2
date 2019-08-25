@@ -152,13 +152,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         private void SendTelemetry(RecordEarningsJob startedEvent, JobModel jobDetails)
         {
-            telemetry.AddProperty("JobType", JobType.EarningsJob.ToString("G"));
-            telemetry.AddProperty("Ukprn", startedEvent.Ukprn.ToString());
-            telemetry.AddProperty("Id", jobDetails.Id.ToString());
-            telemetry.AddProperty("ExternalJobId", startedEvent.JobId.ToString());
-            telemetry.AddProperty("CollectionPeriod", startedEvent.CollectionPeriod.ToString());
-            telemetry.AddProperty("CollectionYear", startedEvent.CollectionYear.ToString());
-            telemetry.TrackEvent("Started Job", startedEvent.LearnerCount);
+            //telemetry.AddProperty("JobType", JobType.EarningsJob.ToString("G"));
+            //telemetry.AddProperty("Ukprn", startedEvent.Ukprn.ToString());
+            //telemetry.AddProperty("Id", jobDetails.Id.ToString());
+            //telemetry.AddProperty("ExternalJobId", startedEvent.JobId.ToString());
+            //telemetry.AddProperty("CollectionPeriod", startedEvent.CollectionPeriod.ToString());
+            //telemetry.AddProperty("CollectionYear", startedEvent.CollectionYear.ToString());
+            //telemetry.TrackEvent("Started Job", startedEvent.LearnerCount);
         }
     }
 }
