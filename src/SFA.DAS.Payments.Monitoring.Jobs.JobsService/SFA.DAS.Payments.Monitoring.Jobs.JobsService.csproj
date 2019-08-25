@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Application\SFA.DAS.Payments.Monitoring.Jobs.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.JobsService.Interfaces\SFA.DAS.Payments.Monitoring.Jobs.JobsService.Interfaces.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.ServiceFabric.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj" />
