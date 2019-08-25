@@ -13,14 +13,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Handlers
     public class RecordJobMessageProcessingStatusHandler : IHandleMessages<RecordJobMessageProcessingStatus>
     {
         private readonly IPaymentLogger logger;
-        private readonly IJobStepService jobStepService;
+        private readonly IJobMessageService jobMessageService;
         private readonly ISqlExceptionService sqlExceptionService;
         private readonly int delayInSeconds;
-        public RecordJobMessageProcessingStatusHandler(IPaymentLogger logger, IJobStepService jobStepService, IConfigurationHelper configurationHelper, ISqlExceptionService sqlExceptionService)
+        public RecordJobMessageProcessingStatusHandler(IPaymentLogger logger, IJobMessageService jobMessageService, IConfigurationHelper configurationHelper, ISqlExceptionService sqlExceptionService)
         {
             if (configurationHelper == null) throw new ArgumentNullException(nameof(configurationHelper));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.jobStepService = jobStepService ?? throw new ArgumentNullException(nameof(jobStepService));
+            this.jobMessageService = jobMessageService ?? throw new ArgumentNullException(nameof(jobMessageService));
             this.sqlExceptionService = sqlExceptionService ?? throw new ArgumentNullException(nameof(sqlExceptionService));
             delayInSeconds = int.Parse(configurationHelper.GetSettingOrDefault("DelayedRetryTimeInSeconds", "5"));
         }
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Handlers
             {
                 logger.LogVerbose(
                     $"Handling job message processed. DC Job Id: {message.JobId}, message name: {message.MessageName}, id: {message.Id}");
-                await jobStepService.JobStepCompleted(message);
+                await jobMessageService.JobStepCompleted(message);
                 logger.LogDebug(
                     $"Finished handling job message processed. DC Job Id: {message.JobId}, message name: {message.MessageName}, id: {message.Id}");
             }

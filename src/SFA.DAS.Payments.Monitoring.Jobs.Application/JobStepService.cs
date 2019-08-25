@@ -12,19 +12,19 @@ using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 {
-    public interface IJobStepService
+    public interface IJobMessageService
     {
         Task JobStepCompleted(RecordJobMessageProcessingStatus jobMessageStatus);
     }
 
-    public class JobStepService : IJobStepService
+    public class JobMessageService : IJobMessageService
     {
         private readonly IPaymentLogger logger;
         private readonly IJobsDataContext dataContext;
         private readonly ITelemetry telemetry;
         private readonly IMemoryCache cache;
 
-        public JobStepService(IPaymentLogger logger, IJobsDataContext dataContext, ITelemetry telemetry, IMemoryCache cache)
+        public JobMessageService(IPaymentLogger logger, IJobsDataContext dataContext, ITelemetry telemetry, IMemoryCache cache)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));

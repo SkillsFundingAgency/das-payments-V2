@@ -305,6 +305,5 @@ namespace SFA.DAS.Payments.PerformanceTests
             await dataContext.SaveChangesAsync();
             Console.WriteLine($"Finished creating job and generated messages. Job id: {job.Id}, Test DC Job id: {job.DcJobId}");
         }
-
     }
 }

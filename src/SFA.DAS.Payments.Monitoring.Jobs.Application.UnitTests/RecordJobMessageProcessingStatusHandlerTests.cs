@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         [Test]
         public async Task Sends_Message_Back_To_Queue_If_Constraint_Violation()
         {
-            mocker.Mock<IJobStepService>()
+            mocker.Mock<IJobMessageService>()
                 .Setup(svc => svc.JobStepCompleted(It.IsAny<RecordJobMessageProcessingStatus>()))
                 .Throws(new DbUpdateException("Violation of primary key", (Exception)null));
             mocker.Mock<ISqlExceptionService>().Setup(svc => svc.IsConstraintViolation(It.IsAny<DbUpdateException>()))
@@ -50,7 +50,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         [Test]
         public async Task ReThrows_Exception_If_Constraint_Violation_Failed_Too_Many_Times()
         {
-            mocker.Mock<IJobStepService>()
+            mocker.Mock<IJobMessageService>()
                 .Setup(svc => svc.JobStepCompleted(It.IsAny<RecordJobMessageProcessingStatus>()))
                 .Throws(new DbUpdateException("Violation of primary key", (Exception)null));
             mocker.Mock<ISqlExceptionService>().Setup(svc => svc.IsConstraintViolation(It.IsAny<DbUpdateException>()))
@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         [Test]
         public async Task ReThrows_Exception_If_Not_Constraint_Violation()
         {
-            mocker.Mock<IJobStepService>()
+            mocker.Mock<IJobMessageService>()
                 .Setup(svc => svc.JobStepCompleted(It.IsAny<RecordJobMessageProcessingStatus>()))
                 .Throws(new DbUpdateException("Violation of primary key", (Exception)null));
             mocker.Mock<ISqlExceptionService>().Setup(svc => svc.IsConstraintViolation(It.IsAny<DbUpdateException>()))
@@ -89,7 +89,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         [Test]
         public async Task Sends_Message_Back_To_Queue_If_Job_Not_Found()
         {
-            mocker.Mock<IJobStepService>()
+            mocker.Mock<IJobMessageService>()
                 .Setup(svc => svc.JobStepCompleted(It.IsAny<RecordJobMessageProcessingStatus>()))
                 .Throws(new DcJobNotFoundException(1));
             var mockContext = mocker.Mock<IMessageHandlerContext>();
@@ -108,7 +108,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         [Test]
         public async Task ReThrows_Exception_If_Job_Not_Found_Too_Many_Times()
         {
-            mocker.Mock<IJobStepService>()
+            mocker.Mock<IJobMessageService>()
                 .Setup(svc => svc.JobStepCompleted(It.IsAny<RecordJobMessageProcessingStatus>()))
                 .Throws(new DcJobNotFoundException(1));
             var mockContext = mocker.Mock<IMessageHandlerContext>();

@@ -89,7 +89,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
 
         private async Task JobStepCompleted()
         {
-            var service = mocker.Create<JobStepService>();
+            var service = mocker.Create<JobMessageService>();
             await service.JobStepCompleted(jobMessageStatus);
         }
     }
