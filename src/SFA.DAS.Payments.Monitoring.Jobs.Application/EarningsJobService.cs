@@ -44,8 +44,22 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 Status = JobStatus.InProgress,
                 LearnerCount = startedEvent.LearnerCount
             };
-            await jobStorageService.StoreJob(jobDetails, CancellationToken.None);
+            await jobStorageService.StoreNewJob(jobDetails, CancellationToken.None);
             logger.LogDebug($"Finished storing new job: {jobDetails.Id} for dc job id: {jobDetails.DcJobId}, Ukprn: {startedEvent.Ukprn}. Now storing the job messages.");
+
+
+            var inProgressMessages = await jobStorageService.GetInProgressMessageIdentifiers(cancellationToken)
+                .ConfigureAwait(false);
+
+            foreach (var generatedMessage in startedEvent.GeneratedMessages)
+            {
+                if (!await jobStorageService.StoredJobMessage(generatedMessage.MessageId, cancellationToken))
+                    inProgressMessages.Add(generatedMessage.MessageId);
+            }
+
+            await jobStorageService.StoreInProgressMessageIdentifiers(inProgressMessages, cancellationToken)
+                .ConfigureAwait(false);
+
             await StoreJobMessages(jobDetails.Id, startedEvent.GeneratedMessages, cancellationToken);
             logger.LogDebug($"Finished storing new job messages for job: {jobDetails.Id} for dc job id: {jobDetails.DcJobId}, Ukprn: {startedEvent.Ukprn}.");
             SendTelemetry(startedEvent, jobDetails);

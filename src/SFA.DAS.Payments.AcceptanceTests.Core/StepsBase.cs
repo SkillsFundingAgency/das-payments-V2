@@ -12,6 +12,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core
 {

@@ -34,6 +34,30 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
         public async Task JobMessageCompleted(RecordJobMessageProcessingStatus jobMessageStatus, CancellationToken cancellationToken = default(CancellationToken))
         {
             logger.LogVerbose($"Now recording completion of message processing.  Job Id: {jobMessageStatus.JobId}, Message id: {jobMessageStatus.Id}.");
+
+            var inProgressMessages = await jobStorageService.GetInProgressMessageIdentifiers(cancellationToken)
+                .ConfigureAwait(false);
+
+            if (inProgressMessages.Contains(jobMessageStatus.Id))
+                inProgressMessages.Remove(jobMessageStatus.Id);
+
+            foreach (var generatedMessage in jobMessageStatus.GeneratedMessages)
+            {
+                if (!await jobStorageService.StoredJobMessage(generatedMessage.MessageId, cancellationToken))
+                    inProgressMessages.Add(generatedMessage.MessageId);
+            }
+
+            await jobStorageService.StoreInProgressMessageIdentifiers(inProgressMessages, cancellationToken)
+                .ConfigureAwait(false);
+
+            var jobStatus = await jobStorageService.GetJobStatus(cancellationToken).ConfigureAwait(false);
+            if (!jobStatus.endTime.HasValue || jobStatus.endTime.Value < jobMessageStatus.EndTime)
+                jobStatus.endTime = jobMessageStatus.EndTime;
+            if (jobStatus.jobStatus != JobStepStatus.Failed)
+                jobStatus.jobStatus = jobMessageStatus.Succeeded ? JobStepStatus.Completed : JobStepStatus.Failed;
+
+            await jobStorageService.StoreJobStatus(jobStatus.jobStatus, jobStatus.endTime, cancellationToken).ConfigureAwait(false);
+
             var messageIds = new List<Guid> { jobMessageStatus.Id };
             messageIds.AddRange(jobMessageStatus.GeneratedMessages.Select(msg => msg.MessageId));
 
@@ -52,6 +76,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             completedJobMessage.EndTime = jobMessageStatus.EndTime;
             completedJobMessage.Status = jobMessageStatus.Succeeded ? JobStepStatus.Completed : JobStepStatus.Failed;
 
+
             foreach (var generatedMessage in jobMessageStatus.GeneratedMessages)
             {
                 var jobMessage = jobMessages.FirstOrDefault(msg => msg.MessageId == jobMessageStatus.Id);
@@ -67,9 +92,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
                 jobMessage.EndTime = jobMessageStatus.EndTime;
                 jobMessage.Status = jobMessageStatus.Succeeded ? JobStepStatus.Completed : JobStepStatus.Failed;
-
             }
-
             await jobStorageService.StoreJobMessages(jobMessages, cancellationToken);
             //var jobSteps = await dataContext.GetJobSteps(messageIds);
             //var job = await GetJob(jobMessageStatus.JobId);

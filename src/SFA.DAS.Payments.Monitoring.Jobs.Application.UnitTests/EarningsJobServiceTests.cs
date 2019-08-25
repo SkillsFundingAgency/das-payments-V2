@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             jobSteps = new List<JobStepModel>();
             mocker = AutoMock.GetLoose();
             mocker.Mock<IJobStorageService>()
-                .Setup(x => x.StoreJob(It.IsAny<JobModel>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.StoreNewJob(It.IsAny<JobModel>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
             mocker.Mock<IJobStorageService>()
                 .Setup(x => x.StoreJobMessages(It.IsAny<List<JobStepModel>>(), It.IsAny<CancellationToken>()))
@@ -91,7 +91,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             await service.JobStarted(jobStarted);
 
             mocker.Mock<IJobStorageService>()
-                .Verify(x => x.StoreJob(
+                .Verify(x => x.StoreNewJob(
                     It.Is<JobModel>(job =>
                         job.StartTime == jobStarted.StartTime
                         && job.JobType == JobType.EarningsJob
