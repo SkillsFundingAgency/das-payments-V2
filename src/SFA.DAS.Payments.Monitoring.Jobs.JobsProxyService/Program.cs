@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Threading;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc;
 
-namespace SFA.DAS.Payments.Monitoring.JobsStatusService
+namespace SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService
 {
     internal static class Program
     {
@@ -13,17 +13,15 @@ namespace SFA.DAS.Payments.Monitoring.JobsStatusService
         {
             try
             {
-                using (ServiceFabricContainerFactory.CreateContainerForStatelessService<JobsStatusService>())
+                using (ServiceFabricContainerFactory.CreateContainerForStatelessService<JobsProxyService>())
                 {
                     Thread.Sleep(Timeout.Infinite);
                 }
             }
             catch (Exception e)
             {
-                {
-                    ServiceEventSource.Current.ServiceHostInitializationFailed(e.ToString());
-                    throw;
-                }
+                ServiceEventSource.Current.ServiceHostInitializationFailed(e.ToString());
+                throw;
             }
         }
     }

@@ -31,6 +31,10 @@
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService\SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.JobsService\SFA.DAS.Payments.Monitoring.Jobs.JobsService.csproj" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <PropertyGroup>
     <ApplicationProjectTargetsPath>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Service Fabric Tools\Microsoft.VisualStudio.Azure.Fabric.ApplicationProject.targets</ApplicationProjectTargetsPath>

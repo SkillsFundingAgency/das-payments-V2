@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors.Runtime;
 
-namespace SFA.DAS.Payments.Monitoring.JobsService
+namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
 {
-    [EventSource(Name = "MyCompany-SFA.DAS.Payments.Monitoring.ServiceFabric-SFA.DAS.Payments.Monitoring.JobsService")]
+    [EventSource(Name = "MyCompany-SFA.DAS.Payments.Monitoring.ServiceFabric-SFA.DAS.Payments.Monitoring.Jobs.JobsService")]
     internal sealed class ActorEventSource : EventSource
     {
         public static readonly ActorEventSource Current = new ActorEventSource();

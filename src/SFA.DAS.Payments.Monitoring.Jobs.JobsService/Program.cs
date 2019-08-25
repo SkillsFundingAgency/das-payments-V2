@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors.Runtime;
 
-namespace SFA.DAS.Payments.Monitoring.JobsService
+namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
 {
     internal static class Program
     {
