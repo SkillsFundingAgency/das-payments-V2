@@ -1,10 +1,14 @@
-﻿using Autofac;
+﻿using System;
+using System.Collections.Generic;
+using Autofac;
 using Microsoft.Extensions.Caching.Memory;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
 {
@@ -31,8 +35,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.RegisterType<JobStatusService>()
                 .As<IJobStatusService>()
                 .InstancePerLifetimeScope();
-            builder.RegisterType<CompletedJobsService>()
-                .As<ICompletedJobsService>()
+            builder.RegisterType<JobStorageService>()
+                .As<IJobStorageService>()
                 .InstancePerLifetimeScope();
             builder.Register((c, p) => new MemoryCache(new MemoryCacheOptions()))
                 .As<IMemoryCache>()

@@ -37,18 +37,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 return JobStatus.InProgress;
 
             var jobStatus = await jobStorageService.GetJobStatus(cancellationToken);
-            if (jobStatus.jobStatus == JobStatus.InProgress)
+            if (jobStatus.jobStatus == JobStepStatus.Processing)
                 return JobStatus.InProgress;
 
             var job = await jobStorageService.GetJob(cancellationToken);
             if (job == null)
                 return JobStatus.InProgress;
 
-
-            job.Status = jobStatus.jobStatus;
+            job.Status = jobStatus.jobStatus == JobStepStatus.Completed ? JobStatus.Completed : JobStatus.CompletedWithErrors;
             job.EndTime = jobStatus.endTime;
             await jobStorageService.UpdateJob(job, cancellationToken).ConfigureAwait(false);
-            return job.Status;
 
             //TODO: move to private method
             telemetry.AddProperty(TelemetryKeys.Id, job.Id.ToString());
@@ -67,6 +65,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 metrics.Add("Learner Count", job.LearnerCount ?? 0);
             telemetry.TrackEvent("Finished Job", metrics);
             logger.LogInfo($"Finished recording completion status of job. Job: {job.Id}, status: {job.Status}, end time: {job.EndTime}");
+            return job.Status;
         }
     }
 }
