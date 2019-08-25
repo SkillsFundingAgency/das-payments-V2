@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
     [Binding]
     public class JobsSteps : StepsBase
     {
-        protected JobsDataContext DataContext => Container.Resolve<JobsDataContext>();
+        protected JobsDataContext DataContext => Scope.Resolve<JobsDataContext>();
         protected JobModel Job
         {
             get => Get<JobModel>();
@@ -166,22 +166,18 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         public async Task WhenTheFinalMessagesForTheJobAreSucessfullyProcessed()
         {
             await Task.Delay(5000);
-            //GeneratedMessages = new List<GeneratedMessage>
-            //{
-            //    new GeneratedMessage {StartTime = DateTimeOffset.UtcNow, MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand", MessageId = Guid.NewGuid()},
-            //    new GeneratedMessage {StartTime = DateTimeOffset.UtcNow, MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand", MessageId = Guid.NewGuid()},
-            //    new GeneratedMessage {StartTime = DateTimeOffset.UtcNow, MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand", MessageId = Guid.NewGuid()},
-            //};
             foreach (var generatedMessage in GeneratedMessages)
             {
-                await MessageSession.Send(new RecordJobMessageProcessingStatus
+                var message = new RecordJobMessageProcessingStatus
                 {
                     JobId = JobDetails.JobId,
                     MessageName = generatedMessage.MessageName,
                     EndTime = DateTimeOffset.UtcNow,
                     Succeeded = true,
                     Id = generatedMessage.MessageId
-                });
+                };
+                Console.WriteLine($"Generated Message: {message.ToJson()}");
+                await MessageSession.Send(message);
             }
         }
 
