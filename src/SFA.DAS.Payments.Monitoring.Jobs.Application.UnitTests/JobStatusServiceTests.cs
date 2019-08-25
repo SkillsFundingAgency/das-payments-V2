@@ -6,7 +6,7 @@ using Autofac.Extras.Moq;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
-using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
 {
@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             {
                 Id = 1,
                 StartTime = DateTimeOffset.UtcNow.AddSeconds(-10),
-                Status = Data.Model.JobStatus.InProgress
+                Status = JobStatus.InProgress
             };
 
             mockDataContext
@@ -78,7 +78,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             await service.UpdateStatus(job, default(CancellationToken));
             mocker.Mock<IJobsDataContext>()
                 .Verify(dc => dc.SaveJobStatus(It.IsAny<long>(),
-                        It.IsAny<Data.Model.JobStatus>(),
+                        It.IsAny<JobStatus>(),
                         It.IsAny<DateTimeOffset>()),
                     Times.Never);
         }
@@ -91,7 +91,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             await service.UpdateStatus(job, default(CancellationToken));
             mocker.Mock<IJobsDataContext>()
                 .Verify(dc => dc.SaveJobStatus(It.IsAny<long>(),
-                        It.IsAny<Data.Model.JobStatus>(),
+                        It.IsAny<JobStatus>(),
                         It.IsAny<DateTimeOffset>()),
                     Times.Never);
         }

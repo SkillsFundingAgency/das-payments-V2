@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
-using Microsoft.ServiceFabric.Actors.Client;
 using SFA.DAS.Payments.Monitoring.Jobs.JobsService.Interfaces;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
 {
@@ -22,6 +19,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
         }
 
         public Task RecordEarningsJob(RecordEarningsJob message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<JobStatus> RecordJobMessageProcessingStatus(RecordJobMessageProcessingStatus message)
         {
             throw new NotImplementedException();
         }

@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Payments.Monitoring.Jobs.Data.Model
+﻿namespace SFA.DAS.Payments.Monitoring.Jobs.Model
 {
     public enum JobType : byte
     {

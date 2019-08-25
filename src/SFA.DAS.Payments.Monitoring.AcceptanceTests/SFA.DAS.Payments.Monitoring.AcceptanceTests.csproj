@@ -230,6 +230,10 @@
       <Project>{9274ABB3-9F30-4320-A111-17BA07DBF568}</Project>
       <Name>SFA.DAS.Payments.Monitoring.Jobs.Messages</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Model\SFA.DAS.Payments.Monitoring.Jobs.Model.csproj">
+      <Project>{DC3C2DFE-CE0C-4B40-9A80-392B600FCDED}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Jobs.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

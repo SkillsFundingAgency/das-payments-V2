@@ -8,8 +8,8 @@ using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
-using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
 {
@@ -83,7 +83,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                     It.Is<JobModel>(job =>
                         job.StartTime == jobStarted.StartTime
                         && job.JobType == JobType.EarningsJob
-                        && job.Status == Data.Model.JobStatus.InProgress && job.DcJobId == jobStarted.JobId
+                        && job.Status == JobStatus.InProgress && job.DcJobId == jobStarted.JobId
                         && job.CollectionPeriod == jobStarted.CollectionPeriod
                         && job.AcademicYear == jobStarted.CollectionYear
                         && job.IlrSubmissionTime == jobStarted.IlrSubmissionTime
