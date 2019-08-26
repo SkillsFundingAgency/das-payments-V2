@@ -18,9 +18,6 @@ namespace SFA.DAS.Payments.Application.Repositories
         DbSet<DataLockFailureModel> DataLockFailure { get; }
         DbSet<EmployerProviderPriorityModel> EmployerProviderPriority { get; }
         DbSet<ApprenticeshipPauseModel> ApprenticeshipPause { get; }
-        DbSet<EarningEventModel> EarningEvent { get; }
-        DbSet<EarningEventPeriodModel> EarningEventPeriod { get; }
-        DbSet<EarningEventPriceEpisodeModel> EarningEventPriceEpisode { get; }
         DatabaseFacade Database { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
         int SaveChanges();
