@@ -253,7 +253,7 @@ namespace SFA.DAS.Payments.PerformanceTests
             {
                 JobId = session.JobId,
                 CollectionPeriod = collectionPeriod,
-                CollectionYear = 1819,
+                CollectionYear = 1920,
                 IlrSubmissionDateTime = session.IlrSubmissionTime,
                 SubmissionDate = session.IlrSubmissionTime,
                 Ukprn = session.Ukprn,

@@ -113,27 +113,27 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         private void SendTelemetry(List<JobStepModel> jobMessages)
         {
-            jobMessages
-                .Where(msg => msg.EndTime != null && msg.StartTime != null)
-                .ToList()
-                .ForEach(jobMessage =>
-            {
-                logger.LogVerbose($"Now generating telemetry for completed message {jobMessage.MessageId}, {jobMessage.MessageName}");
-                var props = new Dictionary<string, string>
-                {
-                    { TelemetryKeys.MessageName, jobMessage.MessageName },
-                    { "JobId", jobMessage.JobId.ToString()},
-                    { TelemetryKeys.Id, jobMessage.Id.ToString() },
-                    { "MessageId",jobMessage.MessageId.ToString("N") },
-                    { "Status",jobMessage.Status.ToString("G") },
-                    //{ TelemetryKeys.ExternalJobId, job.DcJobId.ToString() },
-                    //{ TelemetryKeys.CollectionPeriod, job.CollectionPeriod.ToString() },
-                    //{ TelemetryKeys.AcademicYear, job.AcademicYear.ToString()}
-                };
-                //                if (jobMessage. != null)
-                //                    props.Add(TelemetryKeys.Ukprn, job.Ukprn.ToString());
-                telemetry.TrackEvent("Processed Message", props, new Dictionary<string, double> { { TelemetryKeys.Duration, (jobMessage.EndTime.Value - jobMessage.StartTime.Value).TotalMilliseconds } });
-            });
+            //jobMessages
+            //    .Where(msg => msg.EndTime != null && msg.StartTime != null)
+            //    .ToList()
+            //    .ForEach(jobMessage =>
+            //{
+            //    logger.LogVerbose($"Now generating telemetry for completed message {jobMessage.MessageId}, {jobMessage.MessageName}");
+            //    var props = new Dictionary<string, string>
+            //    {
+            //        { TelemetryKeys.MessageName, jobMessage.MessageName },
+            //        { "JobId", jobMessage.JobId.ToString()},
+            //        { TelemetryKeys.Id, jobMessage.Id.ToString() },
+            //        { "MessageId",jobMessage.MessageId.ToString("N") },
+            //        { "Status",jobMessage.Status.ToString("G") },
+            //        //{ TelemetryKeys.ExternalJobId, job.DcJobId.ToString() },
+            //        //{ TelemetryKeys.CollectionPeriod, job.CollectionPeriod.ToString() },
+            //        //{ TelemetryKeys.AcademicYear, job.AcademicYear.ToString()}
+            //    };
+            //    //                if (jobMessage. != null)
+            //    //                    props.Add(TelemetryKeys.Ukprn, job.Ukprn.ToString());
+            //    telemetry.TrackEvent("Processed Message", props, new Dictionary<string, double> { { TelemetryKeys.Duration, (jobMessage.EndTime.Value - jobMessage.StartTime.Value).TotalMilliseconds } });
+            //});
         }
     }
 }
