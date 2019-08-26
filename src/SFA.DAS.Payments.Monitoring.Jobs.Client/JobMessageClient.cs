@@ -26,7 +26,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-
         public async Task ProcessedJobMessage(long jobId, Guid messageId, string messageName, List<GeneratedMessage> generatedMessages)
         {
             logger.LogVerbose($"Sending request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
