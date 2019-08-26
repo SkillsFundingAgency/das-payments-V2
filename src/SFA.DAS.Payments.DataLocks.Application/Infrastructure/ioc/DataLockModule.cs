@@ -11,6 +11,7 @@ using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.ServiceFabric.Core;
 using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 
@@ -20,6 +21,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<ActorReliableCollectionCache<ApprenticeshipContractType1EarningEvent>>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<ActorReliableCollectionCache<Act1FunctionalSkillEarningsEvent>>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<GenerateApprenticeshipEarningCacheKey>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            
             builder.RegisterType<ActorReliableCollectionCache<List<ApprenticeshipModel>>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ActorReliableCollectionCache<List<long>>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<DataLockLearnerCache>().AsImplementedInterfaces().InstancePerLifetimeScope();
