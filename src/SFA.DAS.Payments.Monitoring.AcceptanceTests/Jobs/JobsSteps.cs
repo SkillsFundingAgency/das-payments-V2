@@ -212,7 +212,10 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         {
             if (GeneratedMessages.Count<1000)
                 await MessageSession.Send(JobDetails).ConfigureAwait(false);
-
+            ((RecordEarningsJob) JobDetails).GeneratedMessages = GeneratedMessages.Take(1000).ToList();
+            await MessageSession.Send(JobDetails).ConfigureAwait(false);
+            ((RecordEarningsJob)JobDetails).GeneratedMessages = GeneratedMessages.Skip(1000).ToList();
+            await MessageSession.Send(JobDetails).ConfigureAwait(false);
         }
 
         [When(@"the final messages for the job are failed to be processed")]
