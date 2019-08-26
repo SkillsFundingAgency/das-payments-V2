@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             mocker = AutoMock.GetLoose();
             mocker.Mock<IJobStorageService>()
                 .Setup(x => x.StoreNewJob(It.IsAny<JobModel>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
+                .Returns(Task.FromResult(true));
             mocker.Mock<IJobStorageService>()
                 .Setup(x => x.StoreJobMessages(It.IsAny<List<JobStepModel>>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
