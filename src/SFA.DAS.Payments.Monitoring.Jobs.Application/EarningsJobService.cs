@@ -44,9 +44,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 Status = JobStatus.InProgress,
                 LearnerCount = startedEvent.LearnerCount
             };
-            await jobStorageService.StoreNewJob(jobDetails, CancellationToken.None);
+            var isNewJob = await jobStorageService.StoreNewJob(jobDetails, CancellationToken.None);
             logger.LogDebug($"Finished storing new job: {jobDetails.Id} for dc job id: {jobDetails.DcJobId}, Ukprn: {startedEvent.Ukprn}. Now storing the job messages.");
-
 
             var inProgressMessages = await jobStorageService.GetInProgressMessageIdentifiers(cancellationToken)
                 .ConfigureAwait(false);
@@ -62,7 +61,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
             await StoreJobMessages(jobDetails.Id, startedEvent.GeneratedMessages, cancellationToken);
             logger.LogDebug($"Finished storing new job messages for job: {jobDetails.Id} for dc job id: {jobDetails.DcJobId}, Ukprn: {startedEvent.Ukprn}.");
-            SendTelemetry(startedEvent, jobDetails);
+            if (isNewJob)
+                SendTelemetry(startedEvent, jobDetails);
             logger.LogInfo($"Finished saving the job info.  Job id: {jobDetails.Id}, DC Job Id: {startedEvent.JobId}, Ukprn: {startedEvent.Ukprn}.");
         }
 
@@ -90,13 +90,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         private void SendTelemetry(RecordEarningsJob startedEvent, JobModel jobDetails)
         {
-            telemetry.AddProperty("JobType", JobType.EarningsJob.ToString("G"));
-            telemetry.AddProperty("Ukprn", startedEvent.Ukprn.ToString());
-            telemetry.AddProperty("Id", jobDetails.Id.ToString());
-            telemetry.AddProperty("ExternalJobId", startedEvent.JobId.ToString());
-            telemetry.AddProperty("CollectionPeriod", startedEvent.CollectionPeriod.ToString());
-            telemetry.AddProperty("CollectionYear", startedEvent.CollectionYear.ToString());
-
             telemetry.TrackEvent("Started Job",
                 new Dictionary<string, string>
                 {

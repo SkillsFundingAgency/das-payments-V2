@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 {
     public interface IJobStorageService
     {
-        Task StoreNewJob(JobModel job, CancellationToken cancellationToken);
+        Task<bool> StoreNewJob(JobModel job, CancellationToken cancellationToken);
         Task UpdateJob(JobModel job, CancellationToken cancellationToken);
         Task<JobModel> GetJob(CancellationToken cancellationToken);
         Task<List<JobStepModel>> GetJobMessages(List<Guid> messageIds, CancellationToken cancellationToken);
@@ -52,19 +52,20 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task StoreNewJob(JobModel job, CancellationToken cancellationToken)
+        public async Task<bool> StoreNewJob(JobModel job, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var cachedJob = await jobCache.TryGet(JobCacheKey, cancellationToken).ConfigureAwait(false);
             if (cachedJob.HasValue)
             {
                 logger.LogDebug($"Job has already been stored.");
-                return;
+                return false;
             }
 
             await jobCache.AddOrReplace(JobCacheKey, job, cancellationToken).ConfigureAwait(false);
             if (job.Id == 0)
                 await dataContext.SaveNewJob(job, cancellationToken).ConfigureAwait(false);
+            return true;
         }
 
         public async Task UpdateJob(JobModel job, CancellationToken cancellationToken)
