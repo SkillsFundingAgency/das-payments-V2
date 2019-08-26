@@ -115,7 +115,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         }
         public async Task<JobModel> GetJobByDcJobId(long dcJobId)
         {
-            return await Jobs.FirstOrDefaultAsync(job => job.DcJobId == dcJobId);
+            return await Jobs.AsNoTracking().FirstOrDefaultAsync(job => job.DcJobId == dcJobId);
         }
 
         public async Task SaveJobStatus(long jobId, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken = default(CancellationToken))

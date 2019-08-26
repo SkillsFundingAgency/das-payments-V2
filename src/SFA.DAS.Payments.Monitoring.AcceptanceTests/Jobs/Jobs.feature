@@ -18,6 +18,13 @@ Scenario: Provider Earnings Job Finished
 	And the final messages for the job are sucessfully processed
 	#Then the job monitoring service should update the status of the job to show that it has completed
 	
+Scenario: Large Provider Earnings Job Finished
+	#Given a provider earnings job has already been recorded		
+	Given the earnings event service has received a large provider earnings job
+	When the earnings event service notifies the job monitoring service to record the job
+	And the final messages for the job are sucessfully processed
+	#Then the job monitoring service should update the status of the job to show that it has completed
+#	
 #Scenario: Provider Earnings Job Finished With Errors
 #	Given a provider earnings job has already been recorded		
 #	When the final messages for the job are failed to be processed

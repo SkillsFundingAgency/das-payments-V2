@@ -77,6 +77,28 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             Console.WriteLine($"Job details: {JobDetails.ToJson()}");
         }
 
+        [Given(@"the earnings event service has received a large provider earnings job")]
+        public void GivenTheEarningsEventServiceHasReceivedALargeProviderEarningsJob()
+        {
+            GeneratedMessages = new List<GeneratedMessage>();
+            for (int i = 0; i < 1500; i++)
+            {
+                GeneratedMessages.Add(new GeneratedMessage { StartTime = DateTimeOffset.UtcNow, MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand", MessageId = Guid.NewGuid() });
+            }
+            JobDetails = new RecordEarningsJob
+            {
+                JobId = TestSession.JobId,
+                CollectionPeriod = CollectionPeriod,
+                CollectionYear = 1819,
+                Ukprn = TestSession.Ukprn,
+                StartTime = DateTimeOffset.UtcNow,
+                IlrSubmissionTime = DateTime.UtcNow.AddSeconds(-10),
+                GeneratedMessages = GeneratedMessages,
+            };
+            Console.WriteLine($"Job details: {JobDetails.ToJson()}");
+        }
+
+
         [Given(@"a provider earnings job has already been recorded")]
         public async Task GivenAProviderEarningsJobHasAlreadyBeenRecorded()
         {
@@ -184,7 +206,9 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         [When(@"the earnings event service notifies the job monitoring service to record the job")]
         public async Task WhenTheEarningsEventServiceNotifiesTheJobMonitoringServiceToRecordTheJob()
         {
-            await MessageSession.Send(JobDetails).ConfigureAwait(false);
+            if (GeneratedMessages.Count<1000)
+                await MessageSession.Send(JobDetails).ConfigureAwait(false);
+
         }
 
         [When(@"the final messages for the job are failed to be processed")]
