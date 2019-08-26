@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService.Handlers
                 var jobStatus = await actor.RecordJobMessageProcessingStatus(message).ConfigureAwait(false);
                 if (jobStatus == JobStatus.InProgress)
                     return;
-                //await DeleteActor(actorId);
+                await DeleteActor(actorId);
             }
             catch (Exception ex)
             {

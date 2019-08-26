@@ -56,14 +56,25 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             telemetry.AddProperty(TelemetryKeys.CollectionPeriod, job.CollectionPeriod.ToString());
             telemetry.AddProperty(TelemetryKeys.AcademicYear, job.AcademicYear.ToString());
             telemetry.AddProperty(TelemetryKeys.Status, job.Status.ToString("G"));
+
+            var properties = new Dictionary<string, string>
+            {
+                { TelemetryKeys.Id, job.Id.ToString()},
+                { TelemetryKeys.JobType, job.JobType.ToString("G")},
+                { TelemetryKeys.Ukprn, job.Ukprn?.ToString() ?? string.Empty},
+                { TelemetryKeys.ExternalJobId, job.DcJobId?.ToString() ?? string.Empty},
+                { TelemetryKeys.CollectionPeriod, job.CollectionPeriod.ToString()},
+                { TelemetryKeys.AcademicYear, job.AcademicYear.ToString()},
+                { TelemetryKeys.Status, job.Status.ToString("G")}
+            };
+
             var metrics = new Dictionary<string, double>
             {
-                {TelemetryKeys.Duration, (job.EndTime.Value - job.StartTime).TotalMilliseconds},
-                //{TelemetryKeys.MessageCount, stepsStatus.Values.Sum()},
+                { TelemetryKeys.Duration, (job.EndTime.Value - job.StartTime).TotalMilliseconds},
             };
             if (job.JobType == JobType.EarningsJob)
                 metrics.Add("Learner Count", job.LearnerCount ?? 0);
-            telemetry.TrackEvent("Finished Job", metrics);
+            telemetry.TrackEvent("Finished Job", properties, metrics);
             logger.LogInfo($"Finished recording completion status of job. Job: {job.Id}, status: {job.Status}, end time: {job.EndTime}");
             return job.Status;
         }

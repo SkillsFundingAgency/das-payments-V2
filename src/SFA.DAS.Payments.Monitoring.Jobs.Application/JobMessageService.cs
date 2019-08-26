@@ -76,7 +76,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             completedJobMessage.EndTime = jobMessageStatus.EndTime;
             completedJobMessage.Status = jobMessageStatus.Succeeded ? JobStepStatus.Completed : JobStepStatus.Failed;
 
-
             foreach (var generatedMessage in jobMessageStatus.GeneratedMessages)
             {
                 var jobMessage = jobMessages.FirstOrDefault(msg => msg.MessageId == jobMessageStatus.Id);
@@ -94,51 +93,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 jobMessage.Status = jobMessageStatus.Succeeded ? JobStepStatus.Completed : JobStepStatus.Failed;
             }
             await jobStorageService.StoreJobMessages(jobMessages, cancellationToken);
-            //var jobSteps = await dataContext.GetJobSteps(messageIds);
-            //var job = await GetJob(jobMessageStatus.JobId);
-            //var jobId = job.Id;
-            //var completedStep = jobSteps.FirstOrDefault(step => step.MessageId == jobMessageStatus.Id);
-            //if (completedStep == null)
-            //{
-            //    logger.LogDebug($"Recording completion of job step before the start time of the step has been recorded. Job: {jobId}, Message Id: {jobMessageStatus.Id}");
-            //    completedStep = new JobStepModel
-            //    {
-            //        JobId = jobId,
-            //        MessageId = jobMessageStatus.Id,
-            //        MessageName = jobMessageStatus.MessageName,
 
-            //    };
-            //    jobSteps.Add(completedStep);
-            //}
-            //completedStep.Status = jobMessageStatus.Succeeded ? JobStepStatus.Completed : JobStepStatus.Failed;
-            //completedStep.EndTime = jobMessageStatus.EndTime;
-
-            //foreach (var generatedMessage in jobMessageStatus.GeneratedMessages)
-            //{
-            //    var jobStep = jobSteps.FirstOrDefault(step => step.MessageId == generatedMessage.MessageId);
-            //    if (jobStep == null)
-            //    {
-            //        jobStep = new JobStepModel
-            //        {
-            //            JobId = jobId,
-            //            MessageId = generatedMessage.MessageId,
-            //            MessageName = generatedMessage.MessageName,
-            //            Status = JobStepStatus.Queued
-            //        };
-            //        jobSteps.Add(jobStep);
-            //    }
-            //    else
-            //    {
-            //        logger.LogDebug($"Updating job step to record the start time. Job id: {jobId}, Message id: {generatedMessage.MessageId}");
-            //    }
-
-            //    jobStep.StartTime = generatedMessage.StartTime;
-            //    jobStep.ParentMessageId = jobMessageStatus.Id;
-            //}
-            //logger.LogVerbose("Now saving updated job steps.");
-            //await dataContext.SaveJobSteps(jobSteps);
             logger.LogDebug("Finished saving updated job steps to db.");
-            //SendTelemetry(job, jobSteps);
+            SendTelemetry(jobMessages);
             logger.LogInfo($"Recorded completion of message processing.  Job Id: {jobMessageStatus.JobId}, Message id: {jobMessageStatus.Id}.");
         }
 
@@ -154,29 +111,30 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
         //    });
         //}
 
-        //private void SendTelemetry(JobModel job, List<JobStepModel> jobSteps)
-        //{
-        //    jobSteps.Where(step => step.StartTime.HasValue && step.EndTime.HasValue)
-        //        .ToList()
-        //        .ForEach(step =>
-        //        {
-        //            logger.LogVerbose($"Now generating telemetry for completed message {step.MessageId}, {step.MessageName}");
-        //            var props = new Dictionary<string, string>
-        //            {
-        //                { TelemetryKeys.MessageName, step.MessageName },
-        //                { TelemetryKeys.JobType, job.JobType.ToString("G")},
-        //                { "JobId", job.Id.ToString()},
-        //                { TelemetryKeys.Id, step.Id.ToString() },
-        //                { "MessageId",step.MessageId.ToString("N") },
-        //                { TelemetryKeys.ExternalJobId, job.DcJobId.ToString() },
-        //                { TelemetryKeys.CollectionPeriod, job.CollectionPeriod.ToString() },
-        //                { TelemetryKeys.AcademicYear, job.AcademicYear.ToString()}
-        //            };
-        //            if (job.Ukprn != null)
-        //                props.Add(TelemetryKeys.Ukprn, job.Ukprn.ToString());
-        //            telemetry.TrackEvent("Processed Message", props, new Dictionary<string, double> { { TelemetryKeys.Duration, (step.EndTime.Value - step.StartTime.Value).TotalMilliseconds } });
-        //        });
-        //}
-
+        private void SendTelemetry(List<JobStepModel> jobMessages)
+        {
+            jobMessages
+                .Where(msg => msg.EndTime != null && msg.StartTime != null)
+                .ToList()
+                .ForEach(jobMessage =>
+            {
+                logger.LogVerbose($"Now generating telemetry for completed message {jobMessage.MessageId}, {jobMessage.MessageName}");
+                var props = new Dictionary<string, string>
+                {
+                    { TelemetryKeys.MessageName, jobMessage.MessageName },
+                    { "JobId", jobMessage.JobId.ToString()},
+                    { TelemetryKeys.Id, jobMessage.Id.ToString() },
+                    { "MessageId",jobMessage.MessageId.ToString("N") },
+                    { "MessageName",jobMessage.MessageName },
+                    { "Status",jobMessage.Status.ToString("G") },
+                    //{ TelemetryKeys.ExternalJobId, job.DcJobId.ToString() },
+                    //{ TelemetryKeys.CollectionPeriod, job.CollectionPeriod.ToString() },
+                    //{ TelemetryKeys.AcademicYear, job.AcademicYear.ToString()}
+                };
+                //                if (jobMessage. != null)
+                //                    props.Add(TelemetryKeys.Ukprn, job.Ukprn.ToString());
+                telemetry.TrackEvent("Processed Message", props, new Dictionary<string, double> { { TelemetryKeys.Duration, (jobMessage.EndTime.Value - jobMessage.StartTime.Value).TotalMilliseconds } });
+            });
+        }
     }
 }
