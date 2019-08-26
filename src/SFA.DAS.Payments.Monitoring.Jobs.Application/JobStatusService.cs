@@ -48,15 +48,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             job.EndTime = jobStatus.endTime;
             await jobStorageService.UpdateJob(job, cancellationToken).ConfigureAwait(false);
 
-            //TODO: move to private method
-            telemetry.AddProperty(TelemetryKeys.Id, job.Id.ToString());
-            telemetry.AddProperty(TelemetryKeys.JobType, job.JobType.ToString("G"));
-            telemetry.AddProperty(TelemetryKeys.Ukprn, job.Ukprn?.ToString() ?? string.Empty);
-            telemetry.AddProperty(TelemetryKeys.ExternalJobId, job.DcJobId?.ToString() ?? string.Empty);
-            telemetry.AddProperty(TelemetryKeys.CollectionPeriod, job.CollectionPeriod.ToString());
-            telemetry.AddProperty(TelemetryKeys.AcademicYear, job.AcademicYear.ToString());
-            telemetry.AddProperty(TelemetryKeys.Status, job.Status.ToString("G"));
-
             var properties = new Dictionary<string, string>
             {
                 { TelemetryKeys.Id, job.Id.ToString()},
