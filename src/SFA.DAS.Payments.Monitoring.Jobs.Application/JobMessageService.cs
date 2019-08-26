@@ -125,7 +125,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                     { "JobId", jobMessage.JobId.ToString()},
                     { TelemetryKeys.Id, jobMessage.Id.ToString() },
                     { "MessageId",jobMessage.MessageId.ToString("N") },
-                    { "MessageName",jobMessage.MessageName },
                     { "Status",jobMessage.Status.ToString("G") },
                     //{ TelemetryKeys.ExternalJobId, job.DcJobId.ToString() },
                     //{ TelemetryKeys.CollectionPeriod, job.CollectionPeriod.ToString() },
