@@ -32,10 +32,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService.Handlers
                 var actorId = new ActorId(message.JobId.ToString());
                 using (var cancellationTokenSource = new CancellationTokenSource())
                 {
-                    cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(2));
                     var actor = proxyFactory.CreateActorProxy<IJobsService>(
                         new Uri("fabric:/SFA.DAS.Payments.Monitoring.ServiceFabric/JobsServiceActorService"), actorId);
-                    var jobStatus = await actor.RecordJobMessageProcessingStatus(message).ConfigureAwait(false);
+                    cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(2));
+                    var jobStatus = await actor.RecordJobMessageProcessingStatus(message, cancellationTokenSource.Token).ConfigureAwait(false);
                     if (jobStatus == JobStatus.InProgress)
                         return;
                     //await DeleteActor(actorId);

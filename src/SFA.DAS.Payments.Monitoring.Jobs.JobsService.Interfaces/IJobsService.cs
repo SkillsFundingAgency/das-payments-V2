@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Remoting.FabricTransport;
@@ -10,7 +11,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService.Interfaces
 {
     public interface IJobsService : IActor
     {
-        Task RecordEarningsJob(RecordEarningsJob message);
-        Task<JobStatus> RecordJobMessageProcessingStatus(RecordJobMessageProcessingStatus message);
+        Task RecordEarningsJob(RecordEarningsJob message, CancellationToken cancellationToken);
+        Task<JobStatus> RecordJobMessageProcessingStatus(RecordJobMessageProcessingStatus message, CancellationToken cancellationToken);
     }
 }
