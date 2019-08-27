@@ -35,17 +35,19 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService.Handlers
                     var actor = proxyFactory.CreateActorProxy<IJobsService>(
                         new Uri("fabric:/SFA.DAS.Payments.Monitoring.ServiceFabric/JobsServiceActorService"), actorId);
                     cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(2));
-                    var jobStatus = await actor.RecordJobMessageProcessingStatus(message, cancellationTokenSource.Token).ConfigureAwait(false);
+                    var jobStatus = await actor.RecordJobMessageProcessingStatus(message, cancellationTokenSource.Token)
+                        .ConfigureAwait(false);
                     if (jobStatus == JobStatus.InProgress)
                         return;
                     //await DeleteActor(actorId);
                 }
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 logger.LogDebug($"Couldn't get actor within time allocated time. Job id: {message.JobId}, message id: {message.Id}, name: {message.MessageName}.");
-                if (!await context.Defer(message, TimeSpan.FromSeconds(1), "no_actor_available",20))
+                if (!await context.Defer(message, TimeSpan.FromSeconds(1), "no_actor_available", 20))
                     throw new InvalidOperationException($"Tried over 10 times to get an actor for job: {message.Id} for message: {message.MessageName}");
+
             }
             catch (Exception ex)
             {
