@@ -33,18 +33,28 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         private readonly IMapper mapper;
         private readonly IApprenticeshipRepository repository;
         private readonly IDataLockProcessor dataLockProcessor;
+        private readonly IActorDataCache<Act1FunctionalSkillEarningsEvent> act1FunctionalSkillEarningsEventCache;
+        private readonly IActorDataCache<ApprenticeshipContractType1EarningEvent> apprenticeshipContractType1EarningEventCache;
+        private readonly IGenerateApprenticeshipEarningCacheKey generateApprenticeshipEarningCacheKey;
 
         public ApprenticeshipUpdatedProcessor(IPaymentLogger logger,
             IActorDataCache<List<ApprenticeshipModel>> cache,
             IMapper mapper,
             IApprenticeshipRepository repository,
-            IDataLockProcessor dataLockProcessor)
+            IDataLockProcessor dataLockProcessor,
+            IActorDataCache<Act1FunctionalSkillEarningsEvent> act1FunctionalSkillEarningsEventCache,
+            IActorDataCache<ApprenticeshipContractType1EarningEvent> apprenticeshipContractType1EarningEventCache,
+            IGenerateApprenticeshipEarningCacheKey generateApprenticeshipEarningCacheKey) 
         {
+
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.cache = cache ?? throw new ArgumentNullException(nameof(cache));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
             this.dataLockProcessor = dataLockProcessor ?? throw new ArgumentNullException(nameof(dataLockProcessor));
+            this.act1FunctionalSkillEarningsEventCache = act1FunctionalSkillEarningsEventCache;
+            this.apprenticeshipContractType1EarningEventCache = apprenticeshipContractType1EarningEventCache;
+            this.generateApprenticeshipEarningCacheKey = generateApprenticeshipEarningCacheKey;
         }
 
         public async Task ProcessApprenticeshipUpdate(ApprenticeshipUpdated updatedApprenticeship)
@@ -69,79 +79,37 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         public async Task<List<DataLockEvent>> GetApprenticeshipUpdatePayments(ApprenticeshipUpdated updatedApprenticeship)
         {
-            var apprenticeshipAct1Earning = await GetApprenticeshipAct1EarningsToReProcess(updatedApprenticeship.Uln, updatedApprenticeship.Ukprn)
+            var earningCacheKey = generateApprenticeshipEarningCacheKey
+                .GenerateAct1EarningsKey(updatedApprenticeship.Ukprn, updatedApprenticeship.Uln);
+
+            var apprenticeshipAct1Earning = await apprenticeshipContractType1EarningEventCache
+                .TryGet(earningCacheKey)
                 .ConfigureAwait(false);
 
-            if (apprenticeshipAct1Earning == null) return null;
+            if (!apprenticeshipAct1Earning.HasValue || apprenticeshipAct1Earning.Value == null) return null;
 
-            var payments = await dataLockProcessor.GetPaymentEvents(apprenticeshipAct1Earning, default(CancellationToken))
+            var payments = await dataLockProcessor.GetPaymentEvents(apprenticeshipAct1Earning.Value, default(CancellationToken))
                 .ConfigureAwait(false);
+
             return payments;
-
         }
         
         public async Task<List<FunctionalSkillDataLockEvent>> GetApprenticeshipUpdateFunctionalSkillPayments(ApprenticeshipUpdated updatedApprenticeship)
         {
-            var apprenticeshipAct1FunctionalSkillEarning = await GetApprenticeshipFunctionalSkillEarningsToReProcess(updatedApprenticeship.Uln, updatedApprenticeship.Ukprn)
+            var earningCacheKey = generateApprenticeshipEarningCacheKey
+                .GenerateAct1FunctionalSkillEarningsKey(updatedApprenticeship.Ukprn, updatedApprenticeship.Uln);
+
+            var apprenticeshipAct1FunctionalSkillEarning = await act1FunctionalSkillEarningsEventCache
+                .TryGet(earningCacheKey)
+                .ConfigureAwait(false);
+            
+            if (!apprenticeshipAct1FunctionalSkillEarning.HasValue || apprenticeshipAct1FunctionalSkillEarning.Value == null) return null;
+            
+            var functionalSkillPayments = await dataLockProcessor.GetFunctionalSkillPaymentEvents(apprenticeshipAct1FunctionalSkillEarning.Value, default(CancellationToken))
                 .ConfigureAwait(false);
 
-            if (apprenticeshipAct1FunctionalSkillEarning == null) return null;
-            
-            var functionalSkillPayments = await dataLockProcessor.GetFunctionalSkillPaymentEvents(apprenticeshipAct1FunctionalSkillEarning, default(CancellationToken))
-                .ConfigureAwait(false);
             return functionalSkillPayments;
 
-        }
-
-        private async Task<ApprenticeshipContractType1EarningEvent> GetApprenticeshipAct1EarningsToReProcess(long uln, long ukprn)
-        {
-            var onProgAndIncentiveEarning = await repository
-                        .GetLatestProviderApprenticeshipEarnings(uln, ukprn, typeof(ApprenticeshipContractType1EarningEvent).FullName, default(CancellationToken))
-                        .ConfigureAwait(false);
-            
-            if (onProgAndIncentiveEarning != null)
-            {
-                var act1EarningEvent = mapper.Map<ApprenticeshipContractType1EarningEvent>(onProgAndIncentiveEarning);
-                act1EarningEvent.OnProgrammeEarnings = new List<OnProgrammeEarning>();
-                act1EarningEvent.IncentiveEarnings = new List<IncentiveEarning>();
-
-                AddOnProgEarnings( onProgAndIncentiveEarning, act1EarningEvent);
-                AddIncentiveEarnings(onProgAndIncentiveEarning, act1EarningEvent);
-
-                act1EarningEvent.Learner = mapper.Map<Learner>(onProgAndIncentiveEarning);
-                act1EarningEvent.LearningAim = mapper.Map<LearningAim>(onProgAndIncentiveEarning);
-
-                return act1EarningEvent;
-            }
-            else
-            {
-                logger.LogWarning($"Can't find any ACT1 OnProg Earnings to Re-Process After Apprenticeship Update For Uln {uln} from Provider {ukprn}");
-            }
-
-            return null;
-        }
-
-        private async Task<Act1FunctionalSkillEarningsEvent> GetApprenticeshipFunctionalSkillEarningsToReProcess(long uln, long ukprn)
-        {
-            var functionalSkillEarning = await repository
-                .GetLatestProviderApprenticeshipEarnings(uln, ukprn, typeof(Act1FunctionalSkillEarningsEvent).FullName, default(CancellationToken))
-                .ConfigureAwait(false);
-
-            if (functionalSkillEarning != null)
-            {
-                var functionalSkillEarningEvent = mapper.Map<Act1FunctionalSkillEarningsEvent>(functionalSkillEarning);
-                AddFunctionalSkillEarnings(functionalSkillEarning, functionalSkillEarningEvent);
-                functionalSkillEarningEvent.Learner = mapper.Map<Learner>(functionalSkillEarning);
-                functionalSkillEarningEvent.LearningAim = mapper.Map<LearningAim>(functionalSkillEarning);
-
-                return functionalSkillEarningEvent;
-            }
-            else
-            {
-                logger.LogWarning($"Can't find any ACT1 Functional Skill Earnings to Re-Process After Apprenticeship Update For Uln {uln} from Provider {ukprn}");
-            }
-
-            return null;
         }
 
         private void AddFunctionalSkillEarnings(EarningEventModel functionalSkillEarning, Act1FunctionalSkillEarningsEvent functionalSkillEarningEvent)

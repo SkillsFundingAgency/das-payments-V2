@@ -30,6 +30,10 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         private readonly ITelemetry telemetry;
         private readonly Func<IApprenticeshipRepository> apprenticeshipRepository;
 
+        private readonly IActorDataCache<ApprenticeshipContractType1EarningEvent> apprenticeshipContractType1EarningEventCache;
+        private readonly IGenerateApprenticeshipEarningCacheKey generateApprenticeshipEarningCacheKey;
+        private readonly IActorDataCache<Act1FunctionalSkillEarningsEvent> act1FunctionalSkillEarningsEventCache;
+
         public DataLockService(
             ActorService actorService,
             ActorId actorId,
@@ -39,8 +43,10 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             IActorDataCache<List<long>> providers,
             IDataLockProcessor dataLockProcessor,
             IApprenticeshipUpdatedProcessor apprenticeshipUpdatedProcessor,
-            ITelemetry telemetry
-            )
+            ITelemetry telemetry, 
+            IActorDataCache<Act1FunctionalSkillEarningsEvent> act1FunctionalSkillEarningsEventCache, 
+            IActorDataCache<ApprenticeshipContractType1EarningEvent> apprenticeshipContractType1EarningEventCache,
+            IGenerateApprenticeshipEarningCacheKey generateApprenticeshipEarningCacheKey)
             : base(actorService, actorId)
         {
             this.paymentLogger = paymentLogger;
@@ -50,6 +56,9 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             this.dataLockProcessor = dataLockProcessor;
             this.apprenticeshipUpdatedProcessor = apprenticeshipUpdatedProcessor ?? throw new ArgumentNullException(nameof(apprenticeshipUpdatedProcessor));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
+            this.act1FunctionalSkillEarningsEventCache = act1FunctionalSkillEarningsEventCache;
+            this.apprenticeshipContractType1EarningEventCache = apprenticeshipContractType1EarningEventCache;
+            this.generateApprenticeshipEarningCacheKey = generateApprenticeshipEarningCacheKey;
         }
 
         public async Task<List<DataLockEvent>> HandleEarning(ApprenticeshipContractType1EarningEvent message, CancellationToken cancellationToken)
@@ -58,6 +67,14 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             {
                 var stopwatch = Stopwatch.StartNew();
                 await Initialise().ConfigureAwait(false);
+
+                var earningCacheKey = generateApprenticeshipEarningCacheKey
+                    .GenerateAct1EarningsKey(message.Ukprn, message.Learner.Uln);
+
+                await apprenticeshipContractType1EarningEventCache
+                    .AddOrReplace(earningCacheKey, message, cancellationToken)
+                    .ConfigureAwait(false);
+
                 var dataLockEvents = await dataLockProcessor.GetPaymentEvents(message, cancellationToken);
                 telemetry.TrackDuration("DataLockService.HandleEarning", stopwatch, message);
                 telemetry.StopOperation(operation);
@@ -65,16 +82,21 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             }
         }
 
-        public async Task<List<FunctionalSkillDataLockEvent>> HandleFunctionalSkillEarning(
-            Act1FunctionalSkillEarningsEvent message, CancellationToken cancellationToken)
+        public async Task<List<FunctionalSkillDataLockEvent>> HandleFunctionalSkillEarning(Act1FunctionalSkillEarningsEvent message, CancellationToken cancellationToken)
         {
-            using (var operation =
-                telemetry.StartOperation("DataLockService.HandleFunctionalSkillEarning", message.EventId.ToString()))
+            using (var operation = telemetry.StartOperation("DataLockService.HandleFunctionalSkillEarning", message.EventId.ToString()))
             {
                 var stopwatch = Stopwatch.StartNew();
                 await Initialise().ConfigureAwait(false);
-                var dataLockEvents =
-                    await dataLockProcessor.GetFunctionalSkillPaymentEvents(message, cancellationToken);
+
+                var earningCacheKey = generateApprenticeshipEarningCacheKey
+                    .GenerateAct1FunctionalSkillEarningsKey(message.Ukprn, message.Learner.Uln);
+
+                await act1FunctionalSkillEarningsEventCache
+                    .AddOrReplace(earningCacheKey, message, cancellationToken)
+                    .ConfigureAwait(false);
+                
+                var dataLockEvents = await dataLockProcessor.GetFunctionalSkillPaymentEvents(message, cancellationToken);
                 telemetry.TrackDuration("DataLockService.HandleFunctionalSkillEarning", stopwatch, message);
                 telemetry.StopOperation(operation);
                 return dataLockEvents;
