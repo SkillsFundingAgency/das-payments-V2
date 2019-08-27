@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService.Handlers
                     //await DeleteActor(actorId);
                 }
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 logger.LogDebug($"Couldn't get actor within time allocated time. Job id: {message.JobId}, message id: {message.Id}, name: {message.MessageName}.");
                 if (!await context.Defer(message, TimeSpan.FromSeconds(1), "no_actor_available",20))
