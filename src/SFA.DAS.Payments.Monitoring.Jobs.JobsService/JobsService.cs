@@ -45,15 +45,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
         {
             try
             {
+                //TODO: use statemanager tx and make sureactorcahe uses current tx too
                 cancellationToken.ThrowIfCancellationRequested();
                 var jobMessageService = lifetimeScope.Resolve<IJobMessageService>();
-                await jobMessageService.JobMessageCompleted(message, cancellationToken).ConfigureAwait(false);
-                cancellationToken.ThrowIfCancellationRequested();
+                await jobMessageService.JobMessageCompleted(message, CancellationToken.None).ConfigureAwait(false);
                 var statusService = lifetimeScope.Resolve<IJobStatusService>();
-                var status = await statusService.ManageStatus(cancellationToken);
-                cancellationToken.ThrowIfCancellationRequested();
+                var status = await statusService.ManageStatus(CancellationToken.None);
                 if (status != JobStatus.InProgress)
-                    await StateManager.ClearCacheAsync(cancellationToken);
+                    await StateManager.ClearCacheAsync(CancellationToken.None);
                 return status;
             }
             catch (Exception e)
