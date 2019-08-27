@@ -122,7 +122,7 @@ namespace SFA.DAS.Payments.PerformanceTests
             var ilrSubmissions = new List<Task>();
 
             var learnerId = 0;
-            var startDate = new DateTime(DateTime.Today.Year + (DateTime.Today.Month < 8 ? -1 : 0), 8, 1);
+            var startDate = new DateTime(2018, 8, 1);
             foreach (var session in sessions)
             {
                 session.Learners.Clear();
@@ -203,13 +203,13 @@ namespace SFA.DAS.Payments.PerformanceTests
                         Cost = 15000M
                     }
                 }
-            });
-            var apprenticeshipIds = apprenticeships.Select(appr => appr.Id.ToString()).Join();
-            var sql = $"Delete from Payments2.ApprenticeshipDuplicate where ApprenticeshipId in ({apprenticeshipIds})";
+            }).ToList();
+            var ulns = apprenticeships.Select(appr => appr.Uln.ToString()).Join();
+            var sql = $"Delete from Payments2.ApprenticeshipDuplicate where ApprenticeshipId in (select Id from Payments2.Apprenticeship where Uln in ({ulns}))";
             await dataContext.Database.ExecuteSqlCommandAsync(sql);
-            sql = $"Delete from Payments2.ApprenticeshipPriceEpisode where ApprenticeshipId in ({apprenticeshipIds})";
+            sql = $"Delete from Payments2.ApprenticeshipPriceEpisode where ApprenticeshipId in (select Id from Payments2.Apprenticeship where Uln in ({ulns}))";
             await dataContext.Database.ExecuteSqlCommandAsync(sql);
-            sql = $"Delete from Payments2.Apprenticeship where Id in ({apprenticeshipIds})";
+            sql = $"Delete from Payments2.Apprenticeship where Uln in ({ulns})";
             await dataContext.Database.ExecuteSqlCommandAsync(sql);
             dataContext.Apprenticeship.AddRange(apprenticeships);
             await dataContext.SaveChangesAsync();

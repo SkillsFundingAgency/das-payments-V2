@@ -5,6 +5,7 @@ using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure;
 using SFA.DAS.Payments.Monitoring.Jobs.JobsService.Interfaces;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
@@ -29,11 +30,22 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService.Handlers
             {
                 logger.LogVerbose($"Getting actor for job: {message.JobId}");
                 var actorId = new ActorId(message.JobId.ToString());
-                var actor = proxyFactory.CreateActorProxy<IJobsService>(new Uri("fabric:/SFA.DAS.Payments.Monitoring.ServiceFabric/JobsServiceActorService"), actorId);
-                var jobStatus = await actor.RecordJobMessageProcessingStatus(message).ConfigureAwait(false);
-                if (jobStatus == JobStatus.InProgress)
-                    return;
-                //await DeleteActor(actorId);
+                using (var cancellationTokenSource = new CancellationTokenSource())
+                {
+                    cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(2));
+                    var actor = proxyFactory.CreateActorProxy<IJobsService>(
+                        new Uri("fabric:/SFA.DAS.Payments.Monitoring.ServiceFabric/JobsServiceActorService"), actorId);
+                    var jobStatus = await actor.RecordJobMessageProcessingStatus(message).ConfigureAwait(false);
+                    if (jobStatus == JobStatus.InProgress)
+                        return;
+                    //await DeleteActor(actorId);
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                logger.LogDebug($"Couldn't get actor within time allocated time. Job id: {message.JobId}, message id: {message.Id}, name: {message.MessageName}.");
+                if (!await context.Defer(message, TimeSpan.FromSeconds(1), "no_actor_available",20))
+                    throw new InvalidOperationException($"Tried over 10 times to get an actor for job: {message.Id} for message: {message.MessageName}");
             }
             catch (Exception ex)
             {
