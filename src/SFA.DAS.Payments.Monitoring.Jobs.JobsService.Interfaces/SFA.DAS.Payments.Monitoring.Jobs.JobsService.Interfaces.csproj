@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
+    <ServerGarbageCollection>True</ServerGarbageCollection>
+    <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
+    <TargetLatestRuntimePatch>False</TargetLatestRuntimePatch>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.2.162" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Model\SFA.DAS.Payments.Monitoring.Jobs.Model.csproj" />
+  </ItemGroup>
+
+</Project>

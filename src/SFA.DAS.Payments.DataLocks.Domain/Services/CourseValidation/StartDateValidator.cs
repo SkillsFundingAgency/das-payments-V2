@@ -6,7 +6,10 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
-    public class StartDateValidator : BaseCourseValidator, ICourseValidator
+
+    public interface IStartDateValidator : ICourseValidator { }
+
+    public class StartDateValidator : BaseCourseValidator, IStartDateValidator
     {
         protected override DataLockErrorCode DataLockerErrorCode => DataLockErrorCode.DLOCK_09;
 

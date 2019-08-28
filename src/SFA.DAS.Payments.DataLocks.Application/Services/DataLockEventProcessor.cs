@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -87,15 +86,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     switch (statusChange)
                     {
                         case DataLockStatusChange.ChangedToFailed:
-                            AddTypeAndPeriodToEvent(changedToFailed, transactionType, newPeriod);
+                            AddTypeAndPeriodToEvent(changedToFailed, transactionType, newPeriod, dataLockEvent);
                             failuresToRecord.Add(CreateEntity(dataLockEvent, transactionType, period, newPeriod));
                             break;
                         case DataLockStatusChange.ChangedToPassed:
-                            AddTypeAndPeriodToEvent(changedToPassed, transactionType, newPeriod);
+                            AddTypeAndPeriodToEvent(changedToPassed, transactionType, newPeriod, dataLockEvent);
                             failuresToDelete.Add(oldFailureEntity.Id);
                             break;
                         case DataLockStatusChange.FailureChanged:
-                            AddTypeAndPeriodToEvent(failureChanged, transactionType, newPeriod);
+                            AddTypeAndPeriodToEvent(failureChanged, transactionType, newPeriod, dataLockEvent);
                             failuresToRecord.Add(CreateEntity(dataLockEvent, transactionType, period, newPeriod));
                             failuresToDelete.Add(oldFailureEntity.Id);
                             break;
@@ -156,7 +155,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     if (newPassesGroupedByTypeAndPeriod.TryGetValue(
                         (oldFailure.TransactionType, oldFailure.DeliveryPeriod), out var newPass))
                     {
-                        AddTypeAndPeriodToEvent(changedToPassed, oldFailure.TransactionType, newPass);
+                        AddTypeAndPeriodToEvent(changedToPassed, oldFailure.TransactionType, newPass, payableEarningEvent);
                         failuresToDelete.Add(oldFailure.Id);
                     }
                 }
@@ -202,9 +201,23 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             };
         }
 
-        private static void AddTypeAndPeriodToEvent(DataLockStatusChanged statusChangedEvent,
-            TransactionType transactionType, EarningPeriod period)
+        private void AddTypeAndPeriodToEvent(DataLockStatusChanged statusChangedEvent, TransactionType transactionType, EarningPeriod period, DataLockEvent dataLockEvent)
         {
+            if (statusChangedEvent is DataLockStatusChangedToPassed)
+            {
+                if (period.DataLockFailures?.Count > 0)
+                {
+                    paymentLogger.LogWarning($"DataLockStatusChangedToPassed has data lock failures. EarningPeriod: {JsonConvert.SerializeObject(period)}");
+                    return;
+                }
+
+                if (!period.ApprenticeshipId.HasValue || !period.ApprenticeshipPriceEpisodeId.HasValue)
+                {
+                    paymentLogger.LogWarning($"DataLockStatusChangedToPassed has no apprenticeship ID. DataLockEvent: {JsonConvert.SerializeObject(dataLockEvent)}");
+                    return;
+                }
+            }
+
             if (statusChangedEvent.TransactionTypesAndPeriods.TryGetValue(transactionType, out var periods))
             {
                 periods.Add(period);
@@ -212,15 +225,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             else
             {
                 statusChangedEvent.TransactionTypesAndPeriods.Add(transactionType, new List<EarningPeriod> {period});
-            }
-
-            if (statusChangedEvent is DataLockStatusChangedToPassed)
-            {
-                if (period.DataLockFailures?.Count > 0)
-                    throw new ApplicationException("DataLockStatusChangedToPassed has data lock failures");
-
-                if (!period.ApprenticeshipId.HasValue || !period.ApprenticeshipPriceEpisodeId.HasValue)
-                    throw new ApplicationException("DataLockStatusChangedToPassed has no apprenticeship ID");
             }
         }
 
@@ -235,13 +239,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 {
                     foreach (var period in onProgrammeEarning.Periods)
                     {
-                        if (period.Amount == 0 && period.PriceEpisodeIdentifier == null)
-                            continue; // DataLocks are generated for all periods, event irrelevant, ignore until fixed
+                        if (IsEmpty(period))
+                            continue;
 
                         var key = ((TransactionType) onProgrammeEarning.Type, period.Period);
                         if (result.ContainsKey(key))
                         {
-                            paymentLogger.LogWarning($"DataLockEvent trying to add duplicate key \n\n " +
+                            paymentLogger.LogWarning($"DataLockEvent failure trying to add duplicate key for {onProgrammeEarning.Type} \n\n " +
                                                      $"Existing Period: {JsonConvert.SerializeObject(result[key])}\n\n" +
                                                      $"Period that failed to add: {JsonConvert.SerializeObject(period)}");
                         }
@@ -259,13 +263,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 {
                     foreach (var period in incentiveEarning.Periods)
                     {
-                        if (period.Amount == 0 && period.PriceEpisodeIdentifier == null)
-                            continue; // DataLocks are generated for all periods, event irrelevant, ignore until fixed
+                        if (IsEmpty(period))
+                            continue;
 
                         var key = ((TransactionType) incentiveEarning.Type, period.Period);
                         if (result.ContainsKey(key))
                         {
-                            paymentLogger.LogWarning($"DataLockEvent trying to add duplicate key \n\n " +
+                            paymentLogger.LogWarning($"DataLockEvent failure trying to add duplicate key for {incentiveEarning.Type} \n\n " +
                                                      $"Existing Period: {JsonConvert.SerializeObject(result[key])}\n\n" +
                                                      $"Period that failed to add: {JsonConvert.SerializeObject(period)}");
                         }
@@ -280,6 +284,22 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             return result;
         }
 
+        private static bool IsEmpty(EarningPeriod period)
+        {
+            if (period.Amount != 0)
+                return false;
+
+            // empty on prog earnings have no price episode ID if no amount, see OnProgrammeEarningValueResolver
+            if (string.IsNullOrEmpty(period.PriceEpisodeIdentifier))
+                return true;
+
+            // empty incentive earnings have price episode ID (wrongly) but no apprenticeship or errors
+            if (period.DataLockFailures == null && period.ApprenticeshipId == null)
+                return true;
+
+            return false;
+        }
+
         private Dictionary<(TransactionType type, byte period), EarningPeriod> GetPassesGroupedByTypeAndPeriod(
             DataLockEvent dataLockEvent)
         {
@@ -289,6 +309,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 foreach (var period in onProgrammeEarning.Periods)
                 {
+                    if (IsEmpty(period))
+                        continue;
+
                     var key = ((TransactionType) onProgrammeEarning.Type, period.Period);
                     if (!result.ContainsKey(key))
                     {
@@ -296,7 +319,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     }
                     else
                     {
-                        paymentLogger.LogWarning($"DataLockEvent trying to add duplicate key \n\n " +
+                        paymentLogger.LogWarning($"DataLockEvent pass trying to add duplicate key for {onProgrammeEarning.Type} \n\n " +
                                                  $"Existing Period: {JsonConvert.SerializeObject(result[key])}\n\n" +
                                                  $"Period that failed to add: {JsonConvert.SerializeObject(period)}");
                     }
@@ -307,6 +330,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 foreach (var period in incentiveEarning.Periods)
                 {
+                    if (IsEmpty(period))
+                        continue;
+
                     var key = ((TransactionType) incentiveEarning.Type, period.Period);
                     if (!result.ContainsKey(key))
                     {
@@ -314,7 +340,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     }
                     else
                     {
-                        paymentLogger.LogWarning($"DataLockEvent trying to add duplicate key \n\n " +
+                        paymentLogger.LogWarning($"DataLockEvent pass trying to add duplicate key for {incentiveEarning.Type} \n\n " +
                                                  $"Existing Period: {JsonConvert.SerializeObject(result[key])}\n\n" +
                                                  $"Period that failed to add: {JsonConvert.SerializeObject(period)}");
                     }

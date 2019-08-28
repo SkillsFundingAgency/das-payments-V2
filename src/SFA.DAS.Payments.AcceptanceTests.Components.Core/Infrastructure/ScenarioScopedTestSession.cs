@@ -2,7 +2,6 @@
 using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
-using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Components.Core.Infrastructure

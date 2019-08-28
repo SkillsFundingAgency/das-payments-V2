@@ -2630,6 +2630,10 @@
       <Project>{9274abb3-9f30-4320-a111-17ba07dbf568}</Project>
       <Name>SFA.DAS.Payments.Monitoring.Jobs.Messages</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Model\SFA.DAS.Payments.Monitoring.Jobs.Model.csproj">
+      <Project>{dc3c2dfe-ce0c-4b40-9a80-392b600fcded}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Jobs.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Messages.Internal\SFA.DAS.Payments.ProviderPayments.Messages.Internal.csproj">
       <Project>{25B9DFA3-DF0C-4C53-A991-1F3D3BB407A8}</Project>
       <Name>SFA.DAS.Payments.ProviderPayments.Messages.Internal</Name>
