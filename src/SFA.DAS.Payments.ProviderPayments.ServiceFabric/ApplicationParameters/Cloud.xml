@@ -20,6 +20,6 @@
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
     <Parameter Name="BatchIntervalInSeconds" Value="__BatchIntervalInSeconds__" />
     <Parameter Name="DasPeriodEndConnectionString" Value="__DasPeriodEndConnectionString__" />
-    <Parameter Name="ExportBatchSize" Value="__ExportBatchSize__" />
+    <Parameter Name="LegacyExportBatchSize" Value="__LegacyExportBatchSize__" />
   </Parameters>
 </Application>

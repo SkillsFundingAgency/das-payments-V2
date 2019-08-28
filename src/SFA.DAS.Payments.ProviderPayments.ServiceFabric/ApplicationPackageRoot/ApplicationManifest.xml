@@ -22,7 +22,7 @@
     <Parameter Name="Audit_BatchFailureTimeoutInSeconds" DefaultValue="60" />
     <Parameter Name="BatchIntervalInSeconds" DefaultValue="10" />
     <Parameter Name="DasPeriodEndConnectionString" DefaultValue="" />
-    <Parameter Name="ExportBatchSize" DefaultValue="10000" />
+    <Parameter Name="LegacyExportBatchSize" DefaultValue="10000" />
   </Parameters>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.ProviderPayments.LegacyExportServicePkg" ServiceManifestVersion="1.0.0" />

@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
     {
         private readonly ILegacyPaymentsRepository legacyPaymentsRepository;
         private readonly IPaymentExportProgressCache paymentExportProgressCache;
-        private readonly int exportBufferSize;
+        private readonly int exportBatchSize;
         private readonly IProviderPaymentsRepository providerPaymentsRepository;
         private readonly IPaymentLogger logger;
         private readonly IPaymentMapper paymentMapper;
@@ -35,7 +35,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.legacyPaymentsRepository = legacyPaymentsRepository ?? throw new ArgumentNullException(nameof(legacyPaymentsRepository));
             this.paymentExportProgressCache = paymentExportProgressCache ?? throw new ArgumentNullException(nameof(paymentExportProgressCache));
-            exportBufferSize = configurationHelper.GetSettingOrDefault("ExportBatchSize", 10000);
+            exportBatchSize = configurationHelper.GetSettingOrDefault("ExportBatchSize", 10000);
             this.logger = logger;
             this.paymentMapper = paymentMapper ?? throw new ArgumentNullException(nameof(paymentMapper));
         }
@@ -46,29 +46,38 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 
             while (true)
             {
-                var page = await paymentExportProgressCache.GetPage(collectionPeriod.AcademicYear, collectionPeriod.Period);
-                logger.LogVerbose($"Starting with page: {page}");
-
-                var payments = providerPaymentsRepository.GetMonthEndPayments(collectionPeriod, exportBufferSize, page);
-
-                if (payments.Count == 0)
+                int page = -1;
+                try
                 {
-                    logger.LogVerbose($"Finished exporting payments to V1 for collection period: {collectionPeriod}");
-                    break;
+                    page = await paymentExportProgressCache.GetPage(collectionPeriod.AcademicYear, collectionPeriod.Period);
+                    logger.LogVerbose($"Starting with page: {page}");
+
+                    var payments = providerPaymentsRepository.GetMonthEndPayments(collectionPeriod, exportBatchSize, page);
+
+                    if (payments.Count == 0)
+                    {
+                        logger.LogVerbose($"Finished exporting payments to V1 for collection period: {collectionPeriod}");
+                        break;
+                    }
+
+                    logger.LogVerbose($"Found {payments.Count} payments to process");
+
+                    var result = paymentMapper.MapV2Payments(payments);
+                    await legacyPaymentsRepository
+                        .WritePaymentInformation(result.payments, result.requiredPayments, result.earnings)
+                        .ConfigureAwait(false);
+
+                    logger.LogVerbose($"Completed write for page: {page} for collection period: {collectionPeriod}");
+
+                    await paymentExportProgressCache
+                        .IncrementPage(collectionPeriod.AcademicYear, collectionPeriod.Period)
+                        .ConfigureAwait(false);
                 }
-
-                logger.LogVerbose($"Found {payments.Count} payments to process");
-
-                var result = paymentMapper.MapV2Payments(payments);
-                await legacyPaymentsRepository
-                    .WritePaymentInformation(result.payments, result.requiredPayments, result.earnings)
-                    .ConfigureAwait(false);
-
-                logger.LogVerbose($"Completed write for page: {page} for collection period: {collectionPeriod}");
-
-                await paymentExportProgressCache
-                    .IncrementPage(collectionPeriod.AcademicYear, collectionPeriod.Period)
-                    .ConfigureAwait(false);
+                catch (Exception e)
+                {
+                    logger.LogError($"Error processing page: {page} during V1 legacy export", e);
+                    throw;
+                }
             }
 
             logger.LogVerbose($"Completed V1 payments export for collection period {collectionPeriod}");
