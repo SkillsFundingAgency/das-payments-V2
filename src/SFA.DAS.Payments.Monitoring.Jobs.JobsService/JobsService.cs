@@ -26,13 +26,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
             this.lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
         }
 
-        public async Task RecordEarningsJob(RecordEarningsJob message)
+        public async Task RecordEarningsJob(RecordEarningsJob message, CancellationToken cancellationToken)
         {
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 var service = lifetimeScope.Resolve<IEarningsJobService>();
                 await service.JobStarted(message, CancellationToken.None).ConfigureAwait(false);
-
             }
             catch (Exception e)
             {
@@ -41,16 +41,18 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
             }
         }
 
-        public async Task<JobStatus> RecordJobMessageProcessingStatus(RecordJobMessageProcessingStatus message)
+        public async Task<JobStatus> RecordJobMessageProcessingStatus(RecordJobMessageProcessingStatus message, CancellationToken cancellationToken)
         {
             try
             {
+                //TODO: use statemanager tx and make sureactorcahe uses current tx too
+                cancellationToken.ThrowIfCancellationRequested();
                 var jobMessageService = lifetimeScope.Resolve<IJobMessageService>();
                 await jobMessageService.JobMessageCompleted(message, CancellationToken.None).ConfigureAwait(false);
                 var statusService = lifetimeScope.Resolve<IJobStatusService>();
                 var status = await statusService.ManageStatus(CancellationToken.None);
                 if (status != JobStatus.InProgress)
-                    await StateManager.ClearCacheAsync();
+                    await StateManager.ClearCacheAsync(CancellationToken.None);
                 return status;
             }
             catch (Exception e)
