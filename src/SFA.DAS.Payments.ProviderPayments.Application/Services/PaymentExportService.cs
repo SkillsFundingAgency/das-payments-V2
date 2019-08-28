@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
     public interface IPaymentExportService
     {
-        Task PerformExportPaymentsToV1(CollectionPeriod collectionPeriod);
+        Task PerformExportPaymentsAndEarningsToV1(CollectionPeriod collectionPeriod);
         Task PerformMonthEndTrigger(CollectionPeriod collectionPeriod);
     }
 
@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             this.paymentMapper = paymentMapper ?? throw new ArgumentNullException(nameof(paymentMapper));
         }
 
-        public async Task PerformExportPaymentsToV1(CollectionPeriod collectionPeriod)
+        public async Task PerformExportPaymentsAndEarningsToV1(CollectionPeriod collectionPeriod)
         {
             logger.LogVerbose($"Started V1 payments export for collection period {collectionPeriod}");
 
@@ -61,7 +61,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 
                 var result = paymentMapper.MapV2Payments(payments);
                 await legacyPaymentsRepository
-                    .WritePaymentInformation(result.payments, result.requiredPayments)
+                    .WritePaymentInformation(result.payments, result.requiredPayments, result.earnings)
                     .ConfigureAwait(false);
 
                 logger.LogVerbose($"Completed write for page: {page} for collection period: {collectionPeriod}");
@@ -74,9 +74,11 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             logger.LogVerbose($"Completed V1 payments export for collection period {collectionPeriod}");
         }
 
-        public Task PerformMonthEndTrigger(CollectionPeriod collectionPeriod)
+        public async Task PerformMonthEndTrigger(CollectionPeriod collectionPeriod)
         {
-            throw new NotImplementedException();
+            logger.LogVerbose($"Triggering month end flag for {collectionPeriod}");
+            await legacyPaymentsRepository.WriteMonthEndTrigger(collectionPeriod);
+            logger.LogVerbose($"Completed month end flag set for {collectionPeriod}");
         }
     }
 }
