@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.ProviderPayments.LegacyExportService.Handlers
         public async Task Handle(ProcessProviderMonthEndCommand message, IMessageHandlerContext context)
         {
             await PaymentExportService.PerformExportPaymentsToV1(message.CollectionPeriod).ConfigureAwait(false);
-            await context.SendLocal(new ProcessEarningsExport(message.CollectionPeriod)).ConfigureAwait(false);
+            await PaymentExportService.PerformExportEarningsToV1(message.CollectionPeriod).ConfigureAwait(false);
             await context.SendLocal(new ProcessTriggerMonthComplete(message.CollectionPeriod)).ConfigureAwait(false);
         }
     }

@@ -11,6 +11,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
     public interface IPaymentExportService
     {
         Task PerformExportPaymentsToV1(CollectionPeriod collectionPeriod);
+        Task PerformMonthEndTrigger(CollectionPeriod collectionPeriod);
     }
 
     class PaymentExportService : IPaymentExportService
@@ -71,6 +72,11 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             }
 
             logger.LogVerbose($"Completed V1 payments export for collection period {collectionPeriod}");
+        }
+
+        public Task PerformMonthEndTrigger(CollectionPeriod collectionPeriod)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -8,17 +8,18 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.Services
 {
     public interface IPaymentMapper
     {
-        (List<LegacyPaymentModel> payments, List<LegacyRequiredPaymentModel> requiredPayments) MapV2Payments(
-            List<PaymentModelWithRequiredPaymentId> payments);
+        (List<LegacyPaymentModel> payments, List<LegacyRequiredPaymentModel> requiredPayments, List<LegacyEarningModel> earnings) 
+            MapV2Payments(List<PaymentModelWithRequiredPaymentId> payments);
     }
 
     public class PaymentMapper : IPaymentMapper
     {
-        public (List<LegacyPaymentModel> payments, List<LegacyRequiredPaymentModel> requiredPayments) MapV2Payments(
-            List<PaymentModelWithRequiredPaymentId> payments)
+        public (List<LegacyPaymentModel> payments, List<LegacyRequiredPaymentModel> requiredPayments, List<LegacyEarningModel> earnings) 
+            MapV2Payments(List<PaymentModelWithRequiredPaymentId> payments)
         {
             var legacyPayments = new List<LegacyPaymentModel>();
             var legacyRequiredPayments = new Dictionary<Guid, LegacyRequiredPaymentModel>();
+            var legacyEarnings = new List<LegacyEarningModel>();
 
             foreach (var paymentModel in payments)
             {
@@ -37,16 +38,19 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.Services
                         AccountVersionId = string.Empty,
                         AimSeqNumber = paymentModel.LearningAimSequenceNumber,
                         AmountDue = paymentModel.AmountDue,
-                        ApprenticeshipContractType = (int)paymentModel.ContractType,
+                        ApprenticeshipContractType = (int) paymentModel.ContractType,
                         CollectionPeriodMonth = MonthFromPeriod(paymentModel.CollectionPeriod.Period),
-                        CollectionPeriodName = $"{paymentModel.CollectionPeriod.AcademicYear}-R{paymentModel.CollectionPeriod.Period:D2}",
-                        CollectionPeriodYear = YearFromPeriod(paymentModel.CollectionPeriod.AcademicYear, paymentModel.CollectionPeriod.Period),
+                        CollectionPeriodName =
+                            $"{paymentModel.CollectionPeriod.AcademicYear}-R{paymentModel.CollectionPeriod.Period:D2}",
+                        CollectionPeriodYear = YearFromPeriod(paymentModel.CollectionPeriod.AcademicYear,
+                            paymentModel.CollectionPeriod.Period),
                         // TODO: Fix this when available
                         CommitmentId = 0,
                         CommitmentVersionId = string.Empty,
                         UseLevyBalance = false,
                         DeliveryMonth = MonthFromPeriod(paymentModel.DeliveryPeriod),
-                        DeliveryYear = YearFromPeriod(paymentModel.CollectionPeriod.AcademicYear, paymentModel.DeliveryPeriod),
+                        DeliveryYear = YearFromPeriod(paymentModel.CollectionPeriod.AcademicYear,
+                            paymentModel.DeliveryPeriod),
                         FrameworkCode = paymentModel.LearningAimFrameworkCode,
                         FundingLineType = paymentModel.LearningAimFundingLineType,
                         IlrSubmissionDateTime = paymentModel.IlrSubmissionDateTime,
@@ -58,14 +62,27 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.Services
                         ProgrammeType = paymentModel.LearningAimProgrammeType,
                         SfaContributionPercentage = paymentModel.SfaContributionPercentage,
                         StandardCode = paymentModel.LearningAimStandardCode,
-                        TransactionType = (int)paymentModel.TransactionType,
+                        TransactionType = (int) paymentModel.TransactionType,
                         Ukprn = paymentModel.Ukprn,
                         Uln = paymentModel.LearnerUln,
                     };
 
                     legacyRequiredPayments.Add(requiredPayment.Id, requiredPayment);
-                }
 
+                    var earning = new LegacyEarningModel
+                    {
+                        StartDate = paymentModel.StartDate,
+                        RequiredPaymentId = paymentModel.RequiredPaymentId,
+                        ActualEndDate = paymentModel.ActualEndDate,
+                        CompletionAmount = paymentModel.CompletionAmount,
+                        PlannedEndDate = paymentModel.PlannedEndDate??DateTime.MinValue,
+                        CompletionStatus = paymentModel.CompletionStatus,
+                        MonthlyInstallment = paymentModel.InstalmentAmount??0m,
+                        TotalInstallments = (paymentModel.NumberOfInstalments??0),
+                    };
+                    legacyEarnings.Add(earning);
+                }
+            
                 var payment = new LegacyPaymentModel
                 {
                     RequiredPaymentId = requiredPayment.Id,
@@ -82,7 +99,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.Services
                 legacyPayments.Add(payment);
             }
 
-            return (legacyPayments, legacyRequiredPayments.Values.ToList());
+            return (legacyPayments, legacyRequiredPayments.Values.ToList(), legacyEarnings);
         }
 
         private int YearFromPeriod(short academicYear, byte collectionPeriod)

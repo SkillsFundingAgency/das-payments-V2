@@ -64,5 +64,7 @@
     <Build Include="PaymentsDue.sql" />
     <Build Include="Payments.sql" />
     <Build Include="Payments\Payments.sql" />
+    <Build Include="Payments\Periods.sql" />
+    <Build Include="PaymentsDue\Earnings.sql" />
   </ItemGroup>
 </Project>
