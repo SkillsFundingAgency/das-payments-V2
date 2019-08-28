@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
         {
             try
             {
-                //TODO: use statemanager tx and make sureactorcahe uses current tx too
+                //TODO: use statemanager tx and make sure IActorDataCache uses current tx too
                 cancellationToken.ThrowIfCancellationRequested();
                 var jobMessageService = lifetimeScope.Resolve<IJobMessageService>();
                 await jobMessageService.JobMessageCompleted(message, CancellationToken.None).ConfigureAwait(false);

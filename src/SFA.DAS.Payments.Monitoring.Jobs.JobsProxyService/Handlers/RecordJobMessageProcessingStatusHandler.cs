@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
@@ -42,18 +43,33 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService.Handlers
                     //await DeleteActor(actorId);
                 }
             }
+            catch (AggregateException aggregateException)
+            {
+                if (aggregateException.InnerExceptions.Any(ex => ex is OperationCanceledException))
+                {
+                    await HandleOperationCancelledException(message, context);
+                    return;
+                }
+                logger.LogWarning($"Failed to record job message status. Job id: {message.JobId}, message id: {message.Id}, name: {message.MessageName}.  Errors: {aggregateException}");
+                throw;
+            }
             catch (OperationCanceledException)
             {
-                logger.LogDebug($"Couldn't get actor within time allocated time. Job id: {message.JobId}, message id: {message.Id}, name: {message.MessageName}.");
-                if (!await context.Defer(message, TimeSpan.FromSeconds(1), "no_actor_available", 20))
-                    throw new InvalidOperationException($"Tried over 10 times to get an actor for job: {message.Id} for message: {message.MessageName}");
-
+                await HandleOperationCancelledException(message, context);
             }
             catch (Exception ex)
             {
                 logger.LogWarning($"Failed to record job message status. Job id: {message.JobId}, message id: {message.Id}, name: {message.MessageName}.  Error: {ex.Message}. {ex}");
                 throw;
             }
+        }
+
+        private async Task<bool> HandleOperationCancelledException(RecordJobMessageProcessingStatus message, IMessageHandlerContext context)
+        {
+            logger.LogDebug($"Couldn't get actor within time allocated time. Job id: {message.JobId}, message id: {message.Id}, name: {message.MessageName}.");
+            if (!await context.Defer(message, TimeSpan.FromSeconds(1), "no_actor_available", 20))
+                throw new InvalidOperationException($"Tried over 10 times to get an actor for job: {message.Id} for message: {message.MessageName}");
+            return true;
         }
 
         private async Task DeleteActor(ActorId actorId)
