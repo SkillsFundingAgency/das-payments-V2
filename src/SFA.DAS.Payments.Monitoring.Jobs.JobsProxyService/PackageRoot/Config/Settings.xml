@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Settings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <!-- Add your custom configuration sections and parameters here -->
+  <Section Name="ConnectionStringsSection">
+    <Parameter Name="StorageConnectionString" Value="UseDevelopmentStorage=true" />
+    <Parameter Name="LoggingConnectionString" Value="Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;"/>
+    <Parameter Name="ServiceBusConnectionString" Value=""/>
+    <Parameter Name="PaymentsConnectionString" Value="" />
+    <Parameter Name="PaymentsMonitoringConnectionString" Value="" />
+  </Section>
+
+  <Section Name="Settings">
+    <Parameter Name="EndpointName" Value="sfa-das-payments-monitoring-jobs"/>
+    <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-monitoring-jobs-errors"/>
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value=""/>
+    <Parameter Name="DelayedRetryTimeInSeconds" Value="120" />
+    <Parameter Name="LogLevel" Value="" />
+    <Parameter Name="ConsoleLogLevel" Value="" />
+  </Section>
+</Settings>

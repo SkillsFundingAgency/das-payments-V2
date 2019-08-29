@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         long? AccountId { get; }
         ContractType ContractType { get; }
         DateTime StartDate { get; }
-        DateTime PlannedEndDate { get;}
+        DateTime? PlannedEndDate { get;}
         DateTime? ActualEndDate { get; }
         byte CompletionStatus { get; }
         decimal CompletionAmount { get; }

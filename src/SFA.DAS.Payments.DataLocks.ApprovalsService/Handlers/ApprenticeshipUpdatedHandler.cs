@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Handlers
 
           await processor.ProcessUpdatedApprenticeship(message);
 
-            Logger.LogInfo($"Finished handling apprenticeship created event.  " +
+            Logger.LogInfo($"Finished handling apprenticeship updated event.  " +
                            $"Now resolving the apprenticeship processor service to handle the new apprenticeship. " +
                            $"Apprenticeship Id: {message.ApprenticeshipId}");
         }

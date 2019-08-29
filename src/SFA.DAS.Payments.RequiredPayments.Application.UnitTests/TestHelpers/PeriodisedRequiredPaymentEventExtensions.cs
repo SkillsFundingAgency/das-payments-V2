@@ -30,6 +30,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers
             paymentEvent.EarningEventId.Should().Be(Guid.Empty);
             paymentEvent.EventId.Should().NotBe(Guid.Empty);
             paymentEvent.AccountId.Should().Be(historicPayment.AccountId);
+            paymentEvent.ApprenticeshipEmployerType.Should().Be(historicPayment.ApprenticeshipEmployerType);
             paymentEvent.EventId.Should().NotBe(historicPayment.ExternalId);
             paymentEvent.EventId.Should().NotBe(Guid.Empty);
             paymentEvent.ActualEndDate.Should().Be(historicPayment.ActualEndDate);

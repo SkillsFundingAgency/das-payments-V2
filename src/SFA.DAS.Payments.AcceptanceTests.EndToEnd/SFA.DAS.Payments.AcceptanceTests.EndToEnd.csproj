@@ -205,17 +205,11 @@
     <Reference Include="nunit.framework, Version=3.11.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.11.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
-	<Reference Include="Polly, Version=6.0.0.0, Culture=neutral, PublicKeyToken=c8a3ffc3f8f825cc, processorArchitecture=MSIL">
+    <Reference Include="Polly, Version=6.0.0.0, Culture=neutral, PublicKeyToken=c8a3ffc3f8f825cc, processorArchitecture=MSIL">
       <HintPath>..\packages\Polly.6.1.2\lib\netstandard2.0\Polly.dll</HintPath>
     </Reference>
     <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="SFA.DAS.CommitmentsV2.Messages, Version=2.1.1494.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.CommitmentsV2.Messages.2.1.1494\lib\netstandard2.0\SFA.DAS.CommitmentsV2.Messages.dll</HintPath>
-    </Reference>
-    <Reference Include="SFA.DAS.CommitmentsV2.Types, Version=2.1.1494.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.CommitmentsV2.Types.2.1.1494\lib\netstandard2.0\SFA.DAS.CommitmentsV2.Types.dll</HintPath>
     </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.2.6.0\lib\net46\Serilog.dll</HintPath>
@@ -237,6 +231,12 @@
     </Reference>
     <Reference Include="Serilog.Sinks.PeriodicBatching, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.Sinks.PeriodicBatching.2.1.1\lib\net45\Serilog.Sinks.PeriodicBatching.dll</HintPath>
+    </Reference>
+    <Reference Include="SFA.DAS.CommitmentsV2.Messages, Version=4.1.70.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.CommitmentsV2.Messages.4.1.70\lib\netstandard2.0\SFA.DAS.CommitmentsV2.Messages.dll</HintPath>
+    </Reference>
+    <Reference Include="SFA.DAS.CommitmentsV2.Types, Version=4.1.70.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.CommitmentsV2.Types.4.1.70\lib\netstandard2.0\SFA.DAS.CommitmentsV2.Types.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -1271,6 +1271,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Two levy learners one employer but two providers not enough levy_PV2-270.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Levy Submission Events\One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature.cs">
+      <DependentUpon>One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Non-Levy - Care Bursary\E2E - PV2-925 - Non-Levy learner starts 1st day of month receives care leaver payment after 60 days.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2283,6 +2288,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy Learner, levy available, finishes two months early PV2-276.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Levy Submission Events\One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs</LastGenOutput>
@@ -2620,6 +2629,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj">
       <Project>{9274abb3-9f30-4320-a111-17ba07dbf568}</Project>
       <Name>SFA.DAS.Payments.Monitoring.Jobs.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Model\SFA.DAS.Payments.Monitoring.Jobs.Model.csproj">
+      <Project>{dc3c2dfe-ce0c-4b40-9a80-392b600fcded}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Jobs.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Messages.Internal\SFA.DAS.Payments.ProviderPayments.Messages.Internal.csproj">
       <Project>{25B9DFA3-DF0C-4C53-A991-1F3D3BB407A8}</Project>

@@ -51,7 +51,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(source => source.NumberOfInstalments))
                 .ForMember(dest => dest.LearningStartDate, opt => opt.MapFrom(source => source.LearningStartDate))
                 .ForMember(dest => dest.ApprenticeshipId, opt => opt.MapFrom(source => source.ApprenticeshipId))
-                .ForMember(dest => dest.ApprenticeshipPriceEpisodeId, opt => opt.MapFrom(source => source.ApprenticeshipPriceEpisodeId));
+                .ForMember(dest => dest.ApprenticeshipPriceEpisodeId, opt => opt.MapFrom(source => source.ApprenticeshipPriceEpisodeId))
+                .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(source => source.NumberOfInstalments))
+                .ForMember(dest => dest.ReportingAimFundingLineType, opt => opt.ResolveUsing<ReportingAimFundingLineTypeValueResolver>());
 
 
             CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
@@ -98,7 +100,11 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(source => source.NumberOfInstalments))
                 .ForMember(dest => dest.LearningStartDate, opt => opt.MapFrom(source => source.LearningStartDate))
                 .ForMember(dest => dest.ApprenticeshipId, opt => opt.MapFrom(source => source.ApprenticeshipId))
-                .ForMember(dest => dest.ApprenticeshipPriceEpisodeId, opt => opt.MapFrom(source => source.ApprenticeshipPriceEpisodeId));
+                .ForMember(dest => dest.ApprenticeshipPriceEpisodeId, opt => opt.MapFrom(source => source.ApprenticeshipPriceEpisodeId))
+                .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(source => source.NumberOfInstalments))
+                .ForMember(dest => dest.ApprenticeshipEmployerType, opt => opt.MapFrom(source => source.ApprenticeshipEmployerType))
+                .ForMember(dest => dest.ReportingAimFundingLineType, opt => opt.MapFrom(source => source.ReportingAimFundingLineType))
+                ;
 
             CreateMap<PaymentModel, EmployerCoInvestedProviderPaymentEvent>();
             CreateMap<PaymentModel, SfaCoInvestedProviderPaymentEvent>();

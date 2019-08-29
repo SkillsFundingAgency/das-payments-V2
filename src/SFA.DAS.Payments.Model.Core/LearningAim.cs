@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.Model.Core
         public int PathwayCode { get; set; }
 
         public string FundingLineType { get; set; }
-        public int SequenceNumber { get; set; }
+        public long SequenceNumber { get; set; }
 
         public DateTime StartDate { get; set; }
 

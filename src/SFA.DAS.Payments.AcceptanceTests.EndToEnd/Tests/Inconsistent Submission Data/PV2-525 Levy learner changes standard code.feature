@@ -1,4 +1,5 @@
-﻿	Feature: Levy learner- changes standard course but price is unchanged PV2-525
+﻿@ignore issue to be fixed after go live
+Feature: Levy learner- changes standard course but price is unchanged PV2-525
 		As a provider,
 		I want a levy learner, where the standard changes in the ILR during training, and is different to the standard submitted in the commitment and initial ILR, but the standard price remains the same
 		So that I am accurately paid the apprenticeship commission
