@@ -32,15 +32,16 @@
 	EarningsStartDate DATETIME NOT NULL,
 	EarningsPlannedEndDate DATETIME NULL,
 	EarningsActualEndDate DATETIME NULL,
-	EarningsCompletionStatus TINYINT NOT NULL,
-	EarningsCompletionAmount DECIMAL (15,5),
-	EarningsInstalmentAmount DECIMAL (15,5),
-	EarningsNumberOfInstalments SMALLINT NOT NULL,
+	EarningsCompletionStatus TINYINT NULL,
+	EarningsCompletionAmount DECIMAL (15,5) NULL,
+	EarningsInstalmentAmount DECIMAL (15,5) NULL,
+	EarningsNumberOfInstalments SMALLINT NULL,
 	LearningStartDate DATETIME2 NULL,
     ApprenticeshipId BIGINT NULL,
     ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL,
-	ReportingAimFundingLineType NVARCHAR(100) NULL,
+	ReportingAimFundingLineType NVARCHAR(120) NULL,
+
 );
 GO
 
@@ -49,11 +50,13 @@ CREATE INDEX [IX_Payment__ApprenticeshipKey] ON [Payments2].[Payment]
 	Ukprn,
 	LearnerUln, 
 	LearnerReferenceNumber,
-	LearningAimReference ,
+	LearningAimReference,
 	LearningAimProgrammeType,
 	LearningAimStandardCode,
-	LearningAimFrameworkCode ,
-	LearningAimPathwayCode 
+	LearningAimFrameworkCode,
+	LearningAimPathwayCode, 
+	AcademicYear,
+	ContractType
 )
 
 GO
@@ -65,7 +68,14 @@ CREATE INDEX [IX_Payment__UkprnPeriodSearch] ON [Payments2].[Payment]
   AcademicYear,
   DeliveryPeriod,
   JobId
-) 
- 
+)  
+
+GO
+
+CREATE INDEX [IX_Payment__Audit] ON [Payments2].[Payment]
+(
+  [EarningEventId],
+  FundingSourceEventId
+)  
 
 GO

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using NServiceBus.Pipeline;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
+using SFA.DAS.Payments.Messages.Core.Events;
 
 namespace SFA.DAS.Payments.Application.Messaging.Telemetry
 {
@@ -19,7 +20,8 @@ namespace SFA.DAS.Payments.Application.Messaging.Telemetry
 
         public override async Task Invoke(IInvokeHandlerContext context, Func<Task> next)
         {
-            using (var operation = telemetry.StartOperation())
+            var operationId = (context.MessageBeingHandled as IEvent)?.EventId.ToString();
+            using (var operation = telemetry.StartOperation(context.MessageHandler.HandlerType.FullName, operationId))
             {
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
@@ -38,9 +40,9 @@ namespace SFA.DAS.Payments.Application.Messaging.Telemetry
                     stopwatch.Stop();
                     telemetry.TrackEvent(context.MessageHandler.HandlerType.FullName,
                         !string.IsNullOrEmpty(failure)
-                            ? new Dictionary<string, string> {{"Failed", "True"}, {"Failure", failure}}
-                            : new Dictionary<string, string> {{"Failed", "False"}},
-                        new Dictionary<string, double> {{TelemetryKeys.Duration, stopwatch.ElapsedMilliseconds}});
+                            ? new Dictionary<string, string> { { "Failed", "True" }, { "Failure", failure } }
+                            : new Dictionary<string, string> { { "Failed", "False" } },
+                        new Dictionary<string, double> { { TelemetryKeys.Duration, stopwatch.ElapsedMilliseconds } });
                     telemetry.StopOperation(operation);
                 }
             }

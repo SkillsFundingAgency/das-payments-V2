@@ -23,6 +23,7 @@ namespace SFA.DAS.Payments.Model.Core
         public decimal? TotalNegotiatedPrice4 { get; set; }
         public decimal AgreedPrice { get; set; }
         public DateTime CourseStartDate { get; set; }
+        public DateTime StartDate { get; set; }
         public DateTime EffectiveTotalNegotiatedPriceStartDate { get; set; }
         public DateTime PlannedEndDate { get; set; }
         public DateTime? ActualEndDate { get; set; }

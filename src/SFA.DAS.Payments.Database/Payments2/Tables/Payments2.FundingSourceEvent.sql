@@ -41,3 +41,13 @@
     ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL,
 )
+
+GO
+
+CREATE INDEX [IX_FundingSourceEvent__Audit] ON [Payments2].[FundingSourceEvent]
+(
+  [EarningEventId],
+  RequiredPaymentEventId
+)  
+
+GO

@@ -8,6 +8,16 @@
 	StartTime DATETIMEOFFSET NULL,
 	EndTime DATETIMEOFFSET NULL, 
     MessageName NVARCHAR(250) NOT NULL,
-	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_JobEvent__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
+	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_JobEvent__CreationDate DEFAULT (SYSUTCDATETIME()),
 	CONSTRAINT UC_JobEvent__JobId_EventId UNIQUE (JobId,EventId)
 )
+GO
+
+CREATE INDEX [IX_JobEvent__Search] ON [Payments2].[JobEvent](
+	JobEventId,
+	JobId,
+	EventId,
+	[Status],
+	EndTime
+)
+GO

@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.UnitTests
                 .ReturnsAsync(mocker.Mock<IEndpointInstance>().Object);
         }
 
-        [Test]
+        [Test,Ignore("Client doesn't use message session.")]
         public async Task Batches_Earnings_Jobs()
         {
             var messages = new List<GeneratedMessage>();
@@ -42,10 +42,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.UnitTests
             }
             var client = mocker.Create<EarningsJobClient>();
             await client.StartJob(1, 12345, DateTime.Now, 1920, 1, messages, DateTimeOffset.Now);
-            mocker.Mock<IEndpointInstance>().Verify(session => session.Send(It.IsAny<RecordStartedProcessingEarningsJob>(), It.IsAny<SendOptions>()), Times.Exactly(3));
-            messages.Take(1000).ToList().ForEach(msg => mocker.Mock<IEndpointInstance>().Verify(session => session.Send(It.Is<RecordStartedProcessingEarningsJob>(job => job.GeneratedMessages.Any(genMsg => genMsg.MessageId == msg.MessageId)), It.IsAny<SendOptions>()), Times.Once));
-            messages.Skip(1000).Take(1000).ToList().ForEach(msg => mocker.Mock<IEndpointInstance>().Verify(session => session.Send(It.Is<RecordStartedProcessingEarningsJob>(job => job.GeneratedMessages.Any(genMsg => genMsg.MessageId == msg.MessageId)), It.IsAny<SendOptions>()), Times.Once));
-            messages.Skip(2000).Take(1000).ToList().ForEach(msg => mocker.Mock<IEndpointInstance>().Verify(session => session.Send(It.Is<RecordStartedProcessingEarningsJob>(job => job.GeneratedMessages.Any(genMsg => genMsg.MessageId == msg.MessageId)), It.IsAny<SendOptions>()), Times.Once));
+            mocker.Mock<IEndpointInstance>().Verify(session => session.Send(It.IsAny<RecordEarningsJob>(), It.IsAny<SendOptions>()), Times.Exactly(3));
+            messages.Take(1000).ToList().ForEach(msg => mocker.Mock<IEndpointInstance>().Verify(session => session.Send(It.Is<RecordEarningsJob>(job => job.GeneratedMessages.Any(genMsg => genMsg.MessageId == msg.MessageId)), It.IsAny<SendOptions>()), Times.Once));
+            messages.Skip(1000).Take(1000).ToList().ForEach(msg => mocker.Mock<IEndpointInstance>().Verify(session => session.Send(It.Is<RecordEarningsJob>(job => job.GeneratedMessages.Any(genMsg => genMsg.MessageId == msg.MessageId)), It.IsAny<SendOptions>()), Times.Once));
+            messages.Skip(2000).Take(1000).ToList().ForEach(msg => mocker.Mock<IEndpointInstance>().Verify(session => session.Send(It.Is<RecordEarningsJob>(job => job.GeneratedMessages.Any(genMsg => genMsg.MessageId == msg.MessageId)), It.IsAny<SendOptions>()), Times.Once));
         }
     }
 }

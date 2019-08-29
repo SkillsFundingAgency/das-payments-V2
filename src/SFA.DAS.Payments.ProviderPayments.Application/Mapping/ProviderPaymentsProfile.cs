@@ -48,7 +48,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.CompletionStatus, opt => opt.MapFrom(source => source.CompletionStatus))
                 .ForMember(dest => dest.CompletionAmount, opt => opt.MapFrom(source => source.CompletionAmount))
                 .ForMember(dest => dest.InstalmentAmount, opt => opt.MapFrom(source => source.InstalmentAmount))
-                .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(source => source.NumberOfInstalments));
+                .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(source => source.NumberOfInstalments))
+                .ForMember(dest => dest.ReportingAimFundingLineType, opt => opt.ResolveUsing<ReportingAimFundingLineTypeValueResolver>());
 
             CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
             CreateMap<SfaCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
@@ -70,6 +71,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.ContractType, opt => opt.MapFrom(source => source.ContractType))
                 .ForMember(dest => dest.FundingSourceType, opt => opt.MapFrom(source => source.FundingSource))
                 .ForMember(dest => dest.IlrSubmissionDateTime, opt => opt.MapFrom(source => source.IlrSubmissionDateTime))
+                .ForMember(dest => dest.IlrFileName, opt => opt.Ignore())
                 .ForMember(dest => dest.JobId, opt => opt.MapFrom(source => source.JobId))
                 .ForPath(dest => dest.Learner.Uln, opt => opt.MapFrom(source => source.LearnerUln))
                 .ForPath(dest => dest.Learner.ReferenceNumber, opt => opt.MapFrom(source => source.LearnerReferenceNumber))
@@ -90,7 +92,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.CompletionStatus, opt => opt.MapFrom(source => source.CompletionStatus))
                 .ForMember(dest => dest.CompletionAmount, opt => opt.MapFrom(source => source.CompletionAmount))
                 .ForMember(dest => dest.InstalmentAmount, opt => opt.MapFrom(source => source.InstalmentAmount))
-                .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(source => source.NumberOfInstalments));
+                .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(source => source.NumberOfInstalments))
+                .ForMember(dest => dest.ApprenticeshipEmployerType, opt => opt.MapFrom(source => source.ApprenticeshipEmployerType))
+                .ForMember(dest => dest.ReportingAimFundingLineType, opt => opt.MapFrom(source => source.ReportingAimFundingLineType))
+                ;
 
             CreateMap<PaymentModel, EmployerCoInvestedProviderPaymentEvent>();
             CreateMap<PaymentModel, SfaCoInvestedProviderPaymentEvent>();

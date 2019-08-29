@@ -229,10 +229,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 EmployerAccountId = 1,
                 OrderedProviders = new List<long> { 1, 2, 3 }
             };
-
-
+            
             levyAccountRepositoryMock
-                .Setup(x => x.AddEmployerProviderPriorities(
+                .Setup(x => x.ReplaceEmployerProviderPriorities(
+                    employerChangedProviderPriority.EmployerAccountId,
                     It.Is<List<EmployerProviderPriorityModel>>(o => o.Count == 3 && o[0].EmployerAccountId == 1 && o[0].Order == 1 && o[0].Ukprn == 1),
                     CancellationToken.None))
                 .Returns(Task.CompletedTask).Verifiable();

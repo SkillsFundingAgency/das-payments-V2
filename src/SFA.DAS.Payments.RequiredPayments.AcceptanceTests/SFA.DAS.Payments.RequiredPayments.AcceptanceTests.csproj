@@ -49,8 +49,11 @@
     <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.Logging, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.Logging.0.1.1-beta0001\lib\netstandard2.0\ESFA.DC.Logging.dll</HintPath>
+    <Reference Include="ESFA.DC.Logging, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Logging.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.Logging.Interfaces, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Logging.Interfaces.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.Logging.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ApplicationInsights, Version=2.8.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.2.8.1\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
@@ -548,6 +551,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Data\SFA.DAS.Payments.Monitoring.Jobs.Data.csproj">
       <Project>{D9849B05-C642-48F7-AA6D-FA917257AE45}</Project>
       <Name>SFA.DAS.Payments.Monitoring.Jobs.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Model\SFA.DAS.Payments.Monitoring.Jobs.Model.csproj">
+      <Project>{dc3c2dfe-ce0c-4b40-9a80-392b600fcded}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Jobs.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Messages\SFA.DAS.Payments.RequiredPayments.Messages.csproj">
       <Project>{21918F17-1310-4276-BEF5-64243F9E0C31}</Project>

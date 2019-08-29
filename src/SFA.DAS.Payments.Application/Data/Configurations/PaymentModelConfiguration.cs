@@ -16,8 +16,8 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.EarningEventId).HasColumnName(@"EarningEventId").IsRequired();
             builder.Property(x => x.FundingSourceEventId).HasColumnName(@"FundingSourceEventId").IsRequired();
             builder.Property(x => x.EventTime).HasColumnName(@"EventTime").IsRequired();
-            builder.Property(x => x.PriceEpisodeIdentifier).HasColumnName(@"PriceEpisodeIdentifier");
-            builder.Property(x => x.Amount).HasColumnName(@"Amount");
+            builder.Property(x => x.PriceEpisodeIdentifier).HasColumnName(@"PriceEpisodeIdentifier").IsRequired();
+            builder.Property(x => x.Amount).HasColumnName(@"Amount").IsRequired();
             builder.OwnsOne(p => p.CollectionPeriod, cp =>
             {
                 cp.Property(x => x.Period).HasColumnName(@"CollectionPeriod").IsRequired();
@@ -44,10 +44,13 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.StartDate).HasColumnName(@"EarningsStartDate").IsRequired();
             builder.Property(x => x.PlannedEndDate).HasColumnName(@"EarningsPlannedEndDate");
             builder.Property(x => x.ActualEndDate).HasColumnName(@"EarningsActualEndDate");
-            builder.Property(x => x.CompletionStatus).HasColumnName(@"EarningsCompletionStatus").IsRequired();
-            builder.Property(x => x.CompletionAmount).HasColumnName(@"EarningsCompletionAmount").IsRequired();
-            builder.Property(x => x.InstalmentAmount).HasColumnName(@"EarningsInstalmentAmount").IsRequired();
-            builder.Property(x => x.NumberOfInstalments).HasColumnName(@"EarningsNumberOfInstalments").IsRequired();
+            builder.Property(x => x.CompletionStatus).HasColumnName(@"EarningsCompletionStatus");
+            builder.Property(x => x.CompletionAmount).HasColumnName(@"EarningsCompletionAmount");
+            builder.Property(x => x.InstalmentAmount).HasColumnName(@"EarningsInstalmentAmount");
+            builder.Property(x => x.NumberOfInstalments).HasColumnName(@"EarningsNumberOfInstalments");
+            builder.Property(x => x.AgreementId).HasColumnName(@"AgreementId");
+            builder.Property(x => x.ApprenticeshipEmployerType).HasColumnName(@"ApprenticeshipEmployerType").IsRequired();
+            builder.Property(x => x.ReportingAimFundingLineType).HasColumnName(@"ReportingAimFundingLineType").IsRequired();
         }
     }
 }

@@ -39,16 +39,57 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
             var paymentPriorities = await dataContext.EmployerProviderPriority.AsNoTracking()
                 .Where(paymentPriority => paymentPriority.EmployerAccountId == employerAccountId)
                 .ToListAsync(cancellationToken);
-            
+
             return paymentPriorities;
+        }
+
+        public async Task ReplaceEmployerProviderPriorities(long employerAccountId, List<EmployerProviderPriorityModel> paymentPriorityModels, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var previousEmployerPriorities = await GetPaymentPriorities(employerAccountId, cancellationToken).ConfigureAwait(false);
+            dataContext.EmployerProviderPriority.RemoveRange(previousEmployerPriorities);
+
+            await dataContext.EmployerProviderPriority
+                .AddRangeAsync(paymentPriorityModels, cancellationToken)
+                .ConfigureAwait(false);
+
+            await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public async Task AddEmployerProviderPriorities(List<EmployerProviderPriorityModel> paymentPriorityModels, CancellationToken cancellationToken = default(CancellationToken))
         {
-             await dataContext.EmployerProviderPriority
+            await dataContext.EmployerProviderPriority
                 .AddRangeAsync(paymentPriorityModels, cancellationToken)
                 .ConfigureAwait(false);
         }
 
+        public async Task<List<long>> GetEmployerAccounts(CancellationToken cancellationToken)
+        {
+            var transferSenders = (await dataContext.Apprenticeship
+                .Where(apprenticeship => apprenticeship.TransferSendingEmployerAccountId != null && apprenticeship.TransferSendingEmployerAccountId != 0)
+                .Select(apprenticeship => apprenticeship.TransferSendingEmployerAccountId)
+                .Distinct()
+                .ToListAsync(cancellationToken))
+                .Select(accountId => accountId.Value)
+                .ToList();
+            var accounts = await dataContext.Apprenticeship
+                .Select(apprenticeship => apprenticeship.AccountId)
+                .Distinct()
+                .ToListAsync(cancellationToken);
+
+            accounts.AddRange(transferSenders);
+            return accounts.Distinct().ToList();
+        }
+
+        public async Task<long?> GetLevyAccountId(long ukprn, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var lastPayment = await dataContext.Payment.AsNoTracking()
+                .Where(payment => payment.Ukprn == ukprn && payment.AccountId.HasValue)
+                .OrderByDescending(payment => payment.EventTime)
+                .Take(1)
+                .FirstOrDefaultAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            return lastPayment?.AccountId;
+        }
     }
 }

@@ -25,5 +25,7 @@ $endpoint = 'localhost:19000'
 #Monitoring
 .\Remove-ServiceFabricApplicationAndType.ps1 -applicationName SFA.DAS.Payments.Monitoring.ServiceFabric -Verbose
 
+#PeriodEnd
+.\Remove-ServiceFabricApplicationAndType.ps1 -applicationName SFA.DAS.Payments.PeriodEnd.ServiceFabric -Verbose
 
 #Get-ServiceFabricApplicationType  -ApplicationTypeName SFA.DAS.Payments.FundingSource.ServiceFabricType 

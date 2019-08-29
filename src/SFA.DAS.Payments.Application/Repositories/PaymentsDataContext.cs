@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Data.Configurations;
+using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Application.Repositories
@@ -13,8 +15,13 @@ namespace SFA.DAS.Payments.Application.Repositories
         public virtual DbSet<ApprenticeshipPriceEpisodeModel> ApprenticeshipPriceEpisode { get; protected set; }
         public virtual DbSet<SubmittedLearnerAimModel> SubmittedLearnerAim { get; protected set; }
         public virtual DbSet<ApprenticeshipDuplicateModel> ApprenticeshipDuplicate { get; protected set; }
+        public virtual DbSet<DataLockFailureModel> DataLockFailure { get; protected set; }
         public virtual DbSet<EmployerProviderPriorityModel> EmployerProviderPriority { get; protected set; }
-
+        public virtual DbSet<ApprenticeshipPauseModel> ApprenticeshipPause { get; protected set; }
+        public virtual DbSet<EarningEventModel> EarningEvent { get; protected set; }
+        public virtual DbSet<EarningEventPeriodModel> EarningEventPeriod { get; protected set; }
+        public virtual DbSet<EarningEventPriceEpisodeModel> EarningEventPriceEpisode { get; protected set; }
+        
         public PaymentsDataContext(string connectionString)
         {
             this.connectionString = connectionString;
@@ -30,7 +37,12 @@ namespace SFA.DAS.Payments.Application.Repositories
             modelBuilder.ApplyConfiguration(new LevyAccountModelConfiguration());
             modelBuilder.ApplyConfiguration(new SubmittedLearnerAimModelConfiguration());
             modelBuilder.ApplyConfiguration(new ApprenticeshipDuplicateModelConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockFailureModelConfiguration());
             modelBuilder.ApplyConfiguration(new EmployerProviderPriorityModelConfiguration());
+            modelBuilder.ApplyConfiguration(new ApprenticeshipPauseModelConfiguration());
+            modelBuilder.ApplyConfiguration(new EarningEventModelConfiguration());
+            modelBuilder.ApplyConfiguration(new EarningEventPeriodModelConfiguration());
+            modelBuilder.ApplyConfiguration(new EarningEventPriceEpisodeModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

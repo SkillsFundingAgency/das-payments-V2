@@ -39,6 +39,9 @@
     <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.JobStatus.Interface, Version=0.1.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.JobStatus.Interface.0.1.12-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Interface.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Azure.Services.AppAuthentication, Version=1.0.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.3\lib\net452\Microsoft.Azure.Services.AppAuthentication.dll</HintPath>
     </Reference>
@@ -226,6 +229,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj">
       <Project>{9274ABB3-9F30-4320-A111-17BA07DBF568}</Project>
       <Name>SFA.DAS.Payments.Monitoring.Jobs.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Model\SFA.DAS.Payments.Monitoring.Jobs.Model.csproj">
+      <Project>{DC3C2DFE-CE0C-4B40-9A80-392B600FCDED}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Jobs.Model</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

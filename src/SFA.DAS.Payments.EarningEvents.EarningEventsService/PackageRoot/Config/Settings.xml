@@ -5,9 +5,11 @@
     <Parameter Name="StorageConnectionString" Value="" />
     <Parameter Name="LoggingConnectionString" Value=""/>
     <Parameter Name="ServiceBusConnectionString" Value=""/>
+    <Parameter Name="MonitoringServiceBusConnectionString" Value=""/>
     <Parameter Name="DCServiceBusConnectionString" Value=""/>
     <Parameter Name="DcStorageConnectionString" Value=""/>
     <Parameter Name="PaymentsConnectionString" Value=""/>
+    <Parameter Name="PaymentsMonitoringConnectionString" Value="" />
   </Section>
 
   <Section Name="Settings">
@@ -20,6 +22,8 @@
     <Parameter Name="LogLevel" Value="" />
     <Parameter Name="ProcessMessageSequentially" Value="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+    <Parameter Name="TimeToPauseBetweenChecks" Value=""/>
+    <Parameter Name="TimeToWaitForJobToComplete" Value=""/>
   </Section>
 
 </Settings>

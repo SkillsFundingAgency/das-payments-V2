@@ -47,6 +47,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             fundingSourceEvent.CompletionAmount.Should().Be(requiredPaymentEvent.CompletionAmount);
             fundingSourceEvent.InstalmentAmount.Should().Be(requiredPaymentEvent.InstalmentAmount);
             fundingSourceEvent.NumberOfInstalments.Should().Be(requiredPaymentEvent.NumberOfInstalments);
+            fundingSourceEvent.ApprenticeshipEmployerType.Should().Be(requiredPaymentEvent.ApprenticeshipEmployerType);
         }
     }
 }

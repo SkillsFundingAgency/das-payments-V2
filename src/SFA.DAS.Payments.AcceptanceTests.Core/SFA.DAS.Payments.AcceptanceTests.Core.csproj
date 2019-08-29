@@ -89,8 +89,8 @@
     <Reference Include="ESFA.DC.JobContext.Interface, Version=0.2.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.JobContext.Interface.0.2.5-beta0001\lib\netstandard2.0\ESFA.DC.JobContext.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.JobContextManager, Version=0.2.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.JobContextManager.0.2.5-beta0001\lib\netstandard2.0\ESFA.DC.JobContextManager.dll</HintPath>
+    <Reference Include="ESFA.DC.JobContextManager, Version=0.2.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.JobContextManager.0.2.10-beta0001\lib\netstandard2.0\ESFA.DC.JobContextManager.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.Jobs.Model, Version=0.1.28.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Jobs.Model.0.1.28-beta0001\lib\netstandard2.0\ESFA.DC.Jobs.Model.dll</HintPath>
@@ -98,8 +98,11 @@
     <Reference Include="ESFA.DC.JobStatus.Interface, Version=0.2.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.JobStatus.Interface.0.2.5-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.Logging, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.Logging.0.1.1-beta0001\lib\netstandard2.0\ESFA.DC.Logging.dll</HintPath>
+    <Reference Include="ESFA.DC.Logging, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Logging.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.Logging.Interfaces, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Logging.Interfaces.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.Logging.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.Mapping.Interface, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Mapping.Interface.0.1.0-beta0001\lib\netstandard2.0\ESFA.DC.Mapping.Interface.dll</HintPath>
@@ -230,8 +233,8 @@
     <Reference Include="nunit.framework, Version=3.11.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.11.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="Polly, Version=5.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Polly.5.9.0\lib\net45\Polly.dll</HintPath>
+    <Reference Include="Polly, Version=6.0.0.0, Culture=neutral, PublicKeyToken=c8a3ffc3f8f825cc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Polly.6.1.2\lib\netstandard2.0\Polly.dll</HintPath>
     </Reference>
     <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
@@ -383,7 +386,6 @@
     <Compile Include="Automation\DcNullHelper.cs" />
     <Compile Include="Automation\IDcHelper.cs" />
     <Compile Include="Automation\LearnRefNumberGenerator.cs" />
-    <Compile Include="Automation\RequiredPaymentsCacheCleaner.cs" />
     <Compile Include="Automation\TestSession.cs" />
     <Compile Include="BindingsBase.cs" />
     <Compile Include="Data\Configurations\ProviderModelConfiguration.cs" />
@@ -456,6 +458,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj">
       <Project>{9274ABB3-9F30-4320-A111-17BA07DBF568}</Project>
       <Name>SFA.DAS.Payments.Monitoring.Jobs.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Model\SFA.DAS.Payments.Monitoring.Jobs.Model.csproj">
+      <Project>{dc3c2dfe-ce0c-4b40-9a80-392b600fcded}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Jobs.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Domain\SFA.DAS.Payments.RequiredPayments.Domain.csproj">
       <Project>{F63F1E0D-03B8-447A-910B-D7990D2E480A}</Project>
