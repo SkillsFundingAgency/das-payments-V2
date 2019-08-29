@@ -2,6 +2,7 @@
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
@@ -284,7 +285,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"only the following provider payments will be generated")]
         public async Task ThenOnlyTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
-            await StartMonthEnd(TestSession.Provider).ConfigureAwait(false);
+            //await StartMonthEnd(TestSession.Provider).ConfigureAwait(false);
             await MatchOnlyProviderPayments(table, TestSession.Provider).ConfigureAwait(false);
         }
 
@@ -307,7 +308,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             var matcher = new ProviderPaymentEventMatcher(provider, CurrentCollectionPeriod, TestSession);
-            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Provider Payment event check failure");
+            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Provider Payment event check failure").ConfigureAwait(false);
         }
 
         [Then(@"Month end is triggered")]
@@ -315,10 +316,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             await SendLevyMonthEnd().ConfigureAwait(false);
 
-            foreach (var provider in TestSession.Providers)
-            {
-                await StartMonthEnd(provider).ConfigureAwait(false);
-            }
+            //foreach (var provider in TestSession.Providers)
+            //{
+            //    await StartMonthEnd(provider).ConfigureAwait(false);
+            //}
         }
 
         [Then(@"at month end only the following provider payments will be generated")]
