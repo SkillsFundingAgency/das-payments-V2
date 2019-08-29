@@ -832,7 +832,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected async Task CheckFundingSourceAndStartMonthEnd(Provider provider, List<ProviderPayment> expectedPayments)
         {
             var matcher = new FundingSourceEventMatcher(provider, CurrentCollectionPeriod, TestSession, expectedPayments);
-            await WaitForIt(() => matcher.MatchPayments(), "Funding Source event check failure").ConfigureAwait(false);
+
+            if (expectedPayments == null)
+                await WaitForUnexpected(() => matcher.MatchNoPayments(), "Funding Source event check failure").ConfigureAwait(false);
+            else
+                await WaitForIt(() => matcher.MatchPayments(), "Funding Source event check failure").ConfigureAwait(false);
+
             await StartMonthEnd(provider).ConfigureAwait(false);
         }
 
