@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Payments.Messages.Core.Events;
+﻿using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Messages.Core.Events;
 
 namespace SFA.DAS.Payments.Audit.Application
 {
