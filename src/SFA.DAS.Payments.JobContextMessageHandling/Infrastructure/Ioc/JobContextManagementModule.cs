@@ -35,14 +35,16 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.Infrastructure.Ioc
             builder.Register(c =>
             {
                 var configHelper = c.Resolve<IConfigurationHelper>();
+                var timeout = TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToPauseBetweenChecks", "00:00:30"));
+                var timeToWaitForJobToComplete =
+                    TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForJobToComplete", "00:02:30"));
                 return new TopicConfiguration(
-                    configHelper.GetConnectionString("DCServiceBusConnectionString"), 
-                    configHelper.GetSetting("TopicName"), 
-                    configHelper.GetSetting("SubscriptionName"), 
-                    1, 
-                    maximumCallbackTimeSpan: TimeSpan.FromMinutes(40));
-            }
-                )
+                    configHelper.GetConnectionString("DCServiceBusConnectionString"),
+                    configHelper.GetSetting("TopicName"),
+                    configHelper.GetSetting("SubscriptionName"),
+                    1,
+                    maximumCallbackTimeSpan: timeout + timeToWaitForJobToComplete);
+            })
                 .As<ITopicConfiguration>();
 
             builder.Register(c =>
