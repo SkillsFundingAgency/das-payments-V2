@@ -25,8 +25,8 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
-using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 
@@ -71,7 +71,7 @@ namespace SFA.DAS.Payments.PerformanceTests
             var routing = transportConfig.Routing();
             routing.RouteToEndpoint(typeof(ProcessLearnerCommand), EndpointNames.EarningEvents);
             routing.RouteToEndpoint(typeof(ProcessProviderMonthEndCommand), EndpointNames.ProviderPayments);
-            routing.RouteToEndpoint(typeof(RecordStartedProcessingEarningsJob), EndpointNames.JobMonitoring);
+            routing.RouteToEndpoint(typeof(RecordEarningsJob), EndpointNames.JobMonitoring);
             routing.RouteToEndpoint(typeof(ProcessLevyPaymentsOnMonthEndCommand).Assembly, EndpointNames.FundingSource);
             routing.RouteToEndpoint(typeof(ResetActorsCommand).Assembly, EndpointNames.DataLocks);
 
@@ -122,7 +122,7 @@ namespace SFA.DAS.Payments.PerformanceTests
             var ilrSubmissions = new List<Task>();
 
             var learnerId = 0;
-            var startDate = new DateTime(DateTime.Today.Year + (DateTime.Today.Month < 8 ? -1 : 0), 8, 1);
+            var startDate = new DateTime(2018, 8, 1);
             foreach (var session in sessions)
             {
                 session.Learners.Clear();
@@ -203,13 +203,13 @@ namespace SFA.DAS.Payments.PerformanceTests
                         Cost = 15000M
                     }
                 }
-            });
-            var apprenticeshipIds = apprenticeships.Select(appr => appr.Id.ToString()).Join();
-            var sql = $"Delete from Payments2.ApprenticeshipDuplicate where ApprenticeshipId in ({apprenticeshipIds})";
+            }).ToList();
+            var ulns = apprenticeships.Select(appr => appr.Uln.ToString()).Join();
+            var sql = $"Delete from Payments2.ApprenticeshipDuplicate where ApprenticeshipId in (select Id from Payments2.Apprenticeship where Uln in ({ulns}))";
             await dataContext.Database.ExecuteSqlCommandAsync(sql);
-            sql = $"Delete from Payments2.ApprenticeshipPriceEpisode where ApprenticeshipId in ({apprenticeshipIds})";
+            sql = $"Delete from Payments2.ApprenticeshipPriceEpisode where ApprenticeshipId in (select Id from Payments2.Apprenticeship where Uln in ({ulns}))";
             await dataContext.Database.ExecuteSqlCommandAsync(sql);
-            sql = $"Delete from Payments2.Apprenticeship where Id in ({apprenticeshipIds})";
+            sql = $"Delete from Payments2.Apprenticeship where Uln in ({ulns})";
             await dataContext.Database.ExecuteSqlCommandAsync(sql);
             dataContext.Apprenticeship.AddRange(apprenticeships);
             await dataContext.SaveChangesAsync();
@@ -253,7 +253,7 @@ namespace SFA.DAS.Payments.PerformanceTests
             {
                 JobId = session.JobId,
                 CollectionPeriod = collectionPeriod,
-                CollectionYear = 1819,
+                CollectionYear = 1920,
                 IlrSubmissionDateTime = session.IlrSubmissionTime,
                 SubmissionDate = session.IlrSubmissionTime,
                 Ukprn = session.Ukprn,
@@ -305,6 +305,5 @@ namespace SFA.DAS.Payments.PerformanceTests
             await dataContext.SaveChangesAsync();
             Console.WriteLine($"Finished creating job and generated messages. Job id: {job.Id}, Test DC Job id: {job.DcJobId}");
         }
-
     }
 }

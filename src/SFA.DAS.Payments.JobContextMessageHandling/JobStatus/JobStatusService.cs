@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
             while (DateTime.Now < endTime)
             {
                 var job = await dataContext.GetJobByDcJobId(jobId).ConfigureAwait(false);
-                if (job == null || job.Status == Monitoring.Jobs.Data.Model.JobStatus.InProgress)
+                if (job == null || job.Status == Monitoring.Jobs.Model.JobStatus.InProgress)
                 {
                     logger.LogVerbose($"DC Job {jobId} is still in progress");
                     await Task.Delay(config.TimeToPauseBetweenChecks);

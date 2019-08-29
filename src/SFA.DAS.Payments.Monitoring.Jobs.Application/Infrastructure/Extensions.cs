@@ -16,11 +16,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure
             return await Defer(context, message, TimeSpan.FromSeconds(delayInSeconds), "JobUpdateFailedRetries");
         }
 
-        public static async Task<bool> Defer(this IMessageHandlerContext context, object message, TimeSpan delay, string retriesKey)
+        public static async Task<bool> Defer(this IMessageHandlerContext context, object message, TimeSpan delay, string retriesKey, int maxnumberOfRetries = 5)
         {
             var retriesHeader = context.MessageHeaders.ContainsKey(retriesKey) ? context.MessageHeaders[retriesKey] : null;
             var retries = string.IsNullOrEmpty(retriesHeader) ? 0 : int.Parse(retriesHeader);
-            if (++retries > 5)
+            if (++retries > maxnumberOfRetries)
             {
                 return false;
             }
