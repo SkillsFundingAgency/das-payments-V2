@@ -51,6 +51,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 EarningEventId = Guid.NewGuid(),
                 ContractType = ContractType.Act1,
                 ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
+                ApprenticeshipId = 12,
             };
             mapperConfiguration = AutoMapperConfigurationFactory.CreateMappingConfig();
             autoMapper = mapperConfiguration.CreateMapper();
