@@ -25,6 +25,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
         [OneTimeSetUp]
         public void Initialise()
         {
+            Mapper.Reset();
             Mapper.Initialize(cfg =>
             {
                 cfg.AddProfile<DataLocksProfile>();
