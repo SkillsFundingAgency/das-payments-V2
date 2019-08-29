@@ -6,6 +6,7 @@
     <Parameter Name="PaymentsConnectionString" Value=""/>
     <Parameter Name="ProviderEventsConnectionString" Value=""/>
     <Parameter Name="ServiceBusConnectionString" Value=""/>
+    <Parameter Name="MonitoringServiceBusConnectionString" Value=""/>
   </Section>
 
   <Section Name="Settings">
