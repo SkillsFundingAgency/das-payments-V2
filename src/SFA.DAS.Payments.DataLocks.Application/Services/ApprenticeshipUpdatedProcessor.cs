@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 {
     public interface IApprenticeshipUpdatedProcessor
     {
-        Task ProcessApprenticeshipUpdate(ApprenticeshipUpdated updatedApprenticeship);
+        Task<List<InvalidatedPayableEarningEvent>> ProcessApprenticeshipUpdate(ApprenticeshipUpdated updatedApprenticeship);
         Task<List<DataLockEvent>> GetApprenticeshipUpdatePayments(ApprenticeshipUpdated updatedApprenticeship);
         Task<List<FunctionalSkillDataLockEvent>> GetApprenticeshipUpdateFunctionalSkillPayments(ApprenticeshipUpdated updatedApprenticeship);
     }
@@ -33,18 +33,22 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         private readonly IMapper mapper;
         private readonly IApprenticeshipRepository repository;
         private readonly IDataLockProcessor dataLockProcessor;
-        private readonly IActorDataCache<Act1FunctionalSkillEarningsEvent> act1FunctionalSkillEarningsEventCache;
-        private readonly IActorDataCache<ApprenticeshipContractType1EarningEvent> apprenticeshipContractType1EarningEventCache;
         private readonly IGenerateApprenticeshipEarningCacheKey generateApprenticeshipEarningCacheKey;
+        private readonly IActorDataCache<ApprenticeshipContractType1EarningEvent> apprenticeshipContractType1EarningEventCache;
+        private readonly IActorDataCache<Act1FunctionalSkillEarningsEvent> act1FunctionalSkillEarningsEventCache;
+        private readonly IActorDataCache<PayableEarningEvent> payableEarningEventCache;
+        private readonly IActorDataCache<PayableFunctionalSkillEarningEvent> payableFunctionalSkillEarningEventCache;
 
         public ApprenticeshipUpdatedProcessor(IPaymentLogger logger,
             IActorDataCache<List<ApprenticeshipModel>> cache,
             IMapper mapper,
             IApprenticeshipRepository repository,
             IDataLockProcessor dataLockProcessor,
+            IGenerateApprenticeshipEarningCacheKey generateApprenticeshipEarningCacheKey,
             IActorDataCache<Act1FunctionalSkillEarningsEvent> act1FunctionalSkillEarningsEventCache,
             IActorDataCache<ApprenticeshipContractType1EarningEvent> apprenticeshipContractType1EarningEventCache,
-            IGenerateApprenticeshipEarningCacheKey generateApprenticeshipEarningCacheKey) 
+            IActorDataCache<PayableEarningEvent> payableEarningEventCache,
+            IActorDataCache<PayableFunctionalSkillEarningEvent> payableFunctionalSkillEarningEventCache)
         {
 
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -52,12 +56,14 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
             this.dataLockProcessor = dataLockProcessor ?? throw new ArgumentNullException(nameof(dataLockProcessor));
+            this.generateApprenticeshipEarningCacheKey = generateApprenticeshipEarningCacheKey;
             this.act1FunctionalSkillEarningsEventCache = act1FunctionalSkillEarningsEventCache;
             this.apprenticeshipContractType1EarningEventCache = apprenticeshipContractType1EarningEventCache;
-            this.generateApprenticeshipEarningCacheKey = generateApprenticeshipEarningCacheKey;
+            this.payableEarningEventCache = payableEarningEventCache;
+            this.payableFunctionalSkillEarningEventCache = payableFunctionalSkillEarningEventCache;
         }
 
-        public async Task ProcessApprenticeshipUpdate(ApprenticeshipUpdated updatedApprenticeship)
+        public async Task<List<InvalidatedPayableEarningEvent>> ProcessApprenticeshipUpdate(ApprenticeshipUpdated updatedApprenticeship)
         {
             logger.LogDebug(
                 $"Getting apprenticeships cache item using uln for apprenticeship id: {updatedApprenticeship.Id}");
@@ -73,14 +79,20 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             logger.LogDebug("Finished mapping the apprenticeship model, now adding to the cache.");
             apprenticeships.Add(model);
             await cache.AddOrReplace(model.Uln.ToString(), apprenticeships, CancellationToken.None);
+            var invalidatedPayableEarnings = await  CreateInvalidatedPayableEarningEvents(model.Ukprn, model.Uln, CancellationToken.None);
+
             logger.LogInfo(
                 $"Finished storing the apprenticeship details in the cache. Apprenticeship id: {model.Id}, Account: {model.AccountId}, Provider: {model.Ukprn}");
+
+            return invalidatedPayableEarnings;
         }
 
         public async Task<List<DataLockEvent>> GetApprenticeshipUpdatePayments(ApprenticeshipUpdated updatedApprenticeship)
         {
             var earningCacheKey = generateApprenticeshipEarningCacheKey
-                .GenerateAct1EarningsKey(updatedApprenticeship.Ukprn, updatedApprenticeship.Uln);
+                .GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1EarningsKey,
+                    updatedApprenticeship.Ukprn,
+                    updatedApprenticeship.Uln);
 
             var apprenticeshipAct1Earning = await apprenticeshipContractType1EarningEventCache
                 .TryGet(earningCacheKey)
@@ -97,7 +109,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         public async Task<List<FunctionalSkillDataLockEvent>> GetApprenticeshipUpdateFunctionalSkillPayments(ApprenticeshipUpdated updatedApprenticeship)
         {
             var earningCacheKey = generateApprenticeshipEarningCacheKey
-                .GenerateAct1FunctionalSkillEarningsKey(updatedApprenticeship.Ukprn, updatedApprenticeship.Uln);
+                .GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1FunctionalSkillEarningsKey,
+                    updatedApprenticeship.Ukprn, 
+                    updatedApprenticeship.Uln);
 
             var apprenticeshipAct1FunctionalSkillEarning = await act1FunctionalSkillEarningsEventCache
                 .TryGet(earningCacheKey)
@@ -138,8 +152,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             functionalSkillEarningEvent.Earnings = new ReadOnlyCollection<FunctionalSkillEarning>(functionalSkillEarnings);
         }
-
-
+        
         private void AddIncentiveEarnings(EarningEventModel onProgAndIncentiveEarning, ApprenticeshipContractType1EarningEvent act1EarningEvent)
         {
             var allIncentiveEarningTypes = Enum.GetValues(typeof(IncentiveEarningType)).Cast<IncentiveEarningType>().ToList();
@@ -189,6 +202,87 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
 
             return (earningPeriods.Select(x => mapper.Map<EarningPeriod>(x)).ToList(), earning.Periods.First().CensusDate ?? DateTime.MaxValue);
+        }
+
+        private async Task<List<InvalidatedPayableEarningEvent>> CreateInvalidatedPayableEarningEvents(long ukprn, long uln, CancellationToken cancellationToken)
+        {
+            var invalidatedPayableEarnings = new List<InvalidatedPayableEarningEvent>();
+
+            var act1PayableEarningsKey = generateApprenticeshipEarningCacheKey.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1PayableEarningsKey, ukprn, uln);
+            var latestPayableEarningEvent = await payableEarningEventCache.TryGet(act1PayableEarningsKey, cancellationToken).ConfigureAwait(false);
+
+            if (latestPayableEarningEvent.HasValue && latestPayableEarningEvent.Value != null)
+            {
+                var onProgAccountIds = GetAccountIdsFromPeriods(latestPayableEarningEvent.Value
+                    .OnProgrammeEarnings
+                    .SelectMany(x => x.Periods)
+                    .ToList());
+
+                var incentiveEarnings = GetAccountIdsFromPeriods(latestPayableEarningEvent.Value
+                    .IncentiveEarnings
+                    .SelectMany(x => x.Periods)
+                    .ToList());
+                 
+                var accountIds = new List<long>();
+                accountIds.AddRange(onProgAccountIds.accountIds);
+                accountIds.AddRange(onProgAccountIds.transferSenderAccountIds);
+                accountIds.AddRange(incentiveEarnings.accountIds);
+                accountIds.AddRange(incentiveEarnings.transferSenderAccountIds);
+
+                var act1InvalidatedPayableEarningEvent = new InvalidatedPayableEarningEvent
+                {
+                    LastDataLockEventId = latestPayableEarningEvent.Value.EventId,
+                    LastEarningEventId = latestPayableEarningEvent.Value.EarningEventId,
+                    AccountIds = accountIds.Distinct().ToList()
+                };
+
+                invalidatedPayableEarnings.Add(act1InvalidatedPayableEarningEvent);
+            }
+            
+            var act1FunctionalSkillPayableEarningsKey = generateApprenticeshipEarningCacheKey
+                .GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1FunctionalSkillPayableEarningsKey, ukprn, uln);
+
+            var latestPayableFunctionalSkillEarning = await payableFunctionalSkillEarningEventCache
+                .TryGet(act1FunctionalSkillPayableEarningsKey, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (latestPayableFunctionalSkillEarning.HasValue && latestPayableFunctionalSkillEarning.Value != null)
+            {
+                var functionalSkillAccountIds = GetAccountIdsFromPeriods(latestPayableFunctionalSkillEarning.Value
+                    .Earnings
+                    .SelectMany(x => x.Periods)
+                    .ToList());
+
+                var accountIds = new List<long>();
+                accountIds.AddRange(functionalSkillAccountIds.accountIds);
+                accountIds.AddRange(functionalSkillAccountIds.transferSenderAccountIds);
+
+                var functionalSkillInvalidatedPayableEarningEvent = new InvalidatedPayableEarningEvent
+                {
+                    LastDataLockEventId = latestPayableFunctionalSkillEarning.Value.EventId,
+                    LastEarningEventId = latestPayableFunctionalSkillEarning.Value.EarningEventId,
+                    AccountIds = accountIds.Distinct().ToList()
+                };
+
+                invalidatedPayableEarnings.Add(functionalSkillInvalidatedPayableEarningEvent);
+            }
+
+            return invalidatedPayableEarnings;
+        }
+
+        private  (List<long> accountIds, List<long> transferSenderAccountIds)  GetAccountIdsFromPeriods(List<EarningPeriod> periods)
+        {
+            var accountIds = periods
+                .Where(p => p.AccountId.HasValue)
+                .Select(p => p.AccountId.Value)
+                .ToList();
+
+            var transferSenderAccountIds = periods
+                .Where(p => p.TransferSenderAccountId.HasValue)
+                .Select(p => p.TransferSenderAccountId.Value)
+                .ToList();
+            
+            return (accountIds, transferSenderAccountIds);
         }
     }
 }

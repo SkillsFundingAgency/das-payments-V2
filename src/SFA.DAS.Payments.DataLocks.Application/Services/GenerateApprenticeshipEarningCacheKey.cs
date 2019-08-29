@@ -7,20 +7,22 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 {
     public interface IGenerateApprenticeshipEarningCacheKey
     {
-        string GenerateAct1EarningsKey(long ukprn, long uln);
-        string GenerateAct1FunctionalSkillEarningsKey(long ukprn, long uln);
+        string GenerateKey(ApprenticeshipEarningCacheKeyTypes keyType, long ukprn, long uln);
     }
 
+    public enum ApprenticeshipEarningCacheKeyTypes
+    {
+        Act1EarningsKey = 1,
+        Act1FunctionalSkillEarningsKey,
+        Act1PayableEarningsKey,
+        Act1FunctionalSkillPayableEarningsKey
+    }
+    
     public class GenerateApprenticeshipEarningCacheKey : IGenerateApprenticeshipEarningCacheKey
     {
-        public string GenerateAct1EarningsKey(long ukprn, long uln)
+        public string GenerateKey(ApprenticeshipEarningCacheKeyTypes keyType, long ukprn, long uln)
         {
-            return $"Act1EarningsKey_{ukprn}_{uln}";
-        }
-
-        public string GenerateAct1FunctionalSkillEarningsKey(long ukprn, long uln)
-        {
-            return $"Act1FunctionalSkillEarningsKey_{ukprn}_{uln}";
+            return $"{Enum.GetName(keyType.GetType(), keyType)}_{ukprn}_{uln}";
         }
     }
 }

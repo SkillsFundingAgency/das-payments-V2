@@ -192,6 +192,41 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             return fundingSourceEvents.AsReadOnly();
         }
 
+
+        public async Task RemoveObsoletePayments(RemoveObsoletePayments message)
+        {
+            var fundingSourceEvents = new List<FundingSourcePaymentEvent>();
+
+            var keys = await generateSortedPaymentKeys.GeyKeys().ConfigureAwait(false);
+
+            var levyAccount = await levyFundingSourceRepository.GetLevyAccount(employerAccountId);
+            levyBalanceService.Initialise(levyAccount.Balance, levyAccount.TransferAllowance);
+
+            paymentLogger.LogDebug($"Processing {keys.Count} required payments, levy balance {levyAccount.Balance}, account {employerAccountId}, job id {jobId}");
+
+            foreach (var key in keys)
+            {
+                var requiredPaymentEvent = await requiredPaymentsCache.TryGet(key).ConfigureAwait(false);
+                fundingSourceEvents.AddRange(CreateFundingSourcePaymentsForRequiredPayment(requiredPaymentEvent.Value, employerAccountId, jobId));
+                await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
+            }
+
+            paymentLogger.LogDebug($"Created {fundingSourceEvents.Count} payments - {GetFundsDebugString(fundingSourceEvents)}, account {employerAccountId}, job id {jobId}");
+
+            levyAccount.Balance = levyBalanceService.RemainingBalance;
+            levyAccount.TransferAllowance = levyBalanceService.RemainingTransferAllowance;
+            await levyAccountCache.AddOrReplace(CacheKeys.LevyBalanceKey, levyAccount);
+
+            await refundSortKeysCache.Clear(CacheKeys.RefundPaymentsKeyListKey).ConfigureAwait(false);
+            await transferPaymentSortKeysCache.Clear(CacheKeys.SenderTransferKeyListKey).ConfigureAwait(false);
+            await requiredPaymentSortKeysCache.Clear(CacheKeys.RequiredPaymentKeyListKey).ConfigureAwait(false);
+
+            await monthEndCache.AddOrReplace(CacheKeys.MonthEndCacheKey, true, CancellationToken.None);
+            paymentLogger.LogInfo($"Finished generating levy and/or co-invested payments for the account: {employerAccountId}, number of payments: {fundingSourceEvents.Count}.");
+            return fundingSourceEvents.AsReadOnly();
+        }
+
+
         public async Task RemovePreviousSubmissions(long employerAccountId, long jobId, CollectionPeriod collectionPeriod,
             DateTime submissionDate)
         {

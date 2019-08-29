@@ -16,6 +16,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching;
 using SFA.DAS.Payments.Model.Core.Incentives;
@@ -30,10 +31,21 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         private Mock<ILearnerMatcher> learnerMatcherMock;
         private Mock<IEarningPeriodsValidationProcessor> onProgValidationMock;
         private List<ApprenticeshipModel> apprenticeships;
+
+        private  Mock<IGenerateApprenticeshipEarningCacheKey> generateApprenticeshipEarningCacheKey;
+        private  Mock<IActorDataCache<ApprenticeshipContractType1EarningEvent>> apprenticeshipContractType1EarningEventCache;
+        private  Mock<IActorDataCache<Act1FunctionalSkillEarningsEvent>> act1FunctionalSkillEarningsEventCache;
+        private  Mock<IActorDataCache<PayableEarningEvent>> payableEarningEventCache;
+        private  Mock<IActorDataCache<PayableFunctionalSkillEarningEvent>> payableFunctionalSkillEarningEventCache;
+
         private const long Uln = 123;
         private const int AcademicYear = 1819;
         private LearningAim aim;
         private const long Ukprn = 123;
+        const string act1EarningsKey = "Act1EarningsKey";
+        const string act1PayableEarningsKey = "Act1PayableEarningsKey";
+        const string act1FunctionalSkillEarningsKey = "Act1FunctionalSkillEarningsKey";
+        const string act1FunctionalSkillPayableEarningsKey = "Act1FunctionalSkillPayableEarningsKey";
 
         [OneTimeSetUp]
         public void Initialise()
@@ -52,6 +64,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         {
             learnerMatcherMock.Verify();
             onProgValidationMock.Verify();
+         
         }
 
         [SetUp]
@@ -68,6 +81,61 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             learnerMatcherMock = new Mock<ILearnerMatcher>(MockBehavior.Strict);
             onProgValidationMock = new Mock<IEarningPeriodsValidationProcessor>(MockBehavior.Strict);
+
+            generateApprenticeshipEarningCacheKey = new Mock<IGenerateApprenticeshipEarningCacheKey>(MockBehavior.Strict);
+            act1FunctionalSkillEarningsEventCache = new Mock<IActorDataCache<Act1FunctionalSkillEarningsEvent>>();
+            apprenticeshipContractType1EarningEventCache = new Mock<IActorDataCache<ApprenticeshipContractType1EarningEvent>>();
+            payableEarningEventCache = new Mock<IActorDataCache<PayableEarningEvent>>();
+            payableFunctionalSkillEarningEventCache = new Mock<IActorDataCache<PayableFunctionalSkillEarningEvent>>();
+            
+            generateApprenticeshipEarningCacheKey
+                .Setup(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1EarningsKey, Ukprn, Uln))
+                .Returns(act1EarningsKey)
+                .Verifiable();
+
+            apprenticeshipContractType1EarningEventCache
+                .Setup(x => x.AddOrReplace(act1EarningsKey,
+                    It.IsAny<ApprenticeshipContractType1EarningEvent>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+
+            generateApprenticeshipEarningCacheKey
+                .Setup(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1PayableEarningsKey, Ukprn, Uln))
+                .Returns(act1PayableEarningsKey)
+                .Verifiable();
+
+            payableEarningEventCache
+                .Setup(x => x.AddOrReplace(act1PayableEarningsKey,
+                    It.IsAny<PayableEarningEvent>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+
+            generateApprenticeshipEarningCacheKey
+                .Setup(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1FunctionalSkillEarningsKey, Ukprn, Uln))
+                .Returns(act1FunctionalSkillEarningsKey)
+                .Verifiable();
+
+            act1FunctionalSkillEarningsEventCache
+                .Setup(x => x.AddOrReplace(act1FunctionalSkillEarningsKey,
+                    It.IsAny<Act1FunctionalSkillEarningsEvent>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+
+            generateApprenticeshipEarningCacheKey
+                .Setup(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1FunctionalSkillPayableEarningsKey, Ukprn, Uln))
+                .Returns(act1FunctionalSkillPayableEarningsKey)
+                .Verifiable();
+
+            payableFunctionalSkillEarningEventCache
+                .Setup(x => x.AddOrReplace(act1FunctionalSkillPayableEarningsKey,
+                    It.IsAny<PayableFunctionalSkillEarningEvent>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+            
         }
 
         [Test]
@@ -95,7 +163,18 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     new List<EarningPeriod>()
                     )).Verifiable();
 
-            var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object);
+
+
+            var dataLockProcessor = new DataLockProcessor(mapper,
+                learnerMatcherMock.Object,
+                onProgValidationMock.Object,
+                generateApprenticeshipEarningCacheKey.Object,
+                act1FunctionalSkillEarningsEventCache.Object,
+                apprenticeshipContractType1EarningEventCache.Object,
+                payableEarningEventCache.Object,
+                payableFunctionalSkillEarningEventCache.Object);
+
+
             var dataLockEvents = await dataLockProcessor.GetPaymentEvents(earningEvent, default(CancellationToken));
 
             dataLockEvents.Should().NotBeNull();
@@ -109,6 +188,19 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             payableEarning.IncentiveEarnings.Should().NotBeNull();
             payableEarning.IncentiveEarnings.Count.Should().Be(1);
             payableEarning.IncentiveEarnings.First().Periods.Count.Should().Be(1);
+            
+            generateApprenticeshipEarningCacheKey
+                .Verify(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1EarningsKey, Ukprn, Uln));
+            
+            apprenticeshipContractType1EarningEventCache
+                .Verify(x => x.AddOrReplace(act1EarningsKey, earningEvent, It.IsAny<CancellationToken>()));
+            
+            generateApprenticeshipEarningCacheKey
+                .Verify(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1PayableEarningsKey, Ukprn, Uln));
+            
+            payableEarningEventCache
+                .Verify(x => x.AddOrReplace(act1PayableEarningsKey, payableEarning, It.IsAny<CancellationToken>()));
+            
         }
 
         [Test]
@@ -124,7 +216,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     Apprenticeships = new List<ApprenticeshipModel>(apprenticeships)
                 }).Verifiable();
 
-            var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object);
+            var dataLockProcessor = new DataLockProcessor(mapper,
+                learnerMatcherMock.Object,
+                onProgValidationMock.Object,
+                generateApprenticeshipEarningCacheKey.Object,
+                act1FunctionalSkillEarningsEventCache.Object,
+                apprenticeshipContractType1EarningEventCache.Object,
+                payableEarningEventCache.Object,
+                payableFunctionalSkillEarningEventCache.Object);
+            
             var dataLockEvents = await dataLockProcessor.GetPaymentEvents(earningEvent, default(CancellationToken));
             dataLockEvents.Should().NotBeNull();
             dataLockEvents.Should().HaveCount(1);
@@ -134,6 +234,19 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 .SelectMany(x => x.Periods)
                 .All(p => p.DataLockFailures.All(d => d.DataLockError == DataLockErrorCode.DLOCK_01))
                 .Should().BeTrue();
+
+
+            generateApprenticeshipEarningCacheKey
+                .Verify(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1EarningsKey, Ukprn, Uln), Times.Once);
+
+            apprenticeshipContractType1EarningEventCache
+                .Verify(x => x.AddOrReplace(act1EarningsKey, earningEvent, It.IsAny<CancellationToken>()), Times.Once);
+
+            generateApprenticeshipEarningCacheKey
+                .Verify(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1PayableEarningsKey, Ukprn, Uln), Times.Never);
+
+            payableEarningEventCache
+                .Verify(x => x.AddOrReplace(act1PayableEarningsKey, It.IsAny<PayableEarningEvent>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Test]
@@ -147,7 +260,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     Apprenticeships = new List<ApprenticeshipModel>(apprenticeships)
                 }).Verifiable();
 
-            var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object);
+            var dataLockProcessor = new DataLockProcessor(mapper,
+                learnerMatcherMock.Object,
+                onProgValidationMock.Object,
+                generateApprenticeshipEarningCacheKey.Object,
+                act1FunctionalSkillEarningsEventCache.Object,
+                apprenticeshipContractType1EarningEventCache.Object,
+                payableEarningEventCache.Object,
+                payableFunctionalSkillEarningEventCache.Object);
+            
             var dataLockEvents = await dataLockProcessor.GetPaymentEvents(earningEvent, default(CancellationToken));
             dataLockEvents.Should().NotBeNull();
             dataLockEvents.Should().HaveCount(1);
@@ -157,6 +278,18 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 .SelectMany(x => x.Periods)
                 .All(p => p.DataLockFailures.All(d => d.DataLockError == DataLockErrorCode.DLOCK_01))
                 .Should().BeTrue();
+            
+            generateApprenticeshipEarningCacheKey
+                .Verify(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1EarningsKey, Ukprn, Uln), Times.Once);
+
+            apprenticeshipContractType1EarningEventCache
+                .Verify(x => x.AddOrReplace(act1EarningsKey, earningEvent, It.IsAny<CancellationToken>()), Times.Once);
+
+            generateApprenticeshipEarningCacheKey
+                .Verify(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1PayableEarningsKey, Ukprn, Uln), Times.Never);
+
+            payableEarningEventCache
+                .Verify(x => x.AddOrReplace(act1PayableEarningsKey, It.IsAny<PayableEarningEvent>(), It.IsAny<CancellationToken>()), Times.Never);
         }
         
         [Test]
@@ -201,7 +334,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 }))
                 .Verifiable();
 
-            var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object);
+            var dataLockProcessor = new DataLockProcessor(mapper,
+                learnerMatcherMock.Object,
+                onProgValidationMock.Object,
+                generateApprenticeshipEarningCacheKey.Object,
+                act1FunctionalSkillEarningsEventCache.Object,
+                apprenticeshipContractType1EarningEventCache.Object,
+                payableEarningEventCache.Object,
+                payableFunctionalSkillEarningEventCache.Object);
+
             var actual = await dataLockProcessor.GetPaymentEvents(testEarningEvent, default(CancellationToken))
                 .ConfigureAwait(false);
 
@@ -231,6 +372,18 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             invalidEarningPeriod.DataLockFailures.Should().NotBeNull();
             invalidEarningPeriod.DataLockFailures.Should().HaveCount(1);
             invalidEarningPeriod.DataLockFailures[0].DataLockError.Should().Be(DataLockErrorCode.DLOCK_09);
+            
+            generateApprenticeshipEarningCacheKey
+                .Verify(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1EarningsKey, Ukprn, Uln));
+
+            apprenticeshipContractType1EarningEventCache
+                .Verify(x => x.AddOrReplace(act1EarningsKey, testEarningEvent, It.IsAny<CancellationToken>()));
+
+            generateApprenticeshipEarningCacheKey
+                .Verify(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1PayableEarningsKey, Ukprn, Uln));
+
+            payableEarningEventCache
+                .Verify(x => x.AddOrReplace(act1PayableEarningsKey, payableEarning, It.IsAny<CancellationToken>()));
         }
 
         [Test]
@@ -274,7 +427,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 }))
                 .Verifiable();
 
-            var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object);
+            var dataLockProcessor = new DataLockProcessor(mapper,
+                learnerMatcherMock.Object,
+                onProgValidationMock.Object,
+                generateApprenticeshipEarningCacheKey.Object,
+                act1FunctionalSkillEarningsEventCache.Object,
+                apprenticeshipContractType1EarningEventCache.Object,
+                payableEarningEventCache.Object,
+                payableFunctionalSkillEarningEventCache.Object);
+
             var actualDataLockEvents = await dataLockProcessor.GetPaymentEvents(testEarningEvent, default(CancellationToken))
                 .ConfigureAwait(false);
 
@@ -326,6 +487,20 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             invalidIncentiveEarningPeriod.DataLockFailures.Should().NotBeNull();
             invalidIncentiveEarningPeriod.DataLockFailures.Should().HaveCount(1);
             invalidIncentiveEarningPeriod.DataLockFailures[0].DataLockError.Should().Be(DataLockErrorCode.DLOCK_09);
+
+
+
+            generateApprenticeshipEarningCacheKey
+                .Verify(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1EarningsKey, Ukprn, Uln));
+
+            apprenticeshipContractType1EarningEventCache
+                .Verify(x => x.AddOrReplace(act1EarningsKey, testEarningEvent, It.IsAny<CancellationToken>()));
+
+            generateApprenticeshipEarningCacheKey
+                .Verify(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1PayableEarningsKey, Ukprn, Uln));
+
+            payableEarningEventCache
+                .Verify(x => x.AddOrReplace(act1PayableEarningsKey, payableEarning, It.IsAny<CancellationToken>()));
         }
 
         [Test]
@@ -369,7 +544,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 }))
                 .Verifiable();
 
-            var dataLockProcessor = new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object);
+            var dataLockProcessor = new DataLockProcessor(mapper,
+                learnerMatcherMock.Object,
+                onProgValidationMock.Object,
+                generateApprenticeshipEarningCacheKey.Object,
+                act1FunctionalSkillEarningsEventCache.Object,
+                apprenticeshipContractType1EarningEventCache.Object,
+                payableEarningEventCache.Object,
+                payableFunctionalSkillEarningEventCache.Object);
+
             var actualDataLockEvents = await dataLockProcessor.GetFunctionalSkillPaymentEvents(testEarningEvent, default(CancellationToken))
                 .ConfigureAwait(false);
 
@@ -378,9 +561,21 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             var failedDataLockEarnings = actualDataLockEvents.OfType<FunctionalSkillEarningFailedDataLockMatching>().ToList();
             failedDataLockEarnings.Should().HaveCount(1);
+            
+            generateApprenticeshipEarningCacheKey
+                .Verify(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1FunctionalSkillEarningsKey, Ukprn, Uln));
+               
+            act1FunctionalSkillEarningsEventCache
+                .Verify(x => x.AddOrReplace(act1FunctionalSkillEarningsKey, testEarningEvent, It.IsAny<CancellationToken>()));
+               
+            generateApprenticeshipEarningCacheKey
+                .Verify(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1FunctionalSkillPayableEarningsKey, Ukprn, Uln));
+               
+            payableFunctionalSkillEarningEventCache
+                .Verify(x => x.AddOrReplace(act1FunctionalSkillPayableEarningsKey, payableEarnings[0], It.IsAny<CancellationToken>()));
+             
         }
-
-
+        
         private ApprenticeshipContractType1EarningEvent CreateTestEarningEvent(byte periodsToCreate, decimal earningPeriodAmount, LearningAim testAim)
         {
             var testEarningEvent = new ApprenticeshipContractType1EarningEvent

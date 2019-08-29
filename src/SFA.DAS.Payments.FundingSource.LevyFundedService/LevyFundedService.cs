@@ -147,6 +147,25 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             }
         }
 
+        public async Task RemoveObsoletePayments(RemoveObsoletePayments command)
+        {
+            paymentLogger.LogVerbose($"Handling RemoveObsoletePayments for {Id}, Account: {command.AccountId}");
+            try
+            {
+                using (var operation = telemetry.StartOperation())
+                {
+                    var stopwatch = Stopwatch.StartNew();
+                    var fundingSourceEvents = await fundingSourceService.HandleMonthEnd(command.AccountId, command.JobId);
+                    telemetry.StopOperation(operation);
+                }
+            }
+            catch (Exception ex)
+            {
+                paymentLogger.LogError($"Failed to Remove Obsolete Payments for Account: {command.AccountId}. Error: {ex.Message}", ex);
+                throw;
+            }
+        }
+
         public async Task RemovePreviousSubmissions(ProcessSubmissionDeletion command)
         {
             paymentLogger.LogVerbose($"Handling ProcessSubmissionDeletion for {Id}, Job: {command.JobId}, Account: {command.AccountId}");
@@ -254,8 +273,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             paymentLogger.LogInfo($"Resetting actor for employer {Id.GetLongId()}");
             await actorCache.ResetInitialiseFlag().ConfigureAwait(false);
         }
-
-
+        
         private void TrackInfrastructureEvent(string eventName, Stopwatch stopwatch)
         {
             stopwatch.Stop();

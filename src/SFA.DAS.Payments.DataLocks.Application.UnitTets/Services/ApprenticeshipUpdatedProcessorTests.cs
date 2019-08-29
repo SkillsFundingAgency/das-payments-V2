@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
 using AutoMapper;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Messages.Events;
@@ -106,9 +108,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             };
 
             var earningKey = "key";
-            
+
             mocker.Mock<IGenerateApprenticeshipEarningCacheKey>()
-                .Setup(x => x.GenerateAct1EarningsKey(updatedApprenticeship.Ukprn, updatedApprenticeship.Uln))
+                .Setup(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1EarningsKey,
+                    updatedApprenticeship.Ukprn,
+                    updatedApprenticeship.Uln))
                 .Returns(earningKey)
                 .Verifiable();
 
@@ -127,18 +131,19 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             await processor.GetApprenticeshipUpdatePayments(updatedApprenticeship);
 
             mocker.Mock<IGenerateApprenticeshipEarningCacheKey>()
-                .Verify(x => x.GenerateAct1EarningsKey(updatedApprenticeship.Ukprn, updatedApprenticeship.Uln), Times.Once);
-            
+                .Verify(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1EarningsKey,
+                    updatedApprenticeship.Ukprn,
+                    updatedApprenticeship.Uln), Times.Once);
+
             mocker.Mock<IActorDataCache<ApprenticeshipContractType1EarningEvent>>()
                 .Verify(x => x.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
-               
+
             mocker.Mock<IDataLockProcessor>()
                 .Verify(x => x.GetPaymentEvents(
-                        It.Is<ApprenticeshipContractType1EarningEvent>(o=> o.Ukprn == updatedApprenticeship.Ukprn && o.Learner.Uln == updatedApprenticeship.Uln),
+                        It.Is<ApprenticeshipContractType1EarningEvent>(o => o.Ukprn == updatedApprenticeship.Ukprn && o.Learner.Uln == updatedApprenticeship.Uln),
                         It.IsAny<CancellationToken>()),
                     Times.Once);
         }
-
 
         [Test]
         public async Task Get_Apprenticeship_Update_FunctionalSkill_Payments_Correctly()
@@ -161,11 +166,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     Uln = updatedApprenticeship.Uln,
                 }
             };
-            
+
             var earningKey = "key";
 
             mocker.Mock<IGenerateApprenticeshipEarningCacheKey>()
-                .Setup(x => x.GenerateAct1FunctionalSkillEarningsKey(updatedApprenticeship.Ukprn, updatedApprenticeship.Uln))
+                .Setup(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1FunctionalSkillEarningsKey,
+                    updatedApprenticeship.Ukprn,
+                    updatedApprenticeship.Uln))
                 .Returns(earningKey)
                 .Verifiable();
 
@@ -193,8 +200,127 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     Times.Once);
 
             mocker.Mock<IGenerateApprenticeshipEarningCacheKey>()
-                .Verify(x => x.GenerateAct1FunctionalSkillEarningsKey(updatedApprenticeship.Ukprn, updatedApprenticeship.Uln), Times.Once);
+                .Verify(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1FunctionalSkillEarningsKey,
+                    updatedApprenticeship.Ukprn,
+                    updatedApprenticeship.Uln), Times.Once);
 
         }
+
+        [Test]
+        public async Task Creates_Valid_InvalidatedPayableEarningEvents()
+        {
+           var latestPayableEarningEvent = new PayableEarningEvent
+            {
+                EarningEventId = Guid.NewGuid(),
+                EventId = Guid.NewGuid(),
+               OnProgrammeEarnings = new List<OnProgrammeEarning>
+                {
+                    new OnProgrammeEarning
+                    {
+                        Periods = new List<EarningPeriod>
+                        {
+                            new EarningPeriod
+                            {
+                                Period = 1,
+                                AccountId = 1,
+                                TransferSenderAccountId = 2
+                            }
+                        }.AsReadOnly()
+                    }
+                },
+                IncentiveEarnings = new List<IncentiveEarning>
+                {
+                    new IncentiveEarning()
+                    {
+                        Periods = new List<EarningPeriod>
+                        {
+                            new EarningPeriod
+                            {
+                                Period = 1,
+                                AccountId = 2,
+                                TransferSenderAccountId = 3
+                            }
+                        }.AsReadOnly()
+                    }
+                }
+            };
+
+            var latestPayableFunctionalSkillEarning = new PayableFunctionalSkillEarningEvent
+            {
+                EarningEventId = Guid.NewGuid(),
+                EventId = Guid.NewGuid(),
+                Earnings = new List<FunctionalSkillEarning>
+                {
+                    new FunctionalSkillEarning()
+                    {
+                        Periods = new List<EarningPeriod>
+                        {
+                            new EarningPeriod
+                            {
+                                Period = 2,
+                                AccountId = 10,
+                                TransferSenderAccountId = 20
+                            }
+                        }.AsReadOnly()
+                    }
+                }.AsReadOnly()
+            };
+
+            mocker.Mock<IActorDataCache<List<ApprenticeshipModel>>>()
+                .Setup(x => x.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ConditionalValue<List<ApprenticeshipModel>>(false, null));
+
+            const string act1PayableEarningsKey = "Act1PayableEarningsKey";
+            mocker.Mock<IGenerateApprenticeshipEarningCacheKey>()
+                .Setup(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1PayableEarningsKey, updatedApprenticeship.Ukprn, updatedApprenticeship.Uln))
+                .Returns(act1PayableEarningsKey);
+
+            mocker.Mock<IActorDataCache<PayableEarningEvent>>()
+                .Setup(x => x.TryGet(act1PayableEarningsKey, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ConditionalValue<PayableEarningEvent>(true, latestPayableEarningEvent));
+
+            const string act1FunctionalSkillPayableEarningsKey = "Act1FunctionalSkillPayableEarningsKey";
+            mocker.Mock<IGenerateApprenticeshipEarningCacheKey>()
+              .Setup(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1FunctionalSkillPayableEarningsKey, updatedApprenticeship.Ukprn, updatedApprenticeship.Uln))
+              .Returns(act1FunctionalSkillPayableEarningsKey);
+
+            mocker.Mock<IActorDataCache<PayableFunctionalSkillEarningEvent>>()
+                .Setup(x => x.TryGet(act1FunctionalSkillPayableEarningsKey, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ConditionalValue<PayableFunctionalSkillEarningEvent>(true, latestPayableFunctionalSkillEarning));
+
+            var processor = mocker.Create<ApprenticeshipUpdatedProcessor>();
+            var actualInvalidatedPayableEarningEvents = await processor.ProcessApprenticeshipUpdate(updatedApprenticeship);
+
+            mocker.Mock<IGenerateApprenticeshipEarningCacheKey>()
+                .Verify(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1PayableEarningsKey, updatedApprenticeship.Ukprn, updatedApprenticeship.Uln));
+            
+            mocker.Mock<IActorDataCache<PayableEarningEvent>>()
+                .Verify(x => x.TryGet(act1PayableEarningsKey, It.IsAny<CancellationToken>()));
+
+            mocker.Mock<IGenerateApprenticeshipEarningCacheKey>()
+                .Verify(x => x.GenerateKey(ApprenticeshipEarningCacheKeyTypes.Act1FunctionalSkillPayableEarningsKey,
+                    updatedApprenticeship.Ukprn, updatedApprenticeship.Uln));
+            
+            mocker.Mock<IActorDataCache<PayableFunctionalSkillEarningEvent>>()
+                .Verify(x => x.TryGet(act1FunctionalSkillPayableEarningsKey, It.IsAny<CancellationToken>()));
+
+            actualInvalidatedPayableEarningEvents.Should().NotBeNull();
+            actualInvalidatedPayableEarningEvents.Should().HaveCount(2);
+
+            actualInvalidatedPayableEarningEvents[0].LastEarningEventId.Should().Be(latestPayableEarningEvent.EarningEventId);
+            actualInvalidatedPayableEarningEvents[0].LastDataLockEventId.Should().Be(latestPayableEarningEvent.EventId);
+            actualInvalidatedPayableEarningEvents[0].AccountIds.Should().HaveCount(3);
+            actualInvalidatedPayableEarningEvents[0].AccountIds[0].Should().Be(1);
+            actualInvalidatedPayableEarningEvents[0].AccountIds[1].Should().Be(2);
+            actualInvalidatedPayableEarningEvents[0].AccountIds[2].Should().Be(3);
+
+            actualInvalidatedPayableEarningEvents[1].LastEarningEventId.Should().Be(latestPayableFunctionalSkillEarning.EarningEventId);
+            actualInvalidatedPayableEarningEvents[1].LastDataLockEventId.Should().Be(latestPayableFunctionalSkillEarning.EventId);
+            actualInvalidatedPayableEarningEvents[1].AccountIds.Should().HaveCount(2);
+            actualInvalidatedPayableEarningEvents[1].AccountIds[0].Should().Be(10);
+            actualInvalidatedPayableEarningEvents[1].AccountIds[1].Should().Be(20);
+        }
+
+
     }
 }
