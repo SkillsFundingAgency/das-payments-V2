@@ -76,5 +76,13 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             await paymentsDataContext.Payment.AddAsync(paymentData, cancellationToken);
             await paymentsDataContext.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task DeletePaymentByDataLockEventId(Guid dataLockEventId,CancellationToken cancellationToken)
+        {
+            var oldDataLockPayments = paymentsDataContext.Payment
+                .Where(p => p.DataLockEventId.HasValue && p.DataLockEventId == dataLockEventId);
+            paymentsDataContext.Payment.RemoveRange(oldDataLockPayments);
+            await paymentsDataContext.SaveChangesAsync(cancellationToken);
+        }
     }
 }

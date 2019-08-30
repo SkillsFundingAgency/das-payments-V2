@@ -21,5 +21,6 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         public short NumberOfInstalments { get; set; }
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
         public string ReportingAimFundingLineType { get; set; }
+        public Guid? DataLockEventId { get; set; }
     }
 }

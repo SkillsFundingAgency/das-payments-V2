@@ -40,5 +40,6 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public string AgreementId { get; set; }
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
         public string ReportingAimFundingLineType { get; set; }
+        public Guid? DataLockEventId { get; set; }
     }
 }

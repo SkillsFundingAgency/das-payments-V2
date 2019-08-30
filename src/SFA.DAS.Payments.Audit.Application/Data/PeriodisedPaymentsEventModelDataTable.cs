@@ -26,7 +26,10 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 new DataColumn("EarningsCompletionStatus"),
                 new DataColumn("EarningsCompletionAmount"),
                 new DataColumn("EarningsInstalmentAmount"),
-                new DataColumn("EarningsNumberOfInstalments")
+                new DataColumn("EarningsNumberOfInstalments"),
+                new DataColumn("DataLockEventId",typeof(Guid)) {AllowDBNull = true},
+
+
             });
         }
 
@@ -65,6 +68,15 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             else
             {
                 dataRow["EarningsActualEndDate"] = eventModel.ActualEndDate;
+            }
+
+            if (!eventModel.DataLockEventId.HasValue)
+            {
+                dataRow["DataLockEventId"] = DBNull.Value;
+            }
+            else
+            {
+                dataRow["DataLockEventId"] = eventModel.DataLockEventId;
             }
 
             return dataRow;

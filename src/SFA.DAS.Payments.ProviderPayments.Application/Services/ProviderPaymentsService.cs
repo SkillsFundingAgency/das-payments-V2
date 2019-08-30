@@ -9,7 +9,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.FundingSource.Messages.Commands;
 using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
 using SFA.DAS.Payments.ProviderPayments.Model;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
@@ -22,17 +25,20 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
         private readonly IValidateIlrSubmission validateIlrSubmission;
         private readonly IPaymentLogger paymentLogger;
         private readonly ITelemetry telemetry;
+        private readonly IProviderPaymentsRepository providerPaymentsRepository;
 
         public ProviderPaymentsService(IDataCache<ReceivedProviderEarningsEvent> ilrSubmittedEventCache, 
             IPaymentsEventModelCache<ProviderPaymentEventModel> paymentCache, IValidateIlrSubmission validateIlrSubmission,
             IPaymentLogger paymentLogger,
-            ITelemetry telemetry)
+            ITelemetry telemetry,
+            IProviderPaymentsRepository providerPaymentsRepository)
         {
             this.ilrSubmittedEventCache = ilrSubmittedEventCache;
             this.paymentCache = paymentCache ?? throw new ArgumentNullException(nameof(paymentCache));
             this.validateIlrSubmission = validateIlrSubmission;
             this.paymentLogger = paymentLogger;
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
+            this.providerPaymentsRepository = providerPaymentsRepository;
         }
 
         public async Task ProcessPayment(ProviderPaymentEventModel payment, CancellationToken cancellationToken)
@@ -55,6 +61,15 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             paymentLogger.LogInfo($"Finished adding the payment to the cache. EventId: {payment.EventId}, FundingSourceId: {payment.FundingSourceId}, UKPRN: {payment.Ukprn}");
         }
 
+        public async Task RemoveObsoletePayments(InvalidatedPayableEarningEvent message, CancellationToken cancellationToken)
+        {
+            paymentLogger.LogInfo($"Trying to Remove Obsolete Payments EventId: {message.LastEarningEventId} DataLock Event Id {message.LastDataLockEventId}");
+
+            await providerPaymentsRepository.DeletePaymentByDataLockEventId(message.LastDataLockEventId, cancellationToken);
+
+            paymentLogger.LogInfo($"Finished Remove Obsolete Payments EventId: {message.LastEarningEventId} DataLock Event Id {message.LastDataLockEventId}");
+        }
+
         private async Task<bool> IsCurrentProviderIlr(long jobId, long ukprn, DateTime ilrSubmissionDateTime, CancellationToken cancellationToken)
         {
             var currentIlr = await GetCurrentIlrSubmissionEvent(ukprn, cancellationToken);
@@ -73,5 +88,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             var currentSubmittedIlrConditionalValue = await ilrSubmittedEventCache.TryGet(ukprn.ToString(), cancellationToken);
             return currentSubmittedIlrConditionalValue.HasValue ? currentSubmittedIlrConditionalValue.Value : null;
         }
+
+
     }
 }

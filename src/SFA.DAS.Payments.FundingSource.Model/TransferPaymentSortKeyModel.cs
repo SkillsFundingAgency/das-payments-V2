@@ -9,5 +9,7 @@ namespace SFA.DAS.Payments.FundingSource.Model
         public string Id { get; set; }
         public DateTime AgreedOnDate { get; set; }
         public long Uln { get; set; }
+        public Guid LastEarningEventId { get; set; }
+        public Guid LastDataLockEventId { get; set; }
     }
 }

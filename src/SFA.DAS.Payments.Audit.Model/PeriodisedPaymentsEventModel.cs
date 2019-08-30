@@ -17,6 +17,7 @@ namespace SFA.DAS.Payments.Audit.Model
         long? AccountId { get; set; }
         long? TransferSenderAccountId { get; set; }
         ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
+         Guid? DataLockEventId { get;}
     }
 
     public abstract class PeriodisedPaymentsEventModel : PaymentsEventModel, IPeriodisedPaymentsEventModel
@@ -33,5 +34,6 @@ namespace SFA.DAS.Payments.Audit.Model
         public long? AccountId { get; set; }
         public long? TransferSenderAccountId { get; set; }
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
+        public Guid? DataLockEventId { get; set; }
     }
 }

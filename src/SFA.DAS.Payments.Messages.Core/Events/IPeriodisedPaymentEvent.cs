@@ -18,6 +18,6 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         decimal CompletionAmount { get; }
         decimal InstalmentAmount { get; }
         short NumberOfInstalments { get; }
-        
+        Guid? DataLockEventId { get; }
     }
 }

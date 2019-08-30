@@ -58,8 +58,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.InstalmentAmount)
                 .Ignore(x => x.NumberOfInstalments)
                 .Ignore(x => x.ApprenticeshipEmployerType)
-                .Ignore(x => x.ReportingAimFundingLineType);
-         
+                .Ignore(x => x.ReportingAimFundingLineType)
+                .Ignore(x => x.DataLockEventId);
+
             CreateMap<IEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<PayableEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<FunctionalSkillEarningsEvent, CalculatedRequiredOnProgrammeAmount>()
@@ -78,7 +79,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.AmountDue)
                 .Ignore(x => x.DeliveryPeriod)
                 .Ignore(x => x.ContractType)
-                ;
+                .Ignore(x => x.DataLockEventId);
+            
 
             CreateMap<PayableEarningEvent, CompletionPaymentHeldBackEvent>()
                 .ForMember(x => x.EarningEventId, opt => opt.MapFrom(source => source.EarningEventId))
@@ -119,6 +121,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(x => x.Learner, opt => opt.MapFrom(src => src.Learner))
                 .ForMember(x => x.LearningAim, opt => opt.MapFrom(src => src.LearningAim))
                 .ForMember(x => x.Ukprn, opt => opt.MapFrom(src => src.Ukprn))
+                .ForMember(x => x.DataLockEventId, opt => opt.MapFrom(src => src.EventId))
                 .Ignore(x => x.AccountId)
                 .Ignore(x => x.TransferSenderAccountId)
                 .Ignore(x => x.StartDate)
@@ -128,12 +131,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.CompletionAmount)
                 .Ignore(x => x.IlrFileName)
                 .Ignore(x => x.InstalmentAmount)
-                .Ignore(x => x.NumberOfInstalments)
-                ;
+                .Ignore(x => x.NumberOfInstalments);
+            
 
             CreateMap<PayableEarningEvent, CalculatedRequiredLevyAmount>()
                 .ForMember(x => x.EarningEventId, opt => opt.MapFrom(source => source.EarningEventId))
                 .ForMember(x => x.ContractType, opt => opt.UseValue(ContractType.Act1))
+                .ForMember(x => x.DataLockEventId, opt => opt.MapFrom(src => src.EventId))
                 .ForMember(x => x.Priority, opt => opt.Ignore())
                 .ForMember(x => x.ApprenticeshipId, opt => opt.Ignore())
                 .ForMember(x => x.ApprenticeshipPriceEpisodeId, opt => opt.Ignore())
@@ -201,7 +205,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.InstalmentAmount)
                 .Ignore(x => x.NumberOfInstalments)
                 .Ignore(x => x.ApprenticeshipEmployerType)
-                .Ignore(x => x.ReportingAimFundingLineType);
+                .Ignore(x => x.ReportingAimFundingLineType)
+                .Ignore(x => x.DataLockEventId);
 
             CreateMap<RequiredPayment, CalculatedRequiredCoInvestedAmount>()
                 .ForMember(x => x.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage))
@@ -218,7 +223,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.ApprenticeshipPriceEpisodeId)
                 .Ignore(x => x.AgreementId)
                 .Ignore(x => x.AgreedOnDate)
-                ;
+                .Ignore(x => x.DataLockEventId);
+            ;
 
             CreateMap<IdentifiedRemovedLearningAim, PeriodisedRequiredPaymentEvent>()
                 .Include<IdentifiedRemovedLearningAim, CalculatedRequiredCoInvestedAmount>()
@@ -242,7 +248,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.ApprenticeshipEmployerType)
                 .Ignore(x => x.ReportingAimFundingLineType)
                 .Ignore(x => x.IlrFileName)
-                ;
+                .Ignore(x => x.DataLockEventId);
+            
 
             CreateMap<IdentifiedRemovedLearningAim, CalculatedRequiredCoInvestedAmount>()
                 .Ignore(x => x.SfaContributionPercentage)
@@ -261,7 +268,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.SfaContributionPercentage)
                 .Ignore(x => x.OnProgrammeEarningType)
                 .Ignore(x => x.AgreedOnDate)
-                ;
+                .Ignore(x => x.DataLockEventId);
+            
 
             CreateMap<PaymentHistoryEntity, PeriodisedRequiredPaymentEvent>()
                 .Include<PaymentHistoryEntity, CalculatedRequiredCoInvestedAmount>()
@@ -281,7 +289,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.LearningAim)
                 .Ignore(x => x.IlrSubmissionDateTime)
                 .Ignore(x => x.IlrFileName)
-                ;
+                .Ignore(x => x.DataLockEventId);
+            
 
             CreateMap<PaymentHistoryEntity, CalculatedRequiredCoInvestedAmount>()
                 .Ignore(x => x.OnProgrammeEarningType)
@@ -298,7 +307,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.AgreementId)
                 .Ignore(x => x.OnProgrammeEarningType)
                 .Ignore(x => x.AgreedOnDate)
-                ;
+                .Ignore(x => x.DataLockEventId);
 
             CreateMap<PriceEpisode, PeriodisedPaymentEvent>()
                 .ForMember(payment => payment.StartDate, opt => opt.MapFrom(episode => episode.EffectiveTotalNegotiatedPriceStartDate))
@@ -326,7 +335,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.CollectionPeriod)
                 .Ignore(x => x.ApprenticeshipEmployerType)
                 .Ignore(x => x.ReportingAimFundingLineType)
-                ;
+                .Ignore(x => x.DataLockEventId);
+
             // End Required Payment --> RequiredPaymentEvent
         }
     }

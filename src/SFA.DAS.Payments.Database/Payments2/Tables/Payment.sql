@@ -41,6 +41,7 @@
     ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL,
 	ReportingAimFundingLineType NVARCHAR(120) NULL,
+	DataLockEventId UNIQUEIDENTIFIER  NULL,
 
 );
 GO
@@ -76,6 +77,14 @@ CREATE INDEX [IX_Payment__Audit] ON [Payments2].[Payment]
 (
   [EarningEventId],
   FundingSourceEventId
+)  
+
+GO
+
+
+CREATE INDEX [IX_Payment__DataLockEventId] ON [Payments2].[Payment]
+(
+  DataLockEventId
 )  
 
 GO

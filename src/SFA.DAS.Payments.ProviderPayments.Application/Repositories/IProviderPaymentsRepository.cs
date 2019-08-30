@@ -24,5 +24,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             long ukprn,
             DateTime currentIlrSubmissionDateTime,
             CancellationToken cancellationToken = default(CancellationToken));
+
+        Task DeletePaymentByDataLockEventId(Guid dataLockEventId, CancellationToken cancellationToken);
     }
 }

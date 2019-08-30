@@ -192,43 +192,62 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             return fundingSourceEvents.AsReadOnly();
         }
 
-
-        public async Task RemoveObsoletePayments(RemoveObsoletePayments message)
+        public async Task RemoveObsoletePayments(RemoveObsoletePayments command)
         {
-            var fundingSourceEvents = new List<FundingSourcePaymentEvent>();
-
-            var keys = await generateSortedPaymentKeys.GeyKeys().ConfigureAwait(false);
-
-            var levyAccount = await levyFundingSourceRepository.GetLevyAccount(employerAccountId);
-            levyBalanceService.Initialise(levyAccount.Balance, levyAccount.TransferAllowance);
-
-            paymentLogger.LogDebug($"Processing {keys.Count} required payments, levy balance {levyAccount.Balance}, account {employerAccountId}, job id {jobId}");
-
-            foreach (var key in keys)
+            try
             {
-                var requiredPaymentEvent = await requiredPaymentsCache.TryGet(key).ConfigureAwait(false);
-                fundingSourceEvents.AddRange(CreateFundingSourcePaymentsForRequiredPayment(requiredPaymentEvent.Value, employerAccountId, jobId));
-                await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
+                var refundKeysValue = await refundSortKeysCache.TryGet(CacheKeys.RefundPaymentsKeyListKey).ConfigureAwait(false);
+                var refundKeys = refundKeysValue.HasValue ? refundKeysValue.Value : new List<string>();
+
+                foreach (var refundKey in refundKeys)
+                {
+                    var refundPayment = await requiredPaymentsCache.TryGet(refundKey).ConfigureAwait(false);
+
+                    if (refundPayment.HasValue &&
+                        refundPayment.Value.EarningEventId == command.LastEarningEventId &&
+                        refundPayment.Value.DataLockEventId == command.LastDataLockEventId
+                    )
+                    {
+                        await requiredPaymentsCache.Clear(refundKey).ConfigureAwait(false);
+                    }
+                }
+
+                var requiredPaymentKeysValue = await requiredPaymentSortKeysCache.TryGet(CacheKeys.RequiredPaymentKeyListKey).ConfigureAwait(false);
+                var requiredPaymentKeys = requiredPaymentKeysValue.HasValue ? requiredPaymentKeysValue.Value : new List<RequiredPaymentSortKeyModel>();
+
+                var requiredPaymentToRemoveKeys = requiredPaymentKeys
+                    .Where(x => x.LastEarningEventId == command.LastEarningEventId &&
+                                x.LastDataLockEventId == command.LastDataLockEventId)
+                    .ToList();
+
+                foreach (var requiredPaymentToRemoveKey in requiredPaymentToRemoveKeys)
+                {
+                    await requiredPaymentsCache.Clear(requiredPaymentToRemoveKey.Id).ConfigureAwait(false);
+                }
+
+                var transferPaymentKeysValue = await transferPaymentSortKeysCache.TryGet(CacheKeys.SenderTransferKeyListKey).ConfigureAwait(false);
+                var transferPaymentKeys = transferPaymentKeysValue.HasValue ? transferPaymentKeysValue.Value : new List<TransferPaymentSortKeyModel>();
+
+                var transferPaymentToRemoveKeys = transferPaymentKeys
+                    .Where(x => x.LastEarningEventId == command.LastEarningEventId &&
+                                x.LastDataLockEventId == command.LastDataLockEventId)
+                    .ToList();
+
+                foreach (var transferPaymentToRemoveKey in transferPaymentToRemoveKeys)
+                {
+                    await requiredPaymentsCache.Clear(transferPaymentToRemoveKey.Id).ConfigureAwait(false);
+                }
+
+            }
+            catch (Exception e)
+            {
+                paymentLogger.LogError($"Error while Removing ObsoletePayments for Account Id {command.AccountId}", e);
+                throw;
             }
 
-            paymentLogger.LogDebug($"Created {fundingSourceEvents.Count} payments - {GetFundsDebugString(fundingSourceEvents)}, account {employerAccountId}, job id {jobId}");
-
-            levyAccount.Balance = levyBalanceService.RemainingBalance;
-            levyAccount.TransferAllowance = levyBalanceService.RemainingTransferAllowance;
-            await levyAccountCache.AddOrReplace(CacheKeys.LevyBalanceKey, levyAccount);
-
-            await refundSortKeysCache.Clear(CacheKeys.RefundPaymentsKeyListKey).ConfigureAwait(false);
-            await transferPaymentSortKeysCache.Clear(CacheKeys.SenderTransferKeyListKey).ConfigureAwait(false);
-            await requiredPaymentSortKeysCache.Clear(CacheKeys.RequiredPaymentKeyListKey).ConfigureAwait(false);
-
-            await monthEndCache.AddOrReplace(CacheKeys.MonthEndCacheKey, true, CancellationToken.None);
-            paymentLogger.LogInfo($"Finished generating levy and/or co-invested payments for the account: {employerAccountId}, number of payments: {fundingSourceEvents.Count}.");
-            return fundingSourceEvents.AsReadOnly();
         }
 
-
-        public async Task RemovePreviousSubmissions(long employerAccountId, long jobId, CollectionPeriod collectionPeriod,
-            DateTime submissionDate)
+        public async Task RemovePreviousSubmissions(long employerAccountId, long jobId, CollectionPeriod collectionPeriod, DateTime submissionDate)
         {
             var keys = await generateSortedPaymentKeys.GeyKeys().ConfigureAwait(false);
 
@@ -249,8 +268,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             paymentLogger.LogInfo("Finished removing previous submission payments.");
         }
 
-        public async Task RemoveCurrentSubmission(long employerAccountId, long jobId, CollectionPeriod collectionPeriod,
-            DateTime submissionDate)
+        public async Task RemoveCurrentSubmission(long employerAccountId, long jobId, CollectionPeriod collectionPeriod, DateTime submissionDate)
         {
             var keys = await generateSortedPaymentKeys.GeyKeys().ConfigureAwait(false);
 

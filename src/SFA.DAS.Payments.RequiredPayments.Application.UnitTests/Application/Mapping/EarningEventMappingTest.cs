@@ -169,6 +169,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             Assert.AreEqual(OnProgrammeEarningType.Completion, act1RequiredPayment.OnProgrammeEarningType);
             Assert.AreEqual(payableEarning.EarningEventId, act1RequiredPayment.EarningEventId);
             Assert.AreNotEqual(payableEarning.EventId, act1RequiredPayment.EarningEventId);
+            act1RequiredPayment.DataLockEventId.Should().Be(payableEarning.EventId);
+
         }
 
         [Test]
@@ -225,6 +227,26 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             // assert
             AssertCommonProperties(requiredPayment, functionalSkillEarningsEvent);
             functionalSkillEarningsEvent.StartDate.Should().Be(requiredPayment.StartDate);
+        }
+
+        [Test]
+        public void TestFunctionalSkillEarningEventMapDataLockEventId()
+        {
+            // arrange
+            PeriodisedRequiredPaymentEvent requiredPayment = new CalculatedRequiredIncentiveAmount
+            {
+                Ukprn = ukprn,
+                Learner = new Learner { ReferenceNumber = "R", Uln = uln },
+                StartDate = DateTime.Today.AddDays(-10)
+            };
+
+            var functionalSkillEarningsEvent = CreatePayableFunctionalSkillEarningsEvent();
+
+            // act
+            mapper.Map(functionalSkillEarningsEvent, requiredPayment);
+
+            // assert
+            requiredPayment.DataLockEventId.Should().Be(functionalSkillEarningsEvent.EventId);
         }
 
         [Test]
@@ -352,6 +374,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
         {
             return new PayableFunctionalSkillEarningEvent
             {
+                EventId = Guid.NewGuid(),
                 CollectionYear = 1819,
                 Learner = new Learner { ReferenceNumber = "R", Uln = uln },
                 Ukprn = ukprn,

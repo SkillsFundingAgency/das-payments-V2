@@ -16,8 +16,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Interfaces
         Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(long employerAccountId, long jobId);
         Task StoreEmployerProviderPriority(EmployerChangedProviderPriority providerPriorityEvent);
         Task RemovePreviousSubmissions(long commandAccountId, long commandJobId, CollectionPeriod commandCollectionPeriod, DateTime commandSubmissionDate);
-
-        Task RemoveCurrentSubmission(long employerAccountId, long jobId, CollectionPeriod collectionPeriod,
-            DateTime submissionDate);
+        Task RemoveCurrentSubmission(long employerAccountId, long jobId, CollectionPeriod collectionPeriod, DateTime submissionDate);
+        Task RemoveObsoletePayments(RemoveObsoletePayments command);
     }
 }
