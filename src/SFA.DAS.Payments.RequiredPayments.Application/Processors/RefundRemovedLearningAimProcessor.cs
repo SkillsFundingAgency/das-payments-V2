@@ -74,6 +74,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     if (requiredPaymentEvent == null)
                     {
                         // This shouldn't now happen as the transaction type in the history should match the one in the cache
+                        logger.LogWarning($"Required payment event is null for EarningType: {refund.payment.EarningType} with TransactionType: {transactionType}");
                         return null;
                     }
                     mapper.Map(refund.payment, requiredPaymentEvent);
