@@ -92,13 +92,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
             return accounts.ToDictionary(account => account.AccountId, account => account.TransferSendingEmployerAccountId);
-
-                .OrderByDescending(payment => payment.EventTime)
-                .Take(1)
-                .FirstOrDefaultAsync(cancellationToken)
-                .ConfigureAwait(false);
-
-            return lastPayment?.AccountId;
         }
     }
 }
