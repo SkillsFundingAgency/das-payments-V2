@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Core;
-using SFA.DAS.Payments.PeriodEnd.Messages.Events;
+using SFA.DAS.Payments.Messages.Core.Events;
 
 namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
 {

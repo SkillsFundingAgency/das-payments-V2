@@ -21,6 +21,8 @@ namespace SFA.DAS.Payments.Application.Repositories
         DbSet<EarningEventModel> EarningEvent { get; }
         DbSet<EarningEventPeriodModel> EarningEventPeriod { get; }
         DbSet<EarningEventPriceEpisodeModel> EarningEventPriceEpisode { get; }
+        DbSet<PeriodEndEventModel> PeriodEndEvent { get; }
+        DbSet<DeferredApprovalsEventModel> DeferredApprovalsEvent { get; }
         DatabaseFacade Database { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
         int SaveChanges();

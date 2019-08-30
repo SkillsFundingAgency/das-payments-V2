@@ -8,8 +8,8 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Application.Services;
+using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 {

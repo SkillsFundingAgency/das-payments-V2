@@ -11,20 +11,21 @@ using Moq;
 using NServiceBus;
 using NUnit.Framework;
 using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
 using SFA.DAS.Payments.JobContextMessageHandling.JobStatus;
+using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.PeriodEnd.Application.Handlers;
-using SFA.DAS.Payments.PeriodEnd.Application.Infrastructure;
-using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 
 namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
 {
     [TestFixture]
     public class PeriodEndJobContextMessageHandlerTests
     {
-        private Autofac.Extras.Moq.AutoMock mocker;
+        private AutoMock mocker;
         
         [SetUp]
         public void SetUp()
@@ -453,6 +454,42 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
             var handler = mocker.Create<PeriodEndJobContextMessageHandler>();
             var completed = await handler.HandleAsync(jobContextMessage, CancellationToken.None);
             completed.Should().BeTrue();
+        }
+
+        [Test]
+        public async Task RecordsPeriodEndEvent()
+        {
+            var jobContextMessage = new JobContextMessage
+            {
+                JobId = 1,
+                Topics = new List<ITopicItem>
+                {
+                    new TopicItem
+                    {
+                        SubscriptionName = "PeriodEnd",
+                        Tasks = new List<ITaskItem>
+                        {
+                            new TaskItem
+                            {
+                                SupportsParallelExecution = false,
+                                Tasks = new List<string>{"PeriodEndStop"}
+                            }
+                        }
+                    }
+                },
+                KeyValuePairs = new Dictionary<string, object> {
+                    { JobContextMessageConstants.KeyValuePairs.ReturnPeriod, 10 },
+                    { JobContextMessageConstants.KeyValuePairs.CollectionYear, 1819 } }
+            };
+
+            var handler = mocker.Create<PeriodEndJobContextMessageHandler>();
+            await handler.HandleAsync(jobContextMessage, CancellationToken.None);
+
+            mocker.Mock<IPeriodEndEventRepository>()
+                .Verify(x => x.RecordPeriodEndEvent(It.Is<PeriodEndEventModel>(
+                    e => e.EventType == typeof(PeriodEndStoppedEvent).Name
+                ), It.IsAny<CancellationToken>()), Times.Once);
+
         }
     }
 }

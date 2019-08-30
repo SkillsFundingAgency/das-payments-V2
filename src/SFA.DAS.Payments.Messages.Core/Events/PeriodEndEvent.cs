@@ -1,9 +1,9 @@
 ﻿using System;
 using SFA.DAS.Payments.Model.Core;
 
-namespace SFA.DAS.Payments.PeriodEnd.Messages.Events
+namespace SFA.DAS.Payments.Messages.Core.Events
 {
-    public abstract class PeriodEndEvent: IPeriodEndEvent
+    public abstract class PeriodEndEvent : IPeriodEndEvent
     {
         public long JobId { get; set; }
         public DateTimeOffset EventTime { get; set; }

@@ -2,7 +2,7 @@
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
-using SFA.DAS.Payments.PeriodEnd.Messages.Events;
+using SFA.DAS.Payments.Messages.Core.Events;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests.Infrastructure

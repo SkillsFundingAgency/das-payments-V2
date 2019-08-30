@@ -6,8 +6,8 @@ using Autofac.Extras.Moq;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
 

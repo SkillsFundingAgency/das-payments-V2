@@ -1,10 +1,9 @@
 ﻿using System;
-using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Model.Core;
 
-namespace SFA.DAS.Payments.PeriodEnd.Messages.Events
+namespace SFA.DAS.Payments.Messages.Core.Events
 {
-    public interface IPeriodEndEvent: IPaymentsMessage
+    public interface IPeriodEndEvent : IPaymentsMessage
     {
         DateTimeOffset EventTime { get; }
         Guid EventId { get; }

@@ -28,4 +28,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="DataLockEventId" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="d23976b6-5112-411d-8890-256122837429" ChangeDateTime="08/30/2019 13:56:44">
+    <Property Name="ElementName" Value="[Payments2].[DeferredApprenticeshipEvent].[Body]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[Payments2].[DeferredApprenticeshipEvent]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="EventBody" />
+  </Operation>
 </Operations>

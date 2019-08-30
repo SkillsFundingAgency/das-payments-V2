@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Payments.PeriodEnd.Messages.Events
+﻿namespace SFA.DAS.Payments.Messages.Core.Events
 {
     public class PeriodEndStoppedEvent : PeriodEndEvent
     {

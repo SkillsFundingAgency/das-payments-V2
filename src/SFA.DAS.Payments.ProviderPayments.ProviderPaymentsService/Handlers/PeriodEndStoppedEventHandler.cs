@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.PeriodEnd.Messages.Events;
+using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers

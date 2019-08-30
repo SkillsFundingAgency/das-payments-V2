@@ -4,7 +4,7 @@ using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
-using SFA.DAS.Payments.PeriodEnd.Messages.Events;
+using SFA.DAS.Payments.Messages.Core.Events;
 
 namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
 {

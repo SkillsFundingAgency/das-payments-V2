@@ -9,11 +9,13 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 using SFA.DAS.Payments.PeriodEnd.Model;
 using NServiceBus;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
 using SFA.DAS.Payments.JobContextMessageHandling.JobStatus;
+using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
@@ -25,15 +27,17 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
         private readonly IEndpointInstanceFactory endpointInstanceFactory;
         private readonly IPeriodEndJobClient jobClient;
         private readonly IJobStatusService jobStatusService;
+        private IPeriodEndEventRepository periodEndEventRepository;
 
         public PeriodEndJobContextMessageHandler(IPaymentLogger logger,
-            IEndpointInstanceFactory endpointInstanceFactory, IPeriodEndJobClient jobClient, IJobStatusService jobStatusService)
+            IEndpointInstanceFactory endpointInstanceFactory, IPeriodEndJobClient jobClient, IJobStatusService jobStatusService, IPeriodEndEventRepository periodEndEventRepository)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.endpointInstanceFactory = endpointInstanceFactory ??
                                            throw new ArgumentNullException(nameof(endpointInstanceFactory));
             this.jobClient = jobClient ?? throw new ArgumentNullException(nameof(jobClient));
             this.jobStatusService = jobStatusService ?? throw new ArgumentNullException(nameof(jobStatusService));
+            this.periodEndEventRepository = periodEndEventRepository;
         }
 
         public async Task<bool> HandleAsync(JobContextMessage message, CancellationToken cancellationToken)
@@ -63,6 +67,18 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 // PV2-1345 will handle PeriodEndStart
                 // PeriodEndStoppedEvent will be handled by the PeriodEndStoppedEventHandler which in turn is handled by the ProcessProviderMonthEndCommandHandler but we don't want to wait for it
 
+                var periodEndEventModel = new PeriodEndEventModel
+                {
+                    JobId = periodEndEvent.JobId,
+                    EventId = periodEndEvent.EventId,
+                    AcademicYear = periodEndEvent.CollectionPeriod.AcademicYear,
+                    Period = periodEndEvent.CollectionPeriod.Period,
+                    EventTime = periodEndEvent.EventTime,
+                    EventType = periodEndEvent.GetType().Name
+                };
+
+                await periodEndEventRepository.RecordPeriodEndEvent(periodEndEventModel, cancellationToken).ConfigureAwait(false);
+                logger.LogInfo($"Finished writing the period end event to DB. Name: {periodEndEvent.GetType().Name}, JobId: {periodEndEvent.JobId}, Collection Period: {periodEndEvent.CollectionPeriod.Period}-{periodEndEvent.CollectionPeriod.AcademicYear}.");
 
                 if (periodEndEvent is PeriodEndStartedEvent || periodEndEvent is PeriodEndStoppedEvent)
                 {
