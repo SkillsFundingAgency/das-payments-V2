@@ -127,10 +127,15 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     }
 
                     telemetry.StopOperation(operation);
-                    await jobStatusService.WaitForJobToFinish(message.JobId, cancellationToken);
-                    logger.LogInfo(
-                        $"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");
-                    return true;
+
+                    if (await jobStatusService.WaitForJobToFinish(message.JobId, cancellationToken))
+                    {
+                        logger.LogInfo(
+                            $"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");
+                        return true;
+                    }
+                    logger.LogError($"Job failed to finished within the allocated time. Job Id: {message.JobId}");
+                    return false;
                 }
             }
             catch (OperationCanceledException)
