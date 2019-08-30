@@ -30,7 +30,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
         {
             try
             {
-                cancellationToken.ThrowIfCancellationRequested();
                 var service = lifetimeScope.Resolve<IEarningsJobService>();
                 await service.JobStarted(message, CancellationToken.None).ConfigureAwait(false);
             }
@@ -46,7 +45,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
             try
             {
                 //TODO: use statemanager tx and make sure IActorDataCache uses current tx too
-                cancellationToken.ThrowIfCancellationRequested();
                 var jobMessageService = lifetimeScope.Resolve<IJobMessageService>();
                 await jobMessageService.JobMessageCompleted(message, CancellationToken.None).ConfigureAwait(false);
                 var statusService = lifetimeScope.Resolve<IJobStatusService>();
