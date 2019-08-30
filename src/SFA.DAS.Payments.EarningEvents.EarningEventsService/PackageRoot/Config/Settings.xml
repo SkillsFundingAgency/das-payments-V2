@@ -24,6 +24,7 @@
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
     <Parameter Name="TimeToPauseBetweenChecks" Value=""/>
     <Parameter Name="TimeToWaitForJobToComplete" Value=""/>
+    <Parameter Name="MaximumCallbackTimeSpan" Value="" />
   </Section>
 
 </Settings>

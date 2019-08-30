@@ -20,5 +20,6 @@
     <Parameter Name="ProcessMessageSequentially" Value="false" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
     <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
+    <Parameter Name="MaximumCallbackTimeSpan" Value="__MaximumCallbackTimeSpan__" />
   </Parameters>
 </Application>

@@ -35,15 +35,12 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.Infrastructure.Ioc
             builder.Register(c =>
             {
                 var configHelper = c.Resolve<IConfigurationHelper>();
-                var timeout = TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToPauseBetweenChecks", "00:00:30"));
-                var timeToWaitForJobToComplete =
-                    TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForJobToComplete", "00:02:30"));
                 return new TopicConfiguration(
                     configHelper.GetConnectionString("DCServiceBusConnectionString"),
                     configHelper.GetSetting("TopicName"),
                     configHelper.GetSetting("SubscriptionName"),
                     1,
-                    maximumCallbackTimeSpan: timeout + timeToWaitForJobToComplete);
+                    maximumCallbackTimeSpan: TimeSpan.Parse(configHelper.GetSettingOrDefault("MaximumCallbackTimeSpan", "02:00:00")));
             })
                 .As<ITopicConfiguration>();
 
@@ -94,8 +91,8 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.Infrastructure.Ioc
                     var config = c.Resolve<IConfigurationHelper>();
                     var periodEndConfig = new JobStatusConfiguration
                     {
-                        TimeToPauseBetweenChecks = TimeSpan.Parse(config.GetSettingOrDefault("TimeToPauseBetweenChecks", "00:00:30")),
-                        TimeToWaitForJobToComplete = TimeSpan.Parse(config.GetSettingOrDefault("TimeToWaitForJobToComplete", "00:02:30"))
+                        TimeToPauseBetweenChecks = TimeSpan.Parse(config.GetSettingOrDefault("TimeToPauseBetweenChecks", "00:01:30")),
+                        TimeToWaitForJobToComplete = TimeSpan.Parse(config.GetSettingOrDefault("TimeToWaitForJobToComplete", "00:30:30"))
                     };
                     return periodEndConfig;
                 })
