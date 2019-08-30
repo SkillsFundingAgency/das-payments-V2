@@ -444,6 +444,106 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         }
 
         [Test]
+        public void LearningDeliveriesWithNoneContractTypeForAllPeriodsReturnsAct2()
+        {
+            var builder = new FunctionalSkillEarningEventBuilder(mapper);
+            var learnerSubmission = new ProcessLearnerCommand
+                {
+                    CollectionPeriod = 1,CollectionYear = 1819,
+                    Learner = new FM36Learner
+                      {
+                          LearningDeliveries = new List<LearningDelivery>
+                               {
+                                   new LearningDelivery
+                                   {
+                                       AimSeqNumber = 1,
+                                       LearningDeliveryValues = new LearningDeliveryValues{LearnAimRef = "ZPROG001"},
+                                       LearningDeliveryPeriodisedTextValues = new List<LearningDeliveryPeriodisedTextValues>
+                                          {
+                                              new LearningDeliveryPeriodisedTextValues
+                                              {
+                                                  AttributeName = "LearnDelContType",
+                                                  Period1 = "None",
+                                                  Period2 = "None",
+                                                  Period3 = "None",
+                                                  Period4 = "None",
+                                                  Period5 = "None",
+                                                  Period6 = "None",
+                                                  Period7 = "None",
+                                                  Period8 = "None",
+                                                  Period9 = "None",
+                                                  Period10 = "None",
+                                                  Period11 = "None",
+                                                  Period12 = "None",
+                                              }
+                                          },
+                                   },
+                                   new LearningDelivery
+                                   {
+                                       AimSeqNumber = 2,
+                                       LearningDeliveryValues = new LearningDeliveryValues{LearnAimRef = "50114979"},
+                                       LearningDeliveryPeriodisedTextValues = new List<LearningDeliveryPeriodisedTextValues>
+                                          {
+                                              new LearningDeliveryPeriodisedTextValues
+                                              {
+                                                  AttributeName = "LearnDelContType",
+                                                  Period1 = "None",
+                                                  Period2 = "None",
+                                                  Period3 = "None",
+                                                  Period4 = "None",
+                                                  Period5 = "None",
+                                                  Period6 = "None",
+                                                  Period7 = "None",
+                                                  Period8 = "None",
+                                                  Period9 = "None",
+                                                  Period10 = "None",
+                                                  Period11 = "None",
+                                                  Period12 = "None",
+                                              }
+                                          },
+                                       LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValues>
+                                          {
+                                              new LearningDeliveryPeriodisedValues
+                                              {
+                                                  AttributeName = "MathEngOnProgPayment",
+                                                  Period1 = 0,
+                                                  Period2 = 0,
+                                                  Period3 = 0,
+                                                  Period4 = 0,
+                                                  Period5 = 0,
+                                                  Period6 = 0,
+                                                  Period7 = 0,
+                                                  Period8 = 0,
+                                                  Period9 = 0,
+                                                  Period10 = 0,
+                                                  Period11 = 0,
+                                                  Period12 = 0,
+                                              }
+                                          }
+                                   }
+                               },
+                          PriceEpisodes = new List<PriceEpisode>
+                                          {
+                                              new PriceEpisode
+                                              {
+                                                  PriceEpisodeValues = new PriceEpisodeValues
+                                                    {
+                                                        PriceEpisodeContractType = "Levy Contract",
+                                                        PriceEpisodeAimSeqNumber = 1
+                                                    }
+                                              }
+                                          }
+                      }
+                };
+
+            var events = builder.Build(learnerSubmission);
+
+            events.Should().NotBeNull();
+            events.Should().HaveCount(1);
+            events.Single().ContractType.Should().Be(ContractType.Act2);
+        }
+
+        [Test]
         public void MixedContractTypeBuild()
         {
             // arrange
