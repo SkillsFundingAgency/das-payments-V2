@@ -378,61 +378,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             statusChangedEvents[0].TransactionTypesAndPeriods.First().Value[0].Period.Should().Be(3);
         }
 
-        [Test] // PV2-1412
-        public async Task TestEmptyEarningsAreIgnored()
-        {
-            // arrange
-            var dataLockEvent = new EarningFailedDataLockMatching
-            {
-                Ukprn = 1,
-                Learner = new Learner {ReferenceNumber = "2", Uln = 3},
-                LearningAim = new LearningAim
-                {
-                    FrameworkCode = 4, StandardCode = 5, Reference = "6", PathwayCode = 7, ProgrammeType = 8,
-                    FundingLineType = "9"
-                },
-                CollectionYear = 1819,
-                CollectionPeriod = new CollectionPeriod {AcademicYear = 7, Period = 8},
-                OnProgrammeEarnings = new List<OnProgrammeEarning>
-                {
-                    new OnProgrammeEarning
-                    {
-                        Type = OnProgrammeEarningType.Learning,
-                        Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod>
-                        {
-                            new EarningPeriod {Period = 1, Amount = 0m, ApprenticeshipId = 1},
-                            new EarningPeriod {Period = 2, Amount = 0m, PriceEpisodeIdentifier = string.Empty}
-                        })
-                    }
-                },
-                IncentiveEarnings = new List<IncentiveEarning>
-                {
-                    new IncentiveEarning
-                    {
-                        Type = IncentiveEarningType.Balancing16To18FrameworkUplift,
-                        Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod>
-                        {
-                            new EarningPeriod {Period = 1, Amount = 0m},
-                            new EarningPeriod {Period = 2, Amount = 0m, PriceEpisodeIdentifier = "episode"},
-                            new EarningPeriod {Period = 3, Amount = 0m, PriceEpisodeIdentifier = string.Empty}
-                        })
-                    }
-                }
-            };
-
-            var dbFailures = new List<DataLockFailureEntity>();
-
-            repositoryMock.Setup(r => r.GetFailures(1, "2", 4, 7, 8, 5, "6", 1819)).ReturnsAsync(dbFailures).Verifiable();
-            repositoryMock.Setup(r => r.ReplaceFailures(It.Is<List<long>>(old => old.Count == 0), It.Is<List<DataLockFailureEntity>>(newF => newF.Count == 0), It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(Task.CompletedTask).Verifiable();
-            
-            // act
-            var statusChangedEvents = await processor.ProcessDataLockFailure(dataLockEvent).ConfigureAwait(false);
-
-            // assert
-            statusChangedEvents.Should().BeEmpty();
-            dataLockStatusServiceMock.Verify(s => s.GetStatusChange(It.IsAny<List<DataLockFailure>>(), It.IsAny<List<DataLockFailure>>()), Times.Never);
-        }
-
         private static IEnumerable<DataLockEvent> GetFailureEvents()
         {
             yield return new EarningFailedDataLockMatching();
