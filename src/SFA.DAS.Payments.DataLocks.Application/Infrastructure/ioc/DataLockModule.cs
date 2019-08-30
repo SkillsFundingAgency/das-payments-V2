@@ -25,6 +25,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<ActorReliableCollectionCache<ApprenticeshipContractType1EarningEvent>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ActorReliableCollectionCache<Act1FunctionalSkillEarningsEvent>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<GenerateApprenticeshipEarningCacheKey>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            builder.RegisterType<ActorReliableCollectionCache<PayableFunctionalSkillEarningEvent>>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<ActorReliableCollectionCache<PayableEarningEvent>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             
             builder.RegisterType<ActorReliableCollectionCache<List<ApprenticeshipModel>>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ActorReliableCollectionCache<List<long>>>().AsImplementedInterfaces().InstancePerLifetimeScope();
