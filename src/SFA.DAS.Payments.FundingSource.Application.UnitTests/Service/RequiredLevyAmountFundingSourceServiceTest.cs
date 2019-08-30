@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
@@ -733,6 +734,133 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             fundingSourcePayments[0].AmountDue.Should().Be(55);
             fundingSourcePayments[1].AmountDue.Should().Be(44);
             fundingSourcePayments[2].AmountDue.Should().Be(33);
+        }
+
+        [Test]
+        public async Task RemoveObsoletePaymentsCorrectly()
+        {
+            // arrange
+            var command = new RemoveObsoletePayments
+            {
+                LastDataLockEventId = Guid.NewGuid(),
+                LastEarningEventId = Guid.NewGuid()
+            };
+
+            long expectedUln = 100;
+            long expectedUkprn = 100;
+
+             var refundKeys = new List<string>{ "refundKey1", "refundKey2" };
+            var requiredPaymentEventToKeep = new CalculatedRequiredLevyAmount
+            {
+                EventId = Guid.NewGuid(),
+                Ukprn = expectedUkprn,
+                EarningEventId = Guid.NewGuid(),
+                DataLockEventId = Guid.NewGuid(),
+                Priority = 1,
+                Learner = new Learner
+                {
+                    Uln = expectedUln
+                },
+                AccountId = 1,
+                AmountDue = -500
+            };
+            var requiredPaymentEventToRemove = new CalculatedRequiredLevyAmount
+            {
+                EventId = Guid.NewGuid(),
+                Ukprn = expectedUkprn,
+                EarningEventId = command.LastEarningEventId,
+                DataLockEventId = command.LastDataLockEventId,
+                Priority = 1,
+                Learner = new Learner
+                {
+                    Uln = expectedUln
+                },
+                AccountId = 1,
+                AmountDue = -500
+            };
+
+            var requiredPaymentSortKeys = new List<RequiredPaymentSortKeyModel>
+            {
+                new RequiredPaymentSortKeyModel
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    LastEarningEventId = command.LastEarningEventId,
+                    LastDataLockEventId = command.LastDataLockEventId,
+                },
+                new RequiredPaymentSortKeyModel
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    LastEarningEventId = Guid.NewGuid(),
+                    LastDataLockEventId = Guid.NewGuid()
+                }
+            };
+
+            var transferPaymentSortKeys = new List<TransferPaymentSortKeyModel>
+            {
+                new TransferPaymentSortKeyModel
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    LastEarningEventId = command.LastEarningEventId,
+                    LastDataLockEventId = command.LastDataLockEventId,
+                },
+                new TransferPaymentSortKeyModel
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    LastEarningEventId = Guid.NewGuid(),
+                    LastDataLockEventId = Guid.NewGuid()
+                }
+            };
+            
+            refundSortKeysCacheMock
+                .Setup(c => c.TryGet(CacheKeys.RefundPaymentsKeyListKey, CancellationToken.None))
+                .ReturnsAsync(() => new ConditionalValue<List<string>>(true, refundKeys))
+                .Verifiable();
+
+            requiredPaymentSortKeysCacheMock
+                .Setup(c => c.TryGet(CacheKeys.RequiredPaymentKeyListKey, CancellationToken.None))
+                .ReturnsAsync(() => new ConditionalValue<List<RequiredPaymentSortKeyModel>>(true, requiredPaymentSortKeys))
+                .Verifiable();
+
+            transferPaymentSortKeysCacheMock
+                .Setup(c => c.TryGet(CacheKeys.SenderTransferKeyListKey, CancellationToken.None))
+                .ReturnsAsync(() => new ConditionalValue<List<TransferPaymentSortKeyModel>>(true, transferPaymentSortKeys))
+                .Verifiable();
+
+
+            eventCacheMock
+                .Setup(c => c.TryGet(refundKeys[0], CancellationToken.None))
+                .ReturnsAsync(new ConditionalValue<CalculatedRequiredLevyAmount>(true, requiredPaymentEventToKeep));
+            
+            eventCacheMock
+                .Setup(c => c.TryGet(refundKeys[1], CancellationToken.None))
+                .ReturnsAsync(new ConditionalValue<CalculatedRequiredLevyAmount>(true, requiredPaymentEventToRemove));
+            
+            eventCacheMock
+                .Setup(x => x.Clear(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            // act
+            await service.RemoveObsoletePayments(command);
+
+
+            eventCacheMock
+                .Verify(x => x.Clear(refundKeys[0], It.IsAny<CancellationToken>()), Times.Never);
+
+            eventCacheMock
+                .Verify(x => x.Clear(refundKeys[1], It.IsAny<CancellationToken>()), Times.Once);
+            
+            eventCacheMock
+                .Verify(x => x.Clear(requiredPaymentSortKeys[0].Id, It.IsAny<CancellationToken>()), Times.Once);
+
+            eventCacheMock
+                .Verify(x => x.Clear(requiredPaymentSortKeys[1].Id, It.IsAny<CancellationToken>()), Times.Never);
+
+            eventCacheMock
+                .Verify(x => x.Clear(transferPaymentSortKeys[0].Id, It.IsAny<CancellationToken>()), Times.Once);
+
+            eventCacheMock
+                .Verify(x => x.Clear(transferPaymentSortKeys[1].Id, It.IsAny<CancellationToken>()), Times.Never);
+
         }
     }
 }

@@ -25,5 +25,6 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces
         Task HandleEmployerProviderPriorityChange(EmployerChangedProviderPriority message);
         Task RemovePreviousSubmissions(ProcessSubmissionDeletion command);
         Task RemoveCurrentSubmission(ProcessSubmissionDeletion command);
+        Task RemoveObsoletePayments(RemoveObsoletePayments command);
     }
 }

@@ -155,7 +155,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 using (var operation = telemetry.StartOperation())
                 {
                     var stopwatch = Stopwatch.StartNew();
-                    var fundingSourceEvents = await fundingSourceService.HandleMonthEnd(command.AccountId, command.JobId);
+                    await fundingSourceService.RemoveObsoletePayments(command);
                     telemetry.StopOperation(operation);
                 }
             }

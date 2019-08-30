@@ -34,8 +34,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
                 {
                     var actorId = new ActorId(command.AccountId);
                     var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
-                    var fundingSourceEvents = await actor.HandleMonthEnd(command).ConfigureAwait(false);
-                    
+                    await actor.RemoveObsoletePayments(command).ConfigureAwait(false);
                     telemetry.StopOperation(operation);
                 }
                 catch (Exception ex)
