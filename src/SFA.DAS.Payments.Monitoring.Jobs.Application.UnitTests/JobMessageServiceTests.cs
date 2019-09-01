@@ -4,10 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
-using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
@@ -42,7 +40,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .ReturnsAsync(new List<JobStepModel>());
             mocker.Mock<IJobStorageService>()
                 .Setup(x => x.GetJobStatus(It.IsAny<CancellationToken>()))
-                .ReturnsAsync((JobStepStatus.Processing, null));
+                .ReturnsAsync((jobStatus: JobStepStatus.Processing, endTime: null));
             mocker.Mock<IJobStorageService>()
                 .Setup(x => x.GetInProgressMessageIdentifiers(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<Guid>());
@@ -77,7 +75,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         {
             mocker.Mock<IJobStorageService>()
                 .Setup(x => x.GetJobStatus(It.IsAny<CancellationToken>()))
-                .ReturnsAsync((JobStepStatus.Completed, DateTimeOffset.UtcNow.AddSeconds(-1)));
+                .ReturnsAsync((jobStatus: JobStepStatus.Completed, endTime: DateTimeOffset.UtcNow.AddSeconds(-1)));
             var jobStatusMessage = new RecordJobMessageProcessingStatus
             {
                 Id = Guid.NewGuid(),
@@ -96,7 +94,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         [Test]
         public async Task Out_Of_Sequence_Completed_Message_Do_Not_Update_Job_Status_And_EndTime()
         {
-            var jobStatus = (JobStepStatus.Failed, DateTimeOffset.UtcNow.AddSeconds(10));
+            var jobStatus = (jobStatus: JobStepStatus.Failed, endTime: DateTimeOffset.UtcNow.AddSeconds(10));
             mocker.Mock<IJobStorageService>()
                 .Setup(x => x.GetJobStatus(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(jobStatus);
@@ -111,7 +109,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             var service = mocker.Create<JobMessageService>();
             await service.RecordCompletedJobMessageStatus(jobStatusMessage);
             mocker.Mock<IJobStorageService>()
-                .Verify(x => x.StoreJobStatus(It.Is<JobStepStatus>(status => status == jobStatus.Failed),
+                .Verify(x => x.StoreJobStatus(It.Is<JobStepStatus>(status => status == jobStatus.jobStatus),
                     It.Is<DateTimeOffset?>(endTime => endTime == jobStatus.Item2), It.IsAny<CancellationToken>()), Times.Once());
         }
 

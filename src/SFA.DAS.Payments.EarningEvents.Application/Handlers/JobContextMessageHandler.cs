@@ -50,7 +50,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             IEarningsJobClientFactory jobClientFactory,
             ITelemetry telemetry,
             IBulkWriter<SubmittedLearnerAimModel> submittedAimWriter,
-            ISubmittedLearnerAimBuilder submittedLearnerAimBuilder, 
+            ISubmittedLearnerAimBuilder submittedLearnerAimBuilder,
             ISubmittedLearnerAimRepository submittedLearnerAimRepository,
             IJobStatusService jobStatusService)
         {
@@ -76,6 +76,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 
                 using (var operation = telemetry.StartOperation($"FM36Processing:{message.JobId}"))
                 {
+                    var stopwatch = Stopwatch.StartNew();
                     if (await jobStatusService.JobCurrentlyRunning(message.JobId))
                     {
                         logger.LogWarning($"Job {message.JobId} is already running.");
@@ -100,12 +101,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    var duration = await ProcessFm36Global(message, collectionPeriod, fm36Output, fileName, cancellationToken)
+                    await ProcessFm36Global(message, collectionPeriod, fm36Output, fileName, cancellationToken)
                             .ConfigureAwait(false);
                     await SendReceivedEarningsEvent(message.JobId, message.SubmissionDateTimeUtc, fm36Output.Year,
                         collectionPeriod, fm36Output.UKPRN).ConfigureAwait(false);
-
-                    telemetry.TrackEvent("Sent All ProcessLearnerCommand Messages",
+                    stopwatch.Stop();
+                    var duration = stopwatch.ElapsedMilliseconds;
+                    telemetry.TrackEvent("Processed ILR Submission",
                         new Dictionary<string, string>
                         {
                             {TelemetryKeys.Count, fm36Output.Learners.Count.ToString()},
@@ -182,13 +184,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             return false;
         }
 
-        private async Task HandleSubmissionEvent<T>(JobContextMessage message) where T: SubmissionEvent, new()
+        private async Task HandleSubmissionEvent<T>(JobContextMessage message) where T : SubmissionEvent, new()
         {
             var eventType = typeof(T).FullName;
 
             using (var operation = telemetry.StartOperation(eventType))
             {
-              
+
                 var submissionEvent = GetSubmissionEvent<T>(message);
                 await SendSubmissionEvent(submissionEvent).ConfigureAwait(false);
 
@@ -209,7 +211,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             }
         }
 
-        private static SubmissionEvent GetSubmissionEvent<T>(IJobContextMessage message) where T: SubmissionEvent, new()
+        private static SubmissionEvent GetSubmissionEvent<T>(IJobContextMessage message) where T : SubmissionEvent, new()
         {
             return new T
             {
@@ -253,7 +255,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             await endpointInstance.Publish(submissionEvent).ConfigureAwait(false);
         }
 
-        private async Task<FM36Global> GetFm36Global(JobContextMessage message, int collectionPeriod, CancellationToken cancellationToken )
+        private async Task<FM36Global> GetFm36Global(JobContextMessage message, int collectionPeriod, CancellationToken cancellationToken)
         {
             FM36Global fm36Output;
             var fileReference = message.Topics.Any(topic => topic.Tasks.Any(task => task.Tasks.Any(taskName => taskName.Equals(JobContextMessageConstants.Tasks.ProcessPeriodEndSubmission))))
@@ -322,7 +324,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 fm36Output.Learners = new List<FM36Learner>();
             }
 
-            
+
             return fm36Output;
         }
 
@@ -386,6 +388,21 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             await submittedAimWriter.Flush(cancellationToken).ConfigureAwait(false);
 
             stopwatch.Stop();
+            var duration = stopwatch.ElapsedMilliseconds;
+            telemetry.TrackEvent("Sent All ProcessLearnerCommand Messages",
+                new Dictionary<string, string>
+                {
+                    {TelemetryKeys.Count, fm36Output.Learners.Count.ToString()},
+                    {TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
+                    {TelemetryKeys.AcademicYear, fm36Output.Year},
+                    {TelemetryKeys.ExternalJobId, message.JobId.ToString()},
+                    {TelemetryKeys.Ukprn, fm36Output.UKPRN.ToString()},
+                },
+                new Dictionary<string, double>
+                {
+                    {TelemetryKeys.Duration, duration},
+                    {TelemetryKeys.Count, fm36Output.Learners.Count},
+                });
             logger.LogDebug($"Took {stopwatch.ElapsedMilliseconds}ms to send {commands.Count} Process Learner Commands for Job: {message.JobId}");
             return stopwatch.ElapsedMilliseconds;
         }
