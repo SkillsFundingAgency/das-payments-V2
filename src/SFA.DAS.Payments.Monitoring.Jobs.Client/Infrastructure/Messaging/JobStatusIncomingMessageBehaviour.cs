@@ -32,13 +32,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging
                 return;
             var jobStatusClient = factory.Create();
             if (paymentMessage is ILeafLevelMessage)
-            {
                 await jobStatusClient.ProcessedCompletedJobMessage(paymentMessage.JobId, context.GetMessageId(), paymentMessage.GetType().Name, !generatedMessages.Any()).ConfigureAwait(false);
-                return;
-            }
+
             if (generatedMessages.Any())
-                await jobStatusClient.RecordStartedProcessingJobMessages(paymentMessage.JobId,  generatedMessages)
-                    .ConfigureAwait(false);
+                await jobStatusClient.RecordStartedProcessingJobMessages(paymentMessage.JobId,  generatedMessages).ConfigureAwait(false);
         }
     }
 }
