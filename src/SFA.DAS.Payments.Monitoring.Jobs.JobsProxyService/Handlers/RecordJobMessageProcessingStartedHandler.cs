@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService.Handlers
 
         protected override async Task HandleMessage(RecordStartedProcessingJobMessages message, IMessageHandlerContext context, IJobsService actor, CancellationToken cancellationToken)
         {
-            var jobStatus = await actor.RecordJobMessageProcessingStartedStatus(message, cancellationToken)
+            await actor.RecordJobMessageProcessingStartedStatus(message, cancellationToken)
                 .ConfigureAwait(false);
         }
     }
