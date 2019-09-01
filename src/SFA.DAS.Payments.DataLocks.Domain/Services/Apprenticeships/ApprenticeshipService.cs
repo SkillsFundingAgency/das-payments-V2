@@ -79,6 +79,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
                 return  new List<ApprenticeshipModel>();
             }
 
+            apprenticeships = apprenticeships.Where(apprenticeship => apprenticeship.IsLevyPayer).ToList();
             apprenticeships.ForEach(x => x.IsLevyPayer = false);
             await  repository.UpdateApprenticeships(apprenticeships).ConfigureAwait(false);
 

@@ -95,51 +95,51 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         private async Task<ApprenticeshipContractType1EarningEvent> GetApprenticeshipAct1EarningsToReProcess(long uln, long ukprn)
         {
-            var onProgAndIncentiveEarning = await repository
-                        .GetLatestProviderApprenticeshipEarnings(uln, ukprn, typeof(ApprenticeshipContractType1EarningEvent).FullName, default(CancellationToken))
-                        .ConfigureAwait(false);
+            //var onProgAndIncentiveEarning = await repository
+            //            .GetLatestProviderApprenticeshipEarnings(uln, ukprn, typeof(ApprenticeshipContractType1EarningEvent).FullName, default(CancellationToken))
+            //            .ConfigureAwait(false);
             
-            if (onProgAndIncentiveEarning != null)
-            {
-                var act1EarningEvent = mapper.Map<ApprenticeshipContractType1EarningEvent>(onProgAndIncentiveEarning);
-                act1EarningEvent.OnProgrammeEarnings = new List<OnProgrammeEarning>();
-                act1EarningEvent.IncentiveEarnings = new List<IncentiveEarning>();
+            //if (onProgAndIncentiveEarning != null)
+            //{
+            //    var act1EarningEvent = mapper.Map<ApprenticeshipContractType1EarningEvent>(onProgAndIncentiveEarning);
+            //    act1EarningEvent.OnProgrammeEarnings = new List<OnProgrammeEarning>();
+            //    act1EarningEvent.IncentiveEarnings = new List<IncentiveEarning>();
 
-                AddOnProgEarnings( onProgAndIncentiveEarning, act1EarningEvent);
-                AddIncentiveEarnings(onProgAndIncentiveEarning, act1EarningEvent);
+            //    AddOnProgEarnings( onProgAndIncentiveEarning, act1EarningEvent);
+            //    AddIncentiveEarnings(onProgAndIncentiveEarning, act1EarningEvent);
 
-                act1EarningEvent.Learner = mapper.Map<Learner>(onProgAndIncentiveEarning);
-                act1EarningEvent.LearningAim = mapper.Map<LearningAim>(onProgAndIncentiveEarning);
+            //    act1EarningEvent.Learner = mapper.Map<Learner>(onProgAndIncentiveEarning);
+            //    act1EarningEvent.LearningAim = mapper.Map<LearningAim>(onProgAndIncentiveEarning);
 
-                return act1EarningEvent;
-            }
-            else
-            {
-                logger.LogWarning($"Can't find any ACT1 OnProg Earnings to Re-Process After Apprenticeship Update For Uln {uln} from Provider {ukprn}");
-            }
+            //    return act1EarningEvent;
+            //}
+            //else
+            //{
+            //    logger.LogWarning($"Can't find any ACT1 OnProg Earnings to Re-Process After Apprenticeship Update For Uln {uln} from Provider {ukprn}");
+            //}
 
             return null;
         }
 
         private async Task<Act1FunctionalSkillEarningsEvent> GetApprenticeshipFunctionalSkillEarningsToReProcess(long uln, long ukprn)
         {
-            var functionalSkillEarning = await repository
-                .GetLatestProviderApprenticeshipEarnings(uln, ukprn, typeof(Act1FunctionalSkillEarningsEvent).FullName, default(CancellationToken))
-                .ConfigureAwait(false);
+            //var functionalSkillEarning = await repository
+            //    .GetLatestProviderApprenticeshipEarnings(uln, ukprn, typeof(Act1FunctionalSkillEarningsEvent).FullName, default(CancellationToken))
+            //    .ConfigureAwait(false);
 
-            if (functionalSkillEarning != null)
-            {
-                var functionalSkillEarningEvent = mapper.Map<Act1FunctionalSkillEarningsEvent>(functionalSkillEarning);
-                AddFunctionalSkillEarnings(functionalSkillEarning, functionalSkillEarningEvent);
-                functionalSkillEarningEvent.Learner = mapper.Map<Learner>(functionalSkillEarning);
-                functionalSkillEarningEvent.LearningAim = mapper.Map<LearningAim>(functionalSkillEarning);
+            //if (functionalSkillEarning != null)
+            //{
+            //    var functionalSkillEarningEvent = mapper.Map<Act1FunctionalSkillEarningsEvent>(functionalSkillEarning);
+            //    AddFunctionalSkillEarnings(functionalSkillEarning, functionalSkillEarningEvent);
+            //    functionalSkillEarningEvent.Learner = mapper.Map<Learner>(functionalSkillEarning);
+            //    functionalSkillEarningEvent.LearningAim = mapper.Map<LearningAim>(functionalSkillEarning);
 
-                return functionalSkillEarningEvent;
-            }
-            else
-            {
-                logger.LogWarning($"Can't find any ACT1 Functional Skill Earnings to Re-Process After Apprenticeship Update For Uln {uln} from Provider {ukprn}");
-            }
+            //    return functionalSkillEarningEvent;
+            //}
+            //else
+            //{
+            //    logger.LogWarning($"Can't find any ACT1 Functional Skill Earnings to Re-Process After Apprenticeship Update For Uln {uln} from Provider {ukprn}");
+            //}
 
             return null;
         }
