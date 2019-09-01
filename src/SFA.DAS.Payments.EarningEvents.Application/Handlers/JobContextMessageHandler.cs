@@ -142,7 +142,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             }
             catch (OperationCanceledException)
             {
-                logger.LogWarning($"Cancellation token cancelled. ");
+                logger.LogError($"Cancellation token cancelled for job: {message.JobId}");
                 return false;
             }
             catch (Exception ex)
