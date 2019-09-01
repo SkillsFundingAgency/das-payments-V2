@@ -20,6 +20,7 @@
     <Parameter Name="TimeToPauseBetweenChecks" DefaultValue="00:00:10" />
     <Parameter Name="TimeToWaitForJobToComplete" DefaultValue="00:02:00" />
     <Parameter Name="MonitoringServiceBusConnectionString" DefaultValue="" />
+    <Parameter Name="MaximumCallbackTimeSpan" DefaultValue="00:10:00" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -50,6 +51,7 @@
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
+            <Parameter Name="MaximumCallbackTimeSpan" Value="[MaximumCallbackTimeSpan]" />
           </Section>
         </Settings>
       </ConfigOverride>

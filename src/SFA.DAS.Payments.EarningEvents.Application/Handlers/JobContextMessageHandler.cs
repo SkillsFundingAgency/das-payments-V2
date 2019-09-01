@@ -74,40 +74,74 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             {
                 if (await HandleSubmissionEvents(message)) return true;
 
-                using (var operation = telemetry.StartOperation("FM36Processing"))
+                using (var operation = telemetry.StartOperation($"FM36Processing:{message.JobId}"))
                 {
-                    var collectionPeriod = int.Parse(message.KeyValuePairs[JobContextMessageKey.ReturnPeriod].ToString());
+                    if (await jobStatusService.JobCurrentlyRunning(message.JobId))
+                    {
+                        logger.LogWarning($"Job {message.JobId} is already running.");
+                        return false;
+                    }
+
+                    var collectionPeriod =
+                        int.Parse(message.KeyValuePairs[JobContextMessageKey.ReturnPeriod].ToString());
                     var fileName = message.KeyValuePairs[JobContextMessageKey.Filename]?.ToString();
-                    var fm36Output = await GetFm36Global(message, collectionPeriod, cancellationToken).ConfigureAwait(false);
+                    var fm36Output = await GetFm36Global(message, collectionPeriod, cancellationToken)
+                        .ConfigureAwait(false);
 
                     if (fm36Output == null)
                     {
                         return true;
                     }
 
-                    await ClearSubmittedLearnerAims(collectionPeriod, fm36Output.Year, message.SubmissionDateTimeUtc, fm36Output.UKPRN, cancellationToken).ConfigureAwait(false);
-                    var duration = await ProcessFm36Global(message, collectionPeriod, fm36Output, fileName, cancellationToken).ConfigureAwait(false);
-                    await SendReceivedEarningsEvent(message.JobId, message.SubmissionDateTimeUtc, fm36Output.Year, collectionPeriod, fm36Output.UKPRN).ConfigureAwait(false);
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    await ClearSubmittedLearnerAims(collectionPeriod, fm36Output.Year, message.SubmissionDateTimeUtc,
+                        fm36Output.UKPRN, cancellationToken).ConfigureAwait(false);
+
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    var duration = await ProcessFm36Global(message, collectionPeriod, fm36Output, fileName, cancellationToken)
+                            .ConfigureAwait(false);
+                    await SendReceivedEarningsEvent(message.JobId, message.SubmissionDateTimeUtc, fm36Output.Year,
+                        collectionPeriod, fm36Output.UKPRN).ConfigureAwait(false);
 
                     telemetry.TrackEvent("Sent All ProcessLearnerCommand Messages",
                         new Dictionary<string, string>
                         {
-                            { TelemetryKeys.Count, fm36Output.Learners.Count.ToString()},
-                            { TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
-                            { TelemetryKeys.AcademicYear, fm36Output.Year},
-                            { TelemetryKeys.ExternalJobId, message.JobId.ToString()},
-                            { TelemetryKeys.Ukprn, fm36Output.UKPRN.ToString()},
+                            {TelemetryKeys.Count, fm36Output.Learners.Count.ToString()},
+                            {TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
+                            {TelemetryKeys.AcademicYear, fm36Output.Year},
+                            {TelemetryKeys.ExternalJobId, message.JobId.ToString()},
+                            {TelemetryKeys.Ukprn, fm36Output.UKPRN.ToString()},
                         },
                         new Dictionary<string, double>
                         {
-                            { TelemetryKeys.Duration, duration},
-                            { TelemetryKeys.Count, fm36Output.Learners.Count},
+                            {TelemetryKeys.Duration, duration},
+                            {TelemetryKeys.Count, fm36Output.Learners.Count},
                         });
+
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        logger.LogError($"Job {message.JobId} has been cancelled after job has started processing. Ukprn: {fm36Output.UKPRN}");
+                        return false;
+                    }
+
                     telemetry.StopOperation(operation);
-                    await jobStatusService.WaitForJobToFinish(message.JobId);
-                    logger.LogInfo($"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");
-                    return true;
+
+                    if (await jobStatusService.WaitForJobToFinish(message.JobId, cancellationToken))
+                    {
+                        logger.LogInfo(
+                            $"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");
+                        return true;
+                    }
+                    logger.LogError($"Job failed to finished within the allocated time. Job Id: {message.JobId}");
+                    return false;
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                logger.LogWarning($"Cancellation token cancelled. ");
+                return false;
             }
             catch (Exception ex)
             {
@@ -244,7 +278,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             {
                 logger.LogWarning($"No FM36Global data found for job: {message.JobId}, file reference: {fileReference}, container: {container}");
 
-                telemetry.TrackEvent("Deserialize FM36Global",
+                telemetry.TrackEvent("Failed To Deserialise FM36Global",
                     new Dictionary<string, string>
                     {
                         { TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
@@ -258,7 +292,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 return null;
             }
 
-            telemetry.TrackEvent("Deserialize FM36Global",
+            telemetry.TrackEvent("Deserialised FM36Global",
                 new Dictionary<string, string>
                 {
                     { TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},

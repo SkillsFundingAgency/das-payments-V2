@@ -22,5 +22,6 @@
     <Parameter Name="LogLevel" Value="" />
     <Parameter Name="ProcessMessageSequentially" Value="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+    <Parameter Name="MaximumCallbackTimeSpan" Value="" />
   </Section>
 </Settings>
