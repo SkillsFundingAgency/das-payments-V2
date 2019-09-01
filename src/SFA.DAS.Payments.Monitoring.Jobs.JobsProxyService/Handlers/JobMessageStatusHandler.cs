@@ -6,26 +6,25 @@ using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure;
 using SFA.DAS.Payments.Monitoring.Jobs.JobsService.Interfaces;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
-using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService.Handlers
 {
-    public class RecordJobMessageProcessingStatusHandler : IHandleMessages<RecordJobMessageProcessingStatus>
+    public abstract class JobMessageStatusHandler<T> : IHandleMessages<T> where T: IJobMessageStatus
     {
         private readonly IActorProxyFactory proxyFactory;
         private readonly IPaymentLogger logger;
 
-        public RecordJobMessageProcessingStatusHandler(IActorProxyFactory proxyFactory,
-            IPaymentLogger logger)
+        protected JobMessageStatusHandler(IActorProxyFactory proxyFactory, IPaymentLogger logger)
         {
             this.proxyFactory = proxyFactory ?? throw new ArgumentNullException(nameof(proxyFactory));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task Handle(RecordJobMessageProcessingStatus message, IMessageHandlerContext context)
+        public async Task Handle(T message, IMessageHandlerContext context)
         {
             try
             {
@@ -36,11 +35,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService.Handlers
                     var actor = proxyFactory.CreateActorProxy<IJobsService>(
                         new Uri("fabric:/SFA.DAS.Payments.Monitoring.ServiceFabric/JobsServiceActorService"), actorId);
                     cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(2));
-                    var jobStatus = await actor.RecordJobMessageProcessingStatus(message, cancellationTokenSource.Token)
-                        .ConfigureAwait(false);
-                    if (jobStatus == JobStatus.InProgress)
-                        return;
-                    //await DeleteActor(actorId);
+                    await HandleMessage(message, context, actor, cancellationTokenSource.Token).ConfigureAwait(false); 
                 }
             }
             catch (AggregateException aggregateException)
@@ -50,7 +45,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService.Handlers
                     await HandleOperationCancelledException(message, context);
                     return;
                 }
-                logger.LogWarning($"Failed to record job message status. Job id: {message.JobId}, message id: {message.Id}, name: {message.MessageName}.  Errors: {aggregateException}");
+                logger.LogWarning($"Failed to record job message status. Job id: {message.JobId}, message: {message.ToJson()}.  Errors: {aggregateException}");
                 throw;
             }
             catch (OperationCanceledException)
@@ -59,16 +54,17 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService.Handlers
             }
             catch (Exception ex)
             {
-                logger.LogWarning($"Failed to record job message status. Job id: {message.JobId}, message id: {message.Id}, name: {message.MessageName}.  Error: {ex.Message}. {ex}");
+                logger.LogWarning($"Failed to record job message status. Job id: {message.JobId}, message: {message.ToJson()}.  Error: {ex.Message}. {ex}");
                 throw;
             }
         }
 
-        private async Task<bool> HandleOperationCancelledException(RecordJobMessageProcessingStatus message, IMessageHandlerContext context)
+        protected abstract Task HandleMessage(T message, IMessageHandlerContext context, IJobsService actor, CancellationToken cancellationToken);
+        private async Task<bool> HandleOperationCancelledException(T message, IMessageHandlerContext context)
         {
-            logger.LogDebug($"Couldn't get actor within time allocated time. Job id: {message.JobId}, message id: {message.Id}, name: {message.MessageName}.");
+            logger.LogDebug($"Couldn't get actor within time allocated time. Job id: {message.JobId}message: {message.ToJson()}.");
             if (!await context.Defer(message, TimeSpan.FromSeconds(1), "no_actor_available", 20))
-                throw new InvalidOperationException($"Tried over 10 times to get an actor for job: {message.Id} for message: {message.MessageName}");
+                throw new InvalidOperationException($"Tried over 10 times to get an actor for job: message: {message.ToJson()}");
             return true;
         }
 

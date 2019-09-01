@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging
 
         public static string GetMessageName(this IOutgoingLogicalMessageContext context)
         {
-            return context.Message.Instance.GetType().FullName;
+            return context.Message.Instance.GetType().Name;
         }
     }
 }
