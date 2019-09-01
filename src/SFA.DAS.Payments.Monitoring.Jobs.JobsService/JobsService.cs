@@ -21,6 +21,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
         private readonly IPaymentLogger logger;
         private readonly ILifetimeScope lifetimeScope;
         private readonly ITelemetry telemetry;
+        private IActorTimer jobCleanUpTimer;
+
+        private const int MaxIdleMinutesForJob = 10;
+        private const int ReminderIntervalInMinutesForJob = 1;
 
         public JobsService(IPaymentLogger logger, ILifetimeScope lifetimeScope, ActorService actorService, ActorId actorId, ITelemetry telemetry) 
             : base(actorService, actorId)
@@ -28,6 +32,48 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
+        }
+
+        protected override Task OnActivateAsync()
+        {
+            jobCleanUpTimer = RegisterTimer(CleanUpJob, null, TimeSpan.FromMinutes(MaxIdleMinutesForJob), TimeSpan.FromMinutes(ReminderIntervalInMinutesForJob));
+            return base.OnActivateAsync();
+        }
+
+        protected override Task OnDeactivateAsync()
+        {
+            if (jobCleanUpTimer != null)
+            {
+                UnregisterTimer(jobCleanUpTimer);
+            }
+
+            return base.OnDeactivateAsync();
+        }
+
+        private async Task<DateTimeOffset?> GetLastMessageStatusTme()
+        {
+            var item = await StateManager.TryGetStateAsync<DateTimeOffset>("last_message_time").ConfigureAwait(false);
+            return item.HasValue ? item.Value : (DateTimeOffset?)null;
+        }
+
+        private async Task SetLastMesasgeStatusTime(DateTimeOffset lastMessageTime)
+        {
+            await StateManager.AddOrUpdateStateAsync < DateTimeOffset>("last_message_time", lastMessageTime, (oldKey, oldValue) => lastMessageTime).ConfigureAwait(false);
+        }
+
+        protected async Task CleanUpJob(object state)
+        {
+            var lastMessageTime = await GetLastMessageStatusTme().ConfigureAwait(false);
+            if (lastMessageTime == null || lastMessageTime.Value.AddMinutes(MaxIdleMinutesForJob) > DateTimeOffset.UtcNow)
+            {
+                logger.LogVerbose(lastMessageTime.HasValue
+                    ? $"Job timeout not triggered.  Is due to timeout at: {lastMessageTime.Value.AddMinutes(MaxIdleMinutesForJob)}"
+                    : "No job messages have been received so cannot start job timeout.");
+                return;
+            }
+            logger.LogInfo($"Job has timed out due to max idle time. Job: {Id.GetStringId()}");
+            var statusService = lifetimeScope.Resolve<IJobStatusService>();
+            await statusService.StopJob();
         }
 
         public async Task RecordEarningsJob(RecordEarningsJob message, CancellationToken cancellationToken)
@@ -42,6 +88,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
                     telemetry.TrackDuration("JobsService.RecordEarningsJob", stopwatch.Elapsed);
                     telemetry.StopOperation(operation);
                 }
+
+                await SetLastMesasgeStatusTime(DateTimeOffset.Now).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -70,6 +118,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
                     }
                     telemetry.TrackDuration("JobsService.RecordJobMessageProcessingStatus", stopwatch.Elapsed);
                     telemetry.StopOperation(operation);
+                    await SetLastMesasgeStatusTime(DateTimeOffset.Now).ConfigureAwait(false);
                     return status;
                 }
             }
@@ -96,6 +145,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
                         await StateManager.ClearCacheAsync(CancellationToken.None);
                     telemetry.TrackDuration("JobsService.RecordJobMessageProcessingStartedStatus", stopwatch.Elapsed);
                     telemetry.StopOperation(operation);
+                    await SetLastMesasgeStatusTime(DateTimeOffset.Now).ConfigureAwait(false);
                     return status;
                 }
             }
@@ -105,5 +155,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
                 throw;
             }
         }
+
+        
     }
 }
