@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.ServiceFabric.Actors;
+using Microsoft.ServiceFabric.Actors.Client;
 using Newtonsoft.Json.Linq;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Monitoring.Jobs.JobsService.Interfaces;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Client
@@ -20,11 +24,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
     {
         private readonly IMessageSession messageSession;
         private readonly IPaymentLogger logger;
-
-        public JobMessageClient(IMessageSession messageSession, IPaymentLogger logger)
+        private readonly IActorProxyFactory proxyFactory;
+        private static readonly string jobServiceUri = "fabric:/SFA.DAS.Payments.Monitoring.ServiceFabric/JobsServiceActorService";
+        public JobMessageClient(IMessageSession messageSession, IPaymentLogger logger, IActorProxyFactory proxyFactory)
         {
             this.messageSession = messageSession ?? throw new ArgumentNullException(nameof(messageSession));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.proxyFactory = proxyFactory ?? throw new ArgumentNullException(nameof(proxyFactory));
         }
 
         public async Task ProcessedCompletedJobMessage(long jobId, Guid messageId, string messageName, bool allowJobCompletion)
@@ -40,7 +46,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 Succeeded = true,
                 AllowJobCompletion = allowJobCompletion
             };
-            await messageSession.Send(itemProcessedEvent).ConfigureAwait(false);
+            //            await messageSession.Send(itemProcessedEvent).ConfigureAwait(false);
+            var actorId = new ActorId(jobId.ToString());
+            var actor = proxyFactory.CreateActorProxy<IJobsService>(new Uri(jobServiceUri), actorId);
+            await actor.RecordJobMessageProcessingStatus(itemProcessedEvent, CancellationToken.None).ConfigureAwait(false);
             logger.LogDebug($"Sent request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
         }
 
@@ -78,7 +87,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                     GeneratedMessages = new List<GeneratedMessage>(),
                     Succeeded = false
                 };
-                await messageSession.Send(itemProcessedEvent).ConfigureAwait(false);
+                //await messageSession.Send(itemProcessedEvent).ConfigureAwait(false);
+                var actorId = new ActorId(jobId.ToString());
+                var actor = proxyFactory.CreateActorProxy<IJobsService>(new Uri(jobServiceUri), actorId);
+                await actor.RecordJobMessageProcessingStatus(itemProcessedEvent, CancellationToken.None).ConfigureAwait(false);
+
             }
             catch (Exception ex)
             {
@@ -94,7 +107,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 JobId = jobId,
                 GeneratedMessages = generatedMessages
             };
-            await messageSession.Send(message).ConfigureAwait(false);
+//            await messageSession.Send(message).ConfigureAwait(false);
+            var actorId = new ActorId(jobId.ToString());
+            var actor = proxyFactory.CreateActorProxy<IJobsService>(new Uri(jobServiceUri), actorId);
+            await actor.RecordJobMessageProcessingStartedStatus(message, CancellationToken.None).ConfigureAwait(false);
             logger.LogVerbose($"Sent request to record started processing job messages. Job Id: {jobId}");
         }
     }

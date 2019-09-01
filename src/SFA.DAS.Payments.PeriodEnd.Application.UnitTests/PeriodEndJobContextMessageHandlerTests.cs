@@ -15,9 +15,8 @@ using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
 using SFA.DAS.Payments.JobContextMessageHandling.JobStatus;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
-using SFA.DAS.Payments.PeriodEnd.Application.Handlers;
-using SFA.DAS.Payments.PeriodEnd.Application.Infrastructure;
 using SFA.DAS.Payments.PeriodEnd.Messages.Events;
+using SFA.DAS.Payments.PeriodEnd.PeriodEndService.Handlers;
 
 namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
 {
