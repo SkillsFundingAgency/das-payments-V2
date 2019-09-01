@@ -11,8 +11,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 {
     public interface IJobMessageClient
     {
-        Task ProcessedJobMessage(long jobId, Guid messageId, string messageName, List<GeneratedMessage> generatedMessages);
+        Task ProcessedCompletedJobMessage(long jobId, Guid messageId, string messageName);
         Task ProcessingFailedForJobMessage(byte[] failedMessageBody);
+        Task RecordStartedProcessingJobMessages(long jobId, List<GeneratedMessage> generatedMessages);
     }
 
     public class JobMessageClient : IJobMessageClient
@@ -26,7 +27,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task ProcessedJobMessage(long jobId, Guid messageId, string messageName, List<GeneratedMessage> generatedMessages)
+        public async Task ProcessedCompletedJobMessage(long jobId, Guid messageId, string messageName)
         {
             logger.LogVerbose($"Sending request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
             var itemProcessedEvent = new RecordJobMessageProcessingStatus
@@ -35,7 +36,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 Id = messageId,
                 MessageName = messageName,
                 EndTime = DateTimeOffset.UtcNow,
-                GeneratedMessages = generatedMessages ?? new List<GeneratedMessage>(),
+                GeneratedMessages = new List<GeneratedMessage>(),
                 Succeeded = true
             };
             await messageSession.Send(itemProcessedEvent).ConfigureAwait(false);
@@ -82,6 +83,18 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
             {
                 logger.LogWarning($"Couldn't generate the job message failed message for monitoring.  {ex.Message}");
             }
+        }
+
+        public async Task RecordStartedProcessingJobMessages(long jobId, List<GeneratedMessage> generatedMessages)
+        {
+            logger.LogVerbose($"Sending request to record started processing job messages. Job Id: {jobId}");
+            var message = new RecordStartedProcessingJobMessages
+            {
+                JobId = jobId,
+                GeneratedMessages = generatedMessages
+            };
+            await messageSession.Send(message).ConfigureAwait(false);
+            logger.LogVerbose($"Sent request to record started processing job messages. Job Id: {jobId}");
         }
     }
 }

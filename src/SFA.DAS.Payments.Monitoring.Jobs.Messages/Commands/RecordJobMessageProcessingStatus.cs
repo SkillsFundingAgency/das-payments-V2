@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands
 {
-    public class RecordJobMessageProcessingStatus : JobsCommand
+    public class RecordJobMessageProcessingStatus : JobsCommand, IJobMessageStatus
     {
         public Guid Id { get; set; }
         public DateTimeOffset EndTime { get; set; }
