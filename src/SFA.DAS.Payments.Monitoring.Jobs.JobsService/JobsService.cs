@@ -61,9 +61,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
                     var jobMessageService = lifetimeScope.Resolve<IJobMessageService>();
                     await jobMessageService.RecordCompletedJobMessageStatus(message, CancellationToken.None).ConfigureAwait(false);
                     var statusService = lifetimeScope.Resolve<IJobStatusService>();
-                    var status = await statusService.ManageStatus(CancellationToken.None);
-                    if (status != JobStatus.InProgress)
-                        await StateManager.ClearCacheAsync(CancellationToken.None);
+                    var status = JobStatus.InProgress;
+                    if (message.AllowJobCompletion)
+                    {
+                        status = await statusService.ManageStatus(CancellationToken.None);
+                        if (status != JobStatus.InProgress)
+                            await StateManager.ClearCacheAsync(CancellationToken.None);
+                    }
                     telemetry.TrackDuration("JobsService.RecordJobMessageProcessingStatus", stopwatch.Elapsed);
                     telemetry.StopOperation(operation);
                     return status;

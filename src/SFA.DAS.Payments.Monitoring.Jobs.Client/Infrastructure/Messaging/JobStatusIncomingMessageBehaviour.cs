@@ -31,9 +31,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging
             if (paymentMessage == null)
                 return;
             var jobStatusClient = factory.Create();
-            if (!generatedMessages.Any() && paymentMessage is ILeafLevelMessage)
+            if (paymentMessage is ILeafLevelMessage)
             {
-                await jobStatusClient.ProcessedCompletedJobMessage(paymentMessage.JobId, context.GetMessageId(), paymentMessage.GetType().Name).ConfigureAwait(false);
+                await jobStatusClient.ProcessedCompletedJobMessage(paymentMessage.JobId, context.GetMessageId(), paymentMessage.GetType().Name, !generatedMessages.Any()).ConfigureAwait(false);
                 return;
             }
             if (generatedMessages.Any())

@@ -10,6 +10,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands
         public bool Succeeded { get; set; }
         public List<GeneratedMessage> GeneratedMessages { get; set; }
         public string MessageName { get; set; }
+        public bool AllowJobCompletion { get; set; } = true;
         public RecordJobMessageProcessingStatus()
         {
             GeneratedMessages = new List<GeneratedMessage>();

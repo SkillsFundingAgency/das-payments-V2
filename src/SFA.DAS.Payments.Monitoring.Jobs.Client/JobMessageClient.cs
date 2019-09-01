@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 {
     public interface IJobMessageClient
     {
-        Task ProcessedCompletedJobMessage(long jobId, Guid messageId, string messageName);
+        Task ProcessedCompletedJobMessage(long jobId, Guid messageId, string messageName, bool allowJobCompletion);
         Task ProcessingFailedForJobMessage(byte[] failedMessageBody);
         Task RecordStartedProcessingJobMessages(long jobId, List<GeneratedMessage> generatedMessages);
     }
@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task ProcessedCompletedJobMessage(long jobId, Guid messageId, string messageName)
+        public async Task ProcessedCompletedJobMessage(long jobId, Guid messageId, string messageName, bool allowJobCompletion)
         {
             logger.LogVerbose($"Sending request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
             var itemProcessedEvent = new RecordJobMessageProcessingStatus
@@ -37,7 +37,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 MessageName = messageName,
                 EndTime = DateTimeOffset.UtcNow,
                 GeneratedMessages = new List<GeneratedMessage>(),
-                Succeeded = true
+                Succeeded = true,
+                AllowJobCompletion = allowJobCompletion
             };
             await messageSession.Send(itemProcessedEvent).ConfigureAwait(false);
             logger.LogDebug($"Sent request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
