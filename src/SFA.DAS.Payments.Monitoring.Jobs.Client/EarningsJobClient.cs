@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
-using Microsoft.ServiceFabric.Actors;
-using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
-using SFA.DAS.Payments.Monitoring.Jobs.JobsService.Interfaces;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Client
@@ -26,13 +22,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 
         private readonly IMessageSession messageSession;
         private readonly IPaymentLogger logger;
-        private readonly IActorProxyFactory proxyFactory;
 
-        public EarningsJobClient(IMessageSession messageSession, IPaymentLogger logger, IActorProxyFactory proxyFactory)
+        public EarningsJobClient(IMessageSession messageSession, IPaymentLogger logger)
         {
             this.messageSession = messageSession ?? throw new ArgumentNullException(nameof(messageSession));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.proxyFactory = proxyFactory ?? throw new ArgumentNullException(nameof(proxyFactory));
         }
 
         public async Task StartJob(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages, DateTimeOffset startTime)
@@ -49,10 +43,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 GeneratedMessages = new List<GeneratedMessage>(),
                 LearnerCount = generatedMessages.Count
             };
-            //            await messageSession.Send(providerEarningsEvent).ConfigureAwait(false);
-            var actorId = new ActorId(jobId.ToString());
-            var actor = proxyFactory.CreateActorProxy<IJobsService>(new Uri("fabric:/SFA.DAS.Payments.Monitoring.ServiceFabric/JobsServiceActorService"), actorId);
-            await actor.RecordEarningsJob(providerEarningsEvent, CancellationToken.None).ConfigureAwait(false);
+            await messageSession.Send(providerEarningsEvent).ConfigureAwait(false);
             logger.LogDebug($"Sent request to record start of earnings job. Job Id: {jobId}, Ukprn: {ukprn}");
         }
     }

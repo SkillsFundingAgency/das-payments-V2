@@ -23,6 +23,7 @@ using SFA.DAS.Payments.Messages.Core.Commands;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Monitoring.Jobs.Client;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
@@ -81,13 +82,13 @@ namespace SFA.DAS.Payments.PerformanceTests
             EndpointConfiguration.UseSerialization<NewtonsoftSerializer>();
             EndpointConfiguration.EnableInstallers();
 
-            //Builder.RegisterType<EarningsJobClient>()
-            //    .As<IEarningsJobClient>()
-            //    .SingleInstance();
+            Builder.RegisterType<EarningsJobClient>()
+                .As<IEarningsJobClient>()
+                .SingleInstance();
 
-            //Builder.RegisterType<EarningsJobClientFactory>()
-            //    .As<IEarningsJobClientFactory>()
-            //    .SingleInstance();
+            Builder.RegisterType<EarningsJobClientFactory>()
+                .As<IEarningsJobClientFactory>()
+                .SingleInstance();
 
             Builder.Register((c, p) =>
             {

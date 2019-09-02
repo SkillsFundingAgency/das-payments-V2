@@ -2,7 +2,6 @@
 using System.Text;
 using Autofac;
 using Microsoft.ApplicationInsights.Channel;
-using Microsoft.ServiceFabric.Actors.Client;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NServiceBus;
@@ -40,8 +39,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
                 {
                     var logger = c.Resolve<IPaymentLogger>();
                     var factory = c.Resolve<IMonitoringMessageSessionFactory>();
-                    var actorProxyFactory = c.Resolve<IActorProxyFactory>();
-                    return new EarningsJobClient(factory.Create(), logger, actorProxyFactory);
+                    var dataContext = c.Resolve<IJobsDataContext>();
+                    //                    return new EarningsJobClient(logger, dataContext, c.Resolve<Application.Infrastructure.Telemetry.ITelemetry>());
+                    return new EarningsJobClient(factory.Create(), logger);
                 })
                 .As<IEarningsJobClient>()
                 .InstancePerDependency();
@@ -58,8 +58,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
                 {
                     var logger = c.Resolve<IPaymentLogger>();
                     var factory = c.Resolve<IMonitoringMessageSessionFactory>();
-                    var actorProxyFactory = c.Resolve<IActorProxyFactory>();
-                    return new JobMessageClient(factory.Create(), logger, actorProxyFactory);
+                    return new JobMessageClient(factory.Create(), logger);
                 })
                 .As<IJobMessageClient>()
                 .SingleInstance();

@@ -15,7 +15,6 @@ using NUnit.Framework;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.EarningEvents.Application.Handlers;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
-using SFA.DAS.Payments.EarningEvents.EarningEventsService.Handlers;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
 using SFA.DAS.Payments.Model.Core.Entities;

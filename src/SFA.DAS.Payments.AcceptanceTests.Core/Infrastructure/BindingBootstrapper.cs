@@ -26,6 +26,7 @@ using SFA.DAS.Payments.AcceptanceTests.Services.BespokeHttpClient;
 using SFA.DAS.Payments.AcceptanceTests.Services.Configuration;
 using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using SFA.DAS.Payments.Messages.Core;
+using SFA.DAS.Payments.Monitoring.Jobs.Client;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
@@ -43,9 +44,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             var config = new TestsConfiguration();
             Builder = new ContainerBuilder();
             Builder.RegisterType<TestsConfiguration>().SingleInstance();
-            //Builder.RegisterType<EarningsJobClient>()
-            //    .As<IEarningsJobClient>()
-            //    .InstancePerLifetimeScope();
+            Builder.RegisterType<EarningsJobClient>()
+                .As<IEarningsJobClient>()
+                .InstancePerLifetimeScope();
 
             Builder.RegisterType<AzureStorageServiceConfig>().As<IAzureStorageKeyValuePersistenceServiceConfig>().InstancePerLifetimeScope();
             Builder.RegisterType<AzureStorageKeyValuePersistenceService>().As<IStreamableKeyValuePersistenceService>().InstancePerLifetimeScope();

@@ -5,28 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Handlers\**" />
-    <EmbeddedResource Remove="Handlers\**" />
-    <None Remove="Handlers\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Infrastructure\Ioc\PeriodEndModule.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="ESFA.DC.JobContextManager" Version="0.2.10-beta0001" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.JobContextMessageHandling\SFA.DAS.Payments.JobContextMessageHandling.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Client\SFA.DAS.Payments.Monitoring.Jobs.Client.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Data\SFA.DAS.Payments.Monitoring.Jobs.Data.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.PeriodEnd.Messages\SFA.DAS.Payments.PeriodEnd.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.PeriodEnd.Model\SFA.DAS.Payments.PeriodEnd.Model.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Infrastructure\Ioc\" />
   </ItemGroup>
 
 </Project>
