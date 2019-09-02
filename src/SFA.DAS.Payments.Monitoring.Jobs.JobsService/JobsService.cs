@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
 
         protected override Task OnActivateAsync()
         {
-            jobCleanUpTimer = RegisterTimer(CleanUpJob, null, TimeSpan.FromMinutes(MaxIdleMinutesForJob), TimeSpan.FromMinutes(ReminderIntervalInMinutesForJob));
+            jobCleanUpTimer = RegisterTimer(TryCleanUpJob, null, TimeSpan.FromMinutes(MaxIdleMinutesForJob), TimeSpan.FromMinutes(ReminderIntervalInMinutesForJob));
             return base.OnActivateAsync();
         }
 
@@ -61,7 +61,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
             await StateManager.AddOrUpdateStateAsync < DateTimeOffset>("last_message_time", DateTimeOffset.UtcNow, (oldKey, oldValue) => DateTimeOffset.UtcNow).ConfigureAwait(false);
         }
 
-        protected async Task CleanUpJob(object state)
+        protected async Task TryCleanUpJob(object state)
         {
             var lastMessageTime = await GetLastMessageStatusTme().ConfigureAwait(false);
             if (lastMessageTime == null || lastMessageTime.Value.AddMinutes(MaxIdleMinutesForJob) > DateTimeOffset.UtcNow)
@@ -112,15 +112,19 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
                     await jobMessageService.RecordCompletedJobMessageStatus(message, CancellationToken.None).ConfigureAwait(false);
                     var statusService = lifetimeScope.Resolve<IJobStatusService>();
                     var status = JobStatus.InProgress;
+                    await SetLastMesasgeStatusTime().ConfigureAwait(false);
                     if (message.AllowJobCompletion)
                     {
                         status = await statusService.ManageStatus(CancellationToken.None);
                         if (status != JobStatus.InProgress)
+                        {
+                            if (jobCleanUpTimer != null)
+                                UnregisterTimer(jobCleanUpTimer);
                             await StateManager.ClearCacheAsync(CancellationToken.None);
+                        }
                     }
                     telemetry.TrackDuration("JobsService.RecordJobMessageProcessingStatus", stopwatch.Elapsed);
                     telemetry.StopOperation(operation);
-                    await SetLastMesasgeStatusTime().ConfigureAwait(false);
                     return status;
                 }
             }
@@ -143,11 +147,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
                     await jobMessageService.RecordStartedJobMessages(message, CancellationToken.None).ConfigureAwait(false);
                     var statusService = lifetimeScope.Resolve<IJobStatusService>();
                     var status = await statusService.ManageStatus(CancellationToken.None);
+                    await SetLastMesasgeStatusTime().ConfigureAwait(false);
                     if (status != JobStatus.InProgress)
+                    {
+                        if (jobCleanUpTimer != null)
+                            UnregisterTimer(jobCleanUpTimer);
                         await StateManager.ClearCacheAsync(CancellationToken.None);
+                    }
                     telemetry.TrackDuration("JobsService.RecordJobMessageProcessingStartedStatus", stopwatch.Elapsed);
                     telemetry.StopOperation(operation);
-                    await SetLastMesasgeStatusTime().ConfigureAwait(false);
                 }
             }
             catch (Exception e)
@@ -156,7 +164,5 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
                 throw;
             }
         }
-
-        
     }
 }
