@@ -15,9 +15,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Interfaces
         Task<ReadOnlyCollection<FundingSourcePaymentEvent>> ProcessReceiverTransferPayment(ProcessUnableToFundTransferFundingSourcePayment message);
         Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(long employerAccountId, long jobId);
         Task StoreEmployerProviderPriority(EmployerChangedProviderPriority providerPriorityEvent);
-        Task RemovePreviousSubmissions(long commandAccountId, long commandJobId, CollectionPeriod commandCollectionPeriod, DateTime commandSubmissionDate);
+        Task RemovePreviousSubmissions(long commandJobId, byte collectionPeriod, short academicYear, DateTime commandSubmissionDate);
 
-        Task RemoveCurrentSubmission(long employerAccountId, long jobId, CollectionPeriod collectionPeriod,
-            DateTime submissionDate);
+        Task RemoveCurrentSubmission(long commandJobId, byte collectionPeriod, short academicYear, DateTime commandSubmissionDate);
     }
 }
