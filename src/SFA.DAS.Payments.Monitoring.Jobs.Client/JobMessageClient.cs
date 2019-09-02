@@ -8,7 +8,6 @@ using Microsoft.ServiceFabric.Actors.Client;
 using Newtonsoft.Json.Linq;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure;
 using SFA.DAS.Payments.Monitoring.Jobs.JobsService.Interfaces;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
@@ -26,6 +25,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
         private readonly IMessageSession messageSession;
         private readonly IPaymentLogger logger;
         private readonly IActorProxyFactory proxyFactory;
+        private static readonly string jobServiceUri = "fabric:/SFA.DAS.Payments.Monitoring.ServiceFabric/JobsServiceActorService";
         public JobMessageClient(IMessageSession messageSession, IPaymentLogger logger, IActorProxyFactory proxyFactory)
         {
             this.messageSession = messageSession ?? throw new ArgumentNullException(nameof(messageSession));
@@ -46,18 +46,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 Succeeded = true,
                 AllowJobCompletion = allowJobCompletion
             };
-            try
-            {
-                var actorId = new ActorId(jobId.ToString());
-                var actor = proxyFactory.CreateActorProxy<IJobsService>(new Uri(ServiceUris.JobsServiceUri), actorId);
-                await actor.RecordJobMessageProcessingStatus(itemProcessedEvent, CancellationToken.None).ConfigureAwait(false);
-                logger.LogDebug($"Sent request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
-            }
-            catch (Exception e)
-            {
-                logger.LogWarning($"Failed to invoke monitoring actor using remoting when trying to record status of a job message.  Falling back to messaging notification for Job: {jobId}, Message: {messageName}, Id: {messageId}. Error: {e.Message}. {e}");
-                await messageSession.Send(itemProcessedEvent).ConfigureAwait(false);
-            }
+            //            await messageSession.Send(itemProcessedEvent).ConfigureAwait(false);
+            var actorId = new ActorId(jobId.ToString());
+            var actor = proxyFactory.CreateActorProxy<IJobsService>(new Uri(jobServiceUri), actorId);
+            await actor.RecordJobMessageProcessingStatus(itemProcessedEvent, CancellationToken.None).ConfigureAwait(false);
+            logger.LogDebug($"Sent request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
         }
 
         public async Task ProcessingFailedForJobMessage(byte[] failedMessageBody)
@@ -94,17 +87,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                     GeneratedMessages = new List<GeneratedMessage>(),
                     Succeeded = false
                 };
-                try
-                {
-                    var actorId = new ActorId(jobId.ToString());
-                    var actor = proxyFactory.CreateActorProxy<IJobsService>(new Uri(ServiceUris.JobsServiceUri), actorId);
-                    await actor.RecordJobMessageProcessingStatus(itemProcessedEvent, CancellationToken.None).ConfigureAwait(false);
-                }
-                catch (Exception e)
-                {
-                    logger.LogWarning($"Failed to invoke monitoring actor using remoting when trying to record status of a failed job message.  Falling back to messaging notification for Job: {jobId}, Id: {messageId}. Error: {e.Message}. {e}");
-                    await messageSession.Send(itemProcessedEvent).ConfigureAwait(false);
-                }
+                //await messageSession.Send(itemProcessedEvent).ConfigureAwait(false);
+                var actorId = new ActorId(jobId.ToString());
+                var actor = proxyFactory.CreateActorProxy<IJobsService>(new Uri(jobServiceUri), actorId);
+                await actor.RecordJobMessageProcessingStatus(itemProcessedEvent, CancellationToken.None).ConfigureAwait(false);
+
             }
             catch (Exception ex)
             {
@@ -120,18 +107,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 JobId = jobId,
                 GeneratedMessages = generatedMessages
             };
-            try
-            {
-                var actorId = new ActorId(jobId.ToString());
-                var actor = proxyFactory.CreateActorProxy<IJobsService>(new Uri(ServiceUris.JobsServiceUri), actorId);
-                await actor.RecordJobMessageProcessingStartedStatus(message, CancellationToken.None).ConfigureAwait(false);
-                logger.LogVerbose($"Sent request to record started processing job messages. Job Id: {jobId}");
-            }
-            catch (Exception e)
-            {
-                logger.LogWarning($"Failed to invoke monitoring actor using remoting when trying to record started processing job messages.  Falling back to messaging notification for Job: {jobId}. Error: {e.Message}. {e}");
-                await messageSession.Send(message).ConfigureAwait(false);
-            }
+//            await messageSession.Send(message).ConfigureAwait(false);
+            var actorId = new ActorId(jobId.ToString());
+            var actor = proxyFactory.CreateActorProxy<IJobsService>(new Uri(jobServiceUri), actorId);
+            await actor.RecordJobMessageProcessingStartedStatus(message, CancellationToken.None).ConfigureAwait(false);
+            logger.LogVerbose($"Sent request to record started processing job messages. Job Id: {jobId}");
         }
     }
 }

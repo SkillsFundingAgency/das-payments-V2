@@ -10,7 +10,6 @@ using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
-using SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.JobsService.Interfaces;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
@@ -50,18 +49,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 GeneratedMessages = new List<GeneratedMessage>(),
                 LearnerCount = generatedMessages.Count
             };
-            try
-            {
-                var actorId = new ActorId(jobId.ToString());
-                var actor = proxyFactory.CreateActorProxy<IJobsService>(new Uri(ServiceUris.JobsServiceUri), actorId);
-                await actor.RecordEarningsJob(providerEarningsEvent, CancellationToken.None).ConfigureAwait(false);
-                logger.LogDebug($"Sent request to record start of earnings job. Job Id: {jobId}, Ukprn: {ukprn}");
-            }
-            catch (Exception e)
-            {
-                logger.LogWarning($"Failed to invoke monitoring actor using remoting when trying to create job.  Falling back to messaging notification for Job: {jobId}, Ukprn: {ukprn}.");
-                await messageSession.Send(providerEarningsEvent).ConfigureAwait(false);
-            }
+            //            await messageSession.Send(providerEarningsEvent).ConfigureAwait(false);
+            var actorId = new ActorId(jobId.ToString());
+            var actor = proxyFactory.CreateActorProxy<IJobsService>(new Uri("fabric:/SFA.DAS.Payments.Monitoring.ServiceFabric/JobsServiceActorService"), actorId);
+            await actor.RecordEarningsJob(providerEarningsEvent, CancellationToken.None).ConfigureAwait(false);
+            logger.LogDebug($"Sent request to record start of earnings job. Job Id: {jobId}, Ukprn: {ukprn}");
         }
     }
 }
