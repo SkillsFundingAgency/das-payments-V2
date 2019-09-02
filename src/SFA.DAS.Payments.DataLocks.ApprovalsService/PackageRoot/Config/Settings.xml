@@ -15,5 +15,6 @@
     <Parameter Name="ConsoleLogLevel" Value="" />
     <Parameter Name="ProcessMessageSequentially" Value="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+    <Parameter Name="PeriodEndStatusCheckIntervalInMinutes" Value="" />
   </Section>
 </Settings>

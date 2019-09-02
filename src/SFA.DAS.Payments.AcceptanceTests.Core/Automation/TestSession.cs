@@ -14,6 +14,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         private const string TestEmployer = "test employer";
         private const string TestProvider = "Test Provider";
 
+        public DateTime? ApprovalsEventTime { get; set; }
         public LearnRefNumberGenerator LearnRefNumberGenerator { get; }
         public string SessionId { get; }
         public List<Learner> Learners { get; }

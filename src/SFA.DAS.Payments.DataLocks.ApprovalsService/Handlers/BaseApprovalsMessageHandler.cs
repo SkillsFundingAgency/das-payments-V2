@@ -15,10 +15,9 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Handlers
 {
     public abstract class BaseApprovalsMessageHandler<T> : IHandleMessages<T> where T : class
     {
-        private readonly IPeriodEndEventRepository periodEndEventRepository;
-        private readonly IDeferredApprovalsEventRepository deferredApprovalsEventRepository;
-        private readonly TimeSpan periodEndCheckInterval;
+        private TimeSpan? periodEndCheckInterval;
 
+        // TODO: move these to a separate singleton service
         private static readonly string PeriodEndStartedEventName = typeof(PeriodEndStartedEvent).Name;
         private static readonly string PeriodEndRunningEventName = typeof(PeriodEndRunningEvent).Name;
         private static DateTime lastPeriodEndCheck;
@@ -27,13 +26,10 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Handlers
         protected IPaymentLogger Logger { get; }
         private readonly IContainerScopeFactory factory;
 
-        protected BaseApprovalsMessageHandler(IPaymentLogger logger, IContainerScopeFactory factory, IPeriodEndEventRepository periodEndEventRepository, IDeferredApprovalsEventRepository deferredApprovalsEventRepository, IConfigurationHelper configHelper)
+        protected BaseApprovalsMessageHandler(IPaymentLogger logger, IContainerScopeFactory factory)
         {
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
-            this.periodEndEventRepository = periodEndEventRepository;
-            this.deferredApprovalsEventRepository = deferredApprovalsEventRepository;
-            periodEndCheckInterval = TimeSpan.FromMinutes(double.Parse(configHelper.GetSetting("PeriodEndStatusCheckIntervalInMinutes") ?? "10"));
         }
 
         public async Task Handle(T message, IMessageHandlerContext context)
@@ -43,10 +39,10 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Handlers
                 Logger.LogVerbose($"Creating scope for handling message: {typeof(T).Name}");
                 using (var scope = factory.CreateScope())
                 {
-                    if (await CanHandle(context).ConfigureAwait(false))
+                    if (await CanHandle(context, scope).ConfigureAwait(false))
                         await HandleMessage(message, context, scope).ConfigureAwait(false);
                     else
-                        await Defer(message).ConfigureAwait(false);
+                        await Defer(message, scope).ConfigureAwait(false);
                 }
                 Logger.LogVerbose($"Finished handling message : {typeof(T).Name}");
             }
@@ -57,16 +53,23 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Handlers
             }
         }
 
-        private async Task<bool> CanHandle(IMessageHandlerContext context)
+        private async Task<bool> CanHandle(IMessageHandlerContext context, ILifetimeScope scope)
         {
             if (IsDeferred(context)) // deferred messages also come here when period end stops
                 return true;
+
+            if (!periodEndCheckInterval.HasValue)
+            {
+                var configHelper = scope.Resolve<IConfigurationHelper>();
+                periodEndCheckInterval = TimeSpan.FromMinutes(configHelper.GetSettingOrDefault("PeriodEndStatusCheckIntervalInMinutes", 10));
+            }
 
             if (lastCheck.HasValue && DateTime.UtcNow.Subtract(lastPeriodEndCheck) < periodEndCheckInterval)
                 return lastCheck.Value;
 
             Logger.LogVerbose("Reading latest period end event from DB");
 
+            var periodEndEventRepository = scope.Resolve<IPeriodEndEventRepository>();
             var lastPeriodEndEvent = await periodEndEventRepository.GetLastPeriodEndEvent(CancellationToken.None).ConfigureAwait(false);
 
             if (lastPeriodEndEvent == null)
@@ -89,19 +92,20 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Handlers
             return lastCheck.Value;
         }
 
-        private async Task Defer(T message)
+        private async Task Defer(T message, ILifetimeScope scope)
         {
             var deferredApprovalsEventEntity = new DeferredApprovalsEventEntity
             {
                 EventTime = DateTime.UtcNow,
                 ApprovalsEvent = message
             };
+            var deferredApprovalsEventRepository = scope.Resolve<IDeferredApprovalsEventRepository>();
             await deferredApprovalsEventRepository.StoreDeferredEvent(deferredApprovalsEventEntity, CancellationToken.None).ConfigureAwait(false);
         }
 
         private bool IsDeferred(IMessageHandlerContext context)
         {
-            return context.MessageHeaders.ContainsKey(PeriodEndStoppedEventHandler.DeferredMessageIdHeader);
+            return context.MessageHeaders.ContainsKey("DeferredMessageId");
         }
 
         protected abstract Task HandleMessage(T message, IMessageHandlerContext context, ILifetimeScope scope);

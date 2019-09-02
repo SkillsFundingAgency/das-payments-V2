@@ -104,7 +104,7 @@
     <Build Include="Payments2\Tables\Payments2.DataLockEventNonPayablePeriodFailures.sql" />
     <Build Include="Payments2\Tables\Payments2.ApprenticeshipPause.sql" />
     <Build Include="Payments2\Tables\Payments2.PeriodEndEvent.sql" />
-    <Build Include="Payments2\Tables\Payments2.DeferredApprenticeshipEvent.sql" />
+    <Build Include="Payments2\Tables\Payments2.DeferredApprovalsEvent.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />

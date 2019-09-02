@@ -31,6 +31,7 @@
     <Parameter Name="DataLockService_EndpointName" DefaultValue="" />
     <Parameter Name="DataLockService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
+    <Parameter Name="PeriodEndStatusCheckIntervalInMinutes" DefaultValue="10" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -81,6 +82,7 @@
             <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+            <Parameter Name="PeriodEndStatusCheckIntervalInMinutes" Value="[PeriodEndStatusCheckIntervalInMinutes]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -120,6 +122,7 @@
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
+            <Parameter Name="DASServiceBusConnectionString" Value="[DASServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[DataLockService_EndpointName]" />

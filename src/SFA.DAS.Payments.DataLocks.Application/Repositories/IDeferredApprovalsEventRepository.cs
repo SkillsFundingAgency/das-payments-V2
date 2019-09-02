@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             await dataContext.DeferredApprovalsEvent.AddAsync(new DeferredApprovalsEventModel
             {
                 EventTime = deferredApprovalsEvent.EventTime,
-                EventType = deferredApprovalsEvent.ApprovalsEvent.GetType().FullName,
+                EventType = deferredApprovalsEvent.ApprovalsEvent.GetType().AssemblyQualifiedName,
                 EventBody = JsonConvert.SerializeObject(deferredApprovalsEvent.ApprovalsEvent, SerialisationSettings)
             }, cancellationToken).ConfigureAwait(false);
 

@@ -6,6 +6,7 @@
     <Parameter Name="PaymentsConnectionString" Value=""/>
     <Parameter Name="ServiceBusConnectionString" Value=""/>
     <Parameter Name="MonitoringServiceBusConnectionString" Value=""/>
+    <Parameter Name="DASServiceBusConnectionString" Value="" />
   </Section>
 
   <Section Name="Settings">

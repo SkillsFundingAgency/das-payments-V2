@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using NServiceBus;
 using NServiceBus.Features;
 using NUnit.Framework;
+using SFA.DAS.CommitmentsV2.Messages.Events;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
@@ -16,11 +18,14 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Messages.Core;
+using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using ApprenticeshipEmployerType = SFA.DAS.CommitmentsV2.Types.ApprenticeshipEmployerType;
+using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -214,6 +219,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ApprenticeshipEmployerTypeOnApproval = GetApprenticeshipEmployerTypeOnApproval(approvalsApprenticeship.EmployerType)
                 };
                 Console.WriteLine($"Sending CreatedApprenticeship message: {createdMessage.ToJson()}");
+                TestSession.ApprovalsEventTime = TestSession.ApprovalsEventTime ?? DateTime.UtcNow;
                 DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
@@ -624,6 +630,88 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 notFound.ForEach(apprenticeship => Console.WriteLine($"Failed to find and/or validate employer provider priority: {apprenticeship.ToJson()}"));
                 return false;
             }, "Failed to find all the stored employer payemnt provider priority details.");
+        }
+
+        [Given(@"Period end has started")]
+        public async Task GivenPeriodEndHasStarted()
+        {
+            var periodEndStartedEvent = new PeriodEndEventModel
+            {
+                EventTime = DateTimeOffset.UtcNow,
+                EventId = Guid.NewGuid(),
+                EventType = typeof(PeriodEndStartedEvent).Name,
+                AcademicYear = 1819,
+                Period = 1,
+                JobId = 1
+            };
+
+            TestDataContext.PeriodEndEvent.Add(periodEndStartedEvent);
+            await TestDataContext.SaveChangesAsync().ConfigureAwait(false);
+        }
+
+        [Then(@"the Payments service should record the apprenticeships only when period end stops")]
+        public async Task ThenThePaymentsServiceShouldRecordTheApprenticeshipsOnlyWhenPeriodEndStops()
+        {
+            await WaitForIt(async () =>
+            {
+                var deferredEvents = await TestDataContext.DeferredApprovalsEvent
+                    .Where(e => e.EventTime >= TestSession.ApprovalsEventTime.Value)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                var apprenticeshipIds = ApprovalsApprenticeships.Select(apprenticeship => apprenticeship.Id).ToArray();
+
+                var recorded = deferredEvents.Any(e =>
+                {
+                    var message = JsonConvert.DeserializeObject(e.EventBody, Type.GetType(e.EventType));
+                    return message is ApprenticeshipCreatedEvent newApprenticeshipMessage 
+                           && newApprenticeshipMessage.ApprenticeshipId == apprenticeshipIds[0];
+                });
+
+                return recorded;
+            }, "Deferred message was never recorded").ConfigureAwait(false);
+
+            var periodEndStoppedEvent = new PeriodEndStoppedEvent
+            {
+                EventTime = DateTimeOffset.UtcNow,
+                EventId = Guid.NewGuid(),
+                CollectionPeriod = new CollectionPeriod{ AcademicYear = 1819, Period = 1 }
+            };
+
+            var periodEndStoppedModel = new PeriodEndEventModel
+            {
+                EventTime = periodEndStoppedEvent.EventTime,
+                EventId = periodEndStoppedEvent.EventId,
+                EventType = typeof(PeriodEndStoppedEvent).Name,
+                AcademicYear = periodEndStoppedEvent.CollectionPeriod.AcademicYear,
+                Period = periodEndStoppedEvent.CollectionPeriod.Period,
+                JobId = periodEndStoppedEvent.JobId
+            };
+
+            TestDataContext.PeriodEndEvent.Add(periodEndStoppedModel);
+            await TestDataContext.SaveChangesAsync().ConfigureAwait(false);
+            await MessageSession.Publish(periodEndStoppedEvent).ConfigureAwait(false);
+
+            await WaitForIt(async () =>
+            {
+                var deferredEvents = await TestDataContext.DeferredApprovalsEvent
+                    .Where(e => e.EventTime >= TestSession.ApprovalsEventTime.Value)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                var apprenticeshipIds = ApprovalsApprenticeships.Select(apprenticeship => apprenticeship.Id).ToArray();
+
+                var recorded = deferredEvents.Any(e =>
+                {
+                    var message = JsonConvert.DeserializeObject(e.EventBody, Type.GetType(e.EventType));
+                    return message is ApprenticeshipCreatedEvent newApprenticeshipMessage 
+                           && newApprenticeshipMessage.ApprenticeshipId == apprenticeshipIds[0];
+                });
+
+                return !recorded;
+            }, "Deferred message was never deleted").ConfigureAwait(false);
+
+            await ThenThePaymentsServiceShouldRecordTheEmployerProviderPriority().ConfigureAwait(false);
         }
 
         private ApprenticeshipModel CreateApprenticeshipModel(ApprovalsApprenticeship apprenticeshipSpec)

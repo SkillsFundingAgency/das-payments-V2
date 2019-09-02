@@ -13,6 +13,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
                 .InstancePerDependency();
             builder.RegisterType<DataLockFailureRepository>().AsImplementedInterfaces();
             builder.RegisterType<PeriodEndEventRepository>().AsImplementedInterfaces();
+            builder.RegisterType<DeferredApprovalsEventRepository>().AsImplementedInterfaces();
         }
     }
 }

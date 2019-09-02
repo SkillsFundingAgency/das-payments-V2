@@ -460,6 +460,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-1195 - Apprenticeship Event Deferred.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1195 - Apprenticeship Event Deferred.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Approvals Interface\PV2-688 - New Apprenticeship Approved.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1659,6 +1664,10 @@
     <None Include="Tests\Additional Payments Incentives\PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-1195 - Apprenticeship Event Deferred.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1195 - Apprenticeship Event Deferred.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Approvals Interface\PV2-696 - Employer Change in Payment Order for Multiple learners with an Employer.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
