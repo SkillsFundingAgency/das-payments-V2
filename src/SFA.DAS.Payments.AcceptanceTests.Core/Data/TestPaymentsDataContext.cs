@@ -39,8 +39,9 @@ delete from Payments2.ApprenticeshipPause where ApprenticeshipId in
 delete from Payments2.ApprenticeshipDuplicate where ApprenticeshipId in
 	(select Id from Payments2.Apprenticeship where Ukprn = {0} )
 
-delete from Payments2.DataLockEventNonPayablePeriodFailures where ApprenticeshipId in
-	(select Id from Payments2.Apprenticeship where Ukprn = {0} )
+delete from Payments2.DataLockEventNonPayablePeriodFailures where DataLockEventNonPayablePeriodId in
+	(select DataLockEventNonPayablePeriodId from Payments2.DataLockEventNonPayablePeriod where DataLockEventId in 
+	(select EventId from Payments2.DataLockEvent where Ukprn = {0}) )
 
 delete from Payments2.Apprenticeship where Ukprn = {0}
 
