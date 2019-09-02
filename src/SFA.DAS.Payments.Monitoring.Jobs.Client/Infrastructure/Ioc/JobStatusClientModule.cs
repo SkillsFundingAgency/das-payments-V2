@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
 
             builder.RegisterType<PeriodEndJobClient>()
                 .As<IPeriodEndJobClient>()
-                .SingleInstance();
+                .InstancePerDependency();
 
             builder.Register((c, p) =>
                 {
@@ -62,7 +62,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
                     return new JobMessageClient(factory.Create(), logger, actorProxyFactory);
                 })
                 .As<IJobMessageClient>()
-                .SingleInstance();
+                .InstancePerDependency();
 
             builder.RegisterType<JobMessageClientFactory>()
                 .As<IJobMessageClientFactory>()

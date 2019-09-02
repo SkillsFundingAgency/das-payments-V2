@@ -30,12 +30,17 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging
 
             if (paymentMessage == null)
                 return;
-            var jobStatusClient = factory.Create();
-            if (paymentMessage is ILeafLevelMessage)
-                await jobStatusClient.ProcessedCompletedJobMessage(paymentMessage.JobId, context.GetMessageId(), paymentMessage.GetType().Name, !generatedMessages.Any()).ConfigureAwait(false);
+            //Don't want to wait for thread to finish
+            Task.Factory.StartNew(async () =>
+            {
+                var jobStatusClient = factory.Create();
+                if (paymentMessage is ILeafLevelMessage)
+                    await jobStatusClient.ProcessedCompletedJobMessage(paymentMessage.JobId, context.GetMessageId(), paymentMessage.GetType().Name, !generatedMessages.Any()).ConfigureAwait(false);
 
-            if (generatedMessages.Any())
-                await jobStatusClient.RecordStartedProcessingJobMessages(paymentMessage.JobId,  generatedMessages).ConfigureAwait(false);
+                if (generatedMessages.Any())
+                    await jobStatusClient.RecordStartedProcessingJobMessages(paymentMessage.JobId, generatedMessages).ConfigureAwait(false);
+
+            }).ConfigureAwait(false); 
         }
     }
 }
