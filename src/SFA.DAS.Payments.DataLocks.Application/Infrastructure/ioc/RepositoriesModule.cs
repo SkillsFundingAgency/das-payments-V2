@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
@@ -11,6 +12,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
                 .AsImplementedInterfaces()
                 .InstancePerDependency();
             builder.RegisterType<DataLockFailureRepository>().AsImplementedInterfaces();
+            builder.RegisterType<PeriodEndEventRepository>().AsImplementedInterfaces();
         }
     }
 }

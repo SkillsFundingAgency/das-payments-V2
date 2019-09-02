@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NServiceBus;
-using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
 using SFA.DAS.Payments.Messages.Core.Events;
@@ -13,15 +12,13 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Handlers
     public class PeriodEndStoppedEventHandler : IHandleMessages<PeriodEndStoppedEvent>
     {
         private readonly IPaymentLogger logger;
-        private readonly IContainerScopeFactory factory;
         private readonly IDeferredApprovalsEventRepository deferredApprovalsEventRepository;
 
         public const string DeferredMessageIdHeader = "DeferredMessageId";
 
-        public PeriodEndStoppedEventHandler(IPaymentLogger logger, IContainerScopeFactory factory, IDeferredApprovalsEventRepository deferredApprovalsEventRepository)
+        public PeriodEndStoppedEventHandler(IPaymentLogger logger, IDeferredApprovalsEventRepository deferredApprovalsEventRepository)
         {
             this.logger = logger;
-            this.factory = factory;
             this.deferredApprovalsEventRepository = deferredApprovalsEventRepository;
         }
 
