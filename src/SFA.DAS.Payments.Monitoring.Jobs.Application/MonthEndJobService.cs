@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
-using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 {
@@ -30,30 +30,30 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         public async Task RecordPeriodEndJob(RecordPeriodEndJob periodEndJob)
         {
-            logger.LogVerbose($"Now recording new month end job.  Job Id: {periodEndJob.JobId}, Collection period: {periodEndJob.CollectionYear}-{periodEndJob.CollectionPeriod}.");
-            var jobDetails = new JobModel
-            {
-                StartTime = periodEndJob.StartTime,
-                Status = JobStatus.InProgress,
-                JobType = ToJobType(periodEndJob),
-                CollectionPeriod = periodEndJob.CollectionPeriod,
-                AcademicYear = periodEndJob.CollectionYear,
-                DcJobId = periodEndJob.JobId,
-            };
-            var jobSteps = periodEndJob.GeneratedMessages.Select(msg => new JobStepModel
-            {
-                MessageId = msg.MessageId,
-                StartTime = msg.StartTime,
-                MessageName = msg.MessageName,
-                Status = JobStepStatus.Queued,
-            }).ToList();
-            await dataContext.SaveNewJob(jobDetails, jobSteps);
-            telemetry.AddProperty("JobType", jobDetails.JobType.ToString("G"));
-            telemetry.AddProperty("JobId", periodEndJob.JobId.ToString());
-            telemetry.AddProperty("CollectionPeriod", periodEndJob.CollectionPeriod.ToString());
-            telemetry.AddProperty("CollectionYear", periodEndJob.CollectionYear.ToString());
-            telemetry.TrackEvent("Started Job");
-            logger.LogDebug($"Finished recording new month end job.  Job Id: {periodEndJob.JobId}, Job type: {jobDetails.JobType:G}, Collection period: {periodEndJob.CollectionYear}-{periodEndJob.CollectionPeriod}.");
+            //logger.LogVerbose($"Now recording new month end job.  Job Id: {periodEndJob.JobId}, Collection period: {periodEndJob.CollectionYear}-{periodEndJob.CollectionPeriod}.");
+            ////var jobDetails = new JobModel
+            ////{
+            ////    StartTime = periodEndJob.StartTime,
+            ////    Status = JobStatus.InProgress,
+            ////    JobType = ToJobType(periodEndJob),
+            ////    CollectionPeriod = periodEndJob.CollectionPeriod,
+            ////    AcademicYear = periodEndJob.CollectionYear,
+            ////    DcJobId = periodEndJob.JobId,
+            ////};
+            ////var jobSteps = periodEndJob.GeneratedMessages.Select(msg => new JobStepModel
+            ////{
+            ////    MessageId = msg.MessageId,
+            ////    StartTime = msg.StartTime,
+            ////    MessageName = msg.MessageName,
+            ////    Status = JobStepStatus.Queued,
+            ////}).ToList();
+            ////await dataContext.SaveNewJob(jobDetails, jobSteps);
+            //telemetry.AddProperty("JobType", jobDetails.JobType.ToString("G"));
+            //telemetry.AddProperty("JobId", periodEndJob.JobId.ToString());
+            //telemetry.AddProperty("CollectionPeriod", periodEndJob.CollectionPeriod.ToString());
+            //telemetry.AddProperty("CollectionYear", periodEndJob.CollectionYear.ToString());
+            //telemetry.TrackEvent("Started Job");
+            //logger.LogDebug($"Finished recording new month end job.  Job Id: {periodEndJob.JobId}, Job type: {jobDetails.JobType:G}, Collection period: {periodEndJob.CollectionYear}-{periodEndJob.CollectionPeriod}.");
         }
 
         private JobType ToJobType(RecordPeriodEndJob periodEndJob)

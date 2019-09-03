@@ -10,14 +10,14 @@ using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using TechTalk.SpecFlow;
 using NServiceBus;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
-using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
 {
     [Binding]
     public class JobsSteps : StepsBase
     {
-        protected JobsDataContext DataContext => Container.Resolve<JobsDataContext>();
+        protected JobsDataContext DataContext => Scope.Resolve<JobsDataContext>();
         protected JobModel Job
         {
             get => Get<JobModel>();
@@ -62,7 +62,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 new GeneratedMessage {StartTime = DateTimeOffset.UtcNow, MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand", MessageId = Guid.NewGuid()},
                 new GeneratedMessage {StartTime = DateTimeOffset.UtcNow, MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand", MessageId = Guid.NewGuid()},
             };
-            JobDetails = new RecordStartedProcessingEarningsJob
+            JobDetails = new RecordEarningsJob
             {
                 JobId = TestSession.JobId,
                 CollectionPeriod = CollectionPeriod,
@@ -77,6 +77,28 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             Console.WriteLine($"Job details: {JobDetails.ToJson()}");
         }
 
+        [Given(@"the earnings event service has received a large provider earnings job")]
+        public void GivenTheEarningsEventServiceHasReceivedALargeProviderEarningsJob()
+        {
+            GeneratedMessages = new List<GeneratedMessage>();
+            for (int i = 0; i < 1500; i++)
+            {
+                GeneratedMessages.Add(new GeneratedMessage { StartTime = DateTimeOffset.UtcNow, MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand", MessageId = Guid.NewGuid() });
+            }
+            JobDetails = new RecordEarningsJob
+            {
+                JobId = TestSession.JobId,
+                CollectionPeriod = CollectionPeriod,
+                CollectionYear = 1819,
+                Ukprn = TestSession.Ukprn,
+                StartTime = DateTimeOffset.UtcNow,
+                IlrSubmissionTime = DateTime.UtcNow.AddSeconds(-10),
+                GeneratedMessages = GeneratedMessages,
+            };
+            Console.WriteLine($"Job details: {JobDetails.ToJson()}");
+        }
+
+
         [Given(@"a provider earnings job has already been recorded")]
         public async Task GivenAProviderEarningsJobHasAlreadyBeenRecorded()
         {
@@ -87,7 +109,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 new GeneratedMessage {StartTime = DateTimeOffset.UtcNow, MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand", MessageId = Guid.NewGuid()},
             };
 
-            var earningsJob = new RecordStartedProcessingEarningsJob
+            var earningsJob = new RecordEarningsJob
             {
                 JobId = TestSession.JobId,
                 CollectionPeriod = CollectionPeriod,
@@ -165,19 +187,30 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         [When(@"the final messages for the job are sucessfully processed")]
         public async Task WhenTheFinalMessagesForTheJobAreSucessfullyProcessed()
         {
+            await Task.Delay(5000);
             foreach (var generatedMessage in GeneratedMessages)
             {
-                await MessageSession.Send(new RecordJobMessageProcessingStatus
+                var message = new RecordJobMessageProcessingStatus
                 {
-                    JobId = JobDetails.JobId, MessageName = generatedMessage.MessageName,
-                    EndTime = DateTimeOffset.UtcNow, Succeeded = true, Id = generatedMessage.MessageId
-                });
+                    JobId = JobDetails.JobId,
+                    MessageName = generatedMessage.MessageName,
+                    EndTime = DateTimeOffset.UtcNow,
+                    Succeeded = true,
+                    Id = generatedMessage.MessageId
+                };
+                Console.WriteLine($"Generated Message: {message.ToJson()}");
+                await MessageSession.Send(message);
             }
         }
 
         [When(@"the earnings event service notifies the job monitoring service to record the job")]
         public async Task WhenTheEarningsEventServiceNotifiesTheJobMonitoringServiceToRecordTheJob()
         {
+            if (GeneratedMessages.Count<1000)
+                await MessageSession.Send(JobDetails).ConfigureAwait(false);
+            ((RecordEarningsJob) JobDetails).GeneratedMessages = GeneratedMessages.Take(1000).ToList();
+            await MessageSession.Send(JobDetails).ConfigureAwait(false);
+            ((RecordEarningsJob)JobDetails).GeneratedMessages = GeneratedMessages.Skip(1000).ToList();
             await MessageSession.Send(JobDetails).ConfigureAwait(false);
         }
 

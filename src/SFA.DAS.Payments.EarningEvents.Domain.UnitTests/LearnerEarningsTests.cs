@@ -79,7 +79,8 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
 
             var functionalSkillEarnings = new List<FunctionalSkillEarningsEvent>
             {
-                new FunctionalSkillEarningsEvent()
+                new Act2FunctionalSkillEarningsEvent(),
+                new Act1FunctionalSkillEarningsEvent()
             };
 
             actBuilder.Setup(b => b.Build(learnerSubmission)).Returns(actEarnings).Verifiable();
@@ -91,7 +92,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
 
             // assert
             Assert.IsFalse(result.Validation.Failed);
-            Assert.AreEqual(3, result.EarningEvents.Count);
+            Assert.AreEqual(4, result.EarningEvents.Count);
         }
     }
 }

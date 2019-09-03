@@ -2,6 +2,6 @@
 {
     public interface IUlnService
     {
-        long GenerateUln(long index);
+        long GenerateUln(long index, string identifier);
     }
 }

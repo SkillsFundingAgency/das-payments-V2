@@ -2,6 +2,7 @@
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.Core.Configuration;
+using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
 {

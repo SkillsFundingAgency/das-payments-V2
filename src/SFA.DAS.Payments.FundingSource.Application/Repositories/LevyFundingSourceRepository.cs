@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -79,6 +78,18 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
 
             accounts.AddRange(transferSenders);
             return accounts.Distinct().ToList();
+        }
+
+        public async Task<long?> GetLevyAccountId(long ukprn, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var lastPayment = await dataContext.Payment.AsNoTracking()
+                .Where(payment => payment.Ukprn == ukprn && payment.AccountId.HasValue)
+                .OrderByDescending(payment => payment.EventTime)
+                .Take(1)
+                .FirstOrDefaultAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            return lastPayment?.AccountId;
         }
     }
 }

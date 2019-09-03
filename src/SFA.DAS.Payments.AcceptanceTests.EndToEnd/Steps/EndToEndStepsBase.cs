@@ -208,6 +208,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     specApprenticeship = group.Last();
                     var apprenticeship =
                         ApprenticeshipHelper.CreateApprenticeshipModel(specApprenticeship, TestSession);
+                    apprenticeship.ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy;
                     apprenticeship.ApprenticeshipPriceEpisodes =
                         group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
                     await ApprenticeshipHelper.AddApprenticeship(apprenticeship, DataContext).ConfigureAwait(false);
@@ -339,6 +340,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 EventId = Guid.NewGuid(),
                 Amount = amount,
                 LearningAimFundingLineType = learnerTraining.FundingLineType,
+                ReportingAimFundingLineType = learnerTraining.FundingLineType,
                 LearnerUln = providerPayment.Uln,
                 LearningAimFrameworkCode = learnerTraining.FrameworkCode,
                 LearningAimProgrammeType = learnerTraining.ProgrammeType,
