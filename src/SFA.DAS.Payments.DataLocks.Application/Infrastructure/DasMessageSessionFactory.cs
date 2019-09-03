@@ -77,6 +77,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure
                 .ConnectionString(configurationHelper.GetConnectionString("DASServiceBusConnectionString"))
                 .Transactions(TransportTransactionMode.ReceiveOnly)
                 .RuleNameShortener(ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
+
+            var routing = transport.Routing();
+            routing.RouteToEndpoint(typeof(PublishDeferredApprovalEventsCommand), configurationHelper.GetSetting("ApprovalsEndpointName"));
+
             endpointConfiguration.SendFailedMessagesTo(config.FailedMessagesQueue);
             endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
             endpointConfiguration.EnableInstallers();

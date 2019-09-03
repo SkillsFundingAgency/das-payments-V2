@@ -27,6 +27,7 @@
     <Parameter Name="ConsoleLogLevel" DefaultValue="Fatal" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
     <Parameter Name="ApprovalsService_EndpointName" DefaultValue="" />
+    <Parameter Name="ApprovalsEndpointName" DefaultValue="" />
     <Parameter Name="ApprovalsService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="DataLockService_EndpointName" DefaultValue="" />
     <Parameter Name="DataLockService_FailedMessagesQueue" DefaultValue="" />
@@ -77,6 +78,7 @@
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[ApprovalsService_EndpointName]" />
+            <Parameter Name="ApprovalsEndpointName" Value="[ApprovalsService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[ApprovalsService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
@@ -126,6 +128,7 @@
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[DataLockService_EndpointName]" />
+            <Parameter Name="ApprovalsEndpointName" Value="[DataLockService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[DataLockService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
