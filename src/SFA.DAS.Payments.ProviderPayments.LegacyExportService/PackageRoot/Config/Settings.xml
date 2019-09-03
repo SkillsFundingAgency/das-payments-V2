@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+<?xml version="1.0" encoding="utf-8" ?>
+<Settings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <!-- This is used by the StateManager's replicator. -->
   <Section Name="ReplicatorConfig">
     <Parameter Name="ReplicatorEndpoint" Value="ReplicatorEndpoint" />
@@ -13,7 +13,7 @@
     <Parameter Name="ServiceBusConnectionString" Value="" />
     <Parameter Name="MonitoringServiceBusConnectionString" Value="" />
     <Parameter Name="DasPeriodEndConnectionString" Value="" />
-    <Parameter Name="ExportBatchSize" Value="" />
+    <Parameter Name="LegacyExportBatchSize" Value="" />
   </Section>
   <Section Name="Settings">
     <Parameter Name="EndpointName" Value="sfa-das-payments-providerpayments" />
@@ -26,5 +26,4 @@
     <Parameter Name="ConsoleLogLevel" Value="" />
     <Parameter Name="ProcessMessageSequentially" Value="" />
   </Section>
-  <!-- The content will be generated during build -->
 </Settings>
