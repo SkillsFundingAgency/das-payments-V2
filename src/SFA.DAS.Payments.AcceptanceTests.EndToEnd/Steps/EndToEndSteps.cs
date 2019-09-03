@@ -4,6 +4,8 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core.Builders;
@@ -247,6 +249,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             await ValidateRequiredPaymentsAtMonthEnd(table, TestSession.Provider).ConfigureAwait(false);
         }
+
+        [Then(@"a Submission (.*) Event is received")]
+        public async void ThenASubmissionSuccessEventIsReceived(string outcome)
+        {
+            var dcHelper = Scope.Resolve<IDcHelper>();
+            await dcHelper.SendIlrSubmissionEvent(TestSession.Provider.Ukprn, AcademicYear, CollectionPeriod,
+                TestSession.GenerateId(), outcome == "Success");
+        }
+
 
         [Then(@"at month end only the following payments will be calculated for ""(.*)""")]
         public async Task ThenAtMonthEndOnlyTheFollowingPaymentsWillBeCalculatedFor(string providerIdentifier, Table table)

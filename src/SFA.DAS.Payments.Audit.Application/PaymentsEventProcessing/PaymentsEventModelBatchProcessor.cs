@@ -5,14 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
 using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.Application.Data;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.Application.Data;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
-using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.Core.Configuration;
+using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
 {
@@ -69,6 +68,8 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                         {
                             bulkCopy.ColumnMappings.Clear();
                             bulkCopy.DestinationTableName = data.Count > 1 ? table.TableName : dataTable.TableName;
+                            bulkCopy.BulkCopyTimeout = 0;
+                            bulkCopy.BatchSize = batchSize;
 
                             foreach (DataRow tableRow in table.Rows)
                             {
@@ -84,14 +85,10 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                             }
                             catch (SystemException ex)
                             {
-                                if (batch.Count == 1)
-                                    throw;
-
-                                logger.LogError("Error bulk writing to server. Processing single records.", ex);
-                                var errors = TrySingleRecord(bulkCopy, table);
-
-                                if (errors == batch.Count) // fallback to retry if all records fail
-                                    throw;
+                                logger.LogWarning($"Error bulk writing to server. Processing single records. \n\n" +
+                                                  $"{ex.Message}\n\n" +
+                                                  $"{ex.StackTrace}");
+                                await TrySingleRecord(bulkCopy, table, sqlConnection).ConfigureAwait(false);
                             }
                         }
 
@@ -110,7 +107,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
             return batch.Count;
         }
 
-        private int TrySingleRecord(SqlBulkCopy bulkCopy, DataTable table)
+        private async Task<int> TrySingleRecord(SqlBulkCopy bulkCopy, DataTable table, SqlConnection connection)
         {
             bulkCopy.BatchSize = 1;
             var errors = 0;
@@ -133,11 +130,16 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
 
                     try
                     {
-                        bulkCopy.WriteToServer(singleRecordTable);
+                        if (connection.State != ConnectionState.Open)
+                        {
+                            await connection.OpenAsync().ConfigureAwait(false);
+                        }
+                        await bulkCopy.WriteToServerAsync(singleRecordTable).ConfigureAwait(false);
                     }
                     catch (SystemException ex)
                     {
-                        logger.LogError($"Single record failure: {ToLogString(singleRecordTable.Rows[0])}", ex);
+                        logger.LogError($"Single record failure with {bulkCopy.DestinationTableName}:\n\n" +
+                                        $" {ToLogString(singleRecordTable.Rows[0])}", ex);
                         errors++;
                     }
                 }

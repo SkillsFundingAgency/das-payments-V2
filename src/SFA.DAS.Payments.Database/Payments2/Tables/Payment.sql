@@ -40,7 +40,7 @@
     ApprenticeshipId BIGINT NULL,
     ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL,
-	ReportingAimFundingLineType NVARCHAR(100) NULL,
+	ReportingAimFundingLineType NVARCHAR(120) NULL,
 
 );
 GO

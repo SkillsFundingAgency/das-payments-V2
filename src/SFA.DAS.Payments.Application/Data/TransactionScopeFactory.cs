@@ -19,5 +19,13 @@ namespace SFA.DAS.Payments.Application.Data
                 IsolationLevel = IsolationLevel.RepeatableRead,
             }, TransactionScopeAsyncFlowOption.Enabled);
         }
+
+        public static TransactionScope CreateSerialisableTransaction()
+        {
+            return new TransactionScope(TransactionScopeOption.Required, new TransactionOptions
+            {
+                IsolationLevel = IsolationLevel.Serializable,
+            }, TransactionScopeAsyncFlowOption.Enabled);
+        }
     }
 }
