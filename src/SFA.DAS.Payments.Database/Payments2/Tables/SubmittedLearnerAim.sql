@@ -29,5 +29,8 @@ CREATE INDEX [IX_SubmittedLearnerAim__Delete] ON [Payments2].[SubmittedLearnerAi
 	[CollectionPeriod], 
 	[IlrSubmissionDateTime]
 )
-
+INCLUDE
+(
+	[LearnerUln]
+)
 Go
