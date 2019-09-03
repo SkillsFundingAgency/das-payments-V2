@@ -22,5 +22,6 @@
     <Parameter Name="TimeToPauseBetweenChecks" Value="__TimeToPauseBetweenChecks__" />
     <Parameter Name="TimeToWaitForJobToComplete" Value="__TimeToWaitForJobToComplete__" />
     <Parameter Name="MaximumCallbackTimeSpan" Value="__TimeToWaitForJobToComplete__" />
+    <Parameter Name="GenerateTransactionType4to16Payments" Value="__GenerateTransactionType4to16Payments__" />
   </Parameters>
 </Application>
