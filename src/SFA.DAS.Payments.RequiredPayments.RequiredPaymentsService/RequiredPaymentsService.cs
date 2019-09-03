@@ -88,6 +88,9 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 
             using (var operation = telemetry.StartOperation())
             {
+                await ResetPaymentHistoryCacheIfDifferentCollectionPeriod(earningEvent.CollectionPeriod)
+                    .ConfigureAwait(false);
+
                 await Initialise().ConfigureAwait(false);
                 var requiredPaymentEvents = await functionalSkillEarningsEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
                 Log(requiredPaymentEvents);

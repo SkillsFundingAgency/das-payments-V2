@@ -142,6 +142,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenNoProviderPaymentsWillBeRecorded(string providerIdentifier)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
+            await CheckFundingSourceAndStartMonthEnd(provider, null).ConfigureAwait(false);
             var matcher = new ProviderPaymentModelMatcher(provider, DataContext, TestSession, CurrentCollectionPeriod);
             await WaitForUnexpected(() => matcher.MatchNoPayments(), "Recorded payments check failed").ConfigureAwait(false);
         }
