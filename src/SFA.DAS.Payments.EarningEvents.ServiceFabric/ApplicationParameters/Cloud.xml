@@ -22,5 +22,6 @@
     <Parameter Name="TimeToPauseBetweenChecks" Value="__TimeToPauseBetweenChecks__" />
     <Parameter Name="TimeToWaitForJobToComplete" Value="__TimeToWaitForJobToComplete__" />
     <Parameter Name="MaximumCallbackTimeSpan" Value="__TimeToWaitForJobToComplete__" />
+    <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
   </Parameters>
 </Application>
