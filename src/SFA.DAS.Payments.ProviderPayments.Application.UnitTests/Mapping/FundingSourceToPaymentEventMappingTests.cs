@@ -18,6 +18,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
         [OneTimeSetUp]
         public void SetUp()
         {
+            Mapper.Reset();
             Mapper.Initialize(cfg => { cfg.AddProfile<ProviderPaymentsProfile>(); });
             Mapper.AssertConfigurationIsValid();
         }
