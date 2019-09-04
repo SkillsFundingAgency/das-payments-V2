@@ -49,6 +49,7 @@
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="BatchIntervalInSeconds" Value="[BatchIntervalInSeconds]" />
+            <Parameter Name="LegacyExportBatchSize" Value="[LegacyExportBatchSize]" />
           </Section>
         </Settings>
       </ConfigOverride>
