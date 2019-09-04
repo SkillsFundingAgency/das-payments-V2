@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Data.Configurations;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Application.Data;
@@ -21,8 +22,9 @@ namespace SFA.DAS.Payments.Application.Repositories
         public virtual DbSet<EarningEventModel> EarningEvent { get; protected set; }
         public virtual DbSet<EarningEventPeriodModel> EarningEventPeriod { get; protected set; }
         public virtual DbSet<EarningEventPriceEpisodeModel> EarningEventPriceEpisode { get; protected set; }
-        public virtual DbSet<PaymentModelWithRequiredPaymentId> PaymentsWithRequiredPayments { get; protected set; }
         
+        public virtual DbSet<PaymentModelWithRequiredPaymentId> PaymentsWithRequiredPayments { get; protected set; }
+
         public PaymentsDataContext(string connectionString)
         {
             this.connectionString = connectionString;
