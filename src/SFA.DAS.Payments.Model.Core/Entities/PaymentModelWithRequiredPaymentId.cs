@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
         public string PriceEpisodeIdentifier { get; set; }
         public decimal Amount { get; set; }
         public byte CollectionPeriod { get; set; }
-        public int AcademicYear { get; set; }
+        public short AcademicYear { get; set; }
         public byte DeliveryPeriod { get; set; }
         public string LearningAimReference { get; set; }
         public int LearningAimProgrammeType { get; set; }
