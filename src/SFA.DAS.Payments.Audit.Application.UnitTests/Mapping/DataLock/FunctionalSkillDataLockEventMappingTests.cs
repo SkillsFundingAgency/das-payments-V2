@@ -16,19 +16,19 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
         {
             base.PopulateCommonProperties(paymentEvent);
             paymentEvent.StartDate = DateTime.Today;
-            paymentEvent.Earnings = new ReadOnlyCollection<FunctionalSkillEarning>(new List<FunctionalSkillEarning>());
+            paymentEvent.Earnings = new ReadOnlyCollection<FunctionalSkillEarning>(new List<FunctionalSkillEarning>() {new FunctionalSkillEarning()});
         }
 
         [Test]
         public void Maps_StartDate()
         {
-            Mapper.Map<DataLockEventModel>(PaymentEvent).StartDate.Should().Be(DateTime.Today);
+            Mapper.Map<DataLockEventModel>(PaymentEvent).StartDate.Should().Be(PaymentEvent.StartDate);
         }
 
         [Test]
         public void Maps_Earnings()
         {
-            Mapper.Map<DataLockEventModel>(PaymentEvent).Earnings.Should().NotBeNull();
+            Mapper.Map<DataLockEventModel>(PaymentEvent).Earnings.Count.Should().Be(1);
         }
     }
 }

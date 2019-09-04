@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
         }
 
         [Test]
-        public void Maps_IsPayable_ToTrue()
+        public void Maps_IsPayable_ToFalse()
         {
             Mapper.Map<DataLockEventModel>(PaymentEvent).IsPayable.Should().BeFalse();
         }
@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
         [Test]
         public void Maps_StartDate()
         {
-            Mapper.Map<DataLockEventModel>(PaymentEvent).StartDate.Should().Be(DateTime.Today);
+            Mapper.Map<DataLockEventModel>(PaymentEvent).StartDate.Should().Be(PaymentEvent.StartDate);
         }
 
         [Test]
