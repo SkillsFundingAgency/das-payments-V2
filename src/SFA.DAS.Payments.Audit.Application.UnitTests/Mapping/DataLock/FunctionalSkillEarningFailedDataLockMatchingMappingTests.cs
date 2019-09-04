@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
@@ -15,7 +14,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
         }
 
         [Test]
-        public void Maps_IsPayable_ToTrue()
+        public void Maps_IsPayable_ToFalse()
         {
             Mapper.Map<DataLockEventModel>(PaymentEvent).IsPayable.Should().BeFalse();
         }

@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
         [Test]
         public void Maps_StartDate()
         {
-            Mapper.Map<DataLockEventModel>(PaymentEvent).StartDate.Should().Be(DateTime.Today);
+            Mapper.Map<DataLockEventModel>(PaymentEvent).StartDate.Should().Be(PaymentEvent.StartDate);
         }
     }
 }
