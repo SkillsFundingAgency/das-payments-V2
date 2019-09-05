@@ -23,11 +23,11 @@ using SFA.DAS.Payments.AcceptanceTests.Services.Configuration;
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting.Tests
 
 {
-    
     [Category("Comparison")]
     public class ComparisonTests
     {
         private IContainer _autofacContainer;
+
         protected IContainer AutofacContainer
         {
             get
@@ -40,10 +40,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting.Tests
                     builder.RegisterType<JobService>().As<IJobService>().InstancePerLifetimeScope();
 
                     builder.RegisterType<BespokeHttpClient>().As<IBespokeHttpClient>().InstancePerLifetimeScope();
-                    builder.RegisterType<AzureStorageServiceConfig>().As<IAzureStorageKeyValuePersistenceServiceConfig>().InstancePerLifetimeScope();
-                    builder.RegisterType<AzureStorageKeyValuePersistenceService>().As<IStreamableKeyValuePersistenceService>().InstancePerLifetimeScope();
+                    builder.RegisterType<AzureStorageServiceConfig>()
+                        .As<IAzureStorageKeyValuePersistenceServiceConfig>().InstancePerLifetimeScope();
+                    builder.RegisterType<AzureStorageKeyValuePersistenceService>()
+                        .As<IStreamableKeyValuePersistenceService>().InstancePerLifetimeScope();
                     builder.RegisterType<StorageService>().As<IStorageService>().InstancePerLifetimeScope();
-
 
 
                     builder.Register(context =>
@@ -54,7 +55,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting.Tests
                                 Policy.Handle<HttpRequestException>()
                                     .WaitAndRetryAsync(
                                         3, // number of retries
-                                        retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), // exponential backoff
+                                        retryAttempt =>
+                                            TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), // exponential backoff
                                         (exception, timeSpan, retryCount, executionContext) =>
                                         {
                                             // add logging
@@ -66,7 +68,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting.Tests
                     builder.RegisterType<JobService>().As<IJobService>().InstancePerLifetimeScope();
                     builder.RegisterType<BespokeHttpClient>().As<IBespokeHttpClient>().InstancePerLifetimeScope();
 
-                    builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().InstancePerLifetimeScope();
+                    builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>()
+                        .InstancePerLifetimeScope();
                     var container = builder.Build();
 
                     _autofacContainer = container;
@@ -77,10 +80,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting.Tests
         }
 
         protected IJobService DcJobService => AutofacContainer.Resolve<IJobService>();
-        protected IAzureStorageKeyValuePersistenceServiceConfig StorageServiceConfig => AutofacContainer.Resolve<IAzureStorageKeyValuePersistenceServiceConfig>();
-        protected IStreamableKeyValuePersistenceService StorageService => AutofacContainer.Resolve<IStreamableKeyValuePersistenceService>();
 
-       
+        protected IAzureStorageKeyValuePersistenceServiceConfig StorageServiceConfig =>
+            AutofacContainer.Resolve<IAzureStorageKeyValuePersistenceServiceConfig>();
+
+        protected IStreamableKeyValuePersistenceService StorageService =>
+            AutofacContainer.Resolve<IStreamableKeyValuePersistenceService>();
 
 
         [Test]
@@ -88,22 +93,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting.Tests
         {
             //Arrange
             IlrPublisher publisher = new IlrPublisher(DcJobService, StorageServiceConfig, StorageService);
-             var ukprn = 10001144;
-             string fileContent = SampleContent();
-            string ilrFileName = $"ILR-{ukprn}-1819-{DateTime.Now.Date.ToString().Replace("/", "")}-{DateTime.Now.TimeOfDay.ToString().Replace(":", "")}.xml";
+            var ukprn = 10001144;
+            string fileContent = SampleContent();
+            string ilrFileName =
+                $"ILR-{ukprn}-1819-{DateTime.Now.Date.ToString().Replace("/", "")}-{DateTime.Now.TimeOfDay.ToString().Replace(":", "")}.xml";
 
-           
-            await publisher.StoreAndPublishIlrFile(ukprn: ukprn, ilrFileName: ilrFileName, ilrFile: fileContent, collectionYear: 1819, collectionPeriod: 1);
-
-
+            await publisher.StoreAndPublishIlrFile(ukprn: ukprn, ilrFileName: ilrFileName, ilrFile: fileContent,
+                collectionYear: 1819, collectionPeriod: 1);
 
 
             Assert.True(true);
         }
-
-
-
-
 
 
         private string SampleContent()

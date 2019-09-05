@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.Jobs.Model.Enums;
+
 using ESFA.DC.JobStatus.Interface;
 using Polly;
 using SFA.DAS.Payments.AcceptanceTests.Services;
@@ -37,11 +37,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting
 
         private async Task PublishIlrFile(int ukprn, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
         {
-            var submission = new SubmissionModel(JobType.IlrSubmission, ukprn)
+            var submission = new SubmissionModel(ESFA.DC.Jobs.Model.Enums.EnumJobType.IlrSubmission, ukprn)
             {
                 FileName = $"{ukprn}/{ilrFileName}",
                 FileSizeBytes = ilrFile.Length,
-                SubmittedBy = "System",
+                CreatedBy = "System",
                 CollectionName = $"ILR{ilrFileName.Split('-')[2]}",
                 Period = collectionPeriod,
                 NotifyEmail = "dcttestemail@gmail.com",

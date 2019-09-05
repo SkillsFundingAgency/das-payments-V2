@@ -4,7 +4,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
 {
     public class SubmissionModel
     {
-        public SubmissionModel(JobType jobType, long ukprn)
+        public SubmissionModel(ESFA.DC.Jobs.Model.Enums.EnumJobType jobType, long ukprn)
         {
             JobType = jobType;
             Ukprn = ukprn;
@@ -18,13 +18,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
 
         public decimal FileSizeBytes { get; set; }
 
-        public string SubmittedBy { get; set; }
+        public string CreatedBy { get; set; }
 
         public long Ukprn { get; set; }
 
         public string NotifyEmail { get; set; }
 
-        public JobType JobType { get; set; }
+        public ESFA.DC.Jobs.Model.Enums.EnumJobType JobType { get; set; }
 
         public string StorageReference { get; set; }
 
