@@ -25,12 +25,11 @@
 
 GO
 
-CREATE INDEX [IX_Apprenticeship__Id_Ukprn_Uln_Account] ON [Payments2].[Apprenticeship]
+CREATE NONCLUSTERED INDEX [IX_Apprenticeship_Ukprn] ON [Payments2].[Apprenticeship]
 (
-	Id,
-	Ukprn,
-	Uln, 
-	AccountId
+	[Ukprn] ASC
+) INCLUDE (
+	[Uln]
 )
 
 GO
@@ -42,4 +41,16 @@ CREATE INDEX [IX_Apprenticeship__AccountSearch] ON [Payments2].[Apprenticeship]
   TransferSendingEmployerAccountId,
   IsLevyPayer
 ) 
+GO
+
+CREATE NONCLUSTERED INDEX [IX_Apprenticeship_Uln] ON [Payments2].[Apprenticeship]
+(
+	[Uln] ASC
+)
+GO
+
+CREATE NONCLUSTERED INDEX [IX_Apprenticeship_AccountId] ON [Payments2].[Apprenticeship]
+(
+	[AccountId] ASC
+)
 GO

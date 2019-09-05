@@ -12,6 +12,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Application.Infrastructure;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Application.Services;
@@ -147,14 +148,14 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             }
         }
 
-        public async Task RemovePreviousSubmissions(ProcessSubmissionDeletion command)
+        public async Task RemovePreviousSubmissions(SubmissionSucceededEvent message)
         {
-            paymentLogger.LogVerbose($"Handling ProcessSubmissionDeletion for {Id}, Job: {command.JobId}, Account: {command.AccountId}");
+            paymentLogger.LogVerbose($"Handling ProcessSubmissionDeletion for {Id}, Job: {message.JobId}");
             try
             {
                 using (var operation = telemetry.StartOperation())
                 {
-                    await fundingSourceService.RemovePreviousSubmissions(command.AccountId, command.JobId, command.CollectionPeriod, command.SubmissionDate);
+                    await fundingSourceService.RemovePreviousSubmissions(message.JobId, message.CollectionPeriod, message.AcademicYear, message.IlrSubmissionDateTime);
                     telemetry.StopOperation(operation);
                 }
             }
@@ -164,15 +165,14 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 throw;
             }
         }
-
-        public async Task RemoveCurrentSubmission(ProcessSubmissionDeletion command)
+        public async Task RemoveCurrentSubmission(SubmissionFailedEvent message)
         {
-            paymentLogger.LogVerbose($"Handling ProcessCurrentSubmissionDeletionCommand for {Id}, Job: {command.JobId}, Account: {command.AccountId}");
+            paymentLogger.LogVerbose($"Handling ProcessCurrentSubmissionDeletionCommand for {Id}, Job: {message.JobId}");
             try
             {
                 using (var operation = telemetry.StartOperation())
                 {
-                    await fundingSourceService.RemovePreviousSubmissions(command.AccountId, command.JobId, command.CollectionPeriod, command.SubmissionDate);
+                    await fundingSourceService.RemoveCurrentSubmission(message.JobId, message.CollectionPeriod, message.AcademicYear, message.IlrSubmissionDateTime);
                     telemetry.StopOperation(operation);
                 }
             }

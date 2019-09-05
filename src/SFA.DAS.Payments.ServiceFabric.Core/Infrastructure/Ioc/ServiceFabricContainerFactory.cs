@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using Autofac.Integration.ServiceFabric;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
@@ -11,10 +12,15 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
 {
     public static class ServiceFabricContainerFactory
     {
-        public static IContainer CreateContainerForActor<TActor>() where TActor : Actor
+        public static IContainer CreateContainerForActor<TActor>(int idleTimeInSeconds = 300,int scanIntervalInSeconds = 30) where TActor : Actor
         {
+
             var builder = ContainerFactory.CreateBuilder();
-            builder.RegisterActor<TActor>()
+            builder.RegisterActor<TActor>(settings: new ActorServiceSettings()
+                {
+                    ActorGarbageCollectionSettings =
+                        new ActorGarbageCollectionSettings(idleTimeInSeconds, scanIntervalInSeconds)
+                })
                 .OnActivating(e =>
                 {
                     ((ActorStateManagerProvider) e.Context.Resolve<IActorStateManagerProvider>()).Current = e.Instance.StateManager;

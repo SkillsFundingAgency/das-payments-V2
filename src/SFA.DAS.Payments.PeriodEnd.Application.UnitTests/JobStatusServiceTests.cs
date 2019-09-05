@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
 using FluentAssertions;
@@ -47,7 +48,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
         {
             job.Status = JobStatus.Completed;
             var service = mocker.Create<JobStatusService>();
-            await service.WaitForJobToFinish(1).ConfigureAwait(false);
+            await service.WaitForJobToFinish(1,CancellationToken.None).ConfigureAwait(false);
             mocker.Mock<IJobsDataContext>()
                 .Verify(dc => dc.GetJobByDcJobId(It.Is<long>(jobId => jobId == 1)),Times.Once);
         }
@@ -57,7 +58,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
         {
             job.Status = JobStatus.Completed;
             var service = mocker.Create<JobStatusService>();
-            var finished = await service.WaitForJobToFinish(1).ConfigureAwait(false);
+            var finished = await service.WaitForJobToFinish(1, CancellationToken.None).ConfigureAwait(false);
             finished.Should().BeTrue();
         }
 
@@ -67,7 +68,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
         {
             job.Status = JobStatus.CompletedWithErrors;
             var service = mocker.Create<JobStatusService>();
-            var finished = await service.WaitForJobToFinish(1).ConfigureAwait(false);
+            var finished = await service.WaitForJobToFinish(1, CancellationToken.None).ConfigureAwait(false);
             finished.Should().BeTrue();
         }
 
@@ -76,7 +77,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
         {
             job.Status = JobStatus.InProgress;
             var service = mocker.Create<JobStatusService>();
-            var finished = await service.WaitForJobToFinish(1).ConfigureAwait(false);
+            var finished = await service.WaitForJobToFinish(1, CancellationToken.None).ConfigureAwait(false);
             finished.Should().BeFalse();
         }
     }
