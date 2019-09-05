@@ -2,9 +2,9 @@
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.ProviderPayments.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <!--<Parameter Name="ProviderPaymentsProxyService_InstanceCount" DefaultValue="-1" />-->
-    <Parameter Name="SFA.DAS.Payments.ProviderPayments.LegacyExportService_MinReplicaSetSize" DefaultValue="3" />
-    <Parameter Name="SFA.DAS.Payments.ProviderPayments.LegacyExportService_PartitionCount" DefaultValue="1" />
-    <Parameter Name="SFA.DAS.Payments.ProviderPayments.LegacyExportService_TargetReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="LegacyExportService_MinReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="LegacyExportService_PartitionCount" DefaultValue="1" />
+    <Parameter Name="LegacyExportService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="ProviderPaymentsService_PartitionCount" DefaultValue="1" />
     <Parameter Name="ProviderPaymentsService_MinReplicaSetSize" DefaultValue="3" />
     <Parameter Name="ProviderPaymentsService_TargetReplicaSetSize" DefaultValue="3" />
@@ -26,7 +26,30 @@
   </Parameters>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.ProviderPayments.LegacyExportServicePkg" ServiceManifestVersion="1.0.0" />
-    <ConfigOverrides />
+    <ConfigOverrides>
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="ConnectionStringsSection">
+            <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
+            <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
+            <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="DasPeriodEndConnectionString" Value="[DasPeriodEndConnectionString]" />
+          </Section>
+          <Section Name="Settings">
+            <Parameter Name="EndpointName" Value="[ProviderPaymentsService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[ProviderPaymentsService_FailedMessagesQueue]" />
+            <Parameter Name="BatchFailureTimeoutInSeconds" Value="[Audit_BatchFailureTimeoutInSeconds]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
+            <Parameter Name="BatchIntervalInSeconds" Value="[BatchIntervalInSeconds]" />
+            <Parameter Name="LegacyExportBatchSize" Value="[LegacyExportBatchSize]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+    </ConfigOverrides>
   </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.ProviderPayments.ProviderPaymentsServicePkg" ServiceManifestVersion="1.0.0" />
@@ -62,8 +85,8 @@
          
          The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
     <Service Name="SFA.DAS.Payments.ProviderPayments.LegacyExportService" ServicePackageActivationMode="ExclusiveProcess">
-      <StatefulService ServiceTypeName="SFA.DAS.Payments.ProviderPayments.LegacyExportServiceType" TargetReplicaSetSize="[SFA.DAS.Payments.ProviderPayments.LegacyExportService_TargetReplicaSetSize]" MinReplicaSetSize="[SFA.DAS.Payments.ProviderPayments.LegacyExportService_MinReplicaSetSize]">
-        <UniformInt64Partition PartitionCount="[SFA.DAS.Payments.ProviderPayments.LegacyExportService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+      <StatefulService ServiceTypeName="SFA.DAS.Payments.ProviderPayments.LegacyExportServiceType" TargetReplicaSetSize="[LegacyExportService_TargetReplicaSetSize]" MinReplicaSetSize="[LegacyExportService_MinReplicaSetSize]">
+        <UniformInt64Partition PartitionCount="[LegacyExportService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
       </StatefulService>
     </Service>
     <Service Name="SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService" ServicePackageActivationMode="ExclusiveProcess">
