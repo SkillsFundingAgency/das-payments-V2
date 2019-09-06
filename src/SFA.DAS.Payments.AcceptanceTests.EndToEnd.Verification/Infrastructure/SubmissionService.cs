@@ -1,34 +1,119 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using ESFA.DC.IO.AzureStorage.Config.Interfaces;
+using ESFA.DC.Jobs.Model;
+using ESFA.DC.Jobs.Model.Enums;
+using ESFA.DC.Serialization.Interfaces;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 
-namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting
+namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 {
-    public class SubmissionService
+    public interface ISubmissionService
     {
-        private dynamic _cloudStorageSettings;
+        Task<IEnumerable<string>> ImportPlaylist();
 
-        private dynamic _serializationService;
+        Task<IEnumerable<string>> CreateTestFiles(IEnumerable<string> playlist);
 
-        public void ImportFiles()
+        Task<IEnumerable<FileUploadJob>> SubmitFiles(IEnumerable<string> filelist);
+
+        Task DeleteFiles(IEnumerable<string> filelist);
+    }
+
+    public class SubmissionService : ISubmissionService
+    {
+        private static CloudBlobClient blobClient;
+
+        private readonly IJsonSerializationService serializationService;
+
+        private readonly CloudStorageSettings cloudStorageSettings;
+
+        public SubmissionService(IAzureStorageKeyValuePersistenceServiceConfig storageServiceConfig, IJsonSerializationService serializationService, CloudStorageSettings cloudStorageSettings)
         {
-            CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(_cloudStorageSettings.ConnectionString);
-            CloudBlobClient blobClient = cloudStorageAccount.CreateCloudBlobClient();
-            CloudBlobContainer blobContainer = blobClient.GetContainerReference("content-files");
-            CloudBlockBlob blob = blobContainer.GetBlockBlobReference("playlist.json");
-            var text = blob.DownloadText(); // Read from Playlist.json file in storage account
-            var files = _serializationService.Deserialize<List<string>>(text);
-            foreach (var file in files)
+            this.serializationService = serializationService;
+            this.cloudStorageSettings = cloudStorageSettings;
+            var cloudStorageAccount = CloudStorageAccount.Parse(storageServiceConfig.ConnectionString);
+            blobClient = cloudStorageAccount.CreateCloudBlobClient();
+        }
+
+        public async Task<IEnumerable<string>> ImportPlaylist()
+        {
+            var blobContainer = blobClient.GetContainerReference("control-files");
+            var blob = blobContainer.GetBlockBlobReference("playlist.json");
+            var text = await blob.DownloadTextAsync();
+            return serializationService.Deserialize<List<string>>(text);
+        }
+
+        public async Task<IEnumerable<string>> CreateTestFiles(IEnumerable<string> playlist)
+        {
+            var newFileList = new List<string>();
+            foreach (var file in playlist)
             {
                 var collectionType = GetCollectionTypeFromFilename(file);
-                AddFileRow(file, true, collectionType);
+                newFileList.Add(await CopyBlobFileToNewILRFile(file, collectionType));
             }
+
+            return newFileList;
         }
+
+        public async Task<IEnumerable<FileUploadJob>> SubmitFiles(IEnumerable<string> filelist)
+        {
+            throw new NotImplementedException();
+
+        }
+
+        //private async Task<FileUploadJob> DoSubmitJob(string file, int delay)
+        //{
+        //    long ukprn = long.Parse(row.Cells["UKPRN"].Value.ToString());
+        //    var filename = row.Cells["Filename"].Value.ToString();
+        //    var collectionType = row.Cells["Type"].Value.ToString();
+
+        //    int period = 8;
+
+        //    await Task.Delay(delay);
+
+        //    var jobid = await _submissionService.SubmitJob(
+        //        row.Cells["Filename"].Value.ToString(),
+        //        decimal.Parse(row.Cells["Filesize"].Value.ToString()),
+        //        System.Security.Principal.WindowsIdentity.GetCurrent().Name,
+        //        ukprn,
+        //        collectionType,
+        //        period,
+        //        false,
+        //        "dcttestemail@gmail.com"
+        //        , _submissionService.ContainerName(collectionType));
+
+        //    var status = await _submissionService.GetJob(ukprn, jobid);
+        //    bool secondStageRequired = true;
+        //    // this line will resubmit for second stage processing
+        //    status = await JobStatusCompletionState(ukprn, jobid, secondStageRequired);
+        //    if (secondStageRequired && status.Status == JobStatusType.Waiting)
+        //    {
+        //        row.Cells["Status"].Value = "Proc. 2nd stage";
+        //        secondStageRequired = false;
+        //        status = await JobStatusCompletionState(ukprn, jobid, secondStageRequired);
+        //    }
+        //    DataGridViewHelper.SetCellStyleAndValue(row.Cells["Status"], status.Status);
+
+        //    ++_uiProgress.Value;
+        //    row.Cells["End"].Value = DateTime.UtcNow;
+        //    try
+        //    {
+        //        DateTime endTime = status.DateTimeUpdatedUtc.Value;
+        //        row.Cells["End"].Value = endTime;
+        //        row.Cells["Duration"].Value = endTime - status.DateTimeSubmittedUtc.Value;
+        //    }
+        //    catch
+        //    { }
+        //    //            row.Cells["Learners"].Value = status.TotalLearners;
+        //}
+
+        public async Task DeleteFiles(IEnumerable<string> filelist)
+        {
+            throw new NotImplementedException();
+        }
+
 
         public void DeleteFiles()
         {
@@ -79,23 +164,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting
 
         public string ContainerName(string collectionType)
         {
-            switch (collectionType) {
+            switch (collectionType)
+            {
                 case "ILR1819":
-                    return _cloudStorageSettings.ILR1819ContainerName;
+                    return cloudStorageSettings.Ilr1819ContainerName;
                 case "ILR1920":
-                    return _cloudStorageSettings.ILR1920ContainerName;
+                    return cloudStorageSettings.ILR1920ContainerName;
                 default:
                     throw new ArgumentOutOfRangeException($"The collection type {collectionType} doesn't have a containerName configured");
             }
         }
 
-        public async void CopyBlob(string source, string target, string containerName)
+        private async Task CopyBlob(string source, string target, string containerName)
         {
-            CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(_cloudStorageSettings.ConnectionString);
-            CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-            CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference(ContainerName(containerName));
-            CloudBlockBlob sourceBlob = cloudBlobContainer.GetBlockBlobReference(source);
-            CloudBlockBlob targetBlob = cloudBlobContainer.GetBlockBlobReference(target);
+            var cloudBlobContainer = blobClient.GetContainerReference(ContainerName(containerName));
+            var sourceBlob = cloudBlobContainer.GetBlockBlobReference(source);
+            var targetBlob = cloudBlobContainer.GetBlockBlobReference(target);
             bool ok = false;
             while (!ok)
             {
@@ -110,21 +194,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting
             }
         }
 
-        public async Task<bool> Exists(string fileName, string containerName)
+        private async Task<bool> Exists(string fileName, string containerName)
         {
-            CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(_cloudStorageSettings.ConnectionString);
-            CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-            CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference(ContainerName(containerName));
-            CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(fileName);
+            var cloudBlobContainer = blobClient.GetContainerReference(ContainerName(containerName));
+            var cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(fileName);
 
             return await cloudBlockBlob.ExistsAsync();
         }
 
         internal async Task<long> GetBlobFilesize(string fp, string containerName)
         {
-            CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(_cloudStorageSettings.ConnectionString);
-            CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-            CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference(ContainerName(containerName));
+            CloudBlobContainer cloudBlobContainer = blobClient.GetContainerReference(ContainerName(containerName));
             var blob = cloudBlobContainer.GetBlockBlobReference(fp);
             if (blob.Exists())
             {
@@ -144,11 +224,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting
                 newFilename = IncrementILRFormatNameByASecond(newFilename);
                 fileok = !await Exists(newFilename, type);
             }
-            CopyBlob(filename, newFilename, type);
+            await CopyBlob(filename, newFilename, type);
             return newFilename;
         }
 
-        internal static string IncrementILRFormatNameByASecond(string filename)
+        private static string IncrementILRFormatNameByASecond(string filename)
         {
             string newFilename;
             string timepart = filename.Substring(filename.Length - 13, 6);
