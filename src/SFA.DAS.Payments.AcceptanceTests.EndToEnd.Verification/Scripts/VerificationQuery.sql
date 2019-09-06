@@ -1,30 +1,9 @@
---declare @academicYear smallint = 1920
---declare @collectionPeriod tinyint = 1
---declare @populateEarnings bit = 1
---declare @StartTime as datetime = '2019-09-05 14:16:13'
-----'2019-09-03 20:00:03.146'
---declare @EndTime as datetime = '2019-09-05 14:16:15'
---    --'2019-09-04 06:44:11.511'
-
-begin
-	with ukprns as ( -- remove ukprns where there was no submissions and where there were failures
-		select distinct ukprn
-		from Payments2.Job j1
-		where AcademicYear = @academicYear
-			and CollectionPeriod = @collectionPeriod
-			--and StartTime between @StartTime and @EndTime
-			--and EndTime between @StartTime and @EndTime
-		--and not exists(select 1 from Payments2.Job j2 where j2.Ukprn = j1.Ukprn and j2.Status <> 2)
-		--and not exists(select 1 from Payments2.Payment p where p.Ukprn = j1.Ukprn and AcademicYear = @academicYear and EarningEventId = '00000000-0000-0000-0000-000000000000')
-	)
-	select
+select
 		ukprns.Ukprn,
 		TransactionTypes.TransactionType as [Transaction Type],
-		isnull(Earnings.EarningsYTD, 0) - isnull(Datalockerrors.DataLockErrors, 0) - isnull(ActualPayments.ActualPaymentYTD, 0) [Missing Actual Payments],
-		--isnull(Earnings.EarningsYTD, 0) - isnull(Datalockerrors.DataLockErrors, 0) - isnull(ActualPayments.ActualPaymentYTD, 0) [Missing Actual Payments  %],
-		isnull(Earnings.EarningsYTD, 0) - isnull(DataLockErrors.DataLockErrors, 0) - isnull(RequiredPaymentYTD, 0) [Missing Required Payments],
-		--(isnull(Earnings.EarningsYTD, 0) - isnull(DataLockErrors.DataLockErrors, 0) - isnull(RequiredPaymentYTD, 0)) / RequiredPaymentYTD [Missing Required Payments %],
-		isnull(Earnings.EarningsYTD, 0) - isnull(DatalockerrorsAudit.DataLockErrors, 0) - isnull(RequiredPaymentYTD, 0) [Missing Required Payments (audit DL)],
+		isnull(Earnings.EarningsYTD, 0) - isnull(Datalockerrors.DataLockErrors, 0) - isnull(ActualPayments.ActualPaymentYTD, 0) - isnull(HeldBackCompletionPayments, 0) [Missing Actual Payments],
+		isnull(Earnings.EarningsYTD, 0) - isnull(DataLockErrors.DataLockErrors, 0) - isnull(RequiredPaymentYTD, 0) - isnull(HeldBackCompletionPayments, 0) [Missing Required Payments],
+		isnull(Earnings.EarningsYTD, 0) - isnull(DatalockerrorsAudit.DataLockErrors, 0) - isnull(RequiredPaymentYTD, 0) - isnull(HeldBackCompletionPayments, 0) [Missing Required Payments (audit DL)],
 		isnull(Earnings.EarningLearnerCount, 0) as [Earnings Learners YTD (audit)],
 		isnull(Earnings.EarningsYTD, 0) as [Earnings YTD (audit)],
 		isnull(Earnings.EarningsACT1, 0) as [Earnings ACT1 (audit)],
@@ -42,16 +21,26 @@ begin
 		isnull([DataLockErrors].DataLockErrorLearnerCount, 0) as [DataLockError Learner Count],
 		isnull([DataLockErrors].DataLockErrors, 0) as [DataLock Errors],
 		isnull([DataLockErrorsAudit].DataLockErrorCount, 0) as [DataLockError Learner Count (audit)],
-		isnull([DataLockErrorsAudit].DataLockErrors, 0) as [DataLock Errors (audit)]
+		isnull([DataLockErrorsAudit].DataLockErrors, 0) as [DataLock Errors (audit)],
 
-		--isnull([HeldBackCompletionPayments], 0) as [Held Back Completion (audit)],
-		--isnull([HeldBackCompletionPaymentsAct1], 0) as [HBCP ACT1 (audit)],
-		--isnull([HeldBackCompletionPaymentsAct2], 0) as [HBCP ACT2 (audit)]
+		isnull([HeldBackCompletionPayments], 0) as [Held Back Completion (audit)],
+		isnull([HeldBackCompletionPaymentsAct1], 0) as [HBCP ACT1 (audit)],
+		isnull([HeldBackCompletionPaymentsAct2], 0) as [HBCP ACT2 (audit)]
 	from (
 			select n as TransactionType from (values (1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16)) v(n)
 		) as TransactionTypes
 	
-		cross join ukprns
+		cross join (
+			-- remove ukprns where there was no submissions and where there were failures
+			select distinct ukprn
+			from Payments2.Job j1
+			where AcademicYear = @academicYear
+				and CollectionPeriod = @collectionPeriod
+				and StartTime between @StartTime and @EndTime
+				and EndTime between @StartTime and @EndTime
+			--and not exists(select 1 from Payments2.Job j2 where j2.Ukprn = j1.Ukprn and j2.Status <> 2)
+			--and not exists(select 1 from Payments2.Payment p where p.Ukprn = j1.Ukprn and AcademicYear = @academicYear and EarningEventId = '00000000-0000-0000-0000-000000000000')
+		) as ukprns
 
 		-- Earnings from audit
 		left join (
@@ -173,37 +162,32 @@ begin
 			and DataLockErrorsAudit.Ukprn = ukprns.Ukprn
 
 
-		-- HeldBackCompletionPayments from audit
-		--left join ( -- we're not recording HBCP yet so working out all TT2 earnings that were not paid and had no DL error
-		--	select
-		--		e.Ukprn,
-		--		ep.TransactionType,
-		--		sum(case when p.Id is null and f.Id is null then ep.Amount end) as HeldBackCompletionPayments,
-		--		sum(case when p.Id is null and f.Id is null and e.ContractType = 1 then ep.Amount end) as HeldBackCompletionPaymentsAct1,
-		--		sum(case when p.Id is null and f.Id is null and e.ContractType = 2 then ep.Amount end) as HeldBackCompletionPaymentsAct2
-		--	from
-		--		Payments2.EarningEvent e with(nolock)
-		--		join Payments2.EarningEventPeriod ep with(nolock) on ep.EarningEventId = e.EventId
-		--		left join Payments2.Payment p with(nolock) on p.EarningEventId = ep.EarningEventId
-		--			and p.DeliveryPeriod = ep.DeliveryPeriod
-		--			and p.TransactionType = ep.TransactionType
-		--		left join Payments2.DataLockFailure f with(nolock) on f.EarningEventId = e.EventId
-		--			and f.DeliveryPeriod = ep.DeliveryPeriod
-		--			and f.TransactionType = ep.TransactionType
-		--	where
-		--		ep.TransactionType = 2
-		--		and ep.Amount <> 0
-		--		and e.AcademicYear = @academicYear
-		--		and e.CollectionPeriod = @collectionPeriod
-		--		and ep.DeliveryPeriod <= @collectionPeriod
-		--	group by
-		--		e.Ukprn,
-		--		ep.TransactionType
-		--) as HeldBackCompletionPayments
-		--on HeldBackCompletionPayments.TransactionType = TransactionTypes.TransactionType
-		--	and HeldBackCompletionPayments.Ukprn = ukprns.Ukprn
-
-
-	order by
-		1,2
-end
+		--HeldBackCompletionPayments from audit
+		left join ( -- we're not recording HBCP yet so working out all TT2 earnings that were not paid and had no DL error
+			select
+				e.Ukprn,
+				ep.TransactionType,
+				sum(case when p.Id is null and f.Id is null then ep.Amount end) as HeldBackCompletionPayments,
+				sum(case when p.Id is null and f.Id is null and e.ContractType = 1 then ep.Amount end) as HeldBackCompletionPaymentsAct1,
+				sum(case when p.Id is null and f.Id is null and e.ContractType = 2 then ep.Amount end) as HeldBackCompletionPaymentsAct2
+			from
+				Payments2.EarningEvent e with(nolock)
+				join Payments2.EarningEventPeriod ep with(nolock) on ep.EarningEventId = e.EventId
+				left join Payments2.RequiredPaymentEvent p with(nolock) on p.EarningEventId = ep.EarningEventId
+					and p.DeliveryPeriod = ep.DeliveryPeriod
+					and p.TransactionType = ep.TransactionType
+				left join Payments2.DataLockFailure f with(nolock) on f.EarningEventId = e.EventId
+					and f.DeliveryPeriod = ep.DeliveryPeriod
+					and f.TransactionType = ep.TransactionType
+			where
+				ep.TransactionType = 2
+				and ep.Amount <> 0
+				and e.AcademicYear = @academicYear
+				and e.CollectionPeriod = @collectionPeriod
+				and ep.DeliveryPeriod <= @collectionPeriod
+			group by
+				e.Ukprn,
+				ep.TransactionType
+		) as HeldBackCompletionPayments
+		on HeldBackCompletionPayments.TransactionType = TransactionTypes.TransactionType
+			and HeldBackCompletionPayments.Ukprn = ukprns.Ukprn
