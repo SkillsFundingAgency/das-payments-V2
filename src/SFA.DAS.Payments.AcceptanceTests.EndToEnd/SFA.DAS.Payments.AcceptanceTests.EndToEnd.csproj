@@ -1276,8 +1276,8 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Tests\NFR\ILR Re-Submission PV2-1359.cs">
-      <DependentUpon>ILR Re-Submission PV2-1359.feature</DependentUpon>
+    <Compile Include="Tests\NFR\PV-1359 - ILR Re-Submission.cs">
+      <DependentUpon>PV-1359 - ILR Re-Submission.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -2297,9 +2297,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\NFR\ILR Re-Submission PV2-1359.feature">
+    <None Include="Tests\NFR\PV-1359 - ILR Re-Submission.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>ILR Re-Submission PV2-1359.cs</LastGenOutput>
+      <LastGenOutput>PV-1359 - ILR Re-Submission.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
