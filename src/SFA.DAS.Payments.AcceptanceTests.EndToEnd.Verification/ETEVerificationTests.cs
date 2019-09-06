@@ -79,7 +79,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
         {
             // Arrange
             DateTime testStartDateTime = DateTime.UtcNow;
-            short academicYear = 1920;
             byte collectionPeriod = 1;
 
             IVerificationService verificationService = autofacContainer.Resolve<IVerificationService>();
@@ -89,12 +88,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
 
             // Act
             var results = await orchestrator.SubmitFiles(filelist);
-         
 
             DateTime testEndDateTime = DateTime.UtcNow;
             // Assert
             results.Should().NotBeNull();
 
+            short academicYear = (short) results.FirstOrDefault().CollectionYear;
 
             string csvString = await verificationService.GetVerificationDataCsv(academicYear, collectionPeriod, true,
                 testStartDateTime,
@@ -106,7 +105,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             byte[] buffer = Encoding.UTF8.GetBytes(csvString);
             await cbs.WriteAsync(buffer, 0, buffer.Length);
             cbs.Close();
-           
 
             decimal actualPercentage = await verificationService.GetTheNumber(academicYear, collectionPeriod, true,
                 testStartDateTime,
