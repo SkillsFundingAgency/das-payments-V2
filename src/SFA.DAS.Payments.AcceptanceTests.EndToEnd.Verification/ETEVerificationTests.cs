@@ -8,6 +8,7 @@ using Autofac;
 using ESFA.DC.IO.AzureStorage;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.IO.Interfaces;
+using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
 using FluentAssertions;
@@ -91,7 +92,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
 
             DateTime testEndDateTime = DateTime.UtcNow;
             // Assert
-            results.Should().NotBeNull();
+            results.All(x=>x.Status == JobStatusType.Completed).Should().BeTrue();
 
             short academicYear = (short) results.FirstOrDefault().CollectionYear;
 

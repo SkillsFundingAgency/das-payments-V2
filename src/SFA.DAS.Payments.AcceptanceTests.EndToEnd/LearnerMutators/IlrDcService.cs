@@ -9,7 +9,7 @@ using AutoMapper;
 using ESFA.DC.ILR.TestDataGenerator.Interfaces;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobStatus.Interface;
+using ESFA.DC.Jobs.Model.Enums;
 using MoreLinq;
 using Polly;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;

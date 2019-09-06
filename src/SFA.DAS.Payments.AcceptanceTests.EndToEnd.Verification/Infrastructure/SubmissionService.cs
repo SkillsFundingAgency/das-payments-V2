@@ -7,6 +7,8 @@ using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Serialization.Interfaces;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using SFA.DAS.Payments.AcceptanceTests.Services;
+using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 {
@@ -32,10 +34,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         private readonly CloudStorageSettings cloudStorageSettings;
 
-        public SubmissionService(IAzureStorageKeyValuePersistenceServiceConfig storageServiceConfig, IJsonSerializationService serializationService, CloudStorageSettings cloudStorageSettings)
+        private readonly IJobService jobService;
+
+        public SubmissionService(IAzureStorageKeyValuePersistenceServiceConfig storageServiceConfig, IJsonSerializationService serializationService, CloudStorageSettings cloudStorageSettings, IJobService jobService)
         {
             this.serializationService = serializationService;
             this.cloudStorageSettings = cloudStorageSettings;
+            this.jobService = jobService;
             var cloudStorageAccount = CloudStorageAccount.Parse(storageServiceConfig.ConnectionString);
             blobClient = cloudStorageAccount.CreateCloudBlobClient();
         }
@@ -62,77 +67,96 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         public async Task<IEnumerable<FileUploadJob>> SubmitFiles(IEnumerable<string> filelist)
         {
-            throw new NotImplementedException();
+            List<Task<FileUploadJob>> _outstandingSubmissionTasks = new List<Task<FileUploadJob>>();
+            var _totalJobsToSubmit = 0;
+            var _submissionDelay = 8000;
 
+            foreach (var file in filelist)
+            {
+                _outstandingSubmissionTasks.Add(DoSubmitJob(file, _submissionDelay * _totalJobsToSubmit++));
+            }
+
+            return await Task.WhenAll(_outstandingSubmissionTasks);
         }
 
-        //private async Task<FileUploadJob> DoSubmitJob(string file, int delay)
-        //{
-        //    long ukprn = long.Parse(row.Cells["UKPRN"].Value.ToString());
-        //    var filename = row.Cells["Filename"].Value.ToString();
-        //    var collectionType = row.Cells["Type"].Value.ToString();
+        private async Task<FileUploadJob> DoSubmitJob(string file, int delay)
+        {
+            long ukprn = UkprnFromFilename(file);
+            var collectionType = GetCollectionTypeFromFilename(file);
 
-        //    int period = 8;
+            int period = 8;
 
-        //    await Task.Delay(delay);
+            await Task.Delay(delay);
 
-        //    var jobid = await _submissionService.SubmitJob(
-        //        row.Cells["Filename"].Value.ToString(),
-        //        decimal.Parse(row.Cells["Filesize"].Value.ToString()),
-        //        System.Security.Principal.WindowsIdentity.GetCurrent().Name,
-        //        ukprn,
-        //        collectionType,
-        //        period,
-        //        false,
-        //        "dcttestemail@gmail.com"
-        //        , _submissionService.ContainerName(collectionType));
+            var submission = new SubmissionModel(EnumJobType.IlrSubmission, ukprn)
+                             {
+                                 FileName = $"{file}",
+                                 FileSizeBytes = await GetBlobFilesize(file,ContainerName(collectionType)),
+                                 CreatedBy = "System",
+                                 CollectionName = collectionType,
+                                 Period = period,
+                                 IsFirstStage = true,
+                                 NotifyEmail = "dcttestemail@gmail.com",
+                                 StorageReference = ContainerName(collectionType)
+                             };
 
-        //    var status = await _submissionService.GetJob(ukprn, jobid);
-        //    bool secondStageRequired = true;
-        //    // this line will resubmit for second stage processing
-        //    status = await JobStatusCompletionState(ukprn, jobid, secondStageRequired);
-        //    if (secondStageRequired && status.Status == JobStatusType.Waiting)
-        //    {
-        //        row.Cells["Status"].Value = "Proc. 2nd stage";
-        //        secondStageRequired = false;
-        //        status = await JobStatusCompletionState(ukprn, jobid, secondStageRequired);
-        //    }
-        //    DataGridViewHelper.SetCellStyleAndValue(row.Cells["Status"], status.Status);
+            var jobId = await jobService.SubmitJob(submission);
+            var status = await jobService.GetJob(ukprn, jobId);
+            // this line will resubmit for second stage processing
+            bool secondStageRequired = true;
+            status = await JobStatusCompletionState(ukprn, jobId, secondStageRequired);
+            if ( secondStageRequired && status.Status == JobStatusType.Waiting)
+            {
+                secondStageRequired = false;
+                status = await JobStatusCompletionState(ukprn, jobId, secondStageRequired);
+            }
 
-        //    ++_uiProgress.Value;
-        //    row.Cells["End"].Value = DateTime.UtcNow;
-        //    try
-        //    {
-        //        DateTime endTime = status.DateTimeUpdatedUtc.Value;
-        //        row.Cells["End"].Value = endTime;
-        //        row.Cells["Duration"].Value = endTime - status.DateTimeSubmittedUtc.Value;
-        //    }
-        //    catch
-        //    { }
-        //    //            row.Cells["Learners"].Value = status.TotalLearners;
-        //}
+            return status;
+        }
+
+        private async Task<FileUploadJob> JobStatusCompletionState(long ukprn, long jobId, bool secondStageRequired)
+        {
+            bool completed = false;
+            FileUploadJob result = new FileUploadJob();
+            while (!completed)
+            {
+                var status = await jobService.GetJob(ukprn, jobId);
+                if (status.Status == JobStatusType.Waiting ||
+                    status.Status == JobStatusType.Completed)
+                {
+                    completed = true;
+                    result = status;
+                    if (secondStageRequired)
+                    {
+                        await jobService.UpdateJobStatus(jobId, JobStatusType.Ready);
+                    }
+                }
+                else if (status.Status == JobStatusType.Failed ||
+                         status.Status == JobStatusType.FailedRetry)
+                {
+                    completed = true;
+                    result = status;
+                }
+                else
+                {
+                    await Task.Delay(1000);
+                }
+            }
+            return result;
+        }
 
         public async Task DeleteFiles(IEnumerable<string> filelist)
         {
-            throw new NotImplementedException();
-        }
+            var jobList = new List<Task>();
+            foreach (var file in filelist)
+            {
+                var blobContainer = blobClient.GetContainerReference(ContainerName(GetCollectionTypeFromFilename(file)));
+                var blockBlob = blobContainer.GetBlockBlobReference(file);
+                jobList.Add(blockBlob.DeleteIfExistsAsync());
+            }
 
 
-        public void DeleteFiles()
-        {
-            // iterate through list of files and delete
-        }
-
-        private async void AddFileRow(string fp, bool selected, string collectionType)
-        {
-            //int rowid = _uiFiles.Rows.Add();
-            //var row = _uiFiles.Rows[rowid];
-            //row.Cells["Filename"].Value = fp;
-            //row.Cells["UKPRN"].Value = UkprnFromFilename(fp);
-            //row.Cells["Submit"].Value = false;
-            //row.Cells["Filesize"].Value = await GetBlobFilesize(fp, collectionType);
-            //row.Cells["Submit"].Value = selected;
-            //row.Cells["Type"].Value = collectionType;
+            await Task.WhenAll(jobList);
         }
 
         private long UkprnFromFilename(string fp)
@@ -165,7 +189,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             return $"{fp.Length}";
         }
 
-        public string ContainerName(string collectionType)
+        private string ContainerName(string collectionType)
         {
             switch (collectionType)
             {
@@ -216,9 +240,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             return await cloudBlockBlob.ExistsAsync();
         }
 
-        internal async Task<long> GetBlobFilesize(string fp, string containerName)
+        private async Task<long> GetBlobFilesize(string fp, string containerName)
         {
-            CloudBlobContainer cloudBlobContainer = blobClient.GetContainerReference(ContainerName(containerName));
+            CloudBlobContainer cloudBlobContainer = blobClient.GetContainerReference(containerName);
             var blob = cloudBlobContainer.GetBlockBlobReference(fp);
             if (blob.Exists())
             {
