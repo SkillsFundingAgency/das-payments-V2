@@ -1276,11 +1276,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Tests\NFR\PV-1359 - ILR Re-Submission.cs">
-      <DependentUpon>PV-1359 - ILR Re-Submission.feature</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Tests\Non-Levy - Care Bursary\E2E - PV2-925 - Non-Levy learner starts 1st day of month receives care leaver payment after 60 days.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2296,10 +2291,6 @@
     <None Include="Tests\Levy Submission Events\One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\NFR\PV-1359 - ILR Re-Submission.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV-1359 - ILR Re-Submission.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
