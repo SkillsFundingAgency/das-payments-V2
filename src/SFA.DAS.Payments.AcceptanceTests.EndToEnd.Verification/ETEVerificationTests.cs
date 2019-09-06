@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Autofac;
 using ESFA.DC.IO.AzureStorage;
@@ -35,6 +37,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
 
             builder.RegisterType<CloudStorageSettings>().SingleInstance();
             builder.RegisterType<TestOrchestrator>().As<ITestOrchestrator>().InstancePerLifetimeScope();
+            builder.RegisterType<VerificationService>().As<IVerificationService>().InstancePerLifetimeScope();
             builder.RegisterType<JobService>().As<IJobService>().InstancePerLifetimeScope();
 
             builder.RegisterType<BespokeHttpClient>().As<IBespokeHttpClient>().InstancePerLifetimeScope();
@@ -56,8 +59,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
                                     TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), // exponential backoff
                                 (exception, timeSpan, retryCount, executionContext) =>
                                 {
-                                        // add logging
-                                    }));
+                                    // add logging
+                                }));
                     return registry;
                 }).As<IReadOnlyPolicyRegistry<string>>()
                 .SingleInstance();
@@ -76,14 +79,42 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
         public async Task InitialTest()
         {
             // Arrange
+            DateTime testStartDateTime = DateTime.UtcNow;
+            short academicYear = 1920;
+            byte collectionPeriod = 1;
+
+            IVerificationService verificationService = autofacContainer.Resolve<IVerificationService>();
             ITestOrchestrator orchestrator = autofacContainer.Resolve<ITestOrchestrator>();
+            ISubmissionService submissionService = autofacContainer.Resolve<ISubmissionService>();
             var filelist = await orchestrator.SetupTestFiles();
 
             // Act
             var results = await orchestrator.SubmitFiles(filelist);
+         
 
+            DateTime testEndDateTime = DateTime.UtcNow;
             // Assert
             results.All(x=>x.Status == JobStatusType.Completed).Should().BeTrue();
+
+
+            string csvString = await verificationService.GetVerificationDataCsv(academicYear, collectionPeriod, true,
+                testStartDateTime,
+                testEndDateTime);
+            
+             //publish the csv.
+            string fileName = $"Verfication_{DateTime.UtcNow.ToString("yyyyMMdd-HHmmss")}.csv";
+            var cbs = await submissionService.GetBlobStream(fileName, academicYear == 1920 ? "ILR1920" : "ILR1819");
+            byte[] buffer = Encoding.UTF8.GetBytes(csvString);
+            await cbs.WriteAsync(buffer, 0, buffer.Length);
+            cbs.Close();
+           
+
+            decimal actualPercentage = await verificationService.GetTheNumber(academicYear, collectionPeriod, true,
+                testStartDateTime,
+                testEndDateTime);
+            decimal expected = 0.5m;
+
+            actualPercentage.Should().BeLessOrEqualTo(expected);
 
             // Clean up
             await orchestrator.DeleteTestFiles(results.Select(x => x.FileName));

@@ -107,6 +107,8 @@
     <Compile Include="Infrastructure\TestOrchestrator.cs" />
     <Compile Include="Infrastructure\SubmissionService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripts\ScriptHelpers.cs" />
+    <Compile Include="Infrastructure\VerificationService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -129,6 +131,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\VerificationQuery.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

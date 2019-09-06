@@ -21,6 +21,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         Task<IEnumerable<FileUploadJob>> SubmitFiles(IEnumerable<string> filelist);
 
         Task DeleteFiles(IEnumerable<string> filelist);
+
+        Task<CloudBlobStream> GetBlobStream(string fileName, string containerName);
+
     }
 
     public class SubmissionService : ISubmissionService
@@ -217,6 +220,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                 ok = targetBlob.CopyState.Status == CopyStatus.Success;
             }
         }
+
+
+
+        public async Task<CloudBlobStream> GetBlobStream(string fileName, string containerName)
+        {
+            CloudBlobContainer cloudBlobContainer = blobClient.GetContainerReference(ContainerName(containerName));
+            CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(fileName);
+
+            return await cloudBlockBlob.OpenWriteAsync();
+        }
+
 
         private async Task<bool> Exists(string fileName, string containerName)
         {
