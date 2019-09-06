@@ -4,9 +4,7 @@
 	So that I am accurately paid my apprenticeship provision.
 
 Scenario Outline: One levy learner, levy available, finished on time PV2-1395
-	# levy balance > agreed price for all months
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
-	# New Commitment line
 	And the following commitments exist
         | start date                | end date                     | agreed price |Framework Code | Pathway Code | Programme Type | 
         | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        |593            | 1            | 20             | 
@@ -31,7 +29,6 @@ Scenario Outline: One levy learner, levy available, finished on time PV2-1395
         | Jun/Last Academic Year | 1000         | 0          | 0         | pe-1                     |
         | Jul/Last Academic Year | 1000         | 0          | 0         | pe-1                     |
 	When the ILR file is submitted for the learners in collection period <Collection_Period>
-	#Levy Payments
 	And the ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
@@ -52,7 +49,6 @@ Scenario Outline: One levy learner, levy available, finished on time PV2-1395
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
         | R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
         | R02/Current Academic Year | Sep/Current Academic Year | 0            | 3000       | 0         |
-	# Levy Payments
 	And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
         | R01/Current Academic Year | Aug/Current Academic Year | 1000          | Learning         |
@@ -61,7 +57,7 @@ Scenario Outline: One levy learner, levy available, finished on time PV2-1395
         | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
         | R01/Current Academic Year | Aug/Current Academic Year | 1000          | Learning         |
         | R02/Current Academic Year | Sep/Current Academic Year | 3000          | Completion       |
-# Levy Balance
+
 Examples: 
         | Collection_Period         | Levy Balance |
         | R01/Current Academic Year | 4500         |
