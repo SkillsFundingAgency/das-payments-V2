@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Autofac;
 using ESFA.DC.IO.AzureStorage;
@@ -10,21 +7,21 @@ using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
+using FluentAssertions;
 using NUnit.Framework;
 using Polly;
 using Polly.Registry;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting;
 using SFA.DAS.Payments.AcceptanceTests.Services;
 using SFA.DAS.Payments.AcceptanceTests.Services.BespokeHttpClient;
-using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
-using ESFA.DC.ILR.TestDataGenerator.Api.StorageService;
 using SFA.DAS.Payments.AcceptanceTests.Services.Configuration;
+using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 
-
-namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting.Tests
+namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
 
 {
     [Category("Comparison")]
-    public class ComparisonTests
+    public class ETEVerificationTests
     {
         private IContainer _autofacContainer;
 
@@ -44,7 +41,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting.Tests
                         .As<IAzureStorageKeyValuePersistenceServiceConfig>().InstancePerLifetimeScope();
                     builder.RegisterType<AzureStorageKeyValuePersistenceService>()
                         .As<IStreamableKeyValuePersistenceService>().InstancePerLifetimeScope();
-                    builder.RegisterType<StorageService>().As<IStorageService>().InstancePerLifetimeScope();
 
 
                     builder.Register(context =>
@@ -91,18 +87,26 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting.Tests
         [Test]
         public async Task InitialTest()
         {
-            //Arrange
+            // Arrange
             IlrPublisher publisher = new IlrPublisher(DcJobService, StorageServiceConfig, StorageService);
-            var ukprn = 10001144;
-            string fileContent = SampleContent();
-            string ilrFileName =
-                $"ILR-{ukprn}-1819-{DateTime.Now.Date.ToString().Replace("/", "")}-{DateTime.Now.TimeOfDay.ToString().Replace(":", "")}.xml";
-
-            await publisher.StoreAndPublishIlrFile(ukprn: ukprn, ilrFileName: ilrFileName, ilrFile: fileContent,
-                collectionYear: 1819, collectionPeriod: 1);
+            //var ukprn = 10001144;
+            //string fileContent = SampleContent();
+            //string ilrFileName =
+            //    $"ILR-{ukprn}-1819-{DateTime.Now.Date.ToString().Replace("/", "")}-{DateTime.Now.TimeOfDay.ToString().Replace(":", "")}.xml";
+            publisher.SetupTestFiles();
 
 
+            // Act
+            //await publisher.StoreAndPublishIlrFile(ukprn: ukprn, ilrFileName: ilrFileName, ilrFile: fileContent,
+            //    collectionYear: 1819, collectionPeriod: 1);
+            var results = publisher.SubmitFiles();
+
+            // Assert
             Assert.True(true);
+            results.Should().NotBeNull();
+
+            // Clean up
+            publisher.DeleteTestFiles();
         }
 
 
