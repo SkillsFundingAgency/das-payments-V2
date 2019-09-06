@@ -8,6 +8,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
         {
             JobType = jobType;
             Ukprn = ukprn;
+            IsFirstStage = true;
         }
 
         public string CollectionName { get; set; }
@@ -29,5 +30,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
         public string StorageReference { get; set; }
 
         public int CollectionYear { get; set; }
+
+        public bool? IsFirstStage { get; set; }
     }
 }

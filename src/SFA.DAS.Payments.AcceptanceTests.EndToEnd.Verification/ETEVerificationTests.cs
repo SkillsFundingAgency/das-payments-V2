@@ -6,6 +6,7 @@ using Autofac;
 using ESFA.DC.IO.AzureStorage;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.IO.Interfaces;
+using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
 using FluentAssertions;
@@ -82,7 +83,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             var results = await orchestrator.SubmitFiles(filelist);
 
             // Assert
-            results.Should().NotBeNull();
+            results.All(x=>x.Status == JobStatusType.Completed).Should().BeTrue();
 
             // Clean up
             await orchestrator.DeleteTestFiles(results.Select(x => x.FileName));

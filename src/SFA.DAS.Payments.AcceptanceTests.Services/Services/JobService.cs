@@ -4,12 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
-
 using Newtonsoft.Json;
 using SFA.DAS.Payments.AcceptanceTests.Services.BespokeHttpClient;
-
 using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
-using SFA.DAS.Payments.Monitoring.Jobs.Model;
 using JobStatusDto = ESFA.DC.Jobs.Model.JobStatusDto;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Services
@@ -23,13 +20,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
             this.httpClient = httpClient;
         }
 
-        public async Task<ESFA.DC.JobStatus.Interface.JobStatusType> GetJobStatus(long jobId)
+        public async Task<JobStatusType> GetJobStatus(long jobId)
         {
             var data = await httpClient.GetDataAsync($"job/{jobId}/status");
-            return JsonConvert.DeserializeObject<ESFA.DC.JobStatus.Interface.JobStatusType>(data);
+            return JsonConvert.DeserializeObject<JobStatusType>(data);
         }
 
-        public async Task<string> UpdateJobStatus(long jobId, ESFA.DC.JobStatus.Interface.JobStatusType status)
+        public async Task<string> UpdateJobStatus(long jobId, JobStatusType status)
         {
             var job = new JobStatusDto()
             {
@@ -55,7 +52,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
                 Status = JobStatusType.Ready,
                 CreatedBy = submissionMessage.CreatedBy,
                 FileName = submissionMessage.FileName,
-                IsFirstStage = true,
+                IsFirstStage = submissionMessage.IsFirstStage,
                 StorageReference = submissionMessage.StorageReference,
                 FileSize = submissionMessage.FileSizeBytes,
                 CollectionName = submissionMessage.CollectionName,
@@ -81,6 +78,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
             var data = await httpClient.GetDataAsync($"job/{ukprn}").ConfigureAwait(false);
             var jobList = JsonConvert.DeserializeObject<IEnumerable<FileUploadJob>>(data);
             return jobList.Where(x => status.Contains((int) x.Status)).Select(j => j.JobId);
+        }
+
+        public async Task<FileUploadJob> GetJob(long ukprn, long jobId)
+        {
+            var data = await httpClient.GetDataAsync($"job/{ukprn}/{jobId}");
+            return JsonConvert.DeserializeObject<FileUploadJob>(data);
         }
     }
 }
