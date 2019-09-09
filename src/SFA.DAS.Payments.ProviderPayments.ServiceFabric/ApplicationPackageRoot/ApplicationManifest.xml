@@ -18,6 +18,7 @@
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="Audit_BatchFailureTimeoutInSeconds" DefaultValue="60" />
     <Parameter Name="BatchIntervalInSeconds" DefaultValue="10" />
+    <Parameter Name="Placement_Constraints" DefaultValue="" />
   </Parameters>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.ProviderPayments.ProviderPaymentsServicePkg" ServiceManifestVersion="1.0.0" />
@@ -53,6 +54,7 @@
     <Service Name="SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService" ServicePackageActivationMode="ExclusiveProcess">
       <StatefulService ServiceTypeName="SFA.DAS.Payments.ProviderPayments.ProviderPaymentsServiceType" TargetReplicaSetSize="[ProviderPaymentsService_TargetReplicaSetSize]" MinReplicaSetSize="[ProviderPaymentsService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[ProviderPaymentsService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
     </Service>
   </DefaultServices>

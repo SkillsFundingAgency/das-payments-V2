@@ -85,6 +85,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 jobMessage.MessageName = generatedMessage.MessageName;
                 jobMessage.JobId = internalJobId;
             });
+            //TODO: only need to store completed messages if the config is enabled
+            jobMessages.RemoveAll(msg => msg.Status == JobStepStatus.Completed || msg.Status == JobStepStatus.Failed);
             await jobStorageService.StoreJobMessages(jobMessages, cancellationToken);
         }
 

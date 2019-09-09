@@ -45,18 +45,18 @@
 );
 GO
 
-CREATE INDEX [IX_Payment__ApprenticeshipKey] ON [Payments2].[Payment]
+CREATE NONCLUSTERED INDEX [IX_Payment__ApprenticeshipKey] ON [Payments2].[Payment]
 (
-	Ukprn,
-	LearnerUln, 
-	LearnerReferenceNumber,
-	LearningAimReference,
-	LearningAimProgrammeType,
-	LearningAimStandardCode,
-	LearningAimFrameworkCode,
-	LearningAimPathwayCode, 
-	AcademicYear,
-	ContractType
+	[Ukprn] ASC,
+    [AcademicYear] ASC,
+    [LearnerReferenceNumber] ASC,
+    [LearningAimReference] ASC,
+    [LearningAimProgrammeType] ASC,
+    [LearningAimStandardCode] ASC,
+    [LearningAimFrameworkCode] ASC,
+    [LearningAimPathwayCode] ASC,
+    [ContractType] ASC,
+    [LearnerUln] ASC
 )
 
 GO

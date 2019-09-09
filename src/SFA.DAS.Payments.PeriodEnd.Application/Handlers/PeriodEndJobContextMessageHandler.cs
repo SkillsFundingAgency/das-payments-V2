@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                     return true;
                 }
 
-                await jobStatusService.WaitForJobToFinish(message.JobId);
+                await jobStatusService.WaitForJobToFinish(message.JobId, cancellationToken);
                 return true;
             }
             catch (Exception ex)
@@ -93,7 +93,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
             {
                 case PeriodEndTaskType.PeriodEndStart:
                     await jobClient.RecordPeriodEndStart(periodEndEvent.JobId, periodEndEvent.CollectionPeriod.AcademicYear,
-                        periodEndEvent.CollectionPeriod.Period, new List<GeneratedMessage> {generatedMessage}).ConfigureAwait(false);
+                        periodEndEvent.CollectionPeriod.Period, new List<GeneratedMessage> { generatedMessage }).ConfigureAwait(false);
                     break;
                 case PeriodEndTaskType.PeriodEndRun:
                     await jobClient.RecordPeriodEndRun(periodEndEvent.JobId, periodEndEvent.CollectionPeriod.AcademicYear,

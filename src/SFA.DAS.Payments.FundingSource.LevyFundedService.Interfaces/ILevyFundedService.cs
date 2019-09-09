@@ -4,6 +4,7 @@ using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Remoting.FabricTransport;
 using Microsoft.ServiceFabric.Services.Remoting;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Messages.Commands;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
@@ -23,7 +24,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces
         Task<ReadOnlyCollection<FundingSourcePaymentEvent>> UnableToFundTransfer(ProcessUnableToFundTransferFundingSourcePayment message);
         Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(ProcessLevyPaymentsOnMonthEndCommand command);
         Task HandleEmployerProviderPriorityChange(EmployerChangedProviderPriority message);
-        Task RemovePreviousSubmissions(ProcessSubmissionDeletion command);
-        Task RemoveCurrentSubmission(ProcessSubmissionDeletion command);
+        Task RemovePreviousSubmissions(SubmissionSucceededEvent message);
+        Task RemoveCurrentSubmission(SubmissionFailedEvent message);
     }
 }
