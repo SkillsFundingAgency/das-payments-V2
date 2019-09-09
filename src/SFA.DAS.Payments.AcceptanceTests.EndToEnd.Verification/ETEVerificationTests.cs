@@ -80,7 +80,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
         {
             // Arrange
             DateTime testStartDateTime = DateTime.UtcNow;
-            byte collectionPeriod = 1;
 
             IVerificationService verificationService = autofacContainer.Resolve<IVerificationService>();
             ITestOrchestrator orchestrator = autofacContainer.Resolve<ITestOrchestrator>();
@@ -95,6 +94,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             results.All(x=>x.Status == JobStatusType.Completed).Should().BeTrue();
 
             short academicYear = (short) results.FirstOrDefault().CollectionYear;
+            byte collectionPeriod = (byte)results.FirstOrDefault().PeriodNumber;
 
             string csvString = await verificationService.GetVerificationDataCsv(academicYear, collectionPeriod, true,
                 testStartDateTime,
