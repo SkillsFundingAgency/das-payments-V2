@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
@@ -12,7 +13,8 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
     [Obsolete("Temporary solution to wait for jobs to finish.  Should really use events from Job service but DC.JobContextManager doesn't support that kind of pattern")]
     public interface IJobStatusService
     {
-        Task<bool> WaitForJobToFinish(long jobId);
+        Task<bool> WaitForJobToFinish(long jobId, CancellationToken cancellationToken);
+        Task<bool> JobCurrentlyRunning(long jobId);
     }
 
     /// <summary>
@@ -32,13 +34,14 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
             this.config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
-        public async Task<bool> WaitForJobToFinish(long jobId)
+        public async Task<bool> WaitForJobToFinish(long jobId, CancellationToken cancellationToken)
         {
             //TODO: Temp brittle solution to wait for jobs to finish
             logger.LogDebug($"Waiting for job {jobId} to finish.");
             var endTime = DateTime.Now.Add(config.TimeToWaitForJobToComplete);
             while (DateTime.Now < endTime)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 var job = await dataContext.GetJobByDcJobId(jobId).ConfigureAwait(false);
                 if (job == null || job.Status == Monitoring.Jobs.Model.JobStatus.InProgress)
                 {
@@ -51,6 +54,12 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
             }
             logger.LogWarning($"Waiting {config.TimeToWaitForJobToComplete} but Job {jobId} still not finished.");
             return false;
+        }
+
+        public async Task<bool> JobCurrentlyRunning(long jobId)
+        {
+            var job = await dataContext.GetJobByDcJobId(jobId).ConfigureAwait(false);
+            return job != null && job.Status == Monitoring.Jobs.Model.JobStatus.InProgress;
         }
     }
 }

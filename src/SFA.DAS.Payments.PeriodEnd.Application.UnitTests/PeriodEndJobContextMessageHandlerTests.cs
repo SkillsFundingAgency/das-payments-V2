@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
                     It.IsAny<List<GeneratedMessage>>()))
                 .Returns(Task.CompletedTask);
             mocker.Mock<IJobStatusService>()
-                .Setup(svc => svc.WaitForJobToFinish(It.IsAny<long>()))
+                .Setup(svc => svc.WaitForJobToFinish(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
         }
 
@@ -418,7 +418,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
             var handler = mocker.Create<PeriodEndJobContextMessageHandler>();
             var completed = await handler.HandleAsync(jobContextMessage, CancellationToken.None);
             mocker.Mock<IJobStatusService>()
-                .Verify(svc => svc.WaitForJobToFinish(It.Is<long>(jobId => jobId == 1)),Times.Exactly(numberOfTimes));
+                .Verify(svc => svc.WaitForJobToFinish(It.Is<long>(jobId => jobId == 1), CancellationToken.None),Times.Exactly(numberOfTimes));
         }
 
         [Test]
@@ -447,7 +447,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
                     { JobContextMessageConstants.KeyValuePairs.CollectionYear, 1819 } }
             };
             mocker.Mock<IJobStatusService>()
-                .Setup(svc => svc.WaitForJobToFinish(It.IsAny<long>()))
+                .Setup(svc => svc.WaitForJobToFinish(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
 
             var handler = mocker.Create<PeriodEndJobContextMessageHandler>();

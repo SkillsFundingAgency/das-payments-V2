@@ -1,6 +1,7 @@
 ﻿using System;
+using SFA.DAS.Payments.Messages.Core;
 
-namespace SFA.DAS.Payments.Messages.Core.Events
+namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 {
     public abstract class SubmissionEvent : IPaymentsMessage
     {

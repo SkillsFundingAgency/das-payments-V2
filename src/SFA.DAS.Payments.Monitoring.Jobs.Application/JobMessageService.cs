@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
-using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Exceptions;
-using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
@@ -15,7 +12,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 {
     public interface IJobMessageService
     {
-        Task JobMessageCompleted(RecordJobMessageProcessingStatus jobMessageStatus, CancellationToken cancellationToken = default(CancellationToken));
+        Task RecordCompletedJobMessageStatus(RecordJobMessageProcessingStatus jobMessageStatus, CancellationToken cancellationToken = default(CancellationToken));
+        Task RecordStartedJobMessages(RecordStartedProcessingJobMessages message, CancellationToken cancellationToken);
     }
 
     public class JobMessageService : IJobMessageService
@@ -31,24 +29,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
-        public async Task JobMessageCompleted(RecordJobMessageProcessingStatus jobMessageStatus, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task RecordCompletedJobMessageStatus(RecordJobMessageProcessingStatus jobMessageStatus, CancellationToken cancellationToken = default(CancellationToken))
         {
-            logger.LogVerbose($"Now recording completion of message processing.  Job Id: {jobMessageStatus.JobId}, Message id: {jobMessageStatus.Id}.");
-
-            var inProgressMessages = await jobStorageService.GetInProgressMessageIdentifiers(cancellationToken)
-                .ConfigureAwait(false);
-
-            if (inProgressMessages.Contains(jobMessageStatus.Id))
-                inProgressMessages.Remove(jobMessageStatus.Id);
-
-            foreach (var generatedMessage in jobMessageStatus.GeneratedMessages)
+            if (jobMessageStatus.GeneratedMessages.Any())
             {
-                if (!await jobStorageService.StoredJobMessage(generatedMessage.MessageId, cancellationToken))
-                    inProgressMessages.Add(generatedMessage.MessageId);
+                logger.LogVerbose($"Received branch level job status message, this message will be ignored will be ignored. Message id: {jobMessageStatus.Id}");
+                return;
             }
 
-            await jobStorageService.StoreInProgressMessageIdentifiers(inProgressMessages, cancellationToken)
-                .ConfigureAwait(false);
+            if (await IsDuplicate(jobMessageStatus.Id, cancellationToken).ConfigureAwait(false))
+                return;
 
             var jobStatus = await jobStorageService.GetJobStatus(cancellationToken).ConfigureAwait(false);
             if (!jobStatus.endTime.HasValue || jobStatus.endTime.Value < jobMessageStatus.EndTime)
@@ -58,82 +48,50 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
             await jobStorageService.StoreJobStatus(jobStatus.jobStatus, jobStatus.endTime, cancellationToken).ConfigureAwait(false);
 
-            var messageIds = new List<Guid> { jobMessageStatus.Id };
-            messageIds.AddRange(jobMessageStatus.GeneratedMessages.Select(msg => msg.MessageId));
-
-            var jobMessages = await jobStorageService.GetJobMessages(messageIds, cancellationToken).ConfigureAwait(false);
-            var completedJobMessage = jobMessages.FirstOrDefault(msg => msg.MessageId == jobMessageStatus.Id);
-            if (completedJobMessage == null)
-            {
-                completedJobMessage = new JobStepModel
-                {
-                    MessageId = jobMessageStatus.Id,
-                    MessageName = jobMessageStatus.MessageName,
-                };
-                jobMessages.Add(completedJobMessage);
-            }
-
-            completedJobMessage.EndTime = jobMessageStatus.EndTime;
-            completedJobMessage.Status = jobMessageStatus.Succeeded ? JobStepStatus.Completed : JobStepStatus.Failed;
-
-            foreach (var generatedMessage in jobMessageStatus.GeneratedMessages)
-            {
-                var jobMessage = jobMessages.FirstOrDefault(msg => msg.MessageId == jobMessageStatus.Id);
-                if (jobMessage == null)
-                {
-                    jobMessage = new JobStepModel
-                    {
-                        MessageId = jobMessageStatus.Id,
-                        MessageName = jobMessageStatus.MessageName,
-                    };
-                    jobMessages.Add(jobMessage);
-                }
-
-                jobMessage.EndTime = jobMessageStatus.EndTime;
-                jobMessage.Status = jobMessageStatus.Succeeded ? JobStepStatus.Completed : JobStepStatus.Failed;
-            }
-            await jobStorageService.StoreJobMessages(jobMessages, cancellationToken);
-
-            logger.LogDebug("Finished saving updated job steps to db.");
-            SendTelemetry(jobMessages);
-            logger.LogInfo($"Recorded completion of message processing.  Job Id: {jobMessageStatus.JobId}, Message id: {jobMessageStatus.Id}.");
+            if (await jobStorageService.HasInProgressMessage(jobMessageStatus.Id, cancellationToken).ConfigureAwait(false))
+                await jobStorageService
+                    .RemoveInProgressMessage(jobMessageStatus.Id, cancellationToken)
+                    .ConfigureAwait(false);
+            else
+                await jobStorageService
+                    .AddCompletedMessage(jobMessageStatus.Id, cancellationToken)
+                    .ConfigureAwait(false);
+            logger.LogDebug($"Recorded completion of message processing.  Job Id: {jobMessageStatus.JobId}, Message id: {jobMessageStatus.Id}.");
         }
 
-        //private async Task<JobModel> GetJob(long dcJobId)
-        //{
-        //    var key = $"job_model_{dcJobId}";
-        //    return await cache.GetOrCreateAsync<JobModel>(key, async ce =>
-        //    {
-        //        var jobModel = await dataContext.GetJobByDcJobId(dcJobId) ?? throw new DcJobNotFoundException(dcJobId);
-        //        ce.Value = jobModel;
-        //        ce.SlidingExpiration = TimeSpan.FromSeconds(120);
-        //        return jobModel;
-        //    });
-        //}
-
-        private void SendTelemetry(List<JobStepModel> jobMessages)
+        private async Task<bool> IsDuplicate(Guid id, CancellationToken cancellationToken)
         {
-            //jobMessages
-            //    .Where(msg => msg.EndTime != null && msg.StartTime != null)
-            //    .ToList()
-            //    .ForEach(jobMessage =>
-            //{
-            //    logger.LogVerbose($"Now generating telemetry for completed message {jobMessage.MessageId}, {jobMessage.MessageName}");
-            //    var props = new Dictionary<string, string>
-            //    {
-            //        { TelemetryKeys.MessageName, jobMessage.MessageName },
-            //        { "JobId", jobMessage.JobId.ToString()},
-            //        { TelemetryKeys.Id, jobMessage.Id.ToString() },
-            //        { "MessageId",jobMessage.MessageId.ToString("N") },
-            //        { "Status",jobMessage.Status.ToString("G") },
-            //        //{ TelemetryKeys.ExternalJobId, job.DcJobId.ToString() },
-            //        //{ TelemetryKeys.CollectionPeriod, job.CollectionPeriod.ToString() },
-            //        //{ TelemetryKeys.AcademicYear, job.AcademicYear.ToString()}
-            //    };
-            //    //                if (jobMessage. != null)
-            //    //                    props.Add(TelemetryKeys.Ukprn, job.Ukprn.ToString());
-            //    telemetry.TrackEvent("Processed Message", props, new Dictionary<string, double> { { TelemetryKeys.Duration, (jobMessage.EndTime.Value - jobMessage.StartTime.Value).TotalMilliseconds } });
-            //});
+            var history = await jobStorageService.GetCompletedMessageIdentifiersHistory(cancellationToken)
+                .ConfigureAwait(false);
+            if (history.Contains(id))
+                return true;
+
+            history.Add(id);
+            await jobStorageService.StoreCompletedMessageIdentifiersHistory(history, cancellationToken);
+            return false;
+        }
+
+        public async Task RecordStartedJobMessages(RecordStartedProcessingJobMessages message, CancellationToken cancellationToken)
+        {
+            logger.LogDebug($"Recording started processing last messages in a job.");
+            var completedMessages = await jobStorageService.GetCompletedMessageIdentifiers(cancellationToken);
+
+            var inProgressMessages = message.GeneratedMessages
+                .Where(startedMessage => !completedMessages.Contains(startedMessage.MessageId))
+                .Select(msg => msg.MessageId)
+                .ToList();
+
+            await jobStorageService.AddInProgressMessages(inProgressMessages, cancellationToken).ConfigureAwait(false);
+
+            var receivedCompletedMessages = message.GeneratedMessages
+                .Where(startedMessage => completedMessages.Contains(startedMessage.MessageId))
+                .Select(msg => msg.MessageId)
+                .ToList();
+
+            await jobStorageService.RemoveCompletedMessages(receivedCompletedMessages, cancellationToken)
+                .ConfigureAwait(false);
+
+            logger.LogDebug($"Recorded started processing last messages in a job.");
         }
     }
 }
