@@ -348,7 +348,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 CompletionStatus = 1,
                 CompletionAmount = 100M,
                 InstalmentAmount = 200M,
-                NumberOfInstalments = 12
+                NumberOfInstalments = 12,
+                ReportingAimFundingLineType = learnerTraining.FundingLineType
             };
         }
 
