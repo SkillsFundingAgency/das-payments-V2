@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -239,13 +240,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 {
                     foreach (var period in onProgrammeEarning.Periods)
                     {
-                        if (IsEmpty(period))
-                            continue;
+                        if (period.Amount == 0 && string.IsNullOrWhiteSpace(period.PriceEpisodeIdentifier))
+                            continue; // DataLocks are generated for all periods, even irrelevant, ignore until fixed
 
                         var key = ((TransactionType) onProgrammeEarning.Type, period.Period);
                         if (result.ContainsKey(key))
                         {
-                            paymentLogger.LogWarning($"DataLockEvent failure trying to add duplicate key for {onProgrammeEarning.Type} \n\n " +
+                            paymentLogger.LogWarning($"DataLockEvent trying to add duplicate key \n\n " +
                                                      $"Existing Period: {JsonConvert.SerializeObject(result[key])}\n\n" +
                                                      $"Period that failed to add: {JsonConvert.SerializeObject(period)}");
                         }
@@ -263,13 +264,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 {
                     foreach (var period in incentiveEarning.Periods)
                     {
-                        if (IsEmpty(period))
-                            continue;
+                        if (period.Amount == 0 && string.IsNullOrWhiteSpace(period.PriceEpisodeIdentifier))
+                            continue; // DataLocks are generated for all periods, even irrelevant, ignore until fixed
 
                         var key = ((TransactionType) incentiveEarning.Type, period.Period);
                         if (result.ContainsKey(key))
                         {
-                            paymentLogger.LogWarning($"DataLockEvent failure trying to add duplicate key for {incentiveEarning.Type} \n\n " +
+                            paymentLogger.LogWarning($"DataLockEvent trying to add duplicate key \n\n " +
                                                      $"Existing Period: {JsonConvert.SerializeObject(result[key])}\n\n" +
                                                      $"Period that failed to add: {JsonConvert.SerializeObject(period)}");
                         }
@@ -284,22 +285,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             return result;
         }
 
-        private static bool IsEmpty(EarningPeriod period)
-        {
-            if (period.Amount != 0)
-                return false;
-
-            // empty on prog earnings have no price episode ID if no amount, see OnProgrammeEarningValueResolver
-            if (string.IsNullOrEmpty(period.PriceEpisodeIdentifier))
-                return true;
-
-            // empty incentive earnings have price episode ID (wrongly) but no apprenticeship or errors
-            if (period.DataLockFailures == null && period.ApprenticeshipId == null)
-                return true;
-
-            return false;
-        }
-
         private Dictionary<(TransactionType type, byte period), EarningPeriod> GetPassesGroupedByTypeAndPeriod(
             DataLockEvent dataLockEvent)
         {
@@ -309,9 +294,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 foreach (var period in onProgrammeEarning.Periods)
                 {
-                    if (IsEmpty(period))
-                        continue;
-
                     var key = ((TransactionType) onProgrammeEarning.Type, period.Period);
                     if (!result.ContainsKey(key))
                     {
@@ -319,7 +301,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     }
                     else
                     {
-                        paymentLogger.LogWarning($"DataLockEvent pass trying to add duplicate key for {onProgrammeEarning.Type} \n\n " +
+                        paymentLogger.LogWarning($"DataLockEvent trying to add duplicate key \n\n " +
                                                  $"Existing Period: {JsonConvert.SerializeObject(result[key])}\n\n" +
                                                  $"Period that failed to add: {JsonConvert.SerializeObject(period)}");
                     }
@@ -330,9 +312,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 foreach (var period in incentiveEarning.Periods)
                 {
-                    if (IsEmpty(period))
-                        continue;
-
                     var key = ((TransactionType) incentiveEarning.Type, period.Period);
                     if (!result.ContainsKey(key))
                     {
@@ -340,7 +319,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     }
                     else
                     {
-                        paymentLogger.LogWarning($"DataLockEvent pass trying to add duplicate key for {incentiveEarning.Type} \n\n " +
+                        paymentLogger.LogWarning($"DataLockEvent trying to add duplicate key \n\n " +
                                                  $"Existing Period: {JsonConvert.SerializeObject(result[key])}\n\n" +
                                                  $"Period that failed to add: {JsonConvert.SerializeObject(period)}");
                     }
