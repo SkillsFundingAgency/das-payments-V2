@@ -125,12 +125,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
 
                 actualPercentage.Should().BeLessOrEqualTo(expected);
             }
-
-
-            // Clean up
-            await orchestrator.DeleteTestFiles(results.Select(x => x.FileName));
         }
-
-     
     }
 }
