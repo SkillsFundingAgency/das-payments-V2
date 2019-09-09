@@ -28,6 +28,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
     public class SubmissionService : ISubmissionService
     {
+        private const string ControlFileContainerName = "control-files";
+        private const string SettingFile = "settings.json";
+
         private static CloudBlobClient blobClient;
 
         private readonly IJsonSerializationService serializationService;
@@ -47,10 +50,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         public async Task<IEnumerable<string>> ImportPlaylist()
         {
-            var blobContainer = blobClient.GetContainerReference("control-files");
-            var blob = blobContainer.GetBlockBlobReference("playlist.json");
+            var settings = await ReadSettingsFile();
+            var blobContainer = blobClient.GetContainerReference(ControlFileContainerName);
+            var blob = blobContainer.GetBlockBlobReference(settings.Playlist);
             var text = await blob.DownloadTextAsync();
             return serializationService.Deserialize<List<string>>(text);
+        }
+
+        private async Task<TestSettings> ReadSettingsFile()
+        {
+            var blobContainer = blobClient.GetContainerReference(ControlFileContainerName);
+            var blob = blobContainer.GetBlockBlobReference(SettingFile);
+            var text = await blob.DownloadTextAsync();
+            return serializationService.Deserialize<TestSettings>(text);
         }
 
         public async Task<IEnumerable<string>> CreateTestFiles(IEnumerable<string> playlist)
@@ -84,7 +96,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             long ukprn = UkprnFromFilename(file);
             var collectionType = GetCollectionTypeFromFilename(file);
 
-            int period = 8;
+            var settings = await ReadSettingsFile();
+            var period = settings.Period;
 
             await Task.Delay(delay);
 
@@ -221,8 +234,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             }
         }
 
-
-
         public async Task<CloudBlobStream> GetBlobStream(string fileName, string containerName)
         {
             CloudBlobContainer cloudBlobContainer = blobClient.GetContainerReference(ContainerName(containerName));
@@ -230,7 +241,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
             return await cloudBlockBlob.OpenWriteAsync();
         }
-
 
         private async Task<bool> Exists(string fileName, string containerName)
         {
