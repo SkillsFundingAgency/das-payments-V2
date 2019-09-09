@@ -11,15 +11,11 @@ Function Remove-SfAppsAndTypes {
         Remove-ServiceFabricApplication -ApplicationName $applicationNameUri -Force
     }
 
-    Get-ServiceFabricApplication | ?  { $_.ApplicationTypeName -like "$applicationFilter*" } | % {
+    Get-ServiceFabricApplicationType | ?  { $_.ApplicationTypeName -like "$applicationFilter*" } | % {
         $applicationTypeName = $_.ApplicationTypeName
-        write-host "Removing..."
-        write-host "    Application Type Name: $applicationTypeName"
-
-        Get-ServiceFabricApplicationType -ApplicationTypeName $applicationTypeName | % {
-            $applicationTypeVersion  = $_.ApplicationTypeVersion
-            Unregister-ServiceFabricApplicationType -ApplicationTypeName $applicationTypeName  -ApplicationTypeVersion $applicationTypeVersion -Force
-        }
+        $applicationTypeVersion  = $_.ApplicationTypeVersion
+        write-host "Removing... $applicationTypeName : $applicationTypeVersion " 
+        Unregister-ServiceFabricApplicationType -ApplicationTypeName $applicationTypeName -ApplicationTypeVersion $applicationTypeVersion -Force
     }
 }
 
