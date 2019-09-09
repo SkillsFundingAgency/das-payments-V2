@@ -132,7 +132,9 @@
       <Name>SFA.DAS.Payments.AcceptanceTests.Services</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\DataStoreQuery.sql" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Scripts\VerificationQuery.sql" />
   </ItemGroup>

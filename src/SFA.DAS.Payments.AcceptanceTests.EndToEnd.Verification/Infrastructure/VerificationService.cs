@@ -15,6 +15,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         Task<decimal> GetTheNumber(short academicYear, byte collectionPeriod, bool populateEarnings,
             DateTime startDateTime, DateTime endDateTime);
+
+        Task<string> GetDataStoreCsv(short academicYear, byte collectionPeriod);
     }
 
     public class VerificationService : IVerificationService
@@ -28,8 +30,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         {
             var sql = Scripts.ScriptHelpers.GetSqlScriptText("VerificationQuery.sql");
             sql += " order by 1,2";
-            using (SqlConnection connection = new SqlConnection(ConfigurationManager
-                .ConnectionStrings["PaymentsConnectionString"].ConnectionString))
+            using (SqlConnection connection = GetPaymentsConnectionString())
             {
                 using (SqlCommand cmd = connection.CreateCommand())
                 {
@@ -40,6 +41,27 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                     cmd.Parameters.AddWithValue("@populateEarnings", populateEarnings);
                     cmd.Parameters.AddWithValue("@StartTime", startDateTime);
                     cmd.Parameters.AddWithValue("@EndTime", endDateTime);
+                    connection.Open();
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        return CreateCsvFromDataReader(reader);
+                    }
+                }
+            }
+        }
+
+        public async Task<string> GetDataStoreCsv(short academicYear,byte collectionPeriod )
+        {
+            var sql = Scripts.ScriptHelpers.GetSqlScriptText("DataStoreQuery.sql");
+           
+            using (SqlConnection connection = GetDataStoreConnectionString(academicYear))
+            {
+                using (SqlCommand cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.AddWithValue("@collectionPeriod", collectionPeriod);
+                    
                     connection.Open();
                     using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
@@ -87,23 +109,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         private static SqlConnection GetDataStoreConnectionString(short year)
         {
-
             switch (year)
             {
                 case 1819:
-                    new SqlConnection(ConfigurationManager
+                 return   new SqlConnection(ConfigurationManager
                         .ConnectionStrings["ILR1819DataStoreConnectionString"].ConnectionString);
                     break;
                 case 1920:
-                    new SqlConnection(ConfigurationManager
+                    return new SqlConnection(ConfigurationManager
                         .ConnectionStrings["ILR1920DataStoreConnectionString"].ConnectionString);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException($"The given year {year} is not supported");
             }
-
-            return new SqlConnection(ConfigurationManager
-                .ConnectionStrings["PaymentsConnectionString"].ConnectionString);
         }
 
 

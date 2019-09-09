@@ -80,6 +80,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
         {
             // Arrange
             DateTime testStartDateTime = DateTime.UtcNow;
+            Console.WriteLine($"StartTime Value: {testStartDateTime}");
 
             IVerificationService verificationService = autofacContainer.Resolve<IVerificationService>();
             ITestOrchestrator orchestrator = autofacContainer.Resolve<ITestOrchestrator>();
@@ -89,6 +90,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             // Act
             var results = await orchestrator.SubmitFiles(filelist);
             DateTime testEndDateTime = DateTime.UtcNow;
+            Console.WriteLine($"EndTime Value: {testEndDateTime}");
+
             results.Should().NotBeNullOrEmpty();
            
             // Assert
@@ -108,7 +111,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
                     testEndDateTime);
 
                 //publish the csv.
-                await FileHelpers.UploadCsvFile(academicYear, collectionPeriod, submissionService, csvString);
+                await FileHelpers.UploadCsvFile(FileHelpers.ReportType.PaymentsData, academicYear, collectionPeriod, submissionService, csvString);
+
+                var secondDataCsv = await verificationService.GetDataStoreCsv(academicYear, collectionPeriod);
+
+                //publish the csv.
+                await FileHelpers.UploadCsvFile(FileHelpers.ReportType.DataStore, academicYear, collectionPeriod, submissionService, secondDataCsv);
 
                 decimal actualPercentage = await verificationService.GetTheNumber(academicYear, collectionPeriod, true,
                     testStartDateTime,
