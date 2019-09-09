@@ -78,7 +78,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                     cmd.Parameters.AddWithValue("@EndTime", endDateTime);
                     connection.Open();
                     var result = await cmd.ExecuteScalarAsync();
-                    return (decimal) result;
+                    return Convert.IsDBNull(result) ? 0m : (decimal) result;
                 }
             }
         }

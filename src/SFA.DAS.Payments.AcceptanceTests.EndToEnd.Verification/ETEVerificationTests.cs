@@ -80,6 +80,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
         {
             // Arrange
             DateTime testStartDateTime = DateTime.UtcNow;
+            Console.WriteLine(testStartDateTime);
 
             IVerificationService verificationService = autofacContainer.Resolve<IVerificationService>();
             ITestOrchestrator orchestrator = autofacContainer.Resolve<ITestOrchestrator>();
@@ -89,6 +90,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             // Act
             var results = await orchestrator.SubmitFiles(filelist);
             DateTime testEndDateTime = DateTime.UtcNow;
+            Console.WriteLine(testEndDateTime);
             results.Should().NotBeNullOrEmpty();
            
             // Assert
@@ -117,12 +119,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
 
                 actualPercentage.Should().BeLessOrEqualTo(expected);
             }
-
-
-            // Clean up
-            await orchestrator.DeleteTestFiles(results.Select(x => x.FileName));
         }
-
-     
     }
 }
