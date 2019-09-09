@@ -65,8 +65,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                 ) as sq
             where[Transaction Type] in (1, 2, 3)";
 
-            using (SqlConnection connection = new SqlConnection(ConfigurationManager
-                .ConnectionStrings["PaymentsConnectionString"].ConnectionString))
+            using (SqlConnection connection = GetPaymentsConnectionString())
             {
                 using (SqlCommand cmd = connection.CreateCommand())
                 {
@@ -84,6 +83,35 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             }
         }
 
+
+
+        private static SqlConnection GetDataStoreConnectionString(short year)
+        {
+
+            switch (year)
+            {
+                case 1819:
+                    new SqlConnection(ConfigurationManager
+                        .ConnectionStrings["ILR1819DataStoreConnectionString"].ConnectionString);
+                    break;
+                case 1920:
+                    new SqlConnection(ConfigurationManager
+                        .ConnectionStrings["ILR1920DataStoreConnectionString"].ConnectionString);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException($"The given year {year} is not supported");
+            }
+
+            return new SqlConnection(ConfigurationManager
+                .ConnectionStrings["PaymentsConnectionString"].ConnectionString);
+        }
+
+
+        private static SqlConnection GetPaymentsConnectionString()
+        {
+            return new SqlConnection(ConfigurationManager
+                .ConnectionStrings["PaymentsConnectionString"].ConnectionString);
+        }
 
 
         private static string CreateCsvFromDataReader(SqlDataReader reader)

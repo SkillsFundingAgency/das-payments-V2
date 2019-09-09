@@ -104,6 +104,7 @@
   <ItemGroup>
     <Compile Include="ETEVerificationTests.cs" />
     <Compile Include="Infrastructure\CloudStorageSettings.cs" />
+    <Compile Include="Infrastructure\FileHelpers.cs" />
     <Compile Include="Infrastructure\TestOrchestrator.cs" />
     <Compile Include="Infrastructure\SubmissionService.cs" />
     <Compile Include="Infrastructure\TestSettings.cs" />

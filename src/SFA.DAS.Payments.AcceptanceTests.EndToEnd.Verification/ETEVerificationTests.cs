@@ -88,34 +88,41 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
 
             // Act
             var results = await orchestrator.SubmitFiles(filelist);
-
             DateTime testEndDateTime = DateTime.UtcNow;
+            results.Should().NotBeNullOrEmpty();
+           
             // Assert
-            results.All(x=>x.Status == JobStatusType.Completed).Should().BeTrue();
+            results.All(x => x.Status == JobStatusType.Completed).Should().BeTrue();
 
-            short academicYear = (short) results.FirstOrDefault().CollectionYear;
             byte collectionPeriod = (byte)results.FirstOrDefault().PeriodNumber;
 
-            string csvString = await verificationService.GetVerificationDataCsv(academicYear, collectionPeriod, true,
-                testStartDateTime,
-                testEndDateTime);
-            
-             //publish the csv.
-            string fileName = $"Verfication_{DateTime.UtcNow.ToString("yyyyMMdd-HHmmss")}.csv";
-            var cbs = await submissionService.GetBlobStream(fileName, academicYear == 1920 ? "ILR1920" : "ILR1819");
-            byte[] buffer = Encoding.UTF8.GetBytes(csvString);
-            await cbs.WriteAsync(buffer, 0, buffer.Length);
-            cbs.Close();
+            var groupedResults = results.ToList().GroupBy(g => g.CollectionYear);
 
-            decimal actualPercentage = await verificationService.GetTheNumber(academicYear, collectionPeriod, true,
-                testStartDateTime,
-                testEndDateTime);
-            decimal expected = 0.5m;
+            foreach (var groupedResult in groupedResults)
+            {
+                short academicYear = (short) groupedResult.Key;
 
-            actualPercentage.Should().BeLessOrEqualTo(expected);
+                string csvString = await verificationService.GetVerificationDataCsv(academicYear, collectionPeriod,
+                    true,
+                    testStartDateTime,
+                    testEndDateTime);
+
+                //publish the csv.
+                await FileHelpers.UploadCsvFile(academicYear, collectionPeriod, submissionService, csvString);
+
+                decimal actualPercentage = await verificationService.GetTheNumber(academicYear, collectionPeriod, true,
+                    testStartDateTime,
+                    testEndDateTime);
+                decimal expected = 0.5m;
+
+                actualPercentage.Should().BeLessOrEqualTo(expected);
+            }
+
 
             // Clean up
             await orchestrator.DeleteTestFiles(results.Select(x => x.FileName));
         }
+
+     
     }
 }
