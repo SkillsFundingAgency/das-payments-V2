@@ -1,5 +1,7 @@
-﻿namespace SFA.DAS.Payments.EarningEvents.Messages.Events
+﻿using SFA.DAS.Payments.Messages.Core;
+
+namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 {
-    public class ApprenticeshipContractType2EarningEvent : ApprenticeshipContractTypeEarningsEvent
-    {}
+    public class ApprenticeshipContractType2EarningEvent : ApprenticeshipContractTypeEarningsEvent, ILeafLevelMessage
+    { }
 }

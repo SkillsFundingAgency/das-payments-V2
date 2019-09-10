@@ -51,9 +51,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
                 {
                     paymentLogger.LogInfo($"Sent {afterMonthEndPayment.GetType().Name} for {message.JobId} and Message Type {message.GetType().Name}");
                     paymentLogger.LogDebug($"Sending Provider Payment Event {JsonConvert.SerializeObject(afterMonthEndPayment)} for Message Id : {context.MessageId}.  {message.ToDebug()}");
-                    await context.Publish(afterMonthEndPayment);
-                    await jobClient.ProcessedJobMessage(afterMonthEndPayment.JobId, afterMonthEndPayment.EventId, afterMonthEndPayment.GetType().FullName, new List<GeneratedMessage>())
-                        .ConfigureAwait(false);
+                    await context.Publish(afterMonthEndPayment).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -61,8 +59,6 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
                 paymentLogger.LogError($"Error handling payment. Ukprn: {message.Ukprn}, JobId: {message.JobId}, Learner: {message.Learner.ReferenceNumber}, ContractType: {message.ContractType:G}, Transaction Type: {message.TransactionType:G}.  Error: {ex}", ex);
                 throw;
             }
-
-
             paymentLogger.LogDebug($"Finished processing Funding Source Payment Event for Message Id : {context.MessageId}.  {message.ToDebug()}");
         }
     }

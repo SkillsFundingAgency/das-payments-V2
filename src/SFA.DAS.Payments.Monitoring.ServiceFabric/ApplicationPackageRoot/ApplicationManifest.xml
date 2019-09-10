@@ -20,6 +20,7 @@
     <Parameter Name="LogLevel" DefaultValue="Information" />
     <Parameter Name="ConsoleLogLevel" DefaultValue="" />
     <Parameter Name="DelayedRetryTimeInSeconds" DefaultValue="5" />
+    <Parameter Name="Placement_Constraints" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -81,11 +82,13 @@
     <Service Name="SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.Monitoring.Jobs.JobsProxyServiceType" InstanceCount="[JobsProxyService_InstanceCount]">
         <SingletonPartition />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
     </Service>
     <Service Name="JobsServiceActorService" GeneratedIdRef="cb971f61-6bb9-4f53-a2d2-c61656f04754|Volatile">
       <StatefulService ServiceTypeName="JobsServiceActorServiceType" TargetReplicaSetSize="[JobsServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[JobsServiceActorService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[JobsServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
     </Service>
   </DefaultServices>

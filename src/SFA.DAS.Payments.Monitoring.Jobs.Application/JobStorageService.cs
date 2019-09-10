@@ -19,9 +19,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
         Task<bool> StoredJobMessage(Guid messageId, CancellationToken cancellationToken);
         Task StoreJobMessages(List<JobStepModel> jobMessages, CancellationToken cancellationToken);
         Task<List<Guid>> GetInProgressMessageIdentifiers(CancellationToken cancellationToken);
-        Task StoreInProgressMessageIdentifiers(List<Guid> inProgressMessageIdentifiers,
-            CancellationToken cancellationToken);
-
+        Task<List<Guid>> GetCompletedMessageIdentifiers(CancellationToken cancellationToken);
+        Task<List<Guid>> GetCompletedMessageIdentifiersHistory(CancellationToken cancellationToken);
+        Task StoreInProgressMessageIdentifiers(List<Guid> inProgressMessageIdentifiers, CancellationToken cancellationToken);
+        Task StoreCompletedMessageIdentifiers(List<Guid> completedMessageIdentifiers, CancellationToken cancellationToken);
+        Task StoreCompletedMessageIdentifiersHistory(List<Guid> completedMessageIdentifiers, CancellationToken cancellationToken);
         Task<(JobStepStatus jobStatus, DateTimeOffset? endTime)> GetJobStatus(CancellationToken cancellationToken);
         Task StoreJobStatus(JobStepStatus jobStatus, DateTimeOffset? endTime, CancellationToken cancellationToken);
     }
@@ -30,23 +32,24 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
     {
         private readonly IActorDataCache<JobModel> jobCache;
         private readonly IActorDataCache<JobStepModel> jobMessagesCache;
-        private readonly IActorDataCache<List<Guid>> inProgressMessageCache;
+        private readonly IActorDataCache<List<Guid>> messageIdentifiersCache;
         private readonly IActorDataCache<(JobStepStatus jobStatus, DateTimeOffset? endTime)> jobStatusCache;
         private readonly IJobsDataContext dataContext;
         private readonly IPaymentLogger logger;
         public const string JobCacheKey = "job";
         public const string JobStatusCacheKey = "job_status";
         public const string InProgressMessagesCacheKey = "in_progress_messages";
-
+        public const string CompletedMessagesCacheKey = "completed_messages";
+        public const string CompletedMessagesHistoryCacheKey = "completed_messages_history";
         public JobStorageService(IActorDataCache<JobModel> jobCache,
             IActorDataCache<JobStepModel> jobMessagesCache,
-            IActorDataCache<List<Guid>> inProgressMessageCache,
+            IActorDataCache<List<Guid>> messageIdentifiersCache,
             IActorDataCache<(JobStepStatus jobStatus, DateTimeOffset? endTime)> jobStatusCache,
             IJobsDataContext dataContext, IPaymentLogger logger)
         {
             this.jobCache = jobCache ?? throw new ArgumentNullException(nameof(jobCache));
             this.jobMessagesCache = jobMessagesCache ?? throw new ArgumentNullException(nameof(jobMessagesCache));
-            this.inProgressMessageCache = inProgressMessageCache ?? throw new ArgumentNullException(nameof(inProgressMessageCache));
+            this.messageIdentifiersCache = messageIdentifiersCache ?? throw new ArgumentNullException(nameof(messageIdentifiersCache));
             this.jobStatusCache = jobStatusCache ?? throw new ArgumentNullException(nameof(jobStatusCache));
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -112,15 +115,43 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         public async Task<List<Guid>> GetInProgressMessageIdentifiers(CancellationToken cancellationToken)
         {
-            var cacheItem = await inProgressMessageCache.TryGet(InProgressMessagesCacheKey, cancellationToken)
+            var cacheItem = await messageIdentifiersCache.TryGet(InProgressMessagesCacheKey, cancellationToken)
+                .ConfigureAwait(false);
+            return cacheItem.HasValue ? cacheItem.Value : new List<Guid>();
+        }
+
+        public async Task<List<Guid>> GetCompletedMessageIdentifiers(CancellationToken cancellationToken)
+        {
+            var cacheItem = await messageIdentifiersCache.TryGet(CompletedMessagesCacheKey, cancellationToken)
+                .ConfigureAwait(false);
+            return cacheItem.HasValue ? cacheItem.Value : new List<Guid>();
+        }
+
+        public async Task<List<Guid>> GetCompletedMessageIdentifiersHistory(CancellationToken cancellationToken)
+        {
+            var cacheItem = await messageIdentifiersCache.TryGet(CompletedMessagesHistoryCacheKey, cancellationToken)
                 .ConfigureAwait(false);
             return cacheItem.HasValue ? cacheItem.Value : new List<Guid>();
         }
 
         public async Task StoreInProgressMessageIdentifiers(List<Guid> inProgressMessageIdentifiers, CancellationToken cancellationToken)
         {
-            await inProgressMessageCache
+            await messageIdentifiersCache
                 .AddOrReplace(InProgressMessagesCacheKey, inProgressMessageIdentifiers, cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        public async Task StoreCompletedMessageIdentifiers(List<Guid> completedMessageIdentifiers, CancellationToken cancellationToken)
+        {
+            await messageIdentifiersCache
+                .AddOrReplace(CompletedMessagesCacheKey, completedMessageIdentifiers, cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        public async Task StoreCompletedMessageIdentifiersHistory(List<Guid> completedMessageIdentifiers, CancellationToken cancellationToken)
+        {
+            await messageIdentifiersCache
+                .AddOrReplace(CompletedMessagesHistoryCacheKey, completedMessageIdentifiers, cancellationToken)
                 .ConfigureAwait(false);
         }
 

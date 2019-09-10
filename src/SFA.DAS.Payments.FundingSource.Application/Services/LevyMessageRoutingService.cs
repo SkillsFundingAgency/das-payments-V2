@@ -7,6 +7,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
     public interface ILevyMessageRoutingService
     {
         long GetDestinationAccountId(CalculatedRequiredLevyAmount message);
+        bool IsTransfer(long accountId, long? transferSenderAccountId);
+        long GetDestinationAccountId(long accountId, long? transferSenderAccountId);
     }
 
     public class LevyMessageRoutingService: ILevyMessageRoutingService
@@ -18,6 +20,19 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             return message.IsTransfer()
                 ? message.TransferSenderAccountId.Value
                 : message.AccountId.Value;
+        }
+
+        public bool IsTransfer(long accountId, long? transferSenderAccountId) =>
+            transferSenderAccountId.HasValue &&
+            transferSenderAccountId != 0 &&
+            accountId != transferSenderAccountId;
+
+        public long GetDestinationAccountId(long accountId, long? transferSenderAccountId)
+        {
+            return IsTransfer(accountId, transferSenderAccountId)
+                ? transferSenderAccountId.Value
+                : accountId;
+
         }
     }
 }

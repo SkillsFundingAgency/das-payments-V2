@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Payments.Messages.Core.Events
+﻿namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 {
     public class SubmissionSucceededEvent : SubmissionEvent
     {

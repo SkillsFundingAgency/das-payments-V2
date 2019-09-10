@@ -13,5 +13,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService.Interfaces
     {
         Task RecordEarningsJob(RecordEarningsJob message, CancellationToken cancellationToken);
         Task<JobStatus> RecordJobMessageProcessingStatus(RecordJobMessageProcessingStatus message, CancellationToken cancellationToken);
+        Task RecordJobMessageProcessingStartedStatus(RecordStartedProcessingJobMessages message,
+            CancellationToken cancellationToken);
     }
 }
