@@ -34,9 +34,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             builder.RegisterType<VerificationService>().As<IVerificationService>().InstancePerLifetimeScope();
             builder.RegisterType<SubmissionService>().As<ISubmissionService>().InstancePerLifetimeScope();
 
-            //builder.RegisterType<AzureStorageKeyValuePersistenceService>()
-            //    .As<IStreamableKeyValuePersistenceService>().InstancePerLifetimeScope();
-
             builder.Register((c, p) =>
                              {
                                  var configHelper = c.Resolve<Configuration>();
@@ -75,8 +72,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
         {
             // Arrange
             DateTime testStartDateTime = DateTime.UtcNow;
-            var startString = $"StartTime Value: {testStartDateTime}";
-            Console.WriteLine(startString);
+            var startString = $"StartTime Value: {testStartDateTime:O}";
             TestContext.WriteLine(startString);
 
             ITestOrchestrator orchestrator = autofacContainer.Resolve<ITestOrchestrator>();
@@ -85,8 +81,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             // Act
             var results = await orchestrator.SubmitFiles(filelist);
             DateTime testEndDateTime = DateTime.UtcNow;
-            var endString = $"EndTime Value: {testEndDateTime}";
-            Console.WriteLine(endString);
+            var endString = $"EndTime Value: {testEndDateTime:O}";
             TestContext.WriteLine(endString);
 
             results.Should().NotBeNullOrEmpty();
@@ -100,7 +95,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
                if (!actualPercentage.HasValue)
                {
                    var nullPercentageMessage = "The returned percentage was null";
-                   Console.WriteLine(nullPercentageMessage);
                    TestContext.WriteLine(nullPercentageMessage);
                    Assert.Inconclusive(nullPercentageMessage);
                }
@@ -108,7 +102,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
                {
                    decimal expected = 0.5m;
                    var returnedPercentage = $"Returned Percentage: {actualPercentage.Value}";
-                   Console.WriteLine(returnedPercentage);
                    TestContext.WriteLine(returnedPercentage);
                    actualPercentage.Should().BeLessOrEqualTo(expected);
                }

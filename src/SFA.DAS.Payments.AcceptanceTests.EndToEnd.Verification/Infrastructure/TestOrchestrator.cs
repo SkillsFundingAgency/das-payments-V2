@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model;
 
@@ -10,10 +12,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         Task<IEnumerable<FileUploadJob>> SubmitFiles(IEnumerable<string> fileList);
 
-        Task DeleteTestFiles(IEnumerable<string> filelist);
+        Task DeleteTestFiles(IEnumerable<string> fileList);
 
         Task VerifyResults(IEnumerable<FileUploadJob> results,
-            DateTime testStartDateTime, DateTime testEndDateTime, Action<decimal?> verificationAction);
+                           DateTime testStartDateTime,
+                           DateTime testEndDateTime,
+                           Action<decimal?> verificationAction);
     }
 
     public class TestOrchestrator : ITestOrchestrator

@@ -177,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ETEVerificationTests.cs" />
+    <Compile Include="Infrastructure\AcceptanceTestsServiceModule.cs" />
     <Compile Include="Infrastructure\Configuration.cs" />
     <Compile Include="Infrastructure\FileHelpers.cs" />
     <Compile Include="Infrastructure\TestOrchestrator.cs" />
