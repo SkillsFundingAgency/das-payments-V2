@@ -76,17 +76,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             TestContext.WriteLine(startString);
 
             ITestOrchestrator orchestrator = autofacContainer.Resolve<ITestOrchestrator>();
-            var filelist = await orchestrator.SetupTestFiles();
+            var fileList = await orchestrator.SetupTestFiles();
 
             // Act
-            var results = await orchestrator.SubmitFiles(filelist);
+            var results = await orchestrator.SubmitFiles(fileList);
 
 
             DateTime testEndDateTime = DateTime.UtcNow;
-
+            DateTime maxWaitDateTime = DateTime.UtcNow.AddMinutes(15);
             while (true)
             {
-                await Task.Delay(1000);
+                if (DateTime.UtcNow >= maxWaitDateTime)
+                    break;
+
+                await Task.Delay(15000);
                 DateTimeOffset? newDateTime =  await GetNewDateTime(results.Select(r=> r.Ukprn).ToList());
 
                 if (!newDateTime.HasValue)
@@ -94,7 +97,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
                     break;
                 }
 
-                if (newDateTime >= testEndDateTime)
+                if (newDateTime > testEndDateTime)
                 {
                     testEndDateTime = newDateTime.Value.DateTime;
                 }
