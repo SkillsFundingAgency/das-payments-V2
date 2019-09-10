@@ -173,6 +173,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             foreach (var key in keys)
             {
                 var requiredPaymentEvent = await requiredPaymentsCache.TryGet(key).ConfigureAwait(false);
+                if (!requiredPaymentEvent.HasValue)
+                    continue;
                 fundingSourceEvents.AddRange(CreateFundingSourcePaymentsForRequiredPayment(requiredPaymentEvent.Value, employerAccountId, jobId));
                 await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
             }
@@ -192,48 +194,53 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             return fundingSourceEvents.AsReadOnly();
         }
 
-        public async Task RemovePreviousSubmissions(long employerAccountId, long jobId, CollectionPeriod collectionPeriod,
+        public async Task RemovePreviousSubmissions(long jobId, byte collectionPeriod, short academicYear,
             DateTime submissionDate)
         {
             var keys = await generateSortedPaymentKeys.GeyKeys().ConfigureAwait(false);
 
-            paymentLogger.LogDebug($"Processing {keys.Count} required payments, account {employerAccountId}, job id {jobId}");
+            paymentLogger.LogDebug($"Processing {keys.Count} required payments, job id {jobId}");
 
             foreach (var key in keys)
             {
-                var requiredPaymentEvent = await requiredPaymentsCache.TryGet(key).ConfigureAwait(false);
+                var cacheItem = await requiredPaymentsCache.TryGet(key).ConfigureAwait(false);
+                if (!cacheItem.HasValue)
+                    continue;
 
-                if (requiredPaymentEvent.Value.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
-                requiredPaymentEvent.Value.CollectionPeriod.Period == collectionPeriod.Period &&
-                    requiredPaymentEvent.Value.IlrSubmissionDateTime < submissionDate)
+                var requiredPaymentEvent = cacheItem.Value;
+
+                if (requiredPaymentEvent.CollectionPeriod.AcademicYear == academicYear &&
+                    requiredPaymentEvent.CollectionPeriod.Period == collectionPeriod &&
+                    requiredPaymentEvent.JobId != jobId &&
+                    requiredPaymentEvent.IlrSubmissionDateTime < submissionDate)
                 {
                     await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
                 }
             }
-
             paymentLogger.LogInfo("Finished removing previous submission payments.");
         }
 
-        public async Task RemoveCurrentSubmission(long employerAccountId, long jobId, CollectionPeriod collectionPeriod,
+        public async Task RemoveCurrentSubmission(long jobId, byte collectionPeriod, short academicYear,
             DateTime submissionDate)
         {
             var keys = await generateSortedPaymentKeys.GeyKeys().ConfigureAwait(false);
 
-            paymentLogger.LogDebug($"Processing {keys.Count} required payments, account {employerAccountId}, job id {jobId}");
-
+            paymentLogger.LogDebug($"Processing {keys.Count} required payments, job id {jobId}");
             foreach (var key in keys)
             {
-                var requiredPaymentEvent = await requiredPaymentsCache.TryGet(key).ConfigureAwait(false);
+                var cacheItem = await requiredPaymentsCache.TryGet(key).ConfigureAwait(false);
+                if (!cacheItem.HasValue)
+                    continue;
 
-                if (requiredPaymentEvent.Value.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
-                    requiredPaymentEvent.Value.CollectionPeriod.Period == collectionPeriod.Period &&
-                     requiredPaymentEvent.Value.IlrSubmissionDateTime == submissionDate)
+                var requiredPaymentEvent = cacheItem.Value;
+
+                if (requiredPaymentEvent.CollectionPeriod.AcademicYear == academicYear &&
+                    requiredPaymentEvent.CollectionPeriod.Period == collectionPeriod &&
+                    requiredPaymentEvent.JobId == jobId)
                 {
                     await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
-                    break;
                 }
             }
-
             paymentLogger.LogInfo("Finished removing current submission payments.");
         }
 

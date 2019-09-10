@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ESFA.DC.Logging.Interfaces;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
+using SFA.DAS.Payments.FundingSource.Application.Services;
+using SFA.DAS.Payments.FundingSource.LevyFundedService;
 using SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces;
 using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
 using SFA.DAS.Payments.Messages.Core.Events;
@@ -13,20 +17,22 @@ using SFA.DAS.Payments.Model.Core.Factories;
 
 namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
 {
-    public abstract class SubmissionEventHandler<T>: IHandleMessages<T> where T: SubmissionEvent
+    public abstract class SubmissionEventHandler<T> : IHandleMessages<T> where T : SubmissionEvent
     {
         private readonly IActorProxyFactory proxyFactory;
         private readonly ILevyFundingSourceRepository repository;
         private readonly IPaymentLogger logger;
         private readonly IExecutionContext executionContext;
+        private readonly ILevyMessageRoutingService levyMessageRoutingService;
 
         protected SubmissionEventHandler(IActorProxyFactory proxyFactory, ILevyFundingSourceRepository repository,
-            IPaymentLogger logger, IExecutionContext executionContext)
+            IPaymentLogger logger, IExecutionContext executionContext, ILevyMessageRoutingService levyMessageRoutingService)
         {
             this.proxyFactory = proxyFactory ?? throw new ArgumentNullException(nameof(proxyFactory));
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
+            this.levyMessageRoutingService = levyMessageRoutingService ?? throw new ArgumentNullException(nameof(levyMessageRoutingService));
         }
 
         public async Task Handle(T message, IMessageHandlerContext context)
@@ -41,31 +47,16 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
             try
             {
                 logger.LogDebug($"Getting AccountId for Ukprn: {message.Ukprn}.");
-                var accountId = await repository.GetLevyAccountId(message.Ukprn).ConfigureAwait(false);
-
-                if (!accountId.HasValue)
+                var accountIds = await repository.GetEmployerAccountsByUkprn(message.Ukprn).ConfigureAwait(false);
+                var tasks = new List<Task>();
+                foreach (var account in accountIds)
                 {
-                    logger.LogInfo($"Successfully processed {messageType} for Job: {message.JobId}, UKPRN: {message.Ukprn}. Skipped submission removing as no account ID found.");
-                    return;
+                    var accountToUse = levyMessageRoutingService.GetDestinationAccountId(account.Key, account.Value);
+                    tasks.Add(InvokeSubmissionAction(accountToUse, message));
                 }
 
-                var actorId = new ActorId(accountId.Value);
-                var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
-
-                var previousSubmissionDeletion = new ProcessSubmissionDeletion
-                {
-                    AccountId = accountId.Value,
-                    CollectionPeriod =
-                        CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(message.AcademicYear,
-                            message.CollectionPeriod),
-                    JobId = message.JobId,
-                    CommandId = Guid.NewGuid(),
-                    RequestTime = message.EventTime,
-                    SubmissionDate = message.IlrSubmissionDateTime
-                };
-
-                await RemoveSubmissions(previousSubmissionDeletion, actor); 
-                logger.LogInfo($"Successfully processed {messageType} event for Actor Id {actorId}, Job: {message.JobId}, UKPRN: {message.Ukprn}");
+                await Task.WhenAll(tasks).ConfigureAwait(false);
+                logger.LogInfo($"Successfully processed {messageType} for Job: {message.JobId}, UKPRN: {message.Ukprn}. Skipped submission removing as no account ID found.");
             }
             catch (Exception ex)
             {
@@ -74,7 +65,15 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
             }
         }
 
-        protected abstract Task RemoveSubmissions(ProcessSubmissionDeletion submission,
-            ILevyFundedService fundingService);
+        private async Task InvokeSubmissionAction(long accountId, T message)
+        {
+            var actorId = new ActorId(accountId);
+            var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri(LevyFundedServiceConstants.ServiceUri), actorId);
+
+            await HandleSubmissionEvent(message, actor);
+            logger.LogInfo($"Successfully processed {typeof(T).Name} event for Actor Id {actorId}, Job: {message.JobId}, UKPRN: {message.Ukprn}");
+        }
+
+        protected abstract Task HandleSubmissionEvent(T message, ILevyFundedService fundingService);
     }
 }

@@ -19,6 +19,10 @@ IF NOT EXISTS (SELECT * FROM [Payments2].[JobStatus]  WHERE [Id] = 3)
 	INSERT INTO [Payments2].[JobStatus]  values (3,'completed with errors')
 GO	
 
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobStatus]  WHERE [Id] = 4)
+	INSERT INTO [Payments2].[JobStatus]  values (4,'Time out due to idle job')
+GO
+
 IF NOT EXISTS (SELECT * FROM [Payments2].[JobEventStatus]  WHERE [Id] = 1)
 	INSERT INTO [Payments2].[JobEventStatus] values (1,'Queued')
 GO 

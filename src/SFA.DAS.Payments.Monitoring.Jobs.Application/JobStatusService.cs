@@ -12,6 +12,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
     public interface IJobStatusService
     {
         Task<JobStatus> ManageStatus(CancellationToken cancellationToken = default(CancellationToken));
+        Task StopJob();
     }
 
     public class JobStatusService : IJobStatusService
@@ -29,11 +30,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         public async Task<JobStatus> ManageStatus(CancellationToken cancellationToken = default(CancellationToken))
         {
-
-            var inProgressMessages = await jobStorageService.GetInProgressMessageIdentifiers(cancellationToken)
-                .ConfigureAwait(false);
-
-            if (inProgressMessages.Any())
+            if (!await HasFinished(cancellationToken))
                 return JobStatus.InProgress;
 
             var jobStatus = await jobStorageService.GetJobStatus(cancellationToken);
@@ -68,6 +65,57 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             telemetry.TrackEvent("Finished Job", properties, metrics);
             logger.LogInfo($"Finished recording completion status of job. Job: {job.Id}, status: {job.Status}, end time: {job.EndTime}");
             return job.Status;
+        }
+
+        public async Task StopJob()
+        {
+            var job = await jobStorageService.GetJob(CancellationToken.None);
+            if (job == null)
+            {
+                logger.LogError("Cannot stop job as job has started.");  //TODO: should really be exception but not sure how runtime deals with exceptions in callbacks
+                return; 
+            }
+
+            job.Status = JobStatus.TimedOut;
+            job.EndTime = DateTimeOffset.UtcNow;
+            await jobStorageService.UpdateJob(job, CancellationToken.None).ConfigureAwait(false);
+            var properties = new Dictionary<string, string>
+            {
+                { TelemetryKeys.Id, job.Id.ToString()},
+                { TelemetryKeys.JobType, job.JobType.ToString("G")},
+                { TelemetryKeys.Ukprn, job.Ukprn?.ToString() ?? string.Empty},
+                { TelemetryKeys.ExternalJobId, job.DcJobId?.ToString() ?? string.Empty},
+                { TelemetryKeys.CollectionPeriod, job.CollectionPeriod.ToString()},
+                { TelemetryKeys.AcademicYear, job.AcademicYear.ToString()},
+                { TelemetryKeys.Status, job.Status.ToString("G")}
+            };
+
+            var metrics = new Dictionary<string, double>
+            {
+                { TelemetryKeys.Duration, (job.EndTime.Value - job.StartTime).TotalMilliseconds},
+            };
+            if (job.JobType == JobType.EarningsJob)
+                metrics.Add("Learner Count", job.LearnerCount ?? 0);
+            telemetry.TrackEvent("Job Timed Out", properties, metrics);
+        }
+
+        public async Task<bool> HasFinished(CancellationToken cancellationToken)
+        {
+            if ((await jobStorageService.GetInProgressMessageIdentifiers(cancellationToken).ConfigureAwait(false)).Any())
+                return false;
+
+            if ((await jobStorageService.GetCompletedMessageIdentifiers(cancellationToken).ConfigureAwait(false)).Any())
+                return false;
+
+            var jobStatus = await jobStorageService.GetJobStatus(cancellationToken);
+            if (jobStatus.jobStatus == JobStepStatus.Processing)
+                return false;
+
+            var job = await jobStorageService.GetJob(cancellationToken);
+            if (job == null)
+                return false;
+
+            return true;
         }
     }
 }

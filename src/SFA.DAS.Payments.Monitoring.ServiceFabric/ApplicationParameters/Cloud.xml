@@ -19,5 +19,6 @@
     <Parameter Name="Monitoring_JobsService_IntervalInSeconds" Value="__Monitoring_JobsService_IntervalInSeconds__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
     <Parameter Name="ConsoleLogLevel" Value="__ConsoleLogLevel__" />
+    <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
   </Parameters>
 </Application>
