@@ -80,16 +80,18 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
             return accounts.Distinct().ToList();
         }
 
-        public async Task<long?> GetLevyAccountId(long ukprn, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Dictionary<long,long?>> GetEmployerAccountsByUkprn(long ukprn, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var lastPayment = await dataContext.Payment.AsNoTracking()
-                .Where(payment => payment.Ukprn == ukprn && payment.AccountId.HasValue)
-                .OrderByDescending(payment => payment.EventTime)
-                .Take(1)
-                .FirstOrDefaultAsync(cancellationToken)
+            var accounts = await dataContext.Apprenticeship.AsNoTracking()
+                .Where(apprenticeship => apprenticeship.Ukprn == ukprn)
+                .Select (apprenticeship => new {
+                    apprenticeship.AccountId, 
+                    apprenticeship.TransferSendingEmployerAccountId
+                })
+                .Distinct()
+                .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
-
-            return lastPayment?.AccountId;
+            return accounts.ToDictionary(account => account.AccountId, account => account.TransferSendingEmployerAccountId);
         }
     }
 }

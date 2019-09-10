@@ -224,7 +224,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                 if (!updatedApprenticeships.Any())
                 {
-                    logger.LogInfo($"Unable to update IsLevyPayerFlag no Apprenticeships found for Account id: {accountId}");
+                    logger.LogDebug($"Unable to update IsLevyPayerFlag no Apprenticeships found for Account id: {accountId}");
                     return;
                 }
 

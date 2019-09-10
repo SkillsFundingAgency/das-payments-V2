@@ -174,6 +174,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .Verify(svc => svc.StoreJobMessages(It.Is<List<JobStepModel>>(lst => lst.Count == 1 && lst.All(item => item.MessageId == generatedMessage.MessageId &&
                                                                                                                        item.StartTime == generatedMessage.StartTime)), It.IsAny<CancellationToken>()), Times.Once);
         }
+
         //[Test]
         //public async Task RecordStartedProcessingEarningsJob_Updates_Existing_Job()
         //{
@@ -209,16 +210,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         //                item.StartTime == generatedMessage.StartTime))), Times.Once);
         //}
 
-        //private async Task JobMessageCompleted()
+        //private async Task RecordJobStatus()
         //{
         //    var service = mocker.Create<JobMessageService>();
-        //    await service.JobMessageCompleted(jobMessageStatus);
+        //    await service.RecordJobStatus(jobMessageStatus);
         //}
 
         //[Test]
         //public async Task Records_Status_Of_Completed_JobStep()
         //{
-        //    await JobMessageCompleted();
+        //    await RecordJobStatus();
         //    mocker.Mock<IJobsDataContext>()
         //        .Verify(dc => dc.SaveJobSteps(It.Is<List<JobStepModel>>(list =>
         //            list.Any(item =>
@@ -232,7 +233,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         //public async Task Creates_New_Completed_Step_Model_If_Not_Found()
         //{
         //    jobSteps.Clear();
-        //    await JobMessageCompleted();
+        //    await RecordJobStatus();
         //    mocker.Mock<IJobsDataContext>()
         //        .Verify(dc => dc.SaveJobSteps(It.Is<List<JobStepModel>>(list =>
         //            list.Any(item =>
@@ -253,7 +254,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         //        MessageName = "MessageA",
         //    };
         //    jobMessageStatus.GeneratedMessages.Add(generatedMessage);
-        //    await JobMessageCompleted();
+        //    await RecordJobStatus();
         //    mocker.Mock<IJobsDataContext>()
         //        .Verify(dc => dc.SaveJobSteps(It.Is<List<JobStepModel>>(list =>
         //            list.Any(item =>
@@ -282,7 +283,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         //        MessageName = generatedMessage.MessageName,
 
         //    });
-        //    await JobMessageCompleted();
+        //    await RecordJobStatus();
         //    mocker.Mock<IJobsDataContext>()
         //        .Verify(dc => dc.SaveJobSteps(It.Is<List<JobStepModel>>(list =>
         //            list.Any(item =>

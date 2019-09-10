@@ -31,6 +31,7 @@
     <Parameter Name="LevyAccountBalanceService_EndpointName" DefaultValue="" />
     <Parameter Name="LevyAccountBalanceService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="LevyAccountRefreshIntervalInHours" DefaultValue="" />
+    <Parameter Name="Placement_Constraints" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -135,21 +136,25 @@
     <Service Name="SFA.DAS.Payments.FundingSource.LevyAccountBalanceService" ServicePackageActivationMode="ExclusiveProcess">
       <StatefulService ServiceTypeName="SFA.DAS.Payments.FundingSource.LevyAccountBalanceServiceType" TargetReplicaSetSize="[LevyAccountBalanceService_TargetReplicaSetSize]" MinReplicaSetSize="[LevyAccountBalanceService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[LevyAccountBalanceService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
     </Service>
     <Service Name="SFA.DAS.Payments.FundingSource.NonLevyFundedService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.FundingSource.NonLevyFundedServiceType" InstanceCount="[NonLevyFundedService_InstanceCount]">
         <SingletonPartition />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
     </Service>
     <Service Name="SFA.DAS.Payments.FundingSource.LevyFundedProxyService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.FundingSource.LevyFundedProxyServiceType" InstanceCount="[LevyFundedProxyService_InstanceCount]">
         <SingletonPartition />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
     </Service>
     <Service Name="LevyFundedServiceActorService" GeneratedIdRef="6df920bd-0d33-4d6b-bbdf-875e7589732d|Persisted">
       <StatefulService ServiceTypeName="LevyFundedServiceActorServiceType" TargetReplicaSetSize="[LevyFundedServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[LevyFundedServiceActorService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[LevyFundedServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
     </Service>
   </DefaultServices>
