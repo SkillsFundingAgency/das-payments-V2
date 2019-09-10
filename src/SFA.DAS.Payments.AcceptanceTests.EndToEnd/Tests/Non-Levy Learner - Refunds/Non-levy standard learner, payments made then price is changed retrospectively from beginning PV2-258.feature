@@ -1,4 +1,5 @@
-﻿@supports_dc_e2e
+﻿@basic_refund
+@supports_dc_e2e
 Feature: Non-levy learner, payments made then price is changed retrospectively from beginning PV2-258
 
 As a provider,

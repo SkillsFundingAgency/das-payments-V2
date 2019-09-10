@@ -1,4 +1,5 @@
-﻿@supports_dc_e2e
+﻿@basic_day
+@supports_dc_e2e
 Feature: Two Non Levy-Learners One Finishes Late And Other Finishes Early PV2-199
 
 Scenario Outline: Two non-LEVY learners, one learner finishes early, one finishes late PV2-199

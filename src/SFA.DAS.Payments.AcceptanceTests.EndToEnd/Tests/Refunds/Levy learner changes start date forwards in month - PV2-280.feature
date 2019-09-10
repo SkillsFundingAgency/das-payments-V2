@@ -1,4 +1,5 @@
-﻿Feature: Levy learner changes start date forwards in month - PV2-280
+﻿@basic_refund
+Feature: Levy learner changes start date forwards in month - PV2-280
 	As a provider,
 	I want a levy learner, where change to start date within calendar month, forward in month is paid the correct amount
 	So that I am accurately paid my apprenticeship provision.

@@ -1,4 +1,5 @@
-﻿@supports_dc_e2e
+﻿@basic_day
+@supports_dc_e2e
 Feature:  PV2-278 A non-levy learner withdraws after planned end date
 
 
