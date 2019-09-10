@@ -1,20 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Autofac;
 using ESFA.DC.Jobs.Model.Enums;
-using ESFA.DC.Serialization.Interfaces;
-using ESFA.DC.Serialization.Json;
 using FluentAssertions;
 using NUnit.Framework;
-using Polly;
-using Polly.Registry;
-using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure;
-using SFA.DAS.Payments.AcceptanceTests.Services;
-using SFA.DAS.Payments.AcceptanceTests.Services.BespokeHttpClient;
-using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
 
@@ -34,37 +26,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             builder.RegisterType<VerificationService>().As<IVerificationService>().InstancePerLifetimeScope();
             builder.RegisterType<SubmissionService>().As<ISubmissionService>().InstancePerLifetimeScope();
 
-            builder.Register((c, p) =>
-                             {
-                                 var configHelper = c.Resolve<Configuration>();
-                                 return new TestPaymentsDataContext(configHelper.PaymentsConnectionString);
-                             }).As<TestPaymentsDataContext>().InstancePerLifetimeScope();
+            builder.RegisterModule<AcceptanceTestsModule>();
 
-            builder.Register(context =>
-                {
-                    var registry = new PolicyRegistry();
-                    registry.Add(
-                        "HttpRetryPolicy",
-                        Policy.Handle<HttpRequestException>()
-                            .WaitAndRetryAsync(
-                                3, // number of retries
-                                retryAttempt =>
-                                    TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), // exponential backoff
-                                (exception, timeSpan, retryCount, executionContext) =>
-                                {
-                                    // add logging
-                                }));
-                    return registry;
-                }).As<IReadOnlyPolicyRegistry<string>>()
-                .SingleInstance();
-            builder.RegisterType<JobService>().As<IJobService>().InstancePerLifetimeScope();
-            builder.RegisterType<BespokeHttpClient>().As<IBespokeHttpClient>().InstancePerLifetimeScope();
-            builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>()
-                .InstancePerLifetimeScope();
-
-            var container = builder.Build();
-
-            autofacContainer = container;
+            autofacContainer = builder.Build();
         }
 
         [Test]
@@ -108,8 +72,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             }
 
 
-            var endString = $"EndTime Value: {testEndDateTime}";
-            Console.WriteLine(endString);
+            var endString = $"EndTime Value: {testEndDateTime:O}";
             TestContext.WriteLine(endString);
 
             results.Should().NotBeNullOrEmpty();
