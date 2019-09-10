@@ -23,5 +23,6 @@
     <Parameter Name="TimeToWaitForJobToComplete" Value="__TimeToWaitForJobToComplete__" />
     <Parameter Name="MaximumCallbackTimeSpan" Value="__TimeToWaitForJobToComplete__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
+    <Parameter Name="GenerateTransactionType4to16Payments" Value="__GenerateTransactionType4to16Payments__" />
   </Parameters>
 </Application>

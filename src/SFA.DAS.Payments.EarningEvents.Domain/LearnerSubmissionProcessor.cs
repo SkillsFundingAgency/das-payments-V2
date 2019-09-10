@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Core.Validation;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Domain.Validation.Learner;
@@ -19,12 +20,19 @@ namespace SFA.DAS.Payments.EarningEvents.Domain
         private readonly ILearnerValidator learnerValidator;
         private readonly IApprenticeshipContractTypeEarningsEventBuilder apprenticeshipContractTypeEarningsEventBuilder;
         private readonly IFunctionalSkillEarningsEventBuilder functionalSkillEarningsEventBuilder;
-
-        public LearnerSubmissionProcessor(ILearnerValidator learnerValidator, IApprenticeshipContractTypeEarningsEventBuilder apprenticeshipContractTypeEarningsEventBuilder, IFunctionalSkillEarningsEventBuilder functionalSkillEarningsEventBuilder)
+        private readonly IConfigurationHelper configurationHelper;
+        private readonly bool generateTransactionType4To16Payments;
+        
+        public LearnerSubmissionProcessor(ILearnerValidator learnerValidator, 
+            IApprenticeshipContractTypeEarningsEventBuilder apprenticeshipContractTypeEarningsEventBuilder, 
+            IFunctionalSkillEarningsEventBuilder functionalSkillEarningsEventBuilder,
+            IConfigurationHelper configurationHelper)
         {
             this.learnerValidator = learnerValidator ?? throw new ArgumentNullException(nameof(learnerValidator));
             this.apprenticeshipContractTypeEarningsEventBuilder = apprenticeshipContractTypeEarningsEventBuilder ?? throw new ArgumentNullException(nameof(apprenticeshipContractTypeEarningsEventBuilder));
             this.functionalSkillEarningsEventBuilder = functionalSkillEarningsEventBuilder ?? throw new ArgumentNullException(nameof(functionalSkillEarningsEventBuilder));
+            this.configurationHelper = configurationHelper ?? throw new ArgumentNullException(nameof(configurationHelper));
+            bool.TryParse(configurationHelper.GetSettingOrDefault("GenerateTransactionType4to16Payments", "true"), out generateTransactionType4To16Payments);
         }
 
         public (ValidationResult Validation, List<EarningEvent> EarningEvents) GenerateEarnings(ProcessLearnerCommand learnerSubmission)
@@ -37,8 +45,9 @@ namespace SFA.DAS.Payments.EarningEvents.Domain
             var earningsEvent = new List<EarningEvent>();
 
             earningsEvent.AddRange(apprenticeshipContractTypeEarningsEventBuilder.Build(learnerSubmission));
-            earningsEvent.AddRange(functionalSkillEarningsEventBuilder.Build(learnerSubmission));
 
+            if(generateTransactionType4To16Payments) earningsEvent.AddRange(functionalSkillEarningsEventBuilder.Build(learnerSubmission));
+            
             return (Validation: validationResult, EarningEvents: earningsEvent);
         }
     }
