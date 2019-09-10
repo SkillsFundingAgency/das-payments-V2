@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Serialization.Interfaces;
@@ -37,25 +36,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         private static CloudBlobClient blobClient;
 
-        private readonly CloudStorageSettings cloudStorageSettings;
-
         private readonly IJobService jobService;
 
         private readonly TestPaymentsDataContext paymentsContext;
 
+        private readonly Configuration configuration;
+
         private readonly IJsonSerializationService serializationService;
 
-        public SubmissionService(IAzureStorageKeyValuePersistenceServiceConfig storageServiceConfig,
+        public SubmissionService(Configuration configuration,
                                  IJsonSerializationService serializationService,
-                                 CloudStorageSettings cloudStorageSettings,
                                  IJobService jobService,
                                  TestPaymentsDataContext paymentsContext)
         {
+            this.configuration = configuration;
             this.serializationService = serializationService;
-            this.cloudStorageSettings = cloudStorageSettings;
             this.jobService = jobService;
             this.paymentsContext = paymentsContext;
-            var cloudStorageAccount = CloudStorageAccount.Parse(storageServiceConfig.ConnectionString);
+            var cloudStorageAccount = CloudStorageAccount.Parse(configuration.DcStorageConnectionString);
             blobClient = cloudStorageAccount.CreateCloudBlobClient();
         }
 
@@ -235,9 +233,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             switch (collectionType)
             {
                 case "ILR1819":
-                    return cloudStorageSettings.Ilr1819ContainerName;
+                    return configuration.Ilr1819ContainerName;
                 case "ILR1920":
-                    return cloudStorageSettings.Ilr1920ContainerName;
+                    return configuration.Ilr1920ContainerName;
                 default:
                     throw new ArgumentOutOfRangeException($"The collection type {collectionType} doesn't have a containerName configured");
             }
