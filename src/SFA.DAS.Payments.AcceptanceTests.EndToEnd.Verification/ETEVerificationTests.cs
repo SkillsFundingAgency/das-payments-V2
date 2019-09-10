@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             var results = await orchestrator.SubmitFiles(fileList);
 
 
-            DateTime testEndDateTime = DateTime.UtcNow;
+            DateTimeOffset testEndDateTime = DateTime.UtcNow;
             DateTime maxWaitDateTime = DateTime.UtcNow.AddMinutes(15);
             while (true)
             {
@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
 
                 if (newDateTime > testEndDateTime)
                 {
-                    testEndDateTime = newDateTime.Value.DateTime;
+                    testEndDateTime = newDateTime.Value;
                 }
                 else
                 {
@@ -81,7 +81,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             results.All(x => x.Status == JobStatusType.Completed).Should().BeTrue();
 
 
-           await orchestrator.VerifyResults(results, testStartDateTime, testEndDateTime, actualPercentage =>
+           await orchestrator.VerifyResults(results, testStartDateTime, testEndDateTime.DateTime, actualPercentage =>
            {
                if (!actualPercentage.HasValue)
                {
