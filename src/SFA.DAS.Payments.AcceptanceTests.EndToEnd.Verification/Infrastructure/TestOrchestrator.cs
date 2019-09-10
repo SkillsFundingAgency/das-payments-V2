@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting
         public async Task<IEnumerable<string>> SetupTestFiles()
         {
           var playlist = await submissionService.ImportPlaylist();
-          await submissionService.ClearPaymentsData(playlist);
+          //await submissionService.ClearPaymentsData(playlist);
           return await submissionService.CreateTestFiles(playlist);
         }
 
