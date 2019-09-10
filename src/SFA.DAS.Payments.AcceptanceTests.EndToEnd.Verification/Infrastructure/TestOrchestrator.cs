@@ -1,26 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ESFA.DC.IO.AzureStorage.Config.Interfaces;
-using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Jobs.Model;
-using Polly;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure;
-using SFA.DAS.Payments.AcceptanceTests.Services;
-using SFA.DAS.Payments.AcceptanceTests.Services.Exceptions;
-using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 
-namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting
+namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 {
-    public interface ITestOrchestrator {
+    public interface ITestOrchestrator
+    {
         Task<IEnumerable<string>> SetupTestFiles();
 
-        Task<IEnumerable<FileUploadJob>> SubmitFiles(IEnumerable<string> filelist);
+        Task<IEnumerable<FileUploadJob>> SubmitFiles(IEnumerable<string> fileList);
 
-        Task DeleteTestFiles(IEnumerable<string> filelist);
+        Task DeleteTestFiles(IEnumerable<string> fileList);
     }
 
     public class TestOrchestrator : ITestOrchestrator
@@ -34,19 +24,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting
 
         public async Task<IEnumerable<string>> SetupTestFiles()
         {
-          var playlist = await submissionService.ImportPlaylist();
-          await submissionService.ClearPaymentsData(playlist);
-          return await submissionService.CreateTestFiles(playlist);
+            var playlist = await submissionService.ImportPlaylist();
+            await submissionService.ClearPaymentsData(playlist);
+            return await submissionService.CreateTestFiles(playlist);
         }
 
-        public Task<IEnumerable<FileUploadJob>> SubmitFiles(IEnumerable<string> filelist)
+        public Task<IEnumerable<FileUploadJob>> SubmitFiles(IEnumerable<string> fileList)
         {
-            return submissionService.SubmitFiles(filelist);
+            return submissionService.SubmitFiles(fileList);
         }
 
-        public Task DeleteTestFiles(IEnumerable<string> filelist)
+        public Task DeleteTestFiles(IEnumerable<string> fileList)
         {
-            return submissionService.DeleteFiles(filelist);
+            return submissionService.DeleteFiles(fileList);
         }
     }
 }

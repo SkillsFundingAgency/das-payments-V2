@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -21,8 +20,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
     public class VerificationService : IVerificationService
     {
-        public VerificationService()
+        private readonly Configuration configuration;
+
+        public VerificationService(Configuration configuration)
         {
+            this.configuration = configuration;
         }
 
         public async Task<string> GetVerificationDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,
@@ -107,28 +109,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
 
 
-        private static SqlConnection GetDataStoreConnectionString(short year)
+        private SqlConnection GetDataStoreConnectionString(short year)
         {
             switch (year)
             {
                 case 1819:
-                 return   new SqlConnection(ConfigurationManager
-                        .ConnectionStrings["ILR1819DataStoreConnectionString"].ConnectionString);
-                    break;
+                 return   new SqlConnection(configuration.GetConnectionString("ILR1819DataStoreConnectionString"));
                 case 1920:
-                    return new SqlConnection(ConfigurationManager
-                        .ConnectionStrings["ILR1920DataStoreConnectionString"].ConnectionString);
-                    break;
+                    return new SqlConnection(configuration.GetConnectionString("ILR1920DataStoreConnectionString"));
                 default:
                     throw new ArgumentOutOfRangeException($"The given year {year} is not supported");
             }
         }
 
 
-        private static SqlConnection GetPaymentsConnectionString()
+        private SqlConnection GetPaymentsConnectionString()
         {
-            return new SqlConnection(ConfigurationManager
-                .ConnectionStrings["PaymentsConnectionString"].ConnectionString);
+            return new SqlConnection(configuration.PaymentsConnectionString);
         }
 
 

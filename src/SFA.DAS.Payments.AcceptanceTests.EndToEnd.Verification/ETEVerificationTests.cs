@@ -17,7 +17,6 @@ using Polly;
 using Polly.Registry;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure;
 using SFA.DAS.Payments.AcceptanceTests.Services;
 using SFA.DAS.Payments.AcceptanceTests.Services.BespokeHttpClient;
