@@ -7,6 +7,7 @@ using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Serialization.Interfaces;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Services;
 using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 
@@ -24,6 +25,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         Task<CloudBlobStream> GetBlobStream(string fileName, string containerName);
 
+        Task ClearPaymentsData(IEnumerable<string> playlist);
     }
 
     public class SubmissionService : ISubmissionService
@@ -39,11 +41,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         private readonly IJobService jobService;
 
-        public SubmissionService(IAzureStorageKeyValuePersistenceServiceConfig storageServiceConfig, IJsonSerializationService serializationService, CloudStorageSettings cloudStorageSettings, IJobService jobService)
+        private readonly TestPaymentsDataContext paymentsContext;
+
+        public SubmissionService(IAzureStorageKeyValuePersistenceServiceConfig storageServiceConfig, IJsonSerializationService serializationService, CloudStorageSettings cloudStorageSettings, IJobService jobService, TestPaymentsDataContext paymentsContext)
         {
             this.serializationService = serializationService;
             this.cloudStorageSettings = cloudStorageSettings;
             this.jobService = jobService;
+            this.paymentsContext = paymentsContext;
             var cloudStorageAccount = CloudStorageAccount.Parse(storageServiceConfig.ConnectionString);
             blobClient = cloudStorageAccount.CreateCloudBlobClient();
         }
@@ -104,7 +109,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             var submission = new SubmissionModel(EnumJobType.IlrSubmission, ukprn)
                              {
                                  FileName = $"{file}",
-                                 FileSizeBytes = await GetBlobFilesize(file,ContainerName(collectionType)),
+                                 FileSizeBytes = GetBlobFilesize(file,ContainerName(collectionType)),
                                  CreatedBy = "System",
                                  CollectionName = collectionType,
                                  Period = period,
@@ -242,6 +247,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             return await cloudBlockBlob.OpenWriteAsync();
         }
 
+        public async Task ClearPaymentsData(IEnumerable<string> playlist)
+        {
+            foreach (var file in playlist)
+            {
+                var ukprn = UkprnFromFilename(file);
+                await paymentsContext.ClearPaymentsDataAsync(ukprn);
+            }
+        }
+
         private async Task<bool> Exists(string fileName, string containerName)
         {
             var cloudBlobContainer = blobClient.GetContainerReference(ContainerName(containerName));
@@ -250,7 +264,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             return await cloudBlockBlob.ExistsAsync();
         }
 
-        private async Task<long> GetBlobFilesize(string fp, string containerName)
+        private long GetBlobFilesize(string fp, string containerName)
         {
             CloudBlobContainer cloudBlobContainer = blobClient.GetContainerReference(containerName);
             var blob = cloudBlobContainer.GetBlockBlobReference(fp);
