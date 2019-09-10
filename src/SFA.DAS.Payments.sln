@@ -259,10 +259,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.Jobs.Model", "SFA.DAS.Payments.Monitoring.Jobs.Model\SFA.DAS.Payments.Monitoring.Jobs.Model.csproj", "{DC3C2DFE-CE0C-4B40-9A80-392B600FCDED}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SFA.DAS.Payments.Database.Legacy.Payments", "SFA.DAS.Payments.Database.Legacy.Payments\SFA.DAS.Payments.Database.Legacy.Payments.sqlproj", "{F8DC3227-6A79-44D5-89D8-6ACE0B8FCB37}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.ProviderPayments.LegacyExportService", "SFA.DAS.Payments.ProviderPayments.LegacyExportService\SFA.DAS.Payments.ProviderPayments.LegacyExportService.csproj", "{2CFF45F6-6398-4F3A-B3AE-03BC82F06F63}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BCC9A717-DE42-4282-9942-F406E89D9EA3}"
 	ProjectSection(SolutionItems) = preProject
 		Parallel.runsettings = Parallel.runsettings
