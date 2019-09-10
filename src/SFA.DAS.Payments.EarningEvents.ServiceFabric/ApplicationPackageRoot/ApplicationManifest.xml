@@ -23,6 +23,7 @@
     <Parameter Name="TimeToWaitForJobToComplete" DefaultValue="00:02:00" />
     <Parameter Name="MaximumCallbackTimeSpan" DefaultValue="00:10:00" />
     <Parameter Name="Placement_Constraints" DefaultValue="" />
+    <Parameter Name="GenerateTransactionType4to16Payments" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -55,6 +56,7 @@
             <Parameter Name="TimeToPauseBetweenChecks" Value="[TimeToPauseBetweenChecks]" />
             <Parameter Name="TimeToWaitForJobToComplete" Value="[TimeToWaitForJobToComplete]" />
             <Parameter Name="MaximumCallbackTimeSpan" Value="[MaximumCallbackTimeSpan]" />
+            <Parameter Name="GenerateTransactionType4to16Payments" Value="[GenerateTransactionType4to16Payments]" />
           </Section>
         </Settings>
       </ConfigOverride>
