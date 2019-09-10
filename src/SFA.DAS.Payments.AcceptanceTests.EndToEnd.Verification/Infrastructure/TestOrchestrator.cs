@@ -21,15 +21,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting
         Task<IEnumerable<FileUploadJob>> SubmitFiles(IEnumerable<string> filelist);
 
         Task DeleteTestFiles(IEnumerable<string> filelist);
+
+        Task VerifyResults(IEnumerable<FileUploadJob> results,
+            DateTime testStartDateTime, DateTime testEndDateTime, Action<decimal?> verificationAction);
     }
 
     public class TestOrchestrator : ITestOrchestrator
     {
         private readonly ISubmissionService submissionService;
+        private readonly IVerificationService verificationService;
 
-        public TestOrchestrator(ISubmissionService submissionService)
+        public TestOrchestrator(ISubmissionService submissionService, IVerificationService verificationService)
         {
             this.submissionService = submissionService;
+            this.verificationService = verificationService;
         }
 
         public async Task<IEnumerable<string>> SetupTestFiles()
@@ -48,6 +53,41 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting
         public Task DeleteTestFiles(IEnumerable<string> filelist)
         {
             return submissionService.DeleteFiles(filelist);
+        }
+
+        public async Task VerifyResults(IEnumerable<FileUploadJob> results,
+            DateTime testStartDateTime, DateTime testEndDateTime, Action<decimal?> verificationAction)
+        {
+            byte collectionPeriod = (byte)results.FirstOrDefault().PeriodNumber;
+
+
+            var groupedResults = results.ToList().GroupBy(g => g.CollectionYear);
+
+            foreach (var groupedResult in groupedResults)
+            {
+                short academicYear = (short)groupedResult.Key;
+
+                string csvString = await verificationService.GetVerificationDataCsv(academicYear, collectionPeriod,
+                    true,
+                    testStartDateTime,
+                    testEndDateTime);
+
+                //publish the csv.
+                await FileHelpers.UploadCsvFile(FileHelpers.ReportType.PaymentsData, academicYear, collectionPeriod,
+                    submissionService, csvString);
+
+                var secondDataCsv = await verificationService.GetDataStoreCsv(academicYear, collectionPeriod);
+
+                //publish the csv.
+                await FileHelpers.UploadCsvFile(FileHelpers.ReportType.DataStore, academicYear, collectionPeriod,
+                    submissionService, secondDataCsv);
+
+                decimal? actualPercentage = await verificationService.GetTheNumber(academicYear, collectionPeriod, true,
+                    testStartDateTime,
+                    testEndDateTime);
+
+                verificationAction.Invoke(actualPercentage);
+            }
         }
     }
 }
