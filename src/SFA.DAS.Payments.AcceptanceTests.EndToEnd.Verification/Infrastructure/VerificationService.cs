@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         Task<string> GetVerificationDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,
             DateTime startDateTime, DateTime endDateTime);
 
-        Task<decimal> GetTheNumber(short academicYear, byte collectionPeriod, bool populateEarnings,
+        Task<decimal?> GetTheNumber(short academicYear, byte collectionPeriod, bool populateEarnings,
             DateTime startDateTime, DateTime endDateTime);
 
         Task<string> GetDataStoreCsv(short academicYear, byte collectionPeriod);
@@ -73,7 +73,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             }
         }
 
-        public async Task<decimal> GetTheNumber(short academicYear, byte collectionPeriod, bool populateEarnings,
+        public async Task<decimal?> GetTheNumber(short academicYear, byte collectionPeriod, bool populateEarnings,
             DateTime startDateTime, DateTime endDateTime)
         {
             var sql = @"select
@@ -102,7 +102,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                     cmd.Parameters.AddWithValue("@EndTime", endDateTime);
                     connection.Open();
                     var result = await cmd.ExecuteScalarAsync();
-                    return Convert.IsDBNull(result) ? 0m : (decimal) result;
+                    return Convert.IsDBNull(result) ? (decimal?) null: (decimal?) result;
                 }
             }
         }

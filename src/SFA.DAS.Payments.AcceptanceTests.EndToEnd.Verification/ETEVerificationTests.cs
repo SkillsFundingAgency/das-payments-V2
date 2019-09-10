@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -8,6 +9,7 @@ using Autofac;
 using ESFA.DC.IO.AzureStorage;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.IO.Interfaces;
+using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
@@ -87,51 +89,46 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
         {
             // Arrange
             DateTime testStartDateTime = DateTime.UtcNow;
-            Console.WriteLine($"StartTime Value: {testStartDateTime}");
+            var startString = $"StartTime Value: {testStartDateTime}";
+            Console.WriteLine(startString);
+            TestContext.WriteLine(startString);
 
-            IVerificationService verificationService = autofacContainer.Resolve<IVerificationService>();
             ITestOrchestrator orchestrator = autofacContainer.Resolve<ITestOrchestrator>();
-            ISubmissionService submissionService = autofacContainer.Resolve<ISubmissionService>();
             var filelist = await orchestrator.SetupTestFiles();
 
             // Act
             var results = await orchestrator.SubmitFiles(filelist);
             DateTime testEndDateTime = DateTime.UtcNow;
-            Console.WriteLine($"EndTime Value: {testEndDateTime}");
+            var endString = $"EndTime Value: {testEndDateTime}";
+            Console.WriteLine(endString);
+            TestContext.WriteLine(endString);
 
             results.Should().NotBeNullOrEmpty();
            
             // Assert
             results.All(x => x.Status == JobStatusType.Completed).Should().BeTrue();
 
-            byte collectionPeriod = (byte)results.FirstOrDefault().PeriodNumber;
 
-            var groupedResults = results.ToList().GroupBy(g => g.CollectionYear);
+           await orchestrator.VerifyResults(results, testStartDateTime, testEndDateTime, actualPercentage =>
+           {
+               if (!actualPercentage.HasValue)
+               {
+                   var nullPercentageMessage = "The returned percentage was null";
+                   Console.WriteLine(nullPercentageMessage);
+                   TestContext.WriteLine(nullPercentageMessage);
+                   Assert.Inconclusive(nullPercentageMessage);
+               }
+               else
+               {
+                   decimal expected = 0.5m;
+                   var returnedPercentage = $"Returned Percentage: {actualPercentage.Value}";
+                   Console.WriteLine(returnedPercentage);
+                   TestContext.WriteLine(returnedPercentage);
+                   actualPercentage.Should().BeLessOrEqualTo(expected);
+               }
+           });
 
-            foreach (var groupedResult in groupedResults)
-            {
-                short academicYear = (short) groupedResult.Key;
-
-                string csvString = await verificationService.GetVerificationDataCsv(academicYear, collectionPeriod,
-                    true,
-                    testStartDateTime,
-                    testEndDateTime);
-
-                //publish the csv.
-                await FileHelpers.UploadCsvFile(FileHelpers.ReportType.PaymentsData, academicYear, collectionPeriod, submissionService, csvString);
-
-                var secondDataCsv = await verificationService.GetDataStoreCsv(academicYear, collectionPeriod);
-
-                //publish the csv.
-                await FileHelpers.UploadCsvFile(FileHelpers.ReportType.DataStore, academicYear, collectionPeriod, submissionService, secondDataCsv);
-
-                decimal actualPercentage = await verificationService.GetTheNumber(academicYear, collectionPeriod, true,
-                    testStartDateTime,
-                    testEndDateTime);
-                decimal expected = 0.5m;
-
-                actualPercentage.Should().BeLessOrEqualTo(expected);
-            }
         }
+     
     }
 }
