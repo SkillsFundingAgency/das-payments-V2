@@ -37,7 +37,7 @@ select
 			where AcademicYear = @academicYear
 				and CollectionPeriod = @collectionPeriod
 				and StartTime between @StartTime and @EndTime
-			--	and EndTime between @StartTime and @EndTime
+				AND ((EndTime IS NULL) or (EndTime between @StartTime and @EndTime))
 			--and not exists(select 1 from Payments2.Job j2 where j2.Ukprn = j1.Ukprn and j2.Status <> 2)
 			--and not exists(select 1 from Payments2.Payment p where p.Ukprn = j1.Ukprn and AcademicYear = @academicYear and EarningEventId = '00000000-0000-0000-0000-000000000000')
 		) as ukprns
