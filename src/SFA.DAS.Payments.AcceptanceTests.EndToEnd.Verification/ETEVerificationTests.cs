@@ -17,6 +17,8 @@ using FluentAssertions;
 using NUnit.Framework;
 using Polly;
 using Polly.Registry;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure;
 using SFA.DAS.Payments.AcceptanceTests.Services;
@@ -37,6 +39,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
         {
             var builder = new ContainerBuilder();
 
+            builder.RegisterType<Configuration>().SingleInstance();
             builder.RegisterType<CloudStorageSettings>().SingleInstance();
             builder.RegisterType<TestOrchestrator>().As<ITestOrchestrator>().InstancePerLifetimeScope();
             builder.RegisterType<VerificationService>().As<IVerificationService>().InstancePerLifetimeScope();
@@ -49,6 +52,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
                 .As<IStreamableKeyValuePersistenceService>().InstancePerLifetimeScope();
             builder.RegisterType<SubmissionService>().As<ISubmissionService>().InstancePerLifetimeScope();
 
+            builder.Register((c, p) =>
+                             {
+                                 var configHelper = c.Resolve<Configuration>();
+                                 return new TestPaymentsDataContext(configHelper.PaymentsConnectionString);
+                             }).As<TestPaymentsDataContext>().InstancePerLifetimeScope();
             builder.Register(context =>
                 {
                     var registry = new PolicyRegistry();

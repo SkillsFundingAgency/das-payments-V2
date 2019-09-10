@@ -39,9 +39,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.ComparisonTesting
 
         public async Task<IEnumerable<string>> SetupTestFiles()
         {
-            // Import file list from playlist.json in cloud storage
           var playlist = await submissionService.ImportPlaylist();
-            // Create new file from existing one
+          await submissionService.ClearPaymentsData(playlist);
           return await submissionService.CreateTestFiles(playlist);
         }
 
