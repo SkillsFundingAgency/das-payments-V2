@@ -80,8 +80,33 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
 
             // Act
             var results = await orchestrator.SubmitFiles(filelist);
+
+
             DateTime testEndDateTime = DateTime.UtcNow;
-            var endString = $"EndTime Value: {testEndDateTime:O}";
+
+            while (true)
+            {
+                await Task.Delay(1000);
+                DateTimeOffset? newDateTime =  await GetNewDateTime(results.Select(r=> r.Ukprn).ToList());
+
+                if (!newDateTime.HasValue)
+                {
+                    break;
+                }
+
+                if (newDateTime >= testEndDateTime)
+                {
+                    testEndDateTime = newDateTime.Value.DateTime;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+
+            var endString = $"EndTime Value: {testEndDateTime}";
+            Console.WriteLine(endString);
             TestContext.WriteLine(endString);
 
             results.Should().NotBeNullOrEmpty();
@@ -108,6 +133,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
            });
 
         }
-     
+
+        private async Task<DateTimeOffset?> GetNewDateTime(List<long> ukprns)
+        {
+            IVerificationService verificationService = autofacContainer.Resolve<IVerificationService>();
+
+            return (await verificationService.GetLastActivityDate(ukprns));
+        }
     }
 }
