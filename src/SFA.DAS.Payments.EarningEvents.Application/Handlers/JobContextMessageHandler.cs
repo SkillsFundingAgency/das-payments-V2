@@ -65,8 +65,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             this.submittedLearnerAimRepository = submittedLearnerAimRepository;
             this.jobStatusService = jobStatusService;
         }
-
-
+        
         public async Task<bool> HandleAsync(JobContextMessage message, CancellationToken cancellationToken)
         {
             logger.LogDebug($"Processing Earning Event Service event for Job Id : {message.JobId}");

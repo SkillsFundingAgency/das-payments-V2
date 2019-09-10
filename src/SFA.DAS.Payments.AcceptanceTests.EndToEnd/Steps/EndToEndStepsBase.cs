@@ -818,24 +818,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             provider.MonthEndJobIdGenerated = true;
         }
 
-        protected async Task SendProcessLearnerCommand(FM36Learner learner)
-        {
-            var command = new ProcessLearnerCommand
-            {
-                Learner = learner,
-                CollectionPeriod = CurrentCollectionPeriod.Period,
-                CollectionYear = AcademicYear,
-                Ukprn = TestSession.Ukprn,
-                JobId = TestSession.JobId,
-                IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
-                RequestTime = DateTimeOffset.UtcNow,
-                SubmissionDate = TestSession.IlrSubmissionTime, //TODO: ????          
-            };
-
-            Console.WriteLine($"Sending process learner command to the earning events service. Command: {command.ToJson()}");
-            await MessageSession.Send(command);
-        }
-
         protected async Task MatchOnlyProviderPayments(Table table, Provider provider)
         {
             var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
@@ -844,7 +826,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             expectedPayments = SetProviderPaymentAccountIds(ilr, expectedPayments);
             var matcher = new ProviderPaymentEventMatcher(provider, CurrentCollectionPeriod, TestSession, expectedPayments);
-            await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
+            await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure").ConfigureAwait(false);
+        }
+
+        protected async Task CheckFundingSourceAndStartMonthEnd(Provider provider, List<ProviderPayment> expectedPayments)
+        {
+            var matcher = new FundingSourceEventMatcher(provider, CurrentCollectionPeriod, TestSession, expectedPayments);
+
+            if (expectedPayments == null)
+                await WaitForUnexpected(() => matcher.MatchNoPayments(), "Funding Source event check failure").ConfigureAwait(false);
+            else
+                await WaitForIt(() => matcher.MatchPayments(), "Funding Source event check failure").ConfigureAwait(false);
+
+            await StartMonthEnd(provider).ConfigureAwait(false);
         }
 
         private IEnumerable<string> PeriodisedValuesForBalancingAndCompletion()
@@ -971,6 +965,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var providerLearners = TestSession.Learners?.Where(c => c.Ukprn == provider.Ukprn).ToList();
             var contractType = GetContractType(expectedPayments, CurrentCollectionPeriod, providerCurrentIlr,
                 providerLearners);
+
+            await CheckFundingSourceAndStartMonthEnd(provider, expectedPayments).ConfigureAwait(false);
 
             var matcher = new ProviderPaymentModelMatcher(provider, DataContext, TestSession, CurrentCollectionPeriod, expectedPayments, contractType);
             await WaitForIt(() => matcher.MatchPayments(), "Recorded payments check failed");

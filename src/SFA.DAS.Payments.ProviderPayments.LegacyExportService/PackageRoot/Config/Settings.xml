@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <!-- This is used by the StateManager's replicator. -->
+  <Section Name="ReplicatorConfig">
+    <Parameter Name="ReplicatorEndpoint" Value="ReplicatorEndpoint" />
+  </Section>
+  <!-- This is used for securing StateManager's replication traffic. -->
+  <Section Name="ReplicatorSecurityConfig" />
+  <Section Name="ConnectionStringsSection">
+    <Parameter Name="StorageConnectionString" Value="" />
+    <Parameter Name="LoggingConnectionString" Value="" />
+    <Parameter Name="PaymentsConnectionString" Value="" />
+    <Parameter Name="ServiceBusConnectionString" Value="" />
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="" />
+    <Parameter Name="DasPeriodEndConnectionString" Value="" />
+  </Section>
+  <Section Name="Settings">
+    <Parameter Name="EndpointName" Value="sfa-das-payments-providerpayments" />
+    <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-providerpayments-errors" />
+    <Parameter Name="BatchIntervalInSeconds" Value="10" />
+    <Parameter Name="BatchSize" Value="500" />
+    <Parameter Name="BatchFailureTimeoutInSeconds" Value="60" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+    <Parameter Name="LogLevel" Value="" />
+    <Parameter Name="ConsoleLogLevel" Value="" />
+    <Parameter Name="ProcessMessageSequentially" Value="" />
+    <Parameter Name="LegacyExportBatchSize" Value="" />
+  </Section>
+</Settings>

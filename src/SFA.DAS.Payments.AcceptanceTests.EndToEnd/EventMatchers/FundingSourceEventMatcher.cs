@@ -1,0 +1,202 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using SFA.DAS.Payments.AcceptanceTests.Core;
+using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
+using SFA.DAS.Payments.FundingSource.Messages.Events;
+using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Tests.Core;
+using SFA.DAS.Payments.Tests.Core.Builders;
+using Learner = SFA.DAS.Payments.Model.Core.Learner;
+
+namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
+{
+    public class FundingSourceEventMatcher : BaseMatcher<FundingSourcePaymentEvent>
+    {
+        private readonly List<ProviderPayment> paymentSpec;
+        private readonly TestSession testSession;
+        private readonly Provider provider;
+        private readonly CollectionPeriod collectionPeriod;
+
+        public FundingSourceEventMatcher(Provider provider, CollectionPeriod collectionPeriod, TestSession testSession, List<ProviderPayment> paymentSpec = null)
+        {
+            this.paymentSpec = paymentSpec;
+            this.provider = provider;
+            this.collectionPeriod = collectionPeriod;
+            this.testSession = testSession;
+        }
+
+        protected override IList<FundingSourcePaymentEvent> GetActualEvents()
+        {
+            return FundingSourcePaymentEventHandler.ReceivedEvents
+                .Where(ev =>
+                    ev.Ukprn == provider.Ukprn &&
+                    ev.JobId == provider.JobId &&
+                    ev.CollectionPeriod.Period == collectionPeriod.Period && 
+                    ev.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear)
+                .ToList();
+        }
+
+        protected override IList<FundingSourcePaymentEvent> GetExpectedEvents()
+        {
+            var expectedPayments = new List<FundingSourcePaymentEvent>();
+            var payments = paymentSpec.Where(p => p.ParsedCollectionPeriod.Period == collectionPeriod.Period
+                                                  && p.ParsedCollectionPeriod.AcademicYear == collectionPeriod.AcademicYear);
+
+            foreach (var providerPayment in payments)
+            {
+                var eventCollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(providerPayment.CollectionPeriod).Build();
+                var deliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(providerPayment.DeliveryPeriod).Build(); 
+                var testLearner = testSession.GetLearner(provider.Ukprn,providerPayment.LearnerId);
+
+                var learner = new Learner
+                {
+                    ReferenceNumber = testLearner.LearnRefNumber,
+                    Uln = testLearner.Uln,
+                };
+
+                var standardCode = providerPayment.StandardCode;
+
+                if (!standardCode.HasValue)
+                {
+                    var aim = testLearner.Aims.FirstOrDefault(a =>
+                    {
+                        var aimStartDate = a.StartDate.ToDate();
+                        var aimStartPeriod = new CollectionPeriodBuilder().WithDate(aimStartDate).Build();
+                        var aimDuration = string.IsNullOrEmpty(a.ActualDuration) ? a.PlannedDuration : a.ActualDuration;
+
+                        var aimEndPeriod = AimPeriodMatcher.GetEndPeriodForAim(aimStartPeriod, aimDuration);
+                        var aimFinishedInPreviousPeriod = aimEndPeriod.FinishesBefore(collectionPeriod);
+                        if (!aimFinishedInPreviousPeriod)
+                        {
+                            return true;
+                        }
+
+                        // withdrawal but payments made during period active
+                        if (a.CompletionStatus == CompletionStatus.Withdrawn && 
+                            providerPayment.LevyPayments >= 0M && 
+                            providerPayment.SfaCoFundedPayments >= 0M && 
+                            providerPayment.EmployerCoFundedPayments >= 0M && 
+                            providerPayment.SfaFullyFundedPayments >= 0M)
+                        {
+                            return false;
+                        }
+
+                        // retrospective withdrawal
+                        return a.AimReference == "ZPROG001" && (a.CompletionStatus == CompletionStatus.Completed || a.CompletionStatus == CompletionStatus.Withdrawn);
+                    });
+
+                    standardCode = aim?.StandardCode ?? 0;
+                }
+
+                if (providerPayment.SfaCoFundedPayments != 0)
+                {
+                    var coFundedSfa = new SfaCoInvestedFundingSourcePaymentEvent
+                    {
+                        TransactionType = providerPayment.TransactionType,
+                        AmountDue = providerPayment.SfaCoFundedPayments,
+                        CollectionPeriod = eventCollectionPeriod,
+                        DeliveryPeriod = deliveryPeriod,
+                        Learner = learner,
+                        FundingSourceType = FundingSourceType.CoInvestedSfa,
+                        LearningAim = new LearningAim { StandardCode = standardCode.Value},
+                        AccountId = providerPayment.AccountId
+                    };
+                    expectedPayments.Add(coFundedSfa);
+                }
+
+                if (providerPayment.EmployerCoFundedPayments != 0)
+                {
+                    var coFundedEmp = new EmployerCoInvestedFundingSourcePaymentEvent
+                    {
+                        TransactionType = providerPayment.TransactionType,
+                        AmountDue = providerPayment.EmployerCoFundedPayments,
+                        CollectionPeriod = eventCollectionPeriod,
+                        DeliveryPeriod = deliveryPeriod,
+                        Learner = learner,
+                        FundingSourceType = FundingSourceType.CoInvestedEmployer,
+                        AccountId = providerPayment.AccountId,
+                        LearningAim = new LearningAim { StandardCode = standardCode.Value }
+                    };
+                    expectedPayments.Add(coFundedEmp);
+                }
+
+                if (providerPayment.SfaFullyFundedPayments != 0)
+                {
+                    var fullyFundedSfa = new SfaFullyFundedFundingSourcePaymentEvent
+                    {
+                        TransactionType = providerPayment.TransactionType,
+                        AmountDue = providerPayment.SfaFullyFundedPayments,
+                        CollectionPeriod = eventCollectionPeriod,
+                        DeliveryPeriod = deliveryPeriod,
+                        Learner = learner,
+                        AccountId = providerPayment.AccountId,
+                        LearningAim = new LearningAim { StandardCode = standardCode.Value }
+                    };
+                    expectedPayments.Add(fullyFundedSfa);
+                }
+
+                if (providerPayment.LevyPayments != 0)
+                {
+                    var levyFunded = new LevyFundingSourcePaymentEvent
+                    {
+                        TransactionType = providerPayment.TransactionType,
+                        AmountDue = providerPayment.LevyPayments,
+                        CollectionPeriod = eventCollectionPeriod,
+                        DeliveryPeriod = deliveryPeriod,
+                        Learner = learner,
+                        AccountId = providerPayment.AccountId,
+                        LearningAim = new LearningAim { StandardCode = standardCode.Value }
+                    };
+                    expectedPayments.Add(levyFunded);
+                }
+
+                if (providerPayment.TransferPayments != 0)
+                {
+                    var transferFunded = new TransferFundingSourcePaymentEvent
+                    {
+                        TransactionType = providerPayment.TransactionType,
+                        AmountDue = providerPayment.TransferPayments,
+                        CollectionPeriod = eventCollectionPeriod,
+                        DeliveryPeriod = deliveryPeriod,
+                        Learner = learner,
+                        AccountId = providerPayment.AccountId,
+                        LearningAim = new LearningAim { StandardCode = standardCode.Value }
+                    };
+                    expectedPayments.Add(transferFunded);
+                }
+
+            }
+
+            return expectedPayments;
+        }
+
+        protected override bool Match(FundingSourcePaymentEvent expected, FundingSourcePaymentEvent actual)
+        {
+            
+            if (expected.GetType() == actual.GetType() &&
+                expected.TransactionType == actual.TransactionType &&
+                expected.AmountDue == actual.AmountDue &&
+                expected.CollectionPeriod.Period == actual.CollectionPeriod.Period &&
+                expected.CollectionPeriod.AcademicYear == actual.CollectionPeriod.AcademicYear &&
+                expected.DeliveryPeriod == actual.DeliveryPeriod &&
+                expected.Learner.ReferenceNumber == actual.Learner.ReferenceNumber &&
+                expected.Learner.Uln == actual.Learner.Uln &&
+                expected.LearningAim.StandardCode == actual.LearningAim.StandardCode)
+            {
+                if (actual.LearningAim.Reference.Equals("ZPROG001", StringComparison.OrdinalIgnoreCase) && EnumHelper.IsOnProgType(actual.TransactionType))  //TODO: check with PO if this is ok
+                {
+                    return expected.AccountId == actual.AccountId;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+    }
+}
