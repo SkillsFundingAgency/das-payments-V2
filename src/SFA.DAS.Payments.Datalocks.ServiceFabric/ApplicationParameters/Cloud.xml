@@ -29,5 +29,6 @@
     <Parameter Name="DataLockService_EndpointName" Value="__DataLockService_EndpointName__" />
     <Parameter Name="DataLockService_FailedMessagesQueue" Value="__DataLockService_FailedMessagesQueue__" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
+    <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
   </Parameters>
 </Application>

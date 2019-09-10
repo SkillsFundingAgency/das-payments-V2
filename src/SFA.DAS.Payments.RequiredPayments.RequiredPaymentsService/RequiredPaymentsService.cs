@@ -88,9 +88,14 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
 
             using (var operation = telemetry.StartOperation())
             {
+                var stopwatch = Stopwatch.StartNew();
+                await ResetPaymentHistoryCacheIfDifferentCollectionPeriod(earningEvent.CollectionPeriod)
+                    .ConfigureAwait(false);
+
                 await Initialise().ConfigureAwait(false);
                 var requiredPaymentEvents = await functionalSkillEarningsEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
                 Log(requiredPaymentEvents);
+                telemetry.TrackDuration("RequiredPaymentsService.HandleFunctionalSkillEarningsEvent", stopwatch, earningEvent);
                 telemetry.StopOperation(operation);
                 return requiredPaymentEvents;
             }
@@ -147,6 +152,9 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             using (var operation = telemetry.StartOperation("RequiredPaymentsService.RefundRemovedLearningAim", removedLearningAim.EventId.ToString()))
             {
                 var stopwatch = Stopwatch.StartNew();
+                await ResetPaymentHistoryCacheIfDifferentCollectionPeriod(removedLearningAim.CollectionPeriod)
+                    .ConfigureAwait(false);
+
                 await Initialise().ConfigureAwait(false);
                 var requiredPaymentEvents = await refundRemovedLearningAimProcessor.RefundLearningAim(removedLearningAim, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
                 Log(requiredPaymentEvents);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using NServiceBus.Pipeline;
 using SFA.DAS.Payments.Messages.Core;
@@ -30,8 +31,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging
             if (paymentMessage == null)
                 return;
             var jobStatusClient = factory.Create();
-            await jobStatusClient.ProcessedJobMessage(paymentMessage.JobId,  context.GetMessageId(), paymentMessage.GetType().FullName, generatedMessages)
-                .ConfigureAwait(false);
+            if (paymentMessage is ILeafLevelMessage)
+                await jobStatusClient.ProcessedCompletedJobMessage(paymentMessage.JobId, context.GetMessageId(), paymentMessage.GetType().Name, !generatedMessages.Any()).ConfigureAwait(false);
+
+            if (generatedMessages.Any())
+                await jobStatusClient.RecordStartedProcessingJobMessages(paymentMessage.JobId,  generatedMessages).ConfigureAwait(false);
         }
     }
 }
