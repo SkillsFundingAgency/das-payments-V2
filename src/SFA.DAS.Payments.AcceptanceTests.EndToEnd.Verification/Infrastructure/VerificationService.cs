@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -17,6 +18,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             DateTime startDateTime, DateTime endDateTime);
 
         Task<string> GetDataStoreCsv(short academicYear, byte collectionPeriod);
+
+        Task<DateTimeOffset?> GetLastActivityDate(List<long> ukprns);
     }
 
     public class VerificationService : IVerificationService
@@ -70,6 +73,38 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                 }
             }
         }
+
+
+        public async Task<DateTimeOffset?> GetLastActivityDate(List<long> ukprns)
+        {
+            var ukprnsString = String.Join(",", ukprns);
+
+            String sql = $@"select max(CreationDate) from (
+						select ukprn, CreationDate from Payments2.EarningEvent
+						union all
+						select ukprn, CreationDate from Payments2.DataLockEvent
+						union all
+						select ukprn, CreationDate from Payments2.RequiredPaymentEvent
+						union all
+						select ukprn, CreationDate from Payments2.FundingSourceEvent
+					) as d
+					where ukprn in ({ukprnsString})";
+
+
+            using (SqlConnection connection = GetPaymentsConnectionString())
+            {
+                using (SqlCommand cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    cmd.CommandType = CommandType.Text;
+                    connection.Open();
+                    var result = await cmd.ExecuteScalarAsync();
+                    return Convert.IsDBNull(result) ? (DateTimeOffset?)null : (DateTimeOffset?)result;
+                }
+
+            }
+        }
+
 
         public async Task<decimal?> GetTheNumber(short academicYear, byte collectionPeriod, bool populateEarnings,
             DateTime startDateTime, DateTime endDateTime)
