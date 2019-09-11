@@ -21,20 +21,12 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Handlers
 
         public async Task Handle(T message, IMessageHandlerContext context)
         {
-            try
+            Logger.LogVerbose($"Creating scope for handling message: {typeof(T).Name}");
+            using (var scope = factory.CreateScope())
             {
-                Logger.LogVerbose($"Creating scope for handling message: {typeof(T).Name}");
-                using (var scope = factory.CreateScope())
-                {
-                    await HandleMessage(message, context, scope);
-                }
-                Logger.LogVerbose($"Finished handling message : {typeof(T).Name}");
+                await HandleMessage(message, context, scope);
             }
-            catch (Exception ex)
-            {
-                Logger.LogError($"Error handling {typeof(T).Name} message. Error: {ex.Message}", ex);
-                throw;
-            }
+            Logger.LogVerbose($"Finished handling message : {typeof(T).Name}");
         }
 
         protected abstract Task HandleMessage(T message, IMessageHandlerContext context, ILifetimeScope scope);

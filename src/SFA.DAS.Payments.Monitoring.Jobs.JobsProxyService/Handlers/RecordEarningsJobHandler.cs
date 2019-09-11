@@ -22,20 +22,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService.Handlers
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task Handle(RecordEarningsJob message, IMessageHandlerContext context)
+        public Task Handle(RecordEarningsJob message, IMessageHandlerContext context)
         {
-            try
-            {
-                logger.LogVerbose($"Getting actor for job: {message.JobId}");
-                var actorId = new ActorId(message.JobId.ToString());
-                var actor = proxyFactory.CreateActorProxy<IJobsService>(new Uri("fabric:/SFA.DAS.Payments.Monitoring.ServiceFabric/JobsServiceActorService"), actorId);
-                await actor.RecordEarningsJob(message, CancellationToken.None).ConfigureAwait(false);  
-            }
-            catch (Exception ex)
-            {
-                logger.LogWarning($"Failed to record earnings job. ukprn: {message.Ukprn}, Job id: {message.JobId}, Period: {message.CollectionPeriod}-{message.CollectionYear}  Error: {ex.Message}. {ex}");
-                throw;
-            }
+            logger.LogVerbose($"Getting actor for job: {message.JobId}");
+            var actorId = new ActorId(message.JobId.ToString());
+            var actor = proxyFactory.CreateActorProxy<IJobsService>(new Uri("fabric:/SFA.DAS.Payments.Monitoring.ServiceFabric/JobsServiceActorService"), actorId);
+            return actor.RecordEarningsJob(message, CancellationToken.None);  
         }
     }
 }
