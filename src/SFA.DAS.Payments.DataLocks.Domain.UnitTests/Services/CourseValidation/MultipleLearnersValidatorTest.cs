@@ -15,12 +15,12 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
     [TestFixture]
     public class MultipleLearnersValidatorTest
     {
-        private  Mock<IDataLockLearnerCache> dataLockLearnerCache;
-        private  Mock<ICalculatePeriodStartAndEndDate> calculatePeriodStartAndEndDate;
+        private Mock<IDataLockLearnerCache> dataLockLearnerCache;
+        private Mock<ICalculatePeriodStartAndEndDate> calculatePeriodStartAndEndDate;
         private const string PriceEpisodeIdentifier = "pe-1";
         private EarningPeriod period;
         private const short academicYear = 1819;
-        private const  long ukprn = 100;
+        private const long ukprn = 100;
 
         [SetUp]
         public void Setup()
@@ -45,9 +45,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         public void WhenNoDuplicateApprenticeshipsReturnNoDataLockErrors()
         {
             var startDateOfPeriod = new DateTime(2018, 8, 1);
-            var endDateOfPeriod= new DateTime(2018, 8, 31);
+            var endDateOfPeriod = new DateTime(2018, 8, 31);
 
-            var earningPeriod = new EarningPeriod {Period = 1};
+            var earningPeriod = new EarningPeriod { Period = 1 };
 
             calculatePeriodStartAndEndDate
                 .Setup(x => x.GetPeriodDate(earningPeriod.Period, academicYear))
@@ -73,7 +73,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 AcademicYear = academicYear,
                 Apprenticeship = new ApprenticeshipModel
                 {
-                    Id = 1 ,
+                    Id = 1,
                     Ukprn = ukprn,
                     Uln = 200,
                     ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
@@ -97,12 +97,12 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 
         [TestCase("When Apprenticeship start date is in a prior earning period then no dLock error", 2, "2018/9/1", "2018/10/1", "2019/7/31")]
         [TestCase("When Apprenticeship has been stopped  in the earning period then no dLock error", 2, "2018/9/1", "2017/9/1", "2018/9/1")]
-        public void WhenApprenticeshipIsNotWithinCurrentDeliveryPeriodReturnNoDataLockErrors(string errorMessage, byte deliveryPeriod, DateTime periodStarDate,DateTime commitmentStarDate, DateTime commitmentEndDate)
+        public void WhenApprenticeshipIsNotWithinCurrentDeliveryPeriodReturnNoDataLockErrors(string errorMessage, byte deliveryPeriod, DateTime periodStarDate, DateTime commitmentStarDate, DateTime commitmentEndDate)
         {
 
             var lastDayOfMonth = DateTime.DaysInMonth(periodStarDate.Year, periodStarDate.Month);
             var periodEndDate = new DateTime(periodStarDate.Year, periodStarDate.Month, lastDayOfMonth);
-            
+
             calculatePeriodStartAndEndDate
                 .Setup(x => x.GetPeriodDate(deliveryPeriod, academicYear))
                 .Returns((periodStarDate, periodEndDate))
@@ -111,7 +111,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             var validation = new DataLockValidationModel
             {
                 PriceEpisode = new PriceEpisode { Identifier = PriceEpisodeIdentifier },
-                EarningPeriod = new EarningPeriod{Period = deliveryPeriod },
+                EarningPeriod = new EarningPeriod { Period = deliveryPeriod },
                 AcademicYear = academicYear,
                 Apprenticeship = new ApprenticeshipModel
                 {
@@ -123,10 +123,80 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                         new ApprenticeshipPriceEpisodeModel
                         {
                             Id = 100,
-                            StartDate = commitmentStarDate
+                            StartDate = commitmentStarDate,
+                            EndDate = commitmentEndDate
                         }
                     },
-                    StopDate  = commitmentEndDate
+                }
+            };
+
+            var validator = new MultipleLearnersValidator(dataLockLearnerCache.Object, calculatePeriodStartAndEndDate.Object);
+            var result = validator.Validate(validation);
+            result.DataLockErrorCode.Should().BeNull(errorMessage);
+            result.ApprenticeshipId.Should().Be(1, errorMessage);
+            result.ApprenticeshipPriceEpisodes.Should().HaveCount(1, errorMessage);
+            result.ApprenticeshipPriceEpisodes[0].Id.Should().Be(100, errorMessage);
+        }
+
+        [Test]
+        public void WhenApprenticeshipIsStoppedReturnNoDataLockErrors()
+        {
+            var errorMessage = "When Apprenticeship has been stopped  in the earning period then no dLock error";
+            byte deliveryPeriod = 2;
+           
+            var commitmentStarDate = new DateTime(2017, 9, 1);
+            var commitmentEndDate = new DateTime(2018, 9, 1);
+
+            var periodStarDate = new DateTime(2018, 9, 1);
+            var periodEndDate = new DateTime(2018, 9, 30);
+
+            calculatePeriodStartAndEndDate
+                .Setup(x => x.GetPeriodDate(deliveryPeriod, academicYear))
+                .Returns((periodStarDate, periodEndDate))
+                .Verifiable();
+
+            dataLockLearnerCache
+                .Setup(x => x.GetDuplicateApprenticeships())
+                .ReturnsAsync(new List<ApprenticeshipModel>
+                {
+                    new ApprenticeshipModel
+                    {
+                        Id = 1,
+                        Uln = 200,
+                        Ukprn = ukprn,
+                        ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                        {
+                            new ApprenticeshipPriceEpisodeModel
+                            {
+                                Id = 100,
+                                StartDate = commitmentStarDate,
+                                EndDate = commitmentEndDate
+                            }
+                        },
+                        Status = ApprenticeshipStatus.Stopped,
+                        StopDate = commitmentEndDate
+                    }
+                });
+
+            var validation = new DataLockValidationModel
+            {
+                PriceEpisode = new PriceEpisode { Identifier = PriceEpisodeIdentifier },
+                EarningPeriod = new EarningPeriod { Period = deliveryPeriod },
+                AcademicYear = academicYear,
+                Apprenticeship = new ApprenticeshipModel
+                {
+                    Id = 1,
+                    Ukprn = ukprn,
+                    Uln = 200,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            Id = 100,
+                            StartDate = commitmentStarDate,
+                        }
+                    },
+                    Status = ApprenticeshipStatus.Active,
                 }
             };
 
@@ -140,7 +210,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 
         [TestCase("When a duplicate start and end within apprenticeship return DLOCK_08", "2018/8/1", "2019/8/1", "2018/8/1", "2019/8/31")]
         [TestCase("When a duplicate start in middle of apprenticeship return DLOCK_08", "2018/8/1", "2019/8/1", "2018/11/1", "2019/8/31")]
-        public void WhenDuplicateApprenticeshipsOverlapReturnDataLockErrors(string errorMessage, 
+        public void WhenDuplicateApprenticeshipsOverlapReturnDataLockErrors(string errorMessage,
             DateTime duplicateApprenticeshipStartDate,
             DateTime duplicateApprenticeshipEndDate,
             DateTime apprenticeshipStarDate,
@@ -170,10 +240,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                             new ApprenticeshipPriceEpisodeModel
                             {
                                 Id = 100,
-                                StartDate = duplicateApprenticeshipStartDate
+                                StartDate = duplicateApprenticeshipStartDate,
+                                EndDate = duplicateApprenticeshipEndDate
                             }
                         },
-                        StopDate = duplicateApprenticeshipEndDate
+                        Status = ApprenticeshipStatus.Active
                     }
                 });
 
@@ -195,7 +266,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                             StartDate = apprenticeshipStarDate
                         }
                     },
-                    EstimatedEndDate = apprenticeshipEndDate
+                    EstimatedEndDate = apprenticeshipEndDate,
+                    Status = ApprenticeshipStatus.Active
                 }
             };
 

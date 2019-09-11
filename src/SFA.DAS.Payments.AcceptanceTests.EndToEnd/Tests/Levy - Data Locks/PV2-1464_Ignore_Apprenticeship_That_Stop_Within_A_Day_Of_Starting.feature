@@ -1,11 +1,13 @@
 ﻿Feature: PV2-1464 Ignore_Apprenticeship_That_Stop_Within_A_Day_Of_Starting
 	
 Scenario Outline: PV2-1464 - Ignore_Apprenticeship_That_Stop_Within_A_Day_Of_Starting
-	Given the employer IsLevyPayer flag is false
+	Given the employer IsLevyPayer flag is true
 	And the following commitments exist
-		| Identifier       | framework code | programme type | pathway code | agreed price | start date                   | end date                  | status | effective from               |stop effective Date               |
-		| Apprenticeship a | 594            | 20             | 1            | 10000        | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | active | 01/Aug/Current Academic Year |02/Aug/Current Academic Year 	 |				
-		| Apprenticeship b | 593            | 20             | 1            | 10000        | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | active | 01/Aug/Current Academic Year |									 |
+		| Identifier       | framework code | programme type | pathway code | agreed price | start date                    | end date                  | status  | effective from               | Stop Effective From          |
+		| Apprenticeship a | 594            | 20             | 1            | 10000        | 01/Aug/Current Academic Year  | 01/Aug/Next Academic Year | stopped | 01/Aug/Current Academic Year | 02/Aug/Current Academic Year |
+		| Apprenticeship b | 594            | 20             | 1            | 10000        | 01/Aug/Current Academic Year  | 01/Aug/Next Academic Year | stopped | 01/Aug/Current Academic Year | 01/Aug/Current Academic Year |
+		| Apprenticeship c | 593            | 20             | 1            | 10000        | 01/Aug/Current Academic Year  | 01/Aug/Next Academic Year | active  | 01/Aug/Current Academic Year |                              |
+	
 	
 	And the provider is providing training for the following learners
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework code | Programme type | Pathway code | Funding Line Type                                  | SFA Contribution Percentage |
@@ -33,18 +35,18 @@ Scenario Outline: PV2-1464 - Ignore_Apprenticeship_That_Stop_Within_A_Day_Of_Sta
 	
 	And the following data lock failures were generated
         | Apprenticeship   | Delivery Period           | Framework Code | Programme Type | Pathway Code | Transaction Type | Error Code | Price Episode Identifier |
-        | Apprenticeship b | Aug/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
-		| Apprenticeship b | Sep/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
-		| Apprenticeship b | Oct/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
-		| Apprenticeship b | Nov/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
-		| Apprenticeship b | Dec/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
-		| Apprenticeship b | Jan/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
-		| Apprenticeship b | Feb/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
-		| Apprenticeship b | Mar/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
-		| Apprenticeship b | Apr/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
-		| Apprenticeship b | May/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
-		| Apprenticeship b | Jun/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
-		| Apprenticeship b | Jul/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
+        | Apprenticeship c | Aug/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
+		| Apprenticeship c | Sep/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
+		| Apprenticeship c | Oct/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
+		| Apprenticeship c | Nov/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
+		| Apprenticeship c | Dec/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
+		| Apprenticeship c | Jan/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
+		| Apprenticeship c | Feb/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
+		| Apprenticeship c | Mar/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
+		| Apprenticeship c | Apr/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
+		| Apprenticeship c | May/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
+		| Apprenticeship c | Jun/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
+		| Apprenticeship c | Jul/Current Academic Year | 594            | 20             | 1            | Learning         | DLOCK_04   | pe-1                     |
 
 	And Month end is triggered
 	And no provider payments will be recorded
