@@ -22,6 +22,7 @@
     <Parameter Name="TimeToPauseBetweenChecks" DefaultValue="00:00:10" />
     <Parameter Name="TimeToWaitForJobToComplete" DefaultValue="00:02:00" />
     <Parameter Name="MaximumCallbackTimeSpan" DefaultValue="00:10:00" />
+    <Parameter Name="Placement_Constraints" DefaultValue="" />
     <Parameter Name="GenerateTransactionType4to16Payments" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
@@ -70,6 +71,7 @@
     <Service Name="SFA.DAS.Payments.EarningEvents.EarningEventsService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.EarningEvents.EarningEventsServiceType" InstanceCount="[EarningEventsService_InstanceCount]">
         <SingletonPartition />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
     </Service>
   </DefaultServices>

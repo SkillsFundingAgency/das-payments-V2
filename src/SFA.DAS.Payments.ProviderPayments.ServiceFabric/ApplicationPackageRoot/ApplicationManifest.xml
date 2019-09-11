@@ -22,6 +22,7 @@
     <Parameter Name="Audit_BatchFailureTimeoutInSeconds" DefaultValue="60" />
     <Parameter Name="BatchIntervalInSeconds" DefaultValue="10" />
     <Parameter Name="DasPeriodEndConnectionString" DefaultValue="" />
+    <Parameter Name="Placement_Constraints" DefaultValue="" />
     <Parameter Name="LegacyExportBatchSize" DefaultValue="10000" />
   </Parameters>
   <ServiceManifestImport>
@@ -69,6 +70,7 @@
     <Service Name="SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService" ServicePackageActivationMode="ExclusiveProcess">
       <StatefulService ServiceTypeName="SFA.DAS.Payments.ProviderPayments.ProviderPaymentsServiceType" TargetReplicaSetSize="[ProviderPaymentsService_TargetReplicaSetSize]" MinReplicaSetSize="[ProviderPaymentsService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[ProviderPaymentsService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
     </Service>
   </DefaultServices>

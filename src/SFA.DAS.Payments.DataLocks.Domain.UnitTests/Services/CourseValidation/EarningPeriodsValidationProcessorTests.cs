@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Autofac.Extras.Moq;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
-using SFA.DAS.Payments.DataLocks.Domain.Services;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -223,60 +221,5 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             periods.ValidPeriods.Count.Should().Be(2);
             periods.ValidPeriods.Any(p => p.ApprenticeshipId == 1 && p.TransferSenderAccountId == 999).Should().Be(true);
         }
-
-        [Test]
-        public void OnlyValidateApprenticeshipsWithinADeliveryPeriods()
-        {
-            apprenticeships = new List<ApprenticeshipModel>
-            {
-                new ApprenticeshipModel
-                {
-                    Id = 1,
-                    AccountId = 21,
-                    Ukprn = ukprn,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
-                        new ApprenticeshipPriceEpisodeModel{Id = 90},
-                        new ApprenticeshipPriceEpisodeModel{Id = 91},
-                        new ApprenticeshipPriceEpisodeModel{Id = 92},
-                        new ApprenticeshipPriceEpisodeModel{Id = 93},
-                    },
-                    EstimatedStartDate =new DateTime(2018, 9,15)
-                }
-            };
-
-            var earning = new OnProgrammeEarning
-            {
-                Periods = new List<EarningPeriod>
-                {
-                    new EarningPeriod
-                    {
-                        Amount = 1,
-                        PriceEpisodeIdentifier = "pe-1",
-                        Period = 1
-                    }
-                }.AsReadOnly()
-            };
-            
-            mocker.Mock<ICalculatePeriodStartAndEndDate>()
-                .Setup(x => x.GetPeriodDate(1, AcademicYear))
-                .Returns(() => (new DateTime(2018, 8, 1), new DateTime(2018, 8, 31)));
-
-            mocker.Mock<ICourseValidationProcessor>()
-                .Setup(x => x.ValidateCourse(It.IsAny<DataLockValidationModel>()))
-                .Returns(() => new CourseValidationResult());
-
-            var periods = mocker.Create<EarningPeriodsValidationProcessor>()
-                .ValidatePeriods(ukprn, 1, priceEpisodes, earning.Periods.ToList(), (TransactionType)earning.Type, apprenticeships, aim, AcademicYear);
-
-            mocker.Mock<ICourseValidationProcessor>()
-                .Verify(x => x.ValidateCourse(It.IsAny<DataLockValidationModel>()), Times.Never);
-
-            periods.ValidPeriods.Count.Should().Be(0);
-            periods.InValidPeriods.Count.Should().Be(1);
-            periods.InValidPeriods.Any(p => p.DataLockFailures.Count() == 1 && p.DataLockFailures.All(d => d.DataLockError == DataLockErrorCode.DLOCK_02))
-                .Should().Be(true);
-        }
-
     }
 }
