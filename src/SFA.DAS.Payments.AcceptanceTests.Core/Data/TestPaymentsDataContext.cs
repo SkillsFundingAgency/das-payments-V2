@@ -7,7 +7,7 @@ using SFA.DAS.Payments.Application.Repositories;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {
-    public class TestPaymentsDataContext: PaymentsDataContext
+    public class TestPaymentsDataContext : PaymentsDataContext
     {
         public DbSet<TestModels.Provider> Providers { get; set; }
 
@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             modelBuilder.ApplyConfiguration(new ProviderModelConfiguration());
         }
 
-        public TestModels.Provider LeastRecentlyUsed() => 
+        public TestModels.Provider LeastRecentlyUsed() =>
             Providers.OrderBy(x => x.LastUsed).FirstOrDefault()
             ?? throw new InvalidOperationException("There are no UKPRNs available in the well-known Providers pool.");
 
@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 
         public Task<int> ClearPaymentsDataAsync(long ukprn)
         {
-           return Database.ExecuteSqlCommandAsync(DeleteUkprnData, ukprn);
+            return Database.ExecuteSqlCommandAsync(DeleteUkprnData, ukprn);
         }
 
         private const string DeleteUkprnData = @"
@@ -85,9 +85,6 @@ delete from Payments2.Payment where Ukprn = {0}
 
 delete from Payments2.SubmittedLearnerAim where Ukprn = {0}
 ";
-
-            Database.ExecuteSqlCommand(deleteUkprnData, ukprn);
-        }
 
         public void ClearApprenticeshipData(long apprenticeshipId)
         {
