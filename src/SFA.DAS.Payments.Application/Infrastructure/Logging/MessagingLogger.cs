@@ -1,26 +1,29 @@
-﻿using System;
+﻿using ESFA.DC.Logging.Config.Interfaces;
 using NServiceBus.Logging;
+using System;
 
 namespace SFA.DAS.Payments.Application.Infrastructure.Logging
 {
     internal class MessagingLogger : ILog
     {
         private readonly IPaymentLogger logger;
+        private readonly ESFA.DC.Logging.Enums.LogLevel minimum;
 
-        public MessagingLogger(IPaymentLogger logger)
+        public MessagingLogger(IPaymentLogger logger, IApplicationLoggerSettings settings)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            minimum = settings.MinimumLogLevel();
         }
 
-        // IPaymentLogger does not expose the minimum level it is configured for,
-        // so we must enable all levels and bear the cost of low-level messages being
-        // discarded by IPaymenLogger.
-        public bool IsDebugEnabled => true;
+        public bool IsDebugEnabled => minimum >= ESFA.DC.Logging.Enums.LogLevel.Debug;
 
-        public bool IsInfoEnabled => true;
-        public bool IsWarnEnabled => true;
-        public bool IsErrorEnabled => true;
-        public bool IsFatalEnabled => true;
+        public bool IsInfoEnabled => minimum >= ESFA.DC.Logging.Enums.LogLevel.Information;
+
+        public bool IsWarnEnabled => minimum >= ESFA.DC.Logging.Enums.LogLevel.Warning;
+
+        public bool IsErrorEnabled => minimum >= ESFA.DC.Logging.Enums.LogLevel.Error;
+
+        public bool IsFatalEnabled => minimum >= ESFA.DC.Logging.Enums.LogLevel.Fatal;
 
         public void Debug(string message) => DebugFormat(message);
 
