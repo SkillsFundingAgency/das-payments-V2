@@ -86,5 +86,16 @@ delete from Payments2.Payment where Ukprn = {0}
 delete from Payments2.SubmittedLearnerAim where Ukprn = {0}
 ";
 
+            Database.ExecuteSqlCommand(deleteUkprnData, ukprn);
+        }
+
+        public void ClearApprenticeshipData(long apprenticeshipId)
+        {
+            const string deleteApprenticeshipData = @"
+delete from Payments2.Apprenticeship where id = {0}
+delete from Payments2.ApprenticeshipPriceEpisode where ApprenticeshipId = {0}
+";
+            Database.ExecuteSqlCommand(deleteApprenticeshipData, apprenticeshipId);
+        }
     }
 }
