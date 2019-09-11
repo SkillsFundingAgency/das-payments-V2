@@ -18,6 +18,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                            DateTime testStartDateTime,
                            DateTime testEndDateTime,
                            Action<decimal?> verificationAction);
+
+        Task<DateTimeOffset?> GetNewDateTime(List<long> ukprns);
     }
 
     public class TestOrchestrator : ITestOrchestrator
@@ -81,6 +83,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
                 verificationAction.Invoke(actualPercentage);
             }
+        }
+
+        public async Task<DateTimeOffset?> GetNewDateTime(List<long> ukprns)
+        {
+            return await verificationService.GetLastActivityDate(ukprns);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
@@ -44,6 +43,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
 
             // Act
             var results = await orchestrator.SubmitFiles(fileList);
+            var resultsList = results.ToList();
 
 
             DateTimeOffset testEndDateTime = DateTime.UtcNow;
@@ -54,7 +54,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
                     break;
 
                 await Task.Delay(15000);
-                DateTimeOffset? newDateTime =  await GetNewDateTime(results.Select(r=> r.Ukprn).ToList());
+                DateTimeOffset? newDateTime = await orchestrator.GetNewDateTime(resultsList.Select(r => r.Ukprn).ToList());
 
                 if (!newDateTime.HasValue)
                 {
@@ -75,13 +75,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             var endString = $"EndTime Value: {testEndDateTime:O}";
             TestContext.WriteLine(endString);
 
-            results.Should().NotBeNullOrEmpty();
-           
             // Assert
-            results.All(x => x.Status == JobStatusType.Completed).Should().BeTrue();
+            resultsList.All(x => x.Status == JobStatusType.Completed).Should().BeTrue();
 
 
-           await orchestrator.VerifyResults(results, testStartDateTime, testEndDateTime.DateTime, actualPercentage =>
+           await orchestrator.VerifyResults(resultsList, testStartDateTime, testEndDateTime.DateTime, actualPercentage =>
            {
                if (!actualPercentage.HasValue)
                {
@@ -98,13 +96,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
                }
            });
 
-        }
-
-        private async Task<DateTimeOffset?> GetNewDateTime(List<long> ukprns)
-        {
-            IVerificationService verificationService = autofacContainer.Resolve<IVerificationService>();
-
-            return (await verificationService.GetLastActivityDate(ukprns));
         }
     }
 }
