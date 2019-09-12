@@ -1,6 +1,6 @@
-﻿using System;
+﻿using NServiceBus.Pipeline;
+using System;
 using System.Runtime.Serialization;
-using NServiceBus.Transport;
 
 namespace SFA.DAS.Payments.Application.Messaging
 {
@@ -8,11 +8,11 @@ namespace SFA.DAS.Payments.Application.Messaging
     internal class MessageProcessingFailedException : Exception
     {
         private readonly string message;
-        private readonly IncomingMessage incomingMessage;
+        private readonly LogicalMessage incomingMessage;
         private readonly Exception innerException;
 
 
-        public MessageProcessingFailedException(string message, IncomingMessage incomingMessage, Exception innerException) : base(message, innerException)
+        public MessageProcessingFailedException(string message, LogicalMessage incomingMessage, Exception innerException) : base(message, innerException)
         {
             this.message = message;
             this.incomingMessage = incomingMessage;
