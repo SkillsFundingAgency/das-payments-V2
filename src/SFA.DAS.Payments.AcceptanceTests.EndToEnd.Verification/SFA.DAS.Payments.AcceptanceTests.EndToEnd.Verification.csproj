@@ -221,6 +221,11 @@
   <ItemGroup>
     <EmbeddedResource Include="Scripts\VerificationQuery.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\EarningsCte.sql" />
+    <EmbeddedResource Include="Scripts\EarningsDetail.sql" />
+    <EmbeddedResource Include="Scripts\EarningsSummary.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

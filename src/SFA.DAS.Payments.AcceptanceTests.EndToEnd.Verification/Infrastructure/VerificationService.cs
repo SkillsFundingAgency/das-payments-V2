@@ -59,8 +59,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         public async Task<string> GetDataStoreCsv(short academicYear, byte collectionPeriod, List<long> ukprnList)
         {
-            var sql = Scripts.ScriptHelpers.GetSqlScriptText("DataStoreQuery.sql");
-           
+            var sql = Scripts.ScriptHelpers.GetSqlScriptText("EarningsCte.sql");
+            sql += Scripts.ScriptHelpers.GetSqlScriptText("EarningsDetail.sql");
+            sql = sql.Replace("<<ukprnlist>>", String.Join(",", ukprnList));
+
             using (SqlConnection connection = GetDataStoreConnectionString(academicYear))
             {
                 using (SqlCommand cmd = connection.CreateCommand())
@@ -111,7 +113,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         public async Task<decimal?> GetTotalEarningsYtd(short academicYear, byte collectionPeriod, List<long> ukprnList)
         {
-            throw new NotImplementedException();
+            var sql = Scripts.ScriptHelpers.GetSqlScriptText("EarningsCte.sql");
+            sql += Scripts.ScriptHelpers.GetSqlScriptText("EarningsSummary.sql");
+            sql = sql.Replace("<<ukprnlist>>", String.Join(",", ukprnList));
+
+            using (SqlConnection connection = GetDataStoreConnectionString(academicYear))
+            {
+                using (SqlCommand cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.AddWithValue("@collectionPeriod", collectionPeriod);
+
+                    connection.Open();
+                    var result = await cmd.ExecuteScalarAsync();
+                    return Convert.IsDBNull(result) ? (decimal?) null : (decimal?) result;
+                }
+            }
         }
 
         public async Task<decimal?> GetTotalMissingRequiredPayments(short academicYear, byte collectionPeriod, bool populateEarnings,

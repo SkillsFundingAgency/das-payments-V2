@@ -26,6 +26,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         Task<CloudBlobStream> GetBlobStream(string fileName, string containerName);
 
         Task ClearPaymentsData(IEnumerable<string> playlist);
+
+        Task<TestSettings> ReadSettingsFile();
     }
 
     public class SubmissionService : ISubmissionService
@@ -115,7 +117,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             }
         }
 
-        private async Task<TestSettings> ReadSettingsFile()
+        public async Task<TestSettings> ReadSettingsFile()
         {
             var blobContainer = blobClient.GetContainerReference(ControlFileContainerName);
             var blob = blobContainer.GetBlockBlobReference(SettingFile);

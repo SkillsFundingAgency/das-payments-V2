@@ -5,5 +5,7 @@
         public string Playlist { get; set; }
 
         public int Period { get; set; }
+
+        public decimal Tolerance { get; set; }
     }
 }
