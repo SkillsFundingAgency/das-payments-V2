@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NServiceBus.Pipeline;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Core;
 
 namespace SFA.DAS.Payments.Application.Messaging
 {
@@ -22,23 +25,18 @@ namespace SFA.DAS.Payments.Application.Messaging
             }
             catch (Exception ex)
             {
-                var messageType = "No enclosed messages";
-                if (context.Message.Headers.ContainsKey("NServiceBus.EnclosedMessageTypes"))
+                if (!(context.Message.Headers.TryGetValue("NServiceBus.EnclosedMessageTypes", out var messageType) 
+                    && TypeString.TryParseTypeName(messageType, out messageType)))
                 {
-                    messageType = context.Message.Headers["NServiceBus.EnclosedMessageTypes"];
+                    messageType = "No enclosed messages";
                 }
 
-                var sendingEndpoint = "No sending endpoint";
-                if (context.Message.Headers.ContainsKey("NServiceBus.OriginatingEndpoint"))
-                {
-                    sendingEndpoint = context.Message.Headers["NServiceBus.OriginatingEndpoint"];
-                }
+                if (!context.Message.Headers.TryGetValue("NServiceBus.OriginatingEndpoint", out var sendingEndpoint))
+                    sendingEndpoint = "No sending endpoint";
 
-                logger.LogError($"Message handling failed. Error: {ex.Message}\n\n" +
-                                $"Message type: {messageType}\n\n" +
-                                $"Sending Endpoint: {sendingEndpoint}\n\n", ex);
-                throw;
+                throw new MessageProcessingFailedException($"Couldn't process message `{messageType}` from `{sendingEndpoint}`.", context.Message, ex);
             }
         }
     }
+
 }
