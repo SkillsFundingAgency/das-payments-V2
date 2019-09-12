@@ -13,12 +13,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         Task<string> GetVerificationDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,
             DateTime startDateTime, DateTime endDateTime);
 
-        Task<decimal?> GetTheNumber(short academicYear, byte collectionPeriod, bool populateEarnings,
+        Task<decimal?> GetTotalMissingRequiredPayments(short academicYear, byte collectionPeriod, bool populateEarnings,
             DateTime startDateTime, DateTime endDateTime);
 
-        Task<string> GetDataStoreCsv(short academicYear, byte collectionPeriod);
+        Task<string> GetDataStoreCsv(short academicYear, byte collectionPeriod, List<long> ukprnList);
 
         Task<DateTimeOffset?> GetLastActivityDate(List<long> ukprns);
+
+        Task<decimal?> GetTotalEarningsYtd(short academicYear, byte collectionPeriod, List<long> ukprnList);
     }
 
     public class VerificationService : IVerificationService
@@ -55,7 +57,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             }
         }
 
-        public async Task<string> GetDataStoreCsv(short academicYear,byte collectionPeriod )
+        public async Task<string> GetDataStoreCsv(short academicYear, byte collectionPeriod, List<long> ukprnList)
         {
             var sql = Scripts.ScriptHelpers.GetSqlScriptText("DataStoreQuery.sql");
            
@@ -107,15 +109,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             }
         }
 
+        public async Task<decimal?> GetTotalEarningsYtd(short academicYear, byte collectionPeriod, List<long> ukprnList)
+        {
+            throw new NotImplementedException();
+        }
 
-        public async Task<decimal?> GetTheNumber(short academicYear, byte collectionPeriod, bool populateEarnings,
+        public async Task<decimal?> GetTotalMissingRequiredPayments(short academicYear, byte collectionPeriod, bool populateEarnings,
             DateTime startDateTime, DateTime endDateTime)
         {
-            var sql = @"select
-           
-            CASE WHEN SUM([Earnings YTD (audit)]) = 0 THEN 0 ELSE 
-            SUM([Missing Required Payments]) / sum([Earnings YTD (audit)]) *100
-            END AS [The Number]
+            var sql = @"select sum([Missing Required Payments]) As MissingRequiredPayments
             FROM(
             ";
 

@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
         }
 
         [Test]
-        public async Task InitialTest()
+        public async Task SmokeTest()
         {
             // Arrange
             DateTime testStartDateTime = DateTime.UtcNow;

@@ -53,36 +53,60 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         public async Task VerifyResults(IEnumerable<FileUploadJob> results,
             DateTime testStartDateTime, DateTime testEndDateTime, Action<decimal?> verificationAction)
         {
-            byte collectionPeriod = (byte)results.FirstOrDefault().PeriodNumber;
+            var resultsList = results.ToList();
+            var ukprnList = resultsList.Select(r => r.Ukprn).ToList();
+
+            byte collectionPeriod = (byte)resultsList.FirstOrDefault().PeriodNumber;
 
 
-            var groupedResults = results.ToList().GroupBy(g => g.CollectionYear);
+            var groupedResults = resultsList.GroupBy(g => g.CollectionYear);
 
             foreach (var groupedResult in groupedResults)
             {
                 short academicYear = (short)groupedResult.Key;
 
-                string csvString = await verificationService.GetVerificationDataCsv(academicYear, collectionPeriod,
-                    true,
+                await ExtractAndSavePaymentsData(testStartDateTime, testEndDateTime, academicYear, collectionPeriod);
+
+                await ExtractAndSaveDatastoreData(academicYear, collectionPeriod, ukprnList);
+
+                decimal? totalMissingRequiredPayments = await verificationService.GetTotalMissingRequiredPayments(academicYear, collectionPeriod, true,
                     testStartDateTime,
                     testEndDateTime);
 
-                //publish the csv.
-                await FileHelpers.UploadCsvFile(FileHelpers.ReportType.PaymentsData, academicYear, collectionPeriod,
-                    submissionService, csvString);
+                decimal? totalEarningYtd = await verificationService.GetTotalEarningsYtd(academicYear, collectionPeriod, ukprnList);
 
-                var secondDataCsv = await verificationService.GetDataStoreCsv(academicYear, collectionPeriod);
-
-                //publish the csv.
-                await FileHelpers.UploadCsvFile(FileHelpers.ReportType.DataStore, academicYear, collectionPeriod,
-                    submissionService, secondDataCsv);
-
-                decimal? actualPercentage = await verificationService.GetTheNumber(academicYear, collectionPeriod, true,
-                    testStartDateTime,
-                    testEndDateTime);
+                var actualPercentage = totalMissingRequiredPayments / totalEarningYtd * 100;
 
                 verificationAction.Invoke(actualPercentage);
             }
+        }
+
+        private async Task ExtractAndSaveDatastoreData(short academicYear, byte collectionPeriod, List<long> ukprnList)
+        {
+            var secondDataCsv = await verificationService.GetDataStoreCsv(academicYear, collectionPeriod, ukprnList);
+
+            //publish the csv.
+            await FileHelpers.UploadCsvFile(FileHelpers.ReportType.DataStore,
+                                            academicYear,
+                                            collectionPeriod,
+                                            submissionService,
+                                            secondDataCsv);
+        }
+
+        private async Task ExtractAndSavePaymentsData(DateTime testStartDateTime, DateTime testEndDateTime, short academicYear, byte collectionPeriod)
+        {
+            string csvString = await verificationService.GetVerificationDataCsv(academicYear,
+                                                                                collectionPeriod,
+                                                                                true,
+                                                                                testStartDateTime,
+                                                                                testEndDateTime);
+
+            //publish the csv.
+            await FileHelpers.UploadCsvFile(FileHelpers.ReportType.PaymentsData,
+                                            academicYear,
+                                            collectionPeriod,
+                                            submissionService,
+                                            csvString);
         }
 
         public async Task<DateTimeOffset?> GetNewDateTime(List<long> ukprns)
