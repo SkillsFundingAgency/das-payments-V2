@@ -54,7 +54,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
                     break;
 
                 await Task.Delay(15000);
-                DateTimeOffset? newDateTime = await orchestrator.GetNewDateTime(resultsList.Select(r => r.Ukprn).ToList());
+                DateTimeOffset? newDateTime =
+                    await orchestrator.GetNewDateTime(resultsList.Select(r => r.Ukprn).ToList());
 
                 if (!newDateTime.HasValue)
                 {
@@ -79,23 +80,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             resultsList.All(x => x.Status == JobStatusType.Completed).Should().BeTrue();
 
 
-           await orchestrator.VerifyResults(resultsList, testStartDateTime, testEndDateTime.DateTime, actualPercentage =>
-           {
-               if (!actualPercentage.HasValue)
-               {
-                   var nullPercentageMessage = "The returned percentage was null";
-                   TestContext.WriteLine(nullPercentageMessage);
-                   Assert.Inconclusive(nullPercentageMessage);
-               }
-               else
-               {
-                   decimal expected = 0.5m;
-                   var returnedPercentage = $"Returned Percentage: {actualPercentage.Value}";
-                   TestContext.WriteLine(returnedPercentage);
-                   actualPercentage.Should().BeLessOrEqualTo(expected);
-               }
-           });
-
+            await orchestrator.VerifyResults(resultsList, testStartDateTime, testEndDateTime.DateTime,
+                (actualPercentage, tolerance) =>
+                {
+                    if (!actualPercentage.HasValue)
+                    {
+                        var nullPercentageMessage = "The returned percentage was null";
+                        TestContext.WriteLine(nullPercentageMessage);
+                        Assert.Inconclusive(nullPercentageMessage);
+                    }
+                    else
+                    {
+                        var returnedPercentage = $"Returned Percentage: {actualPercentage.Value}";
+                        TestContext.WriteLine(returnedPercentage);
+                        actualPercentage.Should().BeLessOrEqualTo(tolerance);
+                    }
+                });
         }
     }
 }

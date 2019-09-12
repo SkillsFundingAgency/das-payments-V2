@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         Task VerifyResults(IEnumerable<FileUploadJob> results,
                            DateTime testStartDateTime,
                            DateTime testEndDateTime,
-                           Action<decimal?> verificationAction);
+                           Action<decimal?, decimal> verificationAction);
 
         Task<DateTimeOffset?> GetNewDateTime(List<long> ukprns);
     }
@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         }
 
         public async Task VerifyResults(IEnumerable<FileUploadJob> results,
-            DateTime testStartDateTime, DateTime testEndDateTime, Action<decimal?> verificationAction)
+            DateTime testStartDateTime, DateTime testEndDateTime, Action<decimal?, decimal> verificationAction)
         {
             var resultsList = results.ToList();
             var ukprnList = resultsList.Select(r => r.Ukprn).ToList();
@@ -82,18 +82,31 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                 var settings = await submissionService.ReadSettingsFile();
                 decimal tolerance = settings.Tolerance;
 
-                var actualPercentage = totalMissingRequiredPayments / totalEarningYtd * 100;
+                decimal? actualPercentage = null;
+                if (totalEarningYtd != 0)
+                {
+                    actualPercentage = totalMissingRequiredPayments / totalEarningYtd * 100;
+                }
 
-                string summaryCsv = CreateSummaryCsv(totalMissingRequiredPayments, tolerance, totalEarningYtd,
+                var summaryCsv = CreateSummaryCsv(totalMissingRequiredPayments, tolerance, totalEarningYtd,
                     actualPercentage);
+                var queryTimeWindowCsv = CreateQueryTimeWindowCsv(testStartDateTime, testEndDateTime);
 
-                await SaveCsv(paymentCsv, dataStoreCsv, summaryCsv, academicYear, collectionPeriod);
+                await SaveCsv(paymentCsv, dataStoreCsv, summaryCsv, queryTimeWindowCsv,  academicYear, collectionPeriod);
 
-                verificationAction.Invoke(actualPercentage);
+                verificationAction.Invoke(actualPercentage, tolerance);
             }
         }
 
-        private async Task SaveCsv(string paymentCsv, string dataStoreCsv, string summaryCsv, short academicYear,
+        private string CreateQueryTimeWindowCsv(DateTime testStartDateTime, DateTime testEndDateTime)
+        {
+            var header = "Query Start Time, Query End Time, Duration";
+            var row = $"{testStartDateTime:O},{testEndDateTime:O},{(testEndDateTime - testStartDateTime):G}";
+            return $"{header}{Environment.NewLine}{row}";
+        }
+
+        private async Task SaveCsv(string paymentCsv, string dataStoreCsv, string summaryCsv, string queryTimeWindow,
+            short academicYear,
             byte collectionPeriod)
         {
             StringBuilder sb = new StringBuilder();
@@ -106,11 +119,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             sb.AppendLine();
             sb.AppendLine("Payments");
             sb.Append(paymentCsv);
+            sb.AppendLine();
+            sb.AppendLine("Query Time Window");
+            sb.Append(queryTimeWindow);
 
             await FileHelpers.UploadCsvFile(academicYear, collectionPeriod, submissionService, sb.ToString());
         }
 
-        private string CreateSummaryCsv(decimal? totalMissingRequiredPayments, decimal tolerance, decimal? totalEarningYtd, decimal? actualPercentage)
+        private string CreateSummaryCsv(decimal? actualPercentage, decimal tolerance, decimal? totalEarningYtd, decimal? totalMissingRequiredPayments)
         {
             var header = "Difference, Tolerance, Earnings (YTD), Missing Required Payments";
             var row = $"{actualPercentage},{tolerance},{totalEarningYtd},{totalMissingRequiredPayments}";
@@ -120,8 +136,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         private async Task<string> ExtractDataStoreData(short academicYear, byte collectionPeriod, List<long> ukprnList)
         {
             return await verificationService.GetDataStoreCsv(academicYear, collectionPeriod, ukprnList);
-
-           
         }
 
         private async Task<string> ExtractPaymentsData(DateTime testStartDateTime, DateTime testEndDateTime, short academicYear, byte collectionPeriod)
@@ -130,8 +144,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                 true,
                 testStartDateTime,
                 testEndDateTime);
-
-           
         }
 
         public async Task<DateTimeOffset?> GetNewDateTime(List<long> ukprns)
