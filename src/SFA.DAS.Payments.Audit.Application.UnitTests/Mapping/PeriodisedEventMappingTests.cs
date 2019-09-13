@@ -17,6 +17,8 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
             paymentEvent.AmountDue = 500;
             paymentEvent.DeliveryPeriod = 1;
             paymentEvent.PriceEpisodeIdentifier = "pe-1";
+            paymentEvent.ApprenticeshipId = 300L;
+            paymentEvent.ApprenticeshipPriceEpisodeId = 600L;
         }
 
 
@@ -36,6 +38,18 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
         public void Maps_PriceEpisodeIdentifier()
         {
             Mapper.Map<TDest>(PaymentEvent).PriceEpisodeIdentifier.Should().Be(PaymentEvent.PriceEpisodeIdentifier);
+        }
+
+        [Test]
+        public void Maps_ApprenticeshipId()
+        {
+            Mapper.Map<TDest>(PaymentEvent).ApprenticeshipId.Should().Be(PaymentEvent.ApprenticeshipId);
+        }
+
+        [Test]
+        public void Maps_ApprenticeshipPriceEpisodeId()
+        {
+            Mapper.Map<TDest>(PaymentEvent).ApprenticeshipPriceEpisodeId.Should().Be(PaymentEvent.ApprenticeshipPriceEpisodeId);
         }
 
         [Test]

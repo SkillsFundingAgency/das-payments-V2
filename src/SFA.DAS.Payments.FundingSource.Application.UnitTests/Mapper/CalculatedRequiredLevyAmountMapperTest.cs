@@ -51,6 +51,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 EarningEventId = Guid.NewGuid(),
                 ContractType = ContractType.Act1,
                 ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
+                ApprenticeshipId = 12,
             };
             mapperConfiguration = AutoMapperConfigurationFactory.CreateMappingConfig();
             autoMapper = mapperConfiguration.CreateMapper();
@@ -155,6 +156,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
         private void PopulateCommonProperties(FundingSourcePaymentEvent expectedEvent)
         {
             expectedEvent.FundingSourceType = FundingSourceType.Levy;
+            expectedEvent.ApprenticeshipId = 12;
             expectedEvent.Learner = new Learner
             {
                 ReferenceNumber = "001",
