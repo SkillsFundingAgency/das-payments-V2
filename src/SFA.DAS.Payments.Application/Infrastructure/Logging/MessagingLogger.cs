@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Logging
 
         public void Warn(string message) => logger.LogWarning(message);
 
-        public void Warn(string message, Exception exception) => logger.LogWarning(message);
+        public void Warn(string message, Exception exception) => WarnFormat("{0}\n{1}", message, exception.Message);
 
         public void WarnFormat(string format, params object[] args) => logger.LogWarning(format, args);
     }
