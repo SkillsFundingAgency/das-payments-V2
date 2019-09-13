@@ -46,6 +46,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             {
                 using (SqlCommand cmd = connection.CreateCommand())
                 {
+                    cmd.CommandTimeout = TimeSpan.FromSeconds(120).Seconds;
                     cmd.CommandText = sql;
                     cmd.CommandType = CommandType.Text;
                     cmd.Parameters.AddWithValue("@academicYear", academicYear);
@@ -72,6 +73,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             {
                 using (SqlCommand cmd = connection.CreateCommand())
                 {
+                    cmd.CommandTimeout = TimeSpan.FromSeconds(120).Seconds;
                     cmd.CommandText = sql;
                     cmd.CommandType = CommandType.Text;
                     cmd.Parameters.AddWithValue("@collectionPeriod", collectionPeriod);
@@ -106,6 +108,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             {
                 using (SqlCommand cmd = connection.CreateCommand())
                 {
+                    cmd.CommandTimeout = TimeSpan.FromSeconds(120).Seconds;
                     cmd.CommandText = sql;
                     cmd.CommandType = CommandType.Text;
                     connection.Open();
