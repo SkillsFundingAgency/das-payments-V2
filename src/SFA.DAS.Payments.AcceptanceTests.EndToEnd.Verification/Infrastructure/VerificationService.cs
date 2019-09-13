@@ -10,13 +10,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 {
     public interface IVerificationService
     {
-        Task<string> GetVerificationDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,
+        Task<string> GetPaymentsDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,
             DateTime startDateTime, DateTime endDateTime);
 
         Task<decimal?> GetTotalMissingRequiredPayments(short academicYear, byte collectionPeriod, bool populateEarnings,
             DateTime startDateTime, DateTime endDateTime);
 
-        Task<string> GetDataStoreCsv(short academicYear, byte collectionPeriod, List<long> ukprnList);
+        Task<string> GetEarningsCsv(short academicYear, byte collectionPeriod, List<long> ukprnList);
 
         Task<DateTimeOffset?> GetLastActivityDate(List<long> ukprns);
 
@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             this.configuration = configuration;
         }
 
-        public async Task<string> GetVerificationDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,
+        public async Task<string> GetPaymentsDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,
             DateTime startDateTime, DateTime endDateTime)
         {
             var sql = Scripts.ScriptHelpers.GetSqlScriptText(PaymentsQuerySql);
@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             }
         }
 
-        public async Task<string> GetDataStoreCsv(short academicYear, byte collectionPeriod, List<long> ukprnList)
+        public async Task<string> GetEarningsCsv(short academicYear, byte collectionPeriod, List<long> ukprnList)
         {
             var sql = Scripts.ScriptHelpers.GetSqlScriptText(EarningsCteSql);
             sql += Scripts.ScriptHelpers.GetSqlScriptText(EarningsDetailSql);

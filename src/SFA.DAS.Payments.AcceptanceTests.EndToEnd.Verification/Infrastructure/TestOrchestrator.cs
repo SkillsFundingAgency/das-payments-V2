@@ -134,12 +134,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         private async Task<string> ExtractDataStoreData(short academicYear, byte collectionPeriod, List<long> ukprnList)
         {
-            return await verificationService.GetDataStoreCsv(academicYear, collectionPeriod, ukprnList);
+            return await verificationService.GetEarningsCsv(academicYear, collectionPeriod, ukprnList);
         }
 
         private async Task<string> ExtractPaymentsData(DateTime testStartDateTime, DateTime testEndDateTime, short academicYear, byte collectionPeriod)
         {
-            return await verificationService.GetVerificationDataCsv(academicYear, collectionPeriod,
+            return await verificationService.GetPaymentsDataCsv(academicYear, collectionPeriod,
                 true,
                 testStartDateTime,
                 testEndDateTime);
