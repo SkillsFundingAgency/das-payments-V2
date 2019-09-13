@@ -88,8 +88,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                     actualPercentage = totalMissingRequiredPayments / totalEarningYtd * 100;
                 }
 
-                var summaryCsv = CreateSummaryCsv(totalMissingRequiredPayments, tolerance, totalEarningYtd,
-                    actualPercentage);
+                var summaryCsv = CreateSummaryCsv(actualPercentage, tolerance, totalEarningYtd, totalMissingRequiredPayments);
                 var queryTimeWindowCsv = CreateQueryTimeWindowCsv(testStartDateTime, testEndDateTime);
 
                 await SaveCsv(paymentCsv, dataStoreCsv, summaryCsv, queryTimeWindowCsv,  academicYear, collectionPeriod);

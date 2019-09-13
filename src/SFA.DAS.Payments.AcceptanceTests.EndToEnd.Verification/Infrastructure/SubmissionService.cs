@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         Task DeleteFiles(IEnumerable<string> fileList);
 
-        Task<CloudBlobStream> GetBlobStream(string fileName, string containerName);
+        Task<CloudBlobStream> GetResultsBlobStream(string fileName);
 
         Task ClearPaymentsData(IEnumerable<string> playlist);
 
@@ -32,6 +32,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
     public class SubmissionService : ISubmissionService
     {
+        private const string ResultsContainerName = "results";
         private const string ControlFileContainerName = "control-files";
 
         private const string SettingFile = "settings.json";
@@ -101,10 +102,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             await Task.WhenAll(jobList);
         }
 
-        public async Task<CloudBlobStream> GetBlobStream(string fileName, string containerName)
+        public async Task<CloudBlobStream> GetResultsBlobStream(string fileName)
         {
-            var cloudBlobContainer = blobClient.GetContainerReference(ContainerName(containerName));
+            var cloudBlobContainer = blobClient.GetContainerReference(ResultsContainerName);
+            await cloudBlobContainer.CreateIfNotExistsAsync();
             var cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(fileName);
+            
             return await cloudBlockBlob.OpenWriteAsync();
         }
 

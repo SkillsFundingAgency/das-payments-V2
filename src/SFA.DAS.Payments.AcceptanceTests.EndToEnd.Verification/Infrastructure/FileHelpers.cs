@@ -8,8 +8,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
     {
         private static string CreateCsvFileName(short academicYear, byte collectionPeriod)
         {
+            var now = DateTime.UtcNow;
             var fileName =
-                $"Verification_{academicYear}_R{collectionPeriod:00}_{DateTime.UtcNow.ToString("yyyyMMdd-HHmmss")}.csv";
+                $"{now:yyyy-MM-dd}/Verification_{academicYear}_R{collectionPeriod:00}_{now:yyyyMMdd-HHmmss}.csv";
             return fileName;
         }
 
@@ -20,7 +21,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         {
             var fileName = CreateCsvFileName(academicYear, collectionPeriod);
 
-            var cbs = await submissionService.GetBlobStream(fileName, academicYear == 1920 ? "ILR1920" : "ILR1819");
+            var cbs = await submissionService.GetResultsBlobStream(fileName);
             var buffer = Encoding.UTF8.GetBytes(csvString);
             await cbs.WriteAsync(buffer, 0, buffer.Length);
             cbs.Close();
