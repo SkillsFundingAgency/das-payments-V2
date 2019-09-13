@@ -44,6 +44,15 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 if (config.ProcessMessageSequentially) endpointConfiguration.LimitMessageProcessingConcurrencyTo(1);
 
                 endpointConfiguration.Pipeline.Register(typeof(ExceptionHandlingBehavior), "Logs exceptions to the payments logger");
+
+                var recoverability = endpointConfiguration.Recoverability();
+                recoverability.Immediate(immediate => immediate.NumberOfRetries(config.ImmediateMessageRetries));
+                recoverability.Delayed(delayed =>
+                {
+                    delayed.NumberOfRetries(config.DelayedMessageRetries);
+                    delayed.TimeIncrease(config.DelayedMessageRetryDelay);
+                });
+
                 return endpointConfiguration;
             })
             .As<EndpointConfiguration>()

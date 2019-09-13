@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Payments.Core.Configuration;
+using System;
 
 namespace SFA.DAS.Payments.Application.Infrastructure.Configuration
 {
@@ -9,5 +10,8 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Configuration
         public string ServiceBusConnectionString { get; set; }
         public string FailedMessagesQueue { get; set; }
         public bool ProcessMessageSequentially { get; set; }
+        public int ImmediateMessageRetries { get; set; }
+        public int DelayedMessageRetries { get; set; }
+        public TimeSpan DelayedMessageRetryDelay { get; set; }
     }
 }

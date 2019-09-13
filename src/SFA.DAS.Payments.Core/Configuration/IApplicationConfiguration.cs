@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Payments.Core.Configuration
+﻿using System;
+
+namespace SFA.DAS.Payments.Core.Configuration
 {
     public interface IApplicationConfiguration
     {
@@ -6,6 +8,9 @@
         string StorageConnectionString { get; }
         string ServiceBusConnectionString { get; }
         string FailedMessagesQueue { get; }
-         bool ProcessMessageSequentially { get; }
+        bool ProcessMessageSequentially { get; }
+        int ImmediateMessageRetries { get; }
+        int DelayedMessageRetries { get; }
+        TimeSpan DelayedMessageRetryDelay { get; }
     }
 }
