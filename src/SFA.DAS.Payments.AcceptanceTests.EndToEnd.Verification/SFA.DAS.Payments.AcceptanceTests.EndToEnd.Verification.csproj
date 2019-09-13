@@ -216,10 +216,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Scripts\DataStoreQuery.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Scripts\VerificationQuery.sql" />
+    <EmbeddedResource Include="Scripts\PaymentsQuery.sql" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Scripts\EarningsCte.sql" />

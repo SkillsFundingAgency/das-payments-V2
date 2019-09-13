@@ -25,6 +25,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
     public class VerificationService : IVerificationService
     {
+        private const string PaymentsQuerySql = "PaymentsQuery.sql";
+        private const string EarningsCteSql = "EarningsCte.sql";
+        private const string EarningsDetailSql = "EarningsDetail.sql";
+        private const string EarningsSummarySql = "EarningsSummary.sql";
+        private const string UkprnListToken = "@ukprnlist";
         private readonly Configuration configuration;
 
         public VerificationService(Configuration configuration)
@@ -35,7 +40,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         public async Task<string> GetVerificationDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,
             DateTime startDateTime, DateTime endDateTime)
         {
-            var sql = Scripts.ScriptHelpers.GetSqlScriptText("VerificationQuery.sql");
+            var sql = Scripts.ScriptHelpers.GetSqlScriptText(PaymentsQuerySql);
             sql += " order by 1,2";
             using (SqlConnection connection = GetPaymentsConnectionString())
             {
@@ -59,9 +64,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         public async Task<string> GetDataStoreCsv(short academicYear, byte collectionPeriod, List<long> ukprnList)
         {
-            var sql = Scripts.ScriptHelpers.GetSqlScriptText("EarningsCte.sql");
-            sql += Scripts.ScriptHelpers.GetSqlScriptText("EarningsDetail.sql");
-            sql = sql.Replace("<<ukprnlist>>", String.Join(",", ukprnList));
+            var sql = Scripts.ScriptHelpers.GetSqlScriptText(EarningsCteSql);
+            sql += Scripts.ScriptHelpers.GetSqlScriptText(EarningsDetailSql);
+            sql = sql.Replace(UkprnListToken, string.Join(",", ukprnList));
 
             using (SqlConnection connection = GetDataStoreConnectionString(academicYear))
             {
@@ -113,9 +118,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         public async Task<decimal?> GetTotalEarningsYtd(short academicYear, byte collectionPeriod, List<long> ukprnList)
         {
-            var sql = Scripts.ScriptHelpers.GetSqlScriptText("EarningsCte.sql");
-            sql += Scripts.ScriptHelpers.GetSqlScriptText("EarningsSummary.sql");
-            sql = sql.Replace("<<ukprnlist>>", String.Join(",", ukprnList));
+            var sql = Scripts.ScriptHelpers.GetSqlScriptText(EarningsCteSql);
+            sql += Scripts.ScriptHelpers.GetSqlScriptText(EarningsSummarySql);
+            sql = sql.Replace(UkprnListToken, string.Join(",", ukprnList));
 
             using (SqlConnection connection = GetDataStoreConnectionString(academicYear))
             {
@@ -139,7 +144,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             FROM(
             ";
 
-            sql +=   Scripts.ScriptHelpers.GetSqlScriptText("VerificationQuery.sql");
+            sql +=   Scripts.ScriptHelpers.GetSqlScriptText(PaymentsQuerySql);
             sql += @"
                 ) as sq
             where[Transaction Type] in (1, 2, 3)";

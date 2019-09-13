@@ -110,5 +110,5 @@ AS (
 		,[PriceEpisodeIdentifier]
 		,[Period]
 	FROM [RawEarnings]
-	WHERE UKPRN IN (<<ukprnlist>>)
+	WHERE UKPRN IN (@ukprnlist)
 )
