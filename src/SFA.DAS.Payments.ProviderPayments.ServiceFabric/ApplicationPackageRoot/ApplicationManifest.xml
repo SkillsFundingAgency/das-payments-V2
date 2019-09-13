@@ -25,6 +25,9 @@
     <Parameter Name="DasNServiceBusLicenseKey" DefaultValue="" />
     <Parameter Name="DasPeriodEndConnectionString" DefaultValue="" />
     <Parameter Name="LegacyExportBatchSize" DefaultValue="10000" />
+    <Parameter Name="ImmediateMessageRetries" DefaultValue="1" />
+    <Parameter Name="DelayedMessageRetries" DefaultValue="3" />
+    <Parameter Name="DelayedMessageRetryDelay" DefaultValue="00:00:10" />
   </Parameters>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.ProviderPayments.LegacyExportServicePkg" ServiceManifestVersion="1.0.0" />
@@ -77,6 +80,9 @@
             <Parameter Name="BatchIntervalInSeconds" Value="[BatchIntervalInSeconds]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
             <Parameter Name="LegacyExportBatchSize" Value="[LegacyExportBatchSize]" />
+            <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
+            <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
+            <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
           </Section>
         </Settings>
       </ConfigOverride>
