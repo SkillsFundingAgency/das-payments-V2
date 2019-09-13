@@ -94,5 +94,10 @@ delete from Payments2.ApprenticeshipPriceEpisode where ApprenticeshipId = {0}
 ";
             Database.ExecuteSqlCommand(deleteApprenticeshipData, apprenticeshipId);
         }
+
+        public void ClearJobId(long jobId)
+        {
+            Database.ExecuteSqlCommand($"delete from Payments2.Job where DCJobId = {jobId}");
+        }
     }
 }
