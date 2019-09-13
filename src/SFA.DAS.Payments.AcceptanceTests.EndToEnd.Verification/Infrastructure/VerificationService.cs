@@ -11,10 +11,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
     public interface IVerificationService
     {
         Task<string> GetPaymentsDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,
-            DateTime startDateTime, DateTime endDateTime);
+            DateTimeOffset startDateTime, DateTimeOffset endDateTime);
 
         Task<decimal?> GetTotalMissingRequiredPayments(short academicYear, byte collectionPeriod, bool populateEarnings,
-            DateTime startDateTime, DateTime endDateTime);
+            DateTimeOffset startDateTime, DateTimeOffset endDateTime);
 
         Task<string> GetEarningsCsv(short academicYear, byte collectionPeriod, List<long> ukprnList);
 
@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         }
 
         public async Task<string> GetPaymentsDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,
-            DateTime startDateTime, DateTime endDateTime)
+            DateTimeOffset startDateTime, DateTimeOffset endDateTime)
         {
             var sql = Scripts.ScriptHelpers.GetSqlScriptText(PaymentsQuerySql);
             sql += " order by 1,2";
@@ -141,7 +141,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         }
 
         public async Task<decimal?> GetTotalMissingRequiredPayments(short academicYear, byte collectionPeriod, bool populateEarnings,
-            DateTime startDateTime, DateTime endDateTime)
+            DateTimeOffset startDateTime, DateTimeOffset endDateTime)
         {
             var sql = @"select sum([Missing Required Payments]) As MissingRequiredPayments
             FROM(

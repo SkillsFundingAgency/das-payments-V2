@@ -16,8 +16,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         Task DeleteTestFiles(IEnumerable<string> fileList);
 
         Task VerifyResults(IEnumerable<FileUploadJob> results,
-                           DateTime testStartDateTime,
-                           DateTime testEndDateTime,
+                           DateTimeOffset testStartDateTime,
+                           DateTimeOffset testEndDateTime,
                            Action<decimal?, decimal> verificationAction);
 
         Task<DateTimeOffset?> GetNewDateTime(List<long> ukprns);
@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         }
 
         public async Task VerifyResults(IEnumerable<FileUploadJob> results,
-            DateTime testStartDateTime, DateTime testEndDateTime, Action<decimal?, decimal> verificationAction)
+            DateTimeOffset testStartDateTime, DateTimeOffset testEndDateTime, Action<decimal?, decimal> verificationAction)
         {
             var resultsList = results.ToList();
             var ukprnList = resultsList.Select(r => r.Ukprn).ToList();
@@ -97,7 +97,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             }
         }
 
-        private string CreateQueryTimeWindowCsv(DateTime testStartDateTime, DateTime testEndDateTime)
+        private string CreateQueryTimeWindowCsv(DateTimeOffset testStartDateTime, DateTimeOffset testEndDateTime)
         {
             var header = "Query Start Time, Query End Time, Duration";
             var row = $"{testStartDateTime:O},{testEndDateTime:O},{(testEndDateTime - testStartDateTime):G}";
@@ -137,7 +137,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             return await verificationService.GetEarningsCsv(academicYear, collectionPeriod, ukprnList);
         }
 
-        private async Task<string> ExtractPaymentsData(DateTime testStartDateTime, DateTime testEndDateTime, short academicYear, byte collectionPeriod)
+        private async Task<string> ExtractPaymentsData(DateTimeOffset testStartDateTime, DateTimeOffset testEndDateTime, short academicYear, byte collectionPeriod)
         {
             return await verificationService.GetPaymentsDataCsv(academicYear, collectionPeriod,
                 true,

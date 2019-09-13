@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
         public async Task SmokeTest()
         {
             // Arrange
-            DateTime testStartDateTime = DateTime.UtcNow;
+            DateTimeOffset testStartDateTime = DateTimeOffset.UtcNow;
             var startString = $"StartTime Value: {testStartDateTime:O}";
             TestContext.WriteLine(startString);
 
@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             var resultsList = results.ToList();
 
 
-            DateTimeOffset testEndDateTime = DateTime.UtcNow;
+            DateTimeOffset testEndDateTime = DateTimeOffset.UtcNow;
             DateTime maxWaitDateTime = DateTime.UtcNow.AddMinutes(15);
             while (true)
             {
@@ -62,7 +62,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
                     break;
                 }
 
-                if (newDateTime > testEndDateTime)
+                if (newDateTime.Value > testEndDateTime)
                 {
                     testEndDateTime = newDateTime.Value;
                 }
@@ -80,7 +80,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             resultsList.All(x => x.Status == JobStatusType.Completed).Should().BeTrue();
 
 
-            await orchestrator.VerifyResults(resultsList, testStartDateTime, testEndDateTime.DateTime,
+            await orchestrator.VerifyResults(resultsList, testStartDateTime, testEndDateTime,
                 (actualPercentage, tolerance) =>
                 {
                     if (!actualPercentage.HasValue)
