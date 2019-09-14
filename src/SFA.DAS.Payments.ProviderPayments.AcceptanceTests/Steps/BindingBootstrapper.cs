@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
@@ -21,8 +22,8 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             Builder.Register((c, p) =>
             {
                 var configHelper = c.Resolve<TestsConfiguration>();
-                return new PaymentsDataContext(configHelper.PaymentsConnectionString);
-            }).As<IPaymentsDataContext>()
+                return new TestPaymentsDataContext(configHelper.PaymentsConnectionString);
+            }).As<IPaymentsDataContext>().As<TestPaymentsDataContext>()
                 .InstancePerDependency();
         }
         
