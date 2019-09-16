@@ -57,6 +57,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
 
             var groupedResults = results.ToList().GroupBy(g => g.CollectionYear);
+            var ukprns = results.Select(r => r.Ukprn).ToList();
 
             foreach (var groupedResult in groupedResults)
             {
@@ -71,7 +72,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                 await FileHelpers.UploadCsvFile(FileHelpers.ReportType.PaymentsData, academicYear, collectionPeriod,
                     submissionService, csvString);
 
-                var secondDataCsv = await verificationService.GetDataStoreCsv(academicYear, collectionPeriod);
+                var secondDataCsv = await verificationService.GetDataStoreCsv(academicYear, collectionPeriod, ukprns);
 
                 //publish the csv.
                 await FileHelpers.UploadCsvFile(FileHelpers.ReportType.DataStore, academicYear, collectionPeriod,

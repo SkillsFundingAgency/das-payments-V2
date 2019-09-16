@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         Task<decimal?> GetTheNumber(short academicYear, byte collectionPeriod, bool populateEarnings,
             DateTime startDateTime, DateTime endDateTime);
 
-        Task<string> GetDataStoreCsv(short academicYear, byte collectionPeriod);
+        Task<string> GetDataStoreCsv(short academicYear, byte collectionPeriod, List<long> ukprns);
 
         Task<DateTimeOffset?> GetLastActivityDate(List<long> ukprns);
     }
@@ -39,6 +39,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             {
                 using (SqlCommand cmd = connection.CreateCommand())
                 {
+                    cmd.CommandTimeout = TimeSpan.FromSeconds(120).Seconds;
                     cmd.CommandText = sql;
                     cmd.CommandType = CommandType.Text;
                     cmd.Parameters.AddWithValue("@academicYear", academicYear);
@@ -55,14 +56,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             }
         }
 
-        public async Task<string> GetDataStoreCsv(short academicYear,byte collectionPeriod )
+        public async Task<string> GetDataStoreCsv(short academicYear, byte collectionPeriod, List<long> ukprns)
         {
             var sql = Scripts.ScriptHelpers.GetSqlScriptText("DataStoreQuery.sql");
+            sql = sql.Replace("<<ukprnList>>",string.Join(",", ukprns));
            
             using (SqlConnection connection = GetDataStoreConnectionString(academicYear))
             {
                 using (SqlCommand cmd = connection.CreateCommand())
                 {
+                    cmd.CommandTimeout = TimeSpan.FromSeconds(120).Seconds;
                     cmd.CommandText = sql;
                     cmd.CommandType = CommandType.Text;
                     cmd.Parameters.AddWithValue("@collectionPeriod", collectionPeriod);
@@ -97,6 +100,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             {
                 using (SqlCommand cmd = connection.CreateCommand())
                 {
+                    cmd.CommandTimeout = TimeSpan.FromSeconds(120).Seconds;
                     cmd.CommandText = sql;
                     cmd.CommandType = CommandType.Text;
                     connection.Open();
