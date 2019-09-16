@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
                     .ToList();
                 
             return new CourseValidationProcessor(
-                    new StartDateValidator(),
+                    new StartDateValidator(ctx.Resolve<ICalculatePeriodStartAndEndDate>()),
                     new CompletionStoppedValidator(),
                     new OnProgrammeAndIncentiveStoppedValidator(ctx.Resolve<ICalculatePeriodStartAndEndDate>()),
                     otherCourseValidators);

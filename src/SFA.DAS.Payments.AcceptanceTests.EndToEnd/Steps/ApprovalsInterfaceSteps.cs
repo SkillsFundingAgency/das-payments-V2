@@ -28,6 +28,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     [Binding]
     public class ApprovalsInterfaceSteps : EndToEndStepsBase
     {
+
+        [BeforeStep()]
+        public void InitialiseNewTestDataContext()
+        {
+            TestDataContext = Scope.Resolve<TestPaymentsDataContext>();
+        }
+
+        [AfterStep()]
+        public void DeScopeTestDataContext()
+        {
+            TestDataContext = null;
+        }
+
         public List<ApprovalsEmployer> Employers
         {
             get => Get<List<ApprovalsEmployer>>();
@@ -55,7 +68,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         public static IMessageSession DasMessageSession { get; set; }
         private static EndpointConfiguration dasEndpointConfiguration;
-        protected TestPaymentsDataContext TestDataContext => Scope.Resolve<TestPaymentsDataContext>();
+        protected TestPaymentsDataContext TestDataContext;
 
         public ApprovalsInterfaceSteps(FeatureContext context) : base(context)
         {
@@ -301,7 +314,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             foreach (var apprenticeshipSpec in PreviousApprovalsApprenticeships)
             {
-                apprenticeshipSpec.Id = TestSession.GenerateId();
+                var apprenticeshipId = TestSession.GenerateId();
+                apprenticeshipSpec.Id = apprenticeshipId;
+                TestDataContext.ClearApprenticeshipData(apprenticeshipId);
                 var apprenticeship = CreateApprenticeshipModel(apprenticeshipSpec);
                 await TestDataContext.Apprenticeship.AddAsync(apprenticeship);
                 await TestDataContext.SaveChangesAsync();
@@ -424,6 +439,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 if (!string.IsNullOrWhiteSpace(changedApprenticeshipSpec.ResumedOnDate))
                     changedApprenticeship.ResumedOnDate = changedApprenticeshipSpec.ResumedOnDate;
+
+                if(!string.IsNullOrWhiteSpace(changedApprenticeshipSpec.StoppedOnDate))
+                   changedApprenticeship.PriceEpisodes.ForEach(pe=> pe.EffectiveTo = changedApprenticeshipSpec.StoppedOnDate);
 
             }
         }

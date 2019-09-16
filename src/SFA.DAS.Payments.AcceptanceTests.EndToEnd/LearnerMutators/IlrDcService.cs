@@ -20,7 +20,6 @@ using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
-using Enums = ESFA.DC.Jobs.Model.Enums;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {
@@ -195,7 +194,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private async Task PublishIlrFile(int ukprn, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
         {
-            var submission = new SubmissionModel(EnumJobType.IlrSubmission, ukprn)
+            var submission = new SubmissionModel(ESFA.DC.Jobs.Model.Enums.EnumJobType.IlrSubmission, ukprn)
             {
                 FileName = $"{ukprn}/{ilrFileName}",
                 FileSizeBytes = ilrFile.Length,

@@ -11,7 +11,7 @@ And  the "employer 2" levy account balance in collection period <Collection_Peri
 And the following commitments exist
   | Identifier       | Employer   | start date                   | end date                  | agreed price | status  | effective from               | effective to                 | stop effective from          | Standard Code | Programme Type |
   | Apprenticeship 1 | employer 1 | 01/Aug/Current Academic Year | 04/Aug/Next Academic Year | 15000        | stopped | 01/Aug/Current Academic Year | 02/Oct/Current Academic Year | 03/Oct/Current Academic Year | 51            | 25             |
-  | Apprenticeship 2 | employer 2 | 01/Aug/Current Academic Year | 04/Aug/Next Academic Year | 5625         | active  | 01/Feb/Current Academic Year |                              |                              | 51            | 25             |
+  | Apprenticeship 2 | employer 2 | 01/Feb/Current Academic Year | 04/Aug/Next Academic Year | 5625         | active  | 01/Feb/Current Academic Year |                              |                              | 51            | 25             |
 
 And the provider is providing training for the following learners
 	| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |

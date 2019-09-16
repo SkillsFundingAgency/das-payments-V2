@@ -20,13 +20,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
             this.httpClient = httpClient;
         }
 
-        public async Task<Enums.JobStatusType> GetJobStatus(long jobId)
+        public async Task<JobStatusType> GetJobStatus(long jobId)
         {
             var data = await httpClient.GetDataAsync($"job/{jobId}/status");
-            return JsonConvert.DeserializeObject<Enums.JobStatusType>(data);
+            return JsonConvert.DeserializeObject<JobStatusType>(data);
         }
 
-        public async Task<string> UpdateJobStatus(long jobId, Enums.JobStatusType status)
+        public async Task<string> UpdateJobStatus(long jobId, JobStatusType status)
         {
             var job = new JobStatusDto()
             {
@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
                 Status = Enums.JobStatusType.Ready,
                 CreatedBy = submissionMessage.CreatedBy,
                 FileName = submissionMessage.FileName,
-                IsFirstStage = true,
+                IsFirstStage = submissionMessage.IsFirstStage,
                 StorageReference = submissionMessage.StorageReference,
                 FileSize = submissionMessage.FileSizeBytes,
                 CollectionName = submissionMessage.CollectionName,
@@ -78,6 +78,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
             var data = await httpClient.GetDataAsync($"job/{ukprn}").ConfigureAwait(false);
             var jobList = JsonConvert.DeserializeObject<IEnumerable<FileUploadJob>>(data);
             return jobList.Where(x => status.Contains((int) x.Status)).Select(j => j.JobId);
+        }
+
+        public async Task<FileUploadJob> GetJob(long ukprn, long jobId)
+        {
+            var data = await httpClient.GetDataAsync($"job/{ukprn}/{jobId}");
+            return JsonConvert.DeserializeObject<FileUploadJob>(data);
         }
     }
 }

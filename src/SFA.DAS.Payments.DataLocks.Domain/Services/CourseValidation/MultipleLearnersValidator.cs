@@ -50,9 +50,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             // Apprenticeship has a duplicate
             var duplicates = allDuplicateApprenticeships
                 .Where(x => x.Uln == dataLockValidationModel.Apprenticeship.Uln &&
+                            x.Status == ApprenticeshipStatus.Active &&
                             x.Id != dataLockValidationModel.Apprenticeship.Id)
                 .ToList();
 
+         
             if (!duplicates.Any())
                 return false;
             
@@ -77,7 +79,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 
         private static DateTime GetApprenticeshipEstimatedEndDate(ApprenticeshipModel apprenticeship)
         {
-            return apprenticeship.StopDate ?? apprenticeship.EstimatedEndDate;
+            var latestApprenticeshipPriceEpisode = apprenticeship
+                .ApprenticeshipPriceEpisodes
+                .Where(x => !x.Removed)
+                .OrderByDescending(x => x.EndDate)
+                .First();
+
+            return latestApprenticeshipPriceEpisode.EndDate ?? DateTime.MaxValue;
         }
 
         private static DateTime GetApprenticeshipActualStartDate(ApprenticeshipModel apprenticeship)

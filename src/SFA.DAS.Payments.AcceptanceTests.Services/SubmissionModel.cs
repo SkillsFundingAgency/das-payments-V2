@@ -6,6 +6,7 @@
         {
             JobType = jobType;
             Ukprn = ukprn;
+            IsFirstStage = true;
         }
 
         public string CollectionName { get; set; }
@@ -27,5 +28,7 @@
         public string StorageReference { get; set; }
 
         public int CollectionYear { get; set; }
+
+        public bool? IsFirstStage { get; set; }
     }
 }
