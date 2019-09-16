@@ -15,6 +15,7 @@ using ESFA.DC.Queueing.Interface;
 using ESFA.DC.Queueing.Interface.Configuration;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
@@ -23,20 +24,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         private readonly IJsonSerializationService serializationService;
         private readonly ITopicPublishService<JobContextDto> topicPublishingService;
         private readonly IFileService azureFileService;
+        private readonly TestPaymentsDataContext dataContext;
 
         public DcHelper(IJsonSerializationService serializationService,
             ITopicPublishService<JobContextDto> topicPublishingService,
-            IFileService azureFileService)
+            IFileService azureFileService, 
+            TestPaymentsDataContext dataContext)
         {
             this.serializationService = serializationService ?? throw new ArgumentNullException(nameof(serializationService));
             this.topicPublishingService = topicPublishingService ?? throw new ArgumentNullException(nameof(topicPublishingService));
             this.azureFileService = azureFileService ?? throw new ArgumentNullException(nameof(azureFileService));
+            this.dataContext = dataContext;
         }
 
         public async Task SendIlrSubmissionEvent(long ukprn, short collectionYear, byte collectionPeriod, long jobId, bool success)
         {
             try
             {
+                dataContext.ClearJobId(jobId);
+
                 var subscriptionName = DcConfiguration.SubscriptionName;
 
                 var dto = new JobContextDto
@@ -84,7 +90,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         {
             try
             {
-                var messagePointer = Guid.NewGuid().ToString().Replace("-", string.Empty);
+                dataContext.ClearJobId(jobId);
+
                 var dto = new JobContextDto
                 {
                     JobId = jobId,
@@ -128,6 +135,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         {
             try
             {
+                dataContext.ClearJobId(jobId);
+
                 var messagePointer = Guid.NewGuid().ToString().Replace("-", string.Empty);
                 var ilrSubmission = new FM36Global
                 {

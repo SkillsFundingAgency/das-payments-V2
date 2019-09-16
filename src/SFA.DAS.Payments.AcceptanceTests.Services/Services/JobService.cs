@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model;
+using ESFA.DC.Jobs.Model.Enums;
 using Newtonsoft.Json;
 using SFA.DAS.Payments.AcceptanceTests.Services.BespokeHttpClient;
 using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using JobStatusDto = ESFA.DC.Jobs.Model.JobStatusDto;
-using Enums = ESFA.DC.Jobs.Model.Enums;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Services
 {
@@ -20,13 +20,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
             this.httpClient = httpClient;
         }
 
-        public async Task<Enums.JobStatusType> GetJobStatus(long jobId)
+        public async Task<JobStatusType> GetJobStatus(long jobId)
         {
             var data = await httpClient.GetDataAsync($"job/{jobId}/status");
-            return JsonConvert.DeserializeObject<Enums.JobStatusType>(data);
+            return JsonConvert.DeserializeObject<JobStatusType>(data);
         }
 
-        public async Task<string> UpdateJobStatus(long jobId, Enums.JobStatusType status)
+        public async Task<string> UpdateJobStatus(long jobId, JobStatusType status)
         {
             var job = new JobStatusDto()
             {
@@ -49,16 +49,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
                 Ukprn = submissionMessage.Ukprn,
                 DateTimeCreatedUtc = DateTime.UtcNow,
                 Priority = 1,
-                Status = Enums.JobStatusType.Ready,
+                Status = JobStatusType.Ready,
                 CreatedBy = submissionMessage.CreatedBy,
                 FileName = submissionMessage.FileName,
-                IsFirstStage = true,
+                IsFirstStage = submissionMessage.IsFirstStage,
                 StorageReference = submissionMessage.StorageReference,
                 FileSize = submissionMessage.FileSizeBytes,
                 CollectionName = submissionMessage.CollectionName,
                 PeriodNumber = submissionMessage.Period,
                 NotifyEmail = submissionMessage.NotifyEmail,
-                TermsAccepted = submissionMessage.JobType == Enums.EnumJobType.EasSubmission ? true : (bool?)null,
+                TermsAccepted = submissionMessage.JobType == EnumJobType.EasSubmission ? true : (bool?)null,
                 CollectionYear = submissionMessage.CollectionYear
             };
 
@@ -78,6 +78,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
             var data = await httpClient.GetDataAsync($"job/{ukprn}").ConfigureAwait(false);
             var jobList = JsonConvert.DeserializeObject<IEnumerable<FileUploadJob>>(data);
             return jobList.Where(x => status.Contains((int) x.Status)).Select(j => j.JobId);
+        }
+
+        public async Task<FileUploadJob> GetJob(long ukprn, long jobId)
+        {
+            var data = await httpClient.GetDataAsync($"job/{ukprn}/{jobId}");
+            return JsonConvert.DeserializeObject<FileUploadJob>(data);
         }
     }
 }
