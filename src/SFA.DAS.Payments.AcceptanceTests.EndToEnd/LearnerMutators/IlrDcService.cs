@@ -179,7 +179,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private async Task PublishIlrFile(int ukprn, string ilrFileName, string ilrFile, int collectionYear, int collectionPeriod)
         {
-            var submission = new SubmissionModel(EnumJobType.IlrSubmission, ukprn)
+            var submission = new SubmissionModel(ESFA.DC.Jobs.Model.Enums.EnumJobType.IlrSubmission, ukprn)
             {
                 FileName = $"{ukprn}/{ilrFileName}",
                 FileSizeBytes = ilrFile.Length,

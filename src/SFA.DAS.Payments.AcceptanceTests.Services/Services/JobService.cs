@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
                 Status = JobStatusType.Ready,
                 CreatedBy = submissionMessage.CreatedBy,
                 FileName = submissionMessage.FileName,
-                IsFirstStage = true,
+                IsFirstStage = submissionMessage.IsFirstStage,
                 StorageReference = submissionMessage.StorageReference,
                 FileSize = submissionMessage.FileSizeBytes,
                 CollectionName = submissionMessage.CollectionName,
@@ -78,6 +78,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
             var data = await httpClient.GetDataAsync($"job/{ukprn}").ConfigureAwait(false);
             var jobList = JsonConvert.DeserializeObject<IEnumerable<FileUploadJob>>(data);
             return jobList.Where(x => status.Contains((int) x.Status)).Select(j => j.JobId);
+        }
+
+        public async Task<FileUploadJob> GetJob(long ukprn, long jobId)
+        {
+            var data = await httpClient.GetDataAsync($"job/{ukprn}/{jobId}");
+            return JsonConvert.DeserializeObject<FileUploadJob>(data);
         }
     }
 }
