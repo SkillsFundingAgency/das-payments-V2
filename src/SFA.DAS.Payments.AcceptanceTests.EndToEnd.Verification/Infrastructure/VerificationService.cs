@@ -12,8 +12,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
     {
         Task<string> GetPaymentsDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,
             DateTimeOffset startDateTime, DateTimeOffset endDateTime);
-
-        Task<decimal?> GetTotalMissingRequiredPayments(short academicYear, byte collectionPeriod, bool populateEarnings,
+        Task<(decimal? missingPayments, decimal? earningsYtd)?> GetPaymentTotals(short academicYear, byte collectionPeriod, bool populateEarnings,
             DateTimeOffset startDateTime, DateTimeOffset endDateTime);
 
         Task<string> GetEarningsCsv(short academicYear, byte collectionPeriod, List<long> ukprnList);
@@ -140,10 +139,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             }
         }
 
-        public async Task<decimal?> GetTotalMissingRequiredPayments(short academicYear, byte collectionPeriod, bool populateEarnings,
+        public async Task<(decimal? missingPayments, decimal? earningsYtd)?> GetPaymentTotals(short academicYear, byte collectionPeriod, bool populateEarnings,
             DateTimeOffset startDateTime, DateTimeOffset endDateTime)
         {
-            var sql = @"select sum([Missing Required Payments]) As MissingRequiredPayments
+            var sql = @"select sum([Missing Required Payments]) As MissingRequiredPayments, sum([Earnings YTD (audit)]) As EarningsYtd
             FROM(
             ";
 
@@ -164,8 +163,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                     cmd.Parameters.AddWithValue("@StartTime", startDateTime);
                     cmd.Parameters.AddWithValue("@EndTime", endDateTime);
                     connection.Open();
-                    var result = await cmd.ExecuteScalarAsync();
-                    return Convert.IsDBNull(result) ? (decimal?) null: (decimal?) result;
+
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            var missingPayments =
+                                (!reader.IsDBNull(0)) ? (decimal?) reader.GetValue(0) : (decimal?) null;
+                            var earningsYtd =
+                                (!reader.IsDBNull(1)) ? (decimal?) reader.GetValue(1) : (decimal?) null;
+                            return (missingPayments, earningsYtd);
+                        }
+                    }
+
+                    return null;
                 }
             }
         }

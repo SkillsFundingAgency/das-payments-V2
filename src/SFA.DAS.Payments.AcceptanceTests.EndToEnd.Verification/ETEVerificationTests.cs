@@ -81,8 +81,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
 
 
             await orchestrator.VerifyResults(resultsList, testStartDateTime, testEndDateTime,
-                (actualPercentage, tolerance) =>
+                (actualPercentage, tolerance, earningDifference) =>
                 {
+                    TestContext.WriteLine($"Earning difference between DC and DAS: {earningDifference}");
+                    earningDifference.Should().Be(0m);
+
                     if (!actualPercentage.HasValue)
                     {
                         var nullPercentageMessage = "The returned percentage was null";
@@ -91,8 +94,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
                     }
                     else
                     {
-                        var returnedPercentage = $"Returned Percentage: {actualPercentage.Value}";
-                        TestContext.WriteLine(returnedPercentage);
+                        TestContext.WriteLine($"Returned Percentage: {actualPercentage.Value}");
                         actualPercentage.Should().BeLessOrEqualTo(tolerance);
                     }
                 });

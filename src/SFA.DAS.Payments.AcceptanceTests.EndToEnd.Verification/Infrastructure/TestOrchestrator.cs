@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         Task VerifyResults(IEnumerable<FileUploadJob> results,
                            DateTimeOffset testStartDateTime,
                            DateTimeOffset testEndDateTime,
-                           Action<decimal?, decimal> verificationAction);
+                           Action<decimal?, decimal, decimal?> verificationAction);
 
         Task<DateTimeOffset?> GetNewDateTime(List<long> ukprns);
     }
@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         }
 
         public async Task VerifyResults(IEnumerable<FileUploadJob> results,
-            DateTimeOffset testStartDateTime, DateTimeOffset testEndDateTime, Action<decimal?, decimal> verificationAction)
+            DateTimeOffset testStartDateTime, DateTimeOffset testEndDateTime, Action<decimal?, decimal, decimal?> verificationAction)
         {
             var resultsList = results.ToList();
             var ukprnList = resultsList.Select(r => r.Ukprn).ToList();
@@ -71,7 +71,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
                 var dataStoreCsv = await ExtractDataStoreData(academicYear, collectionPeriod, ukprnList);
 
-                decimal? totalMissingRequiredPayments = await verificationService.GetTotalMissingRequiredPayments(
+               var paymentTotals = await verificationService.GetPaymentTotals(
                     academicYear, collectionPeriod, true,
                     testStartDateTime,
                     testEndDateTime);
@@ -85,15 +85,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                 decimal? actualPercentage = null;
                 if (totalEarningYtd != 0)
                 {
-                    actualPercentage = totalMissingRequiredPayments / totalEarningYtd * 100;
+                    actualPercentage = paymentTotals?.missingPayments / totalEarningYtd * 100;
                 }
 
-                var summaryCsv = CreateSummaryCsv(actualPercentage, tolerance, totalEarningYtd, totalMissingRequiredPayments);
+                var summaryCsv = CreateSummaryCsv(actualPercentage, tolerance, totalEarningYtd, paymentTotals);
                 var queryTimeWindowCsv = CreateQueryTimeWindowCsv(testStartDateTime, testEndDateTime);
 
                 await SaveCsv(paymentCsv, dataStoreCsv, summaryCsv, queryTimeWindowCsv,  academicYear, collectionPeriod);
 
-                verificationAction.Invoke(actualPercentage, tolerance);
+                var earningsDifference = totalEarningYtd - paymentTotals?.earningsYtd;
+
+                verificationAction.Invoke(actualPercentage, tolerance, earningsDifference);
             }
         }
 
@@ -125,10 +127,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             await FileHelpers.UploadCsvFile(academicYear, collectionPeriod, submissionService, sb.ToString());
         }
 
-        private string CreateSummaryCsv(decimal? actualPercentage, decimal tolerance, decimal? totalEarningYtd, decimal? totalMissingRequiredPayments)
+        private string CreateSummaryCsv(decimal? actualPercentage, decimal tolerance, decimal? totalEarningYtd, (decimal? missingPayments, decimal? earningsYtd)? paymentTotals)
         {
-            var header = "Difference, Tolerance, Earnings (YTD), Missing Required Payments";
-            var row = $"{actualPercentage},{tolerance},{totalEarningYtd},{totalMissingRequiredPayments}";
+            var header = "Difference, Tolerance, Earnings (YTD) - DC, Missing Required Payments, Earnings (YTD) - DAS";
+            var row = $"{actualPercentage},{tolerance},{totalEarningYtd},{paymentTotals?.missingPayments}, {paymentTotals?.earningsYtd}";
             return $"{header}{Environment.NewLine}{row}";
         }
 
