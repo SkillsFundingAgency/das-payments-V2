@@ -20,7 +20,6 @@ using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
-using JobStatusType = ESFA.DC.JobStatus.Interface.JobStatusType;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 {

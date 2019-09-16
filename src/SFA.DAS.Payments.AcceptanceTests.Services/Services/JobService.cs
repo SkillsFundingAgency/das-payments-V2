@@ -20,13 +20,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
             this.httpClient = httpClient;
         }
 
-        public async Task<ESFA.DC.JobStatus.Interface.JobStatusType> GetJobStatus(long jobId)
+        public async Task<JobStatusType> GetJobStatus(long jobId)
         {
             var data = await httpClient.GetDataAsync($"job/{jobId}/status");
-            return JsonConvert.DeserializeObject<ESFA.DC.JobStatus.Interface.JobStatusType>(data);
+            return JsonConvert.DeserializeObject<JobStatusType>(data);
         }
 
-        public async Task<string> UpdateJobStatus(long jobId, ESFA.DC.JobStatus.Interface.JobStatusType status)
+        public async Task<string> UpdateJobStatus(long jobId, JobStatusType status)
         {
             var job = new JobStatusDto()
             {
