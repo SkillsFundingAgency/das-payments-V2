@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Abstract;
-using Microsoft.EntityFrameworkCore.Query.ExpressionVisitors.Internal;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
@@ -47,8 +46,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected IPaymentsDataContext DataContext => Scope.Resolve<IPaymentsDataContext>();
 
         protected IMapper Mapper => Scope.Resolve<IMapper>();
-
-        protected IDcHelper DcHelper => Get<IDcHelper>();
 
         protected List<Price> CurrentPriceEpisodes
         {
@@ -203,11 +200,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 {
                     //use last apprenticeship to make sure it picks up the most recent status
                     specApprenticeship = group.Last();
-                    var apprenticeship =
-                        ApprenticeshipHelper.CreateApprenticeshipModel(specApprenticeship, TestSession);
+                    var isNew = specApprenticeship.ApprenticeshipId == default(long);
+
+                    var apprenticeship = ApprenticeshipHelper.CreateApprenticeshipModel(specApprenticeship, TestSession);
                     apprenticeship.ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy;
-                    apprenticeship.ApprenticeshipPriceEpisodes =
-                        group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
+                    apprenticeship.ApprenticeshipPriceEpisodes = group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
+
+                    if (isNew)
+                        Scope.Resolve<TestPaymentsDataContext>().ClearApprenticeshipData(apprenticeship.Id);
+
                     await ApprenticeshipHelper.AddApprenticeship(apprenticeship, DataContext).ConfigureAwait(false);
                     specApprenticeship.ApprenticeshipId = apprenticeship.Id;
                     Apprenticeships.Add(specApprenticeship);
