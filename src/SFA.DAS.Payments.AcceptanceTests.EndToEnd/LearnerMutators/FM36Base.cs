@@ -652,8 +652,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                     AddNewPmrAppFinRecord(appFinRecords, priceEpisode);
                 }
 
-                AddTnpAppFinRecordForAssessmentPrice(appFinRecords, priceEpisode);
-                delivery.EPAOrgID = EpaOrgId;
+                if (!string.IsNullOrWhiteSpace(priceEpisode.TotalAssessmentPriceEffectiveDate) &&
+                    priceEpisode.TotalAssessmentPrice != 0)
+                {
+
+                    AddTnpAppFinRecordForAssessmentPrice(appFinRecords, priceEpisode);
+                    delivery.EPAOrgID = EpaOrgId;
+                }
             }
 
             if ((int)priceEpisode.ContractType != 0)
