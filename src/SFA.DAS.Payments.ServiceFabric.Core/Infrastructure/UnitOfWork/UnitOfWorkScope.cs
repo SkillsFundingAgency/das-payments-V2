@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Transactions;
 using Autofac;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -7,7 +8,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Infrastructure.UnitOfWork;
 using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 
-namespace SFA.DAS.Payments.ServiceFabric.Core.UnitOfWork
+namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
 {
     public class UnitOfWorkScope : IUnitOfWorkScope
     {
@@ -15,6 +16,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.UnitOfWork
         private readonly IReliableStateManagerTransactionProvider transactionProvider;
         private readonly ITelemetry telemetry;
         private readonly IOperationHolder<RequestTelemetry> operation;
+        private readonly TransactionScope transactionScope;
 
         public UnitOfWorkScope(ILifetimeScope lifetimeScope, string operationName)
         {
@@ -24,6 +26,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.UnitOfWork
             ((ReliableStateManagerTransactionProvider)transactionProvider).Current = stateManager.CreateTransaction();
             telemetry = lifetimeScope.Resolve<ITelemetry>();
             operation = telemetry.StartOperation(operationName);
+            transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         }
 
         public T Resolve<T>()
@@ -35,6 +38,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.UnitOfWork
         {
             telemetry?.StopOperation(operation);
             operation?.Dispose();
+            transactionScope?.Dispose();
             transactionProvider.Current.Dispose();
             ((ReliableStateManagerTransactionProvider)transactionProvider).Current = null;
             LifetimeScope?.Dispose();
@@ -48,6 +52,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.UnitOfWork
         public async Task Commit()
         {
             await transactionProvider.Current.CommitAsync();
+            transactionScope?.Complete();
         }
     }
 }

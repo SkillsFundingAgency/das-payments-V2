@@ -2,7 +2,7 @@
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.UnitOfWork;
 
-namespace SFA.DAS.Payments.ServiceFabric.Core.UnitOfWork
+namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
 {
     public class UnitOfWorkScopeFactory : IUnitOfWorkScopeFactory
     {

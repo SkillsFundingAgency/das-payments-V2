@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using SFA.DAS.Payments.Application.Infrastructure.UnitOfWork;
-using SFA.DAS.Payments.ServiceFabric.Core.UnitOfWork;
+using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc.Modules
 {

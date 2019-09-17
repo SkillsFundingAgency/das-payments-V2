@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
     public interface IJobStorageService
     {
         Task<bool> StoreNewJob(JobModel job, CancellationToken cancellationToken);
-        Task UpdateJob(JobModel job, CancellationToken cancellationToken);
+        Task SaveJobStatus(long jobId, JobStatus jobStatus, DateTimeOffset endTime, CancellationToken cancellationToken);
         Task<JobModel> GetJob(long jobId, CancellationToken cancellationToken);
         Task<List<Guid>> GetInProgressMessageIdentifiers(long jobId, CancellationToken cancellationToken);
         Task RemoveInProgressMessageIdentifiers(long jobId, List<Guid> messageIdentifiers, CancellationToken cancellationToken);
@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
         Task<List<CompletedMessage>> GetCompletedMessages(long jobId, CancellationToken cancellationToken);
         Task RemoveCompletedMessages(long jobId, List<Guid> completedMessages, CancellationToken cancellationToken);
         Task StoreCompletedMessage(CompletedMessage completedMessage, CancellationToken cancellationToken);
-        Task<(JobStepStatus jobStatus, DateTimeOffset? endTime)> GetJobStatus(long jobId, CancellationToken cancellationToken);
-        Task StoreJobStatus(long jobId, JobStepStatus jobStatus, DateTimeOffset? endTime, CancellationToken cancellationToken);
+        Task<(bool hasFailedMessages, DateTimeOffset? endTime)> GetJobStatus(long jobId, CancellationToken cancellationToken);
+        Task StoreJobStatus(long jobId, bool hasFailedMessages, DateTimeOffset? endTime, CancellationToken cancellationToken);
     }
 }

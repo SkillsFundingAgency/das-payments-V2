@@ -7,7 +7,7 @@ using NServiceBus;
 using NServiceBus.UnitOfWork;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.ServiceFabric.Core.Batch;
-using SFA.DAS.Payments.ServiceFabric.Core.UnitOfWork;
+using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
 {

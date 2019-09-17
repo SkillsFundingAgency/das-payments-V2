@@ -5,7 +5,7 @@ using NServiceBus.UnitOfWork;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 
-namespace SFA.DAS.Payments.ServiceFabric.Core.UnitOfWork
+namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
 {
     
     public interface IStateManagerUnitOfWork

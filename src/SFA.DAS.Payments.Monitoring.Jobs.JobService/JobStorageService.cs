@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
         private static readonly TimeSpan TransactionTimeout = new TimeSpan(0, 0, 4);
 
         public const string JobCacheKey = "jobs";
-        public const string jobStatusCacheKey = "job_status";
+        public const string JobStatusCacheKey = "job_status";
         public const string InProgressMessagesCacheKey = "inprogress_messages";
         public const string CompletedMessagesCacheKey = "completed_messages";
 
@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
         }
         private static string GetCacheKey(string cacheKeyPrefix, long jobId) => $"{cacheKeyPrefix}_{jobId}";
 
-        private async Task<IReliableDictionary2<long,JobModel>> GetJobcollection()
+        private async Task<IReliableDictionary2<long,JobModel>> GetJobCollection()
         {
             return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<long, JobModel>>(JobCacheKey);
         }
@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             if (!job.DcJobId.HasValue)
                 throw new InvalidOperationException($"No dc job id specified for the job. Job type: {job.JobType:G}");
             cancellationToken.ThrowIfCancellationRequested();
-            var jobCache = await GetJobcollection();
+            var jobCache = await GetJobCollection();
             var cachedJob = await jobCache.TryGetValueAsync(reliableTransactionProvider.Current, job.DcJobId.Value, TransactionTimeout, cancellationToken).ConfigureAwait(false);
             if (cachedJob.HasValue)
             {
@@ -63,14 +63,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             return true;
         }
 
-        public async Task UpdateJob(JobModel job, CancellationToken cancellationToken)
+        public async Task SaveJobStatus(long jobId, JobStatus jobStatus, DateTimeOffset endTime,  CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            await dataContext.SaveJobStatus(jobId, jobStatus, endTime, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<JobModel> GetJob(long jobId, CancellationToken cancellationToken)
         {
-            var collection = await GetJobcollection().ConfigureAwait(false);
+            var collection = await GetJobCollection().ConfigureAwait(false);
             var item = await collection
                 .TryGetValueAsync(reliableTransactionProvider.Current, jobId, TransactionTimeout, cancellationToken)
                 .ConfigureAwait(false);
@@ -162,26 +162,26 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
         }
 
 
-        private async Task<IReliableDictionary2<long,(JobStepStatus jobStatus, DateTimeOffset? endTime)>> GetJobStatusCollection(long jobId)
+        private async Task<IReliableDictionary2<long,(bool hasFailedMessages, DateTimeOffset? endTime)>> GetJobStatusCollection(long jobId)
         {
-            return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<long, (JobStepStatus jobStatus, DateTimeOffset? endTime)>>(jobStatusCacheKey).ConfigureAwait(false);
+            return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<long, (bool hasFailedMessages, DateTimeOffset? endTime)>>(JobStatusCacheKey).ConfigureAwait(false);
         }
 
-        public async Task<(JobStepStatus jobStatus, DateTimeOffset? endTime)> GetJobStatus(long jobId, CancellationToken cancellationToken)
+        public async Task<(bool hasFailedMessages, DateTimeOffset? endTime)> GetJobStatus(long jobId, CancellationToken cancellationToken)
         {
             var collection = await GetJobStatusCollection(jobId).ConfigureAwait(false);
             var value = await collection
                 .TryGetValueAsync(reliableTransactionProvider.Current, jobId, TransactionTimeout, cancellationToken)
                 .ConfigureAwait(false);
-            return value.HasValue ? value.Value : (jobStatus: JobStepStatus.Processing, endTime: null);
+            return value.HasValue ? value.Value : (hasFailedMessages: false, endTime: null);
         }
 
-        public async Task StoreJobStatus(long jobId, JobStepStatus jobStepStatus, DateTimeOffset? endTime, CancellationToken cancellationToken)
+        public async Task StoreJobStatus(long jobId, bool hasFailedMessages, DateTimeOffset? endTime, CancellationToken cancellationToken)
         {
             var collection = await GetJobStatusCollection(jobId).ConfigureAwait(false);
             await collection.AddOrUpdateAsync(reliableTransactionProvider.Current, jobId,
-                (jobStatus: jobStepStatus, endTime: endTime),
-                (key, value) => (jobStatus: jobStepStatus, endTime: endTime),
+                (hasFailedMessages: hasFailedMessages, endTime: endTime),
+                (key, value) => (hasFailedMessages: hasFailedMessages, endTime: endTime),
                 TransactionTimeout, cancellationToken).ConfigureAwait(false);
         }
     }
