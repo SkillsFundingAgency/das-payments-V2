@@ -42,10 +42,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             logger.LogDebug($"Got {historicPayments.Count} historic payments. Now generating refunds per transaction type.");
 
             // Now restricted the historic payments from the cache to those for the transaction type in that particular group.
-            var requiredPaymentEvents = historicPayments.GroupBy(historicPayment => historicPayment.TransactionType)
+            var requiredPaymentEvents = historicPayments
+                .GroupBy(historicPayment => historicPayment.TransactionType)
                 .SelectMany(group => CreateRefundPayments(
                     identifiedRemovedLearningAim, 
-                    historicPayments.Where(h => h.TransactionType == group.Key).ToList(), 
+                    group.ToList(), 
                     group.Key, 
                     cacheItem.Value.Where(c => c.TransactionType == group.Key).ToList()))
                 .ToList();
@@ -57,15 +58,16 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         {
             var refundPaymentsAndPeriods = refundRemovedLearningAimService.RefundLearningAim(historicPayments);
 
-            return refundPaymentsAndPeriods.Where(r => r.payment.TransactionType == transactionType)
+            return refundPaymentsAndPeriods
+                .Where(r => r.payment.TransactionType == transactionType)
                 .Select(refund =>
                 {
                     logger.LogVerbose("Now mapping the required payment to a PeriodisedRequiredPaymentEvent.");
 
                     var historicPayment = cacheItem.FirstOrDefault(payment =>
                         payment.PriceEpisodeIdentifier == refund.payment.PriceEpisodeIdentifier &&
-                        payment.DeliveryPeriod == refund.deliveryPeriod
-                        && payment.TransactionType == transactionType);
+                        payment.DeliveryPeriod == refund.deliveryPeriod &&
+                        payment.TransactionType == transactionType);
 
                     if (historicPayment == null)
                         throw new InvalidOperationException($"Cannot find historic payment with price episode identifier: {refund.payment.PriceEpisodeIdentifier} for period {refund.deliveryPeriod}.");
@@ -86,11 +88,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
                     logger.LogDebug("Finished mapping");
                     return requiredPaymentEvent;
-                }).Where(x =>
-                {
-                    // Just in case the null is hit above, remove any nulls
-                    return x != null;
-                }).ToList();
+                })
+                .Where(x => x != null)
+                .ToList();
         }
     }
 }

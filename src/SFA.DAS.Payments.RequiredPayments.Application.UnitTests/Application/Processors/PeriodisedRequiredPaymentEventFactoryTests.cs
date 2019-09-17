@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using FluentAssertions;
 using Moq;
@@ -27,6 +26,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>())).Verifiable();
             factory = new PeriodisedRequiredPaymentEventFactory(logger.Object);
         }
+
         [Test]
         [TestCaseSource(nameof(GetValidRequiredPaymentEventConfiguration))]
         public void CoInvestedCreatedCorrectly((EarningType earningType, int transactionType, Type eventType) config)
@@ -73,7 +73,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             yield return (EarningType.Levy, (int)TransactionType.Learning, levyType);
             yield return (EarningType.Levy, (int)TransactionType.Balancing, levyType);
             yield return (EarningType.Levy, (int)TransactionType.Completion, levyType);
-
         }
 
         private static IEnumerable<(EarningType earningType, int transactionType)> GetInvalidRequiredPaymentEventConfiguration()
@@ -109,9 +108,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             yield return (EarningType.Levy, (int)TransactionType.BalancingMathsAndEnglish);
             yield return (EarningType.Levy, (int)TransactionType.LearningSupport);
             yield return (EarningType.Levy, (int)TransactionType.CareLeaverApprenticePayment);
-
-
         }
-
     }
 }
