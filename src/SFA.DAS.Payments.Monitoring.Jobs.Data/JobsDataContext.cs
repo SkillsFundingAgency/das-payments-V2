@@ -120,7 +120,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 
         public async Task SaveJobStatus(long jobId, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var job = await GetJob(jobId) ?? throw new ArgumentException($"Job not found: {jobId}");
+            var job = await GetJobByDcJobId(jobId) ?? throw new ArgumentException($"Job not found: {jobId}");
             job.EndTime = endTime;
             job.Status = status;
             await SaveChangesAsync(cancellationToken);

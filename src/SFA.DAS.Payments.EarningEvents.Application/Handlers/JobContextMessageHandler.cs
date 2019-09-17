@@ -113,7 +113,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                             {TelemetryKeys.Count, fm36Output.Learners.Count.ToString()},
                             {TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
                             {TelemetryKeys.AcademicYear, fm36Output.Year},
-                            {TelemetryKeys.ExternalJobId, message.JobId.ToString()},
+                            {TelemetryKeys.JobId, message.JobId.ToString()},
                             {TelemetryKeys.Ukprn, fm36Output.UKPRN.ToString()},
                         },
                         new Dictionary<string, double>
@@ -199,7 +199,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     {
                         { TelemetryKeys.CollectionPeriod, submissionEvent.CollectionPeriod.ToString()},
                         { TelemetryKeys.AcademicYear, submissionEvent.AcademicYear.ToString()},
-                        { TelemetryKeys.ExternalJobId, submissionEvent.JobId.ToString()},
+                        { TelemetryKeys.JobId, submissionEvent.JobId.ToString()},
                         { TelemetryKeys.Ukprn, submissionEvent.Ukprn.ToString()},
                     },
                     new Dictionary<string, double>
@@ -284,7 +284,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     new Dictionary<string, string>
                     {
                         { TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
-                        { TelemetryKeys.ExternalJobId, message.JobId.ToString()},
+                        { TelemetryKeys.JobId, message.JobId.ToString()},
                     },
                     new Dictionary<string, double>
                     {
@@ -299,7 +299,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 {
                     { TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
                     { TelemetryKeys.AcademicYear, fm36Output.Year},
-                    { TelemetryKeys.ExternalJobId, message.JobId.ToString()},
+                    { TelemetryKeys.JobId, message.JobId.ToString()},
                     { TelemetryKeys.Ukprn, fm36Output.UKPRN.ToString()},
                 },
                 new Dictionary<string, double>
@@ -395,7 +395,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     {TelemetryKeys.Count, fm36Output.Learners.Count.ToString()},
                     {TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
                     {TelemetryKeys.AcademicYear, fm36Output.Year},
-                    {TelemetryKeys.ExternalJobId, message.JobId.ToString()},
+                    {TelemetryKeys.JobId, message.JobId.ToString()},
                     {TelemetryKeys.Ukprn, fm36Output.UKPRN.ToString()},
                 },
                 new Dictionary<string, double>

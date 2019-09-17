@@ -101,10 +101,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         {
             var properties = new Dictionary<string, string>
             {
-                { TelemetryKeys.Id, job.Id.ToString()},
+                { TelemetryKeys.JobId, job.DcJobId.Value.ToString()},
                 { TelemetryKeys.JobType, job.JobType.ToString("G")},
                 { TelemetryKeys.Ukprn, job.Ukprn?.ToString() ?? string.Empty},
-                { TelemetryKeys.ExternalJobId, job.DcJobId?.ToString() ?? string.Empty},
+                { TelemetryKeys.InternalJobId, job.DcJobId.ToString()},
                 { TelemetryKeys.CollectionPeriod, job.CollectionPeriod.ToString()},
                 { TelemetryKeys.AcademicYear, job.AcademicYear.ToString()},
                 { TelemetryKeys.Status, job.Status.ToString("G")}

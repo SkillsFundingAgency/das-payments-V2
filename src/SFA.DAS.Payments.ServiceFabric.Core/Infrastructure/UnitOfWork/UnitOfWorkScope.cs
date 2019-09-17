@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Transactions;
 using Autofac;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -16,7 +15,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
         private readonly IReliableStateManagerTransactionProvider transactionProvider;
         private readonly ITelemetry telemetry;
         private readonly IOperationHolder<RequestTelemetry> operation;
-        private readonly TransactionScope transactionScope;
+        //private readonly TransactionScope transactionScope;
 
         public UnitOfWorkScope(ILifetimeScope lifetimeScope, string operationName)
         {
@@ -26,7 +25,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
             ((ReliableStateManagerTransactionProvider)transactionProvider).Current = stateManager.CreateTransaction();
             telemetry = lifetimeScope.Resolve<ITelemetry>();
             operation = telemetry.StartOperation(operationName);
-            transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+            //transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         }
 
         public T Resolve<T>()
@@ -38,7 +37,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
         {
             telemetry?.StopOperation(operation);
             operation?.Dispose();
-            transactionScope?.Dispose();
+            //transactionScope?.Dispose();
             transactionProvider.Current.Dispose();
             ((ReliableStateManagerTransactionProvider)transactionProvider).Current = null;
             LifetimeScope?.Dispose();
@@ -52,7 +51,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
         public async Task Commit()
         {
             await transactionProvider.Current.CommitAsync();
-            transactionScope?.Complete();
+            //transactionScope?.Complete();
         }
     }
 }
