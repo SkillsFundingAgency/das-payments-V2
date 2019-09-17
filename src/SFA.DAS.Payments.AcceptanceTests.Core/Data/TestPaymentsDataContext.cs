@@ -37,61 +37,64 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         }
 
         private const string DeleteUkprnData = @"
-delete from Payments2.LevyAccount where AccountId in
-	(select AccountId from Payments2.Apprenticeship where Ukprn = {0})
+            delete from Payments2.LevyAccount where AccountId in
+	            (select AccountId from Payments2.Apprenticeship where Ukprn = {0})
 
-delete from Payments2.ApprenticeshipPriceEpisode where ApprenticeshipId in 
-	(select Id from Payments2.Apprenticeship where Ukprn = {0})
+            delete from Payments2.ApprenticeshipPriceEpisode where ApprenticeshipId in 
+	            (select Id from Payments2.Apprenticeship where Ukprn = {0})
 
-delete from Payments2.ApprenticeshipPause where ApprenticeshipId in 
-	(select Id from Payments2.Apprenticeship where Ukprn = {0})
+            delete from Payments2.ApprenticeshipPause where ApprenticeshipId in 
+	            (select Id from Payments2.Apprenticeship where Ukprn = {0})
 
-delete from Payments2.ApprenticeshipDuplicate where ApprenticeshipId in
-	(select Id from Payments2.Apprenticeship where Ukprn = {0} )
+            delete from Payments2.ApprenticeshipDuplicate where ApprenticeshipId in
+	            (select Id from Payments2.Apprenticeship where Ukprn = {0} )
 
-delete from Payments2.DataLockEventNonPayablePeriodFailures where ApprenticeshipId in
-	(select Id from Payments2.Apprenticeship where Ukprn = {0} )
+            delete from Payments2.DataLockEventNonPayablePeriodFailures where ApprenticeshipId in
+	            (select Id from Payments2.Apprenticeship where Ukprn = {0} )
 
-delete from Payments2.Apprenticeship where Ukprn = {0}
+            delete from Payments2.Apprenticeship where Ukprn = {0}
 
-delete from Payments2.DataLockEventNonPayablePeriod where DataLockEventId in 
-	(select EventId from Payments2.DataLockEvent where Ukprn = {0})
+            delete from Payments2.DataLockEventNonPayablePeriod where DataLockEventId in 
+	            (select EventId from Payments2.DataLockEvent where Ukprn = {0})
 
-delete from Payments2.DataLockEventPayablePeriod where DataLockEventId in 
-	(select EventId from Payments2.DataLockEvent where Ukprn = {0})
+            delete from Payments2.DataLockEventPayablePeriod where DataLockEventId in 
+	            (select EventId from Payments2.DataLockEvent where Ukprn = {0})
 
-delete from Payments2.DataLockEventPriceEpisode where DataLockEventId in 
-	(select EventId from Payments2.DataLockEvent where Ukprn = {0})
+            delete from Payments2.DataLockEventPriceEpisode where DataLockEventId in 
+	            (select EventId from Payments2.DataLockEvent where Ukprn = {0})
 
-delete from Payments2.DataLockFailure where Ukprn = {0}
+            delete from Payments2.DataLockFailure where Ukprn = {0}
 
-delete from Payments2.DataLockEvent where Ukprn = {0}
+            delete from Payments2.DataLockEvent where Ukprn = {0}
 
-delete from Payments2.EarningEventPeriod where EarningEventId in 
-	(select EventId from Payments2.EarningEvent where Ukprn = {0})
+            delete from Payments2.EarningEventPeriod where EarningEventId in 
+	            (select EventId from Payments2.EarningEvent where Ukprn = {0})
 
-delete from Payments2.EarningEventPriceEpisode where EarningEventId in 
-	(select EventId from Payments2.EarningEvent where Ukprn = {0})
+            delete from Payments2.EarningEventPriceEpisode where EarningEventId in 
+	            (select EventId from Payments2.EarningEvent where Ukprn = {0})
 
-delete from Payments2.EarningEvent where Ukprn = {0}
+            delete from Payments2.EarningEvent where Ukprn = {0}
 
-delete from Payments2.EmployerProviderPriority where Ukprn = {0}
+            delete from Payments2.EmployerProviderPriority where Ukprn = {0}
 
-delete from Payments2.FundingSourceEvent where Ukprn = {0}
+            delete from Payments2.FundingSourceEvent where Ukprn = {0}
 
-delete from Payments2.RequiredPaymentEvent where Ukprn = {0}
+            delete from Payments2.RequiredPaymentEvent where Ukprn = {0}
 
-delete from Payments2.Payment where Ukprn = {0}
+            delete from Payments2.Payment where Ukprn = {0}
 
-delete from Payments2.SubmittedLearnerAim where Ukprn = {0}
-";
+            delete from Payments2.SubmittedLearnerAim where Ukprn = {0}
+        ";
 
         public void ClearApprenticeshipData(long apprenticeshipId)
         {
             const string deleteApprenticeshipData = @"
-delete from Payments2.Apprenticeship where id = {0}
-delete from Payments2.ApprenticeshipPriceEpisode where ApprenticeshipId = {0}
-";
+                delete from Payments2.[ApprenticeshipDuplicate] where ApprenticeshipId = {0}
+                delete from Payments2.[ApprenticeshipPause] where ApprenticeshipId = {0}
+                delete from Payments2.[ApprenticeshipPriceEpisode] where ApprenticeshipId = {0}
+                delete from Payments2.[Apprenticeship] where id = {0}
+            ";
+
             Database.ExecuteSqlCommand(deleteApprenticeshipData, apprenticeshipId);
         }
 
