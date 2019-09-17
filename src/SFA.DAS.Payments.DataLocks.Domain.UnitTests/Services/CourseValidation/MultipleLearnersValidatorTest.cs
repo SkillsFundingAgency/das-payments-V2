@@ -163,7 +163,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                     {
                         Id = 1,
                         Uln = 200,
-                        Ukprn = ukprn,
+                        Ukprn = 200,
                         ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                         {
                             new ApprenticeshipPriceEpisodeModel
@@ -234,7 +234,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                     {
                         Id = 2,
                         Uln = 200,
-                        Ukprn = ukprn,
+                        Ukprn = 200,
                         ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                         {
                             new ApprenticeshipPriceEpisodeModel
@@ -277,5 +277,72 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_08);
         }
 
+        [Test]
+        public void WhenApprenticeshipIsSameUkprnReturnNoDataLockErrors()
+        {
+            byte deliveryPeriod = 2;
+
+            var commitmentStarDate = new DateTime(2017, 9, 1);
+            var commitmentEndDate = new DateTime(2018, 9, 1);
+
+            var periodStarDate = new DateTime(2018, 9, 1);
+            var periodEndDate = new DateTime(2018, 9, 30);
+
+            calculatePeriodStartAndEndDate
+                .Setup(x => x.GetPeriodDate(deliveryPeriod, academicYear))
+                .Returns((periodStarDate, periodEndDate))
+                .Verifiable();
+
+            dataLockLearnerCache
+                .Setup(x => x.GetDuplicateApprenticeships())
+                .ReturnsAsync(new List<ApprenticeshipModel>
+                {
+                    new ApprenticeshipModel
+                    {
+                        Id = 1,
+                        Uln = 200,
+                        Ukprn = ukprn,
+                        ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                        {
+                            new ApprenticeshipPriceEpisodeModel
+                            {
+                                Id = 100,
+                                StartDate = commitmentStarDate
+                            }
+                        },
+                        Status = ApprenticeshipStatus.Active,
+                    }
+
+                });
+
+            var validation = new DataLockValidationModel
+            {
+                PriceEpisode = new PriceEpisode { Identifier = PriceEpisodeIdentifier },
+                EarningPeriod = new EarningPeriod { Period = deliveryPeriod },
+                AcademicYear = academicYear,
+                Apprenticeship = new ApprenticeshipModel
+                {
+                    Id = 2,
+                    Ukprn = ukprn,
+                    Uln = 200,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            Id = 200,
+                            StartDate = commitmentStarDate,
+                        }
+                    },
+                    Status = ApprenticeshipStatus.Active,
+                }
+            };
+
+            var validator = new MultipleLearnersValidator(dataLockLearnerCache.Object, calculatePeriodStartAndEndDate.Object);
+            var result = validator.Validate(validation);
+            result.DataLockErrorCode.Should().BeNull();
+            result.ApprenticeshipId.Should().Be(2);
+            result.ApprenticeshipPriceEpisodes.Should().HaveCount(1);
+            result.ApprenticeshipPriceEpisodes[0].Id.Should().Be(200);
+        }
     }
 }
