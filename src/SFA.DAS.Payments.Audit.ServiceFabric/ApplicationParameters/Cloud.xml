@@ -28,5 +28,6 @@
     <Parameter Name="Audit_DataLockService_TargetReplicaSetSize" Value="__Audit_DataLockService_TargetReplicaSetSize__" />
     <Parameter Name="Audit_DataLock_EndpointName" Value="__Audit_DataLock_EndpointName__" />
     <Parameter Name="Audit_DataLock_FailedMessagesQueue" Value="__Audit_DataLock_FailedMessagesQueue__" />
+    <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
   </Parameters>
 </Application>

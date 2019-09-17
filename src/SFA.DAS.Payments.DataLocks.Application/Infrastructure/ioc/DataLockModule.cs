@@ -5,6 +5,7 @@ using SFA.DAS.Payments.DataLocks.Domain.Services;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
 using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
@@ -31,7 +32,22 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
 
             builder.RegisterType<EarningPeriodsValidationProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<CourseValidationProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
-
+            
+            builder.Register(ctx =>
+            {
+                var otherCourseValidators = ctx.Resolve<IEnumerable<ICourseValidator>>()
+                    .Where(x => x.GetType() != typeof(StartDateValidator) ||
+                                x.GetType() != typeof(CompletionStoppedValidator) ||
+                                x.GetType() != typeof(OnProgrammeAndIncentiveStoppedValidator))
+                    .ToList();
+                
+            return new CourseValidationProcessor(
+                    new StartDateValidator(ctx.Resolve<ICalculatePeriodStartAndEndDate>()),
+                    new CompletionStoppedValidator(),
+                    new OnProgrammeAndIncentiveStoppedValidator(ctx.Resolve<ICalculatePeriodStartAndEndDate>()),
+                    otherCourseValidators);
+            }).AsImplementedInterfaces().InstancePerLifetimeScope();
+            
             builder.RegisterType<CalculatePeriodStartAndEndDate>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<DataLockEventProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<DataLockEventProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
@@ -63,8 +79,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<ApprenticeshipProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ApprenticeshipService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ApprenticeshipUpdatedProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
-
-
             builder.RegisterType<ApprenticeshipApprovedUpdatedService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ApprenticeshipDataLockTriageService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ApprenticeshipStoppedService>().AsImplementedInterfaces().InstancePerLifetimeScope();

@@ -16,6 +16,14 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
         {
             current.Status = ApprenticeshipStatus.Stopped;
             current.StopDate = updated.StopDate;
+
+            foreach (var currentApprenticeshipPriceEpisode in current.ApprenticeshipPriceEpisodes)
+            {
+                if (!currentApprenticeshipPriceEpisode.Removed)
+                {
+                    currentApprenticeshipPriceEpisode.EndDate = updated.StopDate;
+                }
+            }
         }
 
     }
