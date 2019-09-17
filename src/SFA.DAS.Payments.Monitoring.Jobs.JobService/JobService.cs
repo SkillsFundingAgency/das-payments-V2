@@ -1,91 +1,98 @@
 using System;
 using System.Collections.Generic;
 using System.Fabric;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors.Runtime;
-using Microsoft.ServiceFabric.Data.Collections;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Remoting;
 using Microsoft.ServiceFabric.Services.Remoting.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Core;
+using SFA.DAS.Payments.Application.Infrastructure.UnitOfWork;
+using SFA.DAS.Payments.Monitoring.Jobs.Application;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
 using SFA.DAS.Payments.Monitoring.Jobs.JobService.Interfaces;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
-using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
 {
-    /// <summary>
-    /// An instance of this class is created for each service replica by the Service Fabric runtime.
-    /// </summary>
     [StatePersistence(StatePersistence.Volatile)]
     public class JobService : StatefulService, IJobService, IService
     {
         private readonly IPaymentLogger logger;
+        private readonly IUnitOfWorkScopeFactory scopeFactory;
 
-        public JobService(StatefulServiceContext context, IPaymentLogger logger)
+        public JobService(StatefulServiceContext context, IPaymentLogger logger, IUnitOfWorkScopeFactory scopeFactory
+            )
             : base(context)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
         }
 
-        /// <summary>
-        /// Optional override to create listeners (e.g., HTTP, Service Remoting, WCF, etc.) for this service replica to handle client or user requests.
-        /// </summary>
-        /// <remarks>
-        /// For more information on service communication, see https://aka.ms/servicefabricservicecommunication
-        /// </remarks>
-        /// <returns>A collection of listeners.</returns>
         protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
         {
             return this.CreateServiceRemotingReplicaListeners();
         }
 
-        /// <summary>
-        /// This is the main entry point for your service replica.
-        /// This method executes when this replica of your service becomes primary and has write status.
-        /// </summary>
-        /// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service replica.</param>
-        //protected override async Task RunAsync(CancellationToken cancellationToken)
-        //{
-        //    // TODO: Replace the following sample code with your own logic 
-        //    //       or remove this RunAsync override if it's not needed in your service.
-
-        //    var myDictionary = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, long>>("myDictionary");
-
-        //    while (true)
-        //    {
-        //        cancellationToken.ThrowIfCancellationRequested();
-
-        //        using (var tx = this.StateManager.CreateTransaction())
-        //        {
-        //            var result = await myDictionary.TryGetValueAsync(tx, "Counter");
-
-        //            ServiceEventSource.Current.ServiceMessage(this.Context, "Current Counter Value: {0}",
-        //                result.HasValue ? result.Value.ToString() : "Value does not exist.");
-
-        //            await myDictionary.AddOrUpdateAsync(tx, "Counter", 0, (key, value) => ++value);
-
-        //            // If an exception is thrown before calling CommitAsync, the transaction aborts, all changes are 
-        //            // discarded, and nothing is saved to the secondary replicas.
-        //            await tx.CommitAsync();
-        //        }
-
-        //        await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
-        //    }
-        //}
 
         public async Task RecordEarningsJob(RecordEarningsJob message, CancellationToken cancellationToken)
         {
-            logger.LogInfo($"Partition: {this.Context.PartitionId}, Create job: {message.ToJson()}");
+            using (var scope = scopeFactory.Create("JobService.RecordEarningsJob"))
+            {
+                try
+                {
+                    var earningsJobService = scope.Resolve<IEarningsJobService>();
+                    await earningsJobService.RecordNewJob(message, cancellationToken).ConfigureAwait(false);
+                    await scope.Commit();
+                }
+                catch (Exception ex)
+                {
+                    scope.Abort();
+                    logger.LogWarning($"Failed to record earnings job: {message.JobId}. Error: {ex.Message}, {ex}");
+                    throw;
+                }
+            }
         }
 
-        public Task<JobStatus> RecordJobMessageProcessingStatus(RecordJobMessageProcessingStatus message, CancellationToken cancellationToken)
+        public async Task RecordEarningsJobAdditionalMessages(RecordEarningsJobAdditionalMessages message,
+            CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            using (var scope = scopeFactory.Create("JobService.RecordEarningsJobAdditionalMessages"))
+            {
+                try
+                {
+                    var earningsJobService = scope.Resolve<IEarningsJobService>();
+                    await earningsJobService.RecordNewJobAdditionalMessages(message, cancellationToken).ConfigureAwait(false);
+                    await scope.Commit();
+                }
+                catch (Exception ex)
+                {
+                    scope.Abort();
+                    logger.LogWarning($"Failed to record earnings job: {message.JobId}. Error: {ex.Message}, {ex}");
+                    throw;
+                }
+            }
+        }
+
+        public async Task RecordJobMessageProcessingStatus(RecordJobMessageProcessingStatus message, CancellationToken cancellationToken)
+        {
+            using (var scope = scopeFactory.Create("JobService.RecordJobMessageProcessingStatus"))
+            {
+                try
+                {
+                    var jobMessageService = scope.Resolve<IJobMessageService>();
+                    await jobMessageService.RecordCompletedJobMessageStatus(message, cancellationToken).ConfigureAwait(false);
+                    await scope.Commit();
+                }
+                catch (Exception ex)
+                {
+                    scope.Abort();
+                    logger.LogWarning($"Failed to record earnings job: {message.JobId}. Error: {ex.Message}, {ex}");
+                    throw;
+                }
+            }
         }
 
         public Task RecordJobMessageProcessingStartedStatus(RecordStartedProcessingJobMessages message,

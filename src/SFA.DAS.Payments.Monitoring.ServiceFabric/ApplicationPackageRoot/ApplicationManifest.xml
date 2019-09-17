@@ -52,8 +52,8 @@
       </ConfigOverride>
     </ConfigOverrides>
   </ServiceManifestImport>
-  <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.Monitoring.Jobs.JobsProxyServicePkg" ServiceManifestVersion="1.0.0" />
+  <!--ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.Monitoring.Jobs.JobsServicePkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides>
       <ConfigOverride Name="Config">
         <Settings>
@@ -75,9 +75,9 @@
         </Settings>
       </ConfigOverride>
     </ConfigOverrides>
-  </ServiceManifestImport>
+  </ServiceManifestImport>-->
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.Monitoring.Jobs.JobsServicePkg" ServiceManifestVersion="1.0.0" />
+    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.Monitoring.Jobs.JobsProxyServicePkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides>
       <ConfigOverride Name="Config">
         <Settings>
@@ -118,11 +118,11 @@
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
     </Service>
-    <Service Name="JobsServiceActorService" GeneratedIdRef="cb971f61-6bb9-4f53-a2d2-c61656f04754|Volatile">
+    <!--<Service Name="JobsServiceActorService" GeneratedIdRef="cb971f61-6bb9-4f53-a2d2-c61656f04754|Volatile">
       <StatefulService ServiceTypeName="JobsServiceActorServiceType" TargetReplicaSetSize="[JobsServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[JobsServiceActorService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[JobsServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
-    </Service>
+    </Service>-->
   </DefaultServices>
 </ApplicationManifest>

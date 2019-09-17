@@ -9,6 +9,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Monitoring.Jobs.Application;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
 using SFA.DAS.Payments.Monitoring.Jobs.JobsService.Interfaces;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
@@ -137,17 +138,17 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService
             {
                 using (var operation = telemetry.StartOperation("JobsService.RecordJobMessageProcessingStartedStatus", message.CommandId.ToString()))
                 {
-                    var stopwatch = Stopwatch.StartNew();
-                    //TODO: use statemanager tx and make sure IActorDataCache uses current tx too
-                    var jobMessageService = lifetimeScope.Resolve<IJobMessageService>();
-                    await jobMessageService.RecordStartedJobMessages(message, CancellationToken.None).ConfigureAwait(false);
-                    var statusService = lifetimeScope.Resolve<IJobStatusService>();
-                    var status = await statusService.ManageStatus(CancellationToken.None);
-                    if (status != JobStatus.InProgress)
-                        await StateManager.ClearCacheAsync(CancellationToken.None);
-                    telemetry.TrackDuration("JobsService.RecordJobMessageProcessingStartedStatus", stopwatch.Elapsed);
-                    telemetry.StopOperation(operation);
-                    await SetLastMesasgeStatusTime().ConfigureAwait(false);
+                    //var stopwatch = Stopwatch.StartNew();
+                    ////TODO: use statemanager tx and make sure IActorDataCache uses current tx too
+                    //var jobMessageService = lifetimeScope.Resolve<IJobMessageService>();
+                    //await jobMessageService.RecordStartedJobMessages(message, CancellationToken.None).ConfigureAwait(false);
+                    //var statusService = lifetimeScope.Resolve<IJobStatusService>();
+                    //var status = await statusService.ManageStatus(CancellationToken.None);
+                    //if (status != JobStatus.InProgress)
+                    //    await StateManager.ClearCacheAsync(CancellationToken.None);
+                    //telemetry.TrackDuration("JobsService.RecordJobMessageProcessingStartedStatus", stopwatch.Elapsed);
+                    //telemetry.StopOperation(operation);
+                    //await SetLastMesasgeStatusTime().ConfigureAwait(false);
                 }
             }
             catch (Exception e)

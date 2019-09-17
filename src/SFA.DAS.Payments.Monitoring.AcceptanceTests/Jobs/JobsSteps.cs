@@ -71,7 +71,6 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 StartTime = DateTimeOffset.UtcNow,
                 IlrSubmissionTime = DateTime.UtcNow.AddSeconds(-10),
                 GeneratedMessages = GeneratedMessages,
-                
             };
 
             Console.WriteLine($"Job details: {JobDetails.ToJson()}");
@@ -199,18 +198,18 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                     Id = generatedMessage.MessageId
                 };
                 Console.WriteLine($"Generated Message: {message.ToJson()}");
-                await MessageSession.Send(message);
+                await MessageSession.Send(message).ConfigureAwait(false);
             }
         }
 
         [When(@"the earnings event service notifies the job monitoring service to record the job")]
         public async Task WhenTheEarningsEventServiceNotifiesTheJobMonitoringServiceToRecordTheJob()
         {
-            if (GeneratedMessages.Count<1000)
-                await MessageSession.Send(JobDetails).ConfigureAwait(false);
-            ((RecordEarningsJob) JobDetails).GeneratedMessages = GeneratedMessages.Take(1000).ToList();
-            await MessageSession.Send(JobDetails).ConfigureAwait(false);
-            ((RecordEarningsJob)JobDetails).GeneratedMessages = GeneratedMessages.Skip(1000).ToList();
+            //if (GeneratedMessages.Count<1000)
+            //    await MessageSession.Send(JobDetails).ConfigureAwait(false);
+            //((RecordEarningsJob) JobDetails).GeneratedMessages = GeneratedMessages.Take(1000).ToList();
+            //await MessageSession.Send(JobDetails).ConfigureAwait(false);
+            //((RecordEarningsJob)JobDetails).GeneratedMessages = GeneratedMessages.Skip(1000).ToList();
             await MessageSession.Send(JobDetails).ConfigureAwait(false);
         }
 
@@ -245,7 +244,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         {
             await WaitForIt(() =>
             {
-                var job = DataContext.Jobs
+                var job = DataContext.Jobs.AsNoTracking()
                     .FirstOrDefault(x => x.DcJobId == JobDetails.JobId);
 
                 if (job == null)
