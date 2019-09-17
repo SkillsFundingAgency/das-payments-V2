@@ -33,11 +33,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             logger.LogVerbose($"Now determining if job {jobId} has finished.");
             var inProgressMessages = await jobStorageService.GetInProgressMessageIdentifiers(jobId, cancellationToken)
                 .ConfigureAwait(false);
-            var completedMessages = await jobStorageService.GetCompletedMessages(jobId, cancellationToken)
-                .ConfigureAwait(false);
-
-            var completedItems = completedMessages
-                .Where(completedMessage => inProgressMessages.Contains(completedMessage.MessageId)).ToList();
+            var completedItems = await GetCompletedMessages(jobId, inProgressMessages, cancellationToken).ConfigureAwait(false);
             if (!completedItems.Any())
             {
                 logger.LogVerbose($"Found no completed messages for job: {jobId}");
@@ -51,27 +47,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             await jobStorageService.RemoveCompletedMessages(jobId, completedItems.Select(item => item.MessageId).ToList(), cancellationToken)
                 .ConfigureAwait(false);
 
-            var statusChanged = false;
-            var currentJobStatus = await jobStorageService.GetJobStatus(jobId, cancellationToken).ConfigureAwait(false);
-            var completedItemsEndTime = completedItems.Max(item => item.CompletedTime);
-            if (!currentJobStatus.endTime.HasValue || completedItemsEndTime > currentJobStatus.endTime)
-            {
-                currentJobStatus.endTime = completedItemsEndTime;
-                statusChanged = true;
-            }
-
-            if (currentJobStatus.hasFailedMessages || completedItems.Any(item => !item.Succeeded))
-            {
-                currentJobStatus.hasFailedMessages = true;
-                statusChanged = true;
-            }
-
-            if (statusChanged)
-            {
-                logger.LogVerbose($"Detected change in job status for job: {jobId}. Has failed messages: {currentJobStatus.hasFailedMessages}, End time: {currentJobStatus.endTime}");
-                await jobStorageService.StoreJobStatus(jobId, currentJobStatus.hasFailedMessages, currentJobStatus.endTime, cancellationToken)
-                    .ConfigureAwait(false);
-            }
+            var currentJobStatus =
+                await UpdateJobStatus(jobId, completedItems, cancellationToken).ConfigureAwait(false);
 
             if (!inProgressMessages.TrueForAll(messageId => completedItems.Any(item => item.MessageId == messageId)))
             {
@@ -95,6 +72,45 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             SendTelemetry(job);
             logger.LogInfo($"Finished recording completion status of job. Job: {job.Id}, status: {job.Status}, end time: {job.EndTime}");
             return job.Status;
+        }
+
+        private async Task<List<CompletedMessage>> GetCompletedMessages(long jobId, List<Guid> inProgressMessages, CancellationToken cancellationToken)
+        {
+            var completedMessages = await jobStorageService.GetCompletedMessages(jobId, cancellationToken)
+                .ConfigureAwait(false);
+
+            var completedItems = completedMessages
+                .Where(completedMessage => inProgressMessages.Contains(completedMessage.MessageId)).ToList();
+
+            return completedItems;
+        }
+
+        private async Task<(bool hasFailedMessages, DateTimeOffset? endTime)> UpdateJobStatus(long jobId, List<CompletedMessage> completedItems,
+            CancellationToken cancellationToken)
+        {
+            var statusChanged = false;
+            var currentJobStatus = await jobStorageService.GetJobStatus(jobId, cancellationToken).ConfigureAwait(false);
+            var completedItemsEndTime = completedItems.Max(item => item.CompletedTime);
+            if (!currentJobStatus.endTime.HasValue || completedItemsEndTime > currentJobStatus.endTime)
+            {
+                currentJobStatus.endTime = completedItemsEndTime;
+                statusChanged = true;
+            }
+
+            if (currentJobStatus.hasFailedMessages || completedItems.Any(item => !item.Succeeded))
+            {
+                currentJobStatus.hasFailedMessages = true;
+                statusChanged = true;
+            }
+
+            if (statusChanged)
+            {
+                logger.LogVerbose($"Detected change in job status for job: {jobId}. Has failed messages: {currentJobStatus.hasFailedMessages}, End time: {currentJobStatus.endTime}");
+                await jobStorageService.StoreJobStatus(jobId, currentJobStatus.hasFailedMessages, currentJobStatus.endTime, cancellationToken)
+                    .ConfigureAwait(false);
+            }
+
+            return currentJobStatus;
         }
 
         private void SendTelemetry(JobModel job)

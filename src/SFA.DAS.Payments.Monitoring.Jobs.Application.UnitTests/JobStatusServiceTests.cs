@@ -15,24 +15,6 @@ using SFA.DAS.Payments.Monitoring.Jobs.Model;
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
 {
     [TestFixture]
-    public class JobStatusManagerTests
-    {
-        private AutoMock mocker;
-
-        [SetUp]
-        public void SetUp()
-        {
-            mocker = AutoMock.GetLoose();
-        }
-
-        [Test]
-        public async Task Starts_Monitoring_Job_Status()
-        {
-
-        }
-    }
-
-    [TestFixture]
     public class JobStatusServiceTests
     {
         private AutoMock mocker;
@@ -222,54 +204,5 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                         It.Is<DateTimeOffset>(endTime => endTime == completedMessage.CompletedTime),
                         It.IsAny<CancellationToken>()), Times.Once());
         }
-
-
-
-        //[Test]
-        //public async Task Completes_Job_If_No_Job_Messages_Stored()
-        //{
-        //    var service = mocker.Create<JobStatusService>();
-        //    var status = await service.ManageStatus().ConfigureAwait(false);
-        //    status.Should().Be(JobStatus.Completed);
-        //    mocker.Mock<IJobStorageService>()
-        //        .Verify(x => x.UpdateJob(It.Is<JobModel>(model => model.Status == JobStatus.Completed), It.IsAny<CancellationToken>()), Times.Once);
-        //}
-
-        //[Test]
-        //public async Task Completes_Job_As_Completed_With_Errors_If_Any_Messages_Failed()
-        //{
-        //    mocker.Mock<IJobStorageService>()
-        //        .Setup(x => x.GetJobStatus(It.IsAny<CancellationToken>()))
-        //        .ReturnsAsync((JobStepStatus.Failed, DateTime.UtcNow));
-        //    var service = mocker.Create<JobStatusService>();
-        //    var status = await service.ManageStatus().ConfigureAwait(false);
-        //    status.Should().Be(JobStatus.CompletedWithErrors);
-        //}
-
-        //[Test]
-        //public async Task Does_Not_Complete_Job_If_Not_All_Messages_Finished()
-        //{
-        //    mocker.Mock<IJobStorageService>()
-        //        .Setup(x => x.GetInProgressMessageIdentifiers(It.IsAny<CancellationToken>()))
-        //        .ReturnsAsync(new List<Guid>{Guid.NewGuid()});
-        //    var service = mocker.Create<JobStatusService>();
-        //    var status = await service.ManageStatus().ConfigureAwait(false);
-        //    status.Should().Be(JobStatus.InProgress);
-        //    mocker.Mock<IJobStorageService>()
-        //        .Verify(x => x.UpdateJob(It.IsAny<JobModel>(), It.IsAny<CancellationToken>()), Times.Never);
-        //}
-
-        //[Test]
-        //public async Task Does_Not_Complete_Job_If_Waiting_For_Job_Message_Starts()
-        //{
-        //    //mocker.Mock<IJobStorageService>()
-        //    //    .Setup(x => x.GetCompletedMessageIdentifiers(It.IsAny<CancellationToken>()))
-        //    //    .ReturnsAsync(new List<Guid> { Guid.NewGuid() });
-        //    var service = mocker.Create<JobStatusService>();
-        //    var status = await service.ManageStatus().ConfigureAwait(false);
-        //    status.Should().Be(JobStatus.InProgress);
-        //    mocker.Mock<IJobStorageService>()
-        //        .Verify(x => x.UpdateJob(It.IsAny<JobModel>(), It.IsAny<CancellationToken>()), Times.Never);
-        //}
     }
 }

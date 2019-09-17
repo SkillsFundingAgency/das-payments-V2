@@ -14,6 +14,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Application;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
 using SFA.DAS.Payments.Monitoring.Jobs.JobService.Interfaces;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
 {
@@ -22,13 +23,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
     {
         private readonly IPaymentLogger logger;
         private readonly IUnitOfWorkScopeFactory scopeFactory;
+        private readonly IJobStatusManager jobStatusManager;
 
-        public JobService(StatefulServiceContext context, IPaymentLogger logger, IUnitOfWorkScopeFactory scopeFactory
-            )
+        public JobService(StatefulServiceContext context, IPaymentLogger logger, IUnitOfWorkScopeFactory scopeFactory, IJobStatusManager jobStatusManager)
             : base(context)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
+            this.jobStatusManager = jobStatusManager ?? throw new ArgumentNullException(nameof(jobStatusManager));
         }
 
         protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
@@ -36,6 +38,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             return this.CreateServiceRemotingReplicaListeners();
         }
 
+        protected override async Task RunAsync(CancellationToken cancellationToken)
+        {
+            await jobStatusManager.Start(cancellationToken);
+        }
 
         public async Task RecordEarningsJob(RecordEarningsJob message, CancellationToken cancellationToken)
         {
@@ -54,6 +60,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
                     throw;
                 }
             }
+            jobStatusManager.StartMonitoringJob(message.JobId,JobType.EarningsJob);
         }
 
         public async Task RecordEarningsJobAdditionalMessages(RecordEarningsJobAdditionalMessages message,

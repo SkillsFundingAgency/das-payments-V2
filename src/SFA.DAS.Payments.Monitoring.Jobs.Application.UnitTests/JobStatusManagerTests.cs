@@ -1,0 +1,50 @@
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Autofac.Extras.Moq;
+using Moq;
+using NUnit.Framework;
+using SFA.DAS.Payments.Application.Infrastructure.UnitOfWork;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
+
+namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
+{
+    [TestFixture]
+    public class JobStatusManagerTests
+    {
+        private AutoMock mocker;
+
+        [SetUp]
+        public void SetUp()
+        {
+            mocker = AutoMock.GetLoose();
+            var mockStatusService = mocker.Mock<IJobStatusService>();
+            mockStatusService.Setup(x => x.ManageStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(JobStatus.InProgress);
+            var mockScope = mocker.Mock<IUnitOfWorkScope>();
+            mockScope.Setup(x => x.Resolve<IJobStatusService>())
+                .Returns(mockStatusService.Object);
+            mocker.Mock<IUnitOfWorkScopeFactory>()
+                .Setup(x => x.Create(It.IsAny<string>()))
+                .Returns(mockScope.Object);
+            mocker.Mock<IJobServiceConfiguration>()
+                .Setup(x => x.JobStatusInterval)
+                .Returns(TimeSpan.FromMilliseconds(500));
+        }
+
+        [Test]
+        public async Task Starts_Monitoring_Job()
+        {
+            var manager = mocker.Create<JobStatusManager>();
+            var cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(1000);
+            await manager.Start(cancellationTokenSource.Token).ConfigureAwait(false);
+            manager.StartMonitoringJob(99, JobType.EarningsJob);
+            await Task.Delay(600,cancellationTokenSource.Token).ConfigureAwait(false);
+            mocker.Mock<IJobStatusService>()
+                .Verify(svc => svc.ManageStatus(It.Is<long>(id => id == 99), It.IsAny<CancellationToken>()));
+        }
+    }
+}
