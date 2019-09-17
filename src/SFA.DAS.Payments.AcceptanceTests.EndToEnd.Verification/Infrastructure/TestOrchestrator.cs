@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         public async Task<IEnumerable<string>> SetupTestFiles()
         {
           var playlist = await submissionService.ImportPlaylist();
-          //await submissionService.ClearPaymentsData(playlist);
+          await submissionService.ClearPaymentsData(playlist);
           return await submissionService.CreateTestFiles(playlist);
         }
 

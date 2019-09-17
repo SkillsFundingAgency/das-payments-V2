@@ -113,10 +113,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         public async Task ClearPaymentsData(IEnumerable<string> playlist)
         {
-            foreach (var file in playlist)
+            if (configuration.ClearPaymentsData)
             {
-                var ukprn = UkprnFromFilename(file);
-                await paymentsContext.ClearPaymentsDataAsync(ukprn);
+                foreach (var file in playlist)
+                {
+                    var ukprn = UkprnFromFilename(file);
+                    await paymentsContext.ClearPaymentsDataAsync(ukprn);
+                }
+            }
+            else
+            {
+                await Task.CompletedTask;
             }
         }
 
@@ -184,7 +191,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                 }
                 else
                 {
-                    await Task.Delay(1000);
+                    await Task.Delay(configuration.DcJobEventCheckDelay);
                 }
             }
 

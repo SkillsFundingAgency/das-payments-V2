@@ -13,6 +13,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         public string DcStorageConnectionString => GetConnectionString("DcStorageConnectionString");
 
+        public TimeSpan SqlCommandTimeout => TimeSpan.Parse(GetAppSetting("SqlCommandTimeout") ?? "00:02:00");
+
+        public TimeSpan MaxTimeout => TimeSpan.Parse(GetAppSetting("MaxTimeout") ?? "00:15:00");
+
+        public TimeSpan DcJobEventCheckDelay => TimeSpan.Parse(GetAppSetting("DcJobEventCheckDelay") ?? "00:00:05");
+
+        public bool ClearPaymentsData => bool.Parse(GetAppSetting("ClearPaymentsData") ?? "false");
+
+        public string GetAppSetting(string keyName)
+        {
+            return ConfigurationManager.AppSettings[keyName] ?? throw new InvalidOperationException($"{keyName} not found in app settings.");
+        }
+
         public string GetConnectionString(string name)
         {
             return ConfigurationManager.ConnectionStrings[name].ConnectionString ??

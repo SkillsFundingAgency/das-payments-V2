@@ -45,9 +45,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             var results = await orchestrator.SubmitFiles(fileList);
             var resultsList = results.ToList();
 
-
+            var configuration = autofacContainer.Resolve<Configuration>();
             DateTimeOffset testEndDateTime = DateTimeOffset.UtcNow;
-            DateTime maxWaitDateTime = DateTime.UtcNow.AddMinutes(15);
+            DateTime maxWaitDateTime = DateTime.UtcNow.Add(configuration.MaxTimeout);
             while (true)
             {
                 if (DateTime.UtcNow >= maxWaitDateTime)
