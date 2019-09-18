@@ -316,7 +316,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var apprenticeshipId = TestSession.GenerateId();
                 apprenticeshipSpec.Id = apprenticeshipId;
                 var apprenticeship = CreateApprenticeshipModel(apprenticeshipSpec);
-                TestDataContext.ClearApprenticeshipData(apprenticeshipId, apprenticeship.Uln);
+                await TestDataContext.ClearApprenticeshipData(apprenticeshipId, apprenticeship.Uln).ConfigureAwait(false);
                 await TestDataContext.Apprenticeship.AddAsync(apprenticeship).ConfigureAwait(false);
                 await TestDataContext.SaveChangesAsync().ConfigureAwait(false);
 
