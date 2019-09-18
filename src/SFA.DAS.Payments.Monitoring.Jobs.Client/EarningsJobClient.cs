@@ -47,6 +47,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                     GeneratedMessages = generatedMessages.Take(batchSize).ToList(),
                     LearnerCount = generatedMessages.Count
                 };
+                await messageSession.Send(providerEarningsEvent).ConfigureAwait(false);
                 var skip = batchSize;
 
                 while ((batch = generatedMessages.Skip(skip).Take(1000).ToList()).Count > 0)
