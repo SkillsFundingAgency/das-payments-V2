@@ -24,10 +24,9 @@
     <Parameter Name="ConsoleLogLevel" DefaultValue="" />
     <Parameter Name="DelayedRetryTimeInSeconds" DefaultValue="5" />
     <Parameter Name="Placement_Constraints" DefaultValue="" />
+    <Parameter Name="JobStatusCheck_Interval" DefaultValue="00:00:10" />
+    <Parameter Name="TimeToWaitForJobToComplete" DefaultValue="01:00:00" />
   </Parameters>
-  <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
-       should match the Name and Version attributes of the ServiceManifest element defined in the 
-       ServiceManifest.xml file. -->
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.Monitoring.Jobs.JobServicePkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides>
@@ -47,35 +46,13 @@
             <Parameter Name="DelayedRetryTimeInSeconds" Value="[DelayedRetryTimeInSeconds]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
+            <Parameter Name="JobStatusCheck_Interval" Value="[JobStatusCheck_Interval]" />
+            <Parameter Name="TimeToWaitForJobToComplete" Value="[TimeToWaitForJobToComplete]" />
           </Section>
         </Settings>
       </ConfigOverride>
     </ConfigOverrides>
   </ServiceManifestImport>
-  <!--ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.Monitoring.Jobs.JobsServicePkg" ServiceManifestVersion="1.0.0" />
-    <ConfigOverrides>
-      <ConfigOverride Name="Config">
-        <Settings>
-          <Section Name="ConnectionStringsSection">
-            <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
-            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
-            <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
-            <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
-            <Parameter Name="PaymentsMonitoringConnectionString" Value="[PaymentsMonitoringConnectionString]" />
-          </Section>
-          <Section Name="Settings">
-            <Parameter Name="EndpointName" Value="[Monitoring_JobsService_EndpointName]" />
-            <Parameter Name="FailedMessagesQueue" Value="[Monitoring_JobsService_FailedMessagesQueue]" />
-            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
-            <Parameter Name="DelayedRetryTimeInSeconds" Value="[DelayedRetryTimeInSeconds]" />
-            <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
-          </Section>
-        </Settings>
-      </ConfigOverride>
-    </ConfigOverrides>
-  </ServiceManifestImport>-->
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.Monitoring.Jobs.JobsProxyServicePkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides>
@@ -95,17 +72,14 @@
             <Parameter Name="DelayedRetryTimeInSeconds" Value="[DelayedRetryTimeInSeconds]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
+            <Parameter Name="JobStatusCheck_Interval" Value="[JobStatusCheck_Interval]" />
+            <Parameter Name="TimeToWaitForJobToComplete" Value="[TimeToWaitForJobToComplete]" />
           </Section>
         </Settings>
       </ConfigOverride>
     </ConfigOverrides>
   </ServiceManifestImport>
   <DefaultServices>
-    <!-- The section below creates instances of service types, when an instance of this 
-         application type is created. You can also create one or more instances of service type using the 
-         ServiceFabric PowerShell module.
-         
-         The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
     <Service Name="SFA.DAS.Payments.Monitoring.Jobs.JobService" ServicePackageActivationMode="ExclusiveProcess">
       <StatefulService ServiceTypeName="SFA.DAS.Payments.Monitoring.Jobs.JobServiceType" TargetReplicaSetSize="[JobService_TargetReplicaSetSize]" MinReplicaSetSize="[JobService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[JobService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
@@ -118,11 +92,5 @@
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
     </Service>
-    <!--<Service Name="JobsServiceActorService" GeneratedIdRef="cb971f61-6bb9-4f53-a2d2-c61656f04754|Volatile">
-      <StatefulService ServiceTypeName="JobsServiceActorServiceType" TargetReplicaSetSize="[JobsServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[JobsServiceActorService_MinReplicaSetSize]">
-        <UniformInt64Partition PartitionCount="[JobsServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
-        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
-      </StatefulService>
-    </Service>-->
   </DefaultServices>
 </ApplicationManifest>

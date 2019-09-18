@@ -2,11 +2,9 @@
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.Monitoring.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="JobsProxyService_InstanceCount" Value="__JobsProxyService_InstanceCount__" />
-    <Parameter Name="Monitoring_JobsService_InstanceCount" Value="__Monitoring_JobsService_InstanceCount__" />
-    <Parameter Name="Monitoring_JobsStatusService_InstanceCount" Value="__Monitoring_JobsStatusService_InstanceCount__" />
-    <Parameter Name="JobsServiceActorService_PartitionCount" Value="__JobsServiceActorService_PartitionCount__" />
-    <Parameter Name="JobsServiceActorService_TargetReplicaSetSize" Value="__JobsServiceActorService_TargetReplicaSetSize__" />
-    <Parameter Name="JobsServiceActorService_MinReplicaSetSize" Value="__JobsServiceActorService_MinReplicaSetSize__" />
+    <Parameter Name="JobService_PartitionCount" Value="__Monitoring_JobsService_PartitionCount__" />
+    <Parameter Name="JobService_MinReplicaSetSize" Value="__Monitoring_JobService_MinReplicaSetSize__" />
+    <Parameter Name="JobService_TargetReplicaSetSize" Value="__Monitoring_JobService_TargetReplicaSetSize__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
     <Parameter Name="ServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
@@ -20,5 +18,7 @@
     <Parameter Name="LogLevel" Value="__LogLevel__" />
     <Parameter Name="ConsoleLogLevel" Value="__ConsoleLogLevel__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
+    <Parameter Name="JobStatusCheck_Interval" Value="__Monitoring_JobStatusCheck_Interval__" />
+    <Parameter Name="TimeToWaitForJobToComplete" Value="__TimeToWaitForJobToComplete__" />
   </Parameters>
 </Application>
