@@ -11,12 +11,15 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
     {
         private readonly ICourseValidationProcessor courseValidationProcessor;
         private readonly IFunctionalSkillValidationProcessor functionalSkillValidationProcessor;
-       
-        public EarningPeriodsValidationProcessor(ICourseValidationProcessor courseValidationProcessor, 
-            IFunctionalSkillValidationProcessor functionalSkillValidationProcessor)
+        private readonly ICalculatePeriodStartAndEndDate calculatePeriodStartAndEndDate;
+
+        public EarningPeriodsValidationProcessor(ICourseValidationProcessor courseValidationProcessor,
+            IFunctionalSkillValidationProcessor functionalSkillValidationProcessor,
+            ICalculatePeriodStartAndEndDate calculatePeriodStartAndEndDate)
         {
             this.courseValidationProcessor = courseValidationProcessor ?? throw new ArgumentNullException(nameof(courseValidationProcessor));
-            this.functionalSkillValidationProcessor = functionalSkillValidationProcessor?? throw new ArgumentNullException(nameof(functionalSkillValidationProcessor));
+            this.functionalSkillValidationProcessor = functionalSkillValidationProcessor ?? throw new ArgumentNullException(nameof(functionalSkillValidationProcessor));
+            this.calculatePeriodStartAndEndDate = calculatePeriodStartAndEndDate ?? throw new ArgumentNullException(nameof(calculatePeriodStartAndEndDate));
         }
 
         public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidateFunctionalSkillPeriods(
@@ -66,7 +69,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                     continue;
                 }
                 
-                foreach (var apprenticeship in apprenticeships)
+                var apprenticeshipsToUseThisPeriod = GetApprenticeshipsToUseThisPeriod(ukprn, apprenticeships, academicYear, period);
+                if (!apprenticeshipsToUseThisPeriod.Any())
+                {
+                    continue;
+                }
+                
+                foreach (var apprenticeship in apprenticeshipsToUseThisPeriod)
                 {
                     var validationModel = new DataLockValidationModel
                     {
@@ -115,6 +124,42 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             return (validPeriods, invalidPeriods);
         }
 
+        private List<ApprenticeshipModel> GetApprenticeshipsToUseThisPeriod(long ukprn, List<ApprenticeshipModel> apprenticeships, int academicYear, EarningPeriod period)
+        {
+            var apprenticeshipsToUseThisPeriod = new List<ApprenticeshipModel>();
+
+            var apprenticeshipsWithinPeriod = apprenticeships
+                .Where(a => a.Ukprn == ukprn && ApprenticeshipStartWithinPeriod(a, period.Period, academicYear))
+                .ToList();
+
+            var activeApprenticeships =
+                apprenticeshipsWithinPeriod
+                    .Where(x => x.Status == ApprenticeshipStatus.Active)
+                    .ToList();
+
+            if (!activeApprenticeships.Any())
+            {
+                var mostRecentApprenticeship = apprenticeshipsWithinPeriod
+                    .OrderByDescending(x => x.Id)
+                    .FirstOrDefault();
+                if (mostRecentApprenticeship != null)
+                {
+                    apprenticeshipsToUseThisPeriod.Add(mostRecentApprenticeship);
+                }
+            }
+            else
+            {
+                apprenticeshipsToUseThisPeriod.AddRange(activeApprenticeships);
+            }
+
+            if (apprenticeshipsToUseThisPeriod.Count == 0)
+            {
+                apprenticeshipsToUseThisPeriod = apprenticeships;
+            }
+
+            return apprenticeshipsToUseThisPeriod;
+        }
+
         private bool IsFunctionalSkillTransactionType(TransactionType transactionType)
         {
             var functionalSkillTransactionTypes = new List<TransactionType>
@@ -134,7 +179,19 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             };
         }
 
-      
+
+        private bool ApprenticeshipStartWithinPeriod(ApprenticeshipModel apprenticeship, byte deliveryPeriod, int academicYear)
+        {
+            var periodDates = calculatePeriodStartAndEndDate.GetPeriodDate(deliveryPeriod, academicYear);
+
+            if (apprenticeship.EstimatedStartDate > periodDates.periodEndDate)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
 
     }
 }

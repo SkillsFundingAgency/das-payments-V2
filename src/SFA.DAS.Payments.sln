@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29025.244
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.705
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Core", "SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj", "{F6E38368-C397-488B-B041-D3E8423C1CE1}"
 EndProject
@@ -251,17 +251,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.DataLocks.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Audit.DataLockService", "SFA.DAS.Payments.Audit.DatalockService\SFA.DAS.Payments.Audit.DataLockService.csproj", "{0C5D5012-D2B2-49F7-90CA-BDE8D8BA57F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Monitoring.Jobs.JobsService", "SFA.DAS.Payments.Monitoring.Jobs.JobsService\SFA.DAS.Payments.Monitoring.Jobs.JobsService.csproj", "{7341099B-2256-4DA4-B54F-CD73A425647F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.Jobs.JobsService", "SFA.DAS.Payments.Monitoring.Jobs.JobsService\SFA.DAS.Payments.Monitoring.Jobs.JobsService.csproj", "{7341099B-2256-4DA4-B54F-CD73A425647F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Monitoring.Jobs.JobsService.Interfaces", "SFA.DAS.Payments.Monitoring.Jobs.JobsService.Interfaces\SFA.DAS.Payments.Monitoring.Jobs.JobsService.Interfaces.csproj", "{CA6EDB41-E998-49A7-BC45-71E21B83C738}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.Jobs.JobsService.Interfaces", "SFA.DAS.Payments.Monitoring.Jobs.JobsService.Interfaces\SFA.DAS.Payments.Monitoring.Jobs.JobsService.Interfaces.csproj", "{CA6EDB41-E998-49A7-BC45-71E21B83C738}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService", "SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService\SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService.csproj", "{8617D0C1-9B50-4E11-9402-8C794686550B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService", "SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService\SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService.csproj", "{8617D0C1-9B50-4E11-9402-8C794686550B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Monitoring.Jobs.Model", "SFA.DAS.Payments.Monitoring.Jobs.Model\SFA.DAS.Payments.Monitoring.Jobs.Model.csproj", "{DC3C2DFE-CE0C-4B40-9A80-392B600FCDED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.Jobs.Model", "SFA.DAS.Payments.Monitoring.Jobs.Model\SFA.DAS.Payments.Monitoring.Jobs.Model.csproj", "{DC3C2DFE-CE0C-4B40-9A80-392B600FCDED}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SFA.DAS.Payments.Database.Legacy.Payments", "SFA.DAS.Payments.Database.Legacy.Payments\SFA.DAS.Payments.Database.Legacy.Payments.sqlproj", "{F8DC3227-6A79-44D5-89D8-6ACE0B8FCB37}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.ProviderPayments.LegacyExportService", "SFA.DAS.Payments.ProviderPayments.LegacyExportService\SFA.DAS.Payments.ProviderPayments.LegacyExportService.csproj", "{2CFF45F6-6398-4F3A-B3AE-03BC82F06F63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification", "SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification\SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.csproj", "{7C2D216F-C9AD-46C2-98BD-A641923F3A45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1163,6 +1165,14 @@ Global
 		{2CFF45F6-6398-4F3A-B3AE-03BC82F06F63}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2CFF45F6-6398-4F3A-B3AE-03BC82F06F63}.Release|x64.ActiveCfg = Release|Any CPU
 		{2CFF45F6-6398-4F3A-B3AE-03BC82F06F63}.Release|x64.Build.0 = Release|Any CPU
+		{7C2D216F-C9AD-46C2-98BD-A641923F3A45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C2D216F-C9AD-46C2-98BD-A641923F3A45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C2D216F-C9AD-46C2-98BD-A641923F3A45}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7C2D216F-C9AD-46C2-98BD-A641923F3A45}.Debug|x64.Build.0 = Debug|Any CPU
+		{7C2D216F-C9AD-46C2-98BD-A641923F3A45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C2D216F-C9AD-46C2-98BD-A641923F3A45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C2D216F-C9AD-46C2-98BD-A641923F3A45}.Release|x64.ActiveCfg = Release|Any CPU
+		{7C2D216F-C9AD-46C2-98BD-A641923F3A45}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1276,6 +1286,7 @@ Global
 		{8617D0C1-9B50-4E11-9402-8C794686550B} = {48AD8C3B-C2ED-4B11-AD1E-1FD0352BD534}
 		{DC3C2DFE-CE0C-4B40-9A80-392B600FCDED} = {48AD8C3B-C2ED-4B11-AD1E-1FD0352BD534}
 		{2CFF45F6-6398-4F3A-B3AE-03BC82F06F63} = {CE13B0C9-B716-4E9A-9563-95DAD13BD5DF}
+		{7C2D216F-C9AD-46C2-98BD-A641923F3A45} = {6B05550F-FBCB-47A1-856D-1A333A0CEDEC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E9E6D1E-3C3C-41C9-AED4-9B6DC9118F1F}
