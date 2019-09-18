@@ -24,5 +24,8 @@
     <Parameter Name="MaximumCallbackTimeSpan" Value="__TimeToWaitForJobToComplete__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
     <Parameter Name="GenerateTransactionType4to16Payments" Value="__GenerateTransactionType4to16Payments__" />
+    <Parameter Name="ImmediateMessageRetries" Value="__ImmediateMessageRetries__"/>
+    <Parameter Name="DelayedMessageRetries" Value="__DelayedMessageRetries__"/>
+    <Parameter Name="DelayedMessageRetryDelay" Value="__DelayedMessageRetryDelay__"/>
   </Parameters>
 </Application>
