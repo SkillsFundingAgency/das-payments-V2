@@ -23,6 +23,9 @@
     <Parameter Name="LogLevel" Value="" />
     <Parameter Name="ConsoleLogLevel" Value="" />
     <Parameter Name="ProcessMessageSequentially" Value="" />
+    <Parameter Name="ImmediateMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetryDelay" Value="" />
   </Section>
   <!-- The content will be generated during build -->
 </Settings>

@@ -26,6 +26,9 @@
     <Parameter Name="TimeToWaitForJobToComplete" Value=""/>
     <Parameter Name="MaximumCallbackTimeSpan" Value="" />
     <Parameter Name="GenerateTransactionType4to16Payments" Value=""/>
+    <Parameter Name="ImmediateMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetryDelay" Value="" />
   </Section>
 
 </Settings>
