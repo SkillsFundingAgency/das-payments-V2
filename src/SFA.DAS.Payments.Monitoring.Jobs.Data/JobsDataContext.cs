@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task<Dictionary<JobStepStatus, int>> GetJobStepsStatus(long jobId);
         Task<DateTimeOffset?> GetLastJobStepEndTime(long jobId);
         Task<JobModel> GetJob(long jobId);
-        Task SaveJobStatus(long jobId, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken = default(CancellationToken));
+        Task SaveJobStatus(long dcJobId, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken = default(CancellationToken));
         Task<List<JobModel>> GetInProgressJobs();
     }
 
@@ -118,12 +118,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             return await Jobs.AsNoTracking().FirstOrDefaultAsync(job => job.DcJobId == dcJobId);
         }
 
-        public async Task SaveJobStatus(long jobId, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task SaveJobStatus(long dcJobId, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var job = await GetJobByDcJobId(jobId) ?? throw new ArgumentException($"Job not found: {jobId}");
+            var job = await Jobs.FirstOrDefaultAsync(storedJob => storedJob.DcJobId == dcJobId, cancellationToken) 
+                      ?? throw new ArgumentException($"Job not found: {dcJobId}");
             job.EndTime = endTime;
             job.Status = status;
-            await SaveChangesAsync(cancellationToken);
+            await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }

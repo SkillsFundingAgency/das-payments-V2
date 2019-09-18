@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 Id = 1,
                 DcJobId = 99,
                 StartTime = DateTimeOffset.UtcNow.AddSeconds(-10),
-                Status = JobStatus.Completed
+                Status = JobStatus.InProgress
             };
             mocker.Mock<IJobStorageService>()
                 .Setup(x => x.GetJob(It.IsAny<long>(), It.IsAny<CancellationToken>()))

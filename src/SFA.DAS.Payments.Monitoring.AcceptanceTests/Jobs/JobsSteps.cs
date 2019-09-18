@@ -276,14 +276,25 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             }, $"Failed to find the expected job steps for job: {Job.Id}");
         }
 
-
         [Then(@"the job monitoring service should update the status of the job to show that it has completed")]
         public async Task ThenTheJobMonitoringServiceShouldUpdateTheStatusOfTheJobToShowThatItHasCompleted()
         {
             await WaitForIt(() =>
-                {
-                    return DataContext.Jobs.Any(j => j.Id == Job.Id && j.Status == JobStatus.Completed);
-                },$"Status was not updated to Completed for job: {Job.Id}, Dc job id: {JobDetails.JobId}");
+            {
+                var job = DataContext.Jobs.AsNoTracking()
+                    .FirstOrDefault(x => x.DcJobId == JobDetails.JobId && x.Status == JobStatus.Completed);
+
+                if (job == null)
+                    return false;
+                Job = job;
+                Console.WriteLine($"Found job: {Job.Id}, status: {Job.Status}, start time: {job.StartTime}");
+                return true;
+            }, $"Failed to find job with dc job id: {JobDetails.JobId}");
+
+            //await WaitForIt(() =>
+            //    {
+            //        return DataContext.Jobs.Any(job => job.DcJobId == JobDetails.JobId && job.Status == JobStatus.Completed);
+            //    },$"Status was not updated to Completed for job: {Job.Id}, Dc job id: {JobDetails.JobId}");
         }
 
     }

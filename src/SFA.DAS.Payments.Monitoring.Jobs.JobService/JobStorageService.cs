@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
         }
         private static string GetCacheKey(string cacheKeyPrefix, long jobId) => $"{cacheKeyPrefix}_{jobId}";
 
-        private async Task<IReliableDictionary2<long,JobModel>> GetJobCollection()
+        private async Task<IReliableDictionary2<long, JobModel>> GetJobCollection()
         {
             return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<long, JobModel>>(JobCacheKey);
         }
@@ -55,7 +55,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             }
 
             await jobCache.AddOrUpdateAsync(reliableTransactionProvider.Current, job.DcJobId.Value,
-                id => job, (id,existingJob) => job, TransactionTimeout, cancellationToken)
+                id => job, (id, existingJob) => job, TransactionTimeout, cancellationToken)
                 .ConfigureAwait(false);
 
             if (job.Id == 0)
@@ -63,8 +63,17 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             return true;
         }
 
-        public async Task SaveJobStatus(long jobId, JobStatus jobStatus, DateTimeOffset endTime,  CancellationToken cancellationToken)
+        public async Task SaveJobStatus(long jobId, JobStatus jobStatus, DateTimeOffset endTime, CancellationToken cancellationToken)
         {
+            var job = await GetJob(jobId, cancellationToken).ConfigureAwait(false);
+            if (job == null)
+                throw new InvalidOperationException($"Job not stored in the cache. Job: {jobId}");
+            job.Status = jobStatus;
+            job.EndTime = endTime;
+            var collection = await GetJobCollection().ConfigureAwait(false);
+            await collection.AddOrUpdateAsync(reliableTransactionProvider.Current, jobId, job, (key, value) => job,
+                    TransactionTimeout, cancellationToken)
+                .ConfigureAwait(false);
             await dataContext.SaveJobStatus(jobId, jobStatus, endTime, cancellationToken).ConfigureAwait(false);
         }
 
@@ -162,7 +171,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
         }
 
 
-        private async Task<IReliableDictionary2<long,(bool hasFailedMessages, DateTimeOffset? endTime)>> GetJobStatusCollection(long jobId)
+        private async Task<IReliableDictionary2<long, (bool hasFailedMessages, DateTimeOffset? endTime)>> GetJobStatusCollection(long jobId)
         {
             return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<long, (bool hasFailedMessages, DateTimeOffset? endTime)>>(JobStatusCacheKey).ConfigureAwait(false);
         }

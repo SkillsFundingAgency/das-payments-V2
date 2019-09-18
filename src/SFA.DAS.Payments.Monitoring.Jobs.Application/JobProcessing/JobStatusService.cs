@@ -31,6 +31,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         public async Task<JobStatus> ManageStatus(long jobId, CancellationToken cancellationToken)
         {
             logger.LogVerbose($"Now determining if job {jobId} has finished.");
+            var job = await jobStorageService.GetJob(jobId, cancellationToken).ConfigureAwait(false);
+            if (job != null && job.Status != JobStatus.InProgress)
+            {
+                logger.LogWarning($"Job {jobId} has already finished. Status: {job.Status}");
+                return job.Status;
+            }
+
             var inProgressMessages = await jobStorageService.GetInProgressMessageIdentifiers(jobId, cancellationToken)
                 .ConfigureAwait(false);
             var completedItems = await GetCompletedMessages(jobId, inProgressMessages, cancellationToken).ConfigureAwait(false);
@@ -56,7 +63,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 return JobStatus.InProgress;
             }
             
-            var job = await jobStorageService.GetJob(jobId, cancellationToken);
+            job = await jobStorageService.GetJob(jobId, cancellationToken);
             if (job == null)
             {
                 logger.LogWarning($"Attempting to record completion status for job {jobId} but the job has not been persisted to database.");
@@ -73,6 +80,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             logger.LogInfo($"Finished recording completion status of job. Job: {job.Id}, status: {job.Status}, end time: {job.EndTime}");
             return job.Status;
         }
+
 
         private async Task<List<CompletedMessage>> GetCompletedMessages(long jobId, List<Guid> inProgressMessages, CancellationToken cancellationToken)
         {

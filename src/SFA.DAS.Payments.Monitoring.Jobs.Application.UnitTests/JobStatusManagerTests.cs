@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .Returns(mockScope.Object);
             mocker.Mock<IJobServiceConfiguration>()
                 .Setup(x => x.JobStatusInterval)
-                .Returns(TimeSpan.FromMilliseconds(500));
+                .Returns(TimeSpan.FromMilliseconds(100));
         }
 
         [Test]
@@ -39,10 +39,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         {
             var manager = mocker.Create<JobStatusManager>();
             var cancellationTokenSource = new CancellationTokenSource();
-            cancellationTokenSource.CancelAfter(1000);
-            await manager.Start(cancellationTokenSource.Token).ConfigureAwait(false);
-            manager.StartMonitoringJob(99, JobType.EarningsJob);
-            await Task.Delay(600,cancellationTokenSource.Token).ConfigureAwait(false);
+            cancellationTokenSource.CancelAfter(10000);
+            try
+            {
+                _ = manager.Start(cancellationTokenSource.Token).ConfigureAwait(false);
+                manager.StartMonitoringJob(99, JobType.EarningsJob);
+                await Task.Delay(1000, cancellationTokenSource.Token).ConfigureAwait(false);
+            }
+            catch (TaskCanceledException) { }
+            catch (OperationCanceledException) { }
             mocker.Mock<IJobStatusService>()
                 .Verify(svc => svc.ManageStatus(It.Is<long>(id => id == 99), It.IsAny<CancellationToken>()));
         }

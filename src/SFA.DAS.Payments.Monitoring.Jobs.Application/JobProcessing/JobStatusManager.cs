@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
     {
         private readonly IPaymentLogger logger;
         private readonly IUnitOfWorkScopeFactory scopeFactory;
-        private readonly ConcurrentDictionary<long, JobType> currentJobs;
+        private readonly ConcurrentDictionary<long, JobStatus> currentJobs;
         private CancellationToken cancellationToken;
         private readonly TimeSpan interval;
         public JobStatusManager(IPaymentLogger logger, IUnitOfWorkScopeFactory scopeFactory, IJobServiceConfiguration configuration)
@@ -28,12 +28,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
             interval = configuration.JobStatusInterval;
-            currentJobs = new ConcurrentDictionary<long, JobType>();
+            currentJobs = new ConcurrentDictionary<long, JobStatus>();
         }
 
-        public Task Start(CancellationToken cancellationToken)
+        public Task Start(CancellationToken suppliedCancellationToken)
         {
-            this.cancellationToken = cancellationToken;
+            this.cancellationToken = suppliedCancellationToken;
             return Run();
         }
 
@@ -43,6 +43,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             {
                 var tasks = currentJobs.Select(job => CheckJobStatus(job.Key)).ToList();
                 await Task.WhenAll(tasks).ConfigureAwait(false);
+                var completedJobs = currentJobs.Where(item => item.Value != JobStatus.InProgress).ToList();
+                foreach (var completedJob in completedJobs)
+                {
+                    if (!currentJobs.TryRemove(completedJob.Key, out _))
+                        logger.LogWarning($"Couldn't remove completed job from jobs list.  JOb: {completedJob.Key}, status: {completedJob.Value}");
+                }
                 await Task.Delay(interval, cancellationToken).ConfigureAwait(false);
             }
         }
@@ -56,8 +62,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                     try
                     {
                         var jobStatusService = scope.Resolve<IJobStatusService>();
-                        await jobStatusService.ManageStatus(jobId, cancellationToken).ConfigureAwait(false);
+                        var status = await jobStatusService.ManageStatus(jobId, cancellationToken).ConfigureAwait(false);
                         await scope.Commit();
+                        currentJobs[jobId] = status;
                     }
                     catch (Exception ex)
                     {
@@ -75,7 +82,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
         public void StartMonitoringJob(long jobId, JobType jobType)
         {
-            currentJobs.AddOrUpdate(jobId,jobType,(key,currentJobType)=> jobType);
+            currentJobs.AddOrUpdate(jobId, JobStatus.InProgress, (key, status) => status);
         }
     }
 }
