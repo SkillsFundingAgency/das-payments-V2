@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockStatusChangedService.Handlers
                     dataLockStatusChangeMessages = await dataLockEventProcessor.ProcessDataLockFailure(message).ConfigureAwait(false);
                     break;
             }
-
+            
             await Task.WhenAll(dataLockStatusChangeMessages.Select(context.Publish)).ConfigureAwait(false);
 
             paymentLogger.LogDebug($"Processed {message.GetType().Name} event for UKPRN {message.Ukprn}, generated {dataLockStatusChangeMessages.Count} events");
