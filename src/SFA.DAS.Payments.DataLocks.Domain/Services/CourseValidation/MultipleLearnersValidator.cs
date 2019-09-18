@@ -51,7 +51,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             var duplicates = allDuplicateApprenticeships
                 .Where(x => x.Uln == dataLockValidationModel.Apprenticeship.Uln &&
                             x.Status == ApprenticeshipStatus.Active &&
-                            x.Id != dataLockValidationModel.Apprenticeship.Id)
+                            x.Id != dataLockValidationModel.Apprenticeship.Id &&
+                            x.Ukprn != dataLockValidationModel.Apprenticeship.Ukprn)
                 .ToList();
 
          

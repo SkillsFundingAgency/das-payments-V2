@@ -26,6 +26,7 @@ namespace SFA.DAS.Payments.Model.Core.Audit
         decimal CompletionAmount { get; set; }
         decimal InstalmentAmount { get; set; }
         short NumberOfInstalments { get; set; }
+        DateTime? LearningStartDate { get; set; }
     }
 
     public abstract class PaymentsEventModel : IPaymentsEventModel
@@ -39,6 +40,7 @@ namespace SFA.DAS.Payments.Model.Core.Audit
         public decimal CompletionAmount { get; set; }
         public decimal InstalmentAmount { get; set; }
         public short NumberOfInstalments { get; set; }
+        public DateTime? LearningStartDate { get; set; }
         public byte CollectionPeriod { get; set; }
         public string LearnerReferenceNumber { get; set; }
         public long LearnerUln { get; set; }

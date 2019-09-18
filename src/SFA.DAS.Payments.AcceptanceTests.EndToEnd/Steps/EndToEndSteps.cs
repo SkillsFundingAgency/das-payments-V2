@@ -251,7 +251,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Then(@"a Submission (.*) Event is received")]
-        public async void ThenASubmissionSuccessEventIsReceived(string outcome)
+        public async Task ThenASubmissionSuccessEventIsReceived(string outcome)
         {
             var dcHelper = Scope.Resolve<IDcHelper>();
             await dcHelper.SendIlrSubmissionEvent(TestSession.Provider.Ukprn, AcademicYear, CollectionPeriod,

@@ -295,19 +295,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the following apprenticeships already exist with Employer Type ""(.*)""")]
-        public async void GivenTheFollowingApprenticeshipsAlreadyExistWithEmployerType(string employerType, Table table)
+        public async Task GivenTheFollowingApprenticeshipsAlreadyExistWithEmployerType(string employerType, Table table)
         {
             PreviousApprovalsApprenticeships = table.CreateSet<ApprovalsApprenticeship>().ToList();
             PreviousApprovalsApprenticeships.ForEach(appr => appr.EmployerType = employerType);
             await SavePreviousApprenticeships();
         }
 
-
         [Given(@"the following apprenticeships already exist")]
         public async Task GivenTheFollowingApprenticeshipsAlreadyExist(Table table)
         {
             PreviousApprovalsApprenticeships = table.CreateSet<ApprovalsApprenticeship>().ToList();
-            await SavePreviousApprenticeships();
+            await SavePreviousApprenticeships().ConfigureAwait(false);
         }
 
         private async Task SavePreviousApprenticeships()
@@ -318,8 +317,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 apprenticeshipSpec.Id = apprenticeshipId;
                 TestDataContext.ClearApprenticeshipData(apprenticeshipId);
                 var apprenticeship = CreateApprenticeshipModel(apprenticeshipSpec);
-                await TestDataContext.Apprenticeship.AddAsync(apprenticeship);
-                await TestDataContext.SaveChangesAsync();
+                await TestDataContext.Apprenticeship.AddAsync(apprenticeship).ConfigureAwait(false);
+                await TestDataContext.SaveChangesAsync().ConfigureAwait(false);
 
                 Console.WriteLine($"Existing Apprenticeship Created: {apprenticeship.ToJson()}");
             }
@@ -339,13 +338,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 var newPriceEpisode = CreateApprenticeshipPriceEpisode(apprenticeship.Id, priceEpisode);
 
-                await TestDataContext.ApprenticeshipPriceEpisode.AddAsync(newPriceEpisode);
-                await TestDataContext.SaveChangesAsync();
+                await TestDataContext.ApprenticeshipPriceEpisode.AddAsync(newPriceEpisode).ConfigureAwait(false);
+                await TestDataContext.SaveChangesAsync().ConfigureAwait(false);
 
                 apprenticeship.PriceEpisodes.Add(priceEpisode);
 
-                Console.WriteLine($"Existing Apprenticeship Created: {newPriceEpisode.ToJson()}");
-
+                Console.WriteLine($"ApprenticeshipPriceEpisode Created: {newPriceEpisode.ToJson()}");
             }
         }
 
