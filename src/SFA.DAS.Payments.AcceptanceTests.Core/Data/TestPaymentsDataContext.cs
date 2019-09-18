@@ -86,16 +86,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             delete from Payments2.SubmittedLearnerAim where Ukprn = {0}
         ";
 
-        public void ClearApprenticeshipData(long apprenticeshipId)
+        public void ClearApprenticeshipData(long apprenticeshipId, long uln)
         {
             const string deleteApprenticeshipData = @"
-                delete from Payments2.[ApprenticeshipDuplicate] where ApprenticeshipId = {0}
-                delete from Payments2.[ApprenticeshipPause] where ApprenticeshipId = {0}
-                delete from Payments2.[ApprenticeshipPriceEpisode] where ApprenticeshipId = {0}
-                delete from Payments2.[Apprenticeship] where id = {0}
+                delete from Payments2.[ApprenticeshipDuplicate] where ApprenticeshipId in (select Id from Payments2.Apprenticeship where Id = {0} or Uln = {1})
+                delete from Payments2.[ApprenticeshipPause] where ApprenticeshipId in (select Id from Payments2.Apprenticeship where Id = {0} or Uln = {1})
+                delete from Payments2.[ApprenticeshipPriceEpisode] where ApprenticeshipId in (select Id from Payments2.Apprenticeship where Id = {0} or Uln = {1})
+                delete from Payments2.[Apprenticeship] where Id = {0} or Uln = {1}
             ";
 
-            Database.ExecuteSqlCommand(deleteApprenticeshipData, apprenticeshipId);
+            Database.ExecuteSqlCommand(deleteApprenticeshipData, apprenticeshipId, uln);
         }
 
         public void ClearJobId(long jobId)

@@ -207,7 +207,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     apprenticeship.ApprenticeshipPriceEpisodes = group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
 
                     if (isNew)
-                        Scope.Resolve<TestPaymentsDataContext>().ClearApprenticeshipData(apprenticeship.Id);
+                        Scope.Resolve<TestPaymentsDataContext>().ClearApprenticeshipData(apprenticeship.Id, apprenticeship.Uln);
 
                     await ApprenticeshipHelper.AddApprenticeship(apprenticeship, DataContext).ConfigureAwait(false);
                     specApprenticeship.ApprenticeshipId = apprenticeship.Id;
