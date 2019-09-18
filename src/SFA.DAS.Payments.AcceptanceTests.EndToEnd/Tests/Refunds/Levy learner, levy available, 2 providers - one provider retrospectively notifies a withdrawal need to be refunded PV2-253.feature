@@ -1,3 +1,4 @@
+@basic_refund
 Feature: One Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded PV2-253
 	As a provider,
 	I want a levy learner, where levy is available the provider retrospectively notifies a withdrawal and previously paid monthly instalments are refunded
