@@ -15,6 +15,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         {
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer(connectionString, options => options.CommandTimeout(600));
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
