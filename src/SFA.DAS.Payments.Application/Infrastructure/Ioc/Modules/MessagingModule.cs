@@ -1,8 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Autofac;
 using NServiceBus;
 using NServiceBus.Features;
+using NServiceBus.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Messaging.Telemetry;
 using SFA.DAS.Payments.Core.Configuration;
@@ -13,8 +14,13 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<MessagingLoggerFactory>();
+            builder.RegisterType<MessagingLogger>();
+
             builder.Register((c, p) =>
             {
+                LogManager.UseFactory(c.Resolve<MessagingLoggerFactory>());
+
                 var config = c.Resolve<IApplicationConfiguration>();
                 var endpointConfiguration = new EndpointConfiguration(config.EndpointName);
 
