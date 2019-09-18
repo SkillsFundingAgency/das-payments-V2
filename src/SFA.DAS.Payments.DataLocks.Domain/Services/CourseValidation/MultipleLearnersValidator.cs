@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.DataLocks.Domain.Infrastructure;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
@@ -15,6 +17,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
     {
         private readonly IDataLockLearnerCache dataLockLearnerCache;
         private readonly ICalculatePeriodStartAndEndDate calculatePeriodStartAndEndDate;
+        private const int allowedOverlapDurationInMonths = 2;
 
         public MultipleLearnersValidator(IDataLockLearnerCache dataLockLearnerCache, ICalculatePeriodStartAndEndDate calculatePeriodStartAndEndDate)
         {
@@ -28,19 +31,19 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes;
         }
 
-        protected override  bool FailedValidation(DataLockValidationModel dataLockValidationModel, List<ApprenticeshipPriceEpisodeModel> validApprenticeshipPriceEpisodes)
+        protected override bool FailedValidation(DataLockValidationModel dataLockValidationModel, List<ApprenticeshipPriceEpisodeModel> validApprenticeshipPriceEpisodes)
         {
-            var apprenticeshipActualStartDate = GetApprenticeshipActualStartDate(dataLockValidationModel.Apprenticeship);
-            var apprenticeshipActualEndDate = GetApprenticeshipEstimatedEndDate(dataLockValidationModel.Apprenticeship);
+            var currentApprenticeshipPriceEpisode = GetLatestApprenticeshipPriceEpisodes(dataLockValidationModel.Apprenticeship);
 
             var earningPeriodDate = calculatePeriodStartAndEndDate
                 .GetPeriodDate(dataLockValidationModel.EarningPeriod.Period, dataLockValidationModel.AcademicYear);
 
-            if (apprenticeshipActualStartDate >= earningPeriodDate.periodEndDate ||
-                apprenticeshipActualEndDate <= earningPeriodDate.periodStartDate)
+            // Is Apprenticeship active within period
+            if (dataLockValidationModel.Apprenticeship.EstimatedStartDate >= earningPeriodDate.periodEndDate ||
+                currentApprenticeshipPriceEpisode.EndDate.HasValue && currentApprenticeshipPriceEpisode.EndDate <= earningPeriodDate.periodStartDate)
                 return false;
 
-            var allDuplicateApprenticeships =  dataLockLearnerCache
+            var allDuplicateApprenticeships = dataLockLearnerCache
                 .GetDuplicateApprenticeships()
                 .Result;
 
@@ -50,53 +53,61 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             // Apprenticeship has a duplicate
             var duplicates = allDuplicateApprenticeships
                 .Where(x => x.Uln == dataLockValidationModel.Apprenticeship.Uln &&
-                            x.Status == ApprenticeshipStatus.Active &&
                             x.Id != dataLockValidationModel.Apprenticeship.Id &&
                             x.Ukprn != dataLockValidationModel.Apprenticeship.Ukprn)
                 .ToList();
 
-         
+
             if (!duplicates.Any())
                 return false;
-            
-            foreach (var duplicate in duplicates)
+
+            var duplicateApprenticeshipsActiveWithinPeriod = duplicates
+                .Where(x => IsActiveInPeriod(x, earningPeriodDate.periodStartDate) &&
+                            IsActiveInPeriod(x, earningPeriodDate.periodStartDate.AddMonths(1)))
+                .ToList();
+
+
+            if (!duplicateApprenticeshipsActiveWithinPeriod.Any())
             {
-                var duplicateActualStartDate = GetApprenticeshipActualStartDate(duplicate);
-                var duplicateActualEndDate = GetApprenticeshipEstimatedEndDate(duplicate);
+                return false;
+            }
 
-                if (duplicateActualStartDate >= earningPeriodDate.periodEndDate ||
-                    duplicateActualEndDate <= earningPeriodDate.periodStartDate)
-                    continue;
-
-                // check if they have the same date range 
-                if (apprenticeshipActualStartDate < duplicateActualEndDate && duplicateActualStartDate < apprenticeshipActualEndDate)
+            foreach (var duplicate in duplicateApprenticeshipsActiveWithinPeriod)
+            {
+                // check if they overlap
+                var duplicateEndDateToUse = duplicate.StopDate ?? duplicate.EstimatedEndDate;
+                if (dataLockValidationModel.Apprenticeship.EstimatedStartDate < duplicateEndDateToUse &&
+                    duplicate.EstimatedStartDate < dataLockValidationModel.Apprenticeship.EstimatedEndDate)
                 {
                     return true;
                 }
             }
-            
+
             return false;
         }
 
-        private static DateTime GetApprenticeshipEstimatedEndDate(ApprenticeshipModel apprenticeship)
+        private ApprenticeshipPriceEpisodeModel GetLatestApprenticeshipPriceEpisodes(ApprenticeshipModel apprenticeship)
         {
-            var latestApprenticeshipPriceEpisode = apprenticeship
-                .ApprenticeshipPriceEpisodes
+            var latestApprenticeshipPriceEpisodes = apprenticeship.ApprenticeshipPriceEpisodes
                 .Where(x => !x.Removed)
-                .OrderByDescending(x => x.EndDate)
+                .OrderByDescending(x => x.StartDate)
                 .First();
-
-            return latestApprenticeshipPriceEpisode.EndDate ?? DateTime.MaxValue;
+            return latestApprenticeshipPriceEpisodes;
         }
 
-        private static DateTime GetApprenticeshipActualStartDate(ApprenticeshipModel apprenticeship)
+        private bool IsActiveInPeriod(ApprenticeshipModel apprenticeship, DateTime periodStartDate)
         {
-            var apprenticeshipActualStartDate = apprenticeship.ApprenticeshipPriceEpisodes
-                .Where(x => !x.Removed)
-                .OrderBy(x => x.StartDate)
-                .First().StartDate;
-            return apprenticeshipActualStartDate;
+            var periodEndDate = periodStartDate.AddDays(-1).AddMonths(1);
+            var latestApprenticeshipPriceEpisode = GetLatestApprenticeshipPriceEpisodes(apprenticeship);
+
+            return !(apprenticeship.EstimatedStartDate >= periodEndDate ||
+                    apprenticeship.EstimatedEndDate <= periodStartDate ||
+                    latestApprenticeshipPriceEpisode.EndDate.HasValue &&
+                    latestApprenticeshipPriceEpisode.EndDate <= periodStartDate ||
+                    apprenticeship.StopDate.HasValue && apprenticeship.StopDate <= periodEndDate);
+
         }
+
     }
 
 }
