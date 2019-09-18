@@ -40,11 +40,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             await jobStorageService.StoreCompletedMessage(completedMessage,cancellationToken);
 
             logger.LogVerbose($"Stored completed message. Now storing {jobMessageStatus.GeneratedMessages.Count} in progress messages generated while processing message: {completedMessage.MessageId} for job: {completedMessage.JobId}");
-            await jobStorageService.StoreInProgressMessageIdentifiers(jobMessageStatus.JobId,
-                jobMessageStatus.GeneratedMessages.Select(message => message.MessageId).ToList(), cancellationToken);
+            await jobStorageService.StoreInProgressMessages(jobMessageStatus.JobId,
+                jobMessageStatus.GeneratedMessages.Select(message => new InProgressMessage
+                {
+                    MessageId = message.MessageId, JobId = jobMessageStatus.JobId, MessageName = message.MessageName
+                }).ToList(), cancellationToken);
 
             logger.LogDebug($"Recorded completion of message processing.  Job Id: {jobMessageStatus.JobId}, Message id: {jobMessageStatus.Id}.");
         }
-
     }
 }

@@ -41,38 +41,38 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         //public static async Task AddInProgressMessage(this IJobStorageService jobStorageService, Guid id, CancellationToken cancellationToken)
         //{
-        //    var inProgressMessages = await jobStorageService.GetInProgressMessageIdentifiers(cancellationToken).ConfigureAwait(false);
+        //    var inProgressMessages = await jobStorageService.GetInProgressMessages(cancellationToken).ConfigureAwait(false);
         //    if (cancellationToken.IsCancellationRequested)
         //        return;
         //    if (inProgressMessages.Contains(id))
         //        return;
         //    inProgressMessages.Add(id);
-        //    await jobStorageService.StoreInProgressMessageIdentifiers(inProgressMessages, cancellationToken).ConfigureAwait(false);
+        //    await jobStorageService.StoreInProgressMessages(inProgressMessages, cancellationToken).ConfigureAwait(false);
         //}
 
         //public static async Task AddInProgressMessages(this IJobStorageService jobStorageService, List<Guid> ids, CancellationToken cancellationToken)
         //{
-        //    var inProgressMessages = await jobStorageService.GetInProgressMessageIdentifiers(cancellationToken).ConfigureAwait(false);
+        //    var inProgressMessages = await jobStorageService.GetInProgressMessages(cancellationToken).ConfigureAwait(false);
         //    if (cancellationToken.IsCancellationRequested)
         //        return;
         //    inProgressMessages.AddRange(ids.Where(id => !inProgressMessages.Contains(id)));
-        //    await jobStorageService.StoreInProgressMessageIdentifiers(inProgressMessages, cancellationToken).ConfigureAwait(false);
+        //    await jobStorageService.StoreInProgressMessages(inProgressMessages, cancellationToken).ConfigureAwait(false);
         //}
 
         //public static async Task RemoveInProgressMessage(this IJobStorageService jobStorageService, Guid id, CancellationToken cancellationToken)
         //{
-        //    var inProgressMessages = await jobStorageService.GetInProgressMessageIdentifiers(cancellationToken).ConfigureAwait(false);
+        //    var inProgressMessages = await jobStorageService.GetInProgressMessages(cancellationToken).ConfigureAwait(false);
         //    if (cancellationToken.IsCancellationRequested)
         //        return;
         //    if (!inProgressMessages.Contains(id))
         //        return;
         //    inProgressMessages.Remove(id);
-        //    await jobStorageService.StoreInProgressMessageIdentifiers(inProgressMessages, cancellationToken).ConfigureAwait(false);
+        //    await jobStorageService.StoreInProgressMessages(inProgressMessages, cancellationToken).ConfigureAwait(false);
         //}
 
         //public static async Task<bool> HasInProgressMessage(this IJobStorageService jobStorageService, Guid id, CancellationToken cancellationToken)
         //{
-        //    var inProgressMessages = await jobStorageService.GetInProgressMessageIdentifiers(cancellationToken).ConfigureAwait(false);
+        //    var inProgressMessages = await jobStorageService.GetInProgressMessages(cancellationToken).ConfigureAwait(false);
         //    return inProgressMessages.Contains(id);
         //}
     }

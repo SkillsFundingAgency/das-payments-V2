@@ -51,8 +51,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .Setup(cache => cache.TryGetValue(It.IsAny<string>(), out job))
                 .Returns(true);
             mocker.Mock<IJobStorageService>()
-                .Setup(x => x.GetInProgressMessageIdentifiers( It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<Guid>());
+                .Setup(x => x.GetInProgressMessages( It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<InProgressMessage>());
 
         }
 
@@ -111,10 +111,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             await service.RecordNewJobAdditionalMessages(jobStarted, CancellationToken.None);
 
             mocker.Mock<IJobStorageService>()
-                .Verify(x => x.StoreInProgressMessageIdentifiers(It.Is<long>(jobId => jobId == jobStarted.JobId), It.Is<List<Guid>>(identifiers =>
+                .Verify(x => x.StoreInProgressMessages(It.Is<long>(jobId => jobId == jobStarted.JobId), It.Is<List<InProgressMessage>>(identifiers =>
                     identifiers.Count == 2 &&
-                    identifiers.Contains(generatedMessageA.MessageId) &&
-                    identifiers.Contains(generatedMessageB.MessageId)), It.IsAny<CancellationToken>()), Times.Once);
+                    identifiers.Exists(inProgress => inProgress.MessageId== generatedMessageA.MessageId) &&
+                    identifiers.Exists(inProgress => inProgress.MessageId == generatedMessageB.MessageId)), It.IsAny<CancellationToken>()), Times.Once);
         }
 
 
@@ -150,10 +150,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             await service.RecordNewJob(jobStarted);
 
             mocker.Mock<IJobStorageService>()
-                .Verify(x => x.StoreInProgressMessageIdentifiers(It.Is<long>(jobId => jobId == jobStarted.JobId), It.Is<List<Guid>>(identifiers =>
+                .Verify(x => x.StoreInProgressMessages(It.Is<long>(jobId => jobId == jobStarted.JobId), It.Is<List<InProgressMessage>>(identifiers =>
                     identifiers.Count == 2 &&
-                    identifiers.Contains(generatedMessageA.MessageId) &&
-                    identifiers.Contains(generatedMessageB.MessageId)), It.IsAny<CancellationToken>()), Times.Once);
+                    identifiers.Exists(inProgress => inProgress.MessageId == generatedMessageA.MessageId) &&
+                    identifiers.Exists(inProgress => inProgress.MessageId == generatedMessageB.MessageId)), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

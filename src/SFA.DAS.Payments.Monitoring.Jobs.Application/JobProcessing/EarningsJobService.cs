@@ -46,18 +46,27 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             };
             var isNewJob = await jobStorageService.StoreNewJob(jobDetails, CancellationToken.None);
             logger.LogDebug($"Finished storing new job: {jobDetails.Id} for dc job id: {jobDetails.DcJobId}, Ukprn: {earningsJobRequest.Ukprn}. Now storing the job messages.");
-            await jobStorageService.StoreInProgressMessageIdentifiers(earningsJobRequest.JobId,
-                earningsJobRequest.GeneratedMessages.Select(message => message.MessageId).ToList(), cancellationToken);
+            await RecordJobInProgressMessages(earningsJobRequest.JobId,earningsJobRequest.GeneratedMessages,cancellationToken).ConfigureAwait(false);
             logger.LogDebug($"Finished storing new job messages for job: {jobDetails.Id} for dc job id: {jobDetails.DcJobId}, Ukprn: {earningsJobRequest.Ukprn}.");
             if (isNewJob)
                 SendTelemetry(earningsJobRequest, jobDetails);
             logger.LogInfo($"Finished saving the job info.  DC Job Id: {earningsJobRequest.JobId}, Ukprn: {earningsJobRequest.Ukprn}.");
         }
 
+        private async Task RecordJobInProgressMessages(long jobId, List<GeneratedMessage> generatedMessages, CancellationToken cancellationToken)
+        {
+            await jobStorageService.StoreInProgressMessages(jobId,
+                generatedMessages.Select(message => new InProgressMessage
+                {
+                    MessageId = message.MessageId,
+                    JobId = jobId,
+                    MessageName = message.MessageName
+                }).ToList(), cancellationToken);
+        }
+
         public async Task RecordNewJobAdditionalMessages(RecordEarningsJobAdditionalMessages earningsJobRequest, CancellationToken cancellationToken)
         {
-            await jobStorageService.StoreInProgressMessageIdentifiers(earningsJobRequest.JobId,
-                earningsJobRequest.GeneratedMessages.Select(message => message.MessageId).ToList(), cancellationToken);
+            await RecordJobInProgressMessages(earningsJobRequest.JobId, earningsJobRequest.GeneratedMessages, cancellationToken).ConfigureAwait(false);
             logger.LogDebug($"Finished storing new job messages for job: {earningsJobRequest.JobId}");
         }
 

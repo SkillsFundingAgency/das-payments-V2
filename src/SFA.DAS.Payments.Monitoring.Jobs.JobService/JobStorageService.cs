@@ -86,27 +86,26 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             return item.Value;
         }
 
-        private async Task<IReliableDictionary2<Guid, object>> GetInProgressMessagesCollection(long jobId)
+        private async Task<IReliableDictionary2<Guid, InProgressMessage>> GetInProgressMessagesCollection(long jobId)
         {
-            return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<Guid, object>>(
+            return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<Guid, InProgressMessage>>(
                 $"{InProgressMessagesCacheKey}_{jobId}");
         }
 
-        public async Task<List<Guid>> GetInProgressMessageIdentifiers(long jobId, CancellationToken cancellationToken)
+        public async Task<List<InProgressMessage>> GetInProgressMessages(long jobId, CancellationToken cancellationToken)
         {
             var inProgressCollection = await GetInProgressMessagesCollection(jobId).ConfigureAwait(false);
             var enumerator = (await inProgressCollection.CreateEnumerableAsync(reliableTransactionProvider.Current)).GetAsyncEnumerator();
-            var identifiers = new List<Guid>();
+            var identifiers = new List<InProgressMessage>();
 
             while (await enumerator.MoveNextAsync(cancellationToken))
             {
-                identifiers.Add(enumerator.Current.Key);
+                identifiers.Add(enumerator.Current.Value);
             }
             return identifiers;
         }
 
-
-        public async Task RemoveInProgressMessageIdentifiers(long jobId, List<Guid> messageIdentifiers, CancellationToken cancellationToken)
+        public async Task RemoveInProgressMessages(long jobId, List<Guid> messageIdentifiers, CancellationToken cancellationToken)
         {
             var inProgressCollection = await GetInProgressMessagesCollection(jobId).ConfigureAwait(false);
             foreach (var messageIdentifier in messageIdentifiers)
@@ -117,14 +116,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             }
         }
 
-        public async Task StoreInProgressMessageIdentifiers(long jobId, List<Guid> inProgressMessageIdentifiers, CancellationToken cancellationToken)
+        public async Task StoreInProgressMessages(long jobId, List<InProgressMessage> inProgressMessages, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var cachedInprogressItems = await GetInProgressMessagesCollection(jobId);
-            foreach (var messageIdentifier in inProgressMessageIdentifiers)
+            var inProgressMessagesCollection = await GetInProgressMessagesCollection(jobId);
+            foreach (var inProgressMessage in inProgressMessages)
             {
-                await cachedInprogressItems.AddOrUpdateAsync(reliableTransactionProvider.Current, messageIdentifier,
-                        key => messageIdentifier, (key, value) => messageIdentifier, TransactionTimeout,
+                await inProgressMessagesCollection.AddOrUpdateAsync(reliableTransactionProvider.Current, inProgressMessage.MessageId,
+                        key => inProgressMessage, (key, value) => inProgressMessage, TransactionTimeout,
                         cancellationToken)
                     .ConfigureAwait(false);
             }

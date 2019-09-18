@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 return job.Status;
             }
 
-            var inProgressMessages = await jobStorageService.GetInProgressMessageIdentifiers(jobId, cancellationToken)
+            var inProgressMessages = await jobStorageService.GetInProgressMessages(jobId, cancellationToken)
                 .ConfigureAwait(false);
             var completedItems = await GetCompletedMessages(jobId, inProgressMessages, cancellationToken).ConfigureAwait(false);
             if (!completedItems.Any())
@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            await jobStorageService.RemoveInProgressMessageIdentifiers(jobId, completedItems.Select(item => item.MessageId).ToList(), cancellationToken)
+            await jobStorageService.RemoveInProgressMessages(jobId, completedItems.Select(item => item.MessageId).ToList(), cancellationToken)
                 .ConfigureAwait(false);
             await jobStorageService.RemoveCompletedMessages(jobId, completedItems.Select(item => item.MessageId).ToList(), cancellationToken)
                 .ConfigureAwait(false);
@@ -57,7 +57,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             var currentJobStatus =
                 await UpdateJobStatus(jobId, completedItems, cancellationToken).ConfigureAwait(false);
 
-            if (!inProgressMessages.TrueForAll(messageId => completedItems.Any(item => item.MessageId == messageId)))
+            if (!inProgressMessages.TrueForAll(inProgress => completedItems.Any(item => item.MessageId == inProgress.MessageId)))
             {
                 logger.LogDebug($"Found in progress messages for job id: {jobId}.  Cannot set status for job.");
                 return JobStatus.InProgress;
@@ -82,13 +82,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         }
 
 
-        private async Task<List<CompletedMessage>> GetCompletedMessages(long jobId, List<Guid> inProgressMessages, CancellationToken cancellationToken)
+        private async Task<List<CompletedMessage>> GetCompletedMessages(long jobId, List<InProgressMessage> inProgressMessages, CancellationToken cancellationToken)
         {
             var completedMessages = await jobStorageService.GetCompletedMessages(jobId, cancellationToken)
                 .ConfigureAwait(false);
 
             var completedItems = completedMessages
-                .Where(completedMessage => inProgressMessages.Contains(completedMessage.MessageId)).ToList();
+                .Where(completedMessage => inProgressMessages.Any(inProgress => inProgress.MessageId == completedMessage.MessageId)).ToList();
 
             return completedItems;
         }

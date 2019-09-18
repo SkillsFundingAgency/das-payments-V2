@@ -11,9 +11,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
         Task<bool> StoreNewJob(JobModel job, CancellationToken cancellationToken);
         Task SaveJobStatus(long jobId, JobStatus jobStatus, DateTimeOffset endTime, CancellationToken cancellationToken);
         Task<JobModel> GetJob(long jobId, CancellationToken cancellationToken);
-        Task<List<Guid>> GetInProgressMessageIdentifiers(long jobId, CancellationToken cancellationToken);
-        Task RemoveInProgressMessageIdentifiers(long jobId, List<Guid> messageIdentifiers, CancellationToken cancellationToken);
-        Task StoreInProgressMessageIdentifiers(long jobId, List<Guid> inProgressMessageIdentifiers, CancellationToken cancellationToken);
+        Task<List<InProgressMessage>> GetInProgressMessages(long jobId, CancellationToken cancellationToken);
+        Task RemoveInProgressMessages(long jobId, List<Guid> messageIdentifiers, CancellationToken cancellationToken);
+        Task StoreInProgressMessages(long jobId, List<InProgressMessage> inProgressMessages, CancellationToken cancellationToken);
         Task<List<CompletedMessage>> GetCompletedMessages(long jobId, CancellationToken cancellationToken);
         Task RemoveCompletedMessages(long jobId, List<Guid> completedMessages, CancellationToken cancellationToken);
         Task StoreCompletedMessage(CompletedMessage completedMessage, CancellationToken cancellationToken);
