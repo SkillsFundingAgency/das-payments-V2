@@ -25,7 +25,8 @@
     <Parameter Name="TimeToPauseBetweenChecks" Value=""/>
     <Parameter Name="TimeToWaitForJobToComplete" Value=""/>
     <Parameter Name="MaximumCallbackTimeSpan" Value="" />
-    <Parameter Name="GenerateTransactionType4to16Payments" Value=""/>
+    <Parameter Name="DoNotGenerateACT1TransactionType4To16Payments" Value=""/>
+    <Parameter Name="DoNotGenerateACT2Payments" Value=""/>
   </Section>
 
 </Settings>
