@@ -15,7 +15,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data
     {
         private readonly IPaymentsDataContext dataContext;
 
-        public DataLockEventRepository(IPaymentsDataContext dataContext) 
+        public DataLockEventRepository(IPaymentsDataContext dataContext)
+        {
             this.dataContext = dataContext;
         }
 

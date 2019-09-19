@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Audit.Application.Data;
+using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.DataLock;
+using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.DataLock
@@ -13,12 +16,14 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.DataLock
     {
         private ISubmissionEventProcessor processor;
         private Mock<IDataLockEventRepository> repositoryMock;
+        private Mock<IPaymentsEventModelBatchService<DataLockEventModel>> batchService;
 
         [SetUp]
         public void SetUp()
         {
+            batchService = new Mock<IPaymentsEventModelBatchService<DataLockEventModel>>(MockBehavior.Strict);
             repositoryMock = new Mock<IDataLockEventRepository>(MockBehavior.Strict);
-            processor = new SubmissionEventProcessor(repositoryMock.Object);
+            processor = new SubmissionEventProcessor(repositoryMock.Object, batchService.Object);
         }
 
         [TearDown]
@@ -28,7 +33,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.DataLock
         }
 
         [Test]
-        public async Task TestEventsDeletedOnFailure()
+        public async Task TestCacheFlushedAndEventsDeletedOnFailure()
         {
             var submissionFailedEvent = new SubmissionFailedEvent
             {
@@ -39,6 +44,10 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.DataLock
                 IlrSubmissionDateTime = DateTime.Now
             };
 
+            batchService.Setup(b => b.StorePayments(It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+
             repositoryMock.Setup(r => r.DeleteEventsOfSubmission(4, 1, 2, submissionFailedEvent.IlrSubmissionDateTime))
                 .Returns(Task.CompletedTask)
                 .Verifiable();
@@ -47,7 +56,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.DataLock
         }
 
         [Test]
-        public async Task TestEventsDeletedOnSuccess()
+        public async Task TestCacheFlushedAndEventsDeletedOnSuccess()
         {
             var submissionSucceededEvent = new SubmissionSucceededEvent
             {
@@ -57,6 +66,10 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.DataLock
                 Ukprn = 4,
                 IlrSubmissionDateTime = DateTime.Now
             };
+
+            batchService.Setup(b => b.StorePayments(It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
 
             repositoryMock.Setup(r => r.DeleteEventsPriorToSubmission(4, 1, 2, submissionSucceededEvent.IlrSubmissionDateTime))
                 .Returns(Task.CompletedTask)
