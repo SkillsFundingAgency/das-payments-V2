@@ -16,14 +16,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
         public static async Task AddApprenticeship(ApprenticeshipModel apprenticeship, IPaymentsDataContext dataContext)
         {
             await dataContext.Apprenticeship.AddAsync(apprenticeship).ConfigureAwait(false);
-            await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
+
         public static async Task UpdateApprenticeship(long apprenticeshipId, ApprenticeshipStatus status, List<ApprenticeshipPriceEpisodeModel> priceEpisodes, IPaymentsDataContext dataContext)
         {
             var apprenticeship = await dataContext.Apprenticeship
                                      .Include(a => a.ApprenticeshipPriceEpisodes)
                                      .FirstOrDefaultAsync(a => a.Id == apprenticeshipId)
-                                 ?? throw new InvalidOperationException($"Apprenticeship not found: {apprenticeshipId}");
+                                     .ConfigureAwait(false);
+
+            if (apprenticeship == null)
+                throw new InvalidOperationException($"Apprenticeship not found: {apprenticeshipId}");
 
             apprenticeship.Status = status;
             apprenticeship.ApprenticeshipPriceEpisodes.ForEach(priceEpisode => priceEpisode.Removed = true);
