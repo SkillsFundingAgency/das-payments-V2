@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Data.Configurations;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
 
@@ -8,7 +7,7 @@ namespace SFA.DAS.Payments.Application.Repositories
 {
     public class PaymentsDataContext : DbContext, IPaymentsDataContext
     {
-        private readonly string connectionString;
+        protected readonly string connectionString;
         public DbSet<LevyAccountModel> LevyAccount { get; protected set; }
         public virtual DbSet<PaymentModel> Payment { get; set; }
         public virtual DbSet<ApprenticeshipModel> Apprenticeship { get; protected set; }
