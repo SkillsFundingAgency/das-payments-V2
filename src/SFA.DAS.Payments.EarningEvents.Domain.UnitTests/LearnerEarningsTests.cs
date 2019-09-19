@@ -11,6 +11,8 @@ using SFA.DAS.Payments.EarningEvents.Domain.Validation.Learner;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Incentives;
+using FluentAssertions;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
 {
@@ -34,12 +36,20 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
             configurationHelper = mocker.Mock<IConfigurationHelper>();
 
             configurationHelper
-                .Setup(x => x.HasSetting("Settings", "GenerateTransactionType4to16Payments"))
+                .Setup(x => x.HasSetting("Settings", "DoNotGenerateACT1TransactionType4To16Payments"))
                 .Returns(true);
 
             configurationHelper
-                .Setup(x => x.GetSetting("Settings", "GenerateTransactionType4to16Payments"))
-                .Returns("true");
+                .Setup(x => x.GetSetting("Settings", "DoNotGenerateACT1TransactionType4To16Payments"))
+                .Returns("false");
+
+            configurationHelper
+                .Setup(x => x.HasSetting("Settings", "DoNotGenerateACT2Payments"))
+                .Returns(true);
+
+            configurationHelper
+                .Setup(x => x.GetSetting("Settings", "DoNotGenerateACT2Payments"))
+                .Returns("false");
 
             validatorMock.Setup(x => x.Validate(It.IsAny<FM36Learner>())).Returns(new ValidationResult(new List<ValidationRuleResult>()));
             learner = new FM36Learner();
@@ -107,7 +117,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
         }
 
         [Test]
-        public void When_GenerateTransactionType4to16Payments_Is_False_No_FunctionalSkillEarningsEvent_Are_Generates()
+        public void When_DoNotGenerateACT1TransactionType4To16Payments_Is_True_Payments_Are_Generated_Correctly()
         {
             // arrange
             var learnerSubmission = new ProcessLearnerCommand
@@ -121,7 +131,18 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
 
             var actEarnings = new List<ApprenticeshipContractTypeEarningsEvent>
             {
-                new ApprenticeshipContractType1EarningEvent(),
+                new ApprenticeshipContractType1EarningEvent
+                {
+                    OnProgrammeEarnings = new List<OnProgrammeEarning>
+                    {
+                        new OnProgrammeEarning()
+                    },
+                    IncentiveEarnings = new List<IncentiveEarning>
+                    {
+                        new IncentiveEarning(),
+                        new IncentiveEarning()
+                    }
+                },
                 new ApprenticeshipContractType2EarningEvent(),
             };
 
@@ -132,9 +153,8 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
             };
 
             configurationHelper
-                .Setup(x => x.GetSetting("Settings", "GenerateTransactionType4to16Payments"))
-                .Returns("false");
-
+                .Setup(x => x.GetSetting("Settings", "DoNotGenerateACT1TransactionType4To16Payments"))
+                .Returns("true");
 
             actBuilder.Setup(b => b.Build(learnerSubmission)).Returns(actEarnings).Verifiable();
             functionalSkillBuilder.Setup(b => b.Build(learnerSubmission)).Returns(functionalSkillEarnings).Verifiable();
@@ -143,13 +163,76 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
             var result = mocker.Create<LearnerSubmissionProcessor>().GenerateEarnings(learnerSubmission);
             
             // assert
-            Assert.IsFalse(result.Validation.Failed);
-            Assert.AreEqual(2, result.EarningEvents.Count);
-            Assert.AreEqual(2, result.EarningEvents.OfType<ApprenticeshipContractTypeEarningsEvent>().Count());
+            result.EarningEvents.Should().HaveCount(3);
 
 
-            actBuilder.Verify(b => b.Build(learnerSubmission));
-            functionalSkillBuilder.Verify(b => b.Build(learnerSubmission), Times.Never);
+            var act1Payments = result.EarningEvents.OfType<ApprenticeshipContractType1EarningEvent>().ToList();
+            act1Payments.Should().HaveCount(1);
+            act1Payments.First().IncentiveEarnings.Should().BeEmpty();
+
+            result.EarningEvents.OfType<Act1FunctionalSkillEarningsEvent>().Should().BeEmpty();
+            
+        }
+
+        [Test]
+        public void When_DoNotGenerateACT2Payments_Is_True_Payments_Are_Generated_Correctly()
+        {
+            // arrange
+            var learnerSubmission = new ProcessLearnerCommand
+            {
+                Learner = learner,
+                CollectionYear = 1819,
+                CollectionPeriod = 1,
+                Ukprn = 12345,
+                JobId = 1
+            };
+
+            var actEarnings = new List<ApprenticeshipContractTypeEarningsEvent>
+            {
+                new ApprenticeshipContractType1EarningEvent
+                {
+                    OnProgrammeEarnings = new List<OnProgrammeEarning>
+                    {
+                        new OnProgrammeEarning()
+                    },
+                    IncentiveEarnings = new List<IncentiveEarning>
+                    {
+                        new IncentiveEarning(),
+                        new IncentiveEarning()
+                    }
+                },
+                new ApprenticeshipContractType2EarningEvent(),
+            };
+
+            var functionalSkillEarnings = new List<FunctionalSkillEarningsEvent>
+            {
+                new Act2FunctionalSkillEarningsEvent(),
+                new Act1FunctionalSkillEarningsEvent()
+            };
+
+            configurationHelper
+                .Setup(x => x.GetSetting("Settings", "DoNotGenerateACT2Payments"))
+                .Returns("true");
+
+            actBuilder.Setup(b => b.Build(learnerSubmission)).Returns(actEarnings).Verifiable();
+            functionalSkillBuilder.Setup(b => b.Build(learnerSubmission)).Returns(functionalSkillEarnings).Verifiable();
+
+            // act
+            var result = mocker.Create<LearnerSubmissionProcessor>().GenerateEarnings(learnerSubmission);
+
+            // assert
+            result.EarningEvents.Should().HaveCount(2);
+
+
+            var act1Payments = result.EarningEvents.OfType<ApprenticeshipContractType1EarningEvent>().ToList();
+            act1Payments.Should().HaveCount(1);
+            act1Payments.First().IncentiveEarnings.Should().HaveCount(2);
+
+            var functionalSkillAct1Payments = result.EarningEvents.OfType<Act1FunctionalSkillEarningsEvent>().ToList();
+            functionalSkillAct1Payments.Should().HaveCount(1);
+
+            result.EarningEvents.OfType<ApprenticeshipContractType2EarningEvent>().Should().BeEmpty();
+            result.EarningEvents.OfType<Act2FunctionalSkillEarningsEvent>().Should().BeEmpty();
 
         }
     }
