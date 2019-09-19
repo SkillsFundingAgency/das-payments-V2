@@ -195,5 +195,40 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                         It.Is<DateTimeOffset>(endTime => endTime == completedMessage.CompletedTime),
                         It.IsAny<CancellationToken>()), Times.Once());
         }
+
+        [TestCase("PayableEarningEvent")]
+        [TestCase("EarningFailedDataLockMatching")]
+        [TestCase("FunctionalSkillEarningFailedDataLockMatching")]
+        [TestCase("PayableFunctionalSkillEarningEvent")]
+        [TestCase("ProcessLearnerCommand")]
+        [TestCase("Act1FunctionalSkillEarningsEvent")]
+        [TestCase("ApprenticeshipContractType1EarningEvent")]
+        public async Task Records_DataLocks_Completion_Time_After_Processing_DataLocks_Events(string messageName)
+        {
+            var jobId = 99;
+            var completedMessage = new CompletedMessage
+            {
+                MessageId = Guid.NewGuid(),
+                JobId = job.Id,
+                Succeeded = true,
+                CompletedTime = DateTimeOffset.UtcNow,
+            };
+
+            var inProgressMessage = new InProgressMessage { MessageName = messageName, MessageId = completedMessage.MessageId };
+            inProgressMessages.Add(inProgressMessage);
+            completedMessages.Add(completedMessage);
+            mocker.Mock<IJobStorageService>()
+                .Setup(x => x.GetJobStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
+
+            var service = mocker.Create<JobStatusService>();
+            await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+            mocker.Mock<IJobStorageService>()
+                .Verify(
+                    x => x.SaveDataLocksCompletionTime(It.Is<long>(id => id == jobId),
+                        It.Is<DateTimeOffset>(endTime => endTime == completedMessage.CompletedTime),
+                        It.IsAny<CancellationToken>()), Times.Once());
+
+        }
     }
 }

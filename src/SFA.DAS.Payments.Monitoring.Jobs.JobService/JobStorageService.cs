@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Data.Collections;
@@ -191,6 +192,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
                 (hasFailedMessages: hasFailedMessages, endTime: endTime),
                 (key, value) => (hasFailedMessages: hasFailedMessages, endTime: endTime),
                 TransactionTimeout, cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken)
+        {
+            await dataContext.SaveDataLocksCompletionTime(jobId, endTime, cancellationToken).ConfigureAwait(
+                false);
         }
     }
 }

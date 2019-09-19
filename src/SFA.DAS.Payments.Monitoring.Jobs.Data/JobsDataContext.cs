@@ -21,6 +21,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task<JobModel> GetJob(long jobId);
         Task SaveJobStatus(long dcJobId, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken = default(CancellationToken));
         Task<List<JobModel>> GetInProgressJobs();
+        Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken);
     }
 
     public class JobsDataContext : DbContext, IJobsDataContext
@@ -97,6 +98,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             return await Jobs
                 .Where(job => job.Status == JobStatus.InProgress)
                 .ToListAsync();
+        }
+
+        public async Task SaveDataLocksCompletionTime(long dcJobId, DateTimeOffset endTime, CancellationToken cancellationToken)
+        {
+            var job = await Jobs.FirstOrDefaultAsync(storedJob => storedJob.DcJobId == dcJobId) ??
+                      throw new InvalidOperationException($"Job not found: {dcJobId}");
+
+            job.DataLocksCompletionTime = endTime;
+            await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<DateTimeOffset?> GetLastJobStepEndTime(long jobId)

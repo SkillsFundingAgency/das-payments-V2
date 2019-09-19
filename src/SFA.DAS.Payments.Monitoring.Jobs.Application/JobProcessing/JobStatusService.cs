@@ -12,7 +12,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
     public interface IJobStatusService
     {
         Task<JobStatus> ManageStatus(long jobId, CancellationToken cancellationToken);
-        Task StopJob();
     }
 
     public class JobStatusService : IJobStatusService
@@ -47,6 +46,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 return JobStatus.InProgress;
             }
 
+            await CompleteDataLocks(jobId, completedItems, inProgressMessages, cancellationToken)
+                .ConfigureAwait(false);
+
             cancellationToken.ThrowIfCancellationRequested();
 
             await jobStorageService.RemoveInProgressMessages(jobId, completedItems.Select(item => item.MessageId).ToList(), cancellationToken)
@@ -62,7 +64,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 logger.LogDebug($"Found in progress messages for job id: {jobId}.  Cannot set status for job.");
                 return JobStatus.InProgress;
             }
-            
+
             job = await jobStorageService.GetJob(jobId, cancellationToken);
             if (job == null)
             {
@@ -73,7 +75,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             job.Status = currentJobStatus.hasFailedMessages ? JobStatus.CompletedWithErrors : JobStatus.Completed;
             job.EndTime = currentJobStatus.endTime;
             await jobStorageService.SaveJobStatus(jobId,
-                currentJobStatus.hasFailedMessages ? JobStatus.CompletedWithErrors : JobStatus.Completed, 
+                currentJobStatus.hasFailedMessages ? JobStatus.CompletedWithErrors : JobStatus.Completed,
                 currentJobStatus.endTime.Value, cancellationToken).ConfigureAwait(false);
 
             SendTelemetry(job);
@@ -121,6 +123,54 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             return currentJobStatus;
         }
 
+        private async Task CompleteDataLocks(long jobId, List<CompletedMessage> completedMessages, List<InProgressMessage> inProgressMessages, CancellationToken cancellationToken)
+        {
+            var dataLocksMessages = new[] {
+                "FunctionalSkillEarningFailedDataLockMatching",
+                "PayableFunctionalSkillEarningEvent",
+                "PayableEarningEvent",
+                "EarningFailedDataLockMatching",
+                "ProcessLearnerCommand",
+                "Act1FunctionalSkillEarningsEvent",
+                "ApprenticeshipContractType1EarningEvent"
+            };
+            var inProgressDataLocks = inProgressMessages
+                .Where(inProgress => dataLocksMessages.Any(dlockType => inProgress.MessageName.Contains(dlockType)))
+                .ToList();
+            if (!inProgressDataLocks.Any())
+                return;
+            if (!inProgressDataLocks.All(inProgress =>
+                completedMessages.Any(completed => completed.MessageId == inProgress.MessageId)))
+                return;
+            var completionTime = completedMessages
+                .Where(completed =>
+                    inProgressDataLocks.Exists(inProgress => inProgress.MessageId == completed.MessageId))
+                .Max(completed => completed.CompletedTime);
+            await jobStorageService.SaveDataLocksCompletionTime(jobId, completionTime, cancellationToken)
+                .ConfigureAwait(false);
+
+            //var properties = new Dictionary<string, string>
+            //{
+            //    { TelemetryKeys.JobId, jobId.ToString()},
+            //    { TelemetryKeys.JobType, JobType.EarningsJob.ToString("G")},
+            //    { TelemetryKeys.Ukprn, job.Ukprn?.ToString() ?? string.Empty},
+            //    { TelemetryKeys.InternalJobId, job.DcJobId.ToString()},
+            //    { TelemetryKeys.CollectionPeriod, job.CollectionPeriod.ToString()},
+            //    { TelemetryKeys.AcademicYear, job.AcademicYear.ToString()},
+            //    { TelemetryKeys.Status, job.Status.ToString("G")}
+            //};
+
+            //var metrics = new Dictionary<string, double>
+            //{
+            //    { TelemetryKeys.Duration, (job.EndTime.Value - job.StartTime).TotalMilliseconds},
+            //};
+            //if (job.JobType == JobType.EarningsJob)
+            //    metrics.Add("Learner Count", job.LearnerCount ?? 0);
+            //telemetry.TrackEvent("Finished DataLocks", properties, metrics);
+
+            logger.LogInfo($"Recorded DataLocks completion time for Job: {jobId}, completion time: {completionTime}");
+        }
+
         private void SendTelemetry(JobModel job)
         {
             var properties = new Dictionary<string, string>
@@ -143,36 +193,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             telemetry.TrackEvent("Finished Job", properties, metrics);
         }
 
-        public async Task StopJob()
-        {
-            //var job = await jobStorageService.GetJob(CancellationToken.None);
-            //if (job == null)
-            //{
-            //    logger.LogError("Cannot stop job as job has started.");  //TODO: should really be exception but not sure how runtime deals with exceptions in callbacks
-            //    return; 
-            //}
 
-            //job.Status = JobStatus.TimedOut;
-            //job.EndTime = DateTimeOffset.UtcNow;
-            //await jobStorageService.UpdateJob(job, CancellationToken.None).ConfigureAwait(false);
-            //var properties = new Dictionary<string, string>
-            //{
-            //    { TelemetryKeys.Id, job.Id.ToString()},
-            //    { TelemetryKeys.JobType, job.JobType.ToString("G")},
-            //    { TelemetryKeys.Ukprn, job.Ukprn?.ToString() ?? string.Empty},
-            //    { TelemetryKeys.ExternalJobId, job.DcJobId?.ToString() ?? string.Empty},
-            //    { TelemetryKeys.CollectionPeriod, job.CollectionPeriod.ToString()},
-            //    { TelemetryKeys.AcademicYear, job.AcademicYear.ToString()},
-            //    { TelemetryKeys.Status, job.Status.ToString("G")}
-            //};
 
-            //var metrics = new Dictionary<string, double>
-            //{
-            //    { TelemetryKeys.Duration, (job.EndTime.Value - job.StartTime).TotalMilliseconds},
-            //};
-            //if (job.JobType == JobType.EarningsJob)
-            //    metrics.Add("Learner Count", job.LearnerCount ?? 0);
-            //telemetry.TrackEvent("Job Timed Out", properties, metrics);
-        }
     }
 }
