@@ -1,4 +1,4 @@
-﻿CREATE TABLE [Payments2].[EarningsAdjustmentStatement]
+﻿CREATE TABLE [Payments2].[ProviderAdjustmentPayments]
 (
 	[Ukprn] [bigint] NOT NULL,
 	[SubmissionId] [uniqueidentifier] NOT NULL,

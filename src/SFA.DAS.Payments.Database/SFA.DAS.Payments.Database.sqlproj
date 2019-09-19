@@ -105,7 +105,7 @@
     <Build Include="Payments2\Tables\Payments2.DataLockEventNonPayablePeriodFailures.sql" />
     <Build Include="Payments2\Tables\Payments2.ApprenticeshipPause.sql" />
     <Build Include="dbo\Stored Procedures\dbo.MetricsPayments.sql" />
-    <Build Include="Payments2\Tables\Payments2.EarningsAdjustmentStatement.sql" />
+    <Build Include="Payments2\Tables\Payments2.ProviderAdjustmentPayments.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />
