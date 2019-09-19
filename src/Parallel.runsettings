@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- For more information, see https://docs.microsoft.com/en-us/visualstudio/test/configure-unit-tests-by-using-a-dot-runsettings-file?view=vs-2019  -->
+
+<RunSettings>
+  <RunConfiguration>
+    <!-- 0 = As many processes as possible, limited by number of cores on machine, 1 = Sequential (1 process), 2-> Given number of processes up to limit by number of cores on machine-->
+    <MaxCpuCount>0</MaxCpuCount>
+    <!-- Disables in-assembly parallel execution, applies to both MSTest and NUnit -->
+    <DisableParallelization>false</DisableParallelization>
+  </RunConfiguration>
+
+    <!--
+    <TestRunParameters>
+        <Parameter name="webAppUrl" value="http://localhost" />
+        <Parameter name="webAppUserName" value="Admin" />
+    </TestRunParameters>
+-->
+
+    <!-- Adapter Specific sections -->
+
+    <!-- MSTest adapter -->
+    <MSTest>
+        <MapInconclusiveToFailed>false</MapInconclusiveToFailed>
+        <CaptureTraceOutput>true</CaptureTraceOutput>
+        <DeleteDeploymentDirectoryAfterTestRunIsComplete>true</DeleteDeploymentDirectoryAfterTestRunIsComplete>
+        <DeploymentEnabled>true</DeploymentEnabled>
+        <DeployTestSourceDependencies>true</DeployTestSourceDependencies>
+        <MapNotRunnableToFailed>false</MapNotRunnableToFailed>
+        <EnableBaseClassTestMethodsFromOtherAssemblies>false</EnableBaseClassTestMethodsFromOtherAssemblies>
+        <!-- <TestTimeout>5000</TestTimeout> -->
+
+        <!-- Uncomment and update path for assembly resolution  -->
+        <!--  <AssemblyResolution>    
+                  <Directory path="D:\myfolder\bin\" includeSubDirectories="false"/>
+             </AssemblyResolution>  -->
+        <ForcedLegacyMode>false</ForcedLegacyMode>
+        <!-- 
+           <SettingsFile>a .testsettings file (require ForcedLegacyMode true) </SettingsFile>
+        -->
+    </MSTest>
+
+    <!-- NUnit3 adapter, uncomment sections to set as appropriate, numeric, booleans, enums have their default values below, except RandomSeed -->
+    <!-- For documentation, see https://github.com/nunit/docs/wiki/Tips-And-Tricks -->
+    <NUnit>
+      <!--<BasePath>D:\Dev\NUnit\nunit3-vs-adapter\demo\NUnitTestDemo\bin\Release</BasePath>-->
+      <!--<PrivateBinPath>extras;more.extras</PrivateBinPath>-->
+      <DefaultTimeout>0</DefaultTimeout>
+      <!--<WorkDirectory>work</WorkDirectory>-->
+      <InternalTraceLevel>Off</InternalTraceLevel>
+      <!--<RandomSeed>1234567</RandomSeed>-->
+      <NumberOfTestWorkers>20</NumberOfTestWorkers>
+      <Verbosity>0</Verbosity>
+      <!--<UseVsKeepEngineRunning>false</UseVsKeepEngineRunning>-->
+      <!--<ShadowCopyFiles>false</ShadowCopyFiles>-->
+      <!--<DefaultTestNamePattern>{m}{a}</DefaultTestNamePattern>-->
+      <!--<DomainUsage>Single</DomainUsage>-->
+      <DumpXmlTestDiscovery>false</DumpXmlTestDiscovery>
+      <DumpXmlTestResults>false</DumpXmlTestResults>
+      <ShowInternalProperties>false</ShowInternalProperties>
+      <TestOutputXml>false</TestOutputXml>
+    </NUnit>
+</RunSettings>
+
