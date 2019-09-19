@@ -139,4 +139,7 @@
   <ItemGroup>
     <RefactorLog Include="SFA.DAS.Payments.Database.refactorlog" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="SFA.DAS.Payments.Database.publish.xml" />
+  </ItemGroup>
 </Project>

@@ -43,11 +43,11 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
                     ((ReliableStateManagerProvider) e.Context.Resolve<IReliableStateManagerProvider>()).Current = e.Instance.StateManager;
                 });
             var container = ContainerFactory.CreateContainer(builder);
-            var endpointConfiguration = container.Resolve<EndpointConfiguration>();
-            endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>
-            {
-                customizations.ExistingLifetimeScope(container);
-            });
+            //var endpointConfiguration = container.Resolve<EndpointConfiguration>();
+            //endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>
+            //{
+            //    customizations.ExistingLifetimeScope(container);
+            //});
             return container;
         }
 

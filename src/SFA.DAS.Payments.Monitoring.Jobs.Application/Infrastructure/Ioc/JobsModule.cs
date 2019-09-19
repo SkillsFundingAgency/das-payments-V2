@@ -60,6 +60,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.RegisterType<SqlExceptionService>()
                 .As<ISqlExceptionService>()
                 .SingleInstance();
+
             builder.RegisterBuildCallback(c =>
             {
                 var config = c.Resolve<IApplicationConfiguration>();

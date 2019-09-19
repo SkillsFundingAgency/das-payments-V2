@@ -1,15 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.Monitoring.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="JobService_MinReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="JobService_MinReplicaSetSize" DefaultValue="1" />
     <Parameter Name="JobService_PartitionCount" DefaultValue="1" />
-    <Parameter Name="JobService_TargetReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="JobService_TargetReplicaSetSize" DefaultValue="1" />
     <Parameter Name="JobsProxyService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="Monitoring_JobsService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="Monitoring_JobsStatusService_InstanceCount" DefaultValue="1" />
-    <Parameter Name="JobsServiceActorService_PartitionCount" DefaultValue="10" />
-    <Parameter Name="JobsServiceActorService_MinReplicaSetSize" DefaultValue="3" />
-    <Parameter Name="JobsServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
@@ -82,7 +79,18 @@
   <DefaultServices>
     <Service Name="SFA.DAS.Payments.Monitoring.Jobs.JobService" ServicePackageActivationMode="ExclusiveProcess">
       <StatefulService ServiceTypeName="SFA.DAS.Payments.Monitoring.Jobs.JobServiceType" TargetReplicaSetSize="[JobService_TargetReplicaSetSize]" MinReplicaSetSize="[JobService_MinReplicaSetSize]">
-        <UniformInt64Partition PartitionCount="[JobService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+        <!--<UniformInt64Partition PartitionCount="[JobService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />-->
+        <NamedPartition>
+          <Partition Name="0" />
+          <Partition Name="1" />
+          <Partition Name="3" />
+          <Partition Name="4" />
+          <Partition Name="5" />
+          <Partition Name="6" />
+          <Partition Name="7" />
+          <Partition Name="8" />
+          <Partition Name="9" />
+        </NamedPartition>
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
     </Service>
