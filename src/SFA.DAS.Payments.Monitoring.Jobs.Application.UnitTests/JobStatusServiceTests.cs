@@ -123,7 +123,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 Succeeded = false,
                 CompletedTime = DateTimeOffset.UtcNow
             };
-            var inProgressMessage = new InProgressMessage { MessageId = completedMessage.MessageId };
+            var inProgressMessage = new InProgressMessage { MessageId = completedMessage.MessageId, MessageName = "Message"};
             inProgressMessages.Add(inProgressMessage);
             completedMessages.Add(completedMessage);
             mocker.Mock<IJobStorageService>()
@@ -150,7 +150,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 Succeeded = true,
                 CompletedTime = DateTimeOffset.UtcNow
             };
-            var inProgressMessage = new InProgressMessage { MessageId = completedMessage.MessageId };
+            var inProgressMessage = new InProgressMessage { MessageId = completedMessage.MessageId, MessageName = "Message" };
             inProgressMessages.Add(inProgressMessage);
             completedMessages.Add(completedMessage);
             mocker.Mock<IJobStorageService>()
@@ -179,7 +179,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 Succeeded = true,
                 CompletedTime = DateTimeOffset.UtcNow
             };
-            var inProgressMessage = new InProgressMessage { MessageId = completedMessage.MessageId };
+            var inProgressMessage = new InProgressMessage { MessageId = completedMessage.MessageId, MessageName = "Message" };
             inProgressMessages.Add(inProgressMessage);
             completedMessages.Add(completedMessage);
             mocker.Mock<IJobStorageService>()

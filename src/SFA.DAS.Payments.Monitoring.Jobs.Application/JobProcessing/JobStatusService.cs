@@ -135,7 +135,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 "ApprenticeshipContractType1EarningEvent"
             };
             var inProgressDataLocks = inProgressMessages
-                .Where(inProgress => dataLocksMessages.Any(dlockType => inProgress.MessageName.Contains(dlockType)))
+                .Where(inProgress => dataLocksMessages.Any(dlockType => inProgress.MessageName?.Contains(dlockType) ?? false))
                 .ToList();
             if (!inProgressDataLocks.Any())
                 return;
