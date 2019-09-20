@@ -23,9 +23,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 
         private readonly IMessageSession messageSession;
         private readonly IPaymentLogger logger;
-        private readonly IApplicationConfiguration config;
+        private readonly IConfigurationHelper config;
 
-        public EarningsJobClient(IMessageSession messageSession, IPaymentLogger logger, IApplicationConfiguration config)
+        public EarningsJobClient(IMessageSession messageSession, IPaymentLogger logger, IConfigurationHelper config)
         {
             this.messageSession = messageSession ?? throw new ArgumentNullException(nameof(messageSession));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -51,7 +51,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                     LearnerCount = generatedMessages.Count
                 };
 
-                var partitionedEndpointName = $"{config.EndpointName}{jobId % 10}";
+                var jobsEndpointName = config.GetSettingOrDefault("Monitoring_JobsService_EndpointName", "sfa-das-payments-monitoring-jobs");
+                var partitionedEndpointName = $"{jobsEndpointName}{jobId % 10}";
                 logger.LogVerbose($"Endpoint for RecordEarningsJob for Job Id {jobId} is `{partitionedEndpointName}`");
                 await messageSession.Send(partitionedEndpointName, providerEarningsEvent).ConfigureAwait(false);
 
