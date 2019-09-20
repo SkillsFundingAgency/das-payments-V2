@@ -42,24 +42,33 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
 
         protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
         {
-            EndpointConfigurationEvents.ConfiguringEndpointName += (object sender, Payments.Application.Infrastructure.Ioc.Modules.EndpointName e) =>
+            try
             {
-                e.Name += ((NamedPartitionInformation)Partition.PartitionInfo).Name;
-            };
+                EndpointConfigurationEvents.ConfiguringEndpointName += (object sender, Payments.Application.Infrastructure.Ioc.Modules.EndpointName e) =>
+                {
+                    e.Name += ((NamedPartitionInformation)Partition.PartitionInfo).Name;
+                };
 
-            var serviceListener = new ServiceReplicaListener(context =>
-                listener = lifetimeScope.Resolve<IStatefulEndpointCommunicationListener>());
+                var serviceListener = new ServiceReplicaListener(context =>
+                    listener = lifetimeScope.Resolve<IStatefulEndpointCommunicationListener>());
 
 
-            return new List<ServiceReplicaListener>
+                return new List<ServiceReplicaListener>
+                {
+                    serviceListener,
+                };
+
+            }
+            catch (Exception e)
             {
-                serviceListener,
-            };
+                logger.LogError($"Error: {e.Message} ",e);
+                throw;
+            }
         }
 
         protected override async Task RunAsync(CancellationToken cancellationToken)
         {
-            await jobStatusManager.Start(cancellationToken);
+            await Task.WhenAll(listener.RunAsync(), jobStatusManager.Start(cancellationToken));
         }
 
         public async Task RecordEarningsJob(RecordEarningsJob message, CancellationToken cancellationToken)

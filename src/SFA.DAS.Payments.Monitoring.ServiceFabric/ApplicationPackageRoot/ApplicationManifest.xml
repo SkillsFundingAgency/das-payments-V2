@@ -50,7 +50,7 @@
       </ConfigOverride>
     </ConfigOverrides>
   </ServiceManifestImport>
-  <ServiceManifestImport>
+  <!--<ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.Monitoring.Jobs.JobsProxyServicePkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides>
       <ConfigOverride Name="Config">
@@ -75,7 +75,7 @@
         </Settings>
       </ConfigOverride>
     </ConfigOverrides>
-  </ServiceManifestImport>
+  </ServiceManifestImport>-->
   <DefaultServices>
     <Service Name="SFA.DAS.Payments.Monitoring.Jobs.JobService" ServicePackageActivationMode="ExclusiveProcess">
       <StatefulService ServiceTypeName="SFA.DAS.Payments.Monitoring.Jobs.JobServiceType" TargetReplicaSetSize="[JobService_TargetReplicaSetSize]" MinReplicaSetSize="[JobService_MinReplicaSetSize]">
@@ -94,11 +94,11 @@
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
     </Service>
-    <Service Name="SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService" ServicePackageActivationMode="ExclusiveProcess">
+    <!--<Service Name="SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.Monitoring.Jobs.JobsProxyServiceType" InstanceCount="[JobsProxyService_InstanceCount]">
         <SingletonPartition />
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
-    </Service>
+    </Service>-->
   </DefaultServices>
 </ApplicationManifest>
