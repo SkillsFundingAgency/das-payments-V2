@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Client
@@ -19,11 +20,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
     {
         private readonly IMessageSession messageSession;
         private readonly IPaymentLogger logger;
+        private readonly IConfigurationHelper config;
 
-        public JobMessageClient(IMessageSession messageSession, IPaymentLogger logger)
+        public JobMessageClient(IMessageSession messageSession, IPaymentLogger logger, IConfigurationHelper config)
         {
             this.messageSession = messageSession ?? throw new ArgumentNullException(nameof(messageSession));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
         public async Task ProcessedJobMessage(long jobId, Guid messageId, string messageName, List<GeneratedMessage> generatedMessages)
@@ -40,7 +43,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                     GeneratedMessages = generatedMessages ?? new List<GeneratedMessage>(),
                     Succeeded = true,
                 };
-                await messageSession.Send(itemProcessedEvent).ConfigureAwait(false);
+
+                var jobsEndpointName = config.GetSettingOrDefault("Monitoring_JobsService_EndpointName", "sfa-das-payments-monitoring-jobs");
+                var partitionedEndpointName = $"{jobsEndpointName}{jobId % 10}";
+                await messageSession.Send(partitionedEndpointName, itemProcessedEvent).ConfigureAwait(false);
                 logger.LogDebug($"Sent request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
             }
             catch (Exception ex)
@@ -83,7 +89,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                     GeneratedMessages = new List<GeneratedMessage>(),
                     Succeeded = false
                 };
-                await messageSession.Send(itemProcessedEvent).ConfigureAwait(false);
+
+                var jobsEndpointName = config.GetSettingOrDefault("Monitoring_JobsService_EndpointName", "sfa-das-payments-monitoring-jobs");
+                var partitionedEndpointName = $"{jobsEndpointName}{jobId % 10}";
+                await messageSession.Send(partitionedEndpointName, itemProcessedEvent).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
