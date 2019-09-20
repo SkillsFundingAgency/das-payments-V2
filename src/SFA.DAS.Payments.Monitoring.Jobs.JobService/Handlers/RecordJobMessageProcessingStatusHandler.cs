@@ -1,25 +1,44 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.ServiceFabric.Actors.Client;
 using Microsoft.ServiceFabric.Services.Remoting.Client;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Monitoring.Jobs.JobService.Interfaces;
+using SFA.DAS.Payments.Application.Infrastructure.UnitOfWork;
+using SFA.DAS.Payments.Monitoring.Jobs.Application;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
-namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService.Handlers
+namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers
 {
-    public class RecordJobMessageProcessingStatusHandler : BaseJobMessageHandler<RecordJobMessageProcessingStatus>
+    public class RecordJobMessageProcessingStatusHandler : IHandleMessages<RecordJobMessageProcessingStatus>
     {
-        public RecordJobMessageProcessingStatusHandler(IServiceProxyFactory proxyFactory,
-            IPaymentLogger logger) : base(proxyFactory, logger)
+        private readonly IUnitOfWorkScopeFactory scopeFactory;
+        private readonly IPaymentLogger logger;
+
+        public RecordJobMessageProcessingStatusHandler(IUnitOfWorkScopeFactory scopeFactory,
+            IPaymentLogger logger)
         {
+            this.scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        protected override async Task HandleMessage(RecordJobMessageProcessingStatus message, IMessageHandlerContext context, IJobService jobService, CancellationToken cancellationToken)
+        public async Task Handle(RecordJobMessageProcessingStatus message, IMessageHandlerContext context)
         {
-            await jobService.RecordJobMessageProcessingStatus(message, cancellationToken)
-                .ConfigureAwait(false);
+            using (var scope = scopeFactory.Create("JobService.RecordJobMessageProcessingStatus"))
+            {
+                try
+                {
+                    var jobMessageService = scope.Resolve<IJobMessageService>();
+                    await jobMessageService.RecordCompletedJobMessageStatus(message, CancellationToken.None).ConfigureAwait(false);
+                    await scope.Commit();
+                }
+                catch (Exception ex)
+                {
+                    scope.Abort();
+                    logger.LogWarning($"Failed to record earnings job: {message.JobId}. Error: {ex.Message}, {ex}");
+                    throw;
+                }
+            }
         }
     }
 }
