@@ -15,15 +15,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
     {
         private readonly IApprenticeshipContractTypeEarningsEventFactory factory;
         private readonly IMapper mapper;
-        private readonly IConfigurationHelper configurationHelper;
-        private readonly bool generateTransactionType4To16Payments;
-
+       
         public ApprenticeshipContractTypeEarningsEventBuilder(IApprenticeshipContractTypeEarningsEventFactory factory, IMapper mapper, IConfigurationHelper configurationHelper)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            this.configurationHelper = configurationHelper ?? throw new ArgumentNullException(nameof(configurationHelper));
-            bool.TryParse(configurationHelper.GetSettingOrDefault("GenerateTransactionType4to16Payments", "true"), out generateTransactionType4To16Payments);
         }
 
         public List<ApprenticeshipContractTypeEarningsEvent> Build(ProcessLearnerCommand learnerSubmission)
@@ -40,11 +36,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                     var learnerWithSortedPriceEpisodes = intermediateLearningAim.CopyReplacingPriceEpisodes(priceEpisodes);
                     var earningEvent = factory.Create(priceEpisodes.Key);
                     mapper.Map(learnerWithSortedPriceEpisodes, earningEvent);
-                    
-                    if(!generateTransactionType4To16Payments)
-                    {
-                        earningEvent.IncentiveEarnings = new List<IncentiveEarning>();
-                    }
                     
                     results.Add(earningEvent);
                 }

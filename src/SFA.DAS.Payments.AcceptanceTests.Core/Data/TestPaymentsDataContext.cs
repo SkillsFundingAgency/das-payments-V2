@@ -15,6 +15,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         {
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer(connectionString, options => options.CommandTimeout(600));
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -86,16 +91,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             delete from Payments2.SubmittedLearnerAim where Ukprn = {0}
         ";
 
-        public void ClearApprenticeshipData(long apprenticeshipId)
+        public async Task ClearApprenticeshipData(long apprenticeshipId, long uln)
         {
             const string deleteApprenticeshipData = @"
-                delete from Payments2.[ApprenticeshipDuplicate] where ApprenticeshipId = {0}
-                delete from Payments2.[ApprenticeshipPause] where ApprenticeshipId = {0}
-                delete from Payments2.[ApprenticeshipPriceEpisode] where ApprenticeshipId = {0}
-                delete from Payments2.[Apprenticeship] where id = {0}
+                delete from Payments2.[ApprenticeshipDuplicate] where ApprenticeshipId in (select Id from Payments2.Apprenticeship where Id = {0} or Uln = {1})
+                delete from Payments2.[ApprenticeshipPause] where ApprenticeshipId in (select Id from Payments2.Apprenticeship where Id = {0} or Uln = {1})
+                delete from Payments2.[ApprenticeshipPriceEpisode] where ApprenticeshipId in (select Id from Payments2.Apprenticeship where Id = {0} or Uln = {1})
+                delete from Payments2.[Apprenticeship] where Id = {0} or Uln = {1}
             ";
 
-            Database.ExecuteSqlCommand(deleteApprenticeshipData, apprenticeshipId);
+            await Database.ExecuteSqlCommandAsync(deleteApprenticeshipData, apprenticeshipId, uln).ConfigureAwait(false);
         }
 
         public void ClearJobId(long jobId)

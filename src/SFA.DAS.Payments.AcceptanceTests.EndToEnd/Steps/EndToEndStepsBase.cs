@@ -193,6 +193,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 .GroupBy(a => a.Identifier)
                 .ToList();
 
+            var dataContext = Scope.Resolve<TestPaymentsDataContext>();
+
             foreach (var group in groupedApprenticeships)
             {
                 var specApprenticeship = Apprenticeships.FirstOrDefault(a => a.Identifier == group.Key);
@@ -207,9 +209,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     apprenticeship.ApprenticeshipPriceEpisodes = group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
 
                     if (isNew)
-                        Scope.Resolve<TestPaymentsDataContext>().ClearApprenticeshipData(apprenticeship.Id);
+                        await dataContext.ClearApprenticeshipData(apprenticeship.Id, apprenticeship.Uln).ConfigureAwait(false);
 
-                    await ApprenticeshipHelper.AddApprenticeship(apprenticeship, DataContext).ConfigureAwait(false);
+                    await ApprenticeshipHelper.AddApprenticeship(apprenticeship, dataContext).ConfigureAwait(false);
                     specApprenticeship.ApprenticeshipId = apprenticeship.Id;
                     Apprenticeships.Add(specApprenticeship);
                 }
@@ -218,16 +220,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     var priceEpisodes = group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
                     var status = group.Last().Status?.ToApprenticeshipPaymentStatus() ??
                                  throw new InvalidOperationException($"last item not found: {group.Key}");
-                    await ApprenticeshipHelper.UpdateApprenticeship(specApprenticeship.ApprenticeshipId, status,
-                        priceEpisodes, DataContext);
+
+                    await ApprenticeshipHelper.UpdateApprenticeship(specApprenticeship.ApprenticeshipId, status, priceEpisodes, dataContext)
+                        .ConfigureAwait(false);
                 }
             }
 
+            await dataContext.SaveChangesAsync().ConfigureAwait(false);
+
             //check for duplicate apprenticeships
-            await HandleDuplicateApprenticeships();
+            await HandleDuplicateApprenticeships(dataContext).ConfigureAwait(false);
         }
 
-        private async Task HandleDuplicateApprenticeships()
+        private async Task HandleDuplicateApprenticeships(IPaymentsDataContext dataContext)
         {
             foreach (var apprenticeship in Apprenticeships)
             {
@@ -241,7 +246,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 {
                     var duplicateApprenticeshipModel =
                         ApprenticeshipHelper.CreateApprenticeshipDuplicateModel(apprenticeship.Ukprn, duplicate);
-                    await ApprenticeshipHelper.AddApprenticeshipDuplicate(duplicateApprenticeshipModel, DataContext)
+                    await ApprenticeshipHelper.AddApprenticeshipDuplicate(duplicateApprenticeshipModel, dataContext)
                         .ConfigureAwait(false);
                 }
             }

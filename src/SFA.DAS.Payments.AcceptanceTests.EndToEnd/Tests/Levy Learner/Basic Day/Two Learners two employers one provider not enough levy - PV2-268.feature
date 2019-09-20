@@ -1,4 +1,5 @@
-﻿Feature: Two Learners two employers one provider not enough levy - PV2-268
+﻿@basic_day
+Feature: Two Learners two employers one provider not enough levy - PV2-268
 	As a provider,
 	I want 2 learners with 2 employers that have 1 provider and there is not enough levy to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision.
