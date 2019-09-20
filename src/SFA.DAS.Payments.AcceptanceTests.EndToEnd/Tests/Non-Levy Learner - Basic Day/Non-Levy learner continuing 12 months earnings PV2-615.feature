@@ -1,4 +1,5 @@
-﻿@supports_dc_e2e
+﻿@basic_day
+@supports_dc_e2e
 Feature: Non-levy learner continuing 12 months earnings PV2-615
 
 Scenario Outline: Non-levy learner continuing 12 months earnings PV2-615

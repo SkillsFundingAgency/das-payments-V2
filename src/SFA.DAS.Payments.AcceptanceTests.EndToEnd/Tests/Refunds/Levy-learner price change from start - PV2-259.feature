@@ -1,4 +1,5 @@
-﻿@ignore
+﻿@basic_refund
+@ignore
 Feature: Levy-learner price change from start - PV2-259
 	As a provider,
 	I want a levy learner, where price is changed, and a negative amount is left to be paid which results in a refund
