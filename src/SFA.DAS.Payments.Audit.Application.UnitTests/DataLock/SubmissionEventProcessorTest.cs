@@ -30,6 +30,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.DataLock
         public void TearDown()
         {
             repositoryMock.Verify();
+            batchService.Verify();
         }
 
         [Test]

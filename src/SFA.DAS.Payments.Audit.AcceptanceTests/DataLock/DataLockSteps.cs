@@ -41,13 +41,43 @@ namespace SFA.DAS.Payments.Audit.AcceptanceTests.DataLock
                     AcademicYear = 1
                 };
 
-                var dataLockPayablePeriod = new DataLockPayablePeriod
+                if (submission.Failure)
                 {
-                    DataLockEventId = dataLockEvent.EventId
-                };
+                    var nonPayablePeriod = new DataLockEventNonPayablePeriod
+                    {
+                        DataLockEventId = dataLockEvent.EventId,
+                        DataLockEventNonPayablePeriodId = Guid.NewGuid()
+                    };
+
+                    dataContext.DataLockEventNonPayablePeriods.Add(nonPayablePeriod);
+
+                    var nonPayableFailures = new DataLockEventNonPayablePeriodFailures
+                    {
+                        DataLockEventNonPayablePeriodId = nonPayablePeriod.DataLockEventNonPayablePeriodId
+                    };
+
+                    dataContext.DataLockEventNonPayablePeriodFailures.Add(nonPayableFailures);
+                }
+                else
+                {
+                    var dataLockPayablePeriod = new DataLockPayablePeriod
+                    {
+                        DataLockEventId = dataLockEvent.EventId
+                    };
+
+                    dataContext.DataLockPayablePeriods.Add(dataLockPayablePeriod);
+
+                    var priceEpisode = new DataLockEventPriceEpisode
+                    {
+                        PriceEpisodeIdentifier = "1",
+                        PlannedEndDate = DateTime.Now,
+                        DataLockEventId = dataLockEvent.EventId,
+                    };
+
+                    dataContext.DataLockEventPriceEpisodes.Add(priceEpisode);
+                }
 
                 dataContext.DataLockEvents.Add(dataLockEvent);
-                dataContext.DataLockPayablePeriods.Add(dataLockPayablePeriod);
             }
 
             dataContext.SaveChanges();

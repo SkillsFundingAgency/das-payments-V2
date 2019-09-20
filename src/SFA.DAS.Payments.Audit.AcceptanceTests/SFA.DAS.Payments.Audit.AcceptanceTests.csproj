@@ -235,6 +235,10 @@
     <Compile Include="Data\AuditDataContext.cs" />
     <Compile Include="Data\Configuration\FundingSourceEventConfiguration.cs" />
     <Compile Include="Data\Entities\DataLockEvent.cs" />
+    <Compile Include="Data\Entities\DataLockEventNonPayablePeriod.cs" />
+    <Compile Include="Data\Entities\DataLockEventNonPayablePeriodFailures.cs" />
+    <Compile Include="Data\Entities\DataLockEventPriceEpisode.cs" />
+    <Compile Include="Data\Entities\DataLockPayablePeriod.cs" />
     <Compile Include="Data\Entities\FundingSourceEvent.cs" />
     <Compile Include="FundingSource\Audit Funding Source Events.feature.cs">
       <AutoGen>True</AutoGen>

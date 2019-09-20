@@ -6,5 +6,6 @@ namespace SFA.DAS.Payments.Audit.AcceptanceTests.DataLock
     {
         public DateTime SubmissionTime { get; set; }
         public string Learner { get; set; }
+        public bool Failure { get; set; }
     }
 }
