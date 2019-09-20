@@ -844,7 +844,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var ilr = CurrentIlr ?? PreviousIlr;
             ilr = ilr?.Where(o => o.Ukprn == provider.Ukprn).ToList();
 
-            expectedPayments = SetProviderPaymentAccountIds(ilr, expectedPayments);
+            var providerLearners = TestSession.Learners?.Where(c => c.Ukprn == provider.Ukprn).ToList();
+
+            var contractType = GetContractType(expectedPayments, CurrentCollectionPeriod, ilr,
+                providerLearners);
+
+            if (contractType != ContractType.Act2)
+            {
+                expectedPayments = SetProviderPaymentAccountIds(ilr, expectedPayments);
+            }
+          
             var matcher = new ProviderPaymentEventMatcher(provider, CurrentCollectionPeriod, TestSession, expectedPayments);
             await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
         }
@@ -967,12 +976,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 .ToList();
 
             var providerCurrentIlr = CurrentIlr?.Where(c => c.Ukprn == provider.Ukprn).ToList();
-
-            expectedPayments = SetProviderPaymentAccountIds(providerCurrentIlr, expectedPayments);
-
+            
             var providerLearners = TestSession.Learners?.Where(c => c.Ukprn == provider.Ukprn).ToList();
             var contractType = GetContractType(expectedPayments, CurrentCollectionPeriod, providerCurrentIlr,
                 providerLearners);
+
+            if (contractType != ContractType.Act2)
+            {
+                expectedPayments = SetProviderPaymentAccountIds(providerCurrentIlr, expectedPayments);
+            }
 
             var matcher = new ProviderPaymentModelMatcher(provider, DataContext, TestSession, CurrentCollectionPeriod, expectedPayments, contractType);
             await WaitForIt(() => matcher.MatchPayments(), "Recorded payments check failed");
