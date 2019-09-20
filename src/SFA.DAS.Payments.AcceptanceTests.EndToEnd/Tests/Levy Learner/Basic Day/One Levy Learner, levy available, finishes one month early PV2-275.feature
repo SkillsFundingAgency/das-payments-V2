@@ -1,4 +1,5 @@
-﻿Feature: One Levy learner - levy available, finishes one month early PV2-275
+﻿@basic_day
+Feature: One Levy learner - levy available, finishes one month early PV2-275
 	As a provider,
 	I want a levy learner, where levy is available and the learner finishes one month early to be paid the correct amount
 	So that I am accurately paid my apprenticeship provision.

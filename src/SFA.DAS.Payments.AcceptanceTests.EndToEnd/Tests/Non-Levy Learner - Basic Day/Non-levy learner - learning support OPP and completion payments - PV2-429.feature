@@ -1,4 +1,5 @@
-﻿#@supports_dc_e2e
+﻿@basic_day
+#@supports_dc_e2e
 Feature: Non-levy learner - learning support OPP and completion payments - PV2-429
 	In order to avoid silly mistakes
 	As a math idiot

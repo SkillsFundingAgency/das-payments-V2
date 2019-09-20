@@ -1,4 +1,5 @@
-﻿@supports_dc_e2e
+﻿@basic_day
+@supports_dc_e2e
 Feature: One Non-Levy Learner finishes early, Balancing and Completion payments made PV2-335
 
 

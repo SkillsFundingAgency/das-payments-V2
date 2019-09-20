@@ -1,4 +1,5 @@
-﻿@supports_dc_e2e
+﻿@basic_day
+@supports_dc_e2e
 Feature: One Levy learner - levy available, finishes on time PV2-261
 	As a provider,
 	I want a levy learner where levy is available that finishes on time to be paid the balancing and completion payments,
