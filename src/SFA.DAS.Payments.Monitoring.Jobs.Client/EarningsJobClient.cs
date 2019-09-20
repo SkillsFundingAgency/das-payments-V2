@@ -7,6 +7,7 @@ using System.Transactions;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
+using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
@@ -22,11 +23,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 
         private readonly IMessageSession messageSession;
         private readonly IPaymentLogger logger;
+        private readonly IApplicationConfiguration config;
 
-        public EarningsJobClient(IMessageSession messageSession, IPaymentLogger logger)
+        public EarningsJobClient(IMessageSession messageSession, IPaymentLogger logger, IApplicationConfiguration config)
         {
             this.messageSession = messageSession ?? throw new ArgumentNullException(nameof(messageSession));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.config = config;
         }
 
         public async Task StartJob(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages, DateTimeOffset startTime)
@@ -47,7 +50,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                     GeneratedMessages = generatedMessages.Take(batchSize).ToList(),
                     LearnerCount = generatedMessages.Count
                 };
-                await messageSession.Send(providerEarningsEvent).ConfigureAwait(false);
+
+                var partitionedEndpointName = $"{config.EndpointName}{jobId % 10}";
+                logger.LogVerbose($"Endpoint for RecordEarningsJob for Job Id {jobId} is `{partitionedEndpointName}`");
+                await messageSession.Send(partitionedEndpointName, providerEarningsEvent).ConfigureAwait(false);
+
                 var skip = batchSize;
 
                 while ((batch = generatedMessages.Skip(skip).Take(1000).ToList()).Count > 0)
