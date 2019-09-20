@@ -31,10 +31,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
         }
 
         [Test]
-        public async Task InitialTest()
+        public async Task SmokeTest()
         {
             // Arrange
-            DateTime testStartDateTime = DateTime.UtcNow;
+            DateTimeOffset testStartDateTime = DateTimeOffset.UtcNow;
             var startString = $"StartTime Value: {testStartDateTime:O}";
             TestContext.WriteLine(startString);
 
@@ -45,23 +45,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             var results = await orchestrator.SubmitFiles(fileList);
             var resultsList = results.ToList();
 
-
-            DateTimeOffset testEndDateTime = DateTime.UtcNow;
-            DateTime maxWaitDateTime = DateTime.UtcNow.AddMinutes(15);
+            var configuration = autofacContainer.Resolve<Configuration>();
+            DateTimeOffset testEndDateTime = DateTimeOffset.UtcNow;
+            DateTime maxWaitDateTime = DateTime.UtcNow.Add(configuration.MaxTimeout);
             while (true)
             {
                 if (DateTime.UtcNow >= maxWaitDateTime)
                     break;
 
                 await Task.Delay(15000);
-                DateTimeOffset? newDateTime = await orchestrator.GetNewDateTime(resultsList.Select(r => r.Ukprn).ToList());
+                DateTimeOffset? newDateTime =
+                    await orchestrator.GetNewDateTime(resultsList.Select(r => r.Ukprn).ToList());
 
                 if (!newDateTime.HasValue)
                 {
                     break;
                 }
 
-                if (newDateTime > testEndDateTime)
+                if (newDateTime.Value > testEndDateTime)
                 {
                     testEndDateTime = newDateTime.Value;
                 }
@@ -79,23 +80,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             resultsList.All(x => x.Status == JobStatusType.Completed).Should().BeTrue();
 
 
-           await orchestrator.VerifyResults(resultsList, testStartDateTime, testEndDateTime.DateTime, actualPercentage =>
-           {
-               if (!actualPercentage.HasValue)
-               {
-                   var nullPercentageMessage = "The returned percentage was null";
-                   TestContext.WriteLine(nullPercentageMessage);
-                   Assert.Inconclusive(nullPercentageMessage);
-               }
-               else
-               {
-                   decimal expected = 0.5m;
-                   var returnedPercentage = $"Returned Percentage: {actualPercentage.Value}";
-                   TestContext.WriteLine(returnedPercentage);
-                   actualPercentage.Should().BeLessOrEqualTo(expected);
-               }
-           });
+            await orchestrator.VerifyResults(resultsList, testStartDateTime, testEndDateTime,
+                (actualPercentage, tolerance, earningDifference) =>
+                {
+                    TestContext.WriteLine($"Earning difference between DC and DAS: {earningDifference}");
+                    earningDifference.Should().Be(0m);
 
+                    if (!actualPercentage.HasValue)
+                    {
+                        var nullPercentageMessage = "The returned percentage was null";
+                        TestContext.WriteLine(nullPercentageMessage);
+                        Assert.Inconclusive(nullPercentageMessage);
+                    }
+                    else
+                    {
+                        TestContext.WriteLine($"Returned Percentage: {actualPercentage.Value}");
+                        actualPercentage.Should().BeLessOrEqualTo(tolerance);
+                    }
+                });
         }
     }
 }
