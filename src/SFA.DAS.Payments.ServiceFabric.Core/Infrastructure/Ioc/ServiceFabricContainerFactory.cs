@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using Autofac.Integration.ServiceFabric;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
@@ -6,6 +7,7 @@ using NServiceBus;
 using NServiceBus.UnitOfWork;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
@@ -36,19 +38,27 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
 
             builder.RegisterType<StateManagerUnitOfWork>().As<IManageUnitsOfWork>().InstancePerLifetimeScope();
 
-            IContainer container;
             builder.RegisterStatefulService<TStatefulService>(typeof(TStatefulService).Namespace + "Type")
                 .OnActivating(e =>
                 {
                     ((ReliableStateManagerProvider)e.Context.Resolve<IReliableStateManagerProvider>()).Current = e.Instance.StateManager;
                 });
-            container = ContainerFactory.CreateContainer(builder);
-            EndpointConfigurationEvents.EndpointConfigured += (sender, e) =>
-            {
-                e.UseContainer<AutofacBuilder>(customizations => customizations.ExistingLifetimeScope(container));
-            };
+            var container = ContainerFactory.CreateContainer(builder);
             if (resolveEndpointConfig)
-                container.Resolve<EndpointConfiguration>();
+            {
+                var endpointConfiguration = container.Resolve<EndpointConfiguration>();
+                endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>
+                {
+                    customizations.ExistingLifetimeScope(container);
+                });
+            }
+            else
+            {
+                EndpointConfigurationEvents.EndpointConfigured += (sender, e) =>
+                {
+                    e.UseContainer<AutofacBuilder>(customizations => customizations.ExistingLifetimeScope(container));
+                };
+            }
             return container;
         }
 
