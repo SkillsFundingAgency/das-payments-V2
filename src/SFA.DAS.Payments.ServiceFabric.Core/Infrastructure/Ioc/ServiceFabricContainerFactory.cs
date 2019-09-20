@@ -1,5 +1,4 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 using Autofac.Integration.ServiceFabric;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
@@ -7,7 +6,6 @@ using NServiceBus;
 using NServiceBus.UnitOfWork;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Messaging;
-using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
@@ -45,13 +43,12 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
                     ((ReliableStateManagerProvider)e.Context.Resolve<IReliableStateManagerProvider>()).Current = e.Instance.StateManager;
                 });
             container = ContainerFactory.CreateContainer(builder);
-            EndpointConfiguration endpointConfiguration;
-            if (resolveEndpointConfig)
-                endpointConfiguration = container.Resolve<EndpointConfiguration>();
             EndpointConfigurationEvents.EndpointConfigured += (sender, e) =>
             {
                 e.UseContainer<AutofacBuilder>(customizations => customizations.ExistingLifetimeScope(container));
             };
+            if (resolveEndpointConfig)
+                container.Resolve<EndpointConfiguration>();
             return container;
         }
 
