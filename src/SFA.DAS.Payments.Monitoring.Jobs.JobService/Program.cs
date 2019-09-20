@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
         {
             try
             {
-                using (ServiceFabricContainerFactory.CreateContainerForStatefulService<JobService>())
+                using (ServiceFabricContainerFactory.CreateContainerForStatefulService<JobService>(false))
                 {
                     Thread.Sleep(Timeout.Infinite);
                 }
