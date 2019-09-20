@@ -50,6 +50,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                             ProgType = 300,
                             PwayCode = 400,
                             LearnDelInitialFundLineType = "Funding Line Type",
+                            LearnStartDate = DateTime.Today.AddDays(-5)
                         }
                     },
                     new LearningDelivery
@@ -406,6 +407,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.Should().NotBeNull();
             earningEvent.LearningAim.Reference.Should().Be("ZPROG001");
+        }
+
+        [Test]
+        public void Maps_LearnStartDate()
+        {
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
+            earningEvent.Should().NotBeNull();
+            earningEvent.StartDate.Should().Be(DateTime.Today.AddDays(-5));
         }
 
         [Test]

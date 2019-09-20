@@ -261,6 +261,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification", "SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification\SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.csproj", "{7C2D216F-C9AD-46C2-98BD-A641923F3A45}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BCC9A717-DE42-4282-9942-F406E89D9EA3}"
+	ProjectSection(SolutionItems) = preProject
+		Parallel.runsettings = Parallel.runsettings
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
