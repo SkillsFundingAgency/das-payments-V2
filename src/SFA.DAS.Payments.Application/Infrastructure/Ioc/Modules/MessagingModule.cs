@@ -20,6 +20,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 var endpointName = new EndpointName(config.EndpointName);
                 EndpointConfigurationEvents.OnConfiguringEndpoint(endpointName);
                 var endpointConfiguration = new EndpointConfiguration(endpointName.Name);
+                EndpointConfigurationEvents.OnEndpointConfigured(endpointConfiguration);
 
 
 

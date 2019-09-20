@@ -6,6 +6,7 @@ using Microsoft.ServiceFabric.Services.Runtime;
 using NServiceBus;
 using NServiceBus.UnitOfWork;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork;
 
@@ -37,17 +38,19 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
 
             builder.RegisterType<StateManagerUnitOfWork>().As<IManageUnitsOfWork>().InstancePerLifetimeScope();
 
+            IContainer container;
             builder.RegisterStatefulService<TStatefulService>(typeof(TStatefulService).Namespace + "Type")
                 .OnActivating(e =>
                 {
                     ((ReliableStateManagerProvider) e.Context.Resolve<IReliableStateManagerProvider>()).Current = e.Instance.StateManager;
                 });
-            var container = ContainerFactory.CreateContainer(builder);
-            //var endpointConfiguration = container.Resolve<EndpointConfiguration>();
-            //endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>
-            //{
-            //    customizations.ExistingLifetimeScope(container);
-            //});
+            container = ContainerFactory.CreateContainer(builder);
+
+            EndpointConfigurationEvents.EndpointConfigured += (sender, e) =>
+            {
+                e.UseContainer<AutofacBuilder>(customizations => customizations.ExistingLifetimeScope(container));
+            };
+
             return container;
         }
 

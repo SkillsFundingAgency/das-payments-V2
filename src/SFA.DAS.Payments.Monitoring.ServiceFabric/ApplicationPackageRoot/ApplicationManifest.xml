@@ -83,6 +83,7 @@
         <NamedPartition>
           <Partition Name="0" />
           <Partition Name="1" />
+          <Partition Name="2" />
           <Partition Name="3" />
           <Partition Name="4" />
           <Partition Name="5" />

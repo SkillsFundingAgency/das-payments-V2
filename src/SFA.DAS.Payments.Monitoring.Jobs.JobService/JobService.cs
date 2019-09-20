@@ -66,9 +66,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             }
         }
 
-        protected override async Task RunAsync(CancellationToken cancellationToken)
+        protected override Task RunAsync(CancellationToken cancellationToken)
         {
-            await Task.WhenAll(listener.RunAsync(), jobStatusManager.Start(cancellationToken));
+            return Task.WhenAll(listener.RunAsync(), jobStatusManager.Start(cancellationToken));
         }
 
         public async Task RecordEarningsJob(RecordEarningsJob message, CancellationToken cancellationToken)
