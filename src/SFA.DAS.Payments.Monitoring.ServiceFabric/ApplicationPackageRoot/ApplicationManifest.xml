@@ -16,7 +16,7 @@
     <Parameter Name="Monitoring_JobsService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="Monitoring_JobsService_FailureTimeoutInSeconds" DefaultValue="150" />
     <Parameter Name="Monitoring_JobsService_IntervalInSeconds" DefaultValue="10" />
-    <Parameter Name="NumberOfNServiceBusThreads" DefaultValue="4"/>
+    <Parameter Name="NumberOfNServiceBusThreads" DefaultValue="4" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
     <Parameter Name="ConsoleLogLevel" DefaultValue="" />
@@ -46,7 +46,7 @@
             <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="JobStatusCheck_Interval" Value="[JobStatusCheck_Interval]" />
             <Parameter Name="TimeToWaitForJobToComplete" Value="[TimeToWaitForJobToComplete]" />
-            <Parameter Name="NumberOfNServiceBusThreads" Value="4"/>
+            <Parameter Name="NumberOfNServiceBusThreads" Value="4" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -93,6 +93,16 @@
           <Partition Name="7" />
           <Partition Name="8" />
           <Partition Name="9" />
+          <Partition Name="10" />
+          <Partition Name="11" />
+          <Partition Name="12" />
+          <Partition Name="13" />
+          <Partition Name="14" />
+          <Partition Name="15" />
+          <Partition Name="16" />
+          <Partition Name="17" />
+          <Partition Name="18" />
+          <Partition Name="19" />
         </NamedPartition>
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>

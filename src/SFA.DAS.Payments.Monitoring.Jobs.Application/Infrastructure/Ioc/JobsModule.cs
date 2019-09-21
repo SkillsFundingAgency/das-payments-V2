@@ -66,6 +66,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
                 var config = c.Resolve<IApplicationConfiguration>();
                 EndpointConfigurationEvents.ConfiguringTransport += (object sender, TransportExtensions<AzureServiceBusTransport> e) =>
                 {
+                    //e.Transactions(TransportTransactionMode.None);
+                    //e.PrefetchCount();
                     e.Routing().RouteToEndpoint(typeof(RecordEarningsJob).Assembly, config.EndpointName);
                 };
             });

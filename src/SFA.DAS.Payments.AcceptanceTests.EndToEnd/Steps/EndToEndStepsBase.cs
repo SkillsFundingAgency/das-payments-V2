@@ -815,7 +815,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             };
             var tasks = new List<Task>
             {
-                MessageSession.Send($"sfa-das-payments-monitoring-jobs{provider.JobId % 10}", dcStartedMonthEndJobCommand),
+                MessageSession.Send($"sfa-das-payments-monitoring-jobs{provider.JobId % 20}", dcStartedMonthEndJobCommand),
                 MessageSession.Send(processProviderPaymentsAtMonthEndCommand)
             };
 
