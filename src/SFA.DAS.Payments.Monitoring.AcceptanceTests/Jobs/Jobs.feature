@@ -14,7 +14,7 @@ Scenario: Provider Earnings Job Started
 Scenario: Provider Earnings Job Finished
 	Given the earnings event service has received a provider earnings job
 	When the earnings event service notifies the job monitoring service to record the job
-	And the final messages for the job are sucessfully processed
+	And the final messages for the job are successfully processed
 	Then the job monitoring service should update the status of the job to show that it has completed	
 #Scenario: Monitoring service records the completion time of data-locks processing
 #	Given the earnings event service has received a provider earnings job
@@ -27,7 +27,7 @@ Scenario: Provider Earnings Job Finished
 Scenario: Large Provider Earnings Job Finished
 	Given the earnings event service has received a large provider earnings job
 	When the earnings event service notifies the job monitoring service to record the job
-	And the final messages for the job are sucessfully processed
+	And the final messages for the job are successfully processed
 	#Then the job monitoring service should update the status of the job to show that it has completed
 #	
 #Scenario: Provider Earnings Job Finished With Errors

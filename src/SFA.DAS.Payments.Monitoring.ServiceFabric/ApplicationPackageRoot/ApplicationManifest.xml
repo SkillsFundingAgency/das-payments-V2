@@ -16,6 +16,7 @@
     <Parameter Name="Monitoring_JobsService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="Monitoring_JobsService_FailureTimeoutInSeconds" DefaultValue="150" />
     <Parameter Name="Monitoring_JobsService_IntervalInSeconds" DefaultValue="10" />
+    <Parameter Name="NumberOfNServiceBusThreads" DefaultValue="4"/>
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
     <Parameter Name="ConsoleLogLevel" DefaultValue="" />
@@ -45,6 +46,7 @@
             <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="JobStatusCheck_Interval" Value="[JobStatusCheck_Interval]" />
             <Parameter Name="TimeToWaitForJobToComplete" Value="[TimeToWaitForJobToComplete]" />
+            <Parameter Name="NumberOfNServiceBusThreads" Value="4"/>
           </Section>
         </Settings>
       </ConfigOverride>
