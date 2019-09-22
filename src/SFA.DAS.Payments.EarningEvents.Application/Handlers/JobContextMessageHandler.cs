@@ -129,6 +129,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     }
 
                     telemetry.StopOperation(operation);
+                    if (fm36Output.Learners.Count == 0)
+                    {
+                        logger.LogWarning($"Received ILR with 0 FM36 learners. Ukprn: {fm36Output.UKPRN}, job id: {message.JobId}.");
+                        return true;
+                    }
 
                     if (await jobStatusService.WaitForJobToFinish(message.JobId, cancellationToken))
                     {
