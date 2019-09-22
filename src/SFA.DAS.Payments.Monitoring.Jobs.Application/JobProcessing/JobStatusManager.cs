@@ -39,6 +39,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
         private async Task Run()
         {
+            await LoadExistingJobs().ConfigureAwait(false);
             while (!cancellationToken.IsCancellationRequested)
             {
                 var tasks = currentJobs.Select(job => CheckJobStatus(job.Key)).ToList();
@@ -50,6 +51,26 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                         logger.LogWarning($"Couldn't remove completed job from jobs list.  JOb: {completedJob.Key}, status: {completedJob.Value}");
                 }
                 await Task.Delay(interval, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        private async Task LoadExistingJobs()
+        {
+            try
+            {
+                using (var scope = scopeFactory.Create("LoadExistingJobs"))
+                {
+                    var jobStorage = scope.Resolve<IJobStorageService>();
+                    var jobs = await jobStorage.GetCurrentJobs(cancellationToken).ConfigureAwait(false);
+                    foreach (var job in jobs)
+                    {
+                        StartMonitoringJob(job, JobType.EarningsJob);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                logger.LogError("Failed to load existing jobs.");
             }
         }
 

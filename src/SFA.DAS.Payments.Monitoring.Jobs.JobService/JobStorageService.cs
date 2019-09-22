@@ -78,6 +78,23 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             await dataContext.SaveJobStatus(jobId, jobStatus, endTime, cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task<List<long>> GetCurrentJobs(CancellationToken cancellationToken)
+        {
+            var collection = await GetJobCollection().ConfigureAwait(false);
+            var jobs = new List<long>();
+            var enumerator = (await collection.CreateEnumerableAsync(reliableTransactionProvider.Current))
+                .GetAsyncEnumerator();
+            while (await enumerator.MoveNextAsync(cancellationToken))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var job = enumerator.Current.Value;
+                if (job.Status == JobStatus.InProgress && job.DcJobId.HasValue)
+                        jobs.Add(job.DcJobId.Value);
+            }
+
+            return jobs;
+        }
+
         public async Task<JobModel> GetJob(long jobId, CancellationToken cancellationToken)
         {
             var collection = await GetJobCollection().ConfigureAwait(false);
