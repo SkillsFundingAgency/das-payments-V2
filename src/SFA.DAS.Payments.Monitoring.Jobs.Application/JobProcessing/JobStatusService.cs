@@ -31,10 +31,20 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         {
             logger.LogVerbose($"Now determining if job {jobId} has finished.");
             var job = await jobStorageService.GetJob(jobId, cancellationToken).ConfigureAwait(false);
-            if (job != null && job.Status != JobStatus.InProgress)
+            if (job != null )
             {
-                logger.LogWarning($"Job {jobId} has already finished. Status: {job.Status}");
-                return job.Status;
+                if (job.Status != JobStatus.InProgress)
+                {
+                    logger.LogWarning($"Job {jobId} has already finished. Status: {job.Status}");
+                    return job.Status;
+                }
+
+                if ((job.JobType == JobType.EarningsJob || job.JobType == JobType.ComponentAcceptanceTestEarningsJob) && job.LearnerCount.HasValue && job.LearnerCount.Value == 0)
+                {
+                    await jobStorageService.SaveJobStatus(jobId,
+                        JobStatus.Completed,
+                        job.StartTime, cancellationToken).ConfigureAwait(false);
+                }
             }
 
             var inProgressMessages = await jobStorageService.GetInProgressMessages(jobId, cancellationToken)

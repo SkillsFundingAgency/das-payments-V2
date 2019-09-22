@@ -41,7 +41,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 Id = 1,
                 DcJobId = 99,
                 StartTime = DateTimeOffset.UtcNow.AddSeconds(-10),
-                Status = JobStatus.InProgress
+                Status = JobStatus.InProgress,
+                LearnerCount = 100,
+                JobType = JobType.EarningsJob
             };
             mocker.Mock<IJobStorageService>()
                 .Setup(x => x.GetJob(It.IsAny<long>(), It.IsAny<CancellationToken>()))
@@ -229,6 +231,62 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                         It.Is<DateTimeOffset>(endTime => endTime == completedMessage.CompletedTime),
                         It.IsAny<CancellationToken>()), Times.Once());
 
+        }
+
+        [Test]
+        public async Task Records_Earnings_Job_As_Completed_If_No_Learners()
+        {
+            var jobId = 99;
+            job.LearnerCount = 0;
+            var completedMessage = new CompletedMessage
+            {
+                MessageId = Guid.NewGuid(),
+                JobId = job.Id,
+                Succeeded = true,
+                CompletedTime = DateTimeOffset.UtcNow
+            };
+            var inProgressMessage = new InProgressMessage { MessageId = completedMessage.MessageId, MessageName = "Message" };
+            inProgressMessages.Add(inProgressMessage);
+            inProgressMessages.Add(new InProgressMessage { MessageId = Guid.NewGuid(), MessageName = "Message" });
+            completedMessages.Add(completedMessage);
+
+            var service = mocker.Create<JobStatusService>();
+            await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+            mocker.Mock<IJobStorageService>()
+                .Verify(
+                    x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
+                        It.Is<JobStatus>(status => status == JobStatus.Completed),
+                        It.Is<DateTimeOffset>(endTime => endTime == job.StartTime),
+                        It.IsAny<CancellationToken>()), Times.Once());
+        }
+
+
+        [Test]
+        public async Task Does_Not_record_Job_As_Completed_If_No_Learners_And_Not_Earnings_Job()
+        {
+            var jobId = 99;
+            job.LearnerCount = 0;
+            job.JobType = JobType.PeriodEndRunJob;
+            var completedMessage = new CompletedMessage
+            {
+                MessageId = Guid.NewGuid(),
+                JobId = job.Id,
+                Succeeded = true,
+                CompletedTime = DateTimeOffset.UtcNow
+            };
+            var inProgressMessage = new InProgressMessage { MessageId = completedMessage.MessageId, MessageName = "Message" };
+            inProgressMessages.Add(inProgressMessage);
+            inProgressMessages.Add(new InProgressMessage { MessageId = Guid.NewGuid(), MessageName = "Message" });
+            completedMessages.Add(completedMessage);
+
+            var service = mocker.Create<JobStatusService>();
+            await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+            mocker.Mock<IJobStorageService>()
+                .Verify(
+                    x => x.SaveJobStatus(It.IsAny<long>(),
+                        It.IsAny<JobStatus>(),
+                        It.IsAny<DateTimeOffset>(),
+                        It.IsAny<CancellationToken>()), Times.Never);
         }
     }
 }
