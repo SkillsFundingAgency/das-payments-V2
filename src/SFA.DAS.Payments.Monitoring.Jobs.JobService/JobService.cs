@@ -48,6 +48,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
                 {
                     e.Name += ((NamedPartitionInformation)Partition.PartitionInfo).Name;
                 };
+                //EndpointConfigurationEvents.EndpointConfigured += EndpointConfigurationEvents_EndpointConfigured;
 
                 var serviceListener = new ServiceReplicaListener(context =>
                     listener = lifetimeScope.Resolve<IStatefulEndpointCommunicationListener>());
@@ -66,74 +67,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             }
         }
 
+        private void EndpointConfigurationEvents_EndpointConfigured(object sender, EndpointConfiguration e)
+        {
+            e.LimitMessageProcessingConcurrencyTo(20);
+        }
+
         protected override Task RunAsync(CancellationToken cancellationToken)
         {
             return Task.WhenAll(listener.RunAsync(), jobStatusManager.Start(cancellationToken));
         }
 
-        public async Task RecordEarningsJob(RecordEarningsJob message, CancellationToken cancellationToken)
-        {
-            using (var scope = scopeFactory.Create("JobService.RecordEarningsJob"))
-            {
-                try
-                {
-                    var earningsJobService = scope.Resolve<IEarningsJobService>();
-                    await earningsJobService.RecordNewJob(message, cancellationToken).ConfigureAwait(false);
-                    await scope.Commit();
-                }
-                catch (Exception ex)
-                {
-                    scope.Abort();
-                    logger.LogWarning($"Failed to record earnings job: {message.JobId}. Error: {ex.Message}, {ex}");
-                    throw;
-                }
-            }
-            jobStatusManager.StartMonitoringJob(message.JobId, JobType.EarningsJob);
-        }
-
-        public async Task RecordEarningsJobAdditionalMessages(RecordEarningsJobAdditionalMessages message,
-            CancellationToken cancellationToken)
-        {
-            using (var scope = scopeFactory.Create("JobService.RecordEarningsJobAdditionalMessages"))
-            {
-                try
-                {
-                    var earningsJobService = scope.Resolve<IEarningsJobService>();
-                    await earningsJobService.RecordNewJobAdditionalMessages(message, cancellationToken).ConfigureAwait(false);
-                    await scope.Commit();
-                }
-                catch (Exception ex)
-                {
-                    scope.Abort();
-                    logger.LogWarning($"Failed to record earnings job: {message.JobId}. Error: {ex.Message}, {ex}");
-                    throw;
-                }
-            }
-        }
-
-        public async Task RecordJobMessageProcessingStatus(RecordJobMessageProcessingStatus message, CancellationToken cancellationToken)
-        {
-            using (var scope = scopeFactory.Create("JobService.RecordJobMessageProcessingStatus"))
-            {
-                try
-                {
-                    var jobMessageService = scope.Resolve<IJobMessageService>();
-                    await jobMessageService.RecordCompletedJobMessageStatus(message, cancellationToken).ConfigureAwait(false);
-                    await scope.Commit();
-                }
-                catch (Exception ex)
-                {
-                    scope.Abort();
-                    logger.LogWarning($"Failed to record earnings job: {message.JobId}. Error: {ex.Message}, {ex}");
-                    throw;
-                }
-            }
-        }
-
-        public Task RecordJobMessageProcessingStartedStatus(RecordStartedProcessingJobMessages message,
-            CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
+ 
     }
 }
