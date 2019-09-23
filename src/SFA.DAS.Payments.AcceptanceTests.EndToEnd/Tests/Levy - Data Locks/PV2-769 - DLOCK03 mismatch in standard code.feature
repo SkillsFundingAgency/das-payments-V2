@@ -36,8 +36,8 @@ Scenario: ILR changes before second Commitment starts (i.e. there is only one ex
 
 	Given the employer levy account balance in collection period R01/Current Academic Year is 15000
 	And the following commitments exist
-		| Identifier       | standard code | programme type | pathway code | agreed price | start date | end date | status | effective from |
-		| Apprenticeship a | 51            | 25             | 1            | 15000        | 03/Aug/Current Academic Year | 04/Aug/Current Academic Year | active | 03/Aug/Current Academic Year |
+		| Identifier       | standard code | programme type | pathway code | agreed price | start date                   | end date                  | status | effective from               |
+		| Apprenticeship a | 51            | 25             | 1            | 15000        | 03/Aug/Current Academic Year | 04/Aug/Next Academic Year | active | 03/Aug/Current Academic Year |
 	And the following learners
         | Learner Reference Number | 
         | abc123                   | 
