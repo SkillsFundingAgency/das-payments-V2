@@ -18,6 +18,7 @@
     <Parameter Name="Audit_RequiredPayments_FailedMessagesQueue" Value="__Audit_RequiredPayments_FailedMessagesQueue__" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="PaymentsConnectionString" Value="__PaymentsConnectionString__" />

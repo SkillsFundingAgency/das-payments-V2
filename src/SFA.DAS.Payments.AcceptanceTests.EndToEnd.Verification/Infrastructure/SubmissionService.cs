@@ -23,13 +23,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         Task DeleteFiles(IEnumerable<string> fileList);
 
-        Task<CloudBlobStream> GetBlobStream(string fileName, string containerName);
+        Task<CloudBlobStream> GetResultsBlobStream(string fileName);
 
         Task ClearPaymentsData(IEnumerable<string> playlist);
+
+        Task<TestSettings> ReadSettingsFile();
     }
 
     public class SubmissionService : ISubmissionService
     {
+        private const string ResultsContainerName = "results";
         private const string ControlFileContainerName = "control-files";
 
         private const string SettingFile = "settings.json";
@@ -99,23 +102,32 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             await Task.WhenAll(jobList);
         }
 
-        public async Task<CloudBlobStream> GetBlobStream(string fileName, string containerName)
+        public async Task<CloudBlobStream> GetResultsBlobStream(string fileName)
         {
-            var cloudBlobContainer = blobClient.GetContainerReference(ContainerName(containerName));
+            var cloudBlobContainer = blobClient.GetContainerReference(ResultsContainerName);
+            await cloudBlobContainer.CreateIfNotExistsAsync();
             var cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(fileName);
+            
             return await cloudBlockBlob.OpenWriteAsync();
         }
 
         public async Task ClearPaymentsData(IEnumerable<string> playlist)
         {
-            foreach (var file in playlist)
+            if (configuration.ClearPaymentsData)
             {
-                var ukprn = UkprnFromFilename(file);
-                await paymentsContext.ClearPaymentsDataAsync(ukprn);
+                foreach (var file in playlist)
+                {
+                    var ukprn = UkprnFromFilename(file);
+                    await paymentsContext.ClearPaymentsDataAsync(ukprn);
+                }
+            }
+            else
+            {
+                await Task.CompletedTask;
             }
         }
 
-        private async Task<TestSettings> ReadSettingsFile()
+        public async Task<TestSettings> ReadSettingsFile()
         {
             var blobContainer = blobClient.GetContainerReference(ControlFileContainerName);
             var blob = blobContainer.GetBlockBlobReference(SettingFile);
@@ -179,7 +191,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                 }
                 else
                 {
-                    await Task.Delay(1000);
+                    await Task.Delay(configuration.DcJobEventCheckDelay);
                 }
             }
 

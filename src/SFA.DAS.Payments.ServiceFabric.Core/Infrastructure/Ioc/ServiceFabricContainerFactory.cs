@@ -6,7 +6,9 @@ using Microsoft.ServiceFabric.Services.Runtime;
 using NServiceBus;
 using NServiceBus.UnitOfWork;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.ServiceFabric.Core.Batch;
+using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
 {
@@ -30,7 +32,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
             return container;
         }
 
-        public static IContainer CreateContainerForStatefulService<TStatefulService>() where TStatefulService : StatefulService
+        public static IContainer CreateContainerForStatefulService<TStatefulService>(bool resolveEndpointConfig = true) where TStatefulService : StatefulService
         {
             var builder = ContainerFactory.CreateBuilder();
 
@@ -39,14 +41,24 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
             builder.RegisterStatefulService<TStatefulService>(typeof(TStatefulService).Namespace + "Type")
                 .OnActivating(e =>
                 {
-                    ((ReliableStateManagerProvider) e.Context.Resolve<IReliableStateManagerProvider>()).Current = e.Instance.StateManager;
+                    ((ReliableStateManagerProvider)e.Context.Resolve<IReliableStateManagerProvider>()).Current = e.Instance.StateManager;
                 });
             var container = ContainerFactory.CreateContainer(builder);
-            var endpointConfiguration = container.Resolve<EndpointConfiguration>();
-            endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>
+            if (resolveEndpointConfig)
             {
-                customizations.ExistingLifetimeScope(container);
-            });
+                var endpointConfiguration = container.Resolve<EndpointConfiguration>();
+                endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>
+                {
+                    customizations.ExistingLifetimeScope(container);
+                });
+            }
+            else
+            {
+                EndpointConfigurationEvents.EndpointConfigured += (sender, e) =>
+                {
+                    e.UseContainer<AutofacBuilder>(customizations => customizations.ExistingLifetimeScope(container));
+                };
+            }
             return container;
         }
 

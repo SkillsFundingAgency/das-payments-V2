@@ -16,7 +16,13 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
             builder.Register((c, p) =>
             {
                 var config = c.Resolve<IApplicationConfiguration>();
-                var endpointConfiguration = new EndpointConfiguration(config.EndpointName);
+
+                var endpointName = new EndpointName(config.EndpointName);
+                EndpointConfigurationEvents.OnConfiguringEndpoint(endpointName);
+                var endpointConfiguration = new EndpointConfiguration(endpointName.Name);
+                EndpointConfigurationEvents.OnEndpointConfigured(endpointConfiguration);
+
+
 
                 var conventions = endpointConfiguration.Conventions();
                 conventions.DefiningMessagesAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages") ?? false));
@@ -56,5 +62,15 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
             builder.RegisterType<ExceptionHandlingBehavior>()
                 .SingleInstance();
         }
+    }
+
+    public class EndpointName
+    {
+        public EndpointName(string endpointName)
+        {
+            Name = endpointName;
+        }
+
+        public string Name { get; set; }
     }
 }
