@@ -35,8 +35,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         private const string ResultsContainerName = "results";
         private const string ControlFileContainerName = "control-files";
 
-        private const string SettingFile = "settings.json";
-
         private static CloudBlobClient blobClient;
 
         private readonly IJobService jobService;
@@ -130,7 +128,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         public async Task<TestSettings> ReadSettingsFile()
         {
             var blobContainer = blobClient.GetContainerReference(ControlFileContainerName);
-            var blob = blobContainer.GetBlockBlobReference(SettingFile);
+            var blob = blobContainer.GetBlockBlobReference(configuration.SettingsFileName);
             var text = await blob.DownloadTextAsync();
             return serializationService.Deserialize<TestSettings>(text);
         }
