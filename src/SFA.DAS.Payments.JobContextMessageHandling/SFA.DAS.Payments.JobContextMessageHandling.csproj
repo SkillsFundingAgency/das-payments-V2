@@ -10,7 +10,7 @@
     <PackageReference Include="ESFA.DC.DateTimeProvider" Version="0.1.6-beta0001" />
     <PackageReference Include="ESFA.DC.DateTimeProvider.Interface" Version="0.1.6-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model" Version="0.1.446" />
-    <PackageReference Include="ESFA.DC.JobContextManager" Version="0.2.10-beta0001" />
+    <PackageReference Include="ESFA.DC.JobContextManager" Version="0.2.11-beta0001" />
     <PackageReference Include="ESFA.DC.Queueing" Version="0.1.18-beta0001" />
     <PackageReference Include="ESFA.DC.Serialization.Json" Version="0.1.6-beta0001" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.1" />
