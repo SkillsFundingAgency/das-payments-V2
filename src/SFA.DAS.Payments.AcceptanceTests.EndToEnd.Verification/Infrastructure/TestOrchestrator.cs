@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model;
 
@@ -15,9 +16,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         Task DeleteTestFiles(IEnumerable<string> fileList);
 
         Task VerifyResults(IEnumerable<FileUploadJob> results,
-                           DateTime testStartDateTime,
-                           DateTime testEndDateTime,
-                           Action<decimal?> verificationAction);
+                           DateTimeOffset testStartDateTime,
+                           DateTimeOffset testEndDateTime,
+                           Action<decimal?, decimal, decimal?> verificationAction);
 
         Task<DateTimeOffset?> GetNewDateTime(List<long> ukprns);
     }
@@ -36,7 +37,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         public async Task<IEnumerable<string>> SetupTestFiles()
         {
           var playlist = await submissionService.ImportPlaylist();
-          //await submissionService.ClearPaymentsData(playlist);
+          await submissionService.ClearPaymentsData(playlist);
           return await submissionService.CreateTestFiles(playlist);
         }
 
@@ -51,39 +52,99 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         }
 
         public async Task VerifyResults(IEnumerable<FileUploadJob> results,
-            DateTime testStartDateTime, DateTime testEndDateTime, Action<decimal?> verificationAction)
+            DateTimeOffset testStartDateTime, DateTimeOffset testEndDateTime, Action<decimal?, decimal, decimal?> verificationAction)
         {
-            byte collectionPeriod = (byte)results.FirstOrDefault().PeriodNumber;
+            var resultsList = results.ToList();
+            var ukprnList = resultsList.Select(r => r.Ukprn).ToList();
+
+            byte collectionPeriod = (byte) resultsList.FirstOrDefault().PeriodNumber;
 
 
-            var groupedResults = results.ToList().GroupBy(g => g.CollectionYear);
-            var ukprns = results.Select(r => r.Ukprn).ToList();
+            var groupedResults = resultsList.GroupBy(g => g.CollectionYear);
 
             foreach (var groupedResult in groupedResults)
             {
-                short academicYear = (short)groupedResult.Key;
+                short academicYear = (short) groupedResult.Key;
 
-                string csvString = await verificationService.GetVerificationDataCsv(academicYear, collectionPeriod,
-                    true,
+                var paymentCsv =
+                    await ExtractPaymentsData(testStartDateTime, testEndDateTime, academicYear, collectionPeriod);
+
+                var dataStoreCsv = await ExtractDataStoreData(academicYear, collectionPeriod, ukprnList);
+
+               var paymentTotals = await verificationService.GetPaymentTotals(
+                    academicYear, collectionPeriod, true,
                     testStartDateTime,
                     testEndDateTime);
 
-                //publish the csv.
-                await FileHelpers.UploadCsvFile(FileHelpers.ReportType.PaymentsData, academicYear, collectionPeriod,
-                    submissionService, csvString);
+                decimal? totalEarningYtd =
+                    await verificationService.GetTotalEarningsYtd(academicYear, collectionPeriod, ukprnList);
 
-                var secondDataCsv = await verificationService.GetDataStoreCsv(academicYear, collectionPeriod, ukprns);
+                var settings = await submissionService.ReadSettingsFile();
+                decimal tolerance = settings.Tolerance;
 
-                //publish the csv.
-                await FileHelpers.UploadCsvFile(FileHelpers.ReportType.DataStore, academicYear, collectionPeriod,
-                    submissionService, secondDataCsv);
+                decimal? actualPercentage = null;
+                if (totalEarningYtd != 0)
+                {
+                    actualPercentage = paymentTotals?.missingPayments / totalEarningYtd * 100;
+                }
 
-                decimal? actualPercentage = await verificationService.GetTheNumber(academicYear, collectionPeriod, true,
-                    testStartDateTime,
-                    testEndDateTime);
+                var summaryCsv = CreateSummaryCsv(actualPercentage, tolerance, totalEarningYtd, paymentTotals);
+                var queryTimeWindowCsv = CreateQueryTimeWindowCsv(testStartDateTime, testEndDateTime);
 
-                verificationAction.Invoke(actualPercentage);
+                await SaveCsv(paymentCsv, dataStoreCsv, summaryCsv, queryTimeWindowCsv,  academicYear, collectionPeriod);
+
+                var earningsDifference = totalEarningYtd - paymentTotals?.earningsYtd;
+
+                verificationAction.Invoke(actualPercentage, tolerance, earningsDifference);
             }
+        }
+
+        private string CreateQueryTimeWindowCsv(DateTimeOffset testStartDateTime, DateTimeOffset testEndDateTime)
+        {
+            var header = "Query Start Time, Query End Time, Duration";
+            var row = $"{testStartDateTime:O},{testEndDateTime:O},{(testEndDateTime - testStartDateTime):G}";
+            return $"{header}{Environment.NewLine}{row}";
+        }
+
+        private async Task SaveCsv(string paymentCsv, string dataStoreCsv, string summaryCsv, string queryTimeWindow,
+            short academicYear,
+            byte collectionPeriod)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("Summary");
+            sb.Append(summaryCsv);
+            sb.AppendLine();
+            sb.AppendLine("Earnings");
+            sb.Append(dataStoreCsv);
+            sb.AppendLine();
+            sb.AppendLine("Payments");
+            sb.Append(paymentCsv);
+            sb.AppendLine();
+            sb.AppendLine("Query Time Window");
+            sb.Append(queryTimeWindow);
+
+            await FileHelpers.UploadCsvFile(academicYear, collectionPeriod, submissionService, sb.ToString());
+        }
+
+        private string CreateSummaryCsv(decimal? actualPercentage, decimal tolerance, decimal? totalEarningYtd, (decimal? missingPayments, decimal? earningsYtd)? paymentTotals)
+        {
+            var header = "Difference, Tolerance, Earnings (YTD) - DC, Missing Required Payments, Earnings (YTD) - DAS";
+            var row = $"{actualPercentage},{tolerance},{totalEarningYtd},{paymentTotals?.missingPayments}, {paymentTotals?.earningsYtd}";
+            return $"{header}{Environment.NewLine}{row}";
+        }
+
+        private async Task<string> ExtractDataStoreData(short academicYear, byte collectionPeriod, List<long> ukprnList)
+        {
+            return await verificationService.GetEarningsCsv(academicYear, collectionPeriod, ukprnList);
+        }
+
+        private async Task<string> ExtractPaymentsData(DateTimeOffset testStartDateTime, DateTimeOffset testEndDateTime, short academicYear, byte collectionPeriod)
+        {
+            return await verificationService.GetPaymentsDataCsv(academicYear, collectionPeriod,
+                true,
+                testStartDateTime,
+                testEndDateTime);
         }
 
         public async Task<DateTimeOffset?> GetNewDateTime(List<long> ukprns)
