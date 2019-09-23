@@ -15,17 +15,36 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
         private readonly IReliableStateManagerTransactionProvider transactionProvider;
         private readonly ITelemetry telemetry;
         private readonly IOperationHolder<RequestTelemetry> operation;
+        private readonly string operationName;
+
         //private readonly TransactionScope transactionScope;
 
         public UnitOfWorkScope(ILifetimeScope lifetimeScope, string operationName)
         {
-            this.LifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
-            var stateManager = lifetimeScope.Resolve<IReliableStateManagerProvider>().Current;
-            transactionProvider = lifetimeScope.Resolve<IReliableStateManagerTransactionProvider>();
-            ((ReliableStateManagerTransactionProvider)transactionProvider).Current = stateManager.CreateTransaction();
+            IReliableStateManagerTransactionProvider transactionProvider_ = null;
+            IOperationHolder<RequestTelemetry> operation_ = null;
+
             telemetry = lifetimeScope.Resolve<ITelemetry>();
-            operation = telemetry.StartOperation(operationName);
-            //transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+            telemetry.TrackAction($"{operationName} UnitOfWorkScope()", "", () =>
+            {
+                lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
+                var stateManager = lifetimeScope.Resolve<IReliableStateManagerProvider>().Current;
+                transactionProvider_ = lifetimeScope.Resolve<IReliableStateManagerTransactionProvider>();
+
+                telemetry.TrackAction($"{operationName} create scope", "", () =>
+                {
+                    ((ReliableStateManagerTransactionProvider)transactionProvider_).Current = stateManager.CreateTransaction();
+                });
+
+                operation_ = telemetry.StartOperation(operationName);
+                //transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+            });
+
+            this.LifetimeScope = lifetimeScope;
+            this.operationName = operationName;
+            this.transactionProvider = transactionProvider_;
+            this.operation = operation_;
         }
 
         public T Resolve<T>()
@@ -33,14 +52,25 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
             return LifetimeScope.Resolve<T>();
         }
 
-        public void Dispose()
+        public void Dispose() => Dispose(null);
+
+        public void Dispose(ITelemetry telemetry = null)
         {
             telemetry?.StopOperation(operation);
-            operation?.Dispose();
+            telemetry?.TrackAction($"{operationName} dispose operation", "", () =>
+            {
+                operation?.Dispose();
+            });
             //transactionScope?.Dispose();
-            transactionProvider.Current.Dispose();
+            telemetry?.TrackAction($"{operationName} dispose txProvider", "", () =>
+            {
+                transactionProvider.Current.Dispose();
+            });
             ((ReliableStateManagerTransactionProvider)transactionProvider).Current = null;
-            LifetimeScope?.Dispose();
+            telemetry?.TrackAction($"{operationName} dispose lifetimeScope", "", () =>
+            {
+                LifetimeScope?.Dispose();
+            });
         }
 
         public void Abort()

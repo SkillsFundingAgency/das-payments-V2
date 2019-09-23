@@ -58,5 +58,55 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
                     { TelemetryKeys.Duration, duration.TotalMilliseconds }
                 });
         }
+
+        public static void TrackAction(this ITelemetry telemetry, string handler, string operationId, Action action)
+        {
+            using (var operation = telemetry.StartOperation(handler, operationId))
+            {
+                var d = new Dictionary<string, string> { { "Failed", "False" } };
+                var watch = Stopwatch.StartNew();
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    watch.Stop();
+                    d = new Dictionary<string, string> { { "Failed", "True" }, { "Failure", ex.Message } };
+                    throw;
+                }
+                finally
+                {
+                    watch.Stop();
+                    telemetry.TrackEvent(handler, d, new Dictionary<string, double> { { TelemetryKeys.Duration, watch.ElapsedMilliseconds } });
+                    telemetry.StopOperation(operation);
+                }
+            }
+        }
+
+        public static async Task TrackActionAsync(this ITelemetry telemetry, string handler, string operationId, Func<Task> action)
+        {
+            using (var operation = telemetry.StartOperation(handler, operationId))
+            {
+                var d = new Dictionary<string, string> { { "Failed", "False" } };
+                var watch = Stopwatch.StartNew();
+                try
+                {
+                    await action();
+                }
+                catch (Exception ex)
+                {
+                    watch.Stop();
+                    d = new Dictionary<string, string> { { "Failed", "True" }, { "Failure", ex.Message } };
+                    throw;
+                }
+                finally
+                {
+                    watch.Stop();
+                    telemetry.TrackEvent(handler, d, new Dictionary<string, double> { { TelemetryKeys.Duration, watch.ElapsedMilliseconds } });
+                    telemetry.StopOperation(operation);
+                }
+            }
+        }
     }
 }
