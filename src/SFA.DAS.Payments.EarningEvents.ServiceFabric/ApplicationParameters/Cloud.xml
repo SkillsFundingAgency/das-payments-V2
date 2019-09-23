@@ -23,7 +23,7 @@
     <Parameter Name="TimeToWaitForJobToComplete" Value="__TimeToWaitForJobToComplete__" />
     <Parameter Name="MaximumCallbackTimeSpan" Value="__TimeToWaitForJobToComplete__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
-    <Parameter Name="DoNotGenerateACT1TransactionType4To16Payments" Value="__DoNotGenerateACT1TransactionType4To16Payments__"/>
-    <Parameter Name="DoNotGenerateACT2Payments" Value="__DoNotGenerateACT2Payments__"/>
+    <Parameter Name="DoNotGenerateACT1TransactionType4To16Payments" Value="__DoNotGenerateACT1TransactionType4To16Payments__" />
+    <Parameter Name="DoNotGenerateACT2Payments" Value="__DoNotGenerateACT2Payments__" />
   </Parameters>
 </Application>

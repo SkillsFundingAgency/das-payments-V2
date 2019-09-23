@@ -49,7 +49,7 @@ Scenario: ILR changes before second Commitment starts (i.e. there is only one ex
 		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Contract Type | SFA Contribution Percentage | Aim Sequence Number | Total Assessment Price |
 		| pe-1             | 12000                | 03/Aug/Current Academic Year           | Act1          | 90%                         | 1                   | 3000                   |
 		| pe-2             | 4500                 | 03/Nov/Current Academic Year           | Act1          | 90%                         | 2                   | 1125                   |
-	When the amended ILR file is re-submitted for the learners in collection period R04/Current Academic Year
+	When the amended ILR file is re-submitted for the learners in collection period R05/Current Academic Year
 
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
@@ -85,31 +85,18 @@ Scenario: ILR changes before second Commitment starts (i.e. there is only one ex
         | Apprenticeship a | Jun/Current Academic Year | Learning         | 52            | 25             | 1            | DLOCK_07   | pe-2                     |
         | Apprenticeship a | Jul/Current Academic Year | Learning         | 52            | 25             | 1            | DLOCK_03   | pe-2                     |
         | Apprenticeship a | Jul/Current Academic Year | Learning         | 52            | 25             | 1            | DLOCK_07   | pe-2                     |
-	#
-	#And only the following provider payments will be generated
-	#	| Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type |
-	#	| R01/Current Academic Year | Aug/Current Academic Year | 0             | 1000                      | Learning         |
-	#	| R02/Current Academic Year | Sep/Current Academic Year | 1000          | 1000                      | Learning         |
-	#	| R03/Current Academic Year | Oct/Current Academic Year | 1000          | 1000                      | Learning         |
-	#	| R04/Current Academic Year | Nov/Current Academic Year | 1000          | 500                       | Learning         |
-	#	| R05/Current Academic Year | Dec/Current Academic Year | 0             | 500                       | Learning         |
-	#	| R06/Current Academic Year | Jan/Current Academic Year | 0             | 500                       | Learning         |
-	#	| R07/Current Academic Year | Feb/Current Academic Year | 0             | 500                       | Learning         |
-	#	| R08/Current Academic Year | Mar/Current Academic Year | 0             | 500                       | Learning         |
-	#	| R09/Current Academic Year | Apr/Current Academic Year | 0             | 500                       | Learning         |
-	#	| R10/Current Academic Year | May/Current Academic Year | 0             | 500                       | Learning         |
-	#	| R11/Current Academic Year | Jun/Current Academic Year | 0             | 500                       | Learning         |
-	#	| R12/Current Academic Year | Jul/Current Academic Year | 0             | 500                       | Learning         |
-
-	#And only the following provider payments will be recorded
-	#	| Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type                 |
-	#	| R12/Current Academic Year | Aug/Current Academic Year | 666.66667     | 0                         | Learning                         |
-	#	| R12/Current Academic Year | Sep/Current Academic Year | 666.66667     | 0                         | Learning                         |
-		#And the provider earnings and payments break down as follows:
-#            | Type                          | 08/18 | 09/18 | 10/18 | 11/18 | 12/18 |
-#            | Provider Earned Total         | 1000  | 1000  | 1000  | 500   | 500   |
-#            | Provider Earned from SFA      | 1000  | 1000  | 1000  | 500   | 500   |
-#            | Provider Paid by SFA          | 0     | 1000  | 1000  | 1000  | 0     |
-#            | Levy account debited          | 0     | 1000  | 1000  | 1000  | 0     |
-#            | SFA Levy employer budget      | 1000  | 1000  | 1000  | 0     | 0     |
-#            | SFA Levy co-funding budget    | 0     | 0     | 0     | 0     | 0     |
+	And Month end is triggered
+	And only the following provider payments will be recorded
+		| Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
+		| R01/Current Academic Year | Aug/Current Academic Year | 1000          | Learning         |
+		| R02/Current Academic Year | Sep/Current Academic Year | 1000          | Learning         |
+		| R03/Current Academic Year | Oct/Current Academic Year | 1000          | Learning         |
+		| R04/Current Academic Year | Nov/Current Academic Year | 0             | Learning         |
+		| R05/Current Academic Year | Dec/Current Academic Year | 0             | Learning         |
+		| R06/Current Academic Year | Jan/Current Academic Year | 0             | Learning         |
+		| R07/Current Academic Year | Feb/Current Academic Year | 0             | Learning         |
+		| R08/Current Academic Year | Mar/Current Academic Year | 0             | Learning         |
+		| R09/Current Academic Year | Apr/Current Academic Year | 0             | Learning         |
+		| R10/Current Academic Year | May/Current Academic Year | 0             | Learning         |
+		| R11/Current Academic Year | Jun/Current Academic Year | 0             | Learning         |
+		| R12/Current Academic Year | Jul/Current Academic Year | 0             | Learning         |
