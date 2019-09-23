@@ -32,6 +32,7 @@ using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.Monitoring.Jobs.Client;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -815,7 +816,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             };
             var tasks = new List<Task>
             {
-                MessageSession.Send($"sfa-das-payments-monitoring-jobs{provider.JobId % 20}", dcStartedMonthEndJobCommand),
+                MessageSession.Send($"sfa-das-payments-monitoring-jobs{new JobMonitorPartition().PartitionNameForJob(provider.JobId, provider.Ukprn)}", dcStartedMonthEndJobCommand),
                 MessageSession.Send(processProviderPaymentsAtMonthEndCommand)
             };
 
