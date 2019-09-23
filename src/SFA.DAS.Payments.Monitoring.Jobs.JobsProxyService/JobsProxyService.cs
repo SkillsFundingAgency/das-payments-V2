@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsProxyService
 
             return new List<ServiceInstanceListener>
             {
-                new ServiceInstanceListener(context => lifetimeScope.Resolve<IStatelessEndpointCommunicationListener>())
+               // new ServiceInstanceListener(context => lifetimeScope.Resolve<IStatelessEndpointCommunicationListener>())
             };
         }
     }
