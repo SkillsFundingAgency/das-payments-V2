@@ -29,8 +29,4 @@
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Messages\SFA.DAS.Payments.RequiredPayments.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.ServiceFabric.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="PaymentsEventProcessing\DataLock\" />
-  </ItemGroup>
 </Project>
