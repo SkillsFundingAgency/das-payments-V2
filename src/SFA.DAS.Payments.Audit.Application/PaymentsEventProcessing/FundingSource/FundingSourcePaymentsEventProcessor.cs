@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using AutoMapper;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
 using SFA.DAS.Payments.Audit.Model;
@@ -8,7 +9,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.FundingSour
 {
     public interface IFundingSourcePaymentsEventProcessor
     {
-        Task ProcessPaymentsEvent(FundingSourcePaymentEvent message);
+        Task ProcessPaymentsEvent(FundingSourcePaymentEvent message, CancellationToken cancellationToken);
     }
 
     public class FundingSourcePaymentsEventProcessor : PaymentsEventProcessor<FundingSourcePaymentEvent, FundingSourceEventModel>, IFundingSourcePaymentsEventProcessor

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Autofac;
 using NServiceBus;
 using NServiceBus.Features;
@@ -15,12 +16,18 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
             builder.Register((c, p) =>
             {
                 var config = c.Resolve<IApplicationConfiguration>();
-                var endpointConfiguration = new EndpointConfiguration(config.EndpointName);
+
+                var endpointName = new EndpointName(config.EndpointName);
+                EndpointConfigurationEvents.OnConfiguringEndpoint(endpointName);
+                var endpointConfiguration = new EndpointConfiguration(endpointName.Name);
+                EndpointConfigurationEvents.OnEndpointConfigured(endpointConfiguration);
+
+
 
                 var conventions = endpointConfiguration.Conventions();
                 conventions.DefiningMessagesAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages") ?? false));
                 conventions.DefiningCommandsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages.Commands") ?? false));
-                conventions.DefiningEventsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages.Events") ?? false));
+                conventions.DefiningEventsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && ((type.Namespace?.Contains(".Messages.Events") ?? false) || (type.Namespace?.Contains(".Messages.Core") ?? false)));
 
                 var persistence = endpointConfiguration.UsePersistence<AzureStoragePersistence>();
                 persistence.ConnectionString(config.StorageConnectionString);
@@ -40,10 +47,9 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 endpointConfiguration.EnableInstallers();
                 endpointConfiguration.Pipeline.Register(typeof(TelemetryHandlerBehaviour), "Sends handler timing to telemetry service.");
                 endpointConfiguration.EnableCallbacks(makesRequests: false);
+                if (config.ProcessMessageSequentially) endpointConfiguration.LimitMessageProcessingConcurrencyTo(1);
 
-                if(config.ProcessMessageSequentially) endpointConfiguration.LimitMessageProcessingConcurrencyTo(1);
-                
-                endpointConfiguration.Pipeline.Register(typeof(ExceptionHandlingBehavior),"Logs exceptions to the payments logger");
+                endpointConfiguration.Pipeline.Register(typeof(ExceptionHandlingBehavior), "Logs exceptions to the payments logger");
                 return endpointConfiguration;
             })
             .As<EndpointConfiguration>()
@@ -56,5 +62,15 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
             builder.RegisterType<ExceptionHandlingBehavior>()
                 .SingleInstance();
         }
+    }
+
+    public class EndpointName
+    {
+        public EndpointName(string endpointName)
+        {
+            Name = endpointName;
+        }
+
+        public string Name { get; set; }
     }
 }

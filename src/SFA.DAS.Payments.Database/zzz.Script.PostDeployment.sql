@@ -19,6 +19,10 @@ IF NOT EXISTS (SELECT * FROM [Payments2].[JobStatus]  WHERE [Id] = 3)
 	INSERT INTO [Payments2].[JobStatus]  values (3,'completed with errors')
 GO	
 
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobStatus]  WHERE [Id] = 4)
+	INSERT INTO [Payments2].[JobStatus]  values (4,'Time out due to idle job')
+GO
+
 IF NOT EXISTS (SELECT * FROM [Payments2].[JobEventStatus]  WHERE [Id] = 1)
 	INSERT INTO [Payments2].[JobEventStatus] values (1,'Queued')
 GO 
@@ -40,7 +44,9 @@ IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 1)
 GO 
 
 IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 2)
-	INSERT INTO [Payments2].[JobType] values (2,'Month end job')
+	INSERT INTO [Payments2].[JobType] values (2,'Period end start job')
+else 
+	UPDATE [Payments2].[JobType] SET [Description] = 'Period end start job' WHERE [Id] = 2
 GO 
 
 IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 3)
@@ -49,6 +55,14 @@ GO
 
 IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 4)
 	INSERT INTO [Payments2].[JobType] VALUES (4,'Component test month end job')
+GO 
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 5)
+	INSERT INTO [Payments2].[JobType] values (5,'Period end run job')
+GO 
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 6)
+	INSERT INTO [Payments2].[JobType] values (6,'Period end stop job')
 GO 
 
 MERGE INTO [Payments2].[ApprenticeshipStatus]	 AS Target

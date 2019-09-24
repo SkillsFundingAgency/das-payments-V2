@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using SFA.DAS.Payments.Audit.Model;
+using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Audit.Application.Data
 {
@@ -18,6 +19,10 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             {
                 new DataColumn("ContractType"),
                 new DataColumn("AgreementId"),
+                new DataColumn("LearningAimSequenceNumber"),
+                new DataColumn("SfaContributionPercentage",typeof(decimal)){AllowDBNull = true},
+                new DataColumn("IlrFileName"),
+                new DataColumn("EventType"),
             });
             periods = new DataTable("Payments2.EarningEventPeriod");
             periods.Columns.AddRange(new[]
@@ -28,6 +33,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 new DataColumn("DeliveryPeriod"),
                 new DataColumn("SfaContributionPercentage",typeof(decimal)){AllowDBNull = true},
                 new DataColumn("Amount"),
+                new DataColumn("CensusDate",typeof(DateTime)),
             });
             priceEpisodes = new DataTable("Payments2.EarningEventPriceEpisode");
             priceEpisodes.Columns.AddRange(new[]
@@ -46,6 +52,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 new DataColumn("CompletionAmount"),
                 new DataColumn("InstalmentAmount"),
                 new DataColumn("NumberOfInstalments"),
+                new DataColumn("AgreedPrice",typeof(decimal)),
+                new DataColumn("CourseStartDate",typeof(DateTime)) {AllowDBNull = true},
             });
         }
 
@@ -54,6 +62,11 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             var dataRow = base.CreateDataRow(eventModel);
             dataRow["ContractType"] = (byte)eventModel.ContractType;
             dataRow["AgreementId"] = eventModel.AgreementId;
+            dataRow["LearningAimSequenceNumber"] = eventModel.LearningAimSequenceNumber;
+            dataRow["SfaContributionPercentage"] = (object)eventModel.SfaContributionPercentage?? DBNull.Value;
+            dataRow["IlrFileName"] = eventModel.IlrFileName;
+            dataRow["EventType"] = eventModel.EventType;
+
             eventModel.Periods.ForEach(period => periods.Rows.Add(CreatePeriodDataRow(period)));
             eventModel.PriceEpisodes.ForEach(priceEpisode => priceEpisodes.Rows.Add(CreatePriceEpisodeDataRow(priceEpisode)));
             return dataRow;
@@ -68,6 +81,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             dataRow["DeliveryPeriod"] = eventModel.DeliveryPeriod;
             dataRow["SfaContributionPercentage"] = (object)eventModel.SfaContributionPercentage ?? DBNull.Value;
             dataRow["Amount"] = eventModel.Amount;
+            dataRow["CensusDate"] = (object)eventModel.CensusDate ?? DBNull.Value;
+
             return dataRow;
         }
 
@@ -88,6 +103,9 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             dataRow["CompletionAmount"] = priceEpisodeModel.CompletionAmount;
             dataRow["InstalmentAmount"] = priceEpisodeModel.InstalmentAmount;
             dataRow["NumberOfInstalments"] = priceEpisodeModel.NumberOfInstalments;
+            dataRow["AgreedPrice"] = priceEpisodeModel.AgreedPrice;
+            dataRow["CourseStartDate"] = priceEpisodeModel.CourseStartDate;
+
             return dataRow;
         }
 
@@ -95,8 +113,6 @@ namespace SFA.DAS.Payments.Audit.Application.Data
         {
             return value.HasValue && value.Value == DateTime.MinValue ? null : value;
         }
-
-
 
         public override List<DataTable> GetDataTable(List<EarningEventModel> events)
         {

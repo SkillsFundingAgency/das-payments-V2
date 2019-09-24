@@ -2,21 +2,33 @@
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="ApprovalsService_InstanceCount" Value="__ApprovalsService_InstanceCount__" />
+    <Parameter Name="DataLockStatusChangedService_InstanceCount" Value="__DataLockStatusChangedService_InstanceCount__" />
+    <Parameter Name="DataLockStatusChangedService_EndpointName" Value="__DataLockStatusChangedService_EndpointName__" />
+    <Parameter Name="DataLockStatusChangedService_FailedMessagesQueue" Value="__DataLockStatusChangedService_FailedMessagesQueue__" />
+    <Parameter Name="DataLockEventService_EndpointName" Value="__DataLockEventService_EndpointName__" />
+    <Parameter Name="DataLockEventService_FailedMessagesQueue" Value="__DataLockEventService_FailedMessagesQueue__" />
+    <Parameter Name="DataLockEventService_PartitionCount" Value="__DataLockEventService_PartitionCount__" />
+    <Parameter Name="DataLockEventService_MinReplicaSetSize" Value="__DataLockEventService_MinReplicaSetSize__" />
+    <Parameter Name="DataLockEventService_TargetReplicaSetSize" Value="__DataLockEventService_TargetReplicaSetSize__" />
     <Parameter Name="DataLockProxyService_InstanceCount" Value="__DataLockProxyService_InstanceCount__" />
     <Parameter Name="DataLockServiceActorService_PartitionCount" Value="__DataLockServiceActorService_PartitionCount__" />
     <Parameter Name="DataLockServiceActorService_MinReplicaSetSize" Value="__DataLockServiceActorService_MinReplicaSetSize__" />
     <Parameter Name="DataLockServiceActorService_TargetReplicaSetSize" Value="__DataLockServiceActorService_TargetReplicaSetSize__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
     <Parameter Name="DASServiceBusConnectionString" Value="__DASServiceBusConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="PaymentsConnectionString" Value="__DasPaymentsConnectionStringRO__" />
+    <Parameter Name="ProviderEventsConnectionString" Value="__DasProviderEventsConnectionStringRW__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
+    <Parameter Name="ConsoleLogLevel" Value="__ConsoleLogLevel__" />
     <Parameter Name="ProcessMessageSequentially" Value="false" />
     <Parameter Name="ApprovalsService_EndpointName" Value="__ApprovalsService_EndpointName__" />
     <Parameter Name="ApprovalsService_FailedMessagesQueue" Value="__ApprovalsService_FailedMessagesQueue__" />
     <Parameter Name="DataLockService_EndpointName" Value="__DataLockService_EndpointName__" />
     <Parameter Name="DataLockService_FailedMessagesQueue" Value="__DataLockService_FailedMessagesQueue__" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
+    <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
   </Parameters>
 </Application>

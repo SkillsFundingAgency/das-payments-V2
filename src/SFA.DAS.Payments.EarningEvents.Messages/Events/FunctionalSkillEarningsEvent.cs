@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Runtime.Serialization;
+using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 {
-    /// <summary>
-    /// Earning events for sub aims such as Maths & English
-    /// </summary>
-    /// <seealso cref="EarningEvent" />
-    public class FunctionalSkillEarningsEvent : EarningEvent
+    [KnownType("GetInheritors")]
+    public abstract class FunctionalSkillEarningsEvent : EarningEvent, IFunctionalSkillEarningEvent
     {
         /// <summary>
         /// Gets or sets the earnings.
@@ -22,7 +22,16 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
         public ReadOnlyCollection<FunctionalSkillEarning> Earnings { get; set; }
 
         public DateTime StartDate { get; set; }
-        
+
         public ContractType ContractType { get; set; }
+
+        private static Type[] inheritors;
+
+        private static Type[] GetInheritors()
+        {
+            return inheritors ?? (inheritors = typeof(FunctionalSkillEarningsEvent).Assembly.GetTypes()
+                       .Where(x => x.IsSubclassOf(typeof(FunctionalSkillEarningsEvent)))
+                       .ToArray());
+        }
     }
 }

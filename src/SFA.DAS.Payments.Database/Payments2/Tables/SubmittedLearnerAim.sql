@@ -20,3 +20,17 @@
 GO
 
 CREATE INDEX [IX_SubmittedLearnerAim_ApprenticeshipKey] ON [Payments2].[SubmittedLearnerAim] ([Ukprn], [LearnerReferenceNumber], [LearningAimFrameworkCode], [LearningAimPathwayCode], [LearningAimProgrammeType], [LearningAimStandardCode], [LearningAimReference], [ContractType])
+Go
+
+CREATE INDEX [IX_SubmittedLearnerAim__Delete] ON [Payments2].[SubmittedLearnerAim] 
+(
+	[Ukprn], 
+	[AcademicYear], 
+	[CollectionPeriod], 
+	[IlrSubmissionDateTime]
+)
+INCLUDE
+(
+	[LearnerUln]
+)
+Go

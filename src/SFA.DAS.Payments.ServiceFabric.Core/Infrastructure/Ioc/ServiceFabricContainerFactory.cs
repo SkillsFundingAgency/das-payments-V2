@@ -1,18 +1,28 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using Autofac.Integration.ServiceFabric;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 using NServiceBus;
+using NServiceBus.UnitOfWork;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
+using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.ServiceFabric.Core.Batch;
+using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
 {
     public static class ServiceFabricContainerFactory
     {
-        public static IContainer CreateContainerForActor<TActor>() where TActor : Actor
+        public static IContainer CreateContainerForActor<TActor>(int idleTimeInSeconds = 300,int scanIntervalInSeconds = 30) where TActor : Actor
         {
+
             var builder = ContainerFactory.CreateBuilder();
-            builder.RegisterActor<TActor>()
+            builder.RegisterActor<TActor>(settings: new ActorServiceSettings()
+                {
+                    ActorGarbageCollectionSettings =
+                        new ActorGarbageCollectionSettings(idleTimeInSeconds, scanIntervalInSeconds)
+                })
                 .OnActivating(e =>
                 {
                     ((ActorStateManagerProvider) e.Context.Resolve<IActorStateManagerProvider>()).Current = e.Instance.StateManager;
@@ -22,20 +32,33 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
             return container;
         }
 
-        public static IContainer CreateContainerForStatefulService<TStatefulService>() where TStatefulService : StatefulService
+        public static IContainer CreateContainerForStatefulService<TStatefulService>(bool resolveEndpointConfig = true) where TStatefulService : StatefulService
         {
             var builder = ContainerFactory.CreateBuilder();
+
+            builder.RegisterType<StateManagerUnitOfWork>().As<IManageUnitsOfWork>().InstancePerLifetimeScope();
+
             builder.RegisterStatefulService<TStatefulService>(typeof(TStatefulService).Namespace + "Type")
                 .OnActivating(e =>
                 {
-                    ((ReliableStateManagerProvider) e.Context.Resolve<IReliableStateManagerProvider>()).Current = e.Instance.StateManager;
+                    ((ReliableStateManagerProvider)e.Context.Resolve<IReliableStateManagerProvider>()).Current = e.Instance.StateManager;
                 });
             var container = ContainerFactory.CreateContainer(builder);
-            var endpointConfiguration = container.Resolve<EndpointConfiguration>();
-            endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>
+            if (resolveEndpointConfig)
             {
-                customizations.ExistingLifetimeScope(container);
-            });
+                var endpointConfiguration = container.Resolve<EndpointConfiguration>();
+                endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>
+                {
+                    customizations.ExistingLifetimeScope(container);
+                });
+            }
+            else
+            {
+                EndpointConfigurationEvents.EndpointConfigured += (sender, e) =>
+                {
+                    e.UseContainer<AutofacBuilder>(customizations => customizations.ExistingLifetimeScope(container));
+                };
+            }
             return container;
         }
 

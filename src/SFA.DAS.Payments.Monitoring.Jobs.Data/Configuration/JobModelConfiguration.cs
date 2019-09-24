@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Data.Configuration
 {
@@ -21,6 +21,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data.Configuration
             builder.Property(x => x.LearnerCount).HasColumnName(@"LearnerCount");
             builder.Property(x => x.AcademicYear).HasColumnName(@"AcademicYear");
             builder.Property(x => x.CollectionPeriod).HasColumnName(@"CollectionPeriod");
+            builder.Property(x => x.DataLocksCompletionTime).HasColumnName(@"DataLocksCompletionTime");
         }
     }
 }

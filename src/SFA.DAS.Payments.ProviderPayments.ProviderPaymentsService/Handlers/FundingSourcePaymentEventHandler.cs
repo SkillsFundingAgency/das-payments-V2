@@ -20,20 +20,21 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
         private readonly IPaymentLogger paymentLogger;
         private readonly IProviderPaymentsService paymentsService;
         private readonly IMapper mapper;
-        private readonly IEarningsJobClient earningsJobClient;
+        private readonly IJobMessageClient jobClient;
         private readonly IProcessAfterMonthEndPaymentService afterMonthEndPaymentService;
 
         public FundingSourcePaymentEventHandler(IPaymentLogger paymentLogger,
          IProviderPaymentsService paymentsService,
             IMapper mapper,
-            IMonthEndService monthEndService,
+            IProviderPeriodEndService providerPeriodEndService,
             IEarningsJobClient earningsJobClient,
+            IJobMessageClient jobClient,
             IProcessAfterMonthEndPaymentService afterMonthEndPaymentService)
         {
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
             this.paymentsService = paymentsService ?? throw new ArgumentNullException(nameof(paymentsService));
             this.mapper = mapper;
-            this.earningsJobClient = earningsJobClient;
+            this.jobClient = jobClient;
             this.afterMonthEndPaymentService = afterMonthEndPaymentService;
         }
 
@@ -50,9 +51,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
                 {
                     paymentLogger.LogInfo($"Sent {afterMonthEndPayment.GetType().Name} for {message.JobId} and Message Type {message.GetType().Name}");
                     paymentLogger.LogDebug($"Sending Provider Payment Event {JsonConvert.SerializeObject(afterMonthEndPayment)} for Message Id : {context.MessageId}.  {message.ToDebug()}");
-                    await context.Publish(afterMonthEndPayment);
-                    await earningsJobClient.ProcessedJobMessage(afterMonthEndPayment.JobId, afterMonthEndPayment.EventId, afterMonthEndPayment.GetType().FullName, new List<GeneratedMessage>())
-                        .ConfigureAwait(false);
+                    await context.Publish(afterMonthEndPayment).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -60,8 +59,6 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
                 paymentLogger.LogError($"Error handling payment. Ukprn: {message.Ukprn}, JobId: {message.JobId}, Learner: {message.Learner.ReferenceNumber}, ContractType: {message.ContractType:G}, Transaction Type: {message.TransactionType:G}.  Error: {ex}", ex);
                 throw;
             }
-
-
             paymentLogger.LogDebug($"Finished processing Funding Source Payment Event for Message Id : {context.MessageId}.  {message.ToDebug()}");
         }
     }

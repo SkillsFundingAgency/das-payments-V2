@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using AutoMapper;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
@@ -18,6 +19,7 @@ using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Model;
+using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
@@ -86,27 +88,41 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
         public async Task StoreEmployerProviderPriority(EmployerChangedProviderPriority providerPriorityEvent)
         {
-            int order = 1;
-            var paymentPriorities = new List<EmployerProviderPriorityModel>();
-            foreach (var providerUkprn in providerPriorityEvent.OrderedProviders)
+            try
             {
-                paymentPriorities.Add(new EmployerProviderPriorityModel
+                int order = 1;
+                var paymentPriorities = new List<EmployerProviderPriorityModel>();
+                foreach (var providerUkprn in providerPriorityEvent.OrderedProviders)
                 {
-                    Ukprn = providerUkprn,
-                    EmployerAccountId = providerPriorityEvent.EmployerAccountId,
-                    Order = order
-                });
+                    paymentPriorities.Add(new EmployerProviderPriorityModel
+                    {
+                        Ukprn = providerUkprn,
+                        EmployerAccountId = providerPriorityEvent.EmployerAccountId,
+                        Order = order
+                    });
 
-                order++;
+                    order++;
+                }
+
+                using (var scope = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled))
+                {
+                    paymentLogger.LogDebug($"Replacing Previous EmployerProviderPriority for Account Id {providerPriorityEvent.EmployerAccountId}");
+                    await levyFundingSourceRepository.ReplaceEmployerProviderPriorities(providerPriorityEvent.EmployerAccountId, paymentPriorities).ConfigureAwait(false);
+                    paymentLogger.LogDebug($"Successfully Replaced Previous EmployerProviderPriority for Account Id {providerPriorityEvent.EmployerAccountId}");
+
+                    paymentLogger.LogDebug($"Adding EmployerProviderPriority to Cache for Account Id {providerPriorityEvent.EmployerAccountId}");
+                    await employerProviderPriorities.AddOrReplace(CacheKeys.EmployerPaymentPriorities, paymentPriorities).ConfigureAwait(false);
+                    paymentLogger.LogInfo($"Successfully Add EmployerProviderPriority to Cache for Account Id {providerPriorityEvent.EmployerAccountId}");
+
+                    scope.Complete();
+                }
+            }
+            catch (Exception e)
+            {
+                paymentLogger.LogError($"Error while updating  EmployerProviderPriority for Account Id {providerPriorityEvent.EmployerAccountId}", e);
+                throw;
             }
 
-            paymentLogger.LogDebug($"Adding EmployerProviderPriority to Database for Account Id {providerPriorityEvent.EmployerAccountId}");
-            await levyFundingSourceRepository.AddEmployerProviderPriorities(paymentPriorities);
-            paymentLogger.LogInfo($"Successfully Add EmployerProviderPriority to Database for Account Id {providerPriorityEvent.EmployerAccountId}");
-
-            paymentLogger.LogDebug($"Adding EmployerProviderPriority to Cache for Account Id {providerPriorityEvent.EmployerAccountId}");
-            await employerProviderPriorities.AddOrReplace(CacheKeys.EmployerPaymentPriorities, paymentPriorities).ConfigureAwait(false);
-            paymentLogger.LogInfo($"Successfully Add EmployerProviderPriority to Cache for Account Id {providerPriorityEvent.EmployerAccountId}");
         }
 
         public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> ProcessReceiverTransferPayment(ProcessUnableToFundTransferFundingSourcePayment message)
@@ -116,12 +132,12 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
             paymentLogger.LogDebug($"Converting the unable to fund transfer payment to a levy payment.  Event id: {message.EventId}, account id: {message.AccountId}, job id: {message.JobId}");
             var requiredPayment = mapper.Map<CalculatedRequiredLevyAmount>(message);
-            paymentLogger.LogVerbose($"Mapped ProcessUnableToFundTransferFundingSourcePayment to CalculatedRequiredLevyAmount");
+            paymentLogger.LogVerbose("Mapped ProcessUnableToFundTransferFundingSourcePayment to CalculatedRequiredLevyAmount");
             var payments = new List<FundingSourcePaymentEvent>();
             var monthEndStartedCacheItem = await monthEndCache.TryGet(CacheKeys.MonthEndCacheKey);
             if (!monthEndStartedCacheItem.HasValue || !monthEndStartedCacheItem.Value)
             {
-                paymentLogger.LogDebug($"Month end has not been started yet so adding the payment to the cache.");
+                paymentLogger.LogDebug("Month end has not been started yet so adding the payment to the cache.");
                 await AddRequiredPayment(requiredPayment);
             }
             else
@@ -132,7 +148,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                     throw new InvalidOperationException($"The last levy account balance has not been stored in the reliable for account: {message.AccountId}");
 
                 levyBalanceService.Initialise(levyAccountCacheItem.Value.Balance, levyAccountCacheItem.Value.TransferAllowance);
-                paymentLogger.LogDebug($"Service has finished month end processing so now generating the payments for the ProcessUnableToFundTransferFundingSourcePayment event.");
+                paymentLogger.LogDebug("Service has finished month end processing so now generating the payments for the ProcessUnableToFundTransferFundingSourcePayment event.");
                 payments.AddRange(CreateFundingSourcePaymentsForRequiredPayment(requiredPayment, message.AccountId.Value, message.JobId));
                 var remainingBalance = mapper.Map<LevyAccountModel>(levyAccountCacheItem.Value);
                 remainingBalance.Balance = levyBalanceService.RemainingBalance;
@@ -148,7 +164,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             var fundingSourceEvents = new List<FundingSourcePaymentEvent>();
 
             var keys = await generateSortedPaymentKeys.GeyKeys().ConfigureAwait(false);
-   
+
             var levyAccount = await levyFundingSourceRepository.GetLevyAccount(employerAccountId);
             levyBalanceService.Initialise(levyAccount.Balance, levyAccount.TransferAllowance);
 
@@ -157,6 +173,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             foreach (var key in keys)
             {
                 var requiredPaymentEvent = await requiredPaymentsCache.TryGet(key).ConfigureAwait(false);
+                if (!requiredPaymentEvent.HasValue)
+                    continue;
                 fundingSourceEvents.AddRange(CreateFundingSourcePaymentsForRequiredPayment(requiredPaymentEvent.Value, employerAccountId, jobId));
                 await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
             }
@@ -174,6 +192,56 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             await monthEndCache.AddOrReplace(CacheKeys.MonthEndCacheKey, true, CancellationToken.None);
             paymentLogger.LogInfo($"Finished generating levy and/or co-invested payments for the account: {employerAccountId}, number of payments: {fundingSourceEvents.Count}.");
             return fundingSourceEvents.AsReadOnly();
+        }
+
+        public async Task RemovePreviousSubmissions(long jobId, byte collectionPeriod, short academicYear,
+            DateTime submissionDate)
+        {
+            var keys = await generateSortedPaymentKeys.GeyKeys().ConfigureAwait(false);
+
+            paymentLogger.LogDebug($"Processing {keys.Count} required payments, job id {jobId}");
+
+            foreach (var key in keys)
+            {
+                var cacheItem = await requiredPaymentsCache.TryGet(key).ConfigureAwait(false);
+                if (!cacheItem.HasValue)
+                    continue;
+
+                var requiredPaymentEvent = cacheItem.Value;
+
+                if (requiredPaymentEvent.CollectionPeriod.AcademicYear == academicYear &&
+                    requiredPaymentEvent.CollectionPeriod.Period == collectionPeriod &&
+                    requiredPaymentEvent.JobId != jobId &&
+                    requiredPaymentEvent.IlrSubmissionDateTime < submissionDate)
+                {
+                    await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
+                }
+            }
+            paymentLogger.LogInfo("Finished removing previous submission payments.");
+        }
+
+        public async Task RemoveCurrentSubmission(long jobId, byte collectionPeriod, short academicYear,
+            DateTime submissionDate)
+        {
+            var keys = await generateSortedPaymentKeys.GeyKeys().ConfigureAwait(false);
+
+            paymentLogger.LogDebug($"Processing {keys.Count} required payments, job id {jobId}");
+            foreach (var key in keys)
+            {
+                var cacheItem = await requiredPaymentsCache.TryGet(key).ConfigureAwait(false);
+                if (!cacheItem.HasValue)
+                    continue;
+
+                var requiredPaymentEvent = cacheItem.Value;
+
+                if (requiredPaymentEvent.CollectionPeriod.AcademicYear == academicYear &&
+                    requiredPaymentEvent.CollectionPeriod.Period == collectionPeriod &&
+                    requiredPaymentEvent.JobId == jobId)
+                {
+                    await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
+                }
+            }
+            paymentLogger.LogInfo("Finished removing current submission payments.");
         }
 
         private List<FundingSourcePaymentEvent> CreateFundingSourcePaymentsForRequiredPayment(CalculatedRequiredLevyAmount requiredPaymentEvent, long employerAccountId, long jobId)

@@ -67,6 +67,7 @@
     <Folder Include="Payments2\Views" />
     <Folder Include="Payments2\Tables" />
     <Folder Include="dbo\" />
+    <Folder Include="dbo\Stored Procedures" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\User_RO.sql" />
@@ -95,6 +96,7 @@
     <Build Include="Payments2\Tables\Payments2.TestingProvider.sql" />
     <Build Include="Payments2\Tables\SubmittedLearnerAim.sql" />
     <Build Include="Payments2\Tables\Payments2.ApprenticeshipDuplicate.sql" />
+    <Build Include="Payments2\Tables\Payments2.DataLockFailure.sql" />
     <Build Include="Payments2\Tables\Payments2.EmployerProviderPriority.sql" />
     <Build Include="Payments2\Tables\Payments2.DataLockEvent.sql" />
     <Build Include="Payments2\Tables\Payments2.DataLockEventPriceEpisode.sql" />
@@ -102,6 +104,9 @@
     <Build Include="Payments2\Tables\Payments2.DataLockEventNonPayablePeriod.sql" />
     <Build Include="Payments2\Tables\Payments2.DataLockEventNonPayablePeriodFailures.sql" />
     <Build Include="Payments2\Tables\Payments2.ApprenticeshipPause.sql" />
+    <Build Include="dbo\Stored Procedures\dbo.MetricsPayments.sql" />
+    <Build Include="Payments2\Tables\Payments2.ProviderAdjustmentPayments.sql" />
+    <Build Include="Payments2\Views\Payments2.DataMatchReport.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />
@@ -134,5 +139,8 @@
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SFA.DAS.Payments.Database.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SFA.DAS.Payments.Database.publish.xml" />
   </ItemGroup>
 </Project>

@@ -1,3 +1,4 @@
+@basic_day
 Feature: Two levy learners one employer but two providers and not enough levy PV2-270
 
 Scenario Outline: Two levy learners, one employer but two providers and not enough levy available both finished on time PV2-270

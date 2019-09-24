@@ -10,5 +10,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Interfaces
     public interface IDataLockProcessor
     {
         Task<List<DataLockEvent>> GetPaymentEvents(ApprenticeshipContractType1EarningEvent earningEvent,CancellationToken cancellationToken);
+
+        Task<List<FunctionalSkillDataLockEvent>> GetFunctionalSkillPaymentEvents(Act1FunctionalSkillEarningsEvent earningEvent, CancellationToken cancellationToken);
     }
 }

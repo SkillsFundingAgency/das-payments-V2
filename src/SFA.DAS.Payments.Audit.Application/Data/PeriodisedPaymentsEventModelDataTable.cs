@@ -26,7 +26,9 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 new DataColumn("EarningsCompletionStatus"),
                 new DataColumn("EarningsCompletionAmount"),
                 new DataColumn("EarningsInstalmentAmount"),
-                new DataColumn("EarningsNumberOfInstalments")
+                new DataColumn("EarningsNumberOfInstalments"),
+                new DataColumn("ApprenticeshipId",typeof(long)) {AllowDBNull = true},
+                new DataColumn("ApprenticeshipPriceEpisodeId",typeof(long)) {AllowDBNull = true}
             });
         }
 
@@ -43,13 +45,13 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             dataRow["SfaContributionPercentage"] = eventModel.SfaContributionPercentage;
             dataRow["AccountId"] = eventModel.AccountId;
             dataRow["TransferSenderAccountId"] = eventModel.TransferSenderAccountId;
-            dataRow["EarningsStartDate"] = eventModel.StartDate;
+            dataRow["EarningsStartDate"] = eventModel.StartDate == DateTime.MinValue ? DateTime.Today:eventModel.StartDate;
             dataRow["EarningsCompletionStatus"] = eventModel.CompletionStatus;
             dataRow["EarningsCompletionAmount"] = eventModel.CompletionAmount;
             dataRow["EarningsInstalmentAmount"] = eventModel.InstalmentAmount;
             dataRow["EarningsNumberOfInstalments"] = eventModel.NumberOfInstalments;
 
-            if (eventModel.PlannedEndDate == DateTime.MinValue)
+            if (!eventModel.PlannedEndDate.HasValue || eventModel.PlannedEndDate == DateTime.MinValue)
             {
                 dataRow["EarningsPlannedEndDate"] = DBNull.Value;
             }
@@ -66,6 +68,25 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             {
                 dataRow["EarningsActualEndDate"] = eventModel.ActualEndDate;
             }
+
+            if (!eventModel.ApprenticeshipId.HasValue)
+            {
+                dataRow["ApprenticeshipId"] = DBNull.Value;
+            }
+            else
+            {
+                dataRow["ApprenticeshipId"] = eventModel.ApprenticeshipId.Value;
+            }
+
+            if (!eventModel.ApprenticeshipPriceEpisodeId.HasValue)
+            {
+                dataRow["ApprenticeshipPriceEpisodeId"] = DBNull.Value;
+            }
+            else
+            {
+                dataRow["ApprenticeshipPriceEpisodeId"] = eventModel.ApprenticeshipPriceEpisodeId.Value;
+            }
+
             return dataRow;
         }
     }

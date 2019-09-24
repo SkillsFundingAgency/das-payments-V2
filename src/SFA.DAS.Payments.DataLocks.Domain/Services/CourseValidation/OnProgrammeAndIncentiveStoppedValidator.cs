@@ -7,7 +7,9 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
-    public class OnProgrammeAndIncentiveStoppedValidator : BaseCourseValidator, ICourseValidator
+    public interface IOnProgrammeAndIncentiveStoppedValidator : ICourseValidator { }
+
+    public class OnProgrammeAndIncentiveStoppedValidator : BaseCourseValidator, IOnProgrammeAndIncentiveStoppedValidator
     {
         private readonly ICalculatePeriodStartAndEndDate calculatePeriodStartAndEndDate;
 

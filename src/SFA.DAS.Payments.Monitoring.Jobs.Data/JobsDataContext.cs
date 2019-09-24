@@ -5,13 +5,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Monitoring.Jobs.Data.Configuration;
-using SFA.DAS.Payments.Monitoring.Jobs.Data.Model;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 {
     public interface IJobsDataContext
     {
-        Task SaveNewJob(JobModel jobDetails, List<JobStepModel> jobSteps, CancellationToken cancellationToken = default(CancellationToken));
+        Task SaveNewJob(JobModel jobDetails, CancellationToken cancellationToken = default(CancellationToken));
         Task<long> GetJobIdFromDcJobId(long dcJobId);
         Task<JobModel> GetJobByDcJobId(long dcJobId);
         Task SaveJobSteps(List<JobStepModel> jobSteps);
@@ -19,10 +19,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task<Dictionary<JobStepStatus, int>> GetJobStepsStatus(long jobId);
         Task<DateTimeOffset?> GetLastJobStepEndTime(long jobId);
         Task<JobModel> GetJob(long jobId);
-        Task SaveJobStatus(long jobId, JobStatus status, DateTimeOffset endTime);
+        Task SaveJobStatus(long dcJobId, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken = default(CancellationToken));
         Task<List<JobModel>> GetInProgressJobs();
-        Task UpdateJob(JobModel job, CancellationToken cancellationToken = default(CancellationToken));
-
+        Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken);
     }
 
     public class JobsDataContext : DbContext, IJobsDataContext
@@ -49,12 +48,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             optionsBuilder.UseSqlServer(connectionString);
         }
 
-        public async Task SaveNewJob(JobModel jobDetails, List<JobStepModel> jobSteps, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task SaveNewJob(JobModel jobDetails, CancellationToken cancellationToken = default(CancellationToken))
         {
             Jobs.Add(jobDetails);
-            await SaveChangesAsync(cancellationToken);
-            jobSteps.ForEach(step => step.JobId = jobDetails.Id);
-            JobSteps.AddRange(jobSteps);
             await SaveChangesAsync(cancellationToken);
         }
 
@@ -104,6 +100,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                 .ToListAsync();
         }
 
+        public async Task SaveDataLocksCompletionTime(long dcJobId, DateTimeOffset endTime, CancellationToken cancellationToken)
+        {
+            var job = await Jobs.FirstOrDefaultAsync(storedJob => storedJob.DcJobId == dcJobId) ??
+                      throw new InvalidOperationException($"Job not found: {dcJobId}");
+
+            job.DataLocksCompletionTime = endTime;
+            await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        }
+
         public async Task<DateTimeOffset?> GetLastJobStepEndTime(long jobId)
         {
             var time = await JobSteps
@@ -120,15 +125,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         }
         public async Task<JobModel> GetJobByDcJobId(long dcJobId)
         {
-            return await Jobs.FirstOrDefaultAsync(job => job.DcJobId == dcJobId);
+            return await Jobs.AsNoTracking().FirstOrDefaultAsync(job => job.DcJobId == dcJobId);
         }
 
-        public async Task SaveJobStatus(long jobId, JobStatus status, DateTimeOffset endTime)
+        public async Task SaveJobStatus(long dcJobId, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var job = await GetJob(jobId) ?? throw new ArgumentException($"Job not found: {jobId}");
+            var job = await Jobs.FirstOrDefaultAsync(storedJob => storedJob.DcJobId == dcJobId, cancellationToken) 
+                      ?? throw new ArgumentException($"Job not found: {dcJobId}");
             job.EndTime = endTime;
             job.Status = status;
-            await SaveChangesAsync();
+            await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }

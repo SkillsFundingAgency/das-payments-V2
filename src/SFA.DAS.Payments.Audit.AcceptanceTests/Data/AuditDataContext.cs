@@ -8,6 +8,11 @@ namespace SFA.DAS.Payments.Audit.AcceptanceTests.Data
     {
         private readonly string connectionString;
         public virtual DbSet<FundingSourceEvent> FundingSourceEvents { get; set; }
+        public virtual DbSet<DataLockEvent> DataLockEvents { get; set; }
+        public virtual DbSet<DataLockPayablePeriod> DataLockPayablePeriods { get; set; }
+        public virtual DbSet<DataLockEventNonPayablePeriod> DataLockEventNonPayablePeriods { get; set; }
+        public virtual DbSet<DataLockEventNonPayablePeriodFailures> DataLockEventNonPayablePeriodFailures { get; set; }
+        public virtual DbSet<DataLockEventPriceEpisode> DataLockEventPriceEpisodes { get; set; }
 
         public AuditDataContext(string connectionString)
         {
@@ -19,6 +24,11 @@ namespace SFA.DAS.Payments.Audit.AcceptanceTests.Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.HasDefaultSchema("Payments2");
             modelBuilder.ApplyConfiguration(new FundingSourceEventConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockEventConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockPayablePeriodConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockEventNonPayablePeriodConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockEventNonPayablePeriodFailuresConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockEventPriceEpisodeConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

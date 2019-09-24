@@ -13,6 +13,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
             {
                 new DataColumn("FundingSourceEventId", typeof(Guid)),
                 new DataColumn("FundingSource"),
+                new DataColumn("ApprenticeshipEmployerType", typeof(byte)),
+                new DataColumn("ReportingAimFundingLineType", typeof(string)),
             });
         }
 
@@ -21,6 +23,27 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
             var dataRow = base.CreateDataRow(eventModel);
             dataRow["FundingSourceEventId"] = eventModel.FundingSourceId;
             dataRow["FundingSource"] = (byte)eventModel.FundingSource;
+
+            if (!eventModel.ApprenticeshipId.HasValue)
+            {
+                dataRow["ApprenticeshipId"] = DBNull.Value;
+            }
+            else
+            {
+                dataRow["ApprenticeshipId"] = eventModel.ApprenticeshipId.Value;
+            }
+
+            if (!eventModel.ApprenticeshipPriceEpisodeId.HasValue)
+            {
+                dataRow["ApprenticeshipPriceEpisodeId"] = DBNull.Value;
+            }
+            else
+            {
+                dataRow["ApprenticeshipPriceEpisodeId"] = eventModel.ApprenticeshipPriceEpisodeId.Value;
+            }
+
+            dataRow["ApprenticeshipEmployerType"] = eventModel.ApprenticeshipEmployerType;
+            dataRow["ReportingAimFundingLineType"] = eventModel.ReportingAimFundingLineType;
             return dataRow;
         }
 

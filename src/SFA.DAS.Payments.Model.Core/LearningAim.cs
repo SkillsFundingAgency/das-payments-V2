@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Payments.Model.Core
+﻿using System;
+
+namespace SFA.DAS.Payments.Model.Core
 {
     public class LearningAim
     {
@@ -13,6 +15,9 @@
         public int PathwayCode { get; set; }
 
         public string FundingLineType { get; set; }
+        public long SequenceNumber { get; set; }
+
+        public DateTime StartDate { get; set; }
 
         public LearningAim Clone()
         {

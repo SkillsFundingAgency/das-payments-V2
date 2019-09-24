@@ -8,7 +8,7 @@ using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application
 {
-    public interface IPaymentHistoryRepository
+    public interface IPaymentHistoryRepository: IDisposable
     {
         Task<List<PaymentHistoryEntity>> GetPaymentHistory(ApprenticeshipKey apprenticeshipKey, CancellationToken cancellationToken = default(CancellationToken));
 
