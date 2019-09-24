@@ -220,15 +220,26 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return events;
         }
 
-        private List<EarningPeriod> GetEarningPeriods(List<Earning> aimEarningSpecs, Aim aimSpec, ApprenticeshipContractTypeEarningsEvent onProgEarning, TransactionType tt, FM36Learner fm36Learner)
+        private List<EarningPeriod> GetEarningPeriods(List<Earning> aimEarningSpecs, Aim aimSpec,
+            ApprenticeshipContractTypeEarningsEvent onProgEarning, TransactionType tt, FM36Learner fm36Learner)
         {
-            return aimEarningSpecs
-                .Select(e => new EarningPeriod
-                {
-                    Amount = PriceEpisodeContractTypeMatchesAim(aimSpec.PriceEpisodes, e.PriceEpisodeIdentifier, onProgEarning)? e.Values[tt] : 0M,
-                    Period = e.DeliveryCalendarPeriod,
-                    PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
-                }).OrderBy(p => p.Period).ToList();
+            var grouped = aimEarningSpecs.GroupBy(e => new {e.DeliveryPeriod, tt}).ToList();
+
+            var conflicts = grouped.Where(g => g.Count() > 1 && g.Count(e => e.Values[tt] != 0) > 1).ToList();
+            if (conflicts.Any())
+            {
+                throw new Exception(
+                    $"Duplicate period in data, each with a value and the same transaction type: [{conflicts.FirstOrDefault().Key}] values:[{string.Join(",",conflicts.SelectMany(c => c, (key, groupedValues) => groupedValues.Values[tt]))}]");
+            }
+
+            var flattened = grouped.Select(g=>g.FirstOrDefault(e => e.Values[tt] != 0)).ToList();
+
+            return  flattened.Select(e => new EarningPeriod
+            {
+                Amount = PriceEpisodeContractTypeMatchesAim(aimSpec.PriceEpisodes, e.PriceEpisodeIdentifier, onProgEarning) ? e.Values[tt] : 0M,
+                Period = e.DeliveryCalendarPeriod,
+                PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
+            }).OrderBy(p => p.Period).ToList();
         }
 
         private static bool PriceEpisodeContractTypeMatchesAim(List<Price> priceEpisodes, string priceEpisodeIdentifier, IEarningEvent onProgEarning)
