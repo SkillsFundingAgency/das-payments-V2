@@ -11,7 +11,6 @@ variables:
   BuildPlatform: 'Any CPU'
   BuildPlatformX64: 'x64'  
   ServiceFabricProjectFolderNames: ['SFA.DAS.Payments.EarningEvents.ServiceFabric', 'SFA.DAS.Payments.FundingSource.ServiceFabric', 'SFA.DAS.Payments.RequiredPayments.ServiceFabric', 'SFA.DAS.Payments.ProviderPayments.ServiceFabric', 'SFA.DAS.Payments.Monitoring.ServiceFabric', 'SFA.DAS.Payments.Audit.ServiceFabric', 'SFA.DAS.Payments.DataLocks.ServiceFabric']
-  ServiceFabricApplicationParametersFolder: 'src\ESFA.DC.Summarisation\ApplicationParameters'
   PrivateSettingsCheckerURL: 'https://raw.githubusercontent.com/SkillsFundingAgency/DC-Tools/master/Scripts/PrivateSettingsChecker.ps1'
 
 pool:
