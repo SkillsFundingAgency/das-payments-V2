@@ -10,6 +10,7 @@ namespace SFA.DAS.Payments.ConfigUpdater
     public partial class ConfigUpdater : Form
     {
         private List<FileConfigEntry> _configurationEntries;
+        private XNamespace _ns = "http://schemas.microsoft.com/2011/01/fabric";
 
         public ConfigUpdater()
         {
@@ -85,9 +86,8 @@ namespace SFA.DAS.Payments.ConfigUpdater
             }
 
             var existingConfig = XElement.Load(configFileToUpdate);
-            XNamespace ns = "http://schemas.microsoft.com/2011/01/fabric";
-
-            var parameters = from parameter in existingConfig.Descendants(ns + "Parameter")
+            
+            var parameters = from parameter in existingConfig.Descendants(_ns + "Parameter")
                 where !string.IsNullOrEmpty(parameter.Attribute("Value").Value)
                 select new {Name = (string) parameter.Attribute("Name"), Value = (string) parameter.Attribute("Value")};
 
@@ -105,9 +105,8 @@ namespace SFA.DAS.Payments.ConfigUpdater
             var baseFolder = Directory.GetParent(configFile).Parent.FullName;
             var manifestPath = baseFolder + @"\ApplicationPackageRoot\ApplicationManifest.xml";
             var manifest = XElement.Load(manifestPath);
-            XNamespace ns = "http://schemas.microsoft.com/2011/01/fabric";
 
-            var defaults = from parameters in manifest.Element(ns + "Parameters").Descendants(ns + "Parameter")
+            var defaults = from parameters in manifest.Element(_ns + "Parameters").Descendants(_ns + "Parameter")
                            where !string.IsNullOrEmpty(parameters.Attribute("DefaultValue").Value)
                            select new
                            {
@@ -127,8 +126,7 @@ namespace SFA.DAS.Payments.ConfigUpdater
         private List<string> GetConfigEntriesFromFile(string configFile)
         {
             var file = XElement.Load(configFile);
-            XNamespace ns = "http://schemas.microsoft.com/2011/01/fabric";
-            var parameters = from parameter in file.Descendants(ns + "Parameter")
+            var parameters = from parameter in file.Descendants(_ns + "Parameter")
                              select (string)parameter.Attribute("Name");
 
             return parameters.ToList();
@@ -157,27 +155,19 @@ namespace SFA.DAS.Payments.ConfigUpdater
             }
 
             SaveUserParameters();
+
             _configurationEntries = GetCurrentConfiguration(SourceFolderPath.Text, ConfigToUpdate.Text);
-            AllParameterValues.DataSource = _configurationEntries;
-            MissingParameters.DataSource = _configurationEntries.Where(x => string.IsNullOrEmpty(x.CurrentValue)).ToList();
-            ConsolidatedParameters.DataSource = GetUniqueConfigEntries(_configurationEntries);
+            BindGridsToConfigurationEntries();
 
-            MakeGridsSortable();
+            UpdateConfig.Enabled = true;
         }
 
-        private void MakeGridsSortable()
+        private void BindGridsToConfigurationEntries()
         {
-            MakeGridSortable(AllParameterValues);
-            MakeGridSortable(MissingParameters);
-            MakeGridSortable(ConsolidatedParameters);
-        }
-
-        private void MakeGridSortable(DataGridView dataGridView)
-        {
-            foreach (DataGridViewColumn column in dataGridView.Columns)
-            {
-                column.SortMode = DataGridViewColumnSortMode.Automatic;
-            }
+            AllParameterValues.DataSource = _configurationEntries.OrderBy(x => x.FileName).ThenBy(x => x.ParameterName).ToList();
+            MissingParameters.DataSource = _configurationEntries.Where(x => string.IsNullOrEmpty(x.CurrentValue)).OrderBy(x => x.FileName).ThenBy(x => x.ParameterName).ToList();
+            ConsolidatedParameters.DataSource = GetUniqueConfigEntries(_configurationEntries).OrderBy(x => x.ParameterName).ToList();
+            ConsolidatedParameters.Columns["FileName"].Visible = false;
         }
 
         private void SaveUserParameters()
@@ -203,13 +193,24 @@ namespace SFA.DAS.Payments.ConfigUpdater
             var configByFiles = _configurationEntries.GroupBy(x => x.FileName);
             foreach (var configFile in configByFiles)
             {
-                UpdateConfigFile(configFile.Key, configFile.Select(x => x));
+                UpdateConfigFile(configFile.Key, configFile.Select(x => x), ConfigToUpdate.Text);
             }
+
+            MessageBox.Show("Config updated");
         }
 
-        private void UpdateConfigFile(string configFile, IEnumerable<FileConfigEntry> configEntries)
+        private void UpdateConfigFile(string configFile, IEnumerable<FileConfigEntry> configEntries, string configToUpdate)
         {
+            var cloudConfigFile = XElement.Load(configFile);
+            var parameterNodes = cloudConfigFile.Descendants(_ns + "Parameter");
+            foreach (var configEntry in configEntries)
+            {
+                var matchingParameter = parameterNodes.Single(x => x.Attribute("Name").Value == configEntry.ParameterName);
+                matchingParameter.Attribute("Value").Value = configEntry.NewValue;
+            }
 
+            var newFileName = Directory.GetParent(configFile) + @"\test" + configToUpdate;
+            cloudConfigFile.Save(newFileName);
         }
     }
 }

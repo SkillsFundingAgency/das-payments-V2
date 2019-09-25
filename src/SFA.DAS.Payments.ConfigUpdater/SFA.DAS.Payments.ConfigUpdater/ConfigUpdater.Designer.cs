@@ -192,6 +192,7 @@
             // 
             // UpdateConfig
             // 
+            this.UpdateConfig.Enabled = false;
             this.UpdateConfig.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.UpdateConfig.Location = new System.Drawing.Point(1108, 501);
             this.UpdateConfig.Name = "UpdateConfig";
