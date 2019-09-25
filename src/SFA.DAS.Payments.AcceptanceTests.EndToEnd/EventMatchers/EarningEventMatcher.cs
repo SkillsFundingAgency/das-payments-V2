@@ -223,16 +223,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         private List<EarningPeriod> GetEarningPeriods(List<Earning> aimEarningSpecs, Aim aimSpec,
             ApprenticeshipContractTypeEarningsEvent onProgEarning, TransactionType tt, FM36Learner fm36Learner)
         {
-            var grouped = aimEarningSpecs.GroupBy(e => new {e.DeliveryPeriod, tt}).ToList();
+            var grouped = aimEarningSpecs.GroupBy(e => new {e.DeliveryPeriod, tt}).Select(group => new {group.Key, specs= group} ).ToList();
 
-            var conflicts = grouped.Where(g => g.Count() > 1 && g.Count(e => e.Values[tt] != 0) > 1).ToList();
+            var conflicts = grouped.Where(g => g.specs.Count() > 1 && g.specs.Count(e => e.Values[tt] != 0m) > 1).ToList();
             if (conflicts.Any())
             {
                 throw new Exception(
-                    $"Duplicate period in data, each with a value and the same transaction type: [{conflicts.FirstOrDefault().Key}] values:[{string.Join(",",conflicts.SelectMany(c => c, (key, groupedValues) => groupedValues.Values[tt]))}]");
+                    $"Duplicate period in data, each with a value and the same transaction type: [{conflicts.FirstOrDefault().Key}] values:[{string.Join(",",conflicts.SelectMany(a => a.specs.Select(y => y.Values[tt])))}]");
             }
 
-            var flattened = grouped.Select(g=>g.FirstOrDefault(e => e.Values[tt] != 0)).ToList();
+            var flattened = grouped.Select(g => 
+            {
+                return g.specs.Count() > 1  && g.specs.Any(v => v.Values[tt] != 0m) ?  g.specs.FirstOrDefault(s=>s.Values[tt] != 0m): g.specs.FirstOrDefault();
+            }).ToList();
 
             return  flattened.Select(e => new EarningPeriod
             {
