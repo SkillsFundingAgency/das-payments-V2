@@ -209,7 +209,7 @@ namespace SFA.DAS.Payments.ConfigUpdater
                 matchingParameter.Attribute("Value").Value = configEntry.NewValue;
             }
 
-            var newFileName = Directory.GetParent(configFile) + @"\test" + configToUpdate;
+            var newFileName = Directory.GetParent(configFile) + @"\" + configToUpdate;
             cloudConfigFile.Save(newFileName);
         }
     }
