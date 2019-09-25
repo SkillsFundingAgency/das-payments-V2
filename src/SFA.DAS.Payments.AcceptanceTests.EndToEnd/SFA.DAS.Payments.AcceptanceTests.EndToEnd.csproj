@@ -1126,6 +1126,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-1464_Ignore_Apprenticeship_That_Stop_Within_A_Day_Of_Starting.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Levy - Data Locks\PV2-1510 - DLOCK01 when no matching record found for the UKPRN.feature.cs">
+      <DependentUpon>PV2-1510 - DLOCK01 when no matching record found for the UKPRN.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Levy - Data Locks\PV2-662 - DLOCK01 when no matching record found for the UKPRN.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2192,6 +2197,10 @@
     <None Include="Tests\Levy - Data Locks\PV2-1464_Ignore_Apprenticeship_That_Stop_Within_A_Day_Of_Starting.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-1464_Ignore_Apprenticeship_That_Stop_Within_A_Day_Of_Starting.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\PV2-1510 - DLOCK01 when no matching record found for the UKPRN.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1510 - DLOCK01 when no matching record found for the UKPRN.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Levy - Data Locks\PV2-662 - DLOCK01 when no matching record found for the UKPRN.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
