@@ -52,6 +52,7 @@
     <Compile Include="ConfigUpdater.Designer.cs">
       <DependentUpon>ConfigUpdater.cs</DependentUpon>
     </Compile>
+    <Compile Include="ConfigurationManager.cs" />
     <Compile Include="FileConfigEntry.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
