@@ -12,8 +12,8 @@
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsMonitoringConnectionString" DefaultValue="" />
-    <Parameter Name="Monitoring_JobsService_EndpointName" DefaultValue="" />
-    <Parameter Name="Monitoring_JobsService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="Monitoring_JobsService_EndpointName" DefaultValue="sfa-das-payments-monitoring-jobs" />
+    <Parameter Name="Monitoring_JobsService_FailedMessagesQueue" DefaultValue="sfa-das-payments-monitoring-jobs-errors" />
     <Parameter Name="Monitoring_JobsService_FailureTimeoutInSeconds" DefaultValue="150" />
     <Parameter Name="Monitoring_JobsService_IntervalInSeconds" DefaultValue="10" />
     <Parameter Name="NumberOfNServiceBusThreads" DefaultValue="4" />

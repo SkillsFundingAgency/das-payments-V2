@@ -14,11 +14,11 @@
     <Parameter Name="LogLevel" DefaultValue="Information" />
     <Parameter Name="ConsoleLogLevel" DefaultValue="" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
-    <Parameter Name="NonLevyFundedService_EndpointName" DefaultValue="" />
-    <Parameter Name="LevyFundedService_EndpointName" DefaultValue="" />
-    <Parameter Name="NonLevyFundedService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="NonLevyFundedService_EndpointName" DefaultValue="sfa-das-payments-fundingsource-nonlevy" />
+    <Parameter Name="LevyFundedService_EndpointName" DefaultValue="sfa-das-payments-fundingsource-levy" />
+    <Parameter Name="NonLevyFundedService_FailedMessagesQueue" DefaultValue="sfa-das-payments-fundingsource-nonlevy-error" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
-    <Parameter Name="LevyFundedService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="LevyFundedService_FailedMessagesQueue" DefaultValue="sfa-das-payments-fundingsource-levy-errors" />
     <Parameter Name="LevyFundedServiceActorService_PartitionCount" DefaultValue="10" />
     <Parameter Name="LevyFundedServiceActorService_MinReplicaSetSize" DefaultValue="3" />
     <Parameter Name="LevyFundedServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
@@ -27,10 +27,10 @@
     <Parameter Name="AccountApiClientSecret" DefaultValue="" />
     <Parameter Name="AccountApiIdentifierUri" DefaultValue="" />
     <Parameter Name="AccountApiTenant" DefaultValue="" />
-    <Parameter Name="LevyAccountBalanceService_BatchSize" DefaultValue="" />
-    <Parameter Name="LevyAccountBalanceService_EndpointName" DefaultValue="" />
-    <Parameter Name="LevyAccountBalanceService_FailedMessagesQueue" DefaultValue="" />
-    <Parameter Name="LevyAccountRefreshIntervalInHours" DefaultValue="" />
+    <Parameter Name="LevyAccountBalanceService_BatchSize" DefaultValue="1000" />
+    <Parameter Name="LevyAccountBalanceService_EndpointName" DefaultValue="sfa-das-payments-levyaccountbalance" />
+    <Parameter Name="LevyAccountBalanceService_FailedMessagesQueue" DefaultValue="sfa-das-payments-levyaccountbalance-errors" />
+    <Parameter Name="LevyAccountRefreshIntervalInHours" DefaultValue="1" />
     <Parameter Name="Placement_Constraints" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 

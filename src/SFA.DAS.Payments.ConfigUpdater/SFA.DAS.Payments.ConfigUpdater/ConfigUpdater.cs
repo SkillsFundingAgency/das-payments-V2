@@ -167,7 +167,23 @@ namespace SFA.DAS.Payments.ConfigUpdater
             AllParameterValues.DataSource = _configurationEntries.OrderBy(x => x.FileName).ThenBy(x => x.ParameterName).ToList();
             MissingParameters.DataSource = _configurationEntries.Where(x => string.IsNullOrEmpty(x.CurrentValue)).OrderBy(x => x.FileName).ThenBy(x => x.ParameterName).ToList();
             ConsolidatedParameters.DataSource = GetUniqueConfigEntries(_configurationEntries).OrderBy(x => x.ParameterName).ToList();
+            MismatchedParameters.DataSource = GetMismatchedParameters(_configurationEntries).OrderBy(x => x.ParameterName).ToList();
             ConsolidatedParameters.Columns["FileName"].Visible = false;
+        }
+
+        private IEnumerable<FileConfigEntry> GetMismatchedParameters(List<FileConfigEntry> allConfigurationEntries)
+        {
+            var mismatchedParameters = new List<FileConfigEntry>();
+            var groupedEntries = allConfigurationEntries.GroupBy(x => x.ParameterName);
+            foreach (var configGroup in groupedEntries)
+            {
+                if (configGroup.Any(x => x.CurrentValue != configGroup.First().CurrentValue))
+                {
+                    mismatchedParameters.AddRange(configGroup);
+                }
+            }
+
+            return mismatchedParameters;
         }
 
         private void SaveUserParameters()

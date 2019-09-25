@@ -13,8 +13,8 @@
     <Parameter Name="LogLevel" DefaultValue="Debug" />
     <Parameter Name="ConsoleLogLevel" DefaultValue="" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
-    <Parameter Name="RequiredPaymentsService_EndpointName" DefaultValue="" />
-    <Parameter Name="RequiredPaymentsService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="RequiredPaymentsService_EndpointName" DefaultValue="sfa-das-payments-requiredpayments" />
+    <Parameter Name="RequiredPaymentsService_FailedMessagesQueue" DefaultValue="sfa-das-payments-requiredpayments-errors" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="RemovedLearnerServiceActorService_PartitionCount" DefaultValue="10" />
     <Parameter Name="RemovedLearnerServiceActorService_MinReplicaSetSize" DefaultValue="1" />

@@ -3,10 +3,10 @@
   <Parameters>
     <Parameter Name="ApprovalsService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="DataLockStatusChangedService_InstanceCount" DefaultValue="-1" />
-    <Parameter Name="DataLockStatusChangedService_EndpointName" DefaultValue="" />
-    <Parameter Name="DataLockStatusChangedService_FailedMessagesQueue" DefaultValue="" />
-    <Parameter Name="DataLockEventService_EndpointName" DefaultValue="" />
-    <Parameter Name="DataLockEventService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="DataLockStatusChangedService_EndpointName" DefaultValue="sfa-das-payments-datalock-status-change" />
+    <Parameter Name="DataLockStatusChangedService_FailedMessagesQueue" DefaultValue="sfa-das-payments-datalock-status-change-errors" />
+    <Parameter Name="DataLockEventService_EndpointName" DefaultValue="sfa-das-payments-datalock-event" />
+    <Parameter Name="DataLockEventService_FailedMessagesQueue" DefaultValue="sfa-das-payments-datalock-event-errors" />
     <Parameter Name="DataLockEventService_PartitionCount" DefaultValue="10" />
     <Parameter Name="DataLockEventService_MinReplicaSetSize" DefaultValue="3" />
     <Parameter Name="DataLockEventService_TargetReplicaSetSize" DefaultValue="3" />
@@ -26,10 +26,10 @@
     <Parameter Name="LogLevel" DefaultValue="Information" />
     <Parameter Name="ConsoleLogLevel" DefaultValue="Fatal" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
-    <Parameter Name="ApprovalsService_EndpointName" DefaultValue="" />
-    <Parameter Name="ApprovalsService_FailedMessagesQueue" DefaultValue="" />
-    <Parameter Name="DataLockService_EndpointName" DefaultValue="" />
-    <Parameter Name="DataLockService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="ApprovalsService_EndpointName" DefaultValue="sfa-das-payments-datalock-approvals" />
+    <Parameter Name="ApprovalsService_FailedMessagesQueue" DefaultValue="sfa-das-payments-datalock-approvals-errors" />
+    <Parameter Name="DataLockService_EndpointName" DefaultValue="sfa-das-payments-datalock" />
+    <Parameter Name="DataLockService_FailedMessagesQueue" DefaultValue="sfa-das-payments-datalock-errors" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="Placement_Constraints" DefaultValue="" />
   </Parameters>

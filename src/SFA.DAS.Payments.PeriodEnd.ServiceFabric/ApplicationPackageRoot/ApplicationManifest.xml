@@ -2,18 +2,18 @@
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.PeriodEnd.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="PeriodEndService_InstanceCount" DefaultValue="-1" />
-    <Parameter Name="PeriodEndService_EndpointName" DefaultValue="" />
-    <Parameter Name="PeriodEndService_FailedMessagesQueue" DefaultValue="" />
-    <Parameter Name="SubscriptionName" DefaultValue="" />
-    <Parameter Name="JobStatusQueueName" DefaultValue="" />
-    <Parameter Name="AuditQueueName" DefaultValue="" />
+    <Parameter Name="PeriodEndService_EndpointName" DefaultValue="sfa-das-payments-periodend" />
+    <Parameter Name="PeriodEndService_FailedMessagesQueue" DefaultValue="sfa-das-payments-periodend-errors" />
+    <Parameter Name="SubscriptionName" DefaultValue="period_end" />
+    <Parameter Name="JobStatusQueueName" DefaultValue="dc_jobs_status" />
+    <Parameter Name="AuditQueueName" DefaultValue="dc_jobs_audit" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="DCServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="DcStorageConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
-    <Parameter Name="TopicName" DefaultValue="" />
+    <Parameter Name="TopicName" DefaultValue="dc" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />

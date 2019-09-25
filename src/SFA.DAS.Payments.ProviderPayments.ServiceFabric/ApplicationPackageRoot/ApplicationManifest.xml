@@ -13,8 +13,8 @@
     <Parameter Name="LogLevel" DefaultValue="Information" />
     <Parameter Name="ConsoleLogLevel" DefaultValue="" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
-    <Parameter Name="ProviderPaymentsService_EndpointName" DefaultValue="" />
-    <Parameter Name="ProviderPaymentsService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="ProviderPaymentsService_EndpointName" DefaultValue="sfa-das-payments-providerpayments" />
+    <Parameter Name="ProviderPaymentsService_FailedMessagesQueue" DefaultValue="sfa-das-payments-providerpayments-errors" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="Audit_BatchFailureTimeoutInSeconds" DefaultValue="60" />
     <Parameter Name="BatchIntervalInSeconds" DefaultValue="10" />
