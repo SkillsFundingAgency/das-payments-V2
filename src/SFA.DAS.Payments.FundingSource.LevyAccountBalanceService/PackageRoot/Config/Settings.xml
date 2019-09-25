@@ -22,6 +22,9 @@
     <Parameter Name="BatchSize" Value="1000" />
     <Parameter Name="LogLevel" Value="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+    <Parameter Name="ImmediateMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetryDelay" Value="" />
     <Parameter Name="EndpointName" Value="sfa-das-payments-levyaccountbalance" />
     <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-levyaccountbalance-errors" />
     <Parameter Name="LevyAccountRefreshIntervalInHours" Value="23" />
