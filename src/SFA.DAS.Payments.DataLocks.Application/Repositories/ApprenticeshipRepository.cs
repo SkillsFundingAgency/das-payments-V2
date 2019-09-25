@@ -23,10 +23,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             this.dataContext = dataContext;
         }
 
-        public async Task<List<long>> GetProviderIds()
+        public async Task<List<long>> GetProviderIdsByUln(long uln)
         {
             return await dataContext.Apprenticeship
-                .Where(x => x.Ukprn != 0)
+                .Where(x => x.Ukprn != 0 && x.Uln == uln)
                 .Select(x => x.Ukprn)
                 .Distinct()
                 .ToListAsync();
