@@ -3,10 +3,18 @@ using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Data;
 using NServiceBus.UnitOfWork;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 
-namespace SFA.DAS.Payments.ServiceFabric.Core.Batch
+namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
 {
-    public class StateManagerUnitOfWork : IManageUnitsOfWork
+    
+    public interface IStateManagerUnitOfWork
+    {
+        Task Begin();
+        Task End(Exception ex = null);
+    }
+
+    public class StateManagerUnitOfWork : IManageUnitsOfWork, IStateManagerUnitOfWork
     {
         private readonly IReliableStateManagerTransactionProvider reliableStateManagerTransactionProvider;
         private readonly IPaymentLogger logger;

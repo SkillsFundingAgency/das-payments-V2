@@ -87,10 +87,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         //            Times.Once);
         //}
 
-        private async Task JobStepCompleted()
-        {
-            var service = mocker.Create<JobMessageService>();
-            await service.RecordCompletedJobMessageStatus(jobMessageStatus);
-        }
+        //private async Task JobStepCompleted()
+        //{
+        //    var service = mocker.Create<JobMessageService>();
+        //    await service.RecordCompletedJobMessageStatus(jobMessageStatus);
+        //}
     }
 }

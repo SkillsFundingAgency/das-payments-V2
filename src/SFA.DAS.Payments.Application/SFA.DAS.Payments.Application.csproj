@@ -30,4 +30,8 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infrastructure\UnitOfWork\" />
+  </ItemGroup>
+
 </Project>
