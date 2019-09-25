@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -42,6 +43,7 @@ namespace SFA.DAS.Payments.ConfigUpdater
             BindGridsToConfigurationEntries();
 
             UpdateConfig.Enabled = true;
+            PublishServices.Enabled = true;
         }
 
         private void BindGridsToConfigurationEntries()
@@ -71,6 +73,18 @@ namespace SFA.DAS.Payments.ConfigUpdater
             _configurationManager.UpdateConfig(ConfigToUpdate.Text);
 
             MessageBox.Show("Config updated");
+        }
+
+        private void PublishServices_Click(object sender, EventArgs e)
+        {
+            var allServiceConfigs = _configurationManager.ConfigurationEntries.Select(x => x.FileName).Distinct();
+            foreach (var serviceConfig in allServiceConfigs)
+            {
+                var packagePublisher = new PackagePublisher();
+                packagePublisher.PublishPackage(Directory.GetParent(serviceConfig).Parent.FullName, ConfigToUpdate.Text);
+            }
+
+            MessageBox.Show("Packages published");
         }
     }
 }

@@ -38,20 +38,21 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.MissingParameters = new System.Windows.Forms.DataGridView();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.ConsolidatedParameters = new System.Windows.Forms.DataGridView();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.AllParameterValues = new System.Windows.Forms.DataGridView();
-            this.UpdateConfig = new System.Windows.Forms.Button();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.ConsolidatedParameters = new System.Windows.Forms.DataGridView();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.MismatchedParameters = new System.Windows.Forms.DataGridView();
+            this.UpdateConfig = new System.Windows.Forms.Button();
+            this.PublishServices = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MissingParameters)).BeginInit();
-            this.tabPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ConsolidatedParameters)).BeginInit();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.AllParameterValues)).BeginInit();
+            this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ConsolidatedParameters)).BeginInit();
             this.tabPage4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MismatchedParameters)).BeginInit();
             this.SuspendLayout();
@@ -150,6 +151,28 @@
             this.MissingParameters.Size = new System.Drawing.Size(1195, 544);
             this.MissingParameters.TabIndex = 0;
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.AllParameterValues);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(1204, 553);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "All Values";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // AllParameterValues
+            // 
+            this.AllParameterValues.AllowUserToAddRows = false;
+            this.AllParameterValues.AllowUserToDeleteRows = false;
+            this.AllParameterValues.AllowUserToOrderColumns = true;
+            this.AllParameterValues.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.AllParameterValues.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.AllParameterValues.Location = new System.Drawing.Point(3, 3);
+            this.AllParameterValues.Name = "AllParameterValues";
+            this.AllParameterValues.Size = new System.Drawing.Size(1195, 544);
+            this.AllParameterValues.TabIndex = 0;
+            // 
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.ConsolidatedParameters);
@@ -173,40 +196,6 @@
             this.ConsolidatedParameters.TabIndex = 0;
             this.ConsolidatedParameters.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.ConsolidatedParameters_CellValueChanged);
             // 
-            // tabPage3
-            // 
-            this.tabPage3.Controls.Add(this.AllParameterValues);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(1204, 553);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "All Values";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // AllParameterValues
-            // 
-            this.AllParameterValues.AllowUserToAddRows = false;
-            this.AllParameterValues.AllowUserToDeleteRows = false;
-            this.AllParameterValues.AllowUserToOrderColumns = true;
-            this.AllParameterValues.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this.AllParameterValues.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.AllParameterValues.Location = new System.Drawing.Point(3, 3);
-            this.AllParameterValues.Name = "AllParameterValues";
-            this.AllParameterValues.Size = new System.Drawing.Size(1195, 544);
-            this.AllParameterValues.TabIndex = 0;
-            // 
-            // UpdateConfig
-            // 
-            this.UpdateConfig.Enabled = false;
-            this.UpdateConfig.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.UpdateConfig.Location = new System.Drawing.Point(1108, 685);
-            this.UpdateConfig.Name = "UpdateConfig";
-            this.UpdateConfig.Size = new System.Drawing.Size(97, 40);
-            this.UpdateConfig.TabIndex = 7;
-            this.UpdateConfig.Text = "Update Config";
-            this.UpdateConfig.UseVisualStyleBackColor = true;
-            this.UpdateConfig.Click += new System.EventHandler(this.UpdateConfig_Click);
-            // 
             // tabPage4
             // 
             this.tabPage4.Controls.Add(this.MismatchedParameters);
@@ -228,11 +217,35 @@
             this.MismatchedParameters.Size = new System.Drawing.Size(1195, 544);
             this.MismatchedParameters.TabIndex = 1;
             // 
+            // UpdateConfig
+            // 
+            this.UpdateConfig.Enabled = false;
+            this.UpdateConfig.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.UpdateConfig.Location = new System.Drawing.Point(1108, 685);
+            this.UpdateConfig.Name = "UpdateConfig";
+            this.UpdateConfig.Size = new System.Drawing.Size(97, 40);
+            this.UpdateConfig.TabIndex = 7;
+            this.UpdateConfig.Text = "Update Config";
+            this.UpdateConfig.UseVisualStyleBackColor = true;
+            this.UpdateConfig.Click += new System.EventHandler(this.UpdateConfig_Click);
+            // 
+            // PublishServices
+            // 
+            this.PublishServices.Enabled = false;
+            this.PublishServices.Location = new System.Drawing.Point(1005, 685);
+            this.PublishServices.Name = "PublishServices";
+            this.PublishServices.Size = new System.Drawing.Size(97, 40);
+            this.PublishServices.TabIndex = 8;
+            this.PublishServices.Text = "Publish Services";
+            this.PublishServices.UseVisualStyleBackColor = true;
+            this.PublishServices.Click += new System.EventHandler(this.PublishServices_Click);
+            // 
             // ConfigUpdater
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1217, 734);
+            this.Controls.Add(this.PublishServices);
             this.Controls.Add(this.UpdateConfig);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.DetermineConfig);
@@ -249,10 +262,10 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.MissingParameters)).EndInit();
-            this.tabPage2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.ConsolidatedParameters)).EndInit();
             this.tabPage3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.AllParameterValues)).EndInit();
+            this.tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ConsolidatedParameters)).EndInit();
             this.tabPage4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.MismatchedParameters)).EndInit();
             this.ResumeLayout(false);
@@ -279,6 +292,7 @@
         private System.Windows.Forms.Button UpdateConfig;
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.DataGridView MismatchedParameters;
+        private System.Windows.Forms.Button PublishServices;
     }
 }
 
