@@ -157,7 +157,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
                     var providerApprenticeships = await repository.ApprenticeshipsByUln(uln).ConfigureAwait(false);
                     await this.apprenticeships.AddOrReplace(uln.ToString(), providerApprenticeships).ConfigureAwait(false);
                     await this.apprenticeships.AddOrReplace(CacheKeys.DuplicateApprenticeshipsKey, providerApprenticeships).ConfigureAwait(false); //TODO: no need for this anymore
-                    var providerIds = await repository.GetProviderIds();
+                    var providerIds = await repository.GetProviderIdsByUln(uln);
                     await this.providers.AddOrReplace(CacheKeys.ProvidersKey, providerIds).ConfigureAwait(false);
                 }
                 await apprenticeships.SetInitialiseFlag().ConfigureAwait(false);

@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
 {
     public interface IApprenticeshipRepository: IDisposable
     {
-        Task<List<long>> GetProviderIds();
+        Task<List<long>> GetProviderIdsByUln(long uln);
         Task<List<long>> ApprenticeshipUlnsByProvider(long ukprn);
         Task<List<ApprenticeshipModel>> ApprenticeshipsByUln(long uln);
         Task<List<ApprenticeshipModel>> DuplicateApprenticeshipsForProvider(long ukprn);
