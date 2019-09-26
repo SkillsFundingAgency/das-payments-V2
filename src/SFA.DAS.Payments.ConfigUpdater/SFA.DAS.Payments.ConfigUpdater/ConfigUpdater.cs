@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using SFA.DAS.Testing.AzureStorageEmulator;
 
 namespace SFA.DAS.Payments.ConfigUpdater
 {
@@ -92,6 +93,7 @@ namespace SFA.DAS.Payments.ConfigUpdater
                 var packagePublisher = new PackagePublisher();
                 packagePublisher.PublishPackage(Directory.GetParent(serviceConfig).Parent.FullName, ConfigToUpdate.Text, VSCommandLinePath.Text);
             }
+            AzureStorageEmulatorManager.StartStorageEmulator();
 
             MessageBox.Show("Packages published");
         }
