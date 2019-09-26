@@ -87,26 +87,35 @@ namespace SFA.DAS.Payments.EarningEvents.Domain
         {
             foreach (var earningEvent in earningsEvents)
             {
+                if (earningEvent.CollectionPeriod == null)
+                    continue;
+
                 if (earningEvent is ApprenticeshipContractTypeEarningsEvent onProgEarning)
                 {
-                    foreach (var onProgrammeEarning in onProgEarning.OnProgrammeEarnings)
+                    if (onProgEarning.OnProgrammeEarnings != null)
                     {
-                        onProgrammeEarning.Periods = onProgrammeEarning.Periods.Where(p => p.Period <= earningEvent.CollectionPeriod.Period).ToList().AsReadOnly();
+                        foreach (var onProgrammeEarning in onProgEarning.OnProgrammeEarnings)
+                        {
+                            onProgrammeEarning.Periods = onProgrammeEarning.Periods.Where(p => p.Period <= earningEvent.CollectionPeriod.Period).ToList().AsReadOnly();
+                        }
+
+                        onProgEarning.OnProgrammeEarnings = onProgEarning.OnProgrammeEarnings.Where(e => e.Periods.Count > 0).ToList();
                     }
 
-                    onProgEarning.OnProgrammeEarnings = onProgEarning.OnProgrammeEarnings.Where(e => e.Periods.Count > 0).ToList();
-
-                    foreach (var incentiveEarning in onProgEarning.IncentiveEarnings)
+                    if (onProgEarning.IncentiveEarnings != null)
                     {
-                        incentiveEarning.Periods = incentiveEarning.Periods.Where(p => p.Period <= earningEvent.CollectionPeriod.Period).ToList().AsReadOnly();
-                    }
+                        foreach (var incentiveEarning in onProgEarning.IncentiveEarnings)
+                        {
+                            incentiveEarning.Periods = incentiveEarning.Periods.Where(p => p.Period <= earningEvent.CollectionPeriod.Period).ToList().AsReadOnly();
+                        }
 
-                    onProgEarning.IncentiveEarnings = onProgEarning.IncentiveEarnings.Where(e => e.Periods.Count > 0).ToList();
+                        onProgEarning.IncentiveEarnings = onProgEarning.IncentiveEarnings.Where(e => e.Periods.Count > 0).ToList();
+                    }
 
                     continue;
                 }
 
-                if (earningEvent is FunctionalSkillEarningsEvent functionalSkillEarningsEvent)
+                if (earningEvent is FunctionalSkillEarningsEvent functionalSkillEarningsEvent && functionalSkillEarningsEvent.Earnings != null)
                 {
                     foreach (var earning in functionalSkillEarningsEvent.Earnings)
                     {
