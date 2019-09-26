@@ -53,9 +53,9 @@ Feature: One Learner changes employer - incentives earned in transfer month PV2-
 
 
 	And price details as follows
-        | Employer id | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type |
-        | employer 1  | pe-1             | 6000                 | 01/Aug/Current Academic Year        | 1500                   | 01/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act1          |
-        | employer 2  | pe-2             |                      |                                     |                        |                                       | 5000                    | 15/Dec/Current Academic Year           | 625                       | 15/Dec/Current Academic Year             | 90%                         | Act1          |
+        | Employer id | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |
+        | employer 1  | pe-1             | 6000                 | 01/Aug/Current Academic Year        | 1500                   | 01/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act1          | 1                   |
+        | employer 2  | pe-2             |                      |                                     |                        |                                       | 5000                    | 15/Nov/Current Academic Year           | 625                       | 15/Dec/Current Academic Year             | 90%                         | Act1          | 1                   |
 
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 
@@ -64,7 +64,7 @@ Feature: One Learner changes employer - incentives earned in transfer month PV2-
 		| Aug/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-1                     |
 		| Sep/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-1                     |
 		| Oct/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-1                     |
-		| Nov/Current Academic Year | 0            | 0          | 0         | 500                          | 0                             | 500                          | 0                             | pe-1                     |
+		#| Nov/Current Academic Year | 0            | 0          | 0         | 500                          | 0                             | 500                          | 0                             | pe-1                     |
 		| Nov/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
 		| Dec/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
 		| Jan/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
