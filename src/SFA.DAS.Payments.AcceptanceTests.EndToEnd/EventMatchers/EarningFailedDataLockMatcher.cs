@@ -77,10 +77,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     var earningPeriods = new List<EarningPeriod>();
                     foreach (var earningPerPeriods in groupedEarningPerPeriods)
                     {
+                        var period = new CollectionPeriodBuilder().WithDate(earningPerPeriods.Key.ToDate()).Build().Period;
+                        if (period > collectionPeriod.Period)
+                            continue;
+
                         earningPeriods.Add(new EarningPeriod
                         {
                             PriceEpisodeIdentifier = earningPerPeriods.First().PriceEpisodeIdentifier,
-                            Period = new CollectionPeriodBuilder().WithDate(earningPerPeriods.Key.ToDate()).Build().Period,
+                            Period = period,
                             DataLockFailures = earningPerPeriods.Select(x => new DataLockFailure
                             {
                                 ApprenticeshipId = learnerEarnings.First().ApprenticeshipId,
