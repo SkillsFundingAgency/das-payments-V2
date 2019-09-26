@@ -9,5 +9,6 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Configuration
         public string ServiceBusConnectionString { get; set; }
         public string FailedMessagesQueue { get; set; }
         public bool ProcessMessageSequentially { get; set; }
+        public string NServiceBusLicense { get; set; }
     }
 }

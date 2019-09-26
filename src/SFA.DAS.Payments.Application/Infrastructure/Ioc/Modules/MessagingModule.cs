@@ -22,8 +22,6 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 var endpointConfiguration = new EndpointConfiguration(endpointName.Name);
                 EndpointConfigurationEvents.OnEndpointConfigured(endpointConfiguration);
 
-
-
                 var conventions = endpointConfiguration.Conventions();
                 conventions.DefiningMessagesAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages") ?? false));
                 conventions.DefiningCommandsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages.Commands") ?? false));
@@ -33,6 +31,9 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 persistence.ConnectionString(config.StorageConnectionString);
 
                 endpointConfiguration.DisableFeature<TimeoutManager>();
+                if (!string.IsNullOrEmpty(config.NServiceBusLicense))
+                    endpointConfiguration.License(config.NServiceBusLicense);
+
                 var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
                 transport
                     .ConnectionString(config.ServiceBusConnectionString)
