@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Management.Automation;
+using System.Management.Automation.Runspaces;
 using System.Windows.Forms;
 using SFA.DAS.Testing.AzureStorageEmulator;
 
@@ -87,6 +89,8 @@ namespace SFA.DAS.Payments.ConfigUpdater
                 MessageBox.Show("Enter a valid path to VsDevCmd.bat (include the file name)");
             }
 
+            StartServiceFabric();
+
             var allServiceConfigs = _configurationManager.ConfigurationEntries.Select(x => x.FileName).Distinct();
             foreach (var serviceConfig in allServiceConfigs)
             {
@@ -96,6 +100,21 @@ namespace SFA.DAS.Payments.ConfigUpdater
             AzureStorageEmulatorManager.StartStorageEmulator();
 
             MessageBox.Show("Packages published");
+        }
+
+        /// <summary>
+        /// For this method to work you need to run either the compiled exe or visual studio as administrator.
+        /// </summary>
+        private static void StartServiceFabric()
+        {
+            var runspaceConfiguration = RunspaceConfiguration.Create();
+            var runspace = RunspaceFactory.CreateRunspace(runspaceConfiguration);
+            runspace.Open();
+            Pipeline pipeline = runspace.CreatePipeline();
+
+            pipeline.Commands.AddScript("Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted");
+            pipeline.Commands.AddScript("Start-Service FabricHostSvc");
+            pipeline.Invoke();
         }
     }
 }
