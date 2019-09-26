@@ -346,7 +346,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
         }
 
         [Test]
-        public void DoesntRemoveFuturePeriodsForAct1()
+        public void RemovesFuturePeriodsForAct1()
         {
             // arrange
             var learnerSubmission = new ProcessLearnerCommand
@@ -434,20 +434,21 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
             Assert.IsInstanceOf<ApprenticeshipContractTypeEarningsEvent>(result.EarningEvents[0]);
             var act2Earning = (ApprenticeshipContractTypeEarningsEvent)result.EarningEvents[0];
 
-            Assert.AreEqual(2, act2Earning.IncentiveEarnings.Count);
-            Assert.AreEqual(2, act2Earning.IncentiveEarnings[0].Periods.Count);
-            Assert.AreEqual(2, act2Earning.IncentiveEarnings[1].Periods.Count);
-            Assert.AreEqual(2, act2Earning.OnProgrammeEarnings.Count);
-            Assert.AreEqual(2, act2Earning.OnProgrammeEarnings[0].Periods.Count);
-            Assert.AreEqual(2, act2Earning.OnProgrammeEarnings[1].Periods.Count);
+            Assert.AreEqual(1, act2Earning.IncentiveEarnings.Count);
+            Assert.AreEqual(1, act2Earning.IncentiveEarnings[0].Periods.Count);
+            Assert.AreEqual(1, act2Earning.IncentiveEarnings[0].Periods[0].Period);
+
+            Assert.AreEqual(1, act2Earning.OnProgrammeEarnings.Count);
+            Assert.AreEqual(1, act2Earning.OnProgrammeEarnings[0].Periods.Count);
+            Assert.AreEqual(1, act2Earning.OnProgrammeEarnings[0].Periods[0].Period);
 
             Assert.IsInstanceOf<FunctionalSkillEarningsEvent>(result.EarningEvents[1]);
             var mathsEarning = (FunctionalSkillEarningsEvent)result.EarningEvents[1];
             Assert.AreEqual(1, mathsEarning.Earnings.Count);
-            Assert.AreEqual(2, mathsEarning.Earnings[0].Periods.Count);
+            Assert.AreEqual(1, mathsEarning.Earnings[0].Periods.Count);
+            Assert.AreEqual(1, mathsEarning.Earnings[0].Periods[0].Period);
 
             Mock.Verify(validatorMock, actBuilder, functionalSkillBuilder);
-
         }
     }
 }
