@@ -46,6 +46,8 @@
             this.MismatchedParameters = new System.Windows.Forms.DataGridView();
             this.UpdateConfig = new System.Windows.Forms.Button();
             this.PublishServices = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.VSCommandLinePath = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MissingParameters)).BeginInit();
@@ -240,11 +242,29 @@
             this.PublishServices.UseVisualStyleBackColor = true;
             this.PublishServices.Click += new System.EventHandler(this.PublishServices_Click);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(570, 17);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(119, 13);
+            this.label4.TabIndex = 10;
+            this.label4.Text = "VS Command Line Path";
+            // 
+            // VSCommandLinePath
+            // 
+            this.VSCommandLinePath.Location = new System.Drawing.Point(700, 13);
+            this.VSCommandLinePath.Name = "VSCommandLinePath";
+            this.VSCommandLinePath.Size = new System.Drawing.Size(455, 20);
+            this.VSCommandLinePath.TabIndex = 12;
+            // 
             // ConfigUpdater
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1217, 734);
+            this.Controls.Add(this.VSCommandLinePath);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.PublishServices);
             this.Controls.Add(this.UpdateConfig);
             this.Controls.Add(this.tabControl1);
@@ -293,6 +313,8 @@
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.DataGridView MismatchedParameters;
         private System.Windows.Forms.Button PublishServices;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox VSCommandLinePath;
     }
 }
 

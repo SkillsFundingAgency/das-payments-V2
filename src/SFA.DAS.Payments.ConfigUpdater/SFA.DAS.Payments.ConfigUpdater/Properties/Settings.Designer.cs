@@ -46,5 +46,17 @@ namespace SFA.DAS.Payments.ConfigUpdater.Properties {
                 this["ConfigToUpdate"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string VSCommandLinePath {
+            get {
+                return ((string)(this["VSCommandLinePath"]));
+            }
+            set {
+                this["VSCommandLinePath"] = value;
+            }
+        }
     }
 }
