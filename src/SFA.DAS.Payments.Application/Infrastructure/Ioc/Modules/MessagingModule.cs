@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
+using System.Web;
 using Autofac;
 using NServiceBus;
 using NServiceBus.Features;
@@ -32,7 +34,10 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
 
                 endpointConfiguration.DisableFeature<TimeoutManager>();
                 if (!string.IsNullOrEmpty(config.NServiceBusLicense))
-                    endpointConfiguration.License(config.NServiceBusLicense);
+                {
+                    var license = WebUtility.HtmlDecode(config.NServiceBusLicense);
+                    endpointConfiguration.License(license);
+                }
 
                 var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
                 transport
