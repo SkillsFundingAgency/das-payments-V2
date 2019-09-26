@@ -1,4 +1,5 @@
-﻿Feature: One Levy learner - levy available, finished late PV2-274
+﻿@basic_day
+Feature: One Levy learner - levy available, finished late PV2-274
 	As a provider,
 	I want a levy learner that finishes late to be paid the correct payments,
 	So that I am accurately paid my apprenticeship provision.

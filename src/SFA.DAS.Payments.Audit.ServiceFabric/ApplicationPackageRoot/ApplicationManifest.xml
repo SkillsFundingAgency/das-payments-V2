@@ -15,6 +15,7 @@
     <Parameter Name="Audit_EarningEventsService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
+    <Parameter Name="MonitoringServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="" />
@@ -29,6 +30,7 @@
     <Parameter Name="Audit_RequiredPayments_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="Audit_BatchFailureTimeoutInSeconds" DefaultValue="60" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
+    <Parameter Name="Placement_Constraints" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -43,6 +45,7 @@
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[Audit_DataLock_EndpointName]" />
@@ -66,6 +69,7 @@
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[Audit_RequiredPayments_EndpointName]" />
@@ -89,6 +93,7 @@
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[Audit_FundingSource_EndpointName]" />
@@ -112,6 +117,7 @@
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[Audit_EarningEvents_EndpointName]" />
@@ -134,21 +140,25 @@
     <Service Name="SFA.DAS.Payments.Audit.DataLockService" ServicePackageActivationMode="ExclusiveProcess">
       <StatefulService ServiceTypeName="SFA.DAS.Payments.Audit.DataLockServiceType" TargetReplicaSetSize="[Audit_DataLockService_TargetReplicaSetSize]" MinReplicaSetSize="[Audit_DataLockService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[Audit_DataLockService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
     </Service>
     <Service Name="SFA.DAS.Payments.Audit.RequiredPaymentService" ServicePackageActivationMode="ExclusiveProcess">
       <StatefulService ServiceTypeName="SFA.DAS.Payments.Audit.RequiredPaymentServiceType" TargetReplicaSetSize="[Audit_RequiredPaymentService_TargetReplicaSetSize]" MinReplicaSetSize="[Audit_RequiredPaymentService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[Audit_RequiredPaymentService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
     </Service>
     <Service Name="SFA.DAS.Payments.Audit.FundingSourceService" ServicePackageActivationMode="ExclusiveProcess">
       <StatefulService ServiceTypeName="SFA.DAS.Payments.Audit.FundingSourceServiceType" TargetReplicaSetSize="[Audit_FundingSourceService_TargetReplicaSetSize]" MinReplicaSetSize="[Audit_FundingSourceService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[Audit_FundingSourceService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
     </Service>
     <Service Name="SFA.DAS.Payments.Audit.EarningEventsService" ServicePackageActivationMode="ExclusiveProcess">
       <StatefulService ServiceTypeName="SFA.DAS.Payments.Audit.EarningEventsServiceType" TargetReplicaSetSize="[Audit_EarningEventsService_TargetReplicaSetSize]" MinReplicaSetSize="[Audit_EarningEventsService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[Audit_EarningEventsService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
     </Service>
   </DefaultServices>

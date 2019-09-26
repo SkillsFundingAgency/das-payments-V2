@@ -15,5 +15,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Model
         public int? LearnerCount { get; set; }
         public short AcademicYear { get; set; }
         public byte CollectionPeriod { get; set; }
+        public DateTimeOffset? DataLocksCompletionTime { get; set; }
     }
 }

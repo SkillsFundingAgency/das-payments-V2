@@ -51,4 +51,8 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infrastructure\UnitOfWork\" />
+  </ItemGroup>
+
 </Project>

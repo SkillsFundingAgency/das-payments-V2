@@ -32,6 +32,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .Include<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>()
                 .ForMember(destinationMember => destinationMember.OnProgrammeEarnings, opt => opt.ResolveUsing<OnProgrammeEarningValueResolver>())
                 .ForMember(destinationMember => destinationMember.IncentiveEarnings, opt => opt.ResolveUsing<IncentiveEarningValueResolver>())
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.Aim.LearningDeliveryValues.LearnStartDate))
                 .Ignore(dest => dest.SfaContributionPercentage)
                 ;
 
@@ -65,6 +66,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(dest => dest.Reference, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.LearnAimRef))
                 .ForMember(dest => dest.StandardCode, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.StdCode))
                 .ForMember(dest => dest.SequenceNumber, opt => opt.MapFrom(source => source.Aim.AimSeqNumber))
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.LearnStartDate))
                 ;
 
             CreateMap<IntermediateLearningAim, SubmittedLearnerAimModel>()

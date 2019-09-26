@@ -28,6 +28,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     [Binding]
     public class ApprovalsInterfaceSteps : EndToEndStepsBase
     {
+
+        [BeforeStep()]
+        public void InitialiseNewTestDataContext()
+        {
+            TestDataContext = Scope.Resolve<TestPaymentsDataContext>();
+        }
+
+        [AfterStep()]
+        public void DeScopeTestDataContext()
+        {
+            TestDataContext = null;
+        }
+
         public List<ApprovalsEmployer> Employers
         {
             get => Get<List<ApprovalsEmployer>>();
@@ -55,7 +68,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         public static IMessageSession DasMessageSession { get; set; }
         private static EndpointConfiguration dasEndpointConfiguration;
-        protected TestPaymentsDataContext TestDataContext => Scope.Resolve<TestPaymentsDataContext>();
+        protected TestPaymentsDataContext TestDataContext;
 
         public ApprovalsInterfaceSteps(FeatureContext context) : base(context)
         {
@@ -282,29 +295,30 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the following apprenticeships already exist with Employer Type ""(.*)""")]
-        public async void GivenTheFollowingApprenticeshipsAlreadyExistWithEmployerType(string employerType, Table table)
+        public async Task GivenTheFollowingApprenticeshipsAlreadyExistWithEmployerType(string employerType, Table table)
         {
             PreviousApprovalsApprenticeships = table.CreateSet<ApprovalsApprenticeship>().ToList();
             PreviousApprovalsApprenticeships.ForEach(appr => appr.EmployerType = employerType);
             await SavePreviousApprenticeships();
         }
 
-
         [Given(@"the following apprenticeships already exist")]
         public async Task GivenTheFollowingApprenticeshipsAlreadyExist(Table table)
         {
             PreviousApprovalsApprenticeships = table.CreateSet<ApprovalsApprenticeship>().ToList();
-            await SavePreviousApprenticeships();
+            await SavePreviousApprenticeships().ConfigureAwait(false);
         }
 
         private async Task SavePreviousApprenticeships()
         {
             foreach (var apprenticeshipSpec in PreviousApprovalsApprenticeships)
             {
-                apprenticeshipSpec.Id = TestSession.GenerateId();
+                var apprenticeshipId = TestSession.GenerateId();
+                apprenticeshipSpec.Id = apprenticeshipId;
                 var apprenticeship = CreateApprenticeshipModel(apprenticeshipSpec);
-                await TestDataContext.Apprenticeship.AddAsync(apprenticeship);
-                await TestDataContext.SaveChangesAsync();
+                await TestDataContext.ClearApprenticeshipData(apprenticeshipId, apprenticeship.Uln).ConfigureAwait(false);
+                await TestDataContext.Apprenticeship.AddAsync(apprenticeship).ConfigureAwait(false);
+                await TestDataContext.SaveChangesAsync().ConfigureAwait(false);
 
                 Console.WriteLine($"Existing Apprenticeship Created: {apprenticeship.ToJson()}");
             }
@@ -324,13 +338,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 var newPriceEpisode = CreateApprenticeshipPriceEpisode(apprenticeship.Id, priceEpisode);
 
-                await TestDataContext.ApprenticeshipPriceEpisode.AddAsync(newPriceEpisode);
-                await TestDataContext.SaveChangesAsync();
+                await TestDataContext.ApprenticeshipPriceEpisode.AddAsync(newPriceEpisode).ConfigureAwait(false);
+                await TestDataContext.SaveChangesAsync().ConfigureAwait(false);
 
                 apprenticeship.PriceEpisodes.Add(priceEpisode);
 
-                Console.WriteLine($"Existing Apprenticeship Created: {newPriceEpisode.ToJson()}");
-
+                Console.WriteLine($"ApprenticeshipPriceEpisode Created: {newPriceEpisode.ToJson()}");
             }
         }
 
@@ -424,6 +437,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 if (!string.IsNullOrWhiteSpace(changedApprenticeshipSpec.ResumedOnDate))
                     changedApprenticeship.ResumedOnDate = changedApprenticeshipSpec.ResumedOnDate;
+
+                if(!string.IsNullOrWhiteSpace(changedApprenticeshipSpec.StoppedOnDate))
+                   changedApprenticeship.PriceEpisodes.ForEach(pe=> pe.EffectiveTo = changedApprenticeshipSpec.StoppedOnDate);
 
             }
         }

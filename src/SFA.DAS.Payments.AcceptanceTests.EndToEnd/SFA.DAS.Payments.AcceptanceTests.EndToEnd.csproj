@@ -79,8 +79,8 @@
     <Reference Include="ESFA.DC.IO.Interfaces, Version=0.1.11.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.IO.Interfaces.0.1.11-beta0001\lib\netstandard2.0\ESFA.DC.IO.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.Jobs.Model, Version=0.1.28.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.Jobs.Model.0.1.28-beta0001\lib\netstandard2.0\ESFA.DC.Jobs.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.Jobs.Model, Version=0.2.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Jobs.Model.0.2.9-beta0001\lib\netstandard2.0\ESFA.DC.Jobs.Model.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.JobStatus.Interface, Version=0.2.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.JobStatus.Interface.0.2.5-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Interface.dll</HintPath>
@@ -1120,6 +1120,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>E2E - PV2-931 - Levy learner with levy balance starts after 1st day of month care leaver payment made after 60 days.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\PV2-1464_Ignore_Apprenticeship_That_Stop_Within_A_Day_Of_Starting.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1464_Ignore_Apprenticeship_That_Stop_Within_A_Day_Of_Starting.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Levy - Data Locks\PV2-662 - DLOCK01 when no matching record found for the UKPRN.feature.cs">
       <AutoGen>True</AutoGen>
@@ -2183,6 +2188,10 @@
     <None Include="Tests\Levy - Care Bursary\E2E - PV2-931 - Levy learner with levy balance starts after 1st day of month care leaver payment made after 60 days.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>E2E - PV2-931 - Levy learner with levy balance starts after 1st day of month care leaver payment made after 60 days.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\PV2-1464_Ignore_Apprenticeship_That_Stop_Within_A_Day_Of_Starting.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1464_Ignore_Apprenticeship_That_Stop_Within_A_Day_Of_Starting.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Levy - Data Locks\PV2-662 - DLOCK01 when no matching record found for the UKPRN.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
