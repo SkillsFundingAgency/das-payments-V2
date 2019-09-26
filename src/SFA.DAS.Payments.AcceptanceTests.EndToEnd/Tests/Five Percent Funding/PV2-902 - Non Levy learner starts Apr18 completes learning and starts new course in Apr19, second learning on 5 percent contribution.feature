@@ -12,7 +12,7 @@ Scenario Outline: Existing Non Levy Learner, started learning before Apr19, comp
 		| Programme | 1        | 01/Apr/Last Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | continuing        | Act2          | ZPROG001      |
   	And price details as follows
 		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-		| pe-1             | 15000                | 01/Apr/Current Academic Year        |                        |                                       | Act2          | 1                   | 90%                         |
+		| pe-1             | 15000                | 01/Apr/Last Academic Year           |                        |                                       | Act2          | 1                   | 90%                         |
     And the following earnings had been generated for the learner
         | Delivery Period           | On-Programme | Completion | Balancing |
         | Aug/Last Academic Year    | 0            | 0          | 0         |
