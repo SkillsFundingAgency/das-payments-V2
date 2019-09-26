@@ -4,6 +4,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Audit.AcceptanceTests.Data;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using TechTalk.SpecFlow;
 
@@ -45,6 +46,8 @@ namespace SFA.DAS.Payments.Audit.AcceptanceTests.Infrastructure
             routing.RouteToEndpoint(typeof(EmployerCoInvestedFundingSourcePaymentEvent), EndpointNames.AuditServiceEndpoint);
             routing.RouteToEndpoint(typeof(SfaFullyFundedFundingSourcePaymentEvent), EndpointNames.AuditServiceEndpoint);
             routing.RouteToEndpoint(typeof(LevyFundingSourcePaymentEvent), EndpointNames.AuditServiceEndpoint);
+            routing.RouteToEndpoint(typeof(SubmissionFailedEvent), EndpointNames.DataLockAuditServiceEndpoint);
+            routing.RouteToEndpoint(typeof(SubmissionSucceededEvent), EndpointNames.DataLockAuditServiceEndpoint);
         }
     }
 }
