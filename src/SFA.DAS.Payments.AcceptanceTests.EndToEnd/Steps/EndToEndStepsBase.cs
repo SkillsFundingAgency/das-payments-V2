@@ -432,7 +432,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 var firstEarningForPriceEpisode = earnings
                     .OrderBy(x => x.DeliveryCalendarPeriod)
-                    .First(e => e.DeliveryCalendarPeriod >= priceEpisodeStartDateAsDeliveryPeriod && e.AimSequenceNumber == priceEpisode.AimSequenceNumber);
+                    .First(e => e.DeliveryCalendarPeriod >= priceEpisodeStartDateAsDeliveryPeriod && e.PriceEpisodeIdentifier == priceEpisode.PriceEpisodeId);
 
                 var sfaContributionPercent = (firstEarningForPriceEpisode.SfaContributionPercentage ??
                                   priceEpisode.SfaContributionPercentage).ToPercent();
@@ -503,7 +503,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 foreach (var currentValues in aimPeriodisedValues)
                 {
                     PriceEpisodePeriodisedValues newValues;
-                    var aimEarnings = earnings.Where(x => x.AimSequenceNumber == aim.AimSequenceNumber).ToList();
+                    var aimEarnings = earnings.Count == 12 ? earnings : earnings.Where(x => x.AimSequenceNumber == aim.AimSequenceNumber).ToList();
 
                     // price episodes not covering the whole year are likely to be one of many, copy values only for current episode, set zero for others
                     if (episodeStart.AcademicYear == AcademicYear && (episodeStart.Period > 1 || episodeLastPeriod < 12))
