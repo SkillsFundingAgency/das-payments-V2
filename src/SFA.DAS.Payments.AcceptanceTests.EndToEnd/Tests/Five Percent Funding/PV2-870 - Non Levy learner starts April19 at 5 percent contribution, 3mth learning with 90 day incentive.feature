@@ -1,4 +1,3 @@
-@ignore
 #Feature: 5% Contribution from April 2019
 #
 #Scenario: Non Levy Learner, starts new learning April 2019, 5% contribution, basic day with 3months in learning, demonstrate incentive payments 90 days
@@ -34,9 +33,13 @@
 
 	Scenario Outline: Non Levy Learner, starts new learning April 2019, 5% contribution, basic day with 3months in learning, demonstrate incentive payments 90 days PV2-870
 
-	And the provider is providing training for the following learners
+	Given the provider is providing training for the following learners
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
 		| 06/Apr/Current Academic Year | 12 months        | 15000                | 06/Apr/Current Academic Year        |                        |                                       |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 95%                         |
+
+	And price details as follows
+		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |
+		| pe-1             | 15000                | 06/Apr/Current Academic Year        | 0                      | 06/Apr/Current Academic Year          | 0                       |                                        | 0                         |                                          | 95%                         | Act2          | 1                   |
 
    	When the ILR file is submitted for the learners for collection period <Collection_Period>
 
