@@ -1,4 +1,4 @@
-﻿using Autofac;
+using Autofac;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using Microsoft.EntityFrameworkCore;
@@ -432,7 +432,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 var firstEarningForPriceEpisode = earnings
                     .OrderBy(x => x.DeliveryCalendarPeriod)
-                    .First(e => e.DeliveryCalendarPeriod >= priceEpisodeStartDateAsDeliveryPeriod);
+                    .First(e => e.DeliveryCalendarPeriod >= priceEpisodeStartDateAsDeliveryPeriod && e.AimSequenceNumber == priceEpisode.AimSequenceNumber);
 
                 var sfaContributionPercent = (firstEarningForPriceEpisode.SfaContributionPercentage ??
                                   priceEpisode.SfaContributionPercentage).ToPercent();
@@ -503,6 +503,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 foreach (var currentValues in aimPeriodisedValues)
                 {
                     PriceEpisodePeriodisedValues newValues;
+                    var aimEarnings = earnings.Where(x => x.AimSequenceNumber == aim.AimSequenceNumber).ToList();
 
                     // price episodes not covering the whole year are likely to be one of many, copy values only for current episode, set zero for others
                     if (episodeStart.AcademicYear == AcademicYear && (episodeStart.Period > 1 || episodeLastPeriod < 12))
@@ -521,7 +522,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                                 ? currentValues.GetValue(p)
                                 : 0;
 
-                            var earningPriceEpisodeIdentifier = earnings[earningRow].PriceEpisodeIdentifier;
+                            var earningPriceEpisodeIdentifier = aimEarnings[earningRow].PriceEpisodeIdentifier;
                             var currentPriceEpisodeIdentifier = currentPriceEpisode.PriceEpisodeIdentifier;
                             if (!string.IsNullOrWhiteSpace(earningPriceEpisodeIdentifier) &&
                                 earningPriceEpisodeIdentifier ==
@@ -531,7 +532,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             }
                             else
                             {
-                                if (earningRow < earnings.Count &&
+                                if (earningRow < aimEarnings.Count &&
                                     !string.IsNullOrWhiteSpace(earningPriceEpisodeIdentifier))
                                 {
                                     if (earningPriceEpisodeIdentifier !=
