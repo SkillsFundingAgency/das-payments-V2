@@ -7,7 +7,6 @@ using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Domain.Validation.Learner;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
-using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.EarningEvents.Domain
@@ -22,7 +21,6 @@ namespace SFA.DAS.Payments.EarningEvents.Domain
         private readonly ILearnerValidator learnerValidator;
         private readonly IApprenticeshipContractTypeEarningsEventBuilder apprenticeshipContractTypeEarningsEventBuilder;
         private readonly IFunctionalSkillEarningsEventBuilder functionalSkillEarningsEventBuilder;
-        private readonly IConfigurationHelper configurationHelper;
         private readonly bool doNotGenerateAct1TransactionType4To16Payments;
         private readonly bool doNotGenerateAct2Payments;
 
@@ -34,7 +32,6 @@ namespace SFA.DAS.Payments.EarningEvents.Domain
             this.learnerValidator = learnerValidator ?? throw new ArgumentNullException(nameof(learnerValidator));
             this.apprenticeshipContractTypeEarningsEventBuilder = apprenticeshipContractTypeEarningsEventBuilder ?? throw new ArgumentNullException(nameof(apprenticeshipContractTypeEarningsEventBuilder));
             this.functionalSkillEarningsEventBuilder = functionalSkillEarningsEventBuilder ?? throw new ArgumentNullException(nameof(functionalSkillEarningsEventBuilder));
-            this.configurationHelper = configurationHelper ?? throw new ArgumentNullException(nameof(configurationHelper));
             bool.TryParse(configurationHelper.GetSetting("DoNotGenerateACT1TransactionType4To16Payments"), out doNotGenerateAct1TransactionType4To16Payments);
             bool.TryParse(configurationHelper.GetSetting("DoNotGenerateACT2Payments"), out doNotGenerateAct2Payments);
         }
@@ -51,7 +48,8 @@ namespace SFA.DAS.Payments.EarningEvents.Domain
             earningsEvent.AddRange(functionalSkillEarningsEventBuilder.Build(learnerSubmission));
 
             var validEarningsEvent = FilterEarningsEventBasedOnConfig(earningsEvent);
-            
+            RemoveFuturePeriods(earningsEvent);
+
             return (Validation: validationResult, EarningEvents: validEarningsEvent);
         }
 
@@ -83,6 +81,41 @@ namespace SFA.DAS.Payments.EarningEvents.Domain
 
             var validEarningsEvent = earningsEvent.Except(earningsToDelete).ToList();
             return validEarningsEvent;
+        }
+
+        private void RemoveFuturePeriods(List<EarningEvent> earningsEvents)
+        {
+            foreach (var earningEvent in earningsEvents)
+            {
+                if (earningEvent is ApprenticeshipContractType2EarningEvent act2OnProgEarning)
+                {
+                    foreach (var onProgrammeEarning in act2OnProgEarning.OnProgrammeEarnings)
+                    {
+                        onProgrammeEarning.Periods = onProgrammeEarning.Periods.Where(p => p.Period <= earningEvent.CollectionPeriod.Period).ToList().AsReadOnly();
+                    }
+
+                    act2OnProgEarning.OnProgrammeEarnings = act2OnProgEarning.OnProgrammeEarnings.Where(e => e.Periods.Count > 0).ToList();
+
+                    foreach (var incentiveEarning in act2OnProgEarning.IncentiveEarnings)
+                    {
+                        incentiveEarning.Periods = incentiveEarning.Periods.Where(p => p.Period <= earningEvent.CollectionPeriod.Period).ToList().AsReadOnly();
+                    }
+
+                    act2OnProgEarning.IncentiveEarnings = act2OnProgEarning.IncentiveEarnings.Where(e => e.Periods.Count > 0).ToList();
+
+                    continue;
+                }
+
+                if (earningEvent is Act2FunctionalSkillEarningsEvent act2FunctionalSkillsEarning)
+                {
+                    foreach (var earning in act2FunctionalSkillsEarning.Earnings)
+                    {
+                        earning.Periods = earning.Periods.Where(p => p.Period <= earningEvent.CollectionPeriod.Period).ToList().AsReadOnly();
+                    }
+
+                    act2FunctionalSkillsEarning.Earnings = act2FunctionalSkillsEarning.Earnings.Where(e => e.Periods.Count > 0).ToList().AsReadOnly();
+                }
+            }
         }
     }
 }

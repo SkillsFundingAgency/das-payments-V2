@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Autofac.Extras.Moq;
+using Castle.Components.DictionaryAdapter;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using Moq;
 using NUnit.Framework;
@@ -12,6 +13,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using FluentAssertions;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
@@ -233,6 +235,218 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
 
             result.EarningEvents.OfType<ApprenticeshipContractType2EarningEvent>().Should().BeEmpty();
             result.EarningEvents.OfType<Act2FunctionalSkillEarningsEvent>().Should().BeEmpty();
+
+        }
+
+        [Test]
+        public void RemovesFuturePeriodsForAct2()
+        {
+            // arrange
+            var learnerSubmission = new ProcessLearnerCommand
+            {
+                Learner = learner,
+                CollectionYear = 1819,
+                CollectionPeriod = 1,
+                Ukprn = 12345,
+                JobId = 1
+            };
+
+            var actEarnings = new List<ApprenticeshipContractTypeEarningsEvent>
+            {
+                new ApprenticeshipContractType2EarningEvent
+                {
+                    CollectionPeriod = new CollectionPeriod {AcademicYear = 1, Period = 1},
+                    IncentiveEarnings = new List<IncentiveEarning>
+                    {
+                        new IncentiveEarning
+                        {
+                            Type = IncentiveEarningType.Balancing16To18FrameworkUplift, Periods = new List<EarningPeriod>
+                            {
+                                new EarningPeriod {Period = 1},
+                                new EarningPeriod {Period = 2}
+                            }.AsReadOnly()
+                        },
+                        new IncentiveEarning
+                        {
+                            Type = IncentiveEarningType.Balancing16To18FrameworkUplift, Periods = new List<EarningPeriod>
+                            {
+                                new EarningPeriod {Period = 3},
+                                new EarningPeriod {Period = 4}
+                            }.AsReadOnly()
+                        }
+                    },
+                    OnProgrammeEarnings = new EditableList<OnProgrammeEarning>
+                    {
+                        new OnProgrammeEarning
+                        {
+                            Periods = new List<EarningPeriod>()
+                            {
+                                new EarningPeriod {Period = 1},
+                                new EarningPeriod {Period = 2}
+                            }.AsReadOnly()
+                        },
+                        new OnProgrammeEarning
+                        {
+                            Periods = new List<EarningPeriod>()
+                            {
+                                new EarningPeriod {Period = 3},
+                                new EarningPeriod {Period = 4}
+                            }.AsReadOnly()
+                        }
+                    }
+                }
+            };
+
+            var functionalSkillEarnings = new List<FunctionalSkillEarningsEvent>
+            {
+                new Act2FunctionalSkillEarningsEvent
+                {
+                    CollectionPeriod = new CollectionPeriod {AcademicYear = 1, Period = 1},
+                    Earnings = new List<FunctionalSkillEarning>
+                    {
+                        new FunctionalSkillEarning
+                        {
+                            Periods = new List<EarningPeriod>
+                            {
+                                new EarningPeriod {Period = 1},
+                                new EarningPeriod {Period = 2}
+                            }.AsReadOnly()
+                        }
+                    }.AsReadOnly()
+                }
+            };
+
+            actBuilder.Setup(b => b.Build(learnerSubmission)).Returns(actEarnings).Verifiable();
+            functionalSkillBuilder.Setup(b => b.Build(learnerSubmission)).Returns(functionalSkillEarnings).Verifiable();
+
+            // act
+            var result = mocker.Create<LearnerSubmissionProcessor>().GenerateEarnings(learnerSubmission);
+
+            // assert
+            Assert.AreEqual(2, result.EarningEvents.Count);
+            Assert.IsInstanceOf<ApprenticeshipContractTypeEarningsEvent>(result.EarningEvents[0]);
+            var act2Earning = (ApprenticeshipContractTypeEarningsEvent)result.EarningEvents[0];
+
+            Assert.AreEqual(1, act2Earning.IncentiveEarnings.Count);
+            Assert.AreEqual(1, act2Earning.IncentiveEarnings[0].Periods.Count);
+            Assert.AreEqual(1, act2Earning.IncentiveEarnings[0].Periods[0].Period);
+
+            Assert.AreEqual(1, act2Earning.OnProgrammeEarnings.Count);
+            Assert.AreEqual(1, act2Earning.OnProgrammeEarnings[0].Periods.Count);
+            Assert.AreEqual(1, act2Earning.OnProgrammeEarnings[0].Periods[0].Period);
+
+            Assert.IsInstanceOf<Act2FunctionalSkillEarningsEvent>(result.EarningEvents[1]);
+            var mathsEarning = (Act2FunctionalSkillEarningsEvent)result.EarningEvents[1];
+            Assert.AreEqual(1, mathsEarning.Earnings.Count);
+            Assert.AreEqual(1, mathsEarning.Earnings[0].Periods.Count);
+            Assert.AreEqual(1, mathsEarning.Earnings[0].Periods[0].Period);
+
+            Mock.Verify(validatorMock, actBuilder, functionalSkillBuilder);
+
+        }
+
+        [Test]
+        public void DoesntRemoveFuturePeriodsForAct1()
+        {
+            // arrange
+            var learnerSubmission = new ProcessLearnerCommand
+            {
+                Learner = learner,
+                CollectionYear = 1819,
+                CollectionPeriod = 1,
+                Ukprn = 12345,
+                JobId = 1
+            };
+
+            var actEarnings = new List<ApprenticeshipContractTypeEarningsEvent>
+            {
+                new ApprenticeshipContractType1EarningEvent
+                {
+                    CollectionPeriod = new CollectionPeriod {AcademicYear = 1, Period = 1},
+                    IncentiveEarnings = new List<IncentiveEarning>
+                    {
+                        new IncentiveEarning
+                        {
+                            Type = IncentiveEarningType.Balancing16To18FrameworkUplift, Periods = new List<EarningPeriod>
+                            {
+                                new EarningPeriod {Period = 1},
+                                new EarningPeriod {Period = 2}
+                            }.AsReadOnly()
+                        },
+                        new IncentiveEarning
+                        {
+                            Type = IncentiveEarningType.Balancing16To18FrameworkUplift, Periods = new List<EarningPeriod>
+                            {
+                                new EarningPeriod {Period = 3},
+                                new EarningPeriod {Period = 4}
+                            }.AsReadOnly()
+                        }
+                    },
+                    OnProgrammeEarnings = new EditableList<OnProgrammeEarning>
+                    {
+                        new OnProgrammeEarning
+                        {
+                            Periods = new List<EarningPeriod>
+                            {
+                                new EarningPeriod {Period = 1},
+                                new EarningPeriod {Period = 2}
+                            }.AsReadOnly()
+                        },
+                        new OnProgrammeEarning
+                        {
+                            Periods = new List<EarningPeriod>
+                            {
+                                new EarningPeriod {Period = 3},
+                                new EarningPeriod {Period = 4}
+                            }.AsReadOnly()
+                        }
+                    }
+                }
+            };
+
+            var functionalSkillEarnings = new List<FunctionalSkillEarningsEvent>
+            {
+                new Act1FunctionalSkillEarningsEvent
+                {
+                    CollectionPeriod = new CollectionPeriod {AcademicYear = 1, Period = 1},
+                    Earnings = new List<FunctionalSkillEarning>
+                    {
+                        new FunctionalSkillEarning
+                        {
+                            Periods = new List<EarningPeriod>
+                            {
+                                new EarningPeriod {Period = 1},
+                                new EarningPeriod {Period = 2}
+                            }.AsReadOnly()
+                        }
+                    }.AsReadOnly()
+                }
+            };
+
+            actBuilder.Setup(b => b.Build(learnerSubmission)).Returns(actEarnings).Verifiable();
+            functionalSkillBuilder.Setup(b => b.Build(learnerSubmission)).Returns(functionalSkillEarnings).Verifiable();
+
+            // act
+            var result = mocker.Create<LearnerSubmissionProcessor>().GenerateEarnings(learnerSubmission);
+
+            // assert
+            Assert.AreEqual(2, result.EarningEvents.Count);
+            Assert.IsInstanceOf<ApprenticeshipContractTypeEarningsEvent>(result.EarningEvents[0]);
+            var act2Earning = (ApprenticeshipContractTypeEarningsEvent)result.EarningEvents[0];
+
+            Assert.AreEqual(2, act2Earning.IncentiveEarnings.Count);
+            Assert.AreEqual(2, act2Earning.IncentiveEarnings[0].Periods.Count);
+            Assert.AreEqual(2, act2Earning.IncentiveEarnings[1].Periods.Count);
+            Assert.AreEqual(2, act2Earning.OnProgrammeEarnings.Count);
+            Assert.AreEqual(2, act2Earning.OnProgrammeEarnings[0].Periods.Count);
+            Assert.AreEqual(2, act2Earning.OnProgrammeEarnings[1].Periods.Count);
+
+            Assert.IsInstanceOf<FunctionalSkillEarningsEvent>(result.EarningEvents[1]);
+            var mathsEarning = (FunctionalSkillEarningsEvent)result.EarningEvents[1];
+            Assert.AreEqual(1, mathsEarning.Earnings.Count);
+            Assert.AreEqual(2, mathsEarning.Earnings[0].Periods.Count);
+
+            Mock.Verify(validatorMock, actBuilder, functionalSkillBuilder);
 
         }
     }
