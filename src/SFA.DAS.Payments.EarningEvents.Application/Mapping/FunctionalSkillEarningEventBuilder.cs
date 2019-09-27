@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using AutoMapper;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
@@ -26,7 +27,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             foreach (var intermediateLearningAim in intermediateResults)
             {
-                var contractTypes = intermediateLearningAim.Learner.LearningDeliveries.GetContractTypesForLearningDeliveries();
+                var contractTypes = new List<LearningDelivery>{ intermediateLearningAim.Aim }.GetContractTypesForLearningDeliveries();
                 var distinctContractTypes = contractTypes.Distinct().ToList();
 
                 var learnerWithSortedPriceEpisodes = intermediateLearningAim.CopyReplacingPriceEpisodes(intermediateLearningAim.PriceEpisodes);
@@ -38,13 +39,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
                     foreach (var earning in functionalSkillEarning.Earnings)
                     {
-                        earning.Periods = GetEarningPeriodsMatchingContractType(contractTypes, contractType, earning.Periods.ToList());
+                        earning.Periods = GetEarningPeriodsMatchingContractType(contractTypes, 
+                            contractType, earning.Periods.ToList());
                     }
 
                     results.Add(functionalSkillEarning);
                 }
-
-            
             }
 
             return results.Distinct().ToList();
