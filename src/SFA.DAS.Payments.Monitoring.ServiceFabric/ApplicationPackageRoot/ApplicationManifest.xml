@@ -108,6 +108,16 @@
           <Partition Name="10003161" />
           <Partition Name="10012467" />
           <Partition Name="10000446" />
+          <Partition Name="10003375" />
+          <Partition Name="10034309" />
+          <Partition Name="10036431" />
+          <Partition Name="10001436" />
+          <Partition Name="10000494" />
+          <Partition Name="10036952" />
+          <Partition Name="10033438" />
+          <Partition Name="10057037" />
+          <Partition Name="10027662" />
+          <Partition Name="10031241" />
         </NamedPartition>
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
