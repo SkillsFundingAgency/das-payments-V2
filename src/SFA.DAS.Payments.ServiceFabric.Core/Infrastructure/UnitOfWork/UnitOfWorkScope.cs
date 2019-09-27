@@ -80,8 +80,10 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
 
         public async Task Commit()
         {
-            await transactionProvider.Current.CommitAsync();
-            //transactionScope?.Complete();
+            await telemetry?.TrackActionAsync($"{operationName} Commit", "", async () =>
+            {
+                await transactionProvider.Current.CommitAsync();
+            });
         }
     }
 }
