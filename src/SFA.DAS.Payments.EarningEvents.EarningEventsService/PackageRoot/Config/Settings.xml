@@ -27,6 +27,8 @@
     <Parameter Name="MaximumCallbackTimeSpan" Value="" />
     <Parameter Name="DoNotGenerateACT1TransactionType4To16Payments" Value=""/>
     <Parameter Name="DoNotGenerateACT2Payments" Value=""/>
+    <Parameter Name="DasNServiceBusLicenseKey" Value="" />
+
   </Section>
 
 </Settings>

@@ -25,6 +25,8 @@
     <Parameter Name="EndpointName" Value="sfa-das-payments-levyaccountbalance" />
     <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-levyaccountbalance-errors" />
     <Parameter Name="LevyAccountRefreshIntervalInHours" Value="23" />
+    <Parameter Name="DasNServiceBusLicenseKey" Value=""/>
+
   </Section>
 
 </Settings>

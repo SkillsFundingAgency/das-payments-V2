@@ -23,6 +23,7 @@
     <Parameter Name="LogLevel" Value="" />
     <Parameter Name="ConsoleLogLevel" Value="" />
     <Parameter Name="ProcessMessageSequentially" Value="" />
+    <Parameter Name="DasNServiceBusLicenseKey" Value="" />
   </Section>
   <!-- The content will be generated during build -->
 </Settings>
