@@ -22,6 +22,7 @@
     <Parameter Name="Audit_BatchFailureTimeoutInSeconds" DefaultValue="60" />
     <Parameter Name="BatchIntervalInSeconds" DefaultValue="10" />
     <Parameter Name="Placement_Constraints" DefaultValue="" />
+    <Parameter Name="DasNServiceBusLicenseKey" DefaultValue="" />
     <Parameter Name="DasPeriodEndConnectionString" DefaultValue="" />
     <Parameter Name="LegacyExportBatchSize" DefaultValue="10000" />
   </Parameters>
@@ -50,6 +51,7 @@
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="BatchIntervalInSeconds" Value="[BatchIntervalInSeconds]" />
+            <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
           </Section>
         </Settings>
       </ConfigOverride>

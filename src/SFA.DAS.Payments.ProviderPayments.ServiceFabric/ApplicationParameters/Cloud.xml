@@ -20,6 +20,7 @@
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
     <Parameter Name="BatchIntervalInSeconds" Value="__BatchIntervalInSeconds__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
+    <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
     <Parameter Name="DasPeriodEndConnectionString" Value="__DasPeriodEndConnectionString__" />
     <Parameter Name="LegacyExportBatchSize" Value="__LegacyExportBatchSize__" />
   </Parameters>

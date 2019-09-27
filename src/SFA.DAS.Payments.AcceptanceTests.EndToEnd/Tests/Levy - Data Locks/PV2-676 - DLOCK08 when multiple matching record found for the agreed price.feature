@@ -1,4 +1,5 @@
-﻿Feature:  DLOCK08 - When multiple matching record found in an employer digital account then datalock DLOCK_08 will be produced PV2-676
+﻿@ignore
+Feature:  DLOCK08 - When multiple matching record found in an employer digital account then datalock DLOCK_08 will be produced PV2-676
 		As a Provider,
 		I want to be notified with a DLOCK08 when multiple matching records found in an employer digital account
 		So that I can correct the data mis-match between the Commitment and ILR - PV2-676

@@ -21,7 +21,8 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                         StorageConnectionString = configHelper.GetConnectionString("StorageConnectionString"),
                         ServiceBusConnectionString = configHelper.GetConnectionString("ServiceBusConnectionString"),
                         FailedMessagesQueue = configHelper.GetSetting("FailedMessagesQueue"),
-                        ProcessMessageSequentially = processMessageSequentially
+                        ProcessMessageSequentially = processMessageSequentially,
+                        NServiceBusLicense = configHelper.GetSetting("DasNServiceBusLicenseKey")
                     };
 
                 })
