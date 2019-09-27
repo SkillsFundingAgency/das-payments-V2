@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Data.Collections;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Monitoring.Jobs.Application;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
@@ -19,6 +20,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
         private readonly IReliableStateManagerTransactionProvider reliableTransactionProvider;
         private readonly IJobsDataContext dataContext;
         private readonly IPaymentLogger logger;
+        private readonly ITelemetry telemetry;
         private static readonly TimeSpan TransactionTimeout = new TimeSpan(0, 0, 4);
 
         public const string JobCacheKey = "jobs";
@@ -28,12 +30,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
 
         public JobStorageService(IReliableStateManagerProvider stateManagerProvider,
             IReliableStateManagerTransactionProvider reliableTransactionProvider,
-            IJobsDataContext dataContext, IPaymentLogger logger)
+            IJobsDataContext dataContext, IPaymentLogger logger, ITelemetry telementry)
         {
             this.stateManagerProvider = stateManagerProvider ?? throw new ArgumentNullException(nameof(stateManagerProvider));
             this.reliableTransactionProvider = reliableTransactionProvider ?? throw new ArgumentNullException(nameof(reliableTransactionProvider));
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.telemetry = telementry;
         }
         private static string GetCacheKey(string cacheKeyPrefix, long jobId) => $"{cacheKeyPrefix}_{jobId}";
 
@@ -66,16 +69,19 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
 
         public async Task SaveJobStatus(long jobId, JobStatus jobStatus, DateTimeOffset endTime, CancellationToken cancellationToken)
         {
-            var job = await GetJob(jobId, cancellationToken).ConfigureAwait(false);
-            if (job == null)
-                throw new InvalidOperationException($"Job not stored in the cache. Job: {jobId}");
-            job.Status = jobStatus;
-            job.EndTime = endTime;
-            var collection = await GetJobCollection().ConfigureAwait(false);
-            await collection.AddOrUpdateAsync(reliableTransactionProvider.Current, jobId, job, (key, value) => job,
-                    TransactionTimeout, cancellationToken)
-                .ConfigureAwait(false);
-            await dataContext.SaveJobStatus(jobId, jobStatus, endTime, cancellationToken).ConfigureAwait(false);
+            await telemetry.TrackActionAsync("SaveJobStatus", "", async () =>
+            {
+                var job = await GetJob(jobId, cancellationToken).ConfigureAwait(false);
+                if (job == null)
+                    throw new InvalidOperationException($"Job not stored in the cache. Job: {jobId}");
+                job.Status = jobStatus;
+                job.EndTime = endTime;
+                var collection = await GetJobCollection().ConfigureAwait(false);
+                await collection.AddOrUpdateAsync(reliableTransactionProvider.Current, jobId, job, (key, value) => job,
+                        TransactionTimeout, cancellationToken)
+                    .ConfigureAwait(false);
+                await dataContext.SaveJobStatus(jobId, jobStatus, endTime, cancellationToken).ConfigureAwait(false);
+            });
         }
 
         public async Task<List<long>> GetCurrentJobs(CancellationToken cancellationToken)
@@ -136,15 +142,18 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
 
         public async Task StoreInProgressMessages(long jobId, List<InProgressMessage> inProgressMessages, CancellationToken cancellationToken)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            var inProgressMessagesCollection = await GetInProgressMessagesCollection(jobId);
-            foreach (var inProgressMessage in inProgressMessages)
+            await telemetry.TrackActionAsync("StoreInProgressMessages", "", async () =>
             {
-                await inProgressMessagesCollection.AddOrUpdateAsync(reliableTransactionProvider.Current, inProgressMessage.MessageId,
-                        key => inProgressMessage, (key, value) => inProgressMessage, TransactionTimeout,
-                        cancellationToken)
-                    .ConfigureAwait(false);
-            }
+                cancellationToken.ThrowIfCancellationRequested();
+                var inProgressMessagesCollection = await GetInProgressMessagesCollection(jobId);
+                foreach (var inProgressMessage in inProgressMessages)
+                {
+                    await inProgressMessagesCollection.AddOrUpdateAsync(reliableTransactionProvider.Current, inProgressMessage.MessageId,
+                            key => inProgressMessage, (key, value) => inProgressMessage, TransactionTimeout,
+                            cancellationToken)
+                        .ConfigureAwait(false);
+                }
+            });
         }
 
         private async Task<IReliableDictionary2<Guid, CompletedMessage>> GetCompletedMessagesCollection(long jobId)
@@ -168,23 +177,29 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
 
         public async Task RemoveCompletedMessages(long jobId, List<Guid> completedMessages, CancellationToken cancellationToken)
         {
-            var completedMessagesCollection = await GetCompletedMessagesCollection(jobId).ConfigureAwait(false);
-            foreach (var completedMessage in completedMessages)
+            await telemetry.TrackActionAsync("RemoveCompletedMessages", "", async () =>
             {
-                await completedMessagesCollection.TryRemoveAsync(reliableTransactionProvider.Current, completedMessage,
-                    TransactionTimeout, cancellationToken).ConfigureAwait(false);
-            }
+                var completedMessagesCollection = await GetCompletedMessagesCollection(jobId).ConfigureAwait(false);
+                foreach (var completedMessage in completedMessages)
+                {
+                    await completedMessagesCollection.TryRemoveAsync(reliableTransactionProvider.Current, completedMessage,
+                        TransactionTimeout, cancellationToken).ConfigureAwait(false);
+                }
+            });
         }
 
         public async Task StoreCompletedMessage(CompletedMessage completedMessage, CancellationToken cancellationToken)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            var completedMessagesCollection =
-                await GetCompletedMessagesCollection(completedMessage.JobId).ConfigureAwait(false);
-            await completedMessagesCollection.AddOrUpdateAsync(reliableTransactionProvider.Current,
-                    completedMessage.MessageId,
-                    completedMessage, (key, value) => completedMessage, TransactionTimeout, cancellationToken)
-                .ConfigureAwait(false);
+            await telemetry.TrackActionAsync("StoreCompletedMessage", "", async () =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var completedMessagesCollection =
+                    await GetCompletedMessagesCollection(completedMessage.JobId).ConfigureAwait(false);
+                await completedMessagesCollection.AddOrUpdateAsync(reliableTransactionProvider.Current,
+                        completedMessage.MessageId,
+                        completedMessage, (key, value) => completedMessage, TransactionTimeout, cancellationToken)
+                    .ConfigureAwait(false);
+            });
         }
 
 
@@ -204,11 +219,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
 
         public async Task StoreJobStatus(long jobId, bool hasFailedMessages, DateTimeOffset? endTime, CancellationToken cancellationToken)
         {
-            var collection = await GetJobStatusCollection(jobId).ConfigureAwait(false);
-            await collection.AddOrUpdateAsync(reliableTransactionProvider.Current, jobId,
-                (hasFailedMessages: hasFailedMessages, endTime: endTime),
-                (key, value) => (hasFailedMessages: hasFailedMessages, endTime: endTime),
-                TransactionTimeout, cancellationToken).ConfigureAwait(false);
+            await telemetry.TrackActionAsync("StoreJobStatus", "", async () =>
+            {
+                var collection = await GetJobStatusCollection(jobId).ConfigureAwait(false);
+                await collection.AddOrUpdateAsync(reliableTransactionProvider.Current, jobId,
+                    (hasFailedMessages: hasFailedMessages, endTime: endTime),
+                    (key, value) => (hasFailedMessages: hasFailedMessages, endTime: endTime),
+                    TransactionTimeout, cancellationToken).ConfigureAwait(false);
+            });
         }
 
         public async Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken)
