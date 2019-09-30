@@ -1,47 +1,35 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using NServiceBus;
+﻿using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Application.Infrastructure.UnitOfWork;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
-using SFA.DAS.Payments.Monitoring.Jobs.Model;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers
 {
-    public class RecordEarningsJobHandler: IHandleMessages<RecordEarningsJob>
+    public class RecordEarningsJobHandler : IHandleMessages<RecordEarningsJob>
     {
         private readonly IPaymentLogger logger;
-        private readonly IUnitOfWorkScopeFactory scopeFactory;
-        private readonly IJobStatusManager jobStatusManager;
+        private readonly IEarningsJobService earningsJobService;
 
-        public RecordEarningsJobHandler(IPaymentLogger logger, IUnitOfWorkScopeFactory scopeFactory, IJobStatusManager jobStatusManager)
+        public RecordEarningsJobHandler(IPaymentLogger logger, IEarningsJobService earningsJobService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
-            this.jobStatusManager = jobStatusManager ?? throw new ArgumentNullException(nameof(jobStatusManager));
+            this.earningsJobService = earningsJobService ?? throw new ArgumentNullException(nameof(earningsJobService));
         }
 
         public async Task Handle(RecordEarningsJob message, IMessageHandlerContext context)
         {
-
-            using (var scope = scopeFactory.Create("JobService.RecordEarningsJob"))
+            try
             {
-                try
-                {
-                    var earningsJobService = scope.Resolve<IEarningsJobService>();
-                    await earningsJobService.RecordNewJob(message, CancellationToken.None).ConfigureAwait(false);
-                    await scope.Commit();
-                }
-                catch (Exception ex)
-                {
-                    scope.Abort();
-                    logger.LogWarning($"Failed to record earnings job: {message.JobId}. Error: {ex.Message}, {ex}");
-                    throw;
-                }
+                await earningsJobService.RecordNewJob(message, CancellationToken.None).ConfigureAwait(false);
             }
-            jobStatusManager.StartMonitoringJob(message.JobId, JobType.EarningsJob);
+            catch (Exception ex)
+            {
+                logger.LogWarning($"Failed to record earnings job: {message.JobId}. Error: {ex.Message}, {ex}");
+                throw;
+            }
         }
     }
 }
