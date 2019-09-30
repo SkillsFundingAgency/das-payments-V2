@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobsService.Handlers
         {
             try
             {
-                await earningsJobService.RecordNewJobAdditionalMessages(message, CancellationToken.None).ConfigureAwait(false);
+                //await earningsJobService.RecordNewJobAdditionalMessages(message, CancellationToken.None).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

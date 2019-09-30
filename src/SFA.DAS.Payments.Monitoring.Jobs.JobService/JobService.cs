@@ -28,10 +28,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
         private readonly IPaymentLogger logger;
         private readonly IUnitOfWorkScopeFactory scopeFactory;
         private readonly IJobStatusManager jobStatusManager;
-        private readonly ILifetimeScope lifetimeScope;
+        private readonly ListenerFactory lifetimeScope;
         private IStatefulEndpointCommunicationListener listener;
 
-        public JobService(StatefulServiceContext context, IPaymentLogger logger, IUnitOfWorkScopeFactory scopeFactory, IJobStatusManager jobStatusManager, ILifetimeScope lifetimeScope)
+        public JobService(StatefulServiceContext context, IPaymentLogger logger, IUnitOfWorkScopeFactory scopeFactory, IJobStatusManager jobStatusManager, ListenerFactory lifetimeScope)
             : base(context)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -48,11 +48,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
                 {
                     e.Name += ((NamedPartitionInformation)Partition.PartitionInfo).Name;
                 };
-                //EndpointConfigurationEvents.EndpointConfigured += EndpointConfigurationEvents_EndpointConfigured;
 
-                var serviceListener = new ServiceReplicaListener(context =>
-                    listener = lifetimeScope.Resolve<IStatefulEndpointCommunicationListener>());
-
+                var serviceListener = new ServiceReplicaListener(context => listener = lifetimeScope.Build());
 
                 return new List<ServiceReplicaListener>
                 {

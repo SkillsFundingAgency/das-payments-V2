@@ -27,8 +27,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers
         {
             try
             {
-                await earningsJobService.RecordNewJob(message, CancellationToken.None).ConfigureAwait(false);
-                jobStatusManager.StartMonitoringJob(message.JobId, JobType.EarningsJob);
+                //await earningsJobService.RecordNewJob(message, CancellationToken.None).ConfigureAwait(false);
+                //jobStatusManager.StartMonitoringJob(message.JobId, JobType.EarningsJob);
             }
             catch (Exception ex)
             {
