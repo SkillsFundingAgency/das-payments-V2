@@ -24,7 +24,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
         private readonly IMessageSession messageSession;
         private readonly IPaymentLogger logger;
         private readonly IConfigurationHelper config;
-        private readonly JobMonitorPartition partitionName = new JobMonitorPartition();
 
         public EarningsJobClient(IMessageSession messageSession, IPaymentLogger logger, IConfigurationHelper config)
         {
@@ -53,7 +52,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 };
 
                 var jobsEndpointName = config.GetSettingOrDefault("Monitoring_JobsService_EndpointName", "sfa-das-payments-monitoring-jobs");
-                var partitionedEndpointName = $"{jobsEndpointName}{partitionName.PartitionNameForJob(jobId, ukprn)}";
+                var partitionedEndpointName = $"{jobsEndpointName}{JobMonitorPartition.PartitionNameForJob(jobId)}";
                 logger.LogVerbose($"Endpoint for RecordEarningsJob for Job Id {jobId} is `{partitionedEndpointName}`");
                 await messageSession.Send(partitionedEndpointName, providerEarningsEvent).ConfigureAwait(false);
 

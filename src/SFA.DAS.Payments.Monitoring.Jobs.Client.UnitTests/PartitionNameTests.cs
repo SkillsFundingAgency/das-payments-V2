@@ -44,24 +44,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.UnitTests
         [TestCase(77, 0, 17)]
         [TestCase(78, 0, 18)]
         [TestCase(79, 0, 19)]
-        [TestCase(80, 0, 0)]
-        [TestCase(1, 10003915, 10003915)]
-        [TestCase(2, 10003915, 10003915)]
-        [TestCase(3, 10003915, 10003915)]
-        [TestCase(4, 10003915, 10003915)]
-        [TestCase(5, 10003915, 10003915)]
-        [TestCase(6, 10003915, 10003915)]
-        [TestCase(7, 10003915, 10003915)]
-        [TestCase(8, 10003915, 10003915)]
-        [TestCase(9, 10003915, 10003915)]
-        [TestCase(10, 10003915, 10003915)]
-        [TestCase(2, 10033440, 10033440)]
-        [TestCase(3, 10003161, 10003161)]
-        [TestCase(4, 10012467, 10012467)]
-        [TestCase(5, 10000446, 10000446)]
+        [TestCase(80, 0, 20)]
         public void Naming(long jobId, long ukprn, long name)
         {
-            var actual = new JobMonitorPartition().PartitionNameForJob(jobId, ukprn);
+            var actual = JobMonitorPartition.PartitionNameForJob(jobId);
             Assert.That(actual, Is.EqualTo(name));
         }
     }
