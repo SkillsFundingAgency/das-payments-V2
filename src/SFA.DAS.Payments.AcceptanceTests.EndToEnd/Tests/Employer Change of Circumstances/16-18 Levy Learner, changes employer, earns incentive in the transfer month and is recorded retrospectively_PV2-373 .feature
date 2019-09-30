@@ -10,9 +10,9 @@ Feature: One Learner changes employer - incentives earned in transfer month PV2-
 	And  the "employer 2" levy account balance in collection period <Collection_Period> is <Levy Balance for employer 2>
 	
 	And the following commitments exist 
-      | Identifier       | Employer   | start date                   | end date                  | agreed price | status    | effective from               | effective to                 | stop effective from          |
-      | Apprenticeship 1 | employer 1 | 05/Aug/Current Academic Year | 28/Aug/Next Academic Year | 7500         | cancelled | 05/Aug/Current Academic Year | 14/Nov/Current Academic Year | 15/Nov/Current Academic Year |
-      | Apprenticeship 2 | employer 2 | 15/Nov/Current Academic Year | 28/Aug/Next Academic Year | 5625         | active    | 15/Nov/Current Academic Year |                              |                              |
+      | Identifier       | Employer   | start date                   | end date                  | agreed price | status    | effective from               | effective to                 | stop effective from          | Standard Code | Programme Type |
+      | Apprenticeship 1 | employer 1 | 05/Aug/Current Academic Year | 28/Aug/Next Academic Year | 7500         | cancelled | 05/Aug/Current Academic Year | 14/Nov/Current Academic Year | 15/Nov/Current Academic Year | 51            | 25             |
+      | Apprenticeship 2 | employer 2 | 15/Nov/Current Academic Year | 28/Aug/Next Academic Year | 5625         | active    | 15/Nov/Current Academic Year |                              |                              |51            | 25             |
 
 	And the provider previously submitted the following learner details
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
@@ -20,7 +20,7 @@ Feature: One Learner changes employer - incentives earned in transfer month PV2-
 
    And price details as follows
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type |
-        | pe-1             | 6000                 | 01/Aug/Current Academic Year        | 1500                   | 01/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act1          |
+        | pe-1             | 6000                 | 05/Aug/Current Academic Year        | 1500                   | 05/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act1          |
   
   And the following earnings had been generated for the learner
         | Delivery Period           | On-Programme | Completion | Balancing | First16To18EmployerIncentive | Second16To18EmployerIncentive | First16To18ProviderIncentive | Second16To18ProviderIncentive | Price Episode Identifier |
@@ -49,12 +49,19 @@ Feature: One Learner changes employer - incentives earned in transfer month PV2-
 		| Start Date                   | Planned Duration             | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
 		| 05/Aug/Current Academic Year | 12 months                    | 12 months       | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |
 
+
+
+		#    But the Provider now changes the Learner details as follows
+		#| Employer id | Start Date                   | Planned Duration | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  |
+		#| employer 1  | 05/Aug/Current Academic Year | 12 months        | 3 months        | withdrawn         | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |
+		#| employer 2  | 15/Nov/Current Academic Year | 12 months        | 9 months        | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract |
+
  #                            | 05/Aug/Current Academic Year | 12 months       | 3 months          | withdrawn     | Act1                | 1             | ZPROG001      | 51             | 25                                                 | 16-18 Apprenticeship (From May 2017) Levy Contract |
 
 
 	And price details as follows
         | Employer id | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |
-        | employer 1  | pe-1             | 6000                 | 01/Aug/Current Academic Year        | 1500                   | 01/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act1          | 1                   |
+        | employer 1  | pe-1             | 6000                 | 05/Aug/Current Academic Year        | 1500                   | 05/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act1          | 1                   |
         | employer 2  | pe-2             |                      |                                     |                        |                                       | 5000                    | 15/Nov/Current Academic Year           | 625                       | 15/Dec/Current Academic Year             | 90%                         | Act1          | 1                   |
 
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
@@ -64,7 +71,7 @@ Feature: One Learner changes employer - incentives earned in transfer month PV2-
 		| Aug/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-1                     |
 		| Sep/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-1                     |
 		| Oct/Current Academic Year | 500          | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-1                     |
-		#| Nov/Current Academic Year | 0            | 0          | 0         | 500                          | 0                             | 500                          | 0                             | pe-1                     |
+		| Nov/Current Academic Year | 0           | 0          | 0         | 500                          | 0                             | 500                          | 0                             | pe-1                     |
 		| Nov/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
 		| Dec/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
 		| Jan/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
@@ -76,15 +83,16 @@ Feature: One Learner changes employer - incentives earned in transfer month PV2-
 		| Jul/Current Academic Year | 562.5        | 1125       | 0         | 0                            | 500                           | 0                            | 500                           | pe-2                     |
 																																																				 
     And at month end only the following payments will be calculated
-        | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | First16To18EmployerIncentive | Second16To18EmployerIncentive | First16To18ProviderIncentive | Second16To18ProviderIncentive |
-        | R05/Current Academic Year | Dec/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
-        | R06/Current Academic Year | Jan/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
-        | R07/Current Academic Year | Feb/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
-        | R08/Current Academic Year | Mar/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
-        | R09/Current Academic Year | Apr/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
-        | R10/Current Academic Year | May/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
-        | R11/Current Academic Year | Jun/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             |
-        | R12/Current Academic Year | Jul/Current Academic Year | 562.5        | 1125       | 0         | 0                            | 500                           | 0                            | 500                           |
+        | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | First16To18EmployerIncentive | Second16To18EmployerIncentive | First16To18ProviderIncentive | Second16To18ProviderIncentive | Price Episode Identifier |
+        | R05/Current Academic Year | Dec/Current Academic Year | 0            | 0          | 0         | -500                         | 0                             | -500                         | 0                             | pe-1                     |
+        | R05/Current Academic Year | Dec/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
+        | R06/Current Academic Year | Jan/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
+        | R07/Current Academic Year | Feb/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
+        | R08/Current Academic Year | Mar/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
+        | R09/Current Academic Year | Apr/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
+        | R10/Current Academic Year | May/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
+        | R11/Current Academic Year | Jun/Current Academic Year | 562.5        | 0          | 0         | 0                            | 0                             | 0                            | 0                             | pe-2                     |
+        | R12/Current Academic Year | Jul/Current Academic Year | 562.5        | 1125       | 0         | 0                            | 500                           | 0                            | 500                           | pe-2                     |
 
 	And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | Levy Payments | SFA Fully Funded Payments | Transaction Type              | Employer   |
