@@ -78,6 +78,11 @@
           <Partition Name="17" />
           <Partition Name="18" />
           <Partition Name="19" />
+          <Partition Name="10003915" />
+          <Partition Name="10033440" />
+          <Partition Name="10003161" />
+          <Partition Name="10012467" />
+          <Partition Name="10000446" />
         </NamedPartition>
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
