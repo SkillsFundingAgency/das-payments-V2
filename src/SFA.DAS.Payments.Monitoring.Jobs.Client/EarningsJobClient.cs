@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                         JobId = jobId,
                         GeneratedMessages = batch,
                     };
-                    await messageSession.Send(partitionedEndpointName, providerEarningsAdditionalMessages).ConfigureAwait(false);
+                    await messageSession.Send(partitionedEndpointName, providerEarningsAdditionalMessages).ConfigureAwait(false); 
                 }
                 logger.LogDebug($"Sent request(s) to record start of earnings job. Job Id: {jobId}, Ukprn: {ukprn}");
             }
