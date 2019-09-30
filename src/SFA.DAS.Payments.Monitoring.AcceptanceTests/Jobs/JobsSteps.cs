@@ -186,7 +186,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         [When(@"the final messages for the job are successfully processed")]
         public async Task WhenTheFinalMessagesForTheJobAreSuccessfullyProcessed()
         {
-            var partitionedEndpointName = $"sfa-das-payments-monitoring-jobs{JobDetails.JobId % 20}";
+            var partitionedEndpointName = $"sfa-das-payments-monitoring-jobs{JobDetails.JobId % 50}";
             foreach (var generatedMessage in GeneratedMessages)
             {
                 var message = new RecordJobMessageProcessingStatus
@@ -205,7 +205,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         [When(@"the earnings event service notifies the job monitoring service to record the job")]
         public async Task WhenTheEarningsEventServiceNotifiesTheJobMonitoringServiceToRecordTheJob()
         {
-            var partitionedEndpointName = $"sfa-das-payments-monitoring-jobs{JobDetails.JobId % 20}";
+            var partitionedEndpointName = $"sfa-das-payments-monitoring-jobs{JobDetails.JobId % 50}";
             var recordEarningsJob = JobDetails as RecordEarningsJob;
             recordEarningsJob.GeneratedMessages = GeneratedMessages.Take(1000).ToList();
             await MessageSession.Send(partitionedEndpointName,JobDetails).ConfigureAwait(false);
