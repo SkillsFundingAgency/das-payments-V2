@@ -59,7 +59,7 @@
       <StatefulService ServiceTypeName="SFA.DAS.Payments.Monitoring.Jobs.JobServiceType" TargetReplicaSetSize="[JobService_TargetReplicaSetSize]" MinReplicaSetSize="[JobService_MinReplicaSetSize]">
         <NamedPartition>
           <Partition Name="0" />
-          <Partition Name="1" />
+          <!--<Partition Name="1" />
           <Partition Name="2" />
           <Partition Name="3" />
           <Partition Name="4" />
@@ -77,7 +77,7 @@
           <Partition Name="16" />
           <Partition Name="17" />
           <Partition Name="18" />
-          <Partition Name="19" />
+          <Partition Name="19" />-->
         </NamedPartition>
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>

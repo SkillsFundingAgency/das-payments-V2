@@ -51,8 +51,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                     LearnerCount = generatedMessages.Count
                 };
 
-                var jobsEndpointName = config.GetSettingOrDefault("Monitoring_JobsService_EndpointName", "sfa-das-payments-monitoring-jobs");
-                var partitionedEndpointName = $"{jobsEndpointName}{jobId % 20}";
+                var partitionedEndpointName = config.GetMonitoringEndpointName(jobId);
                 logger.LogVerbose($"Endpoint for RecordEarningsJob for Job Id {jobId} is `{partitionedEndpointName}`");
                 await messageSession.Send(partitionedEndpointName, providerEarningsEvent).ConfigureAwait(false);
 
