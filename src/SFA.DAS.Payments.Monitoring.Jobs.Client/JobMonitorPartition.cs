@@ -21,6 +21,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
             10057037,
             10027662,
             10031241,
+            10001149,
+            10023047,
+            10004977,
+            10003526,
+            10005319,
+            10029952,
+            10021755,
+            10046797,
+            10007924,
+            10006600,
         };
 
         public long PartitionNameForJob(long jobId, long Ukprn)
