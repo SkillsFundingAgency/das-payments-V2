@@ -142,7 +142,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 "EarningFailedDataLockMatching",
                 "ProcessLearnerCommand",
                 "Act1FunctionalSkillEarningsEvent",
-                "ApprenticeshipContractType1EarningEvent"
+                "ApprenticeshipContractType1EarningEvent",
+                "EarningFailedDataLockMatching",
             };
             var inProgressDataLocks = inProgressMessages
                 .Where(inProgress => dataLocksMessages.Any(dlockType => inProgress.MessageName?.Contains(dlockType) ?? false))
