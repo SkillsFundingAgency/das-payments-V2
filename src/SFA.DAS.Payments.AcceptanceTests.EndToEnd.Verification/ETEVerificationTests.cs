@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Autofac;
 using ESFA.DC.Jobs.Model.Enums;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure;
 
@@ -77,27 +78,31 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             TestContext.WriteLine(endString);
 
             // Assert
-            resultsList.All(x => x.Status == JobStatusType.Completed).Should().BeTrue();
+            using (new AssertionScope())
+            {
+                await orchestrator.VerifyResults(resultsList,
+                                                 testStartDateTime,
+                                                 testEndDateTime,
+                                                 (actualPercentage, tolerance, earningDifference) =>
+                                                 {
+                                                     TestContext.WriteLine($"Earning difference between DC and DAS: {earningDifference}");
+                                                     earningDifference.Should().Be(0m);
 
+                                                     if (!actualPercentage.HasValue)
+                                                     {
+                                                         var nullPercentageMessage = "The returned percentage was null";
+                                                         TestContext.WriteLine(nullPercentageMessage);
+                                                         Assert.Inconclusive(nullPercentageMessage);
+                                                     }
+                                                     else
+                                                     {
+                                                         TestContext.WriteLine($"Returned Percentage: {actualPercentage.Value}");
+                                                         actualPercentage.Should().BeLessOrEqualTo(tolerance);
+                                                     }
+                                                 });
 
-            await orchestrator.VerifyResults(resultsList, testStartDateTime, testEndDateTime,
-                (actualPercentage, tolerance, earningDifference) =>
-                {
-                    TestContext.WriteLine($"Earning difference between DC and DAS: {earningDifference}");
-                    earningDifference.Should().Be(0m);
-
-                    if (!actualPercentage.HasValue)
-                    {
-                        var nullPercentageMessage = "The returned percentage was null";
-                        TestContext.WriteLine(nullPercentageMessage);
-                        Assert.Inconclusive(nullPercentageMessage);
-                    }
-                    else
-                    {
-                        TestContext.WriteLine($"Returned Percentage: {actualPercentage.Value}");
-                        actualPercentage.Should().BeLessOrEqualTo(tolerance);
-                    }
-                });
+                resultsList.Should().OnlyContain(x => x.Status == JobStatusType.Completed, "because all jobs should have completed.");
+            }
         }
     }
 }

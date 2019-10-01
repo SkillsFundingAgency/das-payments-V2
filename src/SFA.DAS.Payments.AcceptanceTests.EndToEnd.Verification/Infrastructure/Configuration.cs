@@ -21,6 +21,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         public bool ClearPaymentsData => bool.Parse(GetAppSetting("ValidateDcAndDasServices") ?? "false");
 
+        public string SettingsFileName => GetAppSetting("JsonSettingsFileName");
+
         public string GetAppSetting(string keyName)
         {
             return ConfigurationManager.AppSettings[keyName] ?? throw new InvalidOperationException($"{keyName} not found in app settings.");
