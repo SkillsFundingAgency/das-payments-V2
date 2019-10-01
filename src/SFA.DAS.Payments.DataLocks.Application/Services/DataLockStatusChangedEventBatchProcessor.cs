@@ -86,8 +86,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                                 // only records null apprenticeship when DLOCK 01 & 02
                                 if (!apprenticeshipId.HasValue)
                                 {
-                                    if (earningPeriod.DataLockFailures.Any(f => f.ApprenticeshipId.HasValue))
-                                        continue;
+                                    continue;
                                 }
 
                                 await SaveDataLockEvent(cancellationToken, dataLockStatusChangedEvent, earningPeriod, apprenticeshipId).ConfigureAwait(false);
