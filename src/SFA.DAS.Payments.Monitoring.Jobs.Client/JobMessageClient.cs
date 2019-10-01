@@ -44,8 +44,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                     Succeeded = true,
                 };
 
-                var jobsEndpointName = config.GetSettingOrDefault("Monitoring_JobsService_EndpointName", "sfa-das-payments-monitoring-jobs");
-                var partitionedEndpointName = $"{jobsEndpointName}{jobId % 20}";
+                var partitionedEndpointName = config.GetMonitoringEndpointName(jobId);
                 await messageSession.Send(partitionedEndpointName, itemProcessedEvent).ConfigureAwait(false);
                 logger.LogDebug($"Sent request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
             }
@@ -90,8 +89,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                     Succeeded = false
                 };
 
-                var jobsEndpointName = config.GetSettingOrDefault("Monitoring_JobsService_EndpointName", "sfa-das-payments-monitoring-jobs");
-                var partitionedEndpointName = $"{jobsEndpointName}{jobId % 20}";
+                var partitionedEndpointName = config.GetMonitoringEndpointName(jobId);
                 await messageSession.Send(partitionedEndpointName, itemProcessedEvent).ConfigureAwait(false);
             }
             catch (Exception ex)
