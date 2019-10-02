@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
         Task PerformMonthEndTrigger(CollectionPeriod collectionPeriod);
     }
 
-    class PaymentExportService : IPaymentExportService
+    public class PaymentExportService : IPaymentExportService
     {
         private readonly ILegacyPaymentsRepository legacyPaymentsRepository;
         private readonly IPaymentExportProgressCache paymentExportProgressCache;
