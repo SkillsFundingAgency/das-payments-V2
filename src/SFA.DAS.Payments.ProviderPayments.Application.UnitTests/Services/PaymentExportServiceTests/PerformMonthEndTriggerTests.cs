@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Model.Core;
@@ -132,6 +133,17 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services.Payme
             await sut.PerformExportPaymentsAndEarningsToV1(testCollectionPeriod);
 
             paymentExportProgressCache.Verify(x => x.IncrementPage(testCollectionPeriod.AcademicYear, testCollectionPeriod.Period));
+        }
+
+        [Test]
+        public void ThrowsAnExceptionWhenSomethingGoesWrong()
+        {
+            paymentExportProgressCache.Setup(x => x.GetPage(It.IsAny<short>(), It.IsAny<byte>()))
+                .Throws<Exception>();
+
+            Func<Task> action = async () => await sut.PerformExportPaymentsAndEarningsToV1(testCollectionPeriod);
+
+            action.Should().Throw<Exception>();
         }
     }
 }
