@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                         ServiceBusConnectionString = configHelper.GetConnectionString("ServiceBusConnectionString"),
                         FailedMessagesQueue = configHelper.GetSetting("FailedMessagesQueue"),
                         ProcessMessageSequentially = processMessageSequentially,
-                        NServiceBusLicense = configHelper.GetSetting("DasNServiceBusLicenseKey")
+                        NServiceBusLicense = configHelper.GetSetting("DasNServiceBusLicenseKey"),
                         ImmediateMessageRetries = configHelper.GetSettingOrDefault("ImmediateMessageRetries", 1),
                         DelayedMessageRetries = configHelper.GetSettingOrDefault("DelayedMessageRetries", 3),
                         DelayedMessageRetryDelay = delayedRetryDelay,
