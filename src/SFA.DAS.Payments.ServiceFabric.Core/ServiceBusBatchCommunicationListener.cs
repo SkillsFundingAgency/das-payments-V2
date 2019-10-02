@@ -87,69 +87,73 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    var pipeLineStopwatch = Stopwatch.StartNew();
-                    var messages = new List<Message>();
-                    for (var i = 0; i < 10 && messages.Count <= 200; i++)
+                    try
                     {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        var receivedMessages = await messageReceiver.ReceiveAsync(200, TimeSpan.FromSeconds(2))
-                            .ConfigureAwait(false);
-                        if (receivedMessages == null || !receivedMessages.Any())
-                            break;
-                        messages.AddRange(receivedMessages);
-                    }
-
-                    if (!messages.Any())
-                    {
-                        await Task.Delay(2000, cancellationToken);
-                        continue;
-                    }
-
-                    var groupedMessages = new Dictionary<Type, List<(string, object)>>();
-                    foreach (var message in messages)
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        try
+                        var pipeLineStopwatch = Stopwatch.StartNew();
+                        var messages = new List<Message>();
+                        for (var i = 0; i < 10 && messages.Count <= 200; i++)
                         {
-                            var applicationMessage = DeserializeMessage(message);
-                            var key = applicationMessage.GetType();
-                            var applicationMessages = groupedMessages.ContainsKey(key)
-                                ? groupedMessages[key]
-                                : groupedMessages[key] = new List<(string, object)>();
-                            applicationMessages.Add((message.SystemProperties.LockToken, applicationMessage));
-
-                        }
-                        catch (Exception e)
-                        {
-                            logger.LogError($"Error deserialising the message. Error: {e.Message}", e);
-                            //TODO: should use the error queue instead of dead letter queue
-                            await messageReceiver.DeadLetterAsync(message.SystemProperties.LockToken)
+                            cancellationToken.ThrowIfCancellationRequested();
+                            var receivedMessages = await messageReceiver.ReceiveAsync(200, TimeSpan.FromSeconds(2))
                                 .ConfigureAwait(false);
+                            if (receivedMessages == null || !receivedMessages.Any())
+                                break;
+                            messages.AddRange(receivedMessages);
                         }
-                    }
 
-                    var stopwatch = Stopwatch.StartNew();
-                    await Task.WhenAll(groupedMessages.Select(group =>
-                        ProcessMessages(group.Key, group.Value, messageReceiver, cancellationToken)));
-                    stopwatch.Stop();
-                    //RecordAllBatchProcessTelemetry(stopwatch.ElapsedMilliseconds, messages.Count);
-                    pipeLineStopwatch.Stop();
-                    //RecordPipelineTelemetry(pipeLineStopwatch.ElapsedMilliseconds, messages.Count);
+                        if (!messages.Any())
+                        {
+                            await Task.Delay(2000, cancellationToken);
+                            continue;
+                        }
+
+                        var groupedMessages = new Dictionary<Type, List<(string, object)>>();
+                        foreach (var message in messages)
+                        {
+                            cancellationToken.ThrowIfCancellationRequested();
+                            try
+                            {
+                                var applicationMessage = DeserializeMessage(message);
+                                var key = applicationMessage.GetType();
+                                var applicationMessages = groupedMessages.ContainsKey(key)
+                                    ? groupedMessages[key]
+                                    : groupedMessages[key] = new List<(string, object)>();
+                                applicationMessages.Add((message.SystemProperties.LockToken, applicationMessage));
+
+                            }
+                            catch (Exception e)
+                            {
+                                logger.LogError($"Error deserialising the message. Error: {e.Message}", e);
+                                //TODO: should use the error queue instead of dead letter queue
+                                await messageReceiver.DeadLetterAsync(message.SystemProperties.LockToken)
+                                    .ConfigureAwait(false);
+                            }
+                        }
+
+                        var stopwatch = Stopwatch.StartNew();
+                        await Task.WhenAll(groupedMessages.Select(group =>
+                            ProcessMessages(group.Key, group.Value, messageReceiver, cancellationToken)));
+                        stopwatch.Stop();
+                        //RecordAllBatchProcessTelemetry(stopwatch.ElapsedMilliseconds, messages.Count);
+                        pipeLineStopwatch.Stop();
+                        //RecordPipelineTelemetry(pipeLineStopwatch.ElapsedMilliseconds, messages.Count);
+
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        logger.LogWarning("Cancelling communication listener.");
+                        return;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        logger.LogWarning("Cancelling communication listener.");
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError($"Error listening for message.  Error: {ex.Message}", ex);
+                    }
                 }
-            }
-            catch (TaskCanceledException)
-            {
-                logger.LogWarning("Cancelling communication listener.");
-                return;
-            }
-            catch (OperationCanceledException)
-            {
-                logger.LogWarning("Cancelling communication listener.");
-                return;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Error listening for message.  Error: {ex.Message}", ex);
             }
             finally
             {
