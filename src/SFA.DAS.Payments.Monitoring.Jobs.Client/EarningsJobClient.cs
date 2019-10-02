@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Transactions;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Core.Configuration;
-using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Client
@@ -24,6 +20,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
         private readonly IMessageSession messageSession;
         private readonly IPaymentLogger logger;
         private readonly IConfigurationHelper config;
+        private readonly JobMonitorPartition partitionName = new JobMonitorPartition();
 
         public EarningsJobClient(IMessageSession messageSession, IPaymentLogger logger, IConfigurationHelper config)
         {
@@ -52,7 +49,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 };
 
                 var jobsEndpointName = config.GetSettingOrDefault("Monitoring_JobsService_EndpointName", "sfa-das-payments-monitoring-jobs");
-                var partitionedEndpointName = $"{jobsEndpointName}{jobId % 20}";
+                var partitionedEndpointName = $"{jobsEndpointName}{partitionName.PartitionNameForJob(jobId, ukprn)}";
                 logger.LogVerbose($"Endpoint for RecordEarningsJob for Job Id {jobId} is `{partitionedEndpointName}`");
                 await messageSession.Send(partitionedEndpointName, providerEarningsEvent).ConfigureAwait(false);
 
@@ -66,7 +63,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                         JobId = jobId,
                         GeneratedMessages = batch,
                     };
-                    await messageSession.Send(providerEarningsAdditionalMessages).ConfigureAwait(false);
+                    await messageSession.Send(partitionedEndpointName, providerEarningsAdditionalMessages).ConfigureAwait(false); 
                 }
                 logger.LogDebug($"Sent request(s) to record start of earnings job. Job Id: {jobId}, Ukprn: {ukprn}");
             }
