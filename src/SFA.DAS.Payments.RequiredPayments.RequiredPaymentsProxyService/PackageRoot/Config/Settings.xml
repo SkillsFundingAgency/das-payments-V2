@@ -16,6 +16,8 @@
     <Parameter Name="ConsoleLogLevel" Value="" />
     <Parameter Name="ProcessMessageSequentially" Value="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value=""/>
+    <Parameter Name="DasNServiceBusLicenseKey" Value=""/>
+
   </Section>
 
 </Settings>

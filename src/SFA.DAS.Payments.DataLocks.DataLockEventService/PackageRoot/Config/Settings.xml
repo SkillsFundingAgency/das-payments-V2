@@ -18,5 +18,7 @@
     <Parameter Name="BatchIntervalInSeconds" Value="10"/>
     <Parameter Name="BatchSize" Value="500"/>
     <Parameter Name="BatchFailureTimeoutInSeconds" Value="60"/>
+    <Parameter Name="DasNServiceBusLicenseKey" Value=""/>
+
   </Section>
 </Settings>

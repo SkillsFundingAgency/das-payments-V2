@@ -24,5 +24,7 @@
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
     <Parameter Name="LogLevel" Value="Information" />
     <Parameter Name="ConsoleLogLevel" Value="Information" />
+    <Parameter Name="DasNServiceBusLicenseKey" Value=""/>
+
   </Section>
 </Settings>

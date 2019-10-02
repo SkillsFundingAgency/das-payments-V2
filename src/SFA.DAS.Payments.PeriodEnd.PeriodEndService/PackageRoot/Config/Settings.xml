@@ -23,5 +23,6 @@
     <Parameter Name="ProcessMessageSequentially" Value="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
     <Parameter Name="MaximumCallbackTimeSpan" Value="" />
+    <Parameter Name="DasNServiceBusLicenseKey" Value=""/>
   </Section>
 </Settings>

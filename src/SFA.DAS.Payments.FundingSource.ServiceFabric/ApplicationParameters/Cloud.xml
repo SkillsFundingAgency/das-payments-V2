@@ -32,5 +32,6 @@
     <Parameter Name="LevyAccountRefreshIntervalInHours" Value="__LevyAccountRefreshIntervalInHours__" />
     <Parameter Name="LevyAccountBalanceService_BatchSize" Value="__LevyAccountBalanceService_BatchSize__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
+    <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
   </Parameters>
 </Application>
