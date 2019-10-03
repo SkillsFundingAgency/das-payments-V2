@@ -149,7 +149,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             }
             else
             {
-                apprenticeshipsToUseThisPeriod.AddRange(activeApprenticeships);
+                var mostRecentApprenticeship = activeApprenticeships
+                    .OrderByDescending(x => x.Id)
+                    .FirstOrDefault();
+
+                apprenticeshipsToUseThisPeriod.Add(mostRecentApprenticeship);
             }
 
             if (apprenticeshipsToUseThisPeriod.Count == 0)

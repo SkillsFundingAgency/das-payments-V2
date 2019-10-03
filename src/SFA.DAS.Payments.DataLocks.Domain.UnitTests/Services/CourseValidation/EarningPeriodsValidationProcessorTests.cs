@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         private List<ApprenticeshipModel> apprenticeships;
         private List<DataLockFailure> dataLockFailures;
         private LearningAim aim;
-        private const int AcademicYear = 1819;
+        private int AcademicYear = 1819;
         private readonly int ukprn = 123;
 
         [SetUp]
@@ -35,6 +35,176 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 new PriceEpisode{Identifier = "pe-2"},
                 new PriceEpisode{Identifier = "pe-3"}
             };
+           
+            dataLockFailures = new List<DataLockFailure>
+            {
+                new DataLockFailure
+                {
+                    ApprenticeshipPriceEpisodeIds = new List<long>(),
+                    DataLockError = DataLockErrorCode.DLOCK_03
+                }
+            };
+
+            aim = new LearningAim();
+
+            mocker.Mock<ICalculatePeriodStartAndEndDate>()
+                .Setup(x => x.GetPeriodDate(1, AcademicYear))
+                .Returns(() => (new DateTime(2018, 8, 1), new DateTime(2018, 8, 31)));
+
+            mocker.Mock<ICalculatePeriodStartAndEndDate>()
+                .Setup(x => x.GetPeriodDate(2, AcademicYear))
+                .Returns(() => (new DateTime(2018, 9, 1), new DateTime(2018, 9, 30)));
+        }
+
+        [Test]
+        public void MatchedPriceEpisodeIsReturnedInValidPeriods()
+        {
+            apprenticeships = new List<ApprenticeshipModel>
+            {
+                new ApprenticeshipModel
+                {
+                    Id = 1,
+                    AccountId = 21,
+                    Ukprn = ukprn,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel{Id = 90},
+                        new ApprenticeshipPriceEpisodeModel{Id = 91},
+                        new ApprenticeshipPriceEpisodeModel{Id = 92},
+                        new ApprenticeshipPriceEpisodeModel{Id = 93},
+                    },
+                    EstimatedStartDate =new DateTime(2018, 8,1),
+                    Status = ApprenticeshipStatus.Active
+                },
+                new ApprenticeshipModel
+                {
+                    Id = 2,
+                    AccountId = 22,
+                    Ukprn = ukprn,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel{Id = 94},
+                        new ApprenticeshipPriceEpisodeModel{Id = 95},
+                        new ApprenticeshipPriceEpisodeModel{Id = 96},
+                        new ApprenticeshipPriceEpisodeModel{Id = 97},
+                    },
+                    EstimatedStartDate =new DateTime(2018, 9,1),
+                    Status = ApprenticeshipStatus.Active
+                }
+            };
+
+            var earning = new OnProgrammeEarning
+            {
+                Periods = new List<EarningPeriod> { new EarningPeriod
+                {
+                    Amount = 1,
+                    PriceEpisodeIdentifier = "pe-1" ,
+                    Period = 1
+                } 
+                }.AsReadOnly()
+            };
+            mocker.Mock<ICourseValidationProcessor>()
+                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 1)))
+                .Returns(() => new CourseValidationResult { MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel { Id = 90 } });
+            mocker.Mock<ICourseValidationProcessor>()
+                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 2)))
+                .Returns(() => new CourseValidationResult { DataLockFailures = dataLockFailures });
+
+            var periods = mocker.Create<EarningPeriodsValidationProcessor>().ValidatePeriods(
+                ukprn,
+                1,
+                priceEpisodes,
+                earning.Periods.ToList(),
+                (TransactionType)earning.Type,
+                apprenticeships,
+                aim,
+                AcademicYear);
+
+            periods.ValidPeriods.Count.Should().Be(1);
+            periods.ValidPeriods.All(p => p.ApprenticeshipPriceEpisodeId == 90).Should().Be(true);
+        }
+
+        [Test]
+        public void MatchesApprenticeship()
+        {
+
+            apprenticeships = new List<ApprenticeshipModel>
+            {
+                new ApprenticeshipModel
+                {
+                    Id = 1,
+                    AccountId = 21,
+                    Ukprn = ukprn,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel{Id = 90},
+                        new ApprenticeshipPriceEpisodeModel{Id = 91},
+                        new ApprenticeshipPriceEpisodeModel{Id = 92},
+                        new ApprenticeshipPriceEpisodeModel{Id = 93},
+                    },
+                    EstimatedStartDate =new DateTime(2018, 8,1),
+                    Status = ApprenticeshipStatus.Active
+                },
+                new ApprenticeshipModel
+                {
+                    Id = 2,
+                    AccountId = 22,
+                    Ukprn = ukprn,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel{Id = 94},
+                        new ApprenticeshipPriceEpisodeModel{Id = 95},
+                        new ApprenticeshipPriceEpisodeModel{Id = 96},
+                        new ApprenticeshipPriceEpisodeModel{Id = 97},
+                    },
+                    EstimatedStartDate =new DateTime(2018, 9,1),
+                    Status = ApprenticeshipStatus.Active
+                }
+            };
+            
+            var earning = new OnProgrammeEarning
+            {
+                Periods = new List<EarningPeriod>
+                {
+                    new EarningPeriod
+                    {
+                        Amount = 1,
+                        PriceEpisodeIdentifier = "pe-1",
+                        Period = 1
+                    },
+                    new EarningPeriod
+                    {
+                        Amount = 1,
+                        PriceEpisodeIdentifier = "pe-2",
+                        Period = 2
+                    },
+
+              }.AsReadOnly()
+            };
+            mocker.Mock<ICourseValidationProcessor>()
+                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 1)))
+                .Returns(() => new CourseValidationResult { MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel { Id = 90 } });
+            mocker.Mock<ICourseValidationProcessor>()
+                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 2)))
+                .Returns(() => new CourseValidationResult { MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel { Id = 96 } });
+
+            var periods = mocker.Create<EarningPeriodsValidationProcessor>().ValidatePeriods(
+                ukprn,
+                1,
+                priceEpisodes,
+                earning.Periods.ToList(),
+                (TransactionType)earning.Type,
+                apprenticeships,
+                aim,
+                AcademicYear);
+            periods.ValidPeriods.Count.Should().Be(2);
+            periods.ValidPeriods.Any(p => p.ApprenticeshipPriceEpisodeId == 90 && p.AccountId == 21).Should().Be(true);
+            periods.ValidPeriods.Any(p => p.ApprenticeshipPriceEpisodeId == 96 && p.AccountId == 22).Should().Be(true);
+        }
+
+        [Test]
+        public void DataLocksAreReturnedInInvalidPeriods()
+        {
             apprenticeships = new List<ApprenticeshipModel>
             {
                 new ApprenticeshipModel
@@ -69,93 +239,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 }
             };
 
-            dataLockFailures = new List<DataLockFailure>
-            {
-                new DataLockFailure
-                {
-                    ApprenticeshipPriceEpisodeIds = new List<long>(),
-                    DataLockError = DataLockErrorCode.DLOCK_03
-                }
-            };
 
-            aim = new LearningAim();
-
-            mocker.Mock<ICalculatePeriodStartAndEndDate>()
-                .Setup(x => x.GetPeriodDate(1, AcademicYear))
-                .Returns(() => (new DateTime(2018, 8, 1), new DateTime(2018, 8, 31)));
-
-
-        }
-
-        [Test]
-        public void MatchedPriceEpisodeIsReturnedInValidPeriods()
-        {
-            var earning = new OnProgrammeEarning
-            {
-                Periods = new List<EarningPeriod> { new EarningPeriod
-                {
-                    Amount = 1,
-                    PriceEpisodeIdentifier = "pe-1" ,
-                    Period = 1
-                } }.AsReadOnly()
-            };
-            mocker.Mock<ICourseValidationProcessor>()
-                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 1)))
-                .Returns(() => new CourseValidationResult { MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel { Id = 90 } });
-            mocker.Mock<ICourseValidationProcessor>()
-                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 2)))
-                .Returns(() => new CourseValidationResult { DataLockFailures = dataLockFailures });
-
-            var periods = mocker.Create<EarningPeriodsValidationProcessor>().ValidatePeriods(
-                ukprn,
-                1,
-                priceEpisodes,
-                earning.Periods.ToList(),
-                (TransactionType)earning.Type,
-                apprenticeships,
-                aim,
-                AcademicYear);
-
-            periods.ValidPeriods.Count.Should().Be(1);
-            periods.ValidPeriods.All(p => p.ApprenticeshipPriceEpisodeId == 90).Should().Be(true);
-        }
-
-        [Test]
-        public void MatchesApprenticeship()
-        {
-            var earning = new OnProgrammeEarning
-            {
-                Periods = new List<EarningPeriod> { new EarningPeriod
-                {
-                    Amount = 1,
-                    PriceEpisodeIdentifier = "pe-1",
-                    Period = 1
-                } }.AsReadOnly()
-            };
-            mocker.Mock<ICourseValidationProcessor>()
-                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 1)))
-                .Returns(() => new CourseValidationResult { MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel { Id = 90 } });
-            mocker.Mock<ICourseValidationProcessor>()
-                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 2)))
-                .Returns(() => new CourseValidationResult { MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel { Id = 96 } });
-
-            var periods = mocker.Create<EarningPeriodsValidationProcessor>().ValidatePeriods(
-                ukprn,
-                1,
-                priceEpisodes,
-                earning.Periods.ToList(),
-                (TransactionType)earning.Type,
-                apprenticeships,
-                aim,
-                AcademicYear);
-            periods.ValidPeriods.Count.Should().Be(2);
-            periods.ValidPeriods.Any(p => p.ApprenticeshipPriceEpisodeId == 90 && p.AccountId == 21).Should().Be(true);
-            periods.ValidPeriods.Any(p => p.ApprenticeshipPriceEpisodeId == 96 && p.AccountId == 22).Should().Be(true);
-        }
-
-        [Test]
-        public void DataLocksAreReturnedInInvalidPeriods()
-        {
             var earning = new OnProgrammeEarning
             {
                 Periods = new List<EarningPeriod>
@@ -217,6 +301,41 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         [Test]
         public void PopulatesTransferSenderAccountIdForMatchedApprenticeship()
         {
+            apprenticeships = new List<ApprenticeshipModel>
+            {
+                new ApprenticeshipModel
+                {
+                    Id = 1,
+                    AccountId = 21,
+                    Ukprn = ukprn,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel{Id = 90},
+                        new ApprenticeshipPriceEpisodeModel{Id = 91},
+                        new ApprenticeshipPriceEpisodeModel{Id = 92},
+                        new ApprenticeshipPriceEpisodeModel{Id = 93},
+                    },
+                    EstimatedStartDate =new DateTime(2018, 8,1),
+                    Status = ApprenticeshipStatus.Active,
+                    TransferSendingEmployerAccountId = 999
+                },
+                new ApprenticeshipModel
+                {
+                    Id = 2,
+                    AccountId = 22,
+                    Ukprn = ukprn,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel{Id = 94},
+                        new ApprenticeshipPriceEpisodeModel{Id = 95},
+                        new ApprenticeshipPriceEpisodeModel{Id = 96},
+                        new ApprenticeshipPriceEpisodeModel{Id = 97},
+                    },
+                    EstimatedStartDate =new DateTime(2018, 9,1),
+                    Status = ApprenticeshipStatus.Active
+                }
+            };
+
             var earning = new OnProgrammeEarning
             {
                 Periods = new List<EarningPeriod> { new EarningPeriod
@@ -232,8 +351,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             mocker.Mock<ICourseValidationProcessor>()
                 .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 2)))
                 .Returns(() => new CourseValidationResult { MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel { Id = 96 } });
-
-            apprenticeships.FirstOrDefault().TransferSendingEmployerAccountId = 999;
+            
             var periods = mocker.Create<EarningPeriodsValidationProcessor>().ValidatePeriods(
                 ukprn,
                 1, priceEpisodes,
@@ -243,7 +361,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 aim,
                 AcademicYear);
 
-            periods.ValidPeriods.Count.Should().Be(2);
+            periods.ValidPeriods.Count.Should().Be(1);
             periods.ValidPeriods.Any(p => p.ApprenticeshipId == 1 && p.TransferSenderAccountId == 999).Should().Be(true);
         }
 
@@ -317,15 +435,15 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                         Period = 2
                     }
                 }.AsReadOnly(),
-                
+
             };
-            
+
             mocker.Mock<ICalculatePeriodStartAndEndDate>()
                 .Setup(x => x.GetPeriodDate(2, AcademicYear))
                 .Returns(() => (new DateTime(2018, 9, 1), new DateTime(2018, 9, 30)));
 
             mocker.Mock<ICourseValidationProcessor>()
-                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(o => o.Apprenticeship.Id== apprenticeships.Last().Id)))
+                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(o => o.Apprenticeship.Id == apprenticeships.Last().Id)))
                 .Returns(() => new CourseValidationResult
                 {
                     DataLockFailures = new List<DataLockFailure>
@@ -351,6 +469,89 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             periods.InValidPeriods.Count.Should().Be(1);
             periods.InValidPeriods.Any(p => p.DataLockFailures.Count() == 1 && p.DataLockFailures.All(d => d.DataLockError == DataLockErrorCode.DLOCK_04))
                 .Should().Be(true);
+        }
+
+        [Test]
+        public void OnlyValidateMostRecentActiveApprenticeshipsWithinADeliveryPeriod()
+        {
+            AcademicYear = 1920;
+            aim.StandardCode = 403;
+            apprenticeships = new List<ApprenticeshipModel>
+            {
+                new ApprenticeshipModel
+                {
+                    Id = 1,
+                    AccountId = 21,
+                    Ukprn = ukprn,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            Id = 1,
+                            ApprenticeshipId = 1,
+                            StartDate = new DateTime(2017, 6,1),
+                        },
+                    },
+                    EstimatedStartDate = new DateTime(2017, 6,1),
+                    EstimatedEndDate = new DateTime(2018, 7,1),
+                    Status = ApprenticeshipStatus.Active,
+                },
+                new ApprenticeshipModel
+                {
+                    Id = 2,
+                    AccountId = 21,
+                    Ukprn = ukprn,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            Id = 2,
+                            ApprenticeshipId = 2,
+                            StartDate = new DateTime(2018, 9,1),
+                        },
+                    },
+                    EstimatedStartDate = new DateTime(2018, 9,1),
+                    EstimatedEndDate = new DateTime(2020, 9,1),
+                    Status = ApprenticeshipStatus.Active,
+                }
+            };
+
+            var earning = new OnProgrammeEarning
+            {
+                Periods = new List<EarningPeriod>
+                {
+                    new EarningPeriod
+                    {
+                        Amount = 1,
+                        PriceEpisodeIdentifier = "pe-1",
+                        Period = 1
+                    }
+                }.AsReadOnly(),
+
+            };
+
+            mocker.Mock<ICalculatePeriodStartAndEndDate>()
+                .Setup(x => x.GetPeriodDate(1, AcademicYear))
+                .Returns(() => (new DateTime(2019, 8, 1), new DateTime(2019, 8, 31)));
+
+            mocker.Mock<ICourseValidationProcessor>()
+                .Setup(x => x.ValidateCourse(It.IsAny<DataLockValidationModel>()))
+                .Returns(() => new CourseValidationResult
+                {
+                    DataLockFailures = new List<DataLockFailure>(),
+                    MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel()
+                });
+
+            var periods = mocker.Create<EarningPeriodsValidationProcessor>()
+                .ValidatePeriods(ukprn, 1, priceEpisodes, earning.Periods.ToList(), (TransactionType)earning.Type, apprenticeships, aim, AcademicYear);
+
+
+            mocker.Mock<ICourseValidationProcessor>()
+                .Verify(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 1)), Times.Never);
+
+            mocker.Mock<ICourseValidationProcessor>()
+                .Verify(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 2)), Times.Once);
+
         }
 
     }
