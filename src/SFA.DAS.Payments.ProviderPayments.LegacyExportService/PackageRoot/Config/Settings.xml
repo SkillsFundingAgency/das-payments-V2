@@ -13,7 +13,6 @@
     <Parameter Name="ServiceBusConnectionString" Value="" />
     <Parameter Name="MonitoringServiceBusConnectionString" Value="" />
     <Parameter Name="DasPeriodEndConnectionString" Value="" />
-    <Parameter Name="LegacyExportBatchSize" Value="" />
   </Section>
   <Section Name="Settings">
     <Parameter Name="EndpointName" Value="sfa-das-payments-providerpayments" />
@@ -25,5 +24,7 @@
     <Parameter Name="LogLevel" Value="" />
     <Parameter Name="ConsoleLogLevel" Value="" />
     <Parameter Name="ProcessMessageSequentially" Value="" />
+    <Parameter Name="DasNServiceBusLicenseKey" Value="" />
+    <Parameter Name="LegacyExportBatchSize" Value="10000" />
   </Section>
 </Settings>
