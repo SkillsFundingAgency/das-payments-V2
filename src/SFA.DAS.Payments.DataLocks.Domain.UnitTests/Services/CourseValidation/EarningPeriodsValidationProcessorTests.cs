@@ -234,7 +234,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                         new ApprenticeshipPriceEpisodeModel{Id = 96},
                         new ApprenticeshipPriceEpisodeModel{Id = 97},
                     },
-                    EstimatedStartDate =new DateTime(2018, 8,1),
+                    EstimatedStartDate =new DateTime(2018, 9,1),
                     Status = ApprenticeshipStatus.Active
                 }
             };
@@ -244,9 +244,22 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             {
                 Periods = new List<EarningPeriod>
                 {
-                    new EarningPeriod { Amount = 1, PriceEpisodeIdentifier = "pe-1", Period = 1 }
+                    new EarningPeriod
+                    {
+                        Amount = 1,
+                        PriceEpisodeIdentifier = "pe-1",
+                        Period = 1
+                    },
+                    new EarningPeriod
+                    {
+                        Amount = 1,
+                        PriceEpisodeIdentifier = "pe-2",
+                        Period = 2
+                    },
+
                 }.AsReadOnly()
             };
+
             mocker.Mock<ICourseValidationProcessor>()
                 .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 1)))
                 .Returns(() => new CourseValidationResult { MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel { Id = 90 } });
@@ -265,6 +278,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 AcademicYear);
 
             periods.InValidPeriods.Count.Should().Be(1);
+            periods.InValidPeriods[0].Period.Should().Be(2);
             periods.InValidPeriods.All(p => p.DataLockFailures[0].DataLockError == DataLockErrorCode.DLOCK_03).Should().BeTrue();
         }
 

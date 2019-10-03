@@ -150,7 +150,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             else
             {
                 var mostRecentApprenticeship = activeApprenticeships
-                    .OrderByDescending(x => x.Id)
+                    .OrderByDescending(x => x.EstimatedStartDate)
                     .FirstOrDefault();
 
                 apprenticeshipsToUseThisPeriod.Add(mostRecentApprenticeship);
