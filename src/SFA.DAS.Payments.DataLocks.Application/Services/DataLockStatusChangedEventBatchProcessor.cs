@@ -74,6 +74,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                         foreach (var apprenticeshipId in apprenticeshipIds)
                         {
+                            // only records null apprenticeship when DLOCK 01 & 02
+                            if (!apprenticeshipId.HasValue)
+                            {
+                                continue;
+                            }
+
                             // v1 doesn't use delivery period, get one earning period for each price episode
                             var earningPeriodsByPriceEpisode = flatPeriodList
                                 .GroupBy(p => p.PriceEpisodeIdentifier)
@@ -83,42 +89,32 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                             foreach (var earningPeriod in earningPeriodsByPriceEpisode)
                             {
-                                // only records null apprenticeship when DLOCK 01 & 02
-                                if (!apprenticeshipId.HasValue)
-                                {
-                                    if (earningPeriod.DataLockFailures.Any(f => f.ApprenticeshipId.HasValue))
-                                        continue;
-                                }
-
                                 await SaveDataLockEvent(cancellationToken, dataLockStatusChangedEvent, earningPeriod, apprenticeshipId).ConfigureAwait(false);
                                 savedEvents++;
 
-                                if (apprenticeshipId.HasValue)
+                                if (isError)
                                 {
-                                    if (isError)
+                                    var writtenVersions = new HashSet<(long apprenticeshipId, long apprenticeshipPriceEpisodeId)>();
+
+                                    foreach (var dataLockFailure in earningPeriod.DataLockFailures.Where(f => f.ApprenticeshipId == apprenticeshipId))
                                     {
-                                        var writtenVersions = new HashSet<(long apprenticeshipId, long apprenticeshipPriceEpisodeId)>();
-
-                                        foreach (var dataLockFailure in earningPeriod.DataLockFailures.Where(f => f.ApprenticeshipId == apprenticeshipId))
+                                        foreach (var apprenticeshipPriceEpisodeId in dataLockFailure.ApprenticeshipPriceEpisodeIds)
                                         {
-                                            foreach (var apprenticeshipPriceEpisodeId in dataLockFailure.ApprenticeshipPriceEpisodeIds)
-                                            {
-                                                // there are multiple errors recorded for the same apprenticeship episode
-                                                if (writtenVersions.Contains((apprenticeshipId.Value, apprenticeshipPriceEpisodeId)))
-                                                    continue;
+                                            // there are multiple errors recorded for the same apprenticeship episode
+                                            if (writtenVersions.Contains((apprenticeshipId.Value, apprenticeshipPriceEpisodeId)))
+                                                continue;
 
-                                                savedPeriods += await SaveCommitmentVersionAndPeriods(dataLockStatusChangedEvent, dataLockFailure.ApprenticeshipId.Value, apprenticeshipPriceEpisodeId, isError, cancellationToken);
-                                                savedCommitmentVersions++;
+                                            savedPeriods += await SaveCommitmentVersionAndPeriods(dataLockStatusChangedEvent, dataLockFailure.ApprenticeshipId.Value, apprenticeshipPriceEpisodeId, isError, cancellationToken);
+                                            savedCommitmentVersions++;
 
-                                                writtenVersions.Add((apprenticeshipId.Value, apprenticeshipPriceEpisodeId));
-                                            }
+                                            writtenVersions.Add((apprenticeshipId.Value, apprenticeshipPriceEpisodeId));
                                         }
                                     }
-                                    else
-                                    {
-                                        savedPeriods += await SaveCommitmentVersionAndPeriods(dataLockStatusChangedEvent, earningPeriod.ApprenticeshipId.Value, earningPeriod.ApprenticeshipPriceEpisodeId.Value, isError, cancellationToken);
-                                        savedCommitmentVersions++;
-                                    }
+                                }
+                                else
+                                {
+                                    savedPeriods += await SaveCommitmentVersionAndPeriods(dataLockStatusChangedEvent, earningPeriod.ApprenticeshipId.Value, earningPeriod.ApprenticeshipPriceEpisodeId.Value, isError, cancellationToken);
+                                    savedCommitmentVersions++;
                                 }
 
                                 if (earningPeriod.DataLockFailures?.Count > 0)
