@@ -73,7 +73,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.Services
                     {
                         StartDate = paymentModel.StartDate,
                         RequiredPaymentId = paymentModel.RequiredPaymentId,
-                        ActualEndDate = paymentModel.ActualEndDate,
+                        ActualEnddate = paymentModel.ActualEndDate,
                         CompletionAmount = paymentModel.CompletionAmount,
                         PlannedEndDate = paymentModel.PlannedEndDate??DateTime.MinValue,
                         CompletionStatus = paymentModel.CompletionStatus,
@@ -104,7 +104,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.Services
 
         private int YearFromPeriod(short academicYear, byte collectionPeriod)
         {
-            var ilrStartYear = academicYear / 100 * 100;
+            var ilrStartYear = (academicYear / 100) + 2000;
 
             if (collectionPeriod > 5)
             {
@@ -116,7 +116,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.Services
 
         private int MonthFromPeriod(byte collectionPeriod)
         {
-            if (collectionPeriod > 5)
+            if (collectionPeriod <= 5)
             {
                 return collectionPeriod + 7;
             }

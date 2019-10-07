@@ -18,6 +18,8 @@
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
     <Parameter Name="ProviderPaymentsService_EndpointName" DefaultValue="" />
     <Parameter Name="ProviderPaymentsService_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="LegacyExportService_EndpointName" DefaultValue="" />
+    <Parameter Name="LegacyExportService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="Audit_BatchFailureTimeoutInSeconds" DefaultValue="60" />
     <Parameter Name="BatchIntervalInSeconds" DefaultValue="10" />
@@ -40,8 +42,8 @@
             <Parameter Name="DasPeriodEndConnectionString" Value="[DasPeriodEndConnectionString]" />
           </Section>
           <Section Name="Settings">
-            <Parameter Name="EndpointName" Value="[ProviderPaymentsService_EndpointName]" />
-            <Parameter Name="FailedMessagesQueue" Value="[ProviderPaymentsService_FailedMessagesQueue]" />
+            <Parameter Name="EndpointName" Value="[LegacyExportService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[LegacyExportService_FailedMessagesQueue]" />
             <Parameter Name="BatchFailureTimeoutInSeconds" Value="[Audit_BatchFailureTimeoutInSeconds]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />

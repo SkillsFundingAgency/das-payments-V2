@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
     {
         Task WritePaymentInformation(IEnumerable<LegacyPaymentModel> payments,
             IEnumerable<LegacyRequiredPaymentModel> requiredPayments,
-            IEnumerable<LegacyEarningModel> earnings);
+            List<LegacyEarningModel> earnings);
 
         Task WriteMonthEndTrigger(CollectionPeriod collectionPeriod);
     }
@@ -31,9 +31,26 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
         public async Task WritePaymentInformation(
             IEnumerable<LegacyPaymentModel> payments, 
             IEnumerable<LegacyRequiredPaymentModel> requiredPayments,
-            IEnumerable<LegacyEarningModel> earnings)
+            List<LegacyEarningModel> earnings)
         {
-            using(var scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions
+            var minDate = new DateTime(2000, 1, 1);
+            foreach (var legacyRequiredPaymentModel in requiredPayments)
+            {
+                if (legacyRequiredPaymentModel.LearningStartDate < minDate)
+                    legacyRequiredPaymentModel.LearningStartDate = minDate;
+            }
+
+            foreach (var legacyEarningModel in earnings)
+            {
+                if (legacyEarningModel.ActualEnddate < minDate) 
+                    legacyEarningModel.ActualEnddate = null;
+                if (legacyEarningModel.PlannedEndDate < minDate) 
+                    legacyEarningModel.PlannedEndDate = minDate;
+                if (legacyEarningModel.StartDate < minDate) 
+                    legacyEarningModel.StartDate = minDate;
+            }
+
+            using (var scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions
             {
                 IsolationLevel = IsolationLevel.ReadUncommitted
             }, TransactionScopeAsyncFlowOption.Enabled))
@@ -61,7 +78,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
                     await bulkCopy.WriteToServerAsync(reader).ConfigureAwait(false);
                 }
 
-                bulkCopy.DestinationTableName = "[Payments].[Period]";
+                bulkCopy.DestinationTableName = "[PaymentsDue].[Earnings]";
                 bulkCopy.ColumnMappings.Clear();
                 PopulateBulkCopy(bulkCopy, typeof(LegacyEarningModel));
 
