@@ -8,6 +8,7 @@
     <Parameter Name="LogLevel" Value="" />
     <Parameter Name="ConsoleLogLevel" Value="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+    <Parameter Name="DasNServiceBusLicenseKey" Value="" />
   </Section>
   <Section Name="RemovedLearnerServiceActorServiceReplicatorConfig">
     <Parameter Name="ReplicatorEndpoint" Value="RemovedLearnerServiceActorServiceReplicatorEndpoint" />

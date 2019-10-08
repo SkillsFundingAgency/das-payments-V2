@@ -22,5 +22,6 @@
     <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
     <Parameter Name="MaximumCallbackTimeSpan" Value="__MaximumCallbackTimeSpan__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
+    <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
   </Parameters>
 </Application>

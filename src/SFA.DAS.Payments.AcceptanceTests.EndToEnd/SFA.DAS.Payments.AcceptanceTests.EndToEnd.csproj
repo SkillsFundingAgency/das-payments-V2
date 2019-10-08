@@ -2651,6 +2651,10 @@
       <Project>{fafc16fb-316e-4c83-9f35-d0d36ddccaf7}</Project>
       <Name>SFA.DAS.Payments.Model.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Client\SFA.DAS.Payments.Monitoring.Jobs.Client.csproj">
+      <Project>{66b42b94-b29b-48ea-9ab6-c96c11c1d9ce}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Jobs.Client</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Data\SFA.DAS.Payments.Monitoring.Jobs.Data.csproj">
       <Project>{D9849B05-C642-48F7-AA6D-FA917257AE45}</Project>
       <Name>SFA.DAS.Payments.Monitoring.Jobs.Data</Name>
