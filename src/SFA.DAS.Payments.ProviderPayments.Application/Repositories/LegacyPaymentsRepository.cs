@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
     public interface ILegacyPaymentsRepository
     {
         Task WritePaymentInformation(IEnumerable<LegacyPaymentModel> payments,
-            IEnumerable<LegacyRequiredPaymentModel> requiredPayments,
+            List<LegacyRequiredPaymentModel> requiredPayments,
             List<LegacyEarningModel> earnings);
 
         Task WriteMonthEndTrigger(CollectionPeriod collectionPeriod);
@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
 
         public async Task WritePaymentInformation(
             IEnumerable<LegacyPaymentModel> payments, 
-            IEnumerable<LegacyRequiredPaymentModel> requiredPayments,
+            List<LegacyRequiredPaymentModel> requiredPayments,
             List<LegacyEarningModel> earnings)
         {
             var minDate = new DateTime(2000, 1, 1);

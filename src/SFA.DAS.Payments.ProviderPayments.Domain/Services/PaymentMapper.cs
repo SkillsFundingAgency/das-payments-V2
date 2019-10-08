@@ -8,13 +8,15 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.Services
 {
     public interface IPaymentMapper
     {
-        (List<LegacyPaymentModel> payments, List<LegacyRequiredPaymentModel> requiredPayments, List<LegacyEarningModel> earnings) 
+        (List<LegacyPaymentModel> payments, List<LegacyRequiredPaymentModel> requiredPayments, List<LegacyEarningModel> earnings)
             MapV2Payments(List<PaymentModelWithRequiredPaymentId> payments);
     }
 
     public class PaymentMapper : IPaymentMapper
     {
-        public (List<LegacyPaymentModel> payments, List<LegacyRequiredPaymentModel> requiredPayments, List<LegacyEarningModel> earnings) 
+        private static readonly HashSet<Guid> ProcessedRequiredPayments = new HashSet<Guid>();
+
+        public (List<LegacyPaymentModel> payments, List<LegacyRequiredPaymentModel> requiredPayments, List<LegacyEarningModel> earnings)
             MapV2Payments(List<PaymentModelWithRequiredPaymentId> payments)
         {
             var legacyPayments = new List<LegacyPaymentModel>();
@@ -23,51 +25,45 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.Services
 
             foreach (var paymentModel in payments)
             {
-                LegacyRequiredPaymentModel requiredPayment;
-
-                if (legacyRequiredPayments.ContainsKey(paymentModel.RequiredPaymentId))
+                var requiredPayment = new LegacyRequiredPaymentModel
                 {
-                    requiredPayment = legacyRequiredPayments[paymentModel.RequiredPaymentId];
-                }
-                else
-                {
-                    requiredPayment = new LegacyRequiredPaymentModel
-                    {
-                        Id = paymentModel.RequiredPaymentId,
-                        AccountId = paymentModel.AccountId,
-                        AccountVersionId = string.Empty,
-                        AimSeqNumber = paymentModel.LearningAimSequenceNumber,
-                        AmountDue = paymentModel.AmountDue,
-                        ApprenticeshipContractType = (int) paymentModel.ContractType,
-                        CollectionPeriodMonth = MonthFromPeriod(paymentModel.CollectionPeriod),
-                        CollectionPeriodName =
-                            $"{paymentModel.AcademicYear}-R{paymentModel.CollectionPeriod:D2}",
-                        CollectionPeriodYear = YearFromPeriod(paymentModel.AcademicYear,
-                            paymentModel.CollectionPeriod),
-                        // TODO: Fix this when available
-                        CommitmentId = 0,
-                        CommitmentVersionId = string.Empty,
-                        UseLevyBalance = false,
-                        DeliveryMonth = MonthFromPeriod(paymentModel.DeliveryPeriod),
-                        DeliveryYear = YearFromPeriod(paymentModel.AcademicYear,
-                            paymentModel.DeliveryPeriod),
-                        FrameworkCode = paymentModel.LearningAimFrameworkCode,
-                        FundingLineType = paymentModel.LearningAimFundingLineType,
-                        IlrSubmissionDateTime = paymentModel.IlrSubmissionDateTime,
-                        LearnAimRef = paymentModel.LearningAimReference,
-                        LearnRefNumber = paymentModel.LearnerReferenceNumber,
-                        LearningStartDate = paymentModel.StartDate,
-                        PathwayCode = paymentModel.LearningAimPathwayCode,
-                        PriceEpisodeIdentifier = paymentModel.PriceEpisodeIdentifier,
-                        ProgrammeType = paymentModel.LearningAimProgrammeType,
-                        SfaContributionPercentage = paymentModel.SfaContributionPercentage,
-                        StandardCode = paymentModel.LearningAimStandardCode,
-                        TransactionType = (int) paymentModel.TransactionType,
-                        Ukprn = paymentModel.Ukprn,
-                        Uln = paymentModel.LearnerUln,
-                    };
+                    Id = paymentModel.RequiredPaymentId,
+                    AccountId = paymentModel.AccountId,
+                    AccountVersionId = string.Empty,
+                    AimSeqNumber = paymentModel.LearningAimSequenceNumber,
+                    AmountDue = paymentModel.AmountDue,
+                    ApprenticeshipContractType = (int)paymentModel.ContractType,
+                    CollectionPeriodMonth = MonthFromPeriod(paymentModel.CollectionPeriod),
+                    CollectionPeriodName =
+                        $"{paymentModel.AcademicYear}-R{paymentModel.CollectionPeriod:D2}",
+                    CollectionPeriodYear = YearFromPeriod(paymentModel.AcademicYear,
+                        paymentModel.CollectionPeriod),
+                    CommitmentId = paymentModel.ApprenticeshipId,
+                    CommitmentVersionId = string.Empty,
+                    UseLevyBalance = false,
+                    DeliveryMonth = MonthFromPeriod(paymentModel.DeliveryPeriod),
+                    DeliveryYear = YearFromPeriod(paymentModel.AcademicYear,
+                        paymentModel.DeliveryPeriod),
+                    FrameworkCode = paymentModel.LearningAimFrameworkCode,
+                    FundingLineType = paymentModel.LearningAimFundingLineType,
+                    IlrSubmissionDateTime = paymentModel.IlrSubmissionDateTime,
+                    LearnAimRef = paymentModel.LearningAimReference,
+                    LearnRefNumber = paymentModel.LearnerReferenceNumber,
+                    LearningStartDate = paymentModel.StartDate,
+                    PathwayCode = paymentModel.LearningAimPathwayCode,
+                    PriceEpisodeIdentifier = paymentModel.PriceEpisodeIdentifier,
+                    ProgrammeType = paymentModel.LearningAimProgrammeType,
+                    SfaContributionPercentage = paymentModel.SfaContributionPercentage,
+                    StandardCode = paymentModel.LearningAimStandardCode,
+                    TransactionType = (int)paymentModel.TransactionType,
+                    Ukprn = paymentModel.Ukprn,
+                    Uln = paymentModel.LearnerUln,
+                };
 
+                if (!ProcessedRequiredPayments.Contains(requiredPayment.Id))
+                {
                     legacyRequiredPayments.Add(requiredPayment.Id, requiredPayment);
+                    ProcessedRequiredPayments.Add(requiredPayment.Id);
 
                     var earning = new LegacyEarningModel
                     {
@@ -75,23 +71,23 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.Services
                         RequiredPaymentId = paymentModel.RequiredPaymentId,
                         ActualEnddate = paymentModel.ActualEndDate,
                         CompletionAmount = paymentModel.CompletionAmount,
-                        PlannedEndDate = paymentModel.PlannedEndDate??DateTime.MinValue,
+                        PlannedEndDate = paymentModel.PlannedEndDate ?? DateTime.MinValue,
                         CompletionStatus = paymentModel.CompletionStatus,
-                        MonthlyInstallment = paymentModel.InstalmentAmount??0m,
-                        TotalInstallments = (paymentModel.NumberOfInstalments??0),
+                        MonthlyInstallment = paymentModel.InstalmentAmount ?? 0m,
+                        TotalInstallments = (paymentModel.NumberOfInstalments ?? 0),
                     };
                     legacyEarnings.Add(earning);
                 }
-            
+
                 var payment = new LegacyPaymentModel
                 {
                     RequiredPaymentId = requiredPayment.Id,
                     CollectionPeriodMonth = requiredPayment.CollectionPeriodMonth,
                     CollectionPeriodYear = requiredPayment.CollectionPeriodYear,
-                    TransactionType = requiredPayment.TransactionType??0,
-                    DeliveryYear = requiredPayment.DeliveryYear??0,
+                    TransactionType = requiredPayment.TransactionType ?? 0,
+                    DeliveryYear = requiredPayment.DeliveryYear ?? 0,
                     CollectionPeriodName = requiredPayment.CollectionPeriodName,
-                    DeliveryMonth = requiredPayment.DeliveryMonth??0,
+                    DeliveryMonth = requiredPayment.DeliveryMonth ?? 0,
                     Amount = paymentModel.Amount,
                     FundingSource = (int)paymentModel.FundingSource,
                     PaymentId = Guid.NewGuid(),
