@@ -126,15 +126,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                             onProgEarning.Learner = learner;
                             onProgEarning.LearningAim = learningAim;
 
-                            if (incentiveEarnings.Any())
-                            {
-                                onProgEarning.IncentiveEarnings = incentiveEarnings.Select(tt => new IncentiveEarning
-                                    {
-                                        Type = (IncentiveEarningType)(int)tt,
-                                        Periods = GetEarningPeriods(aimEarningSpecs, aimSpec, onProgEarning, tt, fm36Learner).AsReadOnly(),
-                                    }).ToList();
-                            }
-
+                          
                             result.Add(onProgEarning);
                         }
                     }
