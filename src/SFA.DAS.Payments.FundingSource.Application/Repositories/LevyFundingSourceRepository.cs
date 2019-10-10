@@ -56,13 +56,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
                 await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task AddEmployerProviderPriorities(List<EmployerProviderPriorityModel> paymentPriorityModels, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            await dataContext.EmployerProviderPriority
-                .AddRangeAsync(paymentPriorityModels, cancellationToken)
-                .ConfigureAwait(false);
-        }
-
         public async Task<List<long>> GetEmployerAccounts(CancellationToken cancellationToken)
         {
             var transferSenders = (await dataContext.Apprenticeship
@@ -81,7 +74,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
             return accounts.Distinct().ToList();
         }
 
-        public async Task<Dictionary<long, long?>> GetEmployerAccountsByUkprn(long ukprn, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<Tuple<long,long?>>> GetEmployerAccountsByUkprn(long ukprn, CancellationToken cancellationToken = default(CancellationToken))
         {
             var accounts = await dataContext.Apprenticeship.AsNoTracking()
                 .Where(apprenticeship => apprenticeship.Ukprn == ukprn)
@@ -93,7 +86,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
                 .Distinct()
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
-            return accounts.ToDictionary(account => account.AccountId, account => account.TransferSendingEmployerAccountId);
+            return accounts.Select(x => new Tuple<long, long?>(x.AccountId, x.TransferSendingEmployerAccountId)).ToList();
         }
     }
 }

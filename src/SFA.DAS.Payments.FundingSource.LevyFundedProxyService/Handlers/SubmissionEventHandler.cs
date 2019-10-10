@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
                 var tasks = new List<Task>();
                 foreach (var account in accountIds)
                 {
-                    var accountToUse = levyMessageRoutingService.GetDestinationAccountId(account.Key, account.Value);
+                    var accountToUse = levyMessageRoutingService.GetDestinationAccountId(account.Item1, account.Item2);
                     tasks.Add(InvokeSubmissionAction(accountToUse, message));
                 }
 
@@ -68,7 +68,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
         private async Task InvokeSubmissionAction(long accountId, T message)
         {
             var actorId = new ActorId(accountId);
-            var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri(LevyFundedServiceConstants.ServiceUri), actorId);
+            var uri = new Uri(LevyFundedServiceConstants.ServiceUri);
+            var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(uri, actorId);
 
             await HandleSubmissionEvent(message, actor);
             logger.LogInfo($"Successfully processed {typeof(T).Name} event for Actor Id {actorId}, Job: {message.JobId}, UKPRN: {message.Ukprn}");

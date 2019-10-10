@@ -5,6 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
@@ -136,13 +139,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         private async Task CompleteDataLocks(long jobId, List<CompletedMessage> completedMessages, List<InProgressMessage> inProgressMessages, CancellationToken cancellationToken)
         {
             var dataLocksMessages = new[] {
-                "FunctionalSkillEarningFailedDataLockMatching",
-                "PayableFunctionalSkillEarningEvent",
-                "PayableEarningEvent",
-                "EarningFailedDataLockMatching",
-                "ProcessLearnerCommand",
-                "Act1FunctionalSkillEarningsEvent",
-                "ApprenticeshipContractType1EarningEvent"
+                nameof(FunctionalSkillEarningFailedDataLockMatching),
+                nameof(PayableFunctionalSkillEarningEvent),
+                nameof(PayableEarningEvent),
+                nameof(EarningFailedDataLockMatching),
+                nameof(ProcessLearnerCommand),
+                nameof(Act1FunctionalSkillEarningsEvent),
+                nameof(ApprenticeshipContractType1EarningEvent),
+                nameof(EarningFailedDataLockMatching),
             };
             var inProgressDataLocks = inProgressMessages
                 .Where(inProgress => dataLocksMessages.Any(dlockType => inProgress.MessageName?.Contains(dlockType) ?? false))
