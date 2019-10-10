@@ -15,6 +15,9 @@ using SFA.DAS.Payments.Model.Core.Incentives;
 using FluentAssertions;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
+using SFA.DAS.Payments.EarningEvents.Application.Mapping;
+using AutoMapper;
+using System;
 
 namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
 {
@@ -27,6 +30,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
         private Mock<IApprenticeshipContractTypeEarningsEventBuilder> actBuilder;
         private Mock<IFunctionalSkillEarningsEventBuilder> functionalSkillBuilder;
         private Mock<IConfigurationHelper> configurationHelper;
+
         [SetUp]
         public void SetUp()
         {
@@ -449,6 +453,64 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
             Assert.AreEqual(1, mathsEarning.Earnings[0].Periods[0].Period);
 
             Mock.Verify(validatorMock, actBuilder, functionalSkillBuilder);
+        }
+
+        [Test]
+        public void Generate_Apprenticeship_Contract_Earnings_Ignoring_Invalid_Contracts()
+        {
+            // Arrange
+            var sut = new ApprenticeshipContractTypeEarningsEventBuilder(
+                new ApprenticeshipContractTypeEarningsEventFactory(),
+                new Mapper(new MapperConfiguration(c => { })));
+
+            learner = new FM36Learner
+            {
+                ULN = 12,
+                LearnRefNumber = "12",
+                PriceEpisodes = new List<ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode>
+                {
+                    new ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode
+                    {
+                        PriceEpisodeValues = new PriceEpisodeValues
+                        {
+                            EpisodeStartDate = DateTime.UtcNow,
+                            PriceEpisodeContractType = "",
+                            PriceEpisodeAimSeqNumber = 1,
+                        },
+                    },
+                },
+                LearningDeliveries = new List<LearningDelivery>
+                {
+                    new LearningDelivery
+                    {
+                        AimSeqNumber = 1,
+                        LearningDeliveryValues = new LearningDeliveryValues
+                        {
+                            LearnAimRef = "ZPROG001",
+                        },
+                    }
+                },
+                HistoricEarningOutputValues = new List<HistoricEarningOutputValues> { },
+            };
+
+            var learnerSubmission = new ProcessLearnerCommand
+            {
+                Learner = learner,
+                CollectionYear = 1920,
+                CollectionPeriod = 1,
+                Ukprn = 12345,
+                JobId = 1
+            };
+
+            // Act
+            var earningsEvents = sut.Build(learnerSubmission);
+
+
+            // Assert
+            //Assert.IsFalse(result.Validation.Failed);
+            //Assert.AreEqual(4, result.EarningEvents.Count);
+
+            //Mock.Verify(validatorMock, actBuilder, functionalSkillBuilder);
         }
     }
 }
