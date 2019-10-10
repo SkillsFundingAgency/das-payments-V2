@@ -433,9 +433,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 var firstEarningForPriceEpisode = earnings
                     .OrderBy(x => x.DeliveryCalendarPeriod)
-                    .First(e => e.DeliveryCalendarPeriod >= priceEpisodeStartDateAsDeliveryPeriod && e.PriceEpisodeIdentifier == priceEpisode.PriceEpisodeId);
+                    .FirstOrDefault(e => e.DeliveryCalendarPeriod >= priceEpisodeStartDateAsDeliveryPeriod && e.PriceEpisodeIdentifier == priceEpisode.PriceEpisodeId);
 
-                var sfaContributionPercent = (firstEarningForPriceEpisode.SfaContributionPercentage ??
+                var sfaContributionPercent = (firstEarningForPriceEpisode?.SfaContributionPercentage ??
                                   priceEpisode.SfaContributionPercentage).ToPercent();
 
                 var newPriceEpisode = new PriceEpisode
