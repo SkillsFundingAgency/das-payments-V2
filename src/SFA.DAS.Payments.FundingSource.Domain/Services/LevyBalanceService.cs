@@ -14,8 +14,8 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
 
         public void Initialise(decimal newBalance, decimal transferAllowance)
         {
-            RemainingBalance = newBalance;
-            this.RemainingTransferAllowance = Math.Min(transferAllowance, RemainingBalance);
+            RemainingBalance = Math.Max(newBalance, 0);
+            this.RemainingTransferAllowance = Math.Min(Math.Max(transferAllowance, 0), RemainingBalance);
             initialised = true;
         }
 
