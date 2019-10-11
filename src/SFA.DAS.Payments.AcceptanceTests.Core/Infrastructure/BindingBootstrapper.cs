@@ -17,6 +17,8 @@ using Microsoft.ServiceBus;
 using Microsoft.ServiceBus.Messaging;
 using NServiceBus;
 using NServiceBus.Features;
+using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 using Polly;
 using Polly.Registry;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
@@ -181,6 +183,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             var endpointConfiguration = Container.Resolve<EndpointConfiguration>();
             endpointConfiguration.UseContainer<AutofacBuilder>(c => c.ExistingLifetimeScope(Container));
             MessageSession = Endpoint.Start(endpointConfiguration).Result;
+        }
+
+        [AfterScenario]
+        public static void MarkFailedTestsToFeatureContext()
+        {
+            if (TestContext.CurrentContext.Result.Outcome != ResultState.Success)
+            {
+                FeatureContext.Current["FailedTests"] = true;
+            }
+        }
+
+        [BeforeScenario]
+        public static void DontRunIfFailedPreviousScenario()
+        {
+            if (FeatureContext.Current.ContainsKey("FailedTests") &&
+                (bool)FeatureContext.Current["FailedTests"] )
+            {
+                Assert.Fail("Failing as previous examples of this feature have failed");
+            }
         }
     }
 }
