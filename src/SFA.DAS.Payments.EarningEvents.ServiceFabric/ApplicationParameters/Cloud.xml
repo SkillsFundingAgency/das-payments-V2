@@ -21,7 +21,7 @@
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
     <Parameter Name="TimeToPauseBetweenChecks" Value="__TimeToPauseBetweenChecks__" />
     <Parameter Name="TimeToWaitForJobToComplete" Value="__TimeToWaitForJobToComplete__" />
-    <Parameter Name="MaximumCallbackTimeSpan" Value="__TimeToWaitForJobToComplete__" />
+    <Parameter Name="MaximumCallbackTimeSpan" Value="__MaximumCallbackTimeSpan__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
     <Parameter Name="DoNotGenerateACT1TransactionType4To16Payments" Value="__DoNotGenerateACT1TransactionType4To16Payments__" />
     <Parameter Name="DoNotGenerateACT2Payments" Value="__DoNotGenerateACT2Payments__" />
