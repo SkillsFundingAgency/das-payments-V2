@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
     {
         private readonly IApprenticeshipContractTypeEarningsEventFactory factory;
         private readonly IMapper mapper;
-       
+
         public ApprenticeshipContractTypeEarningsEventBuilder(IApprenticeshipContractTypeEarningsEventFactory factory, IMapper mapper)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
@@ -32,12 +32,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 foreach (var priceEpisodes in episodesByContractType)
                 {
                     var learnerWithSortedPriceEpisodes = intermediateLearningAim.CopyReplacingPriceEpisodes(priceEpisodes);
-                    
+
                     var earningEvent = factory.Create(priceEpisodes.Key);
-                    if (earningEvent == null) continue; 
+                    if (!earningEvent.IsApplicableContractType) continue;
 
                     mapper.Map(learnerWithSortedPriceEpisodes, earningEvent);
-
 
                     var priceEpisodeToUse = priceEpisodes.FirstOrDefault() ??
                                             throw new NullReferenceException("Price Episode Cannot be null");
@@ -47,7 +46,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                     results.Add(earningEvent);
                 }
             }
-            
+
             return results;
         }
     }
