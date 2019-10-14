@@ -32,19 +32,11 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
         {
             paymentLogger.LogInfo($"Processing EmployerChangedProviderPriority event. Message Id: {context.MessageId}, Account Id: {message.EmployerAccountId}");
            
-            try
-            {
-                var actorId = new ActorId(message.EmployerAccountId);
-                var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
-                await actor.HandleEmployerProviderPriorityChange(message).ConfigureAwait(false);
+            var actorId = new ActorId(message.EmployerAccountId);
+            var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
+            await actor.HandleEmployerProviderPriorityChange(message).ConfigureAwait(false);
 
-                paymentLogger.LogInfo($"Successfully processed EmployerChangedProviderPriority event for Actor Id {actorId} ,Account Id: {message.EmployerAccountId}");
-            }
-            catch (Exception ex)
-            {
-                paymentLogger.LogError($"Error while handling EmployerChangedProviderPriority event, Account Id: {message.EmployerAccountId}", ex);
-                throw;
-            }
+            paymentLogger.LogInfo($"Successfully processed EmployerChangedProviderPriority event for Actor Id {actorId} ,Account Id: {message.EmployerAccountId}");
         }
     }
 }
