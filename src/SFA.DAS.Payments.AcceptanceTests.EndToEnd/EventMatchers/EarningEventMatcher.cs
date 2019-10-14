@@ -126,6 +126,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                             onProgEarning.Learner = learner;
                             onProgEarning.LearningAim = learningAim;
 
+                          
                             result.Add(onProgEarning);
                         }
                     }
