@@ -1,4 +1,3 @@
-@ignore
 Feature: 5% Contribution from April 2019 PV2-895
 As a provider,
 I want a Non Levy learner, starting prior to Apr 2019, taking a planned break and resuming from Apr 2019, where completion payment remains at 10% contribution
@@ -32,27 +31,28 @@ Scenario Outline: Non Levy Learner, started learning before Apr19, has planned b
 
     But the Provider now changes the Learner details as follows
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-		| 03/Apr/Current Academic Year | 10 months        | 15000                | 03/Apr/Current Academic Year        | 3000                   | 03/Apr/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 17            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+        | 01/Nov/Current Academic Year | 12 months        | 12000                | 01/Nov/Current Academic Year        | 3000                   | 01/Nov/Current Academic Year          | 4 months        | planned break     | Act2          | 1                   | ZPROG001      | 17            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+		| 03/Apr/Current Academic Year | 10 months        | 12000                | 03/Apr/Current Academic Year        | 3000                   | 03/Apr/Current Academic Year          |                 | continuing        | Act2          | 1                   | ZPROG001      | 17            | 25             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
 	And price details as follows
-        | Price details     | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | SFA Contribution Percentage |
-        | 1st price details | 12000                | 01/Nov/Current Academic Year        | 3000                   | 01/Nov/Current Academic Year          | 90%                         |
-        | 2nd price details | 12000                | 03/Apr/Current Academic Year        | 3000                   | 03/Apr/Current Academic Year          | 90%                         |
+        | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |
+        | pe-1             | 12000                | 01/Nov/Current Academic Year        | 3000                   | 01/Nov/Current Academic Year          | 90%                         | Act2          | 1                   |
+        | pe-2             | 12000                | 03/Apr/Current Academic Year        | 3000                   | 03/Apr/Current Academic Year          | 90%                         | Act2          | 1                   |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
-        | Delivery Period           | On-Programme | Completion | Balancing |
-        | Aug/Current Academic Year | 0            | 0          | 0         |
-        | Sep/Current Academic Year | 0            | 0          | 0         |
-        | Oct/Current Academic Year | 0            | 0          | 0         |
-        | Nov/Current Academic Year | 1000         | 0          | 0         |
-        | Dec/Current Academic Year | 1000         | 0          | 0         |
-        | Jan/Current Academic Year | 1000         | 0          | 0         |
-        | Feb/Current Academic Year | 1000         | 0          | 0         |
-        | Mar/Current Academic Year | 0            | 0          | 0         |
-        | Apr/Current Academic Year | 1000         | 0          | 0         |
-        | May/Current Academic Year | 1000         | 0          | 0         |
-        | Jun/Current Academic Year | 1000         | 0          | 0         |
-        | Jul/Current Academic Year | 1000         | 0          | 0         |
-    And at month end only the following payments will be calculated
+        | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+        | Aug/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | Sep/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | Oct/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | Nov/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | Dec/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | Jan/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | Feb/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | Mar/Current Academic Year | 0            | 0          | 0         | pe-1                     |
+        | Apr/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
+        | May/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
+        | Jun/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
+        | Jul/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
+    And only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
         | R08/Current Academic Year | Mar/Current Academic Year | 0            | 0          | 0         |
         | R09/Current Academic Year | Apr/Current Academic Year | 1000         | 0          | 0         |
