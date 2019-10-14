@@ -7,5 +7,6 @@
         string ServiceBusConnectionString { get; }
         string FailedMessagesQueue { get; }
          bool ProcessMessageSequentially { get; }
+         string NServiceBusLicense { get; }
     }
 }

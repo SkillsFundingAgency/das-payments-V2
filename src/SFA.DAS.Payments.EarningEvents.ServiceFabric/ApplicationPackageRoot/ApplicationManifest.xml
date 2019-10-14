@@ -25,6 +25,7 @@
     <Parameter Name="Placement_Constraints" DefaultValue="" />
     <Parameter Name="DoNotGenerateACT1TransactionType4To16Payments" DefaultValue="false" />
     <Parameter Name="DoNotGenerateACT2Payments" DefaultValue="false" />
+    <Parameter Name="DasNServiceBusLicenseKey" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -59,6 +60,7 @@
             <Parameter Name="MaximumCallbackTimeSpan" Value="[MaximumCallbackTimeSpan]" />
             <Parameter Name="DoNotGenerateACT1TransactionType4To16Payments" Value="[DoNotGenerateACT1TransactionType4To16Payments]" />
             <Parameter Name="DoNotGenerateACT2Payments" Value="[DoNotGenerateACT2Payments]" />
+            <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
           </Section>
         </Settings>
       </ConfigOverride>
