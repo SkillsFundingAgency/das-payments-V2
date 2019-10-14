@@ -15,8 +15,8 @@
     <Parameter Name="DasPeriodEndConnectionString" Value="" />
   </Section>
   <Section Name="Settings">
-    <Parameter Name="EndpointName" Value="sfa-das-payments-providerpayments" />
-    <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-providerpayments-errors" />
+    <Parameter Name="EndpointName" Value="sfa-das-payments-providerpayments-legacy-export" />
+    <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-providerpayments-legacy-export-errors" />
     <Parameter Name="BatchIntervalInSeconds" Value="10" />
     <Parameter Name="BatchSize" Value="500" />
     <Parameter Name="BatchFailureTimeoutInSeconds" Value="60" />

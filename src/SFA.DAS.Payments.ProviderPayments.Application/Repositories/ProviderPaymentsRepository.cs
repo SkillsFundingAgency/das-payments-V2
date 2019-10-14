@@ -44,7 +44,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
 	                ON E.EventId = P.EarningEventId
                 WHERE P.AcademicYear = {collectionPeriod.AcademicYear}
                     AND P.CollectionPeriod = {collectionPeriod.Period}
-                ORDER BY P.Id
+                ORDER BY R.EventId
                 OFFSET {pageSize*page} ROWS
                 FETCH NEXT {pageSize} ROWS ONLY
                 "
