@@ -4,6 +4,6 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 {
     public class ApprenticeshipContractTypeNoneEarningEvent : ApprenticeshipContractTypeEarningsEvent, ILeafLevelMessage
     {
-        public override bool IsApplicableContractType => false;
+        public override bool IsPayable => false;
     }
 }
