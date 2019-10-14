@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         public const string ContractForServicesWithEmployer = "Contract for services with the employer";
         public const string ContractForServicesWithSfa = "Contract for services with the ESFA";
 
-        public /*nullable*/ ApprenticeshipContractTypeEarningsEvent Create(string contractType)
+        public ApprenticeshipContractTypeEarningsEvent Create(string contractType)
         {
             switch (contractType)
             {
@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 case ContractForServicesWithSfa:
                     return new ApprenticeshipContractType2EarningEvent();
                 default:
-                    return null;
+                    return new ApprenticeshipContractTypeNoneEarningEvent();
             }
         }
     }

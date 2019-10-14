@@ -8,6 +8,7 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 {
     public abstract class ApprenticeshipContractTypeEarningsEvent : EarningEvent, IContractTypeEarningEvent
     {
+        public virtual bool IsApplicableContractType => true;
         public decimal SfaContributionPercentage { get; set; }
         public DateTime StartDate { get; set; }
         public List<OnProgrammeEarning> OnProgrammeEarnings { get; set; }

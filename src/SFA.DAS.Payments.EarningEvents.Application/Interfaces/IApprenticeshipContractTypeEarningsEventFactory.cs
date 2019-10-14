@@ -4,6 +4,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Interfaces
 {
     public interface IApprenticeshipContractTypeEarningsEventFactory
     {
-        /*nullable*/ ApprenticeshipContractTypeEarningsEvent Create(string contractType);
+        ApprenticeshipContractTypeEarningsEvent Create(string contractType);
     }
 }
