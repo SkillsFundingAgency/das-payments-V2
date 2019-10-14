@@ -23,5 +23,7 @@
     <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
     <Parameter Name="DasPeriodEndConnectionString" Value="__DasPeriodEndConnectionString__" />
     <Parameter Name="LegacyExportBatchSize" Value="__LegacyExportBatchSize__" />
+    <Parameter Name="ProviderPaymentsService_EndpointName" Value="__ProviderPaymentsService_EndpointName__" />
+    <Parameter Name="ProviderPaymentsService_FailedMessagesQueue" Value="__ProviderPaymentsService_FailedMessagesQueue__" />
   </Parameters>
 </Application>
