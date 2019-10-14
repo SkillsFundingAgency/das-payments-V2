@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                     var learnerWithSortedPriceEpisodes = intermediateLearningAim.CopyReplacingPriceEpisodes(priceEpisodes);
 
                     var earningEvent = factory.Create(priceEpisodes.Key);
-                    if (!earningEvent.IsApplicableContractType) continue;
+                    if (!earningEvent.IsPayable) continue;
 
                     mapper.Map(learnerWithSortedPriceEpisodes, earningEvent);
 
