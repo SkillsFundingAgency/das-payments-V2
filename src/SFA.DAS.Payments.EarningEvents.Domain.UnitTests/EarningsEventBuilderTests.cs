@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
         public void Generate_No_Earnings_When_Fm36_Only_Has_Invalid_Contracts()
         {
             var cmd = new LearnerBuilder()
-                .Build();
+                .BuildLearnerCommand();
 
             // Arrange
             cmd.Learner.PriceEpisodes.First().PriceEpisodeValues.PriceEpisodeContractType = "";
@@ -35,7 +35,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
         {
             var cmd = new LearnerBuilder()
                 .WithMultipleDeliveries()
-                .Build();
+                .BuildLearnerCommand();
 
             // Arrange
             cmd.Learner.PriceEpisodes.First().PriceEpisodeValues.PriceEpisodeContractType = "";
