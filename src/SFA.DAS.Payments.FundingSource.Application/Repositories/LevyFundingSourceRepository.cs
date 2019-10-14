@@ -45,14 +45,15 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
 
         public async Task ReplaceEmployerProviderPriorities(long employerAccountId, List<EmployerProviderPriorityModel> paymentPriorityModels, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var previousEmployerPriorities = await GetPaymentPriorities(employerAccountId, cancellationToken).ConfigureAwait(false);
-            dataContext.EmployerProviderPriority.RemoveRange(previousEmployerPriorities);
+            var previousEmployerPriorities =  dataContext.EmployerProviderPriority
+                .Where(paymentPriority => paymentPriority.EmployerAccountId == employerAccountId);
+                dataContext.EmployerProviderPriority.RemoveRange(previousEmployerPriorities);
+               
+                await dataContext.EmployerProviderPriority
+                    .AddRangeAsync(paymentPriorityModels, cancellationToken)
+                    .ConfigureAwait(false);
 
-            await dataContext.EmployerProviderPriority
-                .AddRangeAsync(paymentPriorityModels, cancellationToken)
-                .ConfigureAwait(false);
-
-            await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<List<long>> GetEmployerAccounts(CancellationToken cancellationToken)
@@ -77,8 +78,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
         {
             var accounts = await dataContext.Apprenticeship.AsNoTracking()
                 .Where(apprenticeship => apprenticeship.Ukprn == ukprn)
-                .Select (apprenticeship => new {
-                    apprenticeship.AccountId, 
+                .Select(apprenticeship => new
+                {
+                    apprenticeship.AccountId,
                     apprenticeship.TransferSendingEmployerAccountId
                 })
                 .Distinct()
