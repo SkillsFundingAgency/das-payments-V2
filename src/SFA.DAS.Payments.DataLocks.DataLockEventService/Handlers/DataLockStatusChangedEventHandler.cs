@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NServiceBus;
@@ -21,18 +19,11 @@ namespace SFA.DAS.Payments.DataLocks.DataLockEventService.Handlers
             this.eventProcessor = eventProcessor ?? throw new ArgumentNullException(nameof(eventProcessor));
         }
 
-        public async Task Handle(DataLockStatusChanged message, IMessageHandlerContext context)
+        public Task Handle(DataLockStatusChanged message, IMessageHandlerContext context)
         {
             paymentLogger.LogDebug($"Processing {message.GetType().Name} event for UKPRN {message.Ukprn}");
 
-            try
-            {
-                await eventProcessor.EnqueueEvent(message, CancellationToken.None).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException($"Error processing {message.GetType().Name} event for UKPRN {message.Ukprn}", ex);
-            }
+            return eventProcessor.EnqueueEvent(message, CancellationToken.None);
         }
     }
 }
