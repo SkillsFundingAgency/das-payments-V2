@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
                 .BuildLearnerCommand();
 
             // Arrange
-            cmd.Learner.PriceEpisodes.First().PriceEpisodeValues.PriceEpisodeContractType = "";
+            cmd.Learner.PriceEpisodes.First().PriceEpisodeValues.PriceEpisodeContractType = "none";
 
             // Act
             var earningsEvents = sut.Build(cmd);
@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
                 .BuildLearnerCommand();
 
             // Arrange
-            cmd.Learner.PriceEpisodes.First().PriceEpisodeValues.PriceEpisodeContractType = "";
+            cmd.Learner.PriceEpisodes.First().PriceEpisodeValues.PriceEpisodeContractType = null;
 
             // Act
             var earningsEvents = sut.Build(cmd);
