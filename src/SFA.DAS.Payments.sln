@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.572
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Core", "SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj", "{F6E38368-C397-488B-B041-D3E8423C1CE1}"
 EndProject
@@ -264,11 +264,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SFA.DAS.Payments.Database.Legacy.Payments", "SFA.DAS.Payments.Database.Legacy.Payments\SFA.DAS.Payments.Database.Legacy.Payments.sqlproj", "{F8DC3227-6A79-44D5-89D8-6ACE0B8FCB37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.ProviderPayments.LegacyExportService", "SFA.DAS.Payments.ProviderPayments.LegacyExportService\SFA.DAS.Payments.ProviderPayments.LegacyExportService.csproj", "{2CFF45F6-6398-4F3A-B3AE-03BC82F06F63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.ProviderPayments.LegacyExportService", "SFA.DAS.Payments.ProviderPayments.LegacyExportService\SFA.DAS.Payments.ProviderPayments.LegacyExportService.csproj", "{2CFF45F6-6398-4F3A-B3AE-03BC82F06F63}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.Jobs.JobService.Interfaces", "SFA.DAS.Payments.Monitoring.Jobs.JobService.Interfaces\SFA.DAS.Payments.Monitoring.Jobs.JobService.Interfaces.csproj", "{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.FundingSource.LevyFundedProxyService.UnitTests", "SFA.DAS.Payments.FundingSource.LevyFundedProxyService.UnitTests\SFA.DAS.Payments.FundingSource.LevyFundedProxyService.UnitTests.csproj", "{539FDC08-236E-4570-B33A-03836EC6B26A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.FundingSource.LevyFundedProxyService.UnitTests", "SFA.DAS.Payments.FundingSource.LevyFundedProxyService.UnitTests\SFA.DAS.Payments.FundingSource.LevyFundedProxyService.UnitTests.csproj", "{539FDC08-236E-4570-B33A-03836EC6B26A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{03E21E69-E578-4F96-A564-A32D26738660}"
+	ProjectSection(SolutionItems) = preProject
+		MetricsQuery.sql = MetricsQuery.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1142,14 +1147,6 @@ Global
 		{FF262C9E-E06E-4969-9549-6BD4EFC44C5C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FF262C9E-E06E-4969-9549-6BD4EFC44C5C}.Release|x64.ActiveCfg = Release|Any CPU
 		{FF262C9E-E06E-4969-9549-6BD4EFC44C5C}.Release|x64.Build.0 = Release|Any CPU
-		{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873}.Debug|x64.Build.0 = Debug|Any CPU
-		{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873}.Release|x64.ActiveCfg = Release|Any CPU
-		{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873}.Release|x64.Build.0 = Release|Any CPU
 		{F8DC3227-6A79-44D5-89D8-6ACE0B8FCB37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F8DC3227-6A79-44D5-89D8-6ACE0B8FCB37}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8DC3227-6A79-44D5-89D8-6ACE0B8FCB37}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
@@ -1170,6 +1167,14 @@ Global
 		{2CFF45F6-6398-4F3A-B3AE-03BC82F06F63}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2CFF45F6-6398-4F3A-B3AE-03BC82F06F63}.Release|x64.ActiveCfg = Release|Any CPU
 		{2CFF45F6-6398-4F3A-B3AE-03BC82F06F63}.Release|x64.Build.0 = Release|Any CPU
+		{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873}.Debug|x64.Build.0 = Debug|Any CPU
+		{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873}.Release|x64.ActiveCfg = Release|Any CPU
+		{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873}.Release|x64.Build.0 = Release|Any CPU
 		{539FDC08-236E-4570-B33A-03836EC6B26A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{539FDC08-236E-4570-B33A-03836EC6B26A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{539FDC08-236E-4570-B33A-03836EC6B26A}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -1289,9 +1294,10 @@ Global
 		{DC3C2DFE-CE0C-4B40-9A80-392B600FCDED} = {48AD8C3B-C2ED-4B11-AD1E-1FD0352BD534}
 		{7C2D216F-C9AD-46C2-98BD-A641923F3A45} = {6B05550F-FBCB-47A1-856D-1A333A0CEDEC}
 		{FF262C9E-E06E-4969-9549-6BD4EFC44C5C} = {48AD8C3B-C2ED-4B11-AD1E-1FD0352BD534}
-		{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873} = {48AD8C3B-C2ED-4B11-AD1E-1FD0352BD534}
 		{2CFF45F6-6398-4F3A-B3AE-03BC82F06F63} = {CE13B0C9-B716-4E9A-9563-95DAD13BD5DF}
+		{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873} = {48AD8C3B-C2ED-4B11-AD1E-1FD0352BD534}
 		{539FDC08-236E-4570-B33A-03836EC6B26A} = {A5C32B77-E094-43D4-8EBC-7859BE3DB3FA}
+		{03E21E69-E578-4F96-A564-A32D26738660} = {5132BDC5-602C-4437-8247-DC85704860A5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E9E6D1E-3C3C-41C9-AED4-9B6DC9118F1F}
