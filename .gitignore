@@ -277,4 +277,3 @@ App.Debug.config
 src/SFA.DAS.Payments.AcceptanceTests.EndToEnd/App.Debug.config-sit
 src/SFA.DAS.Payments.AcceptanceTests.EndToEnd/App.Debug.config-das
 *.DotSettings
-/src/SFA.DAS.Payments.AcceptanceTests.Core/Infrastructure/BindingBootstrapper-old.cs
