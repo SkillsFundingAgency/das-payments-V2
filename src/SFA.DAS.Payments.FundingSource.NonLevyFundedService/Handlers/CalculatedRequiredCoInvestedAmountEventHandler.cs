@@ -29,30 +29,22 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
             var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
             currentExecutionContext.JobId = message.JobId.ToString();
 
-            try
+            var payments = contractType2RequiredPaymentService.GetFundedPayments(message);
+            foreach (var recordablePaymentEvent in payments)
             {
-                var payments = contractType2RequiredPaymentService.GetFundedPayments(message);
-                foreach (var recordablePaymentEvent in payments)
+                try
                 {
-                    try
-                    {
-                        await context.Publish(recordablePaymentEvent);
-                        paymentLogger.LogInfo($"Successfully published CoInvestedPayment of Type  {recordablePaymentEvent.GetType().Name}");
-                    }
-                    catch (Exception ex)
-                    {
-                        paymentLogger.LogError($"Error publishing the event: RecordablePaymentEvent", ex);
-                        throw;
-                    }
+                    await context.Publish(recordablePaymentEvent);
+                    paymentLogger.LogInfo($"Successfully published CoInvestedPayment of Type  {recordablePaymentEvent.GetType().Name}");
                 }
+                catch (Exception ex)
+                {
+                    paymentLogger.LogError($"Error publishing the event: RecordablePaymentEvent", ex);
+                    throw;
+                }
+            }
 
-                paymentLogger.LogInfo($"Successfully processed NonLevyFunded Service event for Job Id {message.JobId}");
-            }
-            catch (Exception ex)
-            {
-                paymentLogger.LogError($"Error while handling NonLevyFundedService event", ex);
-                throw;
-            }
+            paymentLogger.LogInfo($"Successfully processed NonLevyFunded Service event for Job Id {message.JobId}");
 
         }
     }

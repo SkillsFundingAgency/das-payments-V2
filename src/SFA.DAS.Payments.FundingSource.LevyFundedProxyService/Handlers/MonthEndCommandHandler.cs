@@ -30,26 +30,18 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
 
             using (var operation = telemetry.StartOperation())
             {
-                try
+                var actorId = new ActorId(command.AccountId);
+                var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
+                var fundingSourceEvents = await actor.HandleMonthEnd(command).ConfigureAwait(false);
+                foreach (var fundingSourcePaymentEvent in fundingSourceEvents)
                 {
-                    var actorId = new ActorId(command.AccountId);
-                    var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
-                    var fundingSourceEvents = await actor.HandleMonthEnd(command).ConfigureAwait(false);
-                    foreach (var fundingSourcePaymentEvent in fundingSourceEvents)
-                    {
-                        if (fundingSourcePaymentEvent is ProcessUnableToFundTransferFundingSourcePayment)
-                            await context.SendLocal(fundingSourcePaymentEvent).ConfigureAwait(false);
-                        else
-                            await context.Publish(fundingSourcePaymentEvent).ConfigureAwait(false);
-                    }
-                    //await Task.WhenAll(fundingSourceEvents.Select(context.Publish));
-                    telemetry.StopOperation(operation);
+                    if (fundingSourcePaymentEvent is ProcessUnableToFundTransferFundingSourcePayment)
+                        await context.SendLocal(fundingSourcePaymentEvent).ConfigureAwait(false);
+                    else
+                        await context.Publish(fundingSourcePaymentEvent).ConfigureAwait(false);
                 }
-                catch (Exception ex)
-                {
-                    paymentLogger.LogError($"Error performing month end for account: {command.AccountId}. Error: {ex}", ex);
-                    throw;
-                }
+                //await Task.WhenAll(fundingSourceEvents.Select(context.Publish));
+                telemetry.StopOperation(operation);
             }
         }
     }
