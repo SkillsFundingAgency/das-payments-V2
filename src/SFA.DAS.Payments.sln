@@ -272,6 +272,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.FundingSou
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{03E21E69-E578-4F96-A564-A32D26738660}"
 	ProjectSection(SolutionItems) = preProject
+		MetricsDCEarnings.sql = MetricsDCEarnings.sql
 		MetricsQuery.sql = MetricsQuery.sql
 	EndProjectSection
 EndProject
