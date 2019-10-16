@@ -274,10 +274,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
         }
 
         [Test]
-        [TestCase(typeof(CalculatedRequiredIncentiveAmount))]
-        [TestCase(typeof(CalculatedRequiredCoInvestedAmount))]
-        [TestCase(typeof(CalculatedRequiredLevyAmount))]
-        public void MapPriceEpisodeToLearningAimFundingLineType(Type requiredPaymentEventType)
+        public void MapPriceEpisodeToLearningAimFundingLineType()
         {
             var priceEpisode = new PriceEpisode
             {

@@ -118,7 +118,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
                         TotalNegotiatedPrice2 = 25.0m,
                         TotalNegotiatedPrice3 = 25.0m,
                         TotalNegotiatedPrice4 = 25.0m,
-                        FundingLineType = "19+ Apprenticeship Levy Contract (procured)"
+                        FundingLineType = "19+ Apprenticeship Levy Contract (procured)",
                     }
 
                 }),
