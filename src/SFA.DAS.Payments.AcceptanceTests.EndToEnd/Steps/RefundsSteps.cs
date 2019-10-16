@@ -105,6 +105,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
+        [Given(@"the ILR file is submitted for the learners for collection period (.*)")]
         public async Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText)
         {
             Task ClearCache() => HandleIlrReSubmissionForTheLearners(collectionPeriodText, TestSession.Provider);

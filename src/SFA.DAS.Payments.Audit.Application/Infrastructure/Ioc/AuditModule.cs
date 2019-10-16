@@ -64,7 +64,6 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
             builder.RegisterType<EarningEventRepository>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
-
         }
     }
 }

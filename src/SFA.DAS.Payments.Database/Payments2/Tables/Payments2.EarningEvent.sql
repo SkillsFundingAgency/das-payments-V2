@@ -31,6 +31,12 @@ CREATE INDEX IX_EarningEvent_ApprenticeshipEarningQuery ON [Payments2].[EarningE
 (
    Ukprn,
    LearnerUln,
-   EventType
+   EventType,
+   JobId,
+   ContractType,
+   CollectionPeriod,
+   AcademicYear,
+   IlrSubmissionDateTime,
+   CreationDate
 )
 GO
