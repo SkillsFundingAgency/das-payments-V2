@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using SFA.DAS.Payments.Audit.Application.Data;
+using SFA.DAS.Payments.Audit.Application.Data.EarningEvent;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.DataLock;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEvent;
@@ -54,6 +55,16 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
             builder.RegisterType<DataLockEventRepository>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
+
+
+            builder.RegisterType<EarningEventSubmissionSucceededProcessor>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<EarningEventRepository>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+
         }
     }
 }
