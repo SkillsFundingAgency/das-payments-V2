@@ -60,6 +60,20 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
             builder.RegisterType<EarningEventSubmissionSucceededProcessor>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
+            
+            builder.RegisterType<EarningEventSubmissionFailedProcessor>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+
+
+            builder.RegisterType<RequiredPaymentEventSubmissionSucceededProcessor>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<RequiredPaymentEventSubmissionFailedProcessor>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+            
 
             builder.RegisterType<EarningEventRepository>()
                 .AsImplementedInterfaces()

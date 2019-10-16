@@ -3,18 +3,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEvent;
+using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.RequiredPayment;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
-namespace SFA.DAS.Payments.Audit.EarningEventsService.Handlers
+namespace SFA.DAS.Payments.Audit.RequiredPaymentService.Handlers
 {
-    public class JobSucceededHandler: IHandleMessages<SubmissionSucceededEvent>
+    public class SubmissionSucceededHandler: IHandleMessages<SubmissionSucceededEvent>
     {
         private readonly IPaymentLogger logger;
-        private readonly IEarningEventSubmissionSucceededProcessor processor;
+        private readonly IRequiredPaymentEventSubmissionSucceededProcessor processor;
 
-        public JobSucceededHandler(IPaymentLogger logger, IEarningEventSubmissionSucceededProcessor processor)
+        public SubmissionSucceededHandler(IPaymentLogger logger, IRequiredPaymentEventSubmissionSucceededProcessor processor)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.processor = processor ?? throw new ArgumentNullException(nameof(processor));
@@ -25,11 +25,11 @@ namespace SFA.DAS.Payments.Audit.EarningEventsService.Handlers
             try
             {
                 await processor.Process(message, CancellationToken.None).ConfigureAwait(false);
-                logger.LogInfo($"Finished processing submission succeeded event for earning events. message: {message.ToJson()}");
+                logger.LogInfo($"Finished processing submission succeeded event for required payment events. message: {message.ToJson()}");
             }
             catch (Exception ex)
             {
-                logger.LogWarning($"Failed to remove previous submission earning events.  Error: {ex.Message}.  Ukprn: {message.Ukprn}, Collection period: {message.AcademicYear}-{message.CollectionPeriod}, Failed job: {message.JobId}.");
+                logger.LogWarning($"Failed to remove previous submission required payment events.  Error: {ex.Message}.  Ukprn: {message.Ukprn}, Collection period: {message.AcademicYear}-{message.CollectionPeriod}, Failed job: {message.JobId}.");
                 throw;
             }
         }
