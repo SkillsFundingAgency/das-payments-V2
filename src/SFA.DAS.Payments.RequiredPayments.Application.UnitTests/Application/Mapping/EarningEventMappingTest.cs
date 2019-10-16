@@ -107,6 +107,23 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             actual.ContractType.Should().Be(ContractType.Act1);
         }
 
+
+        [Test]
+        [TestCase(typeof(PayableEarningEvent), typeof(CalculatedRequiredIncentiveAmount))]
+        [TestCase(typeof(PayableEarningEvent), typeof(CalculatedRequiredCoInvestedAmount))]
+        [TestCase(typeof(PayableEarningEvent), typeof(CalculatedRequiredLevyAmount))]
+        [TestCase(typeof(PayableEarningEvent), typeof(CompletionPaymentHeldBackEvent))]
+        public void LearningAimFundingLineTypeIsCorrectForPayableEarningEvent(Type earningEventType, Type requiredPaymentEventType)
+        {
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
+            var earningEvent = Activator.CreateInstance(earningEventType);
+
+            var actual = mapper.Map(earningEvent, requiredPaymentEvent);
+            actual.ContractType.Should().Be(ContractType.Act1);
+        }
+
+
+
         [Test]
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredIncentiveAmount))]
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredCoInvestedAmount))]
@@ -140,7 +157,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
                     earningEvent = new Act2FunctionalSkillEarningsEvent();
                     break;
             }
-            
+
             var actual = mapper.Map(earningEvent, requiredPaymentEvent);
             actual.ContractType.Should().Be(expectedContractType);
         }
@@ -224,6 +241,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
 
             // assert
             AssertCommonProperties(requiredPayment, functionalSkillEarningsEvent);
+            Assert.AreEqual(requiredPayment.LearningAim.FundingLineType, functionalSkillEarningsEvent.LearningAim.FundingLineType);
             functionalSkillEarningsEvent.StartDate.Should().Be(requiredPayment.StartDate);
         }
 
@@ -240,13 +258,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
                 ActualEndDate = DateTime.UtcNow,
                 CompletionAmount = 100M,
                 InstalmentAmount = 200M,
-                NumberOfInstalments = 16
+                NumberOfInstalments = 16,
             };
 
             var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
-
+          
             mapper.Map(priceEpisode, requiredPaymentEvent);
-
             requiredPaymentEvent.StartDate.Should().Be(priceEpisode.EffectiveTotalNegotiatedPriceStartDate);
             requiredPaymentEvent.PlannedEndDate.Should().Be(priceEpisode.PlannedEndDate);
             requiredPaymentEvent.ActualEndDate.Should().Be(priceEpisode.ActualEndDate);
@@ -256,6 +273,36 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             requiredPaymentEvent.NumberOfInstalments.Should().Be((short)priceEpisode.NumberOfInstalments);
         }
 
+        [Test]
+        [TestCase(typeof(CalculatedRequiredIncentiveAmount))]
+        [TestCase(typeof(CalculatedRequiredCoInvestedAmount))]
+        [TestCase(typeof(CalculatedRequiredLevyAmount))]
+        public void MapPriceEpisodeToLearningAimFundingLineType(Type requiredPaymentEventType)
+        {
+            var priceEpisode = new PriceEpisode
+            {
+                EffectiveTotalNegotiatedPriceStartDate = DateTime.UtcNow,
+                PlannedEndDate = DateTime.UtcNow,
+                ActualEndDate = DateTime.UtcNow,
+                CompletionAmount = 100M,
+                InstalmentAmount = 200M,
+                NumberOfInstalments = 16,
+                FundingLineType = "19+ Apprenticeship Non Levy Contract (procured)"
+            };
+
+           var learningAim = new LearningAim
+            {
+                FundingLineType = "flt",
+                PathwayCode = 3,
+                StandardCode = 4,
+                ProgrammeType = 5,
+                FrameworkCode = 6,
+                Reference = "7"
+            };
+
+            learningAim.FundingLineType.Should().Be(priceEpisode.FundingLineType);
+        }
+        
         [Test]
         public void PaymentHistoryEntityMapsEarningsInfo()
         {
@@ -290,7 +337,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             Assert.AreEqual(requiredPayment.CollectionPeriod.AcademicYear, earning.CollectionPeriod.AcademicYear);
             Assert.AreEqual(requiredPayment.LearningAim.PathwayCode, earning.LearningAim.PathwayCode);
             Assert.AreEqual(requiredPayment.LearningAim.FrameworkCode, earning.LearningAim.FrameworkCode);
-            Assert.AreEqual(requiredPayment.LearningAim.FundingLineType, earning.LearningAim.FundingLineType);
             Assert.AreEqual(requiredPayment.LearningAim.ProgrammeType, earning.LearningAim.ProgrammeType);
             Assert.AreEqual(requiredPayment.LearningAim.Reference, earning.LearningAim.Reference);
             Assert.AreEqual(requiredPayment.LearningAim.StandardCode, earning.LearningAim.StandardCode);

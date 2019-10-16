@@ -117,7 +117,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
                         TotalNegotiatedPrice1 = 25.0m,
                         TotalNegotiatedPrice2 = 25.0m,
                         TotalNegotiatedPrice3 = 25.0m,
-                        TotalNegotiatedPrice4 = 25.0m
+                        TotalNegotiatedPrice4 = 25.0m,
+                        FundingLineType = "19+ Apprenticeship Levy Contract (procured)"
                     }
 
                 }),
@@ -269,7 +270,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
             priceEpisode.TotalNegotiatedPrice2.Should().Be(earningEventPayment.PriceEpisodes.First().TotalNegotiatedPrice2);
             priceEpisode.TotalNegotiatedPrice3.Should().Be(earningEventPayment.PriceEpisodes.First().TotalNegotiatedPrice3);
             priceEpisode.TotalNegotiatedPrice4.Should().Be(earningEventPayment.PriceEpisodes.First().TotalNegotiatedPrice4);
-
+            priceEpisode.FundingLineType.Should().Be(earningEventPayment.PriceEpisodes.First().FundingLineType);
         }
 
         [Test]
