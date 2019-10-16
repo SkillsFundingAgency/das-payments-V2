@@ -40,25 +40,18 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 
         public async Task Handle(FundingSourcePaymentEvent message, IMessageHandlerContext context)
         {
-            try
-            {
-                paymentLogger.LogDebug($"Processing Funding Source Payment Event for Message Id : {context.MessageId}");
-                var paymentModel = mapper.Map<ProviderPaymentEventModel>(message);
-                await paymentsService.ProcessPayment(paymentModel, default(CancellationToken)).ConfigureAwait(false);
+            paymentLogger.LogDebug($"Processing Funding Source Payment Event for Message Id : {context.MessageId}");
+            var paymentModel = mapper.Map<ProviderPaymentEventModel>(message);
+            await paymentsService.ProcessPayment(paymentModel, default(CancellationToken)).ConfigureAwait(false);
 
-                var afterMonthEndPayment = await afterMonthEndPaymentService.GetPaymentEvent(message);
-                if (afterMonthEndPayment != null)
-                {
-                    paymentLogger.LogInfo($"Sent {afterMonthEndPayment.GetType().Name} for {message.JobId} and Message Type {message.GetType().Name}");
-                    paymentLogger.LogDebug($"Sending Provider Payment Event {JsonConvert.SerializeObject(afterMonthEndPayment)} for Message Id : {context.MessageId}.  {message.ToDebug()}");
-                    await context.Publish(afterMonthEndPayment).ConfigureAwait(false);
-                }
-            }
-            catch (Exception ex)
+            var afterMonthEndPayment = await afterMonthEndPaymentService.GetPaymentEvent(message);
+            if (afterMonthEndPayment != null)
             {
-                paymentLogger.LogError($"Error handling payment. Ukprn: {message.Ukprn}, JobId: {message.JobId}, Learner: {message.Learner.ReferenceNumber}, ContractType: {message.ContractType:G}, Transaction Type: {message.TransactionType:G}.  Error: {ex}", ex);
-                throw;
+                paymentLogger.LogInfo($"Sent {afterMonthEndPayment.GetType().Name} for {message.JobId} and Message Type {message.GetType().Name}");
+                paymentLogger.LogDebug($"Sending Provider Payment Event {JsonConvert.SerializeObject(afterMonthEndPayment)} for Message Id : {context.MessageId}.  {message.ToDebug()}");
+                await context.Publish(afterMonthEndPayment).ConfigureAwait(false);
             }
+
             paymentLogger.LogDebug($"Finished processing Funding Source Payment Event for Message Id : {context.MessageId}.  {message.ToDebug()}");
         }
     }

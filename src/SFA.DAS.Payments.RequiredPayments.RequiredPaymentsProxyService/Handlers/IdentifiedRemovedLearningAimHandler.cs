@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -35,32 +35,24 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             logger.LogDebug($"Processing 'IdentifiedRemovedLearningAim' message.");
             ((ExecutionContext)executionContext).JobId = message.JobId.ToString();
 
-            try
-            {
-                var key = apprenticeshipKeyService.GenerateApprenticeshipKey(
-                    message.Ukprn,
-                    message.Learner.ReferenceNumber,
-                    message.LearningAim.FrameworkCode,
-                    message.LearningAim.PathwayCode,
-                    message.LearningAim.ProgrammeType,
-                    message.LearningAim.StandardCode,
-                    message.LearningAim.Reference,
-                    message.CollectionPeriod.AcademicYear, 
-                    message.ContractType);
+            var key = apprenticeshipKeyService.GenerateApprenticeshipKey(
+                message.Ukprn,
+                message.Learner.ReferenceNumber,
+                message.LearningAim.FrameworkCode,
+                message.LearningAim.PathwayCode,
+                message.LearningAim.ProgrammeType,
+                message.LearningAim.StandardCode,
+                message.LearningAim.Reference,
+                message.CollectionPeriod.AcademicYear,
+                message.ContractType);
 
-                var actorId = new ActorId(key);
-                var actor = proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
-                IReadOnlyCollection<PeriodisedRequiredPaymentEvent> requiredPayments = await actor.RefundRemovedLearningAim(message, CancellationToken.None).ConfigureAwait(false);
-                logger.LogDebug($"Got {requiredPayments?.Count ?? 0} required payments.");
-                if (requiredPayments != null)
-                    await Task.WhenAll(requiredPayments.Select(context.Publish)).ConfigureAwait(false);
-                logger.LogInfo($"Successfully processed IdentifiedRemovedLearningAim event for Actor Id {actorId}");
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Error while handling IdentifiedRemovedLearningAim event. Error: {ex.Message}", ex);
-                throw;
-            }
+            var actorId = new ActorId(key);
+            var actor = proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
+            IReadOnlyCollection<PeriodisedRequiredPaymentEvent> requiredPayments = await actor.RefundRemovedLearningAim(message, CancellationToken.None).ConfigureAwait(false);
+            logger.LogDebug($"Got {requiredPayments?.Count ?? 0} required payments.");
+            if (requiredPayments != null)
+                await Task.WhenAll(requiredPayments.Select(context.Publish)).ConfigureAwait(false);
+            logger.LogInfo($"Successfully processed IdentifiedRemovedLearningAim event for Actor Id {actorId}");
         }
     }
 }
