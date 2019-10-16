@@ -234,5 +234,93 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             // assert
             actualRequiredPayment.Should().HaveCount(0);
         }
+
+        [Test]
+        public async Task TestGeneratesValidRequiredEventFundingLineType()
+        {
+            // arrange
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2);
+
+            var earningEvent = new PayableEarningEvent
+            {
+                Ukprn = 1,
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
+                CollectionYear = period.AcademicYear,
+                Learner = EarningEventDataHelper.CreateLearner(),
+                LearningAim = EarningEventDataHelper.CreateLearningAim(),
+                OnProgrammeEarnings = new List<OnProgrammeEarning>()
+                {
+                    new OnProgrammeEarning
+                    {
+                        Type = OnProgrammeEarningType.Learning,
+                        Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod>()
+                        {
+                            new EarningPeriod
+                            {
+                                Amount = 100,
+                                Period = period.Period,
+                                PriceEpisodeIdentifier = "1",
+                                SfaContributionPercentage = 0.9m,
+                            },
+                            new EarningPeriod
+                            {
+                                Amount = 200,
+                                Period = (byte) (period.Period + 1),
+                                PriceEpisodeIdentifier = "2",
+                                SfaContributionPercentage = 0.9m,
+                            }
+                        })
+                    }
+                },
+                PriceEpisodes = new List<PriceEpisode>
+                {
+                    new PriceEpisode
+                    {
+                        Identifier = "1",
+                        EffectiveTotalNegotiatedPriceStartDate = DateTime.UtcNow,
+                        PlannedEndDate = DateTime.UtcNow,
+                        ActualEndDate = DateTime.UtcNow,
+                        CompletionAmount = 100M,
+                        InstalmentAmount = 200M,
+                        NumberOfInstalments = 16,
+                        FundingLineType = "19+ Apprenticeship Non Levy Contract (procured)"
+                    }
+                }
+            };
+
+            var requiredPayments = new List<RequiredPayment>
+            {
+                new RequiredPayment
+                {
+                    Amount = 100,
+                    EarningType = EarningType.Levy,
+                },
+            };
+
+            var paymentHistoryEntities = new[] {new PaymentHistoryEntity
+            {
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
+                DeliveryPeriod = 2,
+                LearnAimReference = earningEvent.LearningAim.Reference,
+                TransactionType = (int) OnProgrammeEarningType.Learning
+            }};
+
+            paymentHistoryCacheMock.Setup(c => c.TryGet(It.Is<string>(key => key == CacheKeys.PaymentHistoryKey), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities))
+                .Verifiable();
+            requiredPaymentsService.Setup(p => p.GetRequiredPayments(It.IsAny<Earning>(), It.IsAny<List<Payment>>()))
+                .Returns(requiredPayments)
+                .Verifiable();
+
+            // act           
+            var actualRequiredPayment = await processor.HandleEarningEvent(earningEvent, paymentHistoryCacheMock.Object, CancellationToken.None);
+
+            // assert
+            actualRequiredPayment.Should().HaveCount(1);
+            actualRequiredPayment[0].LearningAim.Should().NotBeNull();
+            actualRequiredPayment[0].LearningAim.FundingLineType.Should().Be(earningEvent.PriceEpisodes[0].FundingLineType);
+        }
+
+
     }
 }

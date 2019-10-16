@@ -262,7 +262,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             };
 
             var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
-          
+
             mapper.Map(priceEpisode, requiredPaymentEvent);
             requiredPaymentEvent.StartDate.Should().Be(priceEpisode.EffectiveTotalNegotiatedPriceStartDate);
             requiredPaymentEvent.PlannedEndDate.Should().Be(priceEpisode.PlannedEndDate);
@@ -290,7 +290,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
                 FundingLineType = "19+ Apprenticeship Non Levy Contract (procured)"
             };
 
-           var learningAim = new LearningAim
+            var learningAim = new LearningAim
             {
                 FundingLineType = "flt",
                 PathwayCode = 3,
@@ -300,9 +300,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
                 Reference = "7"
             };
 
+            mapper.Map(priceEpisode, learningAim);
+
             learningAim.FundingLineType.Should().Be(priceEpisode.FundingLineType);
         }
-        
+
         [Test]
         public void PaymentHistoryEntityMapsEarningsInfo()
         {
