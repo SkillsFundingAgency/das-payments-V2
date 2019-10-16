@@ -38,21 +38,25 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.EarningEvent
         public async Task Deletes_Previous_Earning_Event_Data()
         {
             var processor = mocker.Create<EarningEventSubmissionSucceededProcessor>();
-            await processor.Process(succeededEvent).ConfigureAwait(false);
+            await processor.Process(succeededEvent, CancellationToken.None).ConfigureAwait(false);
 
             mocker.GetMock<IEarningEventRepository>()
-                .Verify(repo => repo.RemovePriorEvents(It.Is<long>(ukprn => ukprn ==  succeededEvent.Ukprn), It.Is<DateTime>(submissionTime => submissionTime == succeededEvent.IlrSubmissionDateTime)),Times.Once);
+                .Verify(repo => repo.RemovePriorEvents(It.Is<long>(ukprn => ukprn ==  succeededEvent.Ukprn), 
+                    It.Is<short>(academicYear => academicYear == succeededEvent.AcademicYear),
+                    It.Is<byte>(collectionPeriod => collectionPeriod == succeededEvent.CollectionPeriod),
+                    It.Is<DateTime>(submissionTime => submissionTime == succeededEvent.IlrSubmissionDateTime),
+                    It.IsAny<CancellationToken>()),
+                    Times.Once);
         }
 
         [Test]
         public async Task Writes_Pending_Earning_Events_To_Db_Before_Deletion()
         {
             var processor = mocker.Create<EarningEventSubmissionSucceededProcessor>();
-            await processor.Process(succeededEvent).ConfigureAwait(false);
+            await processor.Process(succeededEvent, CancellationToken.None).ConfigureAwait(false);
 
             mocker.GetMock<IPaymentsEventModelBatchService<EarningEventModel>>()
                 .Verify(service => service.StorePayments(It.IsAny<CancellationToken>()), Times.Once);
-
         }
     }
 }
