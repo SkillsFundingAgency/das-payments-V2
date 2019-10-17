@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using SFA.DAS.Payments.Audit.Application.Data;
 using SFA.DAS.Payments.Audit.Application.Data.EarningEvent;
+using SFA.DAS.Payments.Audit.Application.Data.FundingSource;
+using SFA.DAS.Payments.Audit.Application.Data.RequiredPayment;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.DataLock;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEvent;
@@ -15,8 +17,8 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<FundingSourcePaymentsEventProcessor>()
-                .As<IFundingSourcePaymentsEventProcessor>()
+            builder.RegisterType<FundingSourceEventProcessor>()
+                .As<IFundingSourceEventProcessor>()
                 .InstancePerLifetimeScope();
             builder.RegisterType<RequiredPaymentEventProcessor>()
                 .As<IRequiredPaymentEventProcessor>()
@@ -52,11 +54,6 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
 
-            builder.RegisterType<DataLockEventRepository>()
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope();
-
-
             builder.RegisterType<EarningEventSubmissionSucceededProcessor>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
@@ -65,7 +62,6 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
 
-
             builder.RegisterType<RequiredPaymentEventSubmissionSucceededProcessor>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
@@ -73,7 +69,26 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
             builder.RegisterType<RequiredPaymentEventSubmissionFailedProcessor>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
-            
+
+            builder.RegisterType<FundingSourceEventSubmissionSucceededProcessor>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<FundingSourceEventSubmissionFailedProcessor>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<DataLockEventRepository>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<RequiredPaymentEventRepository>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<FundingSourceEventRepository>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
 
             builder.RegisterType<EarningEventRepository>()
                 .AsImplementedInterfaces()

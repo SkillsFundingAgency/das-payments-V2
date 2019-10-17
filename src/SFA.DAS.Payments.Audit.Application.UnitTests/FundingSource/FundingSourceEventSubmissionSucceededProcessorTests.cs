@@ -4,20 +4,17 @@ using System.Threading.Tasks;
 using AutoMoqCore;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Payments.Audit.Application.Data.EarningEvent;
-using SFA.DAS.Payments.Audit.Application.Data.RequiredPayment;
+using SFA.DAS.Payments.Audit.Application.Data.FundingSource;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
-using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEvent;
-using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.RequiredPayment;
+using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.FundingSource;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.Model.Core.Audit;
 
-namespace SFA.DAS.Payments.Audit.Application.UnitTests.RequiredPayment
+namespace SFA.DAS.Payments.Audit.Application.UnitTests.FundingSource
 {
     [TestFixture]
 
-    public class RequieredPaymentEventSubmissionSucceededProcessorTests
+    public class FundingSourceEventSubmissionSucceededProcessorTests
     {
         private AutoMoqer mocker;
         private SubmissionSucceededEvent succeededEvent;
@@ -38,12 +35,12 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.RequiredPayment
         }
 
         [Test]
-        public async Task Deletes_Previous_Required_Payment_Event_Data()
+        public async Task Deletes_Previous_FundingSource_Event_Data()
         {
-            var processor = mocker.Create<RequiredPaymentEventSubmissionSucceededProcessor>();
+            var processor = mocker.Create<FundingSourceEventSubmissionSucceededProcessor>();
             await processor.Process(succeededEvent, CancellationToken.None).ConfigureAwait(false);
 
-            mocker.GetMock<IRequiredPaymentEventRepository>()
+            mocker.GetMock<IFundingSourceEventRepository>()
                 .Verify(repo => repo.RemovePriorEvents(It.Is<long>(ukprn => ukprn == succeededEvent.Ukprn),
                         It.Is<short>(academicYear => academicYear == succeededEvent.AcademicYear),
                         It.Is<byte>(collectionPeriod => collectionPeriod == succeededEvent.CollectionPeriod),
@@ -53,12 +50,12 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.RequiredPayment
         }
 
         [Test]
-        public async Task Writes_Pending_Required_Payment_Events_To_Db_Before_Deletion()
+        public async Task Writes_Pending_Funding_Source_Events_To_Db_Before_Deletion()
         {
-            var processor = mocker.Create<RequiredPaymentEventSubmissionSucceededProcessor>();
+            var processor = mocker.Create<FundingSourceEventSubmissionSucceededProcessor>();
             await processor.Process(succeededEvent, CancellationToken.None).ConfigureAwait(false);
 
-            mocker.GetMock<IPaymentsEventModelBatchService<RequiredPaymentEventModel>>()
+            mocker.GetMock<IPaymentsEventModelBatchService<FundingSourceEventModel>>()
                 .Verify(service => service.StorePayments(It.IsAny<CancellationToken>()), Times.Once);
         }
     }
