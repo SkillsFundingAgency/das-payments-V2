@@ -186,19 +186,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
         }
 
         [AfterScenario]
-        public static void MarkFailedTestsToFeatureContext()
+        public static void MarkFailedTestsToFeatureContext(FeatureContext featureContext, TestContext testContext)
         {
-            if (TestContext.CurrentContext.Result.Outcome != ResultState.Success)
+            if (testContext.Result.Outcome != ResultState.Success)
             {
-                FeatureContext.Current["FailedTests"] = true;
+                featureContext["FailedTests"] = true;
             }
         }
 
         [BeforeScenario]
-        public static void DontRunIfFailedPreviousScenario()
+        public static void DontRunIfFailedPreviousScenario(FeatureContext featureContext)
         {
-            if (FeatureContext.Current.ContainsKey("FailedTests") &&
-                (bool)FeatureContext.Current["FailedTests"] )
+            if (featureContext.ContainsKey("FailedTests") &&
+                (bool)featureContext["FailedTests"] )
             {
                 Assert.Fail("Failing as previous examples of this feature have failed");
             }
