@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
             return this;
         }
 
-        public ProcessLearnerCommand Build()
+        public ProcessLearnerCommand BuildLearnerCommand()
         {
             fixture.Customize<FM36Learner>(c => c
                 .Without(x => x.PriceEpisodes)
