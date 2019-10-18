@@ -283,7 +283,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                         CompletionAmount = 100M,
                         InstalmentAmount = 200M,
                         NumberOfInstalments = 16,
-                        FundingLineType = "19+ Apprenticeship Non Levy Contract (procured)"
+                        FundingLineType = "19+ Apprenticeship Non-Levy Contract (procured)"
                     }
                 }
             };
