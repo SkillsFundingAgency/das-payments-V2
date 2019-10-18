@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers;
+using SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd;
+using SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.Submission;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Infrastructure.Ioc

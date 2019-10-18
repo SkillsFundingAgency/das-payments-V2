@@ -1,4 +1,5 @@
-﻿Create TABLE [Payments2].[Job]( 
+﻿Create TABLE [Payments2].[Job]
+( 
 	JobId BIGINT NOT NULL IDENTITY(1,1) CONSTRAINT PK_Job PRIMARY KEY CLUSTERED,
 	JobType TINYINT NOT NULL CONSTRAINT FK_Job__JobType FOREIGN KEY REFERENCES [Payments2].[JobType] (Id),
 	StartTime DATETIMEOFFSET NOT NULL CONSTRAINT DF_Job__StartTime DEFAULT (SYSDATETIMEOFFSET()),	
@@ -12,17 +13,22 @@
 	AcademicYear SMALLINT NOT NULL,
 	CollectionPeriod TINYINT NOT NULL,
 	DataLocksCompletionTime DATETIMEOFFSET NULL,
-	INDEX IX_Job__DCJobId_Ukprn NONCLUSTERED (DCJobId, Ukprn)
+	DCJobSucceeded BIT NULL,
+	DCJobEndTime DATETIMEOFFSET NULL,
 )
-
 GO
 
-CREATE INDEX [IX_Job__Search] ON [Payments2].[Job](
+CREATE INDEX [IX_Job__Search] ON [Payments2].[Job]
+(
 	JobId,
 	JobType,
 	DCJobId,
 	Ukprn,
 	[Status],
-	DataLocksCompletionTime
+	StartTime,
+	EndTime,	
+	DataLocksCompletionTime,
+	DCJobSucceeded,
+	DCJobEndTime
 )
 GO

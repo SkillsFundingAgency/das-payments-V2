@@ -95,6 +95,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             return jobs;
         }
 
+        public async Task StoreDcJobStatus(long jobId, bool succeeded)
+        {
+            await dataContext.SaveDcSubmissionStatus(jobId, succeeded).ConfigureAwait(false);
+        }
+
         public async Task<JobModel> GetJob(long jobId, CancellationToken cancellationToken)
         {
             var collection = await GetJobCollection().ConfigureAwait(false);

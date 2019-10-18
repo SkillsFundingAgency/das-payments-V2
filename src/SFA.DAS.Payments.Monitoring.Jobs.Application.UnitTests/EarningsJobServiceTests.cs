@@ -6,6 +6,7 @@ using Autofac.Extras.Moq;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
@@ -51,7 +52,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .Setup(cache => cache.TryGetValue(It.IsAny<string>(), out job))
                 .Returns(true);
             mocker.Mock<IJobStorageService>()
-                .Setup(x => x.GetInProgressMessages( It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.GetInProgressMessages(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<InProgressMessage>());
 
         }
@@ -113,7 +114,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             mocker.Mock<IJobStorageService>()
                 .Verify(x => x.StoreInProgressMessages(It.Is<long>(jobId => jobId == jobStarted.JobId), It.Is<List<InProgressMessage>>(identifiers =>
                     identifiers.Count == 2 &&
-                    identifiers.Exists(inProgress => inProgress.MessageId== generatedMessageA.MessageId) &&
+                    identifiers.Exists(inProgress => inProgress.MessageId == generatedMessageA.MessageId) &&
                     identifiers.Exists(inProgress => inProgress.MessageId == generatedMessageB.MessageId)), It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -154,6 +155,28 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                     identifiers.Count == 2 &&
                     identifiers.Exists(inProgress => inProgress.MessageId == generatedMessageA.MessageId) &&
                     identifiers.Exists(inProgress => inProgress.MessageId == generatedMessageB.MessageId)), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task Stores_Submission_Succeeded()
+        {
+            var submissionJobId = 1234;
+            var service = mocker.Create<EarningsJobService>();
+            await service.RecordDcJobCompleted(submissionJobId, true, CancellationToken.None);
+
+            mocker.Mock<IJobStorageService>()
+                .Verify(svc => svc.StoreDcJobStatus(It.Is<long>(jobId => jobId == submissionJobId), It.Is<bool>(succeeded => succeeded)), Times.Once);
+        }
+
+        [Test]
+        public async Task Stores_Submission_Failed()
+        {
+            var submissionJobId = 1234;
+            var service = mocker.Create<EarningsJobService>();
+            await service.RecordDcJobCompleted(submissionJobId, false, CancellationToken.None);
+
+            mocker.Mock<IJobStorageService>()
+                .Verify(svc => svc.StoreDcJobStatus(It.Is<long>(jobId => jobId == submissionJobId), It.Is<bool>(succeeded => !succeeded)), Times.Once);
         }
     }
 }
