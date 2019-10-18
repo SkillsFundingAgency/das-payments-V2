@@ -26,6 +26,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [OneTimeSetUp]
         public void InitialiseMapper()
         {
+            Mapper.Reset();
             Mapper.Initialize(cfg => { cfg.AddProfile<EarningsEventProfile>(); });
             Mapper.AssertConfigurationIsValid();
         }
