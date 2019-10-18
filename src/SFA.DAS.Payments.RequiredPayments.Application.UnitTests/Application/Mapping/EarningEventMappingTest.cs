@@ -107,23 +107,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             actual.ContractType.Should().Be(ContractType.Act1);
         }
 
-
-        [Test]
-        [TestCase(typeof(PayableEarningEvent), typeof(CalculatedRequiredIncentiveAmount))]
-        [TestCase(typeof(PayableEarningEvent), typeof(CalculatedRequiredCoInvestedAmount))]
-        [TestCase(typeof(PayableEarningEvent), typeof(CalculatedRequiredLevyAmount))]
-        [TestCase(typeof(PayableEarningEvent), typeof(CompletionPaymentHeldBackEvent))]
-        public void LearningAimFundingLineTypeIsCorrectForPayableEarningEvent(Type earningEventType, Type requiredPaymentEventType)
-        {
-            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
-            var earningEvent = Activator.CreateInstance(earningEventType);
-
-            var actual = mapper.Map(earningEvent, requiredPaymentEvent);
-            actual.ContractType.Should().Be(ContractType.Act1);
-        }
-
-
-
         [Test]
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredIncentiveAmount))]
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredCoInvestedAmount))]
