@@ -39,8 +39,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                                                                           ev.AcademicYear == 1920 &&
                                                                           ev.CollectionPeriod == 01 &&
                                                                           ev.IlrSubmissionDateTime == submissionTime &&
-                                                                          ev.Ukprn == 1234)));
-
+                                                                          ev.Ukprn == 1234), It.IsAny<PublishOptions>()), Times.Once);
         }
     }
 }
