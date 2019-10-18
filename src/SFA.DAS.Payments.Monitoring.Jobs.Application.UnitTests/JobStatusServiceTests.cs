@@ -43,7 +43,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 StartTime = DateTimeOffset.UtcNow.AddSeconds(-10),
                 Status = JobStatus.InProgress,
                 LearnerCount = 100,
-                JobType = JobType.EarningsJob
+                JobType = JobType.EarningsJob,
+                DcJobEndTime = DateTimeOffset.Now,
+                DcJobSucceeded = true
             };
             mocker.Mock<IJobStorageService>()
                 .Setup(x => x.GetJob(It.IsAny<long>(), It.IsAny<CancellationToken>()))
@@ -64,12 +66,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         {
             var jobId = 99;
             var completedMessageId = Guid.NewGuid();
-            var inProgress = new InProgressMessage{MessageId = completedMessageId};
+            var inProgress = new InProgressMessage { MessageId = completedMessageId };
             inProgressMessages.Add(inProgress);
             completedMessages.Add(new CompletedMessage { MessageId = completedMessageId, JobId = jobId, Succeeded = true, CompletedTime = DateTimeOffset.UtcNow });
             var service = mocker.Create<JobStatusService>();
-            var status = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
-            status.Should().Be(JobStatus.Completed);
+            await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
             mocker.Mock<IJobStorageService>()
                 .Verify(svc => svc.RemoveInProgressMessages(It.Is<long>(id => id == jobId),
                     It.Is<List<Guid>>(identifiers => identifiers.Count == 1 && identifiers.Contains(completedMessageId)), It.IsAny<CancellationToken>()), Times.Once);
@@ -83,11 +84,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         {
             var jobId = 99;
             var completedMessageId = Guid.NewGuid();
-            inProgressMessages.Add(new InProgressMessage{MessageId = Guid.NewGuid()});
+            inProgressMessages.Add(new InProgressMessage { MessageId = Guid.NewGuid() });
             inProgressMessages.Add(new InProgressMessage { MessageId = Guid.NewGuid() });
             var service = mocker.Create<JobStatusService>();
             var status = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
-            status.Should().Be(JobStatus.InProgress);
+            status.Should().BeFalse();
         }
 
         [Test]
@@ -96,9 +97,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             var jobId = 99;
             var completedMessage = new CompletedMessage
             {
-                MessageId = Guid.NewGuid(), JobId = job.Id, Succeeded = true, CompletedTime = DateTimeOffset.UtcNow
+                MessageId = Guid.NewGuid(),
+                JobId = job.Id,
+                Succeeded = true,
+                CompletedTime = DateTimeOffset.UtcNow
             };
-            var inProgressMessage = new InProgressMessage {MessageId =completedMessage.MessageId};
+            var inProgressMessage = new InProgressMessage { MessageId = completedMessage.MessageId };
             inProgressMessages.Add(inProgressMessage);
             completedMessages.Add(completedMessage);
             mocker.Mock<IJobStorageService>()
@@ -125,7 +129,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 Succeeded = false,
                 CompletedTime = DateTimeOffset.UtcNow
             };
-            var inProgressMessage = new InProgressMessage { MessageId = completedMessage.MessageId, MessageName = "Message"};
+            var inProgressMessage = new InProgressMessage { MessageId = completedMessage.MessageId, MessageName = "Message" };
             inProgressMessages.Add(inProgressMessage);
             completedMessages.Add(completedMessage);
             mocker.Mock<IJobStorageService>()
@@ -163,12 +167,36 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
             mocker.Mock<IJobStorageService>()
                 .Verify(
-                    x => x.SaveJobStatus(It.Is<long>(id => id == jobId), 
+                    x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
                         It.Is<JobStatus>(status => status == JobStatus.Completed),
                         It.Is<DateTimeOffset>(endTime => endTime == completedMessage.CompletedTime),
                         It.IsAny<CancellationToken>()), Times.Once());
         }
 
+        [Test]
+        public async Task Does_Not_Return_Finished_If_All_Messages_Completed_But_DC_Not_Confirmed_Completion()
+        {
+            var jobId = 99;
+            job.DcJobEndTime = null;
+            job.DcJobSucceeded = null;
+            var completedMessage = new CompletedMessage
+            {
+                MessageId = Guid.NewGuid(),
+                JobId = job.Id,
+                Succeeded = true,
+                CompletedTime = DateTimeOffset.UtcNow
+            };
+            var inProgressMessage = new InProgressMessage { MessageId = completedMessage.MessageId, MessageName = "Message" };
+            inProgressMessages.Add(inProgressMessage);
+            completedMessages.Add(completedMessage);
+            mocker.Mock<IJobStorageService>()
+                .Setup(x => x.GetJobStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
+
+            var service = mocker.Create<JobStatusService>();
+            var finished = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+            finished.Should().BeFalse();
+        }
 
         [Test]
         public async Task Records_Job_Completed_With_Errors()
@@ -287,6 +315,60 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                         It.IsAny<JobStatus>(),
                         It.IsAny<DateTimeOffset>(),
                         It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Test]
+        public async Task Publishes_JobSucceeded_When_Job_Finished_And_Recorded_DC_Completion()
+        {
+            var jobId = 99;
+            var completedMessage = new CompletedMessage
+            {
+                MessageId = Guid.NewGuid(),
+                JobId = job.Id,
+                Succeeded = true,
+                CompletedTime = DateTimeOffset.UtcNow
+            };
+            var inProgressMessage = new InProgressMessage { MessageId = completedMessage.MessageId, MessageName = "Message" };
+            inProgressMessages.Add(inProgressMessage);
+            completedMessages.Add(completedMessage);
+            mocker.Mock<IJobStorageService>()
+                .Setup(x => x.GetJobStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
+
+            var service = mocker.Create<JobStatusService>();
+            await service.ManageStatus(job.Id, CancellationToken.None).ConfigureAwait(false);
+            mocker.Mock<IJobStatusEventPublisher>()
+                .Verify(publisher => publisher.SubmissionSucceeded(It.Is<long>(id => id == job.DcJobId), 
+                    It.Is<long>(ukprn => ukprn == job.Ukprn),
+                    It.Is<short>(academicYEar => academicYEar == job.AcademicYear),
+                    It.Is<byte>(collectionPeriod => collectionPeriod == job.CollectionPeriod),
+                    It.Is<DateTime>(ilrSubmissionTIme => ilrSubmissionTIme == job.IlrSubmissionTime)), Times.Once);
+        }
+
+        [Test]
+        public async Task Publishes_JobFailed_When_Job_Finished_And_Recorded_DC_Failure()
+        {
+            var jobId = 99;
+            job.DcJobSucceeded = false;
+            var completedMessage = new CompletedMessage
+            {
+                MessageId = Guid.NewGuid(),
+                JobId = job.Id,
+                Succeeded = true,
+                CompletedTime = DateTimeOffset.UtcNow
+            };
+            var inProgressMessage = new InProgressMessage { MessageId = completedMessage.MessageId, MessageName = "Message" };
+            inProgressMessages.Add(inProgressMessage);
+            completedMessages.Add(completedMessage);
+            mocker.Mock<IJobStorageService>()
+                .Setup(x => x.GetJobStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
+
+            var service = mocker.Create<JobStatusService>();
+            await service.ManageStatus(job.Id, CancellationToken.None).ConfigureAwait(false);
+            mocker.Mock<IJobStatusEventPublisher>()
+                .Verify(publisher => publisher.SubmissionFailed(It.Is<long>(id => id == job.DcJobId),
+                    It.Is<long>(ukprn => ukprn == job.Ukprn)), Times.Once);
         }
     }
 }

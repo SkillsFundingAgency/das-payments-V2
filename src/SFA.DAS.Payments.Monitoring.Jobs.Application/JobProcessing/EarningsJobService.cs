@@ -74,7 +74,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         public async Task RecordDcJobCompleted(long jobId, bool succeeded, CancellationToken cancellationToken)
         {
             logger.LogDebug($"Now storing the completion status of the submission job. Id: {jobId}, succeeded: {succeeded}");
-            await jobStorageService.StoreDcJobStatus(jobId, succeeded).ConfigureAwait(false);
+            await jobStorageService.StoreDcJobStatus(jobId, succeeded, cancellationToken).ConfigureAwait(false);
             logger.LogInfo($"Finished storing the completion status of the submission job. Id: {jobId}, succeeded: {succeeded}");
         }
 

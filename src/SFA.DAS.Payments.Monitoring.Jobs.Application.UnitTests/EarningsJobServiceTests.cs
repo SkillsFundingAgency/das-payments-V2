@@ -6,7 +6,6 @@ using Autofac.Extras.Moq;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
@@ -165,7 +164,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             await service.RecordDcJobCompleted(submissionJobId, true, CancellationToken.None);
 
             mocker.Mock<IJobStorageService>()
-                .Verify(svc => svc.StoreDcJobStatus(It.Is<long>(jobId => jobId == submissionJobId), It.Is<bool>(succeeded => succeeded)), Times.Once);
+                .Verify(svc => svc.StoreDcJobStatus(It.Is<long>(jobId => jobId == submissionJobId), It.Is<bool>(succeeded => succeeded), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]
@@ -176,7 +175,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             await service.RecordDcJobCompleted(submissionJobId, false, CancellationToken.None);
 
             mocker.Mock<IJobStorageService>()
-                .Verify(svc => svc.StoreDcJobStatus(It.Is<long>(jobId => jobId == submissionJobId), It.Is<bool>(succeeded => !succeeded)), Times.Once);
+                .Verify(svc => svc.StoreDcJobStatus(It.Is<long>(jobId => jobId == submissionJobId), It.Is<bool>(succeeded => !succeeded), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

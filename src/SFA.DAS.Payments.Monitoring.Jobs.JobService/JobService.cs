@@ -59,8 +59,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
 
         protected override Task RunAsync(CancellationToken cancellationToken)
         {
+            return Task.WhenAll(RunSendOnlyEndpoint(), jobStatusManager.Start(cancellationToken));
+        }
+
+        private async Task RunSendOnlyEndpoint()
+        {
             var endpoint = lifetimeScope.Resolve<EndpointConfiguration>();
-            return Task.WhenAll(Endpoint.Create(endpoint), jobStatusManager.Start(cancellationToken));
+            await Endpoint.Create(endpoint);
+            endpoint.SendOnly();
+            var factory = lifetimeScope.Resolve<IEndpointInstanceFactory>();
+            await factory.GetEndpointInstance();
         }
     }
 }
