@@ -5,11 +5,11 @@ using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEvent;
 using SFA.DAS.Payments.Core;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 
 namespace SFA.DAS.Payments.Audit.EarningEventsService.Handlers
 {
-    public class SubmissionFailedHandler : IHandleMessages<SubmissionFailedEvent>
+    public class SubmissionFailedHandler : IHandleMessages<SubmissionJobFailed>
     {
         private readonly IPaymentLogger logger;
         private readonly IEarningEventSubmissionFailedProcessor processor;
@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.Audit.EarningEventsService.Handlers
             this.processor = processor ?? throw new ArgumentNullException(nameof(processor));
         }
 
-        public async Task Handle(SubmissionFailedEvent message, IMessageHandlerContext context)
+        public async Task Handle(SubmissionJobFailed message, IMessageHandlerContext context)
         {
             try
             {

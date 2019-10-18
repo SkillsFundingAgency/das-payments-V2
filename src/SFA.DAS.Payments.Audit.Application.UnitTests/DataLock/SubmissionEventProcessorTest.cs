@@ -7,7 +7,7 @@ using SFA.DAS.Payments.Audit.Application.Data;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.DataLock;
 using SFA.DAS.Payments.Audit.Model;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.DataLock
 {
@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.DataLock
         [Test]
         public async Task TestCacheFlushedAndEventsDeletedOnFailure()
         {
-            var submissionFailedEvent = new SubmissionFailedEvent
+            var submissionFailedEvent = new SubmissionJobFailed
             {
                 AcademicYear = 1,
                 CollectionPeriod = 2,
@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.DataLock
         [Test]
         public async Task TestCacheFlushedAndEventsDeletedOnSuccess()
         {
-            var submissionSucceededEvent = new SubmissionSucceededEvent
+            var submissionSucceededEvent = new SubmissionJobSucceeded
             {
                 AcademicYear = 1,
                 CollectionPeriod = 2,

@@ -5,12 +5,13 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.Application.Data.RequiredPayment;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 
 namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.RequiredPayment
 {
     public interface IRequiredPaymentEventSubmissionSucceededProcessor
     {
-        Task Process(SubmissionSucceededEvent message, CancellationToken cancellationToken);
+        Task Process(SubmissionJobSucceeded message, CancellationToken cancellationToken);
     }
 
     public class RequiredPaymentEventSubmissionSucceededProcessor : IRequiredPaymentEventSubmissionSucceededProcessor
@@ -27,7 +28,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.RequiredPay
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        public async Task Process(SubmissionSucceededEvent message, CancellationToken cancellationToken)
+        public async Task Process(SubmissionJobSucceeded message, CancellationToken cancellationToken)
         {
             logger.LogVerbose($"Flushing cached payments before removing required payments for provider: {message.Ukprn}, collection period: {message.CollectionPeriod}");
             await batchService.StorePayments(cancellationToken).ConfigureAwait(false);

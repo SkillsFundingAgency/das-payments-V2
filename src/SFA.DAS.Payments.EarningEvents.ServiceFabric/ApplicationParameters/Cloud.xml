@@ -26,8 +26,8 @@
     <Parameter Name="DoNotGenerateACT1TransactionType4To16Payments" Value="__DoNotGenerateACT1TransactionType4To16Payments__" />
     <Parameter Name="DoNotGenerateACT2Payments" Value="__DoNotGenerateACT2Payments__" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
-    <Parameter Name="ImmediateMessageRetries" Value="__ImmediateMessageRetries__"/>
-    <Parameter Name="DelayedMessageRetries" Value="__DelayedMessageRetries__"/>
-    <Parameter Name="DelayedMessageRetryDelay" Value="__DelayedMessageRetryDelay__"/>
+    <Parameter Name="ImmediateMessageRetries" Value="__ImmediateMessageRetries__" />
+    <Parameter Name="DelayedMessageRetries" Value="__DelayedMessageRetries__" />
+    <Parameter Name="DelayedMessageRetryDelay" Value="__DelayedMessageRetryDelay__" />
   </Parameters>
 </Application>

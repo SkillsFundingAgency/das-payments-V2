@@ -225,6 +225,27 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
            
         }
 
+        [Given(@"the learner earnings were generated")]
+        [When(@"the learner earnings are generated")]
+        public async Task GivenTheLearnerEarningsWereGenerated()
+        {
+            var table = new Table("Delivery Period","On - Programme","Completion","Balancing","Price Episode Identifier");
+            table.AddRow("Aug / Current Academic Year","1000","0","0","pe - 1");
+            table.AddRow("Sep / Current Academic Year","1000","0","0","pe - 1");
+            table.AddRow("Oct / Current Academic Year","1000","0","0","pe - 1");
+            table.AddRow("Nov / Current Academic Year","1000","0","0","pe - 1");
+            table.AddRow("Dec / Current Academic Year","1000","0","0","pe - 1");
+            table.AddRow("Jan / Current Academic Year","1000","0","0","pe - 1");
+            table.AddRow("Feb / Current Academic Year","1000","0","0","pe - 1");
+            table.AddRow("Mar / Current Academic Year","1000","0","0","pe - 1");
+            table.AddRow("Apr / Current Academic Year","1000","0","0","pe - 1");
+            table.AddRow("May / Current Academic Year","1000","0","0","pe - 1");
+            table.AddRow("Jun / Current Academic Year","1000","0","0","pe - 1");
+            table.AddRow("Jul / Current Academic Year","1000","0","0","pe - 1");
+            await GenerateEarnings(table, TestSession.Provider).ConfigureAwait(false);
+        }
+
+
         [Then(@"the following learner earnings should be generated")]
         [Given(@"the following learner earnings were generated")]
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)

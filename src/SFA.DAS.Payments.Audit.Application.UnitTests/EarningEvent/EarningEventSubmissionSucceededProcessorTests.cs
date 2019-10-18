@@ -9,6 +9,7 @@ using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEvent;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Audit;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.EarningEvent
 {
@@ -17,13 +18,13 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.EarningEvent
     public class EarningEventSubmissionSucceededProcessorTests
     {
         private AutoMoqer mocker;
-        private SubmissionSucceededEvent succeededEvent;
+        private SubmissionJobSucceeded succeededEvent;
 
         [SetUp]
         public void SetUp()
         {
             mocker = new AutoMoqer();
-            succeededEvent = new SubmissionSucceededEvent
+            succeededEvent = new SubmissionJobSucceeded
             {
                 JobId = 99,
                 AcademicYear = 1920,

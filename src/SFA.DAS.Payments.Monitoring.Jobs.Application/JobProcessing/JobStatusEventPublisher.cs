@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         Task SubmissionFinished(bool succeeded, long jobId, long ukprn, short academicYear, byte collectionPeriod, DateTime ilrSubmissionTime);
     }
 
-    public class JobStatusEventPublisher: IJobStatusEventPublisher
+    public class JobStatusEventPublisher : IJobStatusEventPublisher
     {
         private readonly IEndpointInstanceFactory factory;
         private readonly IPaymentLogger logger;
@@ -26,16 +26,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
         public async Task SubmissionFinished(bool succeeded, long jobId, long ukprn, short academicYear, byte collectionPeriod, DateTime ilrSubmissionTime)
         {
-            var submissionJobFinished = new SubmissionJobFinished
-            {
-                JobId = jobId,
-                CollectionPeriod = collectionPeriod,
-                Ukprn = ukprn,
-                AcademicYear = academicYear,
-                IlrSubmissionDateTime = ilrSubmissionTime,
-                Succeeded = succeeded
-            };
-            logger.LogDebug($"Publishing SubmissionJobFinished event. Event: {submissionJobFinished.ToJson()}");
+            var submissionJobFinished = succeeded ? (SubmissionJobFinishedEvent)new SubmissionJobSucceeded() : new SubmissionJobFailed();
+            submissionJobFinished.JobId = jobId;
+            submissionJobFinished.CollectionPeriod = collectionPeriod;
+            submissionJobFinished.Ukprn = ukprn;
+            submissionJobFinished.AcademicYear = academicYear;
+            submissionJobFinished.IlrSubmissionDateTime = ilrSubmissionTime;
+            logger.LogDebug($"Publishing {submissionJobFinished.GetType().Name} event. Event: {submissionJobFinished.ToJson()}");
             var endpointInstance = await factory.GetEndpointInstance();
             await endpointInstance.Publish(submissionJobFinished).ConfigureAwait(false);
         }

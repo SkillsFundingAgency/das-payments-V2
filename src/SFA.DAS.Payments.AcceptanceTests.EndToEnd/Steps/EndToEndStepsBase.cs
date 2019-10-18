@@ -1048,6 +1048,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var learners = new List<FM36Learner>();
             var providerCurrentIlrs = CurrentIlr?.Where(o => o.Ukprn == provider.Ukprn).ToList();
 
+            await GenerateEarnings(table, provider, earnings, learners, providerCurrentIlrs).ConfigureAwait(false);
+
+            var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings,
+                TestSession, CurrentCollectionPeriod, learners);
+            await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
+        }
+
+        protected async Task GenerateEarnings(Table table, Provider provider, List<Earning> earnings, List<FM36Learner> learners, List<Training> providerCurrentIlrs)
+        {
             if (providerCurrentIlrs != null)
             {
                 foreach (var training in providerCurrentIlrs)
@@ -1071,7 +1080,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     }
                     else
                     {
-                        foreach (var currentPriceEpisode in CurrentPriceEpisodes.Where(p => (string.IsNullOrWhiteSpace(p.Provider) || TestSession.GetProviderByIdentifier(p.Provider).Ukprn == provider.Ukprn) 
+                        foreach (var currentPriceEpisode in CurrentPriceEpisodes.Where(p => (string.IsNullOrWhiteSpace(p.Provider) || TestSession.GetProviderByIdentifier(p.Provider).Ukprn == provider.Ukprn)
                                                                                             && (string.IsNullOrWhiteSpace(p.LearnerId) || p.LearnerId == aim.LearnerId)))
                         {
                             if (currentPriceEpisode.AimSequenceNumber == 0 ||
@@ -1101,9 +1110,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod,
                 provider.JobId);
 
-            var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings,
-                TestSession, CurrentCollectionPeriod, learners);
-            await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
+        }
+
+        protected async Task GenerateEarnings(Table table, Provider provider)
+        {
+            var earnings = CreateEarnings(table, provider.Ukprn);
+            var learners = new List<FM36Learner>();
+            var providerCurrentIlrs = CurrentIlr?.Where(o => o.Ukprn == provider.Ukprn).ToList();
+            await GenerateEarnings(table, provider, earnings, learners, providerCurrentIlrs).ConfigureAwait(false);
         }
 
         protected async Task HandleIlrReSubmissionForTheLearners(string collectionPeriodText, Provider provider)

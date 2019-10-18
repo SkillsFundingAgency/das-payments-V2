@@ -8,7 +8,7 @@ using SFA.DAS.Payments.Audit.Application.Data.RequiredPayment;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.RequiredPayment;
 using SFA.DAS.Payments.Audit.Model;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.RequiredPayment
 {
@@ -17,13 +17,13 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.RequiredPayment
     public class RequiredPaymentEventSubmissionFailedProcessorTests
     {
         private AutoMoqer mocker;
-        private SubmissionFailedEvent failedEvent;
+        private SubmissionJobFailed failedEvent;
 
         [SetUp]
         public void SetUp()
         {
             mocker = new AutoMoqer();
-            failedEvent = new SubmissionFailedEvent
+            failedEvent = new SubmissionJobFailed
             {
                 JobId = 99,
                 AcademicYear = 1920,

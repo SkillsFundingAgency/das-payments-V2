@@ -8,7 +8,7 @@ using SFA.DAS.Payments.Audit.Application.Data.FundingSource;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.FundingSource;
 using SFA.DAS.Payments.Audit.Model;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.FundingSource
 {
@@ -17,13 +17,13 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.FundingSource
     public class FundingSourceEventSubmissionSucceededProcessorTests
     {
         private AutoMoqer mocker;
-        private SubmissionSucceededEvent succeededEvent;
+        private SubmissionJobSucceeded succeededEvent;
 
         [SetUp]
         public void SetUp()
         {
             mocker = new AutoMoqer();
-            succeededEvent = new SubmissionSucceededEvent
+            succeededEvent = new SubmissionJobSucceeded
             {
                 JobId = 99,
                 AcademicYear = 1920,

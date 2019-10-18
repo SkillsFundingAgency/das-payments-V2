@@ -10,40 +10,10 @@ Scenario: Successful submission removes previous submission data - PV2-1395
 	And price details as follows
 		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |
 		| pe-1             | 15000                | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act2          | 1                   |
-	And the ILR file is submitted for the learners for collection period <Collection_Period>
-	And the following learner earnings were generated
-		| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
-		| Aug/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Sep/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Oct/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Nov/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Dec/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Jan/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Feb/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Mar/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Apr/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| May/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Jun/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Jul/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-	When the amended ILR file is re-submitted for the learners in collection period <collection_period>
-	Then the following learner earnings should be generated
-		| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
-		| Aug/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Sep/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Oct/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Nov/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Dec/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Jan/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Feb/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Mar/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Apr/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| May/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Jun/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Jul/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-	And only the following provider payments will be recorded
-		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
-		| R01/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         |
-
-	Examples:
-		| Collection_Period         |
-		| R01/Current Academic Year |
+	And the ILR file is submitted for the learners for collection period R01/Current Academic Year
+	And the learner earnings were generated
+	When the amended ILR file is re-submitted for the learners in collection period R01/Current Academic Year
+	And the learner earnings are generated
+	And the Data-Collections processes for the job have completed successfully
+	Then the payments application should record that the job completed successfully
+	And the data for the previous submission should be removed

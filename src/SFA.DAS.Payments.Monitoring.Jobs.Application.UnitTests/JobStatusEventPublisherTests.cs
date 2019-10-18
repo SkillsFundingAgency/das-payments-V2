@@ -25,21 +25,37 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .ReturnsAsync(endpointInstance.Object);
         }
 
-        [TestCase(true)]
-        [TestCase(false)]
-        public async Task Publishes_SubmissionJobCompleted_Event(bool succeeded)
+        [Test]
+        public async Task Publishes_SubmissionJobSucceeded_If_Job_Successful()
         {
             var submissionTime = DateTime.Now;
             await mocker.Create<JobStatusEventPublisher>()
-                .SubmissionFinished(succeeded, 99, 1234, 1920, 01, submissionTime);
+                .SubmissionFinished(true, 99, 1234, 1920, 01, submissionTime);
 
             mocker.Mock<IEndpointInstance>()
-                .Verify(x => x.Publish(It.Is<SubmissionJobFinished>(ev => ev.Succeeded == succeeded &&
+                .Verify(x => x.Publish(It.Is<SubmissionJobSucceeded>(ev => 
                                                                           ev.JobId == 99 &&
                                                                           ev.AcademicYear == 1920 &&
                                                                           ev.CollectionPeriod == 01 &&
                                                                           ev.IlrSubmissionDateTime == submissionTime &&
                                                                           ev.Ukprn == 1234), It.IsAny<PublishOptions>()), Times.Once);
         }
+    
+        [Test]
+        public async Task Publishes_SubmissionJobFailed_If_Job_Failed()
+        {
+            var submissionTime = DateTime.Now;
+            await mocker.Create<JobStatusEventPublisher>()
+                .SubmissionFinished(false, 99, 1234, 1920, 01, submissionTime);
+
+            mocker.Mock<IEndpointInstance>()
+                .Verify(x => x.Publish(It.Is<SubmissionJobFailed>(ev => 
+                                                                               ev.JobId == 99 &&
+                                                                               ev.AcademicYear == 1920 &&
+                                                                               ev.CollectionPeriod == 01 &&
+                                                                               ev.IlrSubmissionDateTime == submissionTime &&
+                                                                               ev.Ukprn == 1234), It.IsAny<PublishOptions>()), Times.Once);
+        }
+
     }
 }

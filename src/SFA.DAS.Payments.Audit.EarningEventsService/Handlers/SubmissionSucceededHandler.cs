@@ -6,10 +6,11 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEvent;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 
 namespace SFA.DAS.Payments.Audit.EarningEventsService.Handlers
 {
-    public class SubmissionSucceededHandler: IHandleMessages<SubmissionSucceededEvent>
+    public class SubmissionSucceededHandler: IHandleMessages<SubmissionJobSucceeded>
     {
         private readonly IPaymentLogger logger;
         private readonly IEarningEventSubmissionSucceededProcessor processor;
@@ -20,7 +21,7 @@ namespace SFA.DAS.Payments.Audit.EarningEventsService.Handlers
             this.processor = processor ?? throw new ArgumentNullException(nameof(processor));
         }
 
-        public async Task Handle(SubmissionSucceededEvent message, IMessageHandlerContext context)
+        public async Task Handle(SubmissionJobSucceeded message, IMessageHandlerContext context)
         {
             try
             {

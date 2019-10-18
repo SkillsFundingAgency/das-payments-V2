@@ -3,7 +3,7 @@ using SFA.DAS.Payments.Messages.Core.Events;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Messages.Events
 {
-    public class SubmissionJobFinished: IEvent
+    public abstract class SubmissionJobFinishedEvent: IEvent
     {
         public Guid EventId { get; set; }
         public DateTimeOffset EventTime { get; set; }
@@ -12,9 +12,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Messages.Events
         public DateTime IlrSubmissionDateTime { get; set; }
         public byte CollectionPeriod { get; set; }
         public short AcademicYear { get; set; }
-        public bool Succeeded { get; set; }
 
-        public SubmissionJobFinished()
+        protected SubmissionJobFinishedEvent()
         {
             EventTime = DateTimeOffset.UtcNow;
             EventId = Guid.NewGuid();

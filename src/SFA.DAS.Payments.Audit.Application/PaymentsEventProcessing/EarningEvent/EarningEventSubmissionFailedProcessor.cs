@@ -5,12 +5,13 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.Application.Data.EarningEvent;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Audit;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 
 namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEvent
 {
     public interface IEarningEventSubmissionFailedProcessor
     {
-        Task Process(SubmissionFailedEvent message, CancellationToken cancellationToken);
+        Task Process(SubmissionJobFailed message, CancellationToken cancellationToken);
     }
 
     public class EarningEventSubmissionFailedProcessor : IEarningEventSubmissionFailedProcessor
@@ -27,7 +28,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEven
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        public async Task Process(SubmissionFailedEvent message, CancellationToken cancellationToken)
+        public async Task Process(SubmissionJobFailed message, CancellationToken cancellationToken)
         {
             logger.LogVerbose($"Flushing cached earning events before removing data for job: {message.JobId}, provider: {message.Ukprn}, collection period: {message.CollectionPeriod}");
             await batchService.StorePayments(cancellationToken).ConfigureAwait(false);
