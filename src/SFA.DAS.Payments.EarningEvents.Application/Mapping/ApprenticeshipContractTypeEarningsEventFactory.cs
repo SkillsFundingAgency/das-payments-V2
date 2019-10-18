@@ -1,5 +1,4 @@
-﻿using System;
-using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
+﻿using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
@@ -22,7 +21,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 case ContractForServicesWithSfa:
                     return new ApprenticeshipContractType2EarningEvent();
                 default:
-                    throw new InvalidOperationException($"Unknown contract type: '{contractType}'.");
+                    return new ApprenticeshipContractTypeNoneEarningEvent();
             }
         }
     }
