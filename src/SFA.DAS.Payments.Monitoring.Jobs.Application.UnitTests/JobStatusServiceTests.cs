@@ -45,7 +45,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 LearnerCount = 100,
                 JobType = JobType.EarningsJob,
                 DcJobEndTime = DateTimeOffset.Now,
-                DcJobSucceeded = true
+                DcJobSucceeded = true,
+                IlrSubmissionTime = DateTime.Now,
+                Ukprn = 1234,
+                AcademicYear = 1920,
+                CollectionPeriod = 01
             };
             mocker.Mock<IJobStorageService>()
                 .Setup(x => x.GetJob(It.IsAny<long>(), It.IsAny<CancellationToken>()))
@@ -318,7 +322,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         }
 
         [Test]
-        public async Task Publishes_JobSucceeded_When_Job_Finished_And_Recorded_DC_Completion()
+        public async Task Publishes_JobFinished_When_Job_Finished_And_Recorded_DC_Completion()
         {
             var jobId = 99;
             var completedMessage = new CompletedMessage
@@ -338,7 +342,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             var service = mocker.Create<JobStatusService>();
             await service.ManageStatus(job.Id, CancellationToken.None).ConfigureAwait(false);
             mocker.Mock<IJobStatusEventPublisher>()
-                .Verify(publisher => publisher.SubmissionSucceeded(It.Is<long>(id => id == job.DcJobId), 
+                .Verify(publisher => publisher.SubmissionFinished( It.Is<bool>(succeeded => succeeded),It.Is<long>(id => id == job.DcJobId), 
                     It.Is<long>(ukprn => ukprn == job.Ukprn),
                     It.Is<short>(academicYEar => academicYEar == job.AcademicYear),
                     It.Is<byte>(collectionPeriod => collectionPeriod == job.CollectionPeriod),
@@ -346,7 +350,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         }
 
         [Test]
-        public async Task Publishes_JobFailed_When_Job_Finished_And_Recorded_DC_Failure()
+        public async Task Publishes_JobFinished_When_Job_Finished_And_Recorded_DC_Failure()
         {
             var jobId = 99;
             job.DcJobSucceeded = false;
@@ -367,8 +371,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             var service = mocker.Create<JobStatusService>();
             await service.ManageStatus(job.Id, CancellationToken.None).ConfigureAwait(false);
             mocker.Mock<IJobStatusEventPublisher>()
-                .Verify(publisher => publisher.SubmissionFailed(It.Is<long>(id => id == job.DcJobId),
-                    It.Is<long>(ukprn => ukprn == job.Ukprn)), Times.Once);
+                .Verify(publisher => publisher.SubmissionFinished(It.Is<bool>(succeeded => !succeeded), It.Is<long>(id => id == job.DcJobId),
+                    It.Is<long>(ukprn => ukprn == job.Ukprn),
+                    It.Is<short>(academicYEar => academicYEar == job.AcademicYear),
+                    It.Is<byte>(collectionPeriod => collectionPeriod == job.CollectionPeriod),
+                    It.Is<DateTime>(ilrSubmissionTIme => ilrSubmissionTIme == job.IlrSubmissionTime)), Times.Once);
         }
     }
 }
