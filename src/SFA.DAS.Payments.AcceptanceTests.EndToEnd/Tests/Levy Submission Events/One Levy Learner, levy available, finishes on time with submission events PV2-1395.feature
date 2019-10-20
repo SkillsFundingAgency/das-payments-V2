@@ -1,5 +1,4 @@
-﻿@ignore - at the moment, there is an issue in the 1395 branch with the first message returning and hence the second one doesn't get consumed.
-Feature: Job submission succeeded 
+﻿Feature: Job submission succeeded 
 	As a provider,
 	I would like my payments and reports to to be based on my most recent successful ILR submission
 
