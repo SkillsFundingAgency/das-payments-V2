@@ -5,9 +5,13 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Monitoring.Jobs.Data;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -19,8 +23,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     [Binding]
     public class EndToEndSteps : EndToEndStepsBase
     {
-        public EndToEndSteps(FeatureContext context) : base(context)
+        private readonly FeatureNumber featureNumber;
+
+        public EndToEndSteps(FeatureContext context, FeatureNumber featureNumber) : base(context)
         {
+            this.featureNumber = featureNumber;
         }
 
         [BeforeScenario()]
@@ -86,6 +93,37 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddNewIlr(table, TestSession.Ukprn);
         }
 
+        [Given(@"the provider has already submitted an ILR in the collection period")]
+        public async Task GivenTheProviderHasAlreadySubittedAnILRInTheCurrentCollectionPeriod()
+        {
+            var learnerTable = new Table("Start Date", "Planned Duration", "Total Training Price", "Total Training Price Effective Date", "Total Assessment Price", "Total Assessment Price Effective Date", "Actual Duration", "Completion Status", "Contract Type", "Aim Sequence Number", "Aim Reference", "Framework Code", "Pathway Code", "Programme Type", "Funding Line Type                              ", "SFA Contribution Percentage");
+            learnerTable.AddRow("03 / Aug / Current Academic Year", "12 months", "15000", "03 / Aug / Current Academic Year       ", "                      ", "                                     ", "               ", "continuing", "Act2", "1", "ZPROG001", "593", "1", "20", "19 + Apprenticeship Non - Levy Contract(procured)", "90 %");
+            GivenTheProviderNowChangesTheLearnerDetailsAsFollows(learnerTable);
+
+            var priceEpisodeTable = new Table("Price Episode Id", "Total Training Price", "Total Training Price Effective Date", "Total Assessment Price", "Total Assessment Price Effective Date", "Residual Training Price", "Residual Training Price Effective Date", "Residual Assessment Price", "Residual Assessment Price Effective Date", "SFA Contribution Percentage", "Contract Type", "Aim Sequence Number");
+            priceEpisodeTable.AddRow("pe - 1", "15000", "06 / Aug / Current Academic Year", "0", "06 / Aug / Current Academic Year         ", "0", "                                      ", "0", "                                        ", "90 %                        ", "Act2", "1");
+            GivenPriceDetailsAsFollows(priceEpisodeTable);
+
+            //step used for dc-das e2e tests
+            await SubmitIlrInPeriod("R01/Current Academic Year", featureNumber).ConfigureAwait(false);
+
+            //step used for das e2e tests
+            await GivenTheLearnerEarningsWereGenerated().ConfigureAwait(false);
+
+            await WaitForJobToFinish(TestSession.JobId).ConfigureAwait(false);
+        }
+
+        private async Task WaitForJobToFinish(long jobId)
+        {
+            await WaitForIt(async () =>
+            {
+                var dataContext = Scope.Resolve<JobsDataContext>();
+                var job = await dataContext.Jobs.AsNoTracking().FirstOrDefaultAsync(savedJob => savedJob.DcJobId == jobId);
+                return job != null && job.Status != JobStatus.InProgress;
+            },$"Job failed to finish. Job id: {jobId}");
+        }
+
+
         [Given(@"the provider ""(.*)"" is providing training for the following learners")]
         [Given(@"the ""(.*)"" is providing training for the following learners")]
         [Given(@"the ""(.*)"" now changes the Learner details as follows")]
@@ -134,7 +172,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the provider priority order is")]
         public async Task GivenTheProviderPriorityOrder(Table table)
         {
-           await AddLevyAccountPriorities(table, TestSession, CurrentCollectionPeriod, DataContext);
+            await AddLevyAccountPriorities(table, TestSession, CurrentCollectionPeriod, DataContext);
         }
 
         [Given(@"the following commitments exist")]
@@ -222,28 +260,37 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("the following capping will apply to the price episodes")]
         public void GivenTheFollowingCappingWillApply(Table table)
         {
-           
+
         }
 
         [Given(@"the learner earnings were generated")]
         [When(@"the learner earnings are generated")]
         public async Task GivenTheLearnerEarningsWereGenerated()
         {
-            var table = new Table("Delivery Period","On - Programme","Completion","Balancing","Price Episode Identifier");
-            table.AddRow("Aug / Current Academic Year","1000","0","0","pe - 1");
-            table.AddRow("Sep / Current Academic Year","1000","0","0","pe - 1");
-            table.AddRow("Oct / Current Academic Year","1000","0","0","pe - 1");
-            table.AddRow("Nov / Current Academic Year","1000","0","0","pe - 1");
-            table.AddRow("Dec / Current Academic Year","1000","0","0","pe - 1");
-            table.AddRow("Jan / Current Academic Year","1000","0","0","pe - 1");
-            table.AddRow("Feb / Current Academic Year","1000","0","0","pe - 1");
-            table.AddRow("Mar / Current Academic Year","1000","0","0","pe - 1");
-            table.AddRow("Apr / Current Academic Year","1000","0","0","pe - 1");
-            table.AddRow("May / Current Academic Year","1000","0","0","pe - 1");
-            table.AddRow("Jun / Current Academic Year","1000","0","0","pe - 1");
-            table.AddRow("Jul / Current Academic Year","1000","0","0","pe - 1");
-            await GenerateEarnings(table, TestSession.Provider).ConfigureAwait(false);
+            await GenerateEarnings(TestSession.Provider).ConfigureAwait(false);
         }
+
+        [When(@"the Payments service records the completion of the job")]
+        public async Task  WhenThePaymentsServiceRecordsTheCompletionOfTheJob()
+        {
+            await WaitForJobToFinish(TestSession.Provider.JobId).ConfigureAwait(false);
+        }
+
+        [When(@"the Data-Collections system confirms successful completion of processing the job")]
+        public async Task WhenTheData_CollectionsSystemConfirmsSuccessfulCompletionOfProcessingTheJob()
+        {
+            var dcHelper = Scope.Resolve<IDcHelper>();
+            await dcHelper.SendIlrSubmissionEvent(TestSession.Provider.Ukprn, CurrentCollectionPeriod.AcademicYear,
+                CurrentCollectionPeriod.Period,
+                TestSession.Provider.JobId, true).ConfigureAwait(false);
+        }
+
+        [Then(@"the data for the previous submission should be removed")]
+        public void ThenTheDataForThePreviousSubmissionShouldBeRemoved()
+        {
+            ScenarioContext.Current.Pending();
+        }
+
 
 
         [Then(@"the following learner earnings should be generated")]
@@ -376,7 +423,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             await ValidateDataLockError(table, provider).ConfigureAwait(false);
         }
-       
+
         private async Task ValidateDataLockError(Table table, Provider provider)
         {
             var dataLockErrors = table.CreateSet<DataLockError>().ToList();

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -101,6 +102,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             TestSession.Learner.Uln = newUln;
             CurrentIlr = PreviousIlr;
+        }
+
+        [When(@"the amended ILR file is re-submitted")]
+        public async Task WhenTheAmendedILRFileIsRe_Submitted()
+        {
+            await WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod("R01/Current Academic Year").ConfigureAwait(false);
+            await GenerateEarnings(TestSession.Provider).ConfigureAwait(false);
         }
 
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]

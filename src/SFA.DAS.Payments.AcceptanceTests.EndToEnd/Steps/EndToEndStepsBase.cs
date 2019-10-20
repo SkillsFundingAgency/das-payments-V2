@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Abstract;
+using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
@@ -1112,6 +1113,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         }
 
+        protected async Task GenerateEarnings(Provider provider)
+        {
+            var table = new Table("Delivery Period", "On - Programme", "Completion", "Balancing", "Price Episode Identifier");
+            table.AddRow("Aug / Current Academic Year", "1000", "0", "0", "pe - 1");
+            table.AddRow("Sep / Current Academic Year", "1000", "0", "0", "pe - 1");
+            table.AddRow("Oct / Current Academic Year", "1000", "0", "0", "pe - 1");
+            table.AddRow("Nov / Current Academic Year", "1000", "0", "0", "pe - 1");
+            table.AddRow("Dec / Current Academic Year", "1000", "0", "0", "pe - 1");
+            table.AddRow("Jan / Current Academic Year", "1000", "0", "0", "pe - 1");
+            table.AddRow("Feb / Current Academic Year", "1000", "0", "0", "pe - 1");
+            table.AddRow("Mar / Current Academic Year", "1000", "0", "0", "pe - 1");
+            table.AddRow("Apr / Current Academic Year", "1000", "0", "0", "pe - 1");
+            table.AddRow("May / Current Academic Year", "1000", "0", "0", "pe - 1");
+            table.AddRow("Jun / Current Academic Year", "1000", "0", "0", "pe - 1");
+            table.AddRow("Jul / Current Academic Year", "1000", "0", "0", "pe - 1");
+            await GenerateEarnings(table, TestSession.Provider).ConfigureAwait(false);
+        }
+
         protected async Task GenerateEarnings(Table table, Provider provider)
         {
             var earnings = CreateEarnings(table, provider.Ukprn);
@@ -1230,6 +1249,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     EmployerProviderPriorities.AddRange(priorities);
                 }
             }
+        }
+
+        protected async Task SubmitIlrInPeriod(string collectionPeriodText, FeatureNumber featureNumber)
+        {
+            Task ClearCache() => HandleIlrReSubmissionForTheLearners(collectionPeriodText, TestSession.Provider);
+            await Scope.Resolve<IIlrService>().PublishLearnerRequest(CurrentIlr, TestSession.Learners, collectionPeriodText, featureNumber.Extract(), ClearCache);
         }
 
     }
