@@ -65,8 +65,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
         private async Task RunSendOnlyEndpoint()
         {
             var endpoint = lifetimeScope.Resolve<EndpointConfiguration>();
-            await Endpoint.Create(endpoint);
             endpoint.SendOnly();
+            //await Endpoint.Create(endpoint);
             var factory = lifetimeScope.Resolve<IEndpointInstanceFactory>();
             await factory.GetEndpointInstance();
         }

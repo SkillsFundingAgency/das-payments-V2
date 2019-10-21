@@ -16,6 +16,14 @@ Scenario: Provider Earnings Job Finished
 	When the earnings event service notifies the job monitoring service to record the job
 	And the final messages for the job are successfully processed
 	Then the job monitoring service should update the status of the job to show that it has completed	
+
+Scenario: Data-Collections confirm completion of Provider Earnings Job
+	Given the monitoring service has recorded the completion of an earnings job
+	When Data-Collections confirms the successful completion of the job
+	Then the monitoring service should record the successful completion of the Data-Collections processes
+	And the monitoring service should notify other services that the job has completed successfully
+
+
 #Scenario: Monitoring service records the completion time of data-locks processing
 #	Given the earnings event service has received a provider earnings job
 #	When the earnings event service notifies the job monitoring service to record the job

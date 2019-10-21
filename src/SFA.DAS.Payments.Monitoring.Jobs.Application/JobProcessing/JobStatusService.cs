@@ -41,6 +41,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 if (job.Status != JobStatus.InProgress && job.DcJobSucceeded.HasValue)
                 {
                     logger.LogWarning($"Job {jobId} has already finished. Status: {job.Status}");
+                    await eventPublisher.SubmissionFinished(job.DcJobSucceeded.Value, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
                     return true;
                 }
 
