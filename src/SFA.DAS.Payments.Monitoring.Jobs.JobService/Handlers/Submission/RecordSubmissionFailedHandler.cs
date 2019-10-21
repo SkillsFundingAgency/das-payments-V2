@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.Submission
         {
             foreach (var submissionFailedEvent in messages)
             {
-                await earningsJobService.RecordDcJobCompleted(submissionFailedEvent.JobId, true, cancellationToken)
+                await earningsJobService.RecordDcJobCompleted(submissionFailedEvent.JobId, false, cancellationToken)
                     .ConfigureAwait(false);
             }
         }

@@ -376,7 +376,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             await WaitForIt(() =>
             {
                 var job = DataContext.Jobs.AsNoTracking()
-                    .FirstOrDefault(x => x.DcJobId == JobDetails.JobId && x.DcJobSucceeded.HasValue && !x.DcJobSucceeded.Value == false);
+                    .FirstOrDefault(x => x.DcJobId == JobDetails.JobId && x.DcJobSucceeded.HasValue && !x.DcJobSucceeded.Value);
 
                 if (job == null)
                     return false;
