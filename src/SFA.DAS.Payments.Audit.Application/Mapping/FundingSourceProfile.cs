@@ -19,6 +19,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping
                 .ForMember(dest => dest.FundingSource, opt => opt.MapFrom(source => source.FundingSourceType))
                 .ForMember(dest => dest.RequiredPaymentEventId, opt => opt.MapFrom(source => source.RequiredPaymentEventId))
                 .ForMember(dest => dest.ContractType, opt => opt.MapFrom(source => source.ContractType))
+                .ForMember(dest => dest.ApprenticeshipEmployerType, opt => opt.MapFrom(source => source.ApprenticeshipEmployerType))
                 ;
             CreateMap<SfaCoInvestedFundingSourcePaymentEvent, FundingSourceEventModel>();
             CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, FundingSourceEventModel>();

@@ -4,14 +4,20 @@
     <Parameter Name="StorageConnectionString" Value="" />
     <Parameter Name="LoggingConnectionString" Value="" />
     <Parameter Name="ServiceBusConnectionString" Value="" />
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="" />
     <Parameter Name="PaymentsConnectionString" Value="" />
   </Section>
   <Section Name="Settings">
     <Parameter Name="EndpointName" Value="" />
     <Parameter Name="FailedMessagesQueue" Value="" />
     <Parameter Name="LogLevel" Value="" />
+    <Parameter Name="ConsoleLogLevel" Value="" />
     <Parameter Name="ProcessMessageSequentially" Value="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+    <Parameter Name="DasNServiceBusLicenseKey" Value="" />
+    <Parameter Name="ImmediateMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetryDelay" Value="" />
   </Section>
   <Section Name="LevyFundedServiceActorServiceReplicatorConfig">
     <Parameter Name="ReplicatorEndpoint" Value="LevyFundedServiceActorServiceReplicatorEndpoint" />

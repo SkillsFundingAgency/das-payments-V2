@@ -1,3 +1,4 @@
+@basic_day
 @supports_dc_e2e
 Feature: One Non-Levy Learner submitted late PV2-427
 	As a provider,

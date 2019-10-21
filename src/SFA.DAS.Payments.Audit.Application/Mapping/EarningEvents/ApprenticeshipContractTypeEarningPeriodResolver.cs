@@ -3,6 +3,7 @@ using System.Linq;
 using AutoMapper;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
@@ -21,7 +22,8 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                     Amount = item.period.Amount,
                     PriceEpisodeIdentifier = item.period.PriceEpisodeIdentifier,
                     SfaContributionPercentage = item.period.SfaContributionPercentage,
-                    EarningEventId = source.EventId
+                    EarningEventId = source.EventId,
+                    CensusDate = item.onProgEarning.CensusDate
                 }) ?? new List<EarningEventPeriodModel>()
             );
 
@@ -33,7 +35,8 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                     DeliveryPeriod = item.period.Period,
                     Amount = item.period.Amount,
                     PriceEpisodeIdentifier = item.period.PriceEpisodeIdentifier,
-                    EarningEventId = source.EventId
+                    EarningEventId = source.EventId,
+                    CensusDate = item.incentiveEarning.CensusDate
                 }) ?? new List<EarningEventPeriodModel>()
             );
             return periods;

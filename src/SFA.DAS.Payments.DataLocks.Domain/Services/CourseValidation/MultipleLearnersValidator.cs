@@ -30,54 +30,63 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 
         protected override  bool FailedValidation(DataLockValidationModel dataLockValidationModel, List<ApprenticeshipPriceEpisodeModel> validApprenticeshipPriceEpisodes)
         {
-            var apprenticeshipActualStartDate = GetApprenticeshipActualStartDate(dataLockValidationModel.Apprenticeship);
-            var apprenticeshipActualEndDate = GetApprenticeshipEstimatedEndDate(dataLockValidationModel.Apprenticeship);
+            //var apprenticeshipActualStartDate = GetApprenticeshipActualStartDate(dataLockValidationModel.Apprenticeship);
+            //var apprenticeshipActualEndDate = GetApprenticeshipEstimatedEndDate(dataLockValidationModel.Apprenticeship);
 
-            var earningPeriodDate = calculatePeriodStartAndEndDate
-                .GetPeriodDate(dataLockValidationModel.EarningPeriod.Period, dataLockValidationModel.AcademicYear);
+            //var earningPeriodDate = calculatePeriodStartAndEndDate
+            //    .GetPeriodDate(dataLockValidationModel.EarningPeriod.Period, dataLockValidationModel.AcademicYear);
 
-            if (apprenticeshipActualStartDate >= earningPeriodDate.periodEndDate ||
-                apprenticeshipActualEndDate <= earningPeriodDate.periodStartDate)
-                return false;
+            //if (apprenticeshipActualStartDate >= earningPeriodDate.periodEndDate ||
+            //    apprenticeshipActualEndDate <= earningPeriodDate.periodStartDate)
+            //    return false;
 
-            var allDuplicateApprenticeships =  dataLockLearnerCache
-                .GetDuplicateApprenticeships()
-                .Result;
+            //var allDuplicateApprenticeships =  dataLockLearnerCache
+            //    .GetDuplicateApprenticeships()
+            //    .Result;
 
-            if (!allDuplicateApprenticeships.Any())
-                return false;
+            //if (!allDuplicateApprenticeships.Any())
+            //    return false;
 
-            // Apprenticeship has a duplicate
-            var duplicates = allDuplicateApprenticeships
-                .Where(x => x.Uln == dataLockValidationModel.Apprenticeship.Uln &&
-                            x.Id != dataLockValidationModel.Apprenticeship.Id)
-                .ToList();
+            //// Apprenticeship has a duplicate
+            //var duplicates = allDuplicateApprenticeships
+            //    .Where(x => x.Uln == dataLockValidationModel.Apprenticeship.Uln &&
+            //                x.Status == ApprenticeshipStatus.Active &&
+            //                x.Id != dataLockValidationModel.Apprenticeship.Id &&
+            //                x.Ukprn != dataLockValidationModel.Apprenticeship.Ukprn)
+            //    .ToList();
 
-            if (!duplicates.Any())
-                return false;
+         
+            //if (!duplicates.Any())
+            //    return false;
             
-            foreach (var duplicate in duplicates)
-            {
-                var duplicateActualStartDate = GetApprenticeshipActualStartDate(duplicate);
-                var duplicateActualEndDate = GetApprenticeshipEstimatedEndDate(duplicate);
+            //foreach (var duplicate in duplicates)
+            //{
+            //    var duplicateActualStartDate = GetApprenticeshipActualStartDate(duplicate);
+            //    var duplicateActualEndDate = GetApprenticeshipEstimatedEndDate(duplicate);
 
-                if (duplicateActualStartDate >= earningPeriodDate.periodEndDate ||
-                    duplicateActualEndDate <= earningPeriodDate.periodStartDate)
-                    continue;
+            //    if (duplicateActualStartDate >= earningPeriodDate.periodEndDate ||
+            //        duplicateActualEndDate <= earningPeriodDate.periodStartDate)
+            //        continue;
 
-                // check if they have the same date range 
-                if (apprenticeshipActualStartDate < duplicateActualEndDate && duplicateActualStartDate < apprenticeshipActualEndDate)
-                {
-                    return true;
-                }
-            }
+            //    // check if they have the same date range 
+            //    if (apprenticeshipActualStartDate < duplicateActualEndDate && duplicateActualStartDate < apprenticeshipActualEndDate)
+            //    {
+            //        return true;
+            //    }
+            //}
             
             return false;
         }
 
         private static DateTime GetApprenticeshipEstimatedEndDate(ApprenticeshipModel apprenticeship)
         {
-            return apprenticeship.StopDate ?? apprenticeship.EstimatedEndDate;
+            var latestApprenticeshipPriceEpisode = apprenticeship
+                .ApprenticeshipPriceEpisodes
+                .Where(x => !x.Removed)
+                .OrderByDescending(x => x.EndDate)
+                .First();
+
+            return latestApprenticeshipPriceEpisode.EndDate ?? DateTime.MaxValue;
         }
 
         private static DateTime GetApprenticeshipActualStartDate(ApprenticeshipModel apprenticeship)

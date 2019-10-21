@@ -11,6 +11,8 @@
     <Parameter Name="LoggingConnectionString" Value="" />
     <Parameter Name="PaymentsConnectionString" Value="" />
     <Parameter Name="ServiceBusConnectionString" Value="" />
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="" />
+    <Parameter Name="DasPeriodEndConnectionString" Value="" />
   </Section>
   <Section Name="Settings">
     <Parameter Name="EndpointName" Value="sfa-das-payments-providerpayments" />
@@ -20,7 +22,13 @@
     <Parameter Name="BatchFailureTimeoutInSeconds" Value="60" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
     <Parameter Name="LogLevel" Value="" />
+    <Parameter Name="ConsoleLogLevel" Value="" />
     <Parameter Name="ProcessMessageSequentially" Value="" />
+    <Parameter Name="DasNServiceBusLicenseKey" Value="" />
+    <Parameter Name="LegacyExportBatchSize" Value="" />
+    <Parameter Name="ImmediateMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetryDelay" Value="" />
   </Section>
   <!-- The content will be generated during build -->
 </Settings>

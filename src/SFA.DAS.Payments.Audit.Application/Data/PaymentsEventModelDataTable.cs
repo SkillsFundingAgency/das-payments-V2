@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Data;
 using SFA.DAS.Payments.Audit.Model;
+using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Audit.Application.Data
 {
     public abstract class PaymentsEventModelDataTable<T> : IPaymentsEventModelDataTable<T> where T : IPaymentsEventModel
     {
-        protected DataTable DataTable { get; private set; }
+        protected DataTable DataTable { get; }
 
         protected PaymentsEventModelDataTable()
         {
@@ -27,9 +28,10 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 new DataColumn("LearningAimPathwayCode"),
                 new DataColumn("LearningAimFundingLineType"),
                 new DataColumn("Ukprn"),
-                new DataColumn("IlrSubmissionDateTime"),
+                new DataColumn("IlrSubmissionDateTime", typeof(DateTime)),
                 new DataColumn("JobId"),
-                new DataColumn("EventTime")
+                new DataColumn("EventTime", typeof(DateTimeOffset)),
+                new DataColumn("LearningStartDate",typeof(DateTime)) {AllowDBNull = true},
             });
         }
 
@@ -51,6 +53,16 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             dataRow["IlrSubmissionDateTime"] = eventModel.IlrSubmissionDateTime;
             dataRow["JobId"] = eventModel.JobId;
             dataRow["EventTime"] = eventModel.EventTime;
+
+            if (!eventModel.LearningStartDate.HasValue || eventModel.LearningStartDate.Value == DateTime.MinValue)
+            {
+                dataRow["LearningStartDate"] = DBNull.Value;
+            }
+            else
+            {
+                dataRow["LearningStartDate"] = eventModel.LearningStartDate.Value;
+            }
+
             return dataRow;
         }
 

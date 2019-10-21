@@ -37,6 +37,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache
 
         public async Task AddOrReplace(string key, T entity, CancellationToken cancellationToken = default(CancellationToken))
         {
+            
             await StateManager.AddOrUpdateStateAsync(key, entity, (oldKey, oldValue) => entity, cancellationToken).ConfigureAwait(false);
         }
 

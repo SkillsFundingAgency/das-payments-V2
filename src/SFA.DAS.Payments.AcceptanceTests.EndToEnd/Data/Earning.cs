@@ -25,5 +25,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
 
         public long Ukprn { get; set; }
         public string LearningAimReference { get; set; }
+
+        public ContractType ContractType { get; set; }
     }
 }

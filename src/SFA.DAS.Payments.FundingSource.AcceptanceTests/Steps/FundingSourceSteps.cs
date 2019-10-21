@@ -111,6 +111,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
 
             MapCommon(requiredPayment, paymentEvent);
             paymentEvent.OnProgrammeEarningType = (OnProgrammeEarningType)requiredPayment.Type;
+            paymentEvent.ContractType = (ContractType)ContractType;
             paymentEvent.SfaContributionPercentage = SfaContributionPercentage;
             return paymentEvent;
         }

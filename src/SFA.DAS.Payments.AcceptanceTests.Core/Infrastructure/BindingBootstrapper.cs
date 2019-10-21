@@ -71,7 +71,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             {
                 var configHelper = c.Resolve<TestsConfiguration>();
                 return new TestPaymentsDataContext(configHelper.PaymentsConnectionString);
-            }).As<TestPaymentsDataContext>().InstancePerLifetimeScope();
+            }).As<TestPaymentsDataContext>().InstancePerDependency();
 
             Builder.Register(c => new TestSession(c.Resolve<IUkprnService>(), c.Resolve<IUlnService>())).InstancePerLifetimeScope();
 
@@ -131,6 +131,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             EndpointConfiguration.EnableInstallers();
 
         }
+
+
 
         [BeforeTestRun(Order = 50)]
         public static void CreateContainer()

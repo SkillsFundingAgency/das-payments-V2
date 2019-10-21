@@ -79,11 +79,17 @@
     <Reference Include="ESFA.DC.IO.Interfaces, Version=0.1.11.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.IO.Interfaces.0.1.11-beta0001\lib\netstandard2.0\ESFA.DC.IO.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.Jobs.Model, Version=0.1.28.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.Jobs.Model.0.1.28-beta0001\lib\netstandard2.0\ESFA.DC.Jobs.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.Jobs.Model, Version=0.2.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Jobs.Model.0.2.9-beta0001\lib\netstandard2.0\ESFA.DC.Jobs.Model.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.JobStatus.Interface, Version=0.2.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.JobStatus.Interface.0.2.5-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Interface.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.Logging, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Logging.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.Logging.Interfaces, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Logging.Interfaces.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.Logging.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.Serialization.Interfaces, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Serialization.Interfaces.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.Serialization.Interfaces.dll</HintPath>
@@ -175,8 +181,8 @@
     <Reference Include="MoreLinq, Version=3.1.1.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
       <HintPath>..\packages\morelinq.3.1.1\lib\net451\MoreLinq.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NServiceBus.Azure.Transports.WindowsAzureServiceBus, Version=9.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
       <HintPath>..\packages\NServiceBus.Azure.Transports.WindowsAzureServiceBus.9.0.3\lib\net46\NServiceBus.Azure.Transports.WindowsAzureServiceBus.dll</HintPath>
@@ -187,17 +193,50 @@
     <Reference Include="NServiceBus.Core, Version=7.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
       <HintPath>..\packages\NServiceBus.7.1.5\lib\net452\NServiceBus.Core.dll</HintPath>
     </Reference>
+    <Reference Include="NServiceBus.Newtonsoft.Json, Version=2.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NServiceBus.Newtonsoft.Json.2.1.0\lib\net452\NServiceBus.Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NServiceBus.ObjectBuilder.Autofac, Version=7.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
       <HintPath>..\packages\NServiceBus.Autofac.7.0.0\lib\net452\NServiceBus.ObjectBuilder.Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="NServiceBus.Persistence.AzureStorage, Version=2.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NServiceBus.Persistence.AzureStorage.2.3.0\lib\net452\NServiceBus.Persistence.AzureStorage.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=3.11.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.11.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="Polly, Version=5.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Polly.5.9.0\lib\net45\Polly.dll</HintPath>
+    <Reference Include="Polly, Version=6.0.0.0, Culture=neutral, PublicKeyToken=c8a3ffc3f8f825cc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Polly.6.1.2\lib\netstandard2.0\Polly.dll</HintPath>
     </Reference>
     <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.2.6.0\lib\net46\Serilog.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Enrichers.Environment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Enrichers.Environment.2.1.2\lib\net45\Serilog.Enrichers.Environment.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Enrichers.Process, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Enrichers.Process.2.0.1\lib\net45\Serilog.Enrichers.Process.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Enrichers.Thread, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Enrichers.Thread.3.0.0\lib\net45\Serilog.Enrichers.Thread.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.Console, Version=3.1.1.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.Console.3.1.1\lib\net45\Serilog.Sinks.Console.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.MSSqlServer, Version=5.1.1.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.MSSqlServer.5.1.1\lib\net452\Serilog.Sinks.MSSqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.PeriodicBatching, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.PeriodicBatching.2.1.1\lib\net45\Serilog.Sinks.PeriodicBatching.dll</HintPath>
+    </Reference>
+    <Reference Include="SFA.DAS.CommitmentsV2.Messages, Version=4.1.70.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.CommitmentsV2.Messages.4.1.70\lib\netstandard2.0\SFA.DAS.CommitmentsV2.Messages.dll</HintPath>
+    </Reference>
+    <Reference Include="SFA.DAS.CommitmentsV2.Types, Version=4.1.70.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.CommitmentsV2.Types.4.1.70\lib\netstandard2.0\SFA.DAS.CommitmentsV2.Types.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -317,10 +356,13 @@
   <ItemGroup>
     <Compile Include="Data\Apprenticeship.cs" />
     <Compile Include="Data\ApprenticeshipStatusPeriod.cs" />
+    <Compile Include="Data\Approvals\ApprovalsApprenticeship.cs" />
     <Compile Include="Data\Earning.cs" />
     <Compile Include="Data\DataLockError.cs" />
+    <Compile Include="Data\Approvals\ApprovalsEmployer.cs" />
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
+    <Compile Include="Data\ProviderPriority.cs" />
     <Compile Include="EventMatchers\BaseMatcher.cs" />
     <Compile Include="EventMatchers\EarningFailedDataLockMatcher.cs" />
     <Compile Include="EventMatchers\PayableEarningEventMatcher.cs" />
@@ -353,6 +395,7 @@
     <Compile Include="LearnerMutators\NonLevy\SmallEmployer\Framework403LearnerWithEHCPlanAndSmallEmployer.cs" />
     <Compile Include="LearnerMutators\Standard57Learner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Steps\ApprovalsInterfaceSteps.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
     <Compile Include="Extensions\FeatureInfoNumberExtractor.cs" />
@@ -416,6 +459,46 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-688 - New Apprenticeship Approved.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-688 - New Apprenticeship Approved.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-696 - Employer Change in Payment Order for Multiple learners with an Employer.feature.cs">
+      <DependentUpon>PV2-696 - Employer Change in Payment Order for Multiple learners with an Employer.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature.cs">
+      <DependentUpon>PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-694_Apprenticeship_Is_Paused_By_The_Employer.feature.cs">
+      <DependentUpon>PV2-694_Apprenticeship_Is_Paused_By_The_Employer.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-693 - Learners apprenticeship Stop Date is Changed by the Employer.feature.cs">
+      <DependentUpon>PV2-693 - Learners apprenticeship Stop Date is Changed by the Employer.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-692 - Apprenticeship Is Stopped by the Employer without completing.feature.cs">
+      <DependentUpon>PV2-692 - Apprenticeship Is Stopped by the Employer without completing.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-689 - Update Existing Apprenticeship.feature.cs">
+      <DependentUpon>PV2-689 - Update Existing Apprenticeship.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Approvals Interface\PV2-690 - Data Lock resolved for a learners with a Commitment in a state of approved and a data-lock recorded against it.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-690 - Data Lock resolved for a learners with a Commitment in a state of approved and a data-lock recorded against it.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Capping\Levy learner over funding band cap - PV2-528.feature.cs">
       <AutoGen>True</AutoGen>
@@ -611,6 +694,31 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>E2E -PV2-943 - Levy learner, Employer stops commitment day after course completed, completion payment paid.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Stops\E2E -PV2-944 - Levy learner, Employer stops commitment on day the course is completed, completion payment paid .feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E -PV2-944 - Levy learner, Employer stops commitment on day the course is completed, completion payment paid .feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Stops\E2E -PV2-945 - Levy learner, Employer stops commitment before the day the course is completed, completion payment not paid .feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E -PV2-945 - Levy learner, Employer stops commitment before the day the course is completed, completion payment not paid .feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Stops\E2E -PV2-946 - Levy learner, Employer stops commitment after the day the course is completes, completion and balancing payment is paid .feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E -PV2-946 - Levy learner, Employer stops commitment after the day the course is completes, completion and balancing payment is paid .feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Stops\E2E -PV2-947 - Levy learner, Employer stops commitment on the day the course completes, completion and balancing payment is paid .feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E -PV2-947 - Levy learner, Employer stops commitment on the day the course completes, completion and balancing payment is paid .feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Employer Stops\E2E -PV2-948 - Levy learner, Employer stops commitment before the day the course completes, completion and balancing payment is not paid .feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>E2E -PV2-948 - Levy learner, Employer stops commitment before the day the course completes, completion and balancing payment is not paid .feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\English and Maths\PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1013,6 +1121,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>E2E - PV2-931 - Levy learner with levy balance starts after 1st day of month care leaver payment made after 60 days.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Levy - Data Locks\PV2-1464_Ignore_Apprenticeship_That_Stop_Within_A_Day_Of_Starting.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1464_Ignore_Apprenticeship_That_Stop_Within_A_Day_Of_Starting.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Data Locks\PV2-1510 - DLOCK01 when no matching record found for the UKPRN.feature.cs">
+      <DependentUpon>PV2-1510 - DLOCK01 when no matching record found for the UKPRN.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Levy - Data Locks\PV2-662 - DLOCK01 when no matching record found for the UKPRN.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1088,6 +1206,33 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-713- DLOCK12 when the employer pauses payments for a learner on a commitment.feature</DependentUpon>
     </Compile>
+    
+    <Compile Include="Tests\Levy - Payment Priority\PV2-602 - Payment Priority for 2 providers levy spent in priority order and sufficient levy available.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-602 - Payment Priority for 2 providers levy spent in priority order and sufficient levy available.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Payment Priority\PV2-603 - Two providers, levy spent in priority order, enough to fund only one provider.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-603 - Two providers, levy spent in priority order, enough to fund only one provider.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy - Payment Priority\PV2-604 - Two providers, levy spent in priority order, enough to fund 1 provider fully but half for another provider.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-604 - Two providers, levy spent in priority order, enough to fund 1 provider fully but half for another provider.feature</DependentUpon>
+    </Compile>
+	 <Compile Include="Tests\Levy - Data Locks\PV2-769 - DLOCK03 mismatch in standard code.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-769 - DLOCK03 mismatch in standard code.feature</DependentUpon>
+    </Compile>
+
+    <Compile Include="Tests\Levy - Payment Priority\PV2-656 - two providers where levy spent in priority order and the priority is changed in R04.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-656 - two providers where levy spent in priority order and the priority is changed in R04.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1142,6 +1287,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Two levy learners one employer but two providers not enough levy_PV2-270.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Levy Submission Events\One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature.cs">
+      <DependentUpon>One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Tests\Non-Levy - Care Bursary\E2E - PV2-925 - Non-Levy learner starts 1st day of month receives care leaver payment after 60 days.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1338,26 +1488,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Tests\Payment Priority\Two levy learners paid in priority order enough levy to fund one learner_PV2-603.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Two levy learners paid in priority order enough levy to fund one learner_PV2-603.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and enough levy for both learners_PV2-602.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Two Levy learners where levy spent in priority order and enough levy for both learners_PV2-602.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and is available for only 1 and half learners_PV2-604.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Two Levy learners where levy spent in priority order and is available for only 1 and half learners_PV2-604.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and the priority is changed in R04_PV2-656.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Two Levy learners where levy spent in priority order and the priority is changed in R04_PV2-656.feature</DependentUpon>
-    </Compile>
     <Compile Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer and ILR changes after the new commitment_PV2-321.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1547,6 +1677,38 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-852 - Non Levy learner, price is less than funding band maximum, earns 16-18 incentive payment, and finishes on time.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Approvals Interface\PV2-696 - Employer Change in Payment Order for Multiple learners with an Employer.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-696 - Employer Change in Payment Order for Multiple learners with an Employer.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-695_Learners_Apprenticeship_Is_Resumed_After_A_Pause.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-694_Apprenticeship_Is_Paused_By_The_Employer.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-694_Apprenticeship_Is_Paused_By_The_Employer.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-693 - Learners apprenticeship Stop Date is Changed by the Employer.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-693 - Learners apprenticeship Stop Date is Changed by the Employer.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-692 - Apprenticeship Is Stopped by the Employer without completing.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-692 - Apprenticeship Is Stopped by the Employer without completing.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-689 - Update Existing Apprenticeship.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-689 - Update Existing Apprenticeship.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-690 - Data Lock resolved for a learners with a Commitment in a state of approved and a data-lock recorded against it.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-690 - Data Lock resolved for a learners with a Commitment in a state of approved and a data-lock recorded against it.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Approvals Interface\PV2-688 - New Apprenticeship Approved.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-688 - New Apprenticeship Approved.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Capping\Levy learner over funding band cap - PV2-528.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner over funding band cap - PV2-528.feature.cs</LastGenOutput>
@@ -1702,6 +1864,26 @@
     <None Include="Tests\Employer Stops\E2E -PV2-943 - Levy learner, Employer stops commitment day after course completed, completion payment paid.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>E2E -PV2-943 - Levy learner, Employer stops commitment day after course completed, completion payment paid.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Stops\E2E -PV2-944 - Levy learner, Employer stops commitment on day the course is completed, completion payment paid .feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E -PV2-944 - Levy learner, Employer stops commitment on day the course is completed, completion payment paid .feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Stops\E2E -PV2-945 - Levy learner, Employer stops commitment before the day the course is completed, completion payment not paid .feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E -PV2-945 - Levy learner, Employer stops commitment before the day the course is completed, completion payment not paid .feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Stops\E2E -PV2-946 - Levy learner, Employer stops commitment after the day the course is completes, completion and balancing payment is paid .feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E -PV2-946 - Levy learner, Employer stops commitment after the day the course is completes, completion and balancing payment is paid .feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Stops\E2E -PV2-947 - Levy learner, Employer stops commitment on the day the course completes, completion and balancing payment is paid .feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E -PV2-947 - Levy learner, Employer stops commitment on the day the course completes, completion and balancing payment is paid .feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Stops\E2E -PV2-948 - Levy learner, Employer stops commitment before the day the course completes, completion and balancing payment is not paid .feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>E2E -PV2-948 - Levy learner, Employer stops commitment before the day the course completes, completion and balancing payment is not paid .feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\English and Maths\PV2-486- Levy learner with English and Maths, planned duration is same as main aim but Eng and Maths finishes early.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2019,6 +2201,14 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>E2E - PV2-931 - Levy learner with levy balance starts after 1st day of month care leaver payment made after 60 days.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Levy - Data Locks\PV2-1464_Ignore_Apprenticeship_That_Stop_Within_A_Day_Of_Starting.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1464_Ignore_Apprenticeship_That_Stop_Within_A_Day_Of_Starting.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Data Locks\PV2-1510 - DLOCK01 when no matching record found for the UKPRN.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1510 - DLOCK01 when no matching record found for the UKPRN.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Levy - Data Locks\PV2-662 - DLOCK01 when no matching record found for the UKPRN.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-662 - DLOCK01 when no matching record found for the UKPRN.feature.cs</LastGenOutput>
@@ -2079,6 +2269,26 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-713- DLOCK12 when the employer pauses payments for a learner on a commitment.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Levy - Data Locks\PV2-769 - DLOCK03 mismatch in standard code.feature" >
+	 <Generator>SpecFlowSingleFileGenerator</Generator>
+	 <LastGenOutput>PV2-769 - DLOCK03 mismatch in standard code.feature.cs</LastGenOutput>
+	</None>	
+    <None Include="Tests\Levy - Payment Priority\PV2-602 - Payment Priority for 2 providers levy spent in priority order and sufficient levy available.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-602 - Payment Priority for 2 providers levy spent in priority order and sufficient levy available.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Payment Priority\PV2-603 - Two providers, levy spent in priority order, enough to fund only one provider.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-603 - Two providers, levy spent in priority order, enough to fund only one provider.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Payment Priority\PV2-604 - Two providers, levy spent in priority order, enough to fund 1 provider fully but half for another provider.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-604 - Two providers, levy spent in priority order, enough to fund 1 provider fully but half for another provider.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy - Payment Priority\PV2-656 - two providers where levy spent in priority order and the priority is changed in R04.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-656 - two providers where levy spent in priority order and the priority is changed in R04.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Levy Learner\Basic Day\2 learners 2 employers 1 provider enough levy - PV2-267.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>2 learners 2 employers 1 provider enough levy - PV2-267.feature.cs</LastGenOutput>
@@ -2106,6 +2316,10 @@
     <None Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finishes two months early PV2-276.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy Learner, levy available, finishes two months early PV2-276.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Submission Events\One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2283,22 +2497,6 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Payment Priority\Two levy learners paid in priority order enough levy to fund one learner_PV2-603.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Two levy learners paid in priority order enough levy to fund one learner_PV2-603.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and enough levy for both learners_PV2-602.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Two Levy learners where levy spent in priority order and enough levy for both learners_PV2-602.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and is available for only 1 and half learners_PV2-604.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Two Levy learners where levy spent in priority order and is available for only 1 and half learners_PV2-604.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Payment Priority\Two Levy learners where levy spent in priority order and the priority is changed in R04_PV2-656.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Two Levy learners where levy spent in priority order and the priority is changed in R04_PV2-656.feature.cs</LastGenOutput>
-    </None>
     <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer and ILR changes after the new commitment_PV2-321.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy learner changes provider but remains with the same employer and ILR changes after the new commitment_PV2-321.feature.cs</LastGenOutput>
@@ -2453,6 +2651,10 @@
       <Project>{fafc16fb-316e-4c83-9f35-d0d36ddccaf7}</Project>
       <Name>SFA.DAS.Payments.Model.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Client\SFA.DAS.Payments.Monitoring.Jobs.Client.csproj">
+      <Project>{66b42b94-b29b-48ea-9ab6-c96c11c1d9ce}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Jobs.Client</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Data\SFA.DAS.Payments.Monitoring.Jobs.Data.csproj">
       <Project>{D9849B05-C642-48F7-AA6D-FA917257AE45}</Project>
       <Name>SFA.DAS.Payments.Monitoring.Jobs.Data</Name>
@@ -2460,6 +2662,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj">
       <Project>{9274abb3-9f30-4320-a111-17ba07dbf568}</Project>
       <Name>SFA.DAS.Payments.Monitoring.Jobs.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Model\SFA.DAS.Payments.Monitoring.Jobs.Model.csproj">
+      <Project>{dc3c2dfe-ce0c-4b40-9a80-392b600fcded}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Jobs.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Messages.Internal\SFA.DAS.Payments.ProviderPayments.Messages.Internal.csproj">
       <Project>{25B9DFA3-DF0C-4C53-A991-1F3D3BB407A8}</Project>

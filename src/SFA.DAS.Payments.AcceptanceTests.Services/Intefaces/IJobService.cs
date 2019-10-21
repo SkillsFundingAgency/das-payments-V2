@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ESFA.DC.JobStatus.Interface;
+using ESFA.DC.Jobs.Model;
+using ESFA.DC.Jobs.Model.Enums;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
 {
@@ -15,5 +16,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
         Task DeleteJob(long jobId);
 
         Task<IEnumerable<long>> GetJobsByStatus(int ukprn, params int[] status);
+
+        Task<FileUploadJob> GetJob(long ukprn, long jobId);
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -28,14 +29,16 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         private readonly IPaymentHistoryRepository paymentHistoryRepository;
         private readonly IApprenticeshipKeyProvider apprenticeshipKeyProvider;
         private readonly INegativeEarningService negativeEarningService;
+        private readonly IPaymentLogger paymentLogger;
 
         protected EarningEventProcessorBase(
-            IMapper mapper, 
-            IRequiredPaymentProcessor requiredPaymentProcessor, 
-            IHoldingBackCompletionPaymentService completionPaymentService, 
-            IPaymentHistoryRepository paymentHistoryRepository, 
-            IApprenticeshipKeyProvider apprenticeshipKeyProvider, 
-            INegativeEarningService negativeEarningService)
+            IMapper mapper,
+            IRequiredPaymentProcessor requiredPaymentProcessor,
+            IHoldingBackCompletionPaymentService completionPaymentService,
+            IPaymentHistoryRepository paymentHistoryRepository,
+            IApprenticeshipKeyProvider apprenticeshipKeyProvider,
+            INegativeEarningService negativeEarningService,
+            IPaymentLogger paymentLogger)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.requiredPaymentProcessor = requiredPaymentProcessor ?? throw new ArgumentNullException(nameof(requiredPaymentProcessor));
@@ -43,6 +46,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             this.paymentHistoryRepository = paymentHistoryRepository;
             this.apprenticeshipKeyProvider = apprenticeshipKeyProvider;
             this.negativeEarningService = negativeEarningService;
+            this.paymentLogger = paymentLogger;
         }
 
         public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleEarningEvent(TEarningEvent earningEvent, IDataCache<PaymentHistoryEntity[]> paymentHistoryCache, CancellationToken cancellationToken)
@@ -50,86 +54,100 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             if (earningEvent == null)
                 throw new ArgumentNullException(nameof(earningEvent));
 
-            var result = new List<PeriodisedRequiredPaymentEvent>();
-            
-            var cachedPayments = await paymentHistoryCache.TryGet(CacheKeys.PaymentHistoryKey, cancellationToken);
-            var academicYearPayments = cachedPayments.HasValue
-                ? cachedPayments.Value
-                    .Where(p => p.LearnAimReference == earningEvent.LearningAim.Reference)
-                    .Select(p => mapper.Map<PaymentHistoryEntity, Payment>(p))
-                    .ToList()
-                : new List<Payment>();
-
-            foreach (var (period, type) in GetPeriods(earningEvent))
+            try
             {
-                if (period.Period > earningEvent.CollectionPeriod.Period) // cut off future periods
-                    continue;
+              
+                var result = new List<PeriodisedRequiredPaymentEvent>();
 
-                if (period.Amount != 0 && !period.SfaContributionPercentage.HasValue)
+                var cachedPayments = await paymentHistoryCache.TryGet(CacheKeys.PaymentHistoryKey, cancellationToken);
+                var academicYearPayments = cachedPayments.HasValue
+                    ? cachedPayments.Value
+                        .Where(p => p.LearnAimReference == earningEvent.LearningAim.Reference)
+                        .Select(p => mapper.Map<PaymentHistoryEntity, Payment>(p))
+                        .ToList()
+                    : new List<Payment>();
+
+                foreach (var (period, type) in GetPeriods(earningEvent))
                 {
-                    throw new InvalidOperationException("Non-zero amount with no Sfa Contribution");
-                }
+                    if (period.Period > earningEvent.CollectionPeriod.Period) // cut off future periods
+                        continue;
 
-                var payments = academicYearPayments.Where(payment => payment.DeliveryPeriod == period.Period &&
-                                                                     payment.TransactionType == type)
-                    .ToList();
-
-                List<RequiredPayment> requiredPayments;
-                var holdBackCompletionPayments = false;
-
-                if (period.Amount < 0 && 
-                    NegativeEarningWillResultInARefund(period, payments))
-                {
-                    requiredPayments = negativeEarningService
-                        .ProcessNegativeEarning(period.Amount, academicYearPayments, period.Period, period.PriceEpisodeIdentifier);
-                }
-                else
-                {
-                    var earning = new Earning
+                    if (period.Amount != 0 && !period.SfaContributionPercentage.HasValue)
                     {
-                        Amount = period.Amount,
-                        SfaContributionPercentage = period.SfaContributionPercentage,
-                        EarningType = GetEarningType(type),
-                        PriceEpisodeIdentifier = period.PriceEpisodeIdentifier,
-                        AccountId = period.AccountId,
-                        TransferSenderAccountId = period.TransferSenderAccountId
-                    };
-
-                    requiredPayments = requiredPaymentProcessor.GetRequiredPayments(earning, payments);
-                    if (requiredPayments.Count > 0)
-                    {
-                        holdBackCompletionPayments = await HoldBackCompletionPayments(earningEvent, earning, type, cancellationToken).ConfigureAwait(false);
-                    }
-                }
-
-                if (requiredPayments.Sum(x => x.Amount) == 0)
-                {
-                    continue;
-                }
-
-                foreach (var requiredPayment in requiredPayments)
-                {
-                    var requiredPaymentEvent = CreateRequiredPaymentEvent(requiredPayment.EarningType, type, holdBackCompletionPayments);
-                    mapper.Map(period, requiredPaymentEvent);
-                    mapper.Map(earningEvent, requiredPaymentEvent);
-                    mapper.Map(requiredPayment, requiredPaymentEvent);
-
-                    var priceEpisodeIdentifier = requiredPaymentEvent.PriceEpisodeIdentifier;
-
-                    if (earningEvent.PriceEpisodes != null && earningEvent.PriceEpisodes.Any())
-                    {
-                        var priceEpisode = earningEvent.PriceEpisodes.Count == 1
-                            ? earningEvent.PriceEpisodes.FirstOrDefault()
-                            : earningEvent.PriceEpisodes?.SingleOrDefault(x => x.Identifier == priceEpisodeIdentifier);
-
-                        mapper.Map(priceEpisode, requiredPaymentEvent);
+                        throw new InvalidOperationException("Non-zero amount with no Sfa Contribution");
                     }
 
-                    result.Add(requiredPaymentEvent);
+                    var payments = academicYearPayments.Where(payment => payment.DeliveryPeriod == period.Period &&
+                                                                         payment.TransactionType == type)
+                        .ToList();
+
+                    List<RequiredPayment> requiredPayments;
+                    var holdBackCompletionPayments = false;
+
+                    if (period.Amount < 0 &&
+                        NegativeEarningWillResultInARefund(period, payments))
+                    {
+                        requiredPayments = negativeEarningService
+                            .ProcessNegativeEarning(period.Amount, academicYearPayments, period.Period, period.PriceEpisodeIdentifier);
+                    }
+                    else
+                    {
+                        var earning = new Earning
+                        {
+                            Amount = period.Amount,
+                            SfaContributionPercentage = period.SfaContributionPercentage,
+                            EarningType = GetEarningType(type),
+                            PriceEpisodeIdentifier = period.PriceEpisodeIdentifier,
+                            AccountId = period.AccountId,
+                            TransferSenderAccountId = period.TransferSenderAccountId
+                        };
+
+                        requiredPayments = requiredPaymentProcessor.GetRequiredPayments(earning, payments);
+                        if (requiredPayments.Count > 0)
+                        {
+                            holdBackCompletionPayments = await HoldBackCompletionPayments(earningEvent, earning, type, cancellationToken).ConfigureAwait(false);
+                        }
+                    }
+
+                    if (requiredPayments.Sum(x => x.Amount) == 0)
+                    {
+                        continue;
+                    }
+
+                    if (holdBackCompletionPayments)
+                    {
+                        continue;
+                    }
+                    foreach (var requiredPayment in requiredPayments)
+                    {
+                        var requiredPaymentEvent = CreateRequiredPaymentEvent(requiredPayment.EarningType, type, holdBackCompletionPayments);
+                        mapper.Map(period, requiredPaymentEvent);
+                        mapper.Map(earningEvent, requiredPaymentEvent);
+                        mapper.Map(requiredPayment, requiredPaymentEvent);
+
+                        var priceEpisodeIdentifier = requiredPaymentEvent.PriceEpisodeIdentifier;
+
+                        if (earningEvent.PriceEpisodes != null && earningEvent.PriceEpisodes.Any())
+                        {
+                            var priceEpisode = earningEvent.PriceEpisodes.Count == 1
+                                ? earningEvent.PriceEpisodes.FirstOrDefault()
+                                : earningEvent.PriceEpisodes?.SingleOrDefault(x => x.Identifier == priceEpisodeIdentifier);
+
+                            mapper.Map(priceEpisode, requiredPaymentEvent);
+                        }
+                        //if (requiredPaymentEvent.PlannedEndDate)
+
+                        result.Add(requiredPaymentEvent);
+                    }
                 }
+                return result.AsReadOnly();
+
             }
-
-            return result.AsReadOnly();
+            catch (Exception e)
+            {
+                paymentLogger.LogError($"Error while Handling EarningEvent for {earningEvent.Ukprn} ", e);
+                throw;
+            }
         }
 
         private static bool NegativeEarningWillResultInARefund(EarningPeriod period, List<Payment> payments)
@@ -139,7 +157,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
         private async Task<bool> HoldBackCompletionPayments(TEarningEvent earningEvent, Earning earning, int type, CancellationToken cancellationToken)
         {
-            if (type != (int) OnProgrammeEarningType.Completion)
+            if (type != (int)OnProgrammeEarningType.Completion)
                 return false;
 
             var priceEpisode = earningEvent.PriceEpisodes.Single(p => p.Identifier == earning.PriceEpisodeIdentifier);
@@ -161,23 +179,23 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 case EarningType.CoInvested:
                     return new CalculatedRequiredCoInvestedAmount
                     {
-                        OnProgrammeEarningType = (OnProgrammeEarningType) transactionType,
+                        OnProgrammeEarningType = (OnProgrammeEarningType)transactionType,
                     };
                 case EarningType.Incentive:
                     return new CalculatedRequiredIncentiveAmount
                     {
-                        Type = (IncentivePaymentType) transactionType,
+                        Type = (IncentivePaymentType)transactionType,
                     };
                 case EarningType.Levy:
                     return new CalculatedRequiredLevyAmount
                     {
-                        OnProgrammeEarningType = (OnProgrammeEarningType) transactionType,
+                        OnProgrammeEarningType = (OnProgrammeEarningType)transactionType,
                     };
             }
 
             throw new NotImplementedException($"Could not create required payment for earning type: {earningType}");
         }
-        
+
         protected abstract IReadOnlyCollection<(EarningPeriod period, int type)> GetPeriods(TEarningEvent earningEvent);
     }
 }

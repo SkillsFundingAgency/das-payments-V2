@@ -11,5 +11,18 @@
 	LearnerCount INT NULL,
 	AcademicYear SMALLINT NOT NULL,
 	CollectionPeriod TINYINT NOT NULL,
+	DataLocksCompletionTime DATETIMEOFFSET NULL,
 	INDEX IX_Job__DCJobId_Ukprn NONCLUSTERED (DCJobId, Ukprn)
 )
+
+GO
+
+CREATE INDEX [IX_Job__Search] ON [Payments2].[Job](
+	JobId,
+	JobType,
+	DCJobId,
+	Ukprn,
+	[Status],
+	DataLocksCompletionTime
+)
+GO

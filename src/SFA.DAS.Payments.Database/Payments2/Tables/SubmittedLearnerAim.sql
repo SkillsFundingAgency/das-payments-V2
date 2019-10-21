@@ -10,7 +10,7 @@
     [LearningAimReference] NVARCHAR(8) NOT NULL, 
     [CollectionPeriod] TINYINT NOT NULL, 
     [AcademicYear] SMALLINT NOT NULL, 
-    [IlrSubmissionDateTime] DATETIME NOT NULL, 
+    [IlrSubmissionDateTime] DATETIME2 NOT NULL, 
     [CreationDate] DATETIMEOFFSET NOT NULL CONSTRAINT DF_SubmittedLearnerAim_CreationDate DEFAULT (SYSDATETIMEOFFSET()), 
     [LearnerUln] BIGINT NOT NULL, 
     [JobId] BIGINT NOT NULL, 
@@ -20,3 +20,17 @@
 GO
 
 CREATE INDEX [IX_SubmittedLearnerAim_ApprenticeshipKey] ON [Payments2].[SubmittedLearnerAim] ([Ukprn], [LearnerReferenceNumber], [LearningAimFrameworkCode], [LearningAimPathwayCode], [LearningAimProgrammeType], [LearningAimStandardCode], [LearningAimReference], [ContractType])
+Go
+
+CREATE INDEX [IX_SubmittedLearnerAim__Delete] ON [Payments2].[SubmittedLearnerAim] 
+(
+	[Ukprn], 
+	[AcademicYear], 
+	[CollectionPeriod], 
+	[IlrSubmissionDateTime]
+)
+INCLUDE
+(
+	[LearnerUln]
+)
+Go

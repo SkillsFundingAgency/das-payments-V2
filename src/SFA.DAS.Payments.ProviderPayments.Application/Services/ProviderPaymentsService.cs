@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
+using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.ProviderPayments.Model;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
@@ -48,10 +49,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             }
 
             paymentLogger.LogVerbose($"Received valid payment with Job Id {payment.JobId} for Ukprn {payment.Ukprn} ");
-            await paymentCache.AddPayment(payment);
+            await paymentCache.AddPayment(payment, cancellationToken);
             stopwatch.Stop();
             telemetry.TrackDuration(GetType().FullName + ".ProcessPayment", stopwatch.Elapsed);
-            paymentLogger.LogInfo("Finished adding the payment to the cache.");
+            paymentLogger.LogInfo($"Finished adding the payment to the cache. EventId: {payment.EventId}, FundingSourceId: {payment.FundingSourceId}, UKPRN: {payment.Ukprn}");
         }
 
         private async Task<bool> IsCurrentProviderIlr(long jobId, long ukprn, DateTime ilrSubmissionDateTime, CancellationToken cancellationToken)

@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Audit.Model
@@ -15,6 +16,9 @@ namespace SFA.DAS.Payments.Audit.Model
          string AgreementId { get; set; }
          long? AccountId { get; set; }
          long? TransferSenderAccountId { get; set; }
+         long? ApprenticeshipId { get; set; }
+         long? ApprenticeshipPriceEpisodeId { get; set; }
+        ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
     }
 
     public abstract class PeriodisedPaymentsEventModel: PaymentsEventModel, IPeriodisedPaymentsEventModel
@@ -30,5 +34,7 @@ namespace SFA.DAS.Payments.Audit.Model
         public string AgreementId { get; set; }
         public long? AccountId { get; set; }
         public long? TransferSenderAccountId { get; set; }
-    }
+        public long? ApprenticeshipId { get; set; }
+        public long? ApprenticeshipPriceEpisodeId { get; set; }
+        public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }    }
 }

@@ -26,6 +26,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [OneTimeSetUp]
         public void InitialiseMapper()
         {
+            Mapper.Reset();
             Mapper.Initialize(cfg => { cfg.AddProfile<EarningsEventProfile>(); });
             Mapper.AssertConfigurationIsValid();
         }
@@ -50,6 +51,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                             ProgType = 300,
                             PwayCode = 400,
                             LearnDelInitialFundLineType = "Funding Line Type",
+                            LearnStartDate = DateTime.Today.AddDays(-5)
                         }
                     },
                     new LearningDelivery
@@ -409,10 +411,18 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         }
 
         [Test]
+        public void Maps_LearnStartDate()
+        {
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
+            earningEvent.Should().NotBeNull();
+            earningEvent.StartDate.Should().Be(DateTime.Today.AddDays(-5));
+        }
+
+        [Test]
         public void TestFunctionalSkillsEarningMap()
         {
             learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries[1]);
-            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, FunctionalSkillEarningsEvent>(learningAim);
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, Act2FunctionalSkillEarningsEvent>(learningAim);
             earningEvent.Should().NotBeNull();
             earningEvent.LearningAim.Reference.Should().Be("M&E");
             earningEvent.Earnings.Should().HaveCount(3);
@@ -1033,7 +1043,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             });
 
             learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries[0]);
-            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, FunctionalSkillEarningsEvent>(learningAim);
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, Act2FunctionalSkillEarningsEvent>(learningAim);
             earningEvent.Should().NotBeNull();
 
             var balancing = earningEvent.Earnings.Where(e => e.Type == FunctionalSkillType.BalancingMathsAndEnglish).ToArray();

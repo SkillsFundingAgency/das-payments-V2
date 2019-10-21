@@ -1,21 +1,22 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
+using SFA.DAS.Payments.Application.Batch;
+using SFA.DAS.Payments.Application.Data;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.Application.Data;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
-using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.Core.Configuration;
+using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
 {
-    public interface IPaymentsEventModelBatchProcessor<T> where T : IPaymentsEventModel
+    public interface IPaymentsEventModelBatchProcessor<T> : IBatchProcessor<T> where T : IPaymentsEventModel
     {
-        Task<int> Process(int batchSize, CancellationToken cancellationToken);
     }
 
     public class PaymentsEventModelBatchProcessor<T> : IPaymentsEventModelBatchProcessor<T> where T : IPaymentsEventModel
@@ -27,7 +28,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
 
         public PaymentsEventModelBatchProcessor(
             IPaymentsEventModelCache<T> cache,
-            IPaymentsEventModelDataTable<T> dataTable, 
+            IPaymentsEventModelDataTable<T> dataTable,
             IConfigurationHelper configurationHelper,
             IPaymentLogger logger)
         {
@@ -45,17 +46,18 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
         public async Task<int> Process(int batchSize, CancellationToken cancellationToken)
         {
             logger.LogVerbose("Processing batch.");
-            var batch = await cache.GetPayments(batchSize);
+            var batch = await cache.GetPayments(batchSize, cancellationToken);
             if (batch.Count < 1)
             {
                 logger.LogVerbose("No records found to process.");
                 return 0;
             }
 
-            logger.LogDebug($"Processing {batch.Count} records.");
+            logger.LogDebug($"Processing {batch.Count} records: {string.Join(", ", batch.Select(m => m.EventId))}");
+
             var data = dataTable.GetDataTable(batch);
+            using (var scope = TransactionScopeFactory.CreateWriteOnlyTransaction())
             using (var sqlConnection = new SqlConnection(connectionString))
-            using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
                 {
@@ -66,6 +68,8 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                         {
                             bulkCopy.ColumnMappings.Clear();
                             bulkCopy.DestinationTableName = data.Count > 1 ? table.TableName : dataTable.TableName;
+                            bulkCopy.BulkCopyTimeout = 0;
+                            bulkCopy.BatchSize = batchSize;
 
                             foreach (DataRow tableRow in table.Rows)
                             {
@@ -81,14 +85,10 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                             }
                             catch (SystemException ex)
                             {
-                                if (batch.Count == 1)
-                                    throw;
-
-                                logger.LogError("Error bulk writing to server. Processing single records.", ex);
-                                var errors = TrySingleRecord(bulkCopy, table);
-
-                                if (errors == batch.Count) // fallback to retry if all records fail
-                                    throw;
+                                logger.LogWarning($"Error bulk writing to server. Processing single records. \n\n" +
+                                                  $"{ex.Message}\n\n" +
+                                                  $"{ex.StackTrace}");
+                                await TrySingleRecord(bulkCopy, table, sqlConnection).ConfigureAwait(false);
                             }
                         }
 
@@ -107,7 +107,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
             return batch.Count;
         }
 
-        private int TrySingleRecord(SqlBulkCopy bulkCopy, DataTable table)
+        private async Task<int> TrySingleRecord(SqlBulkCopy bulkCopy, DataTable table, SqlConnection connection)
         {
             bulkCopy.BatchSize = 1;
             var errors = 0;
@@ -119,7 +119,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                 var dataSchema = dataReader.GetSchemaTable();
                 foreach (DataRow row in dataSchema.Rows)
                 {
-                    singleRecordTable.Columns.Add(new DataColumn(row["ColumnName"].ToString(), (Type) row["DataType"]));
+                    singleRecordTable.Columns.Add(new DataColumn(row["ColumnName"].ToString(), (Type)row["DataType"]));
                 }
 
                 while (dataReader.Read())
@@ -130,11 +130,16 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
 
                     try
                     {
-                        bulkCopy.WriteToServer(singleRecordTable);
+                        if (connection.State != ConnectionState.Open)
+                        {
+                            await connection.OpenAsync().ConfigureAwait(false);
+                        }
+                        await bulkCopy.WriteToServerAsync(singleRecordTable).ConfigureAwait(false);
                     }
                     catch (SystemException ex)
                     {
-                        logger.LogError($"Single record failure: {ToLogString(singleRecordTable.Rows[0])}", ex);
+                        logger.LogError($"Single record failure with {bulkCopy.DestinationTableName}:\n\n" +
+                                        $" {ToLogString(singleRecordTable.Rows[0])}", ex);
                         errors++;
                     }
                 }

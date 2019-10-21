@@ -1,7 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Net;
+using System.Web;
 using Autofac;
 using NServiceBus;
 using NServiceBus.Features;
+using NServiceBus.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Messaging.Telemetry;
 using SFA.DAS.Payments.Core.Configuration;
@@ -12,20 +17,35 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<MessagingLoggerFactory>();
+            builder.RegisterType<MessagingLogger>();
+
             builder.Register((c, p) =>
             {
+                LogManager.UseFactory(c.Resolve<MessagingLoggerFactory>());
+
                 var config = c.Resolve<IApplicationConfiguration>();
-                var endpointConfiguration = new EndpointConfiguration(config.EndpointName);
+
+                var endpointName = new EndpointName(config.EndpointName);
+                EndpointConfigurationEvents.OnConfiguringEndpoint(endpointName);
+                var endpointConfiguration = new EndpointConfiguration(endpointName.Name);
+                EndpointConfigurationEvents.OnEndpointConfigured(endpointConfiguration);
 
                 var conventions = endpointConfiguration.Conventions();
                 conventions.DefiningMessagesAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages") ?? false));
                 conventions.DefiningCommandsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages.Commands") ?? false));
-                conventions.DefiningEventsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages.Events") ?? false));
+                conventions.DefiningEventsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && ((type.Namespace?.Contains(".Messages.Events") ?? false) || (type.Namespace?.Contains(".Messages.Core") ?? false)));
 
                 var persistence = endpointConfiguration.UsePersistence<AzureStoragePersistence>();
                 persistence.ConnectionString(config.StorageConnectionString);
 
                 endpointConfiguration.DisableFeature<TimeoutManager>();
+                if (!string.IsNullOrEmpty(config.NServiceBusLicense))
+                {
+                    var license = WebUtility.HtmlDecode(config.NServiceBusLicense);
+                    endpointConfiguration.License(license);
+                }
+
                 var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
                 transport
                     .ConnectionString(config.ServiceBusConnectionString)
@@ -40,10 +60,18 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 endpointConfiguration.EnableInstallers();
                 endpointConfiguration.Pipeline.Register(typeof(TelemetryHandlerBehaviour), "Sends handler timing to telemetry service.");
                 endpointConfiguration.EnableCallbacks(makesRequests: false);
+                if (config.ProcessMessageSequentially) endpointConfiguration.LimitMessageProcessingConcurrencyTo(1);
 
-                if(config.ProcessMessageSequentially) endpointConfiguration.LimitMessageProcessingConcurrencyTo(1);
-                
-                endpointConfiguration.Pipeline.Register(typeof(ExceptionHandlingBehavior),"Logs exceptions to the payments logger");
+                endpointConfiguration.Pipeline.Register(typeof(ExceptionHandlingBehavior), "Logs exceptions to the payments logger");
+
+                var recoverability = endpointConfiguration.Recoverability();
+                recoverability.Immediate(immediate => immediate.NumberOfRetries(config.ImmediateMessageRetries));
+                recoverability.Delayed(delayed =>
+                {
+                    delayed.NumberOfRetries(config.DelayedMessageRetries);
+                    delayed.TimeIncrease(config.DelayedMessageRetryDelay);
+                });
+
                 return endpointConfiguration;
             })
             .As<EndpointConfiguration>()
@@ -56,5 +84,15 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
             builder.RegisterType<ExceptionHandlingBehavior>()
                 .SingleInstance();
         }
+    }
+
+    public class EndpointName
+    {
+        public EndpointName(string endpointName)
+        {
+            Name = endpointName;
+        }
+
+        public string Name { get; set; }
     }
 }

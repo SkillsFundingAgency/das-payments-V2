@@ -44,13 +44,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 Ukprn = 10000,
 
                 AgreementId = "11",
-                ApprenticeshipId = 12,
                 Priority = 13,
                 EventId = Guid.NewGuid(),
                 AccountId = 1000000,
                 IlrSubmissionDateTime = DateTime.Today,
                 EarningEventId = Guid.NewGuid(),
                 ContractType = ContractType.Act1,
+                ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
+                ApprenticeshipId = 12,
             };
             mapperConfiguration = AutoMapperConfigurationFactory.CreateMappingConfig();
             autoMapper = mapperConfiguration.CreateMapper();
@@ -155,6 +156,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
         private void PopulateCommonProperties(FundingSourcePaymentEvent expectedEvent)
         {
             expectedEvent.FundingSourceType = FundingSourceType.Levy;
+            expectedEvent.ApprenticeshipId = 12;
             expectedEvent.Learner = new Learner
             {
                 ReferenceNumber = "001",
@@ -177,6 +179,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             expectedEvent.CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 1);
             expectedEvent.AccountId = 1000000;
             expectedEvent.EarningEventId = requiredPaymentEvent.EarningEventId;
+            expectedEvent.ApprenticeshipEmployerType = requiredPaymentEvent.ApprenticeshipEmployerType;
         }
     }
 }

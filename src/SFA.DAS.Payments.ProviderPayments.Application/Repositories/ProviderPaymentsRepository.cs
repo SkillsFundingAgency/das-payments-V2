@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.ProviderPayments.Application.Data;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
 {
@@ -29,6 +30,31 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
                 .ToListAsync(cancellationToken);
         }
 
+        public List<PaymentModelWithRequiredPaymentId> GetMonthEndPayments(CollectionPeriod collectionPeriod, int pageSize,
+            int page)
+        {
+            var payments = paymentsDataContext.PaymentsWithRequiredPayments.FromSql($@"
+                SELECT R.EventId [RequiredPaymentEventId], P.*, E.LearningAimSequenceNumber, R.Amount [AmountDue]
+                  FROM [Payments2].[Payment] P
+                JOIN Payments2.FundingSourceEvent F
+	                ON F.EventId = P.FundingSourceEventId
+                JOIN Payments2.RequiredPaymentEvent R
+	                ON R.EventId = F.RequiredPaymentEventId
+                JOIN Payments2.EarningEvent E
+	                ON E.EventId = P.EarningEventId
+                WHERE P.AcademicYear = {collectionPeriod.AcademicYear}
+                    AND P.CollectionPeriod = {collectionPeriod.Period}
+                ORDER BY P.Id
+                OFFSET {pageSize*page} ROWS
+                FETCH NEXT {pageSize} ROWS ONLY
+                "
+                )
+                .AsNoTracking()
+                .ToList();
+
+            return payments;
+        }
+
         public async Task<List<long>> GetMonthEndProviders(CollectionPeriod collectionPeriod,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -37,6 +63,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
                         p.CollectionPeriod.Period == collectionPeriod.Period &&
                         p.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear)
                    .Select(o => o.Ukprn)
+                   .Distinct()
                    .ToListAsync(cancellationToken);
         }
 
@@ -50,6 +77,21 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
                             p.CollectionPeriod.Period == collectionPeriod.Period &&
                             p.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
                             p.IlrSubmissionDateTime < currentIlrSubmissionDateTime);
+
+            paymentsDataContext.Payment.RemoveRange(oldSubmittedIlrPayments);
+            await paymentsDataContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task DeleteCurrentMonthEndPayment(CollectionPeriod collectionPeriod,
+            long ukprn,
+            DateTime currentIlrSubmissionDateTime,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var oldSubmittedIlrPayments = paymentsDataContext.Payment
+                .Where(p => p.Ukprn == ukprn &&
+                            p.CollectionPeriod.Period == collectionPeriod.Period &&
+                            p.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
+                            p.IlrSubmissionDateTime == currentIlrSubmissionDateTime);
 
             paymentsDataContext.Payment.RemoveRange(oldSubmittedIlrPayments);
             await paymentsDataContext.SaveChangesAsync(cancellationToken);

@@ -15,6 +15,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         public short AcademicYear { get; protected set; }
         public int CollectionPeriod { get; protected set; }
         public DateTime IlrSubmissionDateTime { get; protected set; }
+        public string IlrFileName { get; protected set; }
         public long JobId { get; set; }
         public ContractType ContractType { get; set; }
         
@@ -30,6 +31,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             AcademicYear = command.CollectionYear;
             CollectionPeriod = command.CollectionPeriod;
             IlrSubmissionDateTime = command.IlrSubmissionDateTime;
+            IlrFileName = command.IlrFileName;
             JobId = command.JobId;
         }
 
@@ -41,6 +43,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             short collectionYear,
             int collectionPeriod, 
             DateTime ilrSubmissionDateTime, 
+            string ilrFileName,
             long jobId)
         {
             Aim = aim;
@@ -50,6 +53,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             AcademicYear = collectionYear;
             CollectionPeriod = collectionPeriod;
             IlrSubmissionDateTime = ilrSubmissionDateTime;
+            IlrFileName = ilrFileName;
             JobId = jobId;
         }
 
@@ -77,7 +81,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         public IntermediateLearningAim CopyReplacingPriceEpisodes(IEnumerable<PriceEpisode> priceEpisodes)
         {
             var copy = new IntermediateLearningAim(Learner, Aim, priceEpisodes, Ukprn, 
-                AcademicYear, CollectionPeriod, IlrSubmissionDateTime, JobId);
+                AcademicYear, CollectionPeriod, IlrSubmissionDateTime, IlrFileName, JobId);
             return copy;
         }
     }

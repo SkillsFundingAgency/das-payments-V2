@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.Logging.Interfaces;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
@@ -15,38 +14,42 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
     public class ApprenticeshipContractType1EarningEventHandler : IHandleMessages<ApprenticeshipContractType1EarningEvent>
     {
         private readonly IActorProxyFactory proxyFactory;
-        private readonly IPaymentLogger paymentLogger;
+        private readonly IPaymentLogger logger;
 
-        public ApprenticeshipContractType1EarningEventHandler(IActorProxyFactory proxyFactory, IPaymentLogger paymentLogger)
+        public ApprenticeshipContractType1EarningEventHandler(IActorProxyFactory proxyFactory, IPaymentLogger logger)
         {
             this.proxyFactory = proxyFactory;
-            this.paymentLogger = paymentLogger;
+            this.logger = logger;
         }
 
         public async Task Handle(ApprenticeshipContractType1EarningEvent message, IMessageHandlerContext context)
         {
-            paymentLogger.LogInfo($"Processing DataLockProxyProxyService event for UKPRN {message.Ukprn}");
+            if (message.Learner == null || message.Learner?.Uln == 0)
+            {
+                throw new InvalidOperationException("Invalid 'ApprenticeshipContractType1EarningEvent' received. Learner was null or Uln was 0.");
+            }
+            var uln = message.Learner.Uln;
+            var learnerRef = message.Learner.ReferenceNumber;
+            logger.LogDebug($"Processing DataLockProxyProxyService event for learner with learner ref {learnerRef}");
+            var actorId = new ActorId(uln);
 
-            var ukprn = message.Ukprn;
-            var actorId = new ActorId(ukprn);
-
-            paymentLogger.LogVerbose($"Creating actor proxy for provider with UKPRN {ukprn}");
+            logger.LogVerbose($"Creating actor proxy for learner with learner ref {learnerRef}");
             var actor = proxyFactory.CreateActorProxy<IDataLockService>(new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/DataLockServiceActorService"), actorId);
-            paymentLogger.LogDebug($"Actor proxy created for UKPRN {ukprn}");
+            logger.LogDebug($"Actor proxy created for learner with ULN {uln}");
 
-            paymentLogger.LogVerbose($"Calling actor proxy to handle earning for UKPRN {message.Ukprn}");
+            logger.LogVerbose($"Calling actor proxy to handle earning for learner with learner ref {learnerRef}");
             var dataLockEvents = await actor.HandleEarning(message, CancellationToken.None).ConfigureAwait(false);
-            paymentLogger.LogDebug($"Earning handled for UKPRN {message.Ukprn}");
+            logger.LogDebug($"Earning handled for learner with learner ref {learnerRef}");
 
             if (dataLockEvents != null)
             {
                 var summary = string.Join(", ", dataLockEvents.GroupBy(e => e.GetType().Name).Select(g => $"{g.Key}: {g.Count()}"));
-                paymentLogger.LogVerbose($"Publishing data lock event for UKPRN {message.Ukprn}: {summary}");
+                logger.LogVerbose($"Publishing data lock event for learner with learner ref {learnerRef}: {summary}");
                 await Task.WhenAll(dataLockEvents.Select(context.Publish)).ConfigureAwait(false);
-                paymentLogger.LogDebug($"Data lock event published for UKPRN {message.Ukprn}");
+                logger.LogDebug($"Data lock event published for learner with learner ref {learnerRef}");
             }
 
-            paymentLogger.LogInfo($"Successfully processed DataLockProxyProxyService event for Actor Id {actorId}");
+            logger.LogInfo($"Successfully processed DataLockProxyProxyService event for Actor Id {actorId}");
         }
     }
 }

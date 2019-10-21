@@ -4,6 +4,10 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -127,6 +131,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             GivenPriceDetailsAsFollows(table);
         }
 
+        [Given(@"the provider priority order is")]
+        public async Task GivenTheProviderPriorityOrder(Table table)
+        {
+           await AddLevyAccountPriorities(table, TestSession, CurrentCollectionPeriod, DataContext);
+        }
+
         [Given(@"the following commitments exist")]
         [Given(@"the following apprenticeships exist")]
         [Given(@"the Commitment details are changed as follows")]
@@ -212,7 +222,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("the following capping will apply to the price episodes")]
         public void GivenTheFollowingCappingWillApply(Table table)
         {
-
+           
         }
 
         [Then(@"the following learner earnings should be generated")]
@@ -239,6 +249,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             await ValidateRequiredPaymentsAtMonthEnd(table, TestSession.Provider).ConfigureAwait(false);
         }
+
+        [Then(@"a Submission (.*) Event is received")]
+        public async Task ThenASubmissionSuccessEventIsReceived(string outcome)
+        {
+            var dcHelper = Scope.Resolve<IDcHelper>();
+            await dcHelper.SendIlrSubmissionEvent(TestSession.Provider.Ukprn, AcademicYear, CollectionPeriod,
+                TestSession.GenerateId(), outcome == "Success");
+        }
+
 
         [Then(@"at month end only the following payments will be calculated for ""(.*)""")]
         public async Task ThenAtMonthEndOnlyTheFollowingPaymentsWillBeCalculatedFor(string providerIdentifier, Table table)

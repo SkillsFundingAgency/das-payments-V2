@@ -36,4 +36,18 @@
 	EarningsCompletionAmount DECIMAL (15,5),
 	EarningsInstalmentAmount DECIMAL (15,5),
 	EarningsNumberOfInstalments SMALLINT NOT NULL,
+	LearningStartDate DATETIME2 NULL,
+    ApprenticeshipId BIGINT NULL,
+    ApprenticeshipPriceEpisodeId BIGINT NULL,
+	ApprenticeshipEmployerType TINYINT NULL,
 )
+
+GO
+
+CREATE INDEX [IX_FundingSourceEvent__Audit] ON [Payments2].[FundingSourceEvent]
+(
+  [EarningEventId],
+  RequiredPaymentEventId
+)  
+
+GO

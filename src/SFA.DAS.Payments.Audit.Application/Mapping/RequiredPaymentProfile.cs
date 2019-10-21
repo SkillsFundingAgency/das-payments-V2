@@ -15,6 +15,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping
                 .Include<CalculatedRequiredLevyAmount, RequiredPaymentEventModel>()
                 .MapPeriodisedCommon()
                 .ForMember(dest => dest.EarningEventId, opt => opt.MapFrom(source => source.EarningEventId))
+                .ForMember(dest => dest.ApprenticeshipEmployerType, opt => opt.MapFrom(source => source.ApprenticeshipEmployerType))
                 ;
 
             CreateMap<CalculatedRequiredIncentiveAmount, RequiredPaymentEventModel>()

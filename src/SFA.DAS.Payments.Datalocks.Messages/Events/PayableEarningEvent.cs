@@ -1,6 +1,10 @@
-﻿namespace SFA.DAS.Payments.DataLocks.Messages.Events
+﻿using System;
+using SFA.DAS.Payments.Messages.Core;
+
+namespace SFA.DAS.Payments.DataLocks.Messages.Events
 {
-    public class PayableEarningEvent : DataLockEvent
+    public class PayableEarningEvent : DataLockEvent, IMonitoredMessage, ILeafLevelMessage
     {
+        public DateTime StartDate { get; set; }
     }
 }

@@ -15,6 +15,7 @@ using ESFA.DC.Queueing.Interface;
 using ESFA.DC.Queueing.Interface.Configuration;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
@@ -23,20 +24,119 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         private readonly IJsonSerializationService serializationService;
         private readonly ITopicPublishService<JobContextDto> topicPublishingService;
         private readonly IFileService azureFileService;
+        private readonly TestPaymentsDataContext dataContext;
 
         public DcHelper(IJsonSerializationService serializationService,
             ITopicPublishService<JobContextDto> topicPublishingService,
-            IFileService azureFileService)
+            IFileService azureFileService, 
+            TestPaymentsDataContext dataContext)
         {
             this.serializationService = serializationService ?? throw new ArgumentNullException(nameof(serializationService));
             this.topicPublishingService = topicPublishingService ?? throw new ArgumentNullException(nameof(topicPublishingService));
             this.azureFileService = azureFileService ?? throw new ArgumentNullException(nameof(azureFileService));
+            this.dataContext = dataContext;
+        }
+
+        public async Task SendIlrSubmissionEvent(long ukprn, short collectionYear, byte collectionPeriod, long jobId, bool success)
+        {
+            try
+            {
+                dataContext.ClearJobId(jobId);
+
+                var subscriptionName = DcConfiguration.SubscriptionName;
+
+                var dto = new JobContextDto
+                {
+                    JobId = jobId,
+                    KeyValuePairs = new Dictionary<string, object>
+                    {
+                        {JobContextMessageKey.UkPrn, ukprn},
+                        {JobContextMessageKey.CollectionYear, collectionYear },
+                        {JobContextMessageKey.ReturnPeriod, collectionPeriod },
+                        {JobContextMessageKey.Username, "PV2-Automated" }
+                    },
+                    SubmissionDateTimeUtc = DateTime.UtcNow,
+                    TopicPointer = 0,
+                    Topics = new List<TopicItemDto>
+                    {
+                        new TopicItemDto
+                        {
+                            SubscriptionName = subscriptionName,
+                            Tasks = new List<TaskItemDto>
+                            {
+                                new TaskItemDto
+                                {
+                                    SupportsParallelExecution = false,
+                                    Tasks = new List<string>
+                                    {
+                                        success?"JobSuccess":"JobFailure"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                await topicPublishingService.PublishAsync(dto, new Dictionary<string, object> { { "To", "GenerateFM36Payments" } }, "GenerateFM36Payments");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public async Task SendPeriodEndTask(short collectionYear, byte collectionPeriod, long jobId, string taskName)
+        {
+            try
+            {
+                dataContext.ClearJobId(jobId);
+
+                var dto = new JobContextDto
+                {
+                    JobId = jobId,
+                    KeyValuePairs = new Dictionary<string, object>
+                    {
+                        {JobContextMessageKey.UkPrn, 0 },
+                        {JobContextMessageKey.Filename, string.Empty },
+                        {JobContextMessageKey.CollectionYear, collectionYear },
+                        {JobContextMessageKey.ReturnPeriod, collectionPeriod },
+                        {JobContextMessageKey.Username, "PV2-Automated" }
+                    },
+                    SubmissionDateTimeUtc = DateTime.UtcNow,
+                    TopicPointer = 0,
+                    Topics = new List<TopicItemDto>
+                    {
+                        new TopicItemDto
+                        {
+                            SubscriptionName = "Payments",
+                            Tasks = new List<TaskItemDto>
+                            {
+                                new TaskItemDto
+                                {
+                                    SupportsParallelExecution = false,
+                                    Tasks = new List<string> { taskName }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                await topicPublishingService.PublishAsync(dto, new Dictionary<string, object> { { "To", "Payments" } }, $"Payments_{taskName}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public async Task SendIlrSubmission(List<FM36Learner> learners, long ukprn, short collectionYear, byte collectionPeriod, long jobId)
         {
             try
             {
+                dataContext.ClearJobId(jobId);
+
                 var messagePointer = Guid.NewGuid().ToString().Replace("-", string.Empty);
                 var ilrSubmission = new FM36Global
                 {
@@ -112,7 +212,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             }).As<IFileService>().InstancePerLifetimeScope();
             builder.Register(c => new TopicConfiguration(DcConfiguration.DcServiceBusConnectionString,
                     DcConfiguration.TopicName,
-                    DcConfiguration.SubscriptionName, 1,
+                    DcConfiguration.SubscriptionName, 10,
                     maximumCallbackTimeSpan: TimeSpan.FromMinutes(40)))
                 .As<ITopicConfiguration>();
 

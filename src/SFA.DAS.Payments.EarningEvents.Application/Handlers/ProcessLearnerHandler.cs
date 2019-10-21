@@ -8,7 +8,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 {
-    public class ProcessLearnerHandler: IHandleMessages<ProcessLearnerCommand>
+    public class ProcessLearnerHandler : IHandleMessages<ProcessLearnerCommand>
     {
         private readonly ILearnerSubmissionProcessor learnerSubmissionProcessor;
         private readonly IPaymentLogger logger;
@@ -34,9 +34,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             {
                 await context.Publish(earningEvent).ConfigureAwait(false);
             }
-
             var summary = string.Join(", ", processorResult.EarningEvents.GroupBy(e => e.GetType().Name).Select(g => $"{g.Key}: {g.Count()}"));
-
             logger.LogInfo($"Finished handling ILR learner submission.Job: { message.JobId}, Ukprn: { message.Ukprn}, Collection year: { message.CollectionYear}, Learner: { message.Learner.LearnRefNumber}. Published events: {summary}");
         }
     }

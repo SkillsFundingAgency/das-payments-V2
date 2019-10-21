@@ -33,9 +33,16 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public DateTime StartDate { get; set; }
         public DateTime? PlannedEndDate { get; set; }
         public DateTime? ActualEndDate { get; set; }
-        public byte CompletionStatus { get; set; }
-        public decimal CompletionAmount { get; set; }
-        public decimal InstalmentAmount { get; set; }
-        public short NumberOfInstalments { get; set; }
+        public byte? CompletionStatus { get; set; }
+        public decimal? CompletionAmount { get; set; }
+        public decimal? InstalmentAmount { get; set; }
+        public short? NumberOfInstalments { get; set; }
+        public string AgreementId { get; set; }
+
+        public DateTime? LearningStartDate { get; set; }
+        public long? ApprenticeshipId { get; set; }
+        public long? ApprenticeshipPriceEpisodeId { get; set; }
+        public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
+        public string ReportingAimFundingLineType { get; set; }
     }
 }

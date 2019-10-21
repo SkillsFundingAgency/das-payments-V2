@@ -35,15 +35,23 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.LearnerMatching
         [Test]
         public async Task WhenLearnerProviderIsNotFoundReturnDataLockErrorCode()
         {
+            ulnLearnerMatcher
+                .Setup(o => o.MatchUln(Uln))
+                .Returns(Task.FromResult<LearnerMatchResult>(new LearnerMatchResult
+                {
+                    Apprenticeships = new List<ApprenticeshipModel> { new ApprenticeshipModel() }
+                }))
+                .Verifiable();
+
             DataLockErrorCode? expectedDataLockErrorCode = DataLockErrorCode.DLOCK_01;
             ukprnMatcher
-                .Setup(o => o.MatchUkprn())
+                .Setup(o => o.MatchUkprn(It.IsAny<long>()))
                 .Returns(Task.FromResult(expectedDataLockErrorCode))
                 .Verifiable();
 
             var learnerMatcher = new LearnerMatcher(ukprnMatcher.Object, ulnLearnerMatcher.Object);
 
-            var actual = await learnerMatcher.MatchLearner(Uln);
+            var actual = await learnerMatcher.MatchLearner(1234,Uln);
 
             actual.DataLockErrorCode.Should().NotBeNull();
             actual.DataLockErrorCode.Should().Be(expectedDataLockErrorCode);
@@ -56,12 +64,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.LearnerMatching
             {
                 DataLockErrorCode = DataLockErrorCode.DLOCK_02
             };
-
-            ukprnMatcher
-                .Setup(o => o.MatchUkprn())
-                .Returns(Task.FromResult(default(DataLockErrorCode?)))
-                .Verifiable();
-
+            
             ulnLearnerMatcher
                 .Setup(o => o.MatchUln(Uln))
                 .Returns(Task.FromResult<LearnerMatchResult>(expectedLearnerMatchResult))
@@ -69,7 +72,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.LearnerMatching
 
             var learnerMatcher = new LearnerMatcher(ukprnMatcher.Object, ulnLearnerMatcher.Object);
 
-            var actual = await learnerMatcher.MatchLearner(Uln);
+            var actual = await learnerMatcher.MatchLearner(1234,Uln);
             actual.Should().NotBeNull();
             actual.DataLockErrorCode.Should().Be(expectedLearnerMatchResult.DataLockErrorCode);
 
@@ -85,7 +88,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.LearnerMatching
             };
 
             ukprnMatcher
-                .Setup(o => o.MatchUkprn())
+                .Setup(o => o.MatchUkprn(It.IsAny<long>()))
                 .Returns(Task.FromResult(default(DataLockErrorCode?)))
                 .Verifiable();
 
@@ -96,7 +99,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.LearnerMatching
 
             var learnerMatcher = new LearnerMatcher(ukprnMatcher.Object, ulnLearnerMatcher.Object);
 
-            var actual = await learnerMatcher.MatchLearner(Uln);
+            var actual = await learnerMatcher.MatchLearner(1234,Uln);
 
             actual.Should().NotBeNull();
             actual.DataLockErrorCode.Should().BeNull();

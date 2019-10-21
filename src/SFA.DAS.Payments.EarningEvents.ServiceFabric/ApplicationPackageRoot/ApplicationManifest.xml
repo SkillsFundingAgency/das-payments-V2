@@ -8,15 +8,27 @@
     <Parameter Name="JobStatusQueueName" DefaultValue="" />
     <Parameter Name="AuditQueueName" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
+    <Parameter Name="MonitoringServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="DCServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="DcStorageConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
+    <Parameter Name="PaymentsMonitoringConnectionString" DefaultValue="" />
     <Parameter Name="TopicName" DefaultValue="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
+    <Parameter Name="TimeToPauseBetweenChecks" DefaultValue="00:00:10" />
+    <Parameter Name="TimeToWaitForJobToComplete" DefaultValue="00:02:00" />
+    <Parameter Name="MaximumCallbackTimeSpan" DefaultValue="00:10:00" />
+    <Parameter Name="Placement_Constraints" DefaultValue="" />
+    <Parameter Name="DoNotGenerateACT1TransactionType4To16Payments" DefaultValue="" />
+    <Parameter Name="DoNotGenerateACT2Payments" DefaultValue="" />
+    <Parameter Name="DasNServiceBusLicenseKey" DefaultValue="" />
+    <Parameter Name="ImmediateMessageRetries" DefaultValue="1" />
+    <Parameter Name="DelayedMessageRetries" DefaultValue="3" />
+    <Parameter Name="DelayedMessageRetryDelay" DefaultValue="00:00:10" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -30,9 +42,11 @@
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
             <Parameter Name="DCServiceBusConnectionString" Value="[DCServiceBusConnectionString]" />
             <Parameter Name="DcStorageConnectionString" Value="[DcStorageConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="PaymentsMonitoringConnectionString" Value="[PaymentsMonitoringConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[EarningEventsService_EndpointName]" />
@@ -44,6 +58,15 @@
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
+            <Parameter Name="TimeToPauseBetweenChecks" Value="[TimeToPauseBetweenChecks]" />
+            <Parameter Name="TimeToWaitForJobToComplete" Value="[TimeToWaitForJobToComplete]" />
+            <Parameter Name="MaximumCallbackTimeSpan" Value="[MaximumCallbackTimeSpan]" />
+            <Parameter Name="DoNotGenerateACT1TransactionType4To16Payments" Value="[DoNotGenerateACT1TransactionType4To16Payments]" />
+            <Parameter Name="DoNotGenerateACT2Payments" Value="[DoNotGenerateACT2Payments]" />
+            <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
+            <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
+            <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
+            <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -58,6 +81,7 @@
     <Service Name="SFA.DAS.Payments.EarningEvents.EarningEventsService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.EarningEvents.EarningEventsServiceType" InstanceCount="[EarningEventsService_InstanceCount]">
         <SingletonPartition />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
     </Service>
   </DefaultServices>

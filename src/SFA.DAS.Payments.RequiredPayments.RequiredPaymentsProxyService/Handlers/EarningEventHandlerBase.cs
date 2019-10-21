@@ -1,4 +1,4 @@
-﻿using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Logging.Interfaces;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
@@ -41,58 +41,33 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             paymentLogger.LogInfo($"Processing RequiredPaymentsProxyService event. Message Id : {context.MessageId}");
             executionContext.JobId = message.JobId.ToString();
 
-            try
-            {
-                var contractType = message is PayableEarningEvent ? ContractType.Act1 :
-                    message is ApprenticeshipContractType2EarningEvent ? ContractType.Act2 :
-                    message is FunctionalSkillEarningsEvent ? (message as FunctionalSkillEarningsEvent).ContractType :
-                    throw new InvalidOperationException($"Cannot resolve contract type for {typeof(T).FullName}");
+            var contractType = message is PayableEarningEvent ? ContractType.Act1 :
+                message is ApprenticeshipContractType2EarningEvent ? ContractType.Act2 :
+                (message as IFunctionalSkillEarningEvent)?.ContractType
+                ?? throw new InvalidOperationException($"Cannot resolve contract type for {typeof(T).FullName}");
 
-                var key = apprenticeshipKeyService.GenerateApprenticeshipKey(
-                    message.Ukprn,
-                    message.Learner.ReferenceNumber,
-                    message.LearningAim.FrameworkCode,
-                    message.LearningAim.PathwayCode,
-                    message.LearningAim.ProgrammeType,
-                    message.LearningAim.StandardCode,
-                    message.LearningAim.Reference,
-                    message.CollectionPeriod.AcademicYear,
-                    contractType
-                );
+            var key = apprenticeshipKeyService.GenerateApprenticeshipKey(
+                message.Ukprn,
+                message.Learner.ReferenceNumber,
+                message.LearningAim.FrameworkCode,
+                message.LearningAim.PathwayCode,
+                message.LearningAim.ProgrammeType,
+                message.LearningAim.StandardCode,
+                message.LearningAim.Reference,
+                message.CollectionPeriod.AcademicYear,
+                contractType
+            );
 
-                var actorId = new ActorId(key);
-                var actor = proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
-                IReadOnlyCollection<PeriodisedRequiredPaymentEvent> requiredPaymentEvent;
-                try
-                {
-                    requiredPaymentEvent = await HandleEarningEvent(message, actor).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    paymentLogger.LogError($"Error invoking required payments actor. Error: {ex.Message}", ex);
-                    throw;
-                }
+            var actorId = new ActorId(key);
+            var actor = proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
+            IReadOnlyCollection<PeriodisedRequiredPaymentEvent> requiredPaymentEvent;
 
-                try
-                {
-                    if (requiredPaymentEvent != null)
-                        await Task.WhenAll(requiredPaymentEvent.Select(context.Publish)).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    //TODO: add more details when we flesh out the event.
-                    paymentLogger.LogError($"Error publishing the event: 'RequiredPaymentEvent'.  Error: {ex.Message}.", ex);
-                    throw;
-                    //TODO: update the job
-                }
+            requiredPaymentEvent = await HandleEarningEvent(message, actor).ConfigureAwait(false);
 
-                paymentLogger.LogInfo($"Successfully processed RequiredPaymentsProxyService event for Actor Id {actorId}");
-            }
-            catch (Exception ex)
-            {
-                paymentLogger.LogError("Error while handling RequiredPaymentsProxyService event", ex);
-                throw;
-            }
+            if (requiredPaymentEvent != null)
+                await Task.WhenAll(requiredPaymentEvent.Select(context.Publish)).ConfigureAwait(false);
+
+            paymentLogger.LogInfo($"Successfully processed RequiredPaymentsProxyService event for Actor Id {actorId}");
         }
 
         protected abstract Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleEarningEvent(T message, IRequiredPaymentsService actor);

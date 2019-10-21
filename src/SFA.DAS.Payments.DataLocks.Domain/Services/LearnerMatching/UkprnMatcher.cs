@@ -12,10 +12,10 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching
         {
             this.dataLockLearnerCache = dataLockLearnerCache;
         }
-        public async Task<DataLockErrorCode?> MatchUkprn()
+        public async Task<DataLockErrorCode?> MatchUkprn(long ukprn)
         {
-            var hasLearnerData = await dataLockLearnerCache.HasLearnerRecords().ConfigureAwait(false);
-            if (!hasLearnerData) return DataLockErrorCode.DLOCK_01;
+            var ukprnExists = await dataLockLearnerCache.UkprnExists(ukprn).ConfigureAwait(false);
+            if (!ukprnExists) return DataLockErrorCode.DLOCK_01;
 
             return default(DataLockErrorCode?);
         }

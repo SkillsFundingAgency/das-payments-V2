@@ -37,7 +37,12 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                     {
                         logLevel = LogLevel.Information;
                     }
-                    
+
+                    if (!Enum.TryParse(configHelper.GetSettingOrDefault("ConsoleLogLevel", "Information"), out LogLevel consoleLogLevel))
+                    {
+                        consoleLogLevel = logLevel;
+                    }
+
                     return new ApplicationLoggerSettings
                     {
                         ApplicationLoggerOutputSettingsCollection = new List<IApplicationLoggerOutputSettings>
@@ -50,7 +55,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
 
                             new ConsoleApplicationLoggerOutputSettings
                             {
-                                MinimumLogLevel = logLevel
+                                MinimumLogLevel = consoleLogLevel
                             },
                         },
                         TaskKey = versionInfo.ServiceReleaseVersion
