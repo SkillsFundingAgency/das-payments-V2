@@ -23,6 +23,7 @@ namespace SFA.DAS.Payments.Application.Repositories
         public virtual DbSet<EarningEventPriceEpisodeModel> EarningEventPriceEpisode { get; protected set; }
         
         public virtual DbSet<PaymentModelWithRequiredPaymentId> PaymentsWithRequiredPayments { get; protected set; }
+        public virtual DbSet<ProviderAdjustmentModel> ProviderAdjustments { get; protected set; }
 
         public PaymentsDataContext(string connectionString)
         {
