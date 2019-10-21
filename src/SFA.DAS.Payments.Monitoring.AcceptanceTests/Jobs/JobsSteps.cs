@@ -268,6 +268,21 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
 
         }
 
+        [When(@"Data-Collections confirms the failure of the job")]
+        public async Task WhenData_CollectionsConfirmsTheFailureOfTheJob()
+        {
+            var earningsJob = JobDetails as RecordEarningsJob ?? throw new InvalidOperationException("Expected job to be a ");
+            await MessageSession.Send(PartitionEndpointName, new SubmissionFailedEvent
+            {
+                JobId = JobDetails.JobId,
+                CollectionPeriod = CollectionPeriod,
+                Ukprn = TestSession.Ukprn,
+                AcademicYear = AcademicYear,
+                IlrSubmissionDateTime = ((RecordEarningsJob)JobDetails).IlrSubmissionTime
+            }).ConfigureAwait(false);
+        }
+
+
         [Then(@"the job monitoring service should update the status of the job to show that it has completed with errors")]
         public async Task ThenTheJobMonitoringServiceShouldUpdateTheStatusOfTheJobToShowThatItHasCompletedWithErrors()
         {
@@ -354,5 +369,30 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             await WaitForIt(() => SubmissionJobSucceededHandler.ReceivedEvents.Any(ev => ev.JobId == JobDetails.JobId),
                 $"Failed to receive the submission job succeeded event for job id: {JobDetails.JobId}").ConfigureAwait(false);
         }
+
+        [Then(@"the monitoring service should record the failure of the Data-Collections processes")]
+        public async Task ThenTheMonitoringServiceShouldRecordTheFailureOfTheData_CollectionsProcesses()
+        {
+            await WaitForIt(() =>
+            {
+                var job = DataContext.Jobs.AsNoTracking()
+                    .FirstOrDefault(x => x.DcJobId == JobDetails.JobId && x.DcJobSucceeded.HasValue && !x.DcJobSucceeded.Value == false);
+
+                if (job == null)
+                    return false;
+
+                Job = job;
+                Console.WriteLine($"Found job: {Job.Id}, status: {Job.Status}, start time: {job.StartTime}");
+                return true;
+            }, $"Failed to find job with dc status failed and dc job id: {JobDetails.JobId}");
+        }
+
+        [Then(@"the monitoring service should notify other services that the job has failed")]
+        public async Task ThenTheMonitoringServiceShouldNotifyOtherServicesThatTheJobHasFailed()
+        {
+            await WaitForIt(() => SubmissionJobFailedHandler.ReceivedEvents.Any(ev => ev.JobId == JobDetails.JobId),
+                $"Failed to receive the submission job failed event for job id: {JobDetails.JobId}").ConfigureAwait(false);
+        }
+
     }
 }

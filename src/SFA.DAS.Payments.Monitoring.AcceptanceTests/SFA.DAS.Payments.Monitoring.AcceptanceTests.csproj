@@ -180,6 +180,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EndpointNames.cs" />
+    <Compile Include="Handlers\SubmissionJobFailedHandler.cs" />
     <Compile Include="Handlers\SubmissionJobSucceededHandler.cs" />
     <Compile Include="Infrastructure\BindingBootstrapper.cs" />
     <Compile Include="Jobs\Jobs.feature.cs">
