@@ -1,4 +1,5 @@
-﻿Feature: Job submission succeeded 
+﻿@ignore
+Feature: Job submission succeeded 
 	As a provider,
 	I would like my payments and reports to to be based on my most recent successful ILR submission
 

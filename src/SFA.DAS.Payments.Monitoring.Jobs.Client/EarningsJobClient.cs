@@ -12,6 +12,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
     public interface IEarningsJobClient
     {
         Task StartJob(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages, DateTimeOffset startTime);
+        string GetMonitoringEndpointForJob(long jobId, long ukprn);
     }
 
     public class EarningsJobClient : IEarningsJobClient
@@ -47,9 +48,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                     GeneratedMessages = generatedMessages.Take(batchSize).ToList(),
                     LearnerCount = generatedMessages.Count
                 };
-
-                var jobsEndpointName = config.GetSettingOrDefault("Monitoring_JobsService_EndpointName", "sfa-das-payments-monitoring-jobs");
-                var partitionedEndpointName = $"{jobsEndpointName}{partitionName.PartitionNameForJob(jobId, ukprn)}";
+                var partitionedEndpointName = GetMonitoringEndpointForJob(jobId, ukprn);
                 logger.LogVerbose($"Endpoint for RecordEarningsJob for Job Id {jobId} is `{partitionedEndpointName}`");
                 await messageSession.Send(partitionedEndpointName, providerEarningsEvent).ConfigureAwait(false);
 
@@ -63,7 +62,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                         JobId = jobId,
                         GeneratedMessages = batch,
                     };
-                    await messageSession.Send(partitionedEndpointName, providerEarningsAdditionalMessages).ConfigureAwait(false); 
+                    await messageSession.Send(partitionedEndpointName, providerEarningsAdditionalMessages).ConfigureAwait(false);
                 }
                 logger.LogDebug($"Sent request(s) to record start of earnings job. Job Id: {jobId}, Ukprn: {ukprn}");
             }
@@ -72,6 +71,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 logger.LogError($"Failed to send the request to record the earnings job. Job: {jobId}, Error: {ex.Message}", ex);
                 throw;
             }
+        }
+
+        public string GetMonitoringEndpointForJob(long jobId, long ukprn)
+        {
+            var jobsEndpointName = config.GetSettingOrDefault("Monitoring_JobsService_EndpointName", "sfa-das-payments-monitoring-jobs");
+            return $"{jobsEndpointName}{partitionName.PartitionNameForJob(jobId, ukprn)}";
         }
     }
 }
