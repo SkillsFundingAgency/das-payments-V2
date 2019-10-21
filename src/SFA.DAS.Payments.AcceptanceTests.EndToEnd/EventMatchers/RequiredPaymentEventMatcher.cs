@@ -152,8 +152,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             var deliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(paymentToValidate.DeliveryPeriod).Build();
             var payment = CreateContractTypeRequiredPaymentEvent(amountDue, type, deliveryPeriod);
 
-            if (payment.AmountDue != 0)
+            if (payment.AmountDue != 0 || (type ==  OnProgrammeEarningType.Learning && paymentToValidate.IncludeZeroExpectedLearningPayments))
+            {
                 expectedPayments.Add(payment);
+            }
         }
 
         protected override bool Match(PeriodisedRequiredPaymentEvent expected, PeriodisedRequiredPaymentEvent actual)

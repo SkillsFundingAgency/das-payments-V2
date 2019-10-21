@@ -228,18 +228,23 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 paymentsDueService.Setup(x => x.CalculateRequiredPaymentAmount(It.IsAny<decimal>(), It.IsAny<List<Payment>>())).Returns(expectedAmount);
                 refundService
                     .Setup(svc => svc.GetRefund(
-                        It.Is<decimal>(amount => amount == 0),
-                        It.Is<List<Payment>>(payments => payments.All(p => p.SfaContributionPercentage == 1M))))
-                    .Returns(new List<RequiredPayment> { new RequiredPayment { SfaContributionPercentage = 1M, Amount = 10 } });
+                        It.Is<decimal>(amount => amount == -5),
+                        It.Is<List<Payment>>(payments => payments.All(p => p.SfaContributionPercentage == .9M))))
+                    .Returns(new List<RequiredPayment> { new RequiredPayment { SfaContributionPercentage = .9M, Amount = -5 } });
                 refundService
                     .Setup(svc => svc.GetRefund(
-                        It.Is<decimal>(amount => amount == 0),
+                        It.Is<decimal>(amount => amount == -10),
+                        It.Is<List<Payment>>(payments => payments.All(p => p.SfaContributionPercentage == 1M))))
+                    .Returns(new List<RequiredPayment> { new RequiredPayment { SfaContributionPercentage = 1M, Amount = -10 } });
+                refundService
+                    .Setup(svc => svc.GetRefund(
+                        It.Is<decimal>(amount => amount == -20),
                         It.Is<List<Payment>>(payments => payments.All(p => p.SfaContributionPercentage == .95M))))
-                    .Returns(new List<RequiredPayment> { new RequiredPayment { SfaContributionPercentage = 95M, Amount = 20 } });
+                    .Returns(new List<RequiredPayment> { new RequiredPayment { SfaContributionPercentage = 95M, Amount = -20 } });
                 var requiredPayments = sut.GetRequiredPayments(testEarning, paymentHistory);
                 requiredPayments.Count.Should().Be(2);
                 requiredPayments.All(rp => rp.SfaContributionPercentage != .9M).Should().BeTrue();
-                requiredPayments.Select(rp => rp.Amount).Sum().Should().Be(30M);
+                requiredPayments.Select(rp => rp.Amount).Sum().Should().Be(-30M);
             }
 
             [Test]
@@ -259,22 +264,22 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
 
                 refundService
                     .Setup(svc => svc.GetRefund(
-                        It.Is<decimal>(amount => amount == 0),
+                        It.Is<decimal>(amount => amount == -10),
                         It.Is<List<Payment>>(payments => payments.All(p => p.SfaContributionPercentage == 1M))))
-                    .Returns(new List<RequiredPayment> { new RequiredPayment { SfaContributionPercentage = 1M, Amount = 10 } });
+                    .Returns(new List<RequiredPayment> { new RequiredPayment { SfaContributionPercentage = 1M, Amount = -10 } });
 
                 refundService
                     .Setup(svc => svc.GetRefund(
-                        It.Is<decimal>(amount => amount == 0),
+                        It.Is<decimal>(amount => amount == -20),
                         It.Is<List<Payment>>(payments => payments.All(p => p.SfaContributionPercentage == .95M))))
-                    .Returns(new List<RequiredPayment> { new RequiredPayment { SfaContributionPercentage = .95M, Amount = 20 } });
+                    .Returns(new List<RequiredPayment> { new RequiredPayment { SfaContributionPercentage = .95M, Amount = -20 } });
 
                 var requiredPayments = sut.GetRequiredPayments(testEarning, paymentHistory);
                 requiredPayments.Count.Should().Be(3);
                 requiredPayments.Count(rp => rp.SfaContributionPercentage == .9M).Should().Be(1);
                 requiredPayments.Count(rp => rp.SfaContributionPercentage == .95M).Should().Be(1);
                 requiredPayments.Count(rp => rp.SfaContributionPercentage == 1M).Should().Be(1);
-                requiredPayments.Select(rp => rp.Amount).Sum().Should().Be(expectedAmount + 10 + 20);
+                requiredPayments.Select(rp => rp.Amount).Sum().Should().Be(expectedAmount + -10 + -20);
             }
 
             [Test]
@@ -300,13 +305,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
 
                 refundService
                     .Setup(svc => svc.GetRefund(
-                        It.Is<decimal>(amount => amount == 0),
+                        It.Is<decimal>(amount => amount == -10),
                         It.Is<List<Payment>>(payments => payments.All(p => p.SfaContributionPercentage == 1M))))
                     .Returns(new List<RequiredPayment> { new RequiredPayment { SfaContributionPercentage = 1M, Amount = -10 } });
 
                 refundService
                     .Setup(svc => svc.GetRefund(
-                        It.Is<decimal>(amount => amount == 0),
+                        It.Is<decimal>(amount => amount == -20),
                         It.Is<List<Payment>>(payments => payments.All(p => p.SfaContributionPercentage == .95M))))
                     .Returns(new List<RequiredPayment> { new RequiredPayment { SfaContributionPercentage = .95M, Amount = -20 } });
 

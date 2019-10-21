@@ -62,7 +62,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
             return paymentHistory
                 .Where(payment => payment.SfaContributionPercentage != currentSfaContributionPercentage)
                 .GroupBy(payment => payment.SfaContributionPercentage)
-                .SelectMany(group => refundService.GetRefund(0, group.ToList()))
+                .SelectMany(group => refundService.GetRefund(group.Sum(g=>g.Amount) <0 ? group.Sum(g=>g.Amount): group.Sum(g=>g.Amount) * -1, group.ToList()))
                 .ToList();
         }
     }
