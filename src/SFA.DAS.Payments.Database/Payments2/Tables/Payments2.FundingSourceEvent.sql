@@ -1,4 +1,4 @@
-﻿CREATE TABLE [Payments2].[FundingSourceEvent]
+CREATE TABLE [Payments2].[FundingSourceEvent]
 (
 	Id BIGINT NOT NULL IDENTITY(1,1) CONSTRAINT PK_FundingSourceEvent PRIMARY KEY CLUSTERED,	
 	EventId UNIQUEIDENTIFIER NOT NULL,
@@ -39,7 +39,8 @@
 	LearningStartDate DATETIME2 NULL,
     ApprenticeshipId BIGINT NULL,
     ApprenticeshipPriceEpisodeId BIGINT NULL,
-	ApprenticeshipEmployerType TINYINT NULL,
+	ApprenticeshipEmployerType TINYINT NULL, 
+    [UnpaidReason] TINYINT NULL,
 )
 
 GO

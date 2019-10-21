@@ -1,11 +1,13 @@
-﻿using System;
+using System;
 using System.Data;
 using SFA.DAS.Payments.Audit.Model;
 
 namespace SFA.DAS.Payments.Audit.Application.Data
 {
-    public abstract class PeriodisedPaymentsEventModelDataTable<T>: PaymentsEventModelDataTable<T> where T: IPeriodisedPaymentsEventModel
+    public abstract class PeriodisedPaymentsEventModelDataTable<T>: PaymentsEventModelDataTable<T> where T: PeriodisedPaymentsEventModel
     {
+        static readonly object DbNull = DBNull.Value;
+
         protected PeriodisedPaymentsEventModelDataTable()
         {
             DataTable.Columns.AddRange(new[]
@@ -28,7 +30,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 new DataColumn("EarningsInstalmentAmount"),
                 new DataColumn("EarningsNumberOfInstalments"),
                 new DataColumn("ApprenticeshipId",typeof(long)) {AllowDBNull = true},
-                new DataColumn("ApprenticeshipPriceEpisodeId",typeof(long)) {AllowDBNull = true}
+                new DataColumn("ApprenticeshipPriceEpisodeId",typeof(long)) {AllowDBNull = true},
+                new DataColumn("UnpaidReason",typeof(long)) {AllowDBNull = true},
             });
         }
 
@@ -69,23 +72,9 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 dataRow["EarningsActualEndDate"] = eventModel.ActualEndDate;
             }
 
-            if (!eventModel.ApprenticeshipId.HasValue)
-            {
-                dataRow["ApprenticeshipId"] = DBNull.Value;
-            }
-            else
-            {
-                dataRow["ApprenticeshipId"] = eventModel.ApprenticeshipId.Value;
-            }
-
-            if (!eventModel.ApprenticeshipPriceEpisodeId.HasValue)
-            {
-                dataRow["ApprenticeshipPriceEpisodeId"] = DBNull.Value;
-            }
-            else
-            {
-                dataRow["ApprenticeshipPriceEpisodeId"] = eventModel.ApprenticeshipPriceEpisodeId.Value;
-            }
+            dataRow["ApprenticeshipId"] = eventModel.ApprenticeshipId ?? DbNull;
+            dataRow["ApprenticeshipPriceEpisodeId"] = eventModel.ApprenticeshipPriceEpisodeId ?? DbNull;
+            dataRow["UnpaidReason"] = eventModel.UnpaidReason ?? DbNull;
 
             return dataRow;
         }
