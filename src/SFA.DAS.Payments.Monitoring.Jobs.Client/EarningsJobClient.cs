@@ -12,7 +12,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
     public interface IEarningsJobClient
     {
         Task StartJob(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages, DateTimeOffset startTime);
-        string GetMonitoringEndpointForJob(long jobId, long ukprn);
+        Task RecordJobFailure(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod);
+        Task RecordJobSuccess(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod);
     }
 
     public class EarningsJobClient : IEarningsJobClient
@@ -68,9 +69,45 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
             }
             catch (Exception ex)
             {
-                logger.LogError($"Failed to send the request to record the earnings job. Job: {jobId}, Error: {ex.Message}", ex);
+                logger.LogWarning($"Failed to send the request to record the earnings job. Job: {jobId}, Error: {ex.Message}. {ex}");
                 throw;
             }
+        }
+
+        public async Task RecordJobFailure(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod)
+        {
+            await RecordJobStatus<RecordEarningsJobFailed>(jobId, ukprn, ilrSubmissionTime, collectionYear, collectionPeriod)
+                .ConfigureAwait(false);
+        }
+
+        private async Task RecordJobStatus<T>(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod) where T : RecordEarningsJobStatus, new()
+        {
+            logger.LogVerbose($"Sending record job failed request to monitoring service for job: {jobId}, ukprn: {ukprn}");
+            try
+            {
+                RecordEarningsJobStatus recordJobStatus = new T
+                {
+                    JobId = jobId,
+                    Ukprn = ukprn,
+                    CollectionPeriod = collectionPeriod,
+                    AcademicYear = collectionYear,
+                    IlrSubmissionDateTime = ilrSubmissionTime
+                };
+                var partitionedEndpointName = GetMonitoringEndpointForJob(jobId, ukprn);
+                await messageSession.Send(partitionedEndpointName, recordJobStatus);
+                logger.LogDebug($"Sent record job status event for job: {jobId}, ukprn: {ukprn}. Status command: {typeof(T).Name}");
+            }
+            catch (Exception e)
+            {
+                logger.LogWarning($"Failed to send the request to record the failed job '{jobId}'. Error: {e.Message}. {e}");
+                throw;
+            }
+        }
+
+        public async Task RecordJobSuccess(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod)
+        {
+            await RecordJobStatus<RecordEarningsJobSucceeded>(jobId, ukprn, ilrSubmissionTime, collectionYear, collectionPeriod)
+                .ConfigureAwait(false);
         }
 
         public string GetMonitoringEndpointForJob(long jobId, long ukprn)

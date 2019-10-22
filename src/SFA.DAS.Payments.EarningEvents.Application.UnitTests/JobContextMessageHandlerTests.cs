@@ -56,9 +56,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                 }
             };
             mocker.Mock<IFileService>()
-                .Setup(svc => 
-                    svc.OpenReadStreamAsync(It.Is<string>(file => file.Equals("valid path")), 
-                        It.Is<string>(containerName => containerName.Equals("container")), 
+                .Setup(svc =>
+                    svc.OpenReadStreamAsync(It.Is<string>(file => file.Equals("valid path")),
+                        It.Is<string>(containerName => containerName.Equals("container")),
                         It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new MemoryStream());
             mocker.Mock<IJsonSerializationService>()
@@ -128,7 +128,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
 
             var handler = mocker.Create<JobContextMessageHandler>();
             await handler.HandleAsync(jobContextMessage, CancellationToken.None);
-            
+
             mocker.Mock<IFileService>().Verify(svc => svc.OpenReadStreamAsync(
                 It.Is<string>(file => file.Equals("valid path")),
                 It.Is<string>(containerName => containerName.Equals("container")),
@@ -447,6 +447,130 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
 
             mocker.Mock<IEndpointInstance>()
                 .Verify(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()), Times.Never);
+        }
+
+        [Test]
+        public async Task Job_Submission_Succeeded_Notifies_Monitoring_To_Record_Job_Status()
+        {
+            long ukprn = 2123;
+            var collectionYear = 1920;
+            var collectionPeriod = 10;
+            var jobContextMessage = new JobContextMessage
+            {
+                JobId = 1,
+                TopicPointer = 0,
+                Topics = new List<ITopicItem>
+                {
+                    new TopicItem
+                    {
+                        SubscriptionName = "GenerateFM36Payments",
+                        Tasks = new List<ITaskItem>
+                        {
+                            new TaskItem
+                            {
+                                SupportsParallelExecution = false,
+                                Tasks = new List<string>
+                                {
+                                    JobContextMessageConstants.Tasks.JobSuccess
+                                }
+                            }
+                        }
+                    },
+                    new TopicItem
+                    {
+                        SubscriptionName = "Other Task",
+                        Tasks = new List<ITaskItem>
+                        {
+                            new TaskItem
+                            {
+                                SupportsParallelExecution = false,
+                                Tasks = new List<string>{"Something else"}
+                            }
+                        }
+                    }
+                },
+                KeyValuePairs = new Dictionary<string, object> {
+                    { JobContextMessageConstants.KeyValuePairs.ReturnPeriod, collectionPeriod },
+                    { JobContextMessageConstants.KeyValuePairs.CollectionYear, collectionYear },
+                    { JobContextMessageConstants.KeyValuePairs.Ukprn, ukprn },
+                    { JobContextMessageConstants.KeyValuePairs.FundingFm36Output, "invalid path" },
+                    { JobContextMessageConstants.KeyValuePairs.FundingFm36OutputPeriodEnd, "valid path" },
+                    { JobContextMessageConstants.KeyValuePairs.Container, "container" },
+                    { JobContextMessageConstants.KeyValuePairs.Filename, "filename" },
+                }
+            };
+
+            var handler = mocker.Create<JobContextMessageHandler>();
+            await handler.HandleAsync(jobContextMessage, CancellationToken.None);
+
+            mocker.Mock<IEarningsJobClient>()
+                .Verify(x => x.RecordJobSuccess(It.Is<long>(jobId => jobId == jobContextMessage.JobId),
+                    It.Is<long>(provider => provider == ukprn),
+                    It.Is<DateTime>(submissionTime => submissionTime == jobContextMessage.SubmissionDateTimeUtc),
+                    It.Is<short>(year => year == collectionYear),
+                    It.Is<byte>(period => period == collectionPeriod)), Times.Once);
+        }
+
+        [Test]
+        public async Task Job_Submission_Failed_Notifies_Monitoring_To_Record_Job_Status()
+        {
+            long ukprn = 2123;
+            var collectionYear = 1920;
+            var collectionPeriod = 10;
+            var jobContextMessage = new JobContextMessage
+            {
+                JobId = 1,
+                TopicPointer = 0,
+                Topics = new List<ITopicItem>
+                {
+                    new TopicItem
+                    {
+                        SubscriptionName = "GenerateFM36Payments",
+                        Tasks = new List<ITaskItem>
+                        {
+                            new TaskItem
+                            {
+                                SupportsParallelExecution = false,
+                                Tasks = new List<string>
+                                {
+                                    JobContextMessageConstants.Tasks.JobFailure
+                                }
+                            }
+                        }
+                    },
+                    new TopicItem
+                    {
+                        SubscriptionName = "Other Task",
+                        Tasks = new List<ITaskItem>
+                        {
+                            new TaskItem
+                            {
+                                SupportsParallelExecution = false,
+                                Tasks = new List<string>{"Something else"}
+                            }
+                        }
+                    }
+                },
+                KeyValuePairs = new Dictionary<string, object> {
+                    { JobContextMessageConstants.KeyValuePairs.ReturnPeriod, collectionPeriod },
+                    { JobContextMessageConstants.KeyValuePairs.CollectionYear, collectionYear },
+                    { JobContextMessageConstants.KeyValuePairs.Ukprn, ukprn },
+                    { JobContextMessageConstants.KeyValuePairs.FundingFm36Output, "invalid path" },
+                    { JobContextMessageConstants.KeyValuePairs.FundingFm36OutputPeriodEnd, "valid path" },
+                    { JobContextMessageConstants.KeyValuePairs.Container, "container" },
+                    { JobContextMessageConstants.KeyValuePairs.Filename, "filename" },
+                }
+            };
+
+            var handler = mocker.Create<JobContextMessageHandler>();
+            await handler.HandleAsync(jobContextMessage, CancellationToken.None);
+
+            mocker.Mock<IEarningsJobClient>()
+                .Verify(x => x.RecordJobFailure(It.Is<long>(jobId => jobId == jobContextMessage.JobId),
+                    It.Is<long>(provider => provider == ukprn),
+                    It.Is<DateTime>(submissionTime => submissionTime == jobContextMessage.SubmissionDateTimeUtc),
+                    It.Is<short>(year => year == collectionYear),
+                    It.Is<byte>(period => period == collectionPeriod)), Times.Once);
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.Serialization;
+using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
@@ -10,7 +10,7 @@ using SFA.DAS.Payments.Model.Core.Incentives;
 namespace SFA.DAS.Payments.DataLocks.Messages.Events
 {
     [KnownType("GetInheritors")]
-    public abstract class FunctionalSkillDataLockEvent : DataLockEvent, IFunctionalSkillEarningEvent
+    public abstract class FunctionalSkillDataLockEvent : DataLockEvent, IFunctionalSkillEarningEvent, IMonitoredMessage
     {
         public ReadOnlyCollection<FunctionalSkillEarning> Earnings { get; set; }
         public DateTime StartDate { get; set; }

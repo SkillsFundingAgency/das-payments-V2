@@ -257,7 +257,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         public async Task WhenData_CollectionsConfirmsTheSuccessfulCompletionOfTheJob()
         {
             var earningsJob = JobDetails as RecordEarningsJob  ?? throw new InvalidOperationException("Expected job to be a ");
-            await MessageSession.Send(PartitionEndpointName, new SubmissionSucceededEvent
+            await MessageSession.Send(PartitionEndpointName, new RecordEarningsJobSucceeded
             {
                 JobId = JobDetails.JobId,
                 CollectionPeriod = CollectionPeriod,
@@ -265,14 +265,13 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 AcademicYear = AcademicYear,
                 IlrSubmissionDateTime = ((RecordEarningsJob)JobDetails).IlrSubmissionTime
             }).ConfigureAwait(false);
-
         }
 
         [When(@"Data-Collections confirms the failure of the job")]
         public async Task WhenData_CollectionsConfirmsTheFailureOfTheJob()
         {
             var earningsJob = JobDetails as RecordEarningsJob ?? throw new InvalidOperationException("Expected job to be a ");
-            await MessageSession.Send(PartitionEndpointName, new SubmissionFailedEvent
+            await MessageSession.Send(PartitionEndpointName, new RecordEarningsJobFailed
             {
                 JobId = JobDetails.JobId,
                 CollectionPeriod = CollectionPeriod,
