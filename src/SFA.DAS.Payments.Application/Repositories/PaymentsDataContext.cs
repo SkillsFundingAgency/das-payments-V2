@@ -46,6 +46,7 @@ namespace SFA.DAS.Payments.Application.Repositories
             modelBuilder.ApplyConfiguration(new EarningEventModelConfiguration());
             modelBuilder.ApplyConfiguration(new EarningEventPeriodModelConfiguration());
             modelBuilder.ApplyConfiguration(new EarningEventPriceEpisodeModelConfiguration());
+            modelBuilder.ApplyConfiguration(new ProviderAdjustmentsModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Payments.ProviderAdjustments.Domain
 {
-    class ProviderAdjustmentPaymentGrouping : IEquatable<ProviderAdjustmentPaymentGrouping>
+    public class ProviderAdjustmentPaymentGrouping : IEquatable<ProviderAdjustmentPaymentGrouping>
     {
         public long Ukprn { get; }
         public int PaymentType { get; }

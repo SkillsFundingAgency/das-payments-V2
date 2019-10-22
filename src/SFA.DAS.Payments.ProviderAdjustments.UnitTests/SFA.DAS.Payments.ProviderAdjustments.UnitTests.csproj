@@ -1,11 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="5.9.0" />
     <PackageReference Include="NUnit" Version="3.11.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.ProviderAdjustments.Domain\SFA.DAS.Payments.ProviderAdjustments.Domain.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.ProviderAdjustments.Model\SFA.DAS.Payments.ProviderAdjustments.Model.csproj" />
   </ItemGroup>
 
 </Project>

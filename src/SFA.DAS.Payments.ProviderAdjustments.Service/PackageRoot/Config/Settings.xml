@@ -21,6 +21,7 @@
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
     <Parameter Name="EndpointName" Value="" />
     <Parameter Name="FailedMessagesQueue" Value="" />
+    <Parameter Name="DasNServiceBusLicenseKey" Value="" />
 
   </Section>
 

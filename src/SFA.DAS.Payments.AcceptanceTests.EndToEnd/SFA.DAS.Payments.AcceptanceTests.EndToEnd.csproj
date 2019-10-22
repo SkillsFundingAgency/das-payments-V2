@@ -94,8 +94,8 @@
     <Reference Include="ESFA.DC.Serialization.Interfaces, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Serialization.Interfaces.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.Serialization.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="FluentAssertions, Version=5.6.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentAssertions.5.6.0\lib\net47\FluentAssertions.dll</HintPath>
+    <Reference Include="FluentAssertions, Version=5.9.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.5.9.0\lib\net47\FluentAssertions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ApplicationInsights, Version=2.8.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.2.8.1\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
@@ -1206,7 +1206,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-713- DLOCK12 when the employer pauses payments for a learner on a commitment.feature</DependentUpon>
     </Compile>
-    
     <Compile Include="Tests\Levy - Payment Priority\PV2-602 - Payment Priority for 2 providers levy spent in priority order and sufficient levy available.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1222,12 +1221,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-604 - Two providers, levy spent in priority order, enough to fund 1 provider fully but half for another provider.feature</DependentUpon>
     </Compile>
-	 <Compile Include="Tests\Levy - Data Locks\PV2-769 - DLOCK03 mismatch in standard code.feature.cs">
+    <Compile Include="Tests\Levy - Data Locks\PV2-769 - DLOCK03 mismatch in standard code.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-769 - DLOCK03 mismatch in standard code.feature</DependentUpon>
     </Compile>
-
     <Compile Include="Tests\Levy - Payment Priority\PV2-656 - two providers where levy spent in priority order and the priority is changed in R04.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2269,10 +2267,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-713- DLOCK12 when the employer pauses payments for a learner on a commitment.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Levy - Data Locks\PV2-769 - DLOCK03 mismatch in standard code.feature" >
-	 <Generator>SpecFlowSingleFileGenerator</Generator>
-	 <LastGenOutput>PV2-769 - DLOCK03 mismatch in standard code.feature.cs</LastGenOutput>
-	</None>	
+    <None Include="Tests\Levy - Data Locks\PV2-769 - DLOCK03 mismatch in standard code.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-769 - DLOCK03 mismatch in standard code.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Levy - Payment Priority\PV2-602 - Payment Priority for 2 providers levy spent in priority order and sufficient levy available.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-602 - Payment Priority for 2 providers levy spent in priority order and sufficient levy available.feature.cs</LastGenOutput>

@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Newtonsoft.Json;
+using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.ProviderAdjustments.Domain;
 
@@ -49,8 +51,12 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
 
         public async Task AddProviderAdjustments(List<ProviderAdjustment> payments)
         {
-            await bulkWriter.Write(payments);
-            await bulkWriter.Flush().ConfigureAwait(false);
+            foreach (var providerAdjustment in payments)
+            {
+                await bulkWriter.Write(providerAdjustment, default(CancellationToken));
+            }
+            
+            await bulkWriter.Flush(default(CancellationToken)).ConfigureAwait(false);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.ProviderAdjustments.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="SFA.DAS.Payments.ProviderAdjustments.Service_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="ProviderAdjustmentsService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="DcStorageConnectionString" DefaultValue="" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
@@ -12,6 +12,7 @@
     <Parameter Name="ProviderAdjustmentService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
+    <Parameter Name="DasNServiceBusLicenseKey" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -33,6 +34,7 @@
             <Parameter Name="FailedMessagesQueue" Value="[ProviderAdjustmentService_FailedMessagesQueue]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -45,7 +47,7 @@
          
          The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
     <Service Name="SFA.DAS.Payments.ProviderAdjustments.Service" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="SFA.DAS.Payments.ProviderAdjustments.ServiceType" InstanceCount="[SFA.DAS.Payments.ProviderAdjustments.Service_InstanceCount]">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.ProviderAdjustments.ServiceType" InstanceCount="[ProviderAdjustmentsService_InstanceCount]">
         <SingletonPartition />
       </StatelessService>
     </Service>
