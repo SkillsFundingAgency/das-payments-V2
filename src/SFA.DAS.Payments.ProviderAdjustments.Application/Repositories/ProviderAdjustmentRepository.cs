@@ -23,6 +23,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
         private readonly IPaymentsDataContext dataContext;
         private readonly IMapper mapper;
         private readonly IBulkWriter<ProviderAdjustment> bulkWriter;
+        private readonly string easApiEndpoint;
 
         public ProviderAdjustmentRepository(
             IBulkWriter<ProviderAdjustment> bulkWriter, 
@@ -34,6 +35,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
             this.dataContext = dataContext;
             this.client = client;
             this.mapper = mapper;
+            easApiEndpoint = "";
         }
 
         public async Task<List<ProviderAdjustment>> GetCurrentProviderAdjustments()

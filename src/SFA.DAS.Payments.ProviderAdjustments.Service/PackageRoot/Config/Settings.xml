@@ -22,7 +22,7 @@
     <Parameter Name="EndpointName" Value="" />
     <Parameter Name="FailedMessagesQueue" Value="" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="" />
-
+    <Parameter Name="EasApiEndpoint" Value="" />
   </Section>
 
 </Settings>
