@@ -38,11 +38,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
                     mapper.Map(learnerWithSortedPriceEpisodes, earningEvent);
 
-                    var priceEpisodeToUse = priceEpisodes.FirstOrDefault() ??
-                                            throw new NullReferenceException("Price Episode Cannot be null");
-
-                    earningEvent.LearningAim.FundingLineType = priceEpisodeToUse.PriceEpisodeValues.PriceEpisodeFundLineType;
-
                     results.Add(earningEvent);
                 }
             }
