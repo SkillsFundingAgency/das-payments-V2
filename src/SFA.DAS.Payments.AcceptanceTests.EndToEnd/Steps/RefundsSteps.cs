@@ -50,7 +50,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         [Given(@"the following earnings had been generated for the learner")]
         public void GivenTheFollowingEarningsHadBeenGeneratedForTheLearner(Table table)
-        { PreviousEarnings = CreateEarnings(table, TestSession.Provider.Ukprn);
+        { 
+            PreviousEarnings = CreateEarnings(table, TestSession.Provider.Ukprn);
             // for new style specs where no ILR specified
             if (PreviousIlr == null)
             {
