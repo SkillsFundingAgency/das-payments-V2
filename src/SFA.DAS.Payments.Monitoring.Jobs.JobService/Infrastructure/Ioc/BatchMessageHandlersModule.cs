@@ -37,11 +37,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Infrastructure.Ioc
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<RecordSubmissionSucceededHandler>()
-                .As<IHandleMessageBatches<SubmissionSucceededEvent>>()
+                .As<IHandleMessageBatches<RecordEarningsJobSucceeded>>()
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<RecordSubmissionFailedHandler>()
-                .As<IHandleMessageBatches<SubmissionFailedEvent>>()
+                .As<IHandleMessageBatches<RecordEarningsJobFailed>>()
                 .InstancePerLifetimeScope();
         }
     }
