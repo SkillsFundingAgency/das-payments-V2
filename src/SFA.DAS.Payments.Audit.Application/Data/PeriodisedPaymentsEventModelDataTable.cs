@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
                 new DataColumn("EarningsNumberOfInstalments"),
                 new DataColumn("ApprenticeshipId",typeof(long)) {AllowDBNull = true},
                 new DataColumn("ApprenticeshipPriceEpisodeId",typeof(long)) {AllowDBNull = true},
-                new DataColumn("UnpaidReason",typeof(long)) {AllowDBNull = true},
+                new DataColumn("NonPaymentReason",typeof(long)) {AllowDBNull = true},
             });
         }
 
@@ -74,7 +74,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data
 
             dataRow["ApprenticeshipId"] = eventModel.ApprenticeshipId ?? DbNull;
             dataRow["ApprenticeshipPriceEpisodeId"] = eventModel.ApprenticeshipPriceEpisodeId ?? DbNull;
-            dataRow["UnpaidReason"] = eventModel.UnpaidReason ?? DbNull;
+            dataRow["NonPaymentReason"] = eventModel.NonPaymentReason ?? DbNull;
 
             return dataRow;
         }

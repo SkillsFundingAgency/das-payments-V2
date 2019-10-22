@@ -54,7 +54,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.ApprenticeshipPriceEpisodeId, opt => opt.MapFrom(source => source.ApprenticeshipPriceEpisodeId))
                 .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(source => source.NumberOfInstalments))
                 .ForMember(dest => dest.ReportingAimFundingLineType, opt => opt.ResolveUsing<ReportingAimFundingLineTypeValueResolver>())
-                .ForMember(dest => dest.UnpaidReason, opt => opt.Ignore())
+                .ForMember(dest => dest.NonPaymentReason, opt => opt.Ignore())
                 ;
 
 

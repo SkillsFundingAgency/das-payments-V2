@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.RequiredPayments
         [Test]
         public void Maps_CompletionWithheld_As_CompletionWithheldReason()
         {
-            Mapper.Map<RequiredPaymentEventModel>(PaymentEvent).UnpaidReason.Should().Be(UnpaidReason.Withheld);
+            Mapper.Map<RequiredPaymentEventModel>(PaymentEvent).NonPaymentReason.Should().Be(NonPaymentReason.InsufficientEmployerContribution);
         }
     }
 }

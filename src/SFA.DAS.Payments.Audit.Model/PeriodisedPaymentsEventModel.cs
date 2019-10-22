@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.Audit.Model
         long? ApprenticeshipId { get; set; }
         long? ApprenticeshipPriceEpisodeId { get; set; }
         ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
-        UnpaidReason? UnpaidReason { get; set; }
+        NonPaymentReason? NonPaymentReason { get; set; }
     }
 
     public abstract class PeriodisedPaymentsEventModel : PaymentsEventModel, IPeriodisedPaymentsEventModel
@@ -37,6 +37,6 @@ namespace SFA.DAS.Payments.Audit.Model
         public long? ApprenticeshipId { get; set; }
         public long? ApprenticeshipPriceEpisodeId { get; set; }
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
-        public UnpaidReason? UnpaidReason { get; set; }
+        public NonPaymentReason? NonPaymentReason { get; set; }
     }
 }

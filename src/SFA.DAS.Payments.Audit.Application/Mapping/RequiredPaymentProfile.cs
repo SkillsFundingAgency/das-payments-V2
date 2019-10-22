@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping
                 ;
 
             CreateMap<CompletionPaymentHeldBackEvent, RequiredPaymentEventModel>()
-                .ForMember(dest => dest.UnpaidReason, opt => opt.UseValue(UnpaidReason.Withheld))
+                .ForMember(dest => dest.NonPaymentReason, opt => opt.UseValue(NonPaymentReason.InsufficientEmployerContribution))
                 ;
         }
     }

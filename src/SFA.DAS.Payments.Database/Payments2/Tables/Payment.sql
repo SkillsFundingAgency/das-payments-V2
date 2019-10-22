@@ -41,7 +41,7 @@ CREATE TABLE [Payments2].[Payment]
     ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL,
 	ReportingAimFundingLineType NVARCHAR(120) NULL, 
-    [UnpaidReason] TINYINT NULL,
+    [NonPaymentReason] TINYINT NULL,
 
 );
 GO

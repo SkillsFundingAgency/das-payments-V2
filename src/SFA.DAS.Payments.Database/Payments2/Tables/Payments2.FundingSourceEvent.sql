@@ -40,7 +40,7 @@ CREATE TABLE [Payments2].[FundingSourceEvent]
     ApprenticeshipId BIGINT NULL,
     ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL, 
-    [UnpaidReason] TINYINT NULL,
+    [NonPaymentReason] TINYINT NULL,
 )
 
 GO

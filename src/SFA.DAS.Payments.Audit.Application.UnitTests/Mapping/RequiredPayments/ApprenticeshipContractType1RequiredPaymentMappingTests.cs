@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.RequiredPayments
         [Test]
         public void Maps_CompletionPaid_As_NotUnpaid()
         {
-            Mapper.Map<RequiredPaymentEventModel>(PaymentEvent).UnpaidReason.Should().Be(null);
+            Mapper.Map<RequiredPaymentEventModel>(PaymentEvent).NonPaymentReason.Should().Be(null);
         }
     }
 }
