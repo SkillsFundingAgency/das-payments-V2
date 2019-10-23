@@ -41,25 +41,28 @@ Scenario Outline: 16-18 Non-Levy apprentice, provider retrospectively adds small
 		| pe-1             | 7500                 | 06/Aug/Current Academic Year           | 0                      | 06/Aug/Current Academic Year             | 0                       |                                        | 0                         |                                          | Act1          | 1                   | 100%                        |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
-		| Delivery Period        | On-Programme | Completion | Balancing | 
-        | Aug/Current Academic Year | 500          | 0          | 0         | 
-        | Sep/Current Academic Year | 500          | 0          | 0         | 
-        | Oct/Current Academic Year | 500          | 0          | 0         | 
-        | Nov/Current Academic Year | 500          | 0          | 0         | 
-        | Dec/Current Academic Year | 500          | 0          | 0         | 
-        | Jan/Current Academic Year | 500          | 0          | 0         | 
-        | Feb/Current Academic Year | 500          | 0          | 0         | 
-        | Mar/Current Academic Year | 500          | 0          | 0         | 
-        | Apr/Current Academic Year | 500          | 0          | 0         | 
-        | May/Current Academic Year | 500          | 0          | 0         | 
-        | Jun/Current Academic Year | 500          | 0          | 0         | 
-        | Jul/Current Academic Year | 500          | 0          | 0         | 
+		| Delivery Period           | On-Programme | Completion | Balancing |
+		| Aug/Current Academic Year | 500          | 0          | 0         |
+		| Sep/Current Academic Year | 500          | 0          | 0         |
+		| Oct/Current Academic Year | 500          | 0          | 0         |
+		| Nov/Current Academic Year | 500          | 0          | 0         |
+		| Dec/Current Academic Year | 500          | 0          | 0         |
+		| Jan/Current Academic Year | 500          | 0          | 0         |
+		| Feb/Current Academic Year | 500          | 0          | 0         |
+		| Mar/Current Academic Year | 500          | 0          | 0         |
+		| Apr/Current Academic Year | 500          | 0          | 0         |
+		| May/Current Academic Year | 500          | 0          | 0         |
+		| Jun/Current Academic Year | 500          | 0          | 0         |
+		| Jul/Current Academic Year | 500          | 0          | 0         |
 	And at month end only the following payments will be calculated
-		| Collection Period         | Delivery Period            | On Programme | Include Zero Expected Learning Payments | Transaction Type |
-		| R04/Current Academic Year | Aug/Current Academic Year  | 0            | true                                    | Learning         |
-		| R04/Current Academic Year | Sept/Current Academic Year | 0            | true                                    | Learning         |
-		| R04/Current Academic Year | Oct/Current Academic Year  | 0            | true                                    | Learning         |
-		| R04/Current Academic Year | Nov/Current Academic Year  | 500          |                                         | Learning         |
+		| Collection Period         | Delivery Period            | On Programme | Transaction Type |
+		| R04/Current Academic Year | Aug/Current Academic Year  | -500         | Learning         |
+		| R04/Current Academic Year | Aug/Current Academic Year  | 500          | Learning         |
+		| R04/Current Academic Year | Sept/Current Academic Year | -500         | Learning         |
+		| R04/Current Academic Year | Sept/Current Academic Year | 500          | Learning         |
+		| R04/Current Academic Year | Oct/Current Academic Year  | -500         | Learning         |
+		| R04/Current Academic Year | Oct/Current Academic Year  | 500          | Learning         |
+		| R04/Current Academic Year | Nov/Current Academic Year  | 500          | Learning         |
 	And only the following provider payments will be recorded
         | Collection Period         | Delivery Period            | Levy Payments | SFA Co-Funded Payments | Transaction Type |
         | R04/Current Academic Year | Aug/Current Academic Year  | -500          |                        | Learning         |

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using DCT.TestDataGenerator;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.Core;
@@ -22,7 +24,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         private readonly List<Training> currentIlr;
         private readonly List<Price> currentPriceEpisodes;
 
-        public RequiredPaymentEventMatcher(Provider provider , CollectionPeriod collectionPeriod)
+        public RequiredPaymentEventMatcher(Provider provider, CollectionPeriod collectionPeriod)
         {
             this.provider = provider;
             this.collectionPeriod = collectionPeriod;
@@ -31,7 +33,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         public RequiredPaymentEventMatcher(Provider provider,
             CollectionPeriod collectionPeriod,
             List<Payment> paymentSpec,
-            List<Training> currentIlr, 
+            List<Training> currentIlr,
             List<Price> currentPriceEpisodes) : this(provider, collectionPeriod)
         {
             this.paymentSpec = paymentSpec;
@@ -42,8 +44,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         protected override IList<PeriodisedRequiredPaymentEvent> GetActualEvents()
         {
             var events = RequiredPaymentEventHandler.ReceivedEvents
-                .Where(e => e.Ukprn == provider.Ukprn && 
-                            e.CollectionPeriod.Period== collectionPeriod.Period &&
+                .Where(e => e.Ukprn == provider.Ukprn &&
+                            e.CollectionPeriod.Period == collectionPeriod.Period &&
                             e.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
                             e.JobId == provider.JobId).ToList();
 
@@ -73,11 +75,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     OnProgrammeEarningType = aggregatedEvent.Key.OnProgrammeEarningType,
                     LearningAim = new LearningAim
                     {
-                        Reference = aggregatedEvent.Key.Reference, 
-                        FrameworkCode = aggregatedEvent.Key.FrameworkCode, 
+                        Reference = aggregatedEvent.Key.Reference,
+                        FrameworkCode = aggregatedEvent.Key.FrameworkCode,
                         StandardCode = aggregatedEvent.Key.StandardCode,
                     },
-                    Learner = new Learner { ReferenceNumber = aggregatedEvent.Key.ReferenceNumber},
+                    Learner = new Learner {ReferenceNumber = aggregatedEvent.Key.ReferenceNumber},
                 });
             }
 
@@ -102,11 +104,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     Type = aggregatedEvent.Key.Type,
                     LearningAim = new LearningAim
                     {
-                        Reference = aggregatedEvent.Key.Reference, 
-                        FrameworkCode = aggregatedEvent.Key.FrameworkCode, 
+                        Reference = aggregatedEvent.Key.Reference,
+                        FrameworkCode = aggregatedEvent.Key.FrameworkCode,
                         StandardCode = aggregatedEvent.Key.StandardCode,
                     },
-                    Learner = new Learner { ReferenceNumber = aggregatedEvent.Key.ReferenceNumber },
+                    Learner = new Learner {ReferenceNumber = aggregatedEvent.Key.ReferenceNumber},
                 });
             }
 
@@ -120,7 +122,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             var paymentsToValidate =
                 paymentSpec
                     .Where(e => e.ParsedCollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
-                                e.ParsedCollectionPeriod.Period == collectionPeriod.Period )
+                                e.ParsedCollectionPeriod.Period == collectionPeriod.Period)
                     .ToList();
 
             foreach (var payment in paymentsToValidate)
@@ -140,10 +142,52 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                             Type = incentiveTypeKey,
                             DeliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(payment.DeliveryPeriod).Build(),
                         });
-                }    
+                }
             }
 
-            return expectedPayments;
+            var results = new List<PeriodisedRequiredPaymentEvent>();
+            var groupedResults = expectedPayments.GroupBy(x =>
+                new
+                {
+                    x.DeliveryPeriod,
+                    x.CollectionPeriod,
+                    Type = x.GetType()
+                });
+
+            foreach (var periodisedRequiredPaymentEvents in groupedResults)
+            {
+                switch (periodisedRequiredPaymentEvents.FirstOrDefault())
+                {
+                    case CalculatedRequiredLevyAmount levyAmount:
+                        results.Add(new CalculatedRequiredLevyAmount
+                        {
+                            AmountDue = periodisedRequiredPaymentEvents.Sum(x => x.AmountDue),
+                            OnProgrammeEarningType = levyAmount.OnProgrammeEarningType,
+                            DeliveryPeriod = levyAmount.DeliveryPeriod
+                        });
+                        break;
+                    case CalculatedRequiredCoInvestedAmount coInvestedAmount:
+                        results.Add(new CalculatedRequiredLevyAmount
+                        {
+                            AmountDue = periodisedRequiredPaymentEvents.Sum(x => x.AmountDue),
+                            OnProgrammeEarningType = coInvestedAmount.OnProgrammeEarningType,
+                            DeliveryPeriod = coInvestedAmount.DeliveryPeriod
+                        });
+                        break;
+                    case CalculatedRequiredIncentiveAmount incentiveAmount:
+                        results.Add(new CalculatedRequiredIncentiveAmount
+                        {
+                            AmountDue = periodisedRequiredPaymentEvents.Sum(x => x.AmountDue),
+                            Type = incentiveAmount.Type,
+                            DeliveryPeriod = incentiveAmount.DeliveryPeriod
+                        });
+                        break;
+                    default:
+                        throw new ArgumentException("Unexpected type encountered");
+                }
+            }
+
+            return results;
         }
 
         private void AddOnProgPayment(Payment paymentToValidate, List<PeriodisedRequiredPaymentEvent> expectedPayments,
@@ -152,7 +196,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             var deliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(paymentToValidate.DeliveryPeriod).Build();
             var payment = CreateContractTypeRequiredPaymentEvent(amountDue, type, deliveryPeriod);
 
-            if (payment.AmountDue != 0 || (type ==  OnProgrammeEarningType.Learning && paymentToValidate.IncludeZeroExpectedLearningPayments))
+            if (payment.AmountDue != 0)
             {
                 expectedPayments.Add(payment);
             }
@@ -162,8 +206,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             return expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.AmountDue == actual.AmountDue.AsRounded() &&
-                   MatchAct(expected as CalculatedRequiredOnProgrammeAmount, actual as CalculatedRequiredOnProgrammeAmount) &&
-                   MatchIncentive(expected as CalculatedRequiredIncentiveAmount, actual as CalculatedRequiredIncentiveAmount);
+                   MatchAct(expected as CalculatedRequiredOnProgrammeAmount,
+                       actual as CalculatedRequiredOnProgrammeAmount) &&
+                   MatchIncentive(expected as CalculatedRequiredIncentiveAmount,
+                       actual as CalculatedRequiredIncentiveAmount);
         }
 
         private bool MatchAct(CalculatedRequiredOnProgrammeAmount expected, CalculatedRequiredOnProgrammeAmount actual)
@@ -174,7 +220,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return expected.OnProgrammeEarningType == actual.OnProgrammeEarningType;
         }
 
-        private bool MatchIncentive(CalculatedRequiredIncentiveAmount expected, CalculatedRequiredIncentiveAmount actual)
+        private bool MatchIncentive(CalculatedRequiredIncentiveAmount expected,
+            CalculatedRequiredIncentiveAmount actual)
         {
             if (expected == null)
                 return true;
@@ -182,7 +229,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return expected.Type == actual.Type;
         }
 
-        private PeriodisedRequiredPaymentEvent CreateContractTypeRequiredPaymentEvent(decimal amountDue, OnProgrammeEarningType onProgrammeEarningType, byte deliveryPeriod)
+        private PeriodisedRequiredPaymentEvent CreateContractTypeRequiredPaymentEvent(decimal amountDue,
+            OnProgrammeEarningType onProgrammeEarningType, byte deliveryPeriod)
         {
             var contractType = EnumHelper.GetContractType(currentIlr, currentPriceEpisodes);
 
@@ -205,7 +253,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     };
 
                 default:
-                    throw new InvalidOperationException("Cannot create the RequiredPaymentMatcher invalid contract type ");
+                    throw new InvalidOperationException(
+                        "Cannot create the RequiredPaymentMatcher invalid contract type ");
             }
         }
     }
