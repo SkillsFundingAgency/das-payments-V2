@@ -16,17 +16,18 @@ using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers;
 using SFA.DAS.Payments.FundingSource.LevyFundedService;
 using SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.UnitTests.Handlers
 {
-    internal class TestSubmissionEventHandler : SubmissionEventHandler<SubmissionFailedEvent>
+    internal class TestSubmissionEventHandler : SubmissionEventHandler<SubmissionJobFailed>
     {
         public TestSubmissionEventHandler(IActorProxyFactory proxyFactory, ILevyFundingSourceRepository repository,
             IPaymentLogger logger, IExecutionContext executionContext, ILevyMessageRoutingService levyMessageRoutingService) : base(proxyFactory, repository, logger, executionContext, levyMessageRoutingService)
         {
         }
 
-        protected override async Task HandleSubmissionEvent(SubmissionFailedEvent message, ILevyFundedService fundingService)
+        protected override async Task HandleSubmissionEvent(SubmissionJobFailed message, ILevyFundedService fundingService)
         {
             await fundingService.RemoveCurrentSubmission(message);
         }
@@ -41,7 +42,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.UnitTests.Handle
         private Mock<ILevyMessageRoutingService> _levyMessageRoutingService;
         private Mock<IActorProxyFactory> _proxyFactory;
 
-        private SubmissionFailedEvent _event;
+        private SubmissionJobFailed _event;
 
         [SetUp]
         public void SetUp()
@@ -53,7 +54,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.UnitTests.Handle
             var executionContext = new ESFA.DC.Logging.ExecutionContext();
             _eventHandler = new TestSubmissionEventHandler(_proxyFactory.Object, _levyFundingSourceRepository.Object, Mock.Of<IPaymentLogger>(), executionContext, _levyMessageRoutingService.Object);
 
-            _event = new SubmissionFailedEvent { Ukprn = 12344325 };
+            _event = new SubmissionJobFailed { Ukprn = 12344325 };
         }
 
         [Test]

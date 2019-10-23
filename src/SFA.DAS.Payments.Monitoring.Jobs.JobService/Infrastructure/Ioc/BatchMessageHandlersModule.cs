@@ -1,6 +1,9 @@
 ﻿using Autofac;
 using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers;
+using SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd;
+using SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.Submission;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Infrastructure.Ioc
@@ -31,6 +34,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Infrastructure.Ioc
 
             builder.RegisterType<RecordPeriodEndStartJobHandler>()
                 .As<IHandleMessageBatches<RecordPeriodEndStartJob>>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<RecordSubmissionSucceededHandler>()
+                .As<IHandleMessageBatches<RecordEarningsJobSucceeded>>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<RecordSubmissionFailedHandler>()
+                .As<IHandleMessageBatches<RecordEarningsJobFailed>>()
                 .InstancePerLifetimeScope();
         }
     }

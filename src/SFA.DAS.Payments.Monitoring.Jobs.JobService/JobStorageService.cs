@@ -95,6 +95,21 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             return jobs;
         }
 
+        public async Task StoreDcJobStatus(long jobId, bool succeeded, CancellationToken cancellationToken)
+        {
+            var job = await GetJob(jobId, cancellationToken).ConfigureAwait(false);
+            if (job == null)
+                throw new InvalidOperationException($"Job not stored in the cache. Job: {jobId}");
+            job.DcJobSucceeded = succeeded;
+            job.DcJobEndTime = DateTimeOffset.UtcNow;
+            var jobCache = await GetJobCollection();
+            await jobCache.AddOrUpdateAsync(reliableTransactionProvider.Current, job.DcJobId.Value,
+                    id => job, (id, existingJob) => job, TransactionTimeout, cancellationToken)
+                .ConfigureAwait(false);
+
+            await dataContext.SaveDcSubmissionStatus(jobId, succeeded, cancellationToken).ConfigureAwait(false);
+        }
+
         public async Task<JobModel> GetJob(long jobId, CancellationToken cancellationToken)
         {
             var collection = await GetJobCollection().ConfigureAwait(false);

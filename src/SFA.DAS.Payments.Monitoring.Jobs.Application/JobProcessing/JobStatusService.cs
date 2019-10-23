@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 {
     public interface IJobStatusService
     {
-        Task<JobStatus> ManageStatus(long jobId, CancellationToken cancellationToken);
+        Task<bool> ManageStatus(long jobId, CancellationToken cancellationToken);
     }
 
     public class JobStatusService : IJobStatusService
@@ -22,24 +22,27 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         private readonly IJobStorageService jobStorageService;
         private readonly IPaymentLogger logger;
         private readonly ITelemetry telemetry;
+        private readonly IJobStatusEventPublisher eventPublisher;
 
-        public JobStatusService(IJobStorageService jobStorageService, IPaymentLogger logger, ITelemetry telemetry)
+        public JobStatusService(IJobStorageService jobStorageService, IPaymentLogger logger, ITelemetry telemetry, IJobStatusEventPublisher eventPublisher)
         {
             this.jobStorageService = jobStorageService ?? throw new ArgumentNullException(nameof(jobStorageService));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
+            this.eventPublisher = eventPublisher ?? throw new ArgumentNullException(nameof(eventPublisher));
         }
 
-        public async Task<JobStatus> ManageStatus(long jobId, CancellationToken cancellationToken)
+        public async Task<bool> ManageStatus(long jobId, CancellationToken cancellationToken)
         {
             logger.LogVerbose($"Now determining if job {jobId} has finished.");
             var job = await jobStorageService.GetJob(jobId, cancellationToken).ConfigureAwait(false);
             if (job != null )
             {
-                if (job.Status != JobStatus.InProgress)
+                if (job.Status != JobStatus.InProgress && job.DcJobSucceeded.HasValue)
                 {
                     logger.LogWarning($"Job {jobId} has already finished. Status: {job.Status}");
-                    return job.Status;
+                    await eventPublisher.SubmissionFinished(job.DcJobSucceeded.Value, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
+                    return true;
                 }
 
                 if ((job.JobType == JobType.EarningsJob || job.JobType == JobType.ComponentAcceptanceTestEarningsJob) && job.LearnerCount.HasValue && job.LearnerCount.Value == 0)
@@ -56,7 +59,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             if (!completedItems.Any())
             {
                 logger.LogVerbose($"Found no completed messages for job: {jobId}");
-                return JobStatus.InProgress;
+                return false;
             }
 
             await CompleteDataLocks(jobId, completedItems, inProgressMessages, cancellationToken)
@@ -75,14 +78,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             if (!inProgressMessages.TrueForAll(inProgress => completedItems.Any(item => item.MessageId == inProgress.MessageId)))
             {
                 logger.LogDebug($"Found in progress messages for job id: {jobId}.  Cannot set status for job.");
-                return JobStatus.InProgress;
+                return false;
             }
 
             job = await jobStorageService.GetJob(jobId, cancellationToken);
             if (job == null)
             {
                 logger.LogWarning($"Attempting to record completion status for job {jobId} but the job has not been persisted to database.");
-                return JobStatus.InProgress;
+                return false;
             }
 
             job.Status = currentJobStatus.hasFailedMessages ? JobStatus.CompletedWithErrors : JobStatus.Completed;
@@ -93,9 +96,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
             SendTelemetry(job);
             logger.LogInfo($"Finished recording completion status of job. Job: {job.Id}, status: {job.Status}, end time: {job.EndTime}");
-            return job.Status;
+            if (!job.DcJobSucceeded.HasValue)
+                return false;
+            //TODO: will need to change when we handle period end jobs
+            await eventPublisher.SubmissionFinished(job.DcJobSucceeded.Value, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
+            return true;
         }
-
 
         private async Task<List<CompletedMessage>> GetCompletedMessages(long jobId, List<InProgressMessage> inProgressMessages, CancellationToken cancellationToken)
         {

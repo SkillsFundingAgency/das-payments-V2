@@ -2,6 +2,6 @@
 {
     public interface IMonitoredMessage : IJobMessage
     {
-        long Ukprn { get; }
+
     }
 }

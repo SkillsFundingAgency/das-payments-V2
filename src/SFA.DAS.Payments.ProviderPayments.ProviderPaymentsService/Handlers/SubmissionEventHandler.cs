@@ -4,12 +4,13 @@ using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 {
     public abstract class SubmissionEventHandler<T> : IHandleMessages<T>
-        where T: SubmissionEvent
+        where T: SubmissionJobFinishedEvent
     {
         private readonly IPaymentLogger paymentLogger;
         private readonly IHandleIlrSubmissionService submissionService;

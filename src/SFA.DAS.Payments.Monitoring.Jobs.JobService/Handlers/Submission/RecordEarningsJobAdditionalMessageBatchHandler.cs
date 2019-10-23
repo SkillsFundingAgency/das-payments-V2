@@ -7,7 +7,7 @@ using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
-namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers
+namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.Submission
 {
     public class RecordEarningsJobAdditionalMessageBatchHandler: IHandleMessageBatches<RecordEarningsJobAdditionalMessages>
     {

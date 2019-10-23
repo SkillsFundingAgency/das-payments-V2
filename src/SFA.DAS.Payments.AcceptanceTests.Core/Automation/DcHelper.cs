@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         {
             try
             {
-                dataContext.ClearJobId(jobId);
+                //dataContext.ClearJobId(jobId);  //TODO: Not sure why we'd remove the job before confirming it
 
                 var subscriptionName = DcConfiguration.SubscriptionName;
 

@@ -2,15 +2,15 @@
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Audit.Application.Data;
 using SFA.DAS.Payments.Audit.Model;
-using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 
 namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.DataLock
 {
     public interface ISubmissionEventProcessor
     {
-        Task ProcessSubmissionFailedEvent(SubmissionFailedEvent submissionFailedEvent);
-        Task ProcessSubmissionSucceededEvent(SubmissionSucceededEvent submissionSucceededEvent);
+        Task ProcessSubmissionFailedEvent(SubmissionJobFailed submissionFailedEvent);
+        Task ProcessSubmissionSucceededEvent(SubmissionJobSucceeded submissionSucceededEvent);
     }
 
     public class SubmissionEventProcessor : ISubmissionEventProcessor
@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.DataLock
             this.batchService = batchService;
         }
 
-        public async Task ProcessSubmissionFailedEvent(SubmissionFailedEvent submissionFailedEvent)
+        public async Task ProcessSubmissionFailedEvent(SubmissionJobFailed submissionFailedEvent)
         {
             // flush audit service cache first
             await batchService.StorePayments(CancellationToken.None).ConfigureAwait(false);
@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.DataLock
             ).ConfigureAwait(false);
         }
 
-        public async Task ProcessSubmissionSucceededEvent(SubmissionSucceededEvent submissionSucceededEvent)
+        public async Task ProcessSubmissionSucceededEvent(SubmissionJobSucceeded submissionSucceededEvent)
         {
             // flush audit service cache first
             await batchService.StorePayments(CancellationToken.None).ConfigureAwait(false);
