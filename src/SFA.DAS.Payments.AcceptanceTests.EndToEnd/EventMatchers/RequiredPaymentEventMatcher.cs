@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using DCT.TestDataGenerator;
-using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+﻿using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Model.Core;
@@ -11,6 +6,9 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.Tests.Core.Builders;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Learner = SFA.DAS.Payments.Model.Core.Learner;
 using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 
