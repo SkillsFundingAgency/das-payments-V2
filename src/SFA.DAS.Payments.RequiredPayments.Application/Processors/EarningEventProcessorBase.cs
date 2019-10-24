@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
             try
             {
-              
+
                 var result = new List<PeriodisedRequiredPaymentEvent>();
 
                 var cachedPayments = await paymentHistoryCache.TryGet(CacheKeys.PaymentHistoryKey, cancellationToken);
@@ -134,9 +134,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                                 : earningEvent.PriceEpisodes?.SingleOrDefault(x => x.Identifier == priceEpisodeIdentifier);
 
                             mapper.Map(priceEpisode, requiredPaymentEvent);
-                        }
-                        //if (requiredPaymentEvent.PlannedEndDate)
 
+                            if (requiredPaymentEvent.LearningAim != null) mapper.Map(priceEpisode, requiredPaymentEvent.LearningAim);
+                        }
+                       
                         result.Add(requiredPaymentEvent);
                     }
                 }

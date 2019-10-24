@@ -23,5 +23,8 @@
     <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
     <Parameter Name="DasPeriodEndConnectionString" Value="__DasPeriodEndConnectionString__" />
     <Parameter Name="LegacyExportBatchSize" Value="__LegacyExportBatchSize__" />
+    <Parameter Name="ImmediateMessageRetries" Value="__ImmediateMessageRetries__"/>
+    <Parameter Name="DelayedMessageRetries" Value="__DelayedMessageRetries__"/>
+    <Parameter Name="DelayedMessageRetryDelay" Value="__DelayedMessageRetryDelay__"/>
   </Parameters>
 </Application>
