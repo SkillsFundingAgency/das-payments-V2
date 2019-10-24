@@ -21,11 +21,308 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
     public class FunctionalSkillEarningEventBuilderTest
     {
         private IMapper mapper;
+        private ProcessLearnerCommand learnerSubmission;
 
         [OneTimeSetUp]
         public void InitialiseMapper()
         {
             mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<EarningsEventProfile>()));
+        }
+
+        [SetUp]
+        public void SetUp()
+        {
+            learnerSubmission = new ProcessLearnerCommand
+            {
+                Ukprn = 1000,
+                CollectionPeriod = 1,
+                CollectionYear = 1920,
+                SubmissionDate = DateTime.Today,
+                JobId = 1,
+                Learner = new FM36Learner
+                {
+                    LearningDeliveries = new EditableList<LearningDelivery>
+                    {
+                        new LearningDelivery
+                        {
+                            AimSeqNumber = 1,
+                            LearningDeliveryValues = new LearningDeliveryValues
+                            {
+                                LearnAimRef = "5011397X",
+                                LearnDelInitialFundLineType = "16-18 Apprenticeship (Employer on App Service)",
+                            },
+                            LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
+                            {
+                                new LearningDeliveryPeriodisedValues
+                                {
+                                    AttributeName = "MathEngOnProgPayment",
+                                    Period1 = 1,
+                                    Period2 = 2,
+                                    Period3 = 3,
+                                    Period4 = 4,
+                                    Period5 = 5,
+                                    Period6 = 6,
+                                    Period7 = 7,
+                                    Period8 = 8,
+                                    Period9 = 9,
+                                    Period10 = 10,
+                                    Period11 = 11,
+                                    Period12 = 12
+                                }
+                            },
+                            LearningDeliveryPeriodisedTextValues = new EditableList<LearningDeliveryPeriodisedTextValues>
+                            {
+                                new LearningDeliveryPeriodisedTextValues
+                                {
+                                    AttributeName = "LearnDelContType",
+                                    Period1 =  "None",
+                                    Period2 =  "None",
+                                    Period3 =  "None",
+                                    Period4 =  "None",
+                                    Period5 =  "None",
+                                    Period6 =  "None",
+                                    Period7 =  "None",
+                                    Period8 =  "None",
+                                    Period9 =  "None",
+                                    Period10 = "None",
+                                    Period11 = "None",
+                                    Period12 = "None",
+                                },
+                                new LearningDeliveryPeriodisedTextValues
+                                {
+                                    AttributeName= "FundLineType",
+                                    Period1 = "none",
+                                    Period2 = "none",
+                                    Period3 = "none",
+                                    Period4 = "none",
+                                    Period5 = "none",
+                                    Period6 = "none",
+                                    Period7 = "none",
+                                    Period8 = "none",
+                                    Period9 = "none",
+                                    Period10 ="none",
+                                    Period11 ="none",
+                                    Period12 ="none",
+                                }
+                            }
+                        },
+                        new LearningDelivery
+                        {
+                            AimSeqNumber = 2,
+                            LearningDeliveryValues = new LearningDeliveryValues
+                            {
+                                LearnAimRef = "5022394X",
+                                LearnDelInitialFundLineType = "16-18 Apprenticeship (Employer on App Service)",
+                            },
+                            LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
+                            {
+                                new LearningDeliveryPeriodisedValues
+                                {
+                                    AttributeName = "MathEngOnProgPayment",
+                                    Period1 = 1,
+                                    Period2 = 2,
+                                    Period3 = 3,
+                                    Period4 = 4,
+                                    Period5 = 5,
+                                    Period6 = 6,
+                                    Period7 = 7,
+                                    Period8 = 8,
+                                    Period9 = 9,
+                                    Period10 = 10,
+                                    Period11 = 11,
+                                    Period12 = 12
+                                }
+                            },
+                            LearningDeliveryPeriodisedTextValues = new EditableList<LearningDeliveryPeriodisedTextValues>
+                            {
+                                new LearningDeliveryPeriodisedTextValues 
+                                {
+                                    AttributeName = "LearnDelContType",
+                                    Period1 = "None",
+                                    Period2 =  "None",
+                                    Period3 =  "None",
+                                    Period4 =  "None",
+                                    Period5 =  "None",
+                                    Period6 =  "None",
+                                    Period7 =  "None",
+                                    Period8 =  "None",
+                                    Period9 =  "None",
+                                    Period10 = "None",
+                                    Period11 = "None",
+                                    Period12 = "None",
+                                },
+                                new LearningDeliveryPeriodisedTextValues
+                                {
+                                    AttributeName= "FundLineType",
+                                    Period1 = "none",
+                                    Period2 = "none",
+                                    Period3 = "none",
+                                    Period4 = "none",
+                                    Period5 = "none",
+                                    Period6 = "none",
+                                    Period7 = "none",
+                                    Period8 = "none",
+                                    Period9 = "none",
+                                    Period10 ="none",
+                                    Period11 ="none",
+                                    Period12 ="none",
+                                }
+                            }
+                        },
+                        new LearningDelivery
+                        {
+                            AimSeqNumber = 3,
+                            LearningDeliveryValues = new LearningDeliveryValues
+                            {
+                                LearnAimRef = "ZPROG001"
+                            },
+                            LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
+                            {
+                                new LearningDeliveryPeriodisedValues
+                                {
+                                    AttributeName = "MathEngBalPayment",
+                                    Period1 = 0.0m,
+                                    Period2 = 0.0m,
+                                    Period3 = 0.0m,
+                                    Period4 = 0.0m,
+                                    Period5 = 0.0m,
+                                    Period6 = 0.0m,
+                                    Period7 = 0.0m,
+                                    Period8 = 0.0m,
+                                    Period9 = 0.0m,
+                                    Period10 = 0.0m,
+                                    Period11 = 0.0m,
+                                    Period12 = 0.0m
+                                }
+                            },
+                            LearningDeliveryPeriodisedTextValues = new EditableList<LearningDeliveryPeriodisedTextValues>
+                            {
+
+                                new LearningDeliveryPeriodisedTextValues
+                                {
+                                    AttributeName = "LearnDelContType",
+                                    Period1 = "Levy Contract",
+                                    Period2 = "Levy Contract",
+                                    Period3 = "Levy Contract",
+                                    Period4 = "Levy Contract",
+                                    Period5 = "Levy Contract",
+                                    Period6 = "Levy Contract",
+                                    Period7 = "Levy Contract",
+                                    Period8 = "Levy Contract",
+                                    Period9 = "Levy Contract",
+                                    Period10 = "Levy Contract",
+                                    Period11 = "Levy Contract",
+                                    Period12 = "Levy Contract"
+                                },
+                                new LearningDeliveryPeriodisedTextValues
+                                {
+                                    AttributeName= "FundLineType",
+                                    Period1 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period2 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period3 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period4 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period5 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period6 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period7 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period8 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period9 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period10 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period11 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period12 = "16-18 Apprenticeship (Employer on App Service)"
+                                }
+
+                            }
+                        },
+                        new LearningDelivery
+                        {
+                            AimSeqNumber = 4,
+                            LearningDeliveryValues = new LearningDeliveryValues
+                            {
+                                LearnAimRef = "5011394X",
+                                LearnDelInitialFundLineType = "16-18 Apprenticeship (Employer on App Service)",
+                            },
+                            LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
+                            {
+                                new LearningDeliveryPeriodisedValues
+                                {
+                                    AttributeName = "MathEngOnProgPayment",
+                                    Period1 = 1,
+                                    Period2 = 2,
+                                    Period3 = 3,
+                                    Period4 = 4,
+                                    Period5 = 5,
+                                    Period6 = 6,
+                                    Period7 = 7,
+                                    Period8 = 8,
+                                    Period9 = 9,
+                                    Period10 = 10,
+                                    Period11 = 11,
+                                    Period12 = 12
+                                }
+                            },
+                            LearningDeliveryPeriodisedTextValues = new EditableList<LearningDeliveryPeriodisedTextValues>
+                            {
+                                new LearningDeliveryPeriodisedTextValues
+                                {
+                                    AttributeName = "LearnDelContType",
+                                    Period1 = "Non-Levy Contract",
+                                    Period2 = "Non-Levy Contract",
+                                    Period3 = "Non-Levy Contract",
+                                    Period4 = "Non-Levy Contract",
+                                    Period5 = "None",
+                                    Period6 = "None",
+                                    Period7 = "Levy Contract",
+                                    Period8 = "Levy Contract",
+                                    Period9 = "Levy Contract",
+                                    Period10 = "Levy Contract",
+                                    Period11 = "Levy Contract",
+                                    Period12 = "Levy Contract"
+                                },
+                                new LearningDeliveryPeriodisedTextValues
+                                {
+                                    AttributeName= "FundLineType",
+                                    Period1 = "16-18 Apprenticeship Non-Levy Contract (procured)",
+                                    Period2 = "16-18 Apprenticeship Non-Levy Contract (procured)",
+                                    Period3 = "16-18 Apprenticeship Non-Levy Contract (procured)",
+                                    Period4 = "16-18 Apprenticeship Non-Levy Contract (procured)",
+                                    Period5 = "none",
+                                    Period6 = "none",
+                                    Period7 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period8 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period9 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period10 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period11 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period12 = "16-18 Apprenticeship (Employer on App Service)"
+                                }
+                            }
+                        },
+
+                    },
+                    PriceEpisodes = new EditableList<PriceEpisode>
+                    {
+                        new PriceEpisode
+                        {
+                            PriceEpisodeValues = new PriceEpisodeValues
+                            {
+                                EpisodeStartDate = DateTime.Today,
+                                PriceEpisodeAimSeqNumber = 3,
+                                PriceEpisodeContractType = "Levy Contract",
+                                TNP1 = 2500,
+                                PriceEpisodeFundLineType ="16-18 Apprenticeship (Employer on App Service)",
+                            },
+                            PriceEpisodePeriodisedValues = new EditableList<PriceEpisodePeriodisedValues>
+                            {
+                                new PriceEpisodePeriodisedValues
+                                {
+                                    AttributeName = "PriceEpisodeOnProgPayment",
+                                    Period1 = 10,
+                                    Period2 = 20
+                                }
+                            }
+                        }
+                    }
+                }
+            };
         }
 
         [Test]
@@ -249,234 +546,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         {
             // arrange
             var builder = new FunctionalSkillEarningEventBuilder(mapper);
-            var learnerSubmission = new ProcessLearnerCommand
-            {
-                Ukprn = 1000,
-                CollectionPeriod = 1,
-                CollectionYear = 1920,
-                SubmissionDate = DateTime.Today,
-                JobId = 1,
-                Learner = new FM36Learner
-                {
-                    LearningDeliveries = new EditableList<LearningDelivery>
-                    {
-                        new LearningDelivery
-                        {
-                            AimSeqNumber = 4,
-                            LearningDeliveryValues = new LearningDeliveryValues
-                            {
-                                LearnAimRef = "5011397X",
-                                LearnDelInitialFundLineType = "16-18 Apprenticeship (Employer on App Service)",
-                            },
-                            LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
-                            {
-                                new LearningDeliveryPeriodisedValues
-                                {
-                                    AttributeName = "MathEngOnProgPayment",
-                                    Period1 = 1,
-                                    Period2 = 2,
-                                    Period3 = 3,
-                                    Period4 = 4,
-                                    Period5 = 5,
-                                    Period6 = 6,
-                                    Period7 = 7,
-                                    Period8 = 8,
-                                    Period9 = 9,
-                                    Period10 = 10,
-                                    Period11 = 11,
-                                    Period12 = 12
-                                }
-                            },
-                            LearningDeliveryPeriodisedTextValues = new EditableList<LearningDeliveryPeriodisedTextValues>
-                            {
-                                new LearningDeliveryPeriodisedTextValues
-                                {
-                                AttributeName = "LearnDelContType",
-                                Period1 =  "None",
-                                Period2 =  "None",
-                                Period3 =  "None",
-                                Period4 =  "None",
-                                Period5 =  "None",
-                                Period6 =  "None",
-                                Period7 =  "None",
-                                Period8 =  "None",
-                                Period9 =  "None",
-                                Period10 = "None",
-                                Period11 = "None",
-                                Period12 = "None",
-                            }
-                            }
-                        },
-                                 new LearningDelivery
-                        {
-                            AimSeqNumber = 3,
-                            LearningDeliveryValues = new LearningDeliveryValues
-                            {
-                                LearnAimRef = "5022394X",
-                                LearnDelInitialFundLineType = "16-18 Apprenticeship (Employer on App Service)",
-                            },
-                            LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
-                            {
-                                new LearningDeliveryPeriodisedValues
-                                {
-                                    AttributeName = "MathEngOnProgPayment",
-                                    Period1 = 1,
-                                    Period2 = 2,
-                                    Period3 = 3,
-                                    Period4 = 4,
-                                    Period5 = 5,
-                                    Period6 = 6,
-                                    Period7 = 7,
-                                    Period8 = 8,
-                                    Period9 = 9,
-                                    Period10 = 10,
-                                    Period11 = 11,
-                                    Period12 = 12
-                                }
-                            },
-                            LearningDeliveryPeriodisedTextValues = new EditableList<LearningDeliveryPeriodisedTextValues>
-                            {
-                                new LearningDeliveryPeriodisedTextValues
-                                {
-                                AttributeName = "LearnDelContType",
-                                Period1 = "None",
-                                Period2 =  "None",
-                                Period3 =  "None",
-                                Period4 =  "None",
-                                Period5 =  "None",
-                                Period6 =  "None",
-                                Period7 =  "None",
-                                Period8 =  "None",
-                                Period9 =  "None",
-                                Period10 = "None",
-                                Period11 = "None",
-                                Period12 = "None",
-                            }
-                            }
-                        },
-                        new LearningDelivery
-                        {
-                            AimSeqNumber = 1,
-                            LearningDeliveryValues = new LearningDeliveryValues
-                            {
-                                LearnAimRef = "ZPROG001"
-                            },
-                            LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
-                            {
-                                new LearningDeliveryPeriodisedValues
-                                {
-                                    AttributeName = "MathEngBalPayment",
-                                    Period1 = 0.0m,
-                                    Period2 = 0.0m,
-                                    Period3 = 0.0m,
-                                    Period4 = 0.0m,
-                                    Period5 = 0.0m,
-                                    Period6 = 0.0m,
-                                    Period7 = 0.0m,
-                                    Period8 = 0.0m,
-                                    Period9 = 0.0m,
-                                    Period10 = 0.0m,
-                                    Period11 = 0.0m,
-                                    Period12 = 0.0m
-                                }
-                            },
-                            LearningDeliveryPeriodisedTextValues = new EditableList<LearningDeliveryPeriodisedTextValues>
-                            {
-
-                                new LearningDeliveryPeriodisedTextValues
-                                {
-                                AttributeName = "LearnDelContType",
-                                Period1 = "Levy Contract",
-                                Period2 = "Levy Contract",
-                                Period3 = "Levy Contract",
-                                Period4 = "Levy Contract",
-                                Period5 = "Levy Contract",
-                                Period6 = "Levy Contract",
-                                Period7 = "Levy Contract",
-                                Period8 = "Levy Contract",
-                                Period9 = "Levy Contract",
-                                Period10 = "Levy Contract",
-                                Period11 = "Levy Contract",
-                                Period12 = "Levy Contract"
-                            }
-
-                            }
-                        },
-
-                           new LearningDelivery
-                        {
-                            AimSeqNumber = 2,
-                            LearningDeliveryValues = new LearningDeliveryValues
-                            {
-                                LearnAimRef = "5011394X",
-                                LearnDelInitialFundLineType = "16-18 Apprenticeship (Employer on App Service)",
-                            },
-                            LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
-                            {
-                                new LearningDeliveryPeriodisedValues
-                                {
-                                    AttributeName = "MathEngOnProgPayment",
-                                    Period1 = 1,
-                                    Period2 = 2,
-                                    Period3 = 3,
-                                    Period4 = 4,
-                                    Period5 = 5,
-                                    Period6 = 6,
-                                    Period7 = 7,
-                                    Period8 = 8,
-                                    Period9 = 9,
-                                    Period10 = 10,
-                                    Period11 = 11,
-                                    Period12 = 12
-                                }
-                            },
-                            LearningDeliveryPeriodisedTextValues = new EditableList<LearningDeliveryPeriodisedTextValues>
-                            {
-                                new LearningDeliveryPeriodisedTextValues
-                                {
-                                AttributeName = "LearnDelContType",
-                                Period1 = "Non-Levy Contract",
-                                Period2 = "Non-Levy Contract",
-                                Period3 = "Non-Levy Contract",
-                                Period4 = "Non-Levy Contract",
-                                Period5 = "None",
-                                Period6 = "None",
-                                Period7 = "Levy Contract",
-                                Period8 = "Levy Contract",
-                                Period9 = "Levy Contract",
-                                Period10 = "Levy Contract",
-                                Period11 = "Levy Contract",
-                                Period12 = "Levy Contract"
-                            }
-                            }
-                        },
-
-                    },
-                    PriceEpisodes = new EditableList<PriceEpisode>
-                    {
-                        new PriceEpisode
-                        {
-                            PriceEpisodeValues = new PriceEpisodeValues
-                            {
-                                EpisodeStartDate = DateTime.Today,
-                                PriceEpisodeAimSeqNumber = 1,
-                                PriceEpisodeContractType = "Levy Contract",
-                                TNP1 = 2500,
-                                PriceEpisodeFundLineType ="16-18 Apprenticeship (Employer on App Service)",
-                            },
-                            PriceEpisodePeriodisedValues = new EditableList<PriceEpisodePeriodisedValues>
-                            {
-                                new PriceEpisodePeriodisedValues
-                                {
-                                    AttributeName = "PriceEpisodeOnProgPayment",
-                                    Period1 = 10,
-                                    Period2 = 20
-                                }
-                            }
-                        }
-                    }
-                }
-            };
 
             // act
             var events = builder.Build(learnerSubmission);
@@ -514,169 +583,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         {
             // arrange
             var builder = new FunctionalSkillEarningEventBuilder(mapper);
-            var learnerSubmission = new ProcessLearnerCommand
-            {
-                Ukprn = 1000,
-                CollectionPeriod = 1,
-                CollectionYear = 1920,
-                SubmissionDate = DateTime.Today,
-                JobId = 1,
-                Learner = new FM36Learner
-                {
-                    LearningDeliveries = new EditableList<LearningDelivery>
-                    {
-                          new LearningDelivery
-                        {
-                            AimSeqNumber = 1,
-                            LearningDeliveryValues = new LearningDeliveryValues
-                            {
-                                LearnAimRef = "5011394X"
-                            },
-                            LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
-                            {
-                                new LearningDeliveryPeriodisedValues
-                                {
-                                    AttributeName = "MathEngBalPayment",
-                                    Period1 = 0.0m,
-                                    Period2 = 0.0m,
-                                    Period3 = 0.0m,
-                                    Period4 = 0.0m,
-                                    Period5 = 0.0m,
-                                    Period6 = 0.0m,
-                                    Period7 = 0.0m,
-                                    Period8 = 0.0m,
-                                    Period9 = 0.0m,
-                                    Period10 = 0.0m,
-                                    Period11 = 0.0m,
-                                    Period12 = 0.0m
-                                }
-                            },
-                            LearningDeliveryPeriodisedTextValues = new EditableList<LearningDeliveryPeriodisedTextValues>
-                            {
-                                new LearningDeliveryPeriodisedTextValues
-                                {
-                                    AttributeName = "LearnDelContType",
-                                    Period1 = "None",
-                                    Period2 = "None",
-                                    Period3 = "None",
-                                    Period4 = "None",
-                                    Period5 = "None",
-                                    Period6 = "None",
-                                    Period7 = "None",
-                                    Period8 = "None",
-                                    Period9 = "None",
-                                    Period10 = "None",
-                                    Period11 = "None",
-                                    Period12 = "None"
-                                },
-                                new LearningDeliveryPeriodisedTextValues
-                                {
-                                    AttributeName= "FundLineType",
-                                    Period1= "None",
-                                    Period2= "None",
-                                    Period3= "None",
-                                    Period4= "None",
-                                    Period5= "None",
-                                    Period6= "None",
-                                    Period7= "None",
-                                    Period8= "None",
-                                    Period9= "None",
-                                    Period10= "None",
-                                    Period11= "None",
-                                    Period12= "None"
-                                }
-                            }
-                        },
-                        new LearningDelivery
-                        {
-                            AimSeqNumber = 2,
-                            LearningDeliveryValues = new LearningDeliveryValues
-                            {
-                                LearnAimRef = "ZPROG001",
-                                LearnDelInitialFundLineType = "16-18 Apprenticeship (Employer on App Service)",
-                            },
-                            LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
-                            {
-                                new LearningDeliveryPeriodisedValues
-                                {
-                                    AttributeName = "MathEngOnProgPayment",
-                                    Period1 = 1,
-                                    Period2 = 2,
-                                    Period3 = 3,
-                                    Period4 = 4,
-                                    Period5 = 5,
-                                    Period6 = 6,
-                                    Period7 = 7,
-                                    Period8 = 8,
-                                    Period9 = 9,
-                                    Period10 = 10,
-                                    Period11 = 11,
-                                    Period12 = 12
-                                }
-                            },
-                            LearningDeliveryPeriodisedTextValues = new EditableList<LearningDeliveryPeriodisedTextValues>
-                            {
-                                new LearningDeliveryPeriodisedTextValues
-                                {
-                                    AttributeName = "LearnDelContType",
-                                    Period1 = "Non-Levy Contract",
-                                    Period2 = "Non-Levy Contract",
-                                    Period3 = "Non-Levy Contract",
-                                    Period4 = "Non-Levy Contract",
-                                    Period5 = "Non-Levy Contract",
-                                    Period6 = "Non-Levy Contract",
-                                    Period7 = "Levy Contract",
-                                    Period8 = "Levy Contract",
-                                    Period9 = "Levy Contract",
-                                    Period10 = "Levy Contract",
-                                    Period11 = "Levy Contract",
-                                    Period12 = "Levy Contract"
-                                },
-                                new LearningDeliveryPeriodisedTextValues
-                                {
-                                    AttributeName= "FundLineType",
-                                    Period1= "16-18 Apprenticeship Non-Levy Contract (procured)",
-                                    Period2= "16-18 Apprenticeship Non-Levy Contract (procured)",
-                                    Period3= "16-18 Apprenticeship Non-Levy Contract (procured)",
-                                    Period4= "16-18 Apprenticeship Non-Levy Contract (procured)",
-                                    Period5= "16-18 Apprenticeship Non-Levy Contract (procured)",
-                                    Period6= "16-18 Apprenticeship (Employer on App Service)",
-                                    Period7= "16-18 Apprenticeship (Employer on App Service)",
-                                    Period8= "16-18 Apprenticeship (Employer on App Service)",
-                                    Period9= "16-18 Apprenticeship (Employer on App Service)",
-                                    Period10= "16-18 Apprenticeship (Employer on App Service)",
-                                    Period11= "16-18 Apprenticeship (Employer on App Service)",
-                                    Period12= "16-18 Apprenticeship (Employer on App Service)"
-                                }
-                            }
-                        }
-                    },
-                    PriceEpisodes = new EditableList<PriceEpisode>
-                    {
-                        new PriceEpisode
-                        {
-                            PriceEpisodeValues = new PriceEpisodeValues
-                            {
-                                EpisodeStartDate = DateTime.Today,
-                                PriceEpisodeAimSeqNumber = 2,
-                                PriceEpisodeContractType = "Levy Contract",
-                                TNP1 = 2500,
-                                PriceEpisodeFundLineType ="16-18 Apprenticeship (Employer on App Service)",
-                            },
-                            PriceEpisodePeriodisedValues = new EditableList<PriceEpisodePeriodisedValues>
-                            {
-                                new PriceEpisodePeriodisedValues
-                                {
-                                    AttributeName = "PriceEpisodeOnProgPayment",
-                                    Period1 = 10,
-                                    Period2 = 20
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-
+            
             // act
             var events = builder.Build(learnerSubmission);
 
@@ -686,15 +593,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
 
             var nonLevyContractTypeEarning = events.Single(x => x.ContractType == ContractType.Act2);
             nonLevyContractTypeEarning.Should().BeOfType<Act2FunctionalSkillEarningsEvent>();
-            nonLevyContractTypeEarning.Should().NotBeNull();
-            nonLevyContractTypeEarning.Earnings.Count.Should().Be(1);
-            nonLevyContractTypeEarning.Earnings.First().Periods.Count.Should().Be(6);
+            nonLevyContractTypeEarning.LearningAim.Should().NotBeNull();
+            nonLevyContractTypeEarning.LearningAim.FundingLineType.Should().Be("16-18 Apprenticeship Non-Levy Contract (procured)");
 
             var levyContractTypeEarning = events.Single(x => x.ContractType == ContractType.Act1);
             levyContractTypeEarning.Should().BeOfType<Act1FunctionalSkillEarningsEvent>();
-            levyContractTypeEarning.Should().NotBeNull();
-            levyContractTypeEarning.Earnings.Count.Should().Be(1);
-            levyContractTypeEarning.Earnings.First().Periods.Count.Should().Be(6);
+            levyContractTypeEarning.LearningAim.Should().NotBeNull();
+            levyContractTypeEarning.LearningAim.FundingLineType.Should().Be("16-18 Apprenticeship (Employer on App Service)");
 
             //mockMapper.Verify();
         }

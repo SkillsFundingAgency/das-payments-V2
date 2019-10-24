@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using FastMember;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.ExpressionTranslators.Internal;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
@@ -47,6 +50,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
                     if(!functionalSkillEarning.Earnings.SelectMany(x => x.Periods).Any()) continue;
 
+                    functionalSkillEarning.LearningAim.FundingLineType = GetFirstMatchingFundingLineTypeForContractType(intermediateLearningAim, functionalSkillEarning);
+
                     foreach (var earning in functionalSkillEarning.Earnings)
                     {
                         if (!earning.Periods.Any() || earning.Periods.Count == 12) continue;
@@ -70,14 +75,33 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
                         earning.Periods = earningPeriods.AsReadOnly();
                     }
-                        
+                    
                     results.Add(functionalSkillEarning);
                 }
-
-            
             }
 
             return results.Distinct().ToList();
+        }
+
+        private static string GetFirstMatchingFundingLineTypeForContractType(IntermediateLearningAim intermediateLearningAim, FunctionalSkillEarningsEvent functionalSkillEarning)
+        {
+            var periodisedFundingLineTypeValues = intermediateLearningAim
+                .Aim
+                .LearningDeliveryPeriodisedTextValues
+                .FirstOrDefault(x => x.AttributeName.Equals("FundLineType"));
+
+            if (periodisedFundingLineTypeValues != null)
+            {
+                var periodWithActiveEarning = functionalSkillEarning
+                    .Earnings
+                    .SelectMany(x => x.Periods)
+                    .Select(x => x.Period)
+                    .First();
+
+                return periodisedFundingLineTypeValues.GetPeriodTextValue(periodWithActiveEarning);
+            }
+
+            throw new InvalidOperationException($"Can't find a valid FundingLineType for aim {intermediateLearningAim.Aim.LearningDeliveryValues.LearnAimRef}");
         }
 
 
