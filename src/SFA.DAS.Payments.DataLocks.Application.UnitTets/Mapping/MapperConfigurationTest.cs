@@ -25,6 +25,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
         [OneTimeSetUp]
         public void Initialise()
         {
+            Mapper.Reset();
             Mapper.Initialize(cfg =>
             {
                 cfg.AddProfile<DataLocksProfile>();
@@ -116,11 +117,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
                         TotalNegotiatedPrice1 = 25.0m,
                         TotalNegotiatedPrice2 = 25.0m,
                         TotalNegotiatedPrice3 = 25.0m,
-                        TotalNegotiatedPrice4 = 25.0m
+                        TotalNegotiatedPrice4 = 25.0m,
+                        FundingLineType = "19+ Apprenticeship Levy Contract (procured)",
                     }
 
                 }),
-                EventId =  Guid.NewGuid()
+                EventId =  Guid.NewGuid(),
+                StartDate = DateTime.Today.AddDays(-5)
             };
 
             var functionalSkillEarnings = new List<FunctionalSkillEarning>
@@ -206,6 +209,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
         }
 
         [Test]
+        public void CanMapLearningStartDate()
+        {
+            var payableEarning = Mapper.Map<ApprenticeshipContractType1EarningEvent, PayableEarningEvent>(earningEventPayment);
+            payableEarning.StartDate.Should().Be(earningEventPayment.StartDate);
+        }
+
+        [Test]
         public void CanMapLearner()
         {
             var payableEarning = Mapper.Map<ApprenticeshipContractType1EarningEvent, PayableEarningEvent>(earningEventPayment);
@@ -260,7 +270,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
             priceEpisode.TotalNegotiatedPrice2.Should().Be(earningEventPayment.PriceEpisodes.First().TotalNegotiatedPrice2);
             priceEpisode.TotalNegotiatedPrice3.Should().Be(earningEventPayment.PriceEpisodes.First().TotalNegotiatedPrice3);
             priceEpisode.TotalNegotiatedPrice4.Should().Be(earningEventPayment.PriceEpisodes.First().TotalNegotiatedPrice4);
-
+            priceEpisode.FundingLineType.Should().Be(earningEventPayment.PriceEpisodes.First().FundingLineType);
         }
 
         [Test]
@@ -483,6 +493,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
             var nonPayableEarning = Mapper.Map<ApprenticeshipContractType1EarningEvent, EarningFailedDataLockMatching>(earningEventPayment);
             nonPayableEarning.EarningEventId.Should().Be(earningEventPayment.EventId);
             nonPayableEarning.EventId.Should().NotBe(default(Guid));
+        }
+
+        [Test]
+        public void CanMapAct1NonPayableEarningStarttDateCorrectly()
+        {
+            var nonPayableEarning = Mapper.Map<ApprenticeshipContractType1EarningEvent, EarningFailedDataLockMatching>(earningEventPayment);
+            nonPayableEarning.StartDate.Should().Be(earningEventPayment.StartDate);
         }
 
         [Test]

@@ -10,19 +10,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 {
     public interface IVerificationService
     {
-        Task<string> GetVerificationDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,
-            DateTime startDateTime, DateTime endDateTime);
+        Task<string> GetPaymentsDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,
+            DateTimeOffset startDateTime, DateTimeOffset endDateTime);
+        Task<(decimal? missingPayments, decimal? earningsYtd)?> GetPaymentTotals(short academicYear, byte collectionPeriod, bool populateEarnings,
+            DateTimeOffset startDateTime, DateTimeOffset endDateTime);
 
-        Task<decimal?> GetTheNumber(short academicYear, byte collectionPeriod, bool populateEarnings,
-            DateTime startDateTime, DateTime endDateTime);
-
-        Task<string> GetDataStoreCsv(short academicYear, byte collectionPeriod, List<long> ukprns);
+        Task<string> GetEarningsCsv(short academicYear, byte collectionPeriod, List<long> ukprnList);
 
         Task<DateTimeOffset?> GetLastActivityDate(List<long> ukprns);
+
+        Task<decimal?> GetTotalEarningsYtd(short academicYear, byte collectionPeriod, List<long> ukprnList);
     }
 
     public class VerificationService : IVerificationService
     {
+        private const string PaymentsQuerySql = "PaymentsQuery.sql";
+        private const string EarningsCteSql = "EarningsCte.sql";
+        private const string EarningsDetailSql = "EarningsDetail.sql";
+        private const string EarningsSummarySql = "EarningsSummary.sql";
+        private const string UkprnListToken = "@ukprnlist";
         private readonly Configuration configuration;
 
         public VerificationService(Configuration configuration)
@@ -30,16 +36,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             this.configuration = configuration;
         }
 
-        public async Task<string> GetVerificationDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,
-            DateTime startDateTime, DateTime endDateTime)
+        public async Task<string> GetPaymentsDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,
+            DateTimeOffset startDateTime, DateTimeOffset endDateTime)
         {
-            var sql = Scripts.ScriptHelpers.GetSqlScriptText("VerificationQuery.sql");
+            var sql = Scripts.ScriptHelpers.GetSqlScriptText(PaymentsQuerySql);
             sql += " order by 1,2";
             using (SqlConnection connection = GetPaymentsConnectionString())
             {
                 using (SqlCommand cmd = connection.CreateCommand())
                 {
-                    cmd.CommandTimeout = TimeSpan.FromSeconds(120).Seconds;
+                    cmd.CommandTimeout = configuration.SqlCommandTimeout.Seconds;
                     cmd.CommandText = sql;
                     cmd.CommandType = CommandType.Text;
                     cmd.Parameters.AddWithValue("@academicYear", academicYear);
@@ -56,16 +62,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             }
         }
 
-        public async Task<string> GetDataStoreCsv(short academicYear, byte collectionPeriod, List<long> ukprns)
+        public async Task<string> GetEarningsCsv(short academicYear, byte collectionPeriod, List<long> ukprnList)
         {
-            var sql = Scripts.ScriptHelpers.GetSqlScriptText("DataStoreQuery.sql");
-            sql = sql.Replace("<<ukprnList>>",string.Join(",", ukprns));
-           
+            var sql = Scripts.ScriptHelpers.GetSqlScriptText(EarningsCteSql);
+            sql += Scripts.ScriptHelpers.GetSqlScriptText(EarningsDetailSql);
+            sql = sql.Replace(UkprnListToken, string.Join(",", ukprnList));
+
             using (SqlConnection connection = GetDataStoreConnectionString(academicYear))
             {
                 using (SqlCommand cmd = connection.CreateCommand())
                 {
-                    cmd.CommandTimeout = TimeSpan.FromSeconds(120).Seconds;
+                    cmd.CommandTimeout = configuration.SqlCommandTimeout.Seconds;
                     cmd.CommandText = sql;
                     cmd.CommandType = CommandType.Text;
                     cmd.Parameters.AddWithValue("@collectionPeriod", collectionPeriod);
@@ -100,7 +107,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             {
                 using (SqlCommand cmd = connection.CreateCommand())
                 {
-                    cmd.CommandTimeout = TimeSpan.FromSeconds(120).Seconds;
+                    cmd.CommandTimeout = configuration.SqlCommandTimeout.Seconds;
                     cmd.CommandText = sql;
                     cmd.CommandType = CommandType.Text;
                     connection.Open();
@@ -111,19 +118,36 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             }
         }
 
-
-        public async Task<decimal?> GetTheNumber(short academicYear, byte collectionPeriod, bool populateEarnings,
-            DateTime startDateTime, DateTime endDateTime)
+        public async Task<decimal?> GetTotalEarningsYtd(short academicYear, byte collectionPeriod, List<long> ukprnList)
         {
-            var sql = @"select
-           
-            CASE WHEN SUM([Earnings YTD (audit)]) = 0 THEN 0 ELSE 
-            SUM([Missing Required Payments]) / sum([Earnings YTD (audit)]) *100
-            END AS [The Number]
+            var sql = Scripts.ScriptHelpers.GetSqlScriptText(EarningsCteSql);
+            sql += Scripts.ScriptHelpers.GetSqlScriptText(EarningsSummarySql);
+            sql = sql.Replace(UkprnListToken, string.Join(",", ukprnList));
+
+            using (SqlConnection connection = GetDataStoreConnectionString(academicYear))
+            {
+                using (SqlCommand cmd = connection.CreateCommand())
+                {
+                    cmd.CommandTimeout = configuration.SqlCommandTimeout.Seconds;
+                    cmd.CommandText = sql;
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.AddWithValue("@collectionPeriod", collectionPeriod);
+
+                    connection.Open();
+                    var result = await cmd.ExecuteScalarAsync();
+                    return Convert.IsDBNull(result) ? (decimal?) null : (decimal?) result;
+                }
+            }
+        }
+
+        public async Task<(decimal? missingPayments, decimal? earningsYtd)?> GetPaymentTotals(short academicYear, byte collectionPeriod, bool populateEarnings,
+            DateTimeOffset startDateTime, DateTimeOffset endDateTime)
+        {
+            var sql = @"select sum([Missing Required Payments]) As MissingRequiredPayments, sum([Earnings YTD (audit)]) As EarningsYtd
             FROM(
             ";
 
-            sql +=   Scripts.ScriptHelpers.GetSqlScriptText("VerificationQuery.sql");
+            sql +=   Scripts.ScriptHelpers.GetSqlScriptText(PaymentsQuerySql);
             sql += @"
                 ) as sq
             where[Transaction Type] in (1, 2, 3)";
@@ -132,6 +156,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             {
                 using (SqlCommand cmd = connection.CreateCommand())
                 {
+                    cmd.CommandTimeout = configuration.SqlCommandTimeout.Seconds;
                     cmd.CommandText = sql;
                     cmd.CommandType = CommandType.Text;
                     cmd.Parameters.AddWithValue("@academicYear", academicYear);
@@ -140,8 +165,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                     cmd.Parameters.AddWithValue("@StartTime", startDateTime);
                     cmd.Parameters.AddWithValue("@EndTime", endDateTime);
                     connection.Open();
-                    var result = await cmd.ExecuteScalarAsync();
-                    return Convert.IsDBNull(result) ? (decimal?) null: (decimal?) result;
+
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            var missingPayments =
+                                (!reader.IsDBNull(0)) ? (decimal?) reader.GetValue(0) : (decimal?) null;
+                            var earningsYtd =
+                                (!reader.IsDBNull(1)) ? (decimal?) reader.GetValue(1) : (decimal?) null;
+                            return (missingPayments, earningsYtd);
+                        }
+                    }
+
+                    return null;
                 }
             }
         }

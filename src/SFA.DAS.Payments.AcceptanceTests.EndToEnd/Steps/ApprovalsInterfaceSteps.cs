@@ -146,8 +146,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             ApprovalsApprenticeships.ForEach(appr => appr.EmployerType = employerType);
         }
 
-
-
         [Given(@"the following apprenticeships have been approved")]
         public void GivenTheFollowingApprenticeshipsHaveBeenApproved(Table table)
         {
@@ -295,31 +293,29 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the following apprenticeships already exist with Employer Type ""(.*)""")]
-        public async void GivenTheFollowingApprenticeshipsAlreadyExistWithEmployerType(string employerType, Table table)
+        public async Task GivenTheFollowingApprenticeshipsAlreadyExistWithEmployerType(string employerType, Table table)
         {
             PreviousApprovalsApprenticeships = table.CreateSet<ApprovalsApprenticeship>().ToList();
             PreviousApprovalsApprenticeships.ForEach(appr => appr.EmployerType = employerType);
             await SavePreviousApprenticeships();
         }
 
-
         [Given(@"the following apprenticeships already exist")]
         public async Task GivenTheFollowingApprenticeshipsAlreadyExist(Table table)
         {
             PreviousApprovalsApprenticeships = table.CreateSet<ApprovalsApprenticeship>().ToList();
-            await SavePreviousApprenticeships();
+            await SavePreviousApprenticeships().ConfigureAwait(false);
         }
-
         private async Task SavePreviousApprenticeships()
         {
             foreach (var apprenticeshipSpec in PreviousApprovalsApprenticeships)
             {
                 var apprenticeshipId = TestSession.GenerateId();
                 apprenticeshipSpec.Id = apprenticeshipId;
-                TestDataContext.ClearApprenticeshipData(apprenticeshipId);
                 var apprenticeship = CreateApprenticeshipModel(apprenticeshipSpec);
-                await TestDataContext.Apprenticeship.AddAsync(apprenticeship);
-                await TestDataContext.SaveChangesAsync();
+                await TestDataContext.ClearApprenticeshipData(apprenticeshipId, apprenticeship.Uln).ConfigureAwait(false);
+                await TestDataContext.Apprenticeship.AddAsync(apprenticeship).ConfigureAwait(false);
+                await TestDataContext.SaveChangesAsync().ConfigureAwait(false);
 
                 Console.WriteLine($"Existing Apprenticeship Created: {apprenticeship.ToJson()}");
             }
@@ -339,13 +335,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 var newPriceEpisode = CreateApprenticeshipPriceEpisode(apprenticeship.Id, priceEpisode);
 
-                await TestDataContext.ApprenticeshipPriceEpisode.AddAsync(newPriceEpisode);
-                await TestDataContext.SaveChangesAsync();
+                await TestDataContext.ApprenticeshipPriceEpisode.AddAsync(newPriceEpisode).ConfigureAwait(false);
+                await TestDataContext.SaveChangesAsync().ConfigureAwait(false);
 
                 apprenticeship.PriceEpisodes.Add(priceEpisode);
 
-                Console.WriteLine($"Existing Apprenticeship Created: {newPriceEpisode.ToJson()}");
-
+                Console.WriteLine($"ApprenticeshipPriceEpisode Created: {newPriceEpisode.ToJson()}");
             }
         }
 
@@ -540,7 +535,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [When(@"the Approvals service notifies the Payments service that the apprenticeships has been resumed")]
-        public void WhenTheApprovalsServiceNotifiesThePaymentsServiceThatTheApprenticeshipsHasBeenResumed()
+        public async Task WhenTheApprovalsServiceNotifiesThePaymentsServiceThatTheApprenticeshipsHasBeenResumed()
         {
             foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
             {
@@ -550,7 +545,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ApprenticeshipId = approvalsApprenticeship.Id,
                 };
                 Console.WriteLine($"Sending ApprenticeshipPausedEvent message: {createdMessage.ToJson()}");
-                DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+                await DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
 
@@ -580,12 +575,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the employers provider priority order is as follows")]
+        [Given(@"employers change provider priority order as follows")]
         public void GivenTheEmployersProviderPriorityOrderIsAsFollows(Table table)
         {
             ProviderPaymentPriorities = table.CreateSet<ProviderPriority>().ToList();
         }
 
-        [When(@"the Approvals service notifies the Payments service of Employer Provider Payment Priority Change")]
+        [Given(@"the Approvals service notifies the Payments service of Employer Provider Payment Priority Change")]
+        [When(@"the Approvals service notifies the Payments service of changes to Employer Provider Payment Priority")]
         public void WhenTheApprovalsServiceNotifiesThePaymentsServiceOfEmployerProviderPaymentPriorityChange()
         {
             var createdMessage = new CommitmentsV2.Messages.Events.PaymentOrderChangedEvent

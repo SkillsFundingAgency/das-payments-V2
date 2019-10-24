@@ -105,6 +105,8 @@
     <Build Include="Payments2\Tables\Payments2.DataLockEventNonPayablePeriodFailures.sql" />
     <Build Include="Payments2\Tables\Payments2.ApprenticeshipPause.sql" />
     <Build Include="dbo\Stored Procedures\dbo.MetricsPayments.sql" />
+    <Build Include="Payments2\Tables\Payments2.ProviderAdjustmentPayments.sql" />
+    <Build Include="Payments2\Views\Payments2.DataMatchReport.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />
@@ -137,5 +139,8 @@
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SFA.DAS.Payments.Database.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SFA.DAS.Payments.Database.publish.xml" />
   </ItemGroup>
 </Project>

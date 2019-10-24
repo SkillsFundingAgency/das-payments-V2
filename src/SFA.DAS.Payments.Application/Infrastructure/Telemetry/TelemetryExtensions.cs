@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
                 {TelemetryKeys.LearnerRef, paymentEvent.Learner?.ReferenceNumber},
                 {TelemetryKeys.CollectionPeriod, paymentEvent.CollectionPeriod.Period.ToString()},
                 {TelemetryKeys.AcademicYear, paymentEvent.CollectionPeriod.AcademicYear.ToString()},
-                {TelemetryKeys.ExternalJobId, paymentEvent.JobId.ToString()},
+                {"JobId", paymentEvent.JobId.ToString()},
                 {TelemetryKeys.Ukprn, paymentEvent.Ukprn.ToString()},
             };
             if (employerAccountId.HasValue)

@@ -1,4 +1,5 @@
 ﻿@supports_dc_e2e
+@basic_day
 Feature: One Levy learner - levy available, finished late PV2-274
 	As a provider,
 	I want a levy learner that finishes late to be paid the correct payments,

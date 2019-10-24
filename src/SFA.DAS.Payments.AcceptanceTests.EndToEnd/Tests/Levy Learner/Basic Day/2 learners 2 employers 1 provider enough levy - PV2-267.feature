@@ -1,4 +1,5 @@
 ﻿@supports_dc_e2e
+@basic_day
 Feature: 2 learners 2 employers 1 provider enough levy - PV2-267
 Scenario Outline: 2 levy learners 2 employers 1 provider and enough levy PV2-267
 	# levy balance is enough for both employers

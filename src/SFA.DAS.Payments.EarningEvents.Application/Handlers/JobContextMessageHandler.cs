@@ -20,7 +20,6 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
-using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
 using SFA.DAS.Payments.JobContextMessageHandling.JobStatus;
 using SFA.DAS.Payments.Model.Core;
@@ -65,8 +64,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             this.submittedLearnerAimRepository = submittedLearnerAimRepository;
             this.jobStatusService = jobStatusService;
         }
-
-
+        
         public async Task<bool> HandleAsync(JobContextMessage message, CancellationToken cancellationToken)
         {
             logger.LogDebug($"Processing Earning Event Service event for Job Id : {message.JobId}");
@@ -113,7 +111,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                             {TelemetryKeys.Count, fm36Output.Learners.Count.ToString()},
                             {TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
                             {TelemetryKeys.AcademicYear, fm36Output.Year},
-                            {TelemetryKeys.ExternalJobId, message.JobId.ToString()},
+                            {TelemetryKeys.JobId, message.JobId.ToString()},
                             {TelemetryKeys.Ukprn, fm36Output.UKPRN.ToString()},
                         },
                         new Dictionary<string, double>
@@ -129,6 +127,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     }
 
                     telemetry.StopOperation(operation);
+                    if (fm36Output.Learners.Count == 0)
+                    {
+                        logger.LogWarning($"Received ILR with 0 FM36 learners. Ukprn: {fm36Output.UKPRN}, job id: {message.JobId}.");
+                        return true;
+                    }
 
                     if (await jobStatusService.WaitForJobToFinish(message.JobId, cancellationToken))
                     {
@@ -199,7 +202,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     {
                         { TelemetryKeys.CollectionPeriod, submissionEvent.CollectionPeriod.ToString()},
                         { TelemetryKeys.AcademicYear, submissionEvent.AcademicYear.ToString()},
-                        { TelemetryKeys.ExternalJobId, submissionEvent.JobId.ToString()},
+                        { TelemetryKeys.JobId, submissionEvent.JobId.ToString()},
                         { TelemetryKeys.Ukprn, submissionEvent.Ukprn.ToString()},
                     },
                     new Dictionary<string, double>
@@ -284,7 +287,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     new Dictionary<string, string>
                     {
                         { TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
-                        { TelemetryKeys.ExternalJobId, message.JobId.ToString()},
+                        { TelemetryKeys.JobId, message.JobId.ToString()},
                     },
                     new Dictionary<string, double>
                     {
@@ -299,7 +302,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 {
                     { TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
                     { TelemetryKeys.AcademicYear, fm36Output.Year},
-                    { TelemetryKeys.ExternalJobId, message.JobId.ToString()},
+                    { TelemetryKeys.JobId, message.JobId.ToString()},
                     { TelemetryKeys.Ukprn, fm36Output.UKPRN.ToString()},
                 },
                 new Dictionary<string, double>
@@ -395,7 +398,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     {TelemetryKeys.Count, fm36Output.Learners.Count.ToString()},
                     {TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
                     {TelemetryKeys.AcademicYear, fm36Output.Year},
-                    {TelemetryKeys.ExternalJobId, message.JobId.ToString()},
+                    {TelemetryKeys.JobId, message.JobId.ToString()},
                     {TelemetryKeys.Ukprn, fm36Output.UKPRN.ToString()},
                 },
                 new Dictionary<string, double>

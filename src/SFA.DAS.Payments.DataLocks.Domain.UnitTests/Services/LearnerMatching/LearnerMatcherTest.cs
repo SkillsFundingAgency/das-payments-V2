@@ -35,6 +35,14 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.LearnerMatching
         [Test]
         public async Task WhenLearnerProviderIsNotFoundReturnDataLockErrorCode()
         {
+            ulnLearnerMatcher
+                .Setup(o => o.MatchUln(Uln))
+                .Returns(Task.FromResult<LearnerMatchResult>(new LearnerMatchResult
+                {
+                    Apprenticeships = new List<ApprenticeshipModel> { new ApprenticeshipModel() }
+                }))
+                .Verifiable();
+
             DataLockErrorCode? expectedDataLockErrorCode = DataLockErrorCode.DLOCK_01;
             ukprnMatcher
                 .Setup(o => o.MatchUkprn(It.IsAny<long>()))
@@ -56,12 +64,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.LearnerMatching
             {
                 DataLockErrorCode = DataLockErrorCode.DLOCK_02
             };
-
-            ukprnMatcher
-                .Setup(o => o.MatchUkprn(It.IsAny<long>()))
-                .Returns(Task.FromResult(default(DataLockErrorCode?)))
-                .Verifiable();
-
+            
             ulnLearnerMatcher
                 .Setup(o => o.MatchUln(Uln))
                 .Returns(Task.FromResult<LearnerMatchResult>(expectedLearnerMatchResult))

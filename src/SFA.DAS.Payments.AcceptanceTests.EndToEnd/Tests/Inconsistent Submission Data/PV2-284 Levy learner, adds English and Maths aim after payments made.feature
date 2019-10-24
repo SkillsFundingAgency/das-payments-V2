@@ -1,5 +1,4 @@
-﻿@ignore issue to be fixed after go live
-# DC Integration
+﻿# DC Integration
 # Course details are key in this test
 
 Feature: Levy learner changes course details in ILR after payments made and adds eng & maths - PV2-284

@@ -1,5 +1,5 @@
 ﻿@supports_dc_e2e
-Feature: Levy Learner is withdrawn retrospectively PV2-250
+@basic_refund
 	As a provider,
 	I want a levy learner, where levy is available the provider retrospectively notifies a withdrawal and previously paid monthly instalments are refunded
 	So that I am accurately paid my apprenticeship provision.

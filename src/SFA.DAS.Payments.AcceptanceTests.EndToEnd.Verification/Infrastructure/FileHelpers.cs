@@ -6,29 +6,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 {
     public static class FileHelpers
     {
-        public enum ReportType
+        private static string CreateCsvFileName(short academicYear, byte collectionPeriod)
         {
-            PaymentsData,
-
-            DataStore
-        }
-
-        public static string CreateCsvFileName(short academicYear, byte collectionPeriod, ReportType reportType)
-        {
+            var now = DateTime.UtcNow;
             var fileName =
-                $"Verification_{reportType}_{academicYear}_R{collectionPeriod:00}_{DateTime.UtcNow.ToString("yyyyMMdd-HHmmss")}.csv";
+                $"{now:yyyy-MM-dd}/Verification_{academicYear}_R{collectionPeriod:00}_{now:yyyyMMdd-HHmmss}.csv";
             return fileName;
         }
 
-        public static async Task UploadCsvFile(ReportType reportType,
-                                               short academicYear,
+        public static async Task UploadCsvFile(short academicYear,
                                                byte collectionPeriod,
                                                ISubmissionService submissionService,
                                                string csvString)
         {
-            var fileName = CreateCsvFileName(academicYear, collectionPeriod, reportType);
+            var fileName = CreateCsvFileName(academicYear, collectionPeriod);
 
-            var cbs = await submissionService.GetBlobStream(fileName, academicYear == 1920 ? "ILR1920" : "ILR1819");
+            var cbs = await submissionService.GetResultsBlobStream(fileName);
             var buffer = Encoding.UTF8.GetBytes(csvString);
             await cbs.WriteAsync(buffer, 0, buffer.Length);
             cbs.Close();

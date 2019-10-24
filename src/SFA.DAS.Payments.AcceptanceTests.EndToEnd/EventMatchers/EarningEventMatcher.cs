@@ -126,6 +126,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                             onProgEarning.Learner = learner;
                             onProgEarning.LearningAim = learningAim;
 
+                          
                             result.Add(onProgEarning);
                         }
                     }
@@ -228,7 +229,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     Amount = PriceEpisodeContractTypeMatchesAim(aimSpec.PriceEpisodes, e.PriceEpisodeIdentifier, onProgEarning)? e.Values[tt] : 0M,
                     Period = e.DeliveryCalendarPeriod,
                     PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
-                }).OrderBy(p => p.Period).ToList();
+                })
+                .Where(p => p.Period <= collectionPeriod.Period)
+                .OrderBy(p => p.Period)
+                .ToList();
         }
 
         private static bool PriceEpisodeContractTypeMatchesAim(List<Price> priceEpisodes, string priceEpisodeIdentifier, IEarningEvent onProgEarning)

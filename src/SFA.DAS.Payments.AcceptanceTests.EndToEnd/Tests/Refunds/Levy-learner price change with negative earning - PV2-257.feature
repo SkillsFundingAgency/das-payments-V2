@@ -1,4 +1,5 @@
-﻿Feature:Levy learner, price is changed and a negative amount is left to be paid resulting in a refund PV2-257
+﻿@basic_refund
+Feature:Levy learner, price is changed and a negative amount is left to be paid resulting in a refund PV2-257
 	Levy standard learner, where original commitment is withdrawn after payments made and new commitment is created with lower price and a negative amount is left to be paid - results in a refund
 	As a provider,
 	I want a levy learner, where original commitment is withdrawn after payments made and new commitment is created with lower price and a negative amount is left to be paid - results in a refund

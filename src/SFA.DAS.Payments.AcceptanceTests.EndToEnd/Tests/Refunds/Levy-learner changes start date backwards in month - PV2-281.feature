@@ -1,5 +1,5 @@
 ﻿@supports_dc_e2e
-#Scenario: DAS Learner - Change to start date within calendar month, backwards in month		
+@basic_refund
 #	Given The learner is programme only DAS
 #	And levy balance > agreed price for all months
 #    And the apprenticeship funding band maximum is 9000
