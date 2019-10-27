@@ -1606,16 +1606,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-736 - Levy learner paid via transfer.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Submission Events\PV2-1395 - Successful submission removes previous submission payments.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-1395 - Successful submission removes previous submission payments.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Submission Events\PV2-1396 - Failed submission job removes payments for failed job.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-1396 - Failed submission job removes payments for failed job.feature</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -1631,7 +1621,6 @@
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>true</IsTransformFile>
     </None>
-    <None Include="packages.config" />
     <None Include="packages.config" />
     <None Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

@@ -293,11 +293,34 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             },$"Provider Payments failed to cleanup old payments for provider {TestSession.Provider.Ukprn}");
         }
 
+        [Then(@"the payments for the current submission should be removed")]
+        public async Task ThenThePaymentsForTheCurrentSubmissionShouldBeRemoved()
+        {
+            await WaitForIt(() =>
+            {
+                var payments = Scope.Resolve<TestPaymentsDataContext>()
+                    .Payment
+                    .AsNoTracking()
+                    .Where(p => p.Ukprn == TestSession.Provider.Ukprn)
+                    .ToList();
+                return payments.Any() && payments.All(p => p.JobId != TestSession.Provider.JobId);
+            }, $"Provider Payments failed to cleanup payments for failed job: {TestSession.Provider.JobId}, Provider: {TestSession.Provider.Ukprn}");
+        }
+
+
         [Then(@"the following learner earnings should be generated")]
         [Given(@"the following learner earnings were generated")]
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
-            await GeneratedAndValidateEarnings(table, TestSession.Provider).ConfigureAwait(false);
+            await WaitForIt(() =>
+            {
+                var payments = Scope.Resolve<TestPaymentsDataContext>()
+                    .Payment
+                    .AsNoTracking()
+                    .Where(p => p.Ukprn == TestSession.Provider.Ukprn)
+                    .ToList();
+                return payments.Any() && payments.All(p => p.JobId != TestSession.Provider.JobId);
+            }, $"Provider Payments failed to cleanup old payments for provider {TestSession.Provider.Ukprn}");
         }
 
         [Then(@"the following learner earnings should be generated for ""(.*)""")]
