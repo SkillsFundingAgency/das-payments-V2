@@ -232,7 +232,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             var actualRequiredPayment = await processor.HandleEarningEvent(earningEvent, paymentHistoryCacheMock.Object, CancellationToken.None);
 
             // assert
-            actualRequiredPayment.Should().HaveCount(0);
+            actualRequiredPayment.Should().HaveCount(1);
         }
     }
 }

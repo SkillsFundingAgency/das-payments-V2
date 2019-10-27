@@ -9,6 +9,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure;
@@ -114,10 +115,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                         continue;
                     }
 
-                    if (holdBackCompletionPayments)
-                    {
-                        continue;
-                    }
                     foreach (var requiredPayment in requiredPayments)
                     {
                         var requiredPaymentEvent = CreateRequiredPaymentEvent(requiredPayment.EarningType, type, holdBackCompletionPayments);
@@ -172,7 +169,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         protected PeriodisedRequiredPaymentEvent CreateRequiredPaymentEvent(EarningType earningType, int transactionType, bool holdBackCompletionPayment)
         {
             if (holdBackCompletionPayment)
-                return new CompletionPaymentHeldBackEvent();
+            {
+                return new CompletionPaymentHeldBackEvent
+                {
+                    TransactionType = (TransactionType)transactionType,
+                };
+            }
 
             switch (earningType)
             {
