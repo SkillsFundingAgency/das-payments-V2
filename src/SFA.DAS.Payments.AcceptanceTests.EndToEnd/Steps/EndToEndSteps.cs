@@ -96,21 +96,29 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the provider has already submitted an ILR in the collection period")]
         public async Task GivenTheProviderHasAlreadySubittedAnILRInTheCurrentCollectionPeriod()
         {
-            var learnerTable = new Table("Start Date", "Planned Duration", "Total Training Price", "Total Training Price Effective Date", "Total Assessment Price", "Total Assessment Price Effective Date", "Actual Duration", "Completion Status", "Contract Type", "Aim Sequence Number", "Aim Reference", "Framework Code", "Pathway Code", "Programme Type", "Funding Line Type                              ", "SFA Contribution Percentage");
-            learnerTable.AddRow("03 / Aug / Current Academic Year", "12 months", "15000", "03 / Aug / Current Academic Year       ", "                      ", "                                     ", "               ", "continuing", "Act2", "1", "ZPROG001", "593", "1", "20", "19 + Apprenticeship Non - Levy Contract(procured)", "90 %");
-            GivenTheProviderNowChangesTheLearnerDetailsAsFollows(learnerTable);
+            var learnerTable = new Table( "Start Date", "Planned Duration", "Total Training Price", "Total Training Price Effective Date", "Total Assessment Price", "Total Assessment Price Effective Date", "Actual Duration", "Completion Status", "SFA Contribution Percentage", "Contract Type", "Aim Sequence Number", "Aim Reference", "Framework Code", "Pathway Code", "Programme Type", "Funding Line Type");
+            learnerTable.AddRow("start of academic year", "12 months", "11250", "Aug/Current Academic Year", "0", "Aug/Current Academic Year", "", "continuing", "90%", "Act2", "1", "ZPROG001", "593", "1", "20", "19 + Apprenticeship Non - Levy Contract(procured)");
+            AddTestLearners(learnerTable);
 
-            var priceEpisodeTable = new Table("Price Episode Id", "Total Training Price", "Total Training Price Effective Date", "Total Assessment Price", "Total Assessment Price Effective Date", "Residual Training Price", "Residual Training Price Effective Date", "Residual Assessment Price", "Residual Assessment Price Effective Date", "SFA Contribution Percentage", "Contract Type", "Aim Sequence Number");
-            priceEpisodeTable.AddRow("pe - 1", "15000", "06 / Aug / Current Academic Year", "0", "06 / Aug / Current Academic Year         ", "0", "                                      ", "0", "                                        ", "90 %                        ", "Act2", "1");
-            GivenPriceDetailsAsFollows(priceEpisodeTable);
+            var previousEarningsTable = new Table("Delivery Period", "On-Programme", "Completion", "Balancing");
+            previousEarningsTable.AddRow("Aug/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Sep/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Oct/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Nov/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Dec/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Jan/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Feb/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Mar/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Apr/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("May/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Jun/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Jul/Current Academic Year", "750", "0", "0");
+            CreatePreviousEarningsAndTraining(previousEarningsTable);
 
-            //step used for dc-das e2e tests
-            await SubmitIlrInPeriod("R01/Current Academic Year", featureNumber).ConfigureAwait(false);
 
-            //step used for das e2e tests
-            await GivenTheLearnerEarningsWereGenerated().ConfigureAwait(false);
-
-            await WaitForJobToFinish(TestSession.JobId).ConfigureAwait(false);
+            var previousPaymentsTable = new Table("Collection Period","Delivery Period","SFA Co - Funded Payments","Employer Co - Funded Payments","Transaction Type");
+            previousPaymentsTable.AddRow("R01/Current Academic Year","Aug/Current Academic Year","675","75","Learning");
+            await GeneratePreviousPayment(previousPaymentsTable, TestSession.Provider.Ukprn);
         }
 
         private async Task WaitForJobToFinish(long jobId)
@@ -120,7 +128,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var dataContext = Scope.Resolve<JobsDataContext>();
                 var job = await dataContext.Jobs.AsNoTracking().FirstOrDefaultAsync(savedJob => savedJob.DcJobId == jobId);
                 return job != null && job.Status != JobStatus.InProgress;
-            },$"Job failed to finish. Job id: {jobId}");
+            }, $"Job failed to finish. Job id: {jobId}");
         }
 
 
@@ -224,37 +232,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"price details as follows")]
         public void GivenPriceDetailsAsFollows(Table table)
         {
-            if (TestSession.AtLeastOneScenarioCompleted)
-            {
-                return;
-            }
-
-            var newPriceEpisodes = table.CreateSet<Price>().ToList();
-            CurrentPriceEpisodes = newPriceEpisodes;
-
-            if (TestSession.Learners.Any(x => x.Aims.Count > 0))
-            {
-                foreach (var newPriceEpisode in newPriceEpisodes)
-                {
-                    Aim aim;
-                    try
-                    {
-                        aim = TestSession.Learners.SelectMany(x => x.Aims)
-                            .SingleOrDefault(x => x.AimSequenceNumber == newPriceEpisode.AimSequenceNumber);
-                    }
-                    catch (Exception)
-                    {
-                        throw new Exception("There are too many aims with the same sequence number");
-                    }
-
-                    if (aim == null)
-                    {
-                        throw new Exception("There is a price episode without a matching aim");
-                    }
-
-                    aim.PriceEpisodes.Add(newPriceEpisode);
-                }
-            }
+            AddPriceDetails(table);
         }
 
         [Given("the following capping will apply to the price episodes")]
@@ -271,7 +249,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [When(@"the Payments service records the completion of the job")]
-        public async Task  WhenThePaymentsServiceRecordsTheCompletionOfTheJob()
+        public async Task WhenThePaymentsServiceRecordsTheCompletionOfTheJob()
         {
             await WaitForJobToFinish(TestSession.Provider.JobId).ConfigureAwait(false);
         }
@@ -285,13 +263,35 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.Provider.JobId, true).ConfigureAwait(false);
         }
 
-        [Then(@"the data for the previous submission should be removed")]
-        public void ThenTheDataForThePreviousSubmissionShouldBeRemoved()
+        [When(@"the payments service is notified that the subsequent Data-Collections processes failed to process the job")]
+        public async Task WhenThePaymentsServiceIsNotifiedThatTheSubsequentData_CollectionsProcessesFailedToProcessTheJob()
         {
-            ScenarioContext.Current.Pending();
+            var dcHelper = Scope.Resolve<IDcHelper>();
+            await dcHelper.SendIlrSubmissionEvent(TestSession.Provider.Ukprn, CurrentCollectionPeriod.AcademicYear,
+                CurrentCollectionPeriod.Period,
+                TestSession.Provider.JobId, false).ConfigureAwait(false);
         }
 
 
+        [When(@"the payments service has notified Data-Collections that the Data-Locks process has finished")]
+        public void WhenThePaymentsServiceHasNotifiedData_CollectionsThatTheData_LocksProcessHasFinished()
+        {
+            //do nothing, just for show
+        }
+
+        [Then(@"the payments for the previous submission should be removed")]
+        public async Task ThenThePaymentsForThePreviousSubmissionShouldBeRemoved()
+        {
+            await WaitForIt(() =>
+            {
+                var payments = Scope.Resolve<TestPaymentsDataContext>()
+                    .Payment
+                    .AsNoTracking()
+                    .Where(p => p.Ukprn == TestSession.Provider.Ukprn)
+                    .ToList();
+                return payments.Any() && payments.All(p => p.JobId == TestSession.Provider.JobId);
+            },$"Provider Payments failed to cleanup old payments for provider {TestSession.Provider.Ukprn}");
+        }
 
         [Then(@"the following learner earnings should be generated")]
         [Given(@"the following learner earnings were generated")]

@@ -1286,11 +1286,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Two levy learners one employer but two providers not enough levy_PV2-270.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Submission Events\One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature.cs">
-      <DependentUpon>One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Tests\Non-Levy - Care Bursary\E2E - PV2-925 - Non-Levy learner starts 1st day of month receives care leaver payment after 60 days.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1611,6 +1606,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-736 - Levy learner paid via transfer.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Submission Events\PV2-1395 - Successful submission removes previous submission payments.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1395 - Successful submission removes previous submission payments.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Submission Events\PV2-1396 - Failed submission job removes payments for failed job.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1396 - Failed submission job removes payments for failed job.feature</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -1626,6 +1631,7 @@
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>true</IsTransformFile>
     </None>
+    <None Include="packages.config" />
     <None Include="packages.config" />
     <None Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2315,10 +2321,6 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy Learner, levy available, finishes two months early PV2-276.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Submission Events\One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature.cs</LastGenOutput>
-    </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy learner - learning support OPP and completion payments - PV2-429.feature.cs</LastGenOutput>
@@ -2562,6 +2564,14 @@
     <None Include="Tests\Small Employer\PV2-349 - Levy learner, 19-24, employed with a small employer at start is funded through levy.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-349 - Levy learner, 19-24, employed with a small employer at start is funded through levy.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Submission Events\PV2-1395 - Successful submission removes previous submission payments.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1395 - Successful submission removes previous submission payments.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Submission Events\PV2-1396 - Failed submission job removes payments for failed job.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1396 - Failed submission job removes payments for failed job.cs</LastGenOutput>
     </None>
     <None Include="Tests\Transfers\PV2-730 - Single Levy learner paid via transfer sender installment changes after price change.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

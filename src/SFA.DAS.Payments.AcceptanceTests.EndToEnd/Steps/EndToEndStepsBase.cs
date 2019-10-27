@@ -1115,19 +1115,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected async Task GenerateEarnings(Provider provider)
         {
-            var table = new Table("Delivery Period", "On - Programme", "Completion", "Balancing", "Price Episode Identifier");
-            table.AddRow("Aug / Current Academic Year", "1000", "0", "0", "pe - 1");
-            table.AddRow("Sep / Current Academic Year", "1000", "0", "0", "pe - 1");
-            table.AddRow("Oct / Current Academic Year", "1000", "0", "0", "pe - 1");
-            table.AddRow("Nov / Current Academic Year", "1000", "0", "0", "pe - 1");
-            table.AddRow("Dec / Current Academic Year", "1000", "0", "0", "pe - 1");
-            table.AddRow("Jan / Current Academic Year", "1000", "0", "0", "pe - 1");
-            table.AddRow("Feb / Current Academic Year", "1000", "0", "0", "pe - 1");
-            table.AddRow("Mar / Current Academic Year", "1000", "0", "0", "pe - 1");
-            table.AddRow("Apr / Current Academic Year", "1000", "0", "0", "pe - 1");
-            table.AddRow("May / Current Academic Year", "1000", "0", "0", "pe - 1");
-            table.AddRow("Jun / Current Academic Year", "1000", "0", "0", "pe - 1");
-            table.AddRow("Jul / Current Academic Year", "1000", "0", "0", "pe - 1");
+            var table = new Table("Delivery Period", "On-Programme", "Completion", "Balancing", "Price Episode Identifier");
+            table.AddRow("Aug/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Sep/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Oct/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Nov/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Dec/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Jan/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Feb/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Mar/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Apr/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("May/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Jun/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Jul/Current Academic Year", "1000", "0", "0", "pe-1");
             await GenerateEarnings(table, TestSession.Provider).ConfigureAwait(false);
         }
 
@@ -1137,6 +1137,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var learners = new List<FM36Learner>();
             var providerCurrentIlrs = CurrentIlr?.Where(o => o.Ukprn == provider.Ukprn).ToList();
             await GenerateEarnings(table, provider, earnings, learners, providerCurrentIlrs).ConfigureAwait(false);
+        }
+
+        protected void AddTestLearners(Table table)
+        {
+            PreviousIlr = table.CreateSet<Training>().ToList();
+            AddTestLearners(PreviousIlr, TestSession.Provider.Ukprn);
+        }
+
+
+        protected void CreatePreviousEarningsAndTraining(Table table)
+        {
+            PreviousEarnings = CreateEarnings(table, TestSession.Provider.Ukprn);
+            // for new style specs where no ILR specified
+            if (PreviousIlr == null)
+            {
+                PreviousIlr = CreateTrainingFromLearners(TestSession.Provider.Ukprn);
+            }
         }
 
         protected async Task HandleIlrReSubmissionForTheLearners(string collectionPeriodText, Provider provider)
@@ -1161,6 +1178,41 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
 
             SetCollectionPeriod(collectionPeriodText);
+        }
+
+        protected void AddPriceDetails(Table table)
+        {
+            if (TestSession.AtLeastOneScenarioCompleted)
+            {
+                return;
+            }
+
+            var newPriceEpisodes = table.CreateSet<Price>().ToList();
+            CurrentPriceEpisodes = newPriceEpisodes;
+
+            if (TestSession.Learners.Any(x => x.Aims.Count > 0))
+            {
+                foreach (var newPriceEpisode in newPriceEpisodes)
+                {
+                    Aim aim;
+                    try
+                    {
+                        aim = TestSession.Learners.SelectMany(x => x.Aims)
+                            .SingleOrDefault(x => x.AimSequenceNumber == newPriceEpisode.AimSequenceNumber);
+                    }
+                    catch (Exception)
+                    {
+                        throw new Exception("There are too many aims with the same sequence number");
+                    }
+
+                    if (aim == null)
+                    {
+                        throw new Exception("There is a price episode without a matching aim");
+                    }
+
+                    aim.PriceEpisodes.Add(newPriceEpisode);
+                }
+            }
         }
 
         protected async Task ValidateRequiredPaymentsAtMonthEnd(Table table, Provider provider)
