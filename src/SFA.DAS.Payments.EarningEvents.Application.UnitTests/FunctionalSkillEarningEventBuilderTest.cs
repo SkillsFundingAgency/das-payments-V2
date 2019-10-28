@@ -172,10 +172,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                         new LearningDelivery
                         {
                             AimSeqNumber = 3,
-                            LearningDeliveryValues = new LearningDeliveryValues
-                            {
-                                LearnAimRef = "ZPROG001"
-                            },
+                            LearningDeliveryValues = new LearningDeliveryValues { LearnAimRef = "ZPROG001" },
                             LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
                             {
                                 new LearningDeliveryPeriodisedValues
@@ -430,49 +427,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         public void MultipleLearningDeliveriesMapCorrectContractType()
         {
             // arrange
-            var mockMapper = new Mock<IMapper>(MockBehavior.Strict);
-
-            var earningPeriods = new List<EarningPeriod>
+            var learnerSubmission2 = new ProcessLearnerCommand
             {
-                new EarningPeriod {Period = 1, Amount = 1},
-                new EarningPeriod {Period = 2, Amount = 2},
-                new EarningPeriod {Period = 3, Amount = 3},
-                new EarningPeriod {Period = 4, Amount = 4},
-                new EarningPeriod {Period = 5, Amount = 5},
-                new EarningPeriod {Period = 6, Amount = 6},
-                new EarningPeriod {Period = 7, Amount = 7},
-                new EarningPeriod {Period = 8, Amount = 8},
-                new EarningPeriod {Period = 9, Amount = 9},
-                new EarningPeriod {Period = 10, Amount = 10},
-                new EarningPeriod {Period = 11, Amount = 11},
-                new EarningPeriod {Period = 12, Amount = 12},
-            };
-
-            var earnings = new List<FunctionalSkillEarning>()
-            {
-                new FunctionalSkillEarning
-                {
-                    Type = FunctionalSkillType.OnProgrammeMathsAndEnglish,
-                    Periods = earningPeriods.AsReadOnly()
-                },
-                new FunctionalSkillEarning
-                {
-                    Type = FunctionalSkillType.BalancingMathsAndEnglish,
-                    Periods = earningPeriods.AsReadOnly()
-                }
-            };
-
-            var expectedAct1Result = new Act1FunctionalSkillEarningsEvent
-            {
-                Earnings = earnings.AsReadOnly()
-            };
-            var expectedAct2Result = new Act2FunctionalSkillEarningsEvent
-            {
-                Earnings = earnings.AsReadOnly()
-            };
-
-            var learnerSubmission = new ProcessLearnerCommand
-            {
+                CollectionPeriod = 1,
+                CollectionYear = 1920,
                 Learner = new FM36Learner
                 {
                     LearningDeliveries = new EditableList<LearningDelivery>
@@ -517,6 +475,22 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                                     Period10 = "Levy Contract",
                                     Period11 = "Levy Contract",
                                     Period12 = "Levy Contract"
+                                },
+                                new LearningDeliveryPeriodisedTextValues
+                                {
+                                    AttributeName= "FundLineType",
+                                    Period1 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period2 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period3 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period4 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period5 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period6 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period7 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period8 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period9 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period10 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period11 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period12 = "16-18 Apprenticeship (Employer on App Service)"
                                 }
                             }
                         },
@@ -560,51 +534,42 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                                     Period10 = "Non-Levy Contract",
                                     Period11 = "Non-Levy Contract",
                                     Period12 = "Non-Levy Contract"
+                                },
+                                new LearningDeliveryPeriodisedTextValues
+                                {
+                                    AttributeName= "FundLineType",
+                                    Period1 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period2 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period3 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period4 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period5 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period6 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period7 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period8 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period9 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period10 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period11 = "16-18 Apprenticeship (Employer on App Service)",
+                                    Period12 = "16-18 Apprenticeship (Employer on App Service)"
                                 }
                             }
                         },
                     },
-                    PriceEpisodes = new EditableList<PriceEpisode>
-                    {
-                        new PriceEpisode
-                        {
-                            PriceEpisodeValues = new PriceEpisodeValues
-                            {
-                                EpisodeStartDate = DateTime.Today,
-                                PriceEpisodeAimSeqNumber = 1,
-                                PriceEpisodeContractType = "Levy Contract",
-                            },
-                            PriceEpisodePeriodisedValues = new EditableList<PriceEpisodePeriodisedValues>
-                            {
-                                new PriceEpisodePeriodisedValues
-                                {
-                                    AttributeName = "PriceEpisodeOnProgPayment",
-                                    Period1 = 10,
-                                    Period2 = 20
-                                }
-                            }
-                        }
-                    }
+                    PriceEpisodes = new EditableList<PriceEpisode> { }
                 }
             };
 
-            mockMapper.Setup(m => m.Map<Act1FunctionalSkillEarningsEvent>(It.IsAny<IntermediateLearningAim>())).Returns(expectedAct1Result).Verifiable();
-            mockMapper.Setup(m => m.Map<Act2FunctionalSkillEarningsEvent>(It.IsAny<IntermediateLearningAim>())).Returns(expectedAct2Result).Verifiable();
-
-            var sut = new FunctionalSkillEarningEventBuilder(mockMapper.Object);
+            var sut = new FunctionalSkillEarningEventBuilder(mapper);
 
             // act
-            var events = sut.Build(learnerSubmission);
+            var events = sut.Build(learnerSubmission2);
 
             // assert
             events.Should().NotBeNull();
             events.Should().HaveCount(2);
-            events[0].Should().BeSameAs(expectedAct1Result);
+            events[0].Should().BeAssignableTo<Act1FunctionalSkillEarningsEvent>();
             events[0].ContractType.Should().Be(ContractType.Act1);
-            events[1].Should().BeSameAs(expectedAct2Result);
+            events[1].Should().BeAssignableTo<Act2FunctionalSkillEarningsEvent>();
             events[1].ContractType.Should().Be(ContractType.Act2);
-
-            mockMapper.Verify();
         }
 
 
@@ -814,8 +779,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             act1Periods.Count.Should().Be(12);
             act1Periods.Take(6).Where(x => x.Amount == 0).Should().HaveCount(6);
             act1Periods.Skip(6).Where(x => x.Amount != 0).Should().HaveCount(6);
-
-            //mockMapper.Verify();
         }
 
         [Test]
@@ -840,41 +803,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             levyContractTypeEarning.Should().BeOfType<Act1FunctionalSkillEarningsEvent>();
             levyContractTypeEarning.LearningAim.Should().NotBeNull();
             levyContractTypeEarning.LearningAim.FundingLineType.Should().Be("16-18 Apprenticeship (Employer on App Service)");
-
-            //mockMapper.Verify();
-        }
-
-        private static T GetFunctionalSkillEarningsEvent<T>() where T : FunctionalSkillEarningsEvent, new()
-        {
-            var earningPeriods = new List<EarningPeriod>
-            {
-                new EarningPeriod {Period = 1, Amount = 1},
-                new EarningPeriod {Period = 2, Amount = 2},
-                new EarningPeriod {Period = 3, Amount = 3},
-                new EarningPeriod {Period = 4, Amount = 4},
-                new EarningPeriod {Period = 5, Amount = 5},
-                new EarningPeriod {Period = 6, Amount = 6},
-                new EarningPeriod {Period = 7, Amount = 7},
-                new EarningPeriod {Period = 8, Amount = 8},
-                new EarningPeriod {Period = 9, Amount = 9},
-                new EarningPeriod {Period = 10, Amount = 10},
-                new EarningPeriod {Period = 11, Amount = 11},
-                new EarningPeriod {Period = 12, Amount = 12},
-            };
-
-            var earnings = new List<FunctionalSkillEarning>
-            {
-                new FunctionalSkillEarning
-                {
-                    Type = FunctionalSkillType.OnProgrammeMathsAndEnglish,
-                    Periods = earningPeriods.AsReadOnly()
-                },
-            };
-
-            return new T
-            {
-                Earnings = earnings.AsReadOnly()
-            };
         }
     }
 }
