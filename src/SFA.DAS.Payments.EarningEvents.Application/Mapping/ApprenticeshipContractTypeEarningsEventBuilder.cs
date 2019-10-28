@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using AutoMapper;
-using SFA.DAS.Payments.Core.Configuration;
+﻿using AutoMapper;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
-using SFA.DAS.Payments.Model.Core.Incentives;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
@@ -15,8 +13,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
     {
         private readonly IApprenticeshipContractTypeEarningsEventFactory factory;
         private readonly IMapper mapper;
-       
-        public ApprenticeshipContractTypeEarningsEventBuilder(IApprenticeshipContractTypeEarningsEventFactory factory, IMapper mapper, IConfigurationHelper configurationHelper)
+
+        public ApprenticeshipContractTypeEarningsEventBuilder(IApprenticeshipContractTypeEarningsEventFactory factory, IMapper mapper)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -34,13 +32,16 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 foreach (var priceEpisodes in episodesByContractType)
                 {
                     var learnerWithSortedPriceEpisodes = intermediateLearningAim.CopyReplacingPriceEpisodes(priceEpisodes);
+
                     var earningEvent = factory.Create(priceEpisodes.Key);
+                    if (!earningEvent.IsPayable) continue;
+
                     mapper.Map(learnerWithSortedPriceEpisodes, earningEvent);
-                    
+
                     results.Add(earningEvent);
                 }
             }
-            
+
             return results;
         }
     }

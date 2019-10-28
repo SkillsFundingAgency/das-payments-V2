@@ -11,7 +11,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 {
     public interface IPeriodEndJobClient
     {
-
         Task RecordPeriodEndStart(long jobId, short collectionYear, byte collectionPeriod,
             List<GeneratedMessage> generatedMessages);
         Task RecordPeriodEndRun(long jobId, short collectionYear, byte collectionPeriod,
@@ -43,8 +42,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 CollectionPeriod = collectionPeriod,
                 GeneratedMessages = generatedMessages
             };
-            var jobsEndpointName = config.GetSettingOrDefault("Monitoring_JobsService_EndpointName", "sfa-das-payments-monitoring-jobs");
-            var partitionedEndpointName = $"{jobsEndpointName}{jobId % 20}";
+            var partitionedEndpointName = config.GetMonitoringEndpointName(jobId);
             logger.LogVerbose($"Endpoint for PeriodEndJobClient for Job Id {jobId} is `{partitionedEndpointName}`");
             await messageSession.Send(partitionedEndpointName, job).ConfigureAwait(false);
             logger.LogInfo($"Sent request to record period end job. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");

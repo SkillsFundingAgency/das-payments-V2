@@ -24,11 +24,16 @@
     <Parameter Name="EndpointName" Value="sfa-das-payments-monitoring-jobs" />
     <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-monitoring-jobs-errors" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+    <Parameter Name="ImmediateMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetryDelay" Value="" />
     <Parameter Name="DelayedRetryTimeInSeconds" Value="120" />
     <Parameter Name="LogLevel" Value="" />
     <Parameter Name="ConsoleLogLevel" Value="" />
     <Parameter Name="JobStatusCheck_Interval" Value="00:00:10" />
     <Parameter Name="TimeToWaitForJobToComplete" Value="01:00:00" />
     <Parameter Name="NumberOfNServiceBusThreads" Value="4" />
+    <Parameter Name="DasNServiceBusLicenseKey" Value=""/>
+
   </Section>
 </Settings>

@@ -45,21 +45,15 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
 
         public async Task ReplaceEmployerProviderPriorities(long employerAccountId, List<EmployerProviderPriorityModel> paymentPriorityModels, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var previousEmployerPriorities = await GetPaymentPriorities(employerAccountId, cancellationToken).ConfigureAwait(false);
-            dataContext.EmployerProviderPriority.RemoveRange(previousEmployerPriorities);
+            var previousEmployerPriorities =  dataContext.EmployerProviderPriority
+                .Where(paymentPriority => paymentPriority.EmployerAccountId == employerAccountId);
+                dataContext.EmployerProviderPriority.RemoveRange(previousEmployerPriorities);
+               
+                await dataContext.EmployerProviderPriority
+                    .AddRangeAsync(paymentPriorityModels, cancellationToken)
+                    .ConfigureAwait(false);
 
-            await dataContext.EmployerProviderPriority
-                .AddRangeAsync(paymentPriorityModels, cancellationToken)
-                .ConfigureAwait(false);
-
-            await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-        }
-
-        public async Task AddEmployerProviderPriorities(List<EmployerProviderPriorityModel> paymentPriorityModels, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            await dataContext.EmployerProviderPriority
-                .AddRangeAsync(paymentPriorityModels, cancellationToken)
-                .ConfigureAwait(false);
+                await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<List<long>> GetEmployerAccounts(CancellationToken cancellationToken)
@@ -80,18 +74,19 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
             return accounts.Distinct().ToList();
         }
 
-        public async Task<Dictionary<long,long?>> GetEmployerAccountsByUkprn(long ukprn, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<Tuple<long,long?>>> GetEmployerAccountsByUkprn(long ukprn, CancellationToken cancellationToken = default(CancellationToken))
         {
             var accounts = await dataContext.Apprenticeship.AsNoTracking()
                 .Where(apprenticeship => apprenticeship.Ukprn == ukprn)
-                .Select (apprenticeship => new {
-                    apprenticeship.AccountId, 
+                .Select(apprenticeship => new
+                {
+                    apprenticeship.AccountId,
                     apprenticeship.TransferSendingEmployerAccountId
                 })
                 .Distinct()
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
-            return accounts.ToDictionary(account => account.AccountId, account => account.TransferSendingEmployerAccountId);
+            return accounts.Select(x => new Tuple<long, long?>(x.AccountId, x.TransferSendingEmployerAccountId)).ToList();
         }
     }
 }
