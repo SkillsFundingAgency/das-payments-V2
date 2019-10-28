@@ -14,6 +14,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
     {
         Task RecordNewJob(RecordEarningsJob earningsJobRequest, CancellationToken cancellationToken = default(CancellationToken));
         Task RecordNewJobAdditionalMessages(RecordEarningsJobAdditionalMessages earningsJobRequest, CancellationToken cancellationToken);
+        Task RecordDcJobCompleted(long jobId, bool succeeded, CancellationToken cancellationToken);
     }
 
     public class EarningsJobService : IEarningsJobService
@@ -68,6 +69,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         {
             await RecordJobInProgressMessages(earningsJobRequest.JobId, earningsJobRequest.GeneratedMessages, cancellationToken).ConfigureAwait(false);
             logger.LogDebug($"Finished storing new job messages for job: {earningsJobRequest.JobId}");
+        }
+
+        public async Task RecordDcJobCompleted(long jobId, bool succeeded, CancellationToken cancellationToken)
+        {
+            logger.LogDebug($"Now storing the completion status of the submission job. Id: {jobId}, succeeded: {succeeded}");
+            await jobStorageService.StoreDcJobStatus(jobId, succeeded, cancellationToken).ConfigureAwait(false);
+            logger.LogInfo($"Finished storing the completion status of the submission job. Id: {jobId}, succeeded: {succeeded}");
         }
 
 

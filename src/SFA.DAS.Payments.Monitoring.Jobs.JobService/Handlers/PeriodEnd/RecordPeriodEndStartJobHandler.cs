@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
-namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers
+namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
 {
     public class RecordPeriodEndStartJobHandler : IHandleMessageBatches<RecordPeriodEndStartJob>
     {
