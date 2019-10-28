@@ -67,10 +67,6 @@ Scenario Outline: Non-Levy Learner-in co-funding no completion payment made as n
         | R09/Current Academic Year | Apr/Current Academic Year | 600          | 0          | 0         |
         | R10/Current Academic Year | May/Current Academic Year | 600          | 0          | 0         |
 	
-	And only the following payments will be held back
-        | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Insufficient Employer Contribution |
-        | R11/Current Academic Year | Jun/Current Academic Year | 0                      | 0                           | 1800              |
-
 	And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
         | R01/Current Academic Year | Aug/Current Academic Year | 540                    | 60                          | Learning         |
@@ -96,6 +92,10 @@ Scenario Outline: Non-Levy Learner-in co-funding no completion payment made as n
         | R08/Current Academic Year | Mar/Current Academic Year | 540                    | 60                          | Learning         |
         | R09/Current Academic Year | Apr/Current Academic Year | 540                    | 60                          | Learning         |
         | R10/Current Academic Year | May/Current Academic Year | 540                    | 60                          | Learning         |
+
+	And only the following payments will be held back
+        | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Insufficient Employer Contribution |
+        | R11/Current Academic Year | Jun/Current Academic Year | 0                      | 0                           | 1800              |
 
 Examples: 
         | Collection_Period         |

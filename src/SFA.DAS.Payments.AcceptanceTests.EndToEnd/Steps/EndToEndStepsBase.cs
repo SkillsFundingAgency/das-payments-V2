@@ -802,7 +802,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected async Task MatchHeldBackRequiredPayments(Table table, Provider provider)
         {
             var expectedPayments = CreatePayments(table, provider.Ukprn);
-            var matcher = new CompletionPaymentHeldBackEventMatcher(provider, CurrentCollectionPeriod, expectedPayments, CurrentIlr, CurrentPriceEpisodes);
+            var matcher = new CompletionPaymentHeldBackEventMatcher(provider, CurrentCollectionPeriod, expectedPayments);
             await WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
         }
 
