@@ -85,7 +85,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             [Test]
             public void ThenThenNothingIsReturned()
             {
-                var testEarning = new Earning();
+                testEarning.Amount = 0;
 
                 var actual = sut.GetRequiredPayments(testEarning, paymentHistory);
 
@@ -100,10 +100,70 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             public void ThenRefundIsCreated()
             {
                 testEarning.Amount = 0;
-                
+                paymentHistory.Add(new Payment { Amount = 50, SfaContributionPercentage = 0.9m, FundingSource = FundingSourceType.Levy});
                 var actual = sut.GetRequiredPayments(testEarning, paymentHistory);
 
-                actual.All(rp => rp.SfaContributionPercentage == .9M && rp.Amount == -50).Should().BeTrue();
+                actual.Should().HaveCount(1);
+                actual.All(rp => rp.SfaContributionPercentage == .9m && rp.Amount == -50).Should().BeTrue();
+            }
+
+            [Test, InlineAutoData]
+            public void ThenTheApprenticeshipIdIsCorrectInTheRequiredPayment(long? testApprenticeshipId)
+            {
+                testEarning.Amount = 0;
+                paymentHistory.Add(new Payment
+                {
+                    Amount = 50, 
+                    SfaContributionPercentage = 0.9m, 
+                    FundingSource = FundingSourceType.Levy, 
+                    ApprenticeshipId = testApprenticeshipId,
+                });
+
+                var actual = sut.GetRequiredPayments(testEarning, paymentHistory);
+                actual.Should().BeEquivalentTo(new
+                {
+                    ApprenticeshipId = testApprenticeshipId,
+                });
+            }
+
+            [Test, AutoData]
+            public void ThenTheApprenticeshipPriceEpisodeIdIsCorrectInTheRequiredPayment(
+                long? testApprenticeshipPriceEpisodeId)
+            {
+                testEarning.Amount = 0;
+                paymentHistory.Add(new Payment
+                {
+                    Amount = 50, 
+                    SfaContributionPercentage = 0.9m, 
+                    FundingSource = FundingSourceType.Levy, 
+                    ApprenticeshipPriceEpisodeId = testApprenticeshipPriceEpisodeId,
+                });
+
+                var actual = sut.GetRequiredPayments(testEarning, paymentHistory);
+                actual.Should().BeEquivalentTo(new
+                {
+                    ApprenticeshipPriceEpisodeId = testApprenticeshipPriceEpisodeId,
+                });
+            }
+
+            [Test, AutoData]
+            public void ThenTheApprenticeshipEmployerTypeIsCorrectInTheRequiredPayment(
+                ApprenticeshipEmployerType testApprenticeshipEmployerType)
+            {
+                testEarning.Amount = 0;
+                paymentHistory.Add(new Payment
+                {
+                    Amount = 50,
+                    SfaContributionPercentage = 0.9m,
+                    FundingSource = FundingSourceType.Levy,
+                    ApprenticeshipEmployerType = testApprenticeshipEmployerType,
+                });
+
+                var actual = sut.GetRequiredPayments(testEarning, paymentHistory);
+                actual.Should().BeEquivalentTo(new
+                {
+                    ApprenticeshipEmployerType = testApprenticeshipEmployerType,
+                });
             }
         }
 
@@ -116,9 +176,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 testEarning.SfaContributionPercentage = null;
                 testEarning.Amount = 0;
 
-                paymentHistory.Add(new Payment { SfaContributionPercentage = .9M, Amount = 10, FundingSource = FundingSourceType.Levy});
-                paymentHistory.Add(new Payment { SfaContributionPercentage = 1M, Amount = 20, FundingSource = FundingSourceType.Levy });
-                paymentHistory.Add(new Payment { SfaContributionPercentage = .95M, Amount = 30, FundingSource = FundingSourceType.Levy });
+                paymentHistory.Add(new Payment { SfaContributionPercentage = .9m, Amount = 10, FundingSource = FundingSourceType.Levy});
+                paymentHistory.Add(new Payment { SfaContributionPercentage = 1m, Amount = 20, FundingSource = FundingSourceType.Levy });
+                paymentHistory.Add(new Payment { SfaContributionPercentage = .95m, Amount = 30, FundingSource = FundingSourceType.Levy });
 
                 var actual = sut.GetRequiredPayments(testEarning, paymentHistory);
 
@@ -173,9 +233,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 
                 var requiredPayments = sut.GetRequiredPayments(testEarning, paymentHistory);
                 requiredPayments.Count.Should().Be(3);
-                requiredPayments.Count(rp => rp.SfaContributionPercentage == .9M).Should().Be(1);
-                requiredPayments.Count(rp => rp.SfaContributionPercentage == .95M).Should().Be(1);
-                requiredPayments.Count(rp => rp.SfaContributionPercentage == 1M).Should().Be(1);
+                requiredPayments.Count(rp => rp.SfaContributionPercentage == .9m).Should().Be(1);
+                requiredPayments.Count(rp => rp.SfaContributionPercentage == .95m).Should().Be(1);
+                requiredPayments.Count(rp => rp.SfaContributionPercentage == 1m).Should().Be(1);
                 requiredPayments.Where(x => x.Amount < 0).Sum(x => x.Amount).Should().Be(-30);
                 requiredPayments.Where(x => x.Amount > 0).Sum(x => x.Amount).Should().Be(40);
             }
