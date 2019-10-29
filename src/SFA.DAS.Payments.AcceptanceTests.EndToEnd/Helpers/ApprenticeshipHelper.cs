@@ -89,6 +89,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
                            default(DateTime?) :
                           apprenticeshipSpec.StopEffectiveFrom.ToDate(),
                 IsLevyPayer = employer.IsLevyPayer,
+                ApprenticeshipEmployerType = string.IsNullOrWhiteSpace(apprenticeshipSpec.EmployerType)
+                    ? ApprenticeshipEmployerType.Levy
+                    : GetNonNullableApprenticeshipEmployerTypeOnApproval(apprenticeshipSpec.EmployerType)
+
             };
 
             return apprenticeshipModel;
@@ -131,5 +135,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
             await dataContext.ApprenticeshipDuplicate.AddAsync(apprenticeshipDuplicate).ConfigureAwait(false);
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
-    }
+        
+        public static Model.Core.Entities.ApprenticeshipEmployerType GetNonNullableApprenticeshipEmployerTypeOnApproval(string employerType)
+        {
+            switch (employerType)
+            {
+                case "Levy":
+                    return Model.Core.Entities.ApprenticeshipEmployerType.Levy;
+                default:
+                    return Model.Core.Entities.ApprenticeshipEmployerType.NonLevy;
+            }
+        }
+}
 }

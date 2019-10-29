@@ -13,6 +13,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Approvals;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Messages.Core;
@@ -262,8 +263,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         ? savedApprenticeship.Status
                         : approvalsApprenticeship.Status.ToApprenticeshipPaymentStatus();
 
-                    var employerTypeOnApproval =
-                        GetApprenticeshipEmployerTypeOnApproval(approvalsApprenticeship.EmployerType);
+                    var employerTypeOnApproval = GetApprenticeshipEmployerTypeOnApproval(approvalsApprenticeship.EmployerType);
 
                     if (MatchesTrainingCode(approvalsApprenticeship, savedApprenticeship) &&
                         MatchPriceEpisodes(approvalsApprenticeship.PriceEpisodes, savedApprenticeship.ApprenticeshipPriceEpisodes) &&
@@ -666,35 +666,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     : apprenticeshipSpec.AgreedOnDate.ToDate(),
                 IsLevyPayer = true,
                 StopDate = apprenticeshipSpec.StoppedOnDate.ToNullableDate(),
-                ApprenticeshipEmployerType = GetNonNullableApprenticeshipEmployerTypeOnApproval(apprenticeshipSpec.EmployerType)
+                ApprenticeshipEmployerType = ApprenticeshipHelper.GetNonNullableApprenticeshipEmployerTypeOnApproval(apprenticeshipSpec.EmployerType)
             };
 
             return apprenticeshipModel;
         }
 
-        private static ApprenticeshipEmployerType? GetApprenticeshipEmployerTypeOnApproval(string employerType)
-        {
-            switch (employerType)
-            {
-                case "Levy":
-                    return ApprenticeshipEmployerType.Levy;
-                case "Non-Levy":
-                    return ApprenticeshipEmployerType.NonLevy;
-                default:
-                    return default(ApprenticeshipEmployerType?);
-            }
-        }
-
-        private static Model.Core.Entities.ApprenticeshipEmployerType GetNonNullableApprenticeshipEmployerTypeOnApproval(string employerType)
-        {
-            switch (employerType)
-            {
-                case "Levy":
-                    return Model.Core.Entities.ApprenticeshipEmployerType.Levy;
-                default:
-                    return Model.Core.Entities.ApprenticeshipEmployerType.NonLevy;
-            }
-        }
+       
 
         private static bool MatchesTrainingCode(ApprovalsApprenticeship approvalsApprenticeship, ApprenticeshipModel savedApprenticeship)
         {
@@ -753,6 +731,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
 
             return true;
+        }
+
+        public static ApprenticeshipEmployerType? GetApprenticeshipEmployerTypeOnApproval(string employerType)
+        {
+            switch (employerType)
+            {
+                case "Levy":
+                    return ApprenticeshipEmployerType.Levy;
+                case "Non-Levy":
+                    return ApprenticeshipEmployerType.NonLevy;
+                default:
+                    return default(ApprenticeshipEmployerType?);
+            }
         }
     }
 }
