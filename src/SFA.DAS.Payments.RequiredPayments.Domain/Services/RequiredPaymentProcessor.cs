@@ -52,6 +52,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 PriceEpisodeIdentifier = earning.PriceEpisodeIdentifier,
                 AccountId = earning.AccountId,
                 TransferSenderAccountId = earning.TransferSenderAccountId
+                // validPaymentHistory.ApprenticeshipEmployerType & ApprenticeshipPriceEpisodeId
             });
 
             return result;
