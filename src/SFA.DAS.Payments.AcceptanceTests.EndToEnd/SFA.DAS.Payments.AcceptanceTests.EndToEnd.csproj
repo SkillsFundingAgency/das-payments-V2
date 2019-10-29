@@ -43,38 +43,38 @@
     <Reference Include="AutoMapper, Version=7.0.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.7.0.1\lib\net45\AutoMapper.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.CollectionsManagement.Models, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.CollectionsManagement.Models.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.CollectionsManagement.Models.dll</HintPath>
+    <Reference Include="ESFA.DC.CollectionsManagement.Models, Version=0.2.19.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.CollectionsManagement.Models.0.2.19-beta0001\lib\netstandard2.0\ESFA.DC.CollectionsManagement.Models.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.Data.AppsEarningsHistory.Model, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Data.AppsEarningsHistory.Model.0.2.0-alpha0009\lib\netstandard2.0\ESFA.DC.Data.AppsEarningsHistory.Model.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model, Version=0.1.320.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.0.1.320\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model, Version=0.1.446.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.0.1.446\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.Model.Loose, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.1819.Model.Loose.0.1.5-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Loose.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.Model.Loose, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.1920.Model.Loose.0.1.8-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Loose.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Api, Version=0.1.29.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.29-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Api.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Api, Version=0.1.44.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.44-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Api.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Api.Config, Version=0.1.29.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.29-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Api.Config.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Api.Config, Version=0.1.44.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.44-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Api.Config.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Api.StorageService, Version=0.1.29.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.29-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Api.StorageService.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Api.StorageService, Version=0.1.44.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.44-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Api.StorageService.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Data, Version=0.1.29.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.29-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Data.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Data, Version=0.1.44.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.44-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Data.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Functors, Version=0.1.29.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.29-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Functors.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Functors, Version=0.1.44.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.44-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Functors.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Generators, Version=0.1.29.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.29-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Generators.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Generators, Version=0.1.44.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.44-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Generators.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Interfaces, Version=0.1.29.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.29-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Interfaces.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.TestDataGenerator.Interfaces, Version=0.1.44.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.TestDataGenerator.Api.0.1.44-beta0001\lib\netstandard2.0\ESFA.DC.ILR.TestDataGenerator.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.IO.AzureStorage, Version=0.1.15.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.IO.AzureStorage.0.1.15-beta0001\lib\netstandard2.0\ESFA.DC.IO.AzureStorage.dll</HintPath>
@@ -82,8 +82,8 @@
     <Reference Include="ESFA.DC.IO.Interfaces, Version=0.1.11.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.IO.Interfaces.0.1.11-beta0001\lib\netstandard2.0\ESFA.DC.IO.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.Jobs.Model, Version=0.2.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.Jobs.Model.0.2.9-beta0001\lib\netstandard2.0\ESFA.DC.Jobs.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.Jobs.Model, Version=0.2.19.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Jobs.Model.0.2.19-beta0001\lib\netstandard2.0\ESFA.DC.Jobs.Model.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.JobStatus.Interface, Version=0.2.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.JobStatus.Interface.0.2.8-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Interface.dll</HintPath>
@@ -1211,7 +1211,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-713- DLOCK12 when the employer pauses payments for a learner on a commitment.feature</DependentUpon>
     </Compile>
-    
     <Compile Include="Tests\Levy - Payment Priority\PV2-602 - Payment Priority for 2 providers levy spent in priority order and sufficient levy available.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1227,12 +1226,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-604 - Two providers, levy spent in priority order, enough to fund 1 provider fully but half for another provider.feature</DependentUpon>
     </Compile>
-	 <Compile Include="Tests\Levy - Data Locks\PV2-769 - DLOCK03 mismatch in standard code.feature.cs">
+    <Compile Include="Tests\Levy - Data Locks\PV2-769 - DLOCK03 mismatch in standard code.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-769 - DLOCK03 mismatch in standard code.feature</DependentUpon>
     </Compile>
-
     <Compile Include="Tests\Levy - Payment Priority\PV2-656 - two providers where levy spent in priority order and the priority is changed in R04.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2274,10 +2272,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-713- DLOCK12 when the employer pauses payments for a learner on a commitment.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Levy - Data Locks\PV2-769 - DLOCK03 mismatch in standard code.feature" >
-	 <Generator>SpecFlowSingleFileGenerator</Generator>
-	 <LastGenOutput>PV2-769 - DLOCK03 mismatch in standard code.feature.cs</LastGenOutput>
-	</None>	
+    <None Include="Tests\Levy - Data Locks\PV2-769 - DLOCK03 mismatch in standard code.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-769 - DLOCK03 mismatch in standard code.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Levy - Payment Priority\PV2-602 - Payment Priority for 2 providers levy spent in priority order and sufficient levy available.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-602 - Payment Priority for 2 providers levy spent in priority order and sufficient levy available.feature.cs</LastGenOutput>

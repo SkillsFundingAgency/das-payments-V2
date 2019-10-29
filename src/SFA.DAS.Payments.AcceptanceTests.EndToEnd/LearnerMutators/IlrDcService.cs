@@ -11,7 +11,6 @@ using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Jobs.Model.Enums;
 using MoreLinq;
 using Polly;
-using Serilog.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Core.Services;
@@ -81,12 +80,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
             var ilrFile = await tdgService.GenerateIlrTestData(learnerMutator, (int)testSession.Provider.Ukprn);
 
-            var amendedFileContents = ilrFile.Value.Replace("xmlns=\"ESFA/ILR/2018-19\"", "xmlns=\"ESFA/ILR/2019-20\"");
-            amendedFileContents = amendedFileContents.Replace("<Year>1819</Year>", "<Year>1920</Year>");
-            ilrFile = new KeyValuePair<string, string>(
-                ilrFile.Key.Replace("-1819-", "-1920-"),
-                amendedFileContents
-            );
             await RefreshTestSessionLearnerFromIlr(ilrFile.Value, learners);
 
             if (learners.Any(l => l.EarningsHistory != null) && !testSession.AtLeastOneScenarioCompleted)
@@ -160,15 +153,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
 
         private async Task RefreshTestSessionLearnerFromIlr(string ilrFile, IEnumerable<Learner> learners)
         {
-            //XNamespace xsdns = tdgService.IlrNamespace;
-            XNamespace xsdns = "ESFA/ILR/2019-20";//MK: Temporarily change namespace
+            XNamespace xsdns = tdgService.IlrNamespace;
             var xDoc = XDocument.Parse(ilrFile);
-
-            //temporarily override year value
-            var ilrYear = xDoc?.Root?.Element(xsdns + "Header")?.Element(xsdns + "CollectionDetails")?
-                .Element(xsdns + "Year");
-            ilrYear?.SetValue("1920");
-
             var learnerDescendants = xDoc.Descendants(xsdns + "Learner");
             var learnersEnumeration = learners as Learner[] ?? learners.ToArray();
             for (var i = 0; i < learnersEnumeration.Count(); i++)
