@@ -11,6 +11,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Entities
         public long? AccountId { get; set; }
         public long? TransferSenderAccountId { get; set; }
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
-
+        public long? ApprenticeshipId { get; set; }
+        public long? ApprenticeshipPriceEpisodeId { get; set; }
     }
 }

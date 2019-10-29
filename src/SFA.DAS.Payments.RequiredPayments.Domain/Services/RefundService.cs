@@ -34,6 +34,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                     x.AccountId,
                     x.TransferSenderAccountId,
                     x.ApprenticeshipEmployerType,
+                    x.ApprenticeshipId,
                     x.ApprenticeshipPriceEpisodeId,
                 })
                 .Select(group =>
@@ -48,6 +49,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                         AccountId = group.Key.AccountId,
                         TransferSenderAccountId = group.Key.TransferSenderAccountId,
                         ApprenticeshipEmployerType = group.Key.ApprenticeshipEmployerType,
+                        ApprenticeshipId = group.Key.ApprenticeshipId,
+                        ApprenticeshipPriceEpisodeId = group.Key.ApprenticeshipPriceEpisodeId,
                     };
                 })
                 .Where(x => x.Amount < 0)

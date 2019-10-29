@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -67,13 +68,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             actual.Single().SfaContributionPercentage.Should().Be(1);
         }
 
-        [Test]
-        [TestCase(ApprenticeshipEmployerType.Levy)]
-        [TestCase(ApprenticeshipEmployerType.NonLevy)]
-        public void RefundProducesRequiredPaymentsWithOriginalEmployerType_Levy(ApprenticeshipEmployerType testType)
+        [Test, AutoData]
+        [InlineAutoData(ApprenticeshipEmployerType.Levy)]
+        [InlineAutoData(ApprenticeshipEmployerType.NonLevy)]
+        public void RefundProducesRequiredPaymentsWithOriginalEmployerType(
+            ApprenticeshipEmployerType testType, RefundService sut)
         {
-            var sut = new RefundService();
-
             var expectedAmount = -123.2m;
             
             var actual = sut.GetRefund(expectedAmount, new List<Payment>
@@ -86,13 +86,108 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 }
             });
 
-            actual.Should().BeEquivalentTo(new []
-            {
+            actual.Should().BeEquivalentTo(
                 new
                 {
                     ApprenticeshipEmployerType = testType,
                 }
+            );
+        }
+
+        [Test, AutoData]
+        public void RefundProducesRequiredPaymentsWithOriginalApprenticeshipId(
+            long testApprenticeshipId, RefundService sut, decimal refundAmount)
+        {
+            var expectedAmount = -1 * refundAmount;
+
+            var actual = sut.GetRefund(expectedAmount, new List<Payment>
+            {
+                new Payment
+                {
+                    Amount = refundAmount,
+                    FundingSource = FundingSourceType.Levy,
+                    ApprenticeshipId = testApprenticeshipId,
+                }
             });
+
+            actual.Should().BeEquivalentTo(
+                new
+                {
+                    ApprenticeshipId = testApprenticeshipId
+                }
+            );
+        }
+
+        [Test, AutoData]
+        public void RefundProducesRequiredPaymentsWithOriginalApprenticeshipId_WhenItIsNull(
+            RefundService sut, decimal refundAmount)
+        {
+            var expectedAmount = -1 * refundAmount;
+
+            var actual = sut.GetRefund(expectedAmount, new List<Payment>
+            {
+                new Payment
+                {
+                    Amount = refundAmount,
+                    FundingSource = FundingSourceType.Levy,
+                    ApprenticeshipId = null,
+                }
+            });
+
+            actual.Should().BeEquivalentTo(
+                new
+                {
+                    ApprenticeshipId = (long?)null,
+                }
+            );
+        }
+
+        [Test, AutoData]
+        public void RefundProducesRequiredPaymentsWithOriginalApprenticeshipPriceEpisodeId(
+            RefundService sut, long testApprenticeshipPriceEpisodeId, decimal refundAmount)
+        {
+            var expectedAmount = -1 * refundAmount;
+
+            var actual = sut.GetRefund(expectedAmount, new List<Payment>
+            {
+                new Payment
+                {
+                    Amount = refundAmount,
+                    FundingSource = FundingSourceType.Levy,
+                    ApprenticeshipPriceEpisodeId = testApprenticeshipPriceEpisodeId,
+                }
+            });
+
+            actual.Should().BeEquivalentTo(
+                new
+                {
+                    ApprenticeshipPriceEpisodeId = testApprenticeshipPriceEpisodeId
+                }
+            );
+        }
+
+        [Test, AutoData]
+        public void RefundProducesRequiredPaymentsWithOriginalApprenticeshipPriceEpisodeId_WhenItIsNull(
+            RefundService sut, decimal refundAmount)
+        {
+            var expectedAmount = -1 * refundAmount;
+
+            var actual = sut.GetRefund(expectedAmount, new List<Payment>
+            {
+                new Payment
+                {
+                    Amount = refundAmount,
+                    FundingSource = FundingSourceType.Levy,
+                    ApprenticeshipPriceEpisodeId = null,
+                }
+            });
+
+            actual.Should().BeEquivalentTo(
+                new
+                {
+                    ApprenticeshipPriceEpisodeId = (long?)null,
+                }
+            );
         }
 
         FundingSourceType ConvertToFundingSource(EarningType earningType)

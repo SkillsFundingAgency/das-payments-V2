@@ -56,7 +56,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
             try
             {
-
                 var result = new List<PeriodisedRequiredPaymentEvent>();
 
                 var cachedPayments = await paymentHistoryCache.TryGet(CacheKeys.PaymentHistoryKey, cancellationToken);
