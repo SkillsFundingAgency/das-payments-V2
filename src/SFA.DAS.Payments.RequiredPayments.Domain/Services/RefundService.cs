@@ -25,14 +25,17 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
             var totalRefundPercent = amount / totalPaidInHistory; // will be negative
             totalRefundPercent = Math.Max(totalRefundPercent, -1);
 
-            return paymentHistory.GroupBy(x => new
+            return paymentHistory
+                .GroupBy(x => new
                 {
-                    SfaContributionPercentage = x.SfaContributionPercentage,
+                    x.SfaContributionPercentage,
                     EarningType = ToEarningType(x.FundingSource),
-                    PriceEpisodeIdentifier = x.PriceEpisodeIdentifier,
-                    AccountId = x.AccountId,
-                    TransferSenderAccountId = x.TransferSenderAccountId
-            })
+                    x.PriceEpisodeIdentifier,
+                    x.AccountId,
+                    x.TransferSenderAccountId,
+                    x.ApprenticeshipEmployerType,
+                    x.ApprenticeshipPriceEpisodeId,
+                })
                 .Select(group =>
                 {
                     var amountForGroup = group.Sum(x => x.Amount);
@@ -43,8 +46,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                         SfaContributionPercentage = group.Key.SfaContributionPercentage,
                         PriceEpisodeIdentifier = group.Key.PriceEpisodeIdentifier,
                         AccountId = group.Key.AccountId,
-                        TransferSenderAccountId = group.Key.TransferSenderAccountId
-
+                        TransferSenderAccountId = group.Key.TransferSenderAccountId,
+                        ApprenticeshipEmployerType = group.Key.ApprenticeshipEmployerType,
                     };
                 })
                 .Where(x => x.Amount < 0)

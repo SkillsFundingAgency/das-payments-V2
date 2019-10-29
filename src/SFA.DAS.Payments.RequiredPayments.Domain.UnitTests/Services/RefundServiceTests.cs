@@ -67,6 +67,34 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             actual.Single().SfaContributionPercentage.Should().Be(1);
         }
 
+        [Test]
+        [TestCase(ApprenticeshipEmployerType.Levy)]
+        [TestCase(ApprenticeshipEmployerType.NonLevy)]
+        public void RefundProducesRequiredPaymentsWithOriginalEmployerType_Levy(ApprenticeshipEmployerType testType)
+        {
+            var sut = new RefundService();
+
+            var expectedAmount = -123.2m;
+            
+            var actual = sut.GetRefund(expectedAmount, new List<Payment>
+            {
+                new Payment
+                {
+                    Amount = -1 * expectedAmount,
+                    FundingSource = FundingSourceType.Levy,
+                    ApprenticeshipEmployerType = testType,
+                }
+            });
+
+            actual.Should().BeEquivalentTo(new []
+            {
+                new
+                {
+                    ApprenticeshipEmployerType = testType,
+                }
+            });
+        }
+
         FundingSourceType ConvertToFundingSource(EarningType earningType)
         {
             switch (earningType)
