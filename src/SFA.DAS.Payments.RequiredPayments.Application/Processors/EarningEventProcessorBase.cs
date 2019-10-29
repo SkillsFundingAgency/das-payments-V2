@@ -83,8 +83,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     List<RequiredPayment> requiredPayments;
                     var holdBackCompletionPayments = false;
 
-                    if (period.Amount < 0 &&
-                        NegativeEarningWillResultInARefund(period, payments))
+                    if (NegativeEarningWillResultInARefund(period, payments))
                     {
                         requiredPayments = negativeEarningService
                             .ProcessNegativeEarning(period.Amount, academicYearPayments, period.Period, period.PriceEpisodeIdentifier);
@@ -152,7 +151,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
         private static bool NegativeEarningWillResultInARefund(EarningPeriod period, List<Payment> payments)
         {
-            return period.Amount < payments.Sum(x => x.Amount);
+            return period.Amount < 0 && period.Amount < payments.Sum(x => x.Amount);
         }
 
         private async Task<bool> HoldBackCompletionPayments(TEarningEvent earningEvent, Earning earning, int type, CancellationToken cancellationToken)
