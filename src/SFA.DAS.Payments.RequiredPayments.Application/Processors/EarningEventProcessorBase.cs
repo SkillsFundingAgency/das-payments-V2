@@ -123,6 +123,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                         mapper.Map(earningEvent, requiredPaymentEvent);
                         mapper.Map(requiredPayment, requiredPaymentEvent);
 
+                        requiredPaymentEvent.ApprenticeshipEmployerType = requiredPayment.ApprenticeshipEmployerType;
+
                         var priceEpisodeIdentifier = requiredPaymentEvent.PriceEpisodeIdentifier;
 
                         if (earningEvent.PriceEpisodes != null && earningEvent.PriceEpisodes.Any())

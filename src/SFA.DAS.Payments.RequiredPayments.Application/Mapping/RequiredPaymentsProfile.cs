@@ -185,6 +185,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Include<RequiredPayment, CalculatedRequiredLevyAmount>()
                 .ForMember(x => x.AmountDue, opt => opt.MapFrom(x => x.Amount))
                 .ForMember(x => x.AccountId, opt => opt.MapFrom(x => x.AccountId))
+                .ForMember(x => x.ApprenticeshipEmployerType, opt => opt.MapFrom(x => x.ApprenticeshipEmployerType))
+                .ForMember(x => x.ApprenticeshipId, opt => opt.MapFrom(x => x.ApprenticeshipId))
+                .ForMember(x => x.ApprenticeshipPriceEpisodeId, opt => opt.MapFrom(x => x.ApprenticeshipPriceEpisodeId))
                 .ForMember(x => x.TransferSenderAccountId, opt => opt.MapFrom(x => x.TransferSenderAccountId))
                 .Ignore(x => x.EarningEventId)
                 .Ignore(x => x.DeliveryPeriod)
@@ -206,8 +209,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.InstalmentAmount)
                 .Ignore(x => x.NumberOfInstalments)
                 .Ignore(x => x.LearningStartDate)
-                .Ignore(x => x.ApprenticeshipId)
-                .Ignore(x => x.ApprenticeshipPriceEpisodeId)
                 .Ignore(x => x.NumberOfInstalments)
                 .Ignore(x => x.ApprenticeshipEmployerType)
                 .Ignore(x => x.ReportingAimFundingLineType);

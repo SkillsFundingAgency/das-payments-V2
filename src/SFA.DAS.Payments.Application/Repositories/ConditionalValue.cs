@@ -12,4 +12,11 @@
 
         public T Value { get; }
     }
+
+    public static class ConditionalValue
+    {
+        public static ConditionalValue<T> With<T>(T t) => new ConditionalValue<T>(true, t);
+
+        public static ConditionalValue<T[]> WithArray<T>(params T[] t) => new ConditionalValue<T[]>(true, t);
+    }
 }
