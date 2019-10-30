@@ -122,8 +122,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                         mapper.Map(period, requiredPaymentEvent);
                         mapper.Map(earningEvent, requiredPaymentEvent);
                         mapper.Map(requiredPayment, requiredPaymentEvent);
-
-                        requiredPaymentEvent.ApprenticeshipEmployerType = requiredPayment.ApprenticeshipEmployerType;
+                        AddRefundCommitmentDetails(requiredPayment, requiredPaymentEvent);
 
                         var priceEpisodeIdentifier = requiredPaymentEvent.PriceEpisodeIdentifier;
 
@@ -137,7 +136,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
                             if (requiredPaymentEvent.LearningAim != null) mapper.Map(priceEpisode, requiredPaymentEvent.LearningAim);
                         }
-                       
+
                         result.Add(requiredPaymentEvent);
                     }
                 }
@@ -148,6 +147,16 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             {
                 paymentLogger.LogError($"Error while Handling EarningEvent for {earningEvent.Ukprn} ", e);
                 throw;
+            }
+        }
+
+        private static void AddRefundCommitmentDetails(RequiredPayment requiredPayment, PeriodisedRequiredPaymentEvent requiredPaymentEvent)
+        {
+            if (requiredPayment.Amount < 0)
+            { 
+                requiredPaymentEvent.ApprenticeshipId = requiredPayment.ApprenticeshipId;
+                requiredPaymentEvent.ApprenticeshipPriceEpisodeId = requiredPayment.ApprenticeshipPriceEpisodeId;
+                requiredPaymentEvent.ApprenticeshipEmployerType = requiredPayment.ApprenticeshipEmployerType;
             }
         }
 
