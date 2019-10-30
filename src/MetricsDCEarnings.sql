@@ -1,6 +1,4 @@
-﻿declare @collectionPeriod tinyint  = 3
-
-
+﻿declare @collectionPeriod tinyint  = 2
 
 ;WITH RawEarnings
 AS (
@@ -126,9 +124,7 @@ AS (
               ,[Period]
        FROM [RawEarnings]
        WHERE UKPRN IN (
-
        10003915
-
 
        )
 )
@@ -154,9 +150,9 @@ select
 
 from (
 
-              --select n as TransactionType from (values (1),(2),(3)) v(n)
+              select n as TransactionType from (values (1),(2),(3)) v(n)
 
-              select n as TransactionType from (values (1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16)) v(n)
+              --select n as TransactionType from (values (1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16)) v(n)
 
        ) as TransactionTypes             
 

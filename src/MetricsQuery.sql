@@ -8,7 +8,7 @@ Usage: Update the monthendjobid and other variables at the top of the script.
 */
 
 declare @academicYear smallint = 1920
-declare @collectionPeriod tinyint =3
+declare @collectionPeriod tinyint =2
 declare @populateEarnings bit = 1
 declare @monthendjobid int = 25680
 
@@ -17,8 +17,8 @@ select
                            ukprns.lastJobId,
                 TransactionTypes.TransactionType as [Transaction Type],
                            
-                            isnull(Earnings.EarningsYTD, 0) - isnull(Datalockerrors.DataLockErrors, 0) - isnull(ActualPayments.ActualPaymentYTD, 0) - isnull(HeldBackCompletionPayments, 0) [Missing Actual Payments],
-                            isnull(Earnings.EarningsYTD, 0) - isnull(DataLockErrors.DataLockErrors, 0) - isnull(RequiredPaymentYTD, 0) - isnull(HeldBackCompletionPayments, 0) [Missing Required Payments],
+                            isnull(Earnings.EarningsYTD, 0) - isnull(DatalockerrorsAudit.DataLockErrors, 0) - isnull(ActualPayments.ActualPaymentYTD, 0) - isnull(HeldBackCompletionPayments, 0) [Missing Actual Payments],
+                           --isnull(Earnings.EarningsYTD, 0) - isnull(DataLockErrors.DataLockErrors, 0) - isnull(RequiredPaymentYTD, 0) - isnull(HeldBackCompletionPayments, 0) [Missing Required Payments],
                             isnull(Earnings.EarningsYTD, 0) - isnull(DatalockerrorsAudit.DataLockErrors, 0) - isnull(RequiredPaymentYTD, 0) - isnull(HeldBackCompletionPayments, 0) [Missing Required Payments (audit DL)],
                             isnull(Earnings.EarningLearnerCount, 0) as [Earnings Learners YTD (audit)],
                             isnull(Earnings.EarningsYTD, 0) as [Earnings YTD (audit)],
@@ -34,8 +34,8 @@ select
                             isnull(ActualPayments.ActualPaymentYTD, 0) as [Payments YTD],
                            isnull(ActualPayments.ActualPaymentACT1, 0) as [Payments ACT1],
                            isnull(ActualPayments.ActualPaymentACT2, 0) as [Payments ACT2],
-                     isnull(DataLocksEE.DataLockErrorLearnerCount, 0) as [DataLockError Learner Count New],
-                            isnull(DataLocksEE.DataLockErrors, 0) as [DataLock Errors New],
+                           --isnull(DataLocksEE.DataLockErrorLearnerCount, 0) as [DataLockError Learner Count New],
+                           --isnull(DataLocksEE.DataLockErrors, 0) as [DataLock Errors New],
                      isnull([DataLockErrors].DataLockErrorLearnerCount, 0) as [DataLockError Learner Count],
                             isnull([DataLockErrors].DataLockErrors, 0) as [DataLock Errors],
                      isnull([DataLockErrorsAudit].DataLockErrorCount, 0) as [DataLockError Learner Count (audit)],
@@ -69,7 +69,7 @@ select
                                                        WHERE 
                                                               AcademicYear = @academicYear
                                                        AND
-                                                              CollectionPeriod = @collectionPeriod
+                                                              CollectionPeriod <= @collectionPeriod
                                                        GROUP BY 
                                                               ukprn
                                                        ) lastSubmission
@@ -118,8 +118,7 @@ select
                         select 
                                 ukprn,
                                 RP.TransactionType,
-                                                       RP.Jobid,
-                                count(distinct RP.LearnerUln) [RequiredPaymentLearnerCount],
+                                                    count(distinct RP.LearnerUln) [RequiredPaymentLearnerCount],
                                 sum(Amount) [RequiredPaymentYTD],
                                 sum(case when ContractType = 1 then Amount end) [RequiredPaymentACT1],
                                 sum(case when ContractType = 2 then Amount end) [RequiredPaymentACT2]
@@ -130,13 +129,11 @@ select
                                 and AcademicYear = @academicYear
                         group by 
                                 ukprn,
-                                TransactionType,
-                                                       rp.JobId
+                                TransactionType
         ) as RequiredPayments
                 on RequiredPayments.TransactionType = TransactionTypes.TransactionType
                         and RequiredPayments.Ukprn = ukprns.Ukprn
-                                         and RequiredPayments.JobId = ukprns.lastJobId
-
+                                         
                 -- ActualPayments
                 left join (
                         select 
@@ -205,34 +202,35 @@ select
                 on DataLockErrorsAudit.TransactionType = TransactionTypes.TransactionType
                         and DataLockErrorsAudit.Ukprn = ukprns.Ukprn
                                          and DataLockErrorsAudit.JobId = ukprns.lastJobId
-                           -- MK Datalocks
-                            left join (
-                        select
-                                e.Ukprn,
-                                ep.TransactionType,
-                                                       e.JobId, 
-                                                       sum(case when  f.Id is not null then ep.Amount end) as DataLockErrors,
-                                count(distinct f.LearnerUln) as [DataLockErrorLearnerCount]
-                        from
-                                Payments2.EarningEvent e with(nolock)
-                                join Payments2.EarningEventPeriod ep with(nolock) on ep.EarningEventId = e.EventId
+                           ---- MK Datalocks
+                           --left join (
+    --                    select
+    --                            e.Ukprn,
+    --                            ep.TransactionType,
+                           --                          e.JobId, 
+                           --                          sum(case when  f.Id is not null then ep.Amount end) as DataLockErrors,
+    --                            count(distinct f.LearnerUln) as [DataLockErrorLearnerCount]
+    --                    from
+    --                            Payments2.EarningEvent e with(nolock)
+    --                            join Payments2.EarningEventPeriod ep with(nolock) on ep.EarningEventId = e.EventId
                                 
-                                left join Payments2.DataLockFailure f with(nolock) on f.EarningEventId = e.EventId
-                                        and f.DeliveryPeriod = ep.DeliveryPeriod
-                                        and f.TransactionType = ep.TransactionType
-                        where
-                                 ep.Amount <> 0
-                                and e.AcademicYear = @academicYear
-                                and e.CollectionPeriod = @collectionPeriod
-                                and ep.DeliveryPeriod <= @collectionPeriod
-                        group by
-                                e.Ukprn,
-                                ep.TransactionType,
-                                                       e.JobId
-                ) as DataLocksEE
-                on DataLocksEE.TransactionType = TransactionTypes.TransactionType
-                        and DataLocksEE.Ukprn = ukprns.Ukprn
-                                         and DataLocksEE.JobId  = ukprns.lastJobId
+    --                            left join Payments2.DataLockFailure f with(nolock) on f.EarningEventId = e.EventId
+    --                                    and f.DeliveryPeriod = ep.DeliveryPeriod
+    --                                    and f.TransactionType = ep.TransactionType
+    --                    where
+    --                             ep.Amount <> 0
+    --                            and e.AcademicYear = @academicYear
+    --                            and e.CollectionPeriod = @collectionPeriod
+    --                            and ep.DeliveryPeriod <= @collectionPeriod
+                                                       
+    --                    group by
+    --                            e.Ukprn,
+    --                            ep.TransactionType,
+                           --                          e.JobId
+    --            ) as DataLocksEE
+    --            on DataLocksEE.TransactionType = TransactionTypes.TransactionType
+    --                    and DataLocksEE.Ukprn = ukprns.Ukprn
+                           --     and DataLocksEE.JobId  = ukprns.lastJobId
 
 
                 --HeldBackCompletionPayments from audit
