@@ -5,10 +5,10 @@ Feature: Non-levy learner continuing 12 months earnings PV2-615
 Scenario Outline: Non-levy learner continuing 12 months earnings PV2-615
 	Given the provider is providing training for the following learners
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                               | SFA Contribution Percentage |
-		| 03/Aug/Current Academic Year | 12 months        | 15000                | 03/Aug/Current Academic Year        |                        |                                       |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 90%                         |
+		| 03/Aug/Current Academic Year | 12 months        | 15000                | 03/Aug/Current Academic Year        |                        |                                       |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship Non-Levy Contract (procured) | 95%                         |
 	And price details as follows
 		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |
-		| pe-1             | 15000                | 03/Aug/Current Academic Year        | 0                      | 03/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act2          | 1                   |
+		| pe-1             | 15000                | 03/Aug/Current Academic Year        | 0                      | 03/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 95%                         | Act2          | 1                   |
 	When the ILR file is submitted for the learners for collection period <Collection_Period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
@@ -40,32 +40,32 @@ Scenario Outline: Non-levy learner continuing 12 months earnings PV2-615
 		| R12/Current Academic Year | Jul/Current Academic Year | 1000         | 0          | 0         |
 	And only the following provider payments will be recorded
 		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
-		| R01/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         |
-		| R02/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | Learning         |
-		| R03/Current Academic Year | Oct/Current Academic Year | 900                    | 100                         | Learning         |
-		| R04/Current Academic Year | Nov/Current Academic Year | 900                    | 100                         | Learning         |
-		| R05/Current Academic Year | Dec/Current Academic Year | 900                    | 100                         | Learning         |
-		| R06/Current Academic Year | Jan/Current Academic Year | 900                    | 100                         | Learning         |
-		| R07/Current Academic Year | Feb/Current Academic Year | 900                    | 100                         | Learning         |
-		| R08/Current Academic Year | Mar/Current Academic Year | 900                    | 100                         | Learning         |
-		| R09/Current Academic Year | Apr/Current Academic Year | 900                    | 100                         | Learning         |
-		| R10/Current Academic Year | May/Current Academic Year | 900                    | 100                         | Learning         |
-		| R11/Current Academic Year | Jun/Current Academic Year | 900                    | 100                         | Learning         |
-		| R12/Current Academic Year | Jul/Current Academic Year | 900                    | 100                         | Learning         |
+		| R01/Current Academic Year | Aug/Current Academic Year | 950                    | 50                          | Learning         |
+		| R02/Current Academic Year | Sep/Current Academic Year | 950                    | 50                          | Learning         |
+		| R03/Current Academic Year | Oct/Current Academic Year | 950                    | 50                          | Learning         |
+		| R04/Current Academic Year | Nov/Current Academic Year | 950                    | 50                          | Learning         |
+		| R05/Current Academic Year | Dec/Current Academic Year | 950                    | 50                          | Learning         |
+		| R06/Current Academic Year | Jan/Current Academic Year | 950                    | 50                          | Learning         |
+		| R07/Current Academic Year | Feb/Current Academic Year | 950                    | 50                          | Learning         |
+		| R08/Current Academic Year | Mar/Current Academic Year | 950                    | 50                          | Learning         |
+		| R09/Current Academic Year | Apr/Current Academic Year | 950                    | 50                          | Learning         |
+		| R10/Current Academic Year | May/Current Academic Year | 950                    | 50                          | Learning         |
+		| R11/Current Academic Year | Jun/Current Academic Year | 950                    | 50                          | Learning         |
+		| R12/Current Academic Year | Jul/Current Academic Year | 950                    | 50                          | Learning         |
 	And at month end only the following provider payments will be generated
 		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
-		| R01/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | Learning         |
-		| R02/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | Learning         |
-		| R03/Current Academic Year | Oct/Current Academic Year | 900                    | 100                         | Learning         |
-		| R04/Current Academic Year | Nov/Current Academic Year | 900                    | 100                         | Learning         |
-		| R05/Current Academic Year | Dec/Current Academic Year | 900                    | 100                         | Learning         |
-		| R06/Current Academic Year | Jan/Current Academic Year | 900                    | 100                         | Learning         |
-		| R07/Current Academic Year | Feb/Current Academic Year | 900                    | 100                         | Learning         |
-		| R08/Current Academic Year | Mar/Current Academic Year | 900                    | 100                         | Learning         |
-		| R09/Current Academic Year | Apr/Current Academic Year | 900                    | 100                         | Learning         |
-		| R10/Current Academic Year | May/Current Academic Year | 900                    | 100                         | Learning         |
-		| R11/Current Academic Year | Jun/Current Academic Year | 900                    | 100                         | Learning         |
-		| R12/Current Academic Year | Jul/Current Academic Year | 900                    | 100                         | Learning         |
+		| R01/Current Academic Year | Aug/Current Academic Year | 950                    | 50                          | Learning         |
+		| R02/Current Academic Year | Sep/Current Academic Year | 950                    | 50                          | Learning         |
+		| R03/Current Academic Year | Oct/Current Academic Year | 950                    | 50                          | Learning         |
+		| R04/Current Academic Year | Nov/Current Academic Year | 950                    | 50                          | Learning         |
+		| R05/Current Academic Year | Dec/Current Academic Year | 950                    | 50                          | Learning         |
+		| R06/Current Academic Year | Jan/Current Academic Year | 950                    | 50                          | Learning         |
+		| R07/Current Academic Year | Feb/Current Academic Year | 950                    | 50                          | Learning         |
+		| R08/Current Academic Year | Mar/Current Academic Year | 950                    | 50                          | Learning         |
+		| R09/Current Academic Year | Apr/Current Academic Year | 950                    | 50                          | Learning         |
+		| R10/Current Academic Year | May/Current Academic Year | 950                    | 50                          | Learning         |
+		| R11/Current Academic Year | Jun/Current Academic Year | 950                    | 50                          | Learning         |
+		| R12/Current Academic Year | Jul/Current Academic Year | 950                    | 50                          | Learning         |
 	Examples:
 		| Collection_Period         |
 		| R01/Current Academic Year |
