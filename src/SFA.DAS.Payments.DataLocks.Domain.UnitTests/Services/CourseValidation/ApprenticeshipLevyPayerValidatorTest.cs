@@ -78,7 +78,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         }
 
         [Test]
-        public void WhenApprenticeshipEmployerNotIsALevyPayerButTransferReceiverReturnNoDataLockErrors()
+        public void WhenApprenticeshipIsNotEmployerALevyPayerButTransferReceiverReturnNoDataLockErrors()
         {
             var validation = new DataLockValidationModel
             {
