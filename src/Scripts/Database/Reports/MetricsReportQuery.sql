@@ -24,7 +24,7 @@ EarningsYTD AS
 	INNER JOIN [Payments2].[EarningEventPeriod] p WITH (NOLOCK)
 		   ON p.EarningEventId = e.EventId
 	WHERE e.AcademicYear = @academicYear
-		   AND e.CollectionPeriod = @collectionPeriod
+		   AND e.CollectionPeriod <= @collectionPeriod
 		   AND ((@ukprn IS NULL) or (@ukprn = ukprn))
 	GROUP BY p.TransactionType
 ),
