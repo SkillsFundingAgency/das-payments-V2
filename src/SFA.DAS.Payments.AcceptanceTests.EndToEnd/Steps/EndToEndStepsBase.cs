@@ -324,9 +324,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             DateTime submissionTime, decimal? sfaContributionPercentage, decimal amount,
             FundingSourceType fundingSourceType, long ukprn, long? accountId, long? senderAccountId)
         {
-            var apprenticeshipId = Apprenticeships.FirstOrDefault(x => x.LearnerId == learnerTraining.LearnerId)?.ApprenticeshipId;
+            var apprenticeshipId = Apprenticeships?.FirstOrDefault(x => x.LearnerId == learnerTraining.LearnerId)?.ApprenticeshipId;
             var priceEpisodeId = CurrentPriceEpisodes
-                .FirstOrDefault(x => x.LearnerId == learnerTraining.LearnerId)
+                ?.FirstOrDefault(x => x.LearnerId == learnerTraining.LearnerId)
                 ?.PriceEpisodeId.ParseAsNullableLong();
 
             return new PaymentModel
