@@ -651,11 +651,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return aimPeriodisedValues;
         }
 
-        private static List<LearningDeliveryPeriodisedTextValues> SetPeriodisedTextValues(Aim aim,
-            IList<Earning> earnings)
+        private static List<LearningDeliveryPeriodisedTextValues> SetPeriodisedTextValues(Aim aim, IList<Earning> earnings)
         {
             var aimPeriodisedTextValues = new List<LearningDeliveryPeriodisedTextValues>();
             const string learningDeliveryContractType = "LearnDelContType";
+            const string learningDeliveryFundingLineType = "FundLineType";
 
             foreach (var earning in earnings.Where(e => !e.AimSequenceNumber.HasValue ||
                                                         e.AimSequenceNumber == aim.AimSequenceNumber))
@@ -665,25 +665,32 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 {
                     if (MathsAndEnglishTransactionTypes().Contains(earningValue.Key))
                     {
-                        var contractType = GetContractTypeDescription(earning.ContractType);
-
-                        var contractTypePeriodisedValues =
-                            aimPeriodisedTextValues.SingleOrDefault(
-                                v => v.AttributeName == learningDeliveryContractType);
-
-                        if (contractTypePeriodisedValues == null)
-                        {
-                            contractTypePeriodisedValues = new LearningDeliveryPeriodisedTextValues
-                                {AttributeName = learningDeliveryContractType};
-                            aimPeriodisedTextValues.Add(contractTypePeriodisedValues);
-                        }
-
-                        SetPeriodTextValue(period, contractTypePeriodisedValues, contractType);
+                        AddPeriodisedTextAttributes(aimPeriodisedTextValues, learningDeliveryContractType, period, GetContractTypeDescription(earning.ContractType));
+                        AddPeriodisedTextAttributes(aimPeriodisedTextValues, learningDeliveryFundingLineType, period, aim.FundingLineType);
                     }
                 }
             }
 
             return aimPeriodisedTextValues;
+        }
+
+        private static void AddPeriodisedTextAttributes(List<LearningDeliveryPeriodisedTextValues> aimPeriodisedTextValues,
+            string attributeName,
+            byte period, 
+            string valueToSet)
+        {
+            var periodisedTextValues = aimPeriodisedTextValues.SingleOrDefault(v => v.AttributeName == attributeName);
+
+            if (periodisedTextValues == null)
+            {
+                periodisedTextValues = new LearningDeliveryPeriodisedTextValues
+                {
+                    AttributeName = attributeName
+                };
+                aimPeriodisedTextValues.Add(periodisedTextValues);
+            }
+
+            SetPeriodTextValue(period, periodisedTextValues, valueToSet);
         }
 
         private static string CalculatePriceEpisodeIdentifier(Price priceEpisode, string priceEpisodePrefix)
