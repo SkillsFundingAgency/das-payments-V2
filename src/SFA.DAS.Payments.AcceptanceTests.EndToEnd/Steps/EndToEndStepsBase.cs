@@ -206,7 +206,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     var isNew = specApprenticeship.ApprenticeshipId == default(long);
 
                     var apprenticeship = ApprenticeshipHelper.CreateApprenticeshipModel(specApprenticeship, TestSession);
-                    apprenticeship.ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy;
                     apprenticeship.ApprenticeshipPriceEpisodes = group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
 
                     if (isNew)
