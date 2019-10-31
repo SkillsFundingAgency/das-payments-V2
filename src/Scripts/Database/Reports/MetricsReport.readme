@@ -1,0 +1,6 @@
+This metrics report is designed to replicate the V1 Earnings vs Payments report. 
+
+Run the query providing relevant values for the academic year and collection period. 
+
+Paste the results of the query into the MetricsReportTemplate Excel document at cell [A3]. This will caluculate all of the remaining percentages and ACT1/ACT2 values. 
+
