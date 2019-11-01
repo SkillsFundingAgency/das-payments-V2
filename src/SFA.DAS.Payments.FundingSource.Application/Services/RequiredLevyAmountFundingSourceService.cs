@@ -195,7 +195,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         }
 
         public async Task RemovePreviousSubmissions(long jobId, byte collectionPeriod, short academicYear,
-            DateTime submissionDate)
+            DateTime submissionDate, long ukprn)
         {
             var keys = await generateSortedPaymentKeys.GeyKeys().ConfigureAwait(false);
 
@@ -212,7 +212,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 if (requiredPaymentEvent.CollectionPeriod.AcademicYear == academicYear &&
                     requiredPaymentEvent.CollectionPeriod.Period == collectionPeriod &&
                     requiredPaymentEvent.JobId != jobId &&
-                    requiredPaymentEvent.IlrSubmissionDateTime < submissionDate)
+                    requiredPaymentEvent.IlrSubmissionDateTime < submissionDate && 
+                    requiredPaymentEvent.Ukprn == ukprn)
                 {
                     await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
                 }
@@ -221,7 +222,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         }
 
         public async Task RemoveCurrentSubmission(long jobId, byte collectionPeriod, short academicYear,
-            DateTime submissionDate)
+            DateTime submissionDate, long ukprn)
         {
             var keys = await generateSortedPaymentKeys.GeyKeys().ConfigureAwait(false);
 
@@ -236,7 +237,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
                 if (requiredPaymentEvent.CollectionPeriod.AcademicYear == academicYear &&
                     requiredPaymentEvent.CollectionPeriod.Period == collectionPeriod &&
-                    requiredPaymentEvent.JobId == jobId)
+                    requiredPaymentEvent.JobId == jobId && 
+                    requiredPaymentEvent.Ukprn == ukprn)
                 {
                     await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
                 }
