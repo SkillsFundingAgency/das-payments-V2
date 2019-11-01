@@ -788,7 +788,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                                                   requiredPaymentEvent2.Ukprn);
 
             // assert
-            eventCacheMock.Verify(c=>c.Clear("1", CancellationToken.None), Times.Never);
         }
 
         [Test]
@@ -844,6 +843,62 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 
             // assert
             eventCacheMock.Verify(c => c.Clear("1", CancellationToken.None), Times.Never);
+        }
+
+        [Test]
+        public async Task ShouldRemovePreviousSuccessfulProviderJobSubmission()
+        {
+            var keys = new List<string> { "1" , "2"};
+            var successfulUkprn = 23456;
+            var requiredPaymentEvent1 = new CalculatedRequiredLevyAmount
+            {
+                EventId = Guid.NewGuid(),
+                AmountDue = 100,
+                SfaContributionPercentage = 11,
+                OnProgrammeEarningType = OnProgrammeEarningType.Completion,
+                Learner = new Learner(),
+                CollectionPeriod = new CollectionPeriod { AcademicYear = 1920, Period = 1},
+                Ukprn = successfulUkprn,
+                AccountId = 1,
+                JobId = 1,
+                IlrSubmissionDateTime = DateTime.Now.AddMinutes(-1)
+            };
+            var requiredPaymentEvent2 = new CalculatedRequiredLevyAmount
+            {
+                EventId = Guid.NewGuid(),
+                AmountDue = 100,
+                SfaContributionPercentage = 11,
+                OnProgrammeEarningType = OnProgrammeEarningType.Completion,
+                Learner = new Learner(),
+                CollectionPeriod = new CollectionPeriod { AcademicYear = 1920, Period = 1},
+                Ukprn = successfulUkprn,
+                AccountId = 1,
+                JobId = 2,
+                IlrSubmissionDateTime = DateTime.Now
+            };
+
+            generateSortedPaymentKeysMock
+                .Setup(x => x.GeyKeys())
+                .ReturnsAsync(keys)
+                .Verifiable();
+
+            eventCacheMock.Setup(c => c.TryGet("1", CancellationToken.None))
+                .ReturnsAsync(() => new ConditionalValue<CalculatedRequiredLevyAmount>(true, requiredPaymentEvent1))
+                .Verifiable();
+            eventCacheMock.Setup(c => c.TryGet("2", CancellationToken.None))
+                .ReturnsAsync(() => new ConditionalValue<CalculatedRequiredLevyAmount>(true, requiredPaymentEvent2))
+                .Verifiable();
+
+            eventCacheMock.Setup(c => c.Clear("1", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
+
+            // act
+            await service.RemovePreviousSubmissions(requiredPaymentEvent2.JobId, 
+                                                  requiredPaymentEvent2.CollectionPeriod.Period,
+                                                  requiredPaymentEvent2.CollectionPeriod.AcademicYear,
+                                                  requiredPaymentEvent2.IlrSubmissionDateTime,
+                                                  requiredPaymentEvent2.Ukprn);
+
+            // assert
         }
     }
 }

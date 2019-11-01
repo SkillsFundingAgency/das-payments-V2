@@ -212,7 +212,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 if (requiredPaymentEvent.CollectionPeriod.AcademicYear == academicYear &&
                     requiredPaymentEvent.CollectionPeriod.Period == collectionPeriod &&
                     requiredPaymentEvent.JobId != jobId &&
-                    requiredPaymentEvent.IlrSubmissionDateTime < submissionDate && 
+                    requiredPaymentEvent.IlrSubmissionDateTime < submissionDate &&
                     requiredPaymentEvent.Ukprn == ukprn)
                 {
                     await requiredPaymentsCache.Clear(key).ConfigureAwait(false);
