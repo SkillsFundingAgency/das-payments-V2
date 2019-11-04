@@ -48,7 +48,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             return requiredPaymentEvents.AsReadOnly();
         }
 
-        private IList<PeriodisedRequiredPaymentEvent> CreateRefundPayments(IdentifiedRemovedLearningAim identifiedRemovedLearningAim, List<Payment> historicPayments, int transactionType, ConditionalValue<PaymentHistoryEntity[]> cacheItem)
+        public IList<PeriodisedRequiredPaymentEvent> CreateRefundPayments(
+            IdentifiedRemovedLearningAim identifiedRemovedLearningAim, 
+            List<Payment> historicPayments, 
+            int transactionType,
+            ConditionalValue<PaymentHistoryEntity[]> cacheItem)
         {
             var refundPaymentsAndPeriods = refundRemovedLearningAimService.RefundLearningAim(historicPayments);
 
@@ -72,7 +76,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
                     // funding line type is not part of removed aim, we need to use value from historic payment
                     requiredPaymentEvent.LearningAim.FundingLineType = historicPayment.LearningAimFundingLineType;
-
+                  
                     logger.LogDebug("Finished mapping");
                     return requiredPaymentEvent;
                 }).ToList();
