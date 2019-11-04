@@ -77,6 +77,39 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             result.ApprenticeshipPriceEpisodes.Should().BeEmpty();
         }
 
-     
+        [Test]
+        public void WhenApprenticeshipIsNotEmployerALevyPayerButTransferReceiverReturnNoDataLockErrors()
+        {
+            var validation = new DataLockValidationModel
+            {
+                PriceEpisode = new PriceEpisode
+                {
+                    Identifier = PriceEpisodeIdentifier
+                },
+                EarningPeriod = period,
+                Apprenticeship = new ApprenticeshipModel
+                {
+                    Id = 1,
+                    IsLevyPayer = false,
+                    AccountId = 50,
+                    TransferSendingEmployerAccountId = 100,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            Id = 100
+                        }
+                    }
+                }
+            };
+
+            var validator = new ApprenticeshipLevyPayerValidator();
+            var result = validator.Validate(validation);
+            result.DataLockErrorCode.Should().BeNull();
+            result.ApprenticeshipPriceEpisodes.Should().HaveCount(1);
+            result.ApprenticeshipPriceEpisodes[0].Id.Should().Be(100);
+        }
+
+
     }
 }
