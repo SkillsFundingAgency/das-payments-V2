@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
+using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
 using Moq;
@@ -213,8 +214,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             refunds.Count(refund => refund.DeliveryPeriod == 4).Should().Be(3);
         }
 
-        [Test]
-        public void CreateRefundPayments_Maps_LearningStartDate()
+        [Test, AutoData]
+        public void CreateRefundPayments_Maps_LearningStartDate(DateTime expectedLearningStartDate)
         {
             mocker.Mock<IRefundRemovedLearningAimService>()
                 .Setup(x => x.RefundLearningAim(It.IsAny<List<Payment>>()))
@@ -230,8 +231,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 });
 
             var sut = mocker.Create<RefundRemovedLearningAimProcessor>();
-            var expectedLearningStartDate = new DateTime();
-
+            
             var historicPaymentEntity = CreatePaymentHistoryEntity(FundingSourceType.Levy, 1);
             historicPaymentEntity.LearningStartDate = expectedLearningStartDate;
 
