@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Autofac.Extras.Moq;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -22,13 +23,52 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         {
             mocker = AutoMock.GetStrict();
             refundService = mocker.Mock<IRefundService>();
-            sut = mocker.Create<NegativeEarningsService>();
+            sut = new NegativeEarningsService(new RefundService());
         }
 
         [TearDown]
         public void Teardown()
         {
             mocker.Dispose();
+        }
+
+        [Test, AutoData]
+        public void ShouldReturnCorrectApprenticeshipId(Payment paymentHistory)
+        {
+            paymentHistory.DeliveryPeriod = 1;
+            var testPaymentHistory = new List<Payment>{paymentHistory};
+
+            var actual = sut.ProcessNegativeEarning(-1, testPaymentHistory, 1, "");
+            actual.Should().BeEquivalentTo(new
+            {
+                ApprenticeshipId = paymentHistory.ApprenticeshipId,
+            });
+        }
+
+        [Test, AutoData]
+        public void ShouldReturnCorrectApprenticeshipPriceEpisodeId(Payment paymentHistory)
+        {
+            paymentHistory.DeliveryPeriod = 1;
+            var testPaymentHistory = new List<Payment> { paymentHistory };
+
+            var actual = sut.ProcessNegativeEarning(-1, testPaymentHistory, 1, "");
+            actual.Should().BeEquivalentTo(new
+            {
+                ApprenticeshipPriceEpisodeId = paymentHistory.ApprenticeshipPriceEpisodeId,
+            });
+        }
+
+        [Test, AutoData]
+        public void ShouldReturnCorrectApprenticeshipEmployerType(Payment paymentHistory)
+        {
+            paymentHistory.DeliveryPeriod = 1;
+            var testPaymentHistory = new List<Payment> { paymentHistory };
+
+            var actual = sut.ProcessNegativeEarning(-1, testPaymentHistory, 1, "");
+            actual.Should().BeEquivalentTo(new
+            {
+                ApprenticeshipEmployerType = paymentHistory.ApprenticeshipEmployerType,
+            });
         }
 
         [Test]
@@ -61,23 +101,26 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             };
             var period2History = new List<Payment>
             {
-                new Payment{Amount = 100, DeliveryPeriod = 2, TransactionType = 1, FundingSource = FundingSourceType.Levy},
+                new Payment{Amount = 100, DeliveryPeriod = 2, TransactionType = 1, FundingSource = FundingSourceType.CoInvestedSfa},
             };
             var period1History = new List<Payment>
             {
-                new Payment{Amount = 100, DeliveryPeriod = 1, TransactionType = 1, FundingSource = FundingSourceType.Levy},
+                new Payment{Amount = 100, DeliveryPeriod = 1, TransactionType = 1, FundingSource = FundingSourceType.Transfer},
             };
 
-            var payments = new List<RequiredPayment>();
-            var sequence = new MockSequence();
+            var actual = sut.ProcessNegativeEarning(-150, period1History.Union(period2History).Union(period3History).ToList(), 3, It.IsAny<string>());
 
-            refundService.InSequence(sequence).Setup(x => x.GetRefund(-200, period3History)).Returns(payments);
-            refundService.InSequence(sequence).Setup(x => x.GetRefund(-200, period2History)).Returns(payments);
-            refundService.InSequence(sequence).Setup(x => x.GetRefund(-200, period1History)).Returns(payments);
-
-            var actual = sut.ProcessNegativeEarning(-200, period1History.Union(period2History).Union(period3History).ToList(), 3, It.IsAny<string>());
-
-            actual.Sum(x => x.Amount).Should().Be(0);
+            actual.Sum(x => x.Amount).Should().Be(-150);
+            actual.Should().HaveCount(2);
+            actual.Should().BeEquivalentTo(new
+            {
+                EarningType = EarningType.Levy,
+                Amount = -100,
+            }, new
+            {
+                EarningType = EarningType.CoInvested,
+                Amount = -50,
+            });
         }
 
         [Test]

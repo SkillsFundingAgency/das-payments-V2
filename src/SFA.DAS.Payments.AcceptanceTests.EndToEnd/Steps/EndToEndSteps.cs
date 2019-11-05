@@ -4,9 +4,11 @@ using System.Threading.Tasks;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
+using System.Collections.Generic;
 using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
@@ -178,6 +180,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
+        [Given(@"the ""(.*)"" IsLevyPayer flag is (.*)")]
+        public async Task GivenTheIsLevyPayerFlagIsFalse(string employerIdentifier, bool isLevyFlag)
+        {
+            var employer = TestSession.GetEmployer(employerIdentifier);
+            employer.IsLevyPayer = isLevyFlag;
+            await SaveLevyAccount(employer).ConfigureAwait(false);
+        }
+
+        [Then(@"a DLOCK_11 is not flagged")]
+        public async Task ThenDLOCK_IsNotFlagged()
+        {
+            var matcher = new EarningFailedDataLockMatcher(TestSession.Provider, TestSession, CurrentCollectionPeriod, new List<DataLockError>());
+            await WaitForUnexpected(() => matcher.MatchUnexpectedEvents(), "DataLock Event check failure").ConfigureAwait(false);
+        }
+        
         [Given(@"the employer IsLevyPayer flag is (.*)")]
         public async Task GivenTheEmployerIsLevyPayerFlagIsFalse(bool isLevyFlag)
         {
@@ -280,7 +297,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenNoPaymentsWillBeCalculated()
         {
             var matcher = new RequiredPaymentEventMatcher(TestSession.Provider, CurrentCollectionPeriod);
-            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Required Payment event check failure").ConfigureAwait(false);
+            await WaitForUnexpected(() => matcher.MatchUnexpectedEvents(), "Required Payment event check failure").ConfigureAwait(false);
         }
 
         [Then(@"at month end no payments will be calculated for ""(.*)""")]
@@ -288,7 +305,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             var matcher = new RequiredPaymentEventMatcher(provider, CurrentCollectionPeriod);
-            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Required Payment event check failure").ConfigureAwait(false);
+            await WaitForUnexpected(() => matcher.MatchUnexpectedEvents(), "Required Payment event check failure").ConfigureAwait(false);
         }
 
         [Then(@"only the following provider payments will be generated")]
@@ -317,7 +334,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             var matcher = new ProviderPaymentEventMatcher(provider, CurrentCollectionPeriod, TestSession);
-            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Provider Payment event check failure");
+            await WaitForUnexpected(() => matcher.MatchUnexpectedEvents(), "Provider Payment event check failure");
         }
 
         [Then(@"Month end is triggered")]
@@ -342,7 +359,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenNoLearnerEarningsWillBeRecorded()
         {
             var matcher = new EarningEventMatcher(TestSession.Provider, CurrentPriceEpisodes, CurrentIlr, null, TestSession, CurrentCollectionPeriod, null);
-            await WaitForUnexpected(() => matcher.MatchNoPayments(), "Earning Event check failure").ConfigureAwait(false);
+            await WaitForUnexpected(() => matcher.MatchUnexpectedEvents(), "Earning Event check failure").ConfigureAwait(false);
         }
 
         [Then(@"at month end no provider payments will be generated")]

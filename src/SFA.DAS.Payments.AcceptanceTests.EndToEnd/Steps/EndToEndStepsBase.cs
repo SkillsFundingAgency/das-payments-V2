@@ -213,7 +213,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     var isNew = specApprenticeship.ApprenticeshipId == default(long);
 
                     var apprenticeship = ApprenticeshipHelper.CreateApprenticeshipModel(specApprenticeship, TestSession);
-                    apprenticeship.ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy;
                     apprenticeship.ApprenticeshipPriceEpisodes = group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
 
                     if (isNew)
@@ -331,6 +330,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             DateTime submissionTime, decimal? sfaContributionPercentage, decimal amount,
             FundingSourceType fundingSourceType, long ukprn, long? accountId, long? senderAccountId)
         {
+            var apprenticeshipId = Apprenticeships?.FirstOrDefault(x => x.LearnerId == learnerTraining.LearnerId)?.ApprenticeshipId;
+            var priceEpisodeId = CurrentPriceEpisodes
+                ?.FirstOrDefault(x => x.LearnerId == learnerTraining.LearnerId)
+                ?.PriceEpisodeId.ParseAsNullableLong();
+
             return new PaymentModel
             {
                 CollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(providerPayment.CollectionPeriod).Build(),
@@ -363,7 +367,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 CompletionStatus = 1,
                 CompletionAmount = 100M,
                 InstalmentAmount = 200M,
-                NumberOfInstalments = 12
+                NumberOfInstalments = 12,
+                ReportingAimFundingLineType = learnerTraining.FundingLineType,
+                //ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
+                ApprenticeshipId = apprenticeshipId,
+                ApprenticeshipPriceEpisodeId = priceEpisodeId,
             };
         }
 
@@ -984,7 +992,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     historicPayment.DeliveryPeriod == p.DeliveryPeriod))
                 .ToList();
 
-            DataContext.Payment.AddRange(previousPayments);
+            await DataContext.Payment.AddRangeAsync(previousPayments);
             await DataContext.SaveChangesAsync().ConfigureAwait(false);
         }
 

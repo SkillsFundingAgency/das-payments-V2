@@ -95,6 +95,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
                            default(DateTime?) :
                           apprenticeshipSpec.StopEffectiveFrom.ToDate(),
                 IsLevyPayer = employer.IsLevyPayer,
+                ApprenticeshipEmployerType = GetApprenticeshipEmployerType(apprenticeshipSpec.EmployerType)
             };
 
             return apprenticeshipModel;
@@ -138,5 +139,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
             await dataContext.ApprenticeshipDuplicate.AddAsync(apprenticeshipDuplicate).ConfigureAwait(false);
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
-    }
+
+        private static ApprenticeshipEmployerType GetApprenticeshipEmployerType(string employerType)
+        {
+            switch (employerType?.Trim().ToLower())
+            {
+                case "non levy":
+                    return ApprenticeshipEmployerType.NonLevy;
+                default:
+                    return ApprenticeshipEmployerType.Levy;
+            }
+
+        }
+
+        
+}
 }
