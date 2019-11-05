@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
@@ -23,16 +24,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         Task DeleteFiles(IEnumerable<string> fileList);
 
-        Task<CloudBlobStream> GetBlobStream(string fileName, string containerName);
+        Task<CloudBlobStream> GetResultsBlobStream(string fileName);
 
         Task ClearPaymentsData(IEnumerable<string> playlist);
+
+        Task<TestSettings> ReadSettingsFile();
     }
 
     public class SubmissionService : ISubmissionService
     {
+        private const string ResultsContainerName = "results";
         private const string ControlFileContainerName = "control-files";
-
-        private const string SettingFile = "settings.json";
 
         private static CloudBlobClient blobClient;
 
@@ -99,26 +101,35 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             await Task.WhenAll(jobList);
         }
 
-        public async Task<CloudBlobStream> GetBlobStream(string fileName, string containerName)
+        public async Task<CloudBlobStream> GetResultsBlobStream(string fileName)
         {
-            var cloudBlobContainer = blobClient.GetContainerReference(ContainerName(containerName));
+            var cloudBlobContainer = blobClient.GetContainerReference(ResultsContainerName);
+            await cloudBlobContainer.CreateIfNotExistsAsync();
             var cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(fileName);
+            
             return await cloudBlockBlob.OpenWriteAsync();
         }
 
         public async Task ClearPaymentsData(IEnumerable<string> playlist)
         {
-            foreach (var file in playlist)
+            if (configuration.ClearPaymentsData)
             {
-                var ukprn = UkprnFromFilename(file);
-                await paymentsContext.ClearPaymentsDataAsync(ukprn);
+                foreach (var file in playlist)
+                {
+                    var ukprn = UkprnFromFilename(file);
+                    await paymentsContext.ClearPaymentsDataAsync(ukprn);
+                }
+            }
+            else
+            {
+                await Task.CompletedTask;
             }
         }
 
-        private async Task<TestSettings> ReadSettingsFile()
+        public async Task<TestSettings> ReadSettingsFile()
         {
             var blobContainer = blobClient.GetContainerReference(ControlFileContainerName);
-            var blob = blobContainer.GetBlockBlobReference(SettingFile);
+            var blob = blobContainer.GetBlockBlobReference(configuration.SettingsFileName);
             var text = await blob.DownloadTextAsync();
             return serializationService.Deserialize<TestSettings>(text);
         }
@@ -163,7 +174,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             var result = new FileUploadJob();
             while (!completed)
             {
-                var status = await jobService.GetJob(ukprn, jobId);
+                FileUploadJob status;
+                try
+                {
+                    status = await jobService.GetJob(ukprn, jobId);
+                }
+                catch (HttpRequestException exception)
+                {
+                    var message =
+                        $"The Job Api has raised an internal server error when getting job for Ukprn: {ukprn} with JobId: {jobId} which needs to be followed up with DCT.";
+                    throw new HttpRequestException(message, exception);
+                }
+
                 if (status.Status == JobStatusType.Waiting ||
                     status.Status == JobStatusType.Completed)
                 {
@@ -179,7 +201,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                 }
                 else
                 {
-                    await Task.Delay(1000);
+                    await Task.Delay(configuration.DcJobEventCheckDelay);
                 }
             }
 

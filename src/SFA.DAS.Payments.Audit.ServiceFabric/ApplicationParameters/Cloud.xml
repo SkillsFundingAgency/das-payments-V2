@@ -18,6 +18,7 @@
     <Parameter Name="Audit_RequiredPayments_FailedMessagesQueue" Value="__Audit_RequiredPayments_FailedMessagesQueue__" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="PaymentsConnectionString" Value="__PaymentsConnectionString__" />
@@ -29,5 +30,6 @@
     <Parameter Name="Audit_DataLock_EndpointName" Value="__Audit_DataLock_EndpointName__" />
     <Parameter Name="Audit_DataLock_FailedMessagesQueue" Value="__Audit_DataLock_FailedMessagesQueue__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
+    <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
   </Parameters>
 </Application>

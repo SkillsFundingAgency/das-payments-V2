@@ -14,7 +14,7 @@
 	LearningAimStandardCode INT NOT NULL,
 	LearningAimFrameworkCode INT NOT NULL,
 	LearningAimPathwayCode INT NOT NULL,
-	LearningAimFundingLineType  NVARCHAR(100) NOT NULL,
+	LearningAimFundingLineType  NVARCHAR(100) NULL,
 	LearningStartDate DATETIME2 NULL,
 	AgreementId NVARCHAR(255) NULL, 
 	IlrSubmissionDateTime DATETIME2 NOT NULL,
@@ -24,3 +24,7 @@
 	EventTime DATETIMEOFFSET NOT NULL,
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_DataLockEvent__CreationDate DEFAULT (SYSDATETIMEOFFSET())
 )
+
+GO
+
+CREATE INDEX [IX_DataLockEvent_Submission] ON [Payments2].[DataLockEvent] ([Ukprn], [AcademicYear], [CollectionPeriod], [IlrSubmissionDateTime])

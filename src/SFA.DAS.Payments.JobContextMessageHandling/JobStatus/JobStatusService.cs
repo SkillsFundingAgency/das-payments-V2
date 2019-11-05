@@ -43,14 +43,15 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 var job = await dataContext.GetJobByDcJobId(jobId).ConfigureAwait(false);
-                if (job == null || job.Status == Monitoring.Jobs.Model.JobStatus.InProgress)
+                if (job != null && (job.DataLocksCompletionTime != null ||
+                                    job.Status != Monitoring.Jobs.Model.JobStatus.InProgress))
                 {
-                    logger.LogVerbose($"DC Job {jobId} is still in progress");
-                    await Task.Delay(config.TimeToPauseBetweenChecks);
-                    continue;
+                    logger.LogInfo($"DC Job {jobId} finished. Status: {job.Status:G}.  Finish time: {job.EndTime:G}");
+                    return true;
                 }
-                logger.LogInfo($"DC Job {jobId} finished. Status: {job.Status:G}.  Finish time: {job.EndTime:G}");
-                return true;
+                logger.LogVerbose($"DC Job {jobId} is still in progress");
+                await Task.Delay(config.TimeToPauseBetweenChecks);
+                continue;
             }
             logger.LogWarning($"Waiting {config.TimeToWaitForJobToComplete} but Job {jobId} still not finished.");
             return false;

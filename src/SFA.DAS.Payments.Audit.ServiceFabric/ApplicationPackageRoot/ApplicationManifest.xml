@@ -15,6 +15,7 @@
     <Parameter Name="Audit_EarningEventsService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
+    <Parameter Name="MonitoringServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="" />
@@ -30,6 +31,10 @@
     <Parameter Name="Audit_BatchFailureTimeoutInSeconds" DefaultValue="60" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="Placement_Constraints" DefaultValue="" />
+    <Parameter Name="DasNServiceBusLicenseKey" DefaultValue="" />
+    <Parameter Name="ImmediateMessageRetries" DefaultValue="1" />
+    <Parameter Name="DelayedMessageRetries" DefaultValue="3" />
+    <Parameter Name="DelayedMessageRetryDelay" DefaultValue="00:00:10" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -44,6 +49,7 @@
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[Audit_DataLock_EndpointName]" />
@@ -52,6 +58,10 @@
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
+            <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
+            <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
+            <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
+            <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -67,6 +77,7 @@
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[Audit_RequiredPayments_EndpointName]" />
@@ -75,6 +86,10 @@
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
+            <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
+            <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
+            <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
+            <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -90,6 +105,7 @@
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[Audit_FundingSource_EndpointName]" />
@@ -98,6 +114,10 @@
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
+            <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
+            <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
+            <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
+            <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -113,6 +133,7 @@
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[Audit_EarningEvents_EndpointName]" />
@@ -121,6 +142,10 @@
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
+            <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
+            <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
+            <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
+            <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
           </Section>
         </Settings>
       </ConfigOverride>

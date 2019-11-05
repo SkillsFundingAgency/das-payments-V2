@@ -1,3 +1,4 @@
+@basic_day
 Feature: Two levy learners but only enough levy to fund one learner- PV2-264
 
 Scenario Outline: Two levy learners, levy available but for only one learner, both finished on time PV2-264

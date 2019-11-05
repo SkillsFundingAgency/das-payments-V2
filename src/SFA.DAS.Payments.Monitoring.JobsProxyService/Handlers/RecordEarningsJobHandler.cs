@@ -23,16 +23,8 @@ namespace SFA.DAS.Payments.Monitoring.JobsProxyService.Handlers
 
         public async Task Handle(RecordEarningsJob message, IMessageHandlerContext context)
         {
-            try
-            {
-                logger.LogVerbose($"Getting actor for job: {message.JobId}");
-                var actorId = new ActorId(message.JobId.ToString());
-            }
-            catch (Exception ex)
-            {
-                logger.LogWarning($"Failed to record earnings job. ukprn: {message.Ukprn}, Job id: {message.JobId}, Period: {message.CollectionPeriod}-{message.CollectionYear}  Error: {ex.Message}",ex);
-                throw;
-            }
+            logger.LogVerbose($"Getting actor for job: {message.JobId}");
+            var actorId = new ActorId(message.JobId.ToString());
         }
     }
 }

@@ -8,6 +8,10 @@
     <Parameter Name="LogLevel" Value="" />
     <Parameter Name="ConsoleLogLevel" Value="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+    <Parameter Name="DasNServiceBusLicenseKey" Value="" />
+    <Parameter Name="ImmediateMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetryDelay" Value="" />
   </Section>
   <Section Name="RemovedLearnerServiceActorServiceReplicatorConfig">
     <Parameter Name="ReplicatorEndpoint" Value="RemovedLearnerServiceActorServiceReplicatorEndpoint" />

@@ -32,6 +32,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .Include<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>()
                 .ForMember(destinationMember => destinationMember.OnProgrammeEarnings, opt => opt.ResolveUsing<OnProgrammeEarningValueResolver>())
                 .ForMember(destinationMember => destinationMember.IncentiveEarnings, opt => opt.ResolveUsing<IncentiveEarningValueResolver>())
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.Aim.LearningDeliveryValues.LearnStartDate))
                 .Ignore(dest => dest.SfaContributionPercentage)
                 ;
 
@@ -60,7 +61,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             CreateMap<IntermediateLearningAim, LearningAim>()
                 .ForMember(dest => dest.PathwayCode, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.PwayCode))
                 .ForMember(dest => dest.FrameworkCode, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.FworkCode))
-                .ForMember(dest => dest.FundingLineType, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.LearnDelInitialFundLineType))
+                .Ignore(x => x.FundingLineType)
                 .ForMember(dest => dest.ProgrammeType, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.ProgType))
                 .ForMember(dest => dest.Reference, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.LearnAimRef))
                 .ForMember(dest => dest.StandardCode, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.StdCode))
@@ -97,6 +98,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(dest => dest.EmployerContribution, opt => opt.MapFrom(source => source.PriceEpisodeValues.PriceEpisodeCumulativePMRs))
                 .ForMember(dest => dest.CompletionHoldBackExemptionCode, opt => opt.MapFrom(source => source.PriceEpisodeValues.PriceEpisodeCompExemCode))
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(source => source.PriceEpisodeValues.EpisodeStartDate))
+                .ForMember(dest => dest.FundingLineType, opt => opt.MapFrom(source => source.PriceEpisodeValues.PriceEpisodeFundLineType))
                 ;
         }
     }

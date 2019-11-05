@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
@@ -10,7 +11,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 {
     public interface IPeriodEndJobClient
     {
-
         Task RecordPeriodEndStart(long jobId, short collectionYear, byte collectionPeriod,
             List<GeneratedMessage> generatedMessages);
         Task RecordPeriodEndRun(long jobId, short collectionYear, byte collectionPeriod,
@@ -23,12 +23,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
     {
         private readonly IMessageSession messageSession;
         private readonly IPaymentLogger logger;
+        private readonly IConfigurationHelper config;
 
-        public PeriodEndJobClient(IMonitoringMessageSessionFactory factory, IPaymentLogger logger)
+        public PeriodEndJobClient(IMonitoringMessageSessionFactory factory, IPaymentLogger logger, IConfigurationHelper config)
         {
 
             messageSession = factory?.Create() ?? throw new ArgumentNullException();
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.config = config ?? throw new ArgumentNullException(nameof(config));
         }
         protected async Task StartJob<T>(long jobId, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages) where T: RecordPeriodEndJob, new()
         {
@@ -40,7 +42,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 CollectionPeriod = collectionPeriod,
                 GeneratedMessages = generatedMessages
             };
-            await messageSession.Send(job).ConfigureAwait(false);
+            var partitionedEndpointName = config.GetMonitoringEndpointName(jobId);
+            logger.LogVerbose($"Endpoint for PeriodEndJobClient for Job Id {jobId} is `{partitionedEndpointName}`");
+            await messageSession.Send(partitionedEndpointName, job).ConfigureAwait(false);
             logger.LogInfo($"Sent request to record period end job. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
         }
 

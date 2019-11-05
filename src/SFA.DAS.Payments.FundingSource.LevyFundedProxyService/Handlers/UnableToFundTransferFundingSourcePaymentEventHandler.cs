@@ -33,21 +33,12 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
             if (!message.AccountId.HasValue)
                 throw new ArgumentException($"Employer AccountId cannot be null. Event Id: {message.EventId}");
 
-            try
-            {
-                logger.LogDebug($"Sending message to actor: {message.AccountId.Value}.");
-                var actorId = new ActorId(message.AccountId.Value);
-                var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
-                var fundingSourceEvents = await actor.UnableToFundTransfer(message).ConfigureAwait(false);
-                await Task.WhenAll(fundingSourceEvents.Select(context.Publish));
-                logger.LogInfo($"Successfully processed ProcessUnableToFundTransferFundingSourcePayment event for Actor Id {actorId}, Learner: {message.Learner?.ReferenceNumber}, Job: {message.JobId}, UKPRN: {message.Ukprn}");
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Error while handling ProcessUnableToFundTransferFundingSourcePayment event. Error: {ex.Message}, Event Id: {message.EventId}, Learner: {message.Learner?.ReferenceNumber}, Job: {message.JobId}, UKPRN: {message.Ukprn}", ex);
-                throw;
-            }
-
+            logger.LogDebug($"Sending message to actor: {message.AccountId.Value}.");
+            var actorId = new ActorId(message.AccountId.Value);
+            var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
+            var fundingSourceEvents = await actor.UnableToFundTransfer(message).ConfigureAwait(false);
+            await Task.WhenAll(fundingSourceEvents.Select(context.Publish));
+            logger.LogInfo($"Successfully processed ProcessUnableToFundTransferFundingSourcePayment event for Actor Id {actorId}, Learner: {message.Learner?.ReferenceNumber}, Job: {message.JobId}, UKPRN: {message.Ukprn}");
         }
     }
 }

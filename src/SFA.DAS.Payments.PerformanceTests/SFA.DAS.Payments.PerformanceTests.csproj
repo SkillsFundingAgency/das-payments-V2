@@ -45,6 +45,9 @@
     <Reference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model, Version=0.1.320.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.0.1.320\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.Logging.Interfaces, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Logging.Interfaces.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.Logging.Interfaces.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.Serialization.Interfaces, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Serialization.Interfaces.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.Serialization.Interfaces.dll</HintPath>
     </Reference>

@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using NServiceBus.Pipeline;
+﻿using NServiceBus.Pipeline;
 using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging
 {
@@ -20,22 +19,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging
         public override async Task Invoke(IIncomingLogicalMessageContext context, Func<Task> next)
         {
             var generatedMessages = new List<GeneratedMessage>();
-            var paymentMessage = context.Message.Instance as IJobMessage;
-            if (paymentMessage != null)
-            {
-                context.Extensions.Set(JobStatusBehaviourConstants.GeneratedMessagesKey, generatedMessages);
-            }
+            context.Extensions.Set(JobStatusBehaviourConstants.GeneratedMessagesKey, generatedMessages);
 
             await next().ConfigureAwait(false);
 
-            if (paymentMessage == null)
-                return;
-            var jobStatusClient = factory.Create();
-            if (paymentMessage is ILeafLevelMessage)
-                await jobStatusClient.ProcessedCompletedJobMessage(paymentMessage.JobId, context.GetMessageId(), paymentMessage.GetType().Name, !generatedMessages.Any()).ConfigureAwait(false);
-
-            if (generatedMessages.Any())
-                await jobStatusClient.RecordStartedProcessingJobMessages(paymentMessage.JobId,  generatedMessages).ConfigureAwait(false);
+            if(context.Message.Instance is IMonitoredMessage paymentMessage)
+            {
+                var jobStatusClient = factory.Create();
+                await jobStatusClient.ProcessedJobMessage(paymentMessage.JobId, context.GetMessageId(), context.GetMessageName(), generatedMessages);
+            }
         }
     }
 }

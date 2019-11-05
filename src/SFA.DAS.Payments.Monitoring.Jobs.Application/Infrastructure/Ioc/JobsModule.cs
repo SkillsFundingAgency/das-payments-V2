@@ -6,6 +6,8 @@ using NServiceBus;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core.Configuration;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
@@ -24,6 +26,21 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
                 })
                 .As<IJobsDataContext>()
                 .InstancePerLifetimeScope();
+            builder.Register((c, p) =>
+            {
+                var configHelper = c.Resolve<IConfigurationHelper>();
+                return new JobServiceConfiguration(
+                    TimeSpan.Parse( configHelper.GetSettingOrDefault("JobStatusCheck_Interval","00:00:10")),
+                    TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForJobToComplete","00:20:00"))
+                    );
+                
+            })
+                .As<IJobServiceConfiguration>()
+                .SingleInstance();
+            builder.RegisterType<JobStatusManager>()
+                .As<IJobStatusManager>()
+                .SingleInstance();
+
             builder.RegisterType<EarningsJobService>()
                 .As<IEarningsJobService>()
                 .InstancePerLifetimeScope();
@@ -36,20 +53,21 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.RegisterType<JobStatusService>()
                 .As<IJobStatusService>()
                 .InstancePerLifetimeScope();
-            builder.RegisterType<JobStorageService>()
-                .As<IJobStorageService>()
-                .InstancePerLifetimeScope();
+
             builder.Register((c, p) => new MemoryCache(new MemoryCacheOptions()))
                 .As<IMemoryCache>()
                 .SingleInstance();
             builder.RegisterType<SqlExceptionService>()
                 .As<ISqlExceptionService>()
                 .SingleInstance();
+
             builder.RegisterBuildCallback(c =>
             {
                 var config = c.Resolve<IApplicationConfiguration>();
                 EndpointConfigurationEvents.ConfiguringTransport += (object sender, TransportExtensions<AzureServiceBusTransport> e) =>
                 {
+                    //e.Transactions(TransportTransactionMode.None);
+                    //e.PrefetchCount();
                     e.Routing().RouteToEndpoint(typeof(RecordEarningsJob).Assembly, config.EndpointName);
                 };
             });

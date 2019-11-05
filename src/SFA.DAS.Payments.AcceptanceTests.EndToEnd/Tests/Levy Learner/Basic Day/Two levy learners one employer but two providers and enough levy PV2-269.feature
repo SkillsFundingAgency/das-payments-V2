@@ -1,3 +1,4 @@
+@basic_day
 Feature: Two levy learners, one employer but two providers and enough levy available both finished on time PV2-269
 	As a provider,
 	I want 2 learners, 1 employer, 2 providers who have enough levy - to be paid the correct amount

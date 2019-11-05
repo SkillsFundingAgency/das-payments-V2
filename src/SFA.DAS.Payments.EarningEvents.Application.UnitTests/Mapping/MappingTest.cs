@@ -26,6 +26,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [OneTimeSetUp]
         public void InitialiseMapper()
         {
+            Mapper.Reset();
             Mapper.Initialize(cfg => { cfg.AddProfile<EarningsEventProfile>(); });
             Mapper.AssertConfigurationIsValid();
         }
@@ -50,6 +51,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                             ProgType = 300,
                             PwayCode = 400,
                             LearnDelInitialFundLineType = "Funding Line Type",
+                            LearnStartDate = DateTime.Today.AddDays(-5)
                         }
                     },
                     new LearningDelivery
@@ -138,7 +140,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                             PriceEpisodeCompleted = true,
                             PriceEpisodeCumulativePMRs = 13,
                             PriceEpisodeCompExemCode = 14,
-                            PriceEpisodeTotalTNPPrice = 30000
+                            PriceEpisodeTotalTNPPrice = 30000,
+                            PriceEpisodeFundLineType = "19+ Apprenticeship Levy Contract (procured)"
                         },
                         PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
                         {
@@ -294,6 +297,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             earningEvent.PriceEpisodes.First().EmployerContribution.Should().Be(13);
             earningEvent.PriceEpisodes.First().CompletionHoldBackExemptionCode.Should().Be(14);
             earningEvent.PriceEpisodes.First().AgreedPrice.Should().Be(30000);
+            earningEvent.PriceEpisodes.First().FundingLineType.Should().Be(fm36Learner.PriceEpisodes[0].PriceEpisodeValues.PriceEpisodeFundLineType);
         }
 
         [Test]
@@ -406,6 +410,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.Should().NotBeNull();
             earningEvent.LearningAim.Reference.Should().Be("ZPROG001");
+        }
+
+        [Test]
+        public void Maps_LearnStartDate()
+        {
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
+            earningEvent.Should().NotBeNull();
+            earningEvent.StartDate.Should().Be(DateTime.Today.AddDays(-5));
         }
 
         [Test]
