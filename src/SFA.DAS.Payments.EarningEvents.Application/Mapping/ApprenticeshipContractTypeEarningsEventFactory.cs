@@ -1,6 +1,6 @@
-﻿using System;
-using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
+﻿using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
@@ -11,18 +11,19 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         public const string ContractForServicesWithEmployer = "Contract for services with the employer";
         public const string ContractForServicesWithSfa = "Contract for services with the ESFA";
 
-        public ApprenticeshipContractTypeEarningsEvent Create(string contractType)
+        public ApprenticeshipContractTypeEarningsEvent Create(string contractTypeAsString)
         {
+
+            var contractType = MappingExtensions.GetContractType(contractTypeAsString);
+
             switch (contractType)
             {
-                case Act1:
-                case ContractForServicesWithEmployer:
+                case ContractType.Act1:
                     return new ApprenticeshipContractType1EarningEvent();
-                case Act2:
-                case ContractForServicesWithSfa:
+                case ContractType.Act2:
                     return new ApprenticeshipContractType2EarningEvent();
                 default:
-                    throw new InvalidOperationException($"Unknown contract type: '{contractType}'.");
+                    return new ApprenticeshipContractTypeNoneEarningEvent();
             }
         }
     }

@@ -207,7 +207,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     var isNew = specApprenticeship.ApprenticeshipId == default(long);
 
                     var apprenticeship = ApprenticeshipHelper.CreateApprenticeshipModel(specApprenticeship, TestSession);
-                    apprenticeship.ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy;
                     apprenticeship.ApprenticeshipPriceEpisodes = group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
 
                     if (isNew)
@@ -325,6 +324,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             DateTime submissionTime, decimal? sfaContributionPercentage, decimal amount,
             FundingSourceType fundingSourceType, long ukprn, long? accountId, long? senderAccountId)
         {
+            var apprenticeshipId = Apprenticeships?.FirstOrDefault(x => x.LearnerId == learnerTraining.LearnerId)?.ApprenticeshipId;
+            var priceEpisodeId = CurrentPriceEpisodes
+                ?.FirstOrDefault(x => x.LearnerId == learnerTraining.LearnerId)
+                ?.PriceEpisodeId.ParseAsNullableLong();
+
             return new PaymentModel
             {
                 CollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(providerPayment.CollectionPeriod).Build(),
@@ -357,7 +361,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 CompletionAmount = 100M,
                 InstalmentAmount = 200M,
                 NumberOfInstalments = 12,
-                ReportingAimFundingLineType = learnerTraining.FundingLineType
+                ReportingAimFundingLineType = learnerTraining.FundingLineType,
+                //ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
+                ApprenticeshipId = apprenticeshipId,
+                ApprenticeshipPriceEpisodeId = priceEpisodeId,
             };
         }
 
@@ -653,11 +660,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return aimPeriodisedValues;
         }
 
-        private static List<LearningDeliveryPeriodisedTextValues> SetPeriodisedTextValues(Aim aim,
-            IList<Earning> earnings)
+        private static List<LearningDeliveryPeriodisedTextValues> SetPeriodisedTextValues(Aim aim, IList<Earning> earnings)
         {
             var aimPeriodisedTextValues = new List<LearningDeliveryPeriodisedTextValues>();
             const string learningDeliveryContractType = "LearnDelContType";
+            const string learningDeliveryFundingLineType = "FundLineType";
 
             foreach (var earning in earnings.Where(e => !e.AimSequenceNumber.HasValue ||
                                                         e.AimSequenceNumber == aim.AimSequenceNumber))
@@ -667,25 +674,32 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 {
                     if (MathsAndEnglishTransactionTypes().Contains(earningValue.Key))
                     {
-                        var contractType = GetContractTypeDescription(earning.ContractType);
-
-                        var contractTypePeriodisedValues =
-                            aimPeriodisedTextValues.SingleOrDefault(
-                                v => v.AttributeName == learningDeliveryContractType);
-
-                        if (contractTypePeriodisedValues == null)
-                        {
-                            contractTypePeriodisedValues = new LearningDeliveryPeriodisedTextValues
-                                {AttributeName = learningDeliveryContractType};
-                            aimPeriodisedTextValues.Add(contractTypePeriodisedValues);
-                        }
-
-                        SetPeriodTextValue(period, contractTypePeriodisedValues, contractType);
+                        AddPeriodisedTextAttributes(aimPeriodisedTextValues, learningDeliveryContractType, period, GetContractTypeDescription(earning.ContractType));
+                        AddPeriodisedTextAttributes(aimPeriodisedTextValues, learningDeliveryFundingLineType, period, aim.FundingLineType);
                     }
                 }
             }
 
             return aimPeriodisedTextValues;
+        }
+
+        private static void AddPeriodisedTextAttributes(List<LearningDeliveryPeriodisedTextValues> aimPeriodisedTextValues,
+            string attributeName,
+            byte period, 
+            string valueToSet)
+        {
+            var periodisedTextValues = aimPeriodisedTextValues.SingleOrDefault(v => v.AttributeName == attributeName);
+
+            if (periodisedTextValues == null)
+            {
+                periodisedTextValues = new LearningDeliveryPeriodisedTextValues
+                {
+                    AttributeName = attributeName
+                };
+                aimPeriodisedTextValues.Add(periodisedTextValues);
+            }
+
+            SetPeriodTextValue(period, periodisedTextValues, valueToSet);
         }
 
         private static string CalculatePriceEpisodeIdentifier(Price priceEpisode, string priceEpisodePrefix)
@@ -971,7 +985,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     historicPayment.DeliveryPeriod == p.DeliveryPeriod))
                 .ToList();
 
-            DataContext.Payment.AddRange(previousPayments);
+            await DataContext.Payment.AddRangeAsync(previousPayments);
             await DataContext.SaveChangesAsync().ConfigureAwait(false);
         }
 

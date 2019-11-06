@@ -4,7 +4,6 @@ using System.Text;
 using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;

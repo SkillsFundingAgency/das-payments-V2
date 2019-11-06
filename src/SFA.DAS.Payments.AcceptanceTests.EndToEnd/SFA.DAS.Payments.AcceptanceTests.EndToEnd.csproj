@@ -1566,6 +1566,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-349 - Levy learner, 19-24, employed with a small employer at start is funded through levy.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Transfers\PV2-1583 - 1 Non-Levy learner, paid for via transfer, on ACT1 contract paid through DAS.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1583 - 1 Non-Levy learner, paid for via transfer, on ACT1 contract paid through DAS.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Transfers\PV2-730 - Single Levy learner paid via transfer sender installment changes after price change.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2553,6 +2558,10 @@
     <None Include="Tests\Small Employer\PV2-349 - Levy learner, 19-24, employed with a small employer at start is funded through levy.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-349 - Levy learner, 19-24, employed with a small employer at start is funded through levy.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Transfers\PV2-1583 - 1 Non-Levy learner, paid for via transfer, on ACT1 contract paid through DAS.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1583 - 1 Non-Levy learner, paid for via transfer, on ACT1 contract paid through DAS.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Submission Events\PV2-1395 - Successful submission removes previous submission payments.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

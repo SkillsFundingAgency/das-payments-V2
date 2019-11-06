@@ -156,7 +156,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             {
                 using (var operation = telemetry.StartOperation())
                 {
-                    await fundingSourceService.RemovePreviousSubmissions(message.JobId, message.CollectionPeriod, message.AcademicYear, message.IlrSubmissionDateTime);
+                    await fundingSourceService.RemovePreviousSubmissions(message.JobId, message.CollectionPeriod, message.AcademicYear, message.IlrSubmissionDateTime, message.Ukprn);
                     telemetry.StopOperation(operation);
                 }
             }
@@ -173,7 +173,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             {
                 using (var operation = telemetry.StartOperation())
                 {
-                    await fundingSourceService.RemoveCurrentSubmission(message.JobId, message.CollectionPeriod, message.AcademicYear, message.IlrSubmissionDateTime);
+                    await fundingSourceService.RemoveCurrentSubmission(message.JobId, message.CollectionPeriod, message.AcademicYear, message.IlrSubmissionDateTime, message.Ukprn);
                     telemetry.StopOperation(operation);
                 }
             }
