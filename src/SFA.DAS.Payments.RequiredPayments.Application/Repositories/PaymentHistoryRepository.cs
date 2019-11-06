@@ -61,6 +61,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     ApprenticeshipId = payment.ApprenticeshipId,
                     ApprenticeshipPriceEpisodeId = payment.ApprenticeshipPriceEpisodeId,
                     ApprenticeshipEmployerType = payment.ApprenticeshipEmployerType,
+                    LearningStartDate = payment.LearningStartDate,
+                    ReportingAimFundingLineType = payment.ReportingAimFundingLineType,
                 })
             .ToListAsync(cancellationToken);
         }
@@ -76,7 +78,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                                   apprenticeshipKey.ProgrammeType == payment.LearningAimProgrammeType &&
                                   apprenticeshipKey.StandardCode == payment.LearningAimStandardCode &&
                                   payment.FundingSource == FundingSourceType.CoInvestedEmployer &&
-                                  apprenticeshipKey.ContractType == payment.ContractType)
+                                  apprenticeshipKey.ContractType == payment.ContractType 
+                                  )
                 .Select(payment => payment.Amount)
                 .DefaultIfEmpty(0)
                 .SumAsync(cancellationToken);
