@@ -20,8 +20,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         {
             var actualPayments = GetActualEvents();
 
-            actualPayments = actualPayments.Where(x => x is FunctionalSkillEarningsEvent functionalSkillEarningsEvent &&
-                                                       functionalSkillEarningsEvent.Earnings.Any() ||
+            actualPayments = actualPayments.Where(x => x is FunctionalSkillEarningsEvent  &&
+                                                       (x as FunctionalSkillEarningsEvent).Earnings.Any() ||
                                                        (x as FunctionalSkillEarningsEvent) == null)
                 .ToList();
 
