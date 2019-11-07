@@ -370,7 +370,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             ToDate = pp.EffectiveTo?.ToNullableDate(),
                             Cost = pp.AgreedPrice
                         }).ToArray(),
-                    
+
                 };
                 Console.WriteLine($"Sending ApprenticeshipUpdatedApprovedEvent message: {createdMessage.ToJson()}");
                 DasMessageSession.Send(createdMessage).ConfigureAwait(false);
@@ -435,8 +435,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 if (!string.IsNullOrWhiteSpace(changedApprenticeshipSpec.ResumedOnDate))
                     changedApprenticeship.ResumedOnDate = changedApprenticeshipSpec.ResumedOnDate;
 
-                if(!string.IsNullOrWhiteSpace(changedApprenticeshipSpec.StoppedOnDate))
-                   changedApprenticeship.PriceEpisodes.ForEach(pe=> pe.EffectiveTo = changedApprenticeshipSpec.StoppedOnDate);
+                if (!string.IsNullOrWhiteSpace(changedApprenticeshipSpec.StoppedOnDate))
+                    changedApprenticeship.PriceEpisodes.ForEach(pe => pe.EffectiveTo = changedApprenticeshipSpec.StoppedOnDate);
 
             }
         }
@@ -535,7 +535,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [When(@"the Approvals service notifies the Payments service that the apprenticeships has been resumed")]
-        public void WhenTheApprovalsServiceNotifiesThePaymentsServiceThatTheApprenticeshipsHasBeenResumed()
+        public async Task WhenTheApprovalsServiceNotifiesThePaymentsServiceThatTheApprenticeshipsHasBeenResumed()
         {
             foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
             {
@@ -545,7 +545,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ApprenticeshipId = approvalsApprenticeship.Id,
                 };
                 Console.WriteLine($"Sending ApprenticeshipPausedEvent message: {createdMessage.ToJson()}");
-                DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+                await DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
 

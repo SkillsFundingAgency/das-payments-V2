@@ -56,7 +56,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
             try
             {
-              
                 var result = new List<PeriodisedRequiredPaymentEvent>();
 
                 var cachedPayments = await paymentHistoryCache.TryGet(CacheKeys.PaymentHistoryKey, cancellationToken);
@@ -84,8 +83,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     List<RequiredPayment> requiredPayments;
                     var holdBackCompletionPayments = false;
 
-                    if (period.Amount < 0 &&
-                        NegativeEarningWillResultInARefund(period, payments))
+                    if (NegativeEarningWillResultInARefund(period, payments))
                     {
                         requiredPayments = negativeEarningService
                             .ProcessNegativeEarning(period.Amount, academicYearPayments, period.Period, period.PriceEpisodeIdentifier);
@@ -124,6 +122,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                         mapper.Map(period, requiredPaymentEvent);
                         mapper.Map(earningEvent, requiredPaymentEvent);
                         mapper.Map(requiredPayment, requiredPaymentEvent);
+                        AddRefundCommitmentDetails(requiredPayment, requiredPaymentEvent);
 
                         var priceEpisodeIdentifier = requiredPaymentEvent.PriceEpisodeIdentifier;
 
@@ -134,8 +133,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                                 : earningEvent.PriceEpisodes?.SingleOrDefault(x => x.Identifier == priceEpisodeIdentifier);
 
                             mapper.Map(priceEpisode, requiredPaymentEvent);
+
+                            if (requiredPaymentEvent.LearningAim != null) mapper.Map(priceEpisode, requiredPaymentEvent.LearningAim);
                         }
-                        //if (requiredPaymentEvent.PlannedEndDate)
 
                         result.Add(requiredPaymentEvent);
                     }
@@ -150,9 +150,19 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             }
         }
 
+        private static void AddRefundCommitmentDetails(RequiredPayment requiredPayment, PeriodisedRequiredPaymentEvent requiredPaymentEvent)
+        {
+            if (requiredPayment.Amount < 0)
+            { 
+                requiredPaymentEvent.ApprenticeshipId = requiredPayment.ApprenticeshipId;
+                requiredPaymentEvent.ApprenticeshipPriceEpisodeId = requiredPayment.ApprenticeshipPriceEpisodeId;
+                requiredPaymentEvent.ApprenticeshipEmployerType = requiredPayment.ApprenticeshipEmployerType;
+            }
+        }
+
         private static bool NegativeEarningWillResultInARefund(EarningPeriod period, List<Payment> payments)
         {
-            return period.Amount < payments.Sum(x => x.Amount);
+            return period.Amount < 0 && period.Amount < payments.Sum(x => x.Amount);
         }
 
         private async Task<bool> HoldBackCompletionPayments(TEarningEvent earningEvent, Earning earning, int type, CancellationToken cancellationToken)

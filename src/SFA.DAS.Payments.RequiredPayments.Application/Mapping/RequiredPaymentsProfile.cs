@@ -315,6 +315,17 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.AgreedOnDate)
                 ;
 
+            CreateMap<PriceEpisode, LearningAim>()
+                .ForMember(payment => payment.FundingLineType, opt => opt.MapFrom(episode => episode.FundingLineType))
+                .Ignore(x => x.Reference)
+                .Ignore(x => x.ProgrammeType)
+                .Ignore(x => x.StandardCode)
+                .Ignore(x => x.FrameworkCode)
+                .Ignore(x => x.PathwayCode)
+                .Ignore(x => x.SequenceNumber)
+                .Ignore(x => x.StartDate);
+
+
             CreateMap<PriceEpisode, PeriodisedPaymentEvent>()
                 .ForMember(payment => payment.StartDate, opt => opt.MapFrom(episode => episode.EffectiveTotalNegotiatedPriceStartDate))
                 .ForMember(payment => payment.PlannedEndDate, opt => opt.MapFrom(episode => episode.PlannedEndDate))

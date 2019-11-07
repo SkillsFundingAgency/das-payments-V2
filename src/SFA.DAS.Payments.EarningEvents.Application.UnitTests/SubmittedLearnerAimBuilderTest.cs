@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using Castle.Components.DictionaryAdapter;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
 using NUnit.Framework;
@@ -47,7 +48,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                         }},
                         new LearningDelivery
                         {
-                            AimSeqNumber = 1,
+                            AimSeqNumber = 2,
                             LearningDeliveryValues = new LearningDeliveryValues
                             {
                                 LearnAimRef = "M&E",
@@ -64,7 +65,26 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                                     Period1 = 1,
                                     Period2 = 2
                                 }
-                            }
+                            },
+                            LearningDeliveryPeriodisedTextValues = new List<LearningDeliveryPeriodisedTextValues>
+                            {
+                                new LearningDeliveryPeriodisedTextValues
+                                {
+                                    AttributeName = "LearnDelContType",
+                                    Period1 = "Levy Contract",
+                                    Period2 = "Levy Contract",
+                                    Period3 = "Levy Contract",
+                                    Period4 = "Levy Contract",
+                                    Period5 = "Levy Contract",
+                                    Period6 = "Levy Contract",
+                                    Period7 = "Levy Contract",
+                                    Period8 = "Levy Contract",
+                                    Period9 = "Levy Contract",
+                                    Period10 = "Levy Contract",
+                                    Period11 = "Levy Contract",
+                                    Period12 = "Levy Contract"
+                                }
+                            },
                         }
                     },
                     PriceEpisodes = new List<PriceEpisode>
@@ -91,7 +111,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
 
                 }
             };
-
+             
             var builder = new SubmittedLearnerAimBuilder(mapper);
             var submittedAims = builder.Build(processLearnerCommand);
             submittedAims.Should().HaveCount(2);

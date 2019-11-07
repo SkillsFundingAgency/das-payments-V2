@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                     .Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learningDelivery.AimSeqNumber)
                     .ToList();
 
-                if (!priceEpisodes.Any())
+                if (!learningDelivery.IsMainAim())
                 {
                     // Maths & English
                     var mathsAndEnglishAims = GetMathsAndEnglishAim(learnerSubmission, learningDelivery, mainAim.HasValue);
@@ -57,7 +57,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 new IntermediateLearningAim(learnerSubmission, new List<PriceEpisode>(), learningDelivery);
 
             var contractTypes =
-                intermediateLearningAim.Learner.LearningDeliveries.GetContractTypesForLearningDeliveries();
+                intermediateLearningAim.Learner
+                    .LearningDeliveries
+                    .Select(x => x.GetContractTypesForLearningDeliveries())
+                    .SelectMany(o => o);
 
             var distinctContractTypes = contractTypes.Distinct().ToList();
 

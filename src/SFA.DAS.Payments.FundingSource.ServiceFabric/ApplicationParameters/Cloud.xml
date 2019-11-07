@@ -33,8 +33,8 @@
     <Parameter Name="LevyAccountBalanceService_BatchSize" Value="__LevyAccountBalanceService_BatchSize__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
-    <Parameter Name="ImmediateMessageRetries" Value="__ImmediateMessageRetries__"/>
-    <Parameter Name="DelayedMessageRetries" Value="__DelayedMessageRetries__"/>
-    <Parameter Name="DelayedMessageRetryDelay" Value="__DelayedMessageRetryDelay__"/>
+    <Parameter Name="ImmediateMessageRetries" Value="__ImmediateMessageRetries__" />
+    <Parameter Name="DelayedMessageRetries" Value="__DelayedMessageRetries__" />
+    <Parameter Name="DelayedMessageRetryDelay" Value="__DelayedMessageRetryDelay__" />
   </Parameters>
 </Application>
