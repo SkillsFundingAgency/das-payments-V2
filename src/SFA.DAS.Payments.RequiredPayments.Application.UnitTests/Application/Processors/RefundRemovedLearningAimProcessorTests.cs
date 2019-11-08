@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Autofac.Extras.Moq;
 using AutoMapper;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Application.Repositories;
@@ -18,6 +19,7 @@ using SFA.DAS.Payments.RequiredPayments.Application.Processors;
 using SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
+using SFA.DAS.Payments.RequiredPayments.Domain.Services;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
@@ -68,7 +70,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             };
         }
 
-        private PaymentHistoryEntity CreatePaymentHistoryEntity(FundingSourceType fundingSource, byte deliveryPeriod)
+        private PaymentHistoryEntity CreatePaymentHistoryEntity(FundingSourceType fundingSource, byte collectionPeriod, byte deliveryPeriod)
         {
             return new PaymentHistoryEntity
             {
@@ -78,7 +80,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 CollectionPeriod = new CollectionPeriod
                 {
                     AcademicYear = 1819,
-                    Period = 1
+                    Period = collectionPeriod
                 },
                 LearnAimReference = "aim-ref-123",
                 LearnerReferenceNumber = "learning-ref-456",
@@ -101,7 +103,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         [Test]
         public async Task Refunds_Required_Levy_Payments()
         {
-            var historicPayment = CreatePaymentHistoryEntity(FundingSourceType.FullyFundedSfa, 1);
+            var historicPayment = CreatePaymentHistoryEntity(FundingSourceType.FullyFundedSfa, 1, 1);
             history.Add(historicPayment);
             mocker.Mock<IDataCache<PaymentHistoryEntity[]>>()
                 .Setup(x => x.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -134,7 +136,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         [Test]
         public async Task Refunds_Required_CoInvested_Payments()
         {
-            var historicPayment = CreatePaymentHistoryEntity(FundingSourceType.CoInvestedSfa, 2);
+            var historicPayment = CreatePaymentHistoryEntity(FundingSourceType.CoInvestedSfa,1, 2);
             history.Add(historicPayment);
             mocker.Mock<IDataCache<PaymentHistoryEntity[]>>()
                 .Setup(x => x.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -167,7 +169,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         [Test]
         public async Task Refunds_Required_Incentive_Payments()
         {
-            var historicPayment = CreatePaymentHistoryEntity(FundingSourceType.FullyFundedSfa, 3);
+            var historicPayment = CreatePaymentHistoryEntity(FundingSourceType.FullyFundedSfa, 1, 3);
             history.Add(historicPayment);
             mocker.Mock<IDataCache<PaymentHistoryEntity[]>>()
                 .Setup(x => x.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -200,11 +202,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         [Test]
         public async Task Refunds_All_Required_Payments()
         {
-            var historicLevyPayment = CreatePaymentHistoryEntity(FundingSourceType.Levy, 4);
+            var historicLevyPayment = CreatePaymentHistoryEntity(FundingSourceType.Levy, 1, 4);
             historicLevyPayment.Amount = 100;
-            var historicCoInvestedPayment = CreatePaymentHistoryEntity(FundingSourceType.CoInvestedSfa, 4);
+            var historicCoInvestedPayment = CreatePaymentHistoryEntity(FundingSourceType.CoInvestedSfa, 1, 4);
             historicCoInvestedPayment.Amount = 50;
-            var historicIncentivePayment = CreatePaymentHistoryEntity(FundingSourceType.FullyFundedSfa, 4);
+            var historicIncentivePayment = CreatePaymentHistoryEntity(FundingSourceType.FullyFundedSfa, 1, 4);
             historicIncentivePayment.Amount = 25;
             history.Add(historicLevyPayment);
             history.Add(historicCoInvestedPayment);
@@ -249,6 +251,50 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             refunds.Count(refund => refund.AmountDue == historicCoInvestedPayment.Amount * -1 && refund is CalculatedRequiredCoInvestedAmount).Should().Be(1);
             refunds.Count(refund => refund.AmountDue == historicIncentivePayment.Amount * -1 && refund is CalculatedRequiredIncentiveAmount).Should().Be(1);
             refunds.Count(refund => refund.DeliveryPeriod == 4).Should().Be(3);
+        }
+
+        [Test]
+        public async Task Clawback_ME_OnProgramme_And_Balancing_Payments()
+        {
+            // arrange
+            mocker.Provide<IRefundService, RefundService>();
+            mocker.Provide<IPaymentDueProcessor, PaymentDueProcessor>();
+            mocker.Provide<IPeriodisedRequiredPaymentEventFactory, PeriodisedRequiredPaymentEventFactory>();
+            mocker.Provide<IRefundRemovedLearningAimService, RefundRemovedLearningAimService>();
+
+            var historicOnProgrammeMEPayment = CreatePaymentHistoryEntity(FundingSourceType.FullyFundedSfa, 2, 1);
+            historicOnProgrammeMEPayment.Amount = 39.25m;
+            historicOnProgrammeMEPayment.TransactionType = (int)TransactionType.OnProgrammeMathsAndEnglish;
+            historicOnProgrammeMEPayment.PriceEpisodeIdentifier = null;
+            history.Add(historicOnProgrammeMEPayment);
+
+            var historicBalancingMEPayment = CreatePaymentHistoryEntity(FundingSourceType.FullyFundedSfa, 2, 2);
+            historicBalancingMEPayment.Amount = 39.25m;
+            historicBalancingMEPayment.TransactionType = (int) TransactionType.BalancingMathsAndEnglish;
+            historicBalancingMEPayment.PriceEpisodeIdentifier = null;
+            history.Add(historicBalancingMEPayment);
+
+            var mockPaymentHistoryCache = mocker.Mock<IDataCache<PaymentHistoryEntity[]>>();
+            mockPaymentHistoryCache.Setup(x => x.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                                   .ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, history.ToArray()));
+            identifiedLearner.CollectionPeriod.Period = 3;
+
+
+            // act
+            var processor = mocker.Create<RefundRemovedLearningAimProcessor>();
+            var refunds = await processor
+                                .RefundLearningAim(identifiedLearner,
+                                                   mockPaymentHistoryCache.Object,
+                                                   CancellationToken.None)
+                                .ConfigureAwait(false);
+
+            // assert
+            using (new AssertionScope())
+            {
+                refunds.Count.Should().Be(2);
+                refunds.Cast<CalculatedRequiredIncentiveAmount>().Count(x => x.Type == IncentivePaymentType.BalancingMathsAndEnglish).Should().Be(1);
+                refunds.Cast<CalculatedRequiredIncentiveAmount>().Count(x => x.Type == IncentivePaymentType.OnProgrammeMathsAndEnglish).Should().Be(1);
+            }
         }
     }
 }
