@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             var failuresToDelete = new List<long>();
             var failuresToRecord = new List<DataLockFailureEntity>();
 
-            var newFailuresGroupedByTypeAndPeriod = GetFailuresGroupedByTypeAndPeriod(dataLockEvent);
+            var newFailuresGroupedByTypeAndPeriod = GetDataLocksGroupedByTypeAndPeriod(dataLockEvent);
 
             using (var scope = TransactionScopeFactory.CreateSerialisableTransaction())
             {
@@ -130,8 +130,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         public async Task<List<DataLockStatusChanged>> ProcessPayableEarning(DataLockEvent payableEarningEvent)
         {
-            using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew,
-                TransactionScopeAsyncFlowOption.Enabled))
+            using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
             {
                 var result = new List<DataLockStatusChanged>();
                 var changedToPassed = new DataLockStatusChangedToPassed
@@ -153,8 +152,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                 foreach (var oldFailure in oldFailures)
                 {
-                    if (newPassesGroupedByTypeAndPeriod.TryGetValue(
-                        (oldFailure.TransactionType, oldFailure.DeliveryPeriod), out var newPass))
+                    if (newPassesGroupedByTypeAndPeriod.TryGetValue((oldFailure.TransactionType, oldFailure.DeliveryPeriod), out var newPass))
                     {
                         AddTypeAndPeriodToEvent(changedToPassed, oldFailure.TransactionType, newPass, payableEarningEvent);
                         failuresToDelete.Add(oldFailure.Id);
@@ -162,15 +160,40 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 }
 
                 if (changedToPassed.TransactionTypesAndPeriods.Count > 0)
+                {
+                    
                     result.Add(changedToPassed);
+                }
+                else
+                {
+                    var newDataLocksGroupedByTypeAndPeriod = GetDataLocksGroupedByTypeAndPeriod(payableEarningEvent);
+                    var fullListOfKeys = newDataLocksGroupedByTypeAndPeriod.Keys
+                        .Concat(oldFailures.Select(f => (f.TransactionType, f.DeliveryPeriod)))
+                        .Distinct()
+                        .ToList();
 
+                    foreach (var key in fullListOfKeys)
+                    {
+                        var transactionType = key.Item1;
+                        var period = key.Item2;
+
+                        if (newPassesGroupedByTypeAndPeriod.TryGetValue((transactionType, period), out var newPass))
+                        {
+                            AddTypeAndPeriodToEvent(changedToPassed, transactionType, newPass, payableEarningEvent);
+                            result.Add(changedToPassed);
+                        }
+                    }
+                }
+               
                 foreach (var dataLockStatusChanged in result)
                 {
                     mapper.Map(payableEarningEvent, dataLockStatusChanged);
                 }
 
-                await dataLockFailureRepository.ReplaceFailures(failuresToDelete, new List<DataLockFailureEntity>(),
-                    payableEarningEvent.EarningEventId, payableEarningEvent.EventId).ConfigureAwait(false);
+                await dataLockFailureRepository.ReplaceFailures(failuresToDelete, 
+                    new List<DataLockFailureEntity>(),
+                    payableEarningEvent.EarningEventId,
+                    payableEarningEvent.EventId).ConfigureAwait(false);
 
                 scope.Complete();
 
@@ -229,8 +252,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
         }
 
-        private Dictionary<(TransactionType type, byte period), EarningPeriod> GetFailuresGroupedByTypeAndPeriod(
-            DataLockEvent dataLockEvent)
+        private Dictionary<(TransactionType type, byte period), EarningPeriod> GetDataLocksGroupedByTypeAndPeriod(DataLockEvent dataLockEvent)
         {
             var result = new Dictionary<(TransactionType type, byte period), EarningPeriod>();
 
