@@ -1,4 +1,4 @@
-﻿CREATE TABLE [Payments2].[Payment]
+CREATE TABLE [Payments2].[Payment]
 (
 	Id BIGINT NOT NULL IDENTITY(1,1) CONSTRAINT PK_Payment PRIMARY KEY,
 	EventId UNIQUEIDENTIFIER NOT NULL CONSTRAINT DF_Payment__EventId DEFAULT(NEWID()), CONSTRAINT UQ_Payment__EventId UNIQUE([EventId]), 
@@ -40,7 +40,8 @@
     ApprenticeshipId BIGINT NULL,
     ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL,
-	ReportingAimFundingLineType NVARCHAR(120) NULL,
+	ReportingAimFundingLineType NVARCHAR(120) NULL, 
+    [NonPaymentReason] TINYINT NULL,
 
 );
 GO

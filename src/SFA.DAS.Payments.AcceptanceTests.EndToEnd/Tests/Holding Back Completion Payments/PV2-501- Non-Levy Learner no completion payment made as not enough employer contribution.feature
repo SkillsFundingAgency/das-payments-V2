@@ -1,4 +1,4 @@
-﻿Feature: Holding back completion payments - PV2-501
+Feature: Holding back completion payments - PV2-501
 	As a provider,
 	I want a non-levy learner, where the employer has paid less than their 10% co-investment for the on-program element, and has not yet paid the employer completion payment element
 	So that I am not paid the completion payment by SFA
@@ -92,6 +92,10 @@ Scenario Outline: Non-Levy Learner-in co-funding no completion payment made as n
         | R08/Current Academic Year | Mar/Current Academic Year | 540                    | 60                          | Learning         |
         | R09/Current Academic Year | Apr/Current Academic Year | 540                    | 60                          | Learning         |
         | R10/Current Academic Year | May/Current Academic Year | 540                    | 60                          | Learning         |
+
+	And only the following payments will be held back
+        | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Insufficient Employer Contribution |
+        | R11/Current Academic Year | Jun/Current Academic Year | 0                      | 0                           | 1800              |
 
 Examples: 
         | Collection_Period         |
