@@ -1,175 +1,155 @@
-﻿declare @collectionPeriod tinyint  = 2
+declare @collectionperiod int = 3
 
-;WITH RawEarnings
-AS (
-       -- this CTE is used as a subquery to calculate earnings and have a transaction type as a value in a field
-       SELECT 
-              [Amount]
-              ,[TransactionType]
-              ,[ACT]
-              ,[UKPRN]
-              ,[LearnRefNumber]
-              ,[PriceEpisodeIdentifier]
-              ,[Period]
-       FROM (
-              SELECT 
-                     [APEP].[PriceEpisodeOnProgPayment] [TransactionType1]
-                     ,[APEP].[PriceEpisodeCompletionPayment] [TransactionType2]
-                     ,[APEP].[PriceEpisodeBalancePayment] [TransactionType3]
-                     ,[APEP].[PriceEpisodeFirstEmp1618Pay] [TransactionType4]
-                     ,[APEP].[PriceEpisodeFirstProv1618Pay] [TransactionType5]
-                     ,[APEP].[PriceEpisodeSecondEmp1618Pay] [TransactionType6]
-                     ,[APEP].[PriceEpisodeSecondProv1618Pay] [TransactionType7]
-              ,[APEP].[PriceEpisodeApplic1618FrameworkUpliftOnProgPayment] [TransactionType8]
-              ,[APEP].[PriceEpisodeApplic1618FrameworkUpliftCompletionPayment] [TransactionType9]
-              ,[APEP].[PriceEpisodeApplic1618FrameworkUpliftBalancing] [TransactionType10]
-              ,[APEP].[PriceEpisodeFirstDisadvantagePayment] [TransactionType11]
-              ,[APEP].[PriceEpisodeSecondDisadvantagePayment] [TransactionType12]
-                     ,CAST(NULL AS DECIMAL(12,5)) [TransactionType13]
-                     ,CAST(NULL AS DECIMAL(12,5)) [TransactionType14]
-                     ,[APEP].[PriceEpisodeLSFCash] [TransactionType15]
-              ,[APEP].[PriceEpisodeLearnerAdditionalPayment] [TransactionType16]
-                      ,CASE WHEN [APE].[PriceEpisodeContractType] = 'Levy Contract' THEN 1
-                WHEN [APE].[PriceEpisodeContractType] = 'Contract for services with the employer' THEN 1
-                WHEN [APE].[PriceEpisodeContractType] = 'None' THEN 0
-                WHEN [APE].[PriceEpisodeContractType] = 'Non-Levy Contract' THEN 2
-                WHEN [APE].[PriceEpisodeContractType] = 'Contract for services with the ESFA' THEN 2
-                ELSE -1 END  [ACT]
-                     ,[APEP].[UKPRN]
-                     ,[APEP].[LearnRefNumber]
-                     ,[APEP].[PriceEpisodeIdentifier]
-                     ,[APEP].[Period]
-              FROM [Rulebase].[AEC_ApprenticeshipPriceEpisode_Period] APEP WITH (NOLOCK)
-              INNER JOIN [Rulebase].[AEC_ApprenticeshipPriceEpisode] APE WITH (NOLOCK)
-                     ON [APEP].[UKPRN] = [APE].[UKPRN]
-                           AND [APEP].[LearnRefNumber] = [APE].[LearnRefNumber]
-                           AND [APEP].[PriceEpisodeIdentifier] = [APE].[PriceEpisodeIdentifier]
-              WHERE [APEP].[Period] <= @collectionPeriod
-              
-        
-              UNION ALL
-        
-              SELECT 
-                     NULL [TransactionType1]
-                     ,NULL [TransactionType2]
-                     ,NULL [TransactionType3]
-                     ,NULL [TransactionType4]
-                     ,NULL [TransactionType5]
-                     ,NULL [TransactionType6]
-                     ,NULL [TransactionType7]
-                     ,NULL [TransactionType8]
-                     ,NULL [TransactionType9]
-                     ,NULL [TransactionType10]
-                     ,NULL [TransactionType11]
-                     ,NULL [TransactionType12]
-                     ,[MathEngOnProgPayment] [TransactionType13]
-                     ,[MathEngBalPayment] [TransactionType14]
-                     ,[LearnSuppFundCash] [TransactionType15]
-                     ,0 [TransactionType16]
-                     ,CASE WHEN [LDP].[LearnDelContType] = 'Levy Contract' THEN 1
-            WHEN [LDP].[LearnDelContType] = 'Contract for services with the employer' THEN 1
-            WHEN [LDP].[LearnDelContType] = 'None' THEN 0
-            WHEN [LDP].[LearnDelContType] = 'Non-Levy Contract' THEN 2
-            WHEN [LDP].[LearnDelContType] = 'Contract for services with the ESFA' THEN 2
-            ELSE -1 END [ACT]
-                     ,[LDP].[UKPRN]
-                     ,[LDP].[LearnRefNumber]
-                     ,NULL [PriceEpisodeIdentifier]
-                     ,[LDP].[Period]
-              FROM [Rulebase].[AEC_LearningDelivery_Period] [LDP] WITH (NOLOCK)
-              INNER JOIN [Rulebase].[AEC_LearningDelivery] [RLD] WITH (NOLOCK)
-                     ON [LDP].[UKPRN] = [RLD].[UKPRN]
-                           AND [LDP].[LearnRefNumber] = [RLD].[LearnRefNumber]
-                           AND [LDP].[AimSeqNumber] = [RLD].[AimSeqNumber]
-              INNER JOIN .[Valid].[LearningDelivery] [LD] WITH (NOLOCK)
-                     ON [LD].[UKPRN] = [LDP].[UKPRN]
-                           AND [LD].[LearnRefNumber] = [LDP].[LearnRefNumber]
-                           AND [LD].[AimSeqNumber] = [RLD].[AimSeqNumber]
-              WHERE (
-                            [MathEngOnProgPayment] > 0
-                           OR [MathEngBalPayment] > 0
-                           OR [LearnSuppFundCash] > 0
-                           )
-                     AND [LDP].[Period] <= @collectionPeriod
-                     AND [LD].[LearnAimRef] != 'ZPROG001'
-              ) AS PivotedEarnings
-       UNPIVOT([Amount] FOR [TransactionType] IN (
-                           [TransactionType1]
-                            ,[TransactionType2]
-                            ,[TransactionType3]
-                            ,[TransactionType4]
-                            ,[TransactionType5]
-                            ,[TransactionType6]
-                            ,[TransactionType7]
-                            ,[TransactionType8]
-                            ,[TransactionType9]
-                            ,[TransactionType10]
-                            ,[TransactionType11]
-                            ,[TransactionType12]
-                            ,[TransactionType13]
-                            ,[TransactionType14]
-                            ,[TransactionType15]
-                            ,[TransactionType16]
-                           )) AS [Earnings_Internal]
-       )
-
-,[Earnings] AS (
-       SELECT 
-              [Amount]
-              ,CAST(REPLACE([TransactionType], 'TransactionType', '') AS INT) [TransactionType]
-              ,[ACT] as [ContractType]
-              ,[Ukprn]
-              ,[LearnRefNumber]
-              ,[PriceEpisodeIdentifier]
-              ,[Period]
-       FROM [RawEarnings]
-       WHERE UKPRN IN (
-       10003915
-
-       )
+--DC Earnings
+;WITH 
+RawEarnings AS (
+    SELECT
+        APEP.LearnRefNumber,
+        APEP.Ukprn,
+        APE.PriceEpisodeAimSeqNumber [AimSeqNumber],
+        APEP.PriceEpisodeIdentifier,
+        APE.EpisodeStartDate,
+        APE.EpisodeEffectiveTNPStartDate,
+        APEP.[Period],
+        L.ULN,
+        COALESCE(LD.ProgType, 0) [ProgrammeType],
+        COALESCE(LD.FworkCode, 0) [FrameworkCode],
+        COALESCE(LD.PwayCode, 0) [PathwayCode],
+        COALESCE(LD.StdCode, 0) [StandardCode],
+        COALESCE(APEP.PriceEpisodeSFAContribPct, 0) [SfaContributionPercentage],
+        APE.PriceEpisodeFundLineType [FundingLineType],
+        LD.LearnAimRef,
+        LD.LearnStartDate [LearningStartDate],
+        COALESCE(APEP.PriceEpisodeOnProgPayment, 0) [TransactionType01],
+        COALESCE(APEP.PriceEpisodeCompletionPayment, 0) [TransactionType02],
+        COALESCE(APEP.PriceEpisodeBalancePayment, 0) [TransactionType03],
+        COALESCE(APEP.PriceEpisodeFirstEmp1618Pay, 0) [TransactionType04],
+        COALESCE(APEP.PriceEpisodeFirstProv1618Pay, 0) [TransactionType05],
+        COALESCE(APEP.PriceEpisodeSecondEmp1618Pay, 0) [TransactionType06],
+        COALESCE(APEP.PriceEpisodeSecondProv1618Pay, 0) [TransactionType07],
+        COALESCE(APEP.PriceEpisodeApplic1618FrameworkUpliftOnProgPayment, 0) [TransactionType08],
+        COALESCE(APEP.PriceEpisodeApplic1618FrameworkUpliftCompletionPayment, 0) [TransactionType09],
+        COALESCE(APEP.PriceEpisodeApplic1618FrameworkUpliftBalancing, 0) [TransactionType10],
+        COALESCE(APEP.PriceEpisodeFirstDisadvantagePayment, 0) [TransactionType11],
+        COALESCE(APEP.PriceEpisodeSecondDisadvantagePayment, 0) [TransactionType12],
+        0 [TransactionType13],
+        0 [TransactionType14],
+        COALESCE(APEP.PriceEpisodeLSFCash, 0) [TransactionType15],
+        COALESCE([APEP].[PriceEpisodeLearnerAdditionalPayment], 0) [TransactionType16],
+        CASE WHEN APE.PriceEpisodeContractType = 'Contract for services with the employer' OR
+                    APE.PriceEpisodeContractType = 'Levy Contract'
+            THEN 1 ELSE 2 END [ApprenticeshipContractType],
+        PriceEpisodeTotalTNPPrice [TotalPrice],
+        0 [MathsAndEnglish]
+    FROM Rulebase.AEC_ApprenticeshipPriceEpisode_Period APEP
+    INNER JOIN Rulebase.AEC_ApprenticeshipPriceEpisode APE
+        on APEP.UKPRN = APE.UKPRN
+        and APEP.LearnRefNumber = APE.LearnRefNumber
+        and APEP.PriceEpisodeIdentifier = APE.PriceEpisodeIdentifier
+    JOIN Valid.Learner L
+        on L.UKPRN = APEP.Ukprn
+        and L.LearnRefNumber = APEP.LearnRefNumber
+    JOIN Valid.LearningDelivery LD
+        on LD.UKPRN = APEP.Ukprn
+        and LD.LearnRefNumber = APEP.LearnRefNumber
+        and LD.AimSeqNumber = APE.PriceEpisodeAimSeqNumber
+    where (
+        APEP.PriceEpisodeOnProgPayment != 0
+        or APEP.PriceEpisodeCompletionPayment != 0
+        or APEP.PriceEpisodeBalancePayment != 0
+        or APEP.PriceEpisodeFirstEmp1618Pay != 0
+        or APEP.PriceEpisodeFirstProv1618Pay != 0
+        or APEP.PriceEpisodeSecondEmp1618Pay != 0
+        or APEP.PriceEpisodeSecondProv1618Pay != 0
+        or APEP.PriceEpisodeApplic1618FrameworkUpliftOnProgPayment != 0
+        or APEP.PriceEpisodeApplic1618FrameworkUpliftCompletionPayment != 0
+        or APEP.PriceEpisodeApplic1618FrameworkUpliftBalancing != 0
+        or APEP.PriceEpisodeFirstDisadvantagePayment != 0
+        or APEP.PriceEpisodeSecondDisadvantagePayment != 0
+        or APEP.PriceEpisodeLSFCash != 0
+        )
+        AND APEP.Period <= @collectionperiod
 )
-
-
-select
-
-       [UKPRN],
-
-       TransactionTypes.TransactionType, 
-
-       isnull(sum(case when Amount > 0 then Amount end), 0) [EarningsYTD],
-
-       isnull(sum(case when ContractType = 1 and Amount > 0 then Amount end), 0) [EarningsACT1],
-
-       isnull(sum(case when ContractType = 2 and Amount > 0 then Amount end), 0) [EarningsACT2],
-
-       isnull(sum(case when Amount < 0 then Amount end), 0) [NegativeEarningsYTD],
-
-       isnull(sum(case when ContractType = 1 and Amount < 0 then Amount end), 0) [NegativeEarningsACT1],
-
-       isnull(sum(case when ContractType = 2 and Amount < 0 then Amount end), 0) [NegativeEarningsACT2]
-
-from (
-
-              select n as TransactionType from (values (1),(2),(3)) v(n)
-
-              --select n as TransactionType from (values (1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16)) v(n)
-
-       ) as TransactionTypes             
-
-       left join [Earnings] e on e.TransactionType = TransactionTypes.TransactionType
-
-group by
-
-       UKPRN,
-
-       TransactionTypes.TransactionType
-
-order by
-
-       UKPRN,
-
-       TransactionTypes.TransactionType
-
-
-
-
+, RawEarningsMathsAndEnglish AS (
+    select 
+        LDP.LearnRefNumber,
+        LDP.Ukprn,
+        LDP.AimSeqNumber,
+        NULL [PriceEpisodeIdentifier],
+        NULL [EpisodeStartDate],
+        NULL [EpisodeEffectiveTNPStartDate],
+        LDP.[Period],
+        L.ULN,
+        COALESCE(LD.ProgType, 0) [ProgrammeType],
+        COALESCE(LD.FworkCode, 0) [FrameworkCode],
+        COALESCE(LD.PwayCode, 0) [PathwayCode],
+        COALESCE(LD.StdCode, 0) [StandardCode],
+        COALESCE(LDP.[LearnDelSFAContribPct], 0) [SfaContributionPercentage],
+        LDP.FundLineType [FundingLineType],
+        LD.LearnAimRef,
+        LD.LearnStartDate [LearningStartDate],
+        0 [TransactionType01],
+        0 [TransactionType02],
+        0 [TransactionType03],
+        0 [TransactionType04],
+        0 [TransactionType05],
+        0 [TransactionType06],
+        0 [TransactionType07],
+        0 [TransactionType08],
+        0 [TransactionType09],
+        0 [TransactionType10],
+        0 [TransactionType11],
+        0 [TransactionType12],
+        COALESCE(MathEngOnProgPayment, 0) [TransactionType13],
+        COALESCE(MathEngBalPayment, 0) [TransactionType14],
+        COALESCE(LearnSuppFundCash, 0) [TransactionType15],
+        0 [TransactionType16],
+        CASE WHEN LDP.LearnDelContType = 'Contract for services with the employer' OR
+                    LDP.LearnDelContType = 'Levy Contract'
+            THEN 1 ELSE 2 END [ApprenticeshipContractType],
+        0 [TotalPrice],
+        1 [MathsAndEnglish]
+    FROM Rulebase.AEC_LearningDelivery_Period LDP
+    INNER JOIN Valid.LearningDelivery LD
+        on LD.UKPRN = LDP.UKPRN
+        and LD.LearnRefNumber = LDP.LearnRefNumber
+        and LD.AimSeqNumber = LDP.AimSeqNumber
+    JOIN Valid.Learner L
+        on L.UKPRN = LD.Ukprn
+        and L.LearnRefNumber = LD.LearnRefNumber
+    where (
+        MathEngOnProgPayment != 0
+        or MathEngBalPayment != 0
+        or LearnSuppFundCash != 0
+        )
+        and LD.LearnAimRef != 'ZPROG001'
+        AND Period <= @collectionperiod
+)
+, AllAct1Earnings AS (
+    SELECT * 
+    FROM RawEarnings
+    --WHERE ApprenticeshipContractType = 1
+    UNION
+    SELECT * 
+    FROM RawEarningsMathsAndEnglish
+    --WHERE ApprenticeshipContractType = 1
+)
+SELECT [ApprenticeshipContractType],
+	SUM(TransactionType01) [TT1], 
+    SUM(TransactionType02) [TT2],
+    SUM(TransactionType03) [TT3],
+    SUM(TransactionType04) [TT4],
+    SUM(TransactionType05) [TT5],
+    SUM(TransactionType06) [TT6],
+    SUM(TransactionType07) [TT7],
+    SUM(TransactionType08) [TT8],
+    SUM(TransactionType09) [TT9],
+    SUM(TransactionType10) [TT10],
+    SUM(TransactionType11) [TT11],
+    SUM(TransactionType12) [TT12],
+    SUM(TransactionType13) [TT13],
+    SUM(TransactionType14) [TT14],
+    SUM(TransactionType15) [TT15],
+    SUM(TransactionType16) [TT16]
+FROM AllAct1Earnings
+GROUP BY [ApprenticeshipContractType]
