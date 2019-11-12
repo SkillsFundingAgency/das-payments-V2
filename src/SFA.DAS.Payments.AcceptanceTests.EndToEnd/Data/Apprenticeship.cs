@@ -36,6 +36,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
 
         public string AgreedOnDate { get; set; }
 
+        public string EmployerType { get; set; }
+
     }
 
 }

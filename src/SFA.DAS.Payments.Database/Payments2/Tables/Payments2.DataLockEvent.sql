@@ -14,7 +14,7 @@
 	LearningAimStandardCode INT NOT NULL,
 	LearningAimFrameworkCode INT NOT NULL,
 	LearningAimPathwayCode INT NOT NULL,
-	LearningAimFundingLineType  NVARCHAR(100) NOT NULL,
+	LearningAimFundingLineType  NVARCHAR(100) NULL,
 	LearningStartDate DATETIME2 NULL,
 	AgreementId NVARCHAR(255) NULL, 
 	IlrSubmissionDateTime DATETIME2 NOT NULL,

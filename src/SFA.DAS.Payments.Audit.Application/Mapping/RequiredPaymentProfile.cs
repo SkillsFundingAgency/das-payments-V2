@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping
                 ;
 
             CreateMap<CalculatedRequiredCoInvestedAmount, RequiredPaymentEventModel>()
-                .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2))
+                .ForMember(dest => dest.ContractType, opt => opt.MapFrom(source => source.ContractType))
                 ;
 
             CreateMap<CalculatedRequiredLevyAmount, RequiredPaymentEventModel>()

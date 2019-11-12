@@ -26,11 +26,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             return PeriodTextAccessor[periodisedValues, "Period" + period].ToString();
         }
 
-        public static ContractType[] GetContractTypesForLearningDeliveries(this List<LearningDelivery> learningDeliveries)
+        public static ContractType[] GetContractTypesForLearningDeliveries(this LearningDelivery learningDelivery)
         {
-            var periodisedTextValues = learningDeliveries.Where(x => x.LearningDeliveryPeriodisedTextValues != null)
-                .SelectMany(x => x.LearningDeliveryPeriodisedTextValues.Where(l => l.AttributeName == "LearnDelContType"))
-                .ToList();
+            if (learningDelivery.LearningDeliveryPeriodisedTextValues == null) return new ContractType[0];
+
+            var periodisedTextValues = learningDelivery
+                .LearningDeliveryPeriodisedTextValues
+                .Where(l => l.AttributeName == "LearnDelContType").ToList();
 
             if (!periodisedTextValues.Any())
             {
@@ -51,7 +53,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             return contractTypes;
         }
-        
+
         public static ContractType GetContractType(string priceEpisodeContractType)
         {
             switch (priceEpisodeContractType)
@@ -59,14 +61,17 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 case ApprenticeshipContractTypeEarningsEventFactory.Act1:
                 case ApprenticeshipContractTypeEarningsEventFactory.ContractForServicesWithEmployer:
                     return ContractType.Act1;
-                default:
+                case ApprenticeshipContractTypeEarningsEventFactory.Act2:
+                case ApprenticeshipContractTypeEarningsEventFactory.ContractForServicesWithSfa:
                     return ContractType.Act2;
+                default:
+                    return ContractType.None;
             }
         }
 
         public static bool IsMainAim(this LearningDelivery learningDelivery)
         {
-            return learningDelivery.LearningDeliveryValues.LearnAimRef == "ZPROG001";
+            return learningDelivery.LearningDeliveryValues.LearnAimRef.Equals("ZPROG001", StringComparison.OrdinalIgnoreCase);
         }
 
         public static void AddPeriodValue(this List<EarningPeriod> earningPeriods, decimal? periodValue, byte period, string priceEpisodeIdentifier, decimal? sfaContributionPercentage = null)
