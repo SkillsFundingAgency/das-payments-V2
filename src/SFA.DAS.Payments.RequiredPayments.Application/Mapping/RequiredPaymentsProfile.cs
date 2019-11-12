@@ -175,6 +175,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(x => x.AgreementId, opt => opt.Ignore());
 
             CreateMap<EarningPeriod, CalculatedRequiredIncentiveAmount>()
+                .ForMember(requiredPayment => requiredPayment.ApprenticeshipEmployerType, opt => opt.MapFrom(period => period.ApprenticeshipEmployerType))
                 .Ignore(x => x.Type)
                 ;
 
