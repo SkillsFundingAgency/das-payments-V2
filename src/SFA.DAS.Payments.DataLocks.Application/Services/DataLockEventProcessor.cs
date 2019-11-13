@@ -155,29 +155,26 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 {
                     foreach (var oldFailure in oldFailures)
                     {
-                        if (newPassesGroupedByTypeAndPeriod.TryGetValue((oldFailure.TransactionType, oldFailure.DeliveryPeriod), out var newPass))
+                        if (newPassesGroupedByTypeAndPeriod.ContainsKey((oldFailure.TransactionType, oldFailure.DeliveryPeriod)))
                         {
-                            AddTypeAndPeriodToEvent(changedToPassed, oldFailure.TransactionType, newPass, payableEarningEvent);
                             failuresToDelete.Add(oldFailure.Id);
                         }
                     }
                 }
-                else
+
+                foreach (var (transactionType, period) in newPassesGroupedByTypeAndPeriod.Keys)
                 {
-                    foreach (var (transactionType, period) in newPassesGroupedByTypeAndPeriod.Keys)
+                    if (newPassesGroupedByTypeAndPeriod.TryGetValue((transactionType, period), out var newPass))
                     {
-                        if (newPassesGroupedByTypeAndPeriod.TryGetValue((transactionType, period), out var newPass))
-                        {
-                            AddTypeAndPeriodToEvent(changedToPassed, transactionType, newPass, payableEarningEvent);
-                        }
+                        AddTypeAndPeriodToEvent(changedToPassed, transactionType, newPass, payableEarningEvent);
                     }
                 }
-
+                
                 if (changedToPassed.TransactionTypesAndPeriods.Count > 0)
                 {
                     result.Add(changedToPassed);
                 }
-                
+
                 foreach (var dataLockStatusChanged in result)
                 {
                     mapper.Map(payableEarningEvent, dataLockStatusChanged);
@@ -342,6 +339,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             return result;
         }
-        
+
     }
 }
