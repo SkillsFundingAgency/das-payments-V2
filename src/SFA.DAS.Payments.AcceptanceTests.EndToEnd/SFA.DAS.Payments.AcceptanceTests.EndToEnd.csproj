@@ -1037,9 +1037,14 @@
       <DependentUpon>PV2-526 Non-Levy learner, standard changes retrospectively.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Inconsistent Submission Data\PV2-684 Levy learner, where learner is deleted, and transaction added for reversal.feature.cs">
+      <DependentUpon>PV2-684 Levy learner, where learner is deleted, and transaction added for reversal.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-684 Levy learner, where learner is deleted, and transaction added for reversal.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Inconsistent Submission Data\PV2-1625 Levy learner, learner is deleted should refund correct types and values.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1625 Levy learner, learner is deleted should refund correct types and values.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Learner Change of Circumstances\Levy learner changes price at end of month - PV2-294.feature.cs">
       <AutoGen>True</AutoGen>
@@ -2138,6 +2143,10 @@
     <None Include="Tests\Inconsistent Submission Data\PV2-684 Levy learner, where learner is deleted, and transaction added for reversal.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-684 Levy learner, where learner is deleted, and transaction added for reversal.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Inconsistent Submission Data\PV2-1625 Levy learner, learner is deleted should refund correct types and values.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1625 Levy learner, learner is deleted should refund correct types and values.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Learner Change of Circumstances\Levy learner changes price at end of month - PV2-294.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
