@@ -37,11 +37,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         {
             var result = new List<DataLockStatusChanged>();
             var changedToFailed = new DataLockStatusChangedToFailed
-                {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
+            { TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>() };
             var changedToPassed = new DataLockStatusChangedToPassed
-                {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
+            { TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>() };
             var failureChanged = new DataLockFailureChanged
-                {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
+            { TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>() };
             var failuresToDelete = new List<long>();
             var failuresToRecord = new List<DataLockFailureEntity>();
 
@@ -134,18 +134,18 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 var result = new List<DataLockStatusChanged>();
                 var changedToPassed = new DataLockStatusChangedToPassed
-                    {TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()};
+                {
+                    TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>>()
+                };
+
                 var failuresToDelete = new List<long>();
-
                 var newPassesGroupedByTypeAndPeriod = GetPassesGroupedByTypeAndPeriod(payableEarningEvent);
+                var allTransactionTypes = newPassesGroupedByTypeAndPeriod.Keys.Select(x => x.type).ToList();
 
-                var oldFailures = await dataLockFailureRepository.GetFailures(
+                var oldFailures = await dataLockFailureRepository.GetPreviousFailures(
                     payableEarningEvent.Ukprn,
                     payableEarningEvent.Learner.ReferenceNumber,
-                    payableEarningEvent.LearningAim.FrameworkCode,
-                    payableEarningEvent.LearningAim.PathwayCode,
-                    payableEarningEvent.LearningAim.ProgrammeType,
-                    payableEarningEvent.LearningAim.StandardCode,
+                    allTransactionTypes,
                     payableEarningEvent.LearningAim.Reference,
                     payableEarningEvent.CollectionYear
                 ).ConfigureAwait(false);
@@ -161,36 +161,31 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                 if (changedToPassed.TransactionTypesAndPeriods.Count > 0)
                 {
-                    
+
                     result.Add(changedToPassed);
                 }
                 else
                 {
-                    var newDataLocksGroupedByTypeAndPeriod = GetDataLocksGroupedByTypeAndPeriod(payableEarningEvent);
-                    var fullListOfKeys = newDataLocksGroupedByTypeAndPeriod.Keys
-                        .Concat(oldFailures.Select(f => (f.TransactionType, f.DeliveryPeriod)))
-                        .Distinct()
-                        .ToList();
-
-                    foreach (var key in fullListOfKeys)
+                    foreach (var (transactionType, period) in newPassesGroupedByTypeAndPeriod.Keys)
                     {
-                        var transactionType = key.Item1;
-                        var period = key.Item2;
-
                         if (newPassesGroupedByTypeAndPeriod.TryGetValue((transactionType, period), out var newPass))
                         {
                             AddTypeAndPeriodToEvent(changedToPassed, transactionType, newPass, payableEarningEvent);
-                            result.Add(changedToPassed);
                         }
                     }
+
+                    if (changedToPassed.TransactionTypesAndPeriods.Count > 0)
+                    {
+                        result.Add(changedToPassed);
+                    }
                 }
-               
+
                 foreach (var dataLockStatusChanged in result)
                 {
                     mapper.Map(payableEarningEvent, dataLockStatusChanged);
                 }
 
-                await dataLockFailureRepository.ReplaceFailures(failuresToDelete, 
+                await dataLockFailureRepository.ReplaceFailures(failuresToDelete,
                     new List<DataLockFailureEntity>(),
                     payableEarningEvent.EarningEventId,
                     payableEarningEvent.EventId).ConfigureAwait(false);
@@ -248,7 +243,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
             else
             {
-                statusChangedEvent.TransactionTypesAndPeriods.Add(transactionType, new List<EarningPeriod> {period});
+                statusChangedEvent.TransactionTypesAndPeriods.Add(transactionType, new List<EarningPeriod> { period });
             }
         }
 
@@ -265,7 +260,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                         if (period.Amount == 0 && string.IsNullOrWhiteSpace(period.PriceEpisodeIdentifier))
                             continue; // DataLocks are generated for all periods, even irrelevant, ignore until fixed
 
-                        var key = ((TransactionType) onProgrammeEarning.Type, period.Period);
+                        var key = ((TransactionType)onProgrammeEarning.Type, period.Period);
                         if (result.ContainsKey(key))
                         {
                             paymentLogger.LogWarning($"DataLockEvent trying to add duplicate key \n\n " +
@@ -289,7 +284,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                         if (period.Amount == 0 && string.IsNullOrWhiteSpace(period.PriceEpisodeIdentifier))
                             continue; // DataLocks are generated for all periods, even irrelevant, ignore until fixed
 
-                        var key = ((TransactionType) incentiveEarning.Type, period.Period);
+                        var key = ((TransactionType)incentiveEarning.Type, period.Period);
                         if (result.ContainsKey(key))
                         {
                             paymentLogger.LogWarning($"DataLockEvent trying to add duplicate key \n\n " +
@@ -307,8 +302,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             return result;
         }
 
-        private Dictionary<(TransactionType type, byte period), EarningPeriod> GetPassesGroupedByTypeAndPeriod(
-            DataLockEvent dataLockEvent)
+        private Dictionary<(TransactionType type, byte period), EarningPeriod> GetPassesGroupedByTypeAndPeriod(DataLockEvent dataLockEvent)
         {
             var result = new Dictionary<(TransactionType type, byte period), EarningPeriod>();
 
@@ -316,7 +310,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 foreach (var period in onProgrammeEarning.Periods)
                 {
-                    var key = ((TransactionType) onProgrammeEarning.Type, period.Period);
+                    var key = ((TransactionType)onProgrammeEarning.Type, period.Period);
                     if (!result.ContainsKey(key))
                     {
                         result.Add(key, period);
@@ -334,7 +328,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 foreach (var period in incentiveEarning.Periods)
                 {
-                    var key = ((TransactionType) incentiveEarning.Type, period.Period);
+                    var key = ((TransactionType)incentiveEarning.Type, period.Period);
                     if (!result.ContainsKey(key))
                     {
                         result.Add(key, period);
@@ -350,5 +344,41 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             return result;
         }
+
+        private int GetTransactionTypeFlag(TransactionType transactionType)
+        {
+            switch (transactionType)
+            {
+                case TransactionType.Learning:
+                case TransactionType.OnProgramme16To18FrameworkUplift:
+                case TransactionType.OnProgrammeMathsAndEnglish:
+                case TransactionType.BalancingMathsAndEnglish:
+                case TransactionType.LearningSupport:
+                    return 1;
+
+                case TransactionType.First16To18EmployerIncentive:
+                case TransactionType.First16To18ProviderIncentive:
+                case TransactionType.FirstDisadvantagePayment:
+                    return 2;
+
+                case TransactionType.Second16To18EmployerIncentive:
+                case TransactionType.Second16To18ProviderIncentive:
+                case TransactionType.SecondDisadvantagePayment:
+                    return 3;
+
+                case TransactionType.Completion:
+                case TransactionType.Balancing:
+                case TransactionType.Completion16To18FrameworkUplift:
+                case TransactionType.Balancing16To18FrameworkUplift:
+                    return 4;
+
+                case TransactionType.CareLeaverApprenticePayment:
+                    return 5;
+
+                default:
+                    throw new ArgumentException($"Transaction Type {transactionType} not supported.", nameof(transactionType));
+            }
+        }
+
     }
 }

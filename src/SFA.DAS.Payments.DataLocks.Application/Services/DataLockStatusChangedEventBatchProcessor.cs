@@ -59,6 +59,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                 using (var scope = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
                 {
+                    
                     foreach (var dataLockStatusChangedEvent in batch)
                     {
                         int savedEvents = 0, savedCommitmentVersions = 0, savedPeriods = 0, savedErrors = 0;
@@ -157,7 +158,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             // collection periods (and transaction types) are recorded per commitment version
             // v1 does not record delivery periods so we only need to create a record per transaction type for current collection period
             // and they don't need transaction types, only flags
-            var periodsGroupedByFlag = dataLockStatusChangedEvent.TransactionTypesAndPeriods.GroupBy(kvp => GetTransactionTypeFlag(kvp.Key));
+            var periodsGroupedByFlag = dataLockStatusChangedEvent.TransactionTypesAndPeriods.GroupBy(kvp => GetTransactionTypeFlag(kvp.Key)).Distinct();
 
             foreach (var group in periodsGroupedByFlag)
             {
@@ -202,7 +203,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 CollectionPeriodName = $"{dataLockStatusChangedEvent.CollectionPeriod.AcademicYear}-{collectionPeriod:D2}",
                 CollectionPeriodMonth = (collectionPeriod < 6) ? collectionPeriod + 7 : collectionPeriod - 5,
                 IsPayable = !isError,
-                CommitmentVersion = commitmentVersionId
+                CommitmentVersion = commitmentVersionId,
             };
 
             logger.LogVerbose($"Saving DataLockEventPeriod {dataLockEventPeriod.CollectionPeriodName} for legacy DataLockEvent {dataLockStatusChangedEvent.EventId} for UKPRN {dataLockStatusChangedEvent.Ukprn}");

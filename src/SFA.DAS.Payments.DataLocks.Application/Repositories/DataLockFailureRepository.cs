@@ -25,6 +25,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             short academicYear
         );
 
+        Task<List<DataLockFailureEntity>> GetPreviousFailures(
+            long ukprn,
+            string learnerReferenceNumber,
+            List<TransactionType> transactionType, 
+            string learnAimRef,
+            short academicYear);
+
         Task ReplaceFailures(
             List<long> oldFailureIds,
             List<DataLockFailureEntity> newFailures,
@@ -53,6 +60,42 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
                     f.LearningAimPathwayCode == pathwayCode &&
                     f.LearningAimProgrammeType == programmeType &&
                     f.LearningAimStandardCode == standardCode &&
+                    f.LearningAimReference == learnAimRef &&
+                    f.AcademicYear == academicYear
+                )
+                .Select(model => new DataLockFailureEntity
+                {
+                    Ukprn = model.Ukprn,
+                    EarningEventId = model.EarningEventId,
+                    DataLockEventId = model.DataLockEventId,
+                    AcademicYear = model.AcademicYear,
+                    TransactionType = model.TransactionType,
+                    DeliveryPeriod = model.DeliveryPeriod,
+                    Id = model.Id,
+                    LearnerReferenceNumber = model.LearnerReferenceNumber,
+                    LearnerUln = model.LearnerUln,
+                    LearningAimFrameworkCode = model.LearningAimFrameworkCode,
+                    LearningAimPathwayCode = model.LearningAimPathwayCode,
+                    LearningAimProgrammeType = model.LearningAimProgrammeType,
+                    LearningAimReference = model.LearningAimReference,
+                    LearningAimStandardCode = model.LearningAimStandardCode,
+                    Amount = model.Amount,
+                    EarningPeriod = JsonConvert.DeserializeObject<EarningPeriod>(model.EarningPeriod)
+                })
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            logger.LogDebug($"retrieved {entities.Count} errors for UKPRN {ukprn}");
+
+            return entities;
+        }
+
+        public async Task<List<DataLockFailureEntity>> GetPreviousFailures(long ukprn, string learnerReferenceNumber, List<TransactionType> transactionType, string learnAimRef, short academicYear)
+        {
+            var entities = await paymentsDataContext.DataLockFailure.Where(f =>
+                    f.Ukprn == ukprn &&
+                    f.LearnerReferenceNumber == learnerReferenceNumber &&
+                    transactionType.Contains(f.TransactionType) &&
                     f.LearningAimReference == learnAimRef &&
                     f.AcademicYear == academicYear
                 )

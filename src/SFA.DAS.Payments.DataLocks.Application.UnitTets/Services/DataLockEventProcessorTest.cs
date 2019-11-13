@@ -377,7 +377,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             statusChangedEvents[0].TransactionTypesAndPeriods.First().Value.Should().HaveCount(1);
             statusChangedEvents[0].TransactionTypesAndPeriods.First().Value[0].Period.Should().Be(3);
         }
-        
+
         [Test]
         public async Task TestDataLockStatusChangedToPassedWithPayablePeriods()
         {
@@ -454,14 +454,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 new DataLockFailureEntity {Id = 100, TransactionType = TransactionType.Balancing16To18FrameworkUplift, DeliveryPeriod = 2,EarningPeriod = new EarningPeriod()},
                 new DataLockFailureEntity {Id = 100, TransactionType = TransactionType.Balancing16To18FrameworkUplift, DeliveryPeriod = 3,EarningPeriod = new EarningPeriod()},
             };
-            
-            repositoryMock.Setup(r => r.GetFailures(
+
+            repositoryMock.Setup(r => r.GetPreviousFailures(
                     payableEarningEvent.Ukprn,
                     payableEarningEvent.Learner.ReferenceNumber,
-                    payableEarningEvent.LearningAim.FrameworkCode,
-                    payableEarningEvent.LearningAim.PathwayCode,
-                    payableEarningEvent.LearningAim.ProgrammeType,
-                    payableEarningEvent.LearningAim.StandardCode,
+                   It.IsAny<List<TransactionType>>(),
                     payableEarningEvent.LearningAim.Reference,
                     payableEarningEvent.CollectionYear
                     )).ReturnsAsync(dbFailures).Verifiable();
@@ -486,7 +483,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             statusChangedEvents[0].TransactionTypesAndPeriods.First().Value.Should().HaveCount(1);
             statusChangedEvents[0].TransactionTypesAndPeriods.First().Value[0].Period.Should().Be(3);
         }
-        
+
         [Test]
         public async Task TestSuccessfulDataLockWithNoPreviousFailures()
         {
@@ -537,15 +534,26 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                         Type = IncentiveEarningType.Balancing16To18FrameworkUplift,
                         Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod>
                         {
-                            new EarningPeriod {Period = 1, Amount = 0m, DataLockFailures = null},
+                            new EarningPeriod 
+                            {
+                                Period = 1, 
+                                Amount = 0m, 
+                                DataLockFailures = null
+                            },
                             new EarningPeriod
                             {
-                                Period = 2, Amount = 0m, PriceEpisodeIdentifier = " ", ApprenticeshipId = null,
+                                Period = 2, 
+                                Amount = 0m, 
+                                PriceEpisodeIdentifier = " ", 
+                                ApprenticeshipId = null,
                                 ApprenticeshipPriceEpisodeId = null
                             },
                             new EarningPeriod
                             {
-                                Period = 3, Amount = 0m, PriceEpisodeIdentifier = string.Empty, ApprenticeshipId = null,
+                                Period = 3, 
+                                Amount = 0m, 
+                                PriceEpisodeIdentifier = string.Empty, 
+                                ApprenticeshipId = null,
                                 ApprenticeshipPriceEpisodeId = null
                             }
                         })
@@ -553,14 +561,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     }
                 }
             };
-            
-            repositoryMock.Setup(r => r.GetFailures(
+
+            repositoryMock.Setup(r => r.GetPreviousFailures(
                     payableEarningEvent.Ukprn,
                     payableEarningEvent.Learner.ReferenceNumber,
-                    payableEarningEvent.LearningAim.FrameworkCode,
-                    payableEarningEvent.LearningAim.PathwayCode,
-                    payableEarningEvent.LearningAim.ProgrammeType,
-                    payableEarningEvent.LearningAim.StandardCode,
+                    It.IsAny<List<TransactionType>>(),
                     payableEarningEvent.LearningAim.Reference,
                     payableEarningEvent.CollectionYear
                     )).ReturnsAsync(new List<DataLockFailureEntity>())
@@ -569,11 +574,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             repositoryMock.Setup(r => r.ReplaceFailures(
                     It.IsAny<List<long>>(),
                     It.Is<List<DataLockFailureEntity>>(newF => newF.Count == 0),
-                    It.IsAny<Guid>(), 
+                    It.IsAny<Guid>(),
                     It.IsAny<Guid>()
                     )).Returns(Task.CompletedTask)
                 .Verifiable();
-            
+
             // act
             var statusChangedEvents = await processor.ProcessPayableEarning(payableEarningEvent).ConfigureAwait(false);
 
@@ -586,7 +591,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             statusChangedEvents[0].TransactionTypesAndPeriods.First().Value.Should().HaveCount(1);
             statusChangedEvents[0].TransactionTypesAndPeriods.First().Value[0].Period.Should().Be(3);
         }
-        
+
         private static IEnumerable<DataLockEvent> GetFailureEvents()
         {
             yield return new EarningFailedDataLockMatching();
