@@ -1,4 +1,5 @@
-﻿Feature: One Learner, Levy available, change Negotiated Price via ILR which is updated DAS-PV2-1581_A
+﻿@ignore
+Feature: One Learner, Levy available, change Negotiated Price via ILR which is updated DAS-PV2-1581_A
 	Levy learner, levy available, and there is a change to the Negotiated Price via the ILR which is updated in DAS
 
 Scenario Outline: One Learner, Levy available, change Negotiated Price via ILR which is updated DAS-PV2-1581_A
