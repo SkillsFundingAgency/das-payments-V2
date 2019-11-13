@@ -291,9 +291,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             // assert
             using (new AssertionScope())
             {
-                refunds.Count.Should().Be(2);
-                refunds.Cast<CalculatedRequiredIncentiveAmount>().Count(x => x.Type == IncentivePaymentType.BalancingMathsAndEnglish).Should().Be(1);
-                refunds.Cast<CalculatedRequiredIncentiveAmount>().Count(x => x.Type == IncentivePaymentType.OnProgrammeMathsAndEnglish).Should().Be(1);
+                refunds.Should().HaveCount(2);
+                refunds.Cast<CalculatedRequiredIncentiveAmount>().Should().ContainSingle(x => x.Type == IncentivePaymentType.BalancingMathsAndEnglish);
+                refunds.Cast<CalculatedRequiredIncentiveAmount>().Should().ContainSingle(x => x.Type == IncentivePaymentType.OnProgrammeMathsAndEnglish);
             }
         }
 
@@ -333,9 +333,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             // assert
             using (new AssertionScope())
             {
-                refunds.Count.Should().Be(2);
-                refunds.Cast<CalculatedRequiredLevyAmount>().Count(x => x.OnProgrammeEarningType == OnProgrammeEarningType.Learning).Should().Be(1);
-                refunds.Cast<CalculatedRequiredLevyAmount>().Count(x => x.OnProgrammeEarningType == OnProgrammeEarningType.Completion).Should().Be(1);
+                refunds.Should().HaveCount(2);
+                refunds.Cast<CalculatedRequiredLevyAmount>().Should().ContainSingle(x => x.OnProgrammeEarningType == OnProgrammeEarningType.Learning);
+                refunds.Cast<CalculatedRequiredLevyAmount>().Should().ContainSingle(x => x.OnProgrammeEarningType == OnProgrammeEarningType.Completion);
             }
         }
     }
