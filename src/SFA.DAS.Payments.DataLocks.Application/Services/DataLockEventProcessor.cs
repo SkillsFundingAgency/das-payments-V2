@@ -342,41 +342,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             return result;
         }
-
-        private int GetTransactionTypeFlag(TransactionType transactionType)
-        {
-            switch (transactionType)
-            {
-                case TransactionType.Learning:
-                case TransactionType.OnProgramme16To18FrameworkUplift:
-                case TransactionType.OnProgrammeMathsAndEnglish:
-                case TransactionType.BalancingMathsAndEnglish:
-                case TransactionType.LearningSupport:
-                    return 1;
-
-                case TransactionType.First16To18EmployerIncentive:
-                case TransactionType.First16To18ProviderIncentive:
-                case TransactionType.FirstDisadvantagePayment:
-                    return 2;
-
-                case TransactionType.Second16To18EmployerIncentive:
-                case TransactionType.Second16To18ProviderIncentive:
-                case TransactionType.SecondDisadvantagePayment:
-                    return 3;
-
-                case TransactionType.Completion:
-                case TransactionType.Balancing:
-                case TransactionType.Completion16To18FrameworkUplift:
-                case TransactionType.Balancing16To18FrameworkUplift:
-                    return 4;
-
-                case TransactionType.CareLeaverApprenticePayment:
-                    return 5;
-
-                default:
-                    throw new ArgumentException($"Transaction Type {transactionType} not supported.", nameof(transactionType));
-            }
-        }
-
+        
     }
 }
