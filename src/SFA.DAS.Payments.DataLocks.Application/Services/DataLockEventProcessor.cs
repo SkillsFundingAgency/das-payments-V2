@@ -150,19 +150,17 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     payableEarningEvent.CollectionYear
                 ).ConfigureAwait(false);
 
-                foreach (var oldFailure in oldFailures)
+
+                if (oldFailures.Any())
                 {
-                    if (newPassesGroupedByTypeAndPeriod.TryGetValue((oldFailure.TransactionType, oldFailure.DeliveryPeriod), out var newPass))
+                    foreach (var oldFailure in oldFailures)
                     {
-                        AddTypeAndPeriodToEvent(changedToPassed, oldFailure.TransactionType, newPass, payableEarningEvent);
-                        failuresToDelete.Add(oldFailure.Id);
+                        if (newPassesGroupedByTypeAndPeriod.TryGetValue((oldFailure.TransactionType, oldFailure.DeliveryPeriod), out var newPass))
+                        {
+                            AddTypeAndPeriodToEvent(changedToPassed, oldFailure.TransactionType, newPass, payableEarningEvent);
+                            failuresToDelete.Add(oldFailure.Id);
+                        }
                     }
-                }
-
-                if (changedToPassed.TransactionTypesAndPeriods.Count > 0)
-                {
-
-                    result.Add(changedToPassed);
                 }
                 else
                 {
@@ -173,13 +171,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                             AddTypeAndPeriodToEvent(changedToPassed, transactionType, newPass, payableEarningEvent);
                         }
                     }
-
-                    if (changedToPassed.TransactionTypesAndPeriods.Count > 0)
-                    {
-                        result.Add(changedToPassed);
-                    }
                 }
 
+                if (changedToPassed.TransactionTypesAndPeriods.Count > 0)
+                {
+                    result.Add(changedToPassed);
+                }
+                
                 foreach (var dataLockStatusChanged in result)
                 {
                     mapper.Map(payableEarningEvent, dataLockStatusChanged);
