@@ -38,24 +38,15 @@ Scenario: A learner was in the ILR correctly for R01 & R02, was withdrawn in R14
 	When the amended ILR file is re-submitted for the learners in collection period R03/Current Academic Year
     Then the following learner earnings should be generated
         | Delivery Period           | On-Programme | Completion | Balancing | Aim Sequence Number | Price Episode Identifier | Contract Type |
-    #    | Aug/Current Academic Year | 0            | 0          | 0         | 1                   | 1st price details        | Act2          |
-    #    | Sep/Current Academic Year | 0            | 0          | 0         | 1                   | 1st price details        | Act2          |
-    #    | Oct/Current Academic Year | 0            | 0          | 0         | 1                   | 1st price details        | Act2          |
-    #    | Nov/Current Academic Year | 0            | 0          | 0         | 1                   | 1st price details        | Act2          |
-    #    | Dec/Current Academic Year | 0            | 0          | 0         | 1                   | 1st price details        | Act2          |
-    #    | Jan/Current Academic Year | 0            | 0          | 0         | 1                   | 1st price details        | Act2          |
-    #    | Feb/Current Academic Year | 0            | 0          | 0         | 1                   | 1st price details        | Act2          |
-    #    | Mar/Current Academic Year | 0            | 0          | 0         | 1                   | 1st price details        | Act2          |
-    #    | Apr/Current Academic Year | 0            | 0          | 0         | 1                   | 1st price details        | Act2          |
-    #    | May/Current Academic Year | 0            | 0          | 0         | 1                   | 1st price details        | Act2          |
-    #    | Jun/Current Academic Year | 0            | 0          | 0         | 1                   | 1st price details        | Act2          |
-    #    | Jul/Current Academic Year | 0            | 0          | 0         | 1                   | 1st price details        | Act2          |
     And only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
-        | R03/Current Academic Year | Oct/Current Academic Year | -1200        | 0          | 0         |
+        | R03/Current Academic Year | Aug/Current Academic Year | -600         | 0          | 0         |
+        | R03/Current Academic Year | Sep/Current Academic Year | -600         | 0          | 0         |
     And only the following provider payments will be recorded
-        | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully-Funded Payments | Transaction Type |
-        | R03/Current Academic Year | Oct/Current Academic Year | -1080                  | -120                        | 0                         | On-Programme     |
+        | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully-Funded Payments | Transaction Type | Price Episode Identifier |
+        | R03/Current Academic Year | Aug/Current Academic Year | -540                   | -60                         | 0                         | Learning         | 1st price details        |
+        | R03/Current Academic Year | Sep/Current Academic Year | -540                   | -60                         | 0                         | Learning         | 1st price details        |
 	And at month end only the following provider payments will be generated
-        | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully-Funded Payments | Transaction Type |
-        | R03/Current Academic Year | Oct/Current Academic Year | -1080                  | -120                        | 0                         | On-Programme     |
+        | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully-Funded Payments | Transaction Type | Price Episode Identifier |
+        | R03/Current Academic Year | Aug/Current Academic Year | -540                   | -60                         | 0                         | Learning         | 1st price details        |
+        | R03/Current Academic Year | Sep/Current Academic Year | -540                   | -60                         | 0                         | Learning         | 1st price details        |
