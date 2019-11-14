@@ -329,15 +329,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the following learner earnings were generated")]
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
-            await WaitForIt(() =>
-            {
-                var payments = Scope.Resolve<TestPaymentsDataContext>()
-                    .Payment
-                    .AsNoTracking()
-                    .Where(p => p.Ukprn == TestSession.Provider.Ukprn)
-                    .ToList();
-                return payments.Any() && payments.All(p => p.JobId != TestSession.Provider.JobId);
-            }, $"Provider Payments failed to cleanup old payments for provider {TestSession.Provider.Ukprn}");
+            await GeneratedAndValidateEarnings(table, TestSession.Provider).ConfigureAwait(false);
         }
 
         [Then(@"the following learner earnings should be generated for ""(.*)""")]
