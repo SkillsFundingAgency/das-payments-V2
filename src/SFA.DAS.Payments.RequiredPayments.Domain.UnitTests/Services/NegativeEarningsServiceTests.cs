@@ -58,18 +58,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             });
         }
 
-        [Test, AutoData]
-        public void ShouldReturnCorrectApprenticeshipEmployerType(Payment paymentHistory)
-        {
-            paymentHistory.DeliveryPeriod = 1;
-            var testPaymentHistory = new List<Payment> { paymentHistory };
-
-            var actual = sut.ProcessNegativeEarning(-1, testPaymentHistory, 1, "", ApprenticeshipEmployerType.Levy);
-            actual.Should().BeEquivalentTo(new
-            {
-                ApprenticeshipEmployerType = paymentHistory.ApprenticeshipEmployerType,
-            });
-        }
 
         [Test]
         public void ShouldNotRefundMoreThanPaymentHistory()
