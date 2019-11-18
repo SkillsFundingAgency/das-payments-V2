@@ -121,6 +121,19 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             actual.ContractType.Should().Be(ContractType.Act2);
         }
 
+
+        [Test]
+        [TestCase( typeof(CalculatedRequiredIncentiveAmount))]
+        public void MathsAndEnglishRequiredMappingShouldMapEarningEventIdCorrectly(Type requiredPaymentEventType)
+        {
+            var earningEventId = Guid.NewGuid();
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
+            var earningEvent = new PayableFunctionalSkillEarningEvent {EarningEventId = earningEventId};
+            var actual = mapper.Map(earningEvent, requiredPaymentEvent);
+            actual.EarningEventId.Should().Be(earningEventId);
+        }
+
+
         [Test]
         [TestCase(typeof(CalculatedRequiredIncentiveAmount), ContractType.Act1)]
         [TestCase(typeof(CalculatedRequiredIncentiveAmount), ContractType.Act2)]
