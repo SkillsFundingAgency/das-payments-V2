@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using AutoMapper;
@@ -220,35 +220,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
 
         }
 
-        [Test]
-        public void TestEarningPeriodToCalculatedRequiredIncentiveAmountMapping()
-        {
-            var earningPeriod = new EarningPeriod
-            {
-                ApprenticeshipId = 101,
-                ApprenticeshipPriceEpisodeId = 102,
-                Period = 1,
-                ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy
-            };
-            var requiredPayment = new CalculatedRequiredIncentiveAmount
-            {
-                Type = IncentivePaymentType.OnProgrammeMathsAndEnglish
-            };
-
-            // act
-            mapper.Map(earningPeriod, requiredPayment);
-            var mathsAndEnglishPayment = requiredPayment;
-            Assert.AreEqual(earningPeriod.Period, mathsAndEnglishPayment.DeliveryPeriod);
-            Assert.AreEqual(earningPeriod.ApprenticeshipId, mathsAndEnglishPayment.ApprenticeshipId);
-            Assert.AreEqual(earningPeriod.ApprenticeshipPriceEpisodeId,
-                mathsAndEnglishPayment.ApprenticeshipPriceEpisodeId);
-            Assert.AreEqual(earningPeriod.ApprenticeshipEmployerType,
-                mathsAndEnglishPayment.ApprenticeshipEmployerType);
-            Assert.AreEqual(IncentivePaymentType.OnProgrammeMathsAndEnglish, mathsAndEnglishPayment.Type);
-        }
-
-
-
+      
         [Test]
         [TestCaseSource(nameof(GetFunctionalSkillEarningEvents))]
         public void TestFunctionalSkillEarningEventMap(IFunctionalSkillEarningEvent functionalSkillEarningsEvent)
