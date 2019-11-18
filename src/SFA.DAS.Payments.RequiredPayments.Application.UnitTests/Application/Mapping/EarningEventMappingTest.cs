@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using AutoMapper;
@@ -119,18 +119,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
 
             var actual = mapper.Map(earningEvent, requiredPaymentEvent);
             actual.ContractType.Should().Be(ContractType.Act2);
-        }
-
-
-        [Test]
-        [TestCase( typeof(CalculatedRequiredIncentiveAmount))]
-        public void MathsAndEnglishRequiredMappingShouldMapEarningEventIdCorrectly(Type requiredPaymentEventType)
-        {
-            var earningEventId = Guid.NewGuid();
-            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
-            var earningEvent = new PayableFunctionalSkillEarningEvent {EarningEventId = earningEventId};
-            var actual = mapper.Map(earningEvent, requiredPaymentEvent);
-            actual.EarningEventId.Should().Be(earningEventId);
         }
 
 
