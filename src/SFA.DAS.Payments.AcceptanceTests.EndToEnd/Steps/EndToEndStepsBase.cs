@@ -361,7 +361,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 InstalmentAmount = 200M,
                 NumberOfInstalments = 12,
                 ReportingAimFundingLineType = learnerTraining.FundingLineType,
-                //ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
+                ApprenticeshipEmployerType = providerPayment.IsEmployerLevyPayer ? ApprenticeshipEmployerType.Levy:ApprenticeshipEmployerType.NonLevy,
                 ApprenticeshipId = apprenticeshipId,
                 ApprenticeshipPriceEpisodeId = priceEpisodeId,
             };
@@ -1049,6 +1049,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                                : expectedPayment.Employer.ToLowerInvariant() == "no employer"
                                    ? default(long?)
                                    : TestSession.GetEmployer(expectedPayment.Employer).AccountId;
+                expectedPayment.IsEmployerLevyPayer = string.IsNullOrWhiteSpace(expectedPayment.Employer)
+                    ? TestSession.Employer.IsLevyPayer : TestSession.GetEmployer(expectedPayment.Employer).IsLevyPayer;
 
                 expectedPayment.SendingAccountId = string.IsNullOrWhiteSpace(expectedPayment.SendingEmployer)
                     ? TestSession.Employer.AccountId
