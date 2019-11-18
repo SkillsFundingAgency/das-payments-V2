@@ -87,5 +87,39 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             r.Should().Be(PriceEpisodeStatus.Updated);
         }
+
+        [Theory, AutoData]
+        public void Match_unchanged_updated_missing_and_removed_price_episodes(
+            List<PriceEpisode> priceEpisodes,
+            string leftOverPriceEpisodeId,
+            PriceEpisodeEventMatcher sut)
+        {
+            var currentPriceEpisodes = new[]
+            {
+                new CurrentPriceEpisode //unchanged
+                {
+                    PriceEpisodeIdentifier = priceEpisodes[1].Identifier,
+                    AgreedPrice = priceEpisodes[1].AgreedPrice,
+                },
+                new CurrentPriceEpisode //updated
+                {
+                    PriceEpisodeIdentifier = priceEpisodes[2].Identifier,
+                    AgreedPrice = priceEpisodes[2].AgreedPrice + 1,
+                },
+                new CurrentPriceEpisode //removed
+                {
+                    PriceEpisodeIdentifier = leftOverPriceEpisodeId,
+                },
+            };
+
+            var r = sut.Match(currentPriceEpisodes, priceEpisodes);
+
+            r.Should().BeEquivalentTo(
+                (priceEpisodes[0].Identifier, PriceEpisodeStatus.New),
+                (priceEpisodes[1].Identifier, PriceEpisodeStatus.New),
+                (priceEpisodes[2].Identifier, PriceEpisodeStatus.Updated),
+                (leftOverPriceEpisodeId, PriceEpisodeStatus.Removed)
+                );
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,27 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services
 
     public class PriceEpisodeEventMatcher
     {
-        public PriceEpisodeStatus Match(IEnumerable<CurrentPriceEpisode> recordedPriceEpisodes, PriceEpisode newPriceEpisode)
+        public List<(string identifier, PriceEpisodeStatus status)> Match(
+            CurrentPriceEpisode[] currentPriceEpisodes, 
+            IEnumerable<PriceEpisode> receivedPriceEpisodes)
+        {
+            var matched = receivedPriceEpisodes
+                .Select(x => (x.Identifier, Match(currentPriceEpisodes, x)));
+
+            var receivedIdentifiers = 
+                receivedPriceEpisodes.Select(x => x.Identifier);
+
+            var removed = currentPriceEpisodes
+                .Select(x => x.PriceEpisodeIdentifier)
+                .Except(receivedIdentifiers)
+                .Select(id => (id, PriceEpisodeStatus.Removed));
+            
+            return matched.Union(removed).ToList();
+        }
+
+        public PriceEpisodeStatus Match(
+            IEnumerable<CurrentPriceEpisode> recordedPriceEpisodes, 
+            PriceEpisode newPriceEpisode)
         {
             var previous = recordedPriceEpisodes.FirstOrDefault(MatchById(newPriceEpisode));
 
