@@ -17,7 +17,7 @@
     <Parameter Name="StorageConnectionString" Value="UseDevelopmentStorage=true" />
     <Parameter Name="LoggingConnectionString" Value="Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;" />
     <Parameter Name="ServiceBusConnectionString" Value="" />
-    <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="" />
     <Parameter Name="PaymentsConnectionString" Value="" />
     <Parameter Name="PaymentsMonitoringConnectionString" Value="" />
   </Section>
