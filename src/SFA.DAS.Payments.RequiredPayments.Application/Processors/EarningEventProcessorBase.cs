@@ -86,9 +86,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     if (NegativeEarningWillResultInARefund(period, payments))
                     {
                         requiredPayments = negativeEarningService
-                            .ProcessNegativeEarning(period.Amount, academicYearPayments, period.Period, period.PriceEpisodeIdentifier, period.ApprenticeshipEmployerType);
-                        
-                        
+                            .ProcessNegativeEarning(period.Amount, academicYearPayments, period.Period, period.PriceEpisodeIdentifier);
                     }
                     else
                     {

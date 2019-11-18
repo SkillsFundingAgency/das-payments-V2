@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             paymentHistory.DeliveryPeriod = 1;
             var testPaymentHistory = new List<Payment>{paymentHistory};
 
-            var actual = sut.ProcessNegativeEarning(-1, testPaymentHistory, 1, "", ApprenticeshipEmployerType.Levy);
+            var actual = sut.ProcessNegativeEarning(-1, testPaymentHistory, 1, "");
             actual.Should().BeEquivalentTo(new
             {
                 ApprenticeshipId = paymentHistory.ApprenticeshipId,
@@ -51,13 +51,25 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             paymentHistory.DeliveryPeriod = 1;
             var testPaymentHistory = new List<Payment> { paymentHistory };
 
-            var actual = sut.ProcessNegativeEarning(-1, testPaymentHistory, 1, "", ApprenticeshipEmployerType.Levy);
+            var actual = sut.ProcessNegativeEarning(-1, testPaymentHistory, 1, "");
             actual.Should().BeEquivalentTo(new
             {
                 ApprenticeshipPriceEpisodeId = paymentHistory.ApprenticeshipPriceEpisodeId,
             });
         }
+        
+        [Test, AutoData]
+        public void ShouldReturnCorrectApprenticeshipEmployerType(Payment paymentHistory)
+        {
+            paymentHistory.DeliveryPeriod = 1;
+            var testPaymentHistory = new List<Payment> { paymentHistory };
 
+            var actual = sut.ProcessNegativeEarning(-1, testPaymentHistory, 1, "");
+            actual.Should().BeEquivalentTo(new
+            {
+                ApprenticeshipEmployerType = paymentHistory.ApprenticeshipEmployerType,
+            });
+        }
 
         [Test]
         public void ShouldNotRefundMoreThanPaymentHistory()
@@ -75,7 +87,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             refundService.Setup(x => x.GetRefund(-300, history)).Returns(payments);
 
 
-            var actual = sut.ProcessNegativeEarning(-300, history, 2, It.IsAny<string>(), It.IsAny<ApprenticeshipEmployerType>());
+            var actual = sut.ProcessNegativeEarning(-300, history, 2, It.IsAny<string>());
 
             actual.First().Amount.Should().Be(-200);
         }
@@ -96,7 +108,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 new Payment{Amount = 100, DeliveryPeriod = 1, TransactionType = 1, FundingSource = FundingSourceType.Transfer},
             };
 
-            var actual = sut.ProcessNegativeEarning(-150, period1History.Union(period2History).Union(period3History).ToList(), 3, It.IsAny<string>(), It.IsAny<ApprenticeshipEmployerType>());
+            var actual = sut.ProcessNegativeEarning(-150, period1History.Union(period2History).Union(period3History).ToList(), 3, It.IsAny<string>());
 
             actual.Sum(x => x.Amount).Should().Be(-150);
             actual.Should().HaveCount(2);
@@ -129,34 +141,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             refundService.Setup(x => x.GetRefund(-100, history)).Returns(payments);
 
 
-            var actual = sut.ProcessNegativeEarning(-100, history, 3, expectedPriceEpisode, ApprenticeshipEmployerType.Levy);
+            var actual = sut.ProcessNegativeEarning(-100, history, 3, expectedPriceEpisode);
 
             actual.First().PriceEpisodeIdentifier.Should().Be(expectedPriceEpisode);
-        }
-
-
-        [Test]
-        public void ApprenticeshipEmployerTypeOfRefundsShouldBeTheSameAsPassedIn()
-        {
-            var expectedApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy;
-
-
-            var history = new List<Payment>
-            {
-                new Payment{Amount = 100, DeliveryPeriod = 2, TransactionType = 1, FundingSource = FundingSourceType.Levy},
-            };
-
-            var payments = new List<RequiredPayment>
-            {
-                new RequiredPayment(),
-            };
-
-            refundService.Setup(x => x.GetRefund(-100, history)).Returns(payments);
-
-
-            var actual = sut.ProcessNegativeEarning(-100, history, 3, "test price episode", expectedApprenticeshipEmployerType);
-
-            actual.First().ApprenticeshipEmployerType.Should().Be(expectedApprenticeshipEmployerType);
         }
     }
 }

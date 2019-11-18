@@ -262,7 +262,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             var paymentHistory = new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities);
             paymentHistoryCacheMock.Setup(c => c.TryGet(CacheKeys.PaymentHistoryKey, It.IsAny<CancellationToken>())).ReturnsAsync(paymentHistory).Verifiable();
 
-            negativeEarningsService.Setup(x => x.ProcessNegativeEarning(-100, It.Is<List<Payment>>(y => y.Count == 1), 2, It.IsAny<string>(), It.IsAny<ApprenticeshipEmployerType>()))
+            negativeEarningsService.Setup(x => x.ProcessNegativeEarning(-100, It.Is<List<Payment>>(y => y.Count == 1), 2, It.IsAny<string>()))
                 .Returns(requiredPayments);
 
             // act

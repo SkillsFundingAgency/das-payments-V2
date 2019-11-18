@@ -16,9 +16,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
             this.refundService = refundService;
         }
 
-        public List<RequiredPayment> ProcessNegativeEarning(decimal amount, List<Payment> paymentHistory,
-            int deliveryPeriod, string priceEpisodeIdentifier,
-            ApprenticeshipEmployerType periodApprenticeshipEmployerType)
+        public List<RequiredPayment> ProcessNegativeEarning(decimal amount, List<Payment> paymentHistory, int deliveryPeriod, string priceEpisodeIdentifier)
         {
             var results = new List<RequiredPayment>();
             var amountLeftToFund = amount;
@@ -46,7 +44,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 foreach (var requiredPayment in paymentsForPeriod)
                 {
                     requiredPayment.PriceEpisodeIdentifier = priceEpisodeIdentifier;
-                    requiredPayment.ApprenticeshipEmployerType = periodApprenticeshipEmployerType;
                 }
 
                 amountLeftToFund -= paymentsForPeriod.Sum(x => x.Amount);
