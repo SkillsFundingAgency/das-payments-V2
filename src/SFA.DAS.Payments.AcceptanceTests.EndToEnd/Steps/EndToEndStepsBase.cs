@@ -328,12 +328,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 ?.FirstOrDefault(x => x.LearnerId == learnerTraining.LearnerId)
                 ?.PriceEpisodeId.ParseAsNullableLong();
 
-            DateTime? startDate = null;
-            if (!string.IsNullOrWhiteSpace(learnerTraining.StartDate))
-            {
-                startDate = learnerTraining.StartDate.ToNullableDate();
-            }
-
             return new PaymentModel
             {
                 CollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(providerPayment.CollectionPeriod).Build(),
@@ -370,7 +364,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 //ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
                 ApprenticeshipId = apprenticeshipId,
                 ApprenticeshipPriceEpisodeId = priceEpisodeId,
-                LearningStartDate = startDate,
+                LearningStartDate = learnerTraining.StartDate.ToNullableDate(),
             };
         }
 
