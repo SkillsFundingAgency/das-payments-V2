@@ -10,20 +10,21 @@ using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 {
     public class PriceEpisodesReceivedServiceTest
     {
         [Theory, AutoDomainData]
-        public void When_job_succeeded_builds_approval_event_for_removed_price_episode(
+        public async Task When_job_succeeded_builds_approval_event_for_removed_price_episode(
             ICurrentPriceEpisodeForJobStore context, 
             PriceEpisodesReceivedService sut, 
             CurrentPriceEpisode priceEpisode)
         {
-            context.Add(priceEpisode);
+            await context.Add(priceEpisode);
 
-            var changeMessages = sut.JobSucceeded(priceEpisode.JobId, priceEpisode.Ukprn);
+            var changeMessages = await sut.JobSucceeded(priceEpisode.JobId, priceEpisode.Ukprn);
 
             changeMessages.Should().BeEquivalentTo(
                 new
@@ -40,7 +41,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         }
 
         [Theory, AutoDomainData]
-        public void When_job_succeeded_builds_approval_event_for_new_price_episode(
+        public async Task When_job_succeeded_builds_approval_event_for_new_price_episode(
             IReceivedDataLockEventStore context, 
             PriceEpisodesReceivedService sut, 
             PayableEarningEvent earning)
@@ -53,7 +54,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 Message = JsonConvert.SerializeObject(earning),
             });
 
-            var changeMessages = sut.JobSucceeded(earning.JobId, earning.Ukprn);
+            var changeMessages = await sut.JobSucceeded(earning.JobId, earning.Ukprn);
 
             changeMessages.PriceEpisodeStatusChanges.Should().ContainEquivalentOf(
                 new 
@@ -64,13 +65,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         }
 
         [Theory, AutoDomainData]
-        public void When_job_succeeded_builds_approval_event_for_new_and_updated_price_episodes(
+        public async Task When_job_succeeded_builds_approval_event_for_new_and_updated_price_episodes(
             ICurrentPriceEpisodeForJobStore currentContext,
             IReceivedDataLockEventStore receivedContext,
             PriceEpisodesReceivedService sut,
             PayableEarningEvent earning)
         {
-            currentContext.Add(new CurrentPriceEpisode
+            await currentContext.Add(new CurrentPriceEpisode
             { 
                 JobId = earning.JobId,
                 Ukprn = earning.Ukprn,
@@ -87,7 +88,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 Message = JsonConvert.SerializeObject(earning),
             });
 
-            var changeMessages = sut.JobSucceeded(earning.JobId, earning.Ukprn);
+            var changeMessages = await sut.JobSucceeded(earning.JobId, earning.Ukprn);
 
             changeMessages.PriceEpisodeStatusChanges.Should().ContainEquivalentOf(
                 new
@@ -105,14 +106,14 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         
         [Theory, AutoDomainData]
         
-        public void When_job_succeeded_builds_approval_event_for_new_and_removed_price_episodes(
+        public async Task When_job_succeeded_builds_approval_event_for_new_and_removed_price_episodes(
             ICurrentPriceEpisodeForJobStore currentContext,
             IReceivedDataLockEventStore receivedContext,
             PriceEpisodesReceivedService sut,
             PayableEarningEvent earning,
             CurrentPriceEpisode removed)
         {
-            currentContext.Add(removed);
+            await currentContext.Add(removed);
 
             receivedContext.Add(new ReceivedDataLockEvent
             {
@@ -122,7 +123,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 Message = JsonConvert.SerializeObject(earning),
             });
 
-            var changeMessages = sut.JobSucceeded(earning.JobId, earning.Ukprn);
+            var changeMessages = await sut.JobSucceeded(earning.JobId, earning.Ukprn);
 
             changeMessages.PriceEpisodeStatusChanges.Should().ContainEquivalentOf(
                 new
@@ -142,7 +143,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         }
 
         [Theory, AutoDomainData]
-        public void When_job_succeeded_removes_received_datalock_events(
+        public async Task When_job_succeeded_removes_received_datalock_events(
             IReceivedDataLockEventStore receivedContext,
             PriceEpisodesReceivedService sut,
             PayableEarningEvent earning)
@@ -155,19 +156,19 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 Message = JsonConvert.SerializeObject(earning),
             });
 
-            var changeMessages = sut.JobSucceeded(earning.JobId, earning.Ukprn);
+            var changeMessages = await sut.JobSucceeded(earning.JobId, earning.Ukprn);
 
             receivedContext.GetDataLocks(earning.JobId, earning.Ukprn).Should().BeEmpty();
         }
 
         [Theory, AutoDomainData]
-        public void When_job_succeeded_replaces_current_price_episodes(
+        public async Task When_job_succeeded_replaces_current_price_episodes(
             ICurrentPriceEpisodeForJobStore currentContext,
             IReceivedDataLockEventStore receivedContext,
             PriceEpisodesReceivedService sut,
             PayableEarningEvent earning)
         {
-            currentContext.Add(new CurrentPriceEpisode
+            await currentContext.Add(new CurrentPriceEpisode
             {
                 JobId = earning.JobId,
                 Ukprn = earning.Ukprn,
@@ -184,7 +185,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 Message = JsonConvert.SerializeObject(earning),
             });
 
-            var changeMessages = sut.JobSucceeded(earning.JobId, earning.Ukprn);
+            var changeMessages = await sut.JobSucceeded(earning.JobId, earning.Ukprn);
 
             var expected = earning.PriceEpisodes.Select(x => new CurrentPriceEpisode
             {
@@ -195,7 +196,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 AgreedPrice = x.AgreedPrice,
             });
 
-            currentContext.GetCurentPriceEpisodes(earning.JobId, earning.Ukprn)
+            (await currentContext.GetCurentPriceEpisodes(earning.JobId, earning.Ukprn))
                 .Should().BeEquivalentTo(expected);
         }
 

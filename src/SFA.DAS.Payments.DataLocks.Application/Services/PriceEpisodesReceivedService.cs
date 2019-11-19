@@ -6,6 +6,7 @@ using SFA.DAS.Payments.Model.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Services
 {
@@ -20,17 +21,17 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             this.receivedEventStore = receivedEventStore;
         }
 
-        public DataLockStatusChanged JobSucceeded(long jobId, long ukprn)
+        public async Task<DataLockStatusChanged> JobSucceeded(long jobId, long ukprn)
         {
             var datalocks = GetDatalocks(jobId, ukprn);
 
-            var currentPriceEpisodes = GetCurrentPriceEpisodes(jobId, ukprn);
+            var currentPriceEpisodes = await GetCurrentPriceEpisodes(jobId, ukprn);
 
             var changes = CalculatePriceEpisodeStatus(datalocks, currentPriceEpisodes);
 
             var buildEvents = CreateStatusChangedEvents(changes);
 
-            ReplaceCurrentPriceEpisodes(jobId, ukprn, datalocks);
+            await ReplaceCurrentPriceEpisodes(jobId, ukprn, datalocks);
 
             RemoveReceivedDataLockEvents(jobId, ukprn);
 
@@ -48,7 +49,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             return datalocks;
         }
 
-        private IEnumerable<CurrentPriceEpisode> GetCurrentPriceEpisodes(long jobId, long ukprn)
+        private Task<IEnumerable<CurrentPriceEpisode>> GetCurrentPriceEpisodes(long jobId, long ukprn)
         {
             return currentPriceEpisodesStore.GetCurentPriceEpisodes(jobId, ukprn);
         }
@@ -84,7 +85,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             };
         }
 
-        private void ReplaceCurrentPriceEpisodes(
+        private async Task ReplaceCurrentPriceEpisodes(
             long jobId, long ukprn, IEnumerable<DataLockEvent> datalocks)
         {
             var replacement = datalocks
@@ -98,7 +99,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                         AgreedPrice = episode.AgreedPrice,
                     });
 
-            currentPriceEpisodesStore.Replace(jobId, ukprn, replacement);
+            await currentPriceEpisodesStore.Replace(jobId, ukprn, replacement);
         }
 
         private void RemoveReceivedDataLockEvents(long jobId, long ukprn)

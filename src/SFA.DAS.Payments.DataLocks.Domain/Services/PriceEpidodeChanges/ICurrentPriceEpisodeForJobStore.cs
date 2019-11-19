@@ -1,13 +1,14 @@
 ﻿using SFA.DAS.Payments.DataLocks.Domain.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges
 {
     public interface ICurrentPriceEpisodeForJobStore
     {
-        void Add(CurrentPriceEpisode priceEpisode);
-        IEnumerable<CurrentPriceEpisode> GetCurentPriceEpisodes(long jobId, long ukprn);
-        void Replace(long jobId, long ukprn, IEnumerable<CurrentPriceEpisode> replacement);
+        Task Add(CurrentPriceEpisode priceEpisode);
+        Task<IEnumerable<CurrentPriceEpisode>> GetCurentPriceEpisodes(long jobId, long ukprn);
+        Task Replace(long jobId, long ukprn, IEnumerable<CurrentPriceEpisode> replacement);
     }
 
 

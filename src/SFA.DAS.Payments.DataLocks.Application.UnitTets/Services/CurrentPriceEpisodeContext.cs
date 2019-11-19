@@ -3,6 +3,7 @@ using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 {
@@ -19,22 +20,22 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             modelBuilder.Entity<CurrentPriceEpisode>().Property<long>("Id");
         }
 
-        public void Add(CurrentPriceEpisode priceEpisode)
+        public async Task Add(CurrentPriceEpisode priceEpisode)
         {
-            Prices.Add(priceEpisode);
-            SaveChanges();
+            await Prices.AddAsync(priceEpisode);
+            await SaveChangesAsync();
         }
 
-        public IEnumerable<CurrentPriceEpisode> GetCurentPriceEpisodes(long jobId, long ukprn)
+        public Task<IEnumerable<CurrentPriceEpisode>> GetCurentPriceEpisodes(long jobId, long ukprn)
         {
-            return Prices;
+            return Task.FromResult(Prices.AsEnumerable());
         }
 
-        public void Replace(long jobId, long ukprn, IEnumerable<CurrentPriceEpisode> priceEpisodes)
+        public async Task Replace(long jobId, long ukprn, IEnumerable<CurrentPriceEpisode> priceEpisodes)
         {
             Prices.RemoveRange(Prices.Where(x => x.JobId == jobId && x.Ukprn == ukprn));
-            Prices.AddRange(priceEpisodes);
-            SaveChanges();
+            await Prices.AddRangeAsync(priceEpisodes);
+            await SaveChangesAsync();
 
         }
     }
