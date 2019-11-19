@@ -11,18 +11,20 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Services
 {
+
     public class PriceEpisodesReceivedService
     {
         private readonly ICurrentPriceEpisodeForJobStore currentPriceEpisodesStore;
         private readonly IReceivedDataLockEventStore receivedEventStore;
+        private readonly PriceEpisodeStatusChangeBuilder statusChangeBuilder = new PriceEpisodeStatusChangeBuilder();
 
         public PriceEpisodesReceivedService(ICurrentPriceEpisodeForJobStore store, IReceivedDataLockEventStore receivedEventStore)
         {
-            this.currentPriceEpisodesStore = store;
+            currentPriceEpisodesStore = store;
             this.receivedEventStore = receivedEventStore;
         }
 
-        public async Task<DataLockStatusChanged> JobSucceeded(long jobId, long ukprn)
+        public async Task<List<PriceEpisodeStatusChange>> JobSucceeded(long jobId, long ukprn)
         {
             var datalocks = await GetDatalocks(jobId, ukprn);
 
@@ -30,7 +32,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             var changes = CalculatePriceEpisodeStatus(datalocks, currentPriceEpisodes);
 
-            var buildEvents = CreateStatusChangedEvents(changes);
+            var buildEvents = CreateStatusChangedEvents(datalocks, changes);
 
             await ReplaceCurrentPriceEpisodes(jobId, ukprn, datalocks);
 
@@ -63,30 +65,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             return changes;
         }
 
-        private static DataLockStatusChanged CreateStatusChangedEvents(
-            List<(string identifier, PriceEpisodeStatus status)> changes)
+        private List<PriceEpisodeStatusChange> CreateStatusChangedEvents(
+            IEnumerable<DataLockEvent> datalocks, List<(string identifier, PriceEpisodeStatus status)> changes)
         {
-            return new DataLockStatusChanged
-            {
-                PriceEpisodeStatusChanges = changes.Select(MapToPriceEpisodeStatusChange).ToList(),
-            };
-        }
-
-        private static PriceEpisodeStatusChange MapToPriceEpisodeStatusChange(
-            (string identifier, PriceEpisodeStatus status) priceEpisode)
-            => MapToPriceEpisodeStatusChange(priceEpisode.identifier, priceEpisode.status);
-
-        private static PriceEpisodeStatusChange MapToPriceEpisodeStatusChange(
-            string identifier, PriceEpisodeStatus status)
-        {
-            return new PriceEpisodeStatusChange
-            {
-                DataLock = new Model.Entities.LegacyDataLockEvent
-                {
-                    PriceEpisodeIdentifier = identifier,
-                    Status = status,
-                }
-            };
+            return statusChangeBuilder.Build(datalocks.ToList(), changes);
         }
 
         private async Task ReplaceCurrentPriceEpisodes(

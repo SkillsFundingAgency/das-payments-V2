@@ -9,17 +9,16 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Messages.Events
 {
-    //public class PriceEpisodeStatus : PriceEpisode
-    //{
-    //    public long Status { get; set; }
-    //}
-
-    public class PriceEpisodeStatusChange
+    public class PriceEpisodeStatusChange : PaymentsEvent
     {
         public LegacyDataLockEvent DataLock { get; set; }
+        public LegacyDataLockEventCommitmentVersion[] CommitmentVersions { get; set; }
+        public LegacyDataLockEventError[] Errors { get; set; }
+        public LegacyDataLockEventPeriod[] Period { get; set; }
     }
 
     [KnownType("GetInheritors")]
+    [Obsolete]
     public /*abstract*/ class DataLockStatusChanged : PaymentsEvent
     {
         public Dictionary<TransactionType, List<EarningPeriod>> TransactionTypesAndPeriods { get; set; }

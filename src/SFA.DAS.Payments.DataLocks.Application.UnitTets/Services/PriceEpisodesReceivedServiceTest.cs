@@ -30,17 +30,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             changeMessages.Should().BeEquivalentTo(
                 new
                 {
-                    PriceEpisodeStatusChanges = new[]
+                    DataLock = new
                     {
-                        new 
-                        {
-                            DataLock = new 
-                            { 
-                                priceEpisode.PriceEpisodeIdentifier,
-                                Status = PriceEpisodeStatus.Removed,
-                            },
-                        }
-                    }.ToList(),
+                        priceEpisode.PriceEpisodeIdentifier,
+                        Status = PriceEpisodeStatus.Removed,
+                    },
                 });
         }
 
@@ -60,7 +54,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             var changeMessages = await sut.JobSucceeded(earning.JobId, earning.Ukprn);
 
-            changeMessages.PriceEpisodeStatusChanges.Should().ContainEquivalentOf(
+            changeMessages.Should().ContainEquivalentOf(
                 new 
                 {
                     DataLock = new 
@@ -97,7 +91,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             var changeMessages = await sut.JobSucceeded(earning.JobId, earning.Ukprn);
 
-            changeMessages.PriceEpisodeStatusChanges.Should().ContainEquivalentOf(
+            changeMessages.Should().ContainEquivalentOf(
                 new
                 {
                     DataLock = new 
@@ -106,7 +100,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                         Status = PriceEpisodeStatus.Updated,
                     },
                 });
-            changeMessages.PriceEpisodeStatusChanges.Should().ContainEquivalentOf(
+            changeMessages.Should().ContainEquivalentOf(
                 new
                 {
                     DataLock = new 
@@ -138,7 +132,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             var changeMessages = await sut.JobSucceeded(earning.JobId, earning.Ukprn);
 
-            changeMessages.PriceEpisodeStatusChanges.Should().ContainEquivalentOf(
+            changeMessages.Should().ContainEquivalentOf(
                 new
                 {
                     DataLock = new 
@@ -147,7 +141,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                         Status = PriceEpisodeStatus.New,
                     },
                 });
-            changeMessages.PriceEpisodeStatusChanges.Should().ContainEquivalentOf(
+            changeMessages.Should().ContainEquivalentOf(
                 new
                 {
                     DataLock = new
@@ -202,7 +196,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 Message = JsonConvert.SerializeObject(earning),
             });
 
-            var changeMessages = await sut.JobSucceeded(earning.JobId, earning.Ukprn);
+            await sut.JobSucceeded(earning.JobId, earning.Ukprn);
 
             var expected = earning.PriceEpisodes.Select(x => new CurrentPriceEpisode
             {

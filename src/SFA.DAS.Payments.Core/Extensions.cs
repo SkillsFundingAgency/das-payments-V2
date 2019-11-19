@@ -27,6 +27,18 @@ namespace SFA.DAS.Payments.Core
         {
             return unrounded.HasValue ? AsRounded((decimal?) unrounded.Value) : default(decimal?);
         }
+
+        public static IEnumerable<TResult> LeftOuterJoin<TOuter, TInner, TKey, TResult>(
+            this IEnumerable<TOuter> outer,
+            IEnumerable<TInner> inner,
+            Func<TOuter, TKey> outerKeySelector,
+            Func<TInner, TKey> innerKeySelector,
+            Func<TOuter, TInner, TResult> resultSelector)
+        {
+            return outer
+                .GroupJoin(inner, outerKeySelector, innerKeySelector, (a, b) => (a, b))
+                .SelectMany(x => x.b.DefaultIfEmpty(), (x, b) => resultSelector(x.a, b));
+        }
     }
 }
 
