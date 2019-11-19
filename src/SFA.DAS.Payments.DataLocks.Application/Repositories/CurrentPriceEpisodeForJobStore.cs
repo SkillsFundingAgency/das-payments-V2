@@ -11,6 +11,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             throw new System.NotImplementedException();
         }
 
+        public void AddRange(IEnumerable<CurrentPriceEpisode> priceEpisode)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public IEnumerable<CurrentPriceEpisode> GetCurentPriceEpisodes(long jobId, long ukprn)
         {
             throw new System.NotImplementedException();

@@ -6,6 +6,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges
     public interface ICurrentPriceEpisodeForJobStore
     {
         void Add(CurrentPriceEpisode priceEpisode);
+        void AddRange(IEnumerable<CurrentPriceEpisode> priceEpisode);
         IEnumerable<CurrentPriceEpisode> GetCurentPriceEpisodes(long jobId, long ukprn);
         void Remove(long jobId, long ukprn);
     }
@@ -25,6 +26,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges
         void Add(ReceivedDataLockEvent dataLock);
         IEnumerable<ReceivedDataLockEvent> GetDataLocks(long jobId, long ukprn);
         //IEnumerable<CurrentPriceEpisode> GetCurentPriceEpisodes(long jobId, long ukprn);
-        //void Remove(long jobId, long ukprn);
+        void Remove(long jobId, long ukprn);
     }
 }

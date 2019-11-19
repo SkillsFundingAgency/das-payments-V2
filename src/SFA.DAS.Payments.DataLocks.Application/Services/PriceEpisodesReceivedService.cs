@@ -38,12 +38,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             var changes = matcher.Match(currentPriceEpisodes, deserialised.SelectMany(x => x.PriceEpisodes));
 
             // build events for approvals
-            return new DataLockStatusChanged
+            var buildEvents = new DataLockStatusChanged
             {
                 PriceEpisodeStatusChanges = changes.Select(x => new PriceEpisodeStatusChange
                 {
-                    PriceEpisode = new PriceEpisode 
-                    { 
+                    PriceEpisode = new PriceEpisode
+                    {
                         Identifier = x.identifier,
                     },
                     Status = x.status,
@@ -51,7 +51,23 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             };
 
             // update "current" with new events
+            currentPriceEpisodesStore.Remove(jobId, ukprn);
+            var a = deserialised.SelectMany(x => x.PriceEpisodes, (dlock, episode) =>
+                    new CurrentPriceEpisode
+                    {
+                        JobId = jobId,
+                        Ukprn = ukprn,
+                        Uln = dlock.Learner.Uln,
+                        PriceEpisodeIdentifier = episode.Identifier,
+                        AgreedPrice = episode.AgreedPrice,
+                    });
+            currentPriceEpisodesStore.AddRange(a);
+
+
             // remove received events from cach
+            receivedEventStore.Remove(jobId, ukprn);
+        
+            return buildEvents;
         }
     }
 }
