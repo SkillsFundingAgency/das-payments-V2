@@ -74,47 +74,30 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error processing the apprenticeship event. Error: {ex.Message}", ex);
                 throw;
             }
         }
 
         public async Task ProcessUpdatedApprenticeship(ApprenticeshipUpdatedApprovedEvent apprenticeshipApprovedEvent)
         {
-            try
-            {
-                logger.LogDebug($"Now processing the apprenticeship update even for Apprenticeship id: {apprenticeshipApprovedEvent.ApprenticeshipId}");
-                var model = mapper.Map<UpdatedApprenticeshipApprovedModel>(apprenticeshipApprovedEvent);
+            logger.LogDebug($"Now processing the apprenticeship update even for Apprenticeship id: {apprenticeshipApprovedEvent.ApprenticeshipId}");
+            var model = mapper.Map<UpdatedApprenticeshipApprovedModel>(apprenticeshipApprovedEvent);
 
-                var updatedApprenticeship = await apprenticeshipApprovedUpdatedService.UpdateApprenticeship(model).ConfigureAwait(false);
-                await PublishApprenticeshipUpdate(updatedApprenticeship);
+            var updatedApprenticeship = await apprenticeshipApprovedUpdatedService.UpdateApprenticeship(model).ConfigureAwait(false);
+            await PublishApprenticeshipUpdate(updatedApprenticeship);
 
-                logger.LogInfo($"Finished processing the apprenticeship updated event. Apprenticeship id: {updatedApprenticeship.Id}, employer account id: {updatedApprenticeship.AccountId}, Ukprn: {updatedApprenticeship.Ukprn}.");
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Error processing the apprenticeship updated event. Error: {ex.Message}", ex);
-                throw;
-            }
+            logger.LogInfo($"Finished processing the apprenticeship updated event. Apprenticeship id: {updatedApprenticeship.Id}, employer account id: {updatedApprenticeship.AccountId}, Ukprn: {updatedApprenticeship.Ukprn}.");
         }
 
         public async Task ProcessApprenticeshipDataLockTriage(DataLockTriageApprovedEvent apprenticeshipDataLockTriageEvent)
         {
-            try
-            {
-                logger.LogDebug($"Now processing the apprenticeship DataLock Triage update for Apprenticeship id: {apprenticeshipDataLockTriageEvent.ApprenticeshipId}");
-                var model = mapper.Map<UpdatedApprenticeshipDataLockTriageModel>(apprenticeshipDataLockTriageEvent);
-                var updatedApprenticeship = await apprenticeshipDataLockTriageService.UpdateApprenticeship(model).ConfigureAwait(false);
+            logger.LogDebug($"Now processing the apprenticeship DataLock Triage update for Apprenticeship id: {apprenticeshipDataLockTriageEvent.ApprenticeshipId}");
+            var model = mapper.Map<UpdatedApprenticeshipDataLockTriageModel>(apprenticeshipDataLockTriageEvent);
+            var updatedApprenticeship = await apprenticeshipDataLockTriageService.UpdateApprenticeship(model).ConfigureAwait(false);
 
-                await PublishApprenticeshipUpdate(updatedApprenticeship);
+            await PublishApprenticeshipUpdate(updatedApprenticeship);
 
-                logger.LogInfo($"Finished processing the Apprenticeship dataLock Triage update event. Apprenticeship id: {updatedApprenticeship.Id}, employer account id: {updatedApprenticeship.AccountId}, Ukprn: {updatedApprenticeship.Ukprn}.");
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Error processing the apprenticeship DataLock Triage update event. Error: {ex.Message}", ex);
-                throw;
-            }
+            logger.LogInfo($"Finished processing the Apprenticeship dataLock Triage update event. Apprenticeship id: {updatedApprenticeship.Id}, employer account id: {updatedApprenticeship.AccountId}, Ukprn: {updatedApprenticeship.Ukprn}.");
         }
 
         public async Task ProcessStoppedApprenticeship(ApprenticeshipStoppedEvent apprenticeshipStoppedEvent)
@@ -144,102 +127,70 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         public async Task ProcessPausedApprenticeship(ApprenticeshipPausedEvent pausedEvent)
         {
-            try
+            logger.LogDebug($"Now processing the apprenticeship paused event for Apprenticeship id: {pausedEvent.ApprenticeshipId}");
+            var model = new UpdatedApprenticeshipPausedModel
             {
-                logger.LogDebug($"Now processing the apprenticeship paused event for Apprenticeship id: {pausedEvent.ApprenticeshipId}");
-                var model = new UpdatedApprenticeshipPausedModel
-                {
-                    ApprenticeshipId = pausedEvent.ApprenticeshipId,
-                    PauseDate = pausedEvent.PausedOn,
-                };
+                ApprenticeshipId = pausedEvent.ApprenticeshipId,
+                PauseDate = pausedEvent.PausedOn,
+            };
 
-                var updatedApprenticeship = await apprenticeshipPauseService.UpdateApprenticeship(model).ConfigureAwait(false);
+            var updatedApprenticeship = await apprenticeshipPauseService.UpdateApprenticeship(model).ConfigureAwait(false);
 
-                await PublishApprenticeshipUpdate(updatedApprenticeship);
+            await PublishApprenticeshipUpdate(updatedApprenticeship);
 
-                logger.LogInfo($"Finished processing the apprenticeship paused event. Apprenticeship id: {updatedApprenticeship.Id}, employer account id: {updatedApprenticeship.AccountId}, Ukprn: {updatedApprenticeship.Ukprn}.");
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Error processing the apprenticeship paused event. Error: {ex.Message}", ex);
-                throw;
-            }
+            logger.LogInfo($"Finished processing the apprenticeship paused event. Apprenticeship id: {updatedApprenticeship.Id}, employer account id: {updatedApprenticeship.AccountId}, Ukprn: {updatedApprenticeship.Ukprn}.");
         }
 
         public async Task ProcessResumedApprenticeship(ApprenticeshipResumedEvent resumedEvent)
         {
-            try
+            logger.LogDebug($"Now processing the apprenticeship resumed event for Apprenticeship id: {resumedEvent.ApprenticeshipId}");
+            var model = new UpdatedApprenticeshipResumedModel
             {
-                logger.LogDebug($"Now processing the apprenticeship resumed event for Apprenticeship id: {resumedEvent.ApprenticeshipId}");
-                var model = new UpdatedApprenticeshipResumedModel
-                {
-                    ApprenticeshipId = resumedEvent.ApprenticeshipId,
-                    ResumedDate = resumedEvent.ResumedOn,
-                };
+                ApprenticeshipId = resumedEvent.ApprenticeshipId,
+                ResumedDate = resumedEvent.ResumedOn,
+            };
 
-                var updatedApprenticeship = await apprenticeshipResumedService.UpdateApprenticeship(model).ConfigureAwait(false);
+            var updatedApprenticeship = await apprenticeshipResumedService.UpdateApprenticeship(model).ConfigureAwait(false);
 
-                 await PublishApprenticeshipUpdate(updatedApprenticeship);
+            await PublishApprenticeshipUpdate(updatedApprenticeship);
 
-                logger.LogInfo($"Finished processing the apprenticeship resumed event. Apprenticeship id: {updatedApprenticeship.Id}, employer account id: {updatedApprenticeship.AccountId}, Ukprn: {updatedApprenticeship.Ukprn}.");
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Error processing the apprenticeship resumed event. Error: {ex.Message}", ex);
-                throw;
-            }
+            logger.LogInfo($"Finished processing the apprenticeship resumed event. Apprenticeship id: {updatedApprenticeship.Id}, employer account id: {updatedApprenticeship.AccountId}, Ukprn: {updatedApprenticeship.Ukprn}.");
         }
 
         public async Task ProcessPaymentOrderChange(PaymentOrderChangedEvent paymentOrderChangedEvent)
         {
-            try
+            logger.LogDebug($"Now processing Payment Order Changed Event for Account id: {paymentOrderChangedEvent.AccountId}");
+
+            var priorityEvent = new EmployerChangedProviderPriority
             {
-                logger.LogDebug($"Now processing Payment Order Changed Event for Account id: {paymentOrderChangedEvent.AccountId}");
+                EmployerAccountId = paymentOrderChangedEvent.AccountId,
+                OrderedProviders = paymentOrderChangedEvent.PaymentOrder.Select(x => (long)x).ToList()
+            };
 
-                var priorityEvent = new EmployerChangedProviderPriority
-                {
-                    EmployerAccountId = paymentOrderChangedEvent.AccountId,
-                    OrderedProviders = paymentOrderChangedEvent.PaymentOrder.Select(x => (long)x).ToList()
-                };
+            var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
+            await endpointInstance.Publish(priorityEvent).ConfigureAwait(false);
 
-                var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
-                await endpointInstance.Publish(priorityEvent).ConfigureAwait(false);
-
-                logger.LogDebug($"Finished processing Payment Order Changed Event for Account id: {paymentOrderChangedEvent.AccountId}");
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Error processing Payment Order Changed Event. Error: {ex.Message}", ex);
-                throw;
-            }
+            logger.LogDebug($"Finished processing Payment Order Changed Event for Account id: {paymentOrderChangedEvent.AccountId}");
         }
 
         public async Task ProcessApprenticeshipForNonLevyPayerEmployer(long accountId)
         {
-            try
-            {
-                logger.LogDebug($"Processing the apprenticeship Employer Is Non Levy Payer event for Account id: {accountId}");
-               
-                var updatedApprenticeships = await apprenticeshipService.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(accountId).ConfigureAwait(false);
+            logger.LogDebug($"Processing the apprenticeship Employer Is Non Levy Payer event for Account id: {accountId}");
+           
+            var updatedApprenticeships = await apprenticeshipService.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(accountId).ConfigureAwait(false);
 
-                if (!updatedApprenticeships.Any())
-                {
-                    logger.LogDebug($"Unable to update IsLevyPayerFlag no Apprenticeships found for Account id: {accountId}");
-                    return;
-                }
-
-                var updatedEvents = updatedApprenticeships.Select(x => mapper.Map<ApprenticeshipUpdated>(x));
-                
-                var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
-                await Task.WhenAll(updatedEvents.Select(message => endpointInstance.Publish(message))).ConfigureAwait(false);
-                
-                logger.LogInfo($"Finished Processing the apprenticeship Employer Is Non Levy Payer event for Account id: {accountId}");
-            }
-            catch (Exception ex)
+            if (!updatedApprenticeships.Any())
             {
-                logger.LogError($"Error while processing apprenticeship Employer Is Non Levy Payer event . Error: {ex.Message}", ex);
-                throw;
+                logger.LogDebug($"Unable to update IsLevyPayerFlag no Apprenticeships found for Account id: {accountId}");
+                return;
             }
+
+            var updatedEvents = updatedApprenticeships.Select(x => mapper.Map<ApprenticeshipUpdated>(x));
+            
+            var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
+            await Task.WhenAll(updatedEvents.Select(message => endpointInstance.Publish(message))).ConfigureAwait(false);
+            
+            logger.LogInfo($"Finished Processing the apprenticeship Employer Is Non Levy Payer event for Account id: {accountId}");
         }
 
         private async Task PublishApprenticeshipUpdate(ApprenticeshipModel updatedApprenticeship)
@@ -251,20 +202,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         private async Task HandleStoppedApprenticeship(UpdatedApprenticeshipStoppedModel model)
         {
-            try
-            {
-                logger.LogDebug($"Now processing the stopped apprenticeship with  id: {model.ApprenticeshipId}");
+            logger.LogDebug($"Now processing the stopped apprenticeship with  id: {model.ApprenticeshipId}");
 
-                var updatedApprenticeship = await apprenticeshipStoppedService.UpdateApprenticeship(model).ConfigureAwait(false);
-                await PublishApprenticeshipUpdate(updatedApprenticeship);
+            var updatedApprenticeship = await apprenticeshipStoppedService.UpdateApprenticeship(model).ConfigureAwait(false);
+            await PublishApprenticeshipUpdate(updatedApprenticeship);
 
-                logger.LogInfo($"Finished processing the stopped apprenticeship event. Apprenticeship id: {updatedApprenticeship.Id}, employer account id: {updatedApprenticeship.AccountId}, Ukprn: {updatedApprenticeship.Ukprn}.");
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Error processing the stopped apprenticeship event. Error: {ex.Message}", ex);
-                throw;
-            }
+            logger.LogInfo($"Finished processing the stopped apprenticeship event. Apprenticeship id: {updatedApprenticeship.Id}, employer account id: {updatedApprenticeship.AccountId}, Ukprn: {updatedApprenticeship.Ukprn}.");
         }
     }
 }

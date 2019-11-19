@@ -1,24 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NServiceBus.Pipeline;
-using NServiceBus.Transport;
-using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Core;
 
 namespace SFA.DAS.Payments.Application.Messaging
 {
     public class ExceptionHandlingBehavior : Behavior<IIncomingLogicalMessageContext>
     {
-        private readonly IPaymentLogger logger;
-
-        public ExceptionHandlingBehavior(IPaymentLogger logger)
-        {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
-
         public override async Task Invoke(IIncomingLogicalMessageContext context, Func<Task> next)
         {
             try
@@ -60,15 +50,10 @@ namespace SFA.DAS.Payments.Application.Messaging
     {
         public static Dictionary<TKey, TValue> ToDictionaryWithoutNullValues<TSource, TKey, TValue>(this IEnumerable<TSource> keys, Func<TSource, TKey> keySelector, Func<TSource, TValue> valueSelector)
         {
-            // message.Learner?.ReferenceNumber
-            // message.Learner.LearnRefNumber
-            //{message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}"
-             
             return keys
                 .Select(x => (key: keySelector(x), value: valueSelector(x)))
                 .Where(x => x.value != null)
                 .ToDictionary(x => x.key, x => x.value);
         }
     }
-
 }

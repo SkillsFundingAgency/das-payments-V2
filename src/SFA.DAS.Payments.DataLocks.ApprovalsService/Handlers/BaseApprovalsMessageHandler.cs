@@ -17,8 +17,7 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Handlers
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
-
-
+        
         public async Task Handle(T message, IMessageHandlerContext context)
         {
             Logger.LogVerbose($"Creating scope for handling message: {typeof(T).Name}");
