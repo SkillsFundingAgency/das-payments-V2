@@ -389,6 +389,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await MatchOnlyProviderPayments(table, TestSession.Provider).ConfigureAwait(false);
         }
 
+        [Then(@"only the following payments will be held back")]
+        public async Task ThenOnlyTheFollowingHeldBackPaymentsWillBeGenerated(Table table)
+        {
+            await MatchHeldBackRequiredPayments(table, TestSession.Provider).ConfigureAwait(false);
+        }
+
         [Then(@"only the following ""(.*)"" payments will be generated")]
         public async Task ThenOnlyTheFollowingPaymentsWillBeGenerated(string providerIdentifier, Table table)
         {
