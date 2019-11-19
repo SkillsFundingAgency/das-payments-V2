@@ -17,8 +17,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         Task DeleteTestFiles(IEnumerable<string> fileList);
 
         Task VerifyResults(IEnumerable<FileUploadJob> results,
-                           DateTimeOffset testStartDateTime,
-                           DateTimeOffset testEndDateTime,
                            Action<decimal?, decimal, decimal?> verificationAction);
 
         Task<DateTimeOffset?> GetNewDateTime(List<long> ukprns);
@@ -52,8 +50,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             return submissionService.DeleteFiles(fileList);
         }
 
-        public async Task VerifyResults(IEnumerable<FileUploadJob> results,
-            DateTimeOffset testStartDateTime, DateTimeOffset testEndDateTime, Action<decimal?, decimal, decimal?> verificationAction)
+        public async Task VerifyResults(IEnumerable<FileUploadJob> results, Action<decimal?, decimal, decimal?> verificationAction)
         {
             var resultsList = results.ToList();
             var ukprnList = resultsList.Select(r => r.Ukprn).ToList();
@@ -88,9 +85,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                 }
 
                 var summaryCsv = CreateSummaryCsv(actualPercentage, tolerance, totalEarningYtd, paymentTotals);
-                var queryTimeWindowCsv = CreateQueryTimeWindowCsv(testStartDateTime, testEndDateTime);
 
-                await SaveCsv(paymentCsv, dataStoreCsv, summaryCsv, queryTimeWindowCsv,  academicYear, collectionPeriod);
+                await SaveCsv(paymentCsv, dataStoreCsv, summaryCsv,  academicYear, collectionPeriod);
 
                 var earningsDifference = totalEarningYtd - paymentTotals?.earningsYtd;
 
@@ -98,14 +94,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             }
         }
 
-        private string CreateQueryTimeWindowCsv(DateTimeOffset testStartDateTime, DateTimeOffset testEndDateTime)
-        {
-            var header = "Query Start Time, Query End Time, Duration";
-            var row = $"{testStartDateTime:O},{testEndDateTime:O},{(testEndDateTime - testStartDateTime):G}";
-            return $"{header}{Environment.NewLine}{row}";
-        }
+   
 
-        private async Task SaveCsv(string paymentCsv, string dataStoreCsv, string summaryCsv, string queryTimeWindow,
+        private async Task SaveCsv(string paymentCsv, string dataStoreCsv, string summaryCsv, 
             short academicYear,
             byte collectionPeriod)
         {
@@ -120,8 +111,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             sb.AppendLine("Payments");
             sb.Append(paymentCsv);
             sb.AppendLine();
-            sb.AppendLine("Query Time Window");
-            sb.Append(queryTimeWindow);
 
             await FileHelpers.UploadCsvFile(academicYear, collectionPeriod, submissionService, sb.ToString());
         }

@@ -35,10 +35,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
         public async Task SmokeTest()
         {
             // Arrange
-            DateTimeOffset testStartDateTime = DateTimeOffset.UtcNow;
-            var startString = $"StartTime Value: {testStartDateTime:O}";
-            TestContext.WriteLine(startString);
-
             ITestOrchestrator orchestrator = autofacContainer.Resolve<ITestOrchestrator>();
             var fileList = await orchestrator.SetupTestFiles();
 
@@ -46,44 +42,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             var results = await orchestrator.SubmitFiles(fileList);
             var resultsList = results.ToList();
 
-            var configuration = autofacContainer.Resolve<Configuration>();
-            DateTimeOffset testEndDateTime = DateTimeOffset.UtcNow;
-            DateTime maxWaitDateTime = DateTime.UtcNow.Add(configuration.MaxTimeout);
-            while (true)
-            {
-                if (DateTime.UtcNow >= maxWaitDateTime)
-                    break;
-
-                await Task.Delay(15000);
-                DateTimeOffset? newDateTime =
-                    await orchestrator.GetNewDateTime(resultsList.Select(r => r.Ukprn).ToList());
-
-                if (!newDateTime.HasValue)
-                {
-                    break;
-                }
-
-                if (newDateTime.Value > testEndDateTime)
-                {
-                    testEndDateTime = newDateTime.Value;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-
-            var endString = $"EndTime Value: {testEndDateTime:O}";
-            TestContext.WriteLine(endString);
-
             // Assert
             using (new AssertionScope())
             {
-                await orchestrator.VerifyResults(resultsList,
-                                                 testStartDateTime,
-                                                 testEndDateTime,
-                                                 (actualPercentage, tolerance, earningDifference) =>
+                await orchestrator.VerifyResults(resultsList,(actualPercentage, tolerance, earningDifference) =>
                                                  {
                                                      TestContext.WriteLine($"Earning difference between DC and DAS: {earningDifference}");
                                                      earningDifference.Should().Be(0m);
