@@ -55,7 +55,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                                 FworkCode = 21,
                                 PwayCode = 22,
                                 ProgType = 23,
-                                StdCode = 24
+                                StdCode = 24,
+                                LearnDelInitialFundLineType = "Levy Contract"
                             },
                             LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValues>
                             {
@@ -95,7 +96,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                             {
                                 PriceEpisodeAimSeqNumber = 1,
                                 PriceEpisodeContractType = "Levy Contract",
-                                EpisodeStartDate = DateTime.Today,
+                                EpisodeStartDate = new DateTime(2020, 8, 1),
                             },
                             PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
                             {
@@ -143,6 +144,159 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             mathsAndEnglishAim.LearningAimStandardCode.Should().Be(processLearnerCommand.Learner.LearningDeliveries[1].LearningDeliveryValues.StdCode);
             mathsAndEnglishAim.Ukprn.Should().Be(processLearnerCommand.Ukprn);
 
+        }
+
+        [Test]
+        public void PriorAcademicYearAimsAreExcluded()
+        {
+            var plc = new ProcessLearnerCommand
+            {
+                CollectionPeriod = 3,
+                CollectionYear = 1920,
+                Ukprn = 1234,
+                Learner = new FM36Learner
+                {
+                    LearnRefNumber = "learner-a",
+                    ULN = 123,
+                    PriceEpisodes = new List<PriceEpisode>
+                    {
+                        new PriceEpisode
+                        {
+                            PriceEpisodeIdentifier = "25-17-01/01/2019",
+                            PriceEpisodeValues = new PriceEpisodeValues
+                            {
+                                EpisodeStartDate = DateTime.Parse("2019-01-01T00:00:00+00:00"),
+                                PriceEpisodeActualEndDate = DateTime.Parse("2019-07-31T00:00:00+00:00"),
+                                PriceEpisodeAimSeqNumber = 1,
+                                PriceEpisodeContractType = "Contract for services with the ESFA"
+                            }
+                        }
+                    },
+                    LearningDeliveries = new List<LearningDelivery>
+                    {
+                        new LearningDelivery
+                        {
+                            AimSeqNumber = 1,
+                            LearningDeliveryValues = new LearningDeliveryValues
+                            {
+                                LearnAimRef = "ZPROG001",
+                                LearnStartDate = DateTime.Parse("2019-01-01T00:00:00+00:00")
+                            }
+                        },
+                        new LearningDelivery
+                        {
+                            AimSeqNumber = 2,
+                            LearningDeliveryValues = new LearningDeliveryValues
+                            {
+                                LearnAimRef = "60062162",
+                                LearnStartDate = DateTime.Parse("2019-01-01T00:00:00+00:00"),
+                                LearnDelInitialFundLineType = "None"
+                            },
+                            LearningDeliveryPeriodisedTextValues = new List<LearningDeliveryPeriodisedTextValues>
+                            {
+                                new LearningDeliveryPeriodisedTextValues
+                                {
+                                    AttributeName = "LearnDelContType",
+                                    Period1 = "None",
+                                    Period2 = "None",
+                                    Period3 = "None",
+                                    Period4 = "None",
+                                    Period5 = "None",
+                                    Period6 = "None",
+                                    Period7 = "None",
+                                    Period8 = "None",
+                                    Period9 = "None",
+                                    Period10 = "None",
+                                    Period11 = "None",
+                                    Period12 = "None"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            var builder = new SubmittedLearnerAimBuilder(mapper);
+
+            var submittedAims = builder.Build(plc);
+
+            submittedAims.Should().HaveCount(0);
+        }
+
+        [Test]
+        public void CurrentAcademicYearAimsAreIncluded()
+        {
+            var plc = new ProcessLearnerCommand
+            {
+                CollectionPeriod = 3,
+                CollectionYear = 1920,
+                Ukprn = 1234,
+                Learner = new FM36Learner
+                {
+                    LearnRefNumber = "learner-a",
+                    ULN = 123,
+                    PriceEpisodes = new List<PriceEpisode>
+                    {
+                        new PriceEpisode
+                        {
+                            PriceEpisodeIdentifier = "25-17-06/08/2019",
+                            PriceEpisodeValues = new PriceEpisodeValues
+                            {
+                                EpisodeStartDate = DateTime.Parse("2019-08-06T00:00:00+00:00"),
+                                PriceEpisodeAimSeqNumber = 1,
+                                PriceEpisodeContractType = "Contract for services with the ESFA"
+                            }
+                        }
+                    },
+                    LearningDeliveries = new List<LearningDelivery>
+                    {
+                        new LearningDelivery
+                        {
+                            AimSeqNumber = 1,
+                            LearningDeliveryValues = new LearningDeliveryValues
+                            {
+                                LearnAimRef = "ZPROG001",
+                                LearnStartDate = DateTime.Parse("2019-08-06T00:00:00+00:00")
+                            }
+                        },
+                        new LearningDelivery
+                        {
+                            AimSeqNumber = 2,
+                            LearningDeliveryValues = new LearningDeliveryValues
+                            {
+                                LearnAimRef = "60062162",
+                                LearnStartDate = DateTime.Parse("2019-08-06T00:00:00+00:00"),
+                                LearnDelInitialFundLineType = "19+ Apprenticeship Non-Levy Contract (procured)"
+                            },
+                            LearningDeliveryPeriodisedTextValues = new List<LearningDeliveryPeriodisedTextValues>
+                            {
+                                new LearningDeliveryPeriodisedTextValues
+                                {
+                                    AttributeName = "LearnDelContType",
+                                    Period1 = "None",
+                                    Period2 = "None",
+                                    Period3 = "None",
+                                    Period4 = "None",
+                                    Period5 = "None",
+                                    Period6 = "None",
+                                    Period7 = "None",
+                                    Period8 = "None",
+                                    Period9 = "None",
+                                    Period10 = "None",
+                                    Period11 = "Contract for services with the ESFA",
+                                    Period12 = "None"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            var builder = new SubmittedLearnerAimBuilder(mapper);
+
+            var submittedAims = builder.Build(plc);
+
+            submittedAims.Should().HaveCount(2);
         }
     }
 }
