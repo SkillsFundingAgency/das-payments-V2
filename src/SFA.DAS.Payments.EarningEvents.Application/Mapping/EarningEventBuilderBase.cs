@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
-using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
@@ -23,7 +21,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                     .Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learningDelivery.AimSeqNumber)
                     .ToList();
 
-                if (!learningDelivery.IsMainAim() && LearningDeliveryHasContract(learningDelivery))
+                if (!learningDelivery.IsMainAim())
                 {
                     // Maths & English
                     var mathsAndEnglishAims = GetMathsAndEnglishAim(learnerSubmission, learningDelivery, mainAim.HasValue);
@@ -47,21 +45,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             }
 
             return results;
-        }
-
-        private static bool LearningDeliveryHasContract(LearningDelivery learningDelivery)
-        {
-            var periodisedTextValues = learningDelivery.LearningDeliveryPeriodisedTextValues
-                .Where(l => l.AttributeName == "LearnDelContType").ToList();
-
-            const byte earningPeriods = 12;
-            var periodFundingLineTypes = new List<string>();
-            for (byte i = 1; i <= earningPeriods; i++)
-            {
-                periodFundingLineTypes.AddRange(periodisedTextValues.Select(p => p.GetPeriodTextValue(i)));
-            }
-
-            return periodFundingLineTypes.Any(x => !x.Equals("none", StringComparison.InvariantCultureIgnoreCase));
         }
 
         private static bool IsCurrentAcademicYear(PriceEpisodeValues priceEpisodeValues, short currentAcademicYear)
@@ -91,8 +74,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 intermediateLearningAim.Learner
                     .LearningDeliveries
                     .Select(x => x.GetContractTypesForLearningDeliveries())
-                    .SelectMany(o => o)
-                    .Where(ct => ct != ContractType.None);
+                    .SelectMany(o => o);
 
             var distinctContractTypes = contractTypes.Distinct().ToList();
 

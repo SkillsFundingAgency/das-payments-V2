@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using Castle.Components.DictionaryAdapter;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
 using NUnit.Framework;
@@ -182,35 +181,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                                 LearnAimRef = "ZPROG001",
                                 LearnStartDate = DateTime.Parse("2019-01-01T00:00:00+00:00")
                             }
-                        },
-                        new LearningDelivery
-                        {
-                            AimSeqNumber = 2,
-                            LearningDeliveryValues = new LearningDeliveryValues
-                            {
-                                LearnAimRef = "60062162",
-                                LearnStartDate = DateTime.Parse("2019-01-01T00:00:00+00:00"),
-                                LearnDelInitialFundLineType = "None"
-                            },
-                            LearningDeliveryPeriodisedTextValues = new List<LearningDeliveryPeriodisedTextValues>
-                            {
-                                new LearningDeliveryPeriodisedTextValues
-                                {
-                                    AttributeName = "LearnDelContType",
-                                    Period1 = "None",
-                                    Period2 = "None",
-                                    Period3 = "None",
-                                    Period4 = "None",
-                                    Period5 = "None",
-                                    Period6 = "None",
-                                    Period7 = "None",
-                                    Period8 = "None",
-                                    Period9 = "None",
-                                    Period10 = "None",
-                                    Period11 = "None",
-                                    Period12 = "None"
-                                }
-                            }
                         }
                     }
                 }
@@ -258,35 +228,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                                 LearnAimRef = "ZPROG001",
                                 LearnStartDate = DateTime.Parse("2019-08-06T00:00:00+00:00")
                             }
-                        },
-                        new LearningDelivery
-                        {
-                            AimSeqNumber = 2,
-                            LearningDeliveryValues = new LearningDeliveryValues
-                            {
-                                LearnAimRef = "60062162",
-                                LearnStartDate = DateTime.Parse("2019-08-06T00:00:00+00:00"),
-                                LearnDelInitialFundLineType = "19+ Apprenticeship Non-Levy Contract (procured)"
-                            },
-                            LearningDeliveryPeriodisedTextValues = new List<LearningDeliveryPeriodisedTextValues>
-                            {
-                                new LearningDeliveryPeriodisedTextValues
-                                {
-                                    AttributeName = "LearnDelContType",
-                                    Period1 = "None",
-                                    Period2 = "None",
-                                    Period3 = "None",
-                                    Period4 = "None",
-                                    Period5 = "None",
-                                    Period6 = "None",
-                                    Period7 = "None",
-                                    Period8 = "None",
-                                    Period9 = "None",
-                                    Period10 = "None",
-                                    Period11 = "Contract for services with the ESFA",
-                                    Period12 = "None"
-                                }
-                            }
                         }
                     }
                 }
@@ -296,7 +237,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
 
             var submittedAims = builder.Build(plc);
 
-            submittedAims.Should().HaveCount(2);
+            submittedAims.Should().HaveCount(1);
         }
     }
 }

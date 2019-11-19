@@ -455,9 +455,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 // price episodes cannot span across academic year boundary
                 var episodeStartDate = priceEpisode.EpisodeEffectiveStartDate;
                 var academicYearStart = new DateTime(AcademicYear / 100 + 2000, 8, 1);
-                if (episodeStartDate < academicYearStart && (aim.ActualDurationAsTimespan.HasValue &&
-                    episodeStartDate.Add(aim.ActualDurationAsTimespan.Value) > academicYearStart || aim.PlannedDurationAsTimespan.HasValue &&
-                    episodeStartDate.Add(aim.PlannedDurationAsTimespan.Value) > academicYearStart)) episodeStartDate = academicYearStart;
+                if (episodeStartDate < academicYearStart) episodeStartDate = academicYearStart;
 
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber = CalculateAimSequenceNumber(priceEpisode);
                 newPriceEpisode.PriceEpisodeValues.EpisodeStartDate = episodeStartDate;
@@ -673,15 +671,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var period = earning.DeliveryCalendarPeriod;
                 foreach (var earningValue in earning.Values)
                 {
-                    if (MathsAndEnglishTransactionTypes().Contains(earningValue.Key) && earningValue.Value > 0)
+                    if (MathsAndEnglishTransactionTypes().Contains(earningValue.Key))
                     {
                         AddPeriodisedTextAttributes(aimPeriodisedTextValues, learningDeliveryContractType, period, GetContractTypeDescription(earning.ContractType));
                         AddPeriodisedTextAttributes(aimPeriodisedTextValues, learningDeliveryFundingLineType, period, aim.FundingLineType);
-                    }
-                    else
-                    {
-                        AddPeriodisedTextAttributes(aimPeriodisedTextValues, learningDeliveryContractType, period, "none");
-                        AddPeriodisedTextAttributes(aimPeriodisedTextValues, learningDeliveryFundingLineType, period, "none");
                     }
                 }
             }
