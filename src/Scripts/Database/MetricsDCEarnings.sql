@@ -1,4 +1,5 @@
 declare @collectionperiod int = 3
+DECLARE @ukprnFilter bigint = null
 
 --DC Earnings
 ;WITH 
@@ -125,15 +126,14 @@ RawEarnings AS (
         and LD.LearnAimRef != 'ZPROG001'
         AND Period <= @collectionperiod
 )
-, AllAct1Earnings AS (
+, AllEarnings AS (
     SELECT * 
     FROM RawEarnings
-    --WHERE ApprenticeshipContractType = 1
     UNION
     SELECT * 
     FROM RawEarningsMathsAndEnglish
-    --WHERE ApprenticeshipContractType = 1
 )
+
 SELECT [ApprenticeshipContractType],
 	SUM(TransactionType01) [TT1], 
     SUM(TransactionType02) [TT2],
@@ -151,5 +151,7 @@ SELECT [ApprenticeshipContractType],
     SUM(TransactionType14) [TT14],
     SUM(TransactionType15) [TT15],
     SUM(TransactionType16) [TT16]
-FROM AllAct1Earnings
+FROM AllEarnings
+where 
+((@ukprnFilter is null) OR (UKPRN = @ukprnFilter))
 GROUP BY [ApprenticeshipContractType]
