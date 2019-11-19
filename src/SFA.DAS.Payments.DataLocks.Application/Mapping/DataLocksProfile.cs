@@ -128,7 +128,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 ;
 
             CreateMap<DataLockEvent, DataLockStatusChanged>()
-                .ForMember(destinationMember => destinationMember.TransactionTypesAndPeriods, opt => opt.Ignore());
+                .ForMember(destinationMember => destinationMember.TransactionTypesAndPeriods, opt => opt.Ignore())
+                .ForMember(destinationMember => destinationMember.PriceEpisodeStatusChanges, opt => opt.Ignore())
+                ;
 
             CreateMap<ApprenticeshipUpdatedApprovedEvent, UpdatedApprenticeshipApprovedModel>()
                 .ForMember(dest => dest.ApprenticeshipId, opt => opt.MapFrom(source => source.ApprenticeshipId))
