@@ -788,6 +788,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                     payment.IncentiveValues.Add(transactionType, amount);
                 }
+
+                foreach (var headerCell in table.Header)
+                {
+                    var name = headerCell.Replace(" ", null).Replace("-", null);
+
+                    if (!Enum.TryParse<NonPaymentReason>(name, true, out var nonPaymentReason))
+                        continue;
+
+                    if (!decimal.TryParse(tableRow[headerCell], out var amount))
+                        continue;
+
+                    payment.NonPaymentReasons.Add(nonPaymentReason, amount);
+                }
             }
 
             return payments;
@@ -797,6 +810,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var expectedPayments = CreatePayments(table, provider.Ukprn);
             var matcher = new RequiredPaymentEventMatcher(provider, CurrentCollectionPeriod, expectedPayments, CurrentIlr, CurrentPriceEpisodes);
+            await WaitForIt(() => matcher.MatchPayments(), "Held Back Required Payment event check failure");
+        }
+
+        protected async Task MatchHeldBackRequiredPayments(Table table, Provider provider)
+        {
+            var expectedPayments = CreatePayments(table, provider.Ukprn);
+            var matcher = new CompletionPaymentHeldBackEventMatcher(provider, CurrentCollectionPeriod, expectedPayments);
             await WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
         }
 
