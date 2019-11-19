@@ -362,7 +362,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 InstalmentAmount = 200M,
                 NumberOfInstalments = 12,
                 ReportingAimFundingLineType = learnerTraining.FundingLineType,
-                //ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
+                ApprenticeshipEmployerType = providerPayment.IsEmployerLevyPayer ? ApprenticeshipEmployerType.Levy:ApprenticeshipEmployerType.NonLevy,
                 ApprenticeshipId = apprenticeshipId,
                 ApprenticeshipPriceEpisodeId = priceEpisodeId,
             };
@@ -789,6 +789,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                     payment.IncentiveValues.Add(transactionType, amount);
                 }
+
+                foreach (var headerCell in table.Header)
+                {
+                    var name = headerCell.Replace(" ", null).Replace("-", null);
+
+                    if (!Enum.TryParse<NonPaymentReason>(name, true, out var nonPaymentReason))
+                        continue;
+
+                    if (!decimal.TryParse(tableRow[headerCell], out var amount))
+                        continue;
+
+                    payment.NonPaymentReasons.Add(nonPaymentReason, amount);
+                }
             }
 
             return payments;
@@ -798,6 +811,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var expectedPayments = CreatePayments(table, provider.Ukprn);
             var matcher = new RequiredPaymentEventMatcher(provider, CurrentCollectionPeriod, expectedPayments, CurrentIlr, CurrentPriceEpisodes);
+            await WaitForIt(() => matcher.MatchPayments(), "Held Back Required Payment event check failure");
+        }
+
+        protected async Task MatchHeldBackRequiredPayments(Table table, Provider provider)
+        {
+            var expectedPayments = CreatePayments(table, provider.Ukprn);
+            var matcher = new CompletionPaymentHeldBackEventMatcher(provider, CurrentCollectionPeriod, expectedPayments);
             await WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
         }
 
@@ -1050,6 +1070,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                                : expectedPayment.Employer.ToLowerInvariant() == "no employer"
                                    ? default(long?)
                                    : TestSession.GetEmployer(expectedPayment.Employer).AccountId;
+                expectedPayment.IsEmployerLevyPayer = string.IsNullOrWhiteSpace(expectedPayment.Employer)
+                    ? TestSession.Employer.IsLevyPayer : TestSession.GetEmployer(expectedPayment.Employer).IsLevyPayer;
 
                 expectedPayment.SendingAccountId = string.IsNullOrWhiteSpace(expectedPayment.SendingEmployer)
                     ? TestSession.Employer.AccountId
