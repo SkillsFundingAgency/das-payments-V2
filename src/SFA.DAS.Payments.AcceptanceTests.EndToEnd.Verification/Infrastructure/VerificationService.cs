@@ -10,10 +10,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 {
     public interface IVerificationService
     {
-        Task<string> GetPaymentsDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,
-            DateTimeOffset startDateTime, DateTimeOffset endDateTime);
-        Task<(decimal? missingPayments, decimal? earningsYtd)?> GetPaymentTotals(short academicYear, byte collectionPeriod, bool populateEarnings,
-            DateTimeOffset startDateTime, DateTimeOffset endDateTime);
+        Task<string> GetPaymentsDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings, IList<long> ukprnList);
+        Task<(decimal? missingPayments, decimal? earningsYtd)?> GetPaymentTotals(short academicYear, byte collectionPeriod, bool populateEarnings, IList<long> ukprnList);
 
         Task<string> GetEarningsCsv(short academicYear, byte collectionPeriod, List<long> ukprnList);
 
@@ -36,8 +34,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             this.configuration = configuration;
         }
 
-        public async Task<string> GetPaymentsDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,
-            DateTimeOffset startDateTime, DateTimeOffset endDateTime)
+        public async Task<string> GetPaymentsDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,IList<long> ukprnList)
         {
             var sql = Scripts.ScriptHelpers.GetSqlScriptText(PaymentsQuerySql);
             sql += " order by 1,2";
@@ -51,8 +48,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                     cmd.Parameters.AddWithValue("@academicYear", academicYear);
                     cmd.Parameters.AddWithValue("@collectionPeriod", collectionPeriod);
                     cmd.Parameters.AddWithValue("@populateEarnings", populateEarnings);
-                    cmd.Parameters.AddWithValue("@StartTime", startDateTime);
-                    cmd.Parameters.AddWithValue("@EndTime", endDateTime);
                     connection.Open();
                     using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
@@ -140,8 +135,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             }
         }
 
-        public async Task<(decimal? missingPayments, decimal? earningsYtd)?> GetPaymentTotals(short academicYear, byte collectionPeriod, bool populateEarnings,
-            DateTimeOffset startDateTime, DateTimeOffset endDateTime)
+        public async Task<(decimal? missingPayments, decimal? earningsYtd)?> GetPaymentTotals(short academicYear, byte collectionPeriod, bool populateEarnings,IList<long> ukprnList)
         {
             var sql = @"select sum([Missing Required Payments]) As MissingRequiredPayments, sum([Earnings YTD (audit)]) As EarningsYtd
             FROM(
@@ -162,8 +156,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                     cmd.Parameters.AddWithValue("@academicYear", academicYear);
                     cmd.Parameters.AddWithValue("@collectionPeriod", collectionPeriod);
                     cmd.Parameters.AddWithValue("@populateEarnings", populateEarnings);
-                    cmd.Parameters.AddWithValue("@StartTime", startDateTime);
-                    cmd.Parameters.AddWithValue("@EndTime", endDateTime);
                     connection.Open();
 
                     using (var reader = await cmd.ExecuteReaderAsync())

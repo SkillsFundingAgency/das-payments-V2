@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -67,14 +68,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                 short academicYear = (short) groupedResult.Key;
 
                 var paymentCsv =
-                    await ExtractPaymentsData(testStartDateTime, testEndDateTime, academicYear, collectionPeriod);
+                    await ExtractPaymentsData(academicYear, collectionPeriod, ukprnList);
 
                 var dataStoreCsv = await ExtractDataStoreData(academicYear, collectionPeriod, ukprnList);
 
                var paymentTotals = await verificationService.GetPaymentTotals(
-                    academicYear, collectionPeriod, true,
-                    testStartDateTime,
-                    testEndDateTime);
+                    academicYear, collectionPeriod, true, ukprnList);
 
                 decimal? totalEarningYtd =
                     await verificationService.GetTotalEarningsYtd(academicYear, collectionPeriod, ukprnList);
@@ -139,12 +138,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             return await verificationService.GetEarningsCsv(academicYear, collectionPeriod, ukprnList);
         }
 
-        private async Task<string> ExtractPaymentsData(DateTimeOffset testStartDateTime, DateTimeOffset testEndDateTime, short academicYear, byte collectionPeriod)
+        private async Task<string> ExtractPaymentsData(short academicYear, byte collectionPeriod, IList<long> ukprnList)
         {
             return await verificationService.GetPaymentsDataCsv(academicYear, collectionPeriod,
                 true,
-                testStartDateTime,
-                testEndDateTime);
+                ukprnList);
         }
 
         public async Task<DateTimeOffset?> GetNewDateTime(List<long> ukprns)
