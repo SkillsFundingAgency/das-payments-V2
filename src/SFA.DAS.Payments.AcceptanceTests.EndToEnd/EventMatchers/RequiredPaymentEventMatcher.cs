@@ -14,6 +14,7 @@ using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
+
     public class RequiredPaymentEventMatcher : BaseMatcher<PeriodisedRequiredPaymentEvent>
     {
         private readonly Provider provider;
@@ -140,7 +141,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                             Type = incentiveTypeKey,
                             DeliveryPeriod = new DeliveryPeriodBuilder().WithSpecDate(payment.DeliveryPeriod).Build(),
                         });
-                }    
+                }
             }
 
             return expectedPayments;
@@ -161,7 +162,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return expected.DeliveryPeriod == actual.DeliveryPeriod &&
                    expected.AmountDue == actual.AmountDue.AsRounded() &&
                    MatchAct(expected as CalculatedRequiredOnProgrammeAmount, actual as CalculatedRequiredOnProgrammeAmount) &&
-                   MatchIncentive(expected as CalculatedRequiredIncentiveAmount, actual as CalculatedRequiredIncentiveAmount);
+                   MatchIncentive(expected as CalculatedRequiredIncentiveAmount, actual as CalculatedRequiredIncentiveAmount) &&
+                   MatchNonPayment(expected as CompletionPaymentHeldBackEvent, actual as CompletionPaymentHeldBackEvent);
         }
 
         private bool MatchAct(CalculatedRequiredOnProgrammeAmount expected, CalculatedRequiredOnProgrammeAmount actual)
@@ -178,6 +180,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 return true;
 
             return expected.Type == actual.Type;
+        }
+
+        private bool MatchNonPayment(CompletionPaymentHeldBackEvent expected, CompletionPaymentHeldBackEvent completionPaymentHeldBackEvent2)
+        {
+            if (expected == null)
+                return true;
+            
+            return false;
         }
 
         private PeriodisedRequiredPaymentEvent CreateContractTypeRequiredPaymentEvent(decimal amountDue, OnProgrammeEarningType onProgrammeEarningType, byte deliveryPeriod)
