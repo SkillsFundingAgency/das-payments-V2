@@ -2,6 +2,7 @@
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.DataLocks.Model.Entities;
 using SFA.DAS.Payments.Model.Core;
 using System;
 using System.Collections.Generic;
@@ -80,8 +81,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         {
             return new PriceEpisodeStatusChange
             {
-                PriceEpisode = new PriceEpisode { Identifier = identifier },
-                Status = status,
+                DataLock = new Model.Entities.LegacyDataLockEvent
+                {
+                    PriceEpisodeIdentifier = identifier,
+                    Status = status,
+                }
             };
         }
 

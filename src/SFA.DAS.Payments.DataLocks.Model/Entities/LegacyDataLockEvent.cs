@@ -2,6 +2,13 @@
 
 namespace SFA.DAS.Payments.DataLocks.Model.Entities
 {
+    public enum PriceEpisodeStatus
+    {
+        New = 1,
+        Updated,
+        Removed,
+    }
+
     public class LegacyDataLockEvent
     {
         public Guid DataLockEventId { get; set; }
@@ -27,6 +34,6 @@ namespace SFA.DAS.Payments.DataLocks.Model.Entities
         public decimal? IlrEndpointAssessorPrice { get; set; }
         public DateTime? IlrPriceEffectiveFromDate { get; set; }
         public DateTime? IlrPriceEffectiveToDate { get; set; }
-        public int Status { get; set; }
+        public PriceEpisodeStatus Status { get; set; }
     }
 }

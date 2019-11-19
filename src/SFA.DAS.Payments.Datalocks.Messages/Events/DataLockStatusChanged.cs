@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using SFA.DAS.Payments.DataLocks.Model.Entities;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -13,17 +14,9 @@ namespace SFA.DAS.Payments.DataLocks.Messages.Events
     //    public long Status { get; set; }
     //}
 
-    public enum PriceEpisodeStatus
-    {
-        New = 1,
-        Updated,
-        Removed,
-    }
-
     public class PriceEpisodeStatusChange
     {
-        public PriceEpisode PriceEpisode { get; set; }
-        public PriceEpisodeStatus Status { get; set; }
+        public LegacyDataLockEvent DataLock { get; set; }
     }
 
     [KnownType("GetInheritors")]

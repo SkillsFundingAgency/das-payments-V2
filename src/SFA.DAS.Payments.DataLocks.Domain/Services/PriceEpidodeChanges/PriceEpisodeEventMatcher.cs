@@ -1,5 +1,6 @@
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.DataLocks.Model.Entities;
 using SFA.DAS.Payments.Model.Core;
 using System;
 using System.Collections.Generic;

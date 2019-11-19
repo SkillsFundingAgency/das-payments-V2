@@ -8,6 +8,7 @@ using SFA.DAS.Payments.DataLocks.Application.Services;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.DataLocks.Model.Entities;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,8 +34,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                     {
                         new 
                         {
-                            PriceEpisode = new {Identifier = priceEpisode.PriceEpisodeIdentifier },
-                            Status = PriceEpisodeStatus.Removed,
+                            DataLock = new 
+                            { 
+                                priceEpisode.PriceEpisodeIdentifier,
+                                Status = PriceEpisodeStatus.Removed,
+                            },
                         }
                     }.ToList(),
                 });
@@ -59,8 +63,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             changeMessages.PriceEpisodeStatusChanges.Should().ContainEquivalentOf(
                 new 
                 {
-                    PriceEpisode = new { earning.PriceEpisodes.First().Identifier },
-                    Status = PriceEpisodeStatus.New,
+                    DataLock = new 
+                    { 
+                        PriceEpisodeIdentifier = earning.PriceEpisodes.First().Identifier,
+                        Status = PriceEpisodeStatus.New,
+                    },
                 });
         }
 
@@ -93,14 +100,20 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             changeMessages.PriceEpisodeStatusChanges.Should().ContainEquivalentOf(
                 new
                 {
-                    PriceEpisode = new { earning.PriceEpisodes[0].Identifier },
-                    Status = PriceEpisodeStatus.Updated,
+                    DataLock = new 
+                    {
+                        PriceEpisodeIdentifier = earning.PriceEpisodes[0].Identifier,
+                        Status = PriceEpisodeStatus.Updated,
+                    },
                 });
             changeMessages.PriceEpisodeStatusChanges.Should().ContainEquivalentOf(
                 new
                 {
-                    PriceEpisode = new { earning.PriceEpisodes[1].Identifier },
-                    Status = PriceEpisodeStatus.New,
+                    DataLock = new 
+                    {
+                        PriceEpisodeIdentifier = earning.PriceEpisodes[1].Identifier,
+                        Status = PriceEpisodeStatus.New,
+                    },
                 });
         }        
         
@@ -128,17 +141,20 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             changeMessages.PriceEpisodeStatusChanges.Should().ContainEquivalentOf(
                 new
                 {
-                    PriceEpisode = new { earning.PriceEpisodes[0].Identifier },
-                    Status = PriceEpisodeStatus.New,
+                    DataLock = new 
+                    { 
+                        PriceEpisodeIdentifier = earning.PriceEpisodes[0].Identifier,
+                        Status = PriceEpisodeStatus.New,
+                    },
                 });
             changeMessages.PriceEpisodeStatusChanges.Should().ContainEquivalentOf(
                 new
                 {
-                    PriceEpisode = new
+                    DataLock = new
                     {
-                        Identifier = removed.PriceEpisodeIdentifier
+                        removed.PriceEpisodeIdentifier,
+                        Status = PriceEpisodeStatus.Removed,
                     },
-                    Status = PriceEpisodeStatus.Removed,
                 });
         }
 

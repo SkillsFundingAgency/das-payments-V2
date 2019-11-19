@@ -289,43 +289,44 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         private async Task<LegacyDataLockEvent> SaveDataLockEvent(CancellationToken cancellationToken, DataLockStatusChanged dataLockStatusChangedEvent, EarningPeriod earningPeriod, long? apprenticeshipId)
         {
-            var priceEpisode = dataLockStatusChangedEvent.PriceEpisodes.Single(e => e.Identifier == earningPeriod.PriceEpisodeIdentifier);
-            var hasTnp3 = priceEpisode.TotalNegotiatedPrice3.GetValueOrDefault(0) > 0;
+            //var priceEpisode = dataLockStatusChangedEvent.PriceEpisodes.Single(e => e.Identifier == earningPeriod.PriceEpisodeIdentifier);
+            //var hasTnp3 = priceEpisode.TotalNegotiatedPrice3.GetValueOrDefault(0) > 0;
 
-            var dataLockEvent = new LegacyDataLockEvent // commitment ID
-            {
-                AcademicYear = dataLockStatusChangedEvent.CollectionPeriod.AcademicYear.ToString(),
-                UKPRN = dataLockStatusChangedEvent.Ukprn,
-                DataLockEventId = dataLockStatusChangedEvent.EventId,
-                EventSource = 1, // submission
-                HasErrors = !(dataLockStatusChangedEvent is DataLockStatusChangedToPassed),
-                ULN = dataLockStatusChangedEvent.Learner.Uln,
-                Status = dataLockStatusChangedEvent is DataLockStatusChangedToPassed ? 3 : dataLockStatusChangedEvent is DataLockStatusChangedToFailed ? 1 : 2,
-                ProcessDateTime = DateTime.UtcNow,
-                LearnRefNumber = dataLockStatusChangedEvent.Learner.ReferenceNumber,
-                IlrFrameworkCode = dataLockStatusChangedEvent.LearningAim.FrameworkCode,
-                IlrPathwayCode = dataLockStatusChangedEvent.LearningAim.PathwayCode,
-                IlrProgrammeType = dataLockStatusChangedEvent.LearningAim.ProgrammeType,
-                IlrStandardCode = dataLockStatusChangedEvent.LearningAim.StandardCode,
-                SubmittedDateTime = dataLockStatusChangedEvent.IlrSubmissionDateTime,
+            //var dataLockEvent = new LegacyDataLockEvent // commitment ID
+            //{
+            //    AcademicYear = dataLockStatusChangedEvent.CollectionPeriod.AcademicYear.ToString(),
+            //    UKPRN = dataLockStatusChangedEvent.Ukprn,
+            //    DataLockEventId = dataLockStatusChangedEvent.EventId,
+            //    EventSource = 1, // submission
+            //    HasErrors = !(dataLockStatusChangedEvent is DataLockStatusChangedToPassed),
+            //    ULN = dataLockStatusChangedEvent.Learner.Uln,
+            //    Status = dataLockStatusChangedEvent is DataLockStatusChangedToPassed ? 3 : dataLockStatusChangedEvent is DataLockStatusChangedToFailed ? 1 : 2,
+            //    ProcessDateTime = DateTime.UtcNow,
+            //    LearnRefNumber = dataLockStatusChangedEvent.Learner.ReferenceNumber,
+            //    IlrFrameworkCode = dataLockStatusChangedEvent.LearningAim.FrameworkCode,
+            //    IlrPathwayCode = dataLockStatusChangedEvent.LearningAim.PathwayCode,
+            //    IlrProgrammeType = dataLockStatusChangedEvent.LearningAim.ProgrammeType,
+            //    IlrStandardCode = dataLockStatusChangedEvent.LearningAim.StandardCode,
+            //    SubmittedDateTime = dataLockStatusChangedEvent.IlrSubmissionDateTime,
 
-                PriceEpisodeIdentifier = earningPeriod.PriceEpisodeIdentifier,
-                CommitmentId = apprenticeshipId.GetValueOrDefault(0),
-                EmployerAccountId = earningPeriod.AccountId.GetValueOrDefault(0),
+            //    PriceEpisodeIdentifier = earningPeriod.PriceEpisodeIdentifier,
+            //    CommitmentId = apprenticeshipId.GetValueOrDefault(0),
+            //    EmployerAccountId = earningPeriod.AccountId.GetValueOrDefault(0),
 
-                AimSeqNumber = dataLockStatusChangedEvent.LearningAim.SequenceNumber,
-                IlrPriceEffectiveFromDate = priceEpisode.EffectiveTotalNegotiatedPriceStartDate,
-                IlrPriceEffectiveToDate = priceEpisode.ActualEndDate.GetValueOrDefault(priceEpisode.PlannedEndDate),
-                IlrEndpointAssessorPrice = hasTnp3 ? priceEpisode.TotalNegotiatedPrice4 : priceEpisode.TotalNegotiatedPrice2,
-                IlrFileName = TrimUkprnFromIlrFileNameLimitToValidLength(dataLockStatusChangedEvent.IlrFileName),
-                IlrStartDate = priceEpisode.CourseStartDate,
-                IlrTrainingPrice = hasTnp3 ? priceEpisode.TotalNegotiatedPrice3 : priceEpisode.TotalNegotiatedPrice1,
-            };
+            //    AimSeqNumber = dataLockStatusChangedEvent.LearningAim.SequenceNumber,
+            //    IlrPriceEffectiveFromDate = priceEpisode.EffectiveTotalNegotiatedPriceStartDate,
+            //    IlrPriceEffectiveToDate = priceEpisode.ActualEndDate.GetValueOrDefault(priceEpisode.PlannedEndDate),
+            //    IlrEndpointAssessorPrice = hasTnp3 ? priceEpisode.TotalNegotiatedPrice4 : priceEpisode.TotalNegotiatedPrice2,
+            //    IlrFileName = TrimUkprnFromIlrFileNameLimitToValidLength(dataLockStatusChangedEvent.IlrFileName),
+            //    IlrStartDate = priceEpisode.CourseStartDate,
+            //    IlrTrainingPrice = hasTnp3 ? priceEpisode.TotalNegotiatedPrice3 : priceEpisode.TotalNegotiatedPrice1,
+            //};
 
-            logger.LogVerbose($"Saving legacy DataLockEvent {dataLockStatusChangedEvent.EventId} for UKPRN {dataLockStatusChangedEvent.Ukprn}");
+            //logger.LogVerbose($"Saving legacy DataLockEvent {dataLockStatusChangedEvent.EventId} for UKPRN {dataLockStatusChangedEvent.Ukprn}");
 
-            await dataLockEventWriter.Write(dataLockEvent, cancellationToken).ConfigureAwait(false);
-            return dataLockEvent;
+            //await dataLockEventWriter.Write(dataLockEvent, cancellationToken).ConfigureAwait(false);
+            //return dataLockEvent;
+            throw new NotImplementedException();
         }
 
         public static string TrimUkprnFromIlrFileNameLimitToValidLength(string input)
