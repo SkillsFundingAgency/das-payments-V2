@@ -1,7 +1,7 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.Payments.DataLocks.Domain.Services;
+using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         [Theory, AutoData]
         public void When_price_episode_cannot_be_found_then_return_New(
             PriceEpisode priceEpisode,
-            PriceEpisodeEventMatcher sut)
+            PriceEpisodeStatusCalculator sut)
         {
             var currentPriceEpisodes = new[]
             {
@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         [Theory, AutoData]
         public void When_price_episode_is_stored_and_has_not_changed_then_return_New(
             PriceEpisode priceEpisode,
-            PriceEpisodeEventMatcher sut)
+            PriceEpisodeStatusCalculator sut)
         {
             var currentPriceEpisodes = new[]
             {
@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         [Theory, AutoData]
         public void When_price_episode_is_stored_and_changes_case_then_return_New(
             PriceEpisode priceEpisode,
-            PriceEpisodeEventMatcher sut)
+            PriceEpisodeStatusCalculator sut)
         {
             priceEpisode.Identifier = priceEpisode.Identifier.ToLower();
             
@@ -73,7 +73,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         [Theory, AutoData]
         public void When_price_episode_price_changes_then_return_Updated(
             PriceEpisode priceEpisode,
-            PriceEpisodeEventMatcher sut)
+            PriceEpisodeStatusCalculator sut)
         {
             var currentPriceEpisodes = new[]
             {
@@ -93,7 +93,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         public void Match_unchanged_updated_missing_and_removed_price_episodes(
             List<PriceEpisode> priceEpisodes,
             string leftOverPriceEpisodeId,
-            PriceEpisodeEventMatcher sut)
+            PriceEpisodeStatusCalculator sut)
         {
             var currentPriceEpisodes = new[]
             {
@@ -113,7 +113,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 },
             };
 
-            var r = sut.Match(currentPriceEpisodes, priceEpisodes);
+            var r = sut.Calculate(currentPriceEpisodes, priceEpisodes);
 
             r.Should().BeEquivalentTo(
                 (priceEpisodes[0].Identifier, PriceEpisodeStatus.New),

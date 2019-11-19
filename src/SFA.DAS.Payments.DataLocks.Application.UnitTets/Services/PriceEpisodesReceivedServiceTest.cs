@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Application.Services;
+using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
-using SFA.DAS.Payments.Model.Core;
 using System;
 using System.Linq;
 

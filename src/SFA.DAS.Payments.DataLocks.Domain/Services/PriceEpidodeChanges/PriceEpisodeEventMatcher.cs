@@ -1,3 +1,4 @@
+using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using System;
@@ -6,18 +7,10 @@ using System.Linq;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges
 {
-    public class CurrentPriceEpisode
-    {
-        public string PriceEpisodeIdentifier { get; set; }
-        public decimal AgreedPrice { get; set; }
-        public long Uln { get; set; }
-        public long Ukprn { get; set; }
-        public long JobId { get; set; }
-    }
 
-    public class PriceEpisodeEventMatcher
+    public class PriceEpisodeStatusCalculator
     {
-        public List<(string identifier, PriceEpisodeStatus status)> Match(
+        public List<(string identifier, PriceEpisodeStatus status)> Calculate(
             IEnumerable<CurrentPriceEpisode> currentPriceEpisodes, 
             IEnumerable<PriceEpisode> receivedPriceEpisodes)
         {

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -21,38 +22,73 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         public DataLockStatusChanged JobSucceeded(long jobId, long ukprn)
         {
-            // get received events from cache
-            var received = receivedEventStore.GetDataLocks(jobId, ukprn);
-            var deserialised = received.Select(x =>
+            var datalocks = GetDatalocks(jobId, ukprn);
+
+            var currentPriceEpisodes = GetCurrentPriceEpisodes(jobId, ukprn);
+
+            var changes = CalculatePriceEpisodeStatus(datalocks, currentPriceEpisodes);
+
+            var buildEvents = CreateStatusChangedEvents(changes);
+
+            ReplaceCurrentPriceEpisodes(jobId, ukprn, datalocks);
+
+            RemoveReceivedDataLockEvents(jobId, ukprn);
+
+            return buildEvents;
+        }
+
+        private IEnumerable<DataLockEvent> GetDatalocks(long jobId, long ukprn)
+        {
+            var receivedEvents = receivedEventStore.GetDataLocks(jobId, ukprn);
+            var datalocks = receivedEvents.Select(x =>
             {
                 var type = Type.GetType(typeof(PayableEarningEvent).AssemblyQualifiedName);
-                var v = JsonConvert.DeserializeObject(x.Message, type);
-                return (DataLockEvent)v;
+                return (DataLockEvent)JsonConvert.DeserializeObject(x.Message, type);
             });
+            return datalocks;
+        }
 
-            // get current price episodes
-            var currentPriceEpisodes = currentPriceEpisodesStore.GetCurentPriceEpisodes(jobId, ukprn);
+        private IEnumerable<CurrentPriceEpisode> GetCurrentPriceEpisodes(long jobId, long ukprn)
+        {
+            return currentPriceEpisodesStore.GetCurentPriceEpisodes(jobId, ukprn);
+        }
 
-            // calculate difference
-            var matcher = new PriceEpisodeEventMatcher();
-            var changes = matcher.Match(currentPriceEpisodes, deserialised.SelectMany(x => x.PriceEpisodes));
+        private static List<(string identifier, PriceEpisodeStatus status)> CalculatePriceEpisodeStatus(
+            IEnumerable<DataLockEvent> datalocks, IEnumerable<CurrentPriceEpisode> currentPriceEpisodes)
+        {
+            var calculator = new PriceEpisodeStatusCalculator();
+            var changes = calculator.Calculate(currentPriceEpisodes, datalocks.SelectMany(x => x.PriceEpisodes));
+            return changes;
+        }
 
-            // build events for approvals
-            var buildEvents = new DataLockStatusChanged
+        private static DataLockStatusChanged CreateStatusChangedEvents(
+            List<(string identifier, PriceEpisodeStatus status)> changes)
+        {
+            return new DataLockStatusChanged
             {
-                PriceEpisodeStatusChanges = changes.Select(x => new PriceEpisodeStatusChange
-                {
-                    PriceEpisode = new PriceEpisode
-                    {
-                        Identifier = x.identifier,
-                    },
-                    Status = x.status,
-                }).ToList(),
+                PriceEpisodeStatusChanges = changes.Select(MapToPriceEpisodeStatusChange).ToList(),
             };
+        }
 
-            // update "current" with new events
-            currentPriceEpisodesStore.Remove(jobId, ukprn);
-            var a = deserialised.SelectMany(x => x.PriceEpisodes, (dlock, episode) =>
+        private static PriceEpisodeStatusChange MapToPriceEpisodeStatusChange(
+            (string identifier, PriceEpisodeStatus status) priceEpisode)
+            => MapToPriceEpisodeStatusChange(priceEpisode.identifier, priceEpisode.status);
+
+        private static PriceEpisodeStatusChange MapToPriceEpisodeStatusChange(
+            string identifier, PriceEpisodeStatus status)
+        {
+            return new PriceEpisodeStatusChange
+            {
+                PriceEpisode = new PriceEpisode { Identifier = identifier },
+                Status = status,
+            };
+        }
+
+        private void ReplaceCurrentPriceEpisodes(
+            long jobId, long ukprn, IEnumerable<DataLockEvent> datalocks)
+        {
+            var replacement = datalocks
+                .SelectMany(x => x.PriceEpisodes, (dlock, episode) =>
                     new CurrentPriceEpisode
                     {
                         JobId = jobId,
@@ -61,13 +97,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                         PriceEpisodeIdentifier = episode.Identifier,
                         AgreedPrice = episode.AgreedPrice,
                     });
-            currentPriceEpisodesStore.AddRange(a);
 
+            currentPriceEpisodesStore.Replace(jobId, ukprn, replacement);
+        }
 
-            // remove received events from cach
+        private void RemoveReceivedDataLockEvents(long jobId, long ukprn)
+        {
             receivedEventStore.Remove(jobId, ukprn);
-        
-            return buildEvents;
         }
     }
 }

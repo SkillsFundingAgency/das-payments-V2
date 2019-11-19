@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,16 +30,12 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             return Prices;
         }
 
-        public void Remove(long jobId, long ukprn)
+        public void Replace(long jobId, long ukprn, IEnumerable<CurrentPriceEpisode> priceEpisodes)
         {
             Prices.RemoveRange(Prices.Where(x => x.JobId == jobId && x.Ukprn == ukprn));
-            SaveChanges();
-        }
-
-        public void AddRange(IEnumerable<CurrentPriceEpisode> priceEpisodes)
-        {
             Prices.AddRange(priceEpisodes);
             SaveChanges();
+
         }
     }
 }
