@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             PriceEpisodesReceivedService sut, 
             PayableEarningEvent earning)
         {
-            context.Add(new ReceivedDataLockEvent
+            await context.Add(new ReceivedDataLockEvent
             {
                 JobId = earning.JobId,
                 Ukprn = earning.Ukprn,
@@ -80,7 +80,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 AgreedPrice = earning.PriceEpisodes.First().AgreedPrice + 1,
             });
 
-            receivedContext.Add(new ReceivedDataLockEvent
+            await receivedContext.Add(new ReceivedDataLockEvent
             {
                 JobId = earning.JobId,
                 Ukprn = earning.Ukprn,
@@ -115,7 +115,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         {
             await currentContext.Add(removed);
 
-            receivedContext.Add(new ReceivedDataLockEvent
+            await receivedContext.Add(new ReceivedDataLockEvent
             {
                 JobId = earning.JobId,
                 Ukprn = earning.Ukprn,
@@ -148,7 +148,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             PriceEpisodesReceivedService sut,
             PayableEarningEvent earning)
         {
-            receivedContext.Add(new ReceivedDataLockEvent
+            await receivedContext.Add(new ReceivedDataLockEvent
             {
                 JobId = earning.JobId,
                 Ukprn = earning.Ukprn,
@@ -156,9 +156,10 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 Message = JsonConvert.SerializeObject(earning),
             });
 
-            var changeMessages = await sut.JobSucceeded(earning.JobId, earning.Ukprn);
+            await sut.JobSucceeded(earning.JobId, earning.Ukprn);
 
-            receivedContext.GetDataLocks(earning.JobId, earning.Ukprn).Should().BeEmpty();
+            (await receivedContext.GetDataLocks(earning.JobId, earning.Ukprn))
+                .Should().BeEmpty();
         }
 
         [Theory, AutoDomainData]
@@ -177,7 +178,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 AgreedPrice = earning.PriceEpisodes.First().AgreedPrice + 1,
             });
 
-            receivedContext.Add(new ReceivedDataLockEvent
+            await receivedContext.Add(new ReceivedDataLockEvent
             {
                 JobId = earning.JobId,
                 Ukprn = earning.Ukprn,

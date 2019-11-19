@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         public async Task<DataLockStatusChanged> JobSucceeded(long jobId, long ukprn)
         {
-            var datalocks = GetDatalocks(jobId, ukprn);
+            var datalocks = await GetDatalocks(jobId, ukprn);
 
             var currentPriceEpisodes = await GetCurrentPriceEpisodes(jobId, ukprn);
 
@@ -33,14 +33,14 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             await ReplaceCurrentPriceEpisodes(jobId, ukprn, datalocks);
 
-            RemoveReceivedDataLockEvents(jobId, ukprn);
+            await RemoveReceivedDataLockEvents(jobId, ukprn);
 
             return buildEvents;
         }
 
-        private IEnumerable<DataLockEvent> GetDatalocks(long jobId, long ukprn)
+        private async Task<IEnumerable<DataLockEvent>> GetDatalocks(long jobId, long ukprn)
         {
-            var receivedEvents = receivedEventStore.GetDataLocks(jobId, ukprn);
+            var receivedEvents = await receivedEventStore.GetDataLocks(jobId, ukprn);
             var datalocks = receivedEvents.Select(x =>
             {
                 var type = Type.GetType(typeof(PayableEarningEvent).AssemblyQualifiedName);
@@ -102,9 +102,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             await currentPriceEpisodesStore.Replace(jobId, ukprn, replacement);
         }
 
-        private void RemoveReceivedDataLockEvents(long jobId, long ukprn)
+        private Task RemoveReceivedDataLockEvents(long jobId, long ukprn)
         {
-            receivedEventStore.Remove(jobId, ukprn);
+            return receivedEventStore.Remove(jobId, ukprn);
         }
     }
 }

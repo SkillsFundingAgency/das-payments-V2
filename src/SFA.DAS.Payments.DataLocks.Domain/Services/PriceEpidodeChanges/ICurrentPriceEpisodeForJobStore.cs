@@ -23,9 +23,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges
 
     public interface IReceivedDataLockEventStore
     {
-        void Add(ReceivedDataLockEvent dataLock);
-        IEnumerable<ReceivedDataLockEvent> GetDataLocks(long jobId, long ukprn);
-        //IEnumerable<CurrentPriceEpisode> GetCurentPriceEpisodes(long jobId, long ukprn);
-        void Remove(long jobId, long ukprn);
+        Task Add(ReceivedDataLockEvent dataLock);
+        Task<IEnumerable<ReceivedDataLockEvent>> GetDataLocks(long jobId, long ukprn);
+        Task Remove(long jobId, long ukprn);
     }
 }

@@ -2,6 +2,7 @@
 using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 {
@@ -13,27 +14,22 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         {
         }
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    modelBuilder.Entity<ReceivedDataLockEvent>().HasKey(o => o.Id);
-        //}
-
-        public void Add(ReceivedDataLockEvent dataLock)
+        public async Task Add(ReceivedDataLockEvent dataLock)
         {
-            DataLockEvents.Add(dataLock);
-            SaveChanges();
+            await DataLockEvents.AddAsync(dataLock);
+            await SaveChangesAsync();
         }
 
-        public IEnumerable<ReceivedDataLockEvent> GetDataLocks(long jobId, long ukprn)
+        public Task<IEnumerable<ReceivedDataLockEvent>> GetDataLocks(long jobId, long ukprn)
         {
-            return DataLockEvents;
+            return Task.FromResult(DataLockEvents.AsEnumerable());
         }
 
-        public void Remove(long jobId, long ukprn)
+        public async Task Remove(long jobId, long ukprn)
         {
             DataLockEvents.RemoveRange(
                 DataLockEvents.Where(x => x.JobId == jobId && x.Ukprn == ukprn));
-            SaveChanges();
+            await SaveChangesAsync();
         }
     }
 }
