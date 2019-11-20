@@ -54,9 +54,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         {
             var resultsList = results.ToList();
             var ukprnList = resultsList.Select(r => r.Ukprn).ToList();
-
             byte collectionPeriod = (byte) resultsList.FirstOrDefault().PeriodNumber;
-
 
             var groupedResults = resultsList.GroupBy(g => g.CollectionYear);
 
@@ -65,7 +63,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                 short academicYear = (short) groupedResult.Key;
 
                 var paymentCsv =
-                    await ExtractPaymentsData(academicYear, collectionPeriod, ukprnList);
+                    await ExtractPaymentsData(results.Min(r=>r.DateTimeCreatedUtc), academicYear, collectionPeriod, ukprnList);
 
                 var dataStoreCsv = await ExtractDataStoreData(academicYear, collectionPeriod, ukprnList);
 
@@ -127,9 +125,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             return await verificationService.GetEarningsCsv(academicYear, collectionPeriod, ukprnList);
         }
 
-        private async Task<string> ExtractPaymentsData(short academicYear, byte collectionPeriod, IList<long> ukprnList)
+        private async Task<string> ExtractPaymentsData(DateTime runStartDateTime,
+            short academicYear, byte collectionPeriod, IList<long> ukprnList)
         {
-            return await verificationService.GetPaymentsDataCsv(academicYear, collectionPeriod,
+            return await verificationService.GetPaymentsDataCsv(runStartDateTime, academicYear, collectionPeriod,
                 true,
                 ukprnList);
         }

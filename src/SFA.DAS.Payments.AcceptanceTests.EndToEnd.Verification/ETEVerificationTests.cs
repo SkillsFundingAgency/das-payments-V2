@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -25,11 +27,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             builder.RegisterType<TestOrchestrator>().As<ITestOrchestrator>().InstancePerLifetimeScope();
             builder.RegisterType<VerificationService>().As<IVerificationService>().InstancePerLifetimeScope();
             builder.RegisterType<SubmissionService>().As<ISubmissionService>().InstancePerLifetimeScope();
-
             builder.RegisterModule<AcceptanceTestsModule>();
 
             autofacContainer = builder.Build();
         }
+
+
+        [Test]
+        public async Task DBTest()
+        {
+            ITestOrchestrator orchestrator = autofacContainer.Resolve<ITestOrchestrator>();
+            var fileUploadJobs = new List<FileUploadJob>
+            {
+                new FileUploadJob() {Ukprn = 10063506, PeriodNumber = 3, CollectionYear = 1920, DateTimeCreatedUtc = DateTime.UtcNow}, new FileUploadJob() {Ukprn = 662745, PeriodNumber = 3, CollectionYear = 1920, DateTimeCreatedUtc = DateTime.UtcNow}
+            }; 
+            await orchestrator.VerifyResults(fileUploadJobs, (arg1, arg2, arg3) => { });
+
+        }
+
 
         [Test]
         public async Task SmokeTest()

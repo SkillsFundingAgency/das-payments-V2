@@ -10,7 +10,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 {
     public interface IVerificationService
     {
-        Task<string> GetPaymentsDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings, IList<long> ukprnList);
+        Task<string> GetPaymentsDataCsv(DateTime runStartDateTime, short academicYear, byte collectionPeriod,
+            bool populateEarnings, IList<long> ukprnList);
         Task<(decimal? missingPayments, decimal? earningsYtd)?> GetPaymentTotals(short academicYear, byte collectionPeriod, bool populateEarnings, IList<long> ukprnList);
 
         Task<string> GetEarningsCsv(short academicYear, byte collectionPeriod, List<long> ukprnList);
@@ -34,10 +35,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             this.configuration = configuration;
         }
 
-        public async Task<string> GetPaymentsDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,IList<long> ukprnList)
+        public async Task<string> GetPaymentsDataCsv(DateTime runStartDateTime, short academicYear,
+            byte collectionPeriod, bool populateEarnings, IList<long> ukprnList)
         {
             var sql = Scripts.ScriptHelpers.GetSqlScriptText(PaymentsQuerySql);
-            sql += " order by 1,2";
+            sql = sql.Replace("@ukprnList", String.Join(",", ukprnList));
             using (SqlConnection connection = GetPaymentsConnectionString())
             {
                 using (SqlCommand cmd = connection.CreateCommand())
@@ -45,17 +47,43 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                     cmd.CommandTimeout = configuration.SqlCommandTimeout.Seconds;
                     cmd.CommandText = sql;
                     cmd.CommandType = CommandType.Text;
-                    cmd.Parameters.AddWithValue("@academicYear", academicYear);
+                    cmd.Parameters.AddWithValue("@monthendStartTime", runStartDateTime);
+                    cmd.Parameters.AddWithValue("@startDate", runStartDateTime);
                     cmd.Parameters.AddWithValue("@collectionPeriod", collectionPeriod);
-                    cmd.Parameters.AddWithValue("@populateEarnings", populateEarnings);
                     connection.Open();
                     using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
-                        return CreateCsvFromDataReader(reader);
+
+                        Dictionary<string, decimal?> results = new Dictionary<string, decimal?>();
+                        await reader.ReadAsync();
+
+                        PoplateResults(results, reader);
+                        await reader.NextResultAsync();
+                        await reader.ReadAsync();
+                        PoplateResults(results, reader);
+                        await reader.NextResultAsync();
+                        await reader.ReadAsync();
+                        PoplateResults(results, reader);
                     }
                 }
             }
+
+            return "";
+
         }
+
+        private void PoplateResults(Dictionary<string, decimal?> results, SqlDataReader reader)
+        {
+           
+            var columnNames = Enumerable.Range(0, reader.FieldCount)
+                .Select(reader.GetName)
+                .ToList();
+            for (int i = 0; i < columnNames.Count; i++)
+            {
+                results.Add(columnNames[i],!reader.IsDBNull(i) ? (decimal?) reader.GetValue(i) : (decimal?) null);
+            }
+        }
+    
 
         public async Task<string> GetEarningsCsv(short academicYear, byte collectionPeriod, List<long> ukprnList)
         {
