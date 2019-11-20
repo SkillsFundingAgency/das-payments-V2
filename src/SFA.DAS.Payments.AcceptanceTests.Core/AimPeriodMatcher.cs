@@ -19,17 +19,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             string plannedDuration,
             string actualDuration)
         {
-            if (!actualDurationAsTimeSpan.HasValue)
-            {
-                return true;
-            }
-
-            var academicYearStart = new DateTime(collectionPeriod.AcademicYear / 100 + 2000, 8, 1);
-            if (startDate.ToDate().Add(actualDurationAsTimeSpan.Value) < academicYearStart)
-            {
-                return false;
-            }
-
             return true;
         }
 
