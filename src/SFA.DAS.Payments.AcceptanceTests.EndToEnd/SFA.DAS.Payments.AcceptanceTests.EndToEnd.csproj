@@ -1027,6 +1027,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-464 Non-Levy learner, deleted aim reference for English and Maths.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Inconsistent Submission Data\PV2-464a Non-Levy learner ME Removed after balancing payment.feature.cs">
+      <DependentUpon>PV2-464a Non-Levy learner ME Removed after balancing payment.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Inconsistent Submission Data\PV2-525 Levy learner changes standard code.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2138,6 +2141,7 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-464 Non-Levy learner, deleted aim reference for English and Maths.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Inconsistent Submission Data\PV2-464a Non-Levy learner ME Removed after balancing payment.feature" />
     <None Include="Tests\Inconsistent Submission Data\PV2-525 Levy learner changes standard code.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-525 Levy learner changes standard code.feature.cs</LastGenOutput>
