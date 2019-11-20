@@ -2,7 +2,6 @@
 using System.Fabric;
 using System.Fabric.Description;
 using System.Threading.Tasks;
-using Microsoft.ServiceFabric.Services.Remoting;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Core;
@@ -19,43 +18,26 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public Task Handle(PeriodEndStartedEvent message, IMessageHandlerContext context)
+        public async Task Handle(PeriodEndStartedEvent message, IMessageHandlerContext context)
         {
             logger.LogInfo($"Received period end started event. Details: {message.ToJson()}");
 
-            long iterations = 0;
-            var appName = "SFA.DAS.Payments.DataLocks.ApprovalsServiceType";
-            var serviceName = "ApprovalsService";
-            var serviceType = "ApprovalsServiceType";
-
+            var serviceName = "fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/SFA.DAS.Payments.DataLocks.ApprovalsService";
+            
             var fabricClient = new FabricClient();
-            var partitionDescription = new SingletonPartitionSchemeDescription();
-            var serviceDescription = new StatelessServiceDescription()
+            var serviceDescription = new DeleteServiceDescription(new Uri(serviceName)) 
             {
-                ApplicationName = new Uri(appName),
-                PartitionSchemeDescription = partitionDescription,
-                ServiceName = new Uri(serviceName),
-                ServiceTypeName = serviceType
+                ForceDelete = true,
             };
 
-            // Create the service instance.  If the service is declared as a default service in the ApplicationManifest.xml,
-            // the service instance is already running and this call will fail.
             try
             {
                 await fabricClient.ServiceManager.DeleteServiceAsync(serviceDescription);
             }
-            catch (AggregateException ae)
-            {
-                Console.WriteLine($"Failed to deploy the new service. {ae}");
-            }
             catch (Exception e)
             {
-                Console.WriteLine($"Failed to deploy the new service. {e}");
+                Console.WriteLine($"Failed to delete the new service. {e}");
             }
-
-
-
-            return Task.CompletedTask;
         }
     }
 }
