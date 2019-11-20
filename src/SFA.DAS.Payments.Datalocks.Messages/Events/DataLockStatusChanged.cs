@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.DataLocks.Messages.Events
         public LegacyDataLockEvent DataLock { get; set; }
         public LegacyDataLockEventCommitmentVersion[] CommitmentVersions { get; set; }
         public LegacyDataLockEventError[] Errors { get; set; }
-        public LegacyDataLockEventPeriod[] Period { get; set; }
+        public LegacyDataLockEventPeriod[] Periods { get; set; }
     }
 
     [KnownType("GetInheritors")]
