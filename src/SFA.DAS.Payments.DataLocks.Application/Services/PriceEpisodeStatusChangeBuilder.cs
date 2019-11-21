@@ -6,51 +6,112 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Services
 {
-    public class PriceEpisodeStatusChangeBuilder
+    public interface IPriceEpisodeStatusChangeBuilder
     {
-        public List<PriceEpisodeStatusChange> Build(List<DataLockEvent> dataLockEvents, List<(string identifier, PriceEpisodeStatus status)> priceEpisodeChanges)
+        Task<List<PriceEpisodeStatusChange>> Build(List<DataLockEvent> dataLockEvents, List<(string identifier, PriceEpisodeStatus status)> priceEpisodeChanges);
+    }
+
+    public class PriceEpisodeStatusChangeBuilder : IPriceEpisodeStatusChangeBuilder
+    {
+        private readonly IApprenticeshipRepository apprenticeshipRepository;
+        public PriceEpisodeStatusChangeBuilder(IApprenticeshipRepository apprenticeshipRepository)
         {
-            var present = BuildPresentEvents(dataLockEvents, priceEpisodeChanges);
+            this.apprenticeshipRepository = apprenticeshipRepository;
+        }
+
+        public async Task<List<PriceEpisodeStatusChange>> Build(List<DataLockEvent> dataLockEvents,
+            List<(string identifier, PriceEpisodeStatus status)> priceEpisodeChanges)
+        {
+            var present = await BuildPresentEvents(dataLockEvents, priceEpisodeChanges);
 
             var removed = BuildRemovedEvents(priceEpisodeChanges);
 
             return present.Union(removed).ToList();
         }
 
-        private static List<PriceEpisodeStatusChange> BuildPresentEvents(List<DataLockEvent> dataLockEvents, List<(string identifier, PriceEpisodeStatus status)> priceEpisodeChanges)
+        private async Task<List<PriceEpisodeStatusChange>> BuildPresentEvents(List<DataLockEvent> dataLockEvents,
+            List<(string identifier, PriceEpisodeStatus status)> priceEpisodeChanges)
         {
             var events = new List<PriceEpisodeStatusChange>();
 
             foreach (var priceEpisode in dataLockEvents.SelectMany(x => x.PriceEpisodes).Distinct())
             {
-                var allDataLocks = dataLockEvents.Where(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisode.Identifier));
+                var priceEpisodeChange =
+                    priceEpisodeChanges.FirstOrDefault(x => x.identifier == priceEpisode.Identifier);
 
-                var priceEpisodeErrors = allDataLocks
+                var priceEpisodeDataLocks = dataLockEvents
+                    .Where(x => x.PriceEpisodes.Any(p => p.Identifier == priceEpisode.Identifier))
+                    .ToList();
+
+                var priceEpisodeErrors = priceEpisodeDataLocks
                     .OfType<EarningFailedDataLockMatching>()
                     .SelectMany(x => x.OnProgrammeEarnings)
                     .SelectMany(x => x.Periods)
-                    .Where(p => p.PriceEpisodeIdentifier.Equals(priceEpisode.Identifier, StringComparison.InvariantCultureIgnoreCase))
+                    .Where(p => p.PriceEpisodeIdentifier.Equals(priceEpisode.Identifier,
+                        StringComparison.InvariantCultureIgnoreCase))
                     .SelectMany(p => p.DataLockFailures)
                     .ToList();
 
-                var apprenticeshipEarnings = dataLockEvents
+                var priceEpisodeEarnings = priceEpisodeDataLocks
+                    .SelectMany(x => x.OnProgrammeEarnings)
+                    .Where(p => p.Periods.Any(o =>
+                        o.PriceEpisodeIdentifier.Equals(priceEpisode.Identifier,
+                            StringComparison.InvariantCultureIgnoreCase)))
+                    .ToList();
+
+                var priceEpisodeEarningPeriods = priceEpisodeDataLocks
                     .SelectMany(x => x.OnProgrammeEarnings)
                     .SelectMany(x => x.Periods)
-                    .GroupBy(x => x.ApprenticeshipId);
+                    .Where(p => p.PriceEpisodeIdentifier.Equals(priceEpisode.Identifier, StringComparison.InvariantCultureIgnoreCase))
+                    .ToList();
 
-                foreach (var apprenticeshipEarning in apprenticeshipEarnings)
+                var priceEpisodeApprenticeshipIds = new List<long>();
+                priceEpisodeApprenticeshipIds.AddRange(priceEpisodeEarningPeriods
+                    .Where(p => p.ApprenticeshipId.HasValue)
+                    .Select(p => p.ApprenticeshipId.Value)
+                    .ToList());
+                priceEpisodeApprenticeshipIds.AddRange(priceEpisodeErrors
+                    .Where(p => p.ApprenticeshipId.HasValue)
+                    .Select(p => p.ApprenticeshipId.Value)
+                    .ToList());
+                
+                var apprenticeships = await apprenticeshipRepository
+                    .Get(priceEpisodeApprenticeshipIds.Distinct().ToList(), CancellationToken.None);
+                
+                foreach (var apprenticeship in apprenticeships)
                 {
-                    var priceEpisodeChange = priceEpisodeChanges.FirstOrDefault(x => x.identifier == priceEpisode.Identifier);
+                    var apprenticeshipEarnings = priceEpisodeEarnings
+                        .Where(o => o.Periods.Any(p =>
+                            (p.ApprenticeshipId.HasValue && p.ApprenticeshipId == apprenticeship.Id) ||
+                            (p.DataLockFailures.Any(d =>
+                                d.ApprenticeshipId.HasValue && d.ApprenticeshipId == apprenticeship.Id))
+                        ))
+                        .ToList();
+
+                    var apprenticeshipEarningPeriods = priceEpisodeEarnings
+                        .SelectMany(o => o.Periods)
+                        .Where(p => (p.ApprenticeshipId.HasValue && p.ApprenticeshipId == apprenticeship.Id) ||
+                            (p.DataLockFailures.Any(d => d.ApprenticeshipId.HasValue && d.ApprenticeshipId == apprenticeship.Id)))
+                        .ToList();
+
+                    var apprenticeshipErrors = priceEpisodeErrors
+                        .Where(p => p.ApprenticeshipId.HasValue && p.ApprenticeshipId == apprenticeship.Id)
+                        .ToList();
 
                     var evt = MapPriceEpisodeStatusChange(
-                        apprenticeshipEarning.FirstOrDefault(),
-                        allDataLocks.First(),
-                        priceEpisodeErrors,
+                        apprenticeshipEarningPeriods,
+                        priceEpisodeDataLocks.First(),
+                        apprenticeshipErrors,
                         priceEpisodeChange.status,
-                        priceEpisode);
+                        priceEpisode,
+                        apprenticeshipEarnings,
+                        apprenticeship);
 
                     events.Add(evt);
                 }
@@ -59,67 +120,65 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             return events;
         }
 
-        private static PriceEpisodeStatusChange MapPriceEpisodeStatusChange(
-            EarningPeriod apprenticeshipEarning,
-            DataLockEvent datalock,
-            List<DataLockFailure> errors,
+        private PriceEpisodeStatusChange MapPriceEpisodeStatusChange(
+            List<EarningPeriod> apprenticeshipEarningPeriods,
+            DataLockEvent dataLock,
+            List<DataLockFailure> apprenticeshipErrors,
             PriceEpisodeStatus status,
-            PriceEpisode priceEpisode)
+            PriceEpisode priceEpisode,
+            List<OnProgrammeEarning> apprenticeshipEarnings,
+            ApprenticeshipModel apprenticeship)
         {
-
-            var period = datalock.OnProgrammeEarnings
-                .SelectMany(x => x.Periods)
-                .Distinct()
-                .FirstOrDefault();
-
             var hasTnp3 = priceEpisode.TotalNegotiatedPrice3 > 0;
+            var priceEpisodeStatusChangeId = Guid.NewGuid();
+            var commitmentVersions = BuildCommitmentVersions(priceEpisodeStatusChangeId, apprenticeship);
+            var periods = BuildPeriods(priceEpisodeStatusChangeId, dataLock, apprenticeshipEarnings, commitmentVersions);
+            var errors = BuildCommitmentErrors(priceEpisodeStatusChangeId, apprenticeshipErrors);
 
             return new PriceEpisodeStatusChange
             {
-                JobId = datalock.JobId,
-                Ukprn = datalock.Ukprn,
-                CollectionPeriod = datalock.CollectionPeriod,
+                JobId = dataLock.JobId,
+                Ukprn = dataLock.Ukprn,
+                CollectionPeriod = dataLock.CollectionPeriod,
 
                 DataLock = new LegacyDataLockEvent
                 {
+                    DataLockEventId = priceEpisodeStatusChangeId,
                     PriceEpisodeIdentifier = priceEpisode.Identifier,
                     Status = status,
-
-                    AcademicYear = datalock.CollectionPeriod.AcademicYear.ToString(),
-                    UKPRN = datalock.Ukprn,
-                    DataLockEventId = datalock.EventId,
+                    AcademicYear = dataLock.CollectionPeriod.AcademicYear.ToString(),
+                    UKPRN = dataLock.Ukprn,
                     EventSource = 1, // submission
-                    HasErrors = errors.Any(),
-                    ULN = datalock.Learner.Uln,
+                    HasErrors = apprenticeshipErrors.Any(),
+                    ULN = dataLock.Learner.Uln,
                     ProcessDateTime = DateTime.UtcNow,
-                    LearnRefNumber = datalock.Learner.ReferenceNumber,
-                    IlrFrameworkCode = datalock.LearningAim.FrameworkCode,
-                    IlrPathwayCode = datalock.LearningAim.PathwayCode,
-                    IlrProgrammeType = datalock.LearningAim.ProgrammeType,
-                    IlrStandardCode = datalock.LearningAim.StandardCode,
-                    SubmittedDateTime = datalock.IlrSubmissionDateTime,
+                    LearnRefNumber = dataLock.Learner.ReferenceNumber,
+                    IlrFrameworkCode = dataLock.LearningAim.FrameworkCode,
+                    IlrPathwayCode = dataLock.LearningAim.PathwayCode,
+                    IlrProgrammeType = dataLock.LearningAim.ProgrammeType,
+                    IlrStandardCode = dataLock.LearningAim.StandardCode,
+                    SubmittedDateTime = dataLock.IlrSubmissionDateTime,
 
-                    CommitmentId = apprenticeshipEarning?.ApprenticeshipId ?? 0,
-                    EmployerAccountId = apprenticeshipEarning?.AccountId ?? 0,
+                    CommitmentId = apprenticeship.Id,
+                    EmployerAccountId = apprenticeship.AccountId,
 
-                    AimSeqNumber = datalock.LearningAim.SequenceNumber,
+                    AimSeqNumber = dataLock.LearningAim.SequenceNumber,
                     IlrPriceEffectiveFromDate = priceEpisode.EffectiveTotalNegotiatedPriceStartDate,
                     IlrPriceEffectiveToDate = priceEpisode.ActualEndDate.GetValueOrDefault(priceEpisode.PlannedEndDate),
-                    IlrEndpointAssessorPrice = hasTnp3 ? priceEpisode.TotalNegotiatedPrice4 : priceEpisode.TotalNegotiatedPrice2,
-                    IlrFileName = TrimUkprnFromIlrFileNameLimitToValidLength(datalock.IlrFileName),
+                    IlrEndpointAssessorPrice =
+                        hasTnp3 ? priceEpisode.TotalNegotiatedPrice4 : priceEpisode.TotalNegotiatedPrice2,
+                    IlrFileName = TrimUkprnFromIlrFileNameLimitToValidLength(dataLock.IlrFileName),
                     IlrStartDate = priceEpisode.CourseStartDate,
                     IlrTrainingPrice = hasTnp3 ? priceEpisode.TotalNegotiatedPrice3 : priceEpisode.TotalNegotiatedPrice1,
                 },
 
-                CommitmentVersions = BuildCommitmentVersions(datalock.EventId, GetApprenticeshipModel(apprenticeshipEarning.ApprenticeshipId)),
-
-                //Period = BuildPeriods(datalock.OnProgrammeEarnings),
-
-                Errors = BuildCommitmentErrors(datalock.EventId, errors),
+                CommitmentVersions = commitmentVersions.ToArray(),
+                Periods = periods,
+                Errors = errors,
             };
         }
 
-        internal static string TrimUkprnFromIlrFileNameLimitToValidLength(string input)
+        private static string TrimUkprnFromIlrFileNameLimitToValidLength(string input)
         {
             const int validLength = 50;
 
@@ -138,9 +197,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             return input;
         }
 
-        private static LegacyDataLockEventCommitmentVersion[] BuildCommitmentVersions(Guid dataLockEventId, ApprenticeshipModel apprenticeship)
+        private static List<LegacyDataLockEventCommitmentVersion> BuildCommitmentVersions(Guid dataLockEventId,
+            ApprenticeshipModel apprenticeship)
         {
-            if (apprenticeship == null) return Array.Empty<LegacyDataLockEventCommitmentVersion>();
+            if (apprenticeship == null) return new List<LegacyDataLockEventCommitmentVersion>();
 
             return apprenticeship.ApprenticeshipPriceEpisodes
                 .Select(apprenticeshipPriceEpisode => new LegacyDataLockEventCommitmentVersion
@@ -155,10 +215,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     CommitmentStandardCode = apprenticeship.StandardCode,
                     CommitmentStartDate = apprenticeship.EstimatedStartDate
                 })
-                .ToArray();
+                .ToList();
         }
 
-        private static LegacyDataLockEventError[] BuildCommitmentErrors(Guid eventId, List<DataLockFailure> dataLockFailures)
+        private static LegacyDataLockEventError[] BuildCommitmentErrors(Guid eventId,
+            List<DataLockFailure> dataLockFailures)
         {
             return dataLockFailures
                 .Distinct()
@@ -171,41 +232,68 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 .ToArray();
         }
 
-        private static string GetDataLockDescription(DataLockErrorCode dlockCode)
+        private static string GetDataLockDescription(DataLockErrorCode dLockCode)
         {
-            switch (dlockCode)
+            switch (dLockCode)
             {
-                case DataLockErrorCode.DLOCK_01: return "No matching record found in an employer digital account for the UKPRN";
-                case DataLockErrorCode.DLOCK_03: return "No matching record found in the employer digital account for the standard code";
-                case DataLockErrorCode.DLOCK_04: return "No matching record found in the employer digital account for the framework code";
-                case DataLockErrorCode.DLOCK_05: return "No matching record found in the employer digital account for the programme type";
-                case DataLockErrorCode.DLOCK_06: return "No matching record found in the employer digital account for the pathway code";
-                case DataLockErrorCode.DLOCK_07: return "No matching record found in the employer digital account for the negotiated cost of training";
-                case DataLockErrorCode.DLOCK_08: return "Multiple matching records found in the employer digital account";
-                case DataLockErrorCode.DLOCK_09: return "The start date for this negotiated price is before the corresponding price start date in the employer digital account";
+                case DataLockErrorCode.DLOCK_01:
+                    return "No matching record found in an employer digital account for the UKPRN";
+                case DataLockErrorCode.DLOCK_03:
+                    return "No matching record found in the employer digital account for the standard code";
+                case DataLockErrorCode.DLOCK_04:
+                    return "No matching record found in the employer digital account for the framework code";
+                case DataLockErrorCode.DLOCK_05:
+                    return "No matching record found in the employer digital account for the programme type";
+                case DataLockErrorCode.DLOCK_06:
+                    return "No matching record found in the employer digital account for the pathway code";
+                case DataLockErrorCode.DLOCK_07:
+                    return
+                        "No matching record found in the employer digital account for the negotiated cost of training";
+                case DataLockErrorCode.DLOCK_08:
+                    return "Multiple matching records found in the employer digital account";
+                case DataLockErrorCode.DLOCK_09:
+                    return
+                        "The start date for this negotiated price is before the corresponding price start date in the employer digital account";
                 case DataLockErrorCode.DLOCK_10: return "The employer has stopped payments for this apprentice";
                 case DataLockErrorCode.DLOCK_11: return "The employer is not currently a levy payer";
                 case DataLockErrorCode.DLOCK_12: return "DLOCK_12";
-                default: return dlockCode.ToString();
+                default: return dLockCode.ToString();
             }
         }
 
-        private static LegacyDataLockEventPeriod[] BuildPeriods(DataLockEvent dataLock, List<OnProgrammeEarning> onProgrammeEarnings)
+        private LegacyDataLockEventPeriod[] BuildPeriods(
+            Guid priceEpisodeStatusChangeId,
+            DataLockEvent dataLock,
+            List<OnProgrammeEarning> apprenticeshipEarnings,
+            List<LegacyDataLockEventCommitmentVersion> commitmentVersions)
         {
+            var eventPeriods = new List<LegacyDataLockEventPeriod>();
             var collectionPeriod = dataLock.CollectionPeriod.Period;
+            var allTransactionTypeFlagGroups = apprenticeshipEarnings
+                .GroupBy(o => GetTransactionTypeFlag((TransactionType) o.Type))
+                .Distinct()
+                .ToList();
 
-            return onProgrammeEarnings.Select(x => 
-                new LegacyDataLockEventPeriod
+            foreach (var allTransactionTypeFlagGroup in allTransactionTypeFlagGroups)
+            {
+                foreach (var commitmentVersion in commitmentVersions)
                 {
-                    DataLockEventId = dataLock.EventId,
-                    //TransactionTypesFlag = GetTransactionTypeFlag(dataLock),
-                    CollectionPeriodYear = dataLock.CollectionPeriod.AcademicYear,
-                    CollectionPeriodName = $"{dataLock.CollectionPeriod.AcademicYear}-{collectionPeriod:D2}",
-                    CollectionPeriodMonth = (collectionPeriod < 6) ? collectionPeriod + 7 : collectionPeriod - 5,
-                    //IsPayable = !isError,
-                    //CommitmentVersion = commitmentVersionId
-                })
-                .ToArray();
+                    var transactionTypeHasErrors =
+                        allTransactionTypeFlagGroup.Any(x => x.Periods.Any(p => p.DataLockFailures.Any()));
+                    eventPeriods.Add(new LegacyDataLockEventPeriod
+                    {
+                        DataLockEventId = priceEpisodeStatusChangeId,
+                        TransactionTypesFlag = GetTransactionTypeFlag((TransactionType) allTransactionTypeFlagGroup.Key),
+                        CollectionPeriodYear = dataLock.CollectionPeriod.AcademicYear,
+                        CollectionPeriodName = $"{dataLock.CollectionPeriod.AcademicYear}-{collectionPeriod:D2}",
+                        CollectionPeriodMonth = (collectionPeriod < 6) ? collectionPeriod + 7 : collectionPeriod - 5,
+                        IsPayable = transactionTypeHasErrors,
+                        CommitmentVersion = commitmentVersion.CommitmentVersion
+                    });
+                }
+            }
+
+            return eventPeriods.ToArray();
         }
 
         private int GetTransactionTypeFlag(TransactionType transactionType)
@@ -239,16 +327,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     return 5;
 
                 default:
-                    throw new ArgumentException($"Transaction Type {transactionType} not supported.", nameof(transactionType));
+                    throw new ArgumentException($"Transaction Type {transactionType} not supported.",
+                        nameof(transactionType));
             }
         }
 
-        private static ApprenticeshipModel GetApprenticeshipModel(long? apprenticeshipId)
-        {
-            return null;
-        }
-
-        private static List<PriceEpisodeStatusChange> BuildRemovedEvents(List<(string identifier, PriceEpisodeStatus status)> priceEpisodeChanges)
+        private static List<PriceEpisodeStatusChange> BuildRemovedEvents(
+            List<(string identifier, PriceEpisodeStatus status)> priceEpisodeChanges)
         {
             return priceEpisodeChanges
                 .Where(x => x.status == PriceEpisodeStatus.Removed)
@@ -256,7 +341,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 .ToList();
         }
 
-        private static PriceEpisodeStatusChange MapRemovedPriceEpisodeStatusChange((string identifier, PriceEpisodeStatus status) removed)
+        private static PriceEpisodeStatusChange MapRemovedPriceEpisodeStatusChange(
+            (string identifier, PriceEpisodeStatus status) removed)
         {
             return new PriceEpisodeStatusChange
             {
@@ -268,15 +354,5 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             };
         }
 
-
-        //private static PriceEpisodeStatusChange MapPriceEpisodeStatusChange(
-        //    (string priceEpisodeIdentifier,
-        //     PriceEpisode priceEpisode,
-        //     DataLockEvent datalock,
-        //     PriceEpisodeStatus status) change)
-        //    => MapPriceEpisodeStatusChange(
-        //        change.datalock,
-        //        change.status,
-        //        change.priceEpisode);
     }
 }

@@ -16,12 +16,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
     {
         private readonly ICurrentPriceEpisodeForJobStore currentPriceEpisodesStore;
         private readonly IReceivedDataLockEventStore receivedEventStore;
-        private readonly PriceEpisodeStatusChangeBuilder statusChangeBuilder = new PriceEpisodeStatusChangeBuilder();
+        private readonly PriceEpisodeStatusChangeBuilder statusChangeBuilder;
 
-        public PriceEpisodesReceivedService(ICurrentPriceEpisodeForJobStore store, IReceivedDataLockEventStore receivedEventStore)
+        public PriceEpisodesReceivedService(ICurrentPriceEpisodeForJobStore store,
+            IReceivedDataLockEventStore receivedEventStore,
+            PriceEpisodeStatusChangeBuilder statusChangeBuilder)
         {
             currentPriceEpisodesStore = store;
             this.receivedEventStore = receivedEventStore;
+            this.statusChangeBuilder = statusChangeBuilder;
         }
 
         public async Task<List<PriceEpisodeStatusChange>> JobSucceeded(long jobId, long ukprn)
@@ -32,7 +35,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             var changes = CalculatePriceEpisodeStatus(datalocks, currentPriceEpisodes);
 
-            var buildEvents = CreateStatusChangedEvents(datalocks, changes);
+            var buildEvents = await CreateStatusChangedEvents(datalocks, changes);
 
             await ReplaceCurrentPriceEpisodes(jobId, ukprn, datalocks);
 
@@ -65,10 +68,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             return changes;
         }
 
-        private List<PriceEpisodeStatusChange> CreateStatusChangedEvents(
+        private async Task<List<PriceEpisodeStatusChange>> CreateStatusChangedEvents(
             IEnumerable<DataLockEvent> datalocks, List<(string identifier, PriceEpisodeStatus status)> changes)
         {
-            return statusChangeBuilder.Build(datalocks.ToList(), changes);
+            return  await statusChangeBuilder.Build(datalocks.ToList(), changes);
         }
 
         private async Task ReplaceCurrentPriceEpisodes(

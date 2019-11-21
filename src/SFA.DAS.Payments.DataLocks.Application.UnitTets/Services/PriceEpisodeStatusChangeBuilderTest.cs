@@ -1,61 +1,74 @@
-﻿using AutoFixture.NUnit3;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.NUnit3;
 using FluentAssertions;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Application.Services;
+using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.DataLocks.Model.Entities;
 using SFA.DAS.Payments.Model.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
 
-namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
+namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 {
     public class PriceEpisodeStatusChangeBuilderTest
     {
-        [Test, AutoData]
-        public void No_datalocks_or_current_price_episodes_builds_no_events(
+        [Test, AutoDomainData]
+        public async Task No_datalocks_or_current_price_episodes_builds_no_events(
+            [Frozen] Mock<IApprenticeshipRepository> repository,
             PriceEpisodeStatusChangeBuilder sut)
         {
-            var result = sut.Build(
+            var result = await sut.Build(
                 new List<DataLockEvent>(),
                 new List<(string identifier, PriceEpisodeStatus status)>());
 
             result.Should().BeEmpty();
         }
 
-        [Test, AutoData]
-        public void Builds_an_add_event_with_data_from_datalock(
+        [Test, AutoDomainData]
+        public async Task Builds_an_add_event_with_data_from_datalock(
+            [Frozen] Mock<IApprenticeshipRepository> repository,
             PriceEpisodeStatusChangeBuilder sut,
-            PayableEarningEvent datalock)
+            PayableEarningEvent dataLock,
+            List<EarningPeriod> periods,
+            List<DataLockFailure> dataLockFailures,
+            List<ApprenticeshipModel> apprenticeships)
         {
-            datalock.IlrFileName = "bob";
 
-            var result = sut.Build(
-                new List<DataLockEvent> { datalock },
+            CommonTestSetup(repository, dataLock, periods, dataLockFailures, apprenticeships);
+            
+            dataLock.IlrFileName = "bob";
+            var result = await sut.Build(
+                new List<DataLockEvent> { dataLock },
                 new List<(string identifier, PriceEpisodeStatus status)>());
 
-            var priceEpisode = datalock.PriceEpisodes[0];
+            var priceEpisode = dataLock.PriceEpisodes[0];
 
             result.Should().ContainEquivalentOf(new
             {
                 DataLock = new
                 {
                     PriceEpisodeIdentifier = priceEpisode.Identifier,
-                    AcademicYear = datalock.CollectionPeriod.AcademicYear.ToString(),
-                    UKPRN = datalock.Ukprn,
-                    DataLockEventId = datalock.EventId,
+                    AcademicYear = dataLock.CollectionPeriod.AcademicYear.ToString(),
+                    UKPRN = dataLock.Ukprn,
                     EventSource = 1,
                     HasErrors = false,
-                    ULN = datalock.Learner.Uln,
-                    LearnRefNumber = datalock.Learner.ReferenceNumber,
-                    IlrFrameworkCode = datalock.LearningAim.FrameworkCode,
-                    IlrPathwayCode = datalock.LearningAim.PathwayCode,
-                    IlrProgrammeType = datalock.LearningAim.ProgrammeType,
-                    IlrStandardCode = datalock.LearningAim.StandardCode,
-                    SubmittedDateTime = datalock.IlrSubmissionDateTime,
-                    AimSeqNumber = datalock.LearningAim.SequenceNumber,
+                    ULN = dataLock.Learner.Uln,
+                    LearnRefNumber = dataLock.Learner.ReferenceNumber,
+                    IlrFrameworkCode = dataLock.LearningAim.FrameworkCode,
+                    IlrPathwayCode = dataLock.LearningAim.PathwayCode,
+                    IlrProgrammeType = dataLock.LearningAim.ProgrammeType,
+                    IlrStandardCode = dataLock.LearningAim.StandardCode,
+                    SubmittedDateTime = dataLock.IlrSubmissionDateTime,
+                    AimSeqNumber = dataLock.LearningAim.SequenceNumber,
                     IlrPriceEffectiveFromDate = priceEpisode.EffectiveTotalNegotiatedPriceStartDate,
                     IlrPriceEffectiveToDate = priceEpisode.ActualEndDate.GetValueOrDefault(priceEpisode.PlannedEndDate),
                     IlrFileName = "bob",
@@ -64,22 +77,25 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             });
         }
 
-        [Test, AutoData]
-        public void Builds_an_add_event_with_status(
+        [Test, AutoDomainData]
+        public async Task Builds_an_add_event_with_status(
             PriceEpisodeStatusChangeBuilder sut,
-            PayableEarningEvent datalock)
+            [Frozen] Mock<IApprenticeshipRepository> repository,
+            PayableEarningEvent dataLock,
+            List<EarningPeriod> periods,
+            List<DataLockFailure> dataLockFailures,
+            List<ApprenticeshipModel> apprenticeships)
         {
-            datalock.IlrFileName = "bob";
-            var priceEpisode = datalock.PriceEpisodes[0];
+            CommonTestSetup(repository, dataLock, periods, dataLockFailures, apprenticeships);
+            var priceEpisode = dataLock.PriceEpisodes[0];
 
-            var result = sut.Build(
-                new List<DataLockEvent> { datalock },
+            var result = await sut.Build(
+                new List<DataLockEvent> { dataLock },
                 new List<(string identifier, PriceEpisodeStatus status)>
                 {
                     (priceEpisode.Identifier, PriceEpisodeStatus.Updated)
                 });
-
-
+            
             result.Should().ContainEquivalentOf(new
             {
                 DataLock = new
@@ -90,16 +106,23 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             });
         }
 
-        [Test, AutoData]
-        public void Builds_an_add_event_without_tnp3(
+           [Test, AutoDomainData]
+        public async Task Builds_an_add_event_without_tnp3(
             PriceEpisodeStatusChangeBuilder sut,
-            PayableEarningEvent datalock)
+            [Frozen] Mock<IApprenticeshipRepository> repository,
+            PayableEarningEvent dataLock,
+            List<EarningPeriod> periods,
+            List<DataLockFailure> dataLockFailures,
+            List<ApprenticeshipModel> apprenticeships)
         {
-            var priceEpisode = datalock.PriceEpisodes[0];
+
+            CommonTestSetup(repository, dataLock, periods, dataLockFailures, apprenticeships);
+
+            var priceEpisode = dataLock.PriceEpisodes[0];
             priceEpisode.TotalNegotiatedPrice3 = 0;
 
-            var result = sut.Build(
-                new List<DataLockEvent> { datalock },
+            var result = await sut.Build(
+                new List<DataLockEvent> { dataLock },
                 new List<(string identifier, PriceEpisodeStatus status)>());
 
             result.Should().ContainEquivalentOf(new
@@ -113,16 +136,23 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             });
         }
 
-        [Test, AutoData]
-        public void Builds_an_add_event_with_tnp3(
+           [Test, AutoDomainData]
+        public async Task Builds_an_add_event_with_tnp3(
+      [Frozen] Mock<IApprenticeshipRepository> repository,
             PriceEpisodeStatusChangeBuilder sut,
-            PayableEarningEvent datalock)
+            PayableEarningEvent dataLock,
+            List<EarningPeriod> periods,
+            List<DataLockFailure> dataLockFailures,
+            List<ApprenticeshipModel> apprenticeships)
         {
-            var priceEpisode = datalock.PriceEpisodes[0];
+
+            CommonTestSetup(repository, dataLock, periods, dataLockFailures, apprenticeships);
+
+            var priceEpisode = dataLock.PriceEpisodes[0];
             priceEpisode.TotalNegotiatedPrice3 = 1;
 
-            var result = sut.Build(
-                new List<DataLockEvent> { datalock },
+            var result = await sut.Build(
+                new List<DataLockEvent> { dataLock },
                 new List<(string identifier, PriceEpisodeStatus status)>());
 
             result.Should().ContainEquivalentOf(new
@@ -136,16 +166,22 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             });
         }
 
-        [Test, AutoData]
-        public void Builds_an_add_event_with_no_errors(
+           [Test, AutoDomainData]
+        public async Task Builds_an_add_event_with_no_errors(
+            [Frozen] Mock<IApprenticeshipRepository> repository,
             PriceEpisodeStatusChangeBuilder sut,
-            PayableEarningEvent datalock)
+            PayableEarningEvent dataLock,
+            List<EarningPeriod> periods,
+            List<DataLockFailure> dataLockFailures,
+            List<ApprenticeshipModel> apprenticeships)
         {
-            var priceEpisode = datalock.PriceEpisodes[0];
+            CommonTestSetup(repository, dataLock, periods, dataLockFailures, apprenticeships);
+
+            var priceEpisode = dataLock.PriceEpisodes[0];
             priceEpisode.TotalNegotiatedPrice3 = 1;
 
-            var result = sut.Build(
-                new List<DataLockEvent> { datalock },
+            var result = await sut.Build(
+                new List<DataLockEvent> { dataLock },
                 new List<(string identifier, PriceEpisodeStatus status)>());
 
             result.Should().ContainEquivalentOf(new
@@ -156,98 +192,87 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         }
 
         [Test]
-        [InlineAutoData(DataLockErrorCode.DLOCK_01, "No matching record found in an employer digital account for the UKPRN")]
-        [InlineAutoData(DataLockErrorCode.DLOCK_03, "No matching record found in the employer digital account for the standard code")]
-        [InlineAutoData(DataLockErrorCode.DLOCK_04, "No matching record found in the employer digital account for the framework code")]
-        [InlineAutoData(DataLockErrorCode.DLOCK_05, "No matching record found in the employer digital account for the programme type")]
-        [InlineAutoData(DataLockErrorCode.DLOCK_06, "No matching record found in the employer digital account for the pathway code")]
-        [InlineAutoData(DataLockErrorCode.DLOCK_07, "No matching record found in the employer digital account for the negotiated cost of training")]
-        [InlineAutoData(DataLockErrorCode.DLOCK_08, "Multiple matching records found in the employer digital account")]
-        [InlineAutoData(DataLockErrorCode.DLOCK_09, "The start date for this negotiated price is before the corresponding price start date in the employer digital account")]
-        [InlineAutoData(DataLockErrorCode.DLOCK_10, "The employer has stopped payments for this apprentice")]
-        [InlineAutoData(DataLockErrorCode.DLOCK_11, "The employer is not currently a levy payer")]
-        [InlineAutoData(DataLockErrorCode.DLOCK_12, "DLOCK_12")]
-        public void Builds_an_event_with_errors(
+        [InlineDomainAutoData(DataLockErrorCode.DLOCK_03, "No matching record found in the employer digital account for the standard code")]
+        [InlineDomainAutoData(DataLockErrorCode.DLOCK_04, "No matching record found in the employer digital account for the framework code")]
+        [InlineDomainAutoData(DataLockErrorCode.DLOCK_05, "No matching record found in the employer digital account for the programme type")]
+        [InlineDomainAutoData(DataLockErrorCode.DLOCK_06, "No matching record found in the employer digital account for the pathway code")]
+        [InlineDomainAutoData(DataLockErrorCode.DLOCK_07, "No matching record found in the employer digital account for the negotiated cost of training")]
+        [InlineDomainAutoData(DataLockErrorCode.DLOCK_08, "Multiple matching records found in the employer digital account")]
+        [InlineDomainAutoData(DataLockErrorCode.DLOCK_09, "The start date for this negotiated price is before the corresponding price start date in the employer digital account")]
+        public async Task Builds_an_event_with_errors(
             DataLockErrorCode errorCode,
             string description,
+            [Frozen] Mock<IApprenticeshipRepository> repository,
             PriceEpisodeStatusChangeBuilder sut,
-            EarningFailedDataLockMatching datalock)
+            EarningFailedDataLockMatching dataLock,
+            List<EarningPeriod> periods,
+            List<DataLockFailure> dataLockFailures,
+            ApprenticeshipModel apprenticeships)
         {
-            var priceEpisode = datalock.PriceEpisodes[0];
-            datalock.OnProgrammeEarnings[0].Periods[0].PriceEpisodeIdentifier = priceEpisode.Identifier;
-            datalock.OnProgrammeEarnings[0].Periods[0].DataLockFailures[0].DataLockError = errorCode;
+            CommonTestSetup(repository, dataLock, periods, dataLockFailures, new List<ApprenticeshipModel>{apprenticeships});
+            var priceEpisode = dataLock.PriceEpisodes[0];
+            periods[0].DataLockFailures[0].DataLockError = errorCode;
 
-            var result = sut.Build(
-                new List<DataLockEvent> { datalock },
+            var result = await sut.Build(
+                new List<DataLockEvent> { dataLock },
                 new List<(string identifier, PriceEpisodeStatus status)>());
 
             result.Should().NotBeEmpty();
-            result.First().Errors.Should().ContainEquivalentOf(new
+            result[0].Errors.Should().ContainEquivalentOf(new
             {
-                DataLockEventId = datalock.EventId,
+                DataLockEventId = result[0].DataLock.DataLockEventId,
                 ErrorCode = errorCode.ToString(),
                 SystemDescription = description,
             });
         }
-
-        [Test, AutoData]
-        public void Builds_an_event_errors_with_datalock_eventid(
+        
+           [Test, AutoDomainData]
+        public async Task Builds_one_for_each_apprenticeship_within_price_episode(
             PriceEpisodeStatusChangeBuilder sut,
-            EarningFailedDataLockMatching datalock)
+            PayableEarningEvent dataLock)
         {
-            datalock.OnProgrammeEarnings[0].Periods[0].PriceEpisodeIdentifier = datalock.PriceEpisodes[0].Identifier;
-
-            var result = sut.Build(
-                new List<DataLockEvent> { datalock },
+            var result = await sut.Build(
+                new List<DataLockEvent> { dataLock },
                 new List<(string identifier, PriceEpisodeStatus status)>());
 
-            result.Should().NotBeEmpty();
-            result.First().Errors.Should().OnlyContain(x => x.DataLockEventId == datalock.EventId);
-        }
-
-        [Test, AutoData]
-        public void Builds_an_event_with_(
-        PriceEpisodeStatusChangeBuilder sut,
-        EarningFailedDataLockMatching datalock)
-        {
-            var priceEpisode = datalock.PriceEpisodes[0];
-            datalock.OnProgrammeEarnings[0].Periods[0].PriceEpisodeIdentifier = priceEpisode.Identifier;
-            datalock.OnProgrammeEarnings[0].Periods[0].DataLockFailures[0].DataLockError = DataLockErrorCode.DLOCK_01;
-
-            var result = sut.Build(
-                new List<DataLockEvent> { datalock },
-                new List<(string identifier, PriceEpisodeStatus status)>());
-
-            result.Should().NotBeEmpty();
-            result.First().Errors.Should().ContainEquivalentOf(new
-            {
-                DataLockEventId = datalock.EventId,
-                ErrorCode = DataLockErrorCode.DLOCK_01.ToString(),
-                SystemDescription = "No matching record found in an employer digital account for the UKPRN",
-            });
-        }
-
-        [Test, AutoData]
-        public void Builds_one_even_per_price(
-            PriceEpisodeStatusChangeBuilder sut,
-            PayableEarningEvent datalock)
-        {
-            var result = sut.Build(
-                new List<DataLockEvent> { datalock },
-                new List<(string identifier, PriceEpisodeStatus status)>());
-
-            var numPriceEpisodes = datalock.PriceEpisodes.Count();
-            var numPeriods = datalock
+            var numPriceEpisodes = dataLock.PriceEpisodes.Count();
+            var numApprenticeshipIds = dataLock
                 .OnProgrammeEarnings
                 .SelectMany(x => x.Periods)
                 .Select(x => x.ApprenticeshipId)
                 .Distinct()
                 .Count();
 
-            result.Should().HaveCount(numPriceEpisodes * numPriceEpisodes);
+            result.Should().HaveCount(numApprenticeshipIds * numPriceEpisodes);
         }
 
-        [Test, AutoData]
+        [Test, AutoDomainData]
+        public async Task Build_Period_For_Apprenticeship_And_PriceEpisode(
+            [Frozen] Mock<IApprenticeshipRepository> repository,
+            PriceEpisodeStatusChangeBuilder sut,
+            EarningFailedDataLockMatching dataLockEvent,
+            List<EarningPeriod> periods,
+            List<DataLockFailure> dataLockFailures,
+            List<ApprenticeshipModel> apprenticeships)
+        {
+
+            CommonTestSetup(repository, dataLockEvent, periods, dataLockFailures, apprenticeships);
+
+            var result = await sut.Build(
+                new List<DataLockEvent> { dataLockEvent },
+                new List<(string identifier, PriceEpisodeStatus status)>{(dataLockEvent.PriceEpisodes[0].Identifier,PriceEpisodeStatus.New) });
+
+            result.First().Periods.Should().ContainEquivalentOf(new
+            {
+                DataLockEventId = result.First().DataLock.DataLockEventId,
+                IsPayable = true,
+                TransactionTypesFlag = 1
+            });
+
+        }
+
+
+           [Test, AutoDomainData]
         public void PriceEpisodesAreDistinctByIdentifier()
         {
             var episode1 = new PriceEpisode { Identifier = "hi" };
@@ -255,5 +280,66 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             var list = new[] { episode1, episode2 };
             list.Distinct().Should().HaveCount(1);
         }
+
+
+        public class AutoDomainDataAttribute : AutoDataAttribute
+        {
+            public AutoDomainDataAttribute()
+                : base(Customise)
+            {
+            }
+
+            private static IFixture Customise()
+            {
+                var dbName = Guid.NewGuid().ToString();
+                var fixture = new Fixture();
+                fixture.Customize(new AutoMoqCustomization { ConfigureMembers = true });
+                return fixture;
+            }
+        }
+
+        public class InlineDomainAutoDataAttribute : InlineAutoDataAttribute
+        {
+            public InlineDomainAutoDataAttribute(params object[] values)
+                : base(Customise, values)
+            {
+            }
+            private static IFixture Customise()
+            {
+                var dbName = Guid.NewGuid().ToString();
+                var fixture = new Fixture();
+                fixture.Customize(new AutoMoqCustomization { ConfigureMembers = true });
+                return fixture;
+            }
+        }
+        
+        private static void CommonTestSetup(Mock<IApprenticeshipRepository> repository,
+            DataLockEvent dataLock,
+            List<EarningPeriod> periods, List<DataLockFailure> dataLockFailures,
+            List<ApprenticeshipModel> apprenticeships)
+        {
+            repository
+                .Setup(x => x.Get(It.IsAny<List<long>>(), CancellationToken.None))
+                .Returns(Task.FromResult(apprenticeships));
+            dataLock.IlrFileName = "bob";
+
+            apprenticeships[0].ApprenticeshipPriceEpisodes.ForEach(x => x.ApprenticeshipId = apprenticeships[0].Id);
+            periods[0].ApprenticeshipId = apprenticeships[0].Id;
+            periods[0].ApprenticeshipPriceEpisodeId = apprenticeships[0].ApprenticeshipPriceEpisodes[0].Id;
+            periods[0].DataLockFailures = dataLockFailures;
+            periods[0].PriceEpisodeIdentifier = dataLock.PriceEpisodes[0].Identifier;
+            dataLock.OnProgrammeEarnings[0].Type = OnProgrammeEarningType.Learning;
+            dataLock.OnProgrammeEarnings[0].Periods = periods.AsReadOnly();
+            dataLockFailures.ForEach(x =>
+            {
+                x.ApprenticeshipId = apprenticeships[0].Id;
+                x.ApprenticeshipPriceEpisodeIds = apprenticeships[0].ApprenticeshipPriceEpisodes.Select(o => o.Id).ToList();
+            });
+
+        }
+
+
     }
+
+
 }

@@ -1,4 +1,8 @@
-﻿using AutoFixture;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -7,13 +11,11 @@ using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Application.Services;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges;
+using SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.DataLocks.Model.Entities;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
+namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 {
     public class PriceEpisodesReceivedServiceTest
     {
@@ -234,7 +236,10 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                         new DbContextOptionsBuilder<ReceivedDataLockEventContext>()
                             .UseInMemoryDatabase(databaseName: dbName)
                             .Options)));
-                //fixture.Customize(new AutoMoqCustomization { ConfigureMembers = true });
+
+
+
+                fixture.Customize(new AutoMoqCustomization { ConfigureMembers = true });
                 return fixture;
             }
         }
