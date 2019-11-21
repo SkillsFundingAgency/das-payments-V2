@@ -176,6 +176,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\DcValues.cs" />
+    <Compile Include="Entities\MetricsCalculator.cs" />
+    <Compile Include="Entities\PaymentsValues.cs" />
     <Compile Include="ETEVerificationTests.cs" />
     <Compile Include="Infrastructure\AcceptanceTestsModule.cs" />
     <Compile Include="Infrastructure\Configuration.cs" />
@@ -219,9 +222,7 @@
     <EmbeddedResource Include="Scripts\PaymentsQuery.sql" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Scripts\EarningsCte.sql" />
-    <EmbeddedResource Include="Scripts\EarningsDetail.sql" />
-    <EmbeddedResource Include="Scripts\EarningsSummary.sql" />
+    <EmbeddedResource Include="Scripts\DcEarnings.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

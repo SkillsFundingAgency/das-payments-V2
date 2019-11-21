@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Entities;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 {
@@ -62,33 +63,36 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             {
                 short academicYear = (short) groupedResult.Key;
 
-                var paymentCsv =
-                    await ExtractPaymentsData(results.Min(r=>r.DateTimeCreatedUtc), academicYear, collectionPeriod, ukprnList);
+               var paymentCsv = await ExtractPaymentsData(results.Min(r=>r.DateTimeCreatedUtc), academicYear, collectionPeriod, ukprnList);
 
                 var dataStoreCsv = await ExtractDataStoreData(academicYear, collectionPeriod, ukprnList);
 
-               var paymentTotals = await verificationService.GetPaymentTotals(
-                    academicYear, collectionPeriod, true, ukprnList);
 
-                decimal? totalEarningYtd =
-                    await verificationService.GetTotalEarningsYtd(academicYear, collectionPeriod, ukprnList);
 
-                var settings = await submissionService.ReadSettingsFile();
-                decimal tolerance = settings.Tolerance;
 
-                decimal? actualPercentage = null;
-                if (totalEarningYtd != 0)
-                {
-                    actualPercentage = paymentTotals?.missingPayments / totalEarningYtd * 100;
-                }
 
-                var summaryCsv = CreateSummaryCsv(actualPercentage, tolerance, totalEarningYtd, paymentTotals);
+               //var paymentTotals = await verificationService.GetPaymentTotals(
+               //     academicYear, collectionPeriod, true, ukprnList);
 
-                await SaveCsv(paymentCsv, dataStoreCsv, summaryCsv,  academicYear, collectionPeriod);
+               // decimal? totalEarningYtd =
+               //     await verificationService.GetTotalEarningsYtd(academicYear, collectionPeriod, ukprnList);
 
-                var earningsDifference = totalEarningYtd - paymentTotals?.earningsYtd;
+                //var settings = await submissionService.ReadSettingsFile();
+                //decimal tolerance = settings.Tolerance;
 
-                verificationAction.Invoke(actualPercentage, tolerance, earningsDifference);
+                //decimal? actualPercentage = null;
+                //if (totalEarningYtd != 0)
+                //{
+                //    actualPercentage = paymentTotals?.missingPayments / totalEarningYtd * 100;
+                //}
+
+                //var summaryCsv = CreateSummaryCsv(actualPercentage, tolerance, totalEarningYtd, paymentTotals);
+
+                //await SaveCsv(paymentCsv, dataStoreCsv, summaryCsv,  academicYear, collectionPeriod);
+
+                //var earningsDifference = totalEarningYtd - paymentTotals?.earningsYtd;
+
+                //verificationAction.Invoke(actualPercentage, tolerance, earningsDifference);
             }
         }
 
@@ -120,15 +124,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             return $"{header}{Environment.NewLine}{row}";
         }
 
-        private async Task<string> ExtractDataStoreData(short academicYear, byte collectionPeriod, List<long> ukprnList)
+        private async Task<DcValues> ExtractDataStoreData(short academicYear, byte collectionPeriod, List<long> ukprnList)
         {
-            return await verificationService.GetEarningsCsv(academicYear, collectionPeriod, ukprnList);
+            return await verificationService.GetDcEarningsData(academicYear, collectionPeriod, ukprnList);
         }
 
-        private async Task<string> ExtractPaymentsData(DateTime runStartDateTime,
+        private async Task<PaymentsValues> ExtractPaymentsData(DateTime runStartDateTime,
             short academicYear, byte collectionPeriod, IList<long> ukprnList)
         {
-            return await verificationService.GetPaymentsDataCsv(runStartDateTime, academicYear, collectionPeriod,
+            return await verificationService.GetPaymentsData(runStartDateTime, academicYear, collectionPeriod,
                 true,
                 ukprnList);
         }
