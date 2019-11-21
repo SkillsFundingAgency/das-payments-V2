@@ -35,9 +35,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         {
             this.configuration = configuration;
         }
-
-
-
+        
         public async Task<PaymentsValues> GetPaymentsData(DateTime runStartDateTime, short academicYear,
             byte collectionPeriod, bool populateEarnings, IList<long> ukprnList)
         {
@@ -71,12 +69,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                     }
                 }
             }
-            setMetricsFromResults(results, paymentsMetrics);
+            SetMetricsFromResults(results, paymentsMetrics);
 
             return paymentsMetrics;
         }
 
-        private static void setMetricsFromResults(Dictionary<string, decimal?> results, PaymentsValues paymentsMetrics)
+        private static void SetMetricsFromResults(Dictionary<string, decimal?> results, PaymentsValues paymentsMetrics)
         {
             if (results.Any())
             {

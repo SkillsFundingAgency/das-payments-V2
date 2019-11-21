@@ -57,7 +57,4 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Entities
             TT15 +
             TT16;
     }
-
-
-    }
 }

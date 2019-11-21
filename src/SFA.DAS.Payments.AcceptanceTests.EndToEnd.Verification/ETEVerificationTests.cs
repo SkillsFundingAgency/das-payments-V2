@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             ITestOrchestrator orchestrator = autofacContainer.Resolve<ITestOrchestrator>();
             var fileUploadJobs = new List<FileUploadJob>
             {
-                new FileUploadJob() {Ukprn = 10063506, PeriodNumber = 3, CollectionYear = 1920, DateTimeCreatedUtc = DateTime.UtcNow}, new FileUploadJob() {Ukprn = 662745, PeriodNumber = 3, CollectionYear = 1920, DateTimeCreatedUtc = DateTime.UtcNow}
+                new FileUploadJob() {Ukprn = 10063506, PeriodNumber = 3, CollectionYear = 1920, DateTimeSubmittedUtc = DateTime.UtcNow}, new FileUploadJob() {Ukprn = 662745, PeriodNumber = 3, CollectionYear = 1920, DateTimeSubmittedUtc = DateTime.UtcNow}
             }; 
             await orchestrator.VerifyResults(fileUploadJobs, (arg1, arg2, arg3) => { });
 

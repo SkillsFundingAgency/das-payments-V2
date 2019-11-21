@@ -182,6 +182,7 @@
     <Compile Include="ETEVerificationTests.cs" />
     <Compile Include="Infrastructure\AcceptanceTestsModule.cs" />
     <Compile Include="Infrastructure\Configuration.cs" />
+    <Compile Include="Infrastructure\CsvGeneration.cs" />
     <Compile Include="Infrastructure\FileHelpers.cs" />
     <Compile Include="Infrastructure\TestOrchestrator.cs" />
     <Compile Include="Infrastructure\SubmissionService.cs" />
