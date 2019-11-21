@@ -3,25 +3,19 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Internal;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Entities;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Scripts;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 {
     public interface IVerificationService
     {
-
-
         Task<PaymentsValues> GetPaymentsData(DateTime runStartDateTime, short academicYear, byte collectionPeriod,
             bool populateEarnings, IList<long> ukprnList);
 
 
-
         Task<DcValues> GetDcEarningsData(short academicYear, byte collectionPeriod, List<long> ukprnList);
-
-
     }
 
     public class VerificationService : IVerificationService
@@ -35,19 +29,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         {
             this.configuration = configuration;
         }
-        
+
         public async Task<PaymentsValues> GetPaymentsData(DateTime runStartDateTime, short academicYear,
             byte collectionPeriod, bool populateEarnings, IList<long> ukprnList)
         {
-            var sql = Scripts.ScriptHelpers.GetSqlScriptText(PaymentsQuerySql);
-            sql = sql.Replace("@ukprnList", String.Join(",", ukprnList));
+            var sql = ScriptHelpers.GetSqlScriptText(PaymentsQuerySql);
+            sql = sql.Replace("@ukprnList", string.Join(",", ukprnList));
 
-            PaymentsValues paymentsMetrics = new PaymentsValues();
+            var paymentsMetrics = new PaymentsValues();
 
-            Dictionary<string, decimal?> results = new Dictionary<string, decimal?>(StringComparer.OrdinalIgnoreCase);
-            using (SqlConnection connection = GetPaymentsConnectionString())
+            var results = new Dictionary<string, decimal?>(StringComparer.OrdinalIgnoreCase);
+            using (var connection = GetPaymentsConnectionString())
             {
-                using (SqlCommand cmd = connection.CreateCommand())
+                using (var cmd = connection.CreateCommand())
                 {
                     cmd.CommandTimeout = configuration.SqlCommandTimeout.Seconds;
                     cmd.CommandText = sql;
@@ -56,7 +50,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                     cmd.Parameters.AddWithValue("@startDate", runStartDateTime);
                     cmd.Parameters.AddWithValue("@collectionPeriod", collectionPeriod);
                     connection.Open();
-                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    using (var reader = await cmd.ExecuteReaderAsync())
                     {
                         await reader.ReadAsync();
                         PopulatePaymentsResults(results, reader);
@@ -69,67 +63,36 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                     }
                 }
             }
+
             SetMetricsFromResults(results, paymentsMetrics);
 
             return paymentsMetrics;
         }
 
-        private static void SetMetricsFromResults(Dictionary<string, decimal?> results, PaymentsValues paymentsMetrics)
-        {
-            if (results.Any())
-            {
-                paymentsMetrics.RequiredPaymentsThisMonth = results["Required Payments made this month"] ?? 0m;
-                paymentsMetrics.PaymentsPriorToThisMonthYtd = results["Payments made before this month YTD"] ?? 0m;
-                paymentsMetrics.ExpectedPaymentsAfterPeriodEnd =
-                    results["Expected Payments YTD after running Period End"] ?? 0m;
-                paymentsMetrics.TotalPaymentsThisMonth = results["Total payments this month"] ?? 0m;
-                paymentsMetrics.TotalAct1Ytd = results["Total ACT 1 payments YTD"] ?? 0m;
-                paymentsMetrics.TotalAct2Ytd = results["Total ACT 2 payments YTD"] ?? 0m;
-                paymentsMetrics.TotalPaymentsYtd = results["Total payments YTD"] ?? 0m;
-                paymentsMetrics.HeldBackCompletionThisMonth = results["Held Back Completion Payments this month"] ?? 0m;
-                paymentsMetrics.DasEarnings = results["DAS Earnings"] ?? 0m;
-                paymentsMetrics.DataLockedEarnings = results["Datalocked Earnings"] ?? 0m;
-                paymentsMetrics.DataLockedPayments = results["Datalocked Payments"] ?? 0m;
-                paymentsMetrics.AdjustedDataLocks = results["Adjusted Datalocks"] ?? 0m;
-            }
-        }
-
-        private void PopulatePaymentsResults(Dictionary<string, decimal?> results, SqlDataReader reader)
-        {
-            var columnNames = Enumerable.Range(0, reader.FieldCount)
-                .Select(reader.GetName)
-                .ToList();
-            for (int i = 0; i < columnNames.Count; i++)
-            {
-                results.Add(columnNames[i],!reader.IsDBNull(i) ? (decimal?) reader.GetValue(i) : (decimal?) null);
-            }
-        }
-    
-
 
         public async Task<DcValues> GetDcEarningsData(short academicYear, byte collectionPeriod, List<long> ukprnList)
         {
-            var sql = Scripts.ScriptHelpers.GetSqlScriptText(DcEarnings);
+            var sql = ScriptHelpers.GetSqlScriptText(DcEarnings);
             sql = sql.Replace(UkprnListToken, string.Join(",", ukprnList));
 
-            DcValues results = new DcValues();
+            var results = new DcValues();
 
 
-            using (SqlConnection connection = GetDataStoreConnectionString(academicYear))
+            using (var connection = GetDataStoreConnectionString(academicYear))
             {
-                using (SqlCommand cmd = connection.CreateCommand())
+                using (var cmd = connection.CreateCommand())
                 {
                     cmd.CommandTimeout = configuration.SqlCommandTimeout.Seconds;
                     cmd.CommandText = sql;
                     cmd.CommandType = CommandType.Text;
                     cmd.Parameters.AddWithValue("@collectionPeriod", collectionPeriod);
-                    
+
                     connection.Open();
-                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    using (var reader = await cmd.ExecuteReaderAsync())
                     {
                         while (await reader.ReadAsync())
                         {
-                            DcContractTypeTotals newValues = new DcContractTypeTotals();
+                            var newValues = new DcContractTypeTotals();
 
                             Func<SqlDataReader, int, decimal> getValueAsNullableDecimal = (dataReader, i) =>
                                 !dataReader.IsDBNull(i) ? (decimal) dataReader.GetValue(i) : (decimal) 0;
@@ -161,47 +124,34 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             return results;
         }
 
-
-        public async Task<(decimal? missingPayments, decimal? earningsYtd)?> GetPaymentTotals(short academicYear, byte collectionPeriod, bool populateEarnings,IList<long> ukprnList)
+        private static void SetMetricsFromResults(Dictionary<string, decimal?> results, PaymentsValues paymentsMetrics)
         {
-            var sql = @"select sum([Missing Required Payments]) As MissingRequiredPayments, sum([Earnings YTD (audit)]) As EarningsYtd
-            FROM(
-            ";
-
-            sql +=   Scripts.ScriptHelpers.GetSqlScriptText(PaymentsQuerySql);
-            sql += @"
-                ) as sq
-            where[Transaction Type] in (1, 2, 3)";
-
-            using (SqlConnection connection = GetPaymentsConnectionString())
+            if (results.Any())
             {
-                using (SqlCommand cmd = connection.CreateCommand())
-                {
-                    cmd.CommandTimeout = configuration.SqlCommandTimeout.Seconds;
-                    cmd.CommandText = sql;
-                    cmd.CommandType = CommandType.Text;
-                    cmd.Parameters.AddWithValue("@academicYear", academicYear);
-                    cmd.Parameters.AddWithValue("@collectionPeriod", collectionPeriod);
-                    cmd.Parameters.AddWithValue("@populateEarnings", populateEarnings);
-                    connection.Open();
-
-                    using (var reader = await cmd.ExecuteReaderAsync())
-                    {
-                        while (reader.Read())
-                        {
-                            var missingPayments =
-                                (!reader.IsDBNull(0)) ? (decimal?) reader.GetValue(0) : (decimal?) null;
-                            var earningsYtd =
-                                (!reader.IsDBNull(1)) ? (decimal?) reader.GetValue(1) : (decimal?) null;
-                            return (missingPayments, earningsYtd);
-                        }
-                    }
-
-                    return null;
-                }
+                paymentsMetrics.RequiredPaymentsThisMonth = results["Required Payments made this month"] ?? 0m;
+                paymentsMetrics.PaymentsPriorToThisMonthYtd = results["Payments made before this month YTD"] ?? 0m;
+                paymentsMetrics.ExpectedPaymentsAfterPeriodEnd =
+                    results["Expected Payments YTD after running Period End"] ?? 0m;
+                paymentsMetrics.TotalPaymentsThisMonth = results["Total payments this month"] ?? 0m;
+                paymentsMetrics.TotalAct1Ytd = results["Total ACT 1 payments YTD"] ?? 0m;
+                paymentsMetrics.TotalAct2Ytd = results["Total ACT 2 payments YTD"] ?? 0m;
+                paymentsMetrics.TotalPaymentsYtd = results["Total payments YTD"] ?? 0m;
+                paymentsMetrics.HeldBackCompletionThisMonth = results["Held Back Completion Payments this month"] ?? 0m;
+                paymentsMetrics.DasEarnings = results["DAS Earnings"] ?? 0m;
+                paymentsMetrics.DataLockedEarnings = results["Datalocked Earnings"] ?? 0m;
+                paymentsMetrics.DataLockedPayments = results["Datalocked Payments"] ?? 0m;
+                paymentsMetrics.AdjustedDataLocks = results["Adjusted Datalocks"] ?? 0m;
             }
         }
 
+        private void PopulatePaymentsResults(Dictionary<string, decimal?> results, SqlDataReader reader)
+        {
+            var columnNames = Enumerable.Range(0, reader.FieldCount)
+                .Select(reader.GetName)
+                .ToList();
+            for (var i = 0; i < columnNames.Count; i++)
+                results.Add(columnNames[i], !reader.IsDBNull(i) ? (decimal?) reader.GetValue(i) : null);
+        }
 
 
         private SqlConnection GetDataStoreConnectionString(short year)
@@ -209,7 +159,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             switch (year)
             {
                 case 1819:
-                 return   new SqlConnection(configuration.GetConnectionString("ILR1819DataStoreConnectionString"));
+                    return new SqlConnection(configuration.GetConnectionString("ILR1819DataStoreConnectionString"));
                 case 1920:
                     return new SqlConnection(configuration.GetConnectionString("ILR1920DataStoreConnectionString"));
                 default:
@@ -221,29 +171,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         private SqlConnection GetPaymentsConnectionString()
         {
             return new SqlConnection(configuration.PaymentsConnectionString);
-        }
-
-
-        private static string CreateCsvFromDataReader(SqlDataReader reader)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            var columnNames = Enumerable.Range(0, reader.FieldCount)
-                .Select(reader.GetName)
-                .ToList();
-            sb.Append(string.Join(",", columnNames));
-            sb.AppendLine();
-
-            while (reader.Read())
-            {
-                var rowData = Enumerable.Range(0, reader.FieldCount)
-                    .Select(i => (!reader.IsDBNull(i)) ? reader.GetValue(i).ToString() : (string) null)
-                    .ToList();
-                sb.Append(string.Join(",", rowData));
-                sb.AppendLine();
-            }
-
-            return sb.ToString();
         }
     }
 }

@@ -5,7 +5,7 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Entities;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 {
-    public class CsvGeneration
+    internal class CsvGeneration
     {
         private readonly MetricsCalculator metricsCalculator;
 

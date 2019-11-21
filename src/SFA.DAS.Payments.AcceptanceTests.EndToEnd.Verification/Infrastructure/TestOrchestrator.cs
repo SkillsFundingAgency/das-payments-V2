@@ -80,10 +80,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                     actualPercentage = metricsCalculator.NotAccountedForRequiredPayments / dasEarningsYtd * 100;
                 }
 
-                var csv = new CsvGeneration(metricsCalculator).BuildCsvString();
-
-                await SaveCsv(csv,  academicYear, collectionPeriod);
-
+                await SaveCsv(new CsvGeneration(metricsCalculator).BuildCsvString(),  academicYear, collectionPeriod);
                 var earningsDifference = totalDcEarningsYtd - dasEarningsYtd;
 
                 verificationAction.Invoke(actualPercentage, tolerance, earningsDifference);

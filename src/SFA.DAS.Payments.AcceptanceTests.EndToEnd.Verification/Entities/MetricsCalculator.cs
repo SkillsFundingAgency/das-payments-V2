@@ -2,7 +2,9 @@
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Entities
 {
-    public class MetricsCalculator
+   
+
+    internal class MetricsCalculator 
     {
         public MetricsCalculator(PaymentsValues paymentsValues, DcValues dcValues)
         {
