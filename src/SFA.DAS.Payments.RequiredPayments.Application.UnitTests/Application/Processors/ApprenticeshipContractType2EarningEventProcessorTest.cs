@@ -8,6 +8,7 @@ using Autofac;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Extras.Moq;
 using AutoMapper;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -26,6 +27,7 @@ using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 using Earning = SFA.DAS.Payments.RequiredPayments.Domain.Entities.Earning;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Processors
 {
@@ -386,6 +388,76 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             Assert.IsNotNull(actualRequiredPayment);
             Assert.AreEqual("2", actualRequiredPayment.First().PriceEpisodeIdentifier);
 
+        }
+
+        [Test]
+        [InlineAutoData(ApprenticeshipEmployerType.Levy)]
+        [InlineAutoData(ApprenticeshipEmployerType.NonLevy)]
+        public async Task TestPriceEpisodeIdentifierPickedFromHistoryForRefunds2(ApprenticeshipEmployerType employerType, OnProgrammeEarning earning, PaymentHistoryEntity previousPayment)
+        {
+            // arrange
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 3);
+            var deliveryPeriod = (byte)2;
+
+            var earningEvent = new ApprenticeshipContractType2EarningEvent
+            {
+                Ukprn = 1,
+                CollectionPeriod = period,
+                CollectionYear = period.AcademicYear,
+                Learner = EarningEventDataHelper.CreateLearner(),
+                LearningAim = EarningEventDataHelper.CreateLearningAim(),
+                OnProgrammeEarnings = new List<OnProgrammeEarning>()
+                {
+                    earning,
+                }
+            };
+
+            earning.Periods[0].ApprenticeshipEmployerType 
+                = previousPayment.ApprenticeshipEmployerType 
+                = employerType;
+
+            earning.Type = OnProgrammeEarningType.Balancing;
+            earning.Periods = earning.Periods.Take(1).ToList().AsReadOnly();
+            earning.Periods[0].Period = deliveryPeriod;
+            earning.Periods[0].Amount = previousPayment.Amount - 1;
+
+            var requiredPayments = new List<RequiredPayment>
+            {
+                new RequiredPayment
+                {
+                    Amount = -1,
+                    EarningType = EarningType.CoInvested,
+                    ApprenticeshipEmployerType = employerType,
+                    ApprenticeshipId = previousPayment.ApprenticeshipId,
+                    ApprenticeshipPriceEpisodeId = previousPayment.ApprenticeshipPriceEpisodeId,
+                },
+            };
+
+            previousPayment.LearnAimReference = earningEvent.LearningAim.Reference;
+            previousPayment.DeliveryPeriod = deliveryPeriod;
+            previousPayment.TransactionType = (int)earning.Type;
+
+            var paymentHistory = ConditionalValue.WithArray(previousPayment);
+            paymentHistoryCacheMock
+                .Setup(c => c.TryGet(It.Is<string>(key => key == CacheKeys.PaymentHistoryKey), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(paymentHistory);
+
+            requiredPaymentService
+                .Setup(p => p.GetRequiredPayments(It.IsAny<Earning>(), It.IsAny<List<Payment>>()))
+                .Returns(requiredPayments);
+
+            // act
+            var actualRequiredPayment = 
+                await act2EarningEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCacheMock.Object, CancellationToken.None);
+
+            // assert
+            actualRequiredPayment.Should().BeEquivalentTo(
+            new
+            {
+                previousPayment.ApprenticeshipEmployerType,
+                previousPayment.ApprenticeshipId,
+                previousPayment.ApprenticeshipPriceEpisodeId,
+            });
         }
 
         [Test]

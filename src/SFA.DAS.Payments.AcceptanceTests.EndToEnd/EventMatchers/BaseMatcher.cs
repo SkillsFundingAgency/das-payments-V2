@@ -53,12 +53,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return (errors.Count == 0, string.Join(", ", errors), final);
         }
 
-        public (bool pass, string reason) MatchNoPayments()
+        public  virtual (bool pass, string reason) MatchUnexpectedEvents()
         {
-            var payments = GetActualEvents();
-            return !payments.Any()
+            var actualEvents = GetActualEvents();
+            return !actualEvents.Any()
                 ? (true, string.Empty)
-                : (false, $"Found Unexpected Payments: {payments.Aggregate(string.Empty, (currText, payment) => $"{currText}, {payment.ToJson()}")}");
+                : (false, $"Found Unexpected {actualEvents.First().GetType().Name}: {actualEvents.Aggregate(string.Empty, (currText, receivedEvent) => $"{currText}, {receivedEvent.ToJson()}")}");
         }
 
         private IList<T> RemoveEmptyFunctionSkillEarningEvent(IList<T> actualPayments)

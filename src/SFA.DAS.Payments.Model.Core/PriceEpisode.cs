@@ -33,5 +33,6 @@ namespace SFA.DAS.Payments.Model.Core
         public bool Completed { get; set; }
         public decimal? EmployerContribution { get; set; }
         public int? CompletionHoldBackExemptionCode { get; set; }
+        public string FundingLineType { get; set; }
     }
 }

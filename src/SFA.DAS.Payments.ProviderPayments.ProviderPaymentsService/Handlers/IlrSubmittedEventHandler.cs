@@ -12,7 +12,6 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 {
     public class IlrSubmittedEventHandler : IHandleMessages<ReceivedProviderEarningsEvent>
     {
-
         private readonly IPaymentLogger logger;
         private readonly IHandleIlrSubmissionService handleIlrSubmissionService;
         private readonly IExecutionContext executionContext;
@@ -28,21 +27,13 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 
         public async Task Handle(ReceivedProviderEarningsEvent message, IMessageHandlerContext context)
         {
-            try
-            {
-                var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
-                currentExecutionContext.JobId = message.JobId.ToString();
-                logger.LogDebug(
-                    $"Processing Ilr Submitted Event for Message: {message.ToJson()}.");
-                await handleIlrSubmissionService.Handle(message, CancellationToken.None);
-                logger.LogInfo($"Successfully processed Ilr Submitted Event: {message.ToJson()}");
-                await context.Reply(0).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Error handling the ILR submitted event. Ex: {ex.Message}", ex);
-                throw;
-            }
+            var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
+            currentExecutionContext.JobId = message.JobId.ToString();
+            logger.LogDebug(
+                $"Processing Ilr Submitted Event for Message: {message.ToJson()}.");
+            await handleIlrSubmissionService.Handle(message, CancellationToken.None);
+            logger.LogInfo($"Successfully processed Ilr Submitted Event: {message.ToJson()}");
+            await context.Reply(0).ConfigureAwait(false);
         }
     }
 }

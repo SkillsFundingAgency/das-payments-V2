@@ -1,4 +1,4 @@
-﻿using Autofac;
+using Autofac;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using Microsoft.EntityFrameworkCore;
@@ -206,7 +206,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     var isNew = specApprenticeship.ApprenticeshipId == default(long);
 
                     var apprenticeship = ApprenticeshipHelper.CreateApprenticeshipModel(specApprenticeship, TestSession);
-                    apprenticeship.ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy;
                     apprenticeship.ApprenticeshipPriceEpisodes = group.Select(ApprenticeshipHelper.CreateApprenticeshipPriceEpisode).ToList();
 
                     if (isNew)
@@ -324,6 +323,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             DateTime submissionTime, decimal? sfaContributionPercentage, decimal amount,
             FundingSourceType fundingSourceType, long ukprn, long? accountId, long? senderAccountId)
         {
+            var apprenticeshipId = Apprenticeships?.FirstOrDefault(x => x.LearnerId == learnerTraining.LearnerId)?.ApprenticeshipId;
+            var priceEpisodeId = CurrentPriceEpisodes
+                ?.FirstOrDefault(x => x.LearnerId == learnerTraining.LearnerId)
+                ?.PriceEpisodeId.ParseAsNullableLong();
+
             return new PaymentModel
             {
                 CollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(providerPayment.CollectionPeriod).Build(),
@@ -356,7 +360,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 CompletionAmount = 100M,
                 InstalmentAmount = 200M,
                 NumberOfInstalments = 12,
-                ReportingAimFundingLineType = learnerTraining.FundingLineType
+                ReportingAimFundingLineType = learnerTraining.FundingLineType,
+                ApprenticeshipEmployerType = providerPayment.IsEmployerLevyPayer ? ApprenticeshipEmployerType.Levy:ApprenticeshipEmployerType.NonLevy,
+                ApprenticeshipId = apprenticeshipId,
+                ApprenticeshipPriceEpisodeId = priceEpisodeId,
             };
         }
 
@@ -433,9 +440,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 var firstEarningForPriceEpisode = earnings
                     .OrderBy(x => x.DeliveryCalendarPeriod)
-                    .First(e => e.DeliveryCalendarPeriod >= priceEpisodeStartDateAsDeliveryPeriod);
+                    .FirstOrDefault(e => e.DeliveryCalendarPeriod >= priceEpisodeStartDateAsDeliveryPeriod && e.PriceEpisodeIdentifier == priceEpisode.PriceEpisodeId);
 
-                var sfaContributionPercent = (firstEarningForPriceEpisode.SfaContributionPercentage ??
+                var sfaContributionPercent = (firstEarningForPriceEpisode?.SfaContributionPercentage ??
                                   priceEpisode.SfaContributionPercentage).ToPercent();
 
                 var newPriceEpisode = new PriceEpisode
@@ -504,6 +511,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 foreach (var currentValues in aimPeriodisedValues)
                 {
                     PriceEpisodePeriodisedValues newValues;
+                    var aimEarnings = earnings.Where(x => x.AimSequenceNumber == aim.AimSequenceNumber || x.AimSequenceNumber == null).ToList();
 
                     // price episodes not covering the whole year are likely to be one of many, copy values only for current episode, set zero for others
                     if (episodeStart.AcademicYear == AcademicYear && (episodeStart.Period > 1 || episodeLastPeriod < 12))
@@ -522,7 +530,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                                 ? currentValues.GetValue(p)
                                 : 0;
 
-                            var earningPriceEpisodeIdentifier = earnings[earningRow].PriceEpisodeIdentifier;
+                            var earningPriceEpisodeIdentifier = aimEarnings[earningRow].PriceEpisodeIdentifier;
                             var currentPriceEpisodeIdentifier = currentPriceEpisode.PriceEpisodeIdentifier;
                             if (!string.IsNullOrWhiteSpace(earningPriceEpisodeIdentifier) &&
                                 earningPriceEpisodeIdentifier ==
@@ -532,7 +540,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             }
                             else
                             {
-                                if (earningRow < earnings.Count &&
+                                if (earningRow < aimEarnings.Count &&
                                     !string.IsNullOrWhiteSpace(earningPriceEpisodeIdentifier))
                                 {
                                     if (earningPriceEpisodeIdentifier !=
@@ -651,11 +659,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return aimPeriodisedValues;
         }
 
-        private static List<LearningDeliveryPeriodisedTextValues> SetPeriodisedTextValues(Aim aim,
-            IList<Earning> earnings)
+        private static List<LearningDeliveryPeriodisedTextValues> SetPeriodisedTextValues(Aim aim, IList<Earning> earnings)
         {
             var aimPeriodisedTextValues = new List<LearningDeliveryPeriodisedTextValues>();
             const string learningDeliveryContractType = "LearnDelContType";
+            const string learningDeliveryFundingLineType = "FundLineType";
 
             foreach (var earning in earnings.Where(e => !e.AimSequenceNumber.HasValue ||
                                                         e.AimSequenceNumber == aim.AimSequenceNumber))
@@ -665,25 +673,32 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 {
                     if (MathsAndEnglishTransactionTypes().Contains(earningValue.Key))
                     {
-                        var contractType = GetContractTypeDescription(earning.ContractType);
-
-                        var contractTypePeriodisedValues =
-                            aimPeriodisedTextValues.SingleOrDefault(
-                                v => v.AttributeName == learningDeliveryContractType);
-
-                        if (contractTypePeriodisedValues == null)
-                        {
-                            contractTypePeriodisedValues = new LearningDeliveryPeriodisedTextValues
-                                {AttributeName = learningDeliveryContractType};
-                            aimPeriodisedTextValues.Add(contractTypePeriodisedValues);
-                        }
-
-                        SetPeriodTextValue(period, contractTypePeriodisedValues, contractType);
+                        AddPeriodisedTextAttributes(aimPeriodisedTextValues, learningDeliveryContractType, period, GetContractTypeDescription(earning.ContractType));
+                        AddPeriodisedTextAttributes(aimPeriodisedTextValues, learningDeliveryFundingLineType, period, aim.FundingLineType);
                     }
                 }
             }
 
             return aimPeriodisedTextValues;
+        }
+
+        private static void AddPeriodisedTextAttributes(List<LearningDeliveryPeriodisedTextValues> aimPeriodisedTextValues,
+            string attributeName,
+            byte period, 
+            string valueToSet)
+        {
+            var periodisedTextValues = aimPeriodisedTextValues.SingleOrDefault(v => v.AttributeName == attributeName);
+
+            if (periodisedTextValues == null)
+            {
+                periodisedTextValues = new LearningDeliveryPeriodisedTextValues
+                {
+                    AttributeName = attributeName
+                };
+                aimPeriodisedTextValues.Add(periodisedTextValues);
+            }
+
+            SetPeriodTextValue(period, periodisedTextValues, valueToSet);
         }
 
         private static string CalculatePriceEpisodeIdentifier(Price priceEpisode, string priceEpisodePrefix)
@@ -773,6 +788,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                     payment.IncentiveValues.Add(transactionType, amount);
                 }
+
+                foreach (var headerCell in table.Header)
+                {
+                    var name = headerCell.Replace(" ", null).Replace("-", null);
+
+                    if (!Enum.TryParse<NonPaymentReason>(name, true, out var nonPaymentReason))
+                        continue;
+
+                    if (!decimal.TryParse(tableRow[headerCell], out var amount))
+                        continue;
+
+                    payment.NonPaymentReasons.Add(nonPaymentReason, amount);
+                }
             }
 
             return payments;
@@ -782,6 +810,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var expectedPayments = CreatePayments(table, provider.Ukprn);
             var matcher = new RequiredPaymentEventMatcher(provider, CurrentCollectionPeriod, expectedPayments, CurrentIlr, CurrentPriceEpisodes);
+            await WaitForIt(() => matcher.MatchPayments(), "Held Back Required Payment event check failure");
+        }
+
+        protected async Task MatchHeldBackRequiredPayments(Table table, Provider provider)
+        {
+            var expectedPayments = CreatePayments(table, provider.Ukprn);
+            var matcher = new CompletionPaymentHeldBackEventMatcher(provider, CurrentCollectionPeriod, expectedPayments);
             await WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
         }
 
@@ -849,7 +884,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var ilr = CurrentIlr ?? PreviousIlr;
             ilr = ilr?.Where(o => o.Ukprn == provider.Ukprn).ToList();
 
-            expectedPayments = SetProviderPaymentAccountIds(ilr, expectedPayments);
+            var providerLearners = TestSession.Learners?.Where(c => c.Ukprn == provider.Ukprn).ToList();
+
+            var contractType = GetContractType(expectedPayments, CurrentCollectionPeriod, ilr,
+                providerLearners);
+
+            if (contractType != ContractType.Act2)
+            {
+                expectedPayments = SetProviderPaymentAccountIds(ilr, expectedPayments);
+            }
+          
             var matcher = new ProviderPaymentEventMatcher(provider, CurrentCollectionPeriod, TestSession, expectedPayments);
             await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
         }
@@ -960,7 +1004,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     historicPayment.DeliveryPeriod == p.DeliveryPeriod))
                 .ToList();
 
-            DataContext.Payment.AddRange(previousPayments);
+            await DataContext.Payment.AddRangeAsync(previousPayments);
             await DataContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
@@ -972,12 +1016,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 .ToList();
 
             var providerCurrentIlr = CurrentIlr?.Where(c => c.Ukprn == provider.Ukprn).ToList();
-
-            expectedPayments = SetProviderPaymentAccountIds(providerCurrentIlr, expectedPayments);
-
+            
             var providerLearners = TestSession.Learners?.Where(c => c.Ukprn == provider.Ukprn).ToList();
             var contractType = GetContractType(expectedPayments, CurrentCollectionPeriod, providerCurrentIlr,
                 providerLearners);
+
+            if (contractType != ContractType.Act2)
+            {
+                expectedPayments = SetProviderPaymentAccountIds(providerCurrentIlr, expectedPayments);
+            }
 
             var matcher = new ProviderPaymentModelMatcher(provider, DataContext, TestSession, CurrentCollectionPeriod, expectedPayments, contractType);
             await WaitForIt(() => matcher.MatchPayments(), "Recorded payments check failed");
@@ -1022,6 +1069,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                                : expectedPayment.Employer.ToLowerInvariant() == "no employer"
                                    ? default(long?)
                                    : TestSession.GetEmployer(expectedPayment.Employer).AccountId;
+                expectedPayment.IsEmployerLevyPayer = string.IsNullOrWhiteSpace(expectedPayment.Employer)
+                    ? TestSession.Employer.IsLevyPayer : TestSession.GetEmployer(expectedPayment.Employer).IsLevyPayer;
 
                 expectedPayment.SendingAccountId = string.IsNullOrWhiteSpace(expectedPayment.SendingEmployer)
                     ? TestSession.Employer.AccountId

@@ -10,6 +10,5 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
         Task<bool> Exists(long ukprn, short academicYear, byte collectionPeriod, CancellationToken cancellationToken = default(CancellationToken));
         Task AddOrReplace(long ukprn, short academicYear, byte collectionPeriod, long monthEndJobId, CancellationToken cancellationToken = default(CancellationToken));
         Task<MonthEndDetails> GetMonthEndDetails(long ukprn, short academicYear,byte collectionPeriod, CancellationToken cancellationToken = default(CancellationToken));
-
     }
 }

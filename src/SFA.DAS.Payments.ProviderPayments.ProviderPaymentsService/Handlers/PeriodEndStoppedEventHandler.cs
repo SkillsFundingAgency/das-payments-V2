@@ -29,27 +29,19 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
             var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
             currentExecutionContext.JobId = message.JobId.ToString();
 
-            try
+            logger.LogDebug($"Processing period end event. Collection: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
+            var commands = await periodEndService.GenerateProviderMonthEndCommands(message).ConfigureAwait(false);
+            if (!commands.Any())
             {
-                logger.LogDebug($"Processing period end event. Collection: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
-                var commands = await periodEndService.GenerateProviderMonthEndCommands(message).ConfigureAwait(false);
-                if (!commands.Any())
-                {
-                    logger.LogWarning($"No Provider Ukprn found for period end payment {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
-                    return;
-                }
-                foreach (var command in commands)
-                {
-                    logger.LogDebug($"Sending month end command for provider: {command.Ukprn}");
-                    await context.SendLocal(command).ConfigureAwait(false);
-                }
-                logger.LogInfo($"Successfully processed Period End Event for {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
+                logger.LogWarning($"No Provider Ukprn found for period end payment {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
+                return;
             }
-            catch (Exception ex)
+            foreach (var command in commands)
             {
-                logger.LogError($"Error while handling Provider Payments Period End. {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}", ex);
-                throw;
+                logger.LogDebug($"Sending month end command for provider: {command.Ukprn}");
+                await context.SendLocal(command).ConfigureAwait(false);
             }
+            logger.LogInfo($"Successfully processed Period End Event for {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
         }
     }
 }

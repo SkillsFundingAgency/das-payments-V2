@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Autofac.Extras.Moq;
 using Castle.Components.DictionaryAdapter;
@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
             validatorMock.Setup(x => x.Validate(It.IsAny<FM36Learner>())).Returns(new ValidationResult(new List<ValidationRuleResult>()));
             learner = new FM36Learner();
         }
-        
+
         [Test]
         public void Fails_If_Validation_Fails()
         {
@@ -163,7 +163,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
 
             // act
             var result = mocker.Create<LearnerSubmissionProcessor>().GenerateEarnings(learnerSubmission);
-            
+
             // assert
             result.EarningEvents.Should().HaveCount(3);
 
@@ -173,7 +173,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
             act1Payments.First().IncentiveEarnings.Should().BeEmpty();
 
             result.EarningEvents.OfType<Act1FunctionalSkillEarningsEvent>().Should().BeEmpty();
-            
+
         }
 
         [Test]

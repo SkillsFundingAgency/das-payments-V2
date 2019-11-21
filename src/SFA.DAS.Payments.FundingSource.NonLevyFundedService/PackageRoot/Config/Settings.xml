@@ -17,5 +17,8 @@
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value=""/>
     <Parameter Name="DasNServiceBusLicenseKey" Value=""/>
 
+    <Parameter Name="ImmediateMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetryDelay" Value="" />
   </Section>
 </Settings>

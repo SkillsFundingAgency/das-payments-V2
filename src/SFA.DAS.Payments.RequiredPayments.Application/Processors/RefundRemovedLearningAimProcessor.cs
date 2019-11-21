@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             logger.LogDebug($"Got {historicPayments.Count} historic payments. Now generating refunds per transaction type.");
 
             var requiredPaymentEvents = historicPayments.GroupBy(historicPayment => historicPayment.TransactionType)
-                .SelectMany(group => CreateRefundPayments(identifiedRemovedLearningAim, historicPayments, group.Key, cacheItem))
+                .SelectMany(group => CreateRefundPayments(identifiedRemovedLearningAim, group.ToList(), group.Key, cacheItem))
                 .ToList();
 
             return requiredPaymentEvents.AsReadOnly();

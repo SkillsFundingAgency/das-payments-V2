@@ -25,12 +25,11 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
         private readonly IProviderPaymentFactory paymentFactory;
         private readonly IJobMessageClient jobClient;
 
-
         public ProcessProviderMonthEndCommandHandler(IPaymentLogger paymentLogger,
             IExecutionContext executionContext,
             IProviderPeriodEndService providerPeriodEndService,
             IMapper mapper,
-            IProviderPaymentFactory paymentFactory, 
+            IProviderPaymentFactory paymentFactory,
             IJobMessageClient jobClient)
         {
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
@@ -46,24 +45,17 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
             paymentLogger.LogDebug($"Processing Provider Month End Command. Ukprn: {message.Ukprn}, Academic Year:{message.CollectionPeriod.AcademicYear}, Collection Period: {message.CollectionPeriod.Period}.");
             var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
             currentExecutionContext.JobId = message.JobId.ToString();
-            try
-            {
-                await providerPeriodEndService.StartMonthEnd(message.Ukprn, message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period, message.JobId).ConfigureAwait(false);
-                var payments = await providerPeriodEndService.GetMonthEndPayments(message.CollectionPeriod, message.Ukprn).ConfigureAwait(false);
 
-                foreach (var paymentEvent in payments.Select(payment => MapToProviderPaymentEvent(payment, message.JobId)))
-                {
-                    await context.Publish(paymentEvent);
-                    paymentLogger.LogInfo($"Sent {paymentEvent.GetType().Name} for {message.JobId} and Message Type {message.GetType().Name}");
-                }
+            await providerPeriodEndService.StartMonthEnd(message.Ukprn, message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period, message.JobId).ConfigureAwait(false);
+            var payments = await providerPeriodEndService.GetMonthEndPayments(message.CollectionPeriod, message.Ukprn).ConfigureAwait(false);
 
-                paymentLogger.LogInfo($"Successfully processed Month End Command for Job Id {message.JobId} and Message Type {message.GetType().Name}, {payments.Count} provider payment events created.");
-            }
-            catch (Exception ex)
+            foreach (var paymentEvent in payments.Select(payment => MapToProviderPaymentEvent(payment, message.JobId)))
             {
-                paymentLogger.LogError($"Error while processing Process Provider Month End Command. Error: {ex}", ex);
-                throw;
+                await context.Publish(paymentEvent);
+                paymentLogger.LogInfo($"Sent {paymentEvent.GetType().Name} for {message.JobId} and Message Type {message.GetType().Name}");
             }
+
+            paymentLogger.LogInfo($"Successfully processed Month End Command for Job Id {message.JobId} and Message Type {message.GetType().Name}, {payments.Count} provider payment events created.");
         }
 
         private ProviderPaymentEvent MapToProviderPaymentEvent(PaymentModel payment, long monthEndJobId)

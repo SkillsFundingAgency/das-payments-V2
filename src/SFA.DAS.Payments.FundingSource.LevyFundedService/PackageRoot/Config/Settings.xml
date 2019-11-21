@@ -15,6 +15,9 @@
     <Parameter Name="ProcessMessageSequentially" Value="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="" />
+    <Parameter Name="ImmediateMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetryDelay" Value="" />
   </Section>
   <Section Name="LevyFundedServiceActorServiceReplicatorConfig">
     <Parameter Name="ReplicatorEndpoint" Value="LevyFundedServiceActorServiceReplicatorEndpoint" />

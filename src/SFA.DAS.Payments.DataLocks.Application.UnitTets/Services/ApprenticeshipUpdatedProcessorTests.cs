@@ -7,12 +7,11 @@ using Autofac.Extras.Moq;
 using AutoMapper;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.CommitmentsV2.Messages.Events;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Application.Mapping;
 using SFA.DAS.Payments.DataLocks.Application.Services;
-using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
+using SFA.DAS.Payments.DataLocks.Domain.Infrastructure;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Audit;
@@ -72,6 +71,54 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             mocker.Mock<IActorDataCache<List<ApprenticeshipModel>>>()
                 .Verify(x => x.AddOrReplace(It.Is<string>(key => key == updatedApprenticeship.Uln.ToString()),
                     It.Is<List<ApprenticeshipModel>>(list => list.Count == 1 && list.First().Id == updatedApprenticeship.Id),
+                    It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task WhenTheProviderCacheDoesNotExistThenItIsCreated()
+        {
+            mocker.Mock<IActorDataCache<List<long>>>()
+                .Setup(x => x.TryGet(CacheKeys.ProvidersKey, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ConditionalValue<List<long>>(false, null));
+
+            var processor = mocker.Create<ApprenticeshipUpdatedProcessor>();
+            await processor.ProcessApprenticeshipUpdate(updatedApprenticeship);
+
+            mocker.Mock<IActorDataCache<List<long>>>()
+                .Verify(x => x.AddOrReplace(It.Is<string>(key => key == CacheKeys.ProvidersKey),
+                    It.Is<List<long>>(list => list.Count == 1 && list.First() == updatedApprenticeship.Ukprn),
+                    It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task WhenTheProviderIsNotInTheCacheThenTheCacheIsUpdated()
+        {
+            mocker.Mock<IActorDataCache<List<long>>>()
+                .Setup(x => x.TryGet(CacheKeys.ProvidersKey, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ConditionalValue<List<long>>(true, new List<long> { 213423454 }));
+
+            var processor = mocker.Create<ApprenticeshipUpdatedProcessor>();
+            await processor.ProcessApprenticeshipUpdate(updatedApprenticeship);
+
+            mocker.Mock<IActorDataCache<List<long>>>()
+                .Verify(x => x.AddOrReplace(It.Is<string>(key => key == CacheKeys.ProvidersKey),
+                    It.Is<List<long>>(list => list.Count == 2 && list.Last() == updatedApprenticeship.Ukprn),
+                    It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task WhenTheProviderIsAlreadyInTheCacheThenTheCacheIsNotUpdated()
+        {
+            mocker.Mock<IActorDataCache<List<long>>>()
+                .Setup(x => x.TryGet(CacheKeys.ProvidersKey, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ConditionalValue<List<long>>(true, new List<long> { updatedApprenticeship.Ukprn }));
+
+            var processor = mocker.Create<ApprenticeshipUpdatedProcessor>();
+            await processor.ProcessApprenticeshipUpdate(updatedApprenticeship);
+
+            mocker.Mock<IActorDataCache<List<long>>>()
+                .Verify(x => x.AddOrReplace(It.Is<string>(key => key == CacheKeys.ProvidersKey),
+                    It.Is<List<long>>(list => list.Count == 1 && list.First() == updatedApprenticeship.Ukprn),
                     It.IsAny<CancellationToken>()), Times.Once);
         }
 

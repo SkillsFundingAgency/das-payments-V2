@@ -23,5 +23,8 @@
     <Parameter Name="MaximumCallbackTimeSpan" Value="__MaximumCallbackTimeSpan__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
+    <Parameter Name="ImmediateMessageRetries" Value="__ImmediateMessageRetries__" />
+    <Parameter Name="DelayedMessageRetries" Value="__DelayedMessageRetries__" />
+    <Parameter Name="DelayedMessageRetryDelay" Value="__DelayedMessageRetryDelay__" />
   </Parameters>
 </Application>

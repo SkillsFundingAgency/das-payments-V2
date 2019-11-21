@@ -26,28 +26,20 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
 
         public async Task Handle(ResetCacheCommand message, IMessageHandlerContext context)
         {
-            try
+            logger.LogDebug($"Resetting cache for provider :{message.Ukprn}");
+            var ulns = await repository.ApprenticeshipUlnsByProvider(message.Ukprn);
+            var resetTasks = new List<Task>();
+            foreach (var uln in ulns)
             {
-                logger.LogDebug($"Resetting cache for provider :{message.Ukprn}");
-                var ulns = await repository.ApprenticeshipUlnsByProvider(message.Ukprn);
-                var resetTasks = new List<Task>();
-                foreach (var uln in ulns)
-                {
-                    var actorId = new ActorId(uln);
-                    logger.LogVerbose($"Creating actor proxy for actor id: {uln}");
-                    var actor = proxyFactory.CreateActorProxy<IDataLockService>(new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/DataLockServiceActorService"), actorId);
-                    logger.LogVerbose($"Actor proxy created, now resetting the cache.");
-                    resetTasks.Add(actor.Reset());
-                }
+                var actorId = new ActorId(uln);
+                logger.LogVerbose($"Creating actor proxy for actor id: {uln}");
+                var actor = proxyFactory.CreateActorProxy<IDataLockService>(new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/DataLockServiceActorService"), actorId);
+                logger.LogVerbose($"Actor proxy created, now resetting the cache.");
+                resetTasks.Add(actor.Reset());
+            }
 
-                await Task.WhenAll(resetTasks).ConfigureAwait(false);
-                logger.LogInfo($"Finished resetting the cache for provider: {message.Ukprn}");
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Failed resetting cache for provider: {message.Ukprn}, Error: {ex.Message}", ex);
-                throw;
-            }
+            await Task.WhenAll(resetTasks).ConfigureAwait(false);
+            logger.LogInfo($"Finished resetting the cache for provider: {message.Ukprn}");
         }
     }
 }

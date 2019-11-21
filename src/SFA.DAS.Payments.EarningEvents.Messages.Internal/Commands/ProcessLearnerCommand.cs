@@ -1,10 +1,11 @@
 ﻿using System;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Messages.Core.Commands;
 
 namespace SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands
 {
-    public class ProcessLearnerCommand: PaymentsCommand
+    public class ProcessLearnerCommand: PaymentsCommand, IMonitoredMessage
     {
 
         public long Ukprn { get; set; }

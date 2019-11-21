@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
@@ -34,8 +35,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
     {
         private const string ResultsContainerName = "results";
         private const string ControlFileContainerName = "control-files";
-
-        private const string SettingFile = "settings.json";
 
         private static CloudBlobClient blobClient;
 
@@ -130,7 +129,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         public async Task<TestSettings> ReadSettingsFile()
         {
             var blobContainer = blobClient.GetContainerReference(ControlFileContainerName);
-            var blob = blobContainer.GetBlockBlobReference(SettingFile);
+            var blob = blobContainer.GetBlockBlobReference(configuration.SettingsFileName);
             var text = await blob.DownloadTextAsync();
             return serializationService.Deserialize<TestSettings>(text);
         }
@@ -175,7 +174,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             var result = new FileUploadJob();
             while (!completed)
             {
-                var status = await jobService.GetJob(ukprn, jobId);
+                FileUploadJob status;
+                try
+                {
+                    status = await jobService.GetJob(ukprn, jobId);
+                }
+                catch (HttpRequestException exception)
+                {
+                    var message =
+                        $"The Job Api has raised an internal server error when getting job for Ukprn: {ukprn} with JobId: {jobId} which needs to be followed up with DCT.";
+                    throw new HttpRequestException(message, exception);
+                }
+
                 if (status.Status == JobStatusType.Waiting ||
                     status.Status == JobStatusType.Completed)
                 {

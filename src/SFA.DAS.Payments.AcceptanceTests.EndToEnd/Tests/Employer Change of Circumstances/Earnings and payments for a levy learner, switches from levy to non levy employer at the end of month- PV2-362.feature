@@ -1,6 +1,3 @@
-@ignore
-# issue in EndToEndStepsBase.SetProviderPaymentAccountId method. Should look at current ILR not all ILR's as ACT2 shouldn't expect an account Id. 
-# Failed on Provider payments model matcher as expects an account id on ACT2 payments
 Feature: Earnings and payments for a levy learner, switches from levy to non levy employer at the end of month- PV2-362
 As a provider,
 I want earnings and payments for a levy learner, levy available, where a learner switches from levy to non-levy employer at the end of month, to be paid the correct amount
@@ -74,6 +71,7 @@ And at month end only the following payments will be calculated
 	| R10/Current Academic Year | May/Current Academic Year | 500          | 0          | 0         |
 	| R11/Current Academic Year | Jun/Current Academic Year | 500          | 0          | 0         |
 	| R12/Current Academic Year | Jul/Current Academic Year | 500          | 0          | 0         |
+
 
 And only the following provider payments will be recorded
 	| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type | Employer   |

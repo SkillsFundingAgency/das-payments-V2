@@ -16,6 +16,12 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
         }
         protected override bool FailedValidation(DataLockValidationModel dataLockValidationModel, List<ApprenticeshipPriceEpisodeModel> validApprenticeshipPriceEpisodes)
         {
+            if (dataLockValidationModel.Apprenticeship.TransferSendingEmployerAccountId.HasValue &&
+                dataLockValidationModel.Apprenticeship.TransferSendingEmployerAccountId > 0)
+            {
+                return false;
+            }
+            
             return !dataLockValidationModel.Apprenticeship.IsLevyPayer;
         }
     }

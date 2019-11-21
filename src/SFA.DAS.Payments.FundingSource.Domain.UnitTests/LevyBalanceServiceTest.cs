@@ -133,5 +133,21 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
             var service = new LevyBalanceService();
             Assert.Throws<InvalidOperationException>(() => service.TryFund(50));
         }
+
+        [Test]
+        public void Should_Return_Zero_If_Initialised_With_Negative_Balance()
+        {
+            var service = new LevyBalanceService();
+            service.Initialise(-50, 0);
+            service.TryFund(50).Should().Be(0);
+        }
+
+        [Test]
+        public void Should_Return_Zero_If_Initialised_With_Negative_Transfer_Balance()
+        {
+            var service = new LevyBalanceService();
+            service.Initialise(50, -50);
+            service.TryFundTransfer(50).Should().Be(0);
+        }
     }
 }

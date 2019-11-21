@@ -44,31 +44,24 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
             if (message.Ukprn == 0)
                 throw new ArgumentException($"Ukprn cannot be 0. Job Id: {message.JobId}");
 
-            try
+            logger.LogDebug($"Getting AccountId for Ukprn: {message.Ukprn}.");
+            var accountIds = await repository.GetEmployerAccountsByUkprn(message.Ukprn).ConfigureAwait(false);
+            var tasks = new List<Task>();
+            foreach (var account in accountIds)
             {
-                logger.LogDebug($"Getting AccountId for Ukprn: {message.Ukprn}.");
-                var accountIds = await repository.GetEmployerAccountsByUkprn(message.Ukprn).ConfigureAwait(false);
-                var tasks = new List<Task>();
-                foreach (var account in accountIds)
-                {
-                    var accountToUse = levyMessageRoutingService.GetDestinationAccountId(account.Key, account.Value);
-                    tasks.Add(InvokeSubmissionAction(accountToUse, message));
-                }
+                var accountToUse = levyMessageRoutingService.GetDestinationAccountId(account.Item1, account.Item2);
+                tasks.Add(InvokeSubmissionAction(accountToUse, message));
+            }
 
-                await Task.WhenAll(tasks).ConfigureAwait(false);
-                logger.LogInfo($"Successfully processed {messageType} for Job: {message.JobId}, UKPRN: {message.Ukprn}. Skipped submission removing as no account ID found.");
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Error while handling {messageType} event. Error: {ex.Message}, Job: {message.JobId}, UKPRN: {message.Ukprn}", ex);
-                throw;
-            }
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+            logger.LogInfo($"Successfully processed {messageType} for Job: {message.JobId}, UKPRN: {message.Ukprn}. Skipped submission removing as no account ID found.");
         }
 
         private async Task InvokeSubmissionAction(long accountId, T message)
         {
             var actorId = new ActorId(accountId);
-            var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri(LevyFundedServiceConstants.ServiceUri), actorId);
+            var uri = new Uri(LevyFundedServiceConstants.ServiceUri);
+            var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(uri, actorId);
 
             await HandleSubmissionEvent(message, actor);
             logger.LogInfo($"Successfully processed {typeof(T).Name} event for Actor Id {actorId}, Job: {message.JobId}, UKPRN: {message.Ukprn}");

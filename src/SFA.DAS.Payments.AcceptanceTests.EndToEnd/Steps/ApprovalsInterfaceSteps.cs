@@ -146,8 +146,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             ApprovalsApprenticeships.ForEach(appr => appr.EmployerType = employerType);
         }
 
-
-
         [Given(@"the following apprenticeships have been approved")]
         public void GivenTheFollowingApprenticeshipsHaveBeenApproved(Table table)
         {
@@ -308,7 +306,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             PreviousApprovalsApprenticeships = table.CreateSet<ApprovalsApprenticeship>().ToList();
             await SavePreviousApprenticeships().ConfigureAwait(false);
         }
-
         private async Task SavePreviousApprenticeships()
         {
             foreach (var apprenticeshipSpec in PreviousApprovalsApprenticeships)
@@ -373,7 +370,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             ToDate = pp.EffectiveTo?.ToNullableDate(),
                             Cost = pp.AgreedPrice
                         }).ToArray(),
-                    
+
                 };
                 Console.WriteLine($"Sending ApprenticeshipUpdatedApprovedEvent message: {createdMessage.ToJson()}");
                 DasMessageSession.Send(createdMessage).ConfigureAwait(false);
@@ -438,8 +435,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 if (!string.IsNullOrWhiteSpace(changedApprenticeshipSpec.ResumedOnDate))
                     changedApprenticeship.ResumedOnDate = changedApprenticeshipSpec.ResumedOnDate;
 
-                if(!string.IsNullOrWhiteSpace(changedApprenticeshipSpec.StoppedOnDate))
-                   changedApprenticeship.PriceEpisodes.ForEach(pe=> pe.EffectiveTo = changedApprenticeshipSpec.StoppedOnDate);
+                if (!string.IsNullOrWhiteSpace(changedApprenticeshipSpec.StoppedOnDate))
+                    changedApprenticeship.PriceEpisodes.ForEach(pe => pe.EffectiveTo = changedApprenticeshipSpec.StoppedOnDate);
 
             }
         }
@@ -538,7 +535,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [When(@"the Approvals service notifies the Payments service that the apprenticeships has been resumed")]
-        public void WhenTheApprovalsServiceNotifiesThePaymentsServiceThatTheApprenticeshipsHasBeenResumed()
+        public async Task WhenTheApprovalsServiceNotifiesThePaymentsServiceThatTheApprenticeshipsHasBeenResumed()
         {
             foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
             {
@@ -548,7 +545,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ApprenticeshipId = approvalsApprenticeship.Id,
                 };
                 Console.WriteLine($"Sending ApprenticeshipPausedEvent message: {createdMessage.ToJson()}");
-                DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+                await DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
 
@@ -578,12 +575,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"the employers provider priority order is as follows")]
+        [Given(@"employers change provider priority order as follows")]
         public void GivenTheEmployersProviderPriorityOrderIsAsFollows(Table table)
         {
             ProviderPaymentPriorities = table.CreateSet<ProviderPriority>().ToList();
         }
 
-        [When(@"the Approvals service notifies the Payments service of Employer Provider Payment Priority Change")]
+        [Given(@"the Approvals service notifies the Payments service of Employer Provider Payment Priority Change")]
+        [When(@"the Approvals service notifies the Payments service of changes to Employer Provider Payment Priority")]
         public void WhenTheApprovalsServiceNotifiesThePaymentsServiceOfEmployerProviderPaymentPriorityChange()
         {
             var createdMessage = new CommitmentsV2.Messages.Events.PaymentOrderChangedEvent

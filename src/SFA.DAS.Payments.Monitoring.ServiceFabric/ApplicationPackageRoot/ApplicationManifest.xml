@@ -25,6 +25,9 @@
     <Parameter Name="JobStatusCheck_Interval" DefaultValue="00:00:10" />
     <Parameter Name="TimeToWaitForJobToComplete" DefaultValue="01:00:00" />
     <Parameter Name="DasNServiceBusLicenseKey" DefaultValue="" />
+    <Parameter Name="ImmediateMessageRetries" DefaultValue="1" />
+    <Parameter Name="DelayedMessageRetries" DefaultValue="3" />
+    <Parameter Name="DelayedMessageRetryDelay" DefaultValue="00:00:10" />
   </Parameters>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.Monitoring.Jobs.JobServicePkg" ServiceManifestVersion="1.0.0" />
@@ -49,6 +52,9 @@
             <Parameter Name="TimeToWaitForJobToComplete" Value="[TimeToWaitForJobToComplete]" />
             <Parameter Name="NumberOfNServiceBusThreads" Value="[NumberOfNServiceBusThreads]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
+            <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
+            <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
+            <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
           </Section>
         </Settings>
       </ConfigOverride>

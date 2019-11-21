@@ -20,7 +20,7 @@ using Learner = SFA.DAS.Payments.Model.Core.Learner;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
-    public class EarningEventMatcher: BaseMatcher<EarningEvent>
+    public class EarningEventMatcher : BaseMatcher<EarningEvent>
     {
         private readonly TestSession testSession;
         private readonly CollectionPeriod collectionPeriod;
@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         private static readonly TestsConfiguration Config = new TestsConfiguration();
 
-        public EarningEventMatcher(Provider provider , List<Price> currentPriceEpisodes,List<Training> currentIlr, IList<Earning> earningSpecs, TestSession testSession, CollectionPeriod collectionPeriod, IList<FM36Learner> learnerSpecs)
+        public EarningEventMatcher(Provider provider, List<Price> currentPriceEpisodes, List<Training> currentIlr, IList<Earning> earningSpecs, TestSession testSession, CollectionPeriod collectionPeriod, IList<FM36Learner> learnerSpecs)
         {
             this.provider = provider;
             this.currentPriceEpisodes = currentPriceEpisodes;
@@ -60,7 +60,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
             foreach (var learnerId in learnerIds)
             {
-                var learnerSpec = testSession.GetLearner(provider.Ukprn,learnerId);
+                var learnerSpec = testSession.GetLearner(provider.Ukprn, learnerId);
                 var fm36Learner = learnerSpecs.Single(l => l.LearnRefNumber == learnerSpec.LearnRefNumber);
                 var learner = new Learner
                 {
@@ -101,7 +101,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         FrameworkCode = aimSpec.FrameworkCode,
                         PathwayCode = aimSpec.PathwayCode,
                         StandardCode = aimSpec.StandardCode,
-                        FundingLineType = aimSpec.FundingLineType,
                         Reference = aimSpec.AimReference
                     };
 
@@ -113,7 +112,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                     if (aimSpec.IsMainAim && onProgEarnings.Any())
                     {
-                        var contractTypeEarningsEvents  = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
+                        var contractTypeEarningsEvents = CreateContractTypeEarningsEventEarningEvent(provider.Ukprn);
 
                         foreach (var onProgEarning in contractTypeEarningsEvents)
                         {
@@ -126,13 +125,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                             onProgEarning.Learner = learner;
                             onProgEarning.LearningAim = learningAim;
 
+
                             result.Add(onProgEarning);
                         }
                     }
 
                     if (!aimSpec.IsMainAim && functionalSkillEarnings.Any())
                     {
-                        var functionalSkillEarningsEvents = CreateFunctionalSkillEarningEvents(functionalSkillEarnings, aimEarningSpecs, fm36Learner, learner, learningAim);
+                        var functionalSkillEarningsEvents = CreateFunctionalSkillEarningEvents(functionalSkillEarnings, 
+                            aimEarningSpecs, 
+                            fm36Learner, 
+                            learner, 
+                            learningAim,
+                            aimSpec);
+
                         result.AddRange(functionalSkillEarningsEvents);
                     }
 
@@ -161,7 +167,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         }
 
         private List<FunctionalSkillEarningsEvent> CreateFunctionalSkillEarningEvents(List<TransactionType> functionalSkillEarnings,
-            List<Earning> aimEarningSpecs, FM36Learner fm36Learner, Learner learner, LearningAim learningAim)
+            List<Earning> aimEarningSpecs, FM36Learner fm36Learner, Learner learner, LearningAim learningAim, Aim aimSpec)
         {
             var contractTypes = EnumHelper.GetContractTypes(currentIlr, currentPriceEpisodes);
 
@@ -217,6 +223,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 }
             });
 
+
+            events.ForEach(x => x.LearningAim.FundingLineType = aimSpec.FundingLineType);
+
             return events;
         }
 
@@ -225,7 +234,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return aimEarningSpecs
                 .Select(e => new EarningPeriod
                 {
-                    Amount = PriceEpisodeContractTypeMatchesAim(aimSpec.PriceEpisodes, e.PriceEpisodeIdentifier, onProgEarning)? e.Values[tt] : 0M,
+                    Amount = PriceEpisodeContractTypeMatchesAim(aimSpec.PriceEpisodes, e.PriceEpisodeIdentifier, onProgEarning) ? e.Values[tt] : 0M,
                     Period = e.DeliveryCalendarPeriod,
                     PriceEpisodeIdentifier = FindPriceEpisodeIdentifier(e.Values[tt], e, fm36Learner, tt)
                 })
@@ -363,7 +372,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return true;
         }
 
-        private List<ApprenticeshipContractTypeEarningsEvent> CreateContractTypeEarningsEventEarningEvent( long ukprn)
+        private List<ApprenticeshipContractTypeEarningsEvent> CreateContractTypeEarningsEventEarningEvent(long ukprn)
         {
             var contractTypes = EnumHelper.GetContractTypes(currentIlr, currentPriceEpisodes);
 

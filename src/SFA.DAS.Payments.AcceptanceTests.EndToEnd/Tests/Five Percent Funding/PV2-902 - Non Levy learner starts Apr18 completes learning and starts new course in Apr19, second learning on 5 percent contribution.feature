@@ -1,15 +1,18 @@
-@ignore the spec needs updating to new format where we can supply both aims
 Feature: 5% Contribution from April 2019 - PV2-902
 	As a provider,
 	I want a Non Levy learner, starting prior to Apr 2019, where learner completes learning and starts a new course on new Pathway code in Apr 2019 on 10% contribution
 	So that I am paid the correct apprenticeship funding by SFA	
 
 Scenario Outline: Existing Non Levy Learner, started learning before Apr19, completes learning and starts new course on new pathway code from Apr19, second pathway code on 5% contribution PV2-902
-
-	Given the provider previously submitted the following learner details
-		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-		| 01/Apr/Last Academic Year | 12 months        | 15000                | 01/Apr/Current Academic Year        |                        |                                       |                 | continuing        | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
-
+	Given the following learners
+		| Learner Reference Number |
+		| abc123                   |
+	And the following aims
+		| Aim Type  | Priority | Start Date                | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | Completion Status | Contract Type | Aim Reference |
+		| Programme | 1        | 01/Apr/Last Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | continuing        | Act2          | ZPROG001      |
+  	And price details as follows
+		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
+		| pe-1             | 15000                | 01/Apr/Last Academic Year           |                        |                                       | Act2          | 1                   | 90%                         |
     And the following earnings had been generated for the learner
         | Delivery Period           | On-Programme | Completion | Balancing |
         | Aug/Last Academic Year    | 0            | 0          | 0         |
@@ -52,12 +55,10 @@ Scenario Outline: Existing Non Levy Learner, started learning before Apr19, comp
         | R07/Current Academic Year | Feb/Current Academic Year | 900                    | 100                         | Learning         |
         | R08/Current Academic Year | Mar/Current Academic Year | 900                    | 100                         | Learning         |
         | R08/Current Academic Year | Mar/Current Academic Year | 2700                   | 300                         | Completion       |
-     
-    But the Provider now changes the Learner details as follows
-		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | SFA Contribution Percentage |
-		| 01/Apr/Last Academic Year    | 12 months        | 15000                | 01/Apr/Last Academic Year           |                        |                                       | 12 months       | completed         | Act2          | 1                   | ZPROG001      | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
-		| 01/Apr/Current Academic Year | 12 months        | 15000                | 01/Apr/Current Academic Year        |                        |                                       |                 | continuing        | Act2          | 2                   | ZPROG001      | 593            | 2            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 95%                         |
-
+    But aims details are changed as follows
+		| Aim Type  | Priority | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                     | Completion Status | Contract Type | Aim Reference |
+		| Programme | 1        | 01/Apr/Last Academic Year    | 12 months        | 12 months       | 1                   | 593            | 1            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | completed         | Act2          | ZPROG001      |
+		| Programme | 1        | 01/Apr/Current Academic Year | 12 months        |                 | 2                   | 593            | 2            | 20             | 16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | continuing        | Act2          | ZPROG001      |
 	And price details as follows
 		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |
 		| pe-1             | 15000                | 01/Apr/Last Academic Year           |                        |                                       | 0                       |                                        | 0                         |                                          | 90%                         | Act2          | 1                   |
@@ -65,6 +66,20 @@ Scenario Outline: Existing Non Levy Learner, started learning before Apr19, comp
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | Aim Sequence Number | Price Episode Identifier |
+		#pe-1
+	 	| Aug/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     |
+	 	| Sep/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     |
+	 	| Oct/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     |
+	 	| Nov/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     |
+	 	| Dec/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     |
+	 	| Jan/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     |
+	 	| Feb/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     |
+	 	| Mar/Current Academic Year | 1000         | 3000       | 0         | 1                   | pe-1                     |
+	 	| Apr/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     |
+	 	| May/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     |
+	 	| Jun/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     |
+	 	| Jul/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     |
+		#pe-2
 		| Aug/Current Academic Year | 0            | 0          | 0         | 2                   | pe-2                     |
 		| Sep/Current Academic Year | 0            | 0          | 0         | 2                   | pe-2                     |
 		| Oct/Current Academic Year | 0            | 0          | 0         | 2                   | pe-2                     |
@@ -77,8 +92,7 @@ Scenario Outline: Existing Non Levy Learner, started learning before Apr19, comp
 		| May/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-2                     |
 		| Jun/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-2                     |
 		| Jul/Current Academic Year | 1000         | 0          | 0         | 2                   | pe-2                     |
-
-    And at month end only the following payments will be calculated
+    And only the following payments will be calculated
 		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | LearningSupport |
 		| R09/Current Academic Year | Apr/Current Academic Year | 1000         | 0          | 0         | 0               |
 		| R10/Current Academic Year | May/Current Academic Year | 1000         | 0          | 0         | 0               |
@@ -86,7 +100,7 @@ Scenario Outline: Existing Non Levy Learner, started learning before Apr19, comp
 		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully-Funded Payments | Transaction Type |
 		| R09/Current Academic Year | Apr/Current Academic Year | 950                    | 50                          | 0                         | Learning         |
 		| R10/Current Academic Year | May/Current Academic Year | 950                    | 50                          | 0                         | Learning         |  
-	And  only the following provider payments will be generated
+	And at month end only the following provider payments will be generated
 		| Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully-Funded Payments | Transaction Type |
 		| R09/Current Academic Year | Apr/Current Academic Year | 950                    | 50                          | 0                         | Learning         |
 		| R10/Current Academic Year | May/Current Academic Year | 950                    | 50                          | 0                         | Learning         |

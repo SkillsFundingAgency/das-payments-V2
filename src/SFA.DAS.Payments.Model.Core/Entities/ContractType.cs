@@ -1,8 +1,11 @@
-﻿namespace SFA.DAS.Payments.Model.Core.Entities
+﻿using System;
+
+namespace SFA.DAS.Payments.Model.Core.Entities
 {
     public enum ContractType: byte
     {
+        None = byte.MaxValue, 
         Act1 = 1,
-        Act2 = 2
+        Act2 = 2,
     }
 }

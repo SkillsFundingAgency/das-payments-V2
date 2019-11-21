@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using AutoMapper;
@@ -26,29 +27,80 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             foreach (var intermediateLearningAim in intermediateResults)
             {
-                var contractTypes = intermediateLearningAim.Learner.LearningDeliveries.GetContractTypesForLearningDeliveries();
-                var distinctContractTypes = contractTypes.Distinct().ToList();
+                if (intermediateLearningAim.Aim.IsMainAim())
+                {
+                    continue;
+                }
 
-                var learnerWithSortedPriceEpisodes = intermediateLearningAim.CopyReplacingPriceEpisodes(intermediateLearningAim.PriceEpisodes);
-                
+                var contractTypes =   intermediateLearningAim.Aim.GetContractTypesForLearningDeliveries();
+
+                var distinctContractTypes = contractTypes.Where(x=> x != ContractType.None).Distinct().ToList();
+
                 foreach (var contractType in distinctContractTypes)
                 {
-                    var functionalSkillEarning =
-                        GetContractTypeFunctionalSkillEarningEvent(learnerWithSortedPriceEpisodes, contractType);
+                    var functionalSkillEarning = GetContractTypeFunctionalSkillEarningEvent(intermediateLearningAim, contractType);
 
                     foreach (var earning in functionalSkillEarning.Earnings)
                     {
                         earning.Periods = GetEarningPeriodsMatchingContractType(contractTypes, contractType, earning.Periods.ToList());
                     }
 
+                    if(!functionalSkillEarning.Earnings.SelectMany(x => x.Periods).Any()) continue;
+
+                    functionalSkillEarning.LearningAim.FundingLineType = GetFirstMatchingFundingLineTypeForContractType(intermediateLearningAim, functionalSkillEarning);
+
+                    foreach (var earning in functionalSkillEarning.Earnings)
+                    {
+                        if (!earning.Periods.Any() || earning.Periods.Count == 12) continue;
+
+                        var earningPeriods = new List<EarningPeriod>(earning.Periods);
+
+                        var sfaContribution = earning.Periods.First().SfaContributionPercentage;
+
+                        for (byte i = 1; i < 13; i++)
+                        {
+                            if (earning.Periods.All(x => x.Period != i))
+                            {
+                                earningPeriods.Add(new EarningPeriod
+                                {
+                                    Amount = 0.0m,
+                                    SfaContributionPercentage = sfaContribution,
+                                    Period =  i,
+                                });
+                            }
+                        }
+
+                        earning.Periods = earningPeriods.AsReadOnly();
+                    }
+                    
                     results.Add(functionalSkillEarning);
                 }
-
-            
             }
 
             return results.Distinct().ToList();
         }
+
+        private static string GetFirstMatchingFundingLineTypeForContractType(IntermediateLearningAim intermediateLearningAim, FunctionalSkillEarningsEvent functionalSkillEarning)
+        {
+            var periodisedFundingLineTypeValues = intermediateLearningAim
+                .Aim
+                .LearningDeliveryPeriodisedTextValues
+                .FirstOrDefault(x => x.AttributeName.Equals("FundLineType"));
+
+            if (periodisedFundingLineTypeValues != null)
+            {
+                var periodWithActiveEarning = functionalSkillEarning
+                    .Earnings
+                    .SelectMany(x => x.Periods)
+                    .Select(x => x.Period)
+                    .First();
+
+                return periodisedFundingLineTypeValues.GetPeriodTextValue(periodWithActiveEarning);
+            }
+
+            throw new InvalidOperationException($"Can't find a valid FundingLineType for aim {intermediateLearningAim.Aim.LearningDeliveryValues.LearnAimRef}");
+        }
+
 
         private FunctionalSkillEarningsEvent GetContractTypeFunctionalSkillEarningEvent(
             IntermediateLearningAim intermediateLearningAim, ContractType contractType)

@@ -21,23 +21,15 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
 
         public async Task Handle(PeriodEndRunningEvent message, IMessageHandlerContext context)
         {
-            try
+            logger.LogInfo($"Received Period End event. Now getting employer period end commands for collection: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}.");
+            var employerPeriodEndCommands = await periodEndService.GenerateEmployerPeriodEndCommands(message).ConfigureAwait(false);
+            logger.LogDebug($"Got {employerPeriodEndCommands.Count} employer period end commands.");
+            foreach (var processLevyPaymentsOnMonthEndCommand in employerPeriodEndCommands)
             {
-                logger.LogInfo($"Received Period End event. Now getting employer period end commands for collection: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}.");
-                var employerPeriodEndCommands = await periodEndService.GenerateEmployerPeriodEndCommands(message).ConfigureAwait(false);
-                logger.LogDebug($"Got {employerPeriodEndCommands.Count} employer period end commands.");
-                foreach (var processLevyPaymentsOnMonthEndCommand in employerPeriodEndCommands)
-                {
-                    logger.LogInfo($"Sending period end command for employer '{processLevyPaymentsOnMonthEndCommand.AccountId}'");
-                    await context.SendLocal(processLevyPaymentsOnMonthEndCommand).ConfigureAwait(false);
-                }
-                logger.LogInfo($"Finished sending employer period end commands for collection: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}.");
+                logger.LogInfo($"Sending period end command for employer '{processLevyPaymentsOnMonthEndCommand.AccountId}'");
+                await context.SendLocal(processLevyPaymentsOnMonthEndCommand).ConfigureAwait(false);
             }
-            catch (Exception ex)
-            {
-                logger.LogError($"Error triggering generation of levy payments for collection: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}");
-                throw;
-            }
+            logger.LogInfo($"Finished sending employer period end commands for collection: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}.");
         }
     }
 }

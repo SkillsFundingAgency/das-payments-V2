@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.ProviderPayments.Application.Data;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
 {
@@ -24,5 +25,14 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             long ukprn,
             DateTime currentIlrSubmissionDateTime,
             CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Retrieves a paged list of payments for a given <paramref name="collectionPeriod"/>
+        /// </summary>
+        /// <param name="collectionPeriod">The collection period</param>
+        /// <param name="pageSize">The number of records to retrieve</param>
+        /// <param name="page">0 based page to retrieve</param>
+        List<PaymentModelWithRequiredPaymentId> GetMonthEndPayments(CollectionPeriod collectionPeriod, int pageSize,
+            int page);
     }
 }

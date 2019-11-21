@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -8,7 +8,7 @@ using SFA.DAS.Payments.ProviderPayments.Application.Services;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 {
-    public abstract class SubmissionEventHandler<T> : IHandleMessages<T> 
+    public abstract class SubmissionEventHandler<T> : IHandleMessages<T>
         where T: SubmissionEvent
     {
         private readonly IPaymentLogger paymentLogger;
@@ -25,17 +25,9 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
         {
             var messageType = message.GetType().Name;
 
-            try
-            {
-                paymentLogger.LogDebug($"Processing {messageType} for Message Id : {context.MessageId}");
+            paymentLogger.LogDebug($"Processing {messageType} for Message Id : {context.MessageId}");
 
-                await HandleSubmission(message, submissionService);
-            }
-            catch (Exception ex)
-            {
-                paymentLogger.LogError($"Error while handling {messageType}. Error: {ex.Message}, Job: {message.JobId}, UKPRN: {message.Ukprn}", ex);
-                throw;
-            }
+            await HandleSubmission(message, submissionService);
 
             paymentLogger.LogDebug($"Finished processing {messageType} for Message Id : {context.MessageId}. ");
         }

@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.csproj.DotSettings" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="Autofac.ServiceFabric" Version="2.0.0" />
     <PackageReference Include="AutoMapper" Version="7.0.1" />
