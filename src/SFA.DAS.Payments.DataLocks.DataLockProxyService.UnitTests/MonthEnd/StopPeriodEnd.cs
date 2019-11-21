@@ -7,6 +7,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.UnitTests.MonthEnd
 {
     public class StopPeriodEnd
     {
+#if DEBUG
         [Test]
         public async Task SendPeriodEndStoppedEvent()
         {
@@ -14,5 +15,6 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.UnitTests.MonthEnd
 
             await messageSession.Publish<PeriodEndStoppedEvent>(m => {}, new PublishOptions());
         }
+#endif
     }
 }

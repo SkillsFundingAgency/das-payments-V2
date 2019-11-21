@@ -1,7 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Autofac;
 using NServiceBus;
-using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
+using SFA.DAS.Payments.Messages.Core;
 
 namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.UnitTests
 {
@@ -9,27 +10,25 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.UnitTests
     {
         public static async Task<IMessageSession> BuildAsync()
         {
-            var config = new TestsConfiguration();
-            var builder = new ContainerBuilder();
-            builder.RegisterType<TestsConfiguration>().SingleInstance();
+            var connectionString = "";
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new Exception("Please set the connection string in 'MessageSessionBuilder.cs' - don't forget" +
+                                    "to remove it when you're done!");
+            }
 
-            var configuration = new EndpointConfiguration(config.AcceptanceTestsEndpointName);
+            var builder = new ContainerBuilder();
+            
+            var configuration = new EndpointConfiguration("sfa-das-payments-datalock-proxy-service-tester");
             builder.RegisterInstance(configuration)
                 .SingleInstance();
             var conventions = configuration.Conventions();
             conventions.DefiningMessagesAs(type => type.IsMessage());
 
-            configuration.UsePersistence<AzureStoragePersistence>()
-                .ConnectionString(config.StorageConnectionString);
-            configuration.DisableFeature<TimeoutManager>();
-
             var transportConfig = configuration.UseTransport<AzureServiceBusTransport>();
-            builder.RegisterInstance(transportConfig)
-                .As<TransportExtensions<AzureServiceBusTransport>>()
-                .SingleInstance();
-
+            
             transportConfig
-                .ConnectionString(config.ServiceBusConnectionString)
+                .ConnectionString(connectionString)
                 .Transactions(TransportTransactionMode.ReceiveOnly);
             
             configuration.UseSerialization<NewtonsoftSerializer>();

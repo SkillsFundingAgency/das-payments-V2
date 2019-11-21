@@ -33,14 +33,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
                 ServiceTypeName = "SFA.DAS.Payments.DataLocks.ApprovalsServiceType",
             };
 
-            try
-            {
-                await fabricClient.ServiceManager.CreateServiceAsync(serviceDescription);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Failed to create the new service. {e}");
-            }
+            await fabricClient.ServiceManager.CreateServiceAsync(serviceDescription);
         }
     }
 }

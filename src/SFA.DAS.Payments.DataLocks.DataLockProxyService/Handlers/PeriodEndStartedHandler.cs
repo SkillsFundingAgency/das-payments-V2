@@ -30,14 +30,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
                 ForceDelete = true,
             };
 
-            try
-            {
-                await fabricClient.ServiceManager.DeleteServiceAsync(serviceDescription);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Failed to delete the new service. {e}");
-            }
+            await fabricClient.ServiceManager.DeleteServiceAsync(serviceDescription);
         }
     }
 }
