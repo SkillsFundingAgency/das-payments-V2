@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             throw new System.NotImplementedException();
         }
 
-        public Task<IEnumerable<CurrentPriceEpisode>> GetCurentPriceEpisodes(long jobId, long ukprn)
+        public Task<IEnumerable<CurrentPriceEpisode>> GetCurrentPriceEpisodes(long jobId, long ukprn)
         {
             throw new System.NotImplementedException();
         }

@@ -1,11 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SFA.DAS.Payments.DataLocks.Domain.Models;
-using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using SFA.DAS.Payments.DataLocks.Domain.Models;
+using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges;
 
-namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
+namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 {
     public class CurrentPriceEpisodeContext : DbContext, ICurrentPriceEpisodeForJobStore
     {
@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             await SaveChangesAsync();
         }
 
-        public Task<IEnumerable<CurrentPriceEpisode>> GetCurentPriceEpisodes(long jobId, long ukprn)
+        public Task<IEnumerable<CurrentPriceEpisode>> GetCurrentPriceEpisodes(long jobId, long ukprn)
         {
             return Task.FromResult(Prices.AsEnumerable());
         }

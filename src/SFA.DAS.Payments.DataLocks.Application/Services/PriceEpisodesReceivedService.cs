@@ -16,11 +16,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
     {
         private readonly ICurrentPriceEpisodeForJobStore currentPriceEpisodesStore;
         private readonly IReceivedDataLockEventStore receivedEventStore;
-        private readonly PriceEpisodeStatusChangeBuilder statusChangeBuilder;
+        private readonly IPriceEpisodeStatusChangeBuilder statusChangeBuilder;
 
         public PriceEpisodesReceivedService(ICurrentPriceEpisodeForJobStore store,
             IReceivedDataLockEventStore receivedEventStore,
-            PriceEpisodeStatusChangeBuilder statusChangeBuilder)
+            IPriceEpisodeStatusChangeBuilder statusChangeBuilder)
         {
             currentPriceEpisodesStore = store;
             this.receivedEventStore = receivedEventStore;
@@ -57,7 +57,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         private Task<IEnumerable<CurrentPriceEpisode>> GetCurrentPriceEpisodes(long jobId, long ukprn)
         {
-            return currentPriceEpisodesStore.GetCurentPriceEpisodes(jobId, ukprn);
+            return currentPriceEpisodesStore.GetCurrentPriceEpisodes(jobId, ukprn);
         }
 
         private static List<(string identifier, PriceEpisodeStatus status)> CalculatePriceEpisodeStatus(

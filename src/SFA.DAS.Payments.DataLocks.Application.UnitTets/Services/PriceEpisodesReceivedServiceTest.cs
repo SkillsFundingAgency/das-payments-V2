@@ -8,12 +8,13 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using SFA.DAS.Payments.DataLocks.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Application.Services;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges;
-using SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.DataLocks.Model.Entities;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 {
@@ -209,7 +210,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 AgreedPrice = x.AgreedPrice,
             });
 
-            (await currentContext.GetCurentPriceEpisodes(earning.JobId, earning.Ukprn))
+            (await currentContext.GetCurrentPriceEpisodes(earning.JobId, earning.Ukprn))
                 .Should().BeEquivalentTo(expected);
         }
 

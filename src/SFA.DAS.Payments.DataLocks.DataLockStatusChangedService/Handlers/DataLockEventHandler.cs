@@ -4,18 +4,23 @@ using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
+using SFA.DAS.Payments.DataLocks.Application.Repositories;
+using SFA.DAS.Payments.DataLocks.Application.Services;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.DataLockStatusChangedService.Handlers
 {
     public class DataLockEventHandler : IHandleMessages<DataLockEvent>
     {
         private readonly IPaymentLogger paymentLogger;
+        private readonly IReceivedDataLockEventStore dataLockEventStore;
         private readonly IDataLockEventProcessor dataLockEventProcessor;
 
-        public DataLockEventHandler(IPaymentLogger paymentLogger, IDataLockEventProcessor dataLockEventProcessor)
+        public DataLockEventHandler(IPaymentLogger paymentLogger, IReceivedDataLockEventStore dataLockEventStore )
         {
             this.paymentLogger = paymentLogger;
+            this.dataLockEventStore = dataLockEventStore;
             this.dataLockEventProcessor = dataLockEventProcessor;
         }
 
@@ -23,21 +28,12 @@ namespace SFA.DAS.Payments.DataLocks.DataLockStatusChangedService.Handlers
         {
             paymentLogger.LogVerbose($"Processing {message.GetType().Name} event for UKPRN {message.Ukprn}");
 
-            var dataLockStatusChangeMessages = new List<DataLockStatusChanged>();
+           //await dataLockEventStore.Add(new ReceivedDataLockEvent
+           //{
+               
+           //})
 
-            switch (message)
-            {
-                case PayableEarningEvent _:
-                    dataLockStatusChangeMessages = await dataLockEventProcessor.ProcessPayableEarning(message).ConfigureAwait(false);
-                    break;
-                case EarningFailedDataLockMatching _:
-                    dataLockStatusChangeMessages = await dataLockEventProcessor.ProcessDataLockFailure(message).ConfigureAwait(false);
-                    break;
-            }
-            
-            await Task.WhenAll(dataLockStatusChangeMessages.Select(context.Publish)).ConfigureAwait(false);
 
-            paymentLogger.LogDebug($"Processed {message.GetType().Name} event for UKPRN {message.Ukprn}, generated {dataLockStatusChangeMessages.Count} events");
         }
     }
 }
