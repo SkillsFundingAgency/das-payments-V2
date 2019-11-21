@@ -57,7 +57,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 ApprenticeshipPriceEpisodeId = paymentHistory.ApprenticeshipPriceEpisodeId,
             });
         }
-
+        
         [Test, AutoData]
         public void ShouldReturnCorrectApprenticeshipEmployerType(Payment paymentHistory)
         {
