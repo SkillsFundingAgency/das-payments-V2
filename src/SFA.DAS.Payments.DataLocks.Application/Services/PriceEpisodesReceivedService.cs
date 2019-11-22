@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.DataLocks.Application.Repositories;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Services
 {

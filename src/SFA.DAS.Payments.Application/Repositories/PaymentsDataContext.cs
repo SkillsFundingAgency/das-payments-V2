@@ -30,6 +30,10 @@ namespace SFA.DAS.Payments.Application.Repositories
             this.connectionString = connectionString;
         }
 
+        public PaymentsDataContext(DbContextOptions<PaymentsDataContext> options)
+            : base(options)
+        { }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

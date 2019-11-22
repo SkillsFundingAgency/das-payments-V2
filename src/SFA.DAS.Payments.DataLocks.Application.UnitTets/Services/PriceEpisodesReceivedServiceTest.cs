@@ -8,6 +8,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Application.Services;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
@@ -22,8 +23,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
     {
         [Theory, AutoDomainData]
         public async Task When_job_succeeded_builds_approval_event_for_removed_price_episode(
-            ICurrentPriceEpisodeForJobStore context, 
-            PriceEpisodesReceivedService sut, 
+            ICurrentPriceEpisodeForJobStore context,
+            IPaymentsDataContext paymentsDataContext,
+            PriceEpisodesReceivedService sut,
             CurrentPriceEpisode priceEpisode)
         {
             await context.Add(priceEpisode);
@@ -43,8 +45,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
         [Theory, AutoDomainData]
         public async Task When_job_succeeded_builds_approval_event_for_new_price_episode(
-            IReceivedDataLockEventStore context, 
-            PriceEpisodesReceivedService sut, 
+            IReceivedDataLockEventStore context,
+            PriceEpisodesReceivedService sut,
             PayableEarningEvent earning)
         {
             await context.Add(new ReceivedDataLockEvent
@@ -58,10 +60,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var changeMessages = await sut.JobSucceeded(earning.JobId, earning.Ukprn);
 
             changeMessages.Should().ContainEquivalentOf(
-                new 
+                new
                 {
-                    DataLock = new 
-                    { 
+                    DataLock = new
+                    {
                         PriceEpisodeIdentifier = earning.PriceEpisodes.First().Identifier,
                         Status = PriceEpisodeStatus.New,
                     },
@@ -76,7 +78,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             PayableEarningEvent earning)
         {
             await currentContext.Add(new CurrentPriceEpisode
-            { 
+            {
                 JobId = earning.JobId,
                 Ukprn = earning.Ukprn,
                 Uln = earning.Learner.Uln,
@@ -97,7 +99,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             changeMessages.Should().ContainEquivalentOf(
                 new
                 {
-                    DataLock = new 
+                    DataLock = new
                     {
                         PriceEpisodeIdentifier = earning.PriceEpisodes[0].Identifier,
                         Status = PriceEpisodeStatus.Updated,
@@ -106,16 +108,16 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             changeMessages.Should().ContainEquivalentOf(
                 new
                 {
-                    DataLock = new 
+                    DataLock = new
                     {
                         PriceEpisodeIdentifier = earning.PriceEpisodes[1].Identifier,
                         Status = PriceEpisodeStatus.New,
                     },
                 });
-        }        
-        
+        }
+
         [Theory, AutoDomainData]
-        
+
         public async Task When_job_succeeded_builds_approval_event_for_new_and_removed_price_episodes(
             ICurrentPriceEpisodeForJobStore currentContext,
             IReceivedDataLockEventStore receivedContext,
@@ -138,8 +140,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             changeMessages.Should().ContainEquivalentOf(
                 new
                 {
-                    DataLock = new 
-                    { 
+                    DataLock = new
+                    {
                         PriceEpisodeIdentifier = earning.PriceEpisodes[0].Identifier,
                         Status = PriceEpisodeStatus.New,
                     },
@@ -232,14 +234,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                         new DbContextOptionsBuilder<CurrentPriceEpisodeContext>()
                             .UseInMemoryDatabase(databaseName: dbName)
                             .Options)));
-                fixture.Register((Func<IReceivedDataLockEventStore>)(() =>
-                    new ReceivedDataLockEventContext(
-                        new DbContextOptionsBuilder<ReceivedDataLockEventContext>()
-                            .UseInMemoryDatabase(databaseName: dbName)
-                            .Options)));
 
-
-
+                var paymentContext = new PaymentsDataContext(new DbContextOptionsBuilder<PaymentsDataContext>().UseInMemoryDatabase(databaseName: dbName).Options);
+                fixture.Register((Func<IPaymentsDataContext>) (() => paymentContext));
+                fixture.Register((Func<IReceivedDataLockEventStore>)(() => new ReceivedDataLockEventStore(paymentContext)));
                 fixture.Customize(new AutoMoqCustomization { ConfigureMembers = true });
                 return fixture;
             }

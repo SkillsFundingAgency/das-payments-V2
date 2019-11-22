@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Entities;
 
@@ -14,12 +15,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
         Task Remove(long jobId, long ukprn);
     }
 
-    public class ReceivedDataLockEventContext : IReceivedDataLockEventStore
+    public class ReceivedDataLockEventStore : IReceivedDataLockEventStore
     {
         private readonly IPaymentsDataContext context;
-      
 
-        public ReceivedDataLockEventContext(IPaymentsDataContext context) 
+        public ReceivedDataLockEventStore(IPaymentsDataContext context) 
         {
             this.context = context;
         }
@@ -30,16 +30,18 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             await context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<ReceivedDataLockEvent>> GetDataLocks(long jobId, long ukprn)
+        public async Task<IEnumerable<ReceivedDataLockEvent>> GetDataLocks(long jobId, long ukprn)
         {
-            return Task.FromResult(context.ReceivedDataLockEvents.AsEnumerable());
+            var dataLocks = await context.ReceivedDataLockEvents
+                .Where(x => x.JobId == jobId && x.Ukprn == ukprn)
+                .ToListAsync();
+            return dataLocks;
         }
 
         public async Task Remove(long jobId, long ukprn)
         {
-            context.ReceivedDataLockEvents.RemoveRange(
-                context.ReceivedDataLockEvents.Where(x => x.JobId == jobId && x.Ukprn == ukprn));
-                context.ReceivedDataLockEvents.Where(x => x.JobId == jobId && x.Ukprn == ukprn));
+            context.ReceivedDataLockEvents
+                .RemoveRange(context.ReceivedDataLockEvents.Where(x => x.JobId == jobId && x.Ukprn == ukprn));
             await context.SaveChangesAsync();
         }
     }
