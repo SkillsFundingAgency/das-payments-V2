@@ -12,12 +12,7 @@ using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Services
 {
-    public interface IPriceEpisodeStatusChangeBuilder
-    {
-        Task<List<PriceEpisodeStatusChange>> Build(List<DataLockEvent> dataLockEvents, List<(string identifier, PriceEpisodeStatus status)> priceEpisodeChanges);
-    }
-
-    public class PriceEpisodeStatusChangeBuilder : IPriceEpisodeStatusChangeBuilder
+    public class PriceEpisodeStatusChangeBuilder
     {
         private readonly IApprenticeshipRepository apprenticeshipRepository;
         public PriceEpisodeStatusChangeBuilder(IApprenticeshipRepository apprenticeshipRepository)

@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
@@ -18,11 +18,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
     {
         private readonly ICurrentPriceEpisodeForJobStore currentPriceEpisodesStore;
         private readonly IReceivedDataLockEventStore receivedEventStore;
-        private readonly IPriceEpisodeStatusChangeBuilder statusChangeBuilder;
+        private readonly PriceEpisodeStatusChangeBuilder statusChangeBuilder;
 
         public PriceEpisodesReceivedService(ICurrentPriceEpisodeForJobStore store,
             IReceivedDataLockEventStore receivedEventStore,
-            IPriceEpisodeStatusChangeBuilder statusChangeBuilder)
+            PriceEpisodeStatusChangeBuilder statusChangeBuilder)
         {
             currentPriceEpisodesStore = store;
             this.receivedEventStore = receivedEventStore;
