@@ -118,7 +118,7 @@ AND EE.Ukprn in (@ukprnList)
 )
 SELECT (SELECT SUM(Amount) FROM DatalockedEarnings) [Datalocked Earnings],
     (SELECT SUM(Amount) FROM DatalockedPayments) [Datalocked Payments],
-    (SELECT (SELECT SUM(Amount) FROM DatalockedEarnings) - (SELECT SUM(Amount) FROM DatalockedPayments)) [Adjusted Datalocks]
+    (SELECT (SELECT ISNULL( SUM(Amount), 0) FROM DatalockedEarnings) - (SELECT ISNULL( SUM(Amount),0) FROM DatalockedPayments)) [Adjusted Datalocks]
 
 --DataLock
 
