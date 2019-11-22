@@ -110,15 +110,18 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     AgreedPrice = o.AgreedPrice
                 })
                 .Select(x =>
-                    new CurrentPriceEpisode
-                    {
-                        JobId = x.Key.JobId,
-                        Ukprn = x.Key.Ukprn,
-                        Uln = x.Key.Uln,
-                        PriceEpisodeIdentifier = x.Key.PriceEpisodeIdentifier,
-                        AgreedPrice = x.Key.AgreedPrice,
-                        MessageType = typeof(PriceEpisodeStatusChange).AssemblyQualifiedName,
-                        Message = JsonConvert.SerializeObject(x.Select(o => o).ToList())
+                {
+                    var messages = x.Select(o => o).ToList();
+                    return new CurrentPriceEpisode
+                        {
+                            JobId = x.Key.JobId,
+                            Ukprn = x.Key.Ukprn,
+                            Uln = x.Key.Uln,
+                            PriceEpisodeIdentifier = x.Key.PriceEpisodeIdentifier,
+                            AgreedPrice = x.Key.AgreedPrice,
+                            MessageType =messages.GetType().AssemblyQualifiedName,
+                            Message = JsonConvert.SerializeObject(messages)
+                        };
                     }).ToList();
 
             return replacements;
