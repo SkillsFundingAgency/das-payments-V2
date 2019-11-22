@@ -230,8 +230,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
                 var fixture = new Fixture();
                 fixture.Register((Func<ICurrentPriceEpisodeForJobStore>)(() =>
-                    new CurrentPriceEpisodeContext(
-                        new DbContextOptionsBuilder<CurrentPriceEpisodeContext>()
+                    new CurrentPriceEpisodeForJobStore(
+                        new DbContextOptionsBuilder<CurrentPriceEpisodeForJobStore>()
                             .UseInMemoryDatabase(databaseName: dbName)
                             .Options)));
 

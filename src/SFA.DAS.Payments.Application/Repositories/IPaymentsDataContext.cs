@@ -23,7 +23,8 @@ namespace SFA.DAS.Payments.Application.Repositories
         DbSet<EarningEventPeriodModel> EarningEventPeriod { get; }
         DbSet<EarningEventPriceEpisodeModel> EarningEventPriceEpisode { get; }
         DbSet<PaymentModelWithRequiredPaymentId> PaymentsWithRequiredPayments { get; }
-         DbSet<ReceivedDataLockEvent> ReceivedDataLockEvents { get; set; }
+        DbSet<ReceivedDataLockEvent> ReceivedDataLockEvents { get; set; }
+        DbSet<CurrentPriceEpisode> CurrentPriceEpisodes { get; set; }
         DatabaseFacade Database { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
         int SaveChanges();

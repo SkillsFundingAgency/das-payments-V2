@@ -22,8 +22,9 @@ namespace SFA.DAS.Payments.Application.Repositories
         public virtual DbSet<EarningEventPeriodModel> EarningEventPeriod { get; protected set; }
         public virtual DbSet<EarningEventPriceEpisodeModel> EarningEventPriceEpisode { get; protected set; }
         public virtual DbSet<PaymentModelWithRequiredPaymentId> PaymentsWithRequiredPayments { get; protected set; }
-
         public virtual DbSet<ReceivedDataLockEvent> ReceivedDataLockEvents { get; set; }
+        public virtual DbSet<CurrentPriceEpisode> CurrentPriceEpisodes { get; set; }
+
 
         public PaymentsDataContext(string connectionString)
         {

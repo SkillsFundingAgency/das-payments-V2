@@ -1,25 +1,43 @@
-﻿using SFA.DAS.Payments.DataLocks.Domain.Models;
-using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Repositories
 {
-    public class CurrentPriceEpisodeForJobStore : ICurrentPriceEpisodeForJobStore
+    public class CurrentPriceEpisodeForJobStore: ICurrentPriceEpisodeForJobStore
     {
-        public Task Add(CurrentPriceEpisode priceEpisode)
+        private readonly IPaymentsDataContext paymentsDataContext;
+
+        public CurrentPriceEpisodeForJobStore(IPaymentsDataContext paymentsDataContext)
         {
-            throw new System.NotImplementedException();
+            this.paymentsDataContext = paymentsDataContext;
         }
 
-        public Task<IEnumerable<CurrentPriceEpisode>> GetCurrentPriceEpisodes(long jobId, long ukprn)
+        public async Task Add(CurrentPriceEpisode priceEpisode)
         {
-            throw new System.NotImplementedException();
+            await paymentsDataContext.CurrentPriceEpisodes.AddAsync(priceEpisode);
+            await paymentsDataContext.SaveChangesAsync();
         }
 
-        public Task Replace(long jobId, long ukprn, IEnumerable<CurrentPriceEpisode> replacement)
+        public async Task<IEnumerable<CurrentPriceEpisode>> GetCurrentPriceEpisodes(long jobId, long ukprn)
         {
-            throw new System.NotImplementedException();
+            return await paymentsDataContext.CurrentPriceEpisodes
+                .Where(x => x.JobId == jobId && x.Ukprn == ukprn)
+                .ToListAsync();
+        }
+
+        public async Task Replace(long jobId, long ukprn, IEnumerable<CurrentPriceEpisode> priceEpisodes)
+        {
+            paymentsDataContext.CurrentPriceEpisodes
+                .RemoveRange(paymentsDataContext.CurrentPriceEpisodes.Where(x => x.JobId == jobId && x.Ukprn == ukprn));
+
+            await paymentsDataContext.CurrentPriceEpisodes.AddRangeAsync(priceEpisodes);
+            await paymentsDataContext.SaveChangesAsync();
+
         }
     }
 }

@@ -5,6 +5,7 @@ using SFA.DAS.Payments.Model.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges
 {
