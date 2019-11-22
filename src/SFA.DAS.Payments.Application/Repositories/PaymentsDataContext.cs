@@ -57,7 +57,8 @@ namespace SFA.DAS.Payments.Application.Repositories
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(connectionString);
+            if(connectionString != null)
+                optionsBuilder.UseSqlServer(connectionString);
         }
     }
 }

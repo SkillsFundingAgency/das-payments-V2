@@ -125,6 +125,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             PayableEarningEvent earning,
             CurrentPriceEpisode removed)
         {
+            removed.JobId = earning.JobId;
+            removed.Ukprn = earning.Ukprn;
             await currentContext.Add(removed);
 
             await receivedContext.Add(new ReceivedDataLockEvent
@@ -213,7 +215,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             });
 
             (await currentContext.GetCurrentPriceEpisodes(earning.JobId, earning.Ukprn))
-                .Should().BeEquivalentTo(expected);
+                .Should().BeEquivalentTo(expected, c => c.Excluding(p => p.Id));
         }
 
 
@@ -229,15 +231,16 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 var dbName = Guid.NewGuid().ToString();
 
                 var fixture = new Fixture();
-                fixture.Register((Func<ICurrentPriceEpisodeForJobStore>)(() =>
-                    new CurrentPriceEpisodeForJobStore(
-                        new DbContextOptionsBuilder<CurrentPriceEpisodeForJobStore>()
-                            .UseInMemoryDatabase(databaseName: dbName)
-                            .Options)));
 
-                var paymentContext = new PaymentsDataContext(new DbContextOptionsBuilder<PaymentsDataContext>().UseInMemoryDatabase(databaseName: dbName).Options);
-                fixture.Register((Func<IPaymentsDataContext>) (() => paymentContext));
-                fixture.Register((Func<IReceivedDataLockEventStore>)(() => new ReceivedDataLockEventStore(paymentContext)));
+                fixture.Register<IPaymentsDataContext>(() =>
+                    new PaymentsDataContext(
+                        new DbContextOptionsBuilder<PaymentsDataContext>()
+                            .UseInMemoryDatabase(databaseName: dbName)
+                            .Options));
+
+
+                fixture.Register<IReceivedDataLockEventStore>(() => fixture.Create<ReceivedDataLockEventStore>());
+                fixture.Register<ICurrentPriceEpisodeForJobStore>(() => fixture.Create<CurrentPriceEpisodeForJobStore>());
                 fixture.Customize(new AutoMoqCustomization { ConfigureMembers = true });
                 return fixture;
             }
