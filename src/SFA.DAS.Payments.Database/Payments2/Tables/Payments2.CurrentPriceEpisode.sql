@@ -1,4 +1,4 @@
-﻿CREATE TABLE [Payment2].[CurrentPriceEpisode]
+﻿CREATE TABLE [Payments2].[CurrentPriceEpisode]
 (
 	[Id] BIGINT NOT NULL IDENTITY(1,1) CONSTRAINT PK_CurrentPriceEpisode PRIMARY KEY CLUSTERED,	
 	[PriceEpisodeIdentifier] NVARCHAR(100) NOT NULL,
