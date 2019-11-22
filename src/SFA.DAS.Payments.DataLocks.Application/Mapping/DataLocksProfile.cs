@@ -212,8 +212,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.CompletionAmount, opt => opt.MapFrom(source => source.CompletionAmount))
                 .ForMember(dest => dest.Completed, opt => opt.MapFrom(source => source.Completed))
                 .ForMember(dest => dest.EmployerContribution, opt => opt.MapFrom(source => source.EmployerContribution))
-                .ForMember(dest => dest.CompletionHoldBackExemptionCode, opt => opt.MapFrom(source => source.CompletionHoldBackExemptionCode));
-            
+                .ForMember(dest => dest.CompletionHoldBackExemptionCode, opt => opt.MapFrom(source => source.CompletionHoldBackExemptionCode))
+                .ForMember(dest => dest.FundingLineType, opt => opt.Ignore())
+                ;
+
+
             CreateMap<EarningEventModel, Act1FunctionalSkillEarningsEvent>()
                 .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(source.AcademicYear, source.CollectionPeriod)))

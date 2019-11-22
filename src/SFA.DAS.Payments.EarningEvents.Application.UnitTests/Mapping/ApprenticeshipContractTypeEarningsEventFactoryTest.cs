@@ -9,8 +9,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
     public class ApprenticeshipContractTypeEarningsEventFactoryTest
     {
         [Test]
-        [TestCase(null, null)]
-        [TestCase("weird string", null)]
+        [TestCase(null, typeof(ApprenticeshipContractTypeNoneEarningEvent))]
+        [TestCase("weird string", typeof(ApprenticeshipContractTypeNoneEarningEvent))]
         [TestCase("Non-Levy Contract", typeof(ApprenticeshipContractType2EarningEvent))]
         [TestCase("Contract for services with the ESFA", typeof(ApprenticeshipContractType2EarningEvent))]
         [TestCase("Levy Contract", typeof(ApprenticeshipContractType1EarningEvent))]

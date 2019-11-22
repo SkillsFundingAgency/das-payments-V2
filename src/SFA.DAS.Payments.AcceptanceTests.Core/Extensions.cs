@@ -70,5 +70,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
 
             return propertyInfo;
         }
+
+        public static long? ParseAsNullableLong(this string s)
+                => long.TryParse(s, out var result) ? result : (long?)null;
     }
 }

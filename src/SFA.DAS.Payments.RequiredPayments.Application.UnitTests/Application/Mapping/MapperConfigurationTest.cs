@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using AutoFixture.NUnit3;
+using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
@@ -33,6 +34,30 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             };
 
             mapper.Map<PaymentHistoryEntity, Payment>(payment);
+        }
+
+        [Test, AutoData]
+        public void MapsPaymentHistoryEntity_ApprenticeshipId_ToPayment(PaymentHistoryEntity testPaymentHistoryEntity, Payment payment)
+        {
+            mapper.Map(testPaymentHistoryEntity, payment);
+
+            payment.ApprenticeshipId.Should().Be(testPaymentHistoryEntity.ApprenticeshipId);
+        }
+
+        [Test, AutoData]
+        public void MapsPaymentHistoryEntity_ApprenticeshipPriceEpisodeId_ToPayment(PaymentHistoryEntity testPaymentHistoryEntity, Payment payment)
+        {
+            mapper.Map(testPaymentHistoryEntity, payment);
+
+            payment.ApprenticeshipPriceEpisodeId.Should().Be(testPaymentHistoryEntity.ApprenticeshipPriceEpisodeId);
+        }
+
+        [Test, AutoData]
+        public void MapsPaymentHistoryEntity_ApprenticeshipEmployerType_ToPayment(PaymentHistoryEntity testPaymentHistoryEntity, Payment payment)
+        {
+            mapper.Map(testPaymentHistoryEntity, payment);
+
+            payment.ApprenticeshipEmployerType.Should().Be(testPaymentHistoryEntity.ApprenticeshipEmployerType);
         }
 
         [Test]

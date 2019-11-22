@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.1\build\SpecFlow.Tools.MsBuild.Generation.props" Condition="Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.1\build\SpecFlow.Tools.MsBuild.Generation.props')" />
   <Import Project="..\packages\NUnit3TestAdapter.3.11.2\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\packages\NUnit3TestAdapter.3.11.2\build\net35\NUnit3TestAdapter.props')" />
@@ -364,6 +364,7 @@
     <Compile Include="Data\ProviderPayment.cs" />
     <Compile Include="Data\ProviderPriority.cs" />
     <Compile Include="EventMatchers\BaseMatcher.cs" />
+    <Compile Include="EventMatchers\CompletionPaymentHeldBackEventMatcher.cs" />
     <Compile Include="EventMatchers\EarningFailedDataLockMatcher.cs" />
     <Compile Include="EventMatchers\PayableEarningEventMatcher.cs" />
     <Compile Include="EventMatchers\EarningEventMatcher.cs" />
@@ -1026,6 +1027,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-464 Non-Levy learner, deleted aim reference for English and Maths.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Inconsistent Submission Data\PV2-464a Non-Levy learner ME Removed after balancing payment.feature.cs">
+      <DependentUpon>PV2-464a Non-Levy learner ME Removed after balancing payment.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Inconsistent Submission Data\PV2-525 Levy learner changes standard code.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1037,9 +1041,14 @@
       <DependentUpon>PV2-526 Non-Levy learner, standard changes retrospectively.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Inconsistent Submission Data\PV2-684 Levy learner, where learner is deleted, and transaction added for reversal.feature.cs">
+      <DependentUpon>PV2-684 Levy learner, where learner is deleted, and transaction added for reversal.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-684 Levy learner, where learner is deleted, and transaction added for reversal.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Inconsistent Submission Data\PV2-1625 Levy learner, learner is deleted should refund correct types and values.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1625 Levy learner, learner is deleted should refund correct types and values.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Learner Change of Circumstances\Levy learner changes price at end of month - PV2-294.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1570,6 +1579,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-349 - Levy learner, 19-24, employed with a small employer at start is funded through levy.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Transfers\PV2-1583 - 1 Non-Levy learner, paid for via transfer, on ACT1 contract paid through DAS.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1583 - 1 Non-Levy learner, paid for via transfer, on ACT1 contract paid through DAS.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Transfers\PV2-730 - Single Levy learner paid via transfer sender installment changes after price change.feature.cs">
       <AutoGen>True</AutoGen>
@@ -2127,6 +2141,7 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-464 Non-Levy learner, deleted aim reference for English and Maths.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Inconsistent Submission Data\PV2-464a Non-Levy learner ME Removed after balancing payment.feature" />
     <None Include="Tests\Inconsistent Submission Data\PV2-525 Levy learner changes standard code.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-525 Levy learner changes standard code.feature.cs</LastGenOutput>
@@ -2138,6 +2153,10 @@
     <None Include="Tests\Inconsistent Submission Data\PV2-684 Levy learner, where learner is deleted, and transaction added for reversal.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-684 Levy learner, where learner is deleted, and transaction added for reversal.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Inconsistent Submission Data\PV2-1625 Levy learner, learner is deleted should refund correct types and values.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1625 Levy learner, learner is deleted should refund correct types and values.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Learner Change of Circumstances\Levy learner changes price at end of month - PV2-294.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2562,6 +2581,10 @@
     <None Include="Tests\Small Employer\PV2-349 - Levy learner, 19-24, employed with a small employer at start is funded through levy.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-349 - Levy learner, 19-24, employed with a small employer at start is funded through levy.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Transfers\PV2-1583 - 1 Non-Levy learner, paid for via transfer, on ACT1 contract paid through DAS.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1583 - 1 Non-Levy learner, paid for via transfer, on ACT1 contract paid through DAS.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Transfers\PV2-730 - Single Levy learner paid via transfer sender installment changes after price change.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

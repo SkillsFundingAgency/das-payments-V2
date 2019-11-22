@@ -140,7 +140,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                             PriceEpisodeCompleted = true,
                             PriceEpisodeCumulativePMRs = 13,
                             PriceEpisodeCompExemCode = 14,
-                            PriceEpisodeTotalTNPPrice = 30000
+                            PriceEpisodeTotalTNPPrice = 30000,
+                            PriceEpisodeFundLineType = "19+ Apprenticeship Levy Contract (procured)"
                         },
                         PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
                         {
@@ -296,6 +297,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             earningEvent.PriceEpisodes.First().EmployerContribution.Should().Be(13);
             earningEvent.PriceEpisodes.First().CompletionHoldBackExemptionCode.Should().Be(14);
             earningEvent.PriceEpisodes.First().AgreedPrice.Should().Be(30000);
+            earningEvent.PriceEpisodes.First().FundingLineType.Should().Be(fm36Learner.PriceEpisodes[0].PriceEpisodeValues.PriceEpisodeFundLineType);
         }
 
         [Test]
