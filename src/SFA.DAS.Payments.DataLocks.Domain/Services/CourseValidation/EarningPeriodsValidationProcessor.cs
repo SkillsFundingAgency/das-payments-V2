@@ -167,7 +167,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
         private bool IsFunctionalSkillTransactionType(TransactionType transactionType)
         {
             var functionalSkillTransactionTypes = new List<TransactionType>
-                {TransactionType.OnProgrammeMathsAndEnglish, TransactionType.BalancingMathsAndEnglish};
+                {TransactionType.OnProgrammeMathsAndEnglish, TransactionType.BalancingMathsAndEnglish, TransactionType.LearningSupport};
 
             return functionalSkillTransactionTypes.Contains(transactionType);
         }

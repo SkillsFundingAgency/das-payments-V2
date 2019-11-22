@@ -292,8 +292,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var otherTraining = learnerTraining.FirstOrDefault(t => t.AimReference != "ZPROG001" && (string.IsNullOrWhiteSpace(t.LearnerId) || t.LearnerId.Equals(providerPayment.LearnerId)));
             var list = new List<PaymentModel>();
             if (providerPayment.SfaFullyFundedPayments > 0)
-                list.Add(CreatePaymentModel(providerPayment, otherTraining ?? onProgTraining, jobId, submissionTime, 1M,
-                    providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa, ukprn, providerPayment.AccountId, providerPayment.SendingAccountId));
+                if (providerPayment.TransactionType == TransactionType.LearningSupport)
+                {
+                    list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, 1M,
+                        providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa, ukprn, providerPayment.AccountId, providerPayment.SendingAccountId));
+                }
+                else
+                {
+                    list.Add(CreatePaymentModel(providerPayment, otherTraining ?? onProgTraining, jobId, submissionTime, 1M,
+                        providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa, ukprn, providerPayment.AccountId, providerPayment.SendingAccountId));
+                }
 
             if (providerPayment.EmployerCoFundedPayments > 0)
                 list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime,
@@ -410,6 +418,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 if (aim.IsMainAim)
                 {
                     learner.PriceEpisodes.AddRange(GeneratePriceEpisodes(aim, earnings));
+                    learningDelivery.LearningDeliveryPeriodisedValues = SetLearningSupportValues(aim, earnings);
                 }
                 else // maths & english & Learning support don't use price episodes
                 {
@@ -417,6 +426,30 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     learningDelivery.LearningDeliveryPeriodisedTextValues = SetPeriodisedTextValues(aim, earnings);
                 }
             }
+        }
+
+        private List<LearningDeliveryPeriodisedValues> SetLearningSupportValues(Aim aim, IList<Earning> earnings)
+        {
+            var aimPeriodisedValues = new List<LearningDeliveryPeriodisedValues>();
+            foreach (var earning in earnings.Where(x => x.AimSequenceNumber == aim.AimSequenceNumber))
+            {
+                var period = earning.DeliveryCalendarPeriod;
+                foreach (var earningValue in earning.Values.Where(v => v.Key == TransactionType.LearningSupport))
+                {
+                    var earningKey = earningValue.Key.ToAttributeName(!aim.IsMainAim);
+
+                    var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningKey);
+                    if (periodisedValues == null)
+                    {
+                        periodisedValues = new LearningDeliveryPeriodisedValues { AttributeName = earningKey };
+                        aimPeriodisedValues.Add(periodisedValues);
+                    }
+
+                    SetPeriodValue(period, periodisedValues, earningValue.Value);
+                }
+            }
+
+            return aimPeriodisedValues;
         }
 
         private List<PriceEpisode> GeneratePriceEpisodes(Aim aim, IList<Earning> earnings)
@@ -638,7 +671,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         continue;
                     }
 
-                    var earningKey = earningValue.Key.ToAttributeName();
+                    var earningKey = earningValue.Key.ToAttributeName(aim.IsMainAim);
 
                     var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningKey);
                     if (periodisedValues == null)
@@ -810,14 +843,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var expectedPayments = CreatePayments(table, provider.Ukprn);
             var matcher = new RequiredPaymentEventMatcher(provider, CurrentCollectionPeriod, expectedPayments, CurrentIlr, CurrentPriceEpisodes);
-            await WaitForIt(() => matcher.MatchPayments(), "Held Back Required Payment event check failure");
+            await WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
         }
 
         protected async Task MatchHeldBackRequiredPayments(Table table, Provider provider)
         {
             var expectedPayments = CreatePayments(table, provider.Ukprn);
             var matcher = new CompletionPaymentHeldBackEventMatcher(provider, CurrentCollectionPeriod, expectedPayments);
-            await WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
+            await WaitForIt(() => matcher.MatchPayments(), "Held Back Required Payment event check failure");
         }
 
         protected async Task StartMonthEnd(Provider provider)

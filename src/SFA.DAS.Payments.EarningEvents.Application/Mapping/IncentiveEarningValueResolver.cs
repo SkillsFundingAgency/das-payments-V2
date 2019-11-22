@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore.Internal;
+using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
@@ -46,18 +50,33 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
         private IncentiveEarning CreateIncentiveEarning(List<PriceEpisode> priceEpisodes, IncentiveEarningType incentiveType)
         {
+            var attributeName = IncentiveEarningTypeToFM36AttributeName(incentiveType);
+            var allPeriods = priceEpisodes.Select(p => p.PriceEpisodePeriodisedValues.SingleOrDefault(v => v.AttributeName == attributeName))
+                .Where(p => p != null)
+                .ToArray();
+
+            var periods = new EarningPeriod[12];
+
+            for (byte i = 1; i <= 12; i++)
+            {
+                var periodValues = allPeriods.Select(p => p.GetPeriodValue(i)).ToArray();
+                var periodValue = periodValues.SingleOrDefault(v => v.GetValueOrDefault(0) != 0).GetValueOrDefault(0);
+
+                var priceEpisodeIdentifier = periodValue == 0 ? null : priceEpisodes[periodValues.IndexOf(periodValue)].PriceEpisodeIdentifier;
+                var sfaContributionPercentage = priceEpisodes.CalculateSfaContributionPercentage(i, priceEpisodeIdentifier);
+
+                periods[i - 1] = new EarningPeriod
+                {
+                    Period = i,
+                    Amount = periodValue.AsRounded(),
+                    PriceEpisodeIdentifier = priceEpisodeIdentifier,
+                    SfaContributionPercentage = sfaContributionPercentage,
+                };
+            }
             var result = new IncentiveEarning
             {
                 Type = incentiveType,
-                Periods = priceEpisodes
-                    .Where(priceEpisode => priceEpisode.PriceEpisodePeriodisedValues != null)
-                    .SelectMany(priceEpisode => priceEpisode.PriceEpisodePeriodisedValues,
-                        (priceEpisode, periodisedValues) => new { priceEpisode, periodisedValues })
-                    .Where(priceEpisodeValues =>
-                        priceEpisodeValues.periodisedValues.AttributeName == IncentiveEarningTypeToFM36AttributeName(incentiveType))
-                    .SelectMany(priceEpisodeValues => priceEpisodeValues.periodisedValues.CreateIncentiveEarningPeriods(priceEpisodeValues.priceEpisode.PriceEpisodeIdentifier))
-                    .ToList()
-                    .AsReadOnly()
+                Periods = new ReadOnlyCollection<EarningPeriod>(periods)
             };
 
             return result;
@@ -82,7 +101,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         {
             return IncentiveTypes
                 .Select(type => CreateIncentiveEarning(source.PriceEpisodes, type))
-                .Where(earning => earning.Periods.Any())
+                .Where(earning => earning.Periods.Any(x => x.Amount != 0))
                 .ToList();
         }
     }
