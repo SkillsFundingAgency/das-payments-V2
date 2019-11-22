@@ -4,7 +4,7 @@ using Autofac;
 using NServiceBus;
 using SFA.DAS.Payments.Messages.Core;
 
-namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.UnitTests
+namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests
 {
     class MessageSessionBuilder
     {
