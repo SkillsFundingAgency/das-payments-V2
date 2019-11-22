@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
+using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpisodeChanges;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Services
@@ -37,19 +38,29 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         public async Task<List<PriceEpisodeStatusChange>> JobSucceeded(long jobId, long ukprn)
         {
+            var priceEpisodeReplacements = new List<CurrentPriceEpisode>();
+            var allPriceEpisodeStatusChanges = new List<PriceEpisodeStatusChange>();
+
             var dataLockEvents = (await GetDataLocks(jobId, ukprn)).ToList();
+            var learnerUlns = dataLockEvents.Select(d => d.Learner.Uln).Distinct();
 
-            var currentPriceEpisodes = await GetCurrentPriceEpisodes(jobId, ukprn);
+            foreach (var learnerUln in learnerUlns)
+            {
+                var learnerDataLocks = dataLockEvents.Where(x => x.Learner.Uln == learnerUln).ToList();
 
-            var changes = CalculatePriceEpisodeStatus(dataLockEvents, currentPriceEpisodes);
+                var currentPriceEpisodes = await GetCurrentPriceEpisodes(jobId, ukprn, learnerUln);
+                var changes = CalculatePriceEpisodeStatus(learnerDataLocks, currentPriceEpisodes);
+                var piceEpisodeStatusChanges = await CreateStatusChangedEvents(learnerDataLocks, changes);
+                var learnerPriceEpisodeReplacements = CreateLearnerCurrentPriceEpisodesReplacement(jobId, ukprn, learnerUln, piceEpisodeStatusChanges);
+                priceEpisodeReplacements.AddRange(learnerPriceEpisodeReplacements);
 
-            var buildEvents = await CreateStatusChangedEvents(dataLockEvents, changes);
+                allPriceEpisodeStatusChanges.AddRange(piceEpisodeStatusChanges);
+            }
 
-            await ReplaceCurrentPriceEpisodes(jobId, ukprn, dataLockEvents);
-
+            await ReplaceCurrentPriceEpisodes(jobId, ukprn, priceEpisodeReplacements);
             await RemoveReceivedDataLockEvents(jobId, ukprn);
 
-            return buildEvents;
+            return allPriceEpisodeStatusChanges;
         }
 
         private async Task<IEnumerable<DataLockEvent>> GetDataLocks(long jobId, long ukprn)
@@ -63,9 +74,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             return datalocks;
         }
 
-        private Task<IEnumerable<CurrentPriceEpisode>> GetCurrentPriceEpisodes(long jobId, long ukprn)
+        private Task<IEnumerable<CurrentPriceEpisode>> GetCurrentPriceEpisodes(long jobId, long ukprn, long uln)
         {
-            return currentPriceEpisodesStore.GetCurrentPriceEpisodes(jobId, ukprn);
+            return currentPriceEpisodesStore.GetCurrentPriceEpisodes(jobId, ukprn, uln);
         }
 
         private static List<(string identifier, PriceEpisodeStatus status)> CalculatePriceEpisodeStatus(
@@ -82,21 +93,44 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             return  await statusChangeBuilder.Build(dataLocks.ToList(), changes);
         }
 
-        private async Task ReplaceCurrentPriceEpisodes(
-            long jobId, long ukprn, IEnumerable<DataLockEvent> dataLocks)
+
+        private  List<CurrentPriceEpisode> CreateLearnerCurrentPriceEpisodesReplacement(
+            long jobId,
+            long ukprn,
+            long uln,
+            IEnumerable<PriceEpisodeStatusChange> episodeStatusChanges)
         {
-            var replacement = dataLocks
-                .SelectMany(x => x.PriceEpisodes, (dlock, episode) =>
+            var replacements = episodeStatusChanges
+                .GroupBy(o => new
+                {
+                    JobId = jobId,
+                    Ukprn = ukprn,
+                    Uln = uln,
+                    PriceEpisodeIdentifier = o.DataLock.PriceEpisodeIdentifier,
+                    AgreedPrice = o.AgreedPrice
+                })
+                .Select(x =>
                     new CurrentPriceEpisode
                     {
-                        JobId = jobId,
-                        Ukprn = ukprn,
-                        Uln = dlock.Learner.Uln,
-                        PriceEpisodeIdentifier = episode.Identifier,
-                        AgreedPrice = episode.AgreedPrice,
-                    });
+                        JobId = x.Key.JobId,
+                        Ukprn = x.Key.Ukprn,
+                        Uln = x.Key.Uln,
+                        PriceEpisodeIdentifier = x.Key.PriceEpisodeIdentifier,
+                        AgreedPrice = x.Key.AgreedPrice,
+                        MessageType = typeof(PriceEpisodeStatusChange).AssemblyQualifiedName,
+                        Message = JsonConvert.SerializeObject(x.Select(o => o).ToList())
+                    }).ToList();
 
-            await currentPriceEpisodesStore.Replace(jobId, ukprn, replacement);
+            return replacements;
+        }
+
+        private async Task ReplaceCurrentPriceEpisodes(
+            long jobId,
+            long ukprn,
+            IEnumerable<CurrentPriceEpisode> currentPriceEpisodes)
+        {
+            
+            await currentPriceEpisodesStore.Replace(jobId, ukprn, currentPriceEpisodes);
         }
 
         private Task RemoveReceivedDataLockEvents(long jobId, long ukprn)

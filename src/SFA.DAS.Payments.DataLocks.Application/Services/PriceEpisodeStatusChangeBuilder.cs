@@ -135,7 +135,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 JobId = dataLock.JobId,
                 Ukprn = dataLock.Ukprn,
                 CollectionPeriod = dataLock.CollectionPeriod,
-
+                AgreedPrice = priceEpisode.AgreedPrice,
                 DataLock = new LegacyDataLockEvent
                 {
                     DataLockEventId = priceEpisodeStatusChangeId,

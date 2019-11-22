@@ -11,6 +11,7 @@ namespace SFA.DAS.Payments.DataLocks.Messages.Events
 {
     public class PriceEpisodeStatusChange : PaymentsEvent
     {
+        public decimal AgreedPrice { get; set; }
         public LegacyDataLockEvent DataLock { get; set; }
         public LegacyDataLockEventCommitmentVersion[] CommitmentVersions { get; set; }
         public LegacyDataLockEventError[] Errors { get; set; }
