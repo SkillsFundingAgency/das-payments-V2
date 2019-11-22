@@ -52,12 +52,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<DataLockStatusService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
 
-            builder.RegisterType<BatchedDataCache<DataLockStatusChanged>>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<CachingEventProcessor<DataLockStatusChanged>>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<BatchedDataCache<PriceEpisodeStatusChange>>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<CachingEventProcessor<PriceEpisodeStatusChange>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ReliableStateManagerTransactionProvider>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<BatchScope>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<BatchScopeFactory>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<BatchProcessingService<DataLockStatusChanged>>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<BatchProcessingService<PriceEpisodeStatusChange>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<DataLockStatusChangedEventBatchProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.RegisterType<LegacyDataLockEventBulkCopyConfiguration>().AsImplementedInterfaces().InstancePerLifetimeScope();
@@ -82,6 +82,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<ApprenticeshipStoppedService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ApprenticeshipPauseService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ApprenticeshipResumedService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<PriceEpisodeStatusChangeBuilder>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<PriceEpisodesReceivedService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
         }
     }

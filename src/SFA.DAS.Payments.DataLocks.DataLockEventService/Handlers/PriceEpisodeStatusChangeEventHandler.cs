@@ -8,12 +8,12 @@ using SFA.DAS.Payments.DataLocks.Messages.Events;
 
 namespace SFA.DAS.Payments.DataLocks.DataLockEventService.Handlers
 {
-    public class DataLockStatusChangedEventHandler : IHandleMessages<PriceEpisodeStatusChange>
+    public class PriceEpisodeStatusChangeEventHandler : IHandleMessages<PriceEpisodeStatusChange>
     {
         private readonly IPaymentLogger paymentLogger;
         private readonly ICachingEventProcessor<PriceEpisodeStatusChange> eventProcessor;
 
-        public DataLockStatusChangedEventHandler(IPaymentLogger paymentLogger, ICachingEventProcessor<PriceEpisodeStatusChange> eventProcessor)
+        public PriceEpisodeStatusChangeEventHandler(IPaymentLogger paymentLogger, ICachingEventProcessor<PriceEpisodeStatusChange> eventProcessor)
         {
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
             this.eventProcessor = eventProcessor ?? throw new ArgumentNullException(nameof(eventProcessor));

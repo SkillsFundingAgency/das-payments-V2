@@ -51,6 +51,8 @@ namespace SFA.DAS.Payments.Application.Repositories
             modelBuilder.ApplyConfiguration(new EarningEventModelConfiguration());
             modelBuilder.ApplyConfiguration(new EarningEventPeriodModelConfiguration());
             modelBuilder.ApplyConfiguration(new EarningEventPriceEpisodeModelConfiguration());
+            modelBuilder.ApplyConfiguration(new CurrentPriceEpisodeConfiguration());
+            modelBuilder.ApplyConfiguration(new ReceivedDataLockEventConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

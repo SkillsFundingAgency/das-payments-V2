@@ -14,7 +14,13 @@ using SFA.DAS.Payments.Model.Core.Entities;
 namespace SFA.DAS.Payments.DataLocks.Application.Services
 {
 
-    public class PriceEpisodesReceivedService
+    public interface IPriceEpisodesReceivedService
+    {
+        Task<List<PriceEpisodeStatusChange>> JobSucceeded(long jobId, long ukprn);
+    }
+
+
+    public class PriceEpisodesReceivedService: IPriceEpisodesReceivedService
     {
         private readonly ICurrentPriceEpisodeForJobStore currentPriceEpisodesStore;
         private readonly IReceivedDataLockEventStore receivedEventStore;
@@ -31,22 +37,22 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         public async Task<List<PriceEpisodeStatusChange>> JobSucceeded(long jobId, long ukprn)
         {
-            var datalocks = await GetDatalocks(jobId, ukprn);
+            var dataLockEvents = (await GetDataLocks(jobId, ukprn)).ToList();
 
             var currentPriceEpisodes = await GetCurrentPriceEpisodes(jobId, ukprn);
 
-            var changes = CalculatePriceEpisodeStatus(datalocks, currentPriceEpisodes);
+            var changes = CalculatePriceEpisodeStatus(dataLockEvents, currentPriceEpisodes);
 
-            var buildEvents = await CreateStatusChangedEvents(datalocks, changes);
+            var buildEvents = await CreateStatusChangedEvents(dataLockEvents, changes);
 
-            await ReplaceCurrentPriceEpisodes(jobId, ukprn, datalocks);
+            await ReplaceCurrentPriceEpisodes(jobId, ukprn, dataLockEvents);
 
             await RemoveReceivedDataLockEvents(jobId, ukprn);
 
             return buildEvents;
         }
 
-        private async Task<IEnumerable<DataLockEvent>> GetDatalocks(long jobId, long ukprn)
+        private async Task<IEnumerable<DataLockEvent>> GetDataLocks(long jobId, long ukprn)
         {
             var receivedEvents = await receivedEventStore.GetDataLocks(jobId, ukprn);
             var datalocks = receivedEvents.Select(x =>
@@ -63,23 +69,23 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         }
 
         private static List<(string identifier, PriceEpisodeStatus status)> CalculatePriceEpisodeStatus(
-            IEnumerable<DataLockEvent> datalocks, IEnumerable<CurrentPriceEpisode> currentPriceEpisodes)
+            IEnumerable<DataLockEvent> dataLocks, IEnumerable<CurrentPriceEpisode> currentPriceEpisodes)
         {
             var calculator = new PriceEpisodeStatusCalculator();
-            var changes = calculator.Calculate(currentPriceEpisodes, datalocks.SelectMany(x => x.PriceEpisodes));
+            var changes = calculator.Calculate(currentPriceEpisodes, dataLocks.SelectMany(x => x.PriceEpisodes));
             return changes;
         }
 
         private async Task<List<PriceEpisodeStatusChange>> CreateStatusChangedEvents(
-            IEnumerable<DataLockEvent> datalocks, List<(string identifier, PriceEpisodeStatus status)> changes)
+            IEnumerable<DataLockEvent> dataLocks, List<(string identifier, PriceEpisodeStatus status)> changes)
         {
-            return  await statusChangeBuilder.Build(datalocks.ToList(), changes);
+            return  await statusChangeBuilder.Build(dataLocks.ToList(), changes);
         }
 
         private async Task ReplaceCurrentPriceEpisodes(
-            long jobId, long ukprn, IEnumerable<DataLockEvent> datalocks)
+            long jobId, long ukprn, IEnumerable<DataLockEvent> dataLocks)
         {
-            var replacement = datalocks
+            var replacement = dataLocks
                 .SelectMany(x => x.PriceEpisodes, (dlock, episode) =>
                     new CurrentPriceEpisode
                     {

@@ -2,7 +2,7 @@
 (
 	[Id] BIGINT NOT NULL CONSTRAINT PK_ReceivedDataLockEvent PRIMARY KEY IDENTITY, 
     [Ukprn] BIGINT NOT NULL, 
-    [LearnerUln] BIGINT NOT NULL, 
+    [Uln] BIGINT NOT NULL, 
     [JobId]  BIGINT NOT NULL, 
 	[MessageType] NVARCHAR(2000) NOT NULL,
 	[Message] NVARCHAR(MAX) NOT NULL,
