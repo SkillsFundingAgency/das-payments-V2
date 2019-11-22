@@ -714,7 +714,24 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         [Test]
         public void CreatedTheCorrectNumberOfEarningEventsWhenLearningSupportIncluded()
         {
-            var processLearnerCommand = new ProcessLearnerCommand
+            var processLearnerCommand = CreateLearnerSubmissionWithLearningSupport();
+
+            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
+                new ApprenticeshipContractTypeEarningsEventFactory(),
+                mapper);
+
+            var events = builder.Build(processLearnerCommand);
+
+            events.Should().HaveCount(1);
+            events.Single().OnProgrammeEarnings.Should().HaveCount(3);
+            events.Single().OnProgrammeEarnings.Single(x => x.Type == OnProgrammeEarningType.Learning).Periods.Should().HaveCount(12);
+            events.Single().IncentiveEarnings.Should().HaveCount(1);
+            events.Single().IncentiveEarnings.Single(x => x.Type == IncentiveEarningType.LearningSupport).Periods.Should().HaveCount(12);
+        }
+
+        private static ProcessLearnerCommand CreateLearnerSubmissionWithLearningSupport()
+        {
+            return new ProcessLearnerCommand
             {
                 Ukprn = 1,
                 JobId = 1,
@@ -726,7 +743,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                 {
                     LearnRefNumber = "learner-a",
                     ULN = 1234678,
-                     PriceEpisodes = new List<PriceEpisode>
+                    PriceEpisodes = new List<PriceEpisode>
                     {
                         new PriceEpisode
                         {
@@ -909,7 +926,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                             }
                         }
                     },
-                   LearningDeliveries = new List<LearningDelivery>
+                    LearningDeliveries = new List<LearningDelivery>
                     {
                         new LearningDelivery
                         {
@@ -942,7 +959,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                                     Period11 = 150,
                                     Period12 = 150
                                 }
-    }
+                            }
                         },
                         new LearningDelivery
                         {
@@ -996,18 +1013,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                     }
                 }
             };
-
-            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
-                new ApprenticeshipContractTypeEarningsEventFactory(),
-                mapper);
-
-            var events = builder.Build(processLearnerCommand);
-
-            events.Should().HaveCount(1);
-            events.Single().OnProgrammeEarnings.Should().HaveCount(3);
-            events.Single().OnProgrammeEarnings.Single(x => x.Type == OnProgrammeEarningType.Learning).Periods.Should().HaveCount(12);
-            events.Single().IncentiveEarnings.Should().HaveCount(1);
-            events.Single().IncentiveEarnings.Single(x => x.Type == IncentiveEarningType.LearningSupport).Periods.Should().HaveCount(12);
         }
     }
 }

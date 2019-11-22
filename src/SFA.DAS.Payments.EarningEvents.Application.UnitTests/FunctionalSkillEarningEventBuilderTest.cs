@@ -809,7 +809,23 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         public void IncludesLearningSupport()
         {
             // arrange
-            var processLearnerCommand = new ProcessLearnerCommand
+            var processLearnerCommand = CreateLearnerSubmissionWithLearningSupport();
+
+            var builder = new FunctionalSkillEarningEventBuilder(mapper);
+            
+            // act
+            var events = builder.Build(processLearnerCommand);
+
+            // assert
+            events.Should().NotBeNull();
+            events.Should().HaveCount(1);
+            events.Single().Earnings.Should().HaveCount(2);
+            events.Single().Earnings.Single(x => x.Type == FunctionalSkillType.LearningSupport).Periods.Should().HaveCount(12);
+        }
+
+        private static ProcessLearnerCommand CreateLearnerSubmissionWithLearningSupport()
+        {
+            return new ProcessLearnerCommand
             {
                 Ukprn = 1,
                 JobId = 1,
@@ -947,7 +963,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                                     Period11 = 0,
                                     Period12 = 0
                                 }
-    }
+                            }
                         },
                         new LearningDelivery
                         {
@@ -1048,22 +1064,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                                     Period11 = "19+ Apprenticeship (Employer on App Service)",
                                     Period12 = "19+ Apprenticeship (Employer on App Service)"
                                 }
-    }
+                            }
                         },
                     }
                 }
             };
-
-            var builder = new FunctionalSkillEarningEventBuilder(mapper);
-            
-            // act
-            var events = builder.Build(processLearnerCommand);
-
-            // assert
-            events.Should().NotBeNull();
-            events.Should().HaveCount(1);
-            events.Single().Earnings.Should().HaveCount(2);
-            events.Single().Earnings.Single(x => x.Type == FunctionalSkillType.LearningSupport).Periods.Should().HaveCount(12);
         }
     }
 }
