@@ -23,6 +23,8 @@
     <Parameter Name="FailedMessagesQueue" Value="" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="" />
     <Parameter Name="EasApiEndpoint" Value="" />
+    <Parameter Name="EasApiUsername" Value=""/>
+    <Parameter Name="EasApiPassword" Value=""/>
   </Section>
 
 </Settings>
