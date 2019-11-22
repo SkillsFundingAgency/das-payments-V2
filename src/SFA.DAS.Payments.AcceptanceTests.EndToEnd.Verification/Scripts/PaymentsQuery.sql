@@ -22,7 +22,7 @@ SELECT
      WHERE CreationDate > @startDate
 	 AND ukprn in (@ukprnList)
 	 ) +
-    (SELECT SUM(Amount) 
+    (SELECT ISNULL(SUM(Amount),0) 
      FROM Payments2.Payment
      WHERE CreationDate < @startDate
 	 AND ukprn in (@ukprnList)
@@ -58,7 +58,7 @@ SELECT
 	(SELECT SUM(Amount)
 	 FROM Payments2.RequiredPaymentEvent
 	 WHERE CreationDate > @startDate
-	-- and NonPaymentReason = 0
+	 and NonPaymentReason = 0
 	 AND ukprn in (@ukprnList)
 	 ) [Held Back Completion Payments this month]
 --Expected Payments

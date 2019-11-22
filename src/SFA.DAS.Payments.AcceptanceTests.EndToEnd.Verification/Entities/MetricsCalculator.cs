@@ -2,9 +2,7 @@
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Entities
 {
-   
-
-    internal class MetricsCalculator 
+    internal class MetricsCalculator
     {
         public MetricsCalculator(PaymentsValues paymentsValues, DcValues dcValues)
         {
@@ -16,28 +14,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Entities
         public DcValues DcValues { get; set; }
 
 
-
         public decimal DasEarningVsDcEarnings =>
             PaymentsValues.DasEarnings != decimal.Zero ? DcValues.Total / PaymentsValues.DasEarnings : 0m;
 
 
-        public decimal AccountedForRequiredPayments => 
+        public decimal AccountedForRequiredPayments =>
             PaymentsValues.ExpectedPaymentsAfterPeriodEnd +
-            PaymentsValues.AdjustedDataLocks + 
+            PaymentsValues.AdjustedDataLocks +
             PaymentsValues.HeldBackCompletionThisMonth;
 
         public decimal AccountedForDcEarnings =>
-            (DcValues.Total != decimal.Zero) ? AccountedForRequiredPayments / DcValues.Total: 0m;
+            DcValues.Total != decimal.Zero ? AccountedForRequiredPayments / DcValues.Total : 0m;
 
         public decimal AccountedForDasEarnings =>
-            (PaymentsValues.DasEarnings != Decimal.Zero) ? AccountedForRequiredPayments / PaymentsValues.DasEarnings :0m;
+            PaymentsValues.DasEarnings != decimal.Zero ? AccountedForRequiredPayments / PaymentsValues.DasEarnings : 0m;
 
         public decimal NotAccountedForRequiredPayments =>
             DcValues.Total - AccountedForRequiredPayments;
 
         public decimal NotAccountedForActualPayments =>
             DcValues.Total - PaymentsValues.AdjustedDataLocks - PaymentsValues.TotalPaymentsYtd;
-
-
     }
 }

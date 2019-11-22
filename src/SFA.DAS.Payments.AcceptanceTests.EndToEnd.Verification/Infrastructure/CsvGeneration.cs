@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         private string CreatePaymentsSummarySection()
         {
             return
-                "Required Payments made this month,Payments made before this month YTD,Expected Payments YTD after running Period End,Total payments this month,Total ACT 1 payments YTD,Total ACT 2 payments YTD,Total payments YTD" +
+                "Required Payments made this month,Payments made before this month YTD,Expected Payments YTD after running Period End,Total payments this month,Total ACT 1 payments YTD,Total ACT 2 payments YTD,Total payments YTD,Held Back Completion Payments" +
                 Environment.NewLine +
                 $"\"{metricsCalculator.PaymentsValues.RequiredPaymentsThisMonth:C}\"," +
                 $"\"{metricsCalculator.PaymentsValues.PaymentsPriorToThisMonthYtd:C}\"," +
@@ -71,7 +71,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                 $"\"{metricsCalculator.PaymentsValues.TotalPaymentsThisMonth:C}\"," +
                 $"\"{metricsCalculator.PaymentsValues.TotalAct1Ytd:C}\"," +
                 $"\"{metricsCalculator.PaymentsValues.TotalAct2Ytd:C}\"," +
-                $"\"{metricsCalculator.PaymentsValues.TotalPaymentsYtd:C}\"";
+                $"\"{metricsCalculator.PaymentsValues.TotalPaymentsYtd:C}\","+
+                $"\"{metricsCalculator.PaymentsValues.HeldBackCompletionThisMonth:C}\"";
         }
 
         private string CreateEarningsSummarySection()

@@ -83,7 +83,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
                 await SaveCsv(new CsvGeneration(metricsCalculator).BuildCsvString(),  academicYear, collectionPeriod);
                 var earningsDifference = totalDcEarningsYtd - dasEarningsYtd;
 
-                verificationAction.Invoke(actualPercentage, tolerance, earningsDifference);
+                verificationAction.Invoke(actualPercentage, tolerance, Decimal.Round( earningsDifference, 2));
             }
         }
 
