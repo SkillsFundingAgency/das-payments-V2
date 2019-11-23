@@ -7,6 +7,7 @@ using Autofac.Extras.Moq;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
@@ -63,6 +64,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             mocker.Mock<IJobStorageService>()
                 .Setup(x => x.GetJobStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((hasFailedMessages: false, endTime: null));
+            mocker.Mock<IJobServiceConfiguration>()
+                .SetupGet(cfg => cfg.EarningsJobTimeout)
+                .Returns(TimeSpan.FromSeconds(20));
         }
 
         [Test]
@@ -376,6 +380,27 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                     It.Is<short>(academicYEar => academicYEar == job.AcademicYear),
                     It.Is<byte>(collectionPeriod => collectionPeriod == job.CollectionPeriod),
                     It.Is<DateTime>(ilrSubmissionTIme => ilrSubmissionTIme == job.IlrSubmissionTime)), Times.Once);
+        }
+
+        [Test]
+        public async Task Records_Job_As_Failed_If_Job_Times_Out()
+        {
+            var jobId = 99;
+            job.LearnerCount = 0;
+            job.StartTime = DateTimeOffset.UtcNow.AddSeconds(-2);
+            mocker.Mock<IJobServiceConfiguration>()
+                .SetupGet(cfg => cfg.EarningsJobTimeout)
+                .Returns(TimeSpan.FromSeconds(1));  
+
+            var service = mocker.Create<JobStatusService>();
+            await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+            mocker.Mock<IJobStorageService>()
+                .Verify(
+                    x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
+                        It.Is<JobStatus>(status => status == JobStatus.TimedOut),
+                        It.IsAny<DateTimeOffset>(),
+                        It.IsAny<CancellationToken>()), 
+                    Times.Once());
         }
     }
 }
