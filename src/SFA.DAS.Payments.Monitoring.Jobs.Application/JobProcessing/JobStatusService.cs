@@ -8,6 +8,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
@@ -19,13 +20,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
     public class JobStatusService : IJobStatusService
     {
+        public IJobServiceConfiguration Config { get; }
         private readonly IJobStorageService jobStorageService;
         private readonly IPaymentLogger logger;
         private readonly ITelemetry telemetry;
         private readonly IJobStatusEventPublisher eventPublisher;
-
-        public JobStatusService(IJobStorageService jobStorageService, IPaymentLogger logger, ITelemetry telemetry, IJobStatusEventPublisher eventPublisher)
+        
+        public JobStatusService(IJobStorageService jobStorageService, IPaymentLogger logger, ITelemetry telemetry, IJobStatusEventPublisher eventPublisher, IJobServiceConfiguration config)
         {
+            Config = config ?? throw new ArgumentNullException(nameof(config));
             this.jobStorageService = jobStorageService ?? throw new ArgumentNullException(nameof(jobStorageService));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
@@ -36,13 +39,20 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         {
             logger.LogVerbose($"Now determining if job {jobId} has finished.");
             var job = await jobStorageService.GetJob(jobId, cancellationToken).ConfigureAwait(false);
-            if (job != null )
+            if (job != null)
             {
                 if (job.Status != JobStatus.InProgress && job.DcJobSucceeded.HasValue)
                 {
                     logger.LogWarning($"Job {jobId} has already finished. Status: {job.Status}");
                     await eventPublisher.SubmissionFinished(job.DcJobSucceeded.Value, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
                     return true;
+                }
+
+                var timedOutTime = DateTimeOffset.UtcNow;
+                if (job.Status== JobStatus.InProgress && job.StartTime.Add(Config.EarningsJobTimeout) < timedOutTime)
+                {
+                    logger.LogWarning($"Job {jobId} has timed out.  Start time: {job.StartTime}, timed out at: {timedOutTime}.");
+                    return await CompleteJob(job, JobStatus.TimedOut, timedOutTime, cancellationToken).ConfigureAwait(false);
                 }
 
                 if ((job.JobType == JobType.EarningsJob || job.JobType == JobType.ComponentAcceptanceTestEarningsJob) && job.LearnerCount.HasValue && job.LearnerCount.Value == 0)
@@ -81,25 +91,35 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 return false;
             }
 
-            job = await jobStorageService.GetJob(jobId, cancellationToken);
+            return await CompleteJob(jobId,
+                currentJobStatus.hasFailedMessages ? JobStatus.CompletedWithErrors : JobStatus.Completed,
+                currentJobStatus.endTime.Value, cancellationToken).ConfigureAwait(false);
+        }
+
+        private async Task<bool> CompleteJob(long jobId, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken)
+        {
+            var job = await jobStorageService.GetJob(jobId, cancellationToken);
             if (job == null)
             {
                 logger.LogWarning($"Attempting to record completion status for job {jobId} but the job has not been persisted to database.");
                 return false;
             }
 
-            job.Status = currentJobStatus.hasFailedMessages ? JobStatus.CompletedWithErrors : JobStatus.Completed;
-            job.EndTime = currentJobStatus.endTime;
-            await jobStorageService.SaveJobStatus(jobId,
-                currentJobStatus.hasFailedMessages ? JobStatus.CompletedWithErrors : JobStatus.Completed,
-                currentJobStatus.endTime.Value, cancellationToken).ConfigureAwait(false);
+            return await CompleteJob(job, status, endTime, cancellationToken).ConfigureAwait(false);
+        }
+
+        private async Task<bool> CompleteJob(JobModel job, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken)
+        {
+            job.Status = status;
+            job.EndTime = endTime;
+            await jobStorageService.SaveJobStatus(job.DcJobId.Value, status, endTime, cancellationToken).ConfigureAwait(false);
 
             SendTelemetry(job);
             logger.LogInfo($"Finished recording completion status of job. Job: {job.Id}, status: {job.Status}, end time: {job.EndTime}");
             if (!job.DcJobSucceeded.HasValue)
                 return false;
-            //TODO: will need to change when we handle period end jobs
-            await eventPublisher.SubmissionFinished(job.DcJobSucceeded.Value, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
+            if (job.JobType == JobType.EarningsJob || job.JobType == JobType.ComponentAcceptanceTestEarningsJob)
+                await eventPublisher.SubmissionFinished(job.DcJobSucceeded.Value, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
             return true;
         }
 
