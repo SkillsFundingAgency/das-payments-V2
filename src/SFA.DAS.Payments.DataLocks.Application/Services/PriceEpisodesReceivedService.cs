@@ -50,11 +50,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                 var currentPriceEpisodes = await GetCurrentPriceEpisodes(jobId, ukprn, learnerUln);
                 var changes = CalculatePriceEpisodeStatus(learnerDataLocks, currentPriceEpisodes);
-                var piceEpisodeStatusChanges = await CreateStatusChangedEvents(learnerDataLocks, changes);
-                var learnerPriceEpisodeReplacements = CreateLearnerCurrentPriceEpisodesReplacement(jobId, ukprn, learnerUln, piceEpisodeStatusChanges);
+                var priceEpisodeStatusChanges = await CreateStatusChangedEvents(learnerDataLocks, changes);
+                var learnerPriceEpisodeReplacements = CreateLearnerCurrentPriceEpisodesReplacement(jobId, ukprn, learnerUln, priceEpisodeStatusChanges);
                 priceEpisodeReplacements.AddRange(learnerPriceEpisodeReplacements);
 
-                allPriceEpisodeStatusChanges.AddRange(piceEpisodeStatusChanges);
+                allPriceEpisodeStatusChanges.AddRange(priceEpisodeStatusChanges);
             }
 
             await ReplaceCurrentPriceEpisodes(jobId, ukprn, priceEpisodeReplacements);
@@ -66,12 +66,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         private async Task<IEnumerable<DataLockEvent>> GetDataLocks(long jobId, long ukprn)
         {
             var receivedEvents = await receivedEventStore.GetDataLocks(jobId, ukprn);
-            var datalocks = receivedEvents.Select(x =>
+            var dataLocks = receivedEvents.Select(x =>
             {
-                var type = Type.GetType(typeof(PayableEarningEvent).AssemblyQualifiedName);
+                var type = Type.GetType(x.MessageType);
                 return (DataLockEvent)JsonConvert.DeserializeObject(x.Message, type);
             });
-            return datalocks;
+            return dataLocks;
         }
 
         private Task<IEnumerable<CurrentPriceEpisode>> GetCurrentPriceEpisodes(long jobId, long ukprn, long uln)

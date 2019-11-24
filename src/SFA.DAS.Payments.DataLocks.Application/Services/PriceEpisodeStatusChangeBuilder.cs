@@ -273,8 +273,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 foreach (var commitmentVersion in commitmentVersions)
                 {
-                    var transactionTypeHasErrors =
-                        allTransactionTypeFlagGroup.Any(x => x.Periods.Any(p => p.DataLockFailures.Any()));
+                    var transactionTypeHasErrors = allTransactionTypeFlagGroup
+                        .Any(x => x.Periods.Any(p => p.DataLockFailures.Any()));
+
                     eventPeriods.Add(new LegacyDataLockEventPeriod
                     {
                         DataLockEventId = priceEpisodeStatusChangeId,
@@ -282,7 +283,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                         CollectionPeriodYear = dataLock.CollectionPeriod.AcademicYear,
                         CollectionPeriodName = $"{dataLock.CollectionPeriod.AcademicYear}-{collectionPeriod:D2}",
                         CollectionPeriodMonth = (collectionPeriod < 6) ? collectionPeriod + 7 : collectionPeriod - 5,
-                        IsPayable = transactionTypeHasErrors,
+                        IsPayable = !transactionTypeHasErrors,
                         CommitmentVersion = commitmentVersion.CommitmentVersion
                     });
                 }
