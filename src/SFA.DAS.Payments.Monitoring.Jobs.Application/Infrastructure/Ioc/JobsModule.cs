@@ -8,6 +8,7 @@ using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
@@ -50,7 +51,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.RegisterType<MonthEndJobService>()
                 .As<IMonthEndJobService>()
                 .InstancePerLifetimeScope();
-            builder.RegisterType<JobStatusService>()
+            builder.RegisterType<EarningsJobStatusService>()
                 .As<IJobStatusService>()
                 .InstancePerLifetimeScope();
 

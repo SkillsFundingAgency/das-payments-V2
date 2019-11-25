@@ -5,15 +5,14 @@ using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
-namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
+namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
 {
     public interface IEarningsJobService
     {
-        Task RecordNewJob(RecordEarningsJob earningsJobRequest, CancellationToken cancellationToken = default(CancellationToken));
+        Task RecordNewJob(RecordEarningsJob earningsJobRequest, CancellationToken cancellationToken);
         Task RecordNewJobAdditionalMessages(RecordEarningsJobAdditionalMessages earningsJobRequest, CancellationToken cancellationToken);
         Task RecordDcJobCompleted(long jobId, bool succeeded, CancellationToken cancellationToken);
     }
-
 
     public class EarningsJobService : JobService, IEarningsJobService
     {
@@ -22,9 +21,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         {
         }
 
-        public async Task RecordNewJob(RecordEarningsJob earningsJobRequest, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task RecordNewJob(RecordEarningsJob earningsJobRequest, CancellationToken cancellationToken)
         {
-            logger.LogDebug($"Now recording new provider earnings job.  Job Id: {earningsJobRequest.JobId}, Ukprn: {earningsJobRequest.Ukprn}.");
+            Logger.LogDebug($"Now recording new provider earnings job.  Job Id: {earningsJobRequest.JobId}, Ukprn: {earningsJobRequest.Ukprn}.");
             var jobDetails = new JobModel
             {
                 JobType = JobType.EarningsJob,
@@ -44,14 +43,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         public async Task RecordNewJobAdditionalMessages(RecordEarningsJobAdditionalMessages earningsJobRequest, CancellationToken cancellationToken)
         {
             await RecordJobInProgressMessages(earningsJobRequest.JobId, earningsJobRequest.GeneratedMessages, cancellationToken).ConfigureAwait(false);
-            logger.LogDebug($"Finished storing new job messages for job: {earningsJobRequest.JobId}");
+            Logger.LogInfo($"Finished storing new job messages for job: {earningsJobRequest.JobId}");
         }
 
         public async Task RecordDcJobCompleted(long jobId, bool succeeded, CancellationToken cancellationToken)
         {
-            logger.LogDebug($"Now storing the completion status of the submission job. Id: {jobId}, succeeded: {succeeded}");
-            await jobStorageService.StoreDcJobStatus(jobId, succeeded, cancellationToken).ConfigureAwait(false);
-            logger.LogInfo($"Finished storing the completion status of the submission job. Id: {jobId}, succeeded: {succeeded}");
+            Logger.LogDebug($"Now storing the completion status of the submission job. Id: {jobId}, succeeded: {succeeded}");
+            await JobStorageService.StoreDcJobStatus(jobId, succeeded, cancellationToken).ConfigureAwait(false);
+            Logger.LogInfo($"Finished storing the completion status of the submission job. Id: {jobId}, succeeded: {succeeded}");
         }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
@@ -70,7 +71,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             };
 
             var service = mocker.Create<EarningsJobService>();
-            await service.RecordNewJob(jobStarted);
+            await service.RecordNewJob(jobStarted,default(CancellationToken));
 
             mocker.Mock<IJobStorageService>()
                 .Verify(x => x.StoreNewJob(
@@ -147,7 +148,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             };
 
             var service = mocker.Create<EarningsJobService>();
-            await service.RecordNewJob(jobStarted);
+            await service.RecordNewJob(jobStarted, default(CancellationToken));
 
             mocker.Mock<IJobStorageService>()
                 .Verify(x => x.StoreInProgressMessages(It.Is<long>(jobId => jobId == jobStarted.JobId), It.Is<List<InProgressMessage>>(identifiers =>
