@@ -7,6 +7,7 @@ SELECT
 	(SELECT SUM(Amount)
 	 FROM Payments2.RequiredPaymentEvent
 	 WHERE CreationDate > @startDate
+      and NonPaymentReason IS NULL
 	 AND ukprn in (@ukprnList)
 	 ) [Required Payments made this month],
 
@@ -20,6 +21,7 @@ SELECT
     (SELECT (SELECT SUM(Amount) 
      FROM Payments2.RequiredPaymentEvent
      WHERE CreationDate > @startDate
+       and NonPaymentReason IS NULL
 	 AND ukprn in (@ukprnList)
 	 ) +
     (SELECT ISNULL(SUM(Amount),0) 
