@@ -9,7 +9,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
 {
-    public class SubmissionSucceededEventHandler : IHandleMessages<SubmissionEvent>
+    public class SubmissionSucceededEventHandler : IHandleMessages<SubmissionSucceededEvent>
     {
         private readonly IPaymentLogger logger;
         private readonly IExecutionContext executionContext;
@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
             this.episodesReceivedService = episodesReceivedService;
         }
 
-        public async Task Handle(SubmissionEvent message, IMessageHandlerContext context)
+        public async Task Handle(SubmissionSucceededEvent message, IMessageHandlerContext context)
         {
             var messageType = message.GetType().Name;
 

@@ -134,9 +134,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             return new PriceEpisodeStatusChange
             {
-                JobId = dataLock.JobId,
-                Ukprn = dataLock.Ukprn,
-                CollectionPeriod = dataLock.CollectionPeriod,
                 AgreedPrice = priceEpisode.AgreedPrice,
                 DataLock = new LegacyDataLockEvent
                 {

@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockEventService.Handlers
 
         public Task Handle(PriceEpisodeStatusChange message, IMessageHandlerContext context)
         {
-            paymentLogger.LogDebug($"Processing {message.GetType().Name} event for UKPRN {message.Ukprn}");
+            paymentLogger.LogDebug($"Processing {message.GetType().Name} event for UKPRN {message.DataLock.UKPRN}");
 
             return eventProcessor.EnqueueEvent(message, CancellationToken.None);
         }
