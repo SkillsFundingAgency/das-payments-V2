@@ -328,8 +328,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
         }
 
-        private static List<PriceEpisodeStatusChange> BuildRemovedEvents(
-            List<(string identifier, PriceEpisodeStatus status)> priceEpisodeChanges)
+        private static List<PriceEpisodeStatusChange> BuildRemovedEvents(List<(string identifier, PriceEpisodeStatus status)> priceEpisodeChanges)
         {
             return priceEpisodeChanges
                 .Where(x => x.status == PriceEpisodeStatus.Removed)

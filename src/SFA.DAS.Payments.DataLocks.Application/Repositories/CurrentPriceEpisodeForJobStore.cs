@@ -3,11 +3,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpisodeChanges;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Repositories
 {
+    public interface ICurrentPriceEpisodeForJobStore
+    {
+        Task Add(CurrentPriceEpisode priceEpisode);
+        Task<List<CurrentPriceEpisode>> GetCurrentPriceEpisodes(long ukprn);
+        Task Replace(long jobId, long ukprn, IEnumerable<CurrentPriceEpisode> replacement);
+    }
+
     public class CurrentPriceEpisodeForJobStore : ICurrentPriceEpisodeForJobStore
     {
         private readonly IPaymentsDataContext paymentsDataContext;
@@ -23,10 +29,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             await paymentsDataContext.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<CurrentPriceEpisode>> GetCurrentPriceEpisodes(long jobId, long ukprn, long learnerUln)
+        public async Task<List<CurrentPriceEpisode>> GetCurrentPriceEpisodes(long ukprn)
         {
             return await paymentsDataContext.CurrentPriceEpisodes
-                .Where(x => x.JobId == jobId && x.Ukprn == ukprn && x.Uln == learnerUln)
+                .Where(x => x.Ukprn == ukprn)
                 .ToListAsync();
         }
 

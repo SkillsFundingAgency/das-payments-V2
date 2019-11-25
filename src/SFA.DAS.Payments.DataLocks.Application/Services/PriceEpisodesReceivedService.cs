@@ -1,6 +1,5 @@
 using Newtonsoft.Json;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
-using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpidodeChanges;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.DataLocks.Model.Entities;
 using SFA.DAS.Payments.Model.Core;
@@ -19,7 +18,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
     {
         Task<List<PriceEpisodeStatusChange>> JobSucceeded(long jobId, long ukprn);
     }
-
 
     public class PriceEpisodesReceivedService: IPriceEpisodesReceivedService
     {
@@ -42,14 +40,16 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             var allPriceEpisodeStatusChanges = new List<PriceEpisodeStatusChange>();
 
             var dataLockEvents = (await GetDataLocks(jobId, ukprn)).ToList();
+            var currentPriceEpisodes = await currentPriceEpisodesStore.GetCurrentPriceEpisodes(ukprn);
+
             var learnerUlns = dataLockEvents.Select(d => d.Learner.Uln).Distinct();
 
             foreach (var learnerUln in learnerUlns)
             {
                 var learnerDataLocks = dataLockEvents.Where(x => x.Learner.Uln == learnerUln).ToList();
+                var leanerPriceEpisodes =  currentPriceEpisodes.Where(x => x.Uln == learnerUln);
 
-                var currentPriceEpisodes = await GetCurrentPriceEpisodes(jobId, ukprn, learnerUln);
-                var changes = CalculatePriceEpisodeStatus(learnerDataLocks, currentPriceEpisodes);
+                var changes = CalculatePriceEpisodeStatus(learnerDataLocks, leanerPriceEpisodes);
                 var priceEpisodeStatusChanges = await CreateStatusChangedEvents(learnerDataLocks, changes);
                 var learnerPriceEpisodeReplacements = CreateLearnerCurrentPriceEpisodesReplacement(jobId, ukprn, learnerUln, priceEpisodeStatusChanges);
                 priceEpisodeReplacements.AddRange(learnerPriceEpisodeReplacements);
@@ -73,12 +73,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             });
             return dataLocks;
         }
-
-        private Task<IEnumerable<CurrentPriceEpisode>> GetCurrentPriceEpisodes(long jobId, long ukprn, long uln)
-        {
-            return currentPriceEpisodesStore.GetCurrentPriceEpisodes(jobId, ukprn, uln);
-        }
-
+        
         private static List<(string identifier, PriceEpisodeStatus status)> CalculatePriceEpisodeStatus(
             IEnumerable<DataLockEvent> dataLocks, IEnumerable<CurrentPriceEpisode> currentPriceEpisodes)
         {
