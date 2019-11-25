@@ -1,67 +1,75 @@
 DECLARE @monthendStartTime DATETIME = '2019-11-07 20:00'
 DECLARE @startDate DATETIME = @monthendStartTime
 DECLARE @collectionperiod INT = 3
-DECLARE @ukprnFilter bigint = null
+DECLARE @ukprnList table
+(
+	ukprn bigint 
+)
+--INSERT INTO @ukprnList --whitelist of suceeded ukprns if required
+--VALUES
+--(10000060),
+--(10000061)
 
+Declare @GivenUkprnCount INT = (SELECT COUNT(1) from @ukprnList)
 
 
 SELECT
 	(SELECT FORMAT(SUM(Amount), 'C', 'en-gb')
 	 FROM Payments2.RequiredPaymentEvent
 	 WHERE CreationDate > @startDate
-	 AND ((@ukprnFilter IS NULL) OR (Ukprn = @ukprnFilter))
+	 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 	 ) [Required Payments made this month],
 
 	(SELECT FORMAT(SUM(Amount), 'C', 'en-gb')
 	 FROM Payments2.Payment
 	 WHERE CreationDate < @startDate
 	 AND AcademicYear = 1920
-	 AND ((@ukprnFilter IS NULL) OR (Ukprn = @ukprnFilter))
+	 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 	 ) [Payments made before this month YTD],
 
     (SELECT FORMAT((SELECT SUM(Amount) 
      FROM Payments2.RequiredPaymentEvent
      WHERE CreationDate > @startDate
-	 AND ((@ukprnFilter IS NULL) OR (Ukprn = @ukprnFilter))
+	 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 	 ) +
-    (SELECT SUM(Amount) 
+    (SELECT ISNULL(SUM(Amount),0) 
      FROM Payments2.Payment
      WHERE CreationDate < @startDate
-	 AND ((@ukprnFilter IS NULL) OR (Ukprn = @ukprnFilter))
-	 AND AcademicYear = 1920 ), 'C', 'en-gb') 
+	AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
+	AND AcademicYear = 1920 ), 'C', 'en-gb') 
 	) [Expected Payments YTD after running Period End],
 
 	(SELECT FORMAT(SUM(Amount), 'C', 'en-gb')
      FROM Payments2.Payment
      where AcademicYear = 1920
 	 and CollectionPeriod = @collectionperiod 
-	 AND ((@ukprnFilter IS NULL) OR (Ukprn = @ukprnFilter))
+	 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 	) [Total payments this month],
 
 	--CASE WHEN IsLevyPayer = 0 THEN 1 ELSE 0 END
 	(SELECT FORMAT(sum(CASE WHEN contracttype = 1 THEN amount ELSE 0 END), 'C', 'en-gb') 
      FROM Payments2.Payment
      where AcademicYear = 1920
-	 AND ((@ukprnFilter IS NULL) OR (Ukprn = @ukprnFilter))
+	AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 	 ) [Total ACT 1 payments YTD],
 
 	(SELECT FORMAT(sum(CASE WHEN contracttype = 2 THEN amount ELSE 0 END), 'C', 'en-gb') 
      FROM Payments2.Payment
      where AcademicYear = 1920
-	 AND ((@ukprnFilter IS NULL) OR (Ukprn = @ukprnFilter))
+	 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 	 ) [Total ACT 2 payments YTD],
 
 	(SELECT FORMAT(SUM(Amount), 'C', 'en-gb') 
      FROM Payments2.Payment
      where AcademicYear = 1920
-	 AND ((@ukprnFilter IS NULL) OR (Ukprn = @ukprnFilter))
+	 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 	 ) [Total payments YTD],
 
 	(SELECT FORMAT(SUM(Amount), 'C', 'en-gb')
 	 FROM Payments2.RequiredPaymentEvent
 	 WHERE CreationDate > @startDate
 	 and NonPaymentReason = 0
-	 AND ((@ukprnFilter IS NULL) OR (Ukprn = @ukprnFilter))
+	 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 	 ) [Held Back Completion Payments this month]
 --Expected Payments
 
@@ -72,7 +80,7 @@ JOIN Payments2.EarningEventPeriod EEP
 AND DeliveryPeriod <= @collectionperiod
 AND Amount != 0
 AND EE.CreationDate > @monthendStartTime
-AND ((@ukprnFilter IS NULL) OR (EE.Ukprn = @ukprnFilter))
+AND ((@GivenUkprnCount = 0) OR  (EE.ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 
 --DAS Earnings
 
@@ -96,7 +104,7 @@ AND ((@ukprnFilter IS NULL) OR (EE.Ukprn = @ukprnFilter))
     )
     AND DeliveryPeriod <= @collectionperiod
     AND Amount != 0
-	AND ((@ukprnFilter IS NULL) OR (EE.Ukprn = @ukprnFilter))
+	 AND ((@GivenUkprnCount = 0) OR  (EE.ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
     AND EE.CreationDate > @monthendStartTime
 )
 , DatalockedPayments AS (
@@ -115,9 +123,8 @@ AND ((@ukprnFilter IS NULL) OR (EE.Ukprn = @ukprnFilter))
         AND E.LearningAimStandardCode = P.LearningAimStandardCode
         AND E.TransactionType = P.TransactionType
 		AND P.AcademicYear = 1920
-    )  
-		AND ((@ukprnFilter IS NULL) OR (p.Ukprn = @ukprnFilter))
-
+    )   
+		 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 )
 SELECT (SELECT FORMAT(SUM(Amount), 'C', 'en-gb') FROM DatalockedEarnings) [Datalocked Earnigs],
     (SELECT FORMAT(SUM(Amount), 'C', 'en-gb') FROM DatalockedPayments) [Datalocked Payments],
