@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             paymentsDataContext.CurrentPriceEpisodes
                 .RemoveRange(paymentsDataContext
                     .CurrentPriceEpisodes
-                    .Where(x => x.JobId == jobId && x.Ukprn == ukprn));
+                    .Where(x => x.Ukprn == ukprn));
 
             await paymentsDataContext.CurrentPriceEpisodes.AddRangeAsync(priceEpisodes);
             await paymentsDataContext.SaveChangesAsync();

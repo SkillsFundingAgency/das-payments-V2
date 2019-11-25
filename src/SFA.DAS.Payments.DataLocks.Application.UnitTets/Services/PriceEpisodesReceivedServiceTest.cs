@@ -36,25 +36,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         {
             testCaseData.CommonSetup();
             await testCaseData.AddDataLockEventToContext(receivedContext);
-            var episodeStatusChange = new List<PriceEpisodeStatusChange>
-            {
-                new PriceEpisodeStatusChange
-                {
-                    DataLock = new LegacyDataLockEvent
-                    {
-                        PriceEpisodeIdentifier = priceEpisode.PriceEpisodeIdentifier,
-                        Status = PriceEpisodeStatus.New,
-                        UKPRN = testCaseData.earning.Ukprn,
-                        ULN = testCaseData.earning.Learner.Uln
-                    }
-                }
-            };
-            
-            priceEpisode.Uln = testCaseData.earning.Learner.Uln;
-            priceEpisode.Ukprn = testCaseData.earning.Ukprn;
-            priceEpisode.JobId = testCaseData.earning.JobId + 1;
-            priceEpisode.Message = JsonConvert.SerializeObject(episodeStatusChange);
 
+            priceEpisode.AssociateWith(testCaseData.earning);
             await currentContext.Add(priceEpisode);
 
             var changeMessages = await sut.JobSucceeded(testCaseData.earning.JobId, testCaseData.earning.Ukprn);
@@ -101,30 +84,22 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             EarningPeriod newPeriod,
             PriceEpisodesReceivedService sut)
         {
-
-            var allPeriods = testCaseData.earning.OnProgrammeEarnings[0].Periods.ToList();
+            // Given
+            testCaseData.earning.PriceEpisodes.Add(newPriceEpisode);
 
             newPeriod.ApprenticeshipId = testCaseData.apprenticeship.Id;
             newPeriod.AccountId = testCaseData.apprenticeship.AccountId;
             newPeriod.PriceEpisodeIdentifier = newPriceEpisode.Identifier;
-            allPeriods.Add(newPeriod);
-            testCaseData.earning.OnProgrammeEarnings[0].Periods = allPeriods.AsReadOnly();
-            testCaseData.earning.PriceEpisodes.Add(newPriceEpisode);
-            
-            await currentContext.Add(new CurrentPriceEpisode
-            {
-                JobId = testCaseData.earning.JobId,
-                Ukprn = testCaseData.earning.Ukprn,
-                Uln = testCaseData.earning.Learner.Uln,
-                PriceEpisodeIdentifier = testCaseData.earning.PriceEpisodes.First().Identifier,
-                AgreedPrice = testCaseData.earning.PriceEpisodes.First().AgreedPrice + 1,
-                MessageType = typeof(List<PriceEpisodeStatusChange>).AssemblyQualifiedName,
-                Message = "[]"
-            });
+            testCaseData.earning.OnProgrammeEarnings[0].Periods = 
+                testCaseData.earning.OnProgrammeEarnings[0].Periods.Append(newPeriod).ToList().AsReadOnly();
 
+            await currentContext.Add(CreateCurrentPriceEpisodeFor(testCaseData.earning));
             await testCaseData.AddDataLockEventToContext(receivedContext);
+
+            // When
             var changeMessages = await sut.JobSucceeded(testCaseData.earning.JobId, testCaseData.earning.Ukprn);
 
+            // Then
             changeMessages.Should().ContainEquivalentOf(
                 new
                 {
@@ -145,6 +120,20 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 });
         }
 
+        private CurrentPriceEpisode CreateCurrentPriceEpisodeFor(EarningFailedDataLockMatching earning)
+        {
+            return new CurrentPriceEpisode
+            {
+                JobId = earning.JobId,
+                Ukprn = earning.Ukprn,
+                Uln = earning.Learner.Uln,
+                PriceEpisodeIdentifier = earning.PriceEpisodes.First().Identifier,
+                AgreedPrice = earning.PriceEpisodes.First().AgreedPrice + 1,
+                MessageType = typeof(List<PriceEpisodeStatusChange>).AssemblyQualifiedName,
+                Message = "[]"
+            };
+        }
+
         [Theory, AutoDomainData]
         public async Task When_job_succeeded_builds_approval_event_for_new_and_removed_price_episodes(
             ICurrentPriceEpisodeForJobStore currentContext,
@@ -157,26 +146,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             await testCaseData.AddDataLockEventToContext(receivedContext);
 
-            var episodeStatusChange = new List<PriceEpisodeStatusChange>
-            {
-                new PriceEpisodeStatusChange
-                {
-                    DataLock = new LegacyDataLockEvent
-                    {
-                        PriceEpisodeIdentifier = removed.PriceEpisodeIdentifier,
-                        Status = PriceEpisodeStatus.New,
-                        UKPRN = testCaseData.earning.Ukprn,
-                        ULN = testCaseData.earning.Learner.Uln
-                    }
-                }
-            };
-            
-            removed.Uln = testCaseData.earning.Learner.Uln;
-            removed.Ukprn = testCaseData.earning.Ukprn;
-            removed.JobId = testCaseData.earning.JobId + 1;
-            removed.MessageType = episodeStatusChange.GetType().AssemblyQualifiedName;
-            removed.Message = JsonConvert.SerializeObject(episodeStatusChange);
-            
+            removed.AssociateWith(testCaseData.earning);
             await currentContext.Add(removed);
 
             var changeMessages = await sut.JobSucceeded(testCaseData.earning.JobId, testCaseData.earning.Ukprn);
@@ -225,23 +195,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             TestCaseData testCaseData,
             PriceEpisodesReceivedService sut)
         {
-
             testCaseData.CommonSetup();
 
             apprenticeshipRepo
                 .Setup(x => x.Get(It.IsAny<List<long>>(), CancellationToken.None))
                 .Returns(Task.FromResult(new List<ApprenticeshipModel> { testCaseData.apprenticeship }));
 
-            await currentContext.Add(new CurrentPriceEpisode
-            {
-                JobId = testCaseData.earning.JobId,
-                Ukprn = testCaseData.earning.Ukprn,
-                Uln = testCaseData.earning.Learner.Uln,
-                PriceEpisodeIdentifier = testCaseData.earning.PriceEpisodes.First().Identifier,
-                AgreedPrice = testCaseData.earning.PriceEpisodes.First().AgreedPrice + 1,
-                MessageType = typeof(List<PriceEpisodeStatusChange>).AssemblyQualifiedName,
-                Message = "[]"
-            });
             await testCaseData.AddDataLockEventToContext(receivedContext);
 
             await sut.JobSucceeded(testCaseData.earning.JobId, testCaseData.earning.Ukprn);
@@ -258,7 +217,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             });
 
             var results = (await currentContext
-                .GetCurrentPriceEpisodes( testCaseData.earning.Ukprn)).ToList();
+                .GetCurrentPriceEpisodes(testCaseData.earning.Ukprn)).ToList();
 
             results.Should().BeEquivalentTo(expected, c =>
                 {
@@ -268,6 +227,45 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 });
 
             results[0].Message.Should().NotBeNull();
+        }
+
+        [Theory, AutoDomainData]
+        public async Task When_job_succeeded_removes_current_price_episode(
+            [Frozen]Mock<IApprenticeshipRepository> apprenticeshipRepo,
+            CurrentPriceEpisode previousPriceEpisode,
+            ICurrentPriceEpisodeForJobStore currentContext,
+            IReceivedDataLockEventStore receivedContext,
+            TestCaseData testCaseData,
+            PriceEpisodesReceivedService sut)
+        {
+            testCaseData.CommonSetup();
+
+            previousPriceEpisode.Ukprn = testCaseData.earning.Ukprn;
+            await currentContext.Add(previousPriceEpisode);
+
+            apprenticeshipRepo
+                .Setup(x => x.Get(It.IsAny<List<long>>(), CancellationToken.None))
+                .Returns(Task.FromResult(new List<ApprenticeshipModel> { testCaseData.apprenticeship }));
+
+            await testCaseData.AddDataLockEventToContext(receivedContext);
+
+            await sut.JobSucceeded(testCaseData.earning.JobId, testCaseData.earning.Ukprn);
+
+            var expected = testCaseData.earning.PriceEpisodes.Select(x => new CurrentPriceEpisode
+            {
+                JobId = testCaseData.earning.JobId,
+                Ukprn = testCaseData.earning.Ukprn,
+                Uln = testCaseData.earning.Learner.Uln,
+                PriceEpisodeIdentifier = x.Identifier,
+                AgreedPrice = x.AgreedPrice,
+                MessageType = typeof(List<PriceEpisodeStatusChange>).AssemblyQualifiedName,
+                Message = "[]"
+            });
+
+            var results = (await currentContext
+                .GetCurrentPriceEpisodes(testCaseData.earning.Ukprn)).ToList();
+
+            results.Should().NotContain(previousPriceEpisode);
         }
 
 
@@ -349,7 +347,32 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             }
         }
+    }
 
-
+    public static class Niceties
+    {
+        public static CurrentPriceEpisode AssociateWith(this CurrentPriceEpisode priceEpisode, DataLockEvent dlock)
+        {
+            priceEpisode.Uln = dlock.Learner.Uln;
+            priceEpisode.Ukprn = dlock.Ukprn;
+            priceEpisode.JobId = dlock.JobId + 1;
+            priceEpisode.MessageType = typeof(List<PriceEpisodeStatusChange>).AssemblyQualifiedName;
+            priceEpisode.Message = JsonConvert.SerializeObject(
+                new List<PriceEpisodeStatusChange>
+                {
+                    new PriceEpisodeStatusChange
+                    {
+                        DataLock = new LegacyDataLockEvent
+                        {
+                            PriceEpisodeIdentifier = priceEpisode.PriceEpisodeIdentifier,
+                            Status = PriceEpisodeStatus.New,
+                            UKPRN = dlock.Ukprn,
+                            ULN = dlock.Learner.Uln
+                        }
+                    }
+                });
+        
+            return priceEpisode;
+        }
     }
 }

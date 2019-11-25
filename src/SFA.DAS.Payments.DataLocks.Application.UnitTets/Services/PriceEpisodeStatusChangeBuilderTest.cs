@@ -43,7 +43,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             List<DataLockFailure> dataLockFailures,
             List<ApprenticeshipModel> apprenticeships)
         {
-
             CommonTestSetup(repository, dataLock, periods, dataLockFailures, apprenticeships);
             var priceEpisode = dataLock.PriceEpisodes[0];
 
@@ -246,26 +245,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 SystemDescription = description,
             });
         }
-        
-        //   [Test, AutoDomainData]
-        //public async Task Builds_one_for_each_apprenticeship_within_price_episode(
-        //    PriceEpisodeStatusChangeBuilder sut,
-        //    PayableEarningEvent dataLock)
-        //{
-        //    var result = await sut.Build(
-        //        new List<DataLockEvent> { dataLock },
-        //        new List<(string identifier, PriceEpisodeStatus status)>());
-
-        //    var numPriceEpisodes = dataLock.PriceEpisodes.Count();
-        //    var numApprenticeshipIds = dataLock
-        //        .OnProgrammeEarnings
-        //        .SelectMany(x => x.Periods)
-        //        .Select(x => x.ApprenticeshipId)
-        //        .Distinct()
-        //        .Count();
-
-        //    result.Should().HaveCount(numApprenticeshipIds * numPriceEpisodes);
-        //}
 
         [Test, AutoDomainData]
         public async Task Build_Period_For_Apprenticeship_And_PriceEpisode(
@@ -419,9 +398,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 : base(Customise, values)
             {
             }
+
             private static IFixture Customise()
             {
-                var dbName = Guid.NewGuid().ToString();
                 var fixture = new Fixture();
                 fixture.Customize(new AutoMoqCustomization { ConfigureMembers = true });
                 return fixture;

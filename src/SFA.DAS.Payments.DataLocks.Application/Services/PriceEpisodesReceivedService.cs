@@ -1,19 +1,16 @@
 using Newtonsoft.Json;
-using SFA.DAS.Payments.DataLocks.Domain.Models;
+using SFA.DAS.Payments.DataLocks.Application.Repositories;
+using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpisodeChanges;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.DataLocks.Model.Entities;
-using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.DataLocks.Application.Repositories;
-using SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpisodeChanges;
-using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Services
 {
-
     public interface IPriceEpisodesReceivedService
     {
         Task<List<PriceEpisodeStatusChange>> JobSucceeded(long jobId, long ukprn);
@@ -25,7 +22,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         private readonly IReceivedDataLockEventStore receivedEventStore;
         private readonly PriceEpisodeStatusChangeBuilder statusChangeBuilder;
 
-        public PriceEpisodesReceivedService(ICurrentPriceEpisodeForJobStore store,
+        public PriceEpisodesReceivedService(
+            ICurrentPriceEpisodeForJobStore store,
             IReceivedDataLockEventStore receivedEventStore,
             PriceEpisodeStatusChangeBuilder statusChangeBuilder)
         {
