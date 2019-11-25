@@ -36,10 +36,24 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         {
             testCaseData.CommonSetup();
             await testCaseData.AddDataLockEventToContext(receivedContext);
-
+            var episodeStatusChange = new List<PriceEpisodeStatusChange>
+            {
+                new PriceEpisodeStatusChange
+                {
+                    DataLock = new LegacyDataLockEvent
+                    {
+                        PriceEpisodeIdentifier = priceEpisode.PriceEpisodeIdentifier,
+                        Status = PriceEpisodeStatus.New,
+                        UKPRN = testCaseData.earning.Ukprn,
+                        ULN = testCaseData.earning.Learner.Uln
+                    }
+                }
+            };
+            
             priceEpisode.Uln = testCaseData.earning.Learner.Uln;
             priceEpisode.Ukprn = testCaseData.earning.Ukprn;
             priceEpisode.JobId = testCaseData.earning.JobId + 1;
+            priceEpisode.Message = JsonConvert.SerializeObject(episodeStatusChange);
 
             await currentContext.Add(priceEpisode);
 
@@ -104,6 +118,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 Uln = testCaseData.earning.Learner.Uln,
                 PriceEpisodeIdentifier = testCaseData.earning.PriceEpisodes.First().Identifier,
                 AgreedPrice = testCaseData.earning.PriceEpisodes.First().AgreedPrice + 1,
+                MessageType = typeof(List<PriceEpisodeStatusChange>).AssemblyQualifiedName,
+                Message = "[]"
             });
 
             await testCaseData.AddDataLockEventToContext(receivedContext);
@@ -130,7 +146,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         }
 
         [Theory, AutoDomainData]
-
         public async Task When_job_succeeded_builds_approval_event_for_new_and_removed_price_episodes(
             ICurrentPriceEpisodeForJobStore currentContext,
             IReceivedDataLockEventStore receivedContext,
@@ -142,10 +157,26 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             await testCaseData.AddDataLockEventToContext(receivedContext);
 
+            var episodeStatusChange = new List<PriceEpisodeStatusChange>
+            {
+                new PriceEpisodeStatusChange
+                {
+                    DataLock = new LegacyDataLockEvent
+                    {
+                        PriceEpisodeIdentifier = removed.PriceEpisodeIdentifier,
+                        Status = PriceEpisodeStatus.New,
+                        UKPRN = testCaseData.earning.Ukprn,
+                        ULN = testCaseData.earning.Learner.Uln
+                    }
+                }
+            };
+            
             removed.Uln = testCaseData.earning.Learner.Uln;
             removed.Ukprn = testCaseData.earning.Ukprn;
             removed.JobId = testCaseData.earning.JobId + 1;
-
+            removed.MessageType = episodeStatusChange.GetType().AssemblyQualifiedName;
+            removed.Message = JsonConvert.SerializeObject(episodeStatusChange);
+            
             await currentContext.Add(removed);
 
             var changeMessages = await sut.JobSucceeded(testCaseData.earning.JobId, testCaseData.earning.Ukprn);
@@ -208,6 +239,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 Uln = testCaseData.earning.Learner.Uln,
                 PriceEpisodeIdentifier = testCaseData.earning.PriceEpisodes.First().Identifier,
                 AgreedPrice = testCaseData.earning.PriceEpisodes.First().AgreedPrice + 1,
+                MessageType = typeof(List<PriceEpisodeStatusChange>).AssemblyQualifiedName,
+                Message = "[]"
             });
             await testCaseData.AddDataLockEventToContext(receivedContext);
 
@@ -220,7 +253,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 Uln = testCaseData.earning.Learner.Uln,
                 PriceEpisodeIdentifier = x.Identifier,
                 AgreedPrice = x.AgreedPrice,
-                MessageType = typeof(List<PriceEpisodeStatusChange>).AssemblyQualifiedName
+                MessageType = typeof(List<PriceEpisodeStatusChange>).AssemblyQualifiedName,
+                Message = "[]"
             });
 
             var results = (await currentContext
@@ -262,6 +296,14 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 fixture.Register<IReceivedDataLockEventStore>(() => fixture.Create<ReceivedDataLockEventStore>());
                 fixture.Register<ICurrentPriceEpisodeForJobStore>(() => fixture.Create<CurrentPriceEpisodeForJobStore>());
                 fixture.Customize(new AutoMoqCustomization { ConfigureMembers = true });
+
+                fixture.Customize<CurrentPriceEpisode>(c => c
+                    .Without(p => p.MessageType)
+                    .Without(p => p.Message)
+                    .Do(x => x.MessageType = typeof(List<PriceEpisodeStatusChange>).AssemblyQualifiedName)
+                    .Do(x => x.Message = "[]")
+                );
+
                 return fixture;
             }
         }
