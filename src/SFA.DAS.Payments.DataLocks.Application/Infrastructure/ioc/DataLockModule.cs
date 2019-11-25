@@ -82,7 +82,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<ApprenticeshipStoppedService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ApprenticeshipPauseService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ApprenticeshipResumedService>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<PriceEpisodeStatusChangeBuilder>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<PriceEpisodeStatusChangeBuilder>().InstancePerLifetimeScope();
             builder.RegisterType<PriceEpisodesReceivedService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
         }

@@ -57,15 +57,16 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                 var priceEpisodeEarnings = priceEpisodeDataLocks
                     .SelectMany(x => x.OnProgrammeEarnings)
-                    .Where(p => p.Periods.Any(o =>
-                        o.PriceEpisodeIdentifier.Equals(priceEpisode.Identifier,
-                            StringComparison.InvariantCultureIgnoreCase)))
+                    .Where(p => p.Periods
+                        .Any(o => !string.IsNullOrWhiteSpace(o.PriceEpisodeIdentifier) &&
+                                  o.PriceEpisodeIdentifier.Equals(priceEpisode.Identifier, StringComparison.InvariantCultureIgnoreCase)))
                     .ToList();
 
                 var priceEpisodeEarningPeriods = priceEpisodeDataLocks
                     .SelectMany(x => x.OnProgrammeEarnings)
                     .SelectMany(x => x.Periods)
-                    .Where(p => p.PriceEpisodeIdentifier.Equals(priceEpisode.Identifier, StringComparison.InvariantCultureIgnoreCase))
+                    .Where(p => !string.IsNullOrWhiteSpace(p.PriceEpisodeIdentifier) && 
+                                p.PriceEpisodeIdentifier.Equals(priceEpisode.Identifier, StringComparison.InvariantCultureIgnoreCase))
                     .ToList();
 
                 var priceEpisodeApprenticeshipIds = new List<long>();

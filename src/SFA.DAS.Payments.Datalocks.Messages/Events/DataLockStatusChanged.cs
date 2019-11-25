@@ -9,7 +9,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Messages.Events
 {
-    public class PriceEpisodeStatusChange 
+    public class PriceEpisodeStatusChange : PaymentsEvent
     {
         public decimal AgreedPrice { get; set; }
         public LegacyDataLockEvent DataLock { get; set; }
