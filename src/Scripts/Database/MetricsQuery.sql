@@ -17,6 +17,7 @@ SELECT
 	(SELECT FORMAT(SUM(Amount), 'C', 'en-gb')
 	 FROM Payments2.RequiredPaymentEvent
 	 WHERE CreationDate > @startDate
+     AND NonPaymentReason IS NULL
 	 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 	 ) [Required Payments made this month],
 
@@ -30,6 +31,7 @@ SELECT
     (SELECT FORMAT((SELECT SUM(Amount) 
      FROM Payments2.RequiredPaymentEvent
      WHERE CreationDate > @startDate
+     AND NonPaymentReason IS NULL
 	 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 	 ) +
     (SELECT ISNULL(SUM(Amount),0) 
