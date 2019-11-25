@@ -21,11 +21,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         }
 
         public async Task<List<PriceEpisodeStatusChange>> Build(List<DataLockEvent> dataLockEvents,
-            List<(string identifier, PriceEpisodeStatus status)> priceEpisodeChanges)
+            List<(string identifier, PriceEpisodeStatus status)> priceEpisodeChanges,
+            List<PriceEpisodeStatusChange> currentPriceEpisodeStatusChange)
         {
             var present = await BuildPresentEvents(dataLockEvents, priceEpisodeChanges);
 
-            var removed = BuildRemovedEvents(priceEpisodeChanges);
+            var removed = BuildRemovedEvents(priceEpisodeChanges, currentPriceEpisodeStatusChange);
 
             return present.Union(removed).ToList();
         }
@@ -34,11 +35,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             List<(string identifier, PriceEpisodeStatus status)> priceEpisodeChanges)
         {
             var events = new List<PriceEpisodeStatusChange>();
-
-            foreach (var priceEpisode in dataLockEvents.SelectMany(x => x.PriceEpisodes).Distinct())
+            
+            foreach (var priceEpisodeChange in priceEpisodeChanges.Where(x => x.status != PriceEpisodeStatus.Removed))
             {
-                var priceEpisodeChange =
-                    priceEpisodeChanges.FirstOrDefault(x => x.identifier == priceEpisode.Identifier);
+                var priceEpisode = dataLockEvents
+                    .SelectMany(x => x.PriceEpisodes)
+                    .First(p => p.Identifier == priceEpisodeChange.identifier);
 
                 var priceEpisodeDataLocks = dataLockEvents
                     .Where(x => x.PriceEpisodes.Any(p => p.Identifier == priceEpisode.Identifier))
@@ -328,26 +330,21 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
         }
 
-        private static List<PriceEpisodeStatusChange> BuildRemovedEvents(List<(string identifier, PriceEpisodeStatus status)> priceEpisodeChanges)
+        private static List<PriceEpisodeStatusChange> BuildRemovedEvents(List<(string identifier,
+            PriceEpisodeStatus status)> priceEpisodeChanges,
+            IEnumerable<PriceEpisodeStatusChange> priceEpisodeStatusChange)
         {
-            return priceEpisodeChanges
-                .Where(x => x.status == PriceEpisodeStatus.Removed)
-                .Select(MapRemovedPriceEpisodeStatusChange)
+
+            var removedPriceEpisodes = priceEpisodeStatusChange
+                .Where(c => priceEpisodeChanges
+                    .Any(p => p.status == PriceEpisodeStatus.Removed && p.identifier == c.DataLock.PriceEpisodeIdentifier))
                 .ToList();
+
+            removedPriceEpisodes.ForEach(x => x.DataLock.Status = PriceEpisodeStatus.Removed);
+
+            return removedPriceEpisodes;
         }
 
-        private static PriceEpisodeStatusChange MapRemovedPriceEpisodeStatusChange(
-            (string identifier, PriceEpisodeStatus status) removed)
-        {
-            return new PriceEpisodeStatusChange
-            {
-                DataLock = new LegacyDataLockEvent
-                {
-                    PriceEpisodeIdentifier = removed.identifier,
-                    Status = removed.status,
-                }
-            };
-        }
 
     }
 }

@@ -28,7 +28,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         {
             var result = await sut.Build(
                 new List<DataLockEvent>(),
-                new List<(string identifier, PriceEpisodeStatus status)>());
+                new List<(string identifier, PriceEpisodeStatus status)>(),
+                new List<PriceEpisodeStatusChange>());
 
             result.Should().BeEmpty();
         }
@@ -44,14 +45,17 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         {
 
             CommonTestSetup(repository, dataLock, periods, dataLockFailures, apprenticeships);
-            
+            var priceEpisode = dataLock.PriceEpisodes[0];
+
             dataLock.IlrFileName = "bob";
             var result = await sut.Build(
                 new List<DataLockEvent> { dataLock },
-                new List<(string identifier, PriceEpisodeStatus status)>());
-
-            var priceEpisode = dataLock.PriceEpisodes[0];
-
+                new List<(string identifier, PriceEpisodeStatus status)>
+                {
+                    (priceEpisode.Identifier, PriceEpisodeStatus.New)
+                },
+                new List<PriceEpisodeStatusChange>());
+            
             result.Should().ContainEquivalentOf(new
             {
                 DataLock = new
@@ -94,7 +98,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 new List<(string identifier, PriceEpisodeStatus status)>
                 {
                     (priceEpisode.Identifier, PriceEpisodeStatus.Updated)
-                });
+                },
+                new List<PriceEpisodeStatusChange>());
             
             result.Should().ContainEquivalentOf(new
             {
@@ -123,7 +128,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             var result = await sut.Build(
                 new List<DataLockEvent> { dataLock },
-                new List<(string identifier, PriceEpisodeStatus status)>());
+                new List<(string identifier, PriceEpisodeStatus status)>
+                {
+                    (priceEpisode.Identifier, PriceEpisodeStatus.New)
+                },
+                new List<PriceEpisodeStatusChange>());
 
             result.Should().ContainEquivalentOf(new
             {
@@ -153,7 +162,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             var result = await sut.Build(
                 new List<DataLockEvent> { dataLock },
-                new List<(string identifier, PriceEpisodeStatus status)>());
+                new List<(string identifier, PriceEpisodeStatus status)>
+                {
+                    (priceEpisode.Identifier, PriceEpisodeStatus.New)
+                },
+                new List<PriceEpisodeStatusChange>());
 
             result.Should().ContainEquivalentOf(new
             {
@@ -182,7 +195,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             var result = await sut.Build(
                 new List<DataLockEvent> { dataLock },
-                new List<(string identifier, PriceEpisodeStatus status)>());
+                new List<(string identifier, PriceEpisodeStatus status)>
+                {
+                    (priceEpisode.Identifier, PriceEpisodeStatus.New)
+                },
+                new List<PriceEpisodeStatusChange>());
 
             result.Should().ContainEquivalentOf(new
             {
@@ -215,7 +232,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             var result = await sut.Build(
                 new List<DataLockEvent> { dataLock },
-                new List<(string identifier, PriceEpisodeStatus status)>());
+                new List<(string identifier, PriceEpisodeStatus status)>
+                {
+                    (priceEpisode.Identifier, PriceEpisodeStatus.New)
+                },
+                new List<PriceEpisodeStatusChange>());
 
             result.Should().NotBeEmpty();
             result[0].Errors.Should().ContainEquivalentOf(new
@@ -260,7 +281,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             var result = await sut.Build(
                 new List<DataLockEvent> { dataLockEvent },
-                new List<(string identifier, PriceEpisodeStatus status)>{(dataLockEvent.PriceEpisodes[0].Identifier,PriceEpisodeStatus.New) });
+                new List<(string identifier, PriceEpisodeStatus status)>
+                {
+                    (dataLockEvent.PriceEpisodes[0].Identifier,PriceEpisodeStatus.New)
+                },
+                new List<PriceEpisodeStatusChange>());
 
             result.First().Periods.Should().ContainEquivalentOf(new
             {
@@ -271,8 +296,73 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
         }
 
+        [Test, AutoDomainData]
+        public async Task Build_PriceEpisode_Should_not_have_remove_event_twice(
+            [Frozen] Mock<IApprenticeshipRepository> repository,
+            PriceEpisodeStatusChangeBuilder sut,
+            EarningFailedDataLockMatching dataLockEvent,
+            List<EarningPeriod> periods,
+            List<DataLockFailure> dataLockFailures,
+            List<ApprenticeshipModel> apprenticeships)
+        {
+            CommonTestSetup(repository, dataLockEvent, periods, dataLockFailures, apprenticeships);
 
-           [Test, AutoDomainData]
+            var result = await sut.Build(
+                new List<DataLockEvent> { dataLockEvent },
+                new List<(string identifier, PriceEpisodeStatus status)>(),
+                new List<PriceEpisodeStatusChange>());
+
+            result.Should().BeEmpty();
+
+        }
+
+        [Test, AutoDomainData]
+        public async Task Build_PriceEpisode_Removed_Event(
+            [Frozen] Mock<IApprenticeshipRepository> repository,
+            PriceEpisodeStatusChangeBuilder sut,
+            EarningFailedDataLockMatching dataLockEvent,
+            List<EarningPeriod> periods,
+            List<DataLockFailure> dataLockFailures,
+            List<ApprenticeshipModel> apprenticeships)
+        {
+
+            CommonTestSetup(repository, dataLockEvent, periods, dataLockFailures, apprenticeships);
+            var episodeStatusChange = new List<PriceEpisodeStatusChange>
+            {
+                new PriceEpisodeStatusChange
+                {
+                    DataLock = new LegacyDataLockEvent
+                    {
+                        PriceEpisodeIdentifier = dataLockEvent.PriceEpisodes[0].Identifier,
+                        Status = PriceEpisodeStatus.New,
+                        UKPRN = dataLockEvent.Ukprn,
+                        ULN = dataLockEvent.Learner.Uln
+                    }
+                }
+            };
+
+            var result = await sut.Build(
+                new List<DataLockEvent> { dataLockEvent },
+                new List<(string identifier, PriceEpisodeStatus status)>
+                {
+                    (dataLockEvent.PriceEpisodes[0].Identifier, PriceEpisodeStatus.Removed)
+                },
+                episodeStatusChange);
+            
+            result.Should().ContainEquivalentOf(new
+            {
+                DataLock = new
+                {
+                    PriceEpisodeIdentifier = dataLockEvent.PriceEpisodes[0].Identifier,
+                    Status = PriceEpisodeStatus.Removed,
+                    UKPRN = dataLockEvent.Ukprn,
+                    ULN = dataLockEvent.Learner.Uln
+                },
+            });
+
+        }
+        
+        [Test, AutoDomainData]
         public void PriceEpisodesAreDistinctByIdentifier()
         {
             var episode1 = new PriceEpisode { Identifier = "hi" };
@@ -280,8 +370,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var list = new[] { episode1, episode2 };
             list.Distinct().Should().HaveCount(1);
         }
-
-
+        
         public class AutoDomainDataAttribute : AutoDataAttribute
         {
             public AutoDomainDataAttribute()
@@ -289,21 +378,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             {
             }
 
-            private static IFixture Customise()
-            {
-                var dbName = Guid.NewGuid().ToString();
-                var fixture = new Fixture();
-                fixture.Customize(new AutoMoqCustomization { ConfigureMembers = true });
-                return fixture;
-            }
-        }
-
-        public class InlineDomainAutoDataAttribute : InlineAutoDataAttribute
-        {
-            public InlineDomainAutoDataAttribute(params object[] values)
-                : base(Customise, values)
-            {
-            }
             private static IFixture Customise()
             {
                 var dbName = Guid.NewGuid().ToString();
@@ -338,8 +412,22 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             });
 
         }
-
-
+        
+        public class InlineDomainAutoDataAttribute : InlineAutoDataAttribute
+        {
+            public InlineDomainAutoDataAttribute(params object[] values)
+                : base(Customise, values)
+            {
+            }
+            private static IFixture Customise()
+            {
+                var dbName = Guid.NewGuid().ToString();
+                var fixture = new Fixture();
+                fixture.Customize(new AutoMoqCustomization { ConfigureMembers = true });
+                return fixture;
+            }
+        }
+        
     }
 
 

@@ -47,10 +47,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             foreach (var learnerUln in learnerUlns)
             {
                 var learnerDataLocks = dataLockEvents.Where(x => x.Learner.Uln == learnerUln).ToList();
-                var leanerPriceEpisodes =  currentPriceEpisodes.Where(x => x.Uln == learnerUln);
+                var leanerPriceEpisodes = currentPriceEpisodes.Where(x => x.Uln == learnerUln).ToList();
 
                 var changes = CalculatePriceEpisodeStatus(learnerDataLocks, leanerPriceEpisodes);
-                var priceEpisodeStatusChanges = await CreateStatusChangedEvents(learnerDataLocks, changes);
+                var previousPriceEpisodesStatus = GetPreviousPriceEpisodeStatus(leanerPriceEpisodes);
+                var priceEpisodeStatusChanges = await CreateStatusChangedEvents(learnerDataLocks, changes, previousPriceEpisodesStatus);
                 var learnerPriceEpisodeReplacements = CreateLearnerCurrentPriceEpisodesReplacement(jobId, ukprn, learnerUln, priceEpisodeStatusChanges);
                 priceEpisodeReplacements.AddRange(learnerPriceEpisodeReplacements);
 
@@ -73,7 +74,19 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             });
             return dataLocks;
         }
-        
+
+        private List<PriceEpisodeStatusChange> GetPreviousPriceEpisodeStatus(IEnumerable<CurrentPriceEpisode> currentPriceEpisodes)
+        {
+            var priceEpisodeStatus = currentPriceEpisodes.SelectMany(x =>
+            {
+                var type = Type.GetType(x.MessageType);
+                return (List<PriceEpisodeStatusChange>)JsonConvert.DeserializeObject(x.Message, type);
+            }).ToList();
+            
+            return priceEpisodeStatus;
+        }
+
+
         private static List<(string identifier, PriceEpisodeStatus status)> CalculatePriceEpisodeStatus(
             IEnumerable<DataLockEvent> dataLocks, IEnumerable<CurrentPriceEpisode> currentPriceEpisodes)
         {
@@ -83,9 +96,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         }
 
         private async Task<List<PriceEpisodeStatusChange>> CreateStatusChangedEvents(
-            IEnumerable<DataLockEvent> dataLocks, List<(string identifier, PriceEpisodeStatus status)> changes)
+            IEnumerable<DataLockEvent> dataLocks,
+            List<(string identifier, PriceEpisodeStatus status)> changes,
+            List<PriceEpisodeStatusChange> previousPriceEpisodeStatusChanges )
         {
-            return  await statusChangeBuilder.Build(dataLocks.ToList(), changes);
+            return  await statusChangeBuilder.Build(dataLocks.ToList(), changes, previousPriceEpisodeStatusChanges);
         }
 
 
