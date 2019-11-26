@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
                 throw new ArgumentException($"Ukprn cannot be 0. Job Id: {message.JobId}");
 
             var priceEpisodeChangesEvents = await episodesReceivedService
-                .JobSucceeded(message.JobId, message.Ukprn)
+                .GetPriceEpisodeChanges(message.JobId, message.Ukprn)
                 .ConfigureAwait(false);
 
             var tasks = priceEpisodeChangesEvents.Select(context.Publish);

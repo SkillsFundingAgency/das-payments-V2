@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 {
     public interface IPriceEpisodesReceivedService
     {
-        Task<List<PriceEpisodeStatusChange>> JobSucceeded(long jobId, long ukprn);
+        Task<List<PriceEpisodeStatusChange>> GetPriceEpisodeChanges(long jobId, long ukprn);
     }
 
     public class PriceEpisodesReceivedService: IPriceEpisodesReceivedService
@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             this.statusChangeBuilder = statusChangeBuilder;
         }
 
-        public async Task<List<PriceEpisodeStatusChange>> JobSucceeded(long jobId, long ukprn)
+        public async Task<List<PriceEpisodeStatusChange>> GetPriceEpisodeChanges(long jobId, long ukprn)
         {
             var priceEpisodeReplacements = new List<CurrentPriceEpisode>();
             var allPriceEpisodeStatusChanges = new List<PriceEpisodeStatusChange>();
