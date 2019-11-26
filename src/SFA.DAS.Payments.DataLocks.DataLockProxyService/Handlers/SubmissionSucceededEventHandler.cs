@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
 
             logger.LogInfo($"Processing {messageType} event. Ukprn: {message.Ukprn}");
 
-            ((ESFA.DC.Logging.ExecutionContext) executionContext).JobId = message.JobId.ToString();
+            ((ESFA.DC.Logging.ExecutionContext)executionContext).JobId = message.JobId.ToString();
 
             if (message.Ukprn == 0)
                 throw new ArgumentException($"Ukprn cannot be 0. Job Id: {message.JobId}");
@@ -39,13 +39,10 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
                 .JobSucceeded(message.JobId, message.Ukprn)
                 .ConfigureAwait(false);
 
-            var tasks = priceEpisodeChangesEvents
-                .Select(x => context.Publish(priceEpisodeChangesEvents));
-
+            var tasks = priceEpisodeChangesEvents.Select(context.Publish);
             await Task.WhenAll(tasks).ConfigureAwait(false);
 
-            logger.LogInfo(
-                $"Successfully processed {messageType} for Job: {message.JobId}, UKPRN: {message.Ukprn}.");
+            logger.LogInfo($"Successfully processed {messageType} for Job: {message.JobId}, UKPRN: {message.Ukprn}.");
 
         }
     }
