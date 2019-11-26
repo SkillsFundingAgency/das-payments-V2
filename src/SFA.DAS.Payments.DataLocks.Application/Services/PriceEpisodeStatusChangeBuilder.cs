@@ -50,8 +50,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     .OfType<EarningFailedDataLockMatching>()
                     .SelectMany(x => x.OnProgrammeEarnings)
                     .SelectMany(x => x.Periods)
-                    .Where(p => p.PriceEpisodeIdentifier.Equals(priceEpisode.Identifier,
-                        StringComparison.InvariantCultureIgnoreCase))
+                    .Where(p => p.PriceEpisodeIdentifier.Equals(priceEpisode.Identifier, StringComparison.InvariantCultureIgnoreCase))
                     .SelectMany(p => p.DataLockFailures)
                     .ToList();
 
@@ -87,15 +86,14 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     var apprenticeshipEarnings = priceEpisodeEarnings
                         .Where(o => o.Periods.Any(p =>
                             (p.ApprenticeshipId.HasValue && p.ApprenticeshipId == apprenticeship.Id) ||
-                            (p.DataLockFailures.Any(d =>
-                                d.ApprenticeshipId.HasValue && d.ApprenticeshipId == apprenticeship.Id))
+                            (p.DataLockFailures != null && p.DataLockFailures.Any(d => d.ApprenticeshipId.HasValue && d.ApprenticeshipId == apprenticeship.Id))
                         ))
                         .ToList();
 
                     var apprenticeshipEarningPeriods = priceEpisodeEarnings
                         .SelectMany(o => o.Periods)
                         .Where(p => (p.ApprenticeshipId.HasValue && p.ApprenticeshipId == apprenticeship.Id) ||
-                            (p.DataLockFailures.Any(d => d.ApprenticeshipId.HasValue && d.ApprenticeshipId == apprenticeship.Id)))
+                            (p.DataLockFailures != null && p.DataLockFailures.Any(d => d.ApprenticeshipId.HasValue && d.ApprenticeshipId == apprenticeship.Id)))
                         .ToList();
 
                     var apprenticeshipErrors = priceEpisodeErrors
@@ -213,8 +211,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 .ToList();
         }
 
-        private static LegacyDataLockEventError[] BuildCommitmentErrors(Guid eventId,
-            List<DataLockFailure> dataLockFailures)
+        private static LegacyDataLockEventError[] BuildCommitmentErrors(Guid eventId, List<DataLockFailure> dataLockFailures)
         {
             return dataLockFailures
                 .Distinct()
@@ -274,7 +271,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 foreach (var commitmentVersion in commitmentVersions)
                 {
                     var transactionTypeHasErrors = allTransactionTypeFlagGroup
-                        .Any(x => x.Periods.Any(p => p.DataLockFailures.Any()));
+                        .Any(x => x.Periods.Any(p => p.DataLockFailures != null &&  p.DataLockFailures.Any()));
 
                     eventPeriods.Add(new LegacyDataLockEventPeriod
                     {
