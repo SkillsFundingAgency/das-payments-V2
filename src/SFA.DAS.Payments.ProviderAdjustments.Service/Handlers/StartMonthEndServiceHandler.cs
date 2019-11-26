@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
 using NServiceBus;
+using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 using SFA.DAS.Payments.ProviderAdjustments.Application;
 
 namespace SFA.DAS.Payments.ProviderAdjustments.Service.Handlers
 {
-    class StartMonthEndServiceHandler : IHandleMessages<StartMonthEndServiceHandler>
+    class StartMonthEndServiceHandler : IHandleMessages<PeriodEndStartedEvent>
     {
         private readonly IProviderAdjustmentsProcessor processor;
 
@@ -13,9 +14,9 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Service.Handlers
             this.processor = processor;
         }
 
-        public async Task Handle(StartMonthEndServiceHandler message, IMessageHandlerContext context)
+        public async Task Handle(PeriodEndStartedEvent message, IMessageHandlerContext context)
         {
-            await processor.ProcessEasAtMonthEnd(1, 1);
+            await processor.ProcessEasAtMonthEnd(message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period);
         }
     }
 }

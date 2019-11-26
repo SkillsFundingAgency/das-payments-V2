@@ -14,8 +14,8 @@
     <Parameter Name="LogLevel" DefaultValue="Information" />
     <Parameter Name="DasNServiceBusLicenseKey" DefaultValue="" />
     <Parameter Name="EasApiEndpoint" DefaultValue="" />
-    <Parameter Name="EasApiUsername" DefaultValue=""/>
-    <Parameter Name="EasApiPassword" DefaultValue=""/>
+    <Parameter Name="EasApiUsername" DefaultValue="" />
+    <Parameter Name="EasApiPassword" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -38,9 +38,9 @@
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
-            <Parameter Name="EasApiEndpoint" Value="[EasApiEndpoint]"/>
-            <Parameter Name="EasApiUsername" Value="[EasApiUsername]"/>
-            <Parameter Name="EasApiPassword" Value="[EasApiPassword]"/>
+            <Parameter Name="EasApiEndpoint" Value="[EasApiEndpoint]" />
+            <Parameter Name="EasApiUsername" Value="[EasApiUsername]" />
+            <Parameter Name="EasApiPassword" Value="[EasApiPassword]" />
           </Section>
         </Settings>
       </ConfigOverride>

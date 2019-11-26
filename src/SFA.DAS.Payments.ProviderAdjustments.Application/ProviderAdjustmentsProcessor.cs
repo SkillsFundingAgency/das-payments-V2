@@ -31,8 +31,8 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application
         {
             logger.LogInfo("Started the Provider Adjustments Processor.");
 
-            var historicPayments = await repository.GetPreviousProviderAdjustments().ConfigureAwait(false);
-            var currentPayments = await repository.GetCurrentProviderAdjustments().ConfigureAwait(false);
+            var historicPayments = await repository.GetPreviousProviderAdjustments(academicYear).ConfigureAwait(false);
+            var currentPayments = await repository.GetCurrentProviderAdjustments(academicYear).ConfigureAwait(false);
 
             var payments = calculator.CalculateDelta(historicPayments, currentPayments);
 
