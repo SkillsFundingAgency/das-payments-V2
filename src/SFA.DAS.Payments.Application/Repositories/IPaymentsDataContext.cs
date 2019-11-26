@@ -16,7 +16,6 @@ namespace SFA.DAS.Payments.Application.Repositories
         DbSet<ApprenticeshipPriceEpisodeModel> ApprenticeshipPriceEpisode { get; }
         DbSet<SubmittedLearnerAimModel> SubmittedLearnerAim { get; }
         DbSet<ApprenticeshipDuplicateModel> ApprenticeshipDuplicate { get; }
-        DbSet<DataLockFailureModel> DataLockFailure { get; }
         DbSet<EmployerProviderPriorityModel> EmployerProviderPriority { get; }
         DbSet<ApprenticeshipPauseModel> ApprenticeshipPause { get; }
         DbSet<EarningEventModel> EarningEvent { get; }

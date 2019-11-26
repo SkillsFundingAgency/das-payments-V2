@@ -15,7 +15,6 @@ namespace SFA.DAS.Payments.Application.Repositories
         public virtual DbSet<ApprenticeshipPriceEpisodeModel> ApprenticeshipPriceEpisode { get; protected set; }
         public virtual DbSet<SubmittedLearnerAimModel> SubmittedLearnerAim { get; protected set; }
         public virtual DbSet<ApprenticeshipDuplicateModel> ApprenticeshipDuplicate { get; protected set; }
-        public virtual DbSet<DataLockFailureModel> DataLockFailure { get; protected set; }
         public virtual DbSet<EmployerProviderPriorityModel> EmployerProviderPriority { get; protected set; }
         public virtual DbSet<ApprenticeshipPauseModel> ApprenticeshipPause { get; protected set; }
         public virtual DbSet<EarningEventModel> EarningEvent { get; protected set; }
@@ -45,7 +44,6 @@ namespace SFA.DAS.Payments.Application.Repositories
             modelBuilder.ApplyConfiguration(new LevyAccountModelConfiguration());
             modelBuilder.ApplyConfiguration(new SubmittedLearnerAimModelConfiguration());
             modelBuilder.ApplyConfiguration(new ApprenticeshipDuplicateModelConfiguration());
-            modelBuilder.ApplyConfiguration(new DataLockFailureModelConfiguration());
             modelBuilder.ApplyConfiguration(new EmployerProviderPriorityModelConfiguration());
             modelBuilder.ApplyConfiguration(new ApprenticeshipPauseModelConfiguration());
             modelBuilder.ApplyConfiguration(new EarningEventModelConfiguration());

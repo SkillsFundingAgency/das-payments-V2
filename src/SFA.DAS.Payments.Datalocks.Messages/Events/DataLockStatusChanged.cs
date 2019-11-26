@@ -18,21 +18,4 @@ namespace SFA.DAS.Payments.DataLocks.Messages.Events
         public LegacyDataLockEventPeriod[] Periods { get; set; }
     }
 
-    [KnownType("GetInheritors")]
-    [Obsolete]
-    public /*abstract*/ class DataLockStatusChanged : PaymentsEvent
-    {
-        public Dictionary<TransactionType, List<EarningPeriod>> TransactionTypesAndPeriods { get; set; }
-
-        public List<PriceEpisode> PriceEpisodes { get; set; } // TODO remove
-        public List<PriceEpisodeStatusChange> PriceEpisodeStatusChanges { get; set; }
-
-        private static Type[] inheritors;
-        private static Type[] GetInheritors()
-        {
-            return inheritors ?? (inheritors = typeof(DataLockStatusChanged).Assembly.GetTypes()
-                       .Where(x => x.IsSubclassOf(typeof(DataLockStatusChanged)))
-                       .ToArray());
-        }
-    }
 }
