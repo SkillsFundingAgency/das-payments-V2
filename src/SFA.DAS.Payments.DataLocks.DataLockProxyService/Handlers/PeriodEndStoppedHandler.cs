@@ -7,6 +7,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.PeriodEnd.Messages.Events;
+using SFA.DAS.Payments.ServiceFabric.Core.Constants;
 
 namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
 {
@@ -19,7 +20,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             var setting = configuration.GetSetting("ApprovalsService_InstanceCount");
-            if (!string.IsNullOrWhiteSpace(setting) && int.TryParse(setting, out var result))
+            if (int.TryParse(setting, out var result))
             {
                 instanceCount = result;
             }
@@ -29,14 +30,12 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
         {
             logger.LogInfo($"Received period end started event. Details: {message.ToJson()}");
 
-            var serviceName = "fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/SFA.DAS.Payments.DataLocks.ApprovalsService";
-            
             var fabricClient = new FabricClient();
             var serviceDescription = new StatelessServiceDescription
             {
                 ApplicationName = new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric"),
                 PartitionSchemeDescription = new SingletonPartitionSchemeDescription(),
-                ServiceName = new Uri(serviceName),
+                ServiceName = new Uri(ServiceNames.DatalockApprovalsService),
                 ServiceTypeName = "SFA.DAS.Payments.DataLocks.ApprovalsServiceType",
                 InstanceCount = instanceCount,
             };

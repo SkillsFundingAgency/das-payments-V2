@@ -17,12 +17,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests
                 x.ServiceName.AbsoluteUri.Equals(
                     "fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/SFA.DAS.Payments.DataLocks.ApprovalsService"));
 
-            if (service?.AggregatedHealthState == HealthState.Ok)
-            {
-                return true;
-            }
-
-            return false;
+            return service?.AggregatedHealthState == HealthState.Ok;
         }
     }
 }

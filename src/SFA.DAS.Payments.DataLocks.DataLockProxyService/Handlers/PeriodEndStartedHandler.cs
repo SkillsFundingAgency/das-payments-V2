@@ -6,6 +6,7 @@ using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.PeriodEnd.Messages.Events;
+using SFA.DAS.Payments.ServiceFabric.Core.Constants;
 
 namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
 {
@@ -22,10 +23,8 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
         {
             logger.LogInfo($"Received period end started event. Details: {message.ToJson()}");
 
-            var serviceName = "fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/SFA.DAS.Payments.DataLocks.ApprovalsService";
-            
             var fabricClient = new FabricClient();
-            var serviceDescription = new DeleteServiceDescription(new Uri(serviceName)) 
+            var serviceDescription = new DeleteServiceDescription(new Uri(ServiceNames.DatalockApprovalsService)) 
             {
                 ForceDelete = true,
             };
