@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using AutoMapper;
@@ -220,6 +220,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
 
         }
 
+      
         [Test]
         public void TestEarningPeriodToCalculatedRequiredIncentiveAmountMapping()
         {
