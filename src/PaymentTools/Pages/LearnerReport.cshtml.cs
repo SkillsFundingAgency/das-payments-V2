@@ -52,7 +52,9 @@ namespace PaymentTools.Pages
                 .ToList();
 
             var paidCommitments = context.Payment
-                .Where(x => x.LearnerUln == LearnerUln).ToList()
+                .Where(x => x.LearnerUln == LearnerUln)
+                //.Where(x => x.PriceEpisodeIdentifier)
+                .ToList()
                 ;
 
             var lockedCommitments = context.DataLockFailure
@@ -65,7 +67,7 @@ namespace PaymentTools.Pages
             CollectionPeriods = earnings.Select(periods => new CollectionPeriod
             {
                 PeriodName = $"R0{periods.Key}",
-                PriceEpisodes = periods.SelectMany(x => x.PriceEpisodes, (period, earning) => MapPriceEpisode(period, earning, paidCommitments, lockedCommitments, ape)).ToList(),
+                PriceEpisodes = periods.SelectMany(x => x.PriceEpisodes, (period, earning) => MapPriceEpisode(period, earning, paidCommitments, lockedCommitments, apprenticeships)).ToList(),
             }).ToList();
         }
 
@@ -74,23 +76,32 @@ namespace PaymentTools.Pages
             EarningEventPriceEpisodeModel episode,
             List<PaymentModel> paidCommitments,
             List<DataLockFailureModel> lockedCommitments,
-            List<ApprenticeshipPriceEpisodeModel> commitments)
+            List<ApprenticeshipModel> commitments)
         {
             return new PriceEpisode(
                 episode.PriceEpisodeIdentifier,
-                $"ACT{earning.ContractType}",
+                earning.ContractType.ToString(),
                 episode.AgreedPrice,
-                commitments.Select(x => new Commitment
+                commitments.SelectMany(x => x.ApprenticeshipPriceEpisodes, (c, x) => new Commitment
                 {
                     Id = x.Id,
                     Start = x.StartDate,
                     End = x.EndDate,
+                    Employer = c.AccountId,
                     Provider = earning.Ukprn,
+                    Course = FrameworkString(c),
+                    Status = c.Status,
+                    Cost = x.Cost,
                     Payments = paidCommitments
-                        .Where(y => (y.ApprenticeshipPriceEpisodeId?.Equals(x.Id)) ?? false)
+                        .Where(y => y.PriceEpisodeIdentifier == episode.PriceEpisodeIdentifier)
+                        .Where(y => y.CollectionPeriod.Period <= earning.CollectionPeriod)
                         .Select(y => new Payment
                         {
+                            Id = y.Id,
                             Amount = y.Amount,
+                            PriceEpisodeIdentifier = y.PriceEpisodeIdentifier,
+                            CollectionPeriod = y.CollectionPeriod,
+                            TransactionType = y.TransactionType.ToString(),
                         }).ToList(),
                     DataLocked = lockedCommitments
                         .Where(y => y.CollectionPeriod == earning.CollectionPeriod)
@@ -99,6 +110,17 @@ namespace PaymentTools.Pages
                             Amount = y.Amount,
                         }).ToList(),
                 }));
+        }
+
+        private static string FrameworkString(ApprenticeshipModel c)
+        {
+            return $"{StandardString(c)}-{c.AgreedOnDate:dd-MM-yyyy}";
+            
+        }
+
+        private static string StandardString(ApprenticeshipModel c)
+        {
+            return c.ProgrammeType == 0 ? $"25-{c.StandardCode}-" : $"{c.FrameworkCode}-{c.ProgrammeType}-{c.PathwayCode}";
         }
     }
 }
@@ -143,6 +165,11 @@ namespace PaymentTools.Model
         public List<Payment> Payments { get; set; } = new List<Payment>();
 
         public decimal TotalPayments => Items.Where(x => x is Payment).Sum(x => (x as Payment).Amount);
+
+        public long Employer { get; internal set; }
+        public decimal Cost { get; internal set; }
+        public ApprenticeshipStatus Status { get; internal set; }
+        public string Course { get; internal set; }
     }
 
     public interface CommitmentItem
@@ -169,9 +196,12 @@ namespace PaymentTools.Model
 
         public decimal Amount { get; set; }
 
-        public List<TransactionType> TransactionTypes { get; set; }
+        public string TransactionType { get; set; }
 
         public string Type => "Payment";
+
+        public string PriceEpisodeIdentifier { get; internal set; }
+        public SFA.DAS.Payments.Model.Core.CollectionPeriod CollectionPeriod { get; internal set; }
     }
 
     public class TransactionType
