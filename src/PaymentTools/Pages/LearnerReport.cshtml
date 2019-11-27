@@ -1,0 +1,58 @@
+﻿@page "{learnerUln:long?}"
+@model PaymentTools.Pages.LearnerReportModel
+@{
+    ViewData["Title"] = "LearnerReport";
+}
+
+<h1>Learner Report</h1>
+
+<form method="get" id="form">
+    Unique Learner Number:
+    <input asp-for="LearnerUln" />
+    <input type="submit"
+           onclick="window.location = '/LearnerReport/' + document.getElementById('LearnerUln').value; return false;" />
+</form>
+
+<hr />
+
+<ul class="collection-period unbalanced">
+    @foreach (var period in Model.CollectionPeriods)
+    {
+        <li>
+            @period.PeriodName - Paid @($"{@period.TotalPayments:C}") / Locked @($"{@period.TotalLocked:C}")
+            <ul>
+                @foreach (var episode in period.PriceEpisodes)
+                {
+                    <li>
+                        Price Episode @episode.EpisodeName ◈ Price @($"{episode.Price:C}") ◈ @episode.Act
+
+                        <ul>
+                            @foreach (var commitment in episode.Commitments)
+                            {
+                                <li>
+                                    Commitment @commitment.Id [@commitment.Description] - 🏦 EmpId - 👩🏼‍🏫 @commitment.Provider
+                                    @if (commitment.Items.Any())
+                                    {
+                                        <ul>
+                                            @foreach (var payment in commitment.Payments)
+                                            {
+                                                <li>
+                                                    Payments
+                                                    @($"{@payment.Amount:C}")
+                                                </li>
+                                            }
+                                            @foreach (var locked in commitment.DataLocked)
+                                            {
+                                                <li>Data Locked - @locked.Amount</li>
+                                            }
+                                        </ul>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                }
+            </ul>
+        </li>
+    }
+</ul>
