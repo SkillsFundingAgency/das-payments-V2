@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests.Month
     public class StopPeriodEnd
     {
         [Test]
-        public async Task SendPeriodEndStoppedEvent()
+        public async Task SendPeriodEndStoppedEvent_ApprovalsServiceIsReinstalled()
         {
             var messageSession = await MessageSessionBuilder.BuildAsync();
 
@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests.Month
                     return;
                 }
 
-                await Task.Delay(500).ConfigureAwait(false);
+                await Task.Delay(50).ConfigureAwait(false);
             }
 
             Assert.Fail("Approvals service is not running 15s after sending message");
