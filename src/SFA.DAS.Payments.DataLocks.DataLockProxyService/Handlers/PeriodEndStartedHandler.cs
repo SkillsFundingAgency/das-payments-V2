@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
     public class PeriodEndStartedHandler: IHandleMessages<PeriodEndStartedEvent>
     {
         private readonly IPaymentLogger logger;
-
+        
         public PeriodEndStartedHandler(IPaymentLogger logger)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
