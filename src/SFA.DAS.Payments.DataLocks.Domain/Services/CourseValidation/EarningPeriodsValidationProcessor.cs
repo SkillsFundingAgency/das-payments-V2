@@ -81,7 +81,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                     {
                         EarningPeriod = period,
                         Apprenticeship = apprenticeship,
-                        PriceEpisode = IsFunctionalSkillTransactionType(transactionType) 
+                        PriceEpisode = IsOnProgrammeIncentiveTransactionType(transactionType) 
                             ? null
                             : priceEpisodes.SingleOrDefault(o =>
                                   o.Identifier.Equals(period.PriceEpisodeIdentifier, StringComparison.OrdinalIgnoreCase))
@@ -164,12 +164,12 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             return apprenticeshipsToUseThisPeriod;
         }
 
-        private bool IsFunctionalSkillTransactionType(TransactionType transactionType)
+        private bool IsOnProgrammeIncentiveTransactionType(TransactionType transactionType)
         {
-            var functionalSkillTransactionTypes = new List<TransactionType>
+            var incentiveTransactionTypes = new List<TransactionType>
                 {TransactionType.OnProgrammeMathsAndEnglish, TransactionType.BalancingMathsAndEnglish, TransactionType.LearningSupport};
 
-            return functionalSkillTransactionTypes.Contains(transactionType);
+            return incentiveTransactionTypes.Contains(transactionType);
         }
 
         private EarningPeriod CreateEarningPeriod(EarningPeriod period)
