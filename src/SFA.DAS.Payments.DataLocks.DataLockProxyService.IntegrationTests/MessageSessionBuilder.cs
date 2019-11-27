@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Autofac;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
 using NServiceBus;
 using SFA.DAS.Payments.Messages.Core;
 
@@ -10,11 +12,16 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests
     {
         public static async Task<IMessageSession> BuildAsync()
         {
-            var connectionString = "";
+            var conf = new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                    .AddJsonFile("appsettings.development.json", optional: false, reloadOnChange: true)
+                .Build();
+
+            var connectionString = conf["ServiceBusConnectionString"];
             if (string.IsNullOrWhiteSpace(connectionString))
             {
-                throw new Exception("Please set the connection string in 'MessageSessionBuilder.cs' - don't forget" +
-                                    "to remove it when you're done!");
+                throw new Exception("Please include an appsettings.development.json file " +
+                                    "and include the connection string");
             }
 
             var builder = new ContainerBuilder();
