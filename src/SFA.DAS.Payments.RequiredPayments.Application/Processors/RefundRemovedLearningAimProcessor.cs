@@ -65,6 +65,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                         throw new InvalidOperationException($"Cannot find historic payment with price episode identifier: {refund.payment.PriceEpisodeIdentifier} for period {refund.deliveryPeriod}.");
                     
                     var requiredPaymentEvent = requiredPaymentEventFactory.Create(refund.payment.EarningType, transactionType);
+                    if (requiredPaymentEvent == null)
+                    {
+                        // This shouldn't now happen as the transaction type in the history should match the one in the cache
+                        logger.LogWarning(
+                            $"Required payment event is null for EarningType: {refund.payment.EarningType} with TransactionType: {transactionType}");
+                        return null;
+                    }
 
                     mapper.Map(refund.payment, requiredPaymentEvent);
                     mapper.Map(historicPayment, requiredPaymentEvent);
@@ -75,7 +82,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
                     logger.LogDebug("Finished mapping");
                     return requiredPaymentEvent;
-                }).ToList();
+                })
+                .Where(x => x != null)
+                .ToList();
         }
     }
 }
