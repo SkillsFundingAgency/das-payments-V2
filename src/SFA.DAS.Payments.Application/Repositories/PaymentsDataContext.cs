@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -34,7 +34,15 @@ namespace SFA.DAS.Payments.Application.Repositories
             : base(options)
         { }
 
+        protected PaymentsDataContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
+            => OnModelCreating(modelBuilder, enforceRequired: true);
+
+        protected void OnModelCreating(ModelBuilder modelBuilder, bool enforceRequired)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.HasDefaultSchema("Payments2");
@@ -46,7 +54,7 @@ namespace SFA.DAS.Payments.Application.Repositories
             modelBuilder.ApplyConfiguration(new ApprenticeshipDuplicateModelConfiguration());
             modelBuilder.ApplyConfiguration(new EmployerProviderPriorityModelConfiguration());
             modelBuilder.ApplyConfiguration(new ApprenticeshipPauseModelConfiguration());
-            modelBuilder.ApplyConfiguration(new EarningEventModelConfiguration());
+            modelBuilder.ApplyConfiguration(new EarningEventModelConfiguration(enforceRequired));
             modelBuilder.ApplyConfiguration(new EarningEventPeriodModelConfiguration());
             modelBuilder.ApplyConfiguration(new EarningEventPriceEpisodeModelConfiguration());
             modelBuilder.ApplyConfiguration(new CurrentPriceEpisodeConfiguration());

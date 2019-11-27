@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using PaymentTools.Model;
-using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -12,6 +11,24 @@ using System.Linq;
 
 namespace PaymentTools.Pages
 {
+    public class ConfigurablePaymentsDataContext : PaymentsDataContext
+    {
+        public ConfigurablePaymentsDataContext(DbContextOptions<ConfigurablePaymentsDataContext> options) 
+            : base(options)
+        {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            // do not call base
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder, enforceRequired: false);
+        }
+    }
+
     public class LearnerReportModel : PageModel
     {
         private readonly IPaymentsDataContext context;

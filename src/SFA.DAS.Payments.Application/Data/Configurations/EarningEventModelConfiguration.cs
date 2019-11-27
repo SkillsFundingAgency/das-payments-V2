@@ -7,6 +7,13 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
 {
     public class EarningEventModelConfiguration : IEntityTypeConfiguration<EarningEventModel>
     {
+        private readonly bool enforceRequired;
+
+        public EarningEventModelConfiguration(bool enforceRequired = false)
+        {
+            this.enforceRequired = enforceRequired;
+        }
+
         public void Configure(EntityTypeBuilder<EarningEventModel> builder)
         {
             builder.ToTable("EarningEvent", "Payments2");
@@ -24,7 +31,8 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.LearningAimStandardCode).HasColumnName(@"LearningAimStandardCode").IsRequired();
             builder.Property(x => x.LearningAimFrameworkCode).HasColumnName(@"LearningAimFrameworkCode").IsRequired();
             builder.Property(x => x.LearningAimPathwayCode).HasColumnName(@"LearningAimPathwayCode").IsRequired();
-            builder.Property(x => x.LearningAimFundingLineType).HasColumnName(@"LearningAimFundingLineType").IsRequired();
+            var propertyBuilder = builder.Property(x => x.LearningAimFundingLineType).HasColumnName(@"LearningAimFundingLineType"); 
+            if (enforceRequired) propertyBuilder.IsRequired();
             builder.Property(x => x.AgreementId).HasColumnName(@"AgreementId");
             builder.Property(x => x.IlrSubmissionDateTime).HasColumnName(@"IlrSubmissionDateTime").IsRequired();
             builder.Property(x => x.JobId).HasColumnName(@"JobId").IsRequired();
