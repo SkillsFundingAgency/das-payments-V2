@@ -228,8 +228,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         {
             switch (dLockCode)
             {
-                case DataLockErrorCode.DLOCK_01:
-                    return "No matching record found in an employer digital account for the UKPRN";
                 case DataLockErrorCode.DLOCK_03:
                     return "No matching record found in the employer digital account for the standard code";
                 case DataLockErrorCode.DLOCK_04:

@@ -84,7 +84,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<ApprenticeshipResumedService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<PriceEpisodeStatusChangeBuilder>().InstancePerLifetimeScope();
             builder.RegisterType<PriceEpisodesReceivedService>().AsImplementedInterfaces().InstancePerLifetimeScope();
-
+            builder.RegisterType<ManageReceivedDataLockEvent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            
         }
     }
 }
