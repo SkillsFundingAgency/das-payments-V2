@@ -22,16 +22,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         {
             bool IsValidPaymentType<T>() where T : struct, IConvertible
             {
-                if (!Enum.IsDefined(typeof(T), transactionType))
-                {
-                    logger.LogError(
-                        $"Invalid EarningType and TransactionType combination: EarningType: {earningType:G}, TransactionType: {transactionType}");
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
+                return Enum.IsDefined(typeof(T), transactionType);
             }
 
             PeriodisedRequiredPaymentEvent paymentEvent = null;
@@ -72,6 +63,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 default:
                     throw new InvalidOperationException(
                         $"Unknown earning type found: {earningType:G}. Cannot create the PeriodisedRequiredPaymentEvent.");
+            }
+
+            if (paymentEvent == null)
+            {
+                logger.LogError(
+                    $"Invalid EarningType and TransactionType combination: EarningType: {earningType:G}, TransactionType: {transactionType}");
             }
 
             return paymentEvent;
