@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
