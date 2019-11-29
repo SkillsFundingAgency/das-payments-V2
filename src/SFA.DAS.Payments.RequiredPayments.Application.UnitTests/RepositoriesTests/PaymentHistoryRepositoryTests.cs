@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.RepositoriesTe
 {
     public class TestPaymentsContext : PaymentsDataContext
     {
-        public TestPaymentsContext(DbContextOptions options) : base(options)
+        public TestPaymentsContext(DbContextOptions<PaymentsDataContext> options) : base(options)
         {}
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.RepositoriesTe
             var contextBuilder = new DbContextOptionsBuilder<PaymentsDataContext>()
                 .UseInMemoryDatabase(databaseName: dbName)
                 .Options;
-            context = new TestPaymentsContext(contextBuilder);
+            context = new PaymentsDataContext(contextBuilder);
             sut = new PaymentHistoryRepository(context);
         }
 
