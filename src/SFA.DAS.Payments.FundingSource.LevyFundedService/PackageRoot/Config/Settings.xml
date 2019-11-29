@@ -18,6 +18,7 @@
     <Parameter Name="ImmediateMessageRetries" Value="" />
     <Parameter Name="DelayedMessageRetries" Value="" />
     <Parameter Name="DelayedMessageRetryDelay" Value="" />
+    <Parameter Name="NServiceBusPrefetchCount" Value="" />
   </Section>
   <Section Name="LevyFundedServiceActorServiceReplicatorConfig">
     <Parameter Name="ReplicatorEndpoint" Value="LevyFundedServiceActorServiceReplicatorEndpoint" />

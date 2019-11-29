@@ -22,6 +22,7 @@
     <Parameter Name="BatchSize" Value="500"/>
     <Parameter Name="BatchFailureTimeoutInSeconds" Value="60"/>
     <Parameter Name="DasNServiceBusLicenseKey" Value=""/>
+    <Parameter Name="NServiceBusPrefetchCount" Value=""/>
 
   </Section>
 </Settings>

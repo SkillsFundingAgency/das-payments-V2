@@ -29,7 +29,7 @@
     <Parameter Name="FailedMessagesQueue" Value="sfa-das-payments-levyaccountbalance-errors" />
     <Parameter Name="LevyAccountRefreshIntervalInHours" Value="23" />
     <Parameter Name="DasNServiceBusLicenseKey" Value=""/>
-
+    <Parameter Name="NServiceBusPrefetchCount" Value="" />
   </Section>
 
 </Settings>

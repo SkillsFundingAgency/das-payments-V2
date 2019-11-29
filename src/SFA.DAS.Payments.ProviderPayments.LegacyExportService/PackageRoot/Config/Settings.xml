@@ -26,5 +26,6 @@
     <Parameter Name="ProcessMessageSequentially" Value="" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="" />
     <Parameter Name="LegacyExportBatchSize" Value="10000" />
+    <Parameter Name="NServiceBusPrefetchCount" Value="" />
   </Section>
 </Settings>

@@ -34,5 +34,6 @@
     <Parameter Name="ImmediateMessageRetries" Value="__ImmediateMessageRetries__" />
     <Parameter Name="DelayedMessageRetries" Value="__DelayedMessageRetries__" />
     <Parameter Name="DelayedMessageRetryDelay" Value="__DelayedMessageRetryDelay__" />
+    <Parameter Name="NServiceBusPrefetchCount" Value="__NServiceBusPrefetchCount__" />
   </Parameters>
 </Application>

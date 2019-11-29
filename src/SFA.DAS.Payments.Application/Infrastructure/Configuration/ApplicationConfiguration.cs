@@ -14,5 +14,6 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Configuration
         public int ImmediateMessageRetries { get; set; }
         public int DelayedMessageRetries { get; set; }
         public TimeSpan DelayedMessageRetryDelay { get; set; }
+        public int? NServiceBusPrefetchCount { get; set; }
     }
 }

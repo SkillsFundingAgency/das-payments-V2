@@ -29,6 +29,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                         ImmediateMessageRetries = configHelper.GetSettingOrDefault("ImmediateMessageRetries", 1),
                         DelayedMessageRetries = configHelper.GetSettingOrDefault("DelayedMessageRetries", 3),
                         DelayedMessageRetryDelay = delayedRetryDelay,
+                        NServiceBusPrefetchCount = configHelper.GetSettingAsNullableInt("NServiceBusPrefetchCount")
                     };
 
                 })
