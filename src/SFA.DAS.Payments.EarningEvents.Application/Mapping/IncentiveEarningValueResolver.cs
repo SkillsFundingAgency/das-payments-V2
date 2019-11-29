@@ -101,7 +101,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         {
             return IncentiveTypes
                 .Select(type => CreateIncentiveEarning(source.PriceEpisodes, type))
-                .Where(earning => earning.Periods.Any(x => x.Amount != 0))
+                .Where(earning => earning.Periods.Any())
                 .ToList();
         }
     }

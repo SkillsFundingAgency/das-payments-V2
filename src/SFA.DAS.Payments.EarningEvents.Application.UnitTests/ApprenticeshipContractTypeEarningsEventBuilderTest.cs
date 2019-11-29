@@ -725,7 +725,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             events.Should().HaveCount(1);
             events.Single().OnProgrammeEarnings.Should().HaveCount(3);
             events.Single().OnProgrammeEarnings.Single(x => x.Type == OnProgrammeEarningType.Learning).Periods.Should().HaveCount(12);
-            events.Single().IncentiveEarnings.Should().HaveCount(1);
+            events.Single().IncentiveEarnings.Should().HaveCount(11);
             events.Single().IncentiveEarnings.Single(x => x.Type == IncentiveEarningType.LearningSupport).Periods.Should().HaveCount(12);
         }
 
