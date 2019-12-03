@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
     {
         public IJobServiceConfiguration Config { get; }
         protected IJobStorageService JobStorageService { get; }
-        private protected IPaymentLogger Logger { get; }
+        protected IPaymentLogger Logger { get; }
         protected ITelemetry Telemetry { get; }
         protected IJobStatusEventPublisher EventPublisher { get; }
 
