@@ -8,20 +8,20 @@ using SFA.DAS.Payments.DataLocks.Messages.Events;
 
 namespace SFA.DAS.Payments.DataLocks.DataLockEventService.Handlers
 {
-    public class DataLockStatusChangedEventHandler : IHandleMessages<DataLockStatusChanged>
+    public class PriceEpisodeStatusChangeEventHandler : IHandleMessages<PriceEpisodeStatusChange>
     {
         private readonly IPaymentLogger paymentLogger;
-        private readonly ICachingEventProcessor<DataLockStatusChanged> eventProcessor;
+        private readonly ICachingEventProcessor<PriceEpisodeStatusChange> eventProcessor;
 
-        public DataLockStatusChangedEventHandler(IPaymentLogger paymentLogger, ICachingEventProcessor<DataLockStatusChanged> eventProcessor)
+        public PriceEpisodeStatusChangeEventHandler(IPaymentLogger paymentLogger, ICachingEventProcessor<PriceEpisodeStatusChange> eventProcessor)
         {
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
             this.eventProcessor = eventProcessor ?? throw new ArgumentNullException(nameof(eventProcessor));
         }
 
-        public Task Handle(DataLockStatusChanged message, IMessageHandlerContext context)
+        public Task Handle(PriceEpisodeStatusChange message, IMessageHandlerContext context)
         {
-            paymentLogger.LogDebug($"Processing {message.GetType().Name} event for UKPRN {message.Ukprn}");
+            paymentLogger.LogDebug($"Processing {message.GetType().Name} event for UKPRN {message.DataLock.UKPRN}");
 
             return eventProcessor.EnqueueEvent(message, CancellationToken.None);
         }

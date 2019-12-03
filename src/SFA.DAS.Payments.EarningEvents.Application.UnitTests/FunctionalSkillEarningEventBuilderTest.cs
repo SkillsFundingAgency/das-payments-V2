@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
@@ -344,7 +344,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                         new LearningDelivery
                         {
                             AimSeqNumber = 2,
-                            LearningDeliveryValues = new LearningDeliveryValues {LearnAimRef = "M&E"},
+                            LearningDeliveryValues = new LearningDeliveryValues
+                            {
+                                LearnAimRef = "M&E",
+                                LearnDelInitialFundLineType = "Non-Levy Contract"
+                            },
                             LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
                             {
                                 new LearningDeliveryPeriodisedValues
@@ -439,7 +443,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                         new LearningDelivery
                         {
                             AimSeqNumber = 1,
-                            LearningDeliveryValues = new LearningDeliveryValues {LearnAimRef = "English"},
+                            LearningDeliveryValues = new LearningDeliveryValues
+                            {
+                                LearnAimRef = "English", 
+                                LearnDelInitialFundLineType = "Non-Levy Contract"
+                            },
                             LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
                             {
                                 new LearningDeliveryPeriodisedValues
@@ -498,7 +506,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                         new LearningDelivery
                         {
                             AimSeqNumber = 2,
-                            LearningDeliveryValues = new LearningDeliveryValues {LearnAimRef = "Maths"},
+                            LearningDeliveryValues = new LearningDeliveryValues
+                            {
+                                LearnAimRef = "Maths",
+                                LearnDelInitialFundLineType = "Non-Levy Contract"
+                            },
                             LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
                             {
                                 new LearningDeliveryPeriodisedValues
@@ -592,7 +604,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                             AimSeqNumber = 1,
                             LearningDeliveryValues = new LearningDeliveryValues
                             {
-                                LearnAimRef = "ZPROG001"
+                                LearnAimRef = "ZPROG001",
+                                LearnDelInitialFundLineType = "Levy Contract"
                             },
                             LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
                             {
@@ -656,7 +669,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                             AimSeqNumber = 2,
                             LearningDeliveryValues = new LearningDeliveryValues
                             {
-                                LearnAimRef = "M&E"
+                                LearnAimRef = "M&E",
+                                LearnDelInitialFundLineType = "Levy Contract"
                             },
                             LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
                             {

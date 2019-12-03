@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
@@ -29,7 +30,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                     continue;
                 }
 
-                var group = priceEpisodes.GroupBy(p => p.PriceEpisodeValues.PriceEpisodeContractType);
+                var group = priceEpisodes.Where(pe => IsCurrentAcademicYear(pe.PriceEpisodeValues, learnerSubmission.CollectionYear))
+                    .GroupBy(p => p.PriceEpisodeValues.PriceEpisodeContractType);
 
                 foreach (var episodes in group)
                 {
@@ -43,6 +45,18 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             }
 
             return results;
+        }
+
+        private static bool IsCurrentAcademicYear(PriceEpisodeValues priceEpisodeValues, short currentAcademicYear)
+        {
+            var calendarYear = currentAcademicYear / 100 + 2000;
+            var yearStartDate = new DateTime(calendarYear, 8, 1);
+            var yearEndDate = yearStartDate.AddYears(1);
+
+            var episodeStartDate = priceEpisodeValues.EpisodeStartDate;
+            return episodeStartDate.HasValue &&
+                   episodeStartDate.Value >= yearStartDate &&
+                   episodeStartDate.Value < yearEndDate;
         }
 
         private static List<IntermediateLearningAim> GetMathsAndEnglishAim(ProcessLearnerCommand learnerSubmission,

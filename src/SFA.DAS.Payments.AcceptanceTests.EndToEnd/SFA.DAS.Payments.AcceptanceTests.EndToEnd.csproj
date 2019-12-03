@@ -887,6 +887,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-590 - Levy Learner framework uplift and 16-18 incentives payments finishes on time.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-1653 Employer payments rounded down.feature.cs" >
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1653 Employer payments rounded down.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Holding Back Completion Payments\PV2-496 - Levy Learner-co-funded,sufficient employer contribution - pay completion.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -977,6 +982,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-609 - Non-Levy learner sufficient emp contribution on program same day as completion payment - pay.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Inconsistent Submission Data\PV2-1627 Learner Removed at end of AY in R14.feature.cs">
+      <DependentUpon>PV2-1627 Learner Removed at end of AY in R14.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Inconsistent Submission Data\PV2-1663 Non Levy Learner inconsistent clawback on retrospective gap in learning.feature.cs">
       <DependentUpon>PV2-1663 Non Levy Learner inconsistent clawback on retrospective gap in learning.feature</DependentUpon>
     </Compile>
@@ -1029,9 +1037,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-464 Non-Levy learner, deleted aim reference for English and Maths.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Inconsistent Submission Data\PV2-464a Non-Levy learner ME Removed after balancing payment.feature.cs">
-      <DependentUpon>PV2-464a Non-Levy learner ME Removed after balancing payment.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Inconsistent Submission Data\PV2-525 Levy learner changes standard code.feature.cs">
       <AutoGen>True</AutoGen>
@@ -2032,6 +2037,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-590 - Levy Learner framework uplift and 16-18 incentives payments finishes on time.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Holding Back Completion Payments\PV2-1653 Employer payments rounded down.feature" >
+      <Generator>SpecFlowSIngleFileGenerator</Generator>
+      <LastGenOutput>Tests\Holding Back Completion Payments\PV2-1653 Employer payments rounded down.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Holding Back Completion Payments\PV2-496 - Levy Learner-co-funded,sufficient employer contribution - pay completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-496 - Levy Learner-co-funded,sufficient employer contribution - pay completion.feature.cs</LastGenOutput>
@@ -2104,6 +2113,7 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-609 - Non-Levy learner sufficient emp contribution on program same day as completion payment - pay.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Inconsistent Submission Data\PV2-1627 Learner Removed at end of AY in R14.feature" />
     <None Include="Tests\Inconsistent Submission Data\PV2-1663 Non Levy Learner inconsistent clawback on retrospective gap in learning.feature" />
     <None Include="Tests\Inconsistent Submission Data\PV2-256 Levy learner, price is changed, originally mix funded.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2145,7 +2155,6 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-464 Non-Levy learner, deleted aim reference for English and Maths.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Inconsistent Submission Data\PV2-464a Non-Levy learner ME Removed after balancing payment.feature" />
     <None Include="Tests\Inconsistent Submission Data\PV2-525 Levy learner changes standard code.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-525 Levy learner changes standard code.feature.cs</LastGenOutput>
