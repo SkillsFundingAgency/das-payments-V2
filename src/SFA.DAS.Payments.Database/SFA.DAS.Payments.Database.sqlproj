@@ -107,6 +107,8 @@
     <Build Include="dbo\Stored Procedures\dbo.MetricsPayments.sql" />
     <Build Include="Payments2\Tables\Payments2.ProviderAdjustmentPayments.sql" />
     <Build Include="Payments2\Views\Payments2.DataMatchReport.sql" />
+    <Build Include="Payments2\Tables\Payments2.ReceivedDataLockEvent.sql" />
+    <Build Include="Payments2\Tables\Payments2.CurrentPriceEpisode.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />

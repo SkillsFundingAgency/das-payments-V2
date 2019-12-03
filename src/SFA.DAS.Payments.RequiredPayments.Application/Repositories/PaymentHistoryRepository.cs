@@ -78,7 +78,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                                   apprenticeshipKey.StandardCode == payment.LearningAimStandardCode &&
                                   payment.FundingSource == FundingSourceType.CoInvestedEmployer &&
                                   apprenticeshipKey.ContractType == payment.ContractType)
-                .Select(payment => payment.Amount)
+                .Select(payment => (int)payment.Amount)
                 .DefaultIfEmpty(0)
                 .SumAsync(cancellationToken);
         }
