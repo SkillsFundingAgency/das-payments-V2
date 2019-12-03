@@ -19,9 +19,12 @@ namespace SFA.DAS.Payments.DataLocks.DataLockEventService
         private IStatefulEndpointCommunicationListener listener;
         private readonly ILifetimeScope lifetimeScope;
         private readonly IPaymentLogger paymentLogger;
-        private readonly IBatchProcessingService<DataLockStatusChanged> batchProcessingService;
+        private readonly IBatchProcessingService<PriceEpisodeStatusChange> batchProcessingService;
 
-        public DataLockEventService(StatefulServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger paymentLogger, IBatchProcessingService<DataLockStatusChanged> batchProcessingService)
+        public DataLockEventService(StatefulServiceContext context,
+            ILifetimeScope lifetimeScope,
+            IPaymentLogger paymentLogger,
+            IBatchProcessingService<PriceEpisodeStatusChange> batchProcessingService)
             : base(context)
         {
             this.lifetimeScope = lifetimeScope;
