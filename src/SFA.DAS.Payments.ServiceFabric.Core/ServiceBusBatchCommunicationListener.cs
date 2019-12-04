@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
 
     public class ServiceBusBatchCommunicationListener: IServiceBusBatchCommunicationListener
     {
-        private readonly IApplicationConfiguration config;
+        //private readonly IApplicationConfiguration config;
         private readonly IPaymentLogger logger;
         private readonly IContainerScopeFactory scopeFactory;
         private readonly ITelemetry telemetry;
@@ -39,16 +39,16 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         private readonly string errorQueueName;
         private CancellationToken startingCancellationToken;
 
-        public ServiceBusBatchCommunicationListener(IApplicationConfiguration config, IPaymentLogger logger,
+        public ServiceBusBatchCommunicationListener(string connectionString, string endpointName, string errorQueueName, IPaymentLogger logger,
             IContainerScopeFactory scopeFactory, ITelemetry telemetry)
         {
-            this.config = config ?? throw new ArgumentNullException(nameof(config));
+            //this.config = config ?? throw new ArgumentNullException(nameof(config));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
-            this.connectionString = config.ServiceBusConnectionString;
-            EndpointName = config.EndpointName;
-            this.errorQueueName = config.FailedMessagesQueue;
+            this.connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+            EndpointName = endpointName ?? throw new ArgumentNullException(nameof(endpointName));
+            this.errorQueueName = errorQueueName ?? endpointName+"-Errors";
         }
 
         public Task<string> OpenAsync(CancellationToken cancellationToken)
@@ -258,7 +258,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             const string transportEncodingHeaderKey = "NServiceBus.Transport.Encoding";
             var transportEncoding = receivedMessage.UserProperties.ContainsKey(transportEncodingHeaderKey)
                 ? (string)receivedMessage.UserProperties[transportEncodingHeaderKey]
-                : "application/octect-stream";
+                : "application/octet-stream";
             byte[] messageBody;
             if (transportEncoding.Equals("wcf/byte-array", StringComparison.OrdinalIgnoreCase))
             {
@@ -283,7 +283,6 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
 
         public void Abort()
         {
-            //
         }
 
         private async Task EnsureQueue(string queuePath)
@@ -292,14 +291,18 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             {
                 var manageClient = new ManagementClient(connectionString);
                 if (await manageClient.QueueExistsAsync(queuePath, startingCancellationToken).ConfigureAwait(false))
+                {
+                    logger.LogInfo($"Queue '{queuePath}' already exists, skipping queue creation.");
                     return;
-                
+                }
+                  
+                logger.LogInfo($"Creating queue '{queuePath}' with properties: TimeToLive: 7 days, Lock Duration: 5 Minutes, Max Delivery Count: 50, Max Size: 5Gb.");
                 var queueDescription = new QueueDescription(queuePath)
                 {
                     DefaultMessageTimeToLive = TimeSpan.FromDays(7),
                     EnableDeadLetteringOnMessageExpiration = true,
-                    LockDuration = TimeSpan.FromMinutes(1),
-                    MaxDeliveryCount = 10,
+                    LockDuration = TimeSpan.FromMinutes(5),
+                    MaxDeliveryCount = 50,
                     MaxSizeInMB = 5120,
                     Path = queuePath
                 };

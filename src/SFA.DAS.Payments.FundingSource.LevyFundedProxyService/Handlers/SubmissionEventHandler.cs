@@ -6,18 +6,15 @@ using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.FundingSource.LevyFundedService;
 using SFA.DAS.Payments.FundingSource.LevyFundedService.Interfaces;
-using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
-using SFA.DAS.Payments.Messages.Core.Events;
-using SFA.DAS.Payments.Model.Core.Factories;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
 {
-    public abstract class SubmissionEventHandler<T> : IHandleMessages<T> where T : SubmissionEvent
+    public abstract class SubmissionEventHandler<T> : IHandleMessages<T> where T : SubmissionJobFinishedEvent
     {
         private readonly IActorProxyFactory proxyFactory;
         private readonly ILevyFundingSourceRepository repository;
