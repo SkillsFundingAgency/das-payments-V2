@@ -354,10 +354,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
            [Frozen] Mock<IApprenticeshipRepository> repository,
            PriceEpisodeStatusChangeBuilder sut,
            EarningFailedDataLockMatching dataLock,
-           List<EarningPeriod> periods,
-           List<DataLockFailure> dataLockFailures,
+           EarningPeriod period,
            ApprenticeshipModel apprenticeships)
         {
+
+           var periods = new List<EarningPeriod>{ period };
             
             var dLockFailures = new List<DataLockFailure>
             {
@@ -380,15 +381,28 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     ApprenticeshipPriceEpisodeIds = apprenticeships.ApprenticeshipPriceEpisodes.Select(x => x.Id).ToList(),
                 },
             };
-
-            periods[0].DataLockFailures = dLockFailures;
             
-            CommonTestSetup(repository, dataLock, periods, new List<ApprenticeshipModel> { apprenticeships }, dataLockFailures);
+            dataLock.OnProgrammeEarnings = new List<OnProgrammeEarning>
+            {
+                new OnProgrammeEarning
+                {
+                    Type = OnProgrammeEarningType.Learning,
+
+                },
+                new OnProgrammeEarning
+                {
+                    Type = OnProgrammeEarningType.Completion,
+                }
+            };
+
+            CommonTestSetup(repository, dataLock, periods, new List<ApprenticeshipModel> { apprenticeships }, dLockFailures);
+
+
             var priceEpisode = dataLock.PriceEpisodes[0];
-            dataLock.OnProgrammeEarnings[1].Type = OnProgrammeEarningType.Completion;
+
             dataLock.OnProgrammeEarnings[1].Periods = periods.AsReadOnly();
 
-            
+
             var result = await sut.Build(
                 new List<DataLockEvent> { dataLock },
                 new List<(string identifier, PriceEpisodeStatus status)>
@@ -399,6 +413,24 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             result.Should().NotBeEmpty();
             result[0].Errors.Should().HaveCount(3);
+            result[0].Errors.Should().BeEquivalentTo(new List<LegacyDataLockEventError>
+            {
+                new LegacyDataLockEventError
+                {
+                    DataLockEventId = result[0].DataLock.DataLockEventId,
+                    ErrorCode = DataLockErrorCode.DLOCK_03.ToString(),
+                },
+                new LegacyDataLockEventError
+                {
+                    DataLockEventId = result[0].DataLock.DataLockEventId,
+                    ErrorCode = DataLockErrorCode.DLOCK_07.ToString(),
+                },
+                new LegacyDataLockEventError
+                {
+                    DataLockEventId = result[0].DataLock.DataLockEventId,
+                    ErrorCode = DataLockErrorCode.DLOCK_06.ToString(),
+                },
+            }, options => options.Excluding(o => o.SystemDescription));
 
         }
 
