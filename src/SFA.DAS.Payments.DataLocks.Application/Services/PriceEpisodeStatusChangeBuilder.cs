@@ -214,12 +214,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         private static LegacyDataLockEventError[] BuildCommitmentErrors(Guid eventId, List<DataLockFailure> dataLockFailures)
         {
             return dataLockFailures
+                .Select(o => o.DataLockError)
                 .Distinct()
-                .Select(x => new LegacyDataLockEventError
+                .Select(dataLockErrorCode => new LegacyDataLockEventError
                 {
                     DataLockEventId = eventId,
-                    SystemDescription = GetDataLockDescription(x.DataLockError),
-                    ErrorCode = x.DataLockError.ToString()
+                    SystemDescription = GetDataLockDescription(dataLockErrorCode),
+                    ErrorCode = dataLockErrorCode.ToString()
                 })
                 .ToArray();
         }
