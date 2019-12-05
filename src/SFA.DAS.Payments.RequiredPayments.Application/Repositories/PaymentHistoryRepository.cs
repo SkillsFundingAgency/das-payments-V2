@@ -93,7 +93,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     {ilrSubmissionDateTime} IlrSubmissionDateTime,
                     {ukprn} JobId,
                     LearnerReferenceNumber,
-                 --   LearnerUln,
                     LearningAimReference,
                     LearningAimFrameworkCode,
                     LearningAimPathwayCode,
@@ -103,7 +102,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                 from (
                     select
                         LearnerReferenceNumber,
-                   --     LearnerUln,
                         LearningAimReference,
                         LearningAimFrameworkCode,
                         LearningAimPathwayCode,
@@ -118,7 +116,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     except
 				    select
 					    LearnerReferenceNumber,
-					 --   LearnerUln,
 					    LearningAimReference,
 					    LearningAimFrameworkCode,
 					    LearningAimPathwayCode,
@@ -134,7 +131,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                 ) as a
                 group by
                     LearnerReferenceNumber,
-                --    LearnerUln,
                     LearningAimReference,
                     LearningAimFrameworkCode,
                     LearningAimPathwayCode,
@@ -154,7 +150,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     Learner = new Learner
                     {
                         ReferenceNumber = p.LearnerReferenceNumber,
-             //           Uln = p.LearnerUln
                     },
                     LearningAim = new LearningAim
                     {

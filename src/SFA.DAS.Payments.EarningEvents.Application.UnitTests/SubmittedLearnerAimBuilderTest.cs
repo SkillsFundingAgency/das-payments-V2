@@ -124,7 +124,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             mainAim.IlrSubmissionDateTime.Should().Be(processLearnerCommand.IlrSubmissionDateTime);
             mainAim.JobId.Should().Be(processLearnerCommand.JobId);
             mainAim.LearnerReferenceNumber.Should().Be(processLearnerCommand.Learner.LearnRefNumber);
-       //     mainAim.LearnerUln.Should().Be(processLearnerCommand.Learner.ULN);
             mainAim.LearningAimFrameworkCode.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0].LearningDeliveryValues.FworkCode);
             mainAim.LearningAimPathwayCode.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0].LearningDeliveryValues.PwayCode);
             mainAim.LearningAimProgrammeType.Should().Be(processLearnerCommand.Learner.LearningDeliveries[0].LearningDeliveryValues.ProgType);
@@ -136,7 +135,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             mathsAndEnglishAim.IlrSubmissionDateTime.Should().Be(processLearnerCommand.IlrSubmissionDateTime);
             mathsAndEnglishAim.JobId.Should().Be(processLearnerCommand.JobId);
             mathsAndEnglishAim.LearnerReferenceNumber.Should().Be(processLearnerCommand.Learner.LearnRefNumber);
-      //      mathsAndEnglishAim.LearnerUln.Should().Be(processLearnerCommand.Learner.ULN);
             mathsAndEnglishAim.LearningAimFrameworkCode.Should().Be(processLearnerCommand.Learner.LearningDeliveries[1].LearningDeliveryValues.FworkCode);
             mathsAndEnglishAim.LearningAimPathwayCode.Should().Be(processLearnerCommand.Learner.LearningDeliveries[1].LearningDeliveryValues.PwayCode);
             mathsAndEnglishAim.LearningAimProgrammeType.Should().Be(processLearnerCommand.Learner.LearningDeliveries[1].LearningDeliveryValues.ProgType);
