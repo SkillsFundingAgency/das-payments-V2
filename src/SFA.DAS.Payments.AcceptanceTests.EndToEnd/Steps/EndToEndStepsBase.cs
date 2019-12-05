@@ -128,7 +128,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 ilrLearner.Ukprn = ukprn;
                 var learner = TestSession.GetLearner(ukprn, ilrLearner.LearnerId);
-                learner.Course.AimSeqNumber = (short)ilrLearner.AimSequenceNumber;
+                learner.Course.AimSeqNumber = (short) ilrLearner.AimSequenceNumber;
                 learner.Course.StandardCode = ilrLearner.StandardCode;
                 learner.Course.FundingLineType = ilrLearner.FundingLineType;
                 learner.Course.LearnAimRef = ilrLearner.AimReference;
@@ -139,9 +139,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learner.SmallEmployer = ilrLearner.SmallEmployer;
                 learner.PostcodePrior = ilrLearner.PostcodePrior;
 
-                ilrLearner.Uln = ilrLearner.Uln != default(long) ? ilrLearner.Uln : learner.Uln;
-                //if (ilrLearner.Uln != default(long)) learner.Uln = ilrLearner.Uln
-
+                //     ilrLearner.Uln = ilrLearner.Uln != default(long) ? ilrLearner.Uln : learner.Uln;
+                if (ilrLearner.Uln != default(long))
+                {
+                    learner.Uln = ilrLearner.Uln;
+                }
+                else
+                {
+                    ilrLearner.Uln = learner.Uln;
+                }
             });
         }
 
