@@ -139,7 +139,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learner.SmallEmployer = ilrLearner.SmallEmployer;
                 learner.PostcodePrior = ilrLearner.PostcodePrior;
 
-                if (ilrLearner.Uln != default)
+                if (ilrLearner.Uln != default(long))
                 {
                     learner.Uln = ilrLearner.Uln;
                 }
