@@ -34,6 +34,23 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             events.Should().HaveCount(1);
             events.First().PriceEpisodes.Should().HaveCount(2);
             events.First().OnProgrammeEarnings.Single(x => x.Type == OnProgrammeEarningType.Learning).Periods.Should().HaveCount(12);
+            var learning = events.First().OnProgrammeEarnings.Single(x => x.Type == OnProgrammeEarningType.Learning);
+            learning.Periods[0].Amount.Should().Be(200);
+            learning.Periods[1].Amount.Should().Be(200);
+            learning.Periods[2].Amount.Should().Be(0);
+            learning.Periods[3].Amount.Should().Be(0);
+            learning.Periods[4].Amount.Should().Be(200);
+            learning.Periods[5].Amount.Should().Be(200);
+            learning.Periods[6].Amount.Should().Be(200);
+            events.First().IncentiveEarnings.Single(x => x.Type == IncentiveEarningType.LearningSupport).Periods.Should().HaveCount(12);
+            var learningSupport = events.First().IncentiveEarnings.Single(x => x.Type == IncentiveEarningType.LearningSupport);
+            learningSupport.Periods[0].Amount.Should().Be(150);
+            learningSupport.Periods[1].Amount.Should().Be(150);
+            learningSupport.Periods[2].Amount.Should().Be(0);
+            learningSupport.Periods[3].Amount.Should().Be(0);
+            learningSupport.Periods[4].Amount.Should().Be(150);
+            learningSupport.Periods[5].Amount.Should().Be(150);
+            learningSupport.Periods[6].Amount.Should().Be(150);
         }
 
         [Test]
@@ -43,7 +60,15 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var events = builder.Build(CreateFromFile());
 
             events.Should().HaveCount(2);
-            events.First().Earnings.Single(x => x.Type == FunctionalSkillType.OnProgrammeMathsAndEnglish).Periods.Should().HaveCount(12);
+            events.First(e => e.LearningAim.Reference.Equals("5010987X")).Earnings
+                .Single(x => x.Type == FunctionalSkillType.OnProgrammeMathsAndEnglish).Periods.Should().HaveCount(12);
+            var maths = events.First(e => e.LearningAim.Reference.Equals("5010987X")).Earnings.Single(x => x.Type == FunctionalSkillType.OnProgrammeMathsAndEnglish);
+            maths.Periods[0].Amount.Should().Be(39.25m);
+            maths.Periods[1].Amount.Should().Be(39.25m);
+            maths.Periods[2].Amount.Should().Be(0);
+            maths.Periods[3].Amount.Should().Be(0);
+            maths.Periods[4].Amount.Should().Be(17.898m);
+            maths.Periods[5].Amount.Should().Be(17.898m);
         }
 
         [Test]
@@ -53,7 +78,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var events = builder.Build(CreateFromFile());
 
             events.Should().HaveCount(3);
-
+            events.Where(x => x.LearningAimReference.Equals("ZPROG001")).Should().HaveCount(1);
+            events.Where(x => !x.LearningAimReference.Equals("ZPROG001")).Should().HaveCount(2);
         }
 
         private ProcessLearnerCommand CreateFromFile()
@@ -69,7 +95,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                         CollectionPeriod = 3,
                         CollectionYear = short.Parse(fm36Global.Year),
                         Ukprn = fm36Global.UKPRN,
-                        Learner = fm36Global.Learners.Single(l => l.LearnRefNumber.Equals("9000005107"))
+                        Learner = fm36Global.Learners.Single(l => l.LearnRefNumber.Equals("01LSF01BR34"))
                     };
                 }
             }
