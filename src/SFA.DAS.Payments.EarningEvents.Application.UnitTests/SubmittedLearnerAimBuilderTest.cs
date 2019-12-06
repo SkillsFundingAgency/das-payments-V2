@@ -55,6 +55,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                                 PwayCode = 22,
                                 ProgType = 23,
                                 StdCode = 24,
+                                LearnDelMathEng = true,
                                 LearnDelInitialFundLineType = "Levy Contract"
                             },
                             LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValues>

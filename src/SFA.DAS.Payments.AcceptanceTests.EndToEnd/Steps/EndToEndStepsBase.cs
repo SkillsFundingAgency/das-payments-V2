@@ -413,6 +413,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learningDelivery.LearningDeliveryValues.ProgType = aim.ProgrammeType;
                 learningDelivery.LearningDeliveryValues.PwayCode = aim.PathwayCode;
                 learningDelivery.LearningDeliveryValues.StdCode = aim.StandardCode;
+                learningDelivery.LearningDeliveryValues.LearnDelMathEng = !aim.IsMainAim;
 
                 learner.LearningDeliveries.Add(learningDelivery);
 

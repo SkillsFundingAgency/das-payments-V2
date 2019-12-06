@@ -11,14 +11,25 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         protected static List<IntermediateLearningAim> InitialLearnerTransform(ProcessLearnerCommand learnerSubmission, bool? mainAim)
         {
             var results = new List<IntermediateLearningAim>();
+            var groupedLearningDeliveries = learnerSubmission.Learner.LearningDeliveries
+                .Where(x => x.IsMainAim() || x.LearningDeliveryValues.LearnDelMathEng.HasValue && x.LearningDeliveryValues.LearnDelMathEng.Value)
+                .GroupBy(ld => new
+                {
+                    ld.LearningDeliveryValues.LearnAimRef,
+                    ld.LearningDeliveryValues.FworkCode,
+                    ld.LearningDeliveryValues.ProgType,
+                    ld.LearningDeliveryValues.PwayCode,
+                    ld.LearningDeliveryValues.StdCode
+                });
 
-            foreach (var learningDelivery in learnerSubmission.Learner.LearningDeliveries)
+            foreach (var groupedLearningDelivery in groupedLearningDeliveries)
             {
+                var learningDelivery = groupedLearningDelivery.First(); // Potential loss of data!!!
                 if (mainAim.HasValue && mainAim.Value != learningDelivery.IsMainAim())
                     continue;
 
                 var priceEpisodes = learnerSubmission.Learner.PriceEpisodes
-                    .Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learningDelivery.AimSeqNumber)
+                    .Where(x => groupedLearningDelivery.Any(g => g.AimSeqNumber == x.PriceEpisodeValues.PriceEpisodeAimSeqNumber))
                     .ToList();
 
                 if (!learningDelivery.IsMainAim())
@@ -33,7 +44,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 var group = priceEpisodes.Where(pe => IsCurrentAcademicYear(pe.PriceEpisodeValues, learnerSubmission.CollectionYear))
                     .GroupBy(p => p.PriceEpisodeValues.PriceEpisodeContractType);
 
-                foreach (var episodes in group)
+                foreach (var episodes in @group)
                 {
                     var intermediateAim = new IntermediateLearningAim(learnerSubmission, episodes, learningDelivery)
                     {
@@ -41,11 +52,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                     };
                     results.Add(intermediateAim);
                 }
-                
+
             }
 
             return results;
         }
+
 
         private static bool IsCurrentAcademicYear(PriceEpisodeValues priceEpisodeValues, short currentAcademicYear)
         {

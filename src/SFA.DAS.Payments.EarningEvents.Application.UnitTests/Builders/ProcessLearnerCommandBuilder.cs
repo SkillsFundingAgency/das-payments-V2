@@ -67,7 +67,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Builders
             var learningDelivery = new LearningDelivery
             {
                 AimSeqNumber = 2,
-                LearningDeliveryValues = new LearningDeliveryValues {LearnAimRef = "M&E"},
+                LearningDeliveryValues = new LearningDeliveryValues {LearnAimRef = "M&E", LearnDelMathEng = true},
                 LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValues>
                 {
                     new LearningDeliveryPeriodisedValues
