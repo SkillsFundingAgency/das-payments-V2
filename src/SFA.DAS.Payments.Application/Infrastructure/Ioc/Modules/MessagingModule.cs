@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                     var license = WebUtility.HtmlDecode(config.NServiceBusLicense);
                     endpointConfiguration.License(license);
                 }
-
+            
                 var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
                 transport
                     .ConnectionString(config.ServiceBusConnectionString)
@@ -73,6 +73,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                     delayed.TimeIncrease(config.DelayedMessageRetryDelay);
                 });
 
+                endpointConfiguration.AuditProcessedMessagesTo("Audit");
                 return endpointConfiguration;
             })
             .As<EndpointConfiguration>()
