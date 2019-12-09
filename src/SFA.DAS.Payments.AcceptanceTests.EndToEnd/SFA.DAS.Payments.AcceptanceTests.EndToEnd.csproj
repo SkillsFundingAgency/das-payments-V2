@@ -986,6 +986,9 @@
     <Compile Include="Tests\Inconsistent Submission Data\PV2-1627 Learner Removed at end of AY in R14.feature.cs">
       <DependentUpon>PV2-1627 Learner Removed at end of AY in R14.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Inconsistent Submission Data\PV2-1663 Non Levy Learner inconsistent clawback on retrospective gap in learning.feature.cs">
+      <DependentUpon>PV2-1663 Non Levy Learner inconsistent clawback on retrospective gap in learning.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Inconsistent Submission Data\PV2-256 Levy learner, price is changed, originally mix funded.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1300,11 +1303,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Two levy learners one employer but two providers not enough levy_PV2-270.feature</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\Levy Submission Events\One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature.cs">
-      <DependentUpon>One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Tests\Non-Levy - Care Bursary\E2E - PV2-925 - Non-Levy learner starts 1st day of month receives care leaver payment after 60 days.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1630,6 +1628,18 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-736 - Levy learner paid via transfer.feature</DependentUpon>
+    </Compile>
+	
+	<Compile Include="Tests\Submission Events\PV2-1395 - Successful submission removes previous submission payments.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1395 - Successful submission removes previous submission payments.feature</DependentUpon>
+    </Compile>
+	
+	<Compile Include="Tests\Submission Events\PV2-1396 - Failed submission job removes payments for failed job.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1396 - Failed submission job removes payments for failed job.feature</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -2112,6 +2122,7 @@
       <LastGenOutput>PV2-609 - Non-Levy learner sufficient emp contribution on program same day as completion payment - pay.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Inconsistent Submission Data\PV2-1627 Learner Removed at end of AY in R14.feature" />
+    <None Include="Tests\Inconsistent Submission Data\PV2-1663 Non Levy Learner inconsistent clawback on retrospective gap in learning.feature" />
     <None Include="Tests\Inconsistent Submission Data\PV2-256 Levy learner, price is changed, originally mix funded.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-256 Levy learner, price is changed, originally mix funded.feature.cs</LastGenOutput>
@@ -2343,10 +2354,6 @@
     <None Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finishes two months early PV2-276.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy Learner, levy available, finishes two months early PV2-276.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\Levy Submission Events\One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>One Levy Learner, levy available, finishes on time with submission events PV2-1395.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2595,6 +2602,14 @@
     <None Include="Tests\Transfers\PV2-1583 - 1 Non-Levy learner, paid for via transfer, on ACT1 contract paid through DAS.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-1583 - 1 Non-Levy learner, paid for via transfer, on ACT1 contract paid through DAS.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Submission Events\PV2-1395 - Successful submission removes previous submission payments.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1395 - Successful submission removes previous submission payments.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Submission Events\PV2-1396 - Failed submission job removes payments for failed job.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1396 - Failed submission job removes payments for failed job.cs</LastGenOutput>
     </None>
     <None Include="Tests\Transfers\PV2-730 - Single Levy learner paid via transfer sender installment changes after price change.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

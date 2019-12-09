@@ -6,10 +6,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Monitoring.Jobs.Data;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -21,8 +25,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     [Binding]
     public class EndToEndSteps : EndToEndStepsBase
     {
-        public EndToEndSteps(FeatureContext context) : base(context)
+        private readonly FeatureNumber featureNumber;
+
+        public EndToEndSteps(FeatureContext context, FeatureNumber featureNumber) : base(context)
         {
+            this.featureNumber = featureNumber;
         }
 
         [BeforeScenario()]
@@ -88,6 +95,45 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             AddNewIlr(table, TestSession.Ukprn);
         }
 
+        [Given(@"the provider has already submitted an ILR in the collection period")]
+        public async Task GivenTheProviderHasAlreadySubittedAnILRInTheCurrentCollectionPeriod()
+        {
+            var learnerTable = new Table( "Start Date", "Planned Duration", "Total Training Price", "Total Training Price Effective Date", "Total Assessment Price", "Total Assessment Price Effective Date", "Actual Duration", "Completion Status", "SFA Contribution Percentage", "Contract Type", "Aim Sequence Number", "Aim Reference", "Framework Code", "Pathway Code", "Programme Type", "Funding Line Type");
+            learnerTable.AddRow("start of academic year", "12 months", "11250", "Aug/Current Academic Year", "0", "Aug/Current Academic Year", "", "continuing", "90%", "Act2", "1", "ZPROG001", "593", "1", "20", "19 + Apprenticeship Non - Levy Contract(procured)");
+            AddTestLearners(learnerTable);
+
+            var previousEarningsTable = new Table("Delivery Period", "On-Programme", "Completion", "Balancing");
+            previousEarningsTable.AddRow("Aug/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Sep/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Oct/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Nov/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Dec/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Jan/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Feb/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Mar/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Apr/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("May/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Jun/Current Academic Year", "750", "0", "0");
+            previousEarningsTable.AddRow("Jul/Current Academic Year", "750", "0", "0");
+            CreatePreviousEarningsAndTraining(previousEarningsTable);
+
+
+            var previousPaymentsTable = new Table("Collection Period","Delivery Period","SFA Co - Funded Payments","Employer Co - Funded Payments","Transaction Type");
+            previousPaymentsTable.AddRow("R01/Current Academic Year","Aug/Current Academic Year","675","75","Learning");
+            await GeneratePreviousPayment(previousPaymentsTable, TestSession.Provider.Ukprn);
+        }
+
+        private async Task WaitForJobToFinish(long jobId)
+        {
+            await WaitForIt(async () =>
+            {
+                var dataContext = Scope.Resolve<JobsDataContext>();
+                var job = await dataContext.Jobs.AsNoTracking().FirstOrDefaultAsync(savedJob => savedJob.DcJobId == jobId);
+                return job != null && job.Status != JobStatus.InProgress;
+            }, $"Job failed to finish. Job id: {jobId}");
+        }
+
+
         [Given(@"the provider ""(.*)"" is providing training for the following learners")]
         [Given(@"the ""(.*)"" is providing training for the following learners")]
         [Given(@"the ""(.*)"" now changes the Learner details as follows")]
@@ -136,7 +182,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the provider priority order is")]
         public async Task GivenTheProviderPriorityOrder(Table table)
         {
-           await AddLevyAccountPriorities(table, TestSession, CurrentCollectionPeriod, DataContext);
+            await AddLevyAccountPriorities(table, TestSession, CurrentCollectionPeriod, DataContext);
         }
 
         [Given(@"the following commitments exist")]
@@ -203,46 +249,84 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"price details as follows")]
         public void GivenPriceDetailsAsFollows(Table table)
         {
-            if (TestSession.AtLeastOneScenarioCompleted)
-            {
-                return;
-            }
-
-            var newPriceEpisodes = table.CreateSet<Price>().ToList();
-            CurrentPriceEpisodes = newPriceEpisodes;
-
-            if (TestSession.Learners.Any(x => x.Aims.Count > 0))
-            {
-                foreach (var newPriceEpisode in newPriceEpisodes)
-                {
-                    Aim aim;
-                    try
-                    {
-                        aim = TestSession.Learners.SelectMany(x => x.Aims)
-                            .SingleOrDefault(x => x.AimSequenceNumber == newPriceEpisode.AimSequenceNumber);
-                    }
-                    catch (Exception)
-                    {
-                        throw new Exception("There are too many aims with the same sequence number");
-                    }
-
-                    if (aim == null)
-                    {
-                        throw new Exception("There is a price episode without a matching aim");
-                    }
-
-                    aim.PriceEpisodes.Add(newPriceEpisode);
-                }
-            }
+            AddPriceDetails(table);
         }
 
         [Given("the following capping will apply to the price episodes")]
         public void GivenTheFollowingCappingWillApply(Table table)
         {
-           
+
         }
 
+        [Given(@"the learner earnings were generated")]
+        [When(@"the learner earnings are generated")]
+        public async Task GivenTheLearnerEarningsWereGenerated()
+        {
+            await GenerateEarnings(TestSession.Provider).ConfigureAwait(false);
+        }
+
+        [When(@"the Payments service records the completion of the job")]
+        public async Task WhenThePaymentsServiceRecordsTheCompletionOfTheJob()
+        {
+            await WaitForJobToFinish(TestSession.Provider.JobId).ConfigureAwait(false);
+        }
+
+        [When(@"the Data-Collections system confirms successful completion of processing the job")]
+        public async Task WhenTheData_CollectionsSystemConfirmsSuccessfulCompletionOfProcessingTheJob()
+        {
+            var dcHelper = Scope.Resolve<IDcHelper>();
+            await dcHelper.SendIlrSubmissionEvent(TestSession.Provider.Ukprn, CurrentCollectionPeriod.AcademicYear,
+                CurrentCollectionPeriod.Period,
+                TestSession.Provider.JobId, true).ConfigureAwait(false);
+        }
+
+        [When(@"the payments service is notified that the subsequent Data-Collections processes failed to process the job")]
+        public async Task WhenThePaymentsServiceIsNotifiedThatTheSubsequentData_CollectionsProcessesFailedToProcessTheJob()
+        {
+            var dcHelper = Scope.Resolve<IDcHelper>();
+            await dcHelper.SendIlrSubmissionEvent(TestSession.Provider.Ukprn, CurrentCollectionPeriod.AcademicYear,
+                CurrentCollectionPeriod.Period,
+                TestSession.Provider.JobId, false).ConfigureAwait(false);
+        }
+
+
+        [When(@"the payments service has notified Data-Collections that the Data-Locks process has finished")]
+        public void WhenThePaymentsServiceHasNotifiedData_CollectionsThatTheData_LocksProcessHasFinished()
+        {
+            //do nothing, just for show
+        }
+
+        [Then(@"the payments for the previous submission should be removed")]
+        public async Task ThenThePaymentsForThePreviousSubmissionShouldBeRemoved()
+        {
+            await WaitForIt(() =>
+            {
+                var payments = Scope.Resolve<TestPaymentsDataContext>()
+                    .Payment
+                    .AsNoTracking()
+                    .Where(p => p.Ukprn == TestSession.Provider.Ukprn)
+                    .ToList();
+                return payments.Any() && payments.All(p => p.JobId == TestSession.Provider.JobId);
+            },$"Provider Payments failed to cleanup old payments for provider {TestSession.Provider.Ukprn}");
+        }
+
+        [Then(@"the payments for the current submission should be removed")]
+        public async Task ThenThePaymentsForTheCurrentSubmissionShouldBeRemoved()
+        {
+            await WaitForIt(() =>
+            {
+                var payments = Scope.Resolve<TestPaymentsDataContext>()
+                    .Payment
+                    .AsNoTracking()
+                    .Where(p => p.Ukprn == TestSession.Provider.Ukprn)
+                    .ToList();
+                return payments.Any() && payments.All(p => p.JobId != TestSession.Provider.JobId);
+            }, $"Provider Payments failed to cleanup payments for failed job: {TestSession.Provider.JobId}, Provider: {TestSession.Provider.Ukprn}");
+        }
+
+
         [Then(@"the following learner earnings should be generated")]
+        [Given(@"the following learner earnings were generated")]
         public async Task ThenTheFollowingLearnerEarningsShouldBeGenerated(Table table)
         {
             await GeneratedAndValidateEarnings(table, TestSession.Provider).ConfigureAwait(false);
@@ -377,7 +461,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             await ValidateDataLockError(table, provider).ConfigureAwait(false);
         }
-       
+
         private async Task ValidateDataLockError(Table table, Provider provider)
         {
             var dataLockErrors = table.CreateSet<DataLockError>().ToList();
