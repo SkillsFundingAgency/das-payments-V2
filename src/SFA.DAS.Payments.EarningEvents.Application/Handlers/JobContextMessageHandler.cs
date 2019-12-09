@@ -64,7 +64,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             this.submittedLearnerAimRepository = submittedLearnerAimRepository;
             this.jobStatusService = jobStatusService;
         }
-        
+
         public async Task<bool> HandleAsync(JobContextMessage message, CancellationToken cancellationToken)
         {
             logger.LogDebug($"Processing Earning Event Service event for Job Id : {message.JobId}");
@@ -256,6 +256,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         {
             var endpointInstance = await factory.GetEndpointInstance().ConfigureAwait(false);
             await endpointInstance.Publish(submissionEvent).ConfigureAwait(false);
+            var jobClient = jobClientFactory.Create();
+            if (submissionEvent is SubmissionFailedEvent)
+                await jobClient.RecordJobFailure(submissionEvent.JobId, submissionEvent.Ukprn, submissionEvent.IlrSubmissionDateTime, submissionEvent.AcademicYear, submissionEvent.CollectionPeriod).ConfigureAwait(false);
+            else
+                await jobClient.RecordJobSuccess(submissionEvent.JobId, submissionEvent.Ukprn, submissionEvent.IlrSubmissionDateTime, submissionEvent.AcademicYear, submissionEvent.CollectionPeriod).ConfigureAwait(false);
         }
 
         private async Task<FM36Global> GetFm36Global(JobContextMessage message, int collectionPeriod, CancellationToken cancellationToken)
