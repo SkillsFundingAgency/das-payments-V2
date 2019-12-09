@@ -73,7 +73,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
                 await ResetPaymentHistoryCacheIfDifferentCollectionPeriod(earningEvent.CollectionPeriod)
                     .ConfigureAwait(false);
 
-                await Initialise().ConfigureAwait(false);
+                await Initialise(earningEvent.CollectionPeriod.Period).ConfigureAwait(false);
                 var requiredPaymentEvents = await contractType2EarningsEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
                 Log(requiredPaymentEvents);
                 telemetry.TrackDuration("RequiredPaymentsService.HandleApprenticeship2ContractTypeEarningsEvent", stopwatch, earningEvent);
@@ -92,7 +92,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
                 await ResetPaymentHistoryCacheIfDifferentCollectionPeriod(earningEvent.CollectionPeriod)
                     .ConfigureAwait(false);
 
-                await Initialise().ConfigureAwait(false);
+                await Initialise(earningEvent.CollectionPeriod.Period).ConfigureAwait(false);
                 var requiredPaymentEvents = await functionalSkillEarningsEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
                 Log(requiredPaymentEvents);
                 telemetry.TrackDuration("RequiredPaymentsService.HandleFunctionalSkillEarningsEvent", stopwatch, earningEvent);
@@ -111,7 +111,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
                 await ResetPaymentHistoryCacheIfDifferentCollectionPeriod(earningEvent.CollectionPeriod)
                     .ConfigureAwait(false);
 
-                await Initialise().ConfigureAwait(false);
+                await Initialise(earningEvent.CollectionPeriod.Period).ConfigureAwait(false);
                 var requiredPaymentEvents = await functionalSkillEarningsEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
                 Log(requiredPaymentEvents);
                 telemetry.TrackDuration("RequiredPaymentsService.HandleFunctionalSkillEarningsEvent", stopwatch, earningEvent);
@@ -131,7 +131,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
                     await ResetPaymentHistoryCacheIfDifferentCollectionPeriod(earningEvent.CollectionPeriod)
                         .ConfigureAwait(false);
 
-                    await Initialise().ConfigureAwait(false);
+                    await Initialise(earningEvent.CollectionPeriod.Period).ConfigureAwait(false);
                     var requiredPaymentEvents = await payableEarningEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
                     Log(requiredPaymentEvents);
                     telemetry.TrackDuration("RequiredPaymentsService.HandlePayableEarningEvent", stopwatch, earningEvent);
@@ -155,7 +155,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
                 await ResetPaymentHistoryCacheIfDifferentCollectionPeriod(removedLearningAim.CollectionPeriod)
                     .ConfigureAwait(false);
 
-                await Initialise().ConfigureAwait(false);
+                await Initialise(removedLearningAim.CollectionPeriod.Period).ConfigureAwait(false);
                 var requiredPaymentEvents = await refundRemovedLearningAimProcessor.RefundLearningAim(removedLearningAim, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
                 Log(requiredPaymentEvents);
                 // removed aim would will not receive a command to clear cache
@@ -181,7 +181,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
                 paymentHistoryCache = new ReliableCollectionCache<PaymentHistoryEntity[]>(StateManager);
                 collectionPeriodCache = new ReliableCollectionCache<CollectionPeriod>(StateManager);
 
-                await Initialise().ConfigureAwait(false);
+                //await Initialise().ConfigureAwait(false);
 
                 await base.OnActivateAsync().ConfigureAwait(false);
                 TrackInfrastructureEvent("RequiredPaymentsService.OnActivateAsync", stopwatch);
@@ -236,7 +236,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             await collectionPeriodCache.AddOrReplace("CollectionPeriod", collectionPeriod).ConfigureAwait(false);
         }
 
-        public async Task Initialise()
+        public async Task Initialise(byte currentCollectionPeriod)
         {
             if (await StateManager.ContainsStateAsync(CacheKeys.InitialisedKey).ConfigureAwait(false))
             {
@@ -247,7 +247,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             paymentLogger.LogDebug($"Initialising actor for apprenticeship {apprenticeshipKeyString}");
             using (var paymentHistoryRepository = paymentHistoryRepositoryFactory())
             {
-                var paymentHistory = await paymentHistoryRepository.GetPaymentHistory(apprenticeshipKey, CancellationToken.None).ConfigureAwait(false);
+                var paymentHistory = await paymentHistoryRepository.GetPaymentHistory(apprenticeshipKey, currentCollectionPeriod, CancellationToken.None).ConfigureAwait(false);
                 await paymentHistoryCache.AddOrReplace(CacheKeys.PaymentHistoryKey, paymentHistory.ToArray(), CancellationToken.None).ConfigureAwait(false);
             }
             await StateManager.TryAddStateAsync(CacheKeys.InitialisedKey, true).ConfigureAwait(false);

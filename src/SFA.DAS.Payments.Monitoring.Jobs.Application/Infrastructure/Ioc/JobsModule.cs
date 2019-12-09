@@ -8,6 +8,7 @@ using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
@@ -30,10 +31,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             {
                 var configHelper = c.Resolve<IConfigurationHelper>();
                 return new JobServiceConfiguration(
-                    TimeSpan.Parse( configHelper.GetSettingOrDefault("JobStatusCheck_Interval","00:00:10")),
-                    TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForJobToComplete","00:20:00"))
+                    TimeSpan.Parse(configHelper.GetSettingOrDefault("JobStatusCheck_Interval", "00:00:10")),
+                    TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForJobToComplete", "00:20:00"))
                     );
-                
+
             })
                 .As<IJobServiceConfiguration>()
                 .SingleInstance();
@@ -50,7 +51,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.RegisterType<MonthEndJobService>()
                 .As<IMonthEndJobService>()
                 .InstancePerLifetimeScope();
-            builder.RegisterType<JobStatusService>()
+            builder.RegisterType<EarningsJobStatusService>()
                 .As<IJobStatusService>()
                 .InstancePerLifetimeScope();
 
@@ -66,11 +67,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
                 var config = c.Resolve<IApplicationConfiguration>();
                 EndpointConfigurationEvents.ConfiguringTransport += (object sender, TransportExtensions<AzureServiceBusTransport> e) =>
                 {
-                    //e.Transactions(TransportTransactionMode.None);
-                    //e.PrefetchCount();
                     e.Routing().RouteToEndpoint(typeof(RecordEarningsJob).Assembly, config.EndpointName);
                 };
             });
+
+            builder.RegisterType<JobStatusEventPublisher>()
+                .As<IJobStatusEventPublisher>()
+                .InstancePerLifetimeScope();
 
             //TODO: should not be in here
             builder.RegisterType<ActorReliableCollectionCache<JobModel>>()
@@ -88,6 +91,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
                 .As<IActorDataCache<(JobStepStatus jobStatus, DateTimeOffset? endTime)>>()
                 //.AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
+
+
         }
     }
 }

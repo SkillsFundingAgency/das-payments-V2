@@ -23,6 +23,7 @@ using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
 using SFA.DAS.Payments.FundingSource.Model;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
 
@@ -148,7 +149,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             }
         }
 
-        public async Task RemovePreviousSubmissions(SubmissionSucceededEvent message)
+        public async Task RemovePreviousSubmissions(SubmissionJobSucceeded message)
         {
             paymentLogger.LogVerbose($"Handling ProcessSubmissionDeletion for {Id}, Job: {message.JobId}");
             try
@@ -165,7 +166,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 throw;
             }
         }
-        public async Task RemoveCurrentSubmission(SubmissionFailedEvent message)
+        public async Task RemoveCurrentSubmission(SubmissionJobFailed message)
         {
             paymentLogger.LogVerbose($"Handling ProcessCurrentSubmissionDeletionCommand for {Id}, Job: {message.JobId}");
             try

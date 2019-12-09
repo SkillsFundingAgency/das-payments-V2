@@ -12,9 +12,9 @@ namespace SFA.DAS.Payments.Audit.FundingSourceService.Handlers
     public class FundingSourceEventHandler: IHandleMessages<FundingSourcePaymentEvent>
     {
         private readonly IPaymentLogger logger;
-        private readonly IFundingSourcePaymentsEventProcessor processor;
+        private readonly IFundingSourceEventProcessor processor;
 
-        public FundingSourceEventHandler(IPaymentLogger logger, IFundingSourcePaymentsEventProcessor processor)
+        public FundingSourceEventHandler(IPaymentLogger logger, IFundingSourceEventProcessor processor)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.processor = processor ?? throw new ArgumentNullException(nameof(processor));
