@@ -24,18 +24,20 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             foreach (var groupedLearningDelivery in groupedLearningDeliveries)
             {
-                var learningDelivery = groupedLearningDelivery.First(); // Potential loss of data!!!
+                var orderedGroupedLearningDelivery = groupedLearningDelivery.OrderByDescending(x => x.LearningDeliveryValues.LearnStartDate).ToList();
+                var learningDelivery = orderedGroupedLearningDelivery.First();
                 if (mainAim.HasValue && mainAim.Value != learningDelivery.IsMainAim())
                     continue;
 
+
                 var priceEpisodes = learnerSubmission.Learner.PriceEpisodes
-                    .Where(x => groupedLearningDelivery.Any(g => g.AimSeqNumber == x.PriceEpisodeValues.PriceEpisodeAimSeqNumber))
+                    .Where(x => orderedGroupedLearningDelivery.Any(g => g.AimSeqNumber == x.PriceEpisodeValues.PriceEpisodeAimSeqNumber))
                     .ToList();
 
                 if (!learningDelivery.IsMainAim())
                 {
                     // Maths & English
-                    var mathsAndEnglishAims = GetMathsAndEnglishAim(learnerSubmission, learningDelivery, mainAim.HasValue);
+                    var mathsAndEnglishAims = GetMathsAndEnglishAim(learnerSubmission, orderedGroupedLearningDelivery, mainAim.HasValue);
                     results.AddRange(mathsAndEnglishAims);
 
                     continue;
@@ -46,7 +48,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
                 foreach (var episodes in @group)
                 {
-                    var intermediateAim = new IntermediateLearningAim(learnerSubmission, episodes, learningDelivery)
+                    var intermediateAim = new IntermediateLearningAim(learnerSubmission, episodes, orderedGroupedLearningDelivery)
                     {
                         ContractType = MappingExtensions.GetContractType(episodes.Key)
                     };
@@ -72,28 +74,26 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         }
 
         private static List<IntermediateLearningAim> GetMathsAndEnglishAim(ProcessLearnerCommand learnerSubmission,
-            LearningDelivery learningDelivery, bool singleContractType)
+            List<LearningDelivery> learningDeliveries, bool singleContractType)
         {
             if (singleContractType)
-                return new List<IntermediateLearningAim> { new IntermediateLearningAim(learnerSubmission, new List<PriceEpisode>(), learningDelivery) };
+                return new List<IntermediateLearningAim> { new IntermediateLearningAim(learnerSubmission, new List<PriceEpisode>(), learningDeliveries) };
 
             var results = new List<IntermediateLearningAim>();
 
             var intermediateLearningAim =
-                new IntermediateLearningAim(learnerSubmission, new List<PriceEpisode>(), learningDelivery);
+                new IntermediateLearningAim(learnerSubmission, new List<PriceEpisode>(), learningDeliveries);
 
             var contractTypes =
                 intermediateLearningAim.Learner
-                    .LearningDeliveries
-                    .Select(x => x.GetContractTypesForLearningDeliveries())
-                    .SelectMany(o => o);
+                    .LearningDeliveries.GetContractTypesForLearningDeliveries();
 
             var distinctContractTypes = contractTypes.Distinct().ToList();
 
             distinctContractTypes.ForEach(c =>
             {
                 var mathsAndEnglishAim =
-                    new IntermediateLearningAim(learnerSubmission, new List<PriceEpisode>(), learningDelivery)
+                    new IntermediateLearningAim(learnerSubmission, new List<PriceEpisode>(), learningDeliveries)
                     {
                         ContractType = c
                     };

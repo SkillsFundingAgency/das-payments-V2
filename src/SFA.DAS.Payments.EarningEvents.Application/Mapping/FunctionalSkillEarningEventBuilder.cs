@@ -27,12 +27,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             foreach (var intermediateLearningAim in intermediateResults)
             {
-                if (intermediateLearningAim.Aim.IsMainAim())
+                if (intermediateLearningAim.Aims.All(x=>x.IsMainAim()))
                 {
                     continue;
                 }
 
-                var contractTypes =   intermediateLearningAim.Aim.GetContractTypesForLearningDeliveries();
+                var contractTypes = intermediateLearningAim.Aims.GetContractTypesForLearningDeliveries();
 
                 var distinctContractTypes = contractTypes.Where(x=> x != ContractType.None).Distinct().ToList();
 
@@ -83,7 +83,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         private static string GetFirstMatchingFundingLineTypeForContractType(IntermediateLearningAim intermediateLearningAim, FunctionalSkillEarningsEvent functionalSkillEarning)
         {
             var periodisedFundingLineTypeValues = intermediateLearningAim
-                .Aim
+                .Aims.First()
                 .LearningDeliveryPeriodisedTextValues
                 .FirstOrDefault(x => x.AttributeName.Equals("FundLineType"));
 
@@ -98,7 +98,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 return periodisedFundingLineTypeValues.GetPeriodTextValue(periodWithActiveEarning);
             }
 
-            throw new InvalidOperationException($"Can't find a valid FundingLineType for aim {intermediateLearningAim.Aim.LearningDeliveryValues.LearnAimRef}");
+            throw new InvalidOperationException($"Can't find a valid FundingLineType for aim {intermediateLearningAim.Aims.First().LearningDeliveryValues.LearnAimRef}");
         }
 
 

@@ -52,6 +52,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                             PwayCode = 400,
                             LearnDelInitialFundLineType = "Funding Line Type",
                             LearnStartDate = DateTime.Today.AddDays(-5)
+                        },
+                        LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValues>
+                        {
+                            new LearningDeliveryPeriodisedValues
+                            {
+                                AttributeName = "MathEngOnProgPayment"
+                            }
                         }
                     },
                     new LearningDelivery
@@ -253,7 +260,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 SubmissionDate = DateTime.UtcNow
             };
 
-            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries[0]);
+            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries);
         }
 
         [Test]
@@ -443,7 +450,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [Test]
         public void TestFunctionalSkillsEarningMap()
         {
-            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries[1]);
+            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes,
+                fm36Learner.LearningDeliveries.Where(x => !x.IsMainAim()).ToList());
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, Act2FunctionalSkillEarningsEvent>(learningAim);
             earningEvent.Should().NotBeNull();
             earningEvent.LearningAim.Reference.Should().Be("M&E");
@@ -463,17 +471,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             learningSupport.Should().HaveCount(1);
             learningSupport[0].Periods.Where(p => p.Amount == 0).Should().HaveCount(11);
             learningSupport[0].Periods.Where(p => p.Amount == 150).Should().HaveCount(1);
-        }
-
-        [Test]
-        public void TestFunctionalSkillsEarningsMapAllZeroPeriodValuesCorrectly()
-        {
-            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries[2]);
-
-            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, Act2FunctionalSkillEarningsEvent>(learningAim);
-
-            earningEvent.Should().NotBeNull();
-            earningEvent.Earnings.Should().HaveCount(0);
         }
 
         [Test]
@@ -586,7 +583,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 }
             });
 
-            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries[0]);
+            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries);
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
 
             earningEvent.PriceEpisodes.Should().HaveCount(2);
@@ -799,7 +796,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             fm36Learner.PriceEpisodes.Add(currentYearPriceEpisode);
             fm36Learner.PriceEpisodes.Add(futureYearPriceEpisode);
 
-            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries[0]);
+            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries);
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
 
             earningEvent.PriceEpisodes.Should().HaveCount(1);
@@ -882,7 +879,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 }
             });
 
-            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries[0]);
+            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries);
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
 
             earningEvent.PriceEpisodes.Should().HaveCount(1);
@@ -992,7 +989,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 Period12 = 0,
             });
 
-            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries[0]);
+            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries);
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             var incentive = earningEvent.IncentiveEarnings.FirstOrDefault(earnings => MapIncentiveType(earnings.Type).Equals(incentiveTypes[0]));
             incentive.Should().NotBeNull();
@@ -1075,7 +1072,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 }
             });
 
-            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries[0]);
+            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries);
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, Act2FunctionalSkillEarningsEvent>(learningAim);
             earningEvent.Should().NotBeNull();
 

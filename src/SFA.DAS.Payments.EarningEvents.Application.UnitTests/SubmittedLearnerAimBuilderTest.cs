@@ -37,14 +37,37 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                     LearnRefNumber = "6",
                     LearningDeliveries = new List<LearningDelivery>
                     {
-                        new LearningDelivery {AimSeqNumber = 1, LearningDeliveryValues = new LearningDeliveryValues
+                        new LearningDelivery {
+                            AimSeqNumber = 1,
+                            LearningDeliveryValues = new LearningDeliveryValues
                         {
                             LearnAimRef = "ZPROG001",
                             FworkCode = 11,
                             PwayCode = 12,
                             ProgType = 13,
                             StdCode = 14
-                        }},
+                        },
+                            LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValues>(),
+                            LearningDeliveryPeriodisedTextValues = new List<LearningDeliveryPeriodisedTextValues>
+                            {
+                                new LearningDeliveryPeriodisedTextValues
+                                {
+                                    AttributeName = "LearnDelContType",
+                                    Period1 = "Levy Contract",
+                                    Period2 = "Levy Contract",
+                                    Period3 = "Levy Contract",
+                                    Period4 = "Levy Contract",
+                                    Period5 = "Levy Contract",
+                                    Period6 = "Levy Contract",
+                                    Period7 = "Levy Contract",
+                                    Period8 = "Levy Contract",
+                                    Period9 = "Levy Contract",
+                                    Period10 = "Levy Contract",
+                                    Period11 = "Levy Contract",
+                                    Period12 = "Levy Contract"
+                                }
+                            }
+                        },
                         new LearningDelivery
                         {
                             AimSeqNumber = 2,
@@ -112,7 +135,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
 
                 }
             };
-             
+
             var builder = new SubmittedLearnerAimBuilder(mapper);
             var submittedAims = builder.Build(processLearnerCommand);
             submittedAims.Should().HaveCount(2);
@@ -121,7 +144,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var mathsAndEnglishAim = submittedAims.Single(aim => aim.LearningAimReference != "ZPROG001");
 
             mainAim.AcademicYear.Should().Be(processLearnerCommand.CollectionYear);
-            mainAim.CollectionPeriod.Should().Be((byte) processLearnerCommand.CollectionPeriod);
+            mainAim.CollectionPeriod.Should().Be((byte)processLearnerCommand.CollectionPeriod);
             mainAim.IlrSubmissionDateTime.Should().Be(processLearnerCommand.IlrSubmissionDateTime);
             mainAim.JobId.Should().Be(processLearnerCommand.JobId);
             mainAim.LearnerReferenceNumber.Should().Be(processLearnerCommand.Learner.LearnRefNumber);
@@ -133,7 +156,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             mainAim.Ukprn.Should().Be(processLearnerCommand.Ukprn);
 
             mathsAndEnglishAim.AcademicYear.Should().Be(processLearnerCommand.CollectionYear);
-            mathsAndEnglishAim.CollectionPeriod.Should().Be((byte) processLearnerCommand.CollectionPeriod);
+            mathsAndEnglishAim.CollectionPeriod.Should().Be((byte)processLearnerCommand.CollectionPeriod);
             mathsAndEnglishAim.IlrSubmissionDateTime.Should().Be(processLearnerCommand.IlrSubmissionDateTime);
             mathsAndEnglishAim.JobId.Should().Be(processLearnerCommand.JobId);
             mathsAndEnglishAim.LearnerReferenceNumber.Should().Be(processLearnerCommand.Learner.LearnRefNumber);

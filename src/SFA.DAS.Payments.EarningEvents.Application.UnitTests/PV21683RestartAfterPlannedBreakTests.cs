@@ -63,12 +63,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             events.First(e => e.LearningAim.Reference.Equals("5010987X")).Earnings
                 .Single(x => x.Type == FunctionalSkillType.OnProgrammeMathsAndEnglish).Periods.Should().HaveCount(12);
             var maths = events.First(e => e.LearningAim.Reference.Equals("5010987X")).Earnings.Single(x => x.Type == FunctionalSkillType.OnProgrammeMathsAndEnglish);
-            maths.Periods[0].Amount.Should().Be(39.25m);
-            maths.Periods[1].Amount.Should().Be(39.25m);
-            maths.Periods[2].Amount.Should().Be(0);
-            maths.Periods[3].Amount.Should().Be(0);
-            maths.Periods[4].Amount.Should().Be(17.898m);
-            maths.Periods[5].Amount.Should().Be(17.898m);
+            maths.Periods.Single(p => p.Period == 1).Amount.Should().Be(39.25m);
+            maths.Periods.Single(p => p.Period == 2).Amount.Should().Be(39.25m);
+            maths.Periods.Single(p => p.Period == 3).Amount.Should().Be(0);
+            maths.Periods.Single(p => p.Period == 4).Amount.Should().Be(0);
+            maths.Periods.Single(p => p.Period == 5).Amount.Should().Be(17.898m);
+            maths.Periods.Single(p => p.Period == 6).Amount.Should().Be(17.898m);
         }
 
         [Test]
