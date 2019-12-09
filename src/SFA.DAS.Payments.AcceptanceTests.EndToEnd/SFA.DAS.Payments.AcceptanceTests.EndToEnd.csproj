@@ -985,6 +985,9 @@
     <Compile Include="Tests\Inconsistent Submission Data\PV2-1627 Learner Removed at end of AY in R14.feature.cs">
       <DependentUpon>PV2-1627 Learner Removed at end of AY in R14.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Inconsistent Submission Data\PV2-1663 Non Levy Learner inconsistent clawback on retrospective gap in learning.feature.cs">
+      <DependentUpon>PV2-1663 Non Levy Learner inconsistent clawback on retrospective gap in learning.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Inconsistent Submission Data\PV2-256 Levy learner, price is changed, originally mix funded.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2118,6 +2121,7 @@
       <LastGenOutput>PV2-609 - Non-Levy learner sufficient emp contribution on program same day as completion payment - pay.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Inconsistent Submission Data\PV2-1627 Learner Removed at end of AY in R14.feature" />
+    <None Include="Tests\Inconsistent Submission Data\PV2-1663 Non Levy Learner inconsistent clawback on retrospective gap in learning.feature" />
     <None Include="Tests\Inconsistent Submission Data\PV2-256 Levy learner, price is changed, originally mix funded.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-256 Levy learner, price is changed, originally mix funded.feature.cs</LastGenOutput>

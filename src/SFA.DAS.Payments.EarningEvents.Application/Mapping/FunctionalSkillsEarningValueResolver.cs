@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             {
                 {"MathEngBalPayment", FunctionalSkillType.BalancingMathsAndEnglish},
                 {"MathEngOnProgPayment", FunctionalSkillType.OnProgrammeMathsAndEnglish},
-                {"PriceEpisodeLSFCash", FunctionalSkillType.LearningSupport},
+                {"LearnSuppFundCash", FunctionalSkillType.LearningSupport},
             };
 
         public ReadOnlyCollection<FunctionalSkillEarning> Resolve(IntermediateLearningAim source, FunctionalSkillEarningsEvent destination, ReadOnlyCollection<FunctionalSkillEarning> destMember, ResolutionContext context)
@@ -27,6 +27,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .Where(periodisedValues => TypeMap.ContainsKey(periodisedValues.AttributeName))
                 .GroupBy(v => v.AttributeName)
                 .Select(CreateEarning)
+                .Where(x => x.Periods.Any(p => p.Amount != 0))
                 .ToList()
                 .AsReadOnly();
         }

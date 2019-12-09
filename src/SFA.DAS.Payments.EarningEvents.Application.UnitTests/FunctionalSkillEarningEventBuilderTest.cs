@@ -8,6 +8,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
+using SFA.DAS.Payments.EarningEvents.Application.UnitTests.Builders;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core;
@@ -817,6 +818,24 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             levyContractTypeEarning.Should().BeOfType<Act1FunctionalSkillEarningsEvent>();
             levyContractTypeEarning.LearningAim.Should().NotBeNull();
             levyContractTypeEarning.LearningAim.FundingLineType.Should().Be("16-18 Apprenticeship (Employer on App Service)");
+        }
+
+        [Test]
+        public void IncludesLearningSupport()
+        {
+            // arrange
+            var processLearnerCommand = new ProcessLearnerCommandBuilder().WithExtendedLearningSupport().Build();
+
+            var builder = new FunctionalSkillEarningEventBuilder(mapper);
+            
+            // act
+            var events = builder.Build(processLearnerCommand);
+
+            // assert
+            events.Should().NotBeNull();
+            events.Should().HaveCount(1);
+            events.Single().Earnings.Should().HaveCount(2);
+            events.Single().Earnings.Single(x => x.Type == FunctionalSkillType.LearningSupport).Periods.Should().HaveCount(12);
         }
     }
 }

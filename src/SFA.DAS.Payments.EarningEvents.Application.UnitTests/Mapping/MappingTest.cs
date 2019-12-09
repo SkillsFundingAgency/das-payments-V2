@@ -103,7 +103,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                             },
                             new LearningDeliveryPeriodisedValues
                             {
-                                AttributeName = "PriceEpisodeLSFCash",
+                                AttributeName = "LearnSuppFundCash",
                                 Period1 = 0,
                                 Period2 = 150,
                                 Period3 = 0,
@@ -118,6 +118,26 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                                 Period12 = 0,
                             },
                         },
+                    },
+                    new LearningDelivery
+                    {
+                        AimSeqNumber = 3,
+                        LearningDeliveryValues = new LearningDeliveryValues
+                        {
+                            LearnAimRef = "Component",
+                            StdCode = 100,
+                            FworkCode = 200,
+                            ProgType = 300,
+                            PwayCode = 400,
+                            LearnStartDate = DateTime.Today.AddDays(-10)
+                        },
+                        LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValues>
+                        {
+                            new LearningDeliveryPeriodisedValues
+                            {
+                                AttributeName = "MathEngOnProgPayment"
+                            }
+                        }
                     }
                 },
                 PriceEpisodes = new List<PriceEpisode>
@@ -443,6 +463,17 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             learningSupport.Should().HaveCount(1);
             learningSupport[0].Periods.Where(p => p.Amount == 0).Should().HaveCount(11);
             learningSupport[0].Periods.Where(p => p.Amount == 150).Should().HaveCount(1);
+        }
+
+        [Test]
+        public void TestFunctionalSkillsEarningsMapAllZeroPeriodValuesCorrectly()
+        {
+            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries[2]);
+
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, Act2FunctionalSkillEarningsEvent>(learningAim);
+
+            earningEvent.Should().NotBeNull();
+            earningEvent.Earnings.Should().HaveCount(0);
         }
 
         [Test]
@@ -1026,7 +1057,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                         },
                         new LearningDeliveryPeriodisedValues
                         {
-                            AttributeName = "PriceEpisodeLSFCash",
+                            AttributeName = "LearnSuppFundCash",
                             Period1 = fm36Earning,
                             Period2 = 0,
                             Period3 = 0,
