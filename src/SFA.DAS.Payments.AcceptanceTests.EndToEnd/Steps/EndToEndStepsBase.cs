@@ -109,7 +109,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (Config.ValidateDcAndDasServices)
                 CurrentIlr.Clear();
-
             CurrentIlr.AddRange(ilr);
         }
 
@@ -180,7 +179,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     throw new Exception("There is an aim without a matching learner");
                 }
 
-                learner.Aims.Clear();
+         //       learner.Aims.Clear();
 
                 learner.Aims.AddRange(learnerAims);
             }
