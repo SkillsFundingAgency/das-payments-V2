@@ -13,9 +13,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
     public interface IPeriodEndJobService
     {
-        Task RecordPeriodEndStart(long jobId, short collectionYear, byte collectionPeriod, CancellationToken cancellationToken);
-        Task RecordPeriodEndRun(long jobId, short collectionYear, byte collectionPeriod, CancellationToken cancellationToken);
-        Task RecordPeriodEndStop(long jobId, short collectionYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task RecordPeriodEndStart(long jobId, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages, CancellationToken cancellationToken);
+        Task RecordPeriodEndRun(long jobId, short collectionYear, byte collectionPeriod,List<GeneratedMessage> generatedMessages, CancellationToken cancellationToken);
+        Task RecordPeriodEndStop(long jobId, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages,CancellationToken cancellationToken);
     }
     
     public class PeriodEndJobService : JobService,IPeriodEndJobService
@@ -27,16 +27,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-
-        public async Task RecordNewJob(JobModel jobDetails, CancellationToken cancellationToken)
-        {
-            Logger.LogDebug($"Now recording new period end job.  Job Id: {jobDetails.DcJobId}");
-            jobDetails.StartTime = DateTimeOffset.Now;
-            await RecordNewJob(jobDetails,cancellationToken).ConfigureAwait(false);
-        }
-        
        
-        public async Task RecordPeriodEndStart(long jobId, short collectionYear, byte collectionPeriod, CancellationToken cancellationToken)
+        public async Task RecordPeriodEndStart(long jobId, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages, CancellationToken cancellationToken)
         {
             logger.LogDebug($"Sending request to record period end start. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
            
@@ -47,13 +39,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
                 AcademicYear = collectionYear,
                 DcJobId = jobId,
                 Status = JobStatus.InProgress,
+                StartTime = DateTimeOffset.UtcNow
             };
-            await RecordNewJob(jobDetails, cancellationToken).ConfigureAwait(false);
+            await RecordNewJob(jobDetails, generatedMessages, cancellationToken).ConfigureAwait(false);
             
             logger.LogInfo($"Sent request to record period end start job. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
         }
 
-        public async Task RecordPeriodEndRun(long jobId, short collectionYear, byte collectionPeriod, CancellationToken cancellationToken)
+        public async Task RecordPeriodEndRun(long jobId, short collectionYear, byte collectionPeriod,List<GeneratedMessage> generatedMessages, CancellationToken cancellationToken)
         {
             logger.LogDebug($"Sending request to record period end run. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
             var jobDetails = new JobModel
@@ -63,12 +56,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
                 AcademicYear = collectionYear,
                 DcJobId = jobId,
                 Status = JobStatus.InProgress,
+                StartTime = DateTimeOffset.UtcNow
             };
-            await RecordNewJob(jobDetails, cancellationToken).ConfigureAwait(false);
+            await RecordNewJob(jobDetails,generatedMessages,  cancellationToken).ConfigureAwait(false);
             logger.LogInfo($"Sent request to record period end run job. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
         }
 
-        public async Task RecordPeriodEndStop(long jobId, short collectionYear, byte collectionPeriod, CancellationToken cancellationToken)
+        public async Task RecordPeriodEndStop(long jobId, short collectionYear, byte collectionPeriod,List<GeneratedMessage> generatedMessages, CancellationToken cancellationToken)
         {
             logger.LogDebug($"Sending request to record period end stop. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
             var jobDetails = new JobModel
@@ -78,8 +72,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
                 AcademicYear = collectionYear,
                 DcJobId = jobId,
                 Status = JobStatus.InProgress,
+                StartTime = DateTimeOffset.UtcNow
             };
-            await RecordNewJob(jobDetails, cancellationToken).ConfigureAwait(false);
+            await RecordNewJob(jobDetails,generatedMessages,  cancellationToken).ConfigureAwait(false);
             logger.LogInfo($"Sent request to record period end stop job. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
         }
     }
