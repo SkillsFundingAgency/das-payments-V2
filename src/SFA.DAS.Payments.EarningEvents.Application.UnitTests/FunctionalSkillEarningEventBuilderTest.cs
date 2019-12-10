@@ -590,8 +590,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             events[1].Should().BeAssignableTo<Act2FunctionalSkillEarningsEvent>();
             events[1].ContractType.Should().Be(ContractType.Act2);
         }
-
-
+        
         [Test]
         public void FunctionalSkillBuild()
         {
