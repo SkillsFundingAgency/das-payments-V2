@@ -42,8 +42,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             mocker.Provide<IMapper>(mapper);
             
             mocker.Provide<IRefundRemovedLearningAimService>(
-                new RefundRemovedLearningAimService(
-                    new RefundService(), new PaymentDueProcessor()));
+                new RefundRemovedLearningAimService());
             identifiedLearner = identifiedLearner = new IdentifiedRemovedLearningAim
             {
                 CollectionPeriod = new CollectionPeriod

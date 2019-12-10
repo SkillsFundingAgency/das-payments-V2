@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         [SetUp]
         public void SetUp()
         {
-            sut = new RefundRemovedLearningAimService(new RefundService(), new PaymentDueProcessor());
+            sut = new RefundRemovedLearningAimService();
             history = new List<Payment>();
         }
 
