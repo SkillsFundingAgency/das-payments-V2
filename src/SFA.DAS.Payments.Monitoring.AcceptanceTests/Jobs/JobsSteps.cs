@@ -42,7 +42,8 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         {
         }
 
-        protected string PartitionEndpointName => $"sfa-das-payments-monitoring-jobs{JobDetails.JobId % 20}";
+        //protected string PartitionEndpointName => $"sfa-das-payments-monitoring-jobs{JobDetails.JobId % 20}";
+        protected string PartitionEndpointName => $"sfa-das-payments-monitoring-jobs0";
 
 
         [Given(@"the payments are for the current collection year")]
@@ -57,6 +58,29 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         {
             CollectionPeriod = period;
         }
+
+    
+        [Given(@"the period end service has received a period end job")]
+        public void GivenThePeriodEndServiceHasReceivedAPeriodEndJob()
+        {
+            GeneratedMessages = new List<GeneratedMessage>
+            {
+                new GeneratedMessage {StartTime = DateTimeOffset.UtcNow, MessageName = "SFA.DAS.Payments.PeriodEnd.Messages.Events.PeriodEndStartedEvent", MessageId = Guid.NewGuid()},
+            };
+            JobDetails = new RecordPeriodEndStartJob
+            {
+                JobId = TestSession.JobId,
+                CollectionPeriod = CollectionPeriod,
+                CollectionYear = 1819,
+                StartTime = DateTimeOffset.UtcNow,
+                GeneratedMessages = GeneratedMessages,
+            };
+
+            Console.WriteLine($"Job details: {JobDetails.ToJson()}");
+       
+        }
+
+
 
         [Given(@"the earnings event service has received a provider earnings job")]
         public void GivenTheEarningsEventServiceHasReceivedAProviderEarningsJob()
@@ -87,7 +111,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             GeneratedMessages = new List<GeneratedMessage>();
             for (var i = 0; i < 1500; i++)
             {
-                GeneratedMessages.Add(new GeneratedMessage { StartTime = DateTimeOffset.UtcNow, MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand", MessageId = Guid.NewGuid() });
+                GeneratedMessages.Add(new GeneratedMessage { StartTime = DateTimeOffset.UtcNow, MessageName = "SFA.DAS.Payments.PeriodEnd.Messages.Events.PeriodEndStartedEvent", MessageId = Guid.NewGuid() });
             }
             JobDetails = new RecordEarningsJob
             {
@@ -188,6 +212,18 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             CreatePeriodEndJob<RecordPeriodEndStopJob>();
         }
 
+
+        [Given(@"the monitoring service has recorded the completion of a period end start job")]
+        public async void GivenTheMonitoringServiceHasRecordedTheCompletionOfAPeriodEndStartJob()
+        {
+            GivenThePeriodEndServiceHasReceivedAPeriodEndJob();
+            await WhenThePeriodEndServiceNotifiesTheJobMonitoringServiceToRecordTheJob().ConfigureAwait(false);
+            await WhenTheFinalMessagesForTheJobAreSuccessfullyProcessed().ConfigureAwait(false);
+            await ThenTheJobMonitoringServiceShouldRecordTheJob().ConfigureAwait(false);
+        }
+
+
+
         [Given(@"the monitoring service has recorded the completion of an earnings job")]
         public async Task GivenTheMonitoringServiceHasRecordedTheCompletionOfAnEarningsJob()
         {
@@ -235,6 +271,17 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 skip += 1000;
             }
         }
+
+
+
+        [When(@"the period end service notifies the job monitoring service to record the job")]
+        public async Task WhenThePeriodEndServiceNotifiesTheJobMonitoringServiceToRecordTheJob()
+        {
+            var recordPeriodEndStartJob = JobDetails as RecordPeriodEndStartJob;
+            recordPeriodEndStartJob.GeneratedMessages = GeneratedMessages.Take(1000).ToList();
+            await MessageSession.Send(PartitionEndpointName, JobDetails).ConfigureAwait(false);
+        }
+
 
 
         [When(@"the final messages for the job are failed to be processed")]

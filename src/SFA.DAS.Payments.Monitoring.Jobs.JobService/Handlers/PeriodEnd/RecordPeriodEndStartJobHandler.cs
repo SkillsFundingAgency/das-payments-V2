@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
 {
@@ -14,11 +16,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
     {
         private readonly IPaymentLogger logger;
         private readonly IPeriodEndJobService periodEndJobService;
+        private readonly IJobStatusManager jobStatusManager;
 
-        public RecordPeriodEndStartJobHandler(IPaymentLogger logger, IPeriodEndJobService periodEndJobService)
+        public RecordPeriodEndStartJobHandler(IPaymentLogger logger, IPeriodEndJobService periodEndJobService, IJobStatusManager jobStatusManager)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.periodEndJobService = periodEndJobService ?? throw new ArgumentNullException(nameof(periodEndJobService));
+            this.jobStatusManager = jobStatusManager ?? throw new ArgumentNullException(nameof(jobStatusManager));
         }
 
         public async Task Handle(IList<RecordPeriodEndStartJob> messages, CancellationToken cancellationToken)
@@ -28,6 +32,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
                 logger.LogInfo($"Handling period end start job: {message.ToJson()}");
                await periodEndJobService.RecordPeriodEndStart(message.JobId, message.CollectionYear,
                    message.CollectionPeriod, message.GeneratedMessages, cancellationToken);
+               jobStatusManager.StartMonitoringJob(message.JobId, JobType.PeriodEndStartJob);
+     
             }
         }
     }
