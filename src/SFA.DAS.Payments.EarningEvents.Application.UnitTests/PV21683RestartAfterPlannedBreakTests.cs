@@ -72,6 +72,21 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         }
 
         [Test]
+        public void RestartAfterPlannedBreakShouldHaveValidFunctionalSkillsEarningShouldhaveValidFundingLineTypes()
+        {
+            var builder = new FunctionalSkillEarningEventBuilder(mapper);
+            var events = builder.Build(CreateFromFile());
+
+            var functionalSkillEvent_5010987X = events.FirstOrDefault(e => e.LearningAim.Reference.Equals("5010987X"));
+            functionalSkillEvent_5010987X.Should().NotBeNull();
+            functionalSkillEvent_5010987X.LearningAim.FundingLineType.Should().Be("19+ Apprenticeship Non-Levy Contract (procured)");
+
+            var functionalSkillEvent_50093186 = events.FirstOrDefault(e => e.LearningAim.Reference.Equals("50093186"));
+            functionalSkillEvent_50093186.Should().NotBeNull();
+            functionalSkillEvent_50093186.LearningAim.FundingLineType.Should().Be("19+ Apprenticeship Non-Levy Contract (procured)");
+        }
+               
+        [Test]
         public void RestartAfterPlannedBreakShouldHaveTwoSubmittedLearnerAims()
         {
             var builder = new SubmittedLearnerAimBuilder(mapper);

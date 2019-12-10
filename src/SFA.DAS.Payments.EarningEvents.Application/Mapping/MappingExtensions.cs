@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             for (byte i = 1; i <= earningPeriods; i++)
             {
                 var periodValues = periodisedTextValues.Select(p => p.GetPeriodTextValue(i)).ToArray();
-                var periodValue = periodValues.FirstOrDefault(v => !v.Equals("None", StringComparison.OrdinalIgnoreCase));
+                var periodValue = periodValues.FirstOrDefault(v => !v.Equals(GlobalConstants.Fm36NoneText, StringComparison.OrdinalIgnoreCase));
 
                 contractTypes[i - 1] = GetContractType(periodValue);
             }
