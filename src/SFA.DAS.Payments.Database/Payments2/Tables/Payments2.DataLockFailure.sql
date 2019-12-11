@@ -23,3 +23,5 @@
 GO
 
 CREATE UNIQUE INDEX [IX_DataLockFailure_Key] ON [Payments2].[DataLockFailure] ([Ukprn], [LearningAimFrameworkCode], [LearningAimPathwayCode], [LearningAimProgrammeType], [LearningAimStandardCode], [LearningAimReference], [LearnerReferenceNumber], [AcademicYear], [DeliveryPeriod], [TransactionType])
+GO
+CREATE NONCLUSTERED INDEX [IX_DataLockFailure__Search] ON [Payments2].[DataLockFailure] ([AcademicYear], [LearnerReferenceNumber], [LearningAimReference], [Ukprn], [TransactionType]) INCLUDE ([Amount], [DataLockEventId], [DeliveryPeriod], [EarningEventId], [LearnerUln], [LearningAimFrameworkCode], [LearningAimPathwayCode], [LearningAimProgrammeType], [LearningAimStandardCode]) WITH (ONLINE = ON)
