@@ -260,7 +260,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 SubmissionDate = DateTime.UtcNow
             };
 
-            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries);
+            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes,
+                fm36Learner.LearningDeliveries.Where(x => x.IsMainAim()).ToList());
         }
 
         [Test]
