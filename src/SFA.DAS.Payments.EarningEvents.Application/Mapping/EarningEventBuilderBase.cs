@@ -12,7 +12,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         {
             var results = new List<IntermediateLearningAim>();
             var groupedLearningDeliveries = learnerSubmission.Learner.LearningDeliveries
-                .Where(x => x.IsMainAim() || x.LearningDeliveryValues.LearnDelMathEng.HasValue && x.LearningDeliveryValues.LearnDelMathEng.Value)
                 .GroupBy(ld => new
                 {
                     ld.LearningDeliveryValues.LearnAimRef,
@@ -80,13 +79,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 return new List<IntermediateLearningAim> { new IntermediateLearningAim(learnerSubmission, new List<PriceEpisode>(), learningDeliveries) };
 
             var results = new List<IntermediateLearningAim>();
-
-            var intermediateLearningAim =
-                new IntermediateLearningAim(learnerSubmission, new List<PriceEpisode>(), learningDeliveries);
-
-            var contractTypes =
-                intermediateLearningAim.Learner
-                    .LearningDeliveries.GetContractTypesForLearningDeliveries();
+            var contractTypes = learningDeliveries.GetContractTypesForLearningDeliveries();
 
             var distinctContractTypes = contractTypes.Distinct().ToList();
 
