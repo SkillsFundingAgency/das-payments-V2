@@ -19,6 +19,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
     [Binding]
     public class JobsSteps : StepsBase
     {
+        
         protected JobsDataContext DataContext => Scope.Resolve<JobsDataContext>();
         protected JobModel Job
         {
@@ -40,10 +41,11 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
 
         public JobsSteps(ScenarioContext context) : base(context)
         {
+         
         }
 
-        //protected string PartitionEndpointName => $"sfa-das-payments-monitoring-jobs{JobDetails.JobId % 20}";
-        protected string PartitionEndpointName => $"sfa-das-payments-monitoring-jobs0";
+        protected string PartitionEndpointName => $"sfa-das-payments-monitoring-jobs{JobDetails.JobId % 20}";
+  
 
 
         [Given(@"the payments are for the current collection year")]
@@ -299,6 +301,20 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 });
             }
         }
+
+        [When(@"Data-Collections confirms the successful completion of the period end start job")]
+        public async Task WhenData_CollectionsConfirmsTheSuccessfulCompletionOfThePeriodEndStartJob()
+        {
+            var earningsJob = JobDetails as RecordPeriodEndStartJob  ?? throw new InvalidOperationException("Expected job to be a ");
+            await MessageSession.Send(PartitionEndpointName, new RecordPeriodEndRunStartJobSucceeded
+            {
+                JobId = JobDetails.JobId,
+                CollectionPeriod = CollectionPeriod,
+                AcademicYear = AcademicYear,
+            }).ConfigureAwait(false);
+        }
+
+
 
         [When(@"Data-Collections confirms the successful completion of the job")]
         public async Task WhenData_CollectionsConfirmsTheSuccessfulCompletionOfTheJob()
