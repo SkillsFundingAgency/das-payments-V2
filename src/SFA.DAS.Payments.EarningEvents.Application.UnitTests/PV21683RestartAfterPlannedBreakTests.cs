@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using AutoMapper;
@@ -54,6 +55,16 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         }
 
         [Test]
+        public void RestartAfterPlannedBreakMainAimShouldHaveValidLearnStartDate()
+        {
+            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(new ApprenticeshipContractTypeEarningsEventFactory(), mapper);
+            var events = builder.Build(CreateFromFile());
+
+            events.First().LearningAim.StartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
+            events.First().StartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
+        }
+
+        [Test]
         public void RestartAfterPlannedBreakShouldHaveTwoFunctionalSkills()
         {
             var builder = new FunctionalSkillEarningEventBuilder(mapper);
@@ -72,7 +83,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         }
 
         [Test]
-        public void RestartAfterPlannedBreakShouldHaveValidFunctionalSkillsEarningShouldhaveValidFundingLineTypes()
+        public void RestartAfterPlannedBreakFunctionalSkillsEarningsShouldHaveValidFundingLineTypes()
         {
             var builder = new FunctionalSkillEarningEventBuilder(mapper);
             var events = builder.Build(CreateFromFile());
@@ -84,6 +95,21 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var functionalSkillEvent_50093186 = events.FirstOrDefault(e => e.LearningAim.Reference.Equals("50093186"));
             functionalSkillEvent_50093186.Should().NotBeNull();
             functionalSkillEvent_50093186.LearningAim.FundingLineType.Should().Be("19+ Apprenticeship Non-Levy Contract (procured)");
+        }
+               
+        [Test]
+        public void RestartAfterPlannedBreakFunctionalSkillsEarningsShouldHaveValidStartDates()
+        {
+            var builder = new FunctionalSkillEarningEventBuilder(mapper);
+            var events = builder.Build(CreateFromFile());
+
+            var functionalSkillEvent_5010987X = events.First(e => e.LearningAim.Reference.Equals("5010987X"));
+            functionalSkillEvent_5010987X.LearningAim.StartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
+            functionalSkillEvent_5010987X.StartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
+
+            var functionalSkillEvent_50093186 = events.First(e => e.LearningAim.Reference.Equals("50093186"));
+            functionalSkillEvent_50093186.LearningAim.StartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
+            functionalSkillEvent_50093186.StartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
         }
                
         [Test]
