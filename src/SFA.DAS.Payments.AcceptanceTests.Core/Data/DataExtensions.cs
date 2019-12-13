@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Payments.Model.Core;
+﻿using Newtonsoft.Json;
+using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {
@@ -24,6 +25,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
                 ProgrammeType = course.ProgrammeType,
                 Reference = course.LearnAimRef
             };
+        }
+
+        public static T Clone<T>(this T source)
+        {
+            if (object.ReferenceEquals(source, null))
+            {
+                return default(T);
+            }
+
+            var deserialiseSettings = new JsonSerializerSettings{ObjectCreationHandling = ObjectCreationHandling.Replace};
+            return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(source), deserialiseSettings);
         }
     }
 }

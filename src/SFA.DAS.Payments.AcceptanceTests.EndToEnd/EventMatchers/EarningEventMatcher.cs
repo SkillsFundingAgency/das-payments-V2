@@ -14,6 +14,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Tests.Core;
 using Earning = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Earning;
 using FunctionalSkillEarning = SFA.DAS.Payments.Model.Core.Incentives.FunctionalSkillEarning;
 using Learner = SFA.DAS.Payments.Model.Core.Learner;
@@ -29,6 +30,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
         private readonly List<Training> currentIlr;
         private readonly IList<Earning> earningSpecs;
         private readonly IList<FM36Learner> learnerSpecs;
+        private static IList<Earning> originalEarningSpecs;
 
         private static readonly TestsConfiguration Config = new TestsConfiguration();
 
@@ -93,6 +95,34 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus, a.AimReference, a.PlannedDuration, a.ActualDuration));
                 }
 
+                if (currentAims.Any(x => x.CompletionStatus == CompletionStatus.PlannedBreak))
+                {
+                    // this is to address PV2-216 planned break/restart
+
+                    var preBreakAim = currentAims.Single(x => x.CompletionStatus == CompletionStatus.PlannedBreak).Clone();
+                    var postBreakAim = currentAims.Single(x => x.CompletionStatus != CompletionStatus.PlannedBreak);
+                    
+                    preBreakAim.CompletionStatus = postBreakAim.CompletionStatus;
+                    preBreakAim.PriceEpisodes.AddRange(postBreakAim.PriceEpisodes); 
+                    currentAims = new List<Aim> { preBreakAim };
+
+                    if (originalEarningSpecs == null) originalEarningSpecs = earningSpecs.Clone();
+                    var postBreakStartPeriod = postBreakAim.StartDate.ToDate().ToString("MMM").ToMonthPeriod();
+                    var preBreakEarnings = originalEarningSpecs.Where(x =>
+                        x.AimSequenceNumber == preBreakAim.AimSequenceNumber && x.DeliveryCalendarPeriod < postBreakStartPeriod).Clone();
+                    var postBreakEarnings = originalEarningSpecs.Where(x =>
+                        x.AimSequenceNumber == postBreakAim.AimSequenceNumber && x.DeliveryCalendarPeriod >= postBreakStartPeriod).Clone();
+                    var newEarnings = new List<Earning>(preBreakEarnings);
+                    newEarnings.AddRange(postBreakEarnings);
+
+                    earningSpecs.Clear();
+                    newEarnings.ForEach(x =>
+                    {
+                        x.AimSequenceNumber = preBreakAim.AimSequenceNumber;
+                        earningSpecs.Add(x);
+                    });
+                }
+
                 foreach (var aimSpec in currentAims)
                 {
                     var learningAim = new LearningAim
@@ -132,10 +162,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
                     if (!aimSpec.IsMainAim && functionalSkillEarnings.Any())
                     {
-                        var functionalSkillEarningsEvents = CreateFunctionalSkillEarningEvents(functionalSkillEarnings, 
-                            aimEarningSpecs, 
-                            fm36Learner, 
-                            learner, 
+                        var functionalSkillEarningsEvents = CreateFunctionalSkillEarningEvents(functionalSkillEarnings,
+                            aimEarningSpecs,
+                            fm36Learner,
+                            learner,
                             learningAim,
                             aimSpec);
 

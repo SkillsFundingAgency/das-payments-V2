@@ -101,15 +101,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected void AddNewIlr(Table table, long ukprn)
         {
-            var ilr = table.CreateSet<Training>().ToList();
-            AddTestLearners(ilr, ukprn);
+            if (!TestSession.AtLeastOneScenarioCompleted)
+            {
+                var ilr = table.CreateSet<Training>().ToList();
+                AddTestLearners(ilr, ukprn);
 
-            if (CurrentIlr == null)
-                CurrentIlr = new List<Training>();
+                if (CurrentIlr == null)
+                    CurrentIlr = new List<Training>();
 
-            if (Config.ValidateDcAndDasServices)
-                CurrentIlr.Clear();
-            CurrentIlr.AddRange(ilr);
+                if (Config.ValidateDcAndDasServices)
+                    CurrentIlr.Clear();
+                CurrentIlr.AddRange(ilr);
+            }
         }
 
         protected void SetCollectionPeriod(string collectionPeriod)
