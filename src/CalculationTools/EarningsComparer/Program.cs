@@ -100,7 +100,7 @@ namespace EarningsComparer
                 .ThenBy(row => row.ApprenticeshipContractType)
                 .ToList();
 
-            joinedValues =  FilterValues(filterMode, joinedValues);
+            var filteredResults =  FilterValues(filterMode, joinedValues);
 
 
             using (var templateStream = Helpers.OpenResource(ExcelTemplate))
@@ -109,9 +109,11 @@ namespace EarningsComparer
                 {
                     var sheet = spreadsheet.Worksheet("Earnings Comparison");
 
+                    AddFilterSheet(spreadsheet, filterMode, filteredResults.Item2);
+
                     AddSummaryInfo(sheet, collectionPeriod, processingStartTime);
 
-                    WriteDataToSheet(sheet, joinedValues);
+                    WriteDataToSheet(sheet, filteredResults.Item1);
 
 
                     sheet.Columns().AdjustToContents();
@@ -122,19 +124,49 @@ namespace EarningsComparer
             }
         }
 
-        private static  List<CombinedRow> FilterValues(FilterMode filterMode, List<CombinedRow> joinedValues)
+        private static void AddFilterSheet(XLWorkbook spreadsheet, FilterMode filterMode, List<long> filterItems)
         {
             switch (filterMode)
             {
                 case FilterMode.None:
-                    return joinedValues;
+                    break;
+                case FilterMode.Whitelist:
+                    var whitelistSheet = spreadsheet.AddWorksheet("Whitelist");
+                    AddFilterList(whitelistSheet, filterItems);
+
+                    break;
+                case FilterMode.Blacklist:
+                    var blacklist = spreadsheet.AddWorksheet("BlackList");
+                    AddFilterList(blacklist, filterItems);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(filterMode), filterMode, null);
+            }
+        }
+
+        private static void AddFilterList(IXLWorksheet whitelistSheet, List<long> filterItems)
+        { int row = 1;
+            foreach (var filterItem in filterItems)
+            {
+               
+                whitelistSheet.Cell(row, 1).SetValue(filterItem);
+                row++;
+            }
+        }
+
+        private static (List<CombinedRow>, List<long>) FilterValues(FilterMode filterMode, List<CombinedRow> joinedValues)
+        {
+            switch (filterMode)
+            {
+                case FilterMode.None:
+                    return (joinedValues, new List<long>());
                 case FilterMode.Whitelist:
                     List<long> whiteList = CreateFilterList(filterMode);
-                    return joinedValues.Where(jv => whiteList.Contains(jv.Ukprn)).ToList();
+                    return (joinedValues.Where(jv => whiteList.Contains(jv.Ukprn)).ToList(), whiteList);
                    
                 case FilterMode.Blacklist:
                     List<long> blackList = CreateFilterList(filterMode);
-                    return  joinedValues.Where(jv => !blackList.Contains(jv.Ukprn)).ToList();
+                    return  (joinedValues.Where(jv => !blackList.Contains(jv.Ukprn)).ToList(), blackList);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(filterMode), filterMode, null);
             }
