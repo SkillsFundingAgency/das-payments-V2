@@ -95,34 +95,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         a.PlannedDurationAsTimespan, a.ActualDurationAsTimespan, a.CompletionStatus, a.AimReference, a.PlannedDuration, a.ActualDuration));
                 }
 
-                if (currentAims.Any(x => x.CompletionStatus == CompletionStatus.PlannedBreak))
-                {
-                    // this is to address PV2-216 planned break/restart
-
-                    var preBreakAim = currentAims.Single(x => x.CompletionStatus == CompletionStatus.PlannedBreak).Clone();
-                    var postBreakAim = currentAims.Single(x => x.CompletionStatus != CompletionStatus.PlannedBreak);
-                    
-                    preBreakAim.CompletionStatus = postBreakAim.CompletionStatus;
-                    preBreakAim.PriceEpisodes.AddRange(postBreakAim.PriceEpisodes); 
-                    currentAims = new List<Aim> { preBreakAim };
-
-                    if (originalEarningSpecs == null) originalEarningSpecs = earningSpecs.Clone();
-                    var postBreakStartPeriod = postBreakAim.StartDate.ToDate().ToString("MMM").ToMonthPeriod();
-                    var preBreakEarnings = originalEarningSpecs.Where(x =>
-                        x.AimSequenceNumber == preBreakAim.AimSequenceNumber && x.DeliveryCalendarPeriod < postBreakStartPeriod).Clone();
-                    var postBreakEarnings = originalEarningSpecs.Where(x =>
-                        x.AimSequenceNumber == postBreakAim.AimSequenceNumber && x.DeliveryCalendarPeriod >= postBreakStartPeriod).Clone();
-                    var newEarnings = new List<Earning>(preBreakEarnings);
-                    newEarnings.AddRange(postBreakEarnings);
-
-                    earningSpecs.Clear();
-                    newEarnings.ForEach(x =>
-                    {
-                        x.AimSequenceNumber = preBreakAim.AimSequenceNumber;
-                        earningSpecs.Add(x);
-                    });
-                }
-
                 foreach (var aimSpec in currentAims)
                 {
                     var learningAim = new LearningAim

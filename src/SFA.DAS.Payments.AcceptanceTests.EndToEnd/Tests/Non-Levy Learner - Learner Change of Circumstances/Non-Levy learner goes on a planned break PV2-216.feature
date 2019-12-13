@@ -35,7 +35,7 @@ Scenario Outline: Non-levy learner goes on a planned break which is recorded in 
         | pe-1             | 15000                | 01/Sep/Current Academic Year        | 0                      | 01/Sep/Current Academic Year          | 90%                         | Act2          | 1                   |
         | pe-2             | 15000                | 03/Jan/Current Academic Year        | 0                      | 03/Jan/Current Academic Year          | 90%                         | Act2          | 2                   |
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
-	Then the following learner earnings should be generated
+	Then the following learner earnings should be generated on restart
         | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier | Aim Sequence Number |
         | Aug/Current Academic Year | 0            | 0          | 0         | pe-1                     | 1                   |
         | Sep/Current Academic Year | 1000         | 0          | 0         | pe-1                     | 1                   |
@@ -63,8 +63,6 @@ Scenario Outline: Non-levy learner goes on a planned break which is recorded in 
         | Jul/Current Academic Year | 1000         | 0          | 0         | pe-2                     | 2                   |
     And only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
-        #| R04/Current Academic Year | Nov/Current Academic Year | 0            | 0          | 0         |
-        #| R05/Current Academic Year | Dec/Current Academic Year | 0            | 0          | 0         |
         | R06/Current Academic Year | Jan/Current Academic Year | 1000         | 0          | 0         |
         | R07/Current Academic Year | Feb/Current Academic Year | 1000         | 0          | 0         |
         | R08/Current Academic Year | Mar/Current Academic Year | 1000         | 0          | 0         |
@@ -74,8 +72,6 @@ Scenario Outline: Non-levy learner goes on a planned break which is recorded in 
         | R12/Current Academic Year | Jul/Current Academic Year | 1000         | 0          | 0         |
 	And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
-        #| R04/Current Academic Year | Nov/Current Academic Year | 0                      | 0                           | Learning         |
-        #| R05/Current Academic Year | Dec/Current Academic Year | 0                      | 0                           | Learning         |
         | R06/Current Academic Year | Jan/Current Academic Year | 900                    | 100                         | Learning         |
         | R07/Current Academic Year | Feb/Current Academic Year | 900                    | 100                         | Learning         |
         | R08/Current Academic Year | Mar/Current Academic Year | 900                    | 100                         | Learning         |
@@ -85,8 +81,6 @@ Scenario Outline: Non-levy learner goes on a planned break which is recorded in 
         | R12/Current Academic Year | Jul/Current Academic Year | 900                    | 100                         | Learning         |
 	And at month end only the following provider payments will be generated
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type |
-        #| R04/Current Academic Year | Nov/Current Academic Year | 0                      | 0                           | Learning         |
-        #| R05/Current Academic Year | Dec/Current Academic Year | 0                      | 0                           | Learning         |
         | R06/Current Academic Year | Jan/Current Academic Year | 900                    | 100                         | Learning         |
         | R07/Current Academic Year | Feb/Current Academic Year | 900                    | 100                         | Learning         |
         | R08/Current Academic Year | Mar/Current Academic Year | 900                    | 100                         | Learning         |
@@ -96,8 +90,6 @@ Scenario Outline: Non-levy learner goes on a planned break which is recorded in 
         | R12/Current Academic Year | Jul/Current Academic Year | 900                    | 100                         | Learning         |
 Examples: 
         | Collection_Period         |
-        #| R04/Current Academic Year |
-        #| R05/Current Academic Year |
         | R06/Current Academic Year |
         | R07/Current Academic Year |
         | R08/Current Academic Year |
