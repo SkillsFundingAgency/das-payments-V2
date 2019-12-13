@@ -349,6 +349,91 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             list.Distinct().Should().HaveCount(1);
         }
 
+        [Test, AutoDomainData]
+        public async Task Built_event_should_have_distinct_errors(
+           [Frozen] Mock<IApprenticeshipRepository> repository,
+           PriceEpisodeStatusChangeBuilder sut,
+           EarningFailedDataLockMatching dataLock,
+           EarningPeriod period,
+           ApprenticeshipModel apprenticeships)
+        {
+
+           var periods = new List<EarningPeriod>{ period };
+            
+            var dLockFailures = new List<DataLockFailure>
+            {
+                new DataLockFailure
+                {
+                    ApprenticeshipId = apprenticeships.Id,
+                    DataLockError = DataLockErrorCode.DLOCK_03,
+                    ApprenticeshipPriceEpisodeIds = new List<long> {apprenticeships.ApprenticeshipPriceEpisodes[0].Id}
+                },
+                new DataLockFailure
+                {
+                    ApprenticeshipId = apprenticeships.Id,
+                    DataLockError = DataLockErrorCode.DLOCK_07,
+                    ApprenticeshipPriceEpisodeIds = apprenticeships.ApprenticeshipPriceEpisodes.Select(x => x.Id).ToList(),
+                },
+                new DataLockFailure
+                {
+                    ApprenticeshipId = apprenticeships.Id,
+                    DataLockError = DataLockErrorCode.DLOCK_06,
+                    ApprenticeshipPriceEpisodeIds = apprenticeships.ApprenticeshipPriceEpisodes.Select(x => x.Id).ToList(),
+                },
+            };
+            
+            dataLock.OnProgrammeEarnings = new List<OnProgrammeEarning>
+            {
+                new OnProgrammeEarning
+                {
+                    Type = OnProgrammeEarningType.Learning,
+
+                },
+                new OnProgrammeEarning
+                {
+                    Type = OnProgrammeEarningType.Completion,
+                }
+            };
+
+            CommonTestSetup(repository, dataLock, periods, new List<ApprenticeshipModel> { apprenticeships }, dLockFailures);
+
+
+            var priceEpisode = dataLock.PriceEpisodes[0];
+
+            dataLock.OnProgrammeEarnings[1].Periods = periods.AsReadOnly();
+
+
+            var result = await sut.Build(
+                new List<DataLockEvent> { dataLock },
+                new List<(string identifier, PriceEpisodeStatus status)>
+                {
+                    (priceEpisode.Identifier, PriceEpisodeStatus.New)
+                },
+                new List<PriceEpisodeStatusChange>());
+
+            result.Should().NotBeEmpty();
+            result[0].Errors.Should().HaveCount(3);
+            result[0].Errors.Should().BeEquivalentTo(new List<LegacyDataLockEventError>
+            {
+                new LegacyDataLockEventError
+                {
+                    DataLockEventId = result[0].DataLock.DataLockEventId,
+                    ErrorCode = DataLockErrorCode.DLOCK_03.ToString(),
+                },
+                new LegacyDataLockEventError
+                {
+                    DataLockEventId = result[0].DataLock.DataLockEventId,
+                    ErrorCode = DataLockErrorCode.DLOCK_07.ToString(),
+                },
+                new LegacyDataLockEventError
+                {
+                    DataLockEventId = result[0].DataLock.DataLockEventId,
+                    ErrorCode = DataLockErrorCode.DLOCK_06.ToString(),
+                },
+            }, options => options.Excluding(o => o.SystemDescription));
+
+        }
+
         public class AutoDomainDataAttribute : AutoDataAttribute
         {
             public AutoDomainDataAttribute()
@@ -385,7 +470,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             dataLock.OnProgrammeEarnings[0].Type = OnProgrammeEarningType.Learning;
             dataLock.OnProgrammeEarnings[0].Periods = periods.AsReadOnly();
-            
+
             if (dataLock is EarningFailedDataLockMatching)
             {
                 dataLockFailures.ForEach(x =>
@@ -394,7 +479,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                               x.ApprenticeshipPriceEpisodeIds = apprenticeships[0].ApprenticeshipPriceEpisodes.Select(o => o.Id).ToList();
                           });
             }
-            
+
         }
 
         public class InlineDomainAutoDataAttribute : InlineAutoDataAttribute
