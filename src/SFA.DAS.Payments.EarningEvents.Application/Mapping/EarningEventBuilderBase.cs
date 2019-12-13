@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 var group = priceEpisodes.Where(pe => IsCurrentAcademicYear(pe.PriceEpisodeValues, learnerSubmission.CollectionYear))
                     .GroupBy(p => p.PriceEpisodeValues.PriceEpisodeContractType);
 
-                foreach (var episodes in @group)
+                foreach (var episodes in group)
                 {
                     var intermediateAim = new IntermediateLearningAim(learnerSubmission, episodes, orderedGroupedLearningDelivery)
                     {

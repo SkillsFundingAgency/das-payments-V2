@@ -50,7 +50,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                             LearningDeliveryValues = new LearningDeliveryValues
                             {
                                 LearnAimRef = "5011397X",
-                                LearnDelMathEng = true,
                                 LearnDelInitialFundLineType = "16-18 Apprenticeship (Employer on App Service)",
                             },
                             LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
@@ -114,7 +113,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                             LearningDeliveryValues = new LearningDeliveryValues
                             {
                                 LearnAimRef = "5022394X",
-                                LearnDelMathEng = true,
                                 LearnDelInitialFundLineType = "16-18 Apprenticeship (Employer on App Service)",
                             },
                             LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
@@ -239,7 +237,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                             LearningDeliveryValues = new LearningDeliveryValues
                             {
                                 LearnAimRef = "5011394X",
-                                LearnDelMathEng = true,
                                 LearnDelInitialFundLineType = "16-18 Apprenticeship (Employer on App Service)",
                             },
                             LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
@@ -350,7 +347,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                             LearningDeliveryValues = new LearningDeliveryValues
                             {
                                 LearnAimRef = "M&E",
-                                LearnDelMathEng = true,
                                 LearnDelInitialFundLineType = "Non-Levy Contract"
                             },
                             LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
@@ -450,7 +446,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                             LearningDeliveryValues = new LearningDeliveryValues
                             {
                                 LearnAimRef = "English",
-                                LearnDelMathEng = true,
                                 LearnDelInitialFundLineType = "Non-Levy Contract"
                             },
                             LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
@@ -514,7 +509,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                             LearningDeliveryValues = new LearningDeliveryValues
                             {
                                 LearnAimRef = "Maths",
-                                LearnDelMathEng = true,
                                 LearnDelInitialFundLineType = "Non-Levy Contract"
                             },
                             LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
@@ -675,7 +669,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                             LearningDeliveryValues = new LearningDeliveryValues
                             {
                                 LearnAimRef = "M&E",
-                                LearnDelMathEng = true,
                                 LearnDelInitialFundLineType = "Levy Contract"
                             },
                             LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
