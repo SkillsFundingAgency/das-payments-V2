@@ -54,6 +54,9 @@
     <Reference Include="MoreLinq, Version=3.3.1.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
       <HintPath>..\..\packages\morelinq.3.3.1\lib\net451\MoreLinq.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -78,13 +81,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EarningsRow.cs" />
+    <Compile Include="Filtering\FilterList.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App.config" />
+    <Content Include="App.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Filtering\Files\blacklist.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Filtering\Files\whitelist.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <EmbeddedResource Include="Resources\Template.xlsx" />
   </ItemGroup>
@@ -92,5 +104,6 @@
     <EmbeddedResource Include="Resources\DasQuery.sql" />
     <EmbeddedResource Include="Resources\DcQuery.sql" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
