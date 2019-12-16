@@ -66,7 +66,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
              throw new InvalidOperationException($"Invalid funding source: '{fundingSourceType}'");
         }
 
-        public static string ToAttributeName(this TransactionType transactionType)
+        public static string ToAttributeName(this TransactionType transactionType, bool isMainAim = true)
         {
             switch (transactionType)
             {
@@ -77,7 +77,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
                 case TransactionType.Completion:
                     return "PriceEpisodeCompletionPayment";
                 case TransactionType.LearningSupport:
-                    return "PriceEpisodeLSFCash";
+                    return isMainAim? "PriceEpisodeLSFCash": "LearnSuppFundCash";
                 case TransactionType.First16To18EmployerIncentive:
                     return "PriceEpisodeFirstEmp1618Pay";
                 case TransactionType.First16To18ProviderIncentive:

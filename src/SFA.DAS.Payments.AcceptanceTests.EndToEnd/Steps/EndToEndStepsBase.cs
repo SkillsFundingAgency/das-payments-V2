@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Abstract;
+using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
@@ -297,8 +298,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var otherTraining = learnerTraining.FirstOrDefault(t => t.AimReference != "ZPROG001" && (string.IsNullOrWhiteSpace(t.LearnerId) || t.LearnerId.Equals(providerPayment.LearnerId)));
             var list = new List<PaymentModel>();
             if (providerPayment.SfaFullyFundedPayments > 0)
-                list.Add(CreatePaymentModel(providerPayment, otherTraining ?? onProgTraining, jobId, submissionTime, 1M,
-                    providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa, ukprn, providerPayment.AccountId, providerPayment.SendingAccountId));
+                if (providerPayment.TransactionType == TransactionType.LearningSupport)
+                {
+                    list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime, 1M,
+                        providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa, ukprn, providerPayment.AccountId, providerPayment.SendingAccountId));
+                }
+                else
+                {
+                    list.Add(CreatePaymentModel(providerPayment, otherTraining ?? onProgTraining, jobId, submissionTime, 1M,
+                        providerPayment.SfaFullyFundedPayments, FundingSourceType.FullyFundedSfa, ukprn, providerPayment.AccountId, providerPayment.SendingAccountId));
+                }
 
             if (providerPayment.EmployerCoFundedPayments > 0)
                 list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime,
@@ -415,6 +424,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 if (aim.IsMainAim)
                 {
                     learner.PriceEpisodes.AddRange(GeneratePriceEpisodes(aim, earnings));
+                    learningDelivery.LearningDeliveryPeriodisedValues = SetLearningSupportValues(aim, earnings);
                 }
                 else // maths & english & Learning support don't use price episodes
                 {
@@ -422,6 +432,30 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     learningDelivery.LearningDeliveryPeriodisedTextValues = SetPeriodisedTextValues(aim, earnings);
                 }
             }
+        }
+
+        private List<LearningDeliveryPeriodisedValues> SetLearningSupportValues(Aim aim, IList<Earning> earnings)
+        {
+            var aimPeriodisedValues = new List<LearningDeliveryPeriodisedValues>();
+            foreach (var earning in earnings.Where(x => x.AimSequenceNumber == aim.AimSequenceNumber))
+            {
+                var period = earning.DeliveryCalendarPeriod;
+                foreach (var earningValue in earning.Values.Where(v => v.Key == TransactionType.LearningSupport))
+                {
+                    var earningKey = earningValue.Key.ToAttributeName(!aim.IsMainAim);
+
+                    var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningKey);
+                    if (periodisedValues == null)
+                    {
+                        periodisedValues = new LearningDeliveryPeriodisedValues { AttributeName = earningKey };
+                        aimPeriodisedValues.Add(periodisedValues);
+                    }
+
+                    SetPeriodValue(period, periodisedValues, earningValue.Value);
+                }
+            }
+
+            return aimPeriodisedValues;
         }
 
         private List<PriceEpisode> GeneratePriceEpisodes(Aim aim, IList<Earning> earnings)
@@ -643,7 +677,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         continue;
                     }
 
-                    var earningKey = earningValue.Key.ToAttributeName();
+                    var earningKey = earningValue.Key.ToAttributeName(aim.IsMainAim);
 
                     var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningKey);
                     if (periodisedValues == null)
@@ -815,14 +849,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var expectedPayments = CreatePayments(table, provider.Ukprn);
             var matcher = new RequiredPaymentEventMatcher(provider, CurrentCollectionPeriod, expectedPayments, CurrentIlr, CurrentPriceEpisodes);
-            await WaitForIt(() => matcher.MatchPayments(), "Held Back Required Payment event check failure");
+            await WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
         }
 
         protected async Task MatchHeldBackRequiredPayments(Table table, Provider provider)
         {
             var expectedPayments = CreatePayments(table, provider.Ukprn);
             var matcher = new CompletionPaymentHeldBackEventMatcher(provider, CurrentCollectionPeriod, expectedPayments);
-            await WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
+            await WaitForIt(() => matcher.MatchPayments(), "Held Back Required Payment event check failure");
         }
 
         protected async Task StartMonthEnd(Provider provider)
@@ -1089,6 +1123,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var learners = new List<FM36Learner>();
             var providerCurrentIlrs = CurrentIlr?.Where(o => o.Ukprn == provider.Ukprn).ToList();
 
+            await GenerateEarnings(table, provider, earnings, learners, providerCurrentIlrs).ConfigureAwait(false);
+
+            var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings,
+                TestSession, CurrentCollectionPeriod, learners);
+            await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
+        }
+
+        protected async Task GenerateEarnings(Table table, Provider provider, List<Earning> earnings, List<FM36Learner> learners, List<Training> providerCurrentIlrs)
+        {
             if (providerCurrentIlrs != null)
             {
                 foreach (var training in providerCurrentIlrs)
@@ -1112,7 +1155,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     }
                     else
                     {
-                        foreach (var currentPriceEpisode in CurrentPriceEpisodes.Where(p => (string.IsNullOrWhiteSpace(p.Provider) || TestSession.GetProviderByIdentifier(p.Provider).Ukprn == provider.Ukprn) 
+                        foreach (var currentPriceEpisode in CurrentPriceEpisodes.Where(p => (string.IsNullOrWhiteSpace(p.Provider) || TestSession.GetProviderByIdentifier(p.Provider).Ukprn == provider.Ukprn)
                                                                                             && (string.IsNullOrWhiteSpace(p.LearnerId) || p.LearnerId == aim.LearnerId)))
                         {
                             if (currentPriceEpisode.AimSequenceNumber == 0 ||
@@ -1142,9 +1185,49 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod,
                 provider.JobId);
 
-            var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings,
-                TestSession, CurrentCollectionPeriod, learners);
-            await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
+        }
+
+        protected async Task GenerateEarnings(Provider provider)
+        {
+            var table = new Table("Delivery Period", "On-Programme", "Completion", "Balancing", "Price Episode Identifier");
+            table.AddRow("Aug/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Sep/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Oct/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Nov/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Dec/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Jan/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Feb/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Mar/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Apr/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("May/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Jun/Current Academic Year", "1000", "0", "0", "pe-1");
+            table.AddRow("Jul/Current Academic Year", "1000", "0", "0", "pe-1");
+            await GenerateEarnings(table, TestSession.Provider).ConfigureAwait(false);
+        }
+
+        protected async Task GenerateEarnings(Table table, Provider provider)
+        {
+            var earnings = CreateEarnings(table, provider.Ukprn);
+            var learners = new List<FM36Learner>();
+            var providerCurrentIlrs = CurrentIlr?.Where(o => o.Ukprn == provider.Ukprn).ToList();
+            await GenerateEarnings(table, provider, earnings, learners, providerCurrentIlrs).ConfigureAwait(false);
+        }
+
+        protected void AddTestLearners(Table table)
+        {
+            PreviousIlr = table.CreateSet<Training>().ToList();
+            AddTestLearners(PreviousIlr, TestSession.Provider.Ukprn);
+        }
+
+
+        protected void CreatePreviousEarningsAndTraining(Table table)
+        {
+            PreviousEarnings = CreateEarnings(table, TestSession.Provider.Ukprn);
+            // for new style specs where no ILR specified
+            if (PreviousIlr == null)
+            {
+                PreviousIlr = CreateTrainingFromLearners(TestSession.Provider.Ukprn);
+            }
         }
 
         protected async Task HandleIlrReSubmissionForTheLearners(string collectionPeriodText, Provider provider)
@@ -1169,6 +1252,41 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
 
             SetCollectionPeriod(collectionPeriodText);
+        }
+
+        protected void AddPriceDetails(Table table)
+        {
+            if (TestSession.AtLeastOneScenarioCompleted)
+            {
+                return;
+            }
+
+            var newPriceEpisodes = table.CreateSet<Price>().ToList();
+            CurrentPriceEpisodes = newPriceEpisodes;
+
+            if (TestSession.Learners.Any(x => x.Aims.Count > 0))
+            {
+                foreach (var newPriceEpisode in newPriceEpisodes)
+                {
+                    Aim aim;
+                    try
+                    {
+                        aim = TestSession.Learners.SelectMany(x => x.Aims)
+                            .SingleOrDefault(x => x.AimSequenceNumber == newPriceEpisode.AimSequenceNumber);
+                    }
+                    catch (Exception)
+                    {
+                        throw new Exception("There are too many aims with the same sequence number");
+                    }
+
+                    if (aim == null)
+                    {
+                        throw new Exception("There is a price episode without a matching aim");
+                    }
+
+                    aim.PriceEpisodes.Add(newPriceEpisode);
+                }
+            }
         }
 
         protected async Task ValidateRequiredPaymentsAtMonthEnd(Table table, Provider provider)
@@ -1257,6 +1375,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     EmployerProviderPriorities.AddRange(priorities);
                 }
             }
+        }
+
+        protected async Task SubmitIlrInPeriod(string collectionPeriodText, FeatureNumber featureNumber)
+        {
+            Task ClearCache() => HandleIlrReSubmissionForTheLearners(collectionPeriodText, TestSession.Provider);
+            await Scope.Resolve<IIlrService>().PublishLearnerRequest(CurrentIlr, TestSession.Learners, collectionPeriodText, featureNumber.Extract(), ClearCache);
         }
 
     }

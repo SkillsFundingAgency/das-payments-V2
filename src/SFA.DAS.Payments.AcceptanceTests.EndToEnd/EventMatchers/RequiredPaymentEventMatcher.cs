@@ -179,7 +179,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             if (expected == null)
                 return true;
 
-            return expected.Type == actual.Type;
+            return expected.Type == actual?.Type;
         }
 
         private bool MatchNonPayment(CompletionPaymentHeldBackEvent expected, CompletionPaymentHeldBackEvent completionPaymentHeldBackEvent2)

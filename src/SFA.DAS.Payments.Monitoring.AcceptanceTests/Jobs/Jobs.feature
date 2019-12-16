@@ -16,6 +16,20 @@ Scenario: Provider Earnings Job Finished
 	When the earnings event service notifies the job monitoring service to record the job
 	And the final messages for the job are successfully processed
 	Then the job monitoring service should update the status of the job to show that it has completed	
+
+Scenario: Data-Collections confirms success of Provider Earnings Job
+	Given the monitoring service has recorded the completion of an earnings job
+	When Data-Collections confirms the successful completion of the job
+	Then the monitoring service should record the successful completion of the Data-Collections processes
+	And the monitoring service should notify other services that the job has completed successfully
+
+
+Scenario: Data-Collections confirms failure of Provider Earnings Job
+	Given the monitoring service has recorded the completion of an earnings job
+	When Data-Collections confirms the failure of the job
+	Then the monitoring service should record the failure of the Data-Collections processes
+	And the monitoring service should notify other services that the job has failed
+
 #Scenario: Monitoring service records the completion time of data-locks processing
 #	Given the earnings event service has received a provider earnings job
 #	When the earnings event service notifies the job monitoring service to record the job
@@ -29,26 +43,5 @@ Scenario: Large Provider Earnings Job Finished
 	When the earnings event service notifies the job monitoring service to record the job
 	And the final messages for the job are successfully processed
 	#Then the job monitoring service should update the status of the job to show that it has completed
-#	
-#Scenario: Provider Earnings Job Finished With Errors
-#	Given a provider earnings job has already been recorded		
-#	When the final messages for the job are failed to be processed
-#	Then the job monitoring service should update the status of the job to show that it has completed with errors
-#		
-#Scenario: Period End Started Job
-#	Given the period end service has received a period end start job
-#	When the earnings event service notifies the job monitoring service to record the job
-#	Then the job monitoring service should record the job
-#	And the job monitoring service should also record the period end job messages
-#
-#Scenario: Period End Running Job
-#	Given the period end service has received a period end run job
-#	When the earnings event service notifies the job monitoring service to record the job
-#	Then the job monitoring service should record the job
-#	And the job monitoring service should also record the period end job messages
-#
-#Scenario: Period End Stopped Job
-#	Given the period end service has received a period end stop job
-#	When the earnings event service notifies the job monitoring service to record the job
-#	Then the job monitoring service should record the job
-#	And the job monitoring service should also record the period end job messages
+	
+

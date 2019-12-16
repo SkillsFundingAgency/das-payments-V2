@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             mocker = AutoMock.GetLoose();
             var mockStatusService = mocker.Mock<IJobStatusService>();
             mockStatusService.Setup(x => x.ManageStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(JobStatus.InProgress);
+                .ReturnsAsync(false);
             var mockScope = mocker.Mock<IUnitOfWorkScope>();
             mockScope.Setup(x => x.Resolve<IJobStatusService>())
                 .Returns(mockStatusService.Object);

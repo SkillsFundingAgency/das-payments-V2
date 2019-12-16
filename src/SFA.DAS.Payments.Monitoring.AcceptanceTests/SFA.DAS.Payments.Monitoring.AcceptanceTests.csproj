@@ -180,6 +180,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EndpointNames.cs" />
+    <Compile Include="Handlers\SubmissionJobFailedHandler.cs" />
+    <Compile Include="Handlers\SubmissionJobSucceededHandler.cs" />
     <Compile Include="Infrastructure\BindingBootstrapper.cs" />
     <Compile Include="Jobs\Jobs.feature.cs">
       <AutoGen>True</AutoGen>
@@ -220,6 +222,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj">
       <Project>{f6e38368-c397-488b-b041-d3e8423c1ce1}</Project>
       <Name>SFA.DAS.Payments.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj">
+      <Project>{07A36781-D09B-4CF9-8D0B-80BB929FE535}</Project>
+      <Name>SFA.DAS.Payments.EarningEvents.Messages</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
       <Project>{678e5d09-c96d-49cc-811f-78ddcb37a474}</Project>
