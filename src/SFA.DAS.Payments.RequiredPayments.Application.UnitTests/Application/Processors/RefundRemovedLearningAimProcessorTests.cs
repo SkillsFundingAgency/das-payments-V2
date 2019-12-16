@@ -57,7 +57,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 Learner = new Learner
                 {
                     ReferenceNumber = "learner-ref-123",
-                    Uln = 2
                 },
                 LearningAim = new LearningAim
                 {
@@ -89,6 +88,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 PriceEpisodeIdentifier = "pe-1",
                 DeliveryPeriod = deliveryPeriod,
                 Ukprn = 7,
+                LearnerUln = 5,
                 ActualEndDate = null,
                 CompletionAmount = 3000,
                 CompletionStatus = 1,
