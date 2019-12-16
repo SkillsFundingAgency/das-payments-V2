@@ -26,16 +26,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
                 Reference = course.LearnAimRef
             };
         }
-
-        public static T Clone<T>(this T source)
-        {
-            if (object.ReferenceEquals(source, null))
-            {
-                return default(T);
-            }
-
-            var deserialiseSettings = new JsonSerializerSettings{ObjectCreationHandling = ObjectCreationHandling.Replace};
-            return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(source), deserialiseSettings);
-        }
     }
 }
