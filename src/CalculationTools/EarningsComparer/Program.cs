@@ -2,6 +2,7 @@
 using Dapper;
 using MoreLinq.Extensions;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
@@ -9,7 +10,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Runtime.InteropServices.WindowsRuntime;
 using CommandLine;
+using DocumentFormat.OpenXml.Office2010.PowerPoint;
 using DocumentFormat.OpenXml.Spreadsheet;
 using EarningsComparer.Filtering;
 using Newtonsoft.Json;
@@ -26,11 +29,23 @@ namespace EarningsComparer
 
         private static int Main(string[] args)
         {
-            Parser argParser = new Parser(settings => settings.CaseInsensitiveEnumValues = true);
+            Parser argParser = new Parser(settings =>
+            {
+                settings.AutoHelp = true;
+                settings.HelpWriter = Console.Out;
+                settings.CaseInsensitiveEnumValues = true;
+            });
 
             return argParser.ParseArguments<Options>(args)
-                .MapResult(RunAndReturnExitCode, _ => 1);
+                .MapResult(RunAndReturnExitCode,ShowOptions);
         }
+
+
+        public static int ShowOptions(IEnumerable<Error> errors)
+        {
+            return 1;
+        }
+
 
         public static int RunAndReturnExitCode(Options options)
         {
@@ -39,7 +54,6 @@ namespace EarningsComparer
                 Console.WriteLine("Time component required on Processing Start Time");
                 return 1;
             }
-
             try
             {
                 CalculateEarningComparisonMetric(options.CollectionPeriod, options.ProcessingStartTime,
@@ -61,8 +75,8 @@ namespace EarningsComparer
             var dcConnectionString = ConfigurationManager.ConnectionStrings["DcConnectionString"].ConnectionString;
             var outputPath = ConfigurationManager.AppSettings["OutputPath"];
 
-            var dasQuery = Helpers.ReadResource(DasQuery);
-            var dcQuery = Helpers.ReadResource(DcQuery);
+            var dasQuery = ResourceHelpers.ReadResource(DasQuery);
+            var dcQuery = ResourceHelpers.ReadResource(DcQuery);
 
             IEnumerable<EarningsRow> dcData;
             IEnumerable<EarningsRow> dasData;
@@ -100,10 +114,10 @@ namespace EarningsComparer
                 .ThenBy(row => row.ApprenticeshipContractType)
                 .ToList();
 
-            var filteredResults =  FilterValues(filterMode, joinedValues);
+            var filteredResults = FilterValues(filterMode, joinedValues);
 
 
-            using (var templateStream = Helpers.OpenResource(ExcelTemplate))
+            using (var templateStream = ResourceHelpers.OpenResource(ExcelTemplate))
             {
                 using (var spreadsheet = new XLWorkbook(templateStream))
                 {
@@ -115,78 +129,44 @@ namespace EarningsComparer
 
                     WriteDataToSheet(sheet, filteredResults.Item1);
 
+                    sheet.AdjustToContent();
 
-                    sheet.Columns().AdjustToContents();
-                    sheet.Rows().AdjustToContents();
-
-                    SaveWorksheet(spreadsheet, outputPath);
+                    ExcelHelpers.SaveWorksheet(spreadsheet, outputPath);
                 }
             }
         }
 
         private static void AddFilterSheet(XLWorkbook spreadsheet, FilterMode filterMode, List<long> filterItems)
         {
-            switch (filterMode)
-            {
-                case FilterMode.None:
-                    break;
-                case FilterMode.Whitelist:
-                    var whitelistSheet = spreadsheet.AddWorksheet("Whitelist");
-                    AddFilterList(whitelistSheet, filterItems);
+            if (filterMode == FilterMode.None)
+                return;
 
-                    break;
-                case FilterMode.Blacklist:
-                    var blacklist = spreadsheet.AddWorksheet("BlackList");
-                    AddFilterList(blacklist, filterItems);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(filterMode), filterMode, null);
-            }
+            var filterSheet = filterMode == FilterMode.Whitelist
+                ? spreadsheet.AddWorksheet("Whitelist")
+                : spreadsheet.AddWorksheet("BlackList");
+            filterSheet.AddRowData(filterItems);
         }
 
-        private static void AddFilterList(IXLWorksheet whitelistSheet, List<long> filterItems)
-        { int row = 1;
-            foreach (var filterItem in filterItems)
-            {
-               
-                whitelistSheet.Cell(row, 1).SetValue(filterItem);
-                row++;
-            }
-        }
 
-        private static (List<CombinedRow>, List<long>) FilterValues(FilterMode filterMode, List<CombinedRow> joinedValues)
+        private static (List<CombinedRow>, List<long>) FilterValues(FilterMode filterMode,
+            List<CombinedRow> joinedValues)
         {
-            switch (filterMode)
-            {
-                case FilterMode.None:
-                    return (joinedValues, new List<long>());
-                case FilterMode.Whitelist:
-                    List<long> whiteList = CreateFilterList(filterMode);
-                    return (joinedValues.Where(jv => whiteList.Contains(jv.Ukprn)).ToList(), whiteList);
-                   
-                case FilterMode.Blacklist:
-                    List<long> blackList = CreateFilterList(filterMode);
-                    return  (joinedValues.Where(jv => !blackList.Contains(jv.Ukprn)).ToList(), blackList);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(filterMode), filterMode, null);
-            }
+          if (filterMode ==  FilterMode.None)
+            return (joinedValues, null);
+
+          var filterItems = GetFilterItems(filterMode);
+
+            return filterMode == FilterMode.Blacklist ?  
+                (joinedValues.Where(jv => !filterItems.Contains(jv.Ukprn)).ToList(), filterItems)
+                :
+                (joinedValues.Where(jv => filterItems.Contains(jv.Ukprn)).ToList(), filterItems);
         }
 
-        private static List<long> CreateFilterList(FilterMode filterMode)
+        private static List<long> GetFilterItems(FilterMode filterMode)
         {
             return filterMode == FilterMode.Blacklist
-                ? LoadFilterValues(BlackListFile)
-                : LoadFilterValues(WhiteListFile);
-        }
-
-        private static List<long> LoadFilterValues(string jsonList)
-        {
-            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                $@"Filtering\Files\{jsonList}");
-            string filtersListText = File.ReadAllText(path);
-            var filterList = JsonConvert.DeserializeObject<FilterList>(filtersListText);
-            //var longList = Array.ConvertAll<string, long>(filterList.FilterValues.ToArray(), Int64.Parse).ToList();
-            return filterList.FilterValues;
+                ? ResourceHelpers.LoadFilterValues(BlackListFile)
+                : ResourceHelpers.LoadFilterValues(WhiteListFile);
         }
 
 
@@ -210,7 +190,7 @@ namespace EarningsComparer
                     .SetRedIfNotEqualToPrevious()
                     .SetGreenIfEqualToPrevious();
 
-                sheet.Cell(row, 5).SetValue(combinedRow.TotalsEqual).SetRedIfFalse().SetGreenIfTrue();
+                sheet.Cell(row, 5).SetValue(combinedRow.EarningsPercentage).SetAsPercentage();
                 sheet.Cell(row, 6).SetValue(combinedRow.TotalsDifference);
 
                 sheet.Cell(row, 7).SetValue(combinedRow.DcRow?.TT1 ?? 0m);
@@ -295,25 +275,6 @@ namespace EarningsComparer
 
                 row++;
             }
-        }
-
-        private static void SetConditionalFormatting(IXLCell cell)
-        {
-            cell.CellLeft(1);
-            var formula = $"={cell.Address}<>{cell.CellLeft(1).Address}";
-            cell.AddConditionalFormat().WhenIsTrue(formula)
-                .Fill.SetBackgroundColor(XLColor.FromHtml("#FFC1B4"));
-        }
-
-
-        private static void SaveWorksheet(XLWorkbook workbook, string path)
-        {
-            workbook.CalculationOnSave = true;
-            var date = DateTime.Now.ToString("yyyy-MM-dd-HH-mm");
-
-            var filename = $"{path}\\EarningsComparisonReport-{date}.xlsx";
-            Console.WriteLine($"Saving to: {filename}");
-            workbook.SaveAs(filename);
         }
     }
 }

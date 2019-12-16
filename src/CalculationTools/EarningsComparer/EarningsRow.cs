@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 
 namespace EarningsComparer
 {
@@ -18,6 +19,17 @@ namespace EarningsComparer
         public EarningsRow DcRow { get; set; }
 
         public bool TotalsEqual => Decimal.Round( DasRow?.AllTypes ??0m, 2) ==  Decimal.Round(DcRow?.AllTypes ??0m,2);
+
+        public decimal EarningsPercentage
+        {
+            get
+            {
+                if(DasRow == null || DcRow == null) 
+                    return 0m;
+
+                return (DcRow?.AllTypes == 0 ) ? 0:  DasRow.AllTypes / DcRow.AllTypes;
+            }
+        }
 
         public decimal TotalsDifference => (DcRow?.AllTypes ?? 0m) - (DasRow?.AllTypes ?? 0m);
     }

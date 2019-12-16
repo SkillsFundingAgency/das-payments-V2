@@ -81,8 +81,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EarningsRow.cs" />
+    <Compile Include="ExcelHelpers.cs" />
     <Compile Include="Filtering\FilterList.cs" />
-    <Compile Include="Helpers.cs" />
+    <Compile Include="ResourceHelpers.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
