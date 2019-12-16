@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Presentation;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace EarningsComparer
 {
@@ -32,6 +34,12 @@ namespace EarningsComparer
         {
             sheet.Columns().AdjustToContents();
             sheet.Rows().AdjustToContents();
+        }
+
+        internal static void SetAsTable(this IXLWorksheet sheet, int startRow, int startCol)
+        {
+            var range = sheet.Range(sheet.Cell(startRow, startCol), sheet.LastCellUsed());
+            range.CreateTable("EarningsTable");
         }
 
 

@@ -71,6 +71,9 @@ namespace EarningsComparer
         private static void CalculateEarningComparisonMetric(short collectionPeriod, DateTime processingStartTime,
             FilterMode filterMode)
         {
+
+            Console.WriteLine("Getting required data");
+
             var dasConnectionString = ConfigurationManager.ConnectionStrings["DasConnectionString"].ConnectionString;
             var dcConnectionString = ConfigurationManager.ConnectionStrings["DcConnectionString"].ConnectionString;
             var outputPath = ConfigurationManager.AppSettings["OutputPath"];
@@ -81,12 +84,17 @@ namespace EarningsComparer
             IEnumerable<EarningsRow> dcData;
             IEnumerable<EarningsRow> dasData;
 
+            Console.WriteLine("Getting DC data");
+
+
             using (var dcConnection = new SqlConnection(dcConnectionString))
             {
                 dcData = dcConnection.Query<EarningsRow>(dcQuery,
                     new {collectionperiod = collectionPeriod},
                     commandTimeout: 5000);
             }
+
+            Console.WriteLine("Getting DAS data");
 
             using (var dasConnection = new SqlConnection(dasConnectionString))
             {
@@ -98,6 +106,9 @@ namespace EarningsComparer
                     },
                     commandTimeout: 5000);
             }
+
+            Console.WriteLine("Calculating values");
+
 
             var joinedValues = dasData.FullJoin(
                     dcData,
@@ -113,6 +124,8 @@ namespace EarningsComparer
                 .OrderBy(row => row.Ukprn)
                 .ThenBy(row => row.ApprenticeshipContractType)
                 .ToList();
+
+         
 
             var filteredResults = FilterValues(filterMode, joinedValues);
 
@@ -130,8 +143,13 @@ namespace EarningsComparer
                     WriteDataToSheet(sheet, filteredResults.Item1);
 
                     sheet.AdjustToContent();
+                    sheet.SetAsTable(9,1);
+
+                    Console.WriteLine($"Saving data to spreadsheet to: {outputPath}");
 
                     ExcelHelpers.SaveWorksheet(spreadsheet, outputPath);
+
+                    Console.WriteLine("Spreadsheet saved.");
                 }
             }
         }
@@ -151,8 +169,14 @@ namespace EarningsComparer
         private static (List<CombinedRow>, List<long>) FilterValues(FilterMode filterMode,
             List<CombinedRow> joinedValues)
         {
-          if (filterMode ==  FilterMode.None)
+            if (filterMode == FilterMode.None)
+            {
+                Console.WriteLine("No filtering configured");
+
             return (joinedValues, null);
+            }
+
+            Console.WriteLine($"Filtering using: {filterMode}");
 
           var filterItems = GetFilterItems(filterMode);
 
@@ -203,42 +227,42 @@ namespace EarningsComparer
                     .SetRedIfNotEqualToPrevious()
                     .SetGreenIfEqualToPrevious();
 
-                sheet.Cell(row, 11).SetValue(combinedRow.DasRow?.TT3 ?? 0m);
+                sheet.Cell(row, 11).SetValue(combinedRow.DcRow?.TT3 ?? 0m);
                 sheet.Cell(row, 12).SetValue(combinedRow.DasRow?.TT3 ?? 0m)
                     .SetRedIfNotEqualToPrevious()
                     .SetGreenIfEqualToPrevious();
 
-                sheet.Cell(row, 13).SetValue(combinedRow.DasRow?.TT4 ?? 0m);
+                sheet.Cell(row, 13).SetValue(combinedRow.DcRow?.TT4 ?? 0m);
                 sheet.Cell(row, 14).SetValue(combinedRow.DasRow?.TT4 ?? 0m)
                     .SetRedIfNotEqualToPrevious()
                     .SetGreenIfEqualToPrevious();
 
-                sheet.Cell(row, 15).SetValue(combinedRow.DasRow?.TT5 ?? 0m);
+                sheet.Cell(row, 15).SetValue(combinedRow.DcRow?.TT5 ?? 0m);
                 sheet.Cell(row, 16).SetValue(combinedRow.DasRow?.TT5 ?? 0m)
                     .SetRedIfNotEqualToPrevious()
                     .SetGreenIfEqualToPrevious();
 
-                sheet.Cell(row, 17).SetValue(combinedRow.DasRow?.TT6 ?? 0m);
+                sheet.Cell(row, 17).SetValue(combinedRow.DcRow?.TT6 ?? 0m);
                 sheet.Cell(row, 18).SetValue(combinedRow.DasRow?.TT6 ?? 0m)
                     .SetRedIfNotEqualToPrevious()
                     .SetGreenIfEqualToPrevious();
 
-                sheet.Cell(row, 19).SetValue(combinedRow.DasRow?.TT7 ?? 0m);
+                sheet.Cell(row, 19).SetValue(combinedRow.DcRow?.TT7 ?? 0m);
                 sheet.Cell(row, 20).SetValue(combinedRow.DasRow?.TT7 ?? 0m)
                     .SetRedIfNotEqualToPrevious()
                     .SetGreenIfEqualToPrevious();
 
-                sheet.Cell(row, 21).SetValue(combinedRow.DasRow?.TT8 ?? 0m);
+                sheet.Cell(row, 21).SetValue(combinedRow.DcRow?.TT8 ?? 0m);
                 sheet.Cell(row, 22).SetValue(combinedRow.DasRow?.TT8 ?? 0m)
                     .SetRedIfNotEqualToPrevious()
                     .SetGreenIfEqualToPrevious();
 
-                sheet.Cell(row, 23).SetValue(combinedRow.DasRow?.TT9 ?? 0m);
+                sheet.Cell(row, 23).SetValue(combinedRow.DcRow?.TT9 ?? 0m);
                 sheet.Cell(row, 24).SetValue(combinedRow.DasRow?.TT9 ?? 0m)
                     .SetRedIfNotEqualToPrevious()
                     .SetGreenIfEqualToPrevious();
 
-                sheet.Cell(row, 25).SetValue(combinedRow.DasRow?.TT10 ?? 0m);
+                sheet.Cell(row, 25).SetValue(combinedRow.DcRow?.TT10 ?? 0m);
                 sheet.Cell(row, 26).SetValue(combinedRow.DasRow?.TT10 ?? 0m)
                     .SetRedIfNotEqualToPrevious()
                     .SetGreenIfEqualToPrevious();
@@ -253,22 +277,22 @@ namespace EarningsComparer
                     .SetRedIfNotEqualToPrevious()
                     .SetGreenIfEqualToPrevious();
 
-                sheet.Cell(row, 31).SetValue(combinedRow.DasRow?.TT13 ?? 0m);
+                sheet.Cell(row, 31).SetValue(combinedRow.DcRow?.TT13 ?? 0m);
                 sheet.Cell(row, 32).SetValue(combinedRow.DasRow?.TT13 ?? 0m)
                     .SetRedIfNotEqualToPrevious()
                     .SetGreenIfEqualToPrevious();
 
-                sheet.Cell(row, 33).SetValue(combinedRow.DasRow?.TT14 ?? 0m);
+                sheet.Cell(row, 33).SetValue(combinedRow.DcRow?.TT14 ?? 0m);
                 sheet.Cell(row, 34).SetValue(combinedRow.DasRow?.TT14 ?? 0m)
                     .SetRedIfNotEqualToPrevious()
                     .SetGreenIfEqualToPrevious();
 
-                sheet.Cell(row, 35).SetValue(combinedRow.DasRow?.TT15 ?? 0m);
+                sheet.Cell(row, 35).SetValue(combinedRow.DcRow?.TT15 ?? 0m);
                 sheet.Cell(row, 36).SetValue(combinedRow.DasRow?.TT15 ?? 0m)
                     .SetRedIfNotEqualToPrevious()
                     .SetGreenIfEqualToPrevious();
 
-                sheet.Cell(row, 37).SetValue(combinedRow.DasRow?.TT16 ?? 0m);
+                sheet.Cell(row, 37).SetValue(combinedRow.DcRow?.TT16 ?? 0m);
                 sheet.Cell(row, 38).SetValue(combinedRow.DasRow?.TT16 ?? 0m)
                     .SetRedIfNotEqualToPrevious()
                     .SetGreenIfEqualToPrevious();
