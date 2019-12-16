@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
-using FluentAssertions;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
@@ -65,7 +64,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                                 StdCode = 100,
                                 FworkCode = 200,
                                 ProgType = 300,
-                                PwayCode = 400,
+                                PwayCode = 500,
                                 LearnDelInitialFundLineType = "Funding Line Type 2",
                                 LearnStartDate = DateTime.Today.AddDays(-6)
                             },
