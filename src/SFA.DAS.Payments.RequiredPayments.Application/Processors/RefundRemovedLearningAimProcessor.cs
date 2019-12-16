@@ -72,7 +72,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
                     // funding line type is not part of removed aim, we need to use value from historic payment
                     requiredPaymentEvent.LearningAim.FundingLineType = historicPayment.LearningAimFundingLineType;
-
+                   
                     logger.LogDebug("Finished mapping");
                     return requiredPaymentEvent;
                 }).ToList();

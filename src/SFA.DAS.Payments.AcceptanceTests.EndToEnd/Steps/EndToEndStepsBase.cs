@@ -378,6 +378,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 ApprenticeshipEmployerType = providerPayment.IsEmployerLevyPayer ? ApprenticeshipEmployerType.Levy:ApprenticeshipEmployerType.NonLevy,
                 ApprenticeshipId = apprenticeshipId,
                 ApprenticeshipPriceEpisodeId = priceEpisodeId,
+                LearningStartDate = learnerTraining.StartDate.ToNullableDate(),
             };
         }
 
