@@ -428,6 +428,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             await SendLevyMonthEnd().ConfigureAwait(false);
 
+            await Task.Delay(TimeSpan.FromSeconds(20));
+
             foreach (var provider in TestSession.Providers)
             {
                 await StartMonthEnd(provider).ConfigureAwait(false);
