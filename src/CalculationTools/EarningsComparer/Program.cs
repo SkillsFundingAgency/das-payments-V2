@@ -194,8 +194,8 @@ namespace EarningsComparer
         }
 
 
-        private static void AddSummaryInfo(IXLWorksheet sheet, in short collectionPeriod,
-            in DateTime processingStartTime)
+        private static void AddSummaryInfo(IXLWorksheet sheet, short collectionPeriod,
+            DateTime processingStartTime)
         {
             sheet.Cell(1, 1)
                 .SetValue(
