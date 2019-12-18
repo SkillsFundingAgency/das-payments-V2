@@ -638,7 +638,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     return true;
                 notFound.ForEach(apprenticeship => Console.WriteLine($"Failed to find and/or validate employer provider priority: {apprenticeship.ToJson()}"));
                 return false;
-            }, "Failed to find all the stored employer payemnt provider priority details.");
+            }, "Failed to find all the stored employer payment provider priority details.");
         }
 
         private ApprenticeshipModel CreateApprenticeshipModel(ApprovalsApprenticeship apprenticeshipSpec)
