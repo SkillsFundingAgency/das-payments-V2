@@ -299,13 +299,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"the payments for the previous submission should be removed")]
         public async Task ThenThePaymentsForThePreviousSubmissionShouldBeRemoved()
         {
-            await WaitForIt(() =>
+            await WaitForIt(async () =>
             {
-                var payments = Scope.Resolve<TestPaymentsDataContext>()
+                var payments = await Scope.Resolve<TestPaymentsDataContext>()
                     .Payment
                     .AsNoTracking()
                     .Where(p => p.Ukprn == TestSession.Provider.Ukprn)
-                    .ToList();
+                    .ToListAsync();
                 return payments.Any() && payments.All(p => p.JobId == TestSession.Provider.JobId);
             },$"Provider Payments failed to cleanup old payments for provider {TestSession.Provider.Ukprn}");
         }
@@ -313,13 +313,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"the payments for the current submission should be removed")]
         public async Task ThenThePaymentsForTheCurrentSubmissionShouldBeRemoved()
         {
-            await WaitForIt(() =>
+            await WaitForIt(async () =>
             {
-                var payments = Scope.Resolve<TestPaymentsDataContext>()
+                var payments = await Scope.Resolve<TestPaymentsDataContext>()
                     .Payment
                     .AsNoTracking()
                     .Where(p => p.Ukprn == TestSession.Provider.Ukprn)
-                    .ToList();
+                    .ToListAsync();
+
                 return payments.Any() && payments.All(p => p.JobId != TestSession.Provider.JobId);
             }, $"Provider Payments failed to cleanup payments for failed job: {TestSession.Provider.JobId}, Provider: {TestSession.Provider.Ukprn}");
         }
@@ -427,9 +428,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task WhenMonthEndIsTriggered()
         {
             await SendLevyMonthEnd().ConfigureAwait(false);
-
-            await Task.Delay(TimeSpan.FromSeconds(20));
-
+            
             foreach (var provider in TestSession.Providers)
             {
                 await StartMonthEnd(provider).ConfigureAwait(false);

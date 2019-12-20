@@ -190,7 +190,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [When(@"the Approvals service notifies the Payments service of the apprenticeships")]
-        public void WhenTheApprovalsServiceNotifiesPaymentsVOfTheApprenticeships()
+        public async Task WhenTheApprovalsServiceNotifiesPaymentsVOfTheApprenticeshipsAsync()
         {
             foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
             {
@@ -225,7 +225,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ApprenticeshipEmployerTypeOnApproval = GetApprenticeshipEmployerTypeOnApproval(approvalsApprenticeship.EmployerType)
                 };
                 Console.WriteLine($"Sending CreatedApprenticeship message: {createdMessage.ToJson()}");
-                DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+                await DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
 
@@ -583,7 +583,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         [Given(@"the Approvals service notifies the Payments service of Employer Provider Payment Priority Change")]
         [When(@"the Approvals service notifies the Payments service of changes to Employer Provider Payment Priority")]
-        public void WhenTheApprovalsServiceNotifiesThePaymentsServiceOfEmployerProviderPaymentPriorityChange()
+        public async Task WhenTheApprovalsServiceNotifiesThePaymentsServiceOfEmployerProviderPaymentPriorityChange()
         {
             var createdMessage = new CommitmentsV2.Messages.Events.PaymentOrderChangedEvent
             {
@@ -594,7 +594,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             };
 
             Console.WriteLine($"Sending PaymentOrderChangedEvent message: {createdMessage.ToJson()}");
-            DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+            await DasMessageSession.Send(createdMessage);
         }
 
         [Then(@"the Payments service should record the Employer Provider Priority")]
