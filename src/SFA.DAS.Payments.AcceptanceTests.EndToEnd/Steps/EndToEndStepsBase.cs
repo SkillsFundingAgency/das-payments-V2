@@ -278,7 +278,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (existingEmployer == null)
             {
-                DataContext.LevyAccount.Add(employer.ToModel());
+                await DataContext.LevyAccount.AddAsync(employer.ToModel());
                 Console.WriteLine($"Employer account created. Id:{employer.AccountId}, Balance:{employer.Balance}, {DateTime.Now}");
             }
             else
