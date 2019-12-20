@@ -428,7 +428,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task WhenMonthEndIsTriggered()
         {
             await SendLevyMonthEnd().ConfigureAwait(false);
-            
+
+            await Task.Delay(TimeSpan.FromSeconds(20)); // wait for funding source service
+
             foreach (var provider in TestSession.Providers)
             {
                 await StartMonthEnd(provider).ConfigureAwait(false);
