@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Entities;
@@ -41,23 +42,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             return ",Required Payments,Actual Payments,DC Earnings,DAS Earnings" +
                    Environment.NewLine +
                    "Accounted for money," +
-                   $"\"{metricsCalculator.AccountedForRequiredPayments:C}\"," +
-                   $"\"{metricsCalculator.PaymentsValues.TotalPaymentsYtd:C}\"," +
+                   $"\"{metricsCalculator.AccountedForRequiredPayments.ToString("C", CultureInfo.CreateSpecificCulture("en-GB"))}\"," +
+                   $"\"{metricsCalculator.PaymentsValues.TotalPaymentsYtd.ToString("C", CultureInfo.CreateSpecificCulture("en-GB"))}\"," +
                    $"\"{metricsCalculator.AccountedForDcEarnings:P}\"," +
                    $"\"{metricsCalculator.AccountedForDasEarnings:P}\"," +
                    Environment.NewLine +
                    "Accounted not for money," +
-                   $"\"{metricsCalculator.NotAccountedForRequiredPayments:C}\"," +
-                   $"\"{metricsCalculator.NotAccountedForActualPayments:C}\"";
+                   $"\"{metricsCalculator.NotAccountedForRequiredPayments.ToString("C", CultureInfo.CreateSpecificCulture("en-GB"))}\"," +
+                   $"\"{metricsCalculator.NotAccountedForActualPayments.ToString("C", CultureInfo.CreateSpecificCulture("en-GB"))}\"";
         }
 
         private string CreateDataLockSummarySection()
         {
             return "DataLock Amount,Datalocked Payments,Adjusted Datalocks" +
                    Environment.NewLine +
-                   $"\"{metricsCalculator.PaymentsValues.DataLockedEarnings:C}\"," +
-                   $"\"{metricsCalculator.PaymentsValues.DataLockedPayments:C}\"," +
-                   $"\"{metricsCalculator.PaymentsValues.AdjustedDataLocks:C}\",";
+                   $"\"{metricsCalculator.PaymentsValues.DataLockedEarnings.ToString("C", CultureInfo.CreateSpecificCulture("en-GB"))}\"," +
+                   $"\"{metricsCalculator.PaymentsValues.DataLockedPayments.ToString("C", CultureInfo.CreateSpecificCulture("en-GB"))}\"," +
+                   $"\"{metricsCalculator.PaymentsValues.AdjustedDataLocks.ToString("C", CultureInfo.CreateSpecificCulture("en-GB"))}\",";
         }
 
         private string CreatePaymentsSummarySection()
@@ -65,21 +66,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             return
                 "Required Payments made this month,Payments made before this month YTD,Expected Payments YTD after running Period End,Total payments this month,Total ACT 1 payments YTD,Total ACT 2 payments YTD,Total payments YTD,Held Back Completion Payments" +
                 Environment.NewLine +
-                $"\"{metricsCalculator.PaymentsValues.RequiredPaymentsThisMonth:C}\"," +
-                $"\"{metricsCalculator.PaymentsValues.PaymentsPriorToThisMonthYtd:C}\"," +
-                $"\"{metricsCalculator.PaymentsValues.ExpectedPaymentsAfterPeriodEnd:C}\"," +
-                $"\"{metricsCalculator.PaymentsValues.TotalPaymentsThisMonth:C}\"," +
-                $"\"{metricsCalculator.PaymentsValues.TotalAct1Ytd:C}\"," +
-                $"\"{metricsCalculator.PaymentsValues.TotalAct2Ytd:C}\"," +
-                $"\"{metricsCalculator.PaymentsValues.TotalPaymentsYtd:C}\","+
-                $"\"{metricsCalculator.PaymentsValues.HeldBackCompletionThisMonth:C}\"";
+                $"\"{metricsCalculator.PaymentsValues.RequiredPaymentsThisMonth.ToString("C", CultureInfo.CreateSpecificCulture("en-GB"))}\"," +
+                $"\"{metricsCalculator.PaymentsValues.PaymentsPriorToThisMonthYtd.ToString("C", CultureInfo.CreateSpecificCulture("en-GB"))}\"," +
+                $"\"{metricsCalculator.PaymentsValues.ExpectedPaymentsAfterPeriodEnd.ToString("C", CultureInfo.CreateSpecificCulture("en-GB"))}\"," +
+                $"\"{metricsCalculator.PaymentsValues.TotalPaymentsThisMonth.ToString("C", CultureInfo.CreateSpecificCulture("en-GB"))}\"," +
+                $"\"{metricsCalculator.PaymentsValues.TotalAct1Ytd.ToString("C", CultureInfo.CreateSpecificCulture("en-GB"))}\"," +
+                $"\"{metricsCalculator.PaymentsValues.TotalAct2Ytd.ToString("C", CultureInfo.CreateSpecificCulture("en-GB"))}\"," +
+                $"\"{metricsCalculator.PaymentsValues.TotalPaymentsYtd.ToString("C", CultureInfo.CreateSpecificCulture("en-GB"))}\","+
+                $"\"{metricsCalculator.PaymentsValues.HeldBackCompletionThisMonth.ToString("C", CultureInfo.CreateSpecificCulture("en-GB"))}\"";
         }
 
         private string CreateEarningsSummarySection()
         {
             return
                 $"\"DAS Earnings\",\"DC Earnings\",\"DAS Earnings v DC Earnings\"{Environment.NewLine}" +
-                $"\"{metricsCalculator.PaymentsValues?.DasEarnings:C}\",\"{metricsCalculator.DcValues.Total:C}\",\"{metricsCalculator.DasEarningVsDcEarnings:P}\"";
+                $"\"{metricsCalculator.PaymentsValues?.DasEarnings.ToString("C", CultureInfo.CreateSpecificCulture("en-GB"))}\",\"{metricsCalculator.DcValues.Total.ToString("C", CultureInfo.CreateSpecificCulture("en-GB"))}\",\"{metricsCalculator.DasEarningVsDcEarnings:P}\"";
         }
     }
 }
