@@ -332,6 +332,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await GeneratedAndValidateEarnings(table, TestSession.Provider).ConfigureAwait(false);
         }
 
+        [Then(@"the following learner earnings should be generated on restart")]
+        public async Task ThenTheFollowingLearnerEarningsShouldBeGeneratedOnRestart(Table table)
+        {
+            await GeneratedAndValidateEarningsOnRestart(table, TestSession.Provider).ConfigureAwait(false);
+        }
+
         [Then(@"the following learner earnings should be generated for ""(.*)""")]
         public async Task ThenTheFollowingLearnerEarningsShouldBeGeneratedFor(string providerIdentifier, Table table)
         {
