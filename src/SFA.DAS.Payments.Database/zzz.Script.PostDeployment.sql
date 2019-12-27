@@ -207,3 +207,19 @@ insert into Payments2.TestingProvider (Ukprn)
     select distinct Ukprn
     from KnownUkprns t
     where not exists (select 1 from Payments2.TestingProvider t2 where t2.Ukprn = t.Ukprn);
+GO
+
+MERGE INTO [Metrics].[SubmissionEarningType]	 AS Target
+USING (VALUES
+(1	, N'DC Earnings'),
+(2	, N'DAS Earnings')
+) AS Source ([Id],[Description])
+ON (Target.[Id] = Source.[Id])
+WHEN MATCHED AND
+  ( NULLIF(Source.[Description], Target.[Description]) IS NOT NULL) THEN
+ UPDATE SET [Description] = Source.[Description]
+WHEN NOT MATCHED BY TARGET THEN
+ INSERT([Id],[Description]) VALUES(Source.[Id],Source.[Description])
+WHEN NOT MATCHED BY SOURCE THEN 
+ DELETE;
+ GO
