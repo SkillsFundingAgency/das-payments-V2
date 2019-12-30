@@ -1,9 +1,10 @@
 ﻿using SFA.DAS.Payments.Model.Core.Entities;
 
-namespace SFA.DAS.Payments.Monitoring.Metrics.Model.Submission
+namespace SFA.DAS.Payments.Monitoring.Metrics.Model
 {
-    public class TransactionTypeCounts
+    public class TransactionTypeAmounts
     {
+        public ContractType ContractType { get; set; }
         public decimal TransactionType1 { get; set; }
         public decimal TransactionType2 { get; set; }
         public decimal TransactionType3 { get; set; }
