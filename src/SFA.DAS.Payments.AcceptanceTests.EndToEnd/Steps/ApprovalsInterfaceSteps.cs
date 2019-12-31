@@ -190,7 +190,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [When(@"the Approvals service notifies the Payments service of the apprenticeships")]
-        public async Task WhenTheApprovalsServiceNotifiesPaymentsVOfTheApprenticeshipsAsync()
+        public async Task WhenTheApprovalsServiceNotifiesPaymentsVOfTheApprenticeships()
         {
             foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
             {
