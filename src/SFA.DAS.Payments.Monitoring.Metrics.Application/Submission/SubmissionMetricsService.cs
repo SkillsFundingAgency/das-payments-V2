@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task BuildMetrics(long jobId, long ukprn, byte collectionPeriod, short academicYear)
+        public async Task BuildMetrics(long ukprn, long jobId, short academicYear, byte collectionPeriod)
         {
 
         }
