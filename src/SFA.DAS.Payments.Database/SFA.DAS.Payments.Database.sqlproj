@@ -114,7 +114,7 @@
     <Build Include="Payments2\Tables\Payments2.CurrentPriceEpisode.sql" />
     <Build Include="Metrics\Tables\Metrics.ProviderDataLockedEarning.sql" />
     <Build Include="Metrics\Tables\Metrics.ProviderRequiredPayment.sql" />
-    <Build Include="Metrics\Tables\Metrics.Submission .sql" />
+    <Build Include="Metrics\Tables\Metrics.SubmissionSummary.sql" />
     <Build Include="Metrics\Tables\Metrics.SubmissionEarningType.sql" />
     <Build Include="Metrics\Schemas\Metrics.sql" />
     <Build Include="Metrics\Tables\Metrics.ProviderEarning.sql" />

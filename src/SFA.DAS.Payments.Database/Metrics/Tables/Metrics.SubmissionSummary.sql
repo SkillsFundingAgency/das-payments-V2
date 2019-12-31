@@ -1,5 +1,5 @@
 ﻿create table Metrics.SubmissionSummary (
-	Id bigint not null identity(1,1) constraint PK_Submission primary key  clustered
+	Id bigint not null identity(1,1) constraint PK_SubmissionSummary primary key  clustered
 	,Ukprn bigint not null
 	,AcademicYear smallint not null
 	,CollectionPeriod tinyint not null
@@ -24,6 +24,6 @@
 	,HeldBackCompletionPaymentsContractType1 decimal(15,5) not null
 	,HeldBackCompletionPaymentsContractType2 decimal(15,5) not null
 	,CreationDate datetimeoffset not null Constraint DF_Submission__CreationDate Default (sysdatetimeoffset())
-	,Index IX_Submission (Ukprn, JobId, AcademicYear, CollectionPeriod, CreationDate)
-	,CONSTRAINT UQ_Submission Unique (Ukprn, AcademicYear, CollectionPeriod)
+	,Index IX_SubmissionSummary (Ukprn, JobId, AcademicYear, CollectionPeriod, CreationDate)
+	,CONSTRAINT UQ_SubmissionSummary Unique (Ukprn, AcademicYear, CollectionPeriod)
 )

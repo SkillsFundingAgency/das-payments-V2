@@ -1,6 +1,6 @@
 ﻿create table Metrics.ProviderRequiredPayment(
 	Id bigint not null identity(1,1) constraint PK_ProviderRequiredPayment primary key clustered
-	,SubmissionId  bigint not null constraint FK_ProviderRequiredPayment__Submission_Id foreign key references [Metrics].[Submission] (Id) on delete cascade
+	,SubmissionSummaryId  bigint not null constraint FK_ProviderRequiredPayment__SubmissionSummary_Id foreign key references [Metrics].[SubmissionSummary] (Id) on delete cascade
 	,ContractType tinyint not null
 	,TransctionType1 decimal(15,5) not null
 	,TransctionType2 decimal(15,5) not null
@@ -19,5 +19,5 @@
 	,TransctionType15 decimal(15,5) not null
 	,TransctionType16 decimal(15,5) not null
 	,CreationDate datetimeoffset not null Constraint DF_ProviderRequiredPayment__CreationDate Default (sysdatetimeoffset())
-	,Index IX_ProviderRequiredPayment (SubmissionId, ContractType, CreationDate)
+	,Index IX_ProviderRequiredPayment (SubmissionSummaryId, ContractType, CreationDate)
 )
