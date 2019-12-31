@@ -69,7 +69,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
                 DataLockedPaymentsMetrics = new List<DataLockedEarningsModel> { new DataLockedEarningsModel { Amounts = dataLocked } },
                 HeldBackCompletionPayments = heldBackCompletionPayments,
                 RequiredPayments = GetRequiredPayments(),
-                RequiredPaymentsMetrics = GetRequiredPaymentsMetrics()
+                RequiredPaymentsMetrics = GetRequiredPaymentsMetrics(),
             };
             result.DasEarnings = GetDasEarnings(result.DcEarnings.ContractType1, result.DcEarnings.ContractType2);
             result.EarningsMetrics = new List<EarningsModel>();
@@ -83,7 +83,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
                 EarningsType = EarningsType.Das,
                 Amounts = earning
             }));
-
+            result.SubmissionMetrics = new ContractTypeAmountsVerbose();
+            result.SubmissionMetrics.ContractType1 = result.RequiredPayments.ContractType1 + result.DataLockedEarnings + result.HeldBackCompletionPayments.ContractType1;
+            result.SubmissionMetrics.ContractType2 = result.RequiredPayments.ContractType2 + result.HeldBackCompletionPayments.ContractType2;
+            result.SubmissionMetrics = GetSubmissionMetrics(result);
+            result.Percentage = result.SubmissionMetrics.Percentage;
             return result;
         }
 
@@ -135,5 +139,21 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
                 Amounts = amounts
             }).ToList();
         }
+
+        private ContractTypeAmountsVerbose GetSubmissionMetrics(SubmissionSummaryModel submissionSummary)
+        {
+            var submissionMetrics = new ContractTypeAmountsVerbose();
+            submissionMetrics.ContractType1 = submissionSummary.RequiredPayments.ContractType1 + submissionSummary.DataLockedEarnings + submissionSummary.HeldBackCompletionPayments.ContractType1;
+            submissionMetrics.ContractType2 = submissionSummary.RequiredPayments.ContractType2 + submissionSummary.HeldBackCompletionPayments.ContractType2;
+            submissionMetrics.DifferenceContractType1 =
+                submissionMetrics.ContractType1 - submissionSummary.DcEarnings.ContractType1;
+            submissionMetrics.DifferenceContractType2 =
+                submissionMetrics.ContractType2 - submissionSummary.DcEarnings.ContractType2;
+            submissionMetrics.PercentageContractType1 = GetPercentage(submissionMetrics.ContractType1 , submissionSummary.DcEarnings.ContractType1) ;
+            submissionMetrics.PercentageContractType2 = GetPercentage(submissionMetrics.ContractType2, submissionSummary.DcEarnings.ContractType2);
+            return submissionMetrics;
+        }
+
+        private static decimal GetPercentage(decimal amount, decimal total) => total > 0 ? (amount / total) * 100 : 0;
     }
 }

@@ -5,7 +5,6 @@
 	,CollectionPeriod tinyint not null
 	,JobId bigint not null
 	,[Percentage] decimal(15,5) not null
-	,[Difference] decimal(15,5) not  null
 	,PercentageContractType1 decimal(15,5) not null
 	,PercentageContractType2 decimal(15,5) not null
 	,DifferenceContractType1 decimal(15,5) not  null

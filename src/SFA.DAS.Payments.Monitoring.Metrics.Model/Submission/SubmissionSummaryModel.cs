@@ -10,7 +10,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Model.Submission
         public short AcademicYear { get; set; }
         public byte CollectionPeriod { get; set; }
         public decimal Percentage { get; set; }
-        public decimal Difference { get; set; }
         public ContractTypeAmountsVerbose SubmissionMetrics { get; set; }
         public List<EarningsModel> EarningsMetrics { get; set; }
         public List<DataLockedEarningsModel> DataLockedPaymentsMetrics { get; set; }
