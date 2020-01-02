@@ -7,9 +7,16 @@ using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
 {
+    public interface ISubmissionSummary
+    {
+        void AddEarnings(List<TransactionTypeAmounts> dcEarningTransactionTypeAmounts, List<TransactionTypeAmounts> dasEarningTransactionTypeAmounts);
+        void AddDataLockedEarnings(DataLockTypeAmounts dataLockedAmounts);
+        void AddHeldBackCompletionPayments(ContractTypeAmounts heldBackCompletionPaymentAmounts);
+        void AddRequiredPayments(List<TransactionTypeAmounts> requiredPaymentAmounts);
+        SubmissionSummaryModel GetMetrics();
+    }
 
-
-    public class SubmissionSummary
+    public class SubmissionSummary : ISubmissionSummary
     {
         public long Ukprn { get; }
         public long JobId { get; }
@@ -33,7 +40,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
             heldBackCompletionPayments = new ContractTypeAmounts();
         }
 
-        public void AddEarnings(List<TransactionTypeAmounts> dcEarningTransactionTypeAmounts, List<TransactionTypeAmounts> dasEarningTransactionTypeAmounts)
+        public virtual void AddEarnings(List<TransactionTypeAmounts> dcEarningTransactionTypeAmounts, List<TransactionTypeAmounts> dasEarningTransactionTypeAmounts)
         {
             dcEarnings.Clear();
             dcEarnings.AddRange(dcEarningTransactionTypeAmounts);
@@ -41,22 +48,22 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
             dasEarnings.AddRange(dasEarningTransactionTypeAmounts);
         }
 
-        public void AddDataLockedEarnings(DataLockTypeAmounts dataLockedAmounts)
+        public virtual void AddDataLockedEarnings(DataLockTypeAmounts dataLockedAmounts)
         {
             dataLocked = dataLockedAmounts ?? throw new ArgumentNullException(nameof(dataLockedAmounts));
         }
 
-        public void AddHeldBackCompletionPayments(ContractTypeAmounts heldBackCompletionPaymentAmounts)
+        public virtual void AddHeldBackCompletionPayments(ContractTypeAmounts heldBackCompletionPaymentAmounts)
         {
             heldBackCompletionPayments = heldBackCompletionPaymentAmounts ?? throw new ArgumentNullException(nameof(heldBackCompletionPaymentAmounts));
         }
 
-        public void AddRequiredPayments(List<TransactionTypeAmounts> requiredPaymentAmounts)
+        public virtual void AddRequiredPayments(List<TransactionTypeAmounts> requiredPaymentAmounts)
         {
             requiredPayments = requiredPaymentAmounts ?? throw new ArgumentNullException(nameof(requiredPaymentAmounts));
         }
 
-        public SubmissionSummaryModel GetMetrics()
+        public virtual SubmissionSummaryModel GetMetrics()
         {
             var result = new SubmissionSummaryModel
             {

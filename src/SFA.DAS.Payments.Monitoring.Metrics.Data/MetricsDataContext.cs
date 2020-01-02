@@ -3,7 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 {
-    public class MetricsDataContext: DbContext
+    public interface IMetricsDataContext
+    {
+
+    }
+
+    public class MetricsDataContext: DbContext, IMetricsDataContext
     {
         private readonly string connectionString;
 

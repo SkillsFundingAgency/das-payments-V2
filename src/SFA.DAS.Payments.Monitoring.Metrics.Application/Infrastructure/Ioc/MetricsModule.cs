@@ -13,12 +13,28 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Ioc
                 .As<ISubmissionSummaryFactory>()
                 .SingleInstance();
 
+            builder.RegisterType<SubmissionMetricsService>()
+                .As<ISubmissionMetricsService>()
+                .InstancePerLifetimeScope();
+
             builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
                     return new DcMetricsDataContext(configHelper.GetConnectionString("DcEarningsConnectionString"));
                 })
                 .As<IDcMetricsDataContext>()
+                .InstancePerLifetimeScope();
+
+            builder.Register((c, p) =>
+                {
+                    var configHelper = c.Resolve<IConfigurationHelper>();
+                    return new MetricsDataContext(configHelper.GetConnectionString("PaymentsConnectionString"));
+                })
+                .As<IMetricsDataContext>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<SubmissionMetricsRepository>()
+                .As<ISubmissionMetricsRepository>()
                 .InstancePerLifetimeScope();
         }
     }

@@ -9,10 +9,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 {
     public interface IDcMetricsDataContext
     {
-        Task<List<TransactionTypeAmounts>> GetEarnings(long ukprn, byte collectionPeriod);
+        Task<List<TransactionTypeAmounts>> GetEarnings(long ukprn, short academicYear, byte collectionPeriod);
     }
 
-    public class DcMetricsDataContext : DbContext
+    public class DcMetricsDataContext : DbContext, IDcMetricsDataContext
     {
         private static string DcEarningsQuery = @"
 ;WITH 
@@ -186,7 +186,7 @@ order by UKPRN,ApprenticeshipContractType";
             optionsBuilder.UseSqlServer(connectionString);
         }
 
-        public async Task<List<TransactionTypeAmounts>> GetEarnings(long ukprn, byte collectionPeriod)
+        public async Task<List<TransactionTypeAmounts>> GetEarnings(long ukprn, short academicYear, byte collectionPeriod)
         {
             return await Earnings.FromSql(DcEarningsQuery, new SqlParameter("@ukprn", ukprn), new SqlParameter("@collectionperiod", collectionPeriod)).ToListAsync();
         }
