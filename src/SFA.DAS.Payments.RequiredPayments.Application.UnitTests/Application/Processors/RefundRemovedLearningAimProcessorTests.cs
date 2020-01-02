@@ -8,6 +8,7 @@ using AutoMapper;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -18,6 +19,7 @@ using SFA.DAS.Payments.RequiredPayments.Application.Processors;
 using SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
+using SFA.DAS.Payments.RequiredPayments.Domain.Services;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
@@ -29,6 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         private AutoMock mocker;
         private List<PaymentHistoryEntity> history;
         private IdentifiedRemovedLearningAim identifiedLearner;
+        private IMapper mapper;
 
         [SetUp]
         public void SetUp()
@@ -37,9 +40,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             history = new List<PaymentHistoryEntity>();
             var config = new MapperConfiguration(cfg => cfg.AddProfile<RequiredPaymentsProfile>());
             config.AssertConfigurationIsValid();
-            var mapper = new Mapper(config);
-            mocker.Provide<IMapper>(mapper);
-            identifiedLearner = identifiedLearner = new IdentifiedRemovedLearningAim
+            mapper = new Mapper(config);
+
+            mocker.Provide(mapper);
+            identifiedLearner = new IdentifiedRemovedLearningAim
             {
                 CollectionPeriod = new CollectionPeriod
                 {
@@ -80,7 +84,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                     AcademicYear = 1819,
                     Period = 1
                 },
-                LearnAimReference = "aim-ref-123",
+                LearnAimReference = "ZPROG001",
                 LearnerReferenceNumber = "learning-ref-456",
                 PriceEpisodeIdentifier = "pe-1",
                 DeliveryPeriod = deliveryPeriod,
@@ -250,5 +254,68 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             refunds.Count(refund => refund.AmountDue == historicIncentivePayment.Amount * -1 && refund is CalculatedRequiredIncentiveAmount).Should().Be(1);
             refunds.Count(refund => refund.DeliveryPeriod == 4).Should().Be(3);
         }
+
+
+        [Test]
+        public async Task Generate_Valid_Required_Payment_Type()
+        {
+            var historicCoInvestedPayment = CreatePaymentHistoryEntity(FundingSourceType.CoInvestedSfa, 1);
+            historicCoInvestedPayment.Amount = 160;
+            historicCoInvestedPayment.SfaContributionPercentage = 1m;
+            historicCoInvestedPayment.ContractType = ContractType.Act2;
+            historicCoInvestedPayment.TransactionType = (int)TransactionType.Learning;
+            historicCoInvestedPayment.CollectionPeriod = new CollectionPeriod
+            {
+                AcademicYear = 1920,
+                Period = 3
+            };
+            history.Add(historicCoInvestedPayment);
+
+            var historicIncentivePayment = CreatePaymentHistoryEntity(FundingSourceType.FullyFundedSfa, 2);
+            historicIncentivePayment.Amount = 500m;
+            historicIncentivePayment.SfaContributionPercentage = 0m;
+            historicIncentivePayment.ContractType = ContractType.Act2;
+            historicIncentivePayment.TransactionType = (int)TransactionType.Second16To18EmployerIncentive;
+            historicIncentivePayment.CollectionPeriod = new CollectionPeriod
+            {
+                AcademicYear = 1920,
+                Period = 3
+            };
+            history.Add(historicIncentivePayment);
+
+            identifiedLearner.CollectionPeriod = new CollectionPeriod
+            {
+                AcademicYear = 1920,
+                Period = 5
+            };
+            
+            mocker.Mock<IDataCache<PaymentHistoryEntity[]>>()
+                .Setup(x => x.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, history.ToArray()));
+
+            var refundRemovedLearningAimService = new RefundRemovedLearningAimService(
+                new RefundService(),
+                new PaymentDueProcessor());
+
+            var processor = new RefundRemovedLearningAimProcessor(
+                refundRemovedLearningAimService,
+                Mock.Of<IPaymentLogger>(),
+                mapper,
+                new PeriodisedRequiredPaymentEventFactory());
+
+            var refunds = await processor.RefundLearningAim(identifiedLearner,
+                mocker.Mock<IDataCache<PaymentHistoryEntity[]>>().Object,
+                CancellationToken.None)
+                .ConfigureAwait(false);
+
+            var refund = refunds.FirstOrDefault(o => o is CalculatedRequiredCoInvestedAmount);
+            refund.Should().NotBeNull();
+
+            var coInvestedAmountPayment = refund as CalculatedRequiredCoInvestedAmount;
+            coInvestedAmountPayment.SfaContributionPercentage.Should().NotBe(0);
+
+
+        }
+
     }
 }
