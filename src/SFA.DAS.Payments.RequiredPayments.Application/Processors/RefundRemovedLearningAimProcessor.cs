@@ -70,9 +70,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     mapper.Map(historicPayment, requiredPaymentEvent);
                     mapper.Map(identifiedRemovedLearningAim, requiredPaymentEvent);
 
-                    // funding line type is not part of removed aim, we need to use value from historic payment
+                    // funding line type and Learner Uln are not part of removed aim, we need to use value from historic payment
                     requiredPaymentEvent.LearningAim.FundingLineType = historicPayment.LearningAimFundingLineType;
-
+                    requiredPaymentEvent.Learner.Uln = historicPayment.LearnerUln;
+                   
                     logger.LogDebug("Finished mapping");
                     return requiredPaymentEvent;
                 }).ToList();

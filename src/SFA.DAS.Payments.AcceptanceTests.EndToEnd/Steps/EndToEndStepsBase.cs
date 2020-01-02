@@ -131,7 +131,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 ilrLearner.Ukprn = ukprn;
                 var learner = TestSession.GetLearner(ukprn, ilrLearner.LearnerId);
-                learner.Course.AimSeqNumber = (short)ilrLearner.AimSequenceNumber;
+                learner.Course.AimSeqNumber = (short) ilrLearner.AimSequenceNumber;
                 learner.Course.StandardCode = ilrLearner.StandardCode;
                 learner.Course.FundingLineType = ilrLearner.FundingLineType;
                 learner.Course.LearnAimRef = ilrLearner.AimReference;
@@ -142,9 +142,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learner.SmallEmployer = ilrLearner.SmallEmployer;
                 learner.PostcodePrior = ilrLearner.PostcodePrior;
 
-                ilrLearner.Uln = ilrLearner.Uln != default(long) ? ilrLearner.Uln : learner.Uln;
-                //if (ilrLearner.Uln != default(long)) learner.Uln = ilrLearner.Uln
-
+                if (ilrLearner.Uln != default(long))
+                {
+                    learner.Uln = ilrLearner.Uln;
+                }
+                else
+                {
+                    ilrLearner.Uln = learner.Uln;
+                }
             });
         }
 
@@ -278,7 +283,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (existingEmployer == null)
             {
-                DataContext.LevyAccount.Add(employer.ToModel());
+                await DataContext.LevyAccount.AddAsync(employer.ToModel());
                 Console.WriteLine($"Employer account created. Id:{employer.AccountId}, Balance:{employer.Balance}, {DateTime.Now}");
             }
             else
@@ -378,6 +383,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 ApprenticeshipEmployerType = providerPayment.IsEmployerLevyPayer ? ApprenticeshipEmployerType.Levy : ApprenticeshipEmployerType.NonLevy,
                 ApprenticeshipId = apprenticeshipId,
                 ApprenticeshipPriceEpisodeId = priceEpisodeId,
+                LearningStartDate = learnerTraining.StartDate.ToNullableDate(),
             };
         }
 
