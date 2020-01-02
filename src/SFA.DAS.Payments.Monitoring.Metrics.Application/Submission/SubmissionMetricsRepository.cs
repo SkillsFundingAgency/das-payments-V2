@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
 
@@ -12,9 +14,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
     public interface ISubmissionMetricsRepository
     {
         Task<List<TransactionTypeAmounts>> GetDasEarnings(long ukprn, long jobId);
+        Task<DataLockTypeAmounts> GetDataLockedEarnings(long ukprn, long jobId);
+        Task<decimal> GetDataLockedEarningsTotal(long ukprn, long jobId);
+        Task<Decimal> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId);
     }
 
-    public class SubmissionMetricsRepository: ISubmissionMetricsRepository
+    public class SubmissionMetricsRepository : ISubmissionMetricsRepository
     {
         private readonly IPaymentsDataContext paymentsDataContext;
 
@@ -62,22 +67,49 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                     TransactionType16 = group.Where(x => x.TransactionType == TransactionType.CareLeaverApprenticePayment).Sum(x => (decimal?)x.Amount) ?? 0,
                 })
                 .ToList();
+        }
 
-            //TODO: fix the EarningEventPeriodModel, Add an EarningEvent navigation property
-            //paymentsDataContext.EarningEvent
-            //    .AsNoTracking()
-            //    .Where(ee => ee.Ukprn== ukprn && ee.JobId == jobId )
-            //    .SelectMany(ee => ee.Periods, (model, periodModel) =>  new { model.ContractType, Period = periodModel } )
-            //    .Where(model => model.Period.Amount != 0)
-            //    .Select(model => new { model.ContractType, model.Period.TransactionType, model.Period.Amount })
+        public async Task<DataLockTypeAmounts> GetDataLockedEarnings(long ukprn, long jobId)
+        {
+            var dataLockAmounts = await paymentsDataContext.DataLockEventNonPayablePeriodFailure
+                .AsNoTracking()
+                .Where(failure => failure.DataLockEventNonPayablePeriod.DataLockEvent.Ukprn == ukprn &&
+                                  failure.DataLockEventNonPayablePeriod.DataLockEvent.JobId == jobId)
+                .GroupBy(failure => failure.DataLockFailure)
+                .Select(group => new
+                {
+                    DataLockType = group.Key,
+                    Amount = group.Sum(failure => failure.DataLockEventNonPayablePeriod.Amount)
+                })
+                .ToListAsync();
 
-            //    .GroupBy(model => model.ContractType)
-            //    .Select( group => new
-            //    {
-            //        ContarctType =  group.Key,
-            //        TransactionType1 = group.Sum(x => x.TransactionType)
-            //    }})
+            return new DataLockTypeAmounts
+            {
+                DataLock1 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_01)?.Amount ?? 0,
+                DataLock2 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_02)?.Amount ?? 0,
+                DataLock3 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_03)?.Amount ?? 0,
+                DataLock4 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_04)?.Amount ?? 0,
+                DataLock5 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_05)?.Amount ?? 0,
+                DataLock6 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_06)?.Amount ?? 0,
+                DataLock7 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_07)?.Amount ?? 0,
+                DataLock8 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_08)?.Amount ?? 0,
+                DataLock9 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_09)?.Amount ?? 0,
+                DataLock10 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_10)?.Amount ?? 0,
+                DataLock11 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_11)?.Amount ?? 0,
+                DataLock12 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_12)?.Amount ?? 0,
+            };
+        }
 
+        public async Task<decimal> GetDataLockedEarningsTotal(long ukprn, long jobId)
+        {
+            return await paymentsDataContext.DataLockEventNonPayablePeriod
+                .Where(period => period.DataLockEvent.Ukprn == ukprn && period.DataLockEvent.JobId == jobId)
+                .SumAsync(period => period.Amount);
+        }
+
+        public async Task<Decimal> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

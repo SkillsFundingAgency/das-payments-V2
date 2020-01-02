@@ -31,9 +31,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             var submissionSummary = submissionSummaryFactory.Create(ukprn, jobId, academicYear, collectionPeriod);
             var dcEarningsTask = dcDataContext.GetEarnings(ukprn, academicYear, collectionPeriod);
             var dasEarningsTask = submissionRepository.GetDasEarnings(ukprn, jobId);
+            var dataLocksTask = submissionRepository.GetDataLockedEarnings(ukprn, jobId);
             await Task.WhenAll(dasEarningsTask, dcEarningsTask).ConfigureAwait(false);
             submissionSummary.AddEarnings(dcEarningsTask.Result, dasEarningsTask.Result);
-
+            submissionSummary.AddDataLockedEarnings(dataLocksTask.Result);
         }
     }
 }
