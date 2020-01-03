@@ -25,14 +25,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
         public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidateFunctionalSkillPeriods(
             long ukprn,
             long uln,
-            List<PriceEpisode> priceEpisodes,
             List<EarningPeriod> periods,
             TransactionType transactionType,
             List<ApprenticeshipModel> apprenticeships,
             LearningAim aim,
             int academicYear)
         {
-            return ValidateEarningPeriods(ukprn, uln, priceEpisodes, periods, transactionType, apprenticeships, aim, academicYear, functionalSkillValidationProcessor);
+            return ValidateEarningPeriods(ukprn, uln, null, periods, transactionType, apprenticeships, aim, academicYear, functionalSkillValidationProcessor);
         }
 
         public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(
@@ -81,7 +80,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                     {
                         EarningPeriod = period,
                         Apprenticeship = apprenticeship,
-                        PriceEpisode = IsFunctionalSkillTransactionType(transactionType) 
+                        PriceEpisode = priceEpisodes == null 
                             ? null
                             : priceEpisodes.SingleOrDefault(o =>
                                   o.Identifier.Equals(period.PriceEpisodeIdentifier, StringComparison.OrdinalIgnoreCase))
@@ -162,14 +161,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             }
 
             return apprenticeshipsToUseThisPeriod;
-        }
-
-        private bool IsFunctionalSkillTransactionType(TransactionType transactionType)
-        {
-            var functionalSkillTransactionTypes = new List<TransactionType>
-                {TransactionType.OnProgrammeMathsAndEnglish, TransactionType.BalancingMathsAndEnglish};
-
-            return functionalSkillTransactionTypes.Contains(transactionType);
         }
 
         private EarningPeriod CreateEarningPeriod(EarningPeriod period)

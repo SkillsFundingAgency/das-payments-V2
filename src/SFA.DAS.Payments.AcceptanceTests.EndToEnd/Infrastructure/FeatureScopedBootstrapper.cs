@@ -12,6 +12,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
 using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using SFA.DAS.Payments.RequiredPayments.Domain;
@@ -37,6 +38,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
                 var configHelper = c.Resolve<TestsConfiguration>();
                 return new PaymentsDataContext(configHelper.PaymentsConnectionString);
             }).As<IPaymentsDataContext>().InstancePerLifetimeScope();
+
+            Builder.Register((c, p) =>
+            {
+                var configHelper = c.Resolve<TestsConfiguration>();
+                return new JobsDataContext(configHelper.PaymentsConnectionString);
+            })
+                .As<JobsDataContext>()
+                .InstancePerLifetimeScope();
+
             DcHelper.AddDcConfig(Builder);
 
             Builder.RegisterType<IlrDcService>()

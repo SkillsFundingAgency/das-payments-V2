@@ -1,4 +1,5 @@
-﻿@ignore - issue with maths and english
+﻿@ignore
+#issue with maths and english
 Feature: Levy learner moves start date forward payments refunded including english & maths - PV2-288
 		As a levy employer,
 		I want a learner that moves start date forward no prog payments and English & Maths refunded, to be paid correct amount,
