@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
     public interface ISubmissionSummary
     {
         void AddEarnings(List<TransactionTypeAmounts> dcEarningTransactionTypeAmounts, List<TransactionTypeAmounts> dasEarningTransactionTypeAmounts);
-        void AddDataLockedEarnings(DataLockTypeAmounts dataLockedAmounts);
+        void AddDataLockedEarnings(decimal total, DataLockTypeAmounts dataLockedAmounts);
         void AddHeldBackCompletionPayments(ContractTypeAmounts heldBackCompletionPaymentAmounts);
         void AddRequiredPayments(List<TransactionTypeAmounts> requiredPaymentAmounts);
         SubmissionSummaryModel GetMetrics();
@@ -25,6 +25,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
         private readonly List<TransactionTypeAmounts> dcEarnings;
         private readonly List<TransactionTypeAmounts> dasEarnings;
         private DataLockTypeAmounts dataLocked;
+        private decimal actualTotalDataLocked;
         private ContractTypeAmounts heldBackCompletionPayments;
         private List<TransactionTypeAmounts> requiredPayments;
         public SubmissionSummary(long ukprn, long jobId, byte collectionPeriod, short academicYear)
@@ -48,8 +49,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
             dasEarnings.AddRange(dasEarningTransactionTypeAmounts);
         }
 
-        public virtual void AddDataLockedEarnings(DataLockTypeAmounts dataLockedAmounts)
+        public virtual void AddDataLockedEarnings(decimal total, DataLockTypeAmounts dataLockedAmounts)
         {
+            actualTotalDataLocked = total;
             dataLocked = dataLockedAmounts ?? throw new ArgumentNullException(nameof(dataLockedAmounts));
         }
 
@@ -72,7 +74,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
                 JobId = JobId,
                 Ukprn = Ukprn,
                 DcEarnings = GetDcEarnings(),
-                DataLockedEarnings = dataLocked.Total,
+                DataLockedEarnings = actualTotalDataLocked,
                 DataLockedPaymentsMetrics = new List<DataLockedEarningsModel> { new DataLockedEarningsModel { Amounts = dataLocked } },
                 HeldBackCompletionPayments = heldBackCompletionPayments,
                 RequiredPayments = GetRequiredPayments(),
@@ -90,9 +92,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
                 EarningsType = EarningsType.Das,
                 Amounts = earning
             }));
-            result.SubmissionMetrics = new ContractTypeAmountsVerbose();
-            result.SubmissionMetrics.ContractType1 = result.RequiredPayments.ContractType1 + result.DataLockedEarnings + result.HeldBackCompletionPayments.ContractType1;
-            result.SubmissionMetrics.ContractType2 = result.RequiredPayments.ContractType2 + result.HeldBackCompletionPayments.ContractType2;
+            result.SubmissionMetrics = new ContractTypeAmountsVerbose
+            {
+                ContractType1 = result.RequiredPayments.ContractType1 + result.DataLockedEarnings +
+                                result.HeldBackCompletionPayments.ContractType1,
+                ContractType2 = result.RequiredPayments.ContractType2 + result.HeldBackCompletionPayments.ContractType2
+            };
             result.SubmissionMetrics = GetSubmissionMetrics(result);
             result.Percentage = result.SubmissionMetrics.Percentage;
             return result;

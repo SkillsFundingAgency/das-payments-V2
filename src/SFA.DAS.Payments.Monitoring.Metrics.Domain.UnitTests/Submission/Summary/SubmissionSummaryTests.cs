@@ -17,6 +17,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
         private List<TransactionTypeAmounts> requiredPayments;
         private DataLockTypeAmounts dataLocks;
         private ContractTypeAmounts heldBackCompletionPayments;
+        private decimal totalDataLockedEarnings;
 
         private SubmissionSummary GetSubmissionSummary()
         {
@@ -27,7 +28,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
             heldBackCompletionPayments = TestsHelper.DefaultHeldBackCompletionPayments;
             var summary = TestsHelper.DefaultSubmissionSummary;
             summary.AddEarnings(dcEarnings, dasEarnings);
-            summary.AddDataLockedEarnings(dataLocks);
+            summary.AddDataLockedEarnings(TestsHelper.DefaultDataLockedTotal, dataLocks);
             summary.AddRequiredPayments(requiredPayments);
             summary.AddHeldBackCompletionPayments(heldBackCompletionPayments);
             return summary;
@@ -47,7 +48,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
         {
             var metrics = GetSubmissionSummaryMetrics();
             metrics.SubmissionMetrics.ContractType1.Should().Be(
-                requiredPayments.GetTotal(ContractType.Act1) + dataLocks.Total +
+                requiredPayments.GetTotal(ContractType.Act1) + TestsHelper.DefaultDataLockedTotal +
                 heldBackCompletionPayments.ContractType1);
             metrics.SubmissionMetrics.ContractType2.Should().Be(
                 requiredPayments.GetTotal(ContractType.Act2) +

@@ -24,6 +24,8 @@ namespace SFA.DAS.Payments.Application.Repositories
         DbSet<DataLockEventModel> DataLockgEvent { get; }
         DbSet<DataLockEventNonPayablePeriodModel> DataLockEventNonPayablePeriod { get; }
         DbSet<DataLockEventNonPayablePeriodFailureModel> DataLockEventNonPayablePeriodFailure { get; }
+        DbSet<RequiredPaymentEventModel> RequiredPaymentEvent { get; }
+
         DbSet<PaymentModelWithRequiredPaymentId> PaymentsWithRequiredPayments { get; }
         DbSet<ReceivedDataLockEvent> ReceivedDataLockEvents { get; set; }
         DbSet<CurrentPriceEpisode> CurrentPriceEpisodes { get; set; }

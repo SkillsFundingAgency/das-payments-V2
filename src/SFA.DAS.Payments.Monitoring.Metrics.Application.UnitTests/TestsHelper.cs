@@ -107,8 +107,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests
         public static DataLockTypeAmounts DefaultDataLockedEarnings => new DataLockTypeAmounts
         {
             DataLock2 = 1000,
+            DataLock4 = 1000,
             DataLock7 = 2000,
         };
+
+        public static decimal DefaultDataLockedTotal => 3000;
         public static ContractTypeAmounts DefaultHeldBackCompletionPayments => new ContractTypeAmounts { ContractType1 = 2000, ContractType2 = 1000 };
 
 

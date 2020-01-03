@@ -17,8 +17,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
         private Autofac.Extras.Moq.AutoMock moqer;
         private List<TransactionTypeAmounts> dcEarnings;
         private List<TransactionTypeAmounts> dasEarnings;
+        private List<TransactionTypeAmounts> requiredPayments;
         private DataLockTypeAmounts dataLocks;
-
+        private decimal totalDataLockedEarnings;
 
         [SetUp]
         public void SetUp()
@@ -27,7 +28,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             dcEarnings = TestsHelper.DefaultDcEarnings;
             dasEarnings = TestsHelper.DefaultDasEarnings;
             dataLocks = TestsHelper.DefaultDataLockedEarnings;
-
+            requiredPayments = TestsHelper.DefaultRequiredPayments;
+            totalDataLockedEarnings = 3000;
             moqer.Mock<IDcMetricsDataContext>()
                 .Setup(ctx => ctx.GetEarnings(It.IsAny<long>(),  It.IsAny<short>(),It.IsAny<byte>()))
                 .ReturnsAsync(dcEarnings);
@@ -45,6 +47,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             moqer.Mock<ISubmissionMetricsRepository>()
                 .Setup(repo => repo.GetDataLockedEarnings(It.IsAny<long>(), It.IsAny<long>()))
                 .ReturnsAsync(dataLocks);
+            moqer.Mock<ISubmissionMetricsRepository>()
+                .Setup(repo => repo.GetDataLockedEarningsTotal(It.IsAny<long>(), It.IsAny<long>()))
+                .ReturnsAsync(TestsHelper.DefaultDataLockedTotal);
+            moqer.Mock<ISubmissionMetricsRepository>()
+                .Setup(repo => repo.GetRequiredPayments(It.IsAny<long>(), It.IsAny<long>()))
+                .ReturnsAsync(requiredPayments);
         }
 
         [Test]
@@ -65,7 +73,18 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             await service.BuildMetrics(1234, 123, 1920, 1).ConfigureAwait(false);
 
             moqer.Mock<ISubmissionSummary>()
-                .Verify(x => x.AddDataLockedEarnings(It.Is<DataLockTypeAmounts>(amounts => amounts == dataLocks)),Times.Once);
+                .Verify(x => x.AddDataLockedEarnings(It.Is<decimal>(total => total == totalDataLockedEarnings), It.Is<DataLockTypeAmounts>(amounts => amounts == dataLocks)),Times.Once);
+
+        }
+
+        [Test]
+        public async Task Includes_Required_Payments_In_Metrics()
+        {
+            var service = moqer.Create<SubmissionMetricsService>();
+            await service.BuildMetrics(1234, 123, 1920, 1).ConfigureAwait(false);
+
+            moqer.Mock<ISubmissionSummary>()
+                .Verify(x => x.AddRequiredPayments(It.Is<List<TransactionTypeAmounts>>(amounts => amounts == requiredPayments)), Times.Once);
 
         }
     }
