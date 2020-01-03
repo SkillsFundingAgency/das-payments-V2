@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,8 +32,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the provider previously submitted the following learner details")]
         public void GivenTheProviderPreviouslySubmittedTheFollowingLearnerDetails(Table table)
         {
-            PreviousIlr = table.CreateSet<Training>().ToList();
-            AddTestLearners(PreviousIlr, TestSession.Provider.Ukprn);
+            AddTestLearners(table);
         }
 
         [Given(@"the ""(.*)"" previously submitted the following learner details")]
@@ -51,13 +51,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the following earnings had been generated for the learner")]
         public void GivenTheFollowingEarningsHadBeenGeneratedForTheLearner(Table table)
         {
-            PreviousEarnings = CreateEarnings(table, TestSession.Provider.Ukprn);
-            // for new style specs where no ILR specified
-            if (PreviousIlr == null)
-            {
-                PreviousIlr = CreateTrainingFromLearners(TestSession.Provider.Ukprn);
-            }
+            CreatePreviousEarningsAndTraining(table);
         }
+
 
         [Given(@"the following earnings had been generated for the learner for ""(.*)""")]
         public void GivenTheFollowingEarningsHadBeenGeneratedForTheLearnerFor(string providerIdentifier, Table table)
@@ -103,8 +99,26 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             CurrentIlr = PreviousIlr;
         }
 
+        [When(@"the amended ILR file is re-submitted")]
+        public async Task WhenTheAmendedILRFileIsRe_Submitted()
+        {
+            var amendedLearnerDetails = new Table("Start Date","Planned Duration","Total Training Price","Total Training Price Effective Date","Total Assessment Price","Total Assessment Price Effective Date","Actual Duration","Completion Status","SFA Contribution Percentage","Contract Type","Aim Sequence Number","Aim Reference","Framework Code","Pathway Code","Programme Type","Funding Line Type");
+            amendedLearnerDetails.AddRow("start of academic year","12 months","10","Aug/Current Academic Year","0","Aug/Current Academic Year","","continuing","90%","Act2","1","ZPROG001","593","1","20","19+ Apprenticeship Non - Levy Contract(procured)");
+            AddNewIlr(amendedLearnerDetails, TestSession.Ukprn);
+
+
+            var priceEdpisodes = new Table("Price Episode Id","Total Training Price","Total Training Price Effective Date","Total Assessment Price","Total Assessment Price Effective Date","Residual Training Price","Residual Training Price Effective Date","Residual Assessment Price","Residual Assessment Price Effective Date","SFA Contribution Percentage","Contract Type","Aim Sequence Number");
+            priceEdpisodes.AddRow("pe-1","10","06/Aug/Current Academic Year","0","06/Aug/Current Academic Year","0","","0","","90%","Act2","1");
+            AddPriceDetails(priceEdpisodes);
+
+            await WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod("R01/Current Academic Year").ConfigureAwait(false);
+            //await GeneratedAndValidateEarnings(table, TestSession.Provider).ConfigureAwait(false);
+            await GenerateEarnings(TestSession.Provider).ConfigureAwait(false);
+        }
+
         [When(@"the amended ILR file is re-submitted for the learners in collection period (.*)")]
         [When(@"the ILR file is submitted for the learners for collection period (.*)")]
+        [Given(@"the ILR file is submitted for the learners for collection period (.*)")]
         public async Task WhenIlrFileIsSubmittedForTheLearnersInCollectionPeriod(string collectionPeriodText)
         {
             Task ClearCache() => HandleIlrReSubmissionForTheLearners(collectionPeriodText, TestSession.Provider);

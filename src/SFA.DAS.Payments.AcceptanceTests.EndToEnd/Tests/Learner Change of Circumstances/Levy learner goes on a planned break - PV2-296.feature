@@ -1,8 +1,8 @@
-﻿Feature: One Levy learner, goes on a planned break which is recorded in ILR  PV2-296
+﻿@ignore
+Feature: One Levy learner, goes on a planned break which is recorded in ILR  PV2-296
 	I want a levy learner, that goes on a planned break which is recorded in ILR, to be paid the correct amount
 	So that I am accurately paid my apprenticeship PV2-296
 
-@ignore
 Scenario Outline: One Levy learner, goes on a planned break which is recorded in ILR  PV2-296
 
 Given the employer levy account balance in collection period R02/Current Academic Year is 17000

@@ -18,7 +18,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
         (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidateFunctionalSkillPeriods(
             long ukprn,
             long uln,
-            List<PriceEpisode> priceEpisodes,
             List<EarningPeriod> periods,
             TransactionType transactionType,
             List<ApprenticeshipModel> apprenticeships,

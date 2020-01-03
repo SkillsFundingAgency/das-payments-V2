@@ -34,5 +34,15 @@ namespace SFA.DAS.Payments.Model.Core
         public decimal? EmployerContribution { get; set; }
         public int? CompletionHoldBackExemptionCode { get; set; }
         public string FundingLineType { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return 
+                obj != null &&
+                obj is PriceEpisode e 
+                && e.Identifier == Identifier;
+        }
+
+        public override int GetHashCode() => Identifier.GetHashCode();
     }
 }
