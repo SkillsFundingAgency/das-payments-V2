@@ -53,6 +53,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             moqer.Mock<ISubmissionMetricsRepository>()
                 .Setup(repo => repo.GetRequiredPayments(It.IsAny<long>(), It.IsAny<long>()))
                 .ReturnsAsync(requiredPayments);
+            moqer.Mock<ISubmissionMetricsRepository>()
+                .Setup(repo => repo.GetHeldBackCompletionPaymentsTotal(It.IsAny<long>(), It.IsAny<long>()))
+                .ReturnsAsync(TestsHelper.DefaultHeldBackCompletionPayments);
         }
 
         [Test]
@@ -86,6 +89,17 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             moqer.Mock<ISubmissionSummary>()
                 .Verify(x => x.AddRequiredPayments(It.Is<List<TransactionTypeAmounts>>(amounts => amounts == requiredPayments)), Times.Once);
 
+        }
+
+        [Test]
+        public async Task Includes_Held_Back_Completion_Payments_In_Metrics()
+        {
+            var service = moqer.Create<SubmissionMetricsService>();
+            await service.BuildMetrics(1234, 123, 1920, 1).ConfigureAwait(false);
+
+            moqer.Mock<ISubmissionSummary>()
+                .Verify(x => x.AddHeldBackCompletionPayments(It.Is<ContractTypeAmounts>(amounts => amounts.ContractType1 == TestsHelper.DefaultHeldBackCompletionPayments.ContractType1 && 
+                                                                                                   amounts.ContractType2 == TestsHelper.DefaultHeldBackCompletionPayments.ContractType2)), Times.Once);
         }
     }
 }

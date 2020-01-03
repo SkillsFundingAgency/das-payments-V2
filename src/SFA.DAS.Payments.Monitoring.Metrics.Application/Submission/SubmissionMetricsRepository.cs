@@ -8,6 +8,7 @@ using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
+using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 {
@@ -16,7 +17,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         Task<List<TransactionTypeAmounts>> GetDasEarnings(long ukprn, long jobId);
         Task<DataLockTypeAmounts> GetDataLockedEarnings(long ukprn, long jobId);
         Task<decimal> GetDataLockedEarningsTotal(long ukprn, long jobId);
-        Task<Decimal> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId);
+        Task<ContractTypeAmounts> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId);
         Task<List<TransactionTypeAmounts>> GetRequiredPayments(long ukprn, long jobId);
     }
 
@@ -108,9 +109,25 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 .SumAsync(period => period.Amount);
         }
 
-        public async Task<Decimal> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId)
+        public async Task<ContractTypeAmounts> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId)
         {
-            throw new NotImplementedException();
+            var amounts = await paymentsDataContext.RequiredPaymentEvent
+                .AsNoTracking()
+                .Where(rp =>
+                    rp.Ukprn == ukprn && rp.JobId == jobId && rp.NonPaymentReason != null && rp.NonPaymentReason == NonPaymentReason.InsufficientEmployerContribution)
+                .GroupBy(rp => rp.ContractType)
+                .Select(group => new
+                {
+                    ContractType = group.Key, Amount = group.Sum(rp => rp.Amount)
+                })
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            return new ContractTypeAmounts
+            {
+                ContractType1 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act1)?.Amount ?? 0,
+                ContractType2 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act2)?.Amount ?? 0,
+            };
         }
 
         public async Task<List<TransactionTypeAmounts>> GetRequiredPayments(long ukprn, long jobId)
@@ -151,6 +168,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                     TransactionType16 = group.Where(x => x.TransactionType == TransactionType.CareLeaverApprenticePayment).Sum(x => (decimal?)x.Amount) ?? 0,
                 })
                 .ToList();
+        }
+
+        public async Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
@@ -33,11 +32,16 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             var dasEarningsTask = submissionRepository.GetDasEarnings(ukprn, jobId);
             var dataLocksTask = submissionRepository.GetDataLockedEarnings(ukprn, jobId);
             var dataLocksTotalTask = submissionRepository.GetDataLockedEarningsTotal(ukprn, jobId);
-            var requiredPaymentsTask = submissionRepository.GetRequiredPayments(ukprn,jobId);
-            await Task.WhenAll(dasEarningsTask, dcEarningsTask,dataLocksTotalTask, requiredPaymentsTask).ConfigureAwait(false);
+            var requiredPaymentsTask = submissionRepository.GetRequiredPayments(ukprn, jobId);
+            var heldBackCompletionAmountsTask = submissionRepository.GetHeldBackCompletionPaymentsTotal(ukprn, jobId);
+            await Task.WhenAll(dasEarningsTask, dcEarningsTask, dataLocksTotalTask, requiredPaymentsTask, heldBackCompletionAmountsTask).ConfigureAwait(false);
             submissionSummary.AddEarnings(dcEarningsTask.Result, dasEarningsTask.Result);
             submissionSummary.AddDataLockedEarnings(dataLocksTotalTask.Result, dataLocksTask.Result);
             submissionSummary.AddRequiredPayments(requiredPaymentsTask.Result);
+            submissionSummary.AddHeldBackCompletionPayments(heldBackCompletionAmountsTask.Result);
+            var metrics = submissionSummary.GetMetrics();
+            submissionRepository.SaveMetrics(metrics);
+            logger.LogInfo($"Finished building metrics for job: {jobId}, provider: {ukprn}, Academic year: {academicYear}, Collection period: {collectionPeriod}");
         }
     }
 }
