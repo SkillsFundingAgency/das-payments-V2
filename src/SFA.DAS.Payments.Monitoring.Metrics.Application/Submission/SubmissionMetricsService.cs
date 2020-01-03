@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             submissionSummary.AddRequiredPayments(requiredPaymentsTask.Result);
             submissionSummary.AddHeldBackCompletionPayments(heldBackCompletionAmountsTask.Result);
             var metrics = submissionSummary.GetMetrics();
-            submissionRepository.SaveMetrics(metrics);
+            await submissionRepository.SaveSubmissionMetrics(metrics);
             logger.LogInfo($"Finished building metrics for job: {jobId}, provider: {ukprn}, Academic year: {academicYear}, Collection period: {collectionPeriod}");
         }
     }

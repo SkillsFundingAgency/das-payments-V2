@@ -19,6 +19,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         Task<decimal> GetDataLockedEarningsTotal(long ukprn, long jobId);
         Task<ContractTypeAmounts> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId);
         Task<List<TransactionTypeAmounts>> GetRequiredPayments(long ukprn, long jobId);
+        Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary);
     }
 
     public class SubmissionMetricsRepository : ISubmissionMetricsRepository
