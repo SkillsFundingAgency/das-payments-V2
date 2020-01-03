@@ -59,7 +59,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
                     var historicPayment = cacheItem.Value.FirstOrDefault(payment =>
                         payment.PriceEpisodeIdentifier == refund.payment.PriceEpisodeIdentifier &&
-                        payment.DeliveryPeriod == refund.deliveryPeriod);
+                        payment.DeliveryPeriod == refund.deliveryPeriod &&
+                        payment.TransactionType == transactionType);
 
                     if (historicPayment == null)
                         throw new InvalidOperationException($"Cannot find historic payment with price episode identifier: {refund.payment.PriceEpisodeIdentifier} for period {refund.deliveryPeriod}.");

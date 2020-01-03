@@ -31,7 +31,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         private AutoMock mocker;
         private List<PaymentHistoryEntity> history;
         private IdentifiedRemovedLearningAim identifiedLearner;
-        private IMapper mapper;
 
         [SetUp]
         public void SetUp()
@@ -43,9 +42,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             var mapper = new Mapper(config);
             mocker.Provide<IMapper>(mapper);
             
-            mocker.Provide<IRefundRemovedLearningAimService>(
-                new RefundRemovedLearningAimService());
-            identifiedLearner = identifiedLearner = new IdentifiedRemovedLearningAim
+            mocker.Provide<IRefundRemovedLearningAimService>(new RefundRemovedLearningAimService());
+            mocker.Provide<IPeriodisedRequiredPaymentEventFactory>(new PeriodisedRequiredPaymentEventFactory());
+            
+            identifiedLearner  = new IdentifiedRemovedLearningAim
             {
                 CollectionPeriod = new CollectionPeriod
                 {
@@ -106,20 +106,17 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         [Test]
         public async Task Refunds_Required_Levy_Payments()
         {
-            var historicPayment = CreatePaymentHistoryEntity(FundingSourceType.FullyFundedSfa, 1);
+            var historicPayment = CreatePaymentHistoryEntity(FundingSourceType.Levy, 1);
             history.Add(historicPayment);
+
             mocker.Mock<IDataCache<PaymentHistoryEntity[]>>()
                 .Setup(x => x.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, history.ToArray()));
-            mocker.Mock<IPeriodisedRequiredPaymentEventFactory>()
-                .Setup(x => x.Create(It.IsAny<EarningType>(), It.IsAny<int>()))
-                .Returns(new CalculatedRequiredLevyAmount
-                {
-                    OnProgrammeEarningType = OnProgrammeEarningType.Learning,
-                });
-
+        
             var processor = mocker.Create<RefundRemovedLearningAimProcessor>();
-            var refunds = await processor.RefundLearningAim(identifiedLearner, mocker.Mock<IDataCache<PaymentHistoryEntity[]>>().Object, CancellationToken.None).ConfigureAwait(false);
+            var refunds = await processor.RefundLearningAim(identifiedLearner, mocker.Mock<IDataCache<PaymentHistoryEntity[]>>().Object, CancellationToken.None)
+                .ConfigureAwait(false);
+
             refunds.Count.Should().Be(1);
             var refund = refunds.First();
             var levyRefund = refund as CalculatedRequiredLevyAmount;
@@ -135,15 +132,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         {
             var historicPayment = CreatePaymentHistoryEntity(FundingSourceType.CoInvestedSfa, 2);
             history.Add(historicPayment);
+
             mocker.Mock<IDataCache<PaymentHistoryEntity[]>>()
                 .Setup(x => x.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, history.ToArray()));
-            mocker.Mock<IPeriodisedRequiredPaymentEventFactory>()
-                .Setup(x => x.Create(It.IsAny<EarningType>(), It.IsAny<int>()))
-                .Returns(new CalculatedRequiredCoInvestedAmount
-                {
-                    OnProgrammeEarningType = OnProgrammeEarningType.Learning
-                });
+         
 
             var processor = mocker.Create<RefundRemovedLearningAimProcessor>();
             var refunds = await processor.RefundLearningAim(identifiedLearner, mocker.Mock<IDataCache<PaymentHistoryEntity[]>>().Object, CancellationToken.None).ConfigureAwait(false);
@@ -165,13 +158,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             mocker.Mock<IDataCache<PaymentHistoryEntity[]>>()
                 .Setup(x => x.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, history.ToArray()));
-            mocker.Mock<IPeriodisedRequiredPaymentEventFactory>()
-                .Setup(x => x.Create(It.IsAny<EarningType>(), It.IsAny<int>()))
-                .Returns(new CalculatedRequiredIncentiveAmount
-                {
-                    Type = IncentivePaymentType.Balancing16To18FrameworkUplift
-                });
-
+          
             var processor = mocker.Create<RefundRemovedLearningAimProcessor>();
             var refunds = await processor.RefundLearningAim(identifiedLearner, mocker.Mock<IDataCache<PaymentHistoryEntity[]>>().Object, CancellationToken.None).ConfigureAwait(false);
             refunds.Count.Should().Be(1);
@@ -196,30 +183,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             history.Add(historicLevyPayment);
             history.Add(historicCoInvestedPayment);
             history.Add(historicIncentivePayment);
+
             mocker.Mock<IDataCache<PaymentHistoryEntity[]>>()
                 .Setup(x => x.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, history.ToArray()));
-            mocker.Mock<IPeriodisedRequiredPaymentEventFactory>()
-                .Setup(x => x.Create(It.Is<EarningType>(et => et == EarningType.Levy), It.IsAny<int>()))
-                .Returns(new CalculatedRequiredLevyAmount
-                {
-                    OnProgrammeEarningType = OnProgrammeEarningType.Learning,
-                });
-
-            mocker.Mock<IPeriodisedRequiredPaymentEventFactory>()
-                .Setup(x => x.Create(It.Is<EarningType>(et => et == EarningType.CoInvested), It.IsAny<int>()))
-                .Returns(new CalculatedRequiredCoInvestedAmount
-                {
-                    OnProgrammeEarningType = OnProgrammeEarningType.Learning
-                });
-
-            mocker.Mock<IPeriodisedRequiredPaymentEventFactory>()
-                .Setup(x => x.Create(It.Is<EarningType>(et => et == EarningType.Incentive), It.IsAny<int>()))
-                .Returns(new CalculatedRequiredIncentiveAmount
-                {
-                    Type = IncentivePaymentType.Balancing16To18FrameworkUplift
-                });
-
+          
             var processor = mocker.Create<RefundRemovedLearningAimProcessor>();
             var refunds = await processor.RefundLearningAim(identifiedLearner, mocker.Mock<IDataCache<PaymentHistoryEntity[]>>().Object, CancellationToken.None).ConfigureAwait(false);
             refunds.Count.Should().Be(3);
@@ -231,20 +199,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
 
         [Test]
-        public async Task Generate_Valid_Required_Payment_Type()
+        public async Task Generate_Valid_SfaContribution_For_CoInvested_Refund_Payment()
         {
-            var historicCoInvestedPayment = CreatePaymentHistoryEntity(FundingSourceType.CoInvestedSfa, 1);
-            historicCoInvestedPayment.Amount = 160;
-            historicCoInvestedPayment.SfaContributionPercentage = 1m;
-            historicCoInvestedPayment.ContractType = ContractType.Act2;
-            historicCoInvestedPayment.TransactionType = (int)TransactionType.Learning;
-            historicCoInvestedPayment.CollectionPeriod = new CollectionPeriod
-            {
-                AcademicYear = 1920,
-                Period = 3
-            };
-            history.Add(historicCoInvestedPayment);
-
             var historicIncentivePayment = CreatePaymentHistoryEntity(FundingSourceType.FullyFundedSfa, 2);
             historicIncentivePayment.Amount = 500m;
             historicIncentivePayment.SfaContributionPercentage = 0m;
@@ -257,6 +213,19 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             };
             history.Add(historicIncentivePayment);
 
+            var historicCoInvestedPayment = CreatePaymentHistoryEntity(FundingSourceType.CoInvestedSfa, 2);
+            historicCoInvestedPayment.Amount = 160;
+            historicCoInvestedPayment.SfaContributionPercentage = 1m;
+            historicCoInvestedPayment.ContractType = ContractType.Act2;
+            historicCoInvestedPayment.TransactionType = (int)TransactionType.Learning;
+            historicCoInvestedPayment.CollectionPeriod = new CollectionPeriod
+            {
+                AcademicYear = 1920,
+                Period = 3
+            };
+            history.Add(historicCoInvestedPayment);
+
+
             identifiedLearner.CollectionPeriod = new CollectionPeriod
             {
                 AcademicYear = 1920,
@@ -267,16 +236,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 .Setup(x => x.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, history.ToArray()));
 
-            var refundRemovedLearningAimService = new RefundRemovedLearningAimService(
-                new RefundService(),
-                new PaymentDueProcessor());
-
-            var processor = new RefundRemovedLearningAimProcessor(
-                refundRemovedLearningAimService,
-                Mock.Of<IPaymentLogger>(),
-                mapper,
-                new PeriodisedRequiredPaymentEventFactory());
-
+            var processor = mocker.Create<RefundRemovedLearningAimProcessor>();
             var refunds = await processor.RefundLearningAim(identifiedLearner,
                 mocker.Mock<IDataCache<PaymentHistoryEntity[]>>().Object,
                 CancellationToken.None)
@@ -286,9 +246,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             refund.Should().NotBeNull();
 
             var coInvestedAmountPayment = refund as CalculatedRequiredCoInvestedAmount;
-            coInvestedAmountPayment.SfaContributionPercentage.Should().NotBe(0);
-
-
+            coInvestedAmountPayment.SfaContributionPercentage.Should().Be(1m);
         }
 
     }
