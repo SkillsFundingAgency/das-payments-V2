@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
@@ -8,12 +10,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
     public interface IMetricsDataContext
     {
         DbSet<SubmissionSummaryModel> SubmissionSummaries { get; }
-        DbSet<DataLockedEarningsModel> DataLockedEarnings { get;  }
-        DbSet<EarningsModel> Earnings { get;  }
-        DbSet<RequiredPaymentsModel> RequiredPayments { get;  }
+        DbSet<DataLockedEarningsModel> DataLockedEarnings { get; }
+        DbSet<EarningsModel> Earnings { get; }
+        DbSet<RequiredPaymentsModel> RequiredPayments { get; }
+        Task Save(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken);
     }
 
-    public class MetricsDataContext: DbContext, IMetricsDataContext
+    public class MetricsDataContext : DbContext, IMetricsDataContext
     {
         private readonly string connectionString;
 
@@ -21,7 +24,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         public virtual DbSet<DataLockedEarningsModel> DataLockedEarnings { get; set; }
         public virtual DbSet<EarningsModel> Earnings { get; set; }
         public virtual DbSet<RequiredPaymentsModel> RequiredPayments { get; set; }
-        
+
         public MetricsDataContext(string connectionString)
         {
             this.connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
@@ -40,6 +43,31 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(connectionString);
+        }
+
+        public async Task Save(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken)
+        {
+            var transaction = await Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
+            try
+            {
+                await Database.ExecuteSqlCommandAsync($@"
+                    Delete 
+                        From [Metrics].[SubmissionSummary] 
+                    Where 
+                        Ukprn = {submissionSummary.Ukprn}
+                        And AcademicYear = {submissionSummary.AcademicYear}
+                        And CollectionPeriod = {submissionSummary.CollectionPeriod}
+                    "
+                    , cancellationToken);
+                SubmissionSummaries.Add(submissionSummary);
+                await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                transaction.Commit();
+            }
+            catch 
+            {
+                transaction.Rollback();
+                throw;
+            }
         }
     }
 }

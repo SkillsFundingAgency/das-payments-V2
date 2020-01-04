@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Application.Submission;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
 using SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
+using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
 {
@@ -31,7 +32,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             requiredPayments = TestsHelper.DefaultRequiredPayments;
             totalDataLockedEarnings = 3000;
             moqer.Mock<IDcMetricsDataContext>()
-                .Setup(ctx => ctx.GetEarnings(It.IsAny<long>(),  It.IsAny<short>(),It.IsAny<byte>()))
+                .Setup(ctx => ctx.GetEarnings(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>()))
                 .ReturnsAsync(dcEarnings);
             var mockSubmissionSummary = moqer.Mock<ISubmissionSummary>();
             moqer.Mock<ISubmissionSummaryFactory>()
@@ -62,10 +63,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
         public async Task Includes_Earnings_In_Metrics()
         {
             var service = moqer.Create<SubmissionMetricsService>();
-            await service.BuildMetrics(1234, 123, 1920, 1).ConfigureAwait(false);
+            await service.BuildMetrics(1234, 123, 1920, 1, CancellationToken.None).ConfigureAwait(false);
 
             moqer.Mock<ISubmissionSummary>()
-                .Verify(x => x.AddEarnings( It.Is<List<TransactionTypeAmounts>>(lst => lst == dcEarnings),
+                .Verify(x => x.AddEarnings(It.Is<List<TransactionTypeAmounts>>(lst => lst == dcEarnings),
                     It.Is<List<TransactionTypeAmounts>>(lst => lst == dasEarnings)), Times.Once);
         }
 
@@ -73,10 +74,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
         public async Task Includes_DataLocks_In_Metrics()
         {
             var service = moqer.Create<SubmissionMetricsService>();
-            await service.BuildMetrics(1234, 123, 1920, 1).ConfigureAwait(false);
+            await service.BuildMetrics(1234, 123, 1920, 1, CancellationToken.None).ConfigureAwait(false);
 
             moqer.Mock<ISubmissionSummary>()
-                .Verify(x => x.AddDataLockedEarnings(It.Is<decimal>(total => total == totalDataLockedEarnings), It.Is<DataLockTypeAmounts>(amounts => amounts == dataLocks)),Times.Once);
+                .Verify(x => x.AddDataLockedEarnings(It.Is<decimal>(total => total == totalDataLockedEarnings), It.Is<DataLockTypeAmounts>(amounts => amounts == dataLocks)), Times.Once);
 
         }
 
@@ -84,7 +85,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
         public async Task Includes_Required_Payments_In_Metrics()
         {
             var service = moqer.Create<SubmissionMetricsService>();
-            await service.BuildMetrics(1234, 123, 1920, 1).ConfigureAwait(false);
+            await service.BuildMetrics(1234, 123, 1920, 1, CancellationToken.None).ConfigureAwait(false);
 
             moqer.Mock<ISubmissionSummary>()
                 .Verify(x => x.AddRequiredPayments(It.Is<List<TransactionTypeAmounts>>(amounts => amounts == requiredPayments)), Times.Once);
@@ -95,11 +96,24 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
         public async Task Includes_Held_Back_Completion_Payments_In_Metrics()
         {
             var service = moqer.Create<SubmissionMetricsService>();
-            await service.BuildMetrics(1234, 123, 1920, 1).ConfigureAwait(false);
+            await service.BuildMetrics(1234, 123, 1920, 1, CancellationToken.None).ConfigureAwait(false);
 
             moqer.Mock<ISubmissionSummary>()
-                .Verify(x => x.AddHeldBackCompletionPayments(It.Is<ContractTypeAmounts>(amounts => amounts.ContractType1 == TestsHelper.DefaultHeldBackCompletionPayments.ContractType1 && 
+                .Verify(x => x.AddHeldBackCompletionPayments(It.Is<ContractTypeAmounts>(amounts => amounts.ContractType1 == TestsHelper.DefaultHeldBackCompletionPayments.ContractType1 &&
                                                                                                    amounts.ContractType2 == TestsHelper.DefaultHeldBackCompletionPayments.ContractType2)), Times.Once);
+        }
+
+        [Test]
+        public async Task Saves_Submission_Metrics()
+        {
+            var service = moqer.Create<SubmissionMetricsService>();
+            await service.BuildMetrics(1234, 123, 1920, 1, CancellationToken.None).ConfigureAwait(false);
+
+            moqer.Mock<ISubmissionSummary>()
+                .Verify(x => x.GetMetrics(), Times.Once);
+            moqer.Mock<ISubmissionMetricsRepository>()
+                .Verify(repo => repo.SaveSubmissionMetrics(It.IsAny<SubmissionSummaryModel>(), It.IsAny<CancellationToken>()), Times.Once);
+
         }
     }
 }

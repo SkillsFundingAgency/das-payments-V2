@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Monitoring.Metrics.Data;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
@@ -19,16 +21,18 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         Task<decimal> GetDataLockedEarningsTotal(long ukprn, long jobId);
         Task<ContractTypeAmounts> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId);
         Task<List<TransactionTypeAmounts>> GetRequiredPayments(long ukprn, long jobId);
-        Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary);
+        Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken);
     }
 
     public class SubmissionMetricsRepository : ISubmissionMetricsRepository
     {
         private readonly IPaymentsDataContext paymentsDataContext;
+        private readonly IMetricsDataContext dataContext;
 
-        public SubmissionMetricsRepository(IPaymentsDataContext paymentsDataContext)
+        public SubmissionMetricsRepository(IPaymentsDataContext paymentsDataContext, IMetricsDataContext dataContext)
         {
             this.paymentsDataContext = paymentsDataContext ?? throw new ArgumentNullException(nameof(paymentsDataContext));
+            this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
         }
 
         public async Task<List<TransactionTypeAmounts>> GetDasEarnings(long ukprn, long jobId)
@@ -171,9 +175,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 .ToList();
         }
 
-        public async Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary)
+        public async Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            await dataContext.Save(submissionSummary, cancellationToken).ConfigureAwait(false);
         }
     }
 }

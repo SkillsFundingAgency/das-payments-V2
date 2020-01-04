@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
@@ -8,7 +9,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 {
     public interface ISubmissionMetricsService
     {
-
+        Task BuildMetrics(long ukprn, long jobId, short academicYear, byte collectionPeriod,
+            CancellationToken cancellationToken);
     }
 
     public class SubmissionMetricsService : ISubmissionMetricsService
@@ -26,7 +28,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             this.submissionRepository = submissionRepository ?? throw new ArgumentNullException(nameof(submissionRepository));
         }
 
-        public async Task BuildMetrics(long ukprn, long jobId, short academicYear, byte collectionPeriod)
+        public async Task BuildMetrics(long ukprn, long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
             logger.LogDebug($"Building metrics for job: {jobId}, provider: {ukprn}, Academic year: {academicYear}, Collection period: {collectionPeriod}");
             var stopwatch = Stopwatch.StartNew();
@@ -45,7 +47,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             submissionSummary.AddRequiredPayments(requiredPaymentsTask.Result);
             submissionSummary.AddHeldBackCompletionPayments(heldBackCompletionAmountsTask.Result);
             var metrics = submissionSummary.GetMetrics();
-            await submissionRepository.SaveSubmissionMetrics(metrics);
+            await submissionRepository.SaveSubmissionMetrics(metrics, cancellationToken);
             logger.LogInfo($"Finished building metrics for job: {jobId}, provider: {ukprn}, Academic year: {academicYear}, Collection period: {collectionPeriod}");
         }
     }
