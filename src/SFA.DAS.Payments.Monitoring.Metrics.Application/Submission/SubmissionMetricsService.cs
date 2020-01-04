@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
@@ -27,6 +28,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
         public async Task BuildMetrics(long ukprn, long jobId, short academicYear, byte collectionPeriod)
         {
+            logger.LogDebug($"Building metrics for job: {jobId}, provider: {ukprn}, Academic year: {academicYear}, Collection period: {collectionPeriod}");
+            var stopwatch = Stopwatch.StartNew();
             var submissionSummary = submissionSummaryFactory.Create(ukprn, jobId, academicYear, collectionPeriod);
             var dcEarningsTask = dcDataContext.GetEarnings(ukprn, academicYear, collectionPeriod);
             var dasEarningsTask = submissionRepository.GetDasEarnings(ukprn, jobId);
@@ -35,6 +38,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             var requiredPaymentsTask = submissionRepository.GetRequiredPayments(ukprn, jobId);
             var heldBackCompletionAmountsTask = submissionRepository.GetHeldBackCompletionPaymentsTotal(ukprn, jobId);
             await Task.WhenAll(dasEarningsTask, dcEarningsTask, dataLocksTotalTask, requiredPaymentsTask, heldBackCompletionAmountsTask).ConfigureAwait(false);
+            stopwatch.Stop();
+            logger.LogDebug($"finished getting data from databases. Took: {stopwatch.ElapsedMilliseconds}ms for metrics report for job: {jobId}, ukprn: {ukprn}");
             submissionSummary.AddEarnings(dcEarningsTask.Result, dasEarningsTask.Result);
             submissionSummary.AddDataLockedEarnings(dataLocksTotalTask.Result, dataLocksTask.Result);
             submissionSummary.AddRequiredPayments(requiredPaymentsTask.Result);
