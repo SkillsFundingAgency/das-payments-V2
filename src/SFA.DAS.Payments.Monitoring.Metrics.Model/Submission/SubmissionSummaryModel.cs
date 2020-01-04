@@ -11,9 +11,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Model.Submission
         public byte CollectionPeriod { get; set; }
         public decimal Percentage { get; set; }
         public ContractTypeAmountsVerbose SubmissionMetrics { get; set; }
-        public List<EarningsModel> EarningsMetrics { get; set; }
-        public List<DataLockedEarningsModel> DataLockedPaymentsMetrics { get; set; }
-        public List<RequiredPaymentsModel> RequiredPaymentsMetrics { get; set; }
+        public virtual List<EarningsModel> EarningsMetrics { get; set; }
+        public virtual List<DataLockedEarningsModel> DataLockedPaymentsMetrics { get; set; }
+        public virtual List<RequiredPaymentsModel> RequiredPaymentsMetrics { get; set; }
         public ContractTypeAmounts DcEarnings { get; set; }
         public ContractTypeAmountsVerbose DasEarnings { get; set; }
         public ContractTypeAmounts RequiredPayments { get; set; }
