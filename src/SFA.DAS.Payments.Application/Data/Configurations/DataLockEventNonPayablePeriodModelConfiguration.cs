@@ -12,6 +12,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).HasColumnName(@"Id").IsRequired();
             builder.Property(x => x.DataLockEventId).HasColumnName(@"DataLockEventId").IsRequired();
+            builder.Property(x => x.DataLockEventNonPayablePeriodId).HasColumnName(@"DataLockEventNonPayablePeriodId").IsRequired();
             builder.Property(x => x.PriceEpisodeIdentifier).HasColumnName(@"PriceEpisodeIdentifier");
             builder.Property(x => x.TransactionType).HasColumnName(@"TransactionType").IsRequired();
             builder.Property(x => x.DeliveryPeriod).HasColumnName(@"DeliveryPeriod").IsRequired();
@@ -21,6 +22,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.LearningStartDate).HasColumnName(@"LearningStartDate");
 
             builder.HasOne(x => x.DataLockEvent).WithMany(dl => dl.NonPayablePeriods).HasForeignKey(x => x.DataLockEventId);
+            builder.HasMany(x => x.Failures).WithOne(y => y.DataLockEventNonPayablePeriod).HasForeignKey(y => y.DataLockEventNonPayablePeriodId);
         }
     }
 }
