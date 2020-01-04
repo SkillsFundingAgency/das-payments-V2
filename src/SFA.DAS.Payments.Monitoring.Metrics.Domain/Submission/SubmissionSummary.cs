@@ -92,12 +92,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
                 EarningsType = EarningsType.Das,
                 Amounts = earning
             }));
-            result.SubmissionMetrics = new ContractTypeAmountsVerbose
-            {
-                ContractType1 = result.RequiredPayments.ContractType1 + result.DataLockedEarnings +
-                                result.HeldBackCompletionPayments.ContractType1,
-                ContractType2 = result.RequiredPayments.ContractType2 + result.HeldBackCompletionPayments.ContractType2
-            };
             result.SubmissionMetrics = GetSubmissionMetrics(result);
             result.Percentage = result.SubmissionMetrics.Percentage;
             return result;
