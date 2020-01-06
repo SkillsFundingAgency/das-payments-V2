@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Payments.Model.Core;
+﻿using Newtonsoft.Json;
+using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {

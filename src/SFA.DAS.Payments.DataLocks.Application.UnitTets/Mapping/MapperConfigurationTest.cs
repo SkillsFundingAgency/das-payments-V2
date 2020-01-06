@@ -274,37 +274,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
         }
 
         [Test]
-        public void TestDataLockEventToDataLockStatusChangedEventMap()
-        {
-            var dataLockEvent = new PayableEarningEvent
-            {
-                Learner = new Learner { Uln = 1, ReferenceNumber = "2"},
-                LearningAim = new LearningAim{FrameworkCode = 3},
-                AgreementId = "4",
-                CollectionPeriod = new CollectionPeriod{AcademicYear = 1, Period = 2},
-                EventId = Guid.NewGuid()                
-            };
-
-            var changedToFailEvent = new DataLockStatusChangedToFailed
-            {
-                TransactionTypesAndPeriods = new Dictionary<TransactionType, List<EarningPeriod>> {{TransactionType.Balancing, new List<EarningPeriod> {new EarningPeriod {Period = 1}, new EarningPeriod {Period = 2}}}},
-                EventId = Guid.NewGuid()
-            };
-
-            Mapper.Map(dataLockEvent, changedToFailEvent);
-
-            changedToFailEvent.Learner.Should().NotBeNull();
-            changedToFailEvent.Learner.Uln.Should().Be(1);
-            changedToFailEvent.LearningAim.Should().NotBeNull();
-            changedToFailEvent.LearningAim.FrameworkCode.Should().Be(3);
-            changedToFailEvent.CollectionPeriod.Should().NotBeNull();
-            changedToFailEvent.CollectionPeriod.AcademicYear.Should().Be(1);
-            changedToFailEvent.EventId.Should().Be(changedToFailEvent.EventId);
-            changedToFailEvent.TransactionTypesAndPeriods.Should().NotBeNull();
-            changedToFailEvent.TransactionTypesAndPeriods.Should().NotBeEmpty();
-        }
-
-        [Test]
         public void CanMapFunctionalSkillEarningToFunctionalSkillDataLockEvent()
         {
             var dataLockEvent =

@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         public int? StandardCode { get; set; }
         public string SendingEmployer { get; set; }
         public long? SendingAccountId { get; set; }
-
         public string PriceEpisodeIdentifier { get; set; }
+        public bool IsEmployerLevyPayer { get; set; }
     }
 }

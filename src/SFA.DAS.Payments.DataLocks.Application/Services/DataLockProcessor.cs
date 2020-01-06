@@ -169,7 +169,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 var validationResult = earningPeriodsValidationProcessor
                     .ValidateFunctionalSkillPeriods(earningEvent.Ukprn,
                         earningEvent.Learner.Uln,
-                        earningEvent.PriceEpisodes,
                         functionalSkillEarning.Periods.ToList(),
                         (TransactionType)functionalSkillEarning.Type,
                         apprenticeshipsForUln,

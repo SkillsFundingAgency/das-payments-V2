@@ -354,7 +354,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             onProgValidationMock
                 .Setup(x => x.ValidateFunctionalSkillPeriods(Ukprn, apprenticeships[0].Uln,
-                    It.IsAny<List<PriceEpisode>>(),
                     It.IsAny<List<EarningPeriod>>(),
                     It.IsAny<TransactionType>(),
                     It.IsAny<List<ApprenticeshipModel>>(),

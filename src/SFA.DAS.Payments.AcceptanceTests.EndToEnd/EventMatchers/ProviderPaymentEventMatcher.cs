@@ -36,7 +36,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             return ProviderPaymentEventHandler.ReceivedEvents
                 .Where(ev =>
                     ev.Ukprn == provider.Ukprn &&
-                    ev.JobId == provider.JobId &&
                     ev.CollectionPeriod.Period == collectionPeriod.Period && 
                     ev.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear)
                 .ToList();

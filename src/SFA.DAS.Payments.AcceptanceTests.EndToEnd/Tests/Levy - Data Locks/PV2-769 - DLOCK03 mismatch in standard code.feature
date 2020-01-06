@@ -87,16 +87,17 @@ Scenario: ILR changes before second Commitment starts (i.e. there is only one ex
         | Apprenticeship a | Jul/Current Academic Year | Learning         | 52            | 25             | 1            | DLOCK_07   | pe-2                     |
 	And Month end is triggered
 	And only the following provider payments will be recorded
-		| Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
-		| R01/Current Academic Year | Aug/Current Academic Year | 1000          | Learning         |
-		| R02/Current Academic Year | Sep/Current Academic Year | 1000          | Learning         |
-		| R03/Current Academic Year | Oct/Current Academic Year | 1000          | Learning         |
-		| R04/Current Academic Year | Nov/Current Academic Year | 0             | Learning         |
-		| R05/Current Academic Year | Dec/Current Academic Year | 0             | Learning         |
-		| R06/Current Academic Year | Jan/Current Academic Year | 0             | Learning         |
-		| R07/Current Academic Year | Feb/Current Academic Year | 0             | Learning         |
-		| R08/Current Academic Year | Mar/Current Academic Year | 0             | Learning         |
-		| R09/Current Academic Year | Apr/Current Academic Year | 0             | Learning         |
-		| R10/Current Academic Year | May/Current Academic Year | 0             | Learning         |
-		| R11/Current Academic Year | Jun/Current Academic Year | 0             | Learning         |
-		| R12/Current Academic Year | Jul/Current Academic Year | 0             | Learning         |
+		| Collection Period         | Delivery Period           | Levy Payments | Transaction Type | Price Episode Identifier |standard code |
+		| R05/Current Academic Year | Aug/Current Academic Year | 1000          | Learning         | pe-1                     |51            |
+		| R05/Current Academic Year | Sep/Current Academic Year | 1000          | Learning         | pe-1                     |51            |
+		| R05/Current Academic Year | Oct/Current Academic Year | 1000          | Learning         | pe-1                     |51            |
+		| R05/Current Academic Year | Nov/Current Academic Year | 0             | Learning         | pe-1                     |51            |
+		| R05/Current Academic Year | Dec/Current Academic Year | 0             | Learning         | pe-1                     |51            |
+		| R05/Current Academic Year | Jan/Current Academic Year | 0             | Learning         | pe-1                     |51            |
+		| R05/Current Academic Year | Feb/Current Academic Year | 0             | Learning         | pe-1                     |51            |
+		| R05/Current Academic Year | Mar/Current Academic Year | 0             | Learning         | pe-1                     |51            |
+		| R05/Current Academic Year | Apr/Current Academic Year | 0             | Learning         | pe-1                     |51            |
+		| R05/Current Academic Year | May/Current Academic Year | 0             | Learning         | pe-1                     |51            |
+		| R05/Current Academic Year | Jun/Current Academic Year | 0             | Learning         | pe-1                     |51            |
+		| R05/Current Academic Year | Jul/Current Academic Year | 0             | Learning         | pe-1                     |51            |
+																															

@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public DcHelper(IJsonSerializationService serializationService,
             ITopicPublishService<JobContextDto> topicPublishingService,
-            IFileService azureFileService, 
+            IFileService azureFileService,
             TestPaymentsDataContext dataContext)
         {
             this.serializationService = serializationService ?? throw new ArgumentNullException(nameof(serializationService));
@@ -41,24 +41,39 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         {
             try
             {
-                dataContext.ClearJobId(jobId);
+                //dataContext.ClearJobId(jobId);  //TODO: Not sure why we'd remove the job before confirming it
 
                 var subscriptionName = DcConfiguration.SubscriptionName;
 
+                var messagePointer = Guid.NewGuid().ToString().Replace("-", string.Empty);
                 var dto = new JobContextDto
                 {
                     JobId = jobId,
                     KeyValuePairs = new Dictionary<string, object>
                     {
+                        {JobContextMessageKey.Filename, messagePointer},
+                        {JobContextMessageKey.FundingFm36Output, messagePointer},
                         {JobContextMessageKey.UkPrn, ukprn},
                         {JobContextMessageKey.CollectionYear, collectionYear },
                         {JobContextMessageKey.ReturnPeriod, collectionPeriod },
                         {JobContextMessageKey.Username, "PV2-Automated" }
                     },
                     SubmissionDateTimeUtc = DateTime.UtcNow,
-                    TopicPointer = 0,
+                    TopicPointer = 1,
                     Topics = new List<TopicItemDto>
                     {
+                        new TopicItemDto
+                        {
+                            SubscriptionName = subscriptionName,
+                            Tasks = new List<TaskItemDto>
+                            {
+                                new TaskItemDto
+                                {
+                                    SupportsParallelExecution = false,
+                                    Tasks = new List<string>()
+                                }
+                            }
+                        },
                         new TopicItemDto
                         {
                             SubscriptionName = subscriptionName,
@@ -186,7 +201,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     }
                 };
 
-                await topicPublishingService.PublishAsync(dto, new Dictionary<string, object>{{"To", "GenerateFM36Payments" } }, "GenerateFM36Payments");
+                await topicPublishingService.PublishAsync(dto, new Dictionary<string, object> { { "To", "GenerateFM36Payments" } }, "GenerateFM36Payments");
             }
             catch (Exception e)
             {

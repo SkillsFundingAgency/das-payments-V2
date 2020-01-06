@@ -58,6 +58,7 @@
     <Folder Include="Properties" />
     <Folder Include="PaymentsDue" />
     <Folder Include="Payments" />
+    <Folder Include="TransferPayments" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="PaymentsDue\RequiredPayments.sql" />
@@ -66,5 +67,7 @@
     <Build Include="Payments\Payments.sql" />
     <Build Include="Payments\Periods.sql" />
     <Build Include="PaymentsDue\Earnings.sql" />
+    <Build Include="TransferPayments\AccountTransfers.sql" />
+    <Build Include="TransferPayments.sql" />
   </ItemGroup>
 </Project>
