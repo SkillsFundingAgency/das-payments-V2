@@ -7,12 +7,12 @@ using SFA.DAS.Payments.Core.Configuration;
 
 namespace SFA.DAS.Payments.Application.Messaging
 {
-    public class MessageLockTimeoutCheckBehavior : Behavior<ITransportReceiveContext>
+    public class MessageLockTimeoutCheckBehaviour : Behavior<ITransportReceiveContext>
     {
         private readonly IPaymentLogger logger;
         private readonly IApplicationConfiguration configuration;
 
-        public MessageLockTimeoutCheckBehavior(IPaymentLogger logger, IApplicationConfiguration configuration)
+        public MessageLockTimeoutCheckBehaviour(IPaymentLogger logger, IApplicationConfiguration configuration)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));

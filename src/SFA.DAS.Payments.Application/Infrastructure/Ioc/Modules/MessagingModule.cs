@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 endpointConfiguration.SendFailedMessagesTo(config.FailedMessagesQueue);
                 endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
                 endpointConfiguration.EnableInstallers();
-                endpointConfiguration.Pipeline.Register(typeof(MessageLockTimeoutCheckBehavior), "Check for a message lock timeout before processing");
+                endpointConfiguration.Pipeline.Register(typeof(MessageLockTimeoutCheckBehaviour), "Check for a message lock timeout before processing");
                 endpointConfiguration.Pipeline.Register(typeof(TelemetryHandlerBehaviour), "Sends handler timing to telemetry service.");
                 endpointConfiguration.EnableCallbacks(makesRequests: false);
                 if (config.ProcessMessageSequentially) endpointConfiguration.LimitMessageProcessingConcurrencyTo(1);
