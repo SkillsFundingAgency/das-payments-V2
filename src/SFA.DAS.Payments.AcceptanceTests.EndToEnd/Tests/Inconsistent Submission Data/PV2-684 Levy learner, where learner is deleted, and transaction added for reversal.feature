@@ -58,14 +58,16 @@ Scenario: Levy learner a is deleted from ILR in 07/18, but Levy learner b is add
         | learner b  | R12/Current Academic Year | May/Current Academic Year | 600          | 0          | 0         |
         | learner b  | R12/Current Academic Year | Jun/Current Academic Year | 600          | 0          | 0         |
         | learner b  | R12/Current Academic Year | Jul/Current Academic Year | 600          | 0          | 0         |
-	And only the following provider payments will be generated
+
+	And only the following provider payments will be recorded
         | Learner ID | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
         | learner a  | R12/Current Academic Year | May/Current Academic Year | -600          | Learning         |
         | learner a  | R12/Current Academic Year | Jun/Current Academic Year | -600          | Learning         |
         | learner b  | R12/Current Academic Year | May/Current Academic Year | 600           | Learning         |
         | learner b  | R12/Current Academic Year | Jun/Current Academic Year | 600           | Learning         |
         | learner b  | R12/Current Academic Year | Jul/Current Academic Year | 600           | Learning         |
-	And only the following provider payments will be recorded
+
+	And only the following provider payments will be generated
         | Learner ID | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
         | learner a  | R12/Current Academic Year | May/Current Academic Year | -600          | Learning         |
         | learner a  | R12/Current Academic Year | Jun/Current Academic Year | -600          | Learning         |
