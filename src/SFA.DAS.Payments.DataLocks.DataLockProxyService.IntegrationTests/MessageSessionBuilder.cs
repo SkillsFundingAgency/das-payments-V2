@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Autofac;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
 using NServiceBus;
 using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.PeriodEnd.Messages.Events;
@@ -15,14 +14,16 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests
         {
             var conf = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                    .AddJsonFile("appsettings.development.json", optional: false, reloadOnChange: true)
+                    .AddJsonFile("appsettings.development.json", optional: true, reloadOnChange: true)
+                    .AddEnvironmentVariables()
                 .Build();
 
             var connectionString = conf["ServiceBusConnectionString"];
             if (string.IsNullOrWhiteSpace(connectionString))
             {
                 throw new Exception("Please include an appsettings.development.json file " +
-                                    "and include the connection string");
+                                    "and include the connection string or set the environment " +
+                                    "variable: 'ServiceBusConnectionString'");
             }
 
             var builder = new ContainerBuilder();
