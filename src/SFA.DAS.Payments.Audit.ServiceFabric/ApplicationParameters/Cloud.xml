@@ -31,5 +31,6 @@
     <Parameter Name="Audit_DataLock_FailedMessagesQueue" Value="__Audit_DataLock_FailedMessagesQueue__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
+    <Parameter Name="MessageLockTimeoutThreshold" Value="__MessageLockTimeoutThreshold__" />
   </Parameters>
 </Application>

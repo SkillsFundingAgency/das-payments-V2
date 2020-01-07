@@ -29,6 +29,6 @@
     <Parameter Name="LogLevel" Value="Information" />
     <Parameter Name="ConsoleLogLevel" Value="Information" />
     <Parameter Name="DasNServiceBusLicenseKey" Value=""/>
-
+    <Parameter Name="MessageLockTimeoutThreshold" Value=""/>
   </Section>
 </Settings>
