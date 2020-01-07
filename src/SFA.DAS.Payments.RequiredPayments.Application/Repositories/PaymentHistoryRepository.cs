@@ -64,6 +64,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     ApprenticeshipPriceEpisodeId = payment.ApprenticeshipPriceEpisodeId,
                     ApprenticeshipEmployerType = payment.ApprenticeshipEmployerType,
                     LearningStartDate = payment.LearningStartDate,
+                    ReportingAimFundingLineType = payment.ReportingAimFundingLineType,
                 })
             .ToListAsync(cancellationToken);
         }

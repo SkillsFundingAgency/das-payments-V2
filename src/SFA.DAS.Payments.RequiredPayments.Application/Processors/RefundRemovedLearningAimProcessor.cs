@@ -48,7 +48,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             return requiredPaymentEvents.AsReadOnly();
         }
 
-        private IList<PeriodisedRequiredPaymentEvent> CreateRefundPayments(IdentifiedRemovedLearningAim identifiedRemovedLearningAim, List<Payment> historicPaymentsByTransactionType, int transactionType, ConditionalValue<PaymentHistoryEntity[]> cacheItem)
+        public IList<PeriodisedRequiredPaymentEvent> CreateRefundPayments(
+            IdentifiedRemovedLearningAim identifiedRemovedLearningAim, 
+            List<Payment> historicPaymentsByTransactionType, 
+            int transactionType,
+            ConditionalValue<PaymentHistoryEntity[]> cacheItem)
         {
             var refundPaymentsAndPeriods = refundRemovedLearningAimService.RefundLearningAim(historicPaymentsByTransactionType);
 

@@ -7,7 +7,7 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
     // ReSharper disable once IdentifierTypo
-    public class PeriodisedRequiredPaymentEventFactory: IPeriodisedRequiredPaymentEventFactory
+    public class PeriodisedRequiredPaymentEventFactory : IPeriodisedRequiredPaymentEventFactory
     {
         public PeriodisedRequiredPaymentEvent Create(EarningType earningType, int transactionType)
         {
@@ -31,7 +31,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 default:
                     throw new InvalidOperationException($"Unknown earning type found: {earningType:G}. Cannot create the PeriodisedRequiredPaymentEvent.");
             }
-
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
+using AutoFixture.NUnit3;
 using AutoMapper;
 using FluentAssertions;
 using Moq;
@@ -12,7 +13,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Application.Mapping;
 using SFA.DAS.Payments.RequiredPayments.Application.Processors;
@@ -31,6 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         private AutoMock mocker;
         private List<PaymentHistoryEntity> history;
         private IdentifiedRemovedLearningAim identifiedLearner;
+        private IMapper mapper;
 
         [SetUp]
         public void SetUp()
@@ -39,7 +40,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             history = new List<PaymentHistoryEntity>();
             var config = new MapperConfiguration(cfg => cfg.AddProfile<RequiredPaymentsProfile>());
             config.AssertConfigurationIsValid();
-            var mapper = new Mapper(config);
+            mapper = new Mapper(config);
             mocker.Provide<IMapper>(mapper);
             
             mocker.Provide<IRefundRemovedLearningAimService>(new RefundRemovedLearningAimService());
@@ -249,5 +250,24 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             coInvestedAmountPayment.SfaContributionPercentage.Should().Be(1m);
         }
 
+        [Test, AutoData]
+        public void CreateRefundPayments_Maps_LearningStartDate(DateTime expectedLearningStartDate)
+        {
+            var sut = mocker.Create<RefundRemovedLearningAimProcessor>();
+            
+            var historicPaymentEntity = CreatePaymentHistoryEntity(FundingSourceType.Levy, 1);
+            historicPaymentEntity.LearningStartDate = expectedLearningStartDate;
+
+            history.Add(historicPaymentEntity);
+            var historicPayments = history.Select(mapper.Map<PaymentHistoryEntity, Payment>).ToList();
+
+            var actual = sut.CreateRefundPayments(identifiedLearner, historicPayments, 1,
+                new ConditionalValue<PaymentHistoryEntity[]>(true, history.ToArray()));
+
+            actual.Should().BeEquivalentTo(new
+            {
+                LearningStartDate = expectedLearningStartDate,
+            });
+        }
     }
 }
