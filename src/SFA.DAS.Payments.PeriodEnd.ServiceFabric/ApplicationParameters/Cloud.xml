@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.PeriodEnd.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+
+<Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             Name="fabric:/SFA.DAS.Payments.PeriodEnd.ServiceFabric"
+             xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="PeriodEndService_InstanceCount" Value="__PeriodEndService_InstanceCount__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
@@ -26,5 +29,6 @@
     <Parameter Name="ImmediateMessageRetries" Value="__ImmediateMessageRetries__" />
     <Parameter Name="DelayedMessageRetries" Value="__DelayedMessageRetries__" />
     <Parameter Name="DelayedMessageRetryDelay" Value="__DelayedMessageRetryDelay__" />
+    <Parameter Name="MessageLockTimeoutThreshold" Value="__MessageLockTimeoutThreshold__" />
   </Parameters>
 </Application>
