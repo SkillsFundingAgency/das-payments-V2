@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.EarningEvents.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+
+<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     ApplicationTypeName="SFA.DAS.Payments.EarningEvents.ServiceFabricType"
+                     ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="EarningEventsService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="EarningEventsService_EndpointName" DefaultValue="" />
@@ -29,12 +32,14 @@
     <Parameter Name="ImmediateMessageRetries" DefaultValue="1" />
     <Parameter Name="DelayedMessageRetries" DefaultValue="3" />
     <Parameter Name="DelayedMessageRetryDelay" DefaultValue="00:00:10" />
+    <Parameter Name="MessageLockTimeoutThreshold" DefaultValue="00:01:00" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
        ServiceManifest.xml file. -->
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.EarningEvents.EarningEventsServicePkg" ServiceManifestVersion="1.0.0" />
+    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.EarningEvents.EarningEventsServicePkg"
+                        ServiceManifestVersion="1.0.0" />
     <ConfigOverrides>
       <ConfigOverride Name="Config">
         <Settings>
@@ -61,12 +66,14 @@
             <Parameter Name="TimeToPauseBetweenChecks" Value="[TimeToPauseBetweenChecks]" />
             <Parameter Name="TimeToWaitForJobToComplete" Value="[TimeToWaitForJobToComplete]" />
             <Parameter Name="MaximumCallbackTimeSpan" Value="[MaximumCallbackTimeSpan]" />
-            <Parameter Name="DoNotGenerateACT1TransactionType4To16Payments" Value="[DoNotGenerateACT1TransactionType4To16Payments]" />
+            <Parameter Name="DoNotGenerateACT1TransactionType4To16Payments"
+                       Value="[DoNotGenerateACT1TransactionType4To16Payments]" />
             <Parameter Name="DoNotGenerateACT2Payments" Value="[DoNotGenerateACT2Payments]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
             <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
             <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
             <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
+            <Parameter Name="MessageLockTimeoutThreshold" Value="[MessageLockTimeoutThreshold]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -79,7 +86,8 @@
          
          The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
     <Service Name="SFA.DAS.Payments.EarningEvents.EarningEventsService" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="SFA.DAS.Payments.EarningEvents.EarningEventsServiceType" InstanceCount="[EarningEventsService_InstanceCount]">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.EarningEvents.EarningEventsServiceType"
+                        InstanceCount="[EarningEventsService_InstanceCount]">
         <SingletonPartition />
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
