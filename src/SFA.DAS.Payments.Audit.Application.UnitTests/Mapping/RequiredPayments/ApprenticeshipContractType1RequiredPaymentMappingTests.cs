@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -13,7 +13,6 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.RequiredPayments
     {
         private const string ExpectedAgreementId = "OXFORD00001";
         private long ExpectedAccountId = 5000000;
-
 
         protected override CalculatedRequiredLevyAmount CreatePaymentEvent()
         {
@@ -41,6 +40,12 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.RequiredPayments
         public void Maps_EmployerApprenticeshipType()
         {
             Mapper.Map<RequiredPaymentEventModel>(PaymentEvent).ApprenticeshipEmployerType.Should().Be(ApprenticeshipEmployerType.Levy);
+        }
+
+        [Test]
+        public void Maps_CompletionPaid_As_NotUnpaid()
+        {
+            Mapper.Map<RequiredPaymentEventModel>(PaymentEvent).NonPaymentReason.Should().Be(null);
         }
     }
 }

@@ -3,31 +3,25 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Entities;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Scripts;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 {
     public interface IVerificationService
     {
-        Task<string> GetPaymentsDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,
-            DateTimeOffset startDateTime, DateTimeOffset endDateTime);
-        Task<(decimal? missingPayments, decimal? earningsYtd)?> GetPaymentTotals(short academicYear, byte collectionPeriod, bool populateEarnings,
-            DateTimeOffset startDateTime, DateTimeOffset endDateTime);
+        Task<PaymentsValues> GetPaymentsData(DateTime runStartDateTime, short academicYear, byte collectionPeriod,
+            bool populateEarnings, IList<long> ukprnList);
 
-        Task<string> GetEarningsCsv(short academicYear, byte collectionPeriod, List<long> ukprnList);
 
-        Task<DateTimeOffset?> GetLastActivityDate(List<long> ukprns);
-
-        Task<decimal?> GetTotalEarningsYtd(short academicYear, byte collectionPeriod, List<long> ukprnList);
+        Task<DcValues> GetDcEarningsData(short academicYear, byte collectionPeriod, List<long> ukprnList);
     }
 
     public class VerificationService : IVerificationService
     {
         private const string PaymentsQuerySql = "PaymentsQuery.sql";
-        private const string EarningsCteSql = "EarningsCte.sql";
-        private const string EarningsDetailSql = "EarningsDetail.sql";
-        private const string EarningsSummarySql = "EarningsSummary.sql";
+        private const string DcEarnings = "DcEarnings.sql";
         private const string UkprnListToken = "@ukprnlist";
         private readonly Configuration configuration;
 
@@ -36,153 +30,128 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             this.configuration = configuration;
         }
 
-        public async Task<string> GetPaymentsDataCsv(short academicYear, byte collectionPeriod, bool populateEarnings,
-            DateTimeOffset startDateTime, DateTimeOffset endDateTime)
+        public async Task<PaymentsValues> GetPaymentsData(DateTime runStartDateTime, short academicYear,
+            byte collectionPeriod, bool populateEarnings, IList<long> ukprnList)
         {
-            var sql = Scripts.ScriptHelpers.GetSqlScriptText(PaymentsQuerySql);
-            sql += " order by 1,2";
-            using (SqlConnection connection = GetPaymentsConnectionString())
+            var sql = ScriptHelpers.GetSqlScriptText(PaymentsQuerySql);
+            sql = sql.Replace("@ukprnList", string.Join(",", ukprnList));
+
+            var paymentsMetrics = new PaymentsValues();
+
+            var results = new Dictionary<string, decimal?>(StringComparer.OrdinalIgnoreCase);
+            using (var connection = GetPaymentsConnectionString())
             {
-                using (SqlCommand cmd = connection.CreateCommand())
+                using (var cmd = connection.CreateCommand())
                 {
                     cmd.CommandTimeout = configuration.SqlCommandTimeout.Seconds;
                     cmd.CommandText = sql;
                     cmd.CommandType = CommandType.Text;
-                    cmd.Parameters.AddWithValue("@academicYear", academicYear);
+                    cmd.Parameters.AddWithValue("@monthendStartTime", runStartDateTime);
+                    cmd.Parameters.AddWithValue("@startDate", runStartDateTime);
                     cmd.Parameters.AddWithValue("@collectionPeriod", collectionPeriod);
-                    cmd.Parameters.AddWithValue("@populateEarnings", populateEarnings);
-                    cmd.Parameters.AddWithValue("@StartTime", startDateTime);
-                    cmd.Parameters.AddWithValue("@EndTime", endDateTime);
                     connection.Open();
-                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                    {
-                        return CreateCsvFromDataReader(reader);
-                    }
-                }
-            }
-        }
-
-        public async Task<string> GetEarningsCsv(short academicYear, byte collectionPeriod, List<long> ukprnList)
-        {
-            var sql = Scripts.ScriptHelpers.GetSqlScriptText(EarningsCteSql);
-            sql += Scripts.ScriptHelpers.GetSqlScriptText(EarningsDetailSql);
-            sql = sql.Replace(UkprnListToken, string.Join(",", ukprnList));
-
-            using (SqlConnection connection = GetDataStoreConnectionString(academicYear))
-            {
-                using (SqlCommand cmd = connection.CreateCommand())
-                {
-                    cmd.CommandTimeout = configuration.SqlCommandTimeout.Seconds;
-                    cmd.CommandText = sql;
-                    cmd.CommandType = CommandType.Text;
-                    cmd.Parameters.AddWithValue("@collectionPeriod", collectionPeriod);
-                    
-                    connection.Open();
-                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                    {
-                        return CreateCsvFromDataReader(reader);
-                    }
-                }
-            }
-        }
-
-
-        public async Task<DateTimeOffset?> GetLastActivityDate(List<long> ukprns)
-        {
-            var ukprnsString = String.Join(",", ukprns);
-
-            String sql = $@"select max(CreationDate) from (
-						select ukprn, CreationDate from Payments2.EarningEvent
-						union all
-						select ukprn, CreationDate from Payments2.DataLockEvent
-						union all
-						select ukprn, CreationDate from Payments2.RequiredPaymentEvent
-						union all
-						select ukprn, CreationDate from Payments2.FundingSourceEvent
-					) as d
-					where ukprn in ({ukprnsString})";
-
-
-            using (SqlConnection connection = GetPaymentsConnectionString())
-            {
-                using (SqlCommand cmd = connection.CreateCommand())
-                {
-                    cmd.CommandTimeout = configuration.SqlCommandTimeout.Seconds;
-                    cmd.CommandText = sql;
-                    cmd.CommandType = CommandType.Text;
-                    connection.Open();
-                    var result = await cmd.ExecuteScalarAsync();
-                    return Convert.IsDBNull(result) ? (DateTimeOffset?)null : (DateTimeOffset?)result;
-                }
-
-            }
-        }
-
-        public async Task<decimal?> GetTotalEarningsYtd(short academicYear, byte collectionPeriod, List<long> ukprnList)
-        {
-            var sql = Scripts.ScriptHelpers.GetSqlScriptText(EarningsCteSql);
-            sql += Scripts.ScriptHelpers.GetSqlScriptText(EarningsSummarySql);
-            sql = sql.Replace(UkprnListToken, string.Join(",", ukprnList));
-
-            using (SqlConnection connection = GetDataStoreConnectionString(academicYear))
-            {
-                using (SqlCommand cmd = connection.CreateCommand())
-                {
-                    cmd.CommandTimeout = configuration.SqlCommandTimeout.Seconds;
-                    cmd.CommandText = sql;
-                    cmd.CommandType = CommandType.Text;
-                    cmd.Parameters.AddWithValue("@collectionPeriod", collectionPeriod);
-
-                    connection.Open();
-                    var result = await cmd.ExecuteScalarAsync();
-                    return Convert.IsDBNull(result) ? (decimal?) null : (decimal?) result;
-                }
-            }
-        }
-
-        public async Task<(decimal? missingPayments, decimal? earningsYtd)?> GetPaymentTotals(short academicYear, byte collectionPeriod, bool populateEarnings,
-            DateTimeOffset startDateTime, DateTimeOffset endDateTime)
-        {
-            var sql = @"select sum([Missing Required Payments]) As MissingRequiredPayments, sum([Earnings YTD (audit)]) As EarningsYtd
-            FROM(
-            ";
-
-            sql +=   Scripts.ScriptHelpers.GetSqlScriptText(PaymentsQuerySql);
-            sql += @"
-                ) as sq
-            where[Transaction Type] in (1, 2, 3)";
-
-            using (SqlConnection connection = GetPaymentsConnectionString())
-            {
-                using (SqlCommand cmd = connection.CreateCommand())
-                {
-                    cmd.CommandTimeout = configuration.SqlCommandTimeout.Seconds;
-                    cmd.CommandText = sql;
-                    cmd.CommandType = CommandType.Text;
-                    cmd.Parameters.AddWithValue("@academicYear", academicYear);
-                    cmd.Parameters.AddWithValue("@collectionPeriod", collectionPeriod);
-                    cmd.Parameters.AddWithValue("@populateEarnings", populateEarnings);
-                    cmd.Parameters.AddWithValue("@StartTime", startDateTime);
-                    cmd.Parameters.AddWithValue("@EndTime", endDateTime);
-                    connection.Open();
-
                     using (var reader = await cmd.ExecuteReaderAsync())
                     {
-                        while (reader.Read())
+                        await reader.ReadAsync();
+                        PopulatePaymentsResults(results, reader);
+                        await reader.NextResultAsync();
+                        await reader.ReadAsync();
+                        PopulatePaymentsResults(results, reader);
+                        await reader.NextResultAsync();
+                        await reader.ReadAsync();
+                        PopulatePaymentsResults(results, reader);
+                    }
+                }
+            }
+
+            SetMetricsFromResults(results, paymentsMetrics);
+
+            return paymentsMetrics;
+        }
+
+
+        public async Task<DcValues> GetDcEarningsData(short academicYear, byte collectionPeriod, List<long> ukprnList)
+        {
+            var sql = ScriptHelpers.GetSqlScriptText(DcEarnings);
+            sql = sql.Replace(UkprnListToken, string.Join(",", ukprnList));
+
+            var results = new DcValues();
+
+
+            using (var connection = GetDataStoreConnectionString(academicYear))
+            {
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandTimeout = configuration.SqlCommandTimeout.Seconds;
+                    cmd.CommandText = sql;
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.AddWithValue("@collectionPeriod", collectionPeriod);
+
+                    connection.Open();
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
                         {
-                            var missingPayments =
-                                (!reader.IsDBNull(0)) ? (decimal?) reader.GetValue(0) : (decimal?) null;
-                            var earningsYtd =
-                                (!reader.IsDBNull(1)) ? (decimal?) reader.GetValue(1) : (decimal?) null;
-                            return (missingPayments, earningsYtd);
+                            var newValues = new DcContractTypeTotals();
+
+                            Func<SqlDataReader, int, decimal> getValueAsNullableDecimal = (dataReader, i) =>
+                                !dataReader.IsDBNull(i) ? (decimal) dataReader.GetValue(i) : (decimal) 0;
+
+                            newValues.ContractType = (int) reader[0];
+                            newValues.TT1 = getValueAsNullableDecimal(reader, 1);
+                            newValues.TT2 = getValueAsNullableDecimal(reader, 2);
+                            newValues.TT3 = getValueAsNullableDecimal(reader, 3);
+                            newValues.TT4 = getValueAsNullableDecimal(reader, 4);
+                            newValues.TT5 = getValueAsNullableDecimal(reader, 5);
+                            newValues.TT6 = getValueAsNullableDecimal(reader, 6);
+                            newValues.TT7 = getValueAsNullableDecimal(reader, 7);
+                            newValues.TT8 = getValueAsNullableDecimal(reader, 8);
+                            newValues.TT9 = getValueAsNullableDecimal(reader, 9);
+                            newValues.TT10 = getValueAsNullableDecimal(reader, 10);
+                            newValues.TT11 = getValueAsNullableDecimal(reader, 11);
+                            newValues.TT12 = getValueAsNullableDecimal(reader, 12);
+                            newValues.TT13 = getValueAsNullableDecimal(reader, 13);
+                            newValues.TT14 = getValueAsNullableDecimal(reader, 14);
+                            newValues.TT15 = getValueAsNullableDecimal(reader, 15);
+                            newValues.TT16 = getValueAsNullableDecimal(reader, 16);
+
+                            results.DcContractTypeTotals.Add(newValues);
                         }
                     }
-
-                    return null;
                 }
+            }
+
+            return results;
+        }
+
+        private static void SetMetricsFromResults(Dictionary<string, decimal?> results, PaymentsValues paymentsMetrics)
+        {
+            if (results.Any())
+            {
+                paymentsMetrics.RequiredPaymentsThisMonth = results["Required Payments made this month"] ?? 0m;
+                paymentsMetrics.PaymentsPriorToThisMonthYtd = results["Payments made before this month YTD"] ?? 0m;
+                paymentsMetrics.ExpectedPaymentsAfterPeriodEnd =
+                    results["Expected Payments YTD after running Period End"] ?? 0m;
+                paymentsMetrics.TotalPaymentsThisMonth = results["Total payments this month"] ?? 0m;
+                paymentsMetrics.TotalAct1Ytd = results["Total ACT 1 payments YTD"] ?? 0m;
+                paymentsMetrics.TotalAct2Ytd = results["Total ACT 2 payments YTD"] ?? 0m;
+                paymentsMetrics.TotalPaymentsYtd = results["Total payments YTD"] ?? 0m;
+                paymentsMetrics.HeldBackCompletionThisMonth = results["Held Back Completion Payments this month"] ?? 0m;
+                paymentsMetrics.DasEarnings = results["DAS Earnings"] ?? 0m;
+                paymentsMetrics.DataLockedEarnings = results["Datalocked Earnings"] ?? 0m;
+                paymentsMetrics.DataLockedPayments = results["Datalocked Payments"] ?? 0m;
+                paymentsMetrics.AdjustedDataLocks = results["Adjusted Datalocks"] ?? 0m;
             }
         }
 
+        private void PopulatePaymentsResults(Dictionary<string, decimal?> results, SqlDataReader reader)
+        {
+            var columnNames = Enumerable.Range(0, reader.FieldCount)
+                .Select(reader.GetName)
+                .ToList();
+            for (var i = 0; i < columnNames.Count; i++)
+                results.Add(columnNames[i], !reader.IsDBNull(i) ? (decimal?) reader.GetValue(i) : null);
+        }
 
 
         private SqlConnection GetDataStoreConnectionString(short year)
@@ -190,7 +159,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             switch (year)
             {
                 case 1819:
-                 return   new SqlConnection(configuration.GetConnectionString("ILR1819DataStoreConnectionString"));
+                    return new SqlConnection(configuration.GetConnectionString("ILR1819DataStoreConnectionString"));
                 case 1920:
                     return new SqlConnection(configuration.GetConnectionString("ILR1920DataStoreConnectionString"));
                 default:
@@ -202,29 +171,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         private SqlConnection GetPaymentsConnectionString()
         {
             return new SqlConnection(configuration.PaymentsConnectionString);
-        }
-
-
-        private static string CreateCsvFromDataReader(SqlDataReader reader)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            var columnNames = Enumerable.Range(0, reader.FieldCount)
-                .Select(reader.GetName)
-                .ToList();
-            sb.Append(string.Join(",", columnNames));
-            sb.AppendLine();
-
-            while (reader.Read())
-            {
-                var rowData = Enumerable.Range(0, reader.FieldCount)
-                    .Select(i => (!reader.IsDBNull(i)) ? reader.GetValue(i).ToString() : (string) null)
-                    .ToList();
-                sb.Append(string.Join(",", rowData));
-                sb.AppendLine();
-            }
-
-            return sb.ToString();
         }
     }
 }

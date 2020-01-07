@@ -10,9 +10,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc.Modules
                 .As<IStatelessEndpointCommunicationListener>();
             builder.RegisterType<StatefulEndpointCommunicationListener>()
                 .As<IStatefulEndpointCommunicationListener>();
-            builder.RegisterType<ServiceBusBatchCommunicationListener>()
-                .As<IServiceBusBatchCommunicationListener>()
-                .SingleInstance();
+
         }
     }
 }

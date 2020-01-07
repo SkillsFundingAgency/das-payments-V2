@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [Payments2].[EarningEventPriceEpisode]
 (
 	Id BIGINT NOT NULL IDENTITY(1,1) CONSTRAINT PK_EarningEventPriceEpisode PRIMARY KEY CLUSTERED,
-	EarningEventId UNIQUEIDENTIFIER NOT NULL CONSTRAINT FK_EarningEventPriceEpisode__EarningEvent FOREIGN KEY REFERENCES [Payments2].[EarningEvent] (EventId), 
+	EarningEventId UNIQUEIDENTIFIER NOT NULL CONSTRAINT FK_EarningEventPriceEpisode__EarningEvent FOREIGN KEY REFERENCES [Payments2].[EarningEvent] (EventId) ON DELETE CASCADE, 
 	PriceEpisodeIdentifier NVARCHAR(50) NOT NULL,
 	SfaContributionPercentage DECIMAL(15,5) NOT NULL,
 	TotalNegotiatedPrice1 DECIMAL(15,5) NOT NULL,
@@ -21,4 +21,6 @@
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_EarningEventPriceEpisode__CreationDate DEFAULT (SYSDATETIMEOFFSET())	,
 	AgreedPrice DECIMAL(15, 5) NULL,
 	CourseStartDate DATETIME2  NULL,
+	INDEX IX_EarningEventPriceEpisode__EarningEventId (EarningEventId),
+	INDEX IX_EarningEventPriceEpisode__Search (EarningEventId, PriceEpisodeIdentifier, StartDate, CourseStartDate, AgreedPrice) 
 )
