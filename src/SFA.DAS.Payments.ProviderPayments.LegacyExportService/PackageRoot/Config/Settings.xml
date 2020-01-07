@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+
+<Settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+          xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <!-- This is used by the StateManager's replicator. -->
   <Section Name="ReplicatorConfig">
     <Parameter Name="ReplicatorEndpoint" Value="ReplicatorEndpoint" />
@@ -26,5 +28,6 @@
     <Parameter Name="ProcessMessageSequentially" Value="" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="" />
     <Parameter Name="LegacyExportBatchSize" Value="10000" />
+    <Parameter Name="MessageLockTimeoutThreshold" Value="" />
   </Section>
 </Settings>
