@@ -13,5 +13,6 @@ namespace SFA.DAS.Payments.Core.Configuration
         int ImmediateMessageRetries { get; }
         int DelayedMessageRetries { get; }
         TimeSpan DelayedMessageRetryDelay { get; }
+        TimeSpan MessageLockTimeoutThreshold { get; }
     }
 }

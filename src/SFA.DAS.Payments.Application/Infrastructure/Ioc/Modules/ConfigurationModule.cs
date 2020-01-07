@@ -17,6 +17,8 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
 
                     if (!TimeSpan.TryParse(configHelper.GetSettingOrDefault("DelayedMessageRetryDelay", "00:00:10"), out var delayedRetryDelay))
                         delayedRetryDelay = new TimeSpan(0, 0, 10);
+                    if (!TimeSpan.TryParse(configHelper.GetSettingOrDefault("MessageLockTimeoutThreshold", "00:00:10"), out var messageLockTimeoutThreshold))
+                        messageLockTimeoutThreshold = new TimeSpan(0, 1, 0);
 
                     return new ApplicationConfiguration
                     {
@@ -29,6 +31,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                         ImmediateMessageRetries = configHelper.GetSettingOrDefault("ImmediateMessageRetries", 1),
                         DelayedMessageRetries = configHelper.GetSettingOrDefault("DelayedMessageRetries", 3),
                         DelayedMessageRetryDelay = delayedRetryDelay,
+                        MessageLockTimeoutThreshold =messageLockTimeoutThreshold, 
                     };
 
                 })
