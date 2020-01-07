@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.Monitoring.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+
+<Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             Name="fabric:/SFA.DAS.Payments.Monitoring.ServiceFabric"
+             xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="JobsProxyService_InstanceCount" Value="__JobsProxyService_InstanceCount__" />
     <Parameter Name="JobService_PartitionCount" Value="__Monitoring_JobsService_PartitionCount__" />
@@ -14,7 +17,8 @@
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
     <Parameter Name="Monitoring_JobsService_EndpointName" Value="__Monitoring_JobsService_EndpointName__" />
     <Parameter Name="Monitoring_JobsService_FailedMessagesQueue" Value="__Monitoring_JobsService_FailedMessagesQueue__" />
-    <Parameter Name="Monitoring_JobsService_FailureTimeoutInSeconds" Value="__Monitoring_JobsService_FailureTimeoutInSeconds__" />
+    <Parameter Name="Monitoring_JobsService_FailureTimeoutInSeconds"
+               Value="__Monitoring_JobsService_FailureTimeoutInSeconds__" />
     <Parameter Name="Monitoring_JobsService_IntervalInSeconds" Value="__Monitoring_JobsService_IntervalInSeconds__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
     <Parameter Name="ConsoleLogLevel" Value="__ConsoleLogLevel__" />
@@ -22,5 +26,6 @@
     <Parameter Name="JobStatusCheck_Interval" Value="__Monitoring_JobStatusCheck_Interval__" />
     <Parameter Name="TimeToWaitForJobToComplete" Value="__TimeToWaitForJobToComplete__" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
+    <Parameter Name="MessageLockTimeoutThreshold" Value="__MessageLockTimeoutThreshold__" />
   </Parameters>
 </Application>
