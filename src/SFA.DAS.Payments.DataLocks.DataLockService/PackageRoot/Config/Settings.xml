@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+
+<Settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+          xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Section Name="DataLockServiceActorServiceReplicatorConfig">
     <Parameter Name="ReplicatorEndpoint" Value="DataLockServiceActorServiceReplicatorEndpoint" />
     <Parameter Name="BatchAcknowledgementInterval" Value="0.005" />
@@ -25,5 +27,6 @@
     <Parameter Name="ImmediateMessageRetries" Value="" />
     <Parameter Name="DelayedMessageRetries" Value="" />
     <Parameter Name="DelayedMessageRetryDelay" Value="" />
+    <Parameter Name="MessageLockTimeoutThreshold" Value="" />
   </Section>
 </Settings>
