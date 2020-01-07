@@ -1,14 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+
+<Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             Name="fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric"
+             xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="LevyAccountBalanceService_PartitionCount" Value="__LevyAccountBalanceService_PartitionCount__" />
-    <Parameter Name="LevyAccountBalanceService_MinReplicaSetSize" Value="__LevyAccountBalanceService_MinReplicaSetSize__" />
-    <Parameter Name="LevyAccountBalanceService_TargetReplicaSetSize" Value="__LevyAccountBalanceService_TargetReplicaSetSize__" />
+    <Parameter Name="LevyAccountBalanceService_MinReplicaSetSize"
+               Value="__LevyAccountBalanceService_MinReplicaSetSize__" />
+    <Parameter Name="LevyAccountBalanceService_TargetReplicaSetSize"
+               Value="__LevyAccountBalanceService_TargetReplicaSetSize__" />
     <Parameter Name="NonLevyFundedService_InstanceCount" Value="__NonLevyFundedService_InstanceCount__" />
     <Parameter Name="LevyFundedProxyService_InstanceCount" Value="__LevyFundedProxyService_InstanceCount__" />
-    <Parameter Name="LevyFundedServiceActorService_PartitionCount" Value="__LevyFundedServiceActorService_PartitionCount__" />
-    <Parameter Name="LevyFundedServiceActorService_TargetReplicaSetSize" Value="__LevyFundedServiceActorService_TargetReplicaSetSize__" />
-    <Parameter Name="LevyFundedServiceActorService_MinReplicaSetSize" Value="__LevyFundedServiceActorService_MinReplicaSetSize__" />
+    <Parameter Name="LevyFundedServiceActorService_PartitionCount"
+               Value="__LevyFundedServiceActorService_PartitionCount__" />
+    <Parameter Name="LevyFundedServiceActorService_TargetReplicaSetSize"
+               Value="__LevyFundedServiceActorService_TargetReplicaSetSize__" />
+    <Parameter Name="LevyFundedServiceActorService_MinReplicaSetSize"
+               Value="__LevyFundedServiceActorService_MinReplicaSetSize__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
     <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
@@ -28,7 +36,8 @@
     <Parameter Name="AccountApiIdentifierUri" Value="__AccountsApiIdentifierUri__" />
     <Parameter Name="AccountApiTenant" Value="__AccountsApiTenantId__" />
     <Parameter Name="LevyAccountBalanceService_EndpointName" Value="__LevyAccountBalanceService_EndpointName__" />
-    <Parameter Name="LevyAccountBalanceService_FailedMessagesQueue" Value="__LevyAccountBalanceService_FailedMessagesQueue__" />
+    <Parameter Name="LevyAccountBalanceService_FailedMessagesQueue"
+               Value="__LevyAccountBalanceService_FailedMessagesQueue__" />
     <Parameter Name="LevyAccountRefreshIntervalInHours" Value="__LevyAccountRefreshIntervalInHours__" />
     <Parameter Name="LevyAccountBalanceService_BatchSize" Value="__LevyAccountBalanceService_BatchSize__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
@@ -36,5 +45,6 @@
     <Parameter Name="ImmediateMessageRetries" Value="__ImmediateMessageRetries__" />
     <Parameter Name="DelayedMessageRetries" Value="__DelayedMessageRetries__" />
     <Parameter Name="DelayedMessageRetryDelay" Value="__DelayedMessageRetryDelay__" />
+    <Parameter Name="MessageLockTimeoutThreshold" Value="__MessageLockTimeoutThreshold__" />
   </Parameters>
 </Application>

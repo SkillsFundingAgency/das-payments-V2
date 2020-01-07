@@ -18,7 +18,8 @@
     <Parameter Name="ImmediateMessageRetries" Value="" />
     <Parameter Name="DelayedMessageRetries" Value="" />
     <Parameter Name="DelayedMessageRetryDelay" Value="" />
-  </Section>
+    <Parameter Name="MessageLockTimeoutThreshold" Value="" />
+    </Section>
   <Section Name="LevyFundedServiceActorServiceReplicatorConfig">
     <Parameter Name="ReplicatorEndpoint" Value="LevyFundedServiceActorServiceReplicatorEndpoint" />
     <Parameter Name="BatchAcknowledgementInterval" Value="0.005" />
