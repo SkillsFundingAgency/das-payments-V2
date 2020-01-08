@@ -26,7 +26,6 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
 
             builder.Property(x => x.IlrSubmissionDateTime).HasColumnName(@"IlrSubmissionDateTime").IsRequired();
 
-            builder.Property(x => x.LearnerUln).HasColumnName(@"LearnerUln").IsRequired();
             builder.Property(x => x.JobId).HasColumnName(@"JobId").IsRequired();
         }
     }
