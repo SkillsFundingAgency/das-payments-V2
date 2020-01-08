@@ -13,11 +13,14 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
             builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
-                    bool.TryParse(configHelper.GetSettingOrDefault("ProcessMessageSequentially", "false"), out bool processMessageSequentially);
+                    bool.TryParse(configHelper.GetSettingOrDefault("ProcessMessageSequentially", "false"),
+                        out bool processMessageSequentially);
 
-                    if (!TimeSpan.TryParse(configHelper.GetSettingOrDefault("DelayedMessageRetryDelay", "00:00:10"), out var delayedRetryDelay))
+                    if (!TimeSpan.TryParse(configHelper.GetSettingOrDefault("DelayedMessageRetryDelay", "00:00:10"),
+                        out var delayedRetryDelay))
                         delayedRetryDelay = new TimeSpan(0, 0, 10);
-                    if (!TimeSpan.TryParse(configHelper.GetSettingOrDefault("MessageLockTimeoutThreshold", "00:00:10"), out var messageLockTimeoutThreshold))
+                    if (!TimeSpan.TryParse(configHelper.GetSettingOrDefault("MessageLockTimeoutThreshold", "00:01:00"),
+                        out var messageLockTimeoutThreshold))
                         messageLockTimeoutThreshold = new TimeSpan(0, 1, 0);
 
                     return new ApplicationConfiguration
@@ -31,9 +34,8 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                         ImmediateMessageRetries = configHelper.GetSettingOrDefault("ImmediateMessageRetries", 1),
                         DelayedMessageRetries = configHelper.GetSettingOrDefault("DelayedMessageRetries", 3),
                         DelayedMessageRetryDelay = delayedRetryDelay,
-                        MessageLockTimeoutThreshold =messageLockTimeoutThreshold, 
+                        MessageLockTimeoutThreshold = messageLockTimeoutThreshold,
                     };
-
                 })
                 .As<IApplicationConfiguration>()
                 .SingleInstance();
