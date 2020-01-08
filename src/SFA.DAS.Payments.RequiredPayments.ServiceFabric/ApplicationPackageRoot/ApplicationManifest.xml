@@ -1,8 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
-<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                     ApplicationTypeName="SFA.DAS.Payments.RequiredPayments.ServiceFabricType"
-                     ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.RequiredPayments.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="RequiredPaymentsProxyService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="RequiredPaymentsServiceActorService_PartitionCount" DefaultValue="10" />
@@ -33,8 +30,7 @@
        should match the Name and Version attributes of the ServiceManifest element defined in the 
        ServiceManifest.xml file. -->
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyServicePkg"
-                        ServiceManifestVersion="1.0.0" />
+    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyServicePkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides>
       <ConfigOverride Name="Config">
         <Settings>
@@ -62,8 +58,7 @@
     </ConfigOverrides>
   </ServiceManifestImport>
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.RequiredPayments.RequiredPaymentsServicePkg"
-                        ServiceManifestVersion="1.0.0" />
+    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.RequiredPayments.RequiredPaymentsServicePkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides>
       <ConfigOverride Name="Config">
         <Settings>
@@ -89,8 +84,7 @@
     </ConfigOverrides>
   </ServiceManifestImport>
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.RequiredPayments.RemovedLearnerServicePkg"
-                        ServiceManifestVersion="1.0.0" />
+    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.RequiredPayments.RemovedLearnerServicePkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides>
       <ConfigOverride Name="Config">
         <Settings>
@@ -115,29 +109,21 @@
          ServiceFabric PowerShell module.
          
          The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
-    <Service Name="SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService"
-             ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyServiceType"
-                        InstanceCount="[RequiredPaymentsProxyService_InstanceCount]">
+    <Service Name="SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyServiceType" InstanceCount="[RequiredPaymentsProxyService_InstanceCount]">
         <SingletonPartition />
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
     </Service>
     <Service Name="RequiredPaymentsServiceActorService" GeneratedIdRef="79cd0ba9-bb5a-45f9-92bc-300ca0ae2395|Volatile">
-      <StatefulService ServiceTypeName="RequiredPaymentsServiceActorServiceType"
-                       TargetReplicaSetSize="[RequiredPaymentsServiceActorService_TargetReplicaSetSize]"
-                       MinReplicaSetSize="[RequiredPaymentsServiceActorService_MinReplicaSetSize]">
-        <UniformInt64Partition PartitionCount="[RequiredPaymentsServiceActorService_PartitionCount]"
-                               LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+      <StatefulService ServiceTypeName="RequiredPaymentsServiceActorServiceType" TargetReplicaSetSize="[RequiredPaymentsServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[RequiredPaymentsServiceActorService_MinReplicaSetSize]">
+        <UniformInt64Partition PartitionCount="[RequiredPaymentsServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
     </Service>
     <Service Name="RemovedLearnerServiceActorService" GeneratedIdRef="4a9ebe68-8edd-4d50-8c7e-a7e1d1d3fc09|None">
-      <StatefulService ServiceTypeName="RemovedLearnerServiceActorServiceType"
-                       TargetReplicaSetSize="[RemovedLearnerServiceActorService_TargetReplicaSetSize]"
-                       MinReplicaSetSize="[RemovedLearnerServiceActorService_MinReplicaSetSize]">
-        <UniformInt64Partition PartitionCount="[RemovedLearnerServiceActorService_PartitionCount]"
-                               LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+      <StatefulService ServiceTypeName="RemovedLearnerServiceActorServiceType" TargetReplicaSetSize="[RemovedLearnerServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[RemovedLearnerServiceActorService_MinReplicaSetSize]">
+        <UniformInt64Partition PartitionCount="[RemovedLearnerServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
     </Service>

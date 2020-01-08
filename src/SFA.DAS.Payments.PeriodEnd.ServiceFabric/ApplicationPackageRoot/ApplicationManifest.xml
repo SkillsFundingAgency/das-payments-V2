@@ -63,7 +63,7 @@
             <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
             <Parameter Name="MessageLockTimeoutThreshold" Value="[MessageLockTimeoutThreshold]" />
-            </Section>
+          </Section>
         </Settings>
       </ConfigOverride>
     </ConfigOverrides>
