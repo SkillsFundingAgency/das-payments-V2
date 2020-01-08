@@ -96,6 +96,28 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         }
 
         [Test, AutoData]
+        public void RefundProducesRequiredPaymentsWithCorrectLearnerStartDate(RefundService sut, DateTime testDate)
+        {
+            
+            var actual = sut.GetRefund(-100, new List<Payment>
+            {
+                new Payment
+                {
+                    Amount = 100,
+                    FundingSource = FundingSourceType.Levy,
+                    LearningStartDate = testDate,
+                }
+            });
+
+            actual.Should().BeEquivalentTo(
+                new
+                {
+                    LearningStartDate = testDate,
+                }
+            );
+        }
+
+        [Test, AutoData]
         public void RefundProducesRequiredPaymentsWithOriginalApprenticeshipId(
             Payment historicPayment, [Negative] decimal refundAmount, RefundService sut)
         {                           

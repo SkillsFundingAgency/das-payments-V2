@@ -29,7 +29,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(payment => payment.InstalmentAmount, opt => opt.MapFrom(episode => episode.InstalmentAmount))
                 .ForMember(payment => payment.NumberOfInstalments, opt => opt.MapFrom(episode => episode.NumberOfInstalments))
                 .ForMember(payment => payment.AccountId, opt => opt.MapFrom(episode => episode.AccountId))
-                .ForMember(payment => payment.TransferSenderAccountId, opt => opt.MapFrom(episode => episode.TransferSenderAccountId))
+                .ForMember(payment => payment.TransferSenderAccountId, opt => opt.MapFrom(episode => episode. TransferSenderAccountId))
+                .ForMember(payment => payment.LearningStartDate, opt => opt.MapFrom(episode => episode.LearningStartDate))
+                .ForMember(payment => payment.ApprenticeshipId, opt => opt.MapFrom(episode => episode.ApprenticeshipId))
                 ;
 
             // Earning event --> required payment event
@@ -238,6 +240,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Include<IdentifiedRemovedLearningAim, CalculatedRequiredCoInvestedAmount>()
                 .Include<IdentifiedRemovedLearningAim, CalculatedRequiredIncentiveAmount>()
                 .Include<IdentifiedRemovedLearningAim, CalculatedRequiredLevyAmount>()
+                .ForPath(x => x.Learner.ReferenceNumber, opt => opt.MapFrom(src => src.Learner.ReferenceNumber))
+                .ForPath(x => x.Learner.Uln, opt => opt.Ignore())
                 .Ignore(x => x.TransferSenderAccountId)
                 .Ignore(x => x.EventId)
                 .Ignore(x => x.AmountDue)
@@ -292,12 +296,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(x => x.ApprenticeshipPriceEpisodeId,opt => opt.MapFrom(src => src.ApprenticeshipPriceEpisodeId))
                 .ForMember(x => x.ApprenticeshipEmployerType,opt => opt.MapFrom(src => src.ApprenticeshipEmployerType))
                 .ForMember(x => x.ReportingAimFundingLineType,opt => opt.MapFrom(src => src.ReportingAimFundingLineType))
+                .ForPath(x => x.Learner.Uln, opt => opt.MapFrom(src => src.LearnerUln))
                 .Ignore(x => x.EventId)
                 .Ignore(x => x.AmountDue)
                 .Ignore(x => x.EarningEventId)
                 .Ignore(x => x.JobId)
                 .Ignore(x => x.EventTime)
-                .Ignore(x => x.Learner)
                 .Ignore(x => x.LearningAim)
                 .Ignore(x => x.IlrSubmissionDateTime)
                 .Ignore(x => x.IlrFileName)

@@ -95,8 +95,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("the Provider now changes the Learner's ULN to \"(.*)\"")]
         public void TheProviderChangesTheLearnersUln(long newUln)
         {
-            TestSession.Learner.Uln = newUln;
+            TestSession.GetLearner(TestSession.Provider.Ukprn, null).Uln = newUln;
             CurrentIlr = PreviousIlr;
+            CurrentIlr.ForEach(x => x.Uln = newUln);
         }
 
         [When(@"the amended ILR file is re-submitted")]
