@@ -15,6 +15,7 @@
     <Parameter Name="PaymentsConnectionString" Value="" />
     <Parameter Name="PaymentsMonitoringConnectionString" Value="" />
     <Parameter Name="DcEarningsConnectionString" Value="" />
+    <Parameter Name="PaymentsMetricsConnectionString" Value="" />
   </Section>
   <Section Name="Settings">
     <Parameter Name="EndpointName" Value="" />
