@@ -350,7 +350,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         {
             await WaitForIt(() =>
             {
-                return DataContext.Jobs.Any(j => j.Id == Job.Id && j.Status == JobStatus.CompletedWithErrors);
+                return  DataContext.Jobs.Any(j => j.Id == Job.Id && j.Status == JobStatus.CompletedWithErrors);
             }, $"Status was not updated to Completed for job: {Job.Id}, Dc job id: {JobDetails.JobId}");
         }
 
@@ -358,10 +358,10 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         [Then(@"the job monitoring service should record the job")]
         public async Task ThenTheJobMonitoringServiceShouldRecordTheJob()
         {
-            await WaitForIt(() =>
+            await WaitForIt(async () =>
             {
-                var job = DataContext.Jobs.AsNoTracking()
-                    .FirstOrDefault(x => x.DcJobId == JobDetails.JobId);
+                var job = await DataContext.Jobs.AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.DcJobId == JobDetails.JobId);
 
                 if (job == null)
                     return false;
@@ -398,7 +398,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             await WaitForIt(() =>
             {
                 var job = DataContext.Jobs.AsNoTracking()
-                    .FirstOrDefault(x => x.DcJobId == JobDetails.JobId && x.Status == JobStatus.Completed);
+                    .FirstOrDefault(x => x.DcJobId == JobDetails.JobId && x.Status == JobStatus.Completed && x.EndTime != null);
 
                 if (job == null)
                     return false;

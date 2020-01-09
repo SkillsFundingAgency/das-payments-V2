@@ -17,11 +17,11 @@ Scenario: Provider Period End Started Job Completed
 	And the final messages for the job are successfully processed
 	Then the job monitoring service should update the status of the job to show that it has completed	
 
-#Scenario: Data-Collections confirms success of period end start job
-#	Given the monitoring service has recorded the completion of a period end start job
-#	When Data-Collections confirms the successful completion of the period end start job
-#	Then the monitoring service should record the successful completion of the Data-Collections processes
-#	And the monitoring service should notify other services that the job has completed successfully
+Scenario: Data-Collections confirms success of period end start job
+	Given the monitoring service has recorded the completion of a period end start job
+	When Data-Collections confirms the successful completion of the period end start job
+	Then the monitoring service should record the successful completion of the Data-Collections processes
+	And the monitoring service should notify other services that the job has completed successfully
 
 
 
