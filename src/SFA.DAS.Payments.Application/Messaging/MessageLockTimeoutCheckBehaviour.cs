@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.Application.Messaging
                 return next();
             }
            
-            logger.LogInfo($"The given message's timeout has passed according to the configured message timeout threshold. Threshold value:{configTimeoutThreshold} ");
+            logger.LogWarning($"The given message's timeout has passed according to the configured message timeout threshold. Threshold value:{configTimeoutThreshold} ");
             context.AbortReceiveOperation();
 
             return Task.CompletedTask;
