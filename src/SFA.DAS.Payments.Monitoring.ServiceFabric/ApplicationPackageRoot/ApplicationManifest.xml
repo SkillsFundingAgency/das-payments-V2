@@ -15,7 +15,6 @@
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="DcEarningsConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsMonitoringConnectionString" DefaultValue="" />
-    <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsMetricsConnectionString" DefaultValue="" />
     <Parameter Name="Monitoring_JobsService_EndpointName" DefaultValue="" />
     <Parameter Name="Monitoring_JobsService_FailedMessagesQueue" DefaultValue="" />
