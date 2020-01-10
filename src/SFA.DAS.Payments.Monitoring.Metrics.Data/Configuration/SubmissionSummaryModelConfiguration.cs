@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration
             });
             builder.OwnsOne(x => x.DasEarnings, amounts =>
             {
-                amounts.Property(x => x.ContractType1).HasColumnName(@"EarningsDCASontractType1");
+                amounts.Property(x => x.ContractType1).HasColumnName(@"EarningsDASContractType1");
                 amounts.Property(x => x.ContractType2).HasColumnName(@"EarningsDASContractType2");
                 amounts.Property(x => x.DifferenceContractType1).HasColumnName(@"EarningsDifferenceContractType1");
                 amounts.Property(x => x.DifferenceContractType2).HasColumnName(@"EarningsDifferenceContractType2");

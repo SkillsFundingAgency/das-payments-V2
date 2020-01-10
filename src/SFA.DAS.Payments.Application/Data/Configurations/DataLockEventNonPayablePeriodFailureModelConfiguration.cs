@@ -12,10 +12,10 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).HasColumnName(@"Id").IsRequired();
             builder.Property(x => x.DataLockFailure).HasColumnName(@"DataLockFailureId").IsRequired();
-            builder.Property(x => x.DataLockEventNonPayablePeriodId).HasColumnName(@"DataLockEventNonPayablePeriod").IsRequired();
-            builder.Property(x => x.ApprenticeshipId).HasColumnName(@"ApprenticeshipId").IsRequired();
+            builder.Property(x => x.DataLockEventNonPayablePeriodId).HasColumnName(@"DataLockEventNonPayablePeriodId").IsRequired();
+            builder.Property(x => x.ApprenticeshipId).HasColumnName(@"ApprenticeshipId");
 
-            builder.HasOne(x => x.DataLockEventNonPayablePeriod).WithMany(dl => dl.Failures).HasPrincipalKey(x => x.DataLockEventNonPayablePeriodId);
+            builder.HasOne(x => x.DataLockEventNonPayablePeriod).WithMany().HasPrincipalKey(x => x.DataLockEventNonPayablePeriodId);
             builder.HasOne(x => x.Apprenticeship).WithMany().HasForeignKey(x => x.ApprenticeshipId);
         }
     }

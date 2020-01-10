@@ -17,6 +17,5 @@ namespace SFA.DAS.Payments.Model.Core.Audit
         public decimal? SfaContributionPercentage { get; set; }
         public DateTime? CensusDate { get; set; }
         public DateTime? LearningStartDate { get; set; }
-        public virtual List<DataLockEventNonPayablePeriodFailureModel> Failures { get; set; }
     }
 }
