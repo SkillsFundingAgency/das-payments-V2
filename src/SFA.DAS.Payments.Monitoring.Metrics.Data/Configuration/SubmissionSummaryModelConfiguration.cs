@@ -60,6 +60,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration
             });
             builder.Property(x => x.NonLevyRequiredPayments).HasColumnName(@"RequiredPaymentsNonLevy");
             builder.Property(x => x.DataLockedEarnings).HasColumnName(@"DataLockedEarnings");
+            builder.OwnsOne(x => x.YearToDatePayments, amounts =>
+            {
+                amounts.Property(x => x.ContractType1).HasColumnName(@"PaymentsYearToDateContractType1");
+                amounts.Property(x => x.ContractType2).HasColumnName(@"PaymentsYearToDateContractType2");
+                amounts.Ignore(x => x.Total);
+            });
 
             builder.HasMany(x => x.EarningsMetrics).WithOne(e => e.SubmissionSummary).HasForeignKey(e => e.SubmissionSummaryId);
             builder.HasMany(x => x.DataLockedPaymentsMetrics).WithOne(d => d.SubmissionSummary).HasForeignKey(d => d.SubmissionSummaryId);

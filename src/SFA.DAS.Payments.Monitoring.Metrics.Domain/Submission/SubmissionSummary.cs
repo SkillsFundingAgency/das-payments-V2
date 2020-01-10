@@ -28,6 +28,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
         private decimal actualTotalDataLocked;
         private ContractTypeAmounts heldBackCompletionPayments;
         private List<TransactionTypeAmounts> requiredPayments;
+        private ContractTypeAmounts yearToDatePayments;
+
         public SubmissionSummary(long ukprn, long jobId, byte collectionPeriod, short academicYear)
         {
             Ukprn = ukprn;
@@ -39,6 +41,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
             dataLocked = new DataLockTypeAmounts();
             requiredPayments = new List<TransactionTypeAmounts>();
             heldBackCompletionPayments = new ContractTypeAmounts();
+            yearToDatePayments = new ContractTypeAmounts();
         }
 
         public virtual void AddEarnings(List<TransactionTypeAmounts> dcEarningTransactionTypeAmounts, List<TransactionTypeAmounts> dasEarningTransactionTypeAmounts)
@@ -65,6 +68,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
             requiredPayments = requiredPaymentAmounts ?? throw new ArgumentNullException(nameof(requiredPaymentAmounts));
         }
 
+        public virtual void AddYearToDatePaymentTotals(ContractTypeAmounts yearToDateAmounts)
+        {
+            yearToDatePayments = yearToDateAmounts ?? throw new ArgumentNullException(nameof(yearToDateAmounts));
+        }
+
         public virtual SubmissionSummaryModel GetMetrics()
         {
             var result = new SubmissionSummaryModel
@@ -77,6 +85,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
                 DataLockedEarnings = actualTotalDataLocked,
                 DataLockedPaymentsMetrics = new List<DataLockedEarningsModel> { new DataLockedEarningsModel { Amounts = dataLocked } },
                 HeldBackCompletionPayments = heldBackCompletionPayments,
+                YearToDatePayments = yearToDatePayments,
                 RequiredPayments = GetRequiredPayments(),
                 RequiredPaymentsMetrics = GetRequiredPaymentsMetrics(),
             };
@@ -148,14 +157,21 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
 
         private ContractTypeAmountsVerbose GetSubmissionMetrics(SubmissionSummaryModel submissionSummary)
         {
-            var submissionMetrics = new ContractTypeAmountsVerbose();
-            submissionMetrics.ContractType1 = submissionSummary.RequiredPayments.ContractType1 + submissionSummary.DataLockedEarnings + submissionSummary.HeldBackCompletionPayments.ContractType1;
-            submissionMetrics.ContractType2 = submissionSummary.RequiredPayments.ContractType2 + submissionSummary.HeldBackCompletionPayments.ContractType2;
+            var submissionMetrics = new ContractTypeAmountsVerbose
+            {
+                ContractType1 = submissionSummary.YearToDatePayments.ContractType1 +
+                                submissionSummary.RequiredPayments.ContractType1 +
+                                submissionSummary.DataLockedEarnings +
+                                submissionSummary.HeldBackCompletionPayments.ContractType1,
+                ContractType2 = submissionSummary.YearToDatePayments.ContractType2 +
+                                submissionSummary.RequiredPayments.ContractType2 +
+                                submissionSummary.HeldBackCompletionPayments.ContractType2
+            };
             submissionMetrics.DifferenceContractType1 =
                 submissionMetrics.ContractType1 - submissionSummary.DcEarnings.ContractType1;
             submissionMetrics.DifferenceContractType2 =
                 submissionMetrics.ContractType2 - submissionSummary.DcEarnings.ContractType2;
-            submissionMetrics.PercentageContractType1 = GetPercentage(submissionMetrics.ContractType1 , submissionSummary.DcEarnings.ContractType1) ;
+            submissionMetrics.PercentageContractType1 = GetPercentage(submissionMetrics.ContractType1, submissionSummary.DcEarnings.ContractType1);
             submissionMetrics.PercentageContractType2 = GetPercentage(submissionMetrics.ContractType2, submissionSummary.DcEarnings.ContractType2);
             return submissionMetrics;
         }

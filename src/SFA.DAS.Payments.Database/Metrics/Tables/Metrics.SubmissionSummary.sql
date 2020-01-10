@@ -25,6 +25,8 @@
 	,DataLockedEarnings decimal(15,5) not null
 	,HeldBackCompletionPaymentsContractType1 decimal(15,5) not null
 	,HeldBackCompletionPaymentsContractType2 decimal(15,5) not null
+	,PaymentsYearToDateContractType1 decimal(15,5) not null
+	,PaymentsYearToDateContractType2 decimal(15,5) not null
 	,CreationDate datetimeoffset not null Constraint DF_SubmissionSummary__CreationDate Default (sysdatetimeoffset())
 	,Index IX_SubmissionSummary (Ukprn, JobId, AcademicYear, CollectionPeriod, CreationDate)
 	,CONSTRAINT UQ_SubmissionSummary Unique (Ukprn, AcademicYear, CollectionPeriod)
