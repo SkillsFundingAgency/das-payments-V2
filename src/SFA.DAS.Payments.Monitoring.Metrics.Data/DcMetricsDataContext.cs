@@ -143,23 +143,23 @@ RawEarnings AS (
     FROM RawEarningsMathsAndEnglish
 )
 
-SELECT [ApprenticeshipContractType] as ContractType,
-	SUM(TransactionType01) [TT1], 
-    SUM(TransactionType02) [TT2],
-    SUM(TransactionType03) [TT3],
-    SUM(TransactionType04) [TT4],
-    SUM(TransactionType05) [TT5],
-    SUM(TransactionType06) [TT6],
-    SUM(TransactionType07) [TT7],
-    SUM(TransactionType08) [TT8],
-    SUM(TransactionType09) [TT9],
-    SUM(TransactionType10) [TT10],
-    SUM(TransactionType11) [TT11],
-    SUM(TransactionType12) [TT12],
-    SUM(TransactionType13) [TT13],
-    SUM(TransactionType14) [TT14],
-    SUM(TransactionType15) [TT15],
-    SUM(TransactionType16) [TT16]
+SELECT Cast([ApprenticeshipContractType] as TinyInt) as ContractType,
+	SUM(TransactionType01) [TransactionType1], 
+    SUM(TransactionType02) [TransactionType2],
+    SUM(TransactionType03) [TransactionType3],
+    SUM(TransactionType04) [TransactionType4],
+    SUM(TransactionType05) [TransactionType5],
+    SUM(TransactionType06) [TransactionType6],
+    SUM(TransactionType07) [TransactionType7],
+    SUM(TransactionType08) [TransactionType8],
+    SUM(TransactionType09) [TransactionType9],
+    SUM(TransactionType10) [TransactionType10],
+    SUM(TransactionType11) [TransactionType11],
+    SUM(TransactionType12) [TransactionType12],
+    SUM(TransactionType13) [TransactionType13],
+    SUM(TransactionType14) [TransactionType14],
+    SUM(TransactionType15) [TransactionType15],
+    SUM(TransactionType16) [TransactionType16]
 
 FROM AllEarnings
 where ukprn =  @ukprn
