@@ -41,13 +41,15 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 var dataLocksTotalTask = submissionRepository.GetDataLockedEarningsTotal(ukprn, jobId);
                 var requiredPaymentsTask = submissionRepository.GetRequiredPayments(ukprn, jobId);
                 var heldBackCompletionAmountsTask = submissionRepository.GetHeldBackCompletionPaymentsTotal(ukprn, jobId);
-                await Task.WhenAll(dcEarningsTask, dasEarningsTask, dataLocksTask, dataLocksTotalTask, requiredPaymentsTask, heldBackCompletionAmountsTask).ConfigureAwait(false);
+                var yearToDateAmountsTask = submissionRepository.GetYearToDatePaymentsTotal(ukprn, academicYear, collectionPeriod);
+                await Task.WhenAll(dcEarningsTask, dasEarningsTask, dataLocksTask, dataLocksTotalTask, requiredPaymentsTask, heldBackCompletionAmountsTask, yearToDateAmountsTask).ConfigureAwait(false);
                 stopwatch.Stop();
                 logger.LogDebug($"finished getting data from databases. Took: {stopwatch.ElapsedMilliseconds}ms for metrics report for job: {jobId}, ukprn: {ukprn}");
                 submissionSummary.AddEarnings(dcEarningsTask.Result, dasEarningsTask.Result);
                 submissionSummary.AddDataLockedEarnings(dataLocksTotalTask.Result, dataLocksTask.Result);
                 submissionSummary.AddRequiredPayments(requiredPaymentsTask.Result);
                 submissionSummary.AddHeldBackCompletionPayments(heldBackCompletionAmountsTask.Result);
+                submissionSummary.AddYearToDatePaymentTotals(yearToDateAmountsTask.Result);
                 var metrics = submissionSummary.GetMetrics();
                 await submissionRepository.SaveSubmissionMetrics(metrics, cancellationToken);
                 logger.LogInfo($"Finished building metrics for job: {jobId}, provider: {ukprn}, Academic year: {academicYear}, Collection period: {collectionPeriod}");

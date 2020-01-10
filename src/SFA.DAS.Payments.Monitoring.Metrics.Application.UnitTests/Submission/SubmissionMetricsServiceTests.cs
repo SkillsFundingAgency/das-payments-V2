@@ -57,6 +57,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             moqer.Mock<ISubmissionMetricsRepository>()
                 .Setup(repo => repo.GetHeldBackCompletionPaymentsTotal(It.IsAny<long>(), It.IsAny<long>()))
                 .ReturnsAsync(TestsHelper.DefaultHeldBackCompletionPayments);
+            moqer.Mock<ISubmissionMetricsRepository>()
+                .Setup(repo => repo.GetYearToDatePaymentsTotal(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>()))
+                .ReturnsAsync(TestsHelper.DefaultYearToDateAmounts);
         }
 
         [Test]
@@ -101,6 +104,18 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             moqer.Mock<ISubmissionSummary>()
                 .Verify(x => x.AddHeldBackCompletionPayments(It.Is<ContractTypeAmounts>(amounts => amounts.ContractType1 == TestsHelper.DefaultHeldBackCompletionPayments.ContractType1 &&
                                                                                                    amounts.ContractType2 == TestsHelper.DefaultHeldBackCompletionPayments.ContractType2)), Times.Once);
+        }
+
+
+        [Test]
+        public async Task Includes_Year_To_Date_Payments_In_Metrics()
+        {
+            var service = moqer.Create<SubmissionMetricsService>();
+            await service.BuildMetrics(1234, 123, 1920, 1, CancellationToken.None).ConfigureAwait(false);
+
+            moqer.Mock<ISubmissionSummary>()
+                .Verify(x => x.AddYearToDatePaymentTotals(It.Is<ContractTypeAmounts>(amounts => amounts.ContractType1 == TestsHelper.DefaultYearToDateAmounts.ContractType1 &&
+                                                                                                   amounts.ContractType2 == TestsHelper.DefaultYearToDateAmounts.ContractType2)), Times.Once);
         }
 
         [Test]

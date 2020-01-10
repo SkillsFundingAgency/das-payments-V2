@@ -159,6 +159,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests
                 }
             };
 
+        public static ContractTypeAmounts DefaultYearToDateAmounts => new ContractTypeAmounts { ContractType1 = 16300, ContractType2 = 16300 };
+
 
     }
 }

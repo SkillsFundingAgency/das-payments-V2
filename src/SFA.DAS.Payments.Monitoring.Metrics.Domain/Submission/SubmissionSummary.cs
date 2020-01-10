@@ -13,6 +13,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
         void AddDataLockedEarnings(decimal total, DataLockTypeAmounts dataLockedAmounts);
         void AddHeldBackCompletionPayments(ContractTypeAmounts heldBackCompletionPaymentAmounts);
         void AddRequiredPayments(List<TransactionTypeAmounts> requiredPaymentAmounts);
+        void AddYearToDatePaymentTotals(ContractTypeAmounts yearToDateAmounts);
         SubmissionSummaryModel GetMetrics();
     }
 

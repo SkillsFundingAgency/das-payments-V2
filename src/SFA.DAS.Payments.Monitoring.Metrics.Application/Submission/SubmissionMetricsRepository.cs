@@ -21,6 +21,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         Task<decimal> GetDataLockedEarningsTotal(long ukprn, long jobId);
         Task<ContractTypeAmounts> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId);
         Task<List<TransactionTypeAmounts>> GetRequiredPayments(long ukprn, long jobId);
+
+        Task<ContractTypeAmounts> GetYearToDatePaymentsTotal(long ukprn, short academicYear,
+            byte currentCollectionPeriod);
         Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken);
     }
 
@@ -173,6 +176,25 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                     TransactionType16 = group.Where(x => x.TransactionType == TransactionType.CareLeaverApprenticePayment).Sum(x => (decimal?)x.Amount) ?? 0,
                 })
                 .ToList();
+        }
+
+        public async Task<ContractTypeAmounts> GetYearToDatePaymentsTotal(long ukprn, short academicYear, byte currentCollectionPeriod)
+        {
+            var amounts = await paymentsDataContext.Payment
+                .AsNoTracking()
+                .Where(p => p.Ukprn == ukprn && 
+                            p.CollectionPeriod.AcademicYear == academicYear &&
+                            p.CollectionPeriod.Period < currentCollectionPeriod)
+                .GroupBy(p => p.ContractType)
+                .Select(g => new { ContractType = g.Key, Amount = g.Sum(p => p.Amount) })
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            return  new ContractTypeAmounts
+            {
+                ContractType1 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act1)?.Amount ?? 0,
+                ContractType2 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act2)?.Amount ?? 0,
+            };
         }
 
         public async Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken)
