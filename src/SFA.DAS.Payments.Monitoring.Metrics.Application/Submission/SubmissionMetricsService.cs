@@ -30,25 +30,33 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
         public async Task BuildMetrics(long ukprn, long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            logger.LogDebug($"Building metrics for job: {jobId}, provider: {ukprn}, Academic year: {academicYear}, Collection period: {collectionPeriod}");
-            var stopwatch = Stopwatch.StartNew();
-            var submissionSummary = submissionSummaryFactory.Create(ukprn, jobId, academicYear, collectionPeriod);
-            var dcEarningsTask = dcDataContext.GetEarnings(ukprn, academicYear, collectionPeriod);
-            var dasEarningsTask = submissionRepository.GetDasEarnings(ukprn, jobId);
-            var dataLocksTask = submissionRepository.GetDataLockedEarnings(ukprn, jobId);
-            var dataLocksTotalTask = submissionRepository.GetDataLockedEarningsTotal(ukprn, jobId);
-            var requiredPaymentsTask = submissionRepository.GetRequiredPayments(ukprn, jobId);
-            var heldBackCompletionAmountsTask = submissionRepository.GetHeldBackCompletionPaymentsTotal(ukprn, jobId);
-            await Task.WhenAll(dasEarningsTask, dcEarningsTask, dataLocksTotalTask, requiredPaymentsTask, heldBackCompletionAmountsTask).ConfigureAwait(false);
-            stopwatch.Stop();
-            logger.LogDebug($"finished getting data from databases. Took: {stopwatch.ElapsedMilliseconds}ms for metrics report for job: {jobId}, ukprn: {ukprn}");
-            submissionSummary.AddEarnings(dcEarningsTask.Result, dasEarningsTask.Result);
-            submissionSummary.AddDataLockedEarnings(dataLocksTotalTask.Result, dataLocksTask.Result);
-            submissionSummary.AddRequiredPayments(requiredPaymentsTask.Result);
-            submissionSummary.AddHeldBackCompletionPayments(heldBackCompletionAmountsTask.Result);
-            var metrics = submissionSummary.GetMetrics();
-            await submissionRepository.SaveSubmissionMetrics(metrics, cancellationToken);
-            logger.LogInfo($"Finished building metrics for job: {jobId}, provider: {ukprn}, Academic year: {academicYear}, Collection period: {collectionPeriod}");
+            try
+            {
+                logger.LogDebug($"Building metrics for job: {jobId}, provider: {ukprn}, Academic year: {academicYear}, Collection period: {collectionPeriod}");
+                var stopwatch = Stopwatch.StartNew();
+                var submissionSummary = submissionSummaryFactory.Create(ukprn, jobId, academicYear, collectionPeriod);
+                var dcEarningsTask = dcDataContext.GetEarnings(ukprn, academicYear, collectionPeriod);
+                var dasEarningsTask = submissionRepository.GetDasEarnings(ukprn, jobId);
+                var dataLocksTask = submissionRepository.GetDataLockedEarnings(ukprn, jobId);
+                var dataLocksTotalTask = submissionRepository.GetDataLockedEarningsTotal(ukprn, jobId);
+                var requiredPaymentsTask = submissionRepository.GetRequiredPayments(ukprn, jobId);
+                var heldBackCompletionAmountsTask = submissionRepository.GetHeldBackCompletionPaymentsTotal(ukprn, jobId);
+                await Task.WhenAll(dcEarningsTask, dasEarningsTask, dataLocksTask, dataLocksTotalTask, requiredPaymentsTask, heldBackCompletionAmountsTask).ConfigureAwait(false);
+                stopwatch.Stop();
+                logger.LogDebug($"finished getting data from databases. Took: {stopwatch.ElapsedMilliseconds}ms for metrics report for job: {jobId}, ukprn: {ukprn}");
+                submissionSummary.AddEarnings(dcEarningsTask.Result, dasEarningsTask.Result);
+                submissionSummary.AddDataLockedEarnings(dataLocksTotalTask.Result, dataLocksTask.Result);
+                submissionSummary.AddRequiredPayments(requiredPaymentsTask.Result);
+                submissionSummary.AddHeldBackCompletionPayments(heldBackCompletionAmountsTask.Result);
+                var metrics = submissionSummary.GetMetrics();
+                await submissionRepository.SaveSubmissionMetrics(metrics, cancellationToken);
+                logger.LogInfo($"Finished building metrics for job: {jobId}, provider: {ukprn}, Academic year: {academicYear}, Collection period: {collectionPeriod}");
+            }
+            catch (Exception e)
+            {
+                logger.LogWarning($"Error building the submission metrics report for job: {jobId}, ukprn: {ukprn}. Error: {e}");
+                throw;
+            }
         }
     }
 }
