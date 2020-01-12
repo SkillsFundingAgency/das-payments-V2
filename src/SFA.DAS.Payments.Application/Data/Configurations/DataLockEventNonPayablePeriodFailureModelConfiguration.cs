@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.ToTable("DataLockEventNonPayablePeriodFailures", "Payments2");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).HasColumnName(@"Id").IsRequired();
-            builder.Property(x => x.DataLockFailure).HasColumnName(@"DataLockFailureId").IsRequired();
+            builder.Property(x => x.DataLockFailure).HasColumnName(@"DataLockFailureId").HasColumnType("TinyInt").IsRequired();
             builder.Property(x => x.DataLockEventNonPayablePeriodId).HasColumnName(@"DataLockEventNonPayablePeriodId").IsRequired();
             builder.Property(x => x.ApprenticeshipId).HasColumnName(@"ApprenticeshipId");
 

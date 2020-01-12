@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
+using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 {
@@ -19,13 +22,16 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         private readonly ISubmissionSummaryFactory submissionSummaryFactory;
         private readonly IDcMetricsDataContext dcDataContext;
         private readonly ISubmissionMetricsRepository submissionRepository;
+        private readonly ITelemetry telemetry;
 
-        public SubmissionMetricsService(IPaymentLogger logger, ISubmissionSummaryFactory submissionSummaryFactory, IDcMetricsDataContext dcDataContext, ISubmissionMetricsRepository submissionRepository)
+        public SubmissionMetricsService(IPaymentLogger logger, ISubmissionSummaryFactory submissionSummaryFactory,
+            IDcMetricsDataContext dcDataContext, ISubmissionMetricsRepository submissionRepository, ITelemetry telemetry)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.submissionSummaryFactory = submissionSummaryFactory ?? throw new ArgumentNullException(nameof(submissionSummaryFactory));
             this.dcDataContext = dcDataContext ?? throw new ArgumentNullException(nameof(dcDataContext));
             this.submissionRepository = submissionRepository ?? throw new ArgumentNullException(nameof(submissionRepository));
+            this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
         public async Task BuildMetrics(long ukprn, long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
@@ -34,17 +40,23 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             {
                 logger.LogDebug($"Building metrics for job: {jobId}, provider: {ukprn}, Academic year: {academicYear}, Collection period: {collectionPeriod}");
                 var stopwatch = Stopwatch.StartNew();
+                var metricsTimeoutCancellationTokenSource = new CancellationTokenSource();
                 var submissionSummary = submissionSummaryFactory.Create(ukprn, jobId, academicYear, collectionPeriod);
-                var dcEarningsTask = dcDataContext.GetEarnings(ukprn, academicYear, collectionPeriod);
-                var dasEarningsTask = submissionRepository.GetDasEarnings(ukprn, jobId);
-                var dataLocksTask = submissionRepository.GetDataLockedEarnings(ukprn, jobId);
-                var dataLocksTotalTask = submissionRepository.GetDataLockedEarningsTotal(ukprn, jobId);
-                var requiredPaymentsTask = submissionRepository.GetRequiredPayments(ukprn, jobId);
-                var heldBackCompletionAmountsTask = submissionRepository.GetHeldBackCompletionPaymentsTotal(ukprn, jobId);
-                var yearToDateAmountsTask = submissionRepository.GetYearToDatePaymentsTotal(ukprn, academicYear, collectionPeriod);
-                await Task.WhenAll(dcEarningsTask, dasEarningsTask, dataLocksTask, dataLocksTotalTask, requiredPaymentsTask, heldBackCompletionAmountsTask, yearToDateAmountsTask).ConfigureAwait(false);
-                stopwatch.Stop();
-                logger.LogDebug($"finished getting data from databases. Took: {stopwatch.ElapsedMilliseconds}ms for metrics report for job: {jobId}, ukprn: {ukprn}");
+                var dcEarningsTask = dcDataContext.GetEarnings(ukprn, academicYear, collectionPeriod, cancellationToken);
+                var dasEarningsTask = submissionRepository.GetDasEarnings(ukprn, jobId, cancellationToken);
+                var dataLocksTask = submissionRepository.GetDataLockedEarnings(ukprn, jobId, cancellationToken);
+                var dataLocksTotalTask = submissionRepository.GetDataLockedEarningsTotal(ukprn, jobId, cancellationToken);
+                var requiredPaymentsTask = submissionRepository.GetRequiredPayments(ukprn, jobId, cancellationToken);
+                var heldBackCompletionAmountsTask = submissionRepository.GetHeldBackCompletionPaymentsTotal(ukprn, jobId, cancellationToken);
+                var yearToDateAmountsTask = submissionRepository.GetYearToDatePaymentsTotal(ukprn, academicYear, collectionPeriod, cancellationToken);
+                var dataTask = Task.WhenAll(dcEarningsTask, dasEarningsTask, dataLocksTask, dataLocksTotalTask, requiredPaymentsTask, heldBackCompletionAmountsTask, yearToDateAmountsTask);
+                var waitTask = Task.Delay(TimeSpan.FromMinutes(4), cancellationToken);
+                Task.WaitAny(dataTask, waitTask);
+                cancellationToken.ThrowIfCancellationRequested();
+                if (!dataTask.IsCompleted)
+                    throw new InvalidOperationException($"Took too long to get data for the submission metrics. Ukprn: {ukprn}, job: {jobId}, Collection period: {collectionPeriod}");
+                var dataDuration = stopwatch.ElapsedMilliseconds;
+                logger.LogDebug($"finished getting data from databases for job: {jobId}, ukprn: {ukprn}. Took: {dataDuration}ms.");
                 submissionSummary.AddEarnings(dcEarningsTask.Result, dasEarningsTask.Result);
                 submissionSummary.AddDataLockedEarnings(dataLocksTotalTask.Result, dataLocksTask.Result);
                 submissionSummary.AddRequiredPayments(requiredPaymentsTask.Result);
@@ -52,13 +64,38 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 submissionSummary.AddYearToDatePaymentTotals(yearToDateAmountsTask.Result);
                 var metrics = submissionSummary.GetMetrics();
                 await submissionRepository.SaveSubmissionMetrics(metrics, cancellationToken);
-                logger.LogInfo($"Finished building metrics for job: {jobId}, provider: {ukprn}, Academic year: {academicYear}, Collection period: {collectionPeriod}");
+                stopwatch.Stop();
+                SendMetricsTelemetry(metrics, stopwatch.ElapsedMilliseconds);
+                logger.LogInfo($"Finished building metrics for submission job: {jobId}, provider: {ukprn}, Academic year: {academicYear}, Collection period: {collectionPeriod}. Took: {stopwatch.ElapsedMilliseconds}ms");
             }
             catch (Exception e)
             {
                 logger.LogWarning($"Error building the submission metrics report for job: {jobId}, ukprn: {ukprn}. Error: {e}");
                 throw;
             }
+        }
+
+        private void SendMetricsTelemetry(SubmissionSummaryModel metrics, long reportGenerationDuration)
+        {
+            var properties = new Dictionary<string, string>
+            {
+                { TelemetryKeys.JobId, metrics.JobId.ToString()},
+                { TelemetryKeys.Ukprn, metrics.Ukprn.ToString()},
+                { TelemetryKeys.CollectionPeriod, metrics.CollectionPeriod.ToString()},
+                { TelemetryKeys.AcademicYear, metrics.AcademicYear.ToString()},
+            };
+
+            var stats = new Dictionary<string, double>
+            {
+                { "ReportGenerationDuration", reportGenerationDuration },
+                { "Percentage" , (double)metrics.Percentage },
+                { "ContractType1Percentage" , (double)metrics.SubmissionMetrics.PercentageContractType1 },
+                { "ContractType2Percentage" , (double)metrics.SubmissionMetrics.PercentageContractType2 },
+                { "EarningsContractType1Percentage" , (double)metrics.SubmissionMetrics.PercentageContractType1 },
+                { "EarningsContractType2Percentage" , (double)metrics.SubmissionMetrics.PercentageContractType2 },
+            };
+
+            telemetry.TrackEvent("Finished Generating Submission Metrics", properties, stats);
         }
     }
 }

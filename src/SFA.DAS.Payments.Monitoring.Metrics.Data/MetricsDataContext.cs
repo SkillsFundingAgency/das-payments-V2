@@ -2,6 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
@@ -19,7 +21,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
     public class MetricsDataContext : DbContext, IMetricsDataContext
     {
         private readonly string connectionString;
-
         public virtual DbSet<SubmissionSummaryModel> SubmissionSummaries { get; set; }
         public virtual DbSet<DataLockedEarningsModel> DataLockedEarnings { get; set; }
         public virtual DbSet<EarningsModel> Earnings { get; set; }

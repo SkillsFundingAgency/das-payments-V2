@@ -17,7 +17,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
         private List<TransactionTypeAmounts> requiredPayments;
         private DataLockTypeAmounts dataLocks;
         private ContractTypeAmounts heldBackCompletionPayments;
-        private decimal totalDataLockedEarnings;
 
         [SetUp]
         public void SetUp()
@@ -129,6 +128,16 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
             var metrics = submissionSummary.GetMetrics();
             metrics.DasEarnings.PercentageContractType1.Should().Be(0);
             metrics.DasEarnings.PercentageContractType2.Should().Be(0);
+        }
+
+        [Test]
+        public void Does_Not_Include_Zero_Earnings_Contract_Types_In_Final_Percentage()
+        {
+            var submissionSummary = GetSubmissionSummary;
+            dcEarnings.RemoveAll(x => x.ContractType == ContractType.Act2);
+            dasEarnings.RemoveAll(x => x.ContractType == ContractType.Act2);
+            var metrics = submissionSummary.GetMetrics();
+            metrics.Percentage.Should().Be(100);
         }
 
         [Test]

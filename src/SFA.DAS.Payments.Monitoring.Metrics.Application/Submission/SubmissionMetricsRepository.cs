@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -16,14 +17,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 {
     public interface ISubmissionMetricsRepository
     {
-        Task<List<TransactionTypeAmounts>> GetDasEarnings(long ukprn, long jobId);
-        Task<DataLockTypeAmounts> GetDataLockedEarnings(long ukprn, long jobId);
-        Task<decimal> GetDataLockedEarningsTotal(long ukprn, long jobId);
-        Task<ContractTypeAmounts> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId);
-        Task<List<TransactionTypeAmounts>> GetRequiredPayments(long ukprn, long jobId);
+        Task<List<TransactionTypeAmounts>> GetDasEarnings(long ukprn, long jobId, CancellationToken cancellationToken);
+        Task<DataLockTypeAmounts> GetDataLockedEarnings(long ukprn, long jobId, CancellationToken cancellationToken);
+        Task<decimal> GetDataLockedEarningsTotal(long ukprn, long jobId, CancellationToken cancellationToken);
+        Task<ContractTypeAmounts> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId, CancellationToken cancellationToken);
+        Task<List<TransactionTypeAmounts>> GetRequiredPayments(long ukprn, long jobId, CancellationToken cancellationToken);
 
         Task<ContractTypeAmounts> GetYearToDatePaymentsTotal(long ukprn, short academicYear,
-            byte currentCollectionPeriod);
+            byte currentCollectionPeriod, CancellationToken cancellationToken);
         Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken);
     }
 
@@ -31,19 +32,27 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
     {
         private readonly IPaymentsDataContext paymentsDataContext;
         private readonly IMetricsDataContext dataContext;
+        private readonly IPaymentLogger logger;
 
-        public SubmissionMetricsRepository(IPaymentsDataContext paymentsDataContext, IMetricsDataContext dataContext)
+        public SubmissionMetricsRepository(IPaymentsDataContext paymentsDataContext, IMetricsDataContext dataContext, IPaymentLogger logger)
         {
             this.paymentsDataContext = paymentsDataContext ?? throw new ArgumentNullException(nameof(paymentsDataContext));
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.paymentsDataContext.Database.SetCommandTimeout(270);  //TODO: use config
+            ((PaymentsDataContext)paymentsDataContext).ConfigureLogging(LogSql, LoggingCategories.SQL);
         }
 
-        public async Task<List<TransactionTypeAmounts>> GetDasEarnings(long ukprn, long jobId)
+        private void LogSql(string sql)
         {
+            logger.LogDebug($"Sql: {sql}");
+        }
 
+        public async Task<List<TransactionTypeAmounts>> GetDasEarnings(long ukprn, long jobId, CancellationToken cancellationToken)
+        {
             var transactionAmounts = await paymentsDataContext.EarningEventPeriod
                 .AsNoTracking()
-                .Where(ee => ee.EarningEvent.Ukprn == ukprn && ee.EarningEvent.JobId == jobId)
+                .Where(ee => ee.Amount != 0 && ee.EarningEvent.Ukprn == ukprn && ee.EarningEvent.JobId == jobId)
                 //.Select(eep => new { eep.Amount, eep.EarningEvent.ContractType, eep.TransactionType})
                 .GroupBy(eep => new { eep.EarningEvent.ContractType, eep.TransactionType })
                 .Select(group => new
@@ -52,7 +61,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                     TransactionType = group.Key.TransactionType,
                     Amount = group.Sum(x => x.Amount)
                 })
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return transactionAmounts
                 .GroupBy(x => x.ContractType)
@@ -79,19 +88,20 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 .ToList();
         }
 
-        public async Task<DataLockTypeAmounts> GetDataLockedEarnings(long ukprn, long jobId)
+        public async Task<DataLockTypeAmounts> GetDataLockedEarnings(long ukprn, long jobId, CancellationToken cancellationToken)
         {
             var dataLockAmounts = await paymentsDataContext.DataLockEventNonPayablePeriodFailure
                 .AsNoTracking()
-                .Where(failure => failure.DataLockEventNonPayablePeriod.DataLockEvent.Ukprn == ukprn &&
+                .Where(failure => failure.DataLockEventNonPayablePeriod.Amount != 0 &&
+                                  failure.DataLockEventNonPayablePeriod.DataLockEvent.Ukprn == ukprn &&
                                   failure.DataLockEventNonPayablePeriod.DataLockEvent.JobId == jobId)
                 .GroupBy(failure => failure.DataLockFailure)
                 .Select(group => new
                 {
                     DataLockType = group.Key,
-                    Amount = group.Sum(failure => failure.DataLockEventNonPayablePeriod.Amount)
+                    Amount = group.Count()
                 })
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return new DataLockTypeAmounts
             {
@@ -110,14 +120,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             };
         }
 
-        public async Task<decimal> GetDataLockedEarningsTotal(long ukprn, long jobId)
+        public async Task<decimal> GetDataLockedEarningsTotal(long ukprn, long jobId, CancellationToken cancellationToken)
         {
             return await paymentsDataContext.DataLockEventNonPayablePeriod
-                .Where(period => period.DataLockEvent.Ukprn == ukprn && period.DataLockEvent.JobId == jobId)
-                .SumAsync(period => period.Amount);
+                .Where(period => period.Amount != 0 && period.DataLockEvent.Ukprn == ukprn && period.DataLockEvent.JobId == jobId)
+                .SumAsync(period => period.Amount, cancellationToken);
         }
 
-        public async Task<ContractTypeAmounts> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId)
+        public async Task<ContractTypeAmounts> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId, CancellationToken cancellationToken)
         {
             var amounts = await paymentsDataContext.RequiredPaymentEvent
                 .AsNoTracking()
@@ -126,9 +136,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 .GroupBy(rp => rp.ContractType)
                 .Select(group => new
                 {
-                    ContractType = group.Key, Amount = group.Sum(rp => rp.Amount)
+                    ContractType = group.Key,
+                    Amount = group.Sum(rp => rp.Amount)
                 })
-                .ToListAsync()
+                .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
 
             return new ContractTypeAmounts
@@ -138,7 +149,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             };
         }
 
-        public async Task<List<TransactionTypeAmounts>> GetRequiredPayments(long ukprn, long jobId)
+        public async Task<List<TransactionTypeAmounts>> GetRequiredPayments(long ukprn, long jobId, CancellationToken cancellationToken)
         {
             var transactionAmounts = await paymentsDataContext.RequiredPaymentEvent
                 .AsNoTracking()
@@ -151,7 +162,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                     TransactionType = group.Key.TransactionType,
                     Amount = group.Sum(x => x.Amount)
                 })
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return transactionAmounts
                 .GroupBy(x => x.ContractType)
@@ -178,19 +189,19 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 .ToList();
         }
 
-        public async Task<ContractTypeAmounts> GetYearToDatePaymentsTotal(long ukprn, short academicYear, byte currentCollectionPeriod)
+        public async Task<ContractTypeAmounts> GetYearToDatePaymentsTotal(long ukprn, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken)
         {
             var amounts = await paymentsDataContext.Payment
                 .AsNoTracking()
-                .Where(p => p.Ukprn == ukprn && 
+                .Where(p => p.Ukprn == ukprn &&
                             p.CollectionPeriod.AcademicYear == academicYear &&
                             p.CollectionPeriod.Period < currentCollectionPeriod)
                 .GroupBy(p => p.ContractType)
                 .Select(g => new { ContractType = g.Key, Amount = g.Sum(p => p.Amount) })
-                .ToListAsync()
+                .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            return  new ContractTypeAmounts
+            return new ContractTypeAmounts
             {
                 ContractType1 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act1)?.Amount ?? 0,
                 ContractType2 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act2)?.Amount ?? 0,

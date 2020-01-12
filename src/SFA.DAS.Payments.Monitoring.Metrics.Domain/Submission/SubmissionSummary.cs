@@ -134,8 +134,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
             };
             result.DifferenceContractType1 = result.ContractType1 - dcContractTpe1;
             result.DifferenceContractType2 = result.ContractType2 - dcContractTpe2;
-            result.PercentageContractType1 = dcContractTpe1 != 0 ? (result.ContractType1 / dcContractTpe1) * 100 : 0;
-            result.PercentageContractType2 = dcContractTpe2 != 0 ? (result.ContractType2 / dcContractTpe2) * 100 : 0;
+            result.PercentageContractType1 = GetPercentage(result.ContractType1, dcContractTpe1); 
+            result.PercentageContractType2 = GetPercentage(result.ContractType2, dcContractTpe2); 
             return result;
         }
 
@@ -177,6 +177,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
             return submissionMetrics;
         }
 
-        private static decimal GetPercentage(decimal amount, decimal total) => total > 0 ? (amount / total) * 100 : 0;
+        private static decimal GetPercentage(decimal amount, decimal total) => amount == total ? 100 : total > 0 ? (amount / total) * 100 : 0;
     }
 }
