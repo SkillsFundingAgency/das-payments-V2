@@ -2,19 +2,19 @@
 {
     public class DataLockTypeCounts
     {
-        public decimal DataLock1 { get; set; }
-        public decimal DataLock2 { get; set; }
-        public decimal DataLock3 { get; set; }
-        public decimal DataLock4 { get; set; }
-        public decimal DataLock5 { get; set; }
-        public decimal DataLock6 { get; set; }
-        public decimal DataLock7 { get; set; }
-        public decimal DataLock8 { get; set; }
-        public decimal DataLock9 { get; set; }
-        public decimal DataLock10 { get; set; }
-        public decimal DataLock11 { get; set; }
-        public decimal DataLock12 { get; set; }
-        public decimal Total =>
+        public int DataLock1 { get; set; }
+        public int DataLock2 { get; set; }
+        public int DataLock3 { get; set; }
+        public int DataLock4 { get; set; }
+        public int DataLock5 { get; set; }
+        public int DataLock6 { get; set; }
+        public int DataLock7 { get; set; }
+        public int DataLock8 { get; set; }
+        public int DataLock9 { get; set; }
+        public int DataLock10 { get; set; }
+        public int DataLock11 { get; set; }
+        public int DataLock12 { get; set; }
+        public int Total =>
             DataLock1 +
             DataLock2 +
             DataLock3 +

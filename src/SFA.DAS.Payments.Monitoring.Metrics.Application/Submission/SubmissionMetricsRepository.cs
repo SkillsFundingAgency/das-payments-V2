@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,7 +39,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.paymentsDataContext.Database.SetCommandTimeout(270);  //TODO: use config
-            ((PaymentsDataContext)paymentsDataContext).ConfigureLogging(LogSql, LoggingCategories.SQL);
+            //((PaymentsDataContext)paymentsDataContext).ConfigureLogging(LogSql, LoggingCategories.SQL);  //TODO: make this configurable
         }
 
         private void LogSql(string sql)
