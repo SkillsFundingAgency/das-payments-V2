@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Payments.Monitoring.Metrics.Model
 {
-    public class DataLockTypeAmounts
+    public class DataLockTypeCounts
     {
         public decimal DataLock1 { get; set; }
         public decimal DataLock2 { get; set; }

@@ -4,11 +4,11 @@ using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration
 {
-    public class DataLockedEarningsModelConfiguration : IEntityTypeConfiguration<DataLockedEarningsModel>
+    public class DataLockedEarningsModelConfiguration : IEntityTypeConfiguration<DataLockCountsModel>
     {
-        public void Configure(EntityTypeBuilder<DataLockedEarningsModel> builder)
+        public void Configure(EntityTypeBuilder<DataLockCountsModel> builder)
         {
-            builder.ToTable("ProviderDataLockedEarning", "Metrics");
+            builder.ToTable("ProviderDataLockCounts", "Metrics");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.SubmissionSummaryId).HasColumnName(@"SubmissionSummaryId").IsRequired();
             builder.OwnsOne(x => x.Amounts, amounts =>
@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration
                 amounts.Property(x => x.DataLock12).HasColumnName("DataLock12"); 
                 amounts.Ignore(x => x.Total);
             });
-            builder.HasOne(x => x.SubmissionSummary).WithMany(x => x.DataLockedPaymentsMetrics)
+            builder.HasOne(x => x.SubmissionSummary).WithMany(x => x.DataLockMetrics)
                 .HasForeignKey(x => x.SubmissionSummaryId);
         }
     }

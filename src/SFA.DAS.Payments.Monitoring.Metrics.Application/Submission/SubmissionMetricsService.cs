@@ -58,7 +58,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 var dataDuration = stopwatch.ElapsedMilliseconds;
                 logger.LogDebug($"finished getting data from databases for job: {jobId}, ukprn: {ukprn}. Took: {dataDuration}ms.");
                 submissionSummary.AddEarnings(dcEarningsTask.Result, dasEarningsTask.Result);
-                submissionSummary.AddDataLockedEarnings(dataLocksTotalTask.Result, dataLocksTask.Result);
+                submissionSummary.AddDataLockTypeCounts(dataLocksTotalTask.Result, dataLocksTask.Result);
                 submissionSummary.AddRequiredPayments(requiredPaymentsTask.Result);
                 submissionSummary.AddHeldBackCompletionPayments(heldBackCompletionAmountsTask.Result);
                 submissionSummary.AddYearToDatePaymentTotals(yearToDateAmountsTask.Result);

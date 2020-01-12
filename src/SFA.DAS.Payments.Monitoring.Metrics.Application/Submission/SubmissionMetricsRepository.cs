@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
     public interface ISubmissionMetricsRepository
     {
         Task<List<TransactionTypeAmounts>> GetDasEarnings(long ukprn, long jobId, CancellationToken cancellationToken);
-        Task<DataLockTypeAmounts> GetDataLockedEarnings(long ukprn, long jobId, CancellationToken cancellationToken);
+        Task<DataLockTypeCounts> GetDataLockedEarnings(long ukprn, long jobId, CancellationToken cancellationToken);
         Task<decimal> GetDataLockedEarningsTotal(long ukprn, long jobId, CancellationToken cancellationToken);
         Task<ContractTypeAmounts> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId, CancellationToken cancellationToken);
         Task<List<TransactionTypeAmounts>> GetRequiredPayments(long ukprn, long jobId, CancellationToken cancellationToken);
@@ -88,7 +88,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 .ToList();
         }
 
-        public async Task<DataLockTypeAmounts> GetDataLockedEarnings(long ukprn, long jobId, CancellationToken cancellationToken)
+        public async Task<DataLockTypeCounts> GetDataLockedEarnings(long ukprn, long jobId, CancellationToken cancellationToken)
         {
             var dataLockAmounts = await paymentsDataContext.DataLockEventNonPayablePeriodFailure
                 .AsNoTracking()
@@ -103,7 +103,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 })
                 .ToListAsync(cancellationToken);
 
-            return new DataLockTypeAmounts
+            return new DataLockTypeCounts
             {
                 DataLock1 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_01)?.Amount ?? 0,
                 DataLock2 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_02)?.Amount ?? 0,

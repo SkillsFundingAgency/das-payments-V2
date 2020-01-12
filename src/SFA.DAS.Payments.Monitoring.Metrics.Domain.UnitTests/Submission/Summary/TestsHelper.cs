@@ -102,7 +102,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
         };
         public static decimal DefaultDataLockedTotal => 3000;
 
-        public static DataLockTypeAmounts DefaultDataLockedEarnings => new DataLockTypeAmounts
+        public static DataLockTypeCounts DefaultDataLockedEarnings => new DataLockTypeCounts
         {
             DataLock2 = 1000,
             DataLock7 = 2000,

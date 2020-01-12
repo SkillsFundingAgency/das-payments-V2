@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
         private List<TransactionTypeAmounts> dcEarnings;
         private List<TransactionTypeAmounts> dasEarnings;
         private List<TransactionTypeAmounts> requiredPayments;
-        private DataLockTypeAmounts dataLocks;
+        private DataLockTypeCounts dataLocks;
         private decimal totalDataLockedEarnings;
 
         [SetUp]
@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 {
                     SubmissionMetrics = new ContractTypeAmountsVerbose(),
                     DasEarnings = new ContractTypeAmountsVerbose(),
-                    DataLockedPaymentsMetrics = new List<DataLockedEarningsModel>(),
+                    DataLockMetrics = new List<DataLockCountsModel>(),
                     DcEarnings = new ContractTypeAmounts(),
                     EarningsMetrics = new List<EarningsModel>(),
                     HeldBackCompletionPayments = new ContractTypeAmounts(),
@@ -93,7 +93,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             await service.BuildMetrics(1234, 123, 1920, 1, CancellationToken.None).ConfigureAwait(false);
 
             moqer.Mock<ISubmissionSummary>()
-                .Verify(x => x.AddDataLockedEarnings(It.Is<decimal>(total => total == totalDataLockedEarnings), It.Is<DataLockTypeAmounts>(amounts => amounts == dataLocks)), Times.Once);
+                .Verify(x => x.AddDataLockTypeCounts(It.Is<decimal>(total => total == totalDataLockedEarnings), It.Is<DataLockTypeCounts>(amounts => amounts == dataLocks)), Times.Once);
 
         }
 

@@ -104,7 +104,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests
             }
         };
 
-        public static DataLockTypeAmounts DefaultDataLockedEarnings => new DataLockTypeAmounts
+        public static DataLockTypeCounts DefaultDataLockedEarnings => new DataLockTypeCounts
         {
             DataLock2 = 1000,
             DataLock4 = 1000,

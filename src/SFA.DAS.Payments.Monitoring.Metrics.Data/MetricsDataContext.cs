@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
     public interface IMetricsDataContext
     {
         DbSet<SubmissionSummaryModel> SubmissionSummaries { get; }
-        DbSet<DataLockedEarningsModel> DataLockedEarnings { get; }
+        DbSet<DataLockCountsModel> DataLockedEarnings { get; }
         DbSet<EarningsModel> Earnings { get; }
         DbSet<RequiredPaymentsModel> RequiredPayments { get; }
         Task Save(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken);
@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
     {
         private readonly string connectionString;
         public virtual DbSet<SubmissionSummaryModel> SubmissionSummaries { get; set; }
-        public virtual DbSet<DataLockedEarningsModel> DataLockedEarnings { get; set; }
+        public virtual DbSet<DataLockCountsModel> DataLockedEarnings { get; set; }
         public virtual DbSet<EarningsModel> Earnings { get; set; }
         public virtual DbSet<RequiredPaymentsModel> RequiredPayments { get; set; }
 

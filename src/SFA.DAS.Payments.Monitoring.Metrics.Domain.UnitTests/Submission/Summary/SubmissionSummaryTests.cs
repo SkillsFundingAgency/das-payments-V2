@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
         private List<TransactionTypeAmounts> dcEarnings;
         private List<TransactionTypeAmounts> dasEarnings;
         private List<TransactionTypeAmounts> requiredPayments;
-        private DataLockTypeAmounts dataLocks;
+        private DataLockTypeCounts dataLocks;
         private ContractTypeAmounts heldBackCompletionPayments;
 
         [SetUp]
@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
 
             var summary = TestsHelper.DefaultSubmissionSummary;
             summary.AddEarnings(dcEarnings, dasEarnings);
-            summary.AddDataLockedEarnings(TestsHelper.DefaultDataLockedTotal, dataLocks);
+            summary.AddDataLockTypeCounts(TestsHelper.DefaultDataLockedTotal, dataLocks);
             summary.AddRequiredPayments(requiredPayments);
             summary.AddHeldBackCompletionPayments(heldBackCompletionPayments);
             summary.AddYearToDatePaymentTotals(TestsHelper.DefaultYearToDateAmounts);
@@ -68,11 +68,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
         public void Calculates_Correct_DataLocked_Earnings_Totals()
         {
             var summary = GetSubmissionSummary;
-            summary.AddDataLockedEarnings(TestsHelper.DefaultDataLockedEarnings.Total, TestsHelper.DefaultDataLockedEarnings);
+            summary.AddDataLockTypeCounts(TestsHelper.DefaultDataLockedEarnings.Total, TestsHelper.DefaultDataLockedEarnings);
             var metrics = summary.GetMetrics();
             metrics.DataLockedEarnings.Should().Be(TestsHelper.DefaultDataLockedEarnings.Total);
-            metrics.DataLockedPaymentsMetrics.Count.Should().Be(1);
-            metrics.DataLockedPaymentsMetrics.Sum(x => x.Amounts.Total).Should()
+            metrics.DataLockMetrics.Count.Should().Be(1);
+            metrics.DataLockMetrics.Sum(x => x.Amounts.Total).Should()
                 .Be(TestsHelper.DefaultDataLockedEarnings.Total);
         }
 

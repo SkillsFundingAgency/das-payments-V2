@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
     public interface ISubmissionSummary
     {
         void AddEarnings(List<TransactionTypeAmounts> dcEarningTransactionTypeAmounts, List<TransactionTypeAmounts> dasEarningTransactionTypeAmounts);
-        void AddDataLockedEarnings(decimal total, DataLockTypeAmounts dataLockedAmounts);
+        void AddDataLockTypeCounts(decimal total, DataLockTypeCounts dataLockedCounts);
         void AddHeldBackCompletionPayments(ContractTypeAmounts heldBackCompletionPaymentAmounts);
         void AddRequiredPayments(List<TransactionTypeAmounts> requiredPaymentAmounts);
         void AddYearToDatePaymentTotals(ContractTypeAmounts yearToDateAmounts);
@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
         public short AcademicYear { get; }
         private readonly List<TransactionTypeAmounts> dcEarnings;
         private readonly List<TransactionTypeAmounts> dasEarnings;
-        private DataLockTypeAmounts dataLocked;
+        private DataLockTypeCounts dataLocked;
         private decimal actualTotalDataLocked;
         private ContractTypeAmounts heldBackCompletionPayments;
         private List<TransactionTypeAmounts> requiredPayments;
@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
             AcademicYear = academicYear;
             dcEarnings = new List<TransactionTypeAmounts>();
             dasEarnings = new List<TransactionTypeAmounts>();
-            dataLocked = new DataLockTypeAmounts();
+            dataLocked = new DataLockTypeCounts();
             requiredPayments = new List<TransactionTypeAmounts>();
             heldBackCompletionPayments = new ContractTypeAmounts();
             yearToDatePayments = new ContractTypeAmounts();
@@ -53,10 +53,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
             dasEarnings.AddRange(dasEarningTransactionTypeAmounts);
         }
 
-        public virtual void AddDataLockedEarnings(decimal total, DataLockTypeAmounts dataLockedAmounts)
+        public virtual void AddDataLockTypeCounts(decimal total, DataLockTypeCounts dataLockedCounts)
         {
             actualTotalDataLocked = total;
-            dataLocked = dataLockedAmounts ?? throw new ArgumentNullException(nameof(dataLockedAmounts));
+            dataLocked = dataLockedCounts ?? throw new ArgumentNullException(nameof(dataLockedCounts));
         }
 
         public virtual void AddHeldBackCompletionPayments(ContractTypeAmounts heldBackCompletionPaymentAmounts)
@@ -84,7 +84,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
                 Ukprn = Ukprn,
                 DcEarnings = GetDcEarnings(),
                 DataLockedEarnings = actualTotalDataLocked,
-                DataLockedPaymentsMetrics = new List<DataLockedEarningsModel> { new DataLockedEarningsModel { Amounts = dataLocked } },
+                DataLockMetrics = new List<DataLockCountsModel> { new DataLockCountsModel { Amounts = dataLocked } },
                 HeldBackCompletionPayments = heldBackCompletionPayments,
                 YearToDatePayments = yearToDatePayments,
                 RequiredPayments = GetRequiredPayments(),
