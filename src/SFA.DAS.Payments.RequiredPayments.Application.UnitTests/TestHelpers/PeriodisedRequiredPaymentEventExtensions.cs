@@ -16,7 +16,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers
             paymentEvent.IlrSubmissionDateTime.Should().Be(identifiedLearningAim.IlrSubmissionDateTime);
             paymentEvent.JobId.Should().Be(identifiedLearningAim.JobId);
             paymentEvent.Learner.ReferenceNumber.Should().Be(identifiedLearningAim.Learner.ReferenceNumber);
-            paymentEvent.Learner.Uln.Should().Be(identifiedLearningAim.Learner.Uln);
             paymentEvent.LearningAim.Reference.Should().Be(identifiedLearningAim.LearningAim.Reference);
             paymentEvent.LearningAim.FrameworkCode.Should().Be(identifiedLearningAim.LearningAim.FrameworkCode);
             paymentEvent.LearningAim.FundingLineType.Should().Be(identifiedLearningAim.LearningAim.FundingLineType);
@@ -40,6 +39,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers
             paymentEvent.DeliveryPeriod.Should().Be(historicPayment.DeliveryPeriod);
             paymentEvent.InstalmentAmount.Should().Be(historicPayment.InstalmentAmount);
             paymentEvent.ActualEndDate.Should().Be(historicPayment.ActualEndDate);
+            paymentEvent.Learner.Uln.Should().Be(historicPayment.LearnerUln);
         }
     }
 }

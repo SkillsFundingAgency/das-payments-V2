@@ -52,3 +52,7 @@ CREATE INDEX [IX_FundingSourceEvent__Audit] ON [Payments2].[FundingSourceEvent]
 )  
 
 GO
+
+CREATE NONCLUSTERED INDEX [IX_FundingSourceEvent__Submission] ON [Payments2].[FundingSourceEvent] 
+([AcademicYear], [CollectionPeriod], [Ukprn], [IlrSubmissionDateTime]) 
+WITH (ONLINE = ON)
