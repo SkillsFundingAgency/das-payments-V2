@@ -49,3 +49,7 @@ CREATE INDEX [IX_RequiredPaymentEvent__Audit] ON [Payments2].[RequiredPaymentEve
 )  
 
 GO
+
+CREATE NONCLUSTERED INDEX [IX_RequiredPaymentEvent_Submission] ON [Payments2].[RequiredPaymentEvent] 
+([AcademicYear], [CollectionPeriod], [Ukprn], [IlrSubmissionDateTime]) 
+WITH (ONLINE = ON)

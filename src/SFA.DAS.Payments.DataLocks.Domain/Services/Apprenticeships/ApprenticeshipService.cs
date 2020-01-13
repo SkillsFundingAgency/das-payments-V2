@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
-using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
@@ -20,8 +17,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
     public class ApprenticeshipService : IApprenticeshipService
     {
         private readonly IApprenticeshipRepository repository;
-      
-
+        
         public ApprenticeshipService(IApprenticeshipRepository repository)
         {
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
@@ -85,7 +81,5 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
 
             return apprenticeships;
         }
-
-
     }
 }
