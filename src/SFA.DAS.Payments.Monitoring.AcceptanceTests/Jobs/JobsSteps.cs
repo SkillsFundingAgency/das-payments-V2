@@ -216,7 +216,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
 
 
         [Given(@"the monitoring service has recorded the completion of a period end start job")]
-        public async void GivenTheMonitoringServiceHasRecordedTheCompletionOfAPeriodEndStartJob()
+        public async Task GivenTheMonitoringServiceHasRecordedTheCompletionOfAPeriodEndStartJob()
         {
             GivenThePeriodEndServiceHasReceivedAPeriodEndJob();
             await WhenThePeriodEndServiceNotifiesTheJobMonitoringServiceToRecordTheJob().ConfigureAwait(false);
