@@ -24,9 +24,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             Guid correlationId = Guid.NewGuid();
             string jobInfoString =
                 $"Job: {message.JobId}, Ukprn: {message.Ukprn}, Collection year: {message.CollectionYear}, Learner: {message.Learner.LearnRefNumber}, CorrelationId: {correlationId}";
-            logger.LogInfo($"Handling ILR learner submission. {jobInfoString}");
+            logger.LogWarning($"Handling ILR learner submission. {jobInfoString}");
             var processorResult = learnerSubmissionProcessor.GenerateEarnings(message);
-            logger.LogInfo($"Processed {nameof(learnerSubmissionProcessor)}.GenerateEarnings. {jobInfoString}");
+            logger.LogWarning($"Processed {nameof(learnerSubmissionProcessor)}.GenerateEarnings. {jobInfoString}");
             if (processorResult.Validation.Failed)
             {
                 logger.LogWarning($"ILR Learner Submission failed validation. {jobInfoString}");
@@ -36,11 +36,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 
             foreach (var earningEvent in processorResult.EarningEvents)
             {
-                logger.LogInfo($"Publishing event for earning event {earningEvent.EventId}. Correlation id: {correlationId}");
+                logger.LogWarning($"Publishing event for earning event {earningEvent.EventId}. Correlation id: {correlationId}");
                 await context.Publish(earningEvent).ConfigureAwait(false);
             }
             var summary = string.Join(", ", processorResult.EarningEvents.GroupBy(e => e.GetType().Name).Select(g => $"{g.Key}: {g.Count()}"));
-            logger.LogInfo($"Finished handling ILR learner submission. {jobInfoString}. Published events: {summary}");
+            logger.LogWarning($"Finished handling ILR learner submission. {jobInfoString}. Published events: {summary}");
         }
     }
 }
