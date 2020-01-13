@@ -24,8 +24,9 @@ namespace SFA.DAS.Payments.Audit.RequiredPaymentService.Handlers
         {
             try
             {
-                await processor.Process(message, CancellationToken.None).ConfigureAwait(false);
-                logger.LogInfo($"Finished processing submission succeeded event for required payment events. message: {message.ToJson()}");
+                //TODO: temp db fix
+                //await processor.Process(message, CancellationToken.None).ConfigureAwait(false);
+                //logger.LogInfo($"Finished processing submission succeeded event for required payment events. message: {message.ToJson()}");
             }
             catch (Exception ex)
             {

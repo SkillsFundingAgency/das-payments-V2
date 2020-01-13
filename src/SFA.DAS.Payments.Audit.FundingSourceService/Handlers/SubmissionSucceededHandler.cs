@@ -25,8 +25,9 @@ namespace SFA.DAS.Payments.Audit.FundingSourceService.Handlers
         {
             try
             {
-                await processor.Process(message, CancellationToken.None).ConfigureAwait(false);
-                logger.LogInfo($"Finished processing submission succeeded event for funding source events. message: {message.ToJson()}");
+                //TODO: temp db fix
+                //await processor.Process(message, CancellationToken.None).ConfigureAwait(false);
+                //logger.LogInfo($"Finished processing submission succeeded event for funding source events. message: {message.ToJson()}");
             }
             catch (Exception ex)
             {
