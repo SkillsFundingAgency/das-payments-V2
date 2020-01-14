@@ -20,17 +20,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
         public PeriodisedRequiredPaymentEvent Create(EarningType earningType, int transactionType)
         {
-            bool IsValidPaymentType<T>() where T : struct, IConvertible
-            {
-                return Enum.IsDefined(typeof(T), transactionType);
-            }
-
             PeriodisedRequiredPaymentEvent paymentEvent = null;
 
             switch (earningType)
             {
                 case EarningType.CoInvested:
-                    if (IsValidPaymentType<OnProgrammeEarningType>())
+                    if (IsValidPaymentType<OnProgrammeEarningType>(transactionType))
                     {
                         paymentEvent = new CalculatedRequiredCoInvestedAmount
                         {
@@ -40,7 +35,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
                     break;
                 case EarningType.Incentive:
-                    if (IsValidPaymentType<IncentivePaymentType>())
+                    if (IsValidPaymentType<IncentivePaymentType>(transactionType))
                     {
                         paymentEvent = new CalculatedRequiredIncentiveAmount
                         {
@@ -51,7 +46,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     break;
 
                 case EarningType.Levy:
-                    if (IsValidPaymentType<OnProgrammeEarningType>())
+                    if (IsValidPaymentType<OnProgrammeEarningType>(transactionType))
                     {
                         paymentEvent = new CalculatedRequiredLevyAmount
                         {
@@ -72,6 +67,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             }
 
             return paymentEvent;
+        }
+
+        private  bool IsValidPaymentType<T>(int transactionType) where T : struct, IConvertible
+        {
+            return Enum.IsDefined(typeof(T), transactionType);
         }
     }
 }
