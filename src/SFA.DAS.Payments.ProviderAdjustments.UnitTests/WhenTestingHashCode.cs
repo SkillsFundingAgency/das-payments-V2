@@ -1,7 +1,4 @@
-﻿
-
-
-using System;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.ProviderAdjustments.Domain;
@@ -11,36 +8,9 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests
     [TestFixture]
     public class WhenTestingHashCode
     {
-        private static ProviderAdjustment earning1 = new ProviderAdjustment
-        {
-            Amount = 10,
-            CollectionPeriodMonth = 11,
-            CollectionPeriodName = "123",
-            CollectionPeriodYear = 13,
-            PaymentType = 14,
-            PaymentTypeName = "15",
-            SubmissionAcademicYear = 16,
-            SubmissionCollectionPeriod = 17,
-            SubmissionId = Guid.NewGuid(),
-            Ukprn = 18,
-        };
-
-        private static ProviderAdjustment earning2 = new ProviderAdjustment
-        {
-            Amount = 20,
-            CollectionPeriodMonth = 21,
-            CollectionPeriodName = "223",
-            CollectionPeriodYear = 23,
-            PaymentType = 24,
-            PaymentTypeName = "25",
-            SubmissionAcademicYear = 26,
-            SubmissionCollectionPeriod = 27,
-            SubmissionId = Guid.NewGuid(),
-            Ukprn = 28,
-        };
-
-        [Test]
-        public void WithDifferringUkprnAreNotEqual()
+        [Test, AutoData]
+        public void WithDifferringUkprnAreNotEqual(ProviderAdjustment earning1,
+            ProviderAdjustment earning2)
         {
             earning2.PaymentType = earning1.PaymentType;
             earning2.SubmissionCollectionPeriod = earning1.SubmissionCollectionPeriod;
@@ -53,8 +23,9 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests
             actual.Should().BeFalse();
         }
 
-        [Test]
-        public void WithDifferringPaymentTypeAreNotEqual()
+        [Test, AutoData]
+        public void WithDifferringPaymentTypeAreNotEqual(ProviderAdjustment earning1,
+            ProviderAdjustment earning2)
         {
             earning2.Ukprn = earning1.Ukprn;
             earning2.SubmissionCollectionPeriod = earning1.SubmissionCollectionPeriod;
@@ -67,8 +38,9 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests
             actual.Should().BeFalse();
         }
 
-        [Test]
-        public void WithDifferringPeriodAreNotEqual()
+        [Test, AutoData]
+        public void WithDifferringPeriodAreNotEqual(ProviderAdjustment earning1,
+            ProviderAdjustment earning2)
         {
             earning2.PaymentType = earning1.PaymentType;
             earning2.Ukprn = earning1.Ukprn;
@@ -81,8 +53,9 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests
             actual.Should().BeFalse();
         }
 
-        [Test]
-        public void WithSameUkprnPaymentTypeAndPeriodAreSame()
+        [Test, AutoData]
+        public void WithSameUkprnPaymentTypeAndPeriodAreSame(ProviderAdjustment earning1,
+            ProviderAdjustment earning2)
         {
             earning2.PaymentType = earning1.PaymentType;
             earning2.SubmissionCollectionPeriod = earning1.SubmissionCollectionPeriod;
