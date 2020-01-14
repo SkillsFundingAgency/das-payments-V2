@@ -314,6 +314,19 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             }).ConfigureAwait(false);
         }
 
+        [When(@"Data-Collections confirms the the failure of the period end start job")]
+        public async Task WhenData_CollectionsConfirmsTheTheFailureOfThePeriodEndStartJob()
+        {
+            var earningsJob = JobDetails as RecordPeriodEndStartJob  ?? throw new InvalidOperationException("Expected job to be a ");
+            await MessageSession.Send(PartitionEndpointName, new RecordPeriodEndRunStartJobFailed
+            {
+                JobId = JobDetails.JobId,
+                CollectionPeriod = CollectionPeriod,
+                AcademicYear = AcademicYear,
+            }).ConfigureAwait(false);
+        }
+
+
 
 
         [When(@"Data-Collections confirms the successful completion of the job")]

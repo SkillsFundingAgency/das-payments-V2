@@ -10,30 +10,29 @@ using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
-namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
+namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd.Run
 {
-    public class RecordPeriodEndStopJobHandler : IHandleMessageBatches<RecordPeriodEndStopJob>
+    public class RecordPeriodEndRunJobHandler : IHandleMessageBatches<RecordPeriodEndRunJob>
     {
         private readonly IPaymentLogger logger;
         private readonly IPeriodEndJobService periodEndJobService;
         private readonly IJobStatusManager jobStatusManager;
 
-
-        public RecordPeriodEndStopJobHandler(IPaymentLogger logger, IPeriodEndJobService periodEndJobService, IJobStatusManager jobStatusManager)
+        public RecordPeriodEndRunJobHandler(IPaymentLogger logger, IPeriodEndJobService periodEndJobService, IJobStatusManager jobStatusManager)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.periodEndJobService = periodEndJobService ?? throw new ArgumentNullException(nameof(periodEndJobService));
             this.jobStatusManager = jobStatusManager ?? throw new ArgumentNullException(nameof(jobStatusManager));
         }
 
-        public async Task Handle(IList<RecordPeriodEndStopJob> messages, CancellationToken cancellationToken)
+        public async Task Handle(IList<RecordPeriodEndRunJob> messages, CancellationToken cancellationToken)
         {
             foreach (var message in messages)
             {
-                logger.LogInfo($"Handling period end stop job: {message.ToJson()}");
-                await periodEndJobService.RecordPeriodEndStop(message.JobId, message.CollectionYear,
-                    message.CollectionPeriod, message.GeneratedMessages, cancellationToken);
-                jobStatusManager.StartMonitoringJob(message.JobId, JobType.PeriodEndStopJob);
+                logger.LogInfo($"Handling period end run job: {message.ToJson()}");
+                await periodEndJobService.RecordPeriodEndRun(message.JobId, message.CollectionYear,
+                    message.CollectionPeriod,message.GeneratedMessages,  cancellationToken);
+                jobStatusManager.StartMonitoringJob(message.JobId, JobType.PeriodEndRunJob);
             }
         }
     }

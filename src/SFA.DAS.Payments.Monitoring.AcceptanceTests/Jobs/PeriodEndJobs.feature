@@ -23,6 +23,11 @@ Scenario: Data-Collections confirms success of period end start job
 	Then the monitoring service should record the successful completion of the Data-Collections processes
 	And the monitoring service should notify other services that the job has completed successfully
 
+Scenario: Data-Collections confirms failure of period end start job
+	Given the monitoring service has recorded the completion of a period end start job
+	When Data-Collections confirms the the failure of the period end start job
+	Then the monitoring service should record the failure of the Data-Collections processes
+	And the monitoring service should notify other services that the job has failed
 
 
 

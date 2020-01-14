@@ -6,6 +6,9 @@ using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers;
 using SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd;
+using SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd.Run;
+using SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd.Start;
+using SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd.Stop;
 using SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.Submission;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.ServiceFabric.Core;
@@ -52,6 +55,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Infrastructure.Ioc
 
             builder.RegisterType<RecordPeriodEndStartJobHandler>()
                 .As<IHandleMessageBatches<RecordPeriodEndStartJob>>()
+                .InstancePerLifetimeScope();
+            builder.RegisterType<RecordPeriodEndStartSucceededHandler>()
+                .As<IHandleMessageBatches<RecordPeriodEndRunStartJobSucceeded>>()
+                .InstancePerLifetimeScope();
+            builder.RegisterType<RecordPeriodEndStartFailedHandler>()
+                .As<IHandleMessageBatches<RecordPeriodEndRunStartJobFailed>>()
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<RecordSubmissionSucceededHandler>()

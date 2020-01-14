@@ -180,6 +180,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EndpointNames.cs" />
+    <Compile Include="Handlers\RecordPeriodEndStartFailedHandler.cs" />
+    <Compile Include="Handlers\RecordPeriodEndStartSucceededHandler.cs" />
     <Compile Include="Handlers\SubmissionJobFailedHandler.cs" />
     <Compile Include="Handlers\SubmissionJobSucceededHandler.cs" />
     <Compile Include="Infrastructure\BindingBootstrapper.cs" />
