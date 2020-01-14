@@ -16,13 +16,14 @@ namespace SFA.DAS.Payments.Application.Repositories
         DbSet<ApprenticeshipPriceEpisodeModel> ApprenticeshipPriceEpisode { get; }
         DbSet<SubmittedLearnerAimModel> SubmittedLearnerAim { get; }
         DbSet<ApprenticeshipDuplicateModel> ApprenticeshipDuplicate { get; }
-        DbSet<DataLockFailureModel> DataLockFailure { get; }
         DbSet<EmployerProviderPriorityModel> EmployerProviderPriority { get; }
         DbSet<ApprenticeshipPauseModel> ApprenticeshipPause { get; }
         DbSet<EarningEventModel> EarningEvent { get; }
         DbSet<EarningEventPeriodModel> EarningEventPeriod { get; }
         DbSet<EarningEventPriceEpisodeModel> EarningEventPriceEpisode { get; }
         DbSet<PaymentModelWithRequiredPaymentId> PaymentsWithRequiredPayments { get; }
+        DbSet<ReceivedDataLockEvent> ReceivedDataLockEvents { get; set; }
+        DbSet<CurrentPriceEpisode> CurrentPriceEpisodes { get; set; }
         DbSet<ProviderAdjustmentModel> ProviderAdjustments { get; }
         DatabaseFacade Database { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));

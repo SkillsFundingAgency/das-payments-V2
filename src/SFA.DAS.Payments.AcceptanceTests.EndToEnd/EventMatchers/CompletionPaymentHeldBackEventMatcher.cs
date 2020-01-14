@@ -32,8 +32,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
             var events = RequiredPaymentEventHandler.ReceivedEvents
                 .Where(e => e.Ukprn == provider.Ukprn &&
                             e.CollectionPeriod.Period == collectionPeriod.Period &&
-                            e.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
-                            e.JobId == provider.JobId).ToList();
+                            e.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear)
+                .ToList();
 
             var results = new List<CompletionPaymentHeldBackEvent>();
 
@@ -94,9 +94,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 }
             }
 
-            if(expectedPayments.Any())
-                return expectedPayments;
-            
             return expectedPayments;
 
         }

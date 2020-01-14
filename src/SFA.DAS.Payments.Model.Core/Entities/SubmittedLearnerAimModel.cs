@@ -15,7 +15,6 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public byte CollectionPeriod { get; set; }
         public short AcademicYear { get; set; }
         public DateTime IlrSubmissionDateTime { get; set; }
-        public long LearnerUln { get; set; }
         public long JobId { get; set; }
 
         public ContractType ContractType { get; set; }

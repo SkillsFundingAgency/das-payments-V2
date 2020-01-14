@@ -26,13 +26,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             return PeriodTextAccessor[periodisedValues, "Period" + period].ToString();
         }
 
-        public static ContractType[] GetContractTypesForLearningDeliveries(this LearningDelivery learningDelivery)
+        public static ContractType[] GetContractTypesForLearningDeliveries(this List<LearningDelivery> learningDeliveries)
         {
-            if (learningDelivery.LearningDeliveryPeriodisedTextValues == null) return new ContractType[0];
+            if (learningDeliveries.All(x => x.LearningDeliveryPeriodisedTextValues == null)) return new ContractType[0];
 
-            var periodisedTextValues = learningDelivery
-                .LearningDeliveryPeriodisedTextValues
-                .Where(l => l.AttributeName == "LearnDelContType").ToList();
+            var periodisedTextValues = learningDeliveries
+                .Select(x => x.LearningDeliveryPeriodisedTextValues.SingleOrDefault(l => l.AttributeName == "LearnDelContType"))
+                .ToList();
 
             if (!periodisedTextValues.Any())
             {
@@ -46,9 +46,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             for (byte i = 1; i <= earningPeriods; i++)
             {
                 var periodValues = periodisedTextValues.Select(p => p.GetPeriodTextValue(i)).ToArray();
-                var periodValue = GetContractType(periodValues[0]);
+                var periodValue = periodValues.FirstOrDefault(v => !v.Equals(GlobalConstants.Fm36NoneText, StringComparison.OrdinalIgnoreCase));
 
-                contractTypes[i - 1] = periodValue;
+                contractTypes[i - 1] = GetContractType(periodValue);
             }
 
             return contractTypes;

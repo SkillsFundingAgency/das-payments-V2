@@ -28,6 +28,4 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
     public interface IApprenticeshipResumedService : IApprenticeshipUpdatedService<UpdatedApprenticeshipResumedModel>
     {
     }
-
-
 }

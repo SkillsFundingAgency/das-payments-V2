@@ -6,7 +6,8 @@
     <Parameter Name="JobService_MinReplicaSetSize" Value="__Monitoring_JobService_MinReplicaSetSize__" />
     <Parameter Name="JobService_TargetReplicaSetSize" Value="__Monitoring_JobService_TargetReplicaSetSize__" />
     <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
-    <Parameter Name="ServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
+    <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="PaymentsConnectionString" Value="__PaymentsConnectionString__" />
     <Parameter Name="PaymentsMonitoringConnectionString" Value="__PaymentsMonitoringConnectionString__" />

@@ -1,4 +1,5 @@
-﻿@ignore - issue with maths and english
+﻿@ignore
+#issue with maths and english
 Feature: Levy learner changes aim reference for eng and maths aim and payments are reconciled - PV2-285
 		As a provider,
 		I want a levy learner, where aim reference for English and Maths is changed and payments are reconciled,

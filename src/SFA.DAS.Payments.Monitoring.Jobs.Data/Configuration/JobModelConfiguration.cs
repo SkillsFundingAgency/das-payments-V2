@@ -22,6 +22,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data.Configuration
             builder.Property(x => x.AcademicYear).HasColumnName(@"AcademicYear");
             builder.Property(x => x.CollectionPeriod).HasColumnName(@"CollectionPeriod");
             builder.Property(x => x.DataLocksCompletionTime).HasColumnName(@"DataLocksCompletionTime");
+            builder.Property(x => x.DcJobSucceeded).HasColumnName(@"DCJobSucceeded");
+            builder.Property(x => x.DcJobEndTime).HasColumnName(@"DCJobEndTime");
         }
     }
 }

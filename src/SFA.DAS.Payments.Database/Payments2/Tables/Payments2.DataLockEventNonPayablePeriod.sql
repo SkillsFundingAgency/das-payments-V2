@@ -12,3 +12,5 @@
 	LearningStartDate DATETIME2 NULL,
 
 )
+GO
+CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriod__DataLockEventId] ON [Payments2].[DataLockEventNonPayablePeriod] ([DataLockEventId]) INCLUDE ([DataLockEventNonPayablePeriodId]) WITH (ONLINE = ON);

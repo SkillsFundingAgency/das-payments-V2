@@ -19,7 +19,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         public IList<SubmittedLearnerAimModel> Build(ProcessLearnerCommand processLearnerCommand)
         {
             var intermediateAims = InitialLearnerTransform(processLearnerCommand, null);
-            return intermediateAims.Select(mapper.Map<SubmittedLearnerAimModel>).ToList();
+            var validIntermediateAims = intermediateAims.Where(x => x.ContractType != ContractType.None);
+            return validIntermediateAims.Select(mapper.Map<SubmittedLearnerAimModel>).ToList();
         }
     }
 }
