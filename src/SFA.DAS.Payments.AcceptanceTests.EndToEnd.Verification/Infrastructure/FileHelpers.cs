@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             var fileName = CreateCsvFileName(academicYear, collectionPeriod);
 
             var cbs = await submissionService.GetResultsBlobStream(fileName);
-            var buffer = Encoding.UTF8.GetBytes(csvString);
+            var buffer = Encoding.Unicode.GetBytes(csvString);
             await cbs.WriteAsync(buffer, 0, buffer.Length);
             cbs.Close();
         }

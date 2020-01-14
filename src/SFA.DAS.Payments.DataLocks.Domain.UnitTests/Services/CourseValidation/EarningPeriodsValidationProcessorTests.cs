@@ -10,6 +10,7 @@ using SFA.DAS.Payments.DataLocks.Domain.Services;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
@@ -568,5 +569,50 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 
         }
 
+        [Test]
+        public void ValidatesFunctionalSkillsWithLearningSupport()
+        {
+            apprenticeships = new List<ApprenticeshipModel>
+            {
+                new ApprenticeshipModel
+                {
+                    Id = 1,
+                    AccountId = 21,
+                    Ukprn = ukprn,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel{Id = 90},
+                    },
+                    EstimatedStartDate =new DateTime(2018, 8,1),
+                    Status = ApprenticeshipStatus.Active,
+                    TransferSendingEmployerAccountId = 999
+                }
+            };
+            var earning = new FunctionalSkillEarning
+            {
+                Type = FunctionalSkillType.LearningSupport,
+                Periods = new List<EarningPeriod>
+                {
+                    new EarningPeriod
+                    {
+                        Amount = 1,
+                        Period = 1
+                    }
+                }.AsReadOnly()
+            };
+            mocker.Mock<IFunctionalSkillValidationProcessor>()
+                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 1)))
+                .Returns(() => new CourseValidationResult
+                {
+                    MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel { Id = 90 },
+                    DataLockFailures = new List<DataLockFailure>()
+                });
+
+
+            var periods = mocker.Create<EarningPeriodsValidationProcessor>().ValidateFunctionalSkillPeriods(
+                ukprn, 1, earning.Periods.ToList(), (TransactionType)earning.Type, apprenticeships, aim, AcademicYear);
+
+            periods.ValidPeriods.Should().HaveCount(1);
+        }
     }
 }

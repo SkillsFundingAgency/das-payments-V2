@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
         }
 
-        public async Task<List<PaymentHistoryEntity>> GetPaymentHistory(ApprenticeshipKey apprenticeshipKey, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<PaymentHistoryEntity>> GetPaymentHistory(ApprenticeshipKey apprenticeshipKey, byte currentCollectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await dataContext.Payment
                 .Where(payment => apprenticeshipKey.Ukprn == payment.Ukprn &&
@@ -33,7 +33,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                             (int)apprenticeshipKey.ProgrammeType == payment.LearningAimProgrammeType &&
                             apprenticeshipKey.StandardCode == payment.LearningAimStandardCode &&
                             apprenticeshipKey.AcademicYear == payment.CollectionPeriod.AcademicYear &&
-                            apprenticeshipKey.ContractType == payment.ContractType)
+                            apprenticeshipKey.ContractType == payment.ContractType &&
+                            currentCollectionPeriod > payment.CollectionPeriod.Period)
                 .Select(payment => new PaymentHistoryEntity
                 {
                     ExternalId = payment.EventId,
@@ -42,6 +43,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     ContractType = payment.ContractType,
                     Ukprn = payment.Ukprn,
                     LearnerReferenceNumber = payment.LearnerReferenceNumber,
+                    LearnerUln = payment.LearnerUln,
                     LearnAimReference = payment.LearningAimReference,
                     LearningAimFundingLineType = payment.LearningAimFundingLineType,
                     TransactionType = (int)payment.TransactionType,
@@ -61,6 +63,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     ApprenticeshipId = payment.ApprenticeshipId,
                     ApprenticeshipPriceEpisodeId = payment.ApprenticeshipPriceEpisodeId,
                     ApprenticeshipEmployerType = payment.ApprenticeshipEmployerType,
+                    LearningStartDate = payment.LearningStartDate,
                 })
             .ToListAsync(cancellationToken);
         }
@@ -77,7 +80,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                                   apprenticeshipKey.StandardCode == payment.LearningAimStandardCode &&
                                   payment.FundingSource == FundingSourceType.CoInvestedEmployer &&
                                   apprenticeshipKey.ContractType == payment.ContractType)
-                .Select(payment => payment.Amount)
+                .Select(payment => (int)payment.Amount)
                 .DefaultIfEmpty(0)
                 .SumAsync(cancellationToken);
         }
@@ -93,7 +96,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     {ilrSubmissionDateTime} IlrSubmissionDateTime,
                     {ukprn} JobId,
                     LearnerReferenceNumber,
-                    LearnerUln,
                     LearningAimReference,
                     LearningAimFrameworkCode,
                     LearningAimPathwayCode,
@@ -103,7 +105,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                 from (
                     select
                         LearnerReferenceNumber,
-                        LearnerUln,
                         LearningAimReference,
                         LearningAimFrameworkCode,
                         LearningAimPathwayCode,
@@ -118,7 +119,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     except
 				    select
 					    LearnerReferenceNumber,
-					    LearnerUln,
 					    LearningAimReference,
 					    LearningAimFrameworkCode,
 					    LearningAimPathwayCode,
@@ -134,7 +134,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                 ) as a
                 group by
                     LearnerReferenceNumber,
-                    LearnerUln,
                     LearningAimReference,
                     LearningAimFrameworkCode,
                     LearningAimPathwayCode,
@@ -154,7 +153,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     Learner = new Learner
                     {
                         ReferenceNumber = p.LearnerReferenceNumber,
-                        Uln = p.LearnerUln
                     },
                     LearningAim = new LearningAim
                     {

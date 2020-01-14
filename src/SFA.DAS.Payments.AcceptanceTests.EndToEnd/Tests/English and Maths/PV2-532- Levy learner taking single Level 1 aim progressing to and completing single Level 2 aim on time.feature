@@ -98,19 +98,6 @@ Scenario Outline: Levy learner taking single Level 1 aim progressing to and comp
         | May/Current Academic Year | 500          | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
         | Jun/Current Academic Year | 500          | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
         | Jul/Current Academic Year | 500          | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
-		#p2
-        | Aug/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act1          |
-        | Sep/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act1          |
-        | Oct/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act1          |
-        | Nov/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act1          |
-        | Dec/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act1          |
-        | Jan/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act1          |
-        | Feb/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act1          |
-        | Mar/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act1          |
-        | Apr/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act1          |
-        | May/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act1          |
-        | Jun/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act1          |
-        | Jul/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   |                          | Act1          |
 		#p3
         | Aug/Current Academic Year | 0            | 0          | 0         | 39.25                      | 3                   |                          | Act1          |
         | Sep/Current Academic Year | 0            | 0          | 0         | 39.25                      | 3                   |                          | Act1          |

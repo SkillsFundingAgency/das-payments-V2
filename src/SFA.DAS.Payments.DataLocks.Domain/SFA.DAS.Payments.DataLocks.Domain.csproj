@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Messages\SFA.DAS.Payments.DataLocks.Messages.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Model\SFA.DAS.Payments.DataLocks.Model.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj" />
   </ItemGroup>
 

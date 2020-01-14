@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Entities;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 {
@@ -16,11 +18,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         Task DeleteTestFiles(IEnumerable<string> fileList);
 
         Task VerifyResults(IEnumerable<FileUploadJob> results,
-                           DateTimeOffset testStartDateTime,
-                           DateTimeOffset testEndDateTime,
                            Action<decimal?, decimal, decimal?> verificationAction);
 
-        Task<DateTimeOffset?> GetNewDateTime(List<long> ukprns);
     }
 
     public class TestOrchestrator : ITestOrchestrator
@@ -51,14 +50,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             return submissionService.DeleteFiles(fileList);
         }
 
-        public async Task VerifyResults(IEnumerable<FileUploadJob> results,
-            DateTimeOffset testStartDateTime, DateTimeOffset testEndDateTime, Action<decimal?, decimal, decimal?> verificationAction)
+        public async Task VerifyResults(IEnumerable<FileUploadJob> results, Action<decimal?, decimal, decimal?> verificationAction)
         {
             var resultsList = results.ToList();
             var ukprnList = resultsList.Select(r => r.Ukprn).ToList();
-
             byte collectionPeriod = (byte) resultsList.FirstOrDefault().PeriodNumber;
-
 
             var groupedResults = resultsList.GroupBy(g => g.CollectionYear);
 
@@ -66,90 +62,47 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             {
                 short academicYear = (short) groupedResult.Key;
 
-                var paymentCsv =
-                    await ExtractPaymentsData(testStartDateTime, testEndDateTime, academicYear, collectionPeriod);
+                var dasPaymentsData = await ExtractPaymentsData(results.Min(r=>r.DateTimeSubmittedUtc.Value), academicYear, collectionPeriod, ukprnList);
+                var dcEarningsYtd = await ExtractDataStoreData(academicYear, collectionPeriod, ukprnList);
 
-                var dataStoreCsv = await ExtractDataStoreData(academicYear, collectionPeriod, ukprnList);
+                MetricsCalculator metricsCalculator = new MetricsCalculator(dasPaymentsData, dcEarningsYtd);
 
-               var paymentTotals = await verificationService.GetPaymentTotals(
-                    academicYear, collectionPeriod, true,
-                    testStartDateTime,
-                    testEndDateTime);
+                var totalDcEarningsYtd = metricsCalculator.DcValues.Total;
+                var dasEarningsYtd =  metricsCalculator.PaymentsValues.DasEarnings;
 
-                decimal? totalEarningYtd =
-                    await verificationService.GetTotalEarningsYtd(academicYear, collectionPeriod, ukprnList);
 
                 var settings = await submissionService.ReadSettingsFile();
                 decimal tolerance = settings.Tolerance;
 
                 decimal? actualPercentage = null;
-                if (totalEarningYtd != 0)
+                if (dasEarningsYtd != 0)
                 {
-                    actualPercentage = paymentTotals?.missingPayments / totalEarningYtd * 100;
+                    actualPercentage = metricsCalculator.NotAccountedForRequiredPayments / dasEarningsYtd * 100;
                 }
 
-                var summaryCsv = CreateSummaryCsv(actualPercentage, tolerance, totalEarningYtd, paymentTotals);
-                var queryTimeWindowCsv = CreateQueryTimeWindowCsv(testStartDateTime, testEndDateTime);
+                await SaveCsv(new CsvGeneration(metricsCalculator).BuildCsvString(),  academicYear, collectionPeriod);
+                var earningsDifference = totalDcEarningsYtd - dasEarningsYtd;
 
-                await SaveCsv(paymentCsv, dataStoreCsv, summaryCsv, queryTimeWindowCsv,  academicYear, collectionPeriod);
-
-                var earningsDifference = totalEarningYtd - paymentTotals?.earningsYtd;
-
-                verificationAction.Invoke(actualPercentage, tolerance, earningsDifference);
+                verificationAction.Invoke(actualPercentage, tolerance, Decimal.Round( earningsDifference, 2));
             }
         }
 
-        private string CreateQueryTimeWindowCsv(DateTimeOffset testStartDateTime, DateTimeOffset testEndDateTime)
+        private async Task SaveCsv(string csvString,short academicYear,byte collectionPeriod)
         {
-            var header = "Query Start Time, Query End Time, Duration";
-            var row = $"{testStartDateTime:O},{testEndDateTime:O},{(testEndDateTime - testStartDateTime):G}";
-            return $"{header}{Environment.NewLine}{row}";
+            await FileHelpers.UploadCsvFile(academicYear, collectionPeriod, submissionService, csvString);
         }
 
-        private async Task SaveCsv(string paymentCsv, string dataStoreCsv, string summaryCsv, string queryTimeWindow,
-            short academicYear,
-            byte collectionPeriod)
+        private async Task<DcValues> ExtractDataStoreData(short academicYear, byte collectionPeriod, List<long> ukprnList)
         {
-            StringBuilder sb = new StringBuilder();
-
-            sb.AppendLine("Summary");
-            sb.Append(summaryCsv);
-            sb.AppendLine();
-            sb.AppendLine("Earnings");
-            sb.Append(dataStoreCsv);
-            sb.AppendLine();
-            sb.AppendLine("Payments");
-            sb.Append(paymentCsv);
-            sb.AppendLine();
-            sb.AppendLine("Query Time Window");
-            sb.Append(queryTimeWindow);
-
-            await FileHelpers.UploadCsvFile(academicYear, collectionPeriod, submissionService, sb.ToString());
+            return await verificationService.GetDcEarningsData(academicYear, collectionPeriod, ukprnList);
         }
 
-        private string CreateSummaryCsv(decimal? actualPercentage, decimal tolerance, decimal? totalEarningYtd, (decimal? missingPayments, decimal? earningsYtd)? paymentTotals)
+        private async Task<PaymentsValues> ExtractPaymentsData(DateTime runStartDateTime,
+            short academicYear, byte collectionPeriod, IList<long> ukprnList)
         {
-            var header = "Difference, Tolerance, Earnings (YTD) - DC, Missing Required Payments, Earnings (YTD) - DAS";
-            var row = $"{actualPercentage},{tolerance},{totalEarningYtd},{paymentTotals?.missingPayments}, {paymentTotals?.earningsYtd}";
-            return $"{header}{Environment.NewLine}{row}";
-        }
-
-        private async Task<string> ExtractDataStoreData(short academicYear, byte collectionPeriod, List<long> ukprnList)
-        {
-            return await verificationService.GetEarningsCsv(academicYear, collectionPeriod, ukprnList);
-        }
-
-        private async Task<string> ExtractPaymentsData(DateTimeOffset testStartDateTime, DateTimeOffset testEndDateTime, short academicYear, byte collectionPeriod)
-        {
-            return await verificationService.GetPaymentsDataCsv(academicYear, collectionPeriod,
+            return await verificationService.GetPaymentsData(runStartDateTime, academicYear, collectionPeriod,
                 true,
-                testStartDateTime,
-                testEndDateTime);
-        }
-
-        public async Task<DateTimeOffset?> GetNewDateTime(List<long> ukprns)
-        {
-            return await verificationService.GetLastActivityDate(ukprns);
+                ukprnList);
         }
     }
 }
