@@ -1,18 +1,19 @@
 ﻿CREATE VIEW [Payments2].[LatestSuccessfulJobs]
 AS
 
-with validJobs (DcJobId, Ukprn)
-as
-(
-Select
-max(DcJobId),
-Ukprn
-from Payments2.Job
-where status in (2,3)
-group by Ukprn
+with validJobs as (
+	Select
+		max(IlrSubmissionTime) [IlrSubmissionTime],
+		Ukprn
+	from Payments2.Job
+	where status in (2,3)
+	group by Ukprn
 )
+
 Select
-j.*
+	j.*
 from Payments2.Job j
-join validJobs vj on j.DCJobId = vj.DcJobId
+join validJobs vj 
+	on j.IlrSubmissionTime = vj.IlrSubmissionTime
+	AND J.Ukprn = VJ.Ukprn
 
