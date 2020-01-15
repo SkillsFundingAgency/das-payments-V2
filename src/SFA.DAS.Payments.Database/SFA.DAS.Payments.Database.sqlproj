@@ -118,6 +118,7 @@
     <Build Include="Metrics\Tables\Metrics.SubmissionEarningType.sql" />
     <Build Include="Metrics\Schemas\Metrics.sql" />
     <Build Include="Metrics\Tables\Metrics.ProviderEarning.sql" />
+    <Build Include="Payments2\Views\Payments2.LatestSuccessfulJobs.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />
