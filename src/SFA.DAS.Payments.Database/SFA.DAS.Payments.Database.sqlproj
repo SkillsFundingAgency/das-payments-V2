@@ -109,6 +109,7 @@
     <Build Include="Payments2\Views\Payments2.DataMatchReport.sql" />
     <Build Include="Payments2\Tables\Payments2.ReceivedDataLockEvent.sql" />
     <Build Include="Payments2\Tables\Payments2.CurrentPriceEpisode.sql" />
+    <Build Include="Payments2\Views\Payments2.LatestSuccessfulJobs.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />
