@@ -23,16 +23,18 @@ namespace SFA.DAS.Payments.Audit.EarningEventsService.Handlers
 
         public async Task Handle(SubmissionJobSucceeded message, IMessageHandlerContext context)
         {
-            try
-            {
-                await processor.Process(message, CancellationToken.None).ConfigureAwait(false);
-                logger.LogInfo($"Finished processing submission succeeded event for earning events. message: {message.ToJson()}");
-            }
-            catch (Exception ex)
-            {
-                logger.LogWarning($"Failed to remove previous submission earning events.  Error: {ex.Message}.  Ukprn: {message.Ukprn}, Collection period: {message.AcademicYear}-{message.CollectionPeriod}, Failed job: {message.JobId}.");
-                throw;
-            }
+            //try
+            //{
+            //    await processor.Process(message, CancellationToken.None).ConfigureAwait(false);
+            //    logger.LogInfo($"Finished processing submission succeeded event for earning events. message: {message.ToJson()}");
+            //}
+            //catch (Exception ex)
+            //{
+            //    logger.LogWarning($"Failed to remove previous submission earning events.  Error: {ex.Message}.  Ukprn: {message.Ukprn}, Collection period: {message.AcademicYear}-{message.CollectionPeriod}, Failed job: {message.JobId}.");
+            //    throw;
+            //}
+
+            await Task.CompletedTask;
         }
     }
 }
