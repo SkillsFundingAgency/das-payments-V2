@@ -51,7 +51,6 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                     .ConnectionString(config.ServiceBusConnectionString)
                     .Transactions(TransportTransactionMode.ReceiveOnly)
                     .RuleNameShortener(ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
-                transport.PrefetchCount(20);
                 builder.RegisterInstance(transport)
                     .As<TransportExtensions<AzureServiceBusTransport>>()
                     .SingleInstance();
