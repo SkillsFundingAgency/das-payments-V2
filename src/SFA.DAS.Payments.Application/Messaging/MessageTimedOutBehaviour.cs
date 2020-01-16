@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.Application.Messaging
             {
                 var timeoutMesssage = $"Message has timed out before processing. Locked until: {lockedUntil}, current time: {DateTime.UtcNow} ";
                 logger.LogWarning(timeoutMesssage);
-                throw new InvalidOperationException();
+                throw new InvalidOperationException(timeoutMesssage);
             }
 
             await next().ConfigureAwait(false);
