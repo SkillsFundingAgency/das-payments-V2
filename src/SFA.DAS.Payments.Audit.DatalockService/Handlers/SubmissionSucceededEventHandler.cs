@@ -21,20 +21,22 @@ namespace SFA.DAS.Payments.Audit.DataLockService.Handlers
 
         public async Task Handle(SubmissionJobSucceeded message, IMessageHandlerContext context)
         {
-            var logString = $"{typeof(SubmissionSucceededEvent).Name}. UKPRN: {message.Ukprn} {message.AcademicYear}-R{message.CollectionPeriod:D2}, ILR Submission: {message.IlrSubmissionDateTime:s}, Job ID: {message.JobId}";
+            //var logString = $"{typeof(SubmissionSucceededEvent).Name}. UKPRN: {message.Ukprn} {message.AcademicYear}-R{message.CollectionPeriod:D2}, ILR Submission: {message.IlrSubmissionDateTime:s}, Job ID: {message.JobId}";
 
-            logger.LogInfo("Handling " + logString);
+            //logger.LogInfo("Handling " + logString);
 
-            try
-            {
-                await submissionEventProcessor.ProcessSubmissionSucceededEvent(message).ConfigureAwait(false);
-                logger.LogInfo("Finished handling " + logString);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"Error handling {logString}. {ex.Message}");
-                throw;
-            }
+            //try
+            //{
+            //    await submissionEventProcessor.ProcessSubmissionSucceededEvent(message).ConfigureAwait(false);
+            //    logger.LogInfo("Finished handling " + logString);
+            //}
+            //catch (Exception ex)
+            //{
+            //    logger.LogError($"Error handling {logString}. {ex.Message}");
+            //    throw;
+            //}
+
+            await Task.CompletedTask;
         }
     }
 }

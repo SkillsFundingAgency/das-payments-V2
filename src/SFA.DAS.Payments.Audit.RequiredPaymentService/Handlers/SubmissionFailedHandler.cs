@@ -23,18 +23,17 @@ namespace SFA.DAS.Payments.Audit.RequiredPaymentService.Handlers
 
         public async Task Handle(SubmissionJobFailed message, IMessageHandlerContext context)
         {
-            //try
-            //{
-            //    await processor.Process(message, CancellationToken.None).ConfigureAwait(false);
-            //    logger.LogInfo($"Finished processing submission succeeded event for required payment events. message: {message.ToJson()}");
-            //}
-            //catch (Exception ex)
-            //{
-            //    logger.LogWarning($"Failed to remove previous submission required payment events.  Error: {ex.Message}.  Ukprn: {message.Ukprn}, Collection period: {message.AcademicYear}-{message.CollectionPeriod}, Failed job: {message.JobId}.");
-            //    throw;
-            //}
+            try
+            {
+                await processor.Process(message, CancellationToken.None).ConfigureAwait(false);
+                logger.LogInfo($"Finished processing submission succeeded event for required payment events. message: {message.ToJson()}");
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning($"Failed to remove previous submission required payment events.  Error: {ex.Message}.  Ukprn: {message.Ukprn}, Collection period: {message.AcademicYear}-{message.CollectionPeriod}, Failed job: {message.JobId}.");
+                throw;
+            }
 
-            await Task.CompletedTask;
         }
     }
 }
