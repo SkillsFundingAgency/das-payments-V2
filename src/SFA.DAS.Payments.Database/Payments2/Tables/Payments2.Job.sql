@@ -32,3 +32,7 @@ CREATE INDEX [IX_Job__Search] ON [Payments2].[Job]
 	DCJobEndTime
 )
 GO
+
+CREATE INDEX IX_Payments2_Job__IlrSubmissionTime
+ON Payments2.Job (IlrSubmissionTime)
+GO
