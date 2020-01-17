@@ -17,7 +17,6 @@ namespace SFA.DAS.Payments.Application.Messaging
 
         public override async Task Invoke(IIncomingLogicalMessageContext context, Func<Task> next)
         {
-
             Message message = null;
             try
             {
@@ -34,7 +33,7 @@ namespace SFA.DAS.Payments.Application.Messaging
                 return;
             }
 
-            var lockedUntil = message?.SystemProperties.LockedUntilUtc;
+            var lockedUntil = message.SystemProperties.LockedUntilUtc;
             if (DateTime.UtcNow > lockedUntil)
             {
                 var timeoutMessage = $"Message has timed out before processing. Locked until: {lockedUntil}, current time: {DateTime.UtcNow} ";
