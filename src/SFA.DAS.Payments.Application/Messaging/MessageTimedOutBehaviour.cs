@@ -28,7 +28,11 @@ namespace SFA.DAS.Payments.Application.Messaging
                 logger.LogError($"Unable to retrieve message: Exception {e}");
             }
 
-            if (message == null) await next();
+            if (message == null)
+            {
+                await next();
+                return;
+            }
 
             var lockedUntil = message?.SystemProperties.LockedUntilUtc;
             if (DateTime.UtcNow > lockedUntil)
