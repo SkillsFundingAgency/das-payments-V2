@@ -115,7 +115,10 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Infrastructure
             endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton((IPaymentLogger)logger));
             endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton(lifetimeScope.Resolve<IContainerScopeFactory>()));
             endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton(lifetimeScope.Resolve<IEndpointInstanceFactory>()));
-            
+
+            var recoverability = endpointConfiguration.Recoverability();
+            recoverability.Immediate(settings => { settings.NumberOfRetries(0); });
+
             return endpointConfiguration;
         }
     }
