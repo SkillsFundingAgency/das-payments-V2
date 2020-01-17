@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.Application.Messaging
             }
             catch (Exception e)
             {
-                logger.LogError($"Unable to retrieve message: Exception {e}");
+                logger.LogError($"Unable to retrieve message: Error: {e.Message}",e);
             }
 
             if (message == null)
