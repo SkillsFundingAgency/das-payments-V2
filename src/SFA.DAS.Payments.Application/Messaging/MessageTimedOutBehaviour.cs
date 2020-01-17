@@ -17,12 +17,25 @@ namespace SFA.DAS.Payments.Application.Messaging
 
         public override async Task Invoke(IIncomingLogicalMessageContext context, Func<Task> next)
         {
-            var lockedUntil = context.Extensions.Get<Message>().SystemProperties.LockedUntilUtc;
+
+            Message message = null;
+            try
+            {
+                message  = context.Extensions.Get<Message>();
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"Unable to retrieve message: Exception {e}");
+            }
+
+            if (message == null) await next();
+
+            var lockedUntil = message?.SystemProperties.LockedUntilUtc;
             if (DateTime.UtcNow > lockedUntil)
             {
-                var timeoutMesssage = $"Message has timed out before processing. Locked until: {lockedUntil}, current time: {DateTime.UtcNow} ";
-                logger.LogWarning(timeoutMesssage);
-                throw new InvalidOperationException(timeoutMesssage);
+                var timeoutMessage = $"Message has timed out before processing. Locked until: {lockedUntil}, current time: {DateTime.UtcNow} ";
+                logger.LogWarning(timeoutMessage);
+                throw new InvalidOperationException(timeoutMessage);
             }
 
             await next().ConfigureAwait(false);
