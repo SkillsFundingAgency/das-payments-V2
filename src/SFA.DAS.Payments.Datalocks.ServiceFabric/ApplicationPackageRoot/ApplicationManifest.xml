@@ -149,6 +149,7 @@
             <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
             <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
             <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
+            <Parameter Name="ApprovalsService_InstanceCount" Value="[ApprovalsService_InstanceCount]" />
           </Section>
         </Settings>
       </ConfigOverride>

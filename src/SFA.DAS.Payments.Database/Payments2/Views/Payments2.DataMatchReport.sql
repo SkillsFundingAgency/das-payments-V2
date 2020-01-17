@@ -24,3 +24,4 @@ from
 
 where
 	(dle.IsPayable = 0) and (dle.LearningAimReference = 'ZPROG001')
+	and dle.JobId IN (SELECT DCJobId FROM Payments2.LatestSuccessfulJobs)
