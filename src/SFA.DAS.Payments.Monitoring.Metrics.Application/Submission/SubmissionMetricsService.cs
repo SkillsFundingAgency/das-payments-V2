@@ -40,7 +40,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             {
                 logger.LogDebug($"Building metrics for job: {jobId}, provider: {ukprn}, Academic year: {academicYear}, Collection period: {collectionPeriod}");
                 var stopwatch = Stopwatch.StartNew();
-                var metricsTimeoutCancellationTokenSource = new CancellationTokenSource();
                 var submissionSummary = submissionSummaryFactory.Create(ukprn, jobId, academicYear, collectionPeriod);
                 var dcEarningsTask = dcDataContext.GetEarnings(ukprn, academicYear, collectionPeriod, cancellationToken);
                 var dasEarningsTask = submissionRepository.GetDasEarnings(ukprn, jobId, cancellationToken);
