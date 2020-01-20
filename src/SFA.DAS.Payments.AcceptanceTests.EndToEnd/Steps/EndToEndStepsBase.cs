@@ -101,16 +101,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected void AddNewIlr(Table table, long ukprn)
         {
-            var ilr = table.CreateSet<Training>().ToList();
-            AddTestLearners(ilr, ukprn);
+            if (!TestSession.AtLeastOneScenarioCompleted)
+            {
+                var ilr = table.CreateSet<Training>().ToList();
+                AddTestLearners(ilr, ukprn);
 
-            if (CurrentIlr == null)
-                CurrentIlr = new List<Training>();
+                if (CurrentIlr == null)
+                    CurrentIlr = new List<Training>();
 
-            if (Config.ValidateDcAndDasServices)
-                CurrentIlr.Clear();
-
-            CurrentIlr.AddRange(ilr);
+                if (Config.ValidateDcAndDasServices)
+                    CurrentIlr.Clear();
+                CurrentIlr.AddRange(ilr);
+            }
         }
 
         protected void SetCollectionPeriod(string collectionPeriod)
@@ -129,7 +131,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 ilrLearner.Ukprn = ukprn;
                 var learner = TestSession.GetLearner(ukprn, ilrLearner.LearnerId);
-                learner.Course.AimSeqNumber = (short)ilrLearner.AimSequenceNumber;
+                learner.Course.AimSeqNumber = (short) ilrLearner.AimSequenceNumber;
                 learner.Course.StandardCode = ilrLearner.StandardCode;
                 learner.Course.FundingLineType = ilrLearner.FundingLineType;
                 learner.Course.LearnAimRef = ilrLearner.AimReference;
@@ -140,9 +142,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 learner.SmallEmployer = ilrLearner.SmallEmployer;
                 learner.PostcodePrior = ilrLearner.PostcodePrior;
 
-                ilrLearner.Uln = ilrLearner.Uln != default(long) ? ilrLearner.Uln : learner.Uln;
-                //if (ilrLearner.Uln != default(long)) learner.Uln = ilrLearner.Uln
-
+                if (ilrLearner.Uln != default(long))
+                {
+                    learner.Uln = ilrLearner.Uln;
+                }
+                else
+                {
+                    ilrLearner.Uln = learner.Uln;
+                }
             });
         }
 
@@ -180,7 +187,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     throw new Exception("There is an aim without a matching learner");
                 }
 
-                learner.Aims.Clear();
+                if (learner.Aims.All(x => x.CompletionStatus != CompletionStatus.PlannedBreak))
+                {
+                    learner.Aims.Clear();
+                }
 
                 learner.Aims.AddRange(learnerAims);
             }
@@ -273,7 +283,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (existingEmployer == null)
             {
-                DataContext.LevyAccount.Add(employer.ToModel());
+                await DataContext.LevyAccount.AddAsync(employer.ToModel());
                 Console.WriteLine($"Employer account created. Id:{employer.AccountId}, Balance:{employer.Balance}, {DateTime.Now}");
             }
             else
@@ -370,9 +380,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 InstalmentAmount = 200M,
                 NumberOfInstalments = 12,
                 ReportingAimFundingLineType = learnerTraining.FundingLineType,
-                ApprenticeshipEmployerType = providerPayment.IsEmployerLevyPayer ? ApprenticeshipEmployerType.Levy:ApprenticeshipEmployerType.NonLevy,
+                ApprenticeshipEmployerType = providerPayment.IsEmployerLevyPayer ? ApprenticeshipEmployerType.Levy : ApprenticeshipEmployerType.NonLevy,
                 ApprenticeshipId = apprenticeshipId,
                 ApprenticeshipPriceEpisodeId = priceEpisodeId,
+                LearningStartDate = learnerTraining.StartDate.ToNullableDate(),
             };
         }
 
@@ -424,8 +435,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 else // maths & english & Learning support don't use price episodes
                 {
                     learningDelivery.LearningDeliveryPeriodisedValues = SetPeriodisedValues<LearningDeliveryPeriodisedValues>(aim, earnings);
-                    learningDelivery.LearningDeliveryPeriodisedTextValues = SetPeriodisedTextValues(aim, earnings);
                 }
+
+                learningDelivery.LearningDeliveryPeriodisedTextValues = SetPeriodisedTextValues(aim, earnings);
             }
         }
 
@@ -515,7 +527,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             for (var i = 0; i < orderedPriceEpisodes.Count; i++)
             {
                 var currentPriceEpisode = priceEpisodesForAim[i];
-              
+
                 if (aim.ActualDurationAsTimespan.HasValue)
                 {
                     currentPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate =
@@ -661,32 +673,46 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 aimPeriodisedValues.Add(sfaContributionPeriodisedValue);
             }
 
-            foreach (var earning in earnings.Where(e => !e.AimSequenceNumber.HasValue ||
-                                                        e.AimSequenceNumber == aim.AimSequenceNumber))
+            var currentEarnings = earnings.Where(e => !e.AimSequenceNumber.HasValue ||
+                                                  e.AimSequenceNumber == aim.AimSequenceNumber).ToList();
+
+            if (currentEarnings.Any())
             {
-                var period = earning.DeliveryCalendarPeriod;
-                foreach (var earningValue in earning.Values)
+                foreach (var earning in currentEarnings)
                 {
-                    if (!aim.IsMainAim && EnumHelper.IsOnProgType(earningValue.Key))
+                    var period = earning.DeliveryCalendarPeriod;
+                    foreach (var earningValue in earning.Values)
                     {
-                        continue;
+                        if (!aim.IsMainAim && EnumHelper.IsOnProgType(earningValue.Key))
+                        {
+                            continue;
+                        }
+
+                        var earningKey = earningValue.Key.ToAttributeName(aim.IsMainAim);
+
+                        var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningKey);
+                        if (periodisedValues == null)
+                        {
+                            periodisedValues = new T { AttributeName = earningKey };
+                            aimPeriodisedValues.Add(periodisedValues);
+                        }
+
+                        SetPeriodValue(period, periodisedValues, earningValue.Value);
                     }
 
-                    var earningKey = earningValue.Key.ToAttributeName(aim.IsMainAim);
-
-                    var periodisedValues = aimPeriodisedValues.SingleOrDefault(v => v.AttributeName == earningKey);
-                    if (periodisedValues == null)
+                    if (sfaContributionPeriodisedValue != null)
                     {
-                        periodisedValues = new T { AttributeName = earningKey };
-                        aimPeriodisedValues.Add(periodisedValues);
+                        SetPeriodValue(period, sfaContributionPeriodisedValue, earning.SfaContributionPercentage.ToPercent());
                     }
-
-                    SetPeriodValue(period, periodisedValues, earningValue.Value);
                 }
-
-                if (sfaContributionPeriodisedValue != null)
+            }
+            else
+            {
+                var periodisedValues = new T { AttributeName = "MathEngOnProgPayment" };
+                aimPeriodisedValues.Add(periodisedValues);
+                for (byte i = 1; i < 13; i++)
                 {
-                    SetPeriodValue(period, sfaContributionPeriodisedValue, earning.SfaContributionPercentage.ToPercent());
+                    SetPeriodValue(i, periodisedValues, 0);
                 }
             }
 
@@ -698,18 +724,30 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var aimPeriodisedTextValues = new List<LearningDeliveryPeriodisedTextValues>();
             const string learningDeliveryContractType = "LearnDelContType";
             const string learningDeliveryFundingLineType = "FundLineType";
+            var currentEarnings = earnings.Where(e => !e.AimSequenceNumber.HasValue ||
+                                                      e.AimSequenceNumber == aim.AimSequenceNumber).ToList();
 
-            foreach (var earning in earnings.Where(e => !e.AimSequenceNumber.HasValue ||
-                                                        e.AimSequenceNumber == aim.AimSequenceNumber))
+            if (currentEarnings.Any())
             {
-                var period = earning.DeliveryCalendarPeriod;
-                foreach (var earningValue in earning.Values)
+                foreach (var earning in currentEarnings)
                 {
-                    if (MathsAndEnglishTransactionTypes().Contains(earningValue.Key))
+                    var period = earning.DeliveryCalendarPeriod;
+                    foreach (var earningValue in earning.Values)
                     {
-                        AddPeriodisedTextAttributes(aimPeriodisedTextValues, learningDeliveryContractType, period, GetContractTypeDescription(earning.ContractType));
-                        AddPeriodisedTextAttributes(aimPeriodisedTextValues, learningDeliveryFundingLineType, period, aim.FundingLineType);
+                        if (MathsAndEnglishTransactionTypes().Contains(earningValue.Key))
+                        {
+                            AddPeriodisedTextAttributes(aimPeriodisedTextValues, learningDeliveryContractType, period, GetContractTypeDescription(earning.ContractType));
+                            AddPeriodisedTextAttributes(aimPeriodisedTextValues, learningDeliveryFundingLineType, period, aim.FundingLineType);
+                        }
                     }
+                }
+            }
+            else
+            {
+                for (byte i = 1; i < 13; i++)
+                {
+                    AddPeriodisedTextAttributes(aimPeriodisedTextValues, learningDeliveryContractType, i, "None");
+                    AddPeriodisedTextAttributes(aimPeriodisedTextValues, learningDeliveryFundingLineType, i, "None");
                 }
             }
 
@@ -718,7 +756,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private static void AddPeriodisedTextAttributes(List<LearningDeliveryPeriodisedTextValues> aimPeriodisedTextValues,
             string attributeName,
-            byte period, 
+            byte period,
             string valueToSet)
         {
             var periodisedTextValues = aimPeriodisedTextValues.SingleOrDefault(v => v.AttributeName == attributeName);
@@ -927,7 +965,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 expectedPayments = SetProviderPaymentAccountIds(ilr, expectedPayments);
             }
-          
+
             var matcher = new ProviderPaymentEventMatcher(provider, CurrentCollectionPeriod, TestSession, expectedPayments);
             await WaitForIt(() => matcher.MatchPayments(), "Provider Payment event check failure");
         }
@@ -1050,7 +1088,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 .ToList();
 
             var providerCurrentIlr = CurrentIlr?.Where(c => c.Ukprn == provider.Ukprn).ToList();
-            
+
             var providerLearners = TestSession.Learners?.Where(c => c.Ukprn == provider.Ukprn).ToList();
             var contractType = GetContractType(expectedPayments, CurrentCollectionPeriod, providerCurrentIlr,
                 providerLearners);
@@ -1123,6 +1161,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings,
                 TestSession, CurrentCollectionPeriod, learners);
             await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
+        }
+
+        protected async Task GeneratedAndValidateEarningsOnRestart(Table table, Provider provider)
+        {
+            var earnings = CreateEarnings(table, provider.Ukprn);
+            var learners = new List<FM36Learner>();
+            var providerCurrentIlrs = CurrentIlr?.Where(o => o.Ukprn == provider.Ukprn).ToList();
+
+            await GenerateEarnings(table, provider, earnings, learners, providerCurrentIlrs).ConfigureAwait(false);
         }
 
         protected async Task GenerateEarnings(Table table, Provider provider, List<Earning> earnings, List<FM36Learner> learners, List<Training> providerCurrentIlrs)
@@ -1320,7 +1367,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected async Task AddLevyAccountPriorities(Table table, TestSession testSession, CollectionPeriod currentCollectionPeriod, IPaymentsDataContext dataContext)
         {
-            if(EmployerProviderPriorities == null) EmployerProviderPriorities = new List<EmployerProviderPriorityModel>();
+            if (EmployerProviderPriorities == null) EmployerProviderPriorities = new List<EmployerProviderPriorityModel>();
 
             var priorities = table.CreateSet<ProviderPriority>()
                 .Select(x =>

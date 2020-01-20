@@ -36,5 +36,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Model.Entities
         public long? ApprenticeshipPriceEpisodeId { get; set; }
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
         public string ReportingAimFundingLineType { get; set; }
+        public long LearnerUln { get; set; }
     }
 }

@@ -47,7 +47,8 @@
  #| Funding Adjustment For Prior Learning |
  #| n/a                                   |
  #| 42% for remaining period|                                 | n/a                      |
-
+ @ignore
+ # Requires review by Test/BA to review as this refers to Next Academic year earnings which is incorrect.
 Feature:  Levy learner with English & Maths and prior funding adjustment and planned break in learning - PV2-540
 		As a provider,
 		I want a Levy learner with English & Maths aim, where the planned duration is the same as the core program and 

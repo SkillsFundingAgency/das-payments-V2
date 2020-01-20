@@ -64,7 +64,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 SubmissionDate = DateTime.UtcNow
             };
 
-            var learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries[0]);
+            var learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes, fm36Learner.LearningDeliveries);
 
             // act
             var earningEvent = mapper.Map<IntermediateLearningAim, ApprenticeshipContractType1EarningEvent>(learningAim);

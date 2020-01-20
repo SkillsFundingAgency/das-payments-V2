@@ -8,7 +8,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
     public class IntermediateLearningAim
     {
-        public LearningDelivery Aim { get; protected set; }
+        public List<LearningDelivery> Aims { get; protected set; }
         public List<PriceEpisode> PriceEpisodes { get; protected set; } = new List<PriceEpisode>();
         public FM36Learner Learner { get; protected set; }
         public long Ukprn { get; protected set; }
@@ -21,10 +21,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         
         public IntermediateLearningAim(
             ProcessLearnerCommand command, 
-            IEnumerable<PriceEpisode> priceEpisodes, 
-            LearningDelivery aim)
+            IEnumerable<PriceEpisode> priceEpisodes,
+            List<LearningDelivery> aims)
         {
-            Aim = aim;
+            Aims = aims;
             PriceEpisodes.AddRange(FilterPriceEpisodes(priceEpisodes, command.CollectionYear));
             Learner = command.Learner;
             Ukprn = command.Ukprn;
@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
         protected IntermediateLearningAim(
             FM36Learner learner, 
-            LearningDelivery aim,
+            List<LearningDelivery> aims,
             IEnumerable<PriceEpisode> priceEpisodes, 
             long ukprn, 
             short collectionYear,
@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             string ilrFileName,
             long jobId)
         {
-            Aim = aim;
+            Aims = aims;
             Learner = learner;
             PriceEpisodes.AddRange(FilterPriceEpisodes(priceEpisodes, collectionYear));
             Ukprn = ukprn;
@@ -80,7 +80,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
         public IntermediateLearningAim CopyReplacingPriceEpisodes(IEnumerable<PriceEpisode> priceEpisodes)
         {
-            var copy = new IntermediateLearningAim(Learner, Aim, priceEpisodes, Ukprn, 
+            var copy = new IntermediateLearningAim(Learner, Aims, priceEpisodes, Ukprn, 
                 AcademicYear, CollectionPeriod, IlrSubmissionDateTime, IlrFileName, JobId);
             return copy;
         }

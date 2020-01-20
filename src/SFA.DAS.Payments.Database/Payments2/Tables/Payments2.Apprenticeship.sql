@@ -49,8 +49,11 @@ CREATE NONCLUSTERED INDEX [IX_Apprenticeship_Uln] ON [Payments2].[Apprenticeship
 )
 GO
 
-CREATE NONCLUSTERED INDEX [IX_Apprenticeship_AccountId] ON [Payments2].[Apprenticeship]
-(
-	[AccountId] ASC
-)
-GO
+
+CREATE NONCLUSTERED INDEX [IX_Apprenticeship__Search] ON [Payments2].[Apprenticeship] 
+([AccountId]) 
+INCLUDE ([AgreedOnDate], [AgreementId], [ApprenticeshipEmployerType], [EstimatedEndDate], 
+	[EstimatedStartDate], [FrameworkCode], [IsLevyPayer], [LegalEntityName], [PathwayCode], 
+	[Priority], [ProgrammeType], [StandardCode], [Status], [StopDate], [TransferSendingEmployerAccountId], 
+	[Ukprn], [Uln]) 
+WITH (ONLINE = ON)
