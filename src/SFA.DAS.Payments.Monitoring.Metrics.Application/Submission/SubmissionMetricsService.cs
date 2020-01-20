@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 var heldBackCompletionAmountsTask = submissionRepository.GetHeldBackCompletionPaymentsTotal(ukprn, jobId, cancellationToken);
                 var yearToDateAmountsTask = submissionRepository.GetYearToDatePaymentsTotal(ukprn, academicYear, collectionPeriod, cancellationToken);
                 var dataTask = Task.WhenAll(dcEarningsTask, dasEarningsTask, dataLocksTask, dataLocksTotalTask, dataLocksAlreadyPaid, requiredPaymentsTask, heldBackCompletionAmountsTask, yearToDateAmountsTask);
-                var waitTask = Task.Delay(TimeSpan.FromMinutes(4), cancellationToken);
+                var waitTask = Task.Delay(TimeSpan.FromSeconds(270), cancellationToken);
                 Task.WaitAny(dataTask, waitTask);
                 cancellationToken.ThrowIfCancellationRequested();
                 if (!dataTask.IsCompleted)
