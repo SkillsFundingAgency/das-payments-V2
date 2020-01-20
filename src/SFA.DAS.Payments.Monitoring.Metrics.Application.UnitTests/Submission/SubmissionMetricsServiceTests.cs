@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             dasEarnings = TestsHelper.DefaultDasEarnings;
             dataLocks = TestsHelper.DefaultDataLockedEarnings;
             requiredPayments = TestsHelper.DefaultRequiredPayments;
-            totalDataLockedEarnings = 3000;
+            totalDataLockedEarnings = TestsHelper.DefaultDataLockedTotal;
             moqer.Mock<IDcMetricsDataContext>()
                 .Setup(ctx => ctx.GetEarnings(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(dcEarnings);
@@ -65,6 +65,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 .Setup(repo => repo.GetDataLockedEarningsTotal(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(TestsHelper.DefaultDataLockedTotal);
             moqer.Mock<ISubmissionMetricsRepository>()
+                .Setup(repo => repo.GetAlreadyPaidDataLockedEarnings(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(TestsHelper.AlreadyPaidDataLockedEarnings);
+            moqer.Mock<ISubmissionMetricsRepository>()
                 .Setup(repo => repo.GetRequiredPayments(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(requiredPayments);
             moqer.Mock<ISubmissionMetricsRepository>()
@@ -73,6 +76,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             moqer.Mock<ISubmissionMetricsRepository>()
                 .Setup(repo => repo.GetYearToDatePaymentsTotal(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(TestsHelper.DefaultYearToDateAmounts);
+
         }
 
         [Test]
@@ -93,7 +97,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             await service.BuildMetrics(1234, 123, 1920, 1, CancellationToken.None).ConfigureAwait(false);
 
             moqer.Mock<ISubmissionSummary>()
-                .Verify(x => x.AddDataLockTypeCounts(It.Is<decimal>(total => total == totalDataLockedEarnings), It.Is<DataLockTypeCounts>(amounts => amounts == dataLocks)), Times.Once);
+                .Verify(x => x.AddDataLockTypeCounts(It.Is<decimal>(total => total == totalDataLockedEarnings), It.Is<DataLockTypeCounts>(amounts => amounts == dataLocks), It.Is<decimal>(amount => amount == TestsHelper.AlreadyPaidDataLockedEarnings)), Times.Once);
 
         }
 
