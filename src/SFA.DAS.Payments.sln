@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.29102.190
+VisualStudioVersion = 16.0.29409.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Core", "SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj", "{F6E38368-C397-488B-B041-D3E8423C1CE1}"
 EndProject
@@ -297,6 +297,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.Metrics.SubmissionService", "SFA.DAS.Payments.Monitoring.Metrics.SubmissionService\SFA.DAS.Payments.Monitoring.Metrics.SubmissionService.csproj", "{48A722F8-A5FA-4A67-B75F-C93D10C203F1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B220F0FC-8C87-4F8A-9479-D20D9AC11204}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests", "SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests\SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests.csproj", "{A444122D-E369-44D9-8BBC-8DB902E8B00B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1262,6 +1264,14 @@ Global
 		{48A722F8-A5FA-4A67-B75F-C93D10C203F1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{48A722F8-A5FA-4A67-B75F-C93D10C203F1}.Release|x64.ActiveCfg = Release|Any CPU
 		{48A722F8-A5FA-4A67-B75F-C93D10C203F1}.Release|x64.Build.0 = Release|Any CPU
+		{A444122D-E369-44D9-8BBC-8DB902E8B00B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A444122D-E369-44D9-8BBC-8DB902E8B00B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A444122D-E369-44D9-8BBC-8DB902E8B00B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A444122D-E369-44D9-8BBC-8DB902E8B00B}.Debug|x64.Build.0 = Debug|Any CPU
+		{A444122D-E369-44D9-8BBC-8DB902E8B00B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A444122D-E369-44D9-8BBC-8DB902E8B00B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A444122D-E369-44D9-8BBC-8DB902E8B00B}.Release|x64.ActiveCfg = Release|Any CPU
+		{A444122D-E369-44D9-8BBC-8DB902E8B00B}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1389,6 +1399,7 @@ Global
 		{0EE35B8C-7F42-40DD-A609-9C47305FCAAA} = {F3F3B467-DCBE-4D11-9BD1-08D628E2C1BE}
 		{48A722F8-A5FA-4A67-B75F-C93D10C203F1} = {0EE35B8C-7F42-40DD-A609-9C47305FCAAA}
 		{B220F0FC-8C87-4F8A-9479-D20D9AC11204} = {48AD8C3B-C2ED-4B11-AD1E-1FD0352BD534}
+		{A444122D-E369-44D9-8BBC-8DB902E8B00B} = {7B48662F-1F86-461C-8638-AC1DDCE3B8B4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E9E6D1E-3C3C-41C9-AED4-9B6DC9118F1F}
