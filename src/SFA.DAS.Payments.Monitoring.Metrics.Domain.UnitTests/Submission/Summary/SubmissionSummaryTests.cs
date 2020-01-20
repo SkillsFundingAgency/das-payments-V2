@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
 
             var summary = TestsHelper.DefaultSubmissionSummary;
             summary.AddEarnings(dcEarnings, dasEarnings);
-            summary.AddDataLockTypeCounts(TestsHelper.DefaultDataLockedTotal, dataLocks);
+            summary.AddDataLockTypeCounts(TestsHelper.DefaultDataLockedTotal, dataLocks, TestsHelper.AlreadyPaidDataLockedEarnings);
             summary.AddRequiredPayments(requiredPayments);
             summary.AddHeldBackCompletionPayments(heldBackCompletionPayments);
             summary.AddYearToDatePaymentTotals(TestsHelper.DefaultYearToDateAmounts);
@@ -68,9 +68,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
         public void Calculates_Correct_DataLocked_Earnings_Totals()
         {
             var summary = GetSubmissionSummary;
-            summary.AddDataLockTypeCounts(TestsHelper.DefaultDataLockedEarnings.Total, TestsHelper.DefaultDataLockedEarnings);
+            summary.AddDataLockTypeCounts(TestsHelper.DefaultDataLockedEarnings.Total, TestsHelper.DefaultDataLockedEarnings, TestsHelper.AlreadyPaidDataLockedEarnings);
             var metrics = summary.GetMetrics();
-            metrics.DataLockedEarnings.Should().Be(TestsHelper.DefaultDataLockedEarnings.Total);
+            metrics.DataLockedEarnings.Should().Be(TestsHelper.DefaultDataLockedTotal - TestsHelper.AlreadyPaidDataLockedEarnings);
             metrics.DataLockMetrics.Count.Should().Be(1);
             metrics.DataLockMetrics.Sum(x => x.Amounts.Total).Should()
                 .Be(TestsHelper.DefaultDataLockedEarnings.Total);
@@ -239,7 +239,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
             metrics.SubmissionMetrics.ContractType1.Should().Be(
                 requiredPayments.GetTotal(ContractType.Act1) + 
                 TestsHelper.DefaultYearToDateAmounts.ContractType1 + 
-                TestsHelper.DefaultDataLockedTotal +
+                (TestsHelper.DefaultDataLockedTotal - TestsHelper.AlreadyPaidDataLockedEarnings) +
                 heldBackCompletionPayments.ContractType1);
             metrics.SubmissionMetrics.ContractType2.Should().Be(
                 requiredPayments.GetTotal(ContractType.Act2) +

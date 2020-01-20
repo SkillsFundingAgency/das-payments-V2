@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
     public interface ISubmissionSummary
     {
         void AddEarnings(List<TransactionTypeAmounts> dcEarningTransactionTypeAmounts, List<TransactionTypeAmounts> dasEarningTransactionTypeAmounts);
-        void AddDataLockTypeCounts(decimal total, DataLockTypeCounts dataLockedCounts);
+        void AddDataLockTypeCounts(decimal total, DataLockTypeCounts dataLockedCounts, decimal alreadyPaidDataLockedEarnings);
         void AddHeldBackCompletionPayments(ContractTypeAmounts heldBackCompletionPaymentAmounts);
         void AddRequiredPayments(List<TransactionTypeAmounts> requiredPaymentAmounts);
         void AddYearToDatePaymentTotals(ContractTypeAmounts yearToDateAmounts);
@@ -27,6 +27,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
         private readonly List<TransactionTypeAmounts> dasEarnings;
         private DataLockTypeCounts dataLocked;
         private decimal actualTotalDataLocked;
+        private decimal alreadyPaidDataLocked;
         private ContractTypeAmounts heldBackCompletionPayments;
         private List<TransactionTypeAmounts> requiredPayments;
         private ContractTypeAmounts yearToDatePayments;
@@ -53,10 +54,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
             dasEarnings.AddRange(dasEarningTransactionTypeAmounts);
         }
 
-        public virtual void AddDataLockTypeCounts(decimal total, DataLockTypeCounts dataLockedCounts)
+        public virtual void AddDataLockTypeCounts(decimal total, DataLockTypeCounts dataLockedCounts, decimal alreadyPaidDataLockedEarnings)
         {
             actualTotalDataLocked = total;
             dataLocked = dataLockedCounts ?? throw new ArgumentNullException(nameof(dataLockedCounts));
+            alreadyPaidDataLocked = alreadyPaidDataLockedEarnings;
         }
 
         public virtual void AddHeldBackCompletionPayments(ContractTypeAmounts heldBackCompletionPaymentAmounts)
@@ -83,7 +85,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
                 JobId = JobId,
                 Ukprn = Ukprn,
                 DcEarnings = GetDcEarnings(),
-                DataLockedEarnings = actualTotalDataLocked,
+                DataLockedEarnings = actualTotalDataLocked - alreadyPaidDataLocked,
                 DataLockMetrics = new List<DataLockCountsModel> { new DataLockCountsModel { Amounts = dataLocked } },
                 HeldBackCompletionPayments = heldBackCompletionPayments,
                 YearToDatePayments = yearToDatePayments,

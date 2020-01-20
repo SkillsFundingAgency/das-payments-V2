@@ -20,6 +20,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         Task<DataLockTypeCounts> GetDataLockedEarnings(long ukprn, long jobId, CancellationToken cancellationToken);
         Task<decimal> GetDataLockedEarningsTotal(long ukprn, long jobId, CancellationToken cancellationToken);
         Task<ContractTypeAmounts> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId, CancellationToken cancellationToken);
+        Task<decimal> GetAlreadyPaidDataLockedEarnings(long ukprn, long jobId, CancellationToken cancellationToken);
         Task<List<TransactionTypeAmounts>> GetRequiredPayments(long ukprn, long jobId, CancellationToken cancellationToken);
 
         Task<ContractTypeAmounts> GetYearToDatePaymentsTotal(long ukprn, short academicYear,
@@ -120,6 +121,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         }
 
         public async Task<decimal> GetDataLockedEarningsTotal(long ukprn, long jobId, CancellationToken cancellationToken)
+        {
+            return await paymentsDataContext.DataLockEventNonPayablePeriod
+                .Where(period => period.Amount != 0 && period.DataLockEvent.Ukprn == ukprn && period.DataLockEvent.JobId == jobId)
+                .SumAsync(period => period.Amount, cancellationToken);
+        }
+
+        public async Task<decimal> GetAlreadyPaidDataLockedEarnings(long ukprn, long jobId, CancellationToken cancellationToken)
         {
             return await paymentsDataContext.DataLockEventNonPayablePeriod
                 .Where(period => period.Amount != 0 && period.DataLockEvent.Ukprn == ukprn && period.DataLockEvent.JobId == jobId)

@@ -100,7 +100,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
                 TransactionType15 = 200,
                 TransactionType16 = 200,            }
         };
-        public static decimal DefaultDataLockedTotal => 3000;
+        public static decimal DefaultDataLockedTotal => 4000;
+        public static decimal AlreadyPaidDataLockedEarnings => 1000;
 
         public static DataLockTypeCounts DefaultDataLockedEarnings => new DataLockTypeCounts
         {
