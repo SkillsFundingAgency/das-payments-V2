@@ -46,12 +46,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 var dasEarningsTask = submissionRepository.GetDasEarnings(ukprn, jobId, cancellationToken);
                 var dataLocksTask = submissionRepository.GetDataLockedEarnings(ukprn, jobId, cancellationToken);
                 var dataLocksTotalTask = submissionRepository.GetDataLockedEarningsTotal(ukprn, jobId, cancellationToken);
-                var dataLocksAllreadyPaid =
+                var dataLocksAlreadyPaid =
                     submissionRepository.GetAlreadyPaidDataLockedEarnings(ukprn, jobId, cancellationToken);
                 var requiredPaymentsTask = submissionRepository.GetRequiredPayments(ukprn, jobId, cancellationToken);
                 var heldBackCompletionAmountsTask = submissionRepository.GetHeldBackCompletionPaymentsTotal(ukprn, jobId, cancellationToken);
                 var yearToDateAmountsTask = submissionRepository.GetYearToDatePaymentsTotal(ukprn, academicYear, collectionPeriod, cancellationToken);
-                var dataTask = Task.WhenAll(dcEarningsTask, dasEarningsTask, dataLocksTask, dataLocksTotalTask, dataLocksAllreadyPaid, requiredPaymentsTask, heldBackCompletionAmountsTask, yearToDateAmountsTask);
+                var dataTask = Task.WhenAll(dcEarningsTask, dasEarningsTask, dataLocksTask, dataLocksTotalTask, dataLocksAlreadyPaid, requiredPaymentsTask, heldBackCompletionAmountsTask, yearToDateAmountsTask);
                 var waitTask = Task.Delay(TimeSpan.FromMinutes(4), cancellationToken);
                 Task.WaitAny(dataTask, waitTask);
                 cancellationToken.ThrowIfCancellationRequested();
@@ -60,7 +60,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 var dataDuration = stopwatch.ElapsedMilliseconds;
                 logger.LogDebug($"finished getting data from databases for job: {jobId}, ukprn: {ukprn}. Took: {dataDuration}ms.");
                 submissionSummary.AddEarnings(dcEarningsTask.Result, dasEarningsTask.Result);
-                submissionSummary.AddDataLockTypeCounts(dataLocksTotalTask.Result, dataLocksTask.Result, dataLocksAllreadyPaid.Result);
+                submissionSummary.AddDataLockTypeCounts(dataLocksTotalTask.Result, dataLocksTask.Result, dataLocksAlreadyPaid.Result);
                 submissionSummary.AddRequiredPayments(requiredPaymentsTask.Result);
                 submissionSummary.AddHeldBackCompletionPayments(heldBackCompletionAmountsTask.Result);
                 submissionSummary.AddYearToDatePaymentTotals(yearToDateAmountsTask.Result);

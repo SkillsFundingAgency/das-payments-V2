@@ -129,9 +129,36 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
         public async Task<decimal> GetAlreadyPaidDataLockedEarnings(long ukprn, long jobId, CancellationToken cancellationToken)
         {
-            return await paymentsDataContext.DataLockEventNonPayablePeriod
-                .Where(period => period.Amount != 0 && period.DataLockEvent.Ukprn == ukprn && period.DataLockEvent.JobId == jobId)
-                .SumAsync(period => period.Amount, cancellationToken);
+            return await paymentsDataContext.Payment
+                       .Join(paymentsDataContext.DataLockEventNonPayablePeriod,
+                           payment => new
+                           {
+                               payment.LearnerReferenceNumber,
+                               payment.LearningAimReference,
+                               payment.LearningAimProgrammeType,
+                               payment.LearningAimStandardCode,
+                               payment.LearningAimFrameworkCode,
+                               payment.LearningAimPathwayCode,
+                               payment.DeliveryPeriod,
+                               payment.CollectionPeriod.AcademicYear,
+                               payment.Ukprn
+                           },
+                           nonPayablePeriod => new
+                           {
+                               nonPayablePeriod.DataLockEvent.LearnerReferenceNumber,
+                               nonPayablePeriod.DataLockEvent.LearningAimReference,
+                               nonPayablePeriod.DataLockEvent.LearningAimProgrammeType,
+                               nonPayablePeriod.DataLockEvent.LearningAimStandardCode,
+                               nonPayablePeriod.DataLockEvent.LearningAimFrameworkCode,
+                               nonPayablePeriod.DataLockEvent.LearningAimPathwayCode,
+                               nonPayablePeriod.DeliveryPeriod,
+                               nonPayablePeriod.DataLockEvent.AcademicYear,
+                               nonPayablePeriod.DataLockEvent.Ukprn
+                           },
+                           (payment, nonPayablePeriod) => new
+                           { payment.Amount, nonPayablePeriod.DataLockEvent.JobId, payment.ContractType })
+                       .Where(joined => joined.ContractType == ContractType.Act1 && joined.JobId == jobId)
+                       .SumAsync(joined => joined.Amount, cancellationToken);
         }
 
         public async Task<ContractTypeAmounts> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId, CancellationToken cancellationToken)

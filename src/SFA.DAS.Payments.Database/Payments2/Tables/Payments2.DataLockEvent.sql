@@ -22,9 +22,14 @@
 	DataLockSourceId TINYINT NOT NULL CONSTRAINT DF_DataLockEvent__DataLockSourceId DEFAULT (1),
 	JobId  BIGINT NOT NULL,
 	EventTime DATETIMEOFFSET NOT NULL,
-	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_DataLockEvent__CreationDate DEFAULT (SYSDATETIMEOFFSET())
+	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_DataLockEvent__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
+
 )
 
 GO
 
 CREATE INDEX [IX_DataLockEvent_Submission] ON [Payments2].[DataLockEvent] ([Ukprn], [AcademicYear], [CollectionPeriod], [IlrSubmissionDateTime])
+GO
+Create index IX_DataLockEvent__Metrics on Payments2.DataLockEvent (Jobid) include (EventId, LearnerReferenceNumber, 
+	LearningAimReference, LearningAimProgrammeType, LearningAimStandardCode, LearningAimPathwayCode,[AcademicYear], Ukprn)
+Go
