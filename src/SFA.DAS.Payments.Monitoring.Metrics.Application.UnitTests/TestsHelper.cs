@@ -7,14 +7,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests
 {
     public class TestsHelper
     {
-        public static SubmissionSummary DefaultSubmissionSummary => new SubmissionSummary(1234, 123, 1, 1920);
-        public static (List<TransactionTypeAmounts> DcEarnings, List<TransactionTypeAmounts> DasEarnings)
-            DefaultEarnings()
-        {
-            return (DcEarnings: DefaultDcEarnings, DasEarnings: DefaultDasEarnings);
-        }
-
-
         public static List<TransactionTypeAmounts> DefaultDcEarnings =>
             new List<TransactionTypeAmounts>
             {
