@@ -16,6 +16,7 @@
     <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.2.162" />
     <PackageReference Include="NServiceBus" Version="7.1.5" />
     <PackageReference Include="NServiceBus.Autofac" Version="7.0.0" />
+    <PackageReference Include="NServiceBus.Metrics" Version="3.0.0" />
     <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="2.1.0" />
     <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.4.0" />
     <PackageReference Include="SFA.DAS.CommitmentsV2.Messages" Version="4.1.70" />
