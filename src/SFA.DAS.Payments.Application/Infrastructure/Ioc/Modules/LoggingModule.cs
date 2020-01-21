@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                     var versionInfo = c.Resolve<IVersionInfo>();
                     var configHelper = c.Resolve<IConfigurationHelper>();
 
-                    if (!Enum.TryParse(configHelper.GetSettingOrDefault("LogLevel", "Information"),  out LogLevel logLevel))
+                    if (!Enum.TryParse(configHelper.GetSettingOrDefault("LogLevel", "Information"), out LogLevel logLevel))
                     {
                         logLevel = LogLevel.Information;
                     }
@@ -47,11 +47,11 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                     {
                         ApplicationLoggerOutputSettingsCollection = new List<IApplicationLoggerOutputSettings>
                         {
-                            new MsSqlServerApplicationLoggerOutputSettings
-                            {
-                                MinimumLogLevel = logLevel,
-                                ConnectionString = loggerOptions.LoggerConnectionString,
-                            },
+                            //new MsSqlServerApplicationLoggerOutputSettings
+                            //{
+                            //    MinimumLogLevel = logLevel,
+                            //    ConnectionString = loggerOptions.LoggerConnectionString,
+                            //},
 
                             new ConsoleApplicationLoggerOutputSettings
                             {
