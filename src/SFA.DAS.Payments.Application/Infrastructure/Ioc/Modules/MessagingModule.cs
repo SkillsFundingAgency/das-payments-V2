@@ -1,12 +1,19 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using Autofac;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.ApplicationInsights.Extensibility;
 using NServiceBus;
 using NServiceBus.Features;
 using NServiceBus.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Messaging.Telemetry;
 using SFA.DAS.Payments.Core.Configuration;
@@ -72,6 +79,36 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                     delayed.NumberOfRetries(config.DelayedMessageRetries);
                     delayed.TimeIncrease(config.DelayedMessageRetryDelay);
                 });
+                //var configHelper = c.Resolve<IConfigurationHelper>();
+                //TelemetryConfiguration.Active.InstrumentationKey = configHelper.GetSetting("ApplicationInsightsInstrumentationKey");
+                //endpointConfiguration.EnableFeature<NServiceBusApplicationInsightsFeature>();
+
+                var telemetry = c.Resolve<ITelemetry>();
+                var metrics = endpointConfiguration.EnableMetrics();
+                metrics.RegisterObservers(
+                    register: context =>
+                    {
+                        foreach (var duration in context.Durations)
+                        {
+                            duration.Register(
+                                observer: (ref DurationEvent durationEvent) =>
+                                {
+                                    var eventName = durationEvent.MessageType.Split(Char.Parse(","))[0];
+                                    telemetry.TrackDuration($"NServiceBus Duration Metric -{eventName}", durationEvent.Duration);
+                                });
+                        }
+                        foreach (var signal in context.Signals)
+                        {
+                            signal.Register(
+                                observer: (ref SignalEvent @event) =>
+                                {
+                                    var eventName = @event.MessageType.Split(Char.Parse(","))[0];
+                                    telemetry.TrackEvent($"NServiceBus Signal Metric:{signal.Name} - Event Name : {eventName}");
+                                });
+                        }
+                    });
+
+
 
                 return endpointConfiguration;
             })
@@ -96,4 +133,8 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
 
         public string Name { get; set; }
     }
+
+
+
 }
+

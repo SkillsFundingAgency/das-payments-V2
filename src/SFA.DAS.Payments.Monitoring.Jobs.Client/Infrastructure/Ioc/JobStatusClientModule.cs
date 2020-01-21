@@ -118,7 +118,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Ioc
             endpointConfiguration.EnableInstallers();
 
             endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton(logger));
-            endpointConfiguration.SendOnly();
+            //endpointConfiguration.SendOnly();
             return endpointConfiguration;
         }
     }

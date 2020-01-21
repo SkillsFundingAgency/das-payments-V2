@@ -194,6 +194,9 @@
     <Reference Include="NServiceBus.Core, Version=7.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
       <HintPath>..\packages\NServiceBus.7.1.5\lib\net452\NServiceBus.Core.dll</HintPath>
     </Reference>
+    <Reference Include="NServiceBus.Metrics, Version=3.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NServiceBus.Metrics.3.0.0\lib\net452\NServiceBus.Metrics.dll</HintPath>
+    </Reference>
     <Reference Include="NServiceBus.Newtonsoft.Json, Version=2.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
       <HintPath>..\packages\NServiceBus.Newtonsoft.Json.2.1.0\lib\net452\NServiceBus.Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -888,7 +891,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-590 - Levy Learner framework uplift and 16-18 incentives payments finishes on time.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Holding Back Completion Payments\PV2-1653 Employer payments rounded down.feature.cs" >
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-1653 Employer payments rounded down.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-1653 Employer payments rounded down.feature</DependentUpon>
@@ -1629,14 +1632,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-736 - Levy learner paid via transfer.feature</DependentUpon>
     </Compile>
-	
-	<Compile Include="Tests\Submission Events\PV2-1395 - Successful submission removes previous submission payments.feature.cs">
+    <Compile Include="Tests\Submission Events\PV2-1395 - Successful submission removes previous submission payments.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-1395 - Successful submission removes previous submission payments.feature</DependentUpon>
     </Compile>
-	
-	<Compile Include="Tests\Submission Events\PV2-1396 - Failed submission job removes payments for failed job.feature.cs">
+    <Compile Include="Tests\Submission Events\PV2-1396 - Failed submission job removes payments for failed job.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-1396 - Failed submission job removes payments for failed job.feature</DependentUpon>
@@ -2045,7 +2046,7 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-590 - Levy Learner framework uplift and 16-18 incentives payments finishes on time.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Holding Back Completion Payments\PV2-1653 Employer payments rounded down.feature" >
+    <None Include="Tests\Holding Back Completion Payments\PV2-1653 Employer payments rounded down.feature">
       <Generator>SpecFlowSIngleFileGenerator</Generator>
       <LastGenOutput>Tests\Holding Back Completion Payments\PV2-1653 Employer payments rounded down.feature.cs</LastGenOutput>
     </None>
