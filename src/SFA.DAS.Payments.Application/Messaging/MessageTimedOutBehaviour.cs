@@ -6,7 +6,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 
 namespace SFA.DAS.Payments.Application.Messaging
 {
-    public class MessageTimedOutBehaviour : Behavior<IIncomingLogicalMessageContext>
+    public class MessageTimedOutBehaviour : Behavior<ITransportReceiveContext>
     {
         private readonly IPaymentLogger logger;
 
@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.Application.Messaging
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public override async Task Invoke(IIncomingLogicalMessageContext context, Func<Task> next)
+        public override async Task Invoke(ITransportReceiveContext context, Func<Task> next)
         {
             Message message = null;
             try
@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.Application.Messaging
 
             if (message == null)
             {
-                await next();
+                await next().ConfigureAwait(false);
                 return;
             }
 
@@ -38,17 +38,22 @@ namespace SFA.DAS.Payments.Application.Messaging
             {
                 var timeoutMessage = $"Message has timed out before processing. Locked until: {lockedUntil}, current time: {DateTime.UtcNow} ";
                 logger.LogWarning(timeoutMessage);
-                throw new InvalidOperationException(timeoutMessage);
+                context.AbortReceiveOperation();
+                return;
             }
 
             await next().ConfigureAwait(false);
+
             if (DateTime.UtcNow > lockedUntil)
             {
                 var lockTimeoutMessage = $"Message has timed out after processing. Locked until: {lockedUntil}, current time: {DateTime.UtcNow} ";
                 logger.LogWarning(lockTimeoutMessage);
-                throw new InvalidOperationException(lockTimeoutMessage);
+                context.AbortReceiveOperation();
+                return;
             }
 
         }
+
+        
     }
 }

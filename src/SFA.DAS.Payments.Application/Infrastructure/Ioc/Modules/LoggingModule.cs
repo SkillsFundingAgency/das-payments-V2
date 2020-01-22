@@ -47,11 +47,11 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                     {
                         ApplicationLoggerOutputSettingsCollection = new List<IApplicationLoggerOutputSettings>
                         {
-                            //new MsSqlServerApplicationLoggerOutputSettings
-                            //{
-                            //    MinimumLogLevel = logLevel,
-                            //    ConnectionString = loggerOptions.LoggerConnectionString,
-                            //},
+                            new MsSqlServerApplicationLoggerOutputSettings
+                            {
+                                MinimumLogLevel = logLevel,
+                                ConnectionString = loggerOptions.LoggerConnectionString,
+                            },
 
                             new ConsoleApplicationLoggerOutputSettings
                             {
