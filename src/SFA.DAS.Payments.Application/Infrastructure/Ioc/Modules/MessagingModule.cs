@@ -70,7 +70,12 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 if (config.ProcessMessageSequentially) endpointConfiguration.LimitMessageProcessingConcurrencyTo(1);
 
                 endpointConfiguration.Pipeline.Register(typeof(ExceptionHandlingBehavior), "Logs exceptions to the payments logger");
-                endpointConfiguration.Pipeline.Register(typeof(MessageTimedOutBehaviour), "Prevent handling timeout messages by throwing exception");
+          
+                endpointConfiguration.Pipeline.Register(typeof(MessageTimedOutTransportReceiveBehaviour), "Prevent handling timeout messages");
+                endpointConfiguration.Pipeline.Register(typeof(MessageTimedOutIIncomingPhysicalMessageContextBehaviour), "Prevent handling timeout messages");
+                endpointConfiguration.Pipeline.Register(typeof(MessageTimedOutIIncomingLogicalMessageContextBehaviour), "Prevent handling timeout messages");
+                endpointConfiguration.Pipeline.Register(typeof(MessageTimedOutInvokeHandlerBehaviour), "Prevent handling timeout messages");
+
 
                 var recoverability = endpointConfiguration.Recoverability();
                 recoverability.Immediate(immediate => immediate.NumberOfRetries(config.ImmediateMessageRetries));
