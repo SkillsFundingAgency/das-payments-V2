@@ -32,6 +32,7 @@ namespace SFA.DAS.Payments.Audit.EarningEventsService.Handlers
                 logger.LogWarning($"Failed to remove previous submission earning events.  Error: {ex.Message}.  Ukprn: {message.Ukprn}, Collection period: {message.AcademicYear}-{message.CollectionPeriod}, Failed job: {message.JobId}.");
                 throw;
             }
+
         }
     }
 }
