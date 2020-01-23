@@ -69,7 +69,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 .UsingConstructor(typeof(ILoggerConfigurationBuilder))
                 .As<ISerilogLoggerFactory>()
                 .InstancePerLifetimeScope();
-            builder.RegisterType<PaymentLogger>()
+            builder.RegisterType<FakePaymentsLogger>()
                 .As<IPaymentLogger, ILogger>()
                 .InstancePerLifetimeScope();
         }
