@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.29102.190
+VisualStudioVersion = 16.0.29409.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Core", "SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj", "{F6E38368-C397-488B-B041-D3E8423C1CE1}"
 EndProject
@@ -275,6 +275,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{03
 		Scripts\Database\MetricsDCEarnings.sql = Scripts\Database\MetricsDCEarnings.sql
 		Scripts\Database\MetricsQuery.sql = Scripts\Database\MetricsQuery.sql
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests", "SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests\SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests.csproj", "{A444122D-E369-44D9-8BBC-8DB902E8B00B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProviderAdjustments", "ProviderAdjustments", "{C2D2FEC2-7C2F-4559-9B14-173D88AE8AA5}"
 EndProject
@@ -1250,6 +1252,14 @@ Global
 		{CF41288C-6BDA-4E4E-B834-C539A1DD1C5C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CF41288C-6BDA-4E4E-B834-C539A1DD1C5C}.Release|x64.ActiveCfg = Release|Any CPU
 		{CF41288C-6BDA-4E4E-B834-C539A1DD1C5C}.Release|x64.Build.0 = Release|Any CPU
+		{A444122D-E369-44D9-8BBC-8DB902E8B00B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A444122D-E369-44D9-8BBC-8DB902E8B00B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A444122D-E369-44D9-8BBC-8DB902E8B00B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A444122D-E369-44D9-8BBC-8DB902E8B00B}.Debug|x64.Build.0 = Debug|Any CPU
+		{A444122D-E369-44D9-8BBC-8DB902E8B00B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A444122D-E369-44D9-8BBC-8DB902E8B00B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A444122D-E369-44D9-8BBC-8DB902E8B00B}.Release|x64.ActiveCfg = Release|Any CPU
+		{A444122D-E369-44D9-8BBC-8DB902E8B00B}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1372,6 +1382,7 @@ Global
 		{144752B8-60D8-4CFD-8925-25C15A993CE4} = {C2D2FEC2-7C2F-4559-9B14-173D88AE8AA5}
 		{63236EA5-16BC-49D2-B26D-ABCFFCBC90A6} = {C2D2FEC2-7C2F-4559-9B14-173D88AE8AA5}
 		{CF41288C-6BDA-4E4E-B834-C539A1DD1C5C} = {63236EA5-16BC-49D2-B26D-ABCFFCBC90A6}
+		{A444122D-E369-44D9-8BBC-8DB902E8B00B} = {7B48662F-1F86-461C-8638-AC1DDCE3B8B4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E9E6D1E-3C3C-41C9-AED4-9B6DC9118F1F}
