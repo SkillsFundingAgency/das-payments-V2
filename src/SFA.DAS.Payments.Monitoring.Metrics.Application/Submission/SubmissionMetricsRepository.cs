@@ -40,12 +40,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.paymentsDataContext.Database.SetCommandTimeout(270);  //TODO: use config
-            //((PaymentsDataContext)paymentsDataContext).ConfigureLogging(LogSql, LoggingCategories.SQL);  //TODO: make this configurable
+            ((PaymentsDataContext)paymentsDataContext).ConfigureLogging(LogSql, LoggingCategories.SQL);  //TODO: make this configurable
         }
 
         private void LogSql(string sql)
         {
-            logger.LogDebug($"Sql: {sql}");
+            if (sql.StartsWith("Executing DbCommand"))
+                logger.LogDebug($"Sql: {sql}");
         }
 
         public async Task<List<TransactionTypeAmounts>> GetDasEarnings(long ukprn, long jobId, CancellationToken cancellationToken)
@@ -53,7 +54,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             var transactionAmounts = await paymentsDataContext.EarningEventPeriod
                 .AsNoTracking()
                 .Where(ee => ee.Amount != 0 && ee.EarningEvent.Ukprn == ukprn && ee.EarningEvent.JobId == jobId)
-                //.Select(eep => new { eep.Amount, eep.EarningEvent.ContractType, eep.TransactionType})
                 .GroupBy(eep => new { eep.EarningEvent.ContractType, eep.TransactionType })
                 .Select(group => new
                 {
@@ -129,36 +129,38 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
         public async Task<decimal> GetAlreadyPaidDataLockedEarnings(long ukprn, long jobId, CancellationToken cancellationToken)
         {
-            return await paymentsDataContext.Payment
-                       .Join(paymentsDataContext.DataLockEventNonPayablePeriod,
-                           payment => new
-                           {
-                               payment.LearnerReferenceNumber,
-                               payment.LearningAimReference,
-                               payment.LearningAimProgrammeType,
-                               payment.LearningAimStandardCode,
-                               payment.LearningAimFrameworkCode,
-                               payment.LearningAimPathwayCode,
-                               payment.DeliveryPeriod,
-                               payment.CollectionPeriod.AcademicYear,
-                               payment.Ukprn
-                           },
-                           nonPayablePeriod => new
-                           {
-                               nonPayablePeriod.DataLockEvent.LearnerReferenceNumber,
-                               nonPayablePeriod.DataLockEvent.LearningAimReference,
-                               nonPayablePeriod.DataLockEvent.LearningAimProgrammeType,
-                               nonPayablePeriod.DataLockEvent.LearningAimStandardCode,
-                               nonPayablePeriod.DataLockEvent.LearningAimFrameworkCode,
-                               nonPayablePeriod.DataLockEvent.LearningAimPathwayCode,
-                               nonPayablePeriod.DeliveryPeriod,
-                               nonPayablePeriod.DataLockEvent.AcademicYear,
-                               nonPayablePeriod.DataLockEvent.Ukprn
-                           },
-                           (payment, nonPayablePeriod) => new
-                           { payment.Amount, nonPayablePeriod.DataLockEvent.JobId, payment.ContractType })
-                       .Where(joined => joined.ContractType == ContractType.Act1 && joined.JobId == jobId)
-                       .SumAsync(joined => joined.Amount, cancellationToken);
+            return await dataContext.GetAlreadyPaidDataLocksAmount(ukprn, jobId, cancellationToken)
+                .ConfigureAwait(false);
+            //return await paymentsDataContext.Payment.AsNoTracking()
+            //           .Join(paymentsDataContext.DataLockEventNonPayablePeriod.Include(x => x.DataLockEvent).AsNoTracking(),
+            //               payment => new
+            //               {
+            //                   payment.LearnerReferenceNumber,
+            //                   payment.LearningAimReference,
+            //                   payment.LearningAimProgrammeType,
+            //                   payment.LearningAimStandardCode,
+            //                   payment.LearningAimFrameworkCode,
+            //                   payment.LearningAimPathwayCode,
+            //                   payment.DeliveryPeriod,
+            //                   payment.CollectionPeriod.AcademicYear,
+            //                   payment.Ukprn
+            //               },
+            //               nonPayablePeriod => new
+            //               {
+            //                   nonPayablePeriod.DataLockEvent.LearnerReferenceNumber,
+            //                   nonPayablePeriod.DataLockEvent.LearningAimReference,
+            //                   nonPayablePeriod.DataLockEvent.LearningAimProgrammeType,
+            //                   nonPayablePeriod.DataLockEvent.LearningAimStandardCode,
+            //                   nonPayablePeriod.DataLockEvent.LearningAimFrameworkCode,
+            //                   nonPayablePeriod.DataLockEvent.LearningAimPathwayCode,
+            //                   nonPayablePeriod.DeliveryPeriod,
+            //                   nonPayablePeriod.DataLockEvent.AcademicYear,
+            //                   nonPayablePeriod.DataLockEvent.Ukprn
+            //               },
+            //               (payment, nonPayablePeriod) => new
+            //               { payment.Amount, nonPayablePeriod.DataLockEvent.JobId, payment.ContractType })
+            //           .Where(joined => joined.ContractType == ContractType.Act1 && joined.JobId == jobId)
+            //           .SumAsync(joined => joined.Amount, cancellationToken);
         }
 
         public async Task<ContractTypeAmounts> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId, CancellationToken cancellationToken)

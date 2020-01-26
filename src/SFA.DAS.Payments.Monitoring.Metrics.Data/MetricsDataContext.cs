@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Data;
+using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
@@ -16,6 +16,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         DbSet<EarningsModel> Earnings { get; }
         DbSet<RequiredPaymentsModel> RequiredPayments { get; }
         Task Save(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken);
+        Task<decimal> GetAlreadyPaidDataLocksAmount(long ukprn, long jobId, CancellationToken cancellationToken);
     }
 
     public class MetricsDataContext : DbContext, IMetricsDataContext
@@ -46,6 +47,29 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             optionsBuilder.UseSqlServer(connectionString);
         }
 
+        public async Task<decimal> GetAlreadyPaidDataLocksAmount(long ukprn, long jobId, CancellationToken cancellationToken)
+        {
+            var sql = @"
+	Select
+		@result = sum(p.Amount)
+		from Payments2.dataLockEventNonPayablePeriod npp
+		join Payments2.dataLockEvent dle on npp.DataLockEventId = dle.EventId 
+		join Payments2.payment p on dle.ukprn = p.ukprn
+			and npp.priceepisodeidentifier = p.priceepisodeidentifier
+			and dle.learnerreferencenumber = p.learnerreferencenumber
+			and npp.deliveryperiod = p.deliveryperiod
+			AND P.TransactionType = npp.TransactionType
+		where dle.jobId = @jobid
+		and dle.Ukprn = @ukprn
+		and npp.Amount <> 0
+		and dle.IsPayable = 0	
+";
+            var result = new SqlParameter("@result", SqlDbType.Decimal) { Direction = ParameterDirection.Output };
+            await Database.ExecuteSqlCommandAsync(sql, new[] { new SqlParameter("@jobid", jobId), new SqlParameter("@ukprn", ukprn), result }, cancellationToken);
+            return result.Value as decimal? ?? 0;
+
+        }
+
         public async Task Save(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken)
         {
             var transaction = await Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
@@ -64,7 +88,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                 await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                 transaction.Commit();
             }
-            catch 
+            catch
             {
                 transaction.Rollback();
                 throw;

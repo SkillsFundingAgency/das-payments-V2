@@ -30,6 +30,5 @@ GO
 
 CREATE INDEX [IX_DataLockEvent_Submission] ON [Payments2].[DataLockEvent] ([Ukprn], [AcademicYear], [CollectionPeriod], [IlrSubmissionDateTime])
 GO
-Create index IX_DataLockEvent__Metrics on Payments2.DataLockEvent (Jobid) include (EventId, LearnerReferenceNumber, 
-	LearningAimReference, LearningAimProgrammeType, LearningAimStandardCode, LearningAimPathwayCode,[AcademicYear], Ukprn)
+Create index IX_DataLockEvent__Metrics ON [Payments2].[DataLockEvent] ([AcademicYear], [CollectionPeriod], [IsPayable], [LearningAimReference], [Ukprn], [JobId]) INCLUDE ([DataLockSourceId], [EarningEventId], [EventId], [IlrSubmissionDateTime], [LearnerReferenceNumber], [LearnerUln]) WITH (ONLINE = ON)
 Go
