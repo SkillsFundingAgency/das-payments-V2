@@ -69,8 +69,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 {
                     ContractType = group.Key,
                     TransactionType1 = group.Where(x => x.TransactionType == TransactionType.Learning).Sum(x => (decimal?)x.Amount) ?? 0,
-                    TransactionType2 = group.Where(x => x.TransactionType == TransactionType.Balancing).Sum(x => (decimal?)x.Amount) ?? 0,
-                    TransactionType3 = group.Where(x => x.TransactionType == TransactionType.Completion).Sum(x => (decimal?)x.Amount) ?? 0,
+                    TransactionType2 = group.Where(x => x.TransactionType == TransactionType.Completion).Sum(x => (decimal?)x.Amount) ?? 0,
+                    TransactionType3 = group.Where(x => x.TransactionType == TransactionType.Balancing).Sum(x => (decimal?)x.Amount) ?? 0,
                     TransactionType4 = group.Where(x => x.TransactionType == TransactionType.First16To18EmployerIncentive).Sum(x => (decimal?)x.Amount) ?? 0,
                     TransactionType5 = group.Where(x => x.TransactionType == TransactionType.First16To18ProviderIncentive).Sum(x => (decimal?)x.Amount) ?? 0,
                     TransactionType6 = group.Where(x => x.TransactionType == TransactionType.Second16To18EmployerIncentive).Sum(x => (decimal?)x.Amount) ?? 0,
@@ -189,8 +189,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         {
             var transactionAmounts = await paymentsDataContext.RequiredPaymentEvent
                 .AsNoTracking()
-                .Where(rp => rp.Ukprn == ukprn && rp.JobId == jobId)
-                //.Select(eep => new { eep.Amount, eep.EarningEvent.ContractType, eep.TransactionType})
+                .Where(rp => rp.Ukprn == ukprn && rp.JobId == jobId && rp.NonPaymentReason == null)
                 .GroupBy(rp => new { rp.ContractType, rp.TransactionType })
                 .Select(group => new
                 {
