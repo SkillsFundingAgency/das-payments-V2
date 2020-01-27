@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ESFA.DC.Logging.Interfaces" Version="0.1.4-beta0001" />
+    <PackageReference Include="ESFA.DC.Logging.Interfaces" Version="0.1.8-beta0001" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.0.5" />
     <PackageReference Include="Microsoft.ServiceFabric" Version="6.3.162" />
     <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.2.162" />

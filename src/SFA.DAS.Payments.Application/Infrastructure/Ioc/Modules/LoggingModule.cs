@@ -51,6 +51,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                             {
                                 MinimumLogLevel = logLevel,
                                 ConnectionString = loggerOptions.LoggerConnectionString,
+                                AutoCreateTable = false
                             },
 
                             new ConsoleApplicationLoggerOutputSettings
