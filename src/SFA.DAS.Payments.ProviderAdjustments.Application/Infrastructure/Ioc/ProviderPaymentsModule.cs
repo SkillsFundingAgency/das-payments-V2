@@ -12,6 +12,8 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Infrastructure.ioc
             builder.RegisterType<ProviderAdjustmentRepository>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ProviderAdjustmentCalculator>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ProviderAdjustmentsProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<BulkWriterProviderAdjustmentsConfiguration>().AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
         }
     }
 }
