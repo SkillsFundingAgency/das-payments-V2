@@ -48,12 +48,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
 
         protected override async Task<bool> CompleteJob(JobModel job, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken)
         {
+            status = job.DcJobSucceeded.HasValue && !job.DcJobSucceeded.Value
+                ? JobStatus.DcTasksFailed
+                : status;
             if (!await base.CompleteJob(job, status, endTime, cancellationToken))
                 return false;
             if (!job.DcJobSucceeded.HasValue)
                 return false;
             if (job.JobType == JobType.EarningsJob || job.JobType == JobType.ComponentAcceptanceTestEarningsJob)
-                await EventPublisher.SubmissionFinished(job.DcJobSucceeded.Value, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
+                await EventPublisher.SubmissionFinished(status == JobStatus.Completed || status == JobStatus.CompletedWithErrors, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
             return true;
         }
 
