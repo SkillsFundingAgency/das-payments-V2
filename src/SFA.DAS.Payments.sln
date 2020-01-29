@@ -274,6 +274,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{03
 	ProjectSection(SolutionItems) = preProject
 		Scripts\Database\MetricsDCEarnings.sql = Scripts\Database\MetricsDCEarnings.sql
 		Scripts\Database\MetricsQuery.sql = Scripts\Database\MetricsQuery.sql
+		Scripts\Database\MetricsQueryJobId.sql = Scripts\Database\MetricsQueryJobId.sql
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests", "SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests\SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests.csproj", "{A444122D-E369-44D9-8BBC-8DB902E8B00B}"
