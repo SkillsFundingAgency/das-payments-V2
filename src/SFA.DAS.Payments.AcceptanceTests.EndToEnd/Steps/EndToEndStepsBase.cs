@@ -33,6 +33,7 @@ using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
@@ -131,7 +132,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 ilrLearner.Ukprn = ukprn;
                 var learner = TestSession.GetLearner(ukprn, ilrLearner.LearnerId);
-                learner.Course.AimSeqNumber = (short) ilrLearner.AimSequenceNumber;
+                learner.Course.AimSeqNumber = (short)ilrLearner.AimSequenceNumber;
                 learner.Course.StandardCode = ilrLearner.StandardCode;
                 learner.Course.FundingLineType = ilrLearner.FundingLineType;
                 learner.Course.LearnAimRef = ilrLearner.AimReference;
@@ -1224,8 +1225,29 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 }
             }
             var dcHelper = Scope.Resolve<IDcHelper>();
-            await dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod,
-                provider.JobId);
+
+            for (provider.JobId = 1; provider.JobId <= 1000; provider.JobId++)
+            {
+                await dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod, provider.JobId);
+            }
+
+            //var matcher = new EarningEventMatcher(provider, CurrentPriceEpisodes, providerCurrentIlrs, earnings,
+            //    TestSession, CurrentCollectionPeriod, learners);
+            //await WaitForIt(() => matcher.MatchPayments(), "Earning event check failure");
+
+            await Task.Delay(TimeSpan.FromMinutes(5));
+
+            var sendOptions = new SendOptions();
+            sendOptions.SetDestination("sfa-das-payments-audit-earningevents");
+            await MessageSession.Send(new SubmissionSucceededEvent
+            {
+                Ukprn = provider.Ukprn,
+                JobId = provider.JobId,
+                CollectionPeriod = CollectionPeriod,
+                IlrSubmissionDateTime = DateTime.UtcNow,
+                AcademicYear = AcademicYear,
+                EventTime = DateTimeOffset.UtcNow
+            }, sendOptions);
 
         }
 
