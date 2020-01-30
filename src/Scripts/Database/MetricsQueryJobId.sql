@@ -34,6 +34,8 @@ Declare @CurrentPayments decimal(15,5)
 Declare @CurrentPaymentsAct1 decimal(15,5)
 Declare @CurrentPaymentsAct2 decimal(15,5)
 Declare @TotalPayments decimal(15,5)
+Declare @DatalockedPayments decimal(15,5)
+Declare @DatalockedEarnings decimal(15,5)
 
 
 
@@ -110,7 +112,6 @@ AND EE.CollectionPeriod = @CollectionPeriod
     WHERE EXISTS (
         SELECT *
         FROM Payments2.DataLockEvent DLE with (nolock)
-        
         JOIN Payments2.DataLockEventNonPayablePeriod DLENP with (nolock)
             ON DLE.EventId = DLENP.DataLockEventId
         WHERE DLE.EarningEventId = EE.EventId
@@ -143,17 +144,17 @@ AND EE.CollectionPeriod = @CollectionPeriod
     )   
 		 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 )
-SELECT (SELECT FORMAT(SUM(Amount), 'C', 'en-gb') FROM DatalockedEarnings) [Datalocked Earnigs],
-    (SELECT FORMAT(SUM(Amount), 'C', 'en-gb') FROM DatalockedPayments) [Datalocked Payments],
-    (SELECT FORMAT((SELECT SUM(Amount) FROM DatalockedEarnings) - (SELECT SUM(Amount) FROM DatalockedPayments), 'C', 'en-gb')) [Adjusted Datalocks]
 
 
+SELECT 
+	@DatalockedPayments = [dlPayments],
+	@DatalockedEarnings = [dlearnings]
+FROM (
+SELECT	(SELECT SUM(Amount)FROM DatalockedEarnings) [dlearnings],
+		(SELECT SUM(Amount) FROM DatalockedPayments) [dlPayments]
+	) dls
 
-
-
-
-
-
-
-
-
+SELECT 
+	FORMAT(@DatalockedEarnings, 'C', 'en-gb') AS [Datalocked Earnings],
+	FORMAT(@DatalockedPayments, 'C', 'en-gb') AS [Datalocked Payments],
+	FORMAT(@DatalockedEarnings - @DatalockedPayments, 'C', 'en-gb') AS [Adjusted Datalocks]
