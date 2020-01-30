@@ -1,105 +1,102 @@
-﻿SET STATISTICS TIME ON;  
+SET STATISTICS TIME ON;  
 GO 
 
-DECLARE @monthendStartTime DATETIME = '2019-11-07 20:00'
-DECLARE @startDate DATETIME = @monthendStartTime
-DECLARE @collectionperiod INT = 3
+DECLARE @collectionperiod INT = 6
 DECLARE @ukprnList table
 (
 	ukprn bigint NOT NULL PRIMARY KEY CLUSTERED
 )
 --INSERT INTO @ukprnList --whitelist of suceeded ukprns if required
 --VALUES
---(10000060),
---(10000061)
+--(10004285)
 
 Declare @GivenUkprnCount INT = (SELECT COUNT(1) from @ukprnList)
 
 Declare @LatestJobIds Table(
-	JobId INT NOT NULL PRIMARY KEY CLUSTERED
+	JobId INT NOT NULL PRIMARY KEY CLUSTERED,
+	UkPrn bigint not null
 )
 
 INSERT INTO @LatestJobIds
-SELECT DISTINCT(DcJobId)
+SELECT DcJobId, Ukprn
 FROM Payments2.LatestSuccessfulJobs
 
-SELECT
-	(SELECT FORMAT(SUM(Amount), 'C', 'en-gb')
-	 FROM Payments2.RequiredPaymentEvent with (nolock)
-	 WHERE CreationDate > @startDate
-     AND NonPaymentReason IS NULL
-	 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
-	 AND (JobId in (SELECT JobId FROM @LatestJobIds))
-	 ) [Required Payments made this month],
+IF(@GivenUkprnCount > 0)
+BEGIN
+ DELETE FROM @LatestJobIds WHERE UkPrn NOT IN (SELECT UkPrn FROM @ukprnList) 
+END
 
-	(SELECT FORMAT(SUM(Amount), 'C', 'en-gb')
+
+Declare @CurrentRequiredPayments decimal(15,5)
+Declare @CurrentRequiredPaymentsHeldBack decimal(15,5)
+Declare @PrevPayments decimal(15,5)
+Declare @CurrentPayments decimal(15,5)
+Declare @CurrentPaymentsAct1 decimal(15,5)
+Declare @CurrentPaymentsAct2 decimal(15,5)
+Declare @TotalPayments decimal(15,5)
+
+
+
+--Required payment table  totals
+select  
+	@CurrentRequiredPayments = notHB,
+	@CurrentRequiredPaymentsHeldBack = HbCompletion
+from
+(SELECT  Sum(case when RPE.NonPaymentReason is null then Amount else 0 end) as notHB,  Sum(case when RPE.NonPaymentReason is not null then Amount else 0 end) as HbCompletion -- current required payments
+	 FROM Payments2.RequiredPaymentEvent RPE with (nolock)
+	 JOIN @LatestJobIds lji
+		ON lji.JobId = RPE.JobId
+	 WHERE RPE.CollectionPeriod = @collectionperiod
+     AND RPE.NonPaymentReason IS NULL
+	) RPs
+
+--payment table totals
+SELECT 
+	@PrevPayments=previousPayments,
+	@CurrentPayments=currentPayments,
+	@CurrentPaymentsAct1=currentPaymentsAct1,
+	@CurrentPaymentsAct2=currentPaymentsAct2,
+	@TotalPayments = totalPayments
+FROM
+	(SELECT
+		Sum(Amount) as totalPayments,
+		Sum(Case when CollectionPeriod < @collectionperiod then Amount else 0 end) as previousPayments,--previous payments  1920
+		Sum(Case when CollectionPeriod = @collectionperiod  then Amount else 0 end) as currentPayments,--current  1920
+		Sum(Case when contracttype = 1 then Amount else 0 end) as currentPaymentsAct1,--current aCT1 1920
+		Sum(Case when contracttype = 2 then Amount else 0 end) as currentPaymentsAct2--current   ACT2 1920
 	 FROM Payments2.Payment with (nolock)
-	 WHERE CreationDate < @startDate
-	 AND AcademicYear = 1920
+	 WHERE AcademicYear = 1920
 	 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
-	 AND (JobId in (SELECT JobId FROM @LatestJobIds))
-	 ) [Payments made before this month YTD],
-
-    (SELECT FORMAT((SELECT SUM(Amount) 
-     FROM Payments2.RequiredPaymentEvent with (nolock)
-     WHERE CreationDate > @startDate
-     AND NonPaymentReason IS NULL
-	 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
-	 AND (JobId in (SELECT JobId FROM @LatestJobIds))
-	 ) +
-    (SELECT ISNULL(SUM(Amount),0) 
-     FROM Payments2.Payment with (nolock)
-     WHERE CreationDate < @startDate
-	AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
-	AND AcademicYear = 1920 ), 'C', 'en-gb') 
-	) [Expected Payments YTD after running Period End],
-
-	(SELECT FORMAT(SUM(Amount), 'C', 'en-gb')
-     FROM Payments2.Payment with (nolock)
-     where AcademicYear = 1920
-	 and CollectionPeriod = @collectionperiod 
-	 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
-	) [Total payments this month],
-
+	 )Payments
 	
-	(SELECT FORMAT(sum(CASE WHEN contracttype = 1 THEN amount ELSE 0 END), 'C', 'en-gb') 
-     FROM Payments2.Payment with (nolock)
-     where AcademicYear = 1920
-	AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
-	 ) [Total ACT 1 payments YTD],
+	
+--payment summaries
+SELECT 
+FORMAT(@CurrentRequiredPayments, 'C', 'en-gb') AS [Required Payments made this month],
+FORMAT(@PrevPayments, 'C', 'en-gb') AS [Payments made before this month YTD],
+FORMAT(@CurrentRequiredPayments + @PrevPayments, 'C', 'en-gb') AS [Expected Payments YTD after running Period End],
+FORMAT(@CurrentPayments, 'C', 'en-gb') AS [Total payments this month],
+FORMAT(@CurrentPaymentsAct1, 'C', 'en-gb') AS [Total ACT 1 payments YTD],
+FORMAT(@CurrentPaymentsAct2, 'C', 'en-gb') AS [Total ACT 2 payments YTD],
+FORMAT(@TotalPayments, 'C', 'en-gb') AS [Total payments YTD],
+FORMAT(@CurrentRequiredPaymentsHeldBack, 'C', 'en-gb') AS [Held Back Completion Payments this month]
 
-	(SELECT FORMAT(sum(CASE WHEN contracttype = 2 THEN amount ELSE 0 END), 'C', 'en-gb') 
-     FROM Payments2.Payment with (nolock)
-     where AcademicYear = 1920
-	 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
-	 ) [Total ACT 2 payments YTD],
 
-	(SELECT FORMAT(SUM(Amount), 'C', 'en-gb') 
-     FROM Payments2.Payment with (nolock)
-     where AcademicYear = 1920
-	 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
-	 ) [Total payments YTD],
-
-	(SELECT FORMAT(SUM(Amount), 'C', 'en-gb')
-	 FROM Payments2.RequiredPaymentEvent with (nolock)
-	 WHERE CreationDate > @startDate
-	 and NonPaymentReason = 0
-	 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
-	 AND (JobId in (SELECT JobId FROM @LatestJobIds))
-	 ) [Held Back Completion Payments this month]
---Expected Payments
-
+--DAS earnings
 SELECT FORMAT(SUM(Amount), 'C', 'en-gb') as [DAS Earnings]
 FROM Payments2.EarningEvent EE with (nolock)
 JOIN Payments2.EarningEventPeriod EEP with (nolock)
     ON EEP.EarningEventId = EE.EventId
+JOIN @LatestJobIds lji
+	ON lji.JobId = EE.JobId
 AND DeliveryPeriod <= @collectionperiod
-AND Amount != 0
-AND EE.CreationDate > @monthendStartTime
-AND ((@GivenUkprnCount = 0) OR  (EE.ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
-AND (JobId in (SELECT JobId FROM @LatestJobIds))
+AND EE.CollectionPeriod = @CollectionPeriod
 
---DAS Earnings
+
+
+
+
+--Datalocks
 
 ;WITH DatalockedEarnings AS (
     SELECT EE.LearnerReferenceNumber, EE.LearnerUln, EE.LearningAimFrameworkCode,
@@ -109,11 +106,12 @@ AND (JobId in (SELECT JobId FROM @LatestJobIds))
     FROM Payments2.EarningEvent EE with (nolock)
     JOIN Payments2.EarningEventPeriod EEP with (nolock)
         ON EEP.EarningEventId = EE.EventId
+
     WHERE EXISTS (
         SELECT *
         FROM Payments2.DataLockEvent DLE with (nolock)
         
-        JOIN Payments2.DataLockEventNonPayablePeriod  DLENP with (nolock)
+        JOIN Payments2.DataLockEventNonPayablePeriod DLENP with (nolock)
             ON DLE.EventId = DLENP.DataLockEventId
         WHERE DLE.EarningEventId = EE.EventId
         AND DLENP.DeliveryPeriod = EEP.DeliveryPeriod
@@ -123,7 +121,7 @@ AND (JobId in (SELECT JobId FROM @LatestJobIds))
     AND DeliveryPeriod <= @collectionperiod
     AND Amount != 0
 	 AND ((@GivenUkprnCount = 0) OR  (EE.ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
-    AND EE.CreationDate > @monthendStartTime
+    AND EE.CollectionPeriod = @collectionperiod
 	AND (ee.JobId in (SELECT JobId FROM @LatestJobIds))
 )
 , DatalockedPayments AS (
@@ -148,8 +146,6 @@ AND (JobId in (SELECT JobId FROM @LatestJobIds))
 SELECT (SELECT FORMAT(SUM(Amount), 'C', 'en-gb') FROM DatalockedEarnings) [Datalocked Earnigs],
     (SELECT FORMAT(SUM(Amount), 'C', 'en-gb') FROM DatalockedPayments) [Datalocked Payments],
     (SELECT FORMAT((SELECT SUM(Amount) FROM DatalockedEarnings) - (SELECT SUM(Amount) FROM DatalockedPayments), 'C', 'en-gb')) [Adjusted Datalocks]
-
---DataLock
 
 
 
