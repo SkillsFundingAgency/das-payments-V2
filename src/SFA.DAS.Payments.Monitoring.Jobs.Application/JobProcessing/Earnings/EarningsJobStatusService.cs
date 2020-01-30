@@ -23,6 +23,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
 
         protected override async Task<bool> CheckSavedJobStatus(JobModel job, CancellationToken cancellationToken)
         {
+            if (job.Status == JobStatus.InProgress && job.LearnerCount > 0)
+                return false;
+
+            if (job.DcJobSucceeded.HasValue && !job.DcJobSucceeded.Value && job.Status != JobStatus.DcTasksFailed)
+            {
+                job.Status = JobStatus.DcTasksFailed;
+                await JobStorageService.SaveJobStatus(job.DcJobId.Value, JobStatus.DcTasksFailed,
+                    job.StartTime, cancellationToken).ConfigureAwait(false);
+            }
+
             if (job.Status != JobStatus.InProgress && job.DcJobSucceeded.HasValue)
             {
                 Logger.LogWarning($"Job {job.DcJobId} has already finished. Status: {job.Status}");
