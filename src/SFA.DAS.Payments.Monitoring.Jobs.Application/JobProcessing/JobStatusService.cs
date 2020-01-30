@@ -88,7 +88,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             }
 
             return await CompleteJob(jobId,
-                
                 currentJobStatus.hasFailedMessages ? JobStatus.CompletedWithErrors : JobStatus.Completed,
                 currentJobStatus.endTime.Value, cancellationToken).ConfigureAwait(false);
         }
