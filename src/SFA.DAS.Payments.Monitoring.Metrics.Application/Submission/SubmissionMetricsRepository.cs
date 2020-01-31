@@ -90,34 +90,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
         public async Task<DataLockTypeCounts> GetDataLockedEarnings(long ukprn, long jobId, CancellationToken cancellationToken)
         {
-            var dataLockAmounts = await paymentsDataContext.DataLockEventNonPayablePeriodFailure
-                .AsNoTracking()
-                .Where(failure => failure.DataLockEventNonPayablePeriod.Amount != 0 &&
-                                  failure.DataLockEventNonPayablePeriod.DataLockEvent.Ukprn == ukprn &&
-                                  failure.DataLockEventNonPayablePeriod.DataLockEvent.JobId == jobId)
-                .GroupBy(failure => failure.DataLockFailure)
-                .Select(group => new
-                {
-                    DataLockType = group.Key,
-                    Amount = group.Count()
-                })
-                .ToListAsync(cancellationToken);
-
-            return new DataLockTypeCounts
-            {
-                DataLock1 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_01)?.Amount ?? 0,
-                DataLock2 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_02)?.Amount ?? 0,
-                DataLock3 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_03)?.Amount ?? 0,
-                DataLock4 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_04)?.Amount ?? 0,
-                DataLock5 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_05)?.Amount ?? 0,
-                DataLock6 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_06)?.Amount ?? 0,
-                DataLock7 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_07)?.Amount ?? 0,
-                DataLock8 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_08)?.Amount ?? 0,
-                DataLock9 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_09)?.Amount ?? 0,
-                DataLock10 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_10)?.Amount ?? 0,
-                DataLock11 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_11)?.Amount ?? 0,
-                DataLock12 = dataLockAmounts.FirstOrDefault(amount => amount.DataLockType == DataLockErrorCode.DLOCK_12)?.Amount ?? 0,
-            };
+            return await dataContext.GetDataLockCounts(ukprn, jobId, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<decimal> GetDataLockedEarningsTotal(long ukprn, long jobId, CancellationToken cancellationToken)
@@ -131,36 +104,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         {
             return await dataContext.GetAlreadyPaidDataLocksAmount(ukprn, jobId, cancellationToken)
                 .ConfigureAwait(false);
-            //return await paymentsDataContext.Payment.AsNoTracking()
-            //           .Join(paymentsDataContext.DataLockEventNonPayablePeriod.Include(x => x.DataLockEvent).AsNoTracking(),
-            //               payment => new
-            //               {
-            //                   payment.LearnerReferenceNumber,
-            //                   payment.LearningAimReference,
-            //                   payment.LearningAimProgrammeType,
-            //                   payment.LearningAimStandardCode,
-            //                   payment.LearningAimFrameworkCode,
-            //                   payment.LearningAimPathwayCode,
-            //                   payment.DeliveryPeriod,
-            //                   payment.CollectionPeriod.AcademicYear,
-            //                   payment.Ukprn
-            //               },
-            //               nonPayablePeriod => new
-            //               {
-            //                   nonPayablePeriod.DataLockEvent.LearnerReferenceNumber,
-            //                   nonPayablePeriod.DataLockEvent.LearningAimReference,
-            //                   nonPayablePeriod.DataLockEvent.LearningAimProgrammeType,
-            //                   nonPayablePeriod.DataLockEvent.LearningAimStandardCode,
-            //                   nonPayablePeriod.DataLockEvent.LearningAimFrameworkCode,
-            //                   nonPayablePeriod.DataLockEvent.LearningAimPathwayCode,
-            //                   nonPayablePeriod.DeliveryPeriod,
-            //                   nonPayablePeriod.DataLockEvent.AcademicYear,
-            //                   nonPayablePeriod.DataLockEvent.Ukprn
-            //               },
-            //               (payment, nonPayablePeriod) => new
-            //               { payment.Amount, nonPayablePeriod.DataLockEvent.JobId, payment.ContractType })
-            //           .Where(joined => joined.ContractType == ContractType.Act1 && joined.JobId == jobId)
-            //           .SumAsync(joined => joined.Amount, cancellationToken);
         }
 
         public async Task<ContractTypeAmounts> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId, CancellationToken cancellationToken)

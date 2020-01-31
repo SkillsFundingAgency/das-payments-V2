@@ -6,6 +6,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
+using SFA.DAS.Payments.Monitoring.Metrics.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
