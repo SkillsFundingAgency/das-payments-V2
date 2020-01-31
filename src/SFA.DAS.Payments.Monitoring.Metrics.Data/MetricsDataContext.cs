@@ -50,19 +50,25 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         public async Task<decimal> GetAlreadyPaidDataLocksAmount(long ukprn, long jobId, CancellationToken cancellationToken)
         {
             var sql = @"
-	Select
-		@result = sum(p.Amount)
-		from Payments2.dataLockEventNonPayablePeriod npp
-		join Payments2.dataLockEvent dle on npp.DataLockEventId = dle.EventId 
-		join Payments2.payment p on dle.ukprn = p.ukprn
-			and npp.priceepisodeidentifier = p.priceepisodeidentifier
-			and dle.learnerreferencenumber = p.learnerreferencenumber
-			and npp.deliveryperiod = p.deliveryperiod
-			AND P.TransactionType = npp.TransactionType
-		where dle.jobId = @jobid
-		and dle.Ukprn = @ukprn
-		and npp.Amount <> 0
-		and dle.IsPayable = 0	
+Select
+    @result = sum(p.Amount)
+    from Payments2.dataLockEventNonPayablePeriod npp
+    join Payments2.dataLockEvent dle on npp.DataLockEventId = dle.EventId 
+    join Payments2.payment p on dle.ukprn = p.ukprn
+	    AND dle.LearningAimFrameworkCode = P.LearningAimFrameworkCode
+	    AND dle.LearningAimPathwayCode = P.LearningAimPathwayCode
+	    AND dle.LearningAimProgrammeType = P.LearningAimProgrammeType
+	    AND dle.LearningAimReference = P.LearningAimReference
+	    AND dle.LearningAimStandardCode = P.LearningAimStandardCode
+	    and dle.learnerreferencenumber = p.learnerreferencenumber
+	    and npp.deliveryperiod = p.deliveryperiod
+	    AND npp.TransactionType = P.TransactionType
+    where 		
+	    dle.jobId = @jobid
+	    and dle.Ukprn = @ukprn
+	    and npp.Amount <> 0
+	    and dle.IsPayable = 0	
+	    and p.collectionperiod < @collectionperiod
 ";
             var result = new SqlParameter("@result", SqlDbType.Decimal) { Direction = ParameterDirection.Output };
             await Database.ExecuteSqlCommandAsync(sql, new[] { new SqlParameter("@jobid", jobId), new SqlParameter("@ukprn", ukprn), result }, cancellationToken);
