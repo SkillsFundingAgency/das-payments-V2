@@ -5,6 +5,7 @@
         InProgress = 1,
         Completed, 
         CompletedWithErrors,
-        TimedOut
+        TimedOut,
+        DcTasksFailed
     }
 }
