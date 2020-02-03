@@ -57,9 +57,9 @@ namespace PaymentTools.Pages
                 .ToList()
                 ;
 
-            var lockedCommitments = context.DataLockFailure
-                .Where(x => x.LearnerUln == LearnerUln).ToList()
-                ;
+            //var lockedCommitments = context.DataLockFailure
+            //    .Where(x => x.LearnerUln == LearnerUln).ToList()
+            //    ;
 
             var apprenticeships = context.Apprenticeship.Where(x => x.Uln == LearnerUln).Include(x => x.ApprenticeshipPriceEpisodes).ToList();
             var ape = apprenticeships.SelectMany(x => x.ApprenticeshipPriceEpisodes).ToList();
@@ -67,7 +67,7 @@ namespace PaymentTools.Pages
             CollectionPeriods = earnings.Select(periods => new CollectionPeriod
             {
                 PeriodName = $"R0{periods.Key}",
-                PriceEpisodes = periods.SelectMany(x => x.PriceEpisodes, (period, earning) => MapPriceEpisode(period, earning, paidCommitments, lockedCommitments, apprenticeships)).ToList(),
+                PriceEpisodes = periods.SelectMany(x => x.PriceEpisodes, (period, earning) => MapPriceEpisode(period, earning, paidCommitments/*, lockedCommitments*/, apprenticeships)).ToList(),
             }).ToList();
         }
 
@@ -75,7 +75,7 @@ namespace PaymentTools.Pages
             EarningEventModel earning,
             EarningEventPriceEpisodeModel episode,
             List<PaymentModel> paidCommitments,
-            List<DataLockFailureModel> lockedCommitments,
+            //List<DataLockFailureModel> lockedCommitments,
             List<ApprenticeshipModel> commitments)
         {
             return new PriceEpisode(
@@ -103,12 +103,12 @@ namespace PaymentTools.Pages
                             CollectionPeriod = y.CollectionPeriod,
                             TransactionType = y.TransactionType.ToString(),
                         }).ToList(),
-                    DataLocked = lockedCommitments
-                        .Where(y => y.CollectionPeriod == earning.CollectionPeriod)
-                        .Select(y => new DataLock
-                        {
-                            Amount = y.Amount,
-                        }).ToList(),
+                    //DataLocked = lockedCommitments
+                    //    .Where(y => y.CollectionPeriod == earning.CollectionPeriod)
+                    //    .Select(y => new DataLock
+                    //    {
+                    //        Amount = y.Amount,
+                    //    }).ToList(),
                 }));
         }
 
