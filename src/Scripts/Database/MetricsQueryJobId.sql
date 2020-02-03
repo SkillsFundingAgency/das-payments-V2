@@ -58,7 +58,6 @@ from
 	 JOIN @LatestJobIds lji
 		ON lji.JobId = RPE.JobId
 	 WHERE RPE.CollectionPeriod = @collectionperiod
-     AND RPE.NonPaymentReason IS NULL
 	) RPs
 
 
