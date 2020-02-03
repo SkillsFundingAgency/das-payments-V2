@@ -1229,9 +1229,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             var dcHelper = Scope.Resolve<IDcHelper>();
             var tasks = new List<Task>();
-            for (var i = 1; i <= 35000; i++)
+            for (var i = 1; i < 35000; i++)
             {
-                var fm36 = learners.First().DeepClone();
+                var fm36 = learners.First();
                 fm36.ULN = TestSession.GenerateId(9999999);
                 learners.Add(fm36);
             }
