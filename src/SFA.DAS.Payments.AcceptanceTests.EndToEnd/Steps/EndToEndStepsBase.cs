@@ -1226,14 +1226,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     learners.Add(learner);
                 }
             }
+
             var dcHelper = Scope.Resolve<IDcHelper>();
             var tasks = new List<Task>();
-            for (var uln = 1; uln <= 35000; uln++)
+            for (var i = 1; i <= 35000; i++)
             {
                 var fm36 = learners.First().DeepClone();
-                fm36.ULN = uln;
+                fm36.ULN = TestSession.GenerateId(9999999);
                 learners.Add(fm36);
             }
+
             await dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod, provider.JobId);
         }
 
