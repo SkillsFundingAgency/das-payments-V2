@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DCT.TestDataGenerator;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Abstract;
 using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using TechTalk.SpecFlow;
@@ -35,6 +36,7 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
+using LearningDelivery = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -132,7 +134,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 ilrLearner.Ukprn = ukprn;
                 var learner = TestSession.GetLearner(ukprn, ilrLearner.LearnerId);
-                learner.Course.AimSeqNumber = (short) ilrLearner.AimSequenceNumber;
+                learner.Course.AimSeqNumber = (short)ilrLearner.AimSequenceNumber;
                 learner.Course.StandardCode = ilrLearner.StandardCode;
                 learner.Course.FundingLineType = ilrLearner.FundingLineType;
                 learner.Course.LearnAimRef = ilrLearner.AimReference;
@@ -1225,16 +1227,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 }
             }
             var dcHelper = Scope.Resolve<IDcHelper>();
-            
-
             var tasks = new List<Task>();
-
-            for (provider.JobId = 1; provider.JobId <= 1000; provider.JobId++)
+            for (var uln = 1; uln <= 35000; uln++)
             {
-                tasks.Add(dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod, provider.JobId));
+                var fm36 = learners.First().DeepClone();
+                fm36.ULN = uln;
+                learners.Add(fm36);
             }
-            
-            await Task.WhenAll(tasks);
+            await dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod, provider.JobId);
         }
 
         protected async Task GenerateEarnings(Provider provider)
