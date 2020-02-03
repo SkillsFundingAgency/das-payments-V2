@@ -1231,8 +1231,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var tasks = new List<Task>();
             for (var i = 1; i < 35000; i++)
             {
-                var fm36 = learners.First();
+                var fm36 = new FM36Learner();
                 fm36.ULN = TestSession.GenerateId(9999999);
+                fm36.LearnRefNumber = learners.First().LearnRefNumber;
+                fm36.LearningDeliveries = learners.First().LearningDeliveries;
+                fm36.PriceEpisodes = learners.First().PriceEpisodes;
+                fm36.HistoricEarningOutputValues = learners.First().HistoricEarningOutputValues;
                 learners.Add(fm36);
             }
 
