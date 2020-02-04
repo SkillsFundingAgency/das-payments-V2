@@ -44,7 +44,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 return false;
             Logger.LogWarning(
                     $"Job {job.DcJobId} has timed out.  Start time: {job.StartTime}, timed out at: {timedOutTime}.");
-            return await CompleteJob(job, JobStatus.TimedOut, timedOutTime, cancellationToken)
+            var status = JobStatus.TimedOut;
+            if (job.DcJobSucceeded.HasValue)
+                status = job.DcJobSucceeded.Value ? JobStatus.CompletedWithErrors : JobStatus.DcTasksFailed;
+                
+            return await CompleteJob(job, status, timedOutTime, cancellationToken)
                 .ConfigureAwait(false);
         }
 
