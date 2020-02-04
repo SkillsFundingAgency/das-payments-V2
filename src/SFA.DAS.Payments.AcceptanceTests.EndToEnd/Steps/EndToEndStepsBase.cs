@@ -1228,8 +1228,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
 
             var dcHelper = Scope.Resolve<IDcHelper>();
-            
-            for (var i = 1; i < 35000; i++)
+
+            if (learners.First()
+                    .PriceEpisodes.Last()
+                    .PriceEpisodeValues.PriceEpisodeContractType != GetContractTypeDescription(ContractType.Act1))
+            {
+                return;
+            }
+
+
+            for (var i = 1; i < 10; i++)
             {
                 var fm36 = new FM36Learner
                 {
@@ -1243,7 +1251,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
 
             var tasks = new List<Task>();
-            for (provider.JobId = 1; provider.JobId < 500; provider.JobId++)
+            for (provider.JobId = 1; provider.JobId < 2; provider.JobId++)
             {
                 tasks.Add( dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod, provider.JobId));
             }
