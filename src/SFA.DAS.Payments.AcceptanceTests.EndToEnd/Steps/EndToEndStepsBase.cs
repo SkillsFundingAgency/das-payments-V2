@@ -1228,19 +1228,28 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
 
             var dcHelper = Scope.Resolve<IDcHelper>();
-            var tasks = new List<Task>();
+            
             for (var i = 1; i < 35000; i++)
             {
-                var fm36 = new FM36Learner();
-                fm36.ULN = TestSession.GenerateId(9999999);
-                fm36.LearnRefNumber = learners.First().LearnRefNumber;
-                fm36.LearningDeliveries = learners.First().LearningDeliveries;
-                fm36.PriceEpisodes = learners.First().PriceEpisodes;
-                fm36.HistoricEarningOutputValues = learners.First().HistoricEarningOutputValues;
+                var fm36 = new FM36Learner
+                {
+                    ULN = TestSession.GenerateId(9999999),
+                    LearnRefNumber = learners.First().LearnRefNumber,
+                    LearningDeliveries = learners.First().LearningDeliveries,
+                    PriceEpisodes = learners.First().PriceEpisodes,
+                    HistoricEarningOutputValues = learners.First().HistoricEarningOutputValues
+                };
                 learners.Add(fm36);
             }
 
-            await dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod, provider.JobId);
+            var tasks = new List<Task>();
+            for (provider.JobId = 1; provider.JobId < 500; provider.JobId++)
+            {
+                tasks.Add( dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod, provider.JobId));
+            }
+
+            await Task.WhenAll(tasks);
+
         }
 
         protected async Task GenerateEarnings(Provider provider)
