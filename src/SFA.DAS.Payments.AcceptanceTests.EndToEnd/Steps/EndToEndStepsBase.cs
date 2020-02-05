@@ -1253,10 +1253,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var tasks = new List<Task>();
             for (provider.JobId = 1; provider.JobId < 1000; provider.JobId++)
             {
-                tasks.Add( dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod, provider.JobId));
+                await dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod, provider.JobId);
             }
-
-            await Task.WhenAll(tasks);
 
         }
 
