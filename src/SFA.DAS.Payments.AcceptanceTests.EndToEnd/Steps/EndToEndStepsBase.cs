@@ -1235,41 +1235,26 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 return;
             }
-            
-            //for (var i = 1; i < 15000; i++)
-            //{
-            //    var fm36 = new FM36Learner
-            //    {
-            //        ULN = TestSession.GenerateId(9999999),
-            //        LearnRefNumber = learners.First().LearnRefNumber,
-            //        LearningDeliveries = learners.First().LearningDeliveries,
-            //        PriceEpisodes = learners.First().PriceEpisodes,
-            //        HistoricEarningOutputValues = learners.First().HistoricEarningOutputValues
-            //    };
-            //    learners.Add(fm36);
 
-
-            //    await SendProcessLearnerCommand()
-            //}
+            for (var learnerIndex = 1; learnerIndex < 15000; learnerIndex++)
+            {
+                var fm36 = new FM36Learner
+                {
+                    ULN = TestSession.GenerateId(9999999),
+                    LearnRefNumber = learners.First().LearnRefNumber,
+                    LearningDeliveries = learners.First().LearningDeliveries,
+                    PriceEpisodes = learners.First().PriceEpisodes,
+                    HistoricEarningOutputValues = learners.First().HistoricEarningOutputValues
+                };
+                learners.Add(fm36);
+            }
 
             var tasks = new List<Task>();
-            for (TestSession.Provider.JobId = 1; provider.JobId < 100; TestSession.Provider.JobId ++)
+            for (TestSession.Provider.JobId = 1; provider.JobId <= 2; TestSession.Provider.JobId ++)
             {
-                for (var learnerIndex = 1; learnerIndex < 5000; learnerIndex ++)
-                {
-                     // await dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod, provider.JobId);
-
-                     var fm36 = new FM36Learner
-                     {
-                         ULN = TestSession.GenerateId(9999999),
-                         LearnRefNumber = learners.First().LearnRefNumber,
-                         LearningDeliveries = learners.First().LearningDeliveries,
-                         PriceEpisodes = learners.First().PriceEpisodes,
-                         HistoricEarningOutputValues = learners.First().HistoricEarningOutputValues
-                     };
-                     learners.Add(fm36);
-                     await SendProcessLearnerCommand(fm36);
-                }
+                tasks.AddRange(learners.Select(SendProcessLearnerCommand));
+                await Task.WhenAll(tasks);
+                tasks.Clear();
 
                 await Task.Delay(TimeSpan.FromMinutes(1));
             }
