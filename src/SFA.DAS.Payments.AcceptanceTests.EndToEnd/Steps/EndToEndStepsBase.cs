@@ -1235,9 +1235,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 return;
             }
-
-
-            for (var i = 1; i < 35000; i++)
+            
+            for (var i = 1; i < 15000; i++)
             {
                 var fm36 = new FM36Learner
                 {
