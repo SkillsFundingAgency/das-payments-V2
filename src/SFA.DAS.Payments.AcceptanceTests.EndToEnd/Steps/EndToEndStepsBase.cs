@@ -1237,7 +1237,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
 
 
-            for (var i = 1; i < 500000; i++)
+            for (var i = 1; i < 35000; i++)
             {
                 var fm36 = new FM36Learner
                 {
@@ -1251,15 +1251,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
 
             var tasks = new List<Task>();
-            for (int i = 1; i < 500; i++)
+            for (var i = 1; i < 100; i++)
             {
 
-                for (provider.JobId = 1; provider.JobId < 100; provider.JobId++)
+                for (provider.JobId = 1; provider.JobId < 25; provider.JobId++)
                 {
                      await dcHelper.SendIlrSubmission(learners, provider.Ukprn, AcademicYear, CollectionPeriod, provider.JobId);
                 }
 
-                await Task.Delay(TimeSpan.FromMinutes(2));
+                await Task.Delay(TimeSpan.FromMinutes(1));
             }
 
         }
