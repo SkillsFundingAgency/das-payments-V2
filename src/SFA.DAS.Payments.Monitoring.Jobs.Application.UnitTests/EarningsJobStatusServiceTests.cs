@@ -183,7 +183,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         }
 
         [Test]
-        public async Task Does_Not_Return_Finished_If_All_Messages_Completed_But_DC_Not_Confirmed_Completion()
+        public async Task Does_Not_Return_Finished_If_All_Messages_Completed_But_DC_Not_Confirmed_Completed()
         {
             var jobId = 99;
             job.DcJobEndTime = null;
@@ -275,17 +275,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         {
             var jobId = 99;
             job.LearnerCount = 0;
-            var completedMessage = new CompletedMessage
-            {
-                MessageId = Guid.NewGuid(),
-                JobId = job.Id,
-                Succeeded = true,
-                CompletedTime = DateTimeOffset.UtcNow
-            };
-            var inProgressMessage = new InProgressMessage { MessageId = completedMessage.MessageId, MessageName = "Message" };
-            inProgressMessages.Add(inProgressMessage);
-            inProgressMessages.Add(new InProgressMessage { MessageId = Guid.NewGuid(), MessageName = "Message" });
-            completedMessages.Add(completedMessage);
+            inProgressMessages.Clear();
+            completedMessages.Clear();
 
             var service = mocker.Create<EarningsJobStatusService>();
             await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
@@ -384,11 +375,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         }
 
         [Test]
-        public async Task Records_Job_As_Failed_If_Job_Times_Out()
+        public async Task Records_Job_As_Failed_If_Dc_Tasks_Fails()
         {
             var jobId = 99;
             job.LearnerCount = 0;
             job.StartTime = DateTimeOffset.UtcNow.AddSeconds(-2);
+            job.DcJobSucceeded = false;
             mocker.Mock<IJobServiceConfiguration>()
                 .SetupGet(cfg => cfg.EarningsJobTimeout)
                 .Returns(TimeSpan.FromSeconds(1));  
@@ -398,10 +390,78 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             mocker.Mock<IJobStorageService>()
                 .Verify(
                     x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
-                        It.Is<JobStatus>(status => status == JobStatus.TimedOut),
+                        It.Is<JobStatus>(status => status == JobStatus.DcTasksFailed),
                         It.IsAny<DateTimeOffset>(),
                         It.IsAny<CancellationToken>()), 
                     Times.Once());
         }
+        
+        [Test]
+        public async Task Records_Job_As_Failed_If_Dc_Tasks_Fails_But_Payments_Completed()
+        {
+            var jobId = 99;
+            job.LearnerCount = 0;
+            job.StartTime = DateTimeOffset.UtcNow.AddSeconds(-2);
+            job.DcJobSucceeded = false;
+            job.Status = JobStatus.Completed;
+            mocker.Mock<IJobServiceConfiguration>()
+                .SetupGet(cfg => cfg.EarningsJobTimeout)
+                .Returns(TimeSpan.FromSeconds(1));
+
+            var service = mocker.Create<EarningsJobStatusService>();
+            await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+            mocker.Mock<IJobStorageService>()
+                .Verify(
+                    x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
+                        It.Is<JobStatus>(status => status == JobStatus.DcTasksFailed),
+                        It.IsAny<DateTimeOffset>(),
+                        It.IsAny<CancellationToken>()),
+                    Times.Once());
+        }
+
+        [Test]
+        public async Task Records_Job_As_Completed_With_Errors_If_Dc_Tasks_Succeeds_But_Times_Out()
+        {
+            var jobId = 99;
+            job.LearnerCount = 0;
+            job.StartTime = DateTimeOffset.UtcNow.AddSeconds(-2);
+            job.DcJobSucceeded = true;
+            mocker.Mock<IJobServiceConfiguration>()
+                .SetupGet(cfg => cfg.EarningsJobTimeout)
+                .Returns(TimeSpan.FromSeconds(1));
+
+            var service = mocker.Create<EarningsJobStatusService>();
+            await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+            mocker.Mock<IJobStorageService>()
+                .Verify(
+                    x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
+                        It.Is<JobStatus>(status => status == JobStatus.CompletedWithErrors),
+                        It.IsAny<DateTimeOffset>(),
+                        It.IsAny<CancellationToken>()),
+                    Times.Once());
+        }
+
+        [Test]
+        public async Task Records_Job_As_Timed_Out_If_Dc_Tasks_Not_Completed()
+        {
+            var jobId = 99;
+            job.LearnerCount = 0;
+            job.StartTime = DateTimeOffset.UtcNow.AddSeconds(-2);
+            job.DcJobSucceeded = null;
+            mocker.Mock<IJobServiceConfiguration>()
+                .SetupGet(cfg => cfg.EarningsJobTimeout)
+                .Returns(TimeSpan.FromSeconds(1));
+
+            var service = mocker.Create<EarningsJobStatusService>();
+            await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+            mocker.Mock<IJobStorageService>()
+                .Verify(
+                    x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
+                        It.Is<JobStatus>(status => status == JobStatus.TimedOut),
+                        It.IsAny<DateTimeOffset>(),
+                        It.IsAny<CancellationToken>()),
+                    Times.Once());
+        }
+
     }
 }

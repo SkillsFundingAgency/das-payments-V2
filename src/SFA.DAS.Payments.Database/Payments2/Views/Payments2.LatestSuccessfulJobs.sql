@@ -6,7 +6,8 @@ with validJobs as (
 		max(IlrSubmissionTime) [IlrSubmissionTime],
 		Ukprn
 	from Payments2.Job
-	where status in (2,3)
+	where status in (2,3) 
+		and DCJobSucceeded = 1
 	group by Ukprn
 )
 

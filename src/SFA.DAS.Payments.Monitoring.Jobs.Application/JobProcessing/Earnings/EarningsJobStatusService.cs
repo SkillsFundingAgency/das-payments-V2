@@ -23,6 +23,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
 
         protected override async Task<bool> CheckSavedJobStatus(JobModel job, CancellationToken cancellationToken)
         {
+            if (job.Status == JobStatus.InProgress && job.LearnerCount > 0)
+                return false;
+
+            if (job.DcJobSucceeded.HasValue && !job.DcJobSucceeded.Value && job.Status != JobStatus.DcTasksFailed)
+            {
+                job.Status = JobStatus.DcTasksFailed;
+                await JobStorageService.SaveJobStatus(job.DcJobId.Value, JobStatus.DcTasksFailed,
+                    job.StartTime, cancellationToken).ConfigureAwait(false);
+            }
+
             if (job.Status != JobStatus.InProgress && job.DcJobSucceeded.HasValue)
             {
                 Logger.LogWarning($"Job {job.DcJobId} has already finished. Status: {job.Status}");
@@ -48,12 +58,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
 
         protected override async Task<bool> CompleteJob(JobModel job, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken)
         {
+            status = job.DcJobSucceeded.HasValue && !job.DcJobSucceeded.Value
+                ? JobStatus.DcTasksFailed
+                : status;
             if (!await base.CompleteJob(job, status, endTime, cancellationToken))
                 return false;
             if (!job.DcJobSucceeded.HasValue)
                 return false;
             if (job.JobType == JobType.EarningsJob || job.JobType == JobType.ComponentAcceptanceTestEarningsJob)
-                await EventPublisher.SubmissionFinished(job.DcJobSucceeded.Value, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
+                await EventPublisher.SubmissionFinished(status == JobStatus.Completed || status == JobStatus.CompletedWithErrors, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
             return true;
         }
 

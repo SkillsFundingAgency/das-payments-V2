@@ -20,14 +20,14 @@
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="" />
     <Parameter Name="ConsoleLogLevel" DefaultValue="" />
-    <Parameter Name="Audit_EarningEvents_EndpointName" DefaultValue="" />
-    <Parameter Name="Audit_EarningEvents_FailedMessagesQueue" DefaultValue="" />
-    <Parameter Name="Audit_DataLock_EndpointName" DefaultValue="" />
-    <Parameter Name="Audit_DataLock_FailedMessagesQueue" DefaultValue="" />
-    <Parameter Name="Audit_FundingSource_EndpointName" DefaultValue="" />
-    <Parameter Name="Audit_FundingSource_FailedMessagesQueue" DefaultValue="" />
-    <Parameter Name="Audit_RequiredPayments_EndpointName" DefaultValue="" />
-    <Parameter Name="Audit_RequiredPayments_FailedMessagesQueue" DefaultValue="" />
+    <Parameter Name="Audit_EarningEvents_EndpointName" DefaultValue="sfa-das-payments-audit-earningevents" />
+    <Parameter Name="Audit_EarningEvents_FailedMessagesQueue" DefaultValue="sfa-das-payments-audit-earningevents-errors" />
+    <Parameter Name="Audit_DataLock_EndpointName" DefaultValue="sfa-das-payments-audit-datalock" />
+    <Parameter Name="Audit_DataLock_FailedMessagesQueue" DefaultValue="sfa-das-payments-audit-datalock-errors" />
+    <Parameter Name="Audit_FundingSource_EndpointName" DefaultValue="sfa-das-payments-audit-fundingsource" />
+    <Parameter Name="Audit_FundingSource_FailedMessagesQueue" DefaultValue="sfa-das-payments-audit-fundingsource-errors" />
+    <Parameter Name="Audit_RequiredPayments_EndpointName" DefaultValue="sfa-das-payments-audit-requiredpayments" />
+    <Parameter Name="Audit_RequiredPayments_FailedMessagesQueue" DefaultValue="sfa-das-payments-audit-requiredpayments-errors" />
     <Parameter Name="Audit_BatchFailureTimeoutInSeconds" DefaultValue="60" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="Placement_Constraints" DefaultValue="" />
