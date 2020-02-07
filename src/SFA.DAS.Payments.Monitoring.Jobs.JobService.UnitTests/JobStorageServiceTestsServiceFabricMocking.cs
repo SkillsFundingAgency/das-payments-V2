@@ -35,12 +35,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
         [Test]
         public async Task TimedOut_Jobs_Should_Have_Status_Updated_When_Subsequent_DCJob_Confirmation_Is_Received()
         {
-            var dictionary = await reliableStateManager.GetOrAddAsync<IReliableDictionary2<long, JobModel>>(JobStorageService.JobCacheKey);
-            await dictionary.AddAsync(transaction, DCJobId, new JobModel{ DcJobId = DCJobId, Status = JobStatus.TimedOut });
+            var jobModelDictionary = await reliableStateManager.GetOrAddAsync<IReliableDictionary2<long, JobModel>>(JobStorageService.JobCacheKey);
+            await jobModelDictionary.AddAsync(transaction, DCJobId, new JobModel{ DcJobId = DCJobId, Status = JobStatus.TimedOut });
 
             await jobsStorageService.StoreDcJobStatus(DCJobId, true, CancellationToken.None);
 
-            var actualStatus = (await dictionary.TryGetValueAsync(transaction, DCJobId)).Value.Status;
+            var actualStatus = (await jobModelDictionary.TryGetValueAsync(transaction, DCJobId)).Value.Status;
             Assert.That(actualStatus, Is.EqualTo(JobStatus.CompletedWithErrors));
         }
     }
