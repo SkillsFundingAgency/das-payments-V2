@@ -26,6 +26,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DCT.TestDataGenerator;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Abstract;
+using Newtonsoft.Json;
 using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -1236,26 +1237,45 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 return;
             }
 
+            var tasks = new List<Task>();
+
+            var db = Scope.Resolve<TestPaymentsDataContext>();
+            var approvalsList = await db.Apprenticeship.AsNoTracking()
+                .Where(a => a.Uln == learners.First().ULN)
+                .ToListAsync();
+
             for (var learnerIndex = 1; learnerIndex < 15000; learnerIndex++)
             {
                 var fm36 = new FM36Learner
                 {
-                    ULN = TestSession.GenerateId(9999999),
+                    ULN = TestSession.GenerateId(99999999),
                     LearnRefNumber = learners.First().LearnRefNumber,
                     LearningDeliveries = learners.First().LearningDeliveries,
                     PriceEpisodes = learners.First().PriceEpisodes,
                     HistoricEarningOutputValues = learners.First().HistoricEarningOutputValues
                 };
-                learners.Add(fm36);
+
+                db.Apprenticeship.AddRange(approvalsList.Select(x =>
+                {
+                    var apprenticeship = JsonConvert.DeserializeObject<ApprenticeshipModel>(x.ToJson());
+                    apprenticeship.Id = fm36.ULN;
+                    apprenticeship.Uln = fm36.ULN;
+                    x.ApprenticeshipPriceEpisodes.ForEach(o =>
+                    {
+                        o.ApprenticeshipId = fm36.ULN;
+                        o.Id = 0;
+                    });
+                    return apprenticeship;
+                }));
+
+                await db.SaveChangesAsync();
+
+                tasks.Add(SendProcessLearnerCommand(fm36));
             }
 
-            var tasks = new List<Task>();
-            for (TestSession.Provider.JobId = 1; provider.JobId <= 2; TestSession.Provider.JobId ++)
+            for (TestSession.Provider.JobId = 1; provider.JobId <= 2; TestSession.Provider.JobId++)
             {
-                tasks.AddRange(learners.Select(SendProcessLearnerCommand));
                 await Task.WhenAll(tasks);
-                tasks.Clear();
-
                 await Task.Delay(TimeSpan.FromMinutes(1));
             }
 

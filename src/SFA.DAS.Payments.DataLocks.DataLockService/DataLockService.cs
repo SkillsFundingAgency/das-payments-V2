@@ -8,6 +8,7 @@ using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.DataLocks.Application.Cache;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Application.Services;
 using SFA.DAS.Payments.DataLocks.DataLockService.Interfaces;
@@ -16,9 +17,11 @@ using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.DataLocks.DataLockService
 {
+
     [StatePersistence(StatePersistence.Volatile)]
     public class DataLockService : Actor, IDataLockService
     {
@@ -28,6 +31,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         private readonly IDataLockProcessor dataLockProcessor;
         private readonly IApprenticeshipUpdatedProcessor apprenticeshipUpdatedProcessor;
         private readonly ITelemetry telemetry;
+        private  IActorIdProvider actorIdProvider;
         private readonly Func<IApprenticeshipRepository> apprenticeshipRepository;
 
         public DataLockService(
@@ -39,7 +43,8 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             IActorDataCache<List<long>> providers,
             IDataLockProcessor dataLockProcessor,
             IApprenticeshipUpdatedProcessor apprenticeshipUpdatedProcessor,
-            ITelemetry telemetry
+            ITelemetry telemetry,
+            IActorIdProvider actorIdProvider
             )
             : base(actorService, actorId)
         {
@@ -50,6 +55,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             this.dataLockProcessor = dataLockProcessor;
             this.apprenticeshipUpdatedProcessor = apprenticeshipUpdatedProcessor ?? throw new ArgumentNullException(nameof(apprenticeshipUpdatedProcessor));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
+            this.actorIdProvider = actorIdProvider;
         }
 
         public async Task<List<DataLockEvent>> HandleEarning(ApprenticeshipContractType1EarningEvent message, CancellationToken cancellationToken)
@@ -144,32 +150,34 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
 
         private async Task Initialise()
         {
-            try
-            {
-                paymentLogger.LogVerbose($"Actor already initialised for apprenticeship {Id}");
-                if (await this.apprenticeships.IsInitialiseFlagIsSet())
-                    return;
-                var stopwatch = Stopwatch.StartNew();
-                paymentLogger.LogInfo($"Initialising actor {Id}");
-                var uln = long.Parse(Id.ToString());
-                using (var repository = apprenticeshipRepository())
-                {
-                    var providerApprenticeships = await repository.ApprenticeshipsByUln(uln).ConfigureAwait(false);
-                    await this.apprenticeships.AddOrReplace(uln.ToString(), providerApprenticeships).ConfigureAwait(false);
-                    await this.apprenticeships.AddOrReplace(CacheKeys.DuplicateApprenticeshipsKey, providerApprenticeships).ConfigureAwait(false); //TODO: no need for this anymore
-                    var providerIds = await repository.GetProviderIdsByUln(uln);
-                    await this.providers.AddOrReplace(CacheKeys.ProvidersKey, providerIds).ConfigureAwait(false);
-                }
-                await apprenticeships.SetInitialiseFlag().ConfigureAwait(false);
-                paymentLogger.LogInfo($"Initialised actor for Id {Id}");
-                stopwatch.Stop();
-                TrackInfrastructureEvent("DataLockService.Initialise", stopwatch);
-            }
-            catch (Exception e)
-            {
-                paymentLogger.LogError($"Error initialising the actor: {Id}. Error: {e.Message}", e);
-                throw;
-            }
+            //try
+            //{
+            //    paymentLogger.LogVerbose($"Actor already initialised for apprenticeship {Id}");
+            //    if (await this.apprenticeships.IsInitialiseFlagIsSet())
+            //        return;
+            //    var stopwatch = Stopwatch.StartNew();
+            //    paymentLogger.LogInfo($"Initialising actor {Id}");
+            //    var uln = long.Parse(Id.ToString());
+            //    using (var repository = apprenticeshipRepository())
+            //    {
+            //        var providerApprenticeships = await repository.ApprenticeshipsByUln(uln).ConfigureAwait(false);
+            //        await this.apprenticeships.AddOrReplace(uln.ToString(), providerApprenticeships).ConfigureAwait(false);
+            //        await this.apprenticeships.AddOrReplace(CacheKeys.DuplicateApprenticeshipsKey, providerApprenticeships).ConfigureAwait(false); //TODO: no need for this anymore
+            //        var providerIds = await repository.GetProviderIdsByUln(uln);
+            //        await this.providers.AddOrReplace(CacheKeys.ProvidersKey, providerIds).ConfigureAwait(false);
+            //    }
+            //    await apprenticeships.SetInitialiseFlag().ConfigureAwait(false);
+            //    paymentLogger.LogInfo($"Initialised actor for Id {Id}");
+            //    stopwatch.Stop();
+            //    TrackInfrastructureEvent("DataLockService.Initialise", stopwatch);
+            //}
+            //catch (Exception e)
+            //{
+            //    paymentLogger.LogError($"Error initialising the actor: {Id}. Error: {e.Message}", e);
+            //    throw;
+            //}
+
+             await Task.CompletedTask;
         }
         
         private void TrackInfrastructureEvent(string eventName, Stopwatch stopwatch)
