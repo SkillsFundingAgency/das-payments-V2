@@ -25,6 +25,7 @@
     <Parameter Name="EasApiEndpoint" Value="" />
     <Parameter Name="EasApiUsername" Value=""/>
     <Parameter Name="EasApiPassword" Value=""/>
+    <Parameter Name="EasCertificateThumbprint" Value=""/>
   </Section>
 
 </Settings>

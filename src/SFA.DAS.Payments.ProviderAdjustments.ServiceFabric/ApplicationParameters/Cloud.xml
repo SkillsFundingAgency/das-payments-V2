@@ -15,5 +15,6 @@
     <Parameter Name="EasApiPassword" Value="__EasApiPassword__" />
     <Parameter Name="ProviderAdjustmentService_EndpointName" Value="__ProviderAdjustmentService_EndpointName__" />
     <Parameter Name="ProviderAdjustmentService_FailedMessagesQueue" Value="__ProviderAdjustmentService_FailedMessagesQueue__" />
+    <Parameter Name="EasCertificateThumbprint" Value="__EasCertificateThumbprint__" />
   </Parameters>
 </Application>

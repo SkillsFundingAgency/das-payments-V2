@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Service
     {
         private readonly ILifetimeScope lifetimeScope;
         private readonly IPaymentLogger logger;
-
+        
         public Service(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger logger)
             : base(context)
         {
@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Service
         protected override async Task RunAsync(CancellationToken cancellationToken)
         {
             var initialised = false;
-
+            
             try
             {
                 logger.LogDebug("Starting the Provider Ajustments service.");

@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests.GivenAProviderAdjustmen
                 var expectedTotal = testEarnings.Sum(x => x.Amount);
 
                 actual.Should().HaveCount(testEarnings.Count);
-                actual.Sum(x => x.Amount).Should().Be(expectedTotal);
+                actual.Sum(x => x.Amount).Should().Be(expectedTotal); 
             }
 
             [Test, AutoData]

@@ -16,6 +16,7 @@
     <Parameter Name="EasApiEndpoint" DefaultValue="" />
     <Parameter Name="EasApiUsername" DefaultValue="" />
     <Parameter Name="EasApiPassword" DefaultValue="" />
+    <Parameter Name="EasCertificateThumbprint" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -41,6 +42,7 @@
             <Parameter Name="EasApiEndpoint" Value="[EasApiEndpoint]" />
             <Parameter Name="EasApiUsername" Value="[EasApiUsername]" />
             <Parameter Name="EasApiPassword" Value="[EasApiPassword]" />
+            <Parameter Name="EasCertificateThumbprint" Value="[EasCertificateThumbprint]" />
           </Section>
         </Settings>
       </ConfigOverride>

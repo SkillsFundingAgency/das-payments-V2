@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
         private readonly IBulkWriter<ProviderAdjustment> bulkWriter;
         private readonly string apiUsername;
         private readonly string apiPassword;
-       
+
         public ProviderAdjustmentRepository(
             IBulkWriter<ProviderAdjustment> bulkWriter, 
             IPaymentsDataContext dataContext, 
@@ -40,7 +41,29 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
         {
             this.bulkWriter = bulkWriter;
             this.dataContext = dataContext;
-            client = new HttpClient{BaseAddress = new Uri(configHelper.GetSetting("EasApiEndpoint"))};
+            var certificateThumbprint = configHelper.GetSetting("EasCertificateThumbprint");
+
+            var handler = new HttpClientHandler();
+            handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+            handler.ServerCertificateCustomValidationCallback =
+                (httpRequestMessage, certificate, cetChain, policyErrors) =>
+                {
+                    var thumbprintMatches = certificate.GetCertHashString()?.Equals(certificateThumbprint);
+                    if (thumbprintMatches.HasValue && thumbprintMatches.Value)
+                    {
+                        return true;
+                    }
+
+                    if (policyErrors == SslPolicyErrors.None)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                };
+
+            client = new HttpClient(handler){BaseAddress = new Uri(configHelper.GetSetting("EasApiEndpoint"))};
+            
             apiUsername = configHelper.GetSetting("EasApiUsername");
             apiPassword = configHelper.GetSetting("EasApiPassword");
             this.mapper = mapper;
@@ -50,7 +73,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
         {
             var token = await GetToken();
             
-            var request = new HttpRequestMessage(HttpMethod.Get, "api/v1/Eas/{academicYear}");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/Eas/{academicYear}");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var httpResponse = await client.SendAsync(request).ConfigureAwait(false);
 
@@ -67,8 +90,9 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
         {
             var body = $"{{\"userName\":\"{apiUsername}\", \"password\": \"{apiPassword}\"}}";
             var content = new ByteArrayContent(Encoding.UTF8.GetBytes(body));
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            var httpResponse = await client.PostAsync($"api/v1/token", content);
+            var httpResponse = await client.PostAsync("api/v1/token", content);
             var responseContent = await httpResponse.Content.ReadAsStringAsync();
             if (httpResponse.IsSuccessStatusCode)
             {
