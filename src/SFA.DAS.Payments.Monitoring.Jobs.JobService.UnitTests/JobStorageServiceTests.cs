@@ -59,6 +59,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
         public async Task TimedOut_Jobs_Should_Have_Status_Updated_When_Subsequent_DCJob_Confirmation_Is_Received(JobStatus status)
         {
             await jobStorageService.StoreDcJobStatus(jobModel.Id, true, new CancellationToken());
+            
         }
     }
 }
