@@ -1,14 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Autofac.Extras.Moq;
 using Microsoft.ServiceFabric.Data.Collections;
-using Moq;
 using NUnit.Framework;
 using ServiceFabric.Mocks;
-using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
-using SFA.DAS.Payments.ServiceFabric.Core;
-using SFA.DAS.Payments.ServiceFabric.Core.Batch;
+using SFA.DAS.Payments.Tests.Core;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
 {
@@ -18,11 +15,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
         private MockReliableStateManager reliableStateManager;
         private MockTransaction transaction;
 
-        private Mock<IReliableStateManagerProvider> reliableStateManagerProvider;
-        private Mock<IReliableStateManagerTransactionProvider> reliableStateManagerTransactionProvider;
-        private Mock<IJobsDataContext> jobsDataContext;
-        private Mock<IPaymentLogger> paymentLogger;
-
         private JobStorageService jobsStorageService;
 
         private long DCJobId = 114;
@@ -30,24 +22,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
         [SetUp]
         public void Setup()
         {
-            reliableStateManager = new MockReliableStateManager();
-            reliableStateManagerProvider = new Mock<IReliableStateManagerProvider>();
-            reliableStateManagerProvider.Setup(x => x.Current).Returns(reliableStateManager);
+            using (var mocker = AutoMock.GetLoose())
+            {
+                reliableStateManager = mocker.SetupReliableStateManagerProvision();
+                transaction = mocker.SetupTransactionProvision(reliableStateManager);
+                mocker.SetupReliableStateManagerTransactionProvision(transaction);
 
-            transaction = new MockTransaction(reliableStateManager, 100112);
-
-            reliableStateManagerTransactionProvider = new Mock<IReliableStateManagerTransactionProvider>();
-            reliableStateManagerTransactionProvider.Setup(x => x.Current).Returns(transaction);
-
-            jobsDataContext = new Mock<IJobsDataContext>();
-            paymentLogger = new Mock<IPaymentLogger>();
-
-            jobsStorageService = new JobStorageService(
-                reliableStateManagerProvider.Object,
-                reliableStateManagerTransactionProvider.Object,
-                jobsDataContext.Object,
-                paymentLogger.Object
-            );
+                jobsStorageService = mocker.Create<JobStorageService>();
+            }
         }
 
         [Test]
