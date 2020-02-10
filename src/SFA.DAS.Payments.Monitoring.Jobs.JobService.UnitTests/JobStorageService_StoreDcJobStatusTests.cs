@@ -42,8 +42,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
         [Test]
         public async Task TimedOut_Jobs_Should_Have_Status_Updated_When_Subsequent_DCJob_Confirmation_Is_Received()
         {
-            var jobModelDictionary = await reliableStateManager.GetOrAddAsync<IReliableDictionary2<long, JobModel>>(JobStorageService.JobCacheKey);
-            await jobModelDictionary.AddAsync(transaction, DCJobId, new JobModel{ DcJobId = DCJobId, Status = JobStatus.TimedOut });
+            var jobModelDictionary =
+                await reliableStateManager.GetOrAddAsync<IReliableDictionary2<long, JobModel>>(JobStorageService
+                    .JobCacheKey);
+            await jobModelDictionary.AddAsync(transaction, DCJobId,
+                new JobModel {DcJobId = DCJobId, Status = JobStatus.TimedOut});
 
             await jobsStorageService.StoreDcJobStatus(DCJobId, true, CancellationToken.None);
 
@@ -54,38 +57,47 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
         [Test]
         public void Jobs_Not_In_The_Cache_Should_Throw_Invalid_Operation_Exception()
         {
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await jobsStorageService.StoreDcJobStatus(DCJobId, true, CancellationToken.None));
+            Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await jobsStorageService.StoreDcJobStatus(DCJobId, true, CancellationToken.None));
         }
 
         [Test]
         public async Task Jobs_Should_Have_DcJobSucceeded_Value_Updated()
         {
-            var jobModelDictionary = await reliableStateManager.GetOrAddAsync<IReliableDictionary2<long, JobModel>>(JobStorageService.JobCacheKey);
-            await jobModelDictionary.AddAsync(transaction, DCJobId, new JobModel { DcJobId = DCJobId });
+            var jobModelDictionary =
+                await reliableStateManager.GetOrAddAsync<IReliableDictionary2<long, JobModel>>(JobStorageService
+                    .JobCacheKey);
+            await jobModelDictionary.AddAsync(transaction, DCJobId, new JobModel {DcJobId = DCJobId});
 
             await jobsStorageService.StoreDcJobStatus(DCJobId, true, CancellationToken.None);
 
-            var actualDcJobSucceeded = (await jobModelDictionary.TryGetValueAsync(transaction, DCJobId)).Value.DcJobSucceeded;
+            var actualDcJobSucceeded =
+                (await jobModelDictionary.TryGetValueAsync(transaction, DCJobId)).Value.DcJobSucceeded;
             Assert.That(actualDcJobSucceeded, Is.True);
         }
 
         [Test]
         public async Task Jobs_Should_Have_DcJobEndTime_Value_Updated()
         {
-            var jobModelDictionary = await reliableStateManager.GetOrAddAsync<IReliableDictionary2<long, JobModel>>(JobStorageService.JobCacheKey);
-            await jobModelDictionary.AddAsync(transaction, DCJobId, new JobModel { DcJobId = DCJobId });
+            var jobModelDictionary =
+                await reliableStateManager.GetOrAddAsync<IReliableDictionary2<long, JobModel>>(JobStorageService
+                    .JobCacheKey);
+            await jobModelDictionary.AddAsync(transaction, DCJobId, new JobModel {DcJobId = DCJobId});
 
             await jobsStorageService.StoreDcJobStatus(DCJobId, true, CancellationToken.None);
 
-            var actualDcJobEndTime = (await jobModelDictionary.TryGetValueAsync(transaction, DCJobId)).Value.DcJobEndTime;
+            var actualDcJobEndTime =
+                (await jobModelDictionary.TryGetValueAsync(transaction, DCJobId)).Value.DcJobEndTime;
             Assert.That(actualDcJobEndTime, Is.Not.Null);
         }
 
         [Test]
         public async Task DataContext_Should_Be_Saved()
         {
-            var jobModelDictionary = await reliableStateManager.GetOrAddAsync<IReliableDictionary2<long, JobModel>>(JobStorageService.JobCacheKey);
-            await jobModelDictionary.AddAsync(transaction, DCJobId, new JobModel { DcJobId = DCJobId });
+            var jobModelDictionary =
+                await reliableStateManager.GetOrAddAsync<IReliableDictionary2<long, JobModel>>(JobStorageService
+                    .JobCacheKey);
+            await jobModelDictionary.AddAsync(transaction, DCJobId, new JobModel {DcJobId = DCJobId});
 
             await jobsStorageService.StoreDcJobStatus(DCJobId, true, CancellationToken.None);
 
