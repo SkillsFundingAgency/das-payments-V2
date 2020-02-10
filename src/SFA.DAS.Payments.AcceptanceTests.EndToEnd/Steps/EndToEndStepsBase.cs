@@ -1244,7 +1244,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 .Where(a => a.Uln == learners.First().ULN)
                 .ToListAsync();
 
-            for (var learnerIndex = 1; learnerIndex < 15000; learnerIndex++)
+            for (var learnerIndex = 1; learnerIndex < 60000; learnerIndex++)
             {
                 var fm36 = new FM36Learner
                 {
@@ -1255,21 +1255,27 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     HistoricEarningOutputValues = learners.First().HistoricEarningOutputValues
                 };
 
-                db.Apprenticeship.AddRange(approvalsList.Select(x =>
+                try
                 {
-                    var apprenticeship = JsonConvert.DeserializeObject<ApprenticeshipModel>(x.ToJson());
-                    apprenticeship.Id = fm36.ULN;
-                    apprenticeship.Uln = fm36.ULN;
-                    x.ApprenticeshipPriceEpisodes.ForEach(o =>
+                    db.Apprenticeship.AddRange(approvalsList.Select(x =>
                     {
-                        o.ApprenticeshipId = fm36.ULN;
-                        o.Id = 0;
-                    });
-                    return apprenticeship;
-                }));
-
-                await db.SaveChangesAsync();
-
+                        var apprenticeship = JsonConvert.DeserializeObject<ApprenticeshipModel>(x.ToJson());
+                        apprenticeship.Id = fm36.ULN;
+                        apprenticeship.Uln = fm36.ULN;
+                        x.ApprenticeshipPriceEpisodes.ForEach(o =>
+                        {
+                            o.ApprenticeshipId = fm36.ULN;
+                            o.Id = 0;
+                        });
+                        return apprenticeship;
+                    }));
+                    await db.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+                
                 tasks.Add(SendProcessLearnerCommand(fm36));
             }
 
