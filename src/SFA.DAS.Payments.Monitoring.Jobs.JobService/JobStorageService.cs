@@ -113,7 +113,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             {
                 await SaveJobStatus(jobId,
                     job.DcJobSucceeded.Value ? JobStatus.CompletedWithErrors : JobStatus.DcTasksFailed,
-                     DateTimeOffset.Now, cancellationToken);
+                    job.EndTime ?? DateTimeOffset.UtcNow, cancellationToken);
             }
         }
 
