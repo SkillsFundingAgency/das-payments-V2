@@ -1,7 +1,5 @@
-using System;
 using System.Linq;
 using System.Net;
-using System.Web;
 using Autofac;
 using NServiceBus;
 using NServiceBus.Features;
@@ -62,7 +60,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 endpointConfiguration.Pipeline.Register(typeof(TelemetryHandlerBehaviour), "Sends handler timing to telemetry service.");
                 endpointConfiguration.EnableCallbacks(makesRequests: false);
                 if (config.ProcessMessageSequentially) endpointConfiguration.LimitMessageProcessingConcurrencyTo(1);
-
+                
                 endpointConfiguration.Pipeline.Register(typeof(ExceptionHandlingBehavior), "Logs exceptions to the payments logger");
 
                 var recoverability = endpointConfiguration.Recoverability();

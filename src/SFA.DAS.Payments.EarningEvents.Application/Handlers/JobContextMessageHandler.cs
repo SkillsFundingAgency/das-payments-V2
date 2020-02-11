@@ -89,7 +89,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 
                     if (fm36Output == null)
                     {
-                        return true;
+                        logger.LogInfo("Could not find valid FM36 - aborting");
+                        return false;
                     }
 
                     cancellationToken.ThrowIfCancellationRequested();
@@ -172,12 +173,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 {
                     if (subscriptionMessage.Tasks.Any(t => t.Tasks.Contains(SubmissionJob.JobSuccess)))
                     {
+                        logger.LogInfo("Job contains a submission succeeded task - not processing any learners");
                         await HandleSubmissionEvent<SubmissionSucceededEvent>(message);
                         return true;
                     }
 
                     if (subscriptionMessage.Tasks.Any(t => t.Tasks.Contains(SubmissionJob.JobFailure)))
                     {
+                        logger.LogInfo("Job contains a submission failed task - not processing any learners");
                         await HandleSubmissionEvent<SubmissionFailedEvent>(message);
                         return true;
                     }
