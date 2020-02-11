@@ -60,7 +60,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.UnitTests.Handle
         [Test]
         public async Task WhenAnAccountHasMultipleTransferSendersThenTheMessageIsRoutedToBoth()
         {
-            var expectedAccounts = new List<Tuple<long, long?>> { new Tuple<long, long?>( 435345, 4354353 ), new Tuple<long, long?>( 45684532, 32497234 ) };
+            var expectedAccounts = new List<Tuple<long, long?>> { new Tuple<long, long?>(435345, 4354353), new Tuple<long, long?>(45684532, 32497234) };
             _levyFundingSourceRepository.Setup(x => x.GetEmployerAccountsByUkprn(_event.Ukprn, It.IsAny<CancellationToken>())).ReturnsAsync(expectedAccounts);
 
             _levyMessageRoutingService.Setup(x => x.GetDestinationAccountId(expectedAccounts[0].Item1, expectedAccounts[0].Item2)).Returns(expectedAccounts[0].Item2.Value);
@@ -69,8 +69,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.UnitTests.Handle
             var sender1LevyFundedService = new Mock<ILevyFundedService>();
             var sender2LevyFundedService = new Mock<ILevyFundedService>();
 
-            _proxyFactory.Setup(x => x.CreateActorProxy<ILevyFundedService>(It.Is<Uri>(y => y.ToString() == LevyFundedServiceConstants.ServiceUri), It.Is<ActorId>(y => y.GetLongId() == expectedAccounts[0].Item2.Value), null)).Returns(sender1LevyFundedService.Object);
-            _proxyFactory.Setup(x => x.CreateActorProxy<ILevyFundedService>(It.Is<Uri>(y => y.ToString() == LevyFundedServiceConstants.ServiceUri), It.Is<ActorId>(y => y.GetLongId() == expectedAccounts[1].Item2.Value), null)).Returns(sender2LevyFundedService.Object);
+            _proxyFactory.Setup(x => x.CreateActorProxy<ILevyFundedService>(It.Is<Uri>(y => y.ToString() == LevyFundedServiceConstants.ServiceUri), It.Is<ActorId>(y => y.GetStringId() == expectedAccounts[0].Item2.ToString()), null)).Returns(sender1LevyFundedService.Object);
+            _proxyFactory.Setup(x => x.CreateActorProxy<ILevyFundedService>(It.Is<Uri>(y => y.ToString() == LevyFundedServiceConstants.ServiceUri), It.Is<ActorId>(y => y.GetStringId() == expectedAccounts[1].Item2.Value.ToString()), null)).Returns(sender2LevyFundedService.Object);
 
             await _eventHandler.Handle(_event, Mock.Of<IMessageHandlerContext>());
 
@@ -79,3 +79,4 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.UnitTests.Handle
         }
     }
 }
+
