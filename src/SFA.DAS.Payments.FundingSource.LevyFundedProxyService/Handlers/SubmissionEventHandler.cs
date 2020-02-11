@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
 
         private async Task InvokeSubmissionAction(long accountId, T message)
         {
-            var actorId = new ActorId(accountId);
+            var actorId = new ActorId(accountId.ToString());
             var uri = new Uri(LevyFundedServiceConstants.ServiceUri);
             var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(uri, actorId);
 
