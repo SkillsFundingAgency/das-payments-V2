@@ -11,6 +11,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using SFA.DAS.Payments.Application.Batch;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.ProviderAdjustments.Domain;
@@ -28,6 +29,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
     {
         private readonly HttpClient client;
         private readonly IPaymentsDataContext dataContext;
+        private readonly IPaymentLogger logger;
         private readonly IMapper mapper;
         private readonly IBulkWriter<ProviderAdjustment> bulkWriter;
         private readonly string apiUsername;
@@ -35,7 +37,8 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
 
         public ProviderAdjustmentRepository(
             IBulkWriter<ProviderAdjustment> bulkWriter, 
-            IPaymentsDataContext dataContext, 
+            IPaymentsDataContext dataContext,
+            IPaymentLogger logger,
             IConfigurationHelper configHelper,
             IMapper mapper)
         {
@@ -67,22 +70,30 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
             apiUsername = configHelper.GetSetting("EasApiUsername");
             apiPassword = configHelper.GetSetting("EasApiPassword");
             this.mapper = mapper;
+            this.logger = logger;
         }
 
         public async Task<List<ProviderAdjustment>> GetCurrentProviderAdjustments(int academicYear)
         {
-            var token = await GetToken();
+            logger.LogInfo("Getting Current Provider Adjustments - Getting Token");
             
+            var token = await GetToken();
+            logger.LogInfo("Token retrieved");
+
             var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/Eas/{academicYear}");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            logger.LogInfo("Getting data from API");
             var httpResponse = await client.SendAsync(request).ConfigureAwait(false);
 
             var responseContent = await httpResponse.Content.ReadAsStringAsync();
             if (httpResponse.IsSuccessStatusCode)
             {
+                logger.LogInfo("Successfully retrieved records from API");
                 return JsonConvert.DeserializeObject<List<ProviderAdjustment>>(responseContent); 
             }
             
+            logger.LogError($"Error getting EAS records: {responseContent}, {httpResponse}");
             throw new InvalidOperationException($"Error getting EAS records: {responseContent}");
         }
 
