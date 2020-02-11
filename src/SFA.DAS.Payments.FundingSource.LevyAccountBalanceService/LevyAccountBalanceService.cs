@@ -8,12 +8,16 @@ using Autofac;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using Microsoft.ServiceFabric.Data.Collections;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
+using Microsoft.ServiceFabric.Services.Remoting;
+using Microsoft.ServiceFabric.Services.Remoting.FabricTransport;
 using Microsoft.ServiceFabric.Services.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.ServiceFabric.Core;
 
+[assembly: FabricTransportServiceRemotingProvider(RemotingListenerVersion = RemotingListenerVersion.V2_1,
+    RemotingClientVersion = RemotingClientVersion.V2_1)]
 namespace SFA.DAS.Payments.FundingSource.LevyAccountBalanceService
 {
     [StatePersistence(StatePersistence.Persisted)]
