@@ -8,6 +8,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
+using SFA.DAS.Payments.EarningEvents.Application.UnitTests.Builders;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core;
@@ -444,7 +445,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                             AimSeqNumber = 1,
                             LearningDeliveryValues = new LearningDeliveryValues
                             {
-                                LearnAimRef = "English", 
+                                LearnAimRef = "English",
                                 LearnDelInitialFundLineType = "Non-Levy Contract"
                             },
                             LearningDeliveryPeriodisedValues = new EditableList<LearningDeliveryPeriodisedValues>
@@ -583,8 +584,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             events[1].Should().BeAssignableTo<Act2FunctionalSkillEarningsEvent>();
             events[1].ContractType.Should().Be(ContractType.Act2);
         }
-
-
+        
         [Test]
         public void FunctionalSkillBuild()
         {
@@ -777,9 +777,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var nonLevyContractTypeEarning = events.Single(x => x.ContractType == ContractType.Act2);
             nonLevyContractTypeEarning.Should().BeOfType<Act2FunctionalSkillEarningsEvent>();
             nonLevyContractTypeEarning.Should().NotBeNull();
-            nonLevyContractTypeEarning.Earnings.Count.Should().Be(1);
+            nonLevyContractTypeEarning.Earnings.Count.Should().Be(3);
 
-            var act2Periods = nonLevyContractTypeEarning.Earnings.First().Periods.OrderBy(p => p.Period).ToList();
+            var act2Periods = nonLevyContractTypeEarning.Earnings.First(x => x.Type == FunctionalSkillType.OnProgrammeMathsAndEnglish).Periods
+                .OrderBy(p => p.Period).ToList();
             act2Periods.Count.Should().Be(12);
             act2Periods.Take(4).Where(x => x.Amount != 0).Should().HaveCount(4);
             act2Periods.Skip(4).Where(x => x.Amount == 0).Should().HaveCount(8);
@@ -787,9 +788,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var levyContractTypeEarning = events.Single(x => x.ContractType == ContractType.Act1);
             levyContractTypeEarning.Should().BeOfType<Act1FunctionalSkillEarningsEvent>();
             levyContractTypeEarning.Should().NotBeNull();
-            levyContractTypeEarning.Earnings.Count.Should().Be(1);
+            levyContractTypeEarning.Earnings.Count.Should().Be(3);
 
-            var act1Periods = levyContractTypeEarning.Earnings.First().Periods.OrderBy(p => p.Period).ToList();
+            var act1Periods = levyContractTypeEarning.Earnings.First(x => x.Type == FunctionalSkillType.OnProgrammeMathsAndEnglish).Periods
+                .OrderBy(p => p.Period).ToList();
             act1Periods.Count.Should().Be(12);
             act1Periods.Take(6).Where(x => x.Amount == 0).Should().HaveCount(6);
             act1Periods.Skip(6).Where(x => x.Amount != 0).Should().HaveCount(6);
@@ -817,6 +819,24 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             levyContractTypeEarning.Should().BeOfType<Act1FunctionalSkillEarningsEvent>();
             levyContractTypeEarning.LearningAim.Should().NotBeNull();
             levyContractTypeEarning.LearningAim.FundingLineType.Should().Be("16-18 Apprenticeship (Employer on App Service)");
+        }
+
+        [Test]
+        public void IncludesLearningSupport()
+        {
+            // arrange
+            var processLearnerCommand = new ProcessLearnerCommandBuilder().WithExtendedLearningSupport().Build();
+
+            var builder = new FunctionalSkillEarningEventBuilder(mapper);
+            
+            // act
+            var events = builder.Build(processLearnerCommand);
+
+            // assert
+            events.Should().NotBeNull();
+            events.Should().HaveCount(1);
+            events.Single().Earnings.Should().HaveCount(3);
+            events.Single().Earnings.Single(x => x.Type == FunctionalSkillType.LearningSupport).Periods.Should().HaveCount(12);
         }
     }
 }

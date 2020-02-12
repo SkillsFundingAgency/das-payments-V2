@@ -48,9 +48,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             return requiredPaymentEvents.AsReadOnly();
         }
 
-        private IList<PeriodisedRequiredPaymentEvent> CreateRefundPayments(IdentifiedRemovedLearningAim identifiedRemovedLearningAim, List<Payment> historicPayments, int transactionType, ConditionalValue<PaymentHistoryEntity[]> cacheItem)
+        private IList<PeriodisedRequiredPaymentEvent> CreateRefundPayments(IdentifiedRemovedLearningAim identifiedRemovedLearningAim, List<Payment> historicPaymentsByTransactionType, int transactionType, ConditionalValue<PaymentHistoryEntity[]> cacheItem)
         {
-            var refundPaymentsAndPeriods = refundRemovedLearningAimService.RefundLearningAim(historicPayments);
+            var refundPaymentsAndPeriods = refundRemovedLearningAimService.RefundLearningAim(historicPaymentsByTransactionType);
 
             return refundPaymentsAndPeriods
                 .Select(refund =>
@@ -59,23 +59,34 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
                     var historicPayment = cacheItem.Value.FirstOrDefault(payment =>
                         payment.PriceEpisodeIdentifier == refund.payment.PriceEpisodeIdentifier &&
-                        payment.DeliveryPeriod == refund.deliveryPeriod);
+                        payment.DeliveryPeriod == refund.deliveryPeriod &&
+                        payment.TransactionType == transactionType);
 
                     if (historicPayment == null)
                         throw new InvalidOperationException($"Cannot find historic payment with price episode identifier: {refund.payment.PriceEpisodeIdentifier} for period {refund.deliveryPeriod}.");
                     
                     var requiredPaymentEvent = requiredPaymentEventFactory.Create(refund.payment.EarningType, transactionType);
+                    if (requiredPaymentEvent == null)
+                    {
+                        // This shouldn't now happen as the transaction type in the history should match the one in the cache
+                        logger.LogWarning(
+                            $"Required payment event is null for EarningType: {refund.payment.EarningType} with TransactionType: {transactionType}");
+                        return null;
+                    }
 
                     mapper.Map(refund.payment, requiredPaymentEvent);
                     mapper.Map(historicPayment, requiredPaymentEvent);
                     mapper.Map(identifiedRemovedLearningAim, requiredPaymentEvent);
 
-                    // funding line type is not part of removed aim, we need to use value from historic payment
+                    // funding line type and Learner Uln are not part of removed aim, we need to use value from historic payment
                     requiredPaymentEvent.LearningAim.FundingLineType = historicPayment.LearningAimFundingLineType;
-
+                    requiredPaymentEvent.Learner.Uln = historicPayment.LearnerUln;
+                   
                     logger.LogDebug("Finished mapping");
                     return requiredPaymentEvent;
-                }).ToList();
+                })
+                .Where(x => x != null)
+                .ToList();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Payments.Model.Core.Entities;
+﻿using System;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain.Entities
 {
@@ -13,5 +14,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Entities
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
         public long? ApprenticeshipId { get; set; }
         public long? ApprenticeshipPriceEpisodeId { get; set; }
+        public DateTime? LearningStartDate { get; set; }
     }
 }

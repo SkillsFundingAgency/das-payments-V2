@@ -190,7 +190,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [When(@"the Approvals service notifies the Payments service of the apprenticeships")]
-        public void WhenTheApprovalsServiceNotifiesPaymentsVOfTheApprenticeships()
+        public async Task WhenTheApprovalsServiceNotifiesPaymentsVOfTheApprenticeships()
         {
             foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
             {
@@ -225,7 +225,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ApprenticeshipEmployerTypeOnApproval = GetApprenticeshipEmployerTypeOnApproval(approvalsApprenticeship.EmployerType)
                 };
                 Console.WriteLine($"Sending CreatedApprenticeship message: {createdMessage.ToJson()}");
-                DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+                await DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
 
@@ -345,7 +345,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [When(@"the Approvals service notifies the Payments service of the apprenticeships changes")]
-        public void WhenTheApprovalsServiceNotifiesThePaymentsServiceOfTheApprenticeshipsChanges()
+        public async Task WhenTheApprovalsServiceNotifiesThePaymentsServiceOfTheApprenticeshipsChanges()
         {
             foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
             {
@@ -373,12 +373,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 };
                 Console.WriteLine($"Sending ApprenticeshipUpdatedApprovedEvent message: {createdMessage.ToJson()}");
-                DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+               await DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
 
         [When(@"the Approvals service notifies the Payments service of the apprenticeships datalock triage changes")]
-        public void WhenTheApprovalsServiceNotifiesThePaymentsServiceOfTheApprenticeshipsDatalockTriageChanges()
+        public async Task WhenTheApprovalsServiceNotifiesThePaymentsServiceOfTheApprenticeshipsDatalockTriageChanges()
         {
             foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
             {
@@ -403,7 +403,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         }).ToArray(),
                 };
                 Console.WriteLine($"Sending DataLockTriageApprovedEvent message: {createdMessage.ToJson()}");
-                DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+              await  DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
 
@@ -442,7 +442,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [When(@"the Approvals service notifies the Payments service that the apprenticeships has stopped")]
-        public void WhenTheApprovalsServiceNotifiesThePaymentsServiceOfThatTheApprenticeshipsHasStopped()
+        public async Task WhenTheApprovalsServiceNotifiesThePaymentsServiceOfThatTheApprenticeshipsHasStopped()
         {
             foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
             {
@@ -453,12 +453,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     StopDate = approvalsApprenticeship.StoppedOnDate.ToDate(),
                 };
                 Console.WriteLine($"Sending ApprenticeshipStoppedEvent message: {createdMessage.ToJson()}");
-                DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+               await DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
 
         [When(@"the Approvals service notifies the Payments service that the apprenticeships stop date has changed")]
-        public void WhenTheApprovalsServiceNotifiesThePaymentsServiceThatTheApprenticeshipsStopDateHasChanged()
+        public async Task WhenTheApprovalsServiceNotifiesThePaymentsServiceThatTheApprenticeshipsStopDateHasChanged()
         {
             foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
             {
@@ -468,12 +468,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     StopDate = approvalsApprenticeship.StoppedOnDate.ToDate(),
                 };
                 Console.WriteLine($"Sending ApprenticeshipStopDateChangedEvent message: {createdMessage.ToJson()}");
-                DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+               await  DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
 
         [When(@"the Approvals service notifies the Payments service that the apprenticeships has been paused")]
-        public void WhenTheApprovalsServiceNotifiesThePaymentsServiceThatTheApprenticeshipsHasBeenPaused()
+        public async Task WhenTheApprovalsServiceNotifiesThePaymentsServiceThatTheApprenticeshipsHasBeenPaused()
         {
             foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
             {
@@ -484,7 +484,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 };
                 Console.WriteLine($"Sending ApprenticeshipPausedEvent message: {createdMessage.ToJson()}");
-                DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+                await DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
 
@@ -583,7 +583,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         [Given(@"the Approvals service notifies the Payments service of Employer Provider Payment Priority Change")]
         [When(@"the Approvals service notifies the Payments service of changes to Employer Provider Payment Priority")]
-        public void WhenTheApprovalsServiceNotifiesThePaymentsServiceOfEmployerProviderPaymentPriorityChange()
+        public async Task WhenTheApprovalsServiceNotifiesThePaymentsServiceOfEmployerProviderPaymentPriorityChange()
         {
             var createdMessage = new CommitmentsV2.Messages.Events.PaymentOrderChangedEvent
             {
@@ -594,7 +594,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             };
 
             Console.WriteLine($"Sending PaymentOrderChangedEvent message: {createdMessage.ToJson()}");
-            DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+            await DasMessageSession.Send(createdMessage);
         }
 
         [Then(@"the Payments service should record the Employer Provider Priority")]
@@ -638,7 +638,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     return true;
                 notFound.ForEach(apprenticeship => Console.WriteLine($"Failed to find and/or validate employer provider priority: {apprenticeship.ToJson()}"));
                 return false;
-            }, "Failed to find all the stored employer payemnt provider priority details.");
+            }, "Failed to find all the stored employer payment provider priority details.");
         }
 
         private ApprenticeshipModel CreateApprenticeshipModel(ApprovalsApprenticeship apprenticeshipSpec)

@@ -15,12 +15,13 @@ select
 	, dle.DataLockSourceId
 	, dle.IsPayable
 	, dle.LearningAimReference
-
+	, dle.JobId
 from 
 	Payments2.DataLockEvent as dle with (nolock) 
 	inner join Payments2.EarningEvent as ee with (nolock) on dle.EarningEventId = ee.EventId 
 	inner join Payments2.DataLockEventNonPayablePeriod as dlenpp with (nolock) on dle.EventId = dlenpp.DataLockEventId 
 	inner join Payments2.DataLockEventNonPayablePeriodFailures as dlenppf with (nolock) on dlenpp.DataLockEventNonPayablePeriodId = dlenppf.DataLockEventNonPayablePeriodId
-
+	join Payments2.LatestSuccessfulJobs lsj on dle.JobId = lsj.DcJobId
 where
-	(dle.IsPayable = 0) and (dle.LearningAimReference = 'ZPROG001')
+	dle.IsPayable = 0 
+	and dle.LearningAimReference = 'ZPROG001'
