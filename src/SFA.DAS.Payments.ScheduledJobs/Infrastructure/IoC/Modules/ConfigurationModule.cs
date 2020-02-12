@@ -1,0 +1,26 @@
+﻿using Autofac;
+using SFA.DAS.Payments.Core.Configuration;
+using SFA.DAS.Payments.ScheduledJobs.Infrastructure.Configuration;
+
+namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
+{
+    public class ConfigurationModule : Module
+    {
+        protected override void Load(ContainerBuilder builder)
+        {
+            builder.Register((c, p) =>
+                {
+                    var configHelper = c.Resolve<IConfigurationHelper>();
+                    return new ScheduledJobsConfiguration()
+                    {
+                        EndpointName = configHelper.GetSetting("EndpointName"),
+                        ServiceBusConnectionString = configHelper.GetConnectionString("ServiceBusConnectionString"),
+                        NServiceBusLicense = configHelper.GetSetting("DasNServiceBusLicenseKey"),
+                    };
+
+                })
+                .As<IScheduledJobsConfiguration>()
+                .SingleInstance();
+        }
+    }
+}
