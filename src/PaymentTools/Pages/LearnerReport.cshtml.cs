@@ -5,30 +5,11 @@ using PaymentTools.Model;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace PaymentTools.Pages
 {
-    public class ConfigurablePaymentsDataContext : PaymentsDataContext
-    {
-        public ConfigurablePaymentsDataContext(DbContextOptions<ConfigurablePaymentsDataContext> options) 
-            : base(options)
-        {
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            // do not call base
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder, enforceRequired: false);
-        }
-    }
-
     public class LearnerReportModel : PageModel
     {
         private readonly IPaymentsDataContext context;
@@ -122,90 +103,5 @@ namespace PaymentTools.Pages
         {
             return c.ProgrammeType == 0 ? $"25-{c.StandardCode}-" : $"{c.FrameworkCode}-{c.ProgrammeType}-{c.PathwayCode}";
         }
-    }
-}
-
-namespace PaymentTools.Model
-{
-    public class CollectionPeriod
-    {
-        public string PeriodName { get; set; } = "R11";
-        public decimal TotalPayments => PriceEpisodes.SelectMany(x => x.Commitments).Sum(x => x.TotalPayments);
-        public decimal TotalLocked => PriceEpisodes.SelectMany(x => x.Commitments).SelectMany(x => x.Items).Select(x => x as DataLock).Where(x => x != null).Sum(x => x.Amount);
-        public List<PriceEpisode> PriceEpisodes { get; set; }
-
-    }
-    public class PriceEpisode
-    {
-        public PriceEpisode(string name, string act, decimal price, IEnumerable<Commitment> commitments)
-        {
-            EpisodeName = name;
-            Act = act;
-            Price = price;
-            Commitments = commitments.ToList().AsReadOnly();
-        }
-
-        public string EpisodeName { get; }
-        public string Act { get; }
-        public decimal Price { get; }
-        public IReadOnlyList<Commitment> Commitments { get; } = new List<Commitment>();
-    }
-
-    public class Commitment
-    {
-        public long Id { get; set; }
-
-        public string Description => $"{Start:MMM-yy} - {End:MMM-yy}";
-        public long Provider { get; set; }
-        public DateTimeOffset Start { get; set; }
-        public DateTimeOffset? End { get; set; }
-
-        public List<CommitmentItem> Items => Payments.Cast<CommitmentItem>().Union(DataLocked).ToList();
-        public List<DataLock> DataLocked { get; set; } = new List<DataLock>();
-        public List<Payment> Payments { get; set; } = new List<Payment>();
-
-        public decimal TotalPayments => Items.Where(x => x is Payment).Sum(x => (x as Payment).Amount);
-
-        public long Employer { get; internal set; }
-        public decimal Cost { get; internal set; }
-        public ApprenticeshipStatus Status { get; internal set; }
-        public string Course { get; internal set; }
-    }
-
-    public interface CommitmentItem
-    {
-        public string Type { get; }
-
-        public decimal Amount { get; }
-    }
-
-    public class DataLock : CommitmentItem
-    {
-        public long Id { get; set; }
-
-        public decimal Amount { get; set; }
-
-        public int DataLockNumber { get; set; }
-
-        public string Type => "Data Lock";
-    }
-
-    public class Payment : CommitmentItem
-    {
-        public long Id { get; set; }
-
-        public decimal Amount { get; set; }
-
-        public string TransactionType { get; set; }
-
-        public string Type => "Payment";
-
-        public string PriceEpisodeIdentifier { get; internal set; }
-        public SFA.DAS.Payments.Model.Core.CollectionPeriod CollectionPeriod { get; internal set; }
-    }
-
-    public class TransactionType
-    {
-        public int TypeId { get; set; }
     }
 }

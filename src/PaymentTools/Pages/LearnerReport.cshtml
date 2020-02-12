@@ -8,57 +8,70 @@
 
 <form method="get" id="form">
     Unique Learner Number:
-    <input asp-for="LearnerUln" />
+    <input asp-for="LearnerUln"/>
     <input type="submit"
            value="Go!"
-           onclick="window.location = '/LearnerReport/' + document.getElementById('LearnerUln').value; return false;" />
+           onclick="window.location = '/LearnerReport/' + document.getElementById('LearnerUln').value; return false;"/>
 </form>
 
-<hr />
-
-<ul class="collection-period unbalanced">
-    @foreach (var period in Model.CollectionPeriods)
-    {
-        <li>
-            @period.PeriodName - Paid <strong>@($"{@period.TotalPayments:C}")</strong> / Locked <strong>@($"{@period.TotalLocked:C}")</strong>
-            <ul>
-                @foreach (var episode in period.PriceEpisodes)
-                {
-                    <li>
-                        Price Episode @episode.EpisodeName ◈ Price @($"{episode.Price:C}") ◈ @episode.Act
-
-                        <ul>
-                            @foreach (var commitment in episode.Commitments)
-                            {
-                            <li>
-                                Commitment <small>@commitment.Id</small> <strong>[@commitment.Description]</strong>
-                                <abbr title="Employer Account ID">🏭 @commitment.Employer</abbr>
-                                <abbr title="Provider ID">🎓 @commitment.Provider</abbr>
-                                <code>@commitment.Course</code> @commitment.Status @($"{commitment.Cost:C}")
-                                @if (commitment.Items.Any())
-                                {
-                                    <ul>
-                                        @foreach (var payment in commitment.Payments)
-                                        {
-                                            <li>
-                                                Payment <small>@payment.Id</small>:
-                                                @($"{@payment.Amount:C}")
-                                                @payment.TransactionType
-                                                (@($"{payment.PriceEpisodeIdentifier} ⸗ {payment.CollectionPeriod.AcademicYear}-R{payment.CollectionPeriod.Period:D2}"))
-                                            </li>
-                                        }
-                                        @foreach (var locked in commitment.DataLocked)
-                                        {
-                                            <li>Data Locked - @locked.Amount</li>
-                                        }
-                                    </ul>
-                                }
-                            </li>
-                            }
-                        </ul>
-                    </li>
-                }
+<hr/>
+@if (Model.CollectionPeriods == null || !Model.CollectionPeriods.Any())
+{
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">There is a problem</h2>
+        <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+                <li><a sfa-validation-for="Postcode"></a>No Record found for Unique Learner Number: @Model.LearnerUln</li>
             </ul>
-        </li>
-    }
-</ul>
+        </div>
+    </div>
+}
+else
+{
+    <ul class="collection-period unbalanced">
+        @foreach (var period in Model.CollectionPeriods)
+        {
+            <li>
+                @period.PeriodName - Paid <strong>@($"{@period.TotalPayments:C}")</strong> / Locked <strong>@($"{@period.TotalLocked:C}")</strong>
+                <ul>
+                    @foreach (var episode in period.PriceEpisodes)
+                    {
+                        <li>
+                            Price Episode @episode.EpisodeName ◈ Price @($"{episode.Price:C}") ◈ @episode.Act
+
+                            <ul>
+                                @foreach (var commitment in episode.Commitments)
+                                {
+                                    <li>
+                                        Commitment <small>@commitment.Id</small> <strong>[@commitment.Description]</strong>
+                                        <abbr title="Employer Account ID">🏭 @commitment.Employer</abbr>
+                                        <abbr title="Provider ID">🎓 @commitment.Provider</abbr>
+                                        <code>@commitment.Course</code> @commitment.Status @($"{commitment.Cost:C}")
+                                        @if (commitment.Items.Any())
+                                        {
+                                            <ul>
+                                                @foreach (var payment in commitment.Payments)
+                                                {
+                                                    <li>
+                                                        Payment <small>@payment.Id</small>:
+                                                        @($"{@payment.Amount:C}")
+                                                        @payment.TransactionType
+                                                        (@($"{payment.PriceEpisodeIdentifier} ⸗ {payment.CollectionPeriod.AcademicYear}-R{payment.CollectionPeriod.Period:D2}"))
+                                                    </li>
+                                                }
+                                                @foreach (var locked in commitment.DataLocked)
+                                                {
+                                                    <li>Data Locked - @locked.Amount</li>
+                                                }
+                                            </ul>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            </li>
+        }
+    </ul>
+}

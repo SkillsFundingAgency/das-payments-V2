@@ -25,7 +25,10 @@ namespace PaymentTools
                 options.UseSqlServer(Configuration.GetConnectionString("PaymentsDatabase"))
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
             services.AddScoped<IPaymentsDataContext, ConfigurablePaymentsDataContext>();
-            services.AddRazorPages();
+            services.AddRazorPages(options =>
+            {
+                options.Conventions.AddPageRoute("/LearnerReport", "");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
