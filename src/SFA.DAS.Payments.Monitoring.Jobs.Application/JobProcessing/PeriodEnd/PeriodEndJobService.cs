@@ -13,12 +13,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
     public interface IPeriodEndJobService
     {
-        Task RecordPeriodEndStart(long jobId, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages, CancellationToken cancellationToken);
-        Task RecordPeriodEndRun(long jobId, short collectionYear, byte collectionPeriod,List<GeneratedMessage> generatedMessages, CancellationToken cancellationToken);
-        Task RecordPeriodEndStop(long jobId, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages,CancellationToken cancellationToken);
-
-        Task RecordDcJobCompleted(long jobId, bool succeeded, CancellationToken cancellationToken);
-
+        Task RecordPeriodEndJob(RecordPeriodEndJob periodEndJob, CancellationToken cancellationToken);
     }
     
     public class PeriodEndJobService : JobService,IPeriodEndJobService
@@ -31,63 +26,33 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
         }
 
        
-        public async Task RecordPeriodEndStart(long jobId, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages, CancellationToken cancellationToken)
+        public async Task RecordPeriodEndJob(RecordPeriodEndJob periodEndJob, CancellationToken cancellationToken)
         {
-            logger.LogDebug($"Sending request to record period end start. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
-           
+            logger.LogDebug($"Sending request to record {periodEndJob.GetType().Name}. Job Id: {periodEndJob.JobId}, collection period: {periodEndJob.CollectionYear}-{periodEndJob.CollectionPeriod}");
             var jobDetails = new JobModel
             {
-                JobType = JobType.PeriodEndStartJob,
-                CollectionPeriod =collectionPeriod,
-                AcademicYear = collectionYear,
-                DcJobId = jobId,
+                JobType = GetJobType(periodEndJob),
+                CollectionPeriod =periodEndJob.CollectionPeriod,
+                AcademicYear = periodEndJob.CollectionYear,
+                DcJobId = periodEndJob.JobId,
                 Status = JobStatus.InProgress,
                 StartTime = DateTimeOffset.UtcNow
             };
-            await RecordNewJob(jobDetails, generatedMessages, cancellationToken).ConfigureAwait(false);
-            
-            logger.LogInfo($"Sent request to record period end start job. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
+
+            await RecordNewJob(jobDetails,periodEndJob.GeneratedMessages,  cancellationToken).ConfigureAwait(false);
+            logger.LogInfo($"Sent request to record period end stop job. Job Id: {periodEndJob.JobId}, collection period: {periodEndJob.CollectionYear}-{periodEndJob.CollectionPeriod}");
+
         }
 
-        public async Task RecordPeriodEndRun(long jobId, short collectionYear, byte collectionPeriod,List<GeneratedMessage> generatedMessages, CancellationToken cancellationToken)
+        private JobType GetJobType(RecordPeriodEndJob periodEndJob)
         {
-            logger.LogDebug($"Sending request to record period end run. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
-            var jobDetails = new JobModel
-            {
-                JobType = JobType.PeriodEndRunJob,
-                CollectionPeriod =collectionPeriod,
-                AcademicYear = collectionYear,
-                DcJobId = jobId,
-                Status = JobStatus.InProgress,
-                StartTime = DateTimeOffset.UtcNow
-            };
-            await RecordNewJob(jobDetails,generatedMessages,  cancellationToken).ConfigureAwait(false);
-            logger.LogInfo($"Sent request to record period end run job. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
+            if (periodEndJob is RecordPeriodEndStartJob)
+                return JobType.PeriodEndStartJob;
+            if (periodEndJob is RecordPeriodEndRunJob)
+                return JobType.PeriodEndRunJob;
+            if (periodEndJob is RecordPeriodEndStopJob)
+                return JobType.PeriodEndStopJob;
+            throw new InvalidOperationException($"Unhandled period end job type: {periodEndJob.GetType().Name}");
         }
-
-        public async Task RecordPeriodEndStop(long jobId, short collectionYear, byte collectionPeriod,List<GeneratedMessage> generatedMessages, CancellationToken cancellationToken)
-        {
-            logger.LogDebug($"Sending request to record period end stop. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
-            var jobDetails = new JobModel
-            {
-                JobType = JobType.PeriodEndStopJob,
-                CollectionPeriod =collectionPeriod,
-                AcademicYear = collectionYear,
-                DcJobId = jobId,
-                Status = JobStatus.InProgress,
-                StartTime = DateTimeOffset.UtcNow
-            };
-            await RecordNewJob(jobDetails,generatedMessages,  cancellationToken).ConfigureAwait(false);
-            logger.LogInfo($"Sent request to record period end stop job. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
-        }
-
-        
-        public async Task RecordDcJobCompleted(long jobId, bool succeeded, CancellationToken cancellationToken)
-        {
-            Logger.LogDebug($"Now storing the completion status of the submission job. Id: {jobId}, succeeded: {succeeded}");
-            await JobStorageService.StoreDcJobStatus(jobId, succeeded, cancellationToken).ConfigureAwait(false);
-            Logger.LogInfo($"Finished storing the completion status of the submission job. Id: {jobId}, succeeded: {succeeded}");
-        }
-
     }
 }

@@ -31,8 +31,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
             foreach (var message in messages)
             {
                 logger.LogInfo($"Handling period end stop job: {message.ToJson()}");
-                await periodEndJobService.RecordPeriodEndStop(message.JobId, message.CollectionYear,
-                    message.CollectionPeriod, message.GeneratedMessages, cancellationToken);
+                await periodEndJobService.RecordPeriodEndJob(message, cancellationToken);
                 jobStatusManager.StartMonitoringJob(message.JobId, JobType.PeriodEndStopJob);
             }
         }
