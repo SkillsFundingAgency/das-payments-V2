@@ -10,7 +10,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
-namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd.Stop
+namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
 {
     public class RecordPeriodEndStopJobHandler : IHandleMessageBatches<RecordPeriodEndStopJob>
     {
