@@ -73,7 +73,6 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                     delayed.TimeIncrease(config.DelayedMessageRetryDelay);
                 });
 
-                endpointConfiguration.AuditProcessedMessagesTo("Audit");
                 return endpointConfiguration;
             })
             .As<EndpointConfiguration>()
