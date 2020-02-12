@@ -23,7 +23,10 @@ namespace SFA.DAS.Payments.Application.Repositories
         public virtual DbSet<PaymentModelWithRequiredPaymentId> PaymentsWithRequiredPayments { get; protected set; }
         public virtual DbSet<ReceivedDataLockEvent> ReceivedDataLockEvents { get; set; }
         public virtual DbSet<CurrentPriceEpisode> CurrentPriceEpisodes { get; set; }
-
+        public virtual DbSet<DataLockEventModel> DataLockgEvent { get; set; }
+        public virtual DbSet<DataLockEventNonPayablePeriodModel> DataLockEventNonPayablePeriod { get; set; }
+        public virtual DbSet<DataLockEventNonPayablePeriodFailureModel> DataLockEventNonPayablePeriodFailure { get; set; }
+        public virtual DbSet<RequiredPaymentEventModel> RequiredPaymentEvent { get; set; }
 
         public PaymentsDataContext(string connectionString)
         {
@@ -51,6 +54,10 @@ namespace SFA.DAS.Payments.Application.Repositories
             modelBuilder.ApplyConfiguration(new EarningEventPriceEpisodeModelConfiguration());
             modelBuilder.ApplyConfiguration(new CurrentPriceEpisodeConfiguration());
             modelBuilder.ApplyConfiguration(new ReceivedDataLockEventConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockEventModelConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockEventNonPayablePeriodModelConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockEventNonPayablePeriodFailureModelConfiguration());
+            modelBuilder.ApplyConfiguration(new RequiredPaymentEventModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
