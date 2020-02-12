@@ -52,9 +52,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.RegisterType<JobMessageService>()
                 .As<IJobMessageService>()
                 .InstancePerLifetimeScope();
-            builder.RegisterType<MonthEndJobService>()
-                .As<IMonthEndJobService>()
-                .InstancePerLifetimeScope();
             builder.RegisterType<EarningsJobStatusService>()
                 .As<IJobStatusService>()
                 .InstancePerLifetimeScope();
