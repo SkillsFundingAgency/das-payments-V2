@@ -12,8 +12,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyAccountBalanceService.Handlers
         private readonly IPaymentLogger paymentLogger;
         private readonly IProcessLevyAccountBalanceService levyAccountBalanceService;
         
-        public ImportEmployerAccountsCommandHandler(IPaymentLogger paymentLogger,
-                                                                      IProcessLevyAccountBalanceService levyAccountBalanceService)
+        public ImportEmployerAccountsCommandHandler(IPaymentLogger paymentLogger, IProcessLevyAccountBalanceService levyAccountBalanceService)
         {
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
             this.levyAccountBalanceService = levyAccountBalanceService ?? throw new ArgumentNullException(nameof(levyAccountBalanceService));

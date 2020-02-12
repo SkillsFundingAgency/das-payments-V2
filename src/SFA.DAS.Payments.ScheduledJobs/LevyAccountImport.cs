@@ -16,10 +16,8 @@ namespace SFA.DAS.Payments.ScheduledJobs
         public static async Task Run([TimerTrigger("%LevyAccountSchedule%", RunOnStartup=true)]TimerInfo myTimer, [Inject]IEndpointInstanceFactory endpointInstanceFactory, ILogger log)
         {
             var command = new ImportEmployerAccounts();
-            var sendOptions = new SendOptions();
-            sendOptions.SetDestination("sfa-das-payments-levyaccountbalance");
             var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
-            await endpointInstance.Send(command, sendOptions).ConfigureAwait(false);
+            await endpointInstance.Send("sfa-das-payments-levyaccountbalance", command).ConfigureAwait(false);
         }
     }
 }
