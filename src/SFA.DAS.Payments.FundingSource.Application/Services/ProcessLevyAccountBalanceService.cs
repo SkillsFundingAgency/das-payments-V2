@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
     public interface IProcessLevyAccountBalanceService
     {
-        Task RunAsync(TimeSpan refreshInterval, CancellationToken cancellationToken = default(CancellationToken));
+        Task RefreshLevyAccountDetails(CancellationToken cancellationToken = default(CancellationToken));
     }
 
     public class ProcessLevyAccountBalanceService : IProcessLevyAccountBalanceService
@@ -21,29 +21,21 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.paymentLogger = paymentLogger;
         }
 
-        public async Task RunAsync(TimeSpan refreshInterval, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task RefreshLevyAccountDetails(CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                var isPeriodStarted = true; //TODO  read value from cache
+                paymentLogger.LogInfo("Starting to refresh all Levy Accounts Details");
 
-                while (isPeriodStarted)
+                try
                 {
-                    paymentLogger.LogInfo("Starting to refresh all Levy Accounts Details");
-
-                    try
-                    {
-                        await accountBalanceService.RefreshLevyAccountDetails(cancellationToken);
-                    }
-                    catch (Exception e)
-                    {
-                        paymentLogger.LogError("Error While trying to refresh all Levy Accounts Details", e);
-                    }
-
-                    // isPeriodStarted = true //TODO  read value from cache
-
-                    await Task.Delay(refreshInterval, cancellationToken);
+                    await accountBalanceService.RefreshLevyAccountDetails(cancellationToken);
                 }
+                catch (Exception e)
+                {
+                    paymentLogger.LogError("Error While trying to refresh all Levy Accounts Details", e);
+                }
+
             }
             catch (TaskCanceledException e)
             {
@@ -54,8 +46,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 paymentLogger.LogError("Error While trying to refresh all Levy Accounts Details", e);
                 throw;
             }
-
-
         }
     }
 }

@@ -47,11 +47,5 @@ namespace SFA.DAS.Payments.FundingSource.LevyAccountBalanceService
                 new ServiceReplicaListener(context => listener = lifetimeScope.Resolve<IStatefulEndpointCommunicationListener>())
             };
         }
-
-        protected override  Task RunAsync(CancellationToken cancellationToken)
-        {
-            logger.LogInfo("Running Levy Account Balance Service");
-            return  Task.WhenAll(listener.RunAsync(), processLevyAccountBalanceService.RunAsync(refreshInterval, cancellationToken));
-        }
     }
 }
