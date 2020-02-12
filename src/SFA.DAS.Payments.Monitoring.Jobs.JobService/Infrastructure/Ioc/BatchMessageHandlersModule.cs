@@ -56,13 +56,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Infrastructure.Ioc
             builder.RegisterType<RecordPeriodEndStartJobHandler>()
                 .As<IHandleMessageBatches<RecordPeriodEndStartJob>>()
                 .InstancePerLifetimeScope();
-            builder.RegisterType<RecordPeriodEndStartSucceededHandler>()
-                .As<IHandleMessageBatches<RecordPeriodEndRunStartJobSucceeded>>()
-                .InstancePerLifetimeScope();
-            builder.RegisterType<RecordPeriodEndStartFailedHandler>()
-                .As<IHandleMessageBatches<RecordPeriodEndRunStartJobFailed>>()
-                .InstancePerLifetimeScope();
-
+   
             builder.RegisterType<RecordSubmissionSucceededHandler>()
                 .As<IHandleMessageBatches<RecordEarningsJobSucceeded>>()
                 .InstancePerLifetimeScope();

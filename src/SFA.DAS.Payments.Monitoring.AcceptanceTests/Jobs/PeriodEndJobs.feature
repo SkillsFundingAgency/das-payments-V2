@@ -6,29 +6,43 @@ Background:
 	Given the payments are for the current collection year
 	And the current collection period is R01
 
-Scenario: Provider Period End Job Started
-	Given the period end service has received a period end job
-	When the period end service notifies the job monitoring service to record the job
+Scenario: Provider Period End Start Job Started
+	Given the period end service has received a period end start job
+	When the period end service notifies the job monitoring service to record the start job
 	Then the job monitoring service should record the job
 
-Scenario: Provider Period End Started Job Completed
-	Given the period end service has received a period end job
-	When the period end service notifies the job monitoring service to record the job
+Scenario: Provider Period End Start Job Completed
+	Given the period end service has received a period end start job
+	When the period end service notifies the job monitoring service to record the start job
 	And the final messages for the job are successfully processed
 	Then the job monitoring service should update the status of the job to show that it has completed	
+	And the monitoring service should notify other services that the start job has completed successfully
 
-Scenario: Data-Collections confirms success of period end start job
-	Given the monitoring service has recorded the completion of a period end start job
-	When Data-Collections confirms the successful completion of the period end start job
-	Then the monitoring service should record the successful completion of the Data-Collections processes
-	And the monitoring service should notify other services that the job has completed successfully
 
-Scenario: Data-Collections confirms failure of period end start job
-	Given the monitoring service has recorded the completion of a period end start job
-	When Data-Collections confirms the the failure of the period end start job
-	Then the monitoring service should record the failure of the Data-Collections processes
-	And the monitoring service should notify other services that the job has failed
+Scenario: Provider Period End  Run Job Started
+	Given the period end service has received a period end run job
+	When the period end service notifies the job monitoring service to record run job
+	Then the job monitoring service should record the job
 
+Scenario: Provider Period End Run  Job Completed
+	Given the period end service has received a period end run job
+	When the period end service notifies the job monitoring service to record run job
+	And the final messages for the job are successfully processed
+	Then the job monitoring service should update the status of the job to show that it has completed	
+	And the monitoring service should notify other services that the run job has completed successfully
+
+
+Scenario: Provider Period End  Stop Job Started
+	Given the period end service has received a period end stop job
+	When the period end service notifies the job monitoring service to record stop job
+	Then the job monitoring service should record the job
+
+Scenario: Provider Period End Stop  Job Completed
+	Given the period end service has received a period end stop job
+	When the period end service notifies the job monitoring service to record stop job
+	And the final messages for the job are successfully processed
+	Then the job monitoring service should update the status of the job to show that it has completed	
+	And the monitoring service should notify other services that the stop job has completed successfully
 
 
 #emulate steps below for period end messages
