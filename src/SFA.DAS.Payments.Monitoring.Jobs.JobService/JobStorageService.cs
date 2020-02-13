@@ -108,6 +108,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
                 .ConfigureAwait(false);
 
             await dataContext.SaveDcSubmissionStatus(jobId, succeeded, cancellationToken).ConfigureAwait(false);
+            
+            if (job.Status == JobStatus.TimedOut)
+            {
+                await SaveJobStatus(jobId,
+                    job.DcJobSucceeded.Value ? JobStatus.CompletedWithErrors : JobStatus.DcTasksFailed,
+                    job.EndTime ?? DateTimeOffset.UtcNow, cancellationToken);
+            }
         }
 
         public async Task<JobModel> GetJob(long jobId, CancellationToken cancellationToken)
