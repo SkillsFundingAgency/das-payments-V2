@@ -14,7 +14,9 @@ using SFA.DAS.Payments.Monitoring.Jobs.Model;
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
 {
 
-    public class EarningsJobStatusService : JobStatusService, IJobStatusService
+    public interface IEarningsJobStatusService: IJobStatusService{ }
+
+    public class EarningsJobStatusService : JobStatusService, IEarningsJobStatusService
     {
         public EarningsJobStatusService(IJobStorageService jobStorageService, IPaymentLogger logger,
             ITelemetry telemetry, IJobStatusEventPublisher eventPublisher, IJobServiceConfiguration config)

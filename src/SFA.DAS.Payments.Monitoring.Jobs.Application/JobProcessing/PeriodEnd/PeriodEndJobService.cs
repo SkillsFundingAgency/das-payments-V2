@@ -10,7 +10,6 @@ using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 {
-
     public interface IPeriodEndJobService
     {
         Task RecordPeriodEndJob(RecordPeriodEndJob periodEndJob, CancellationToken cancellationToken);
@@ -24,7 +23,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-
        
         public async Task RecordPeriodEndJob(RecordPeriodEndJob periodEndJob, CancellationToken cancellationToken)
         {

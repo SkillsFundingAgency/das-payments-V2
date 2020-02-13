@@ -35,14 +35,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
                     TimeSpan.Parse(configHelper.GetSettingOrDefault("JobStatusCheck_Interval", "00:00:10")),
                     TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForJobToComplete", "00:20:00"))
                     );
-
             })
                 .As<IJobServiceConfiguration>()
                 .SingleInstance();
-            builder.RegisterType<JobStatusManager>()
-                .As<IJobStatusManager>()
+            builder.RegisterType<EarningsJobStatusManager>()
+                .As<IEarningsJobStatusManager>()
                 .SingleInstance();
-
+            builder.RegisterType<PeriodEndJobStatusManager>()
+                .As<IPeriodEndJobStatusManager>()
+                .SingleInstance();
             builder.RegisterType<EarningsJobService>()
                 .As<IEarningsJobService>()
                 .InstancePerLifetimeScope();
@@ -53,7 +54,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
                 .As<IJobMessageService>()
                 .InstancePerLifetimeScope();
             builder.RegisterType<EarningsJobStatusService>()
-                .As<IJobStatusService>()
+                .As<IEarningsJobStatusService>()
+                .InstancePerLifetimeScope();
+            builder.RegisterType<PeriodEndJobStatusService>()
+                .As<IPeriodEndJobStatusService>()
                 .InstancePerLifetimeScope();
            
             

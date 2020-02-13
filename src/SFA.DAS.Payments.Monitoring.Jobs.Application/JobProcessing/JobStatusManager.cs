@@ -17,14 +17,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         void StartMonitoringJob(long jobId, JobType jobType);
     }
 
-    public class JobStatusManager : IJobStatusManager
+    public abstract class JobStatusManager : IJobStatusManager
     {
         private readonly IPaymentLogger logger;
         private readonly IUnitOfWorkScopeFactory scopeFactory;
         private readonly ConcurrentDictionary<long, bool> currentJobs;
         private CancellationToken cancellationToken;
         private readonly TimeSpan interval;
-        public JobStatusManager(IPaymentLogger logger, IUnitOfWorkScopeFactory scopeFactory, IJobServiceConfiguration configuration)
+        protected JobStatusManager(IPaymentLogger logger, IUnitOfWorkScopeFactory scopeFactory, IJobServiceConfiguration configuration)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
@@ -83,7 +83,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 {
                     try
                     {
-                        var jobStatusService = scope.Resolve<IJobStatusService>();
+                        var jobStatusService = GetJobStatusService(scope);
                         var finished = await jobStatusService.ManageStatus(jobId, cancellationToken).ConfigureAwait(false);
                         await scope.Commit();
                         currentJobs[jobId] = finished;
@@ -101,6 +101,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 throw;
             }
         }
+
+        public abstract IJobStatusService GetJobStatusService(IUnitOfWorkScope scope);
+       
 
         public void StartMonitoringJob(long jobId, JobType jobType)
         {
