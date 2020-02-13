@@ -70,58 +70,27 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
             if (!await base.CompleteJob(job, status, endTime, cancellationToken))
                 return false;
 
-            if (IsPeriodEndJob(job.JobType))
+            if (IsPeriodEndJob(job.JobType) && job.Status != JobStatus.TimedOut)
             {
-                await SendPeriodEndSuccessEvents(job);
+                await EventPublisher.PeriodEndJobFinished(job, true);
             }
 
-            if (!job.DcJobSucceeded.HasValue)
+            if (!job.DcJobSucceeded.HasValue && !IsPeriodEndJob(job.JobType))
                 return false;
             if (job.JobType == JobType.EarningsJob || job.JobType == JobType.ComponentAcceptanceTestEarningsJob)
                 await EventPublisher.SubmissionFinished(status == JobStatus.Completed || status == JobStatus.CompletedWithErrors, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
             return true;
         }
 
-        private async Task SendPeriodEndSuccessEvents(JobModel job)
-        {
-            if (job.JobType == JobType.PeriodEndStartJob || job.JobType == JobType.ComponentAcceptanceTestMonthEndJob)
-                await EventPublisher.PeriodEndStartFinished(true, job.DcJobId.Value, job.AcademicYear,
-                    job.CollectionPeriod);
-
-            if (job.JobType == JobType.PeriodEndRunJob || job.JobType == JobType.ComponentAcceptanceTestMonthEndJob)
-                await EventPublisher.PeriodEndRunFinished(true, job.DcJobId.Value, job.AcademicYear,
-                    job.CollectionPeriod);
-
-            if (job.JobType == JobType.PeriodEndStopJob || job.JobType == JobType.ComponentAcceptanceTestMonthEndJob)
-                await EventPublisher.PeriodEndStopFinished(true, job.DcJobId.Value, job.AcademicYear,
-                    job.CollectionPeriod);
-        }
-
-
         protected override async Task<bool> IsJobTimedOut(JobModel job, CancellationToken cancellationToken)
         {
             var isJobTimedOut = await base.IsJobTimedOut(job, cancellationToken);
             if (isJobTimedOut && IsPeriodEndJob(job.JobType))
             {
-                await SendPeriodEndFailureEvents(job);
+                await EventPublisher.PeriodEndJobFinished(job, false);
             }
 
             return isJobTimedOut;
-        }
-
-        private async Task SendPeriodEndFailureEvents(JobModel job)
-        {
-            if (job.JobType == JobType.PeriodEndStartJob || job.JobType == JobType.ComponentAcceptanceTestMonthEndJob)
-                await EventPublisher.PeriodEndStartFinished(false, job.DcJobId.Value, job.AcademicYear,
-                    job.CollectionPeriod);
-
-            if (job.JobType == JobType.PeriodEndRunJob || job.JobType == JobType.ComponentAcceptanceTestMonthEndJob)
-                await EventPublisher.PeriodEndRunFinished(false, job.DcJobId.Value, job.AcademicYear,
-                    job.CollectionPeriod);
-
-            if (job.JobType == JobType.PeriodEndStopJob || job.JobType == JobType.ComponentAcceptanceTestMonthEndJob)
-                await EventPublisher.PeriodEndStopFinished(false, job.DcJobId.Value, job.AcademicYear,
-                    job.CollectionPeriod);
         }
 
         private bool IsPeriodEndJob(JobType jobType)

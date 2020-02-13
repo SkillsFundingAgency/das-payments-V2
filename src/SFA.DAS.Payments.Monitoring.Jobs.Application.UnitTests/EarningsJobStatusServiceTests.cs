@@ -463,5 +463,62 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                     Times.Once());
         }
 
+
+        
+        [TestCase(JobType.PeriodEndStartJob)]
+        [TestCase(JobType.PeriodEndRunJob)]
+        [TestCase(JobType.PeriodEndStopJob)]
+        public async Task Publishes_PeriodEndJobFinished_with_SUCCESS_When_PeriodEndJob_Finishes(JobType jobType)
+        {
+            job.JobType = jobType;
+            job.DcJobSucceeded = null;
+
+            var completedMessage = new CompletedMessage
+            {
+                MessageId = Guid.NewGuid(),
+                JobId = job.Id,
+                Succeeded = true,
+                CompletedTime = DateTimeOffset.UtcNow
+            };
+            var inProgressMessage = new InProgressMessage { MessageId = completedMessage.MessageId, MessageName = "Message" };
+            inProgressMessages.Add(inProgressMessage);
+            completedMessages.Add(completedMessage);
+            mocker.Mock<IJobStorageService>()
+                .Setup(x => x.GetJobStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
+
+            var service = mocker.Create<EarningsJobStatusService>();
+            await service.ManageStatus(job.Id, CancellationToken.None).ConfigureAwait(false);
+            mocker.Mock<IJobStatusEventPublisher>()
+         
+                .Verify(publisher => publisher.PeriodEndJobFinished(It.Is<JobModel>(jobModel => jobModel == job)
+                    ,It.Is<bool>(b=> b == true)), Times.Once);
+        }
+
+
+        [TestCase(JobType.PeriodEndStartJob)]
+        [TestCase(JobType.PeriodEndRunJob)]
+        [TestCase(JobType.PeriodEndStopJob)]
+        public async Task Publishes_PeriodEndJobFinished_with_FAILURE_When_PeriodEndJob_TimesOut(JobType jobType)
+        {
+            job.JobType = jobType;
+            job.LearnerCount = 0;
+            job.StartTime = DateTimeOffset.UtcNow.AddSeconds(-2);
+            job.DcJobSucceeded = null;
+            mocker.Mock<IJobServiceConfiguration>()
+                .SetupGet(cfg => cfg.EarningsJobTimeout)
+                .Returns(TimeSpan.FromSeconds(1));
+         
+            mocker.Mock<IJobStorageService>()
+                .Setup(x => x.GetJobStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
+
+            var service = mocker.Create<EarningsJobStatusService>();
+            await service.ManageStatus(job.Id, CancellationToken.None).ConfigureAwait(false);
+            mocker.Mock<IJobStatusEventPublisher>()
+         
+                .Verify(publisher => publisher.PeriodEndJobFinished(It.Is<JobModel>(jobModel => jobModel == job)
+                    ,It.Is<bool>(b=> b == false)), Times.Once);
+        }
     }
 }
