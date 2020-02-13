@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Payments.Model.Core
 {
-    public enum DataLockErrorCode
+    public enum DataLockErrorCode: byte
     {
         DLOCK_01 = 1,
         DLOCK_02 = 2,
