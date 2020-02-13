@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RemovedLearnerService
         {
             this.removedLearnerAimIdentificationService = removedLearnerAimIdentificationService;
 
-            if (long.TryParse(actorId.GetStringId(), out ukprn))
+            if (!long.TryParse(actorId.GetStringId(), out ukprn))
             {
                 throw new InvalidCastException($"Unable to cast Actor Id {Id.GetStringId()} to valid ukprn");
             }
