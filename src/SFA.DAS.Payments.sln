@@ -333,7 +333,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "V1", "V1", "{E1FFBAB5-CC3F-
 		Scripts\Database\AdHoc\V1\DeleteDuplicateEarnings.sql = Scripts\Database\AdHoc\V1\DeleteDuplicateEarnings.sql
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.ScheduledJobs", "SFA.DAS.Payments.ScheduledJobs\SFA.DAS.Payments.ScheduledJobs.csproj", "{38655219-BDDB-4F2A-8B8C-B30D1434A762}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.ScheduledJobs", "SFA.DAS.Payments.ScheduledJobs\SFA.DAS.Payments.ScheduledJobs.csproj", "{38655219-BDDB-4F2A-8B8C-B30D1434A762}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{F2AA36D4-90C5-4850-9AA2-29AFAFACD785}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
