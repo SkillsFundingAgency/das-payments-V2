@@ -34,6 +34,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
         private readonly IBulkWriter<ProviderAdjustment> bulkWriter;
         private readonly string apiUsername;
         private readonly string apiPassword;
+        private readonly int pageSize;
 
         public ProviderAdjustmentRepository(
             IBulkWriter<ProviderAdjustment> bulkWriter, 
@@ -69,6 +70,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
             
             apiUsername = configHelper.GetSetting("EasApiUsername");
             apiPassword = configHelper.GetSetting("EasApiPassword");
+            pageSize = configHelper.GetSettingOrDefault("EasPageSize", 10000);
             this.mapper = mapper;
             this.logger = logger;
         }
@@ -80,21 +82,40 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
             var token = await GetToken();
             logger.LogInfo("Token retrieved");
 
-            var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/Eas/{academicYear}");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            logger.LogInfo("Getting data from API");
-            var httpResponse = await client.SendAsync(request).ConfigureAwait(false);
-
-            var responseContent = await httpResponse.Content.ReadAsStringAsync();
-            if (httpResponse.IsSuccessStatusCode)
+            var providerAdjustments = new List<ProviderAdjustment>();
+            var pageNumber = 1;
+           
+            while(true)
             {
-                logger.LogInfo("Successfully retrieved records from API");
-                return JsonConvert.DeserializeObject<List<ProviderAdjustment>>(responseContent); 
+                var request = new HttpRequestMessage(HttpMethod.Get, $"api/v1/Eas/{academicYear}?pagenumber={pageNumber}&pagesize={pageSize}");
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                logger.LogInfo($"Getting page {pageNumber} of data from API");
+                var httpResponse = await client.SendAsync(request).ConfigureAwait(false);
+
+                var responseContent = await httpResponse.Content.ReadAsStringAsync();
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    var batch = JsonConvert.DeserializeObject<List<ProviderAdjustment>>(responseContent);
+                    if (batch.Count == 0)
+                    {
+                        logger.LogInfo($"No messages on page {pageNumber}");
+                        break;
+                    }
+                    logger.LogInfo($"Successfully retrieved {batch.Count} records from API");
+                    providerAdjustments.AddRange(batch);
+                }
+                else
+                {
+                    logger.LogError($"Error getting EAS records: {responseContent}, {httpResponse}");
+                    throw new InvalidOperationException($"Error getting EAS records: {responseContent}");
+                }
+
+                pageNumber++;
             }
-            
-            logger.LogError($"Error getting EAS records: {responseContent}, {httpResponse}");
-            throw new InvalidOperationException($"Error getting EAS records: {responseContent}");
+
+            logger.LogInfo($"Finished reading records from the API. Got {providerAdjustments.Count} records");
+            return providerAdjustments;
         }
 
         public async Task<string> GetToken()

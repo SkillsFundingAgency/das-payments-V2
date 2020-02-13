@@ -26,6 +26,7 @@
     <Parameter Name="EasApiUsername" Value=""/>
     <Parameter Name="EasApiPassword" Value=""/>
     <Parameter Name="EasCertificateThumbprint" Value=""/>
+    <Parameter Name="EasPageSize" Value=""/>
   </Section>
 
 </Settings>

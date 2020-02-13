@@ -17,6 +17,7 @@
     <Parameter Name="EasApiUsername" DefaultValue="" />
     <Parameter Name="EasApiPassword" DefaultValue="" />
     <Parameter Name="EasCertificateThumbprint" DefaultValue="" />
+    <Parameter Name="EasPageSize" DefaultValue="1000" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -43,6 +44,7 @@
             <Parameter Name="EasApiUsername" Value="[EasApiUsername]" />
             <Parameter Name="EasApiPassword" Value="[EasApiPassword]" />
             <Parameter Name="EasCertificateThumbprint" Value="[EasCertificateThumbprint]" />
+            <Parameter Name="EasPageSize" Value="[EasPageSize]" />
           </Section>
         </Settings>
       </ConfigOverride>
