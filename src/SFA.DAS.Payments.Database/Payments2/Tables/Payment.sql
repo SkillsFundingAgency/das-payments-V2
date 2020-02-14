@@ -81,7 +81,6 @@ CREATE INDEX [IX_Payment__Audit] ON [Payments2].[Payment]
 
 GO
 
-
 CREATE NONCLUSTERED INDEX [IX_Payment__Metrics_Paid_DataLocks] ON [Payments2].[Payment]
 (
 	[Ukprn],
