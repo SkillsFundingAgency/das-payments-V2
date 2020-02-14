@@ -232,9 +232,9 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         private async Task Initialise()
         {
             long accountId = 0;
-            if (!long.TryParse(Id.GetStringId(), out accountId))
+            if (!long.TryParse(Id.ToString(), out accountId))
             {
-                throw  new InvalidCastException($"Unable to cast Actor Id {Id.GetStringId()} to valid account Id ");
+                throw  new InvalidCastException($"Unable to cast Actor Id {Id} to valid account Id ");
             };
             
             if (await actorCache.IsInitialiseFlagIsSet().ConfigureAwait(false))
@@ -244,7 +244,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             }
 
             var stopwatch = Stopwatch.StartNew();
-            paymentLogger.LogInfo($"Initialising actor for employer {Id.GetStringId()}");
+            paymentLogger.LogInfo($"Initialising actor for employer {Id}");
 
             var paymentPriorities = await levyFundingSourceRepository.GetPaymentPriorities(accountId).ConfigureAwait(false);
             await employerProviderPriorities
@@ -252,13 +252,13 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                     .ConfigureAwait(false);
 
             await actorCache.SetInitialiseFlag().ConfigureAwait(false);
-            paymentLogger.LogInfo($"Initialised actor for employer {Id.GetStringId()}");
+            paymentLogger.LogInfo($"Initialised actor for employer {Id}");
             TrackInfrastructureEvent("LevyFundedService.Initialise", stopwatch);
         }
 
         public async Task Reset()
         {
-            paymentLogger.LogInfo($"Resetting actor for employer {Id.GetStringId()}");
+            paymentLogger.LogInfo($"Resetting actor for employer {Id}");
             await actorCache.ResetInitialiseFlag().ConfigureAwait(false);
         }
 
