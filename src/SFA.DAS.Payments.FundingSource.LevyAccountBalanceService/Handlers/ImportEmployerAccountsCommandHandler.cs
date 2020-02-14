@@ -22,10 +22,13 @@ namespace SFA.DAS.Payments.FundingSource.LevyAccountBalanceService.Handlers
         {
             paymentLogger.LogInfo($"Processing Import Employer Accounts Message Id : {context.MessageId}");
 
-            await levyAccountBalanceService.RefreshLevyAccountDetails();
+            var totalPages = await this.levyAccountBalanceService.GetTotalNumberOfPages();
+            for (int i = 1; i <= totalPages; i++)
+            {
+                await context.SendLocal(new ImportPageOfAccounts { PageNumber = i });
+            }
 
             paymentLogger.LogInfo($"Successfully processed Import Employer Accounts Message Id : {context.MessageId}");
-
         }
     }
 }
