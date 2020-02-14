@@ -61,7 +61,7 @@ Create NONCLUSTERED INDEX [IX_RequiredPaymentEvent__Metrics] ON [Payments2].[Req
 ) include (ContractType, TransactionType, Amount)
 Go
 
-CREATE INDEX IX_RequiredPaymentEvent__AcademinYear_CollectionPeriod_JobId
+CREATE INDEX IX_RequiredPaymentEvent__AcademicYear_CollectionPeriod_JobId
 ON Payments2.RequiredPaymentEvent (AcademicYear, CollectionPeriod, JobId)
 INCLUDE (EventId)
 GO
