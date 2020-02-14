@@ -5,5 +5,6 @@
         public string EndpointName { get; set; }
         public string ServiceBusConnectionString { get; set; }
         public string NServiceBusLicense { get; set; }
+        public string LevyAccountBalanceEndpoint { get; set; }
     }
 }

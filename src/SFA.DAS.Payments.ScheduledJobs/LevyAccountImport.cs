@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.FundingSource.Messages.Commands;
+using SFA.DAS.Payments.ScheduledJobs.Infrastructure.Configuration;
 using SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC;
 
 namespace SFA.DAS.Payments.ScheduledJobs
@@ -13,11 +14,11 @@ namespace SFA.DAS.Payments.ScheduledJobs
     public static class LevyAccountImport
     {
         [FunctionName("LevyAccountImport")]
-        public static async Task Run([TimerTrigger("%LevyAccountSchedule%", RunOnStartup=true)]TimerInfo myTimer, [Inject]IEndpointInstanceFactory endpointInstanceFactory, ILogger log)
+        public static async Task Run([TimerTrigger("%LevyAccountSchedule%", RunOnStartup=true)]TimerInfo myTimer, [Inject]IEndpointInstanceFactory endpointInstanceFactory, [Inject]IScheduledJobsConfiguration config, ILogger log)
         {
             var command = new ImportEmployerAccounts();
             var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
-            await endpointInstance.Send("sfa-das-payments-levyaccountbalance", command).ConfigureAwait(false);
+            await endpointInstance.Send(config.LevyAccountBalanceEndpoint, command).ConfigureAwait(false);
         }
     }
 }
