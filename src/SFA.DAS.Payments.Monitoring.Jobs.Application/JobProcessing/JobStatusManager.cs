@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         private readonly IPaymentLogger logger;
         private readonly IUnitOfWorkScopeFactory scopeFactory;
         private readonly ConcurrentDictionary<long, bool> currentJobs;
-        private CancellationToken cancellationToken;
+        protected CancellationToken cancellationToken;
         private readonly TimeSpan interval;
         protected JobStatusManager(IPaymentLogger logger, IUnitOfWorkScopeFactory scopeFactory, IJobServiceConfiguration configuration)
         {
@@ -62,7 +63,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 using (var scope = scopeFactory.Create("LoadExistingJobs"))
                 {
                     var jobStorage = scope.Resolve<IJobStorageService>();
-                    var jobs = await jobStorage.GetCurrentJobs(cancellationToken).ConfigureAwait(false);
+                    var jobs = await GetCurrentJobs(jobStorage);
                     foreach (var job in jobs)
                     {
                         StartMonitoringJob(job, JobType.EarningsJob);
@@ -74,6 +75,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 logger.LogError("Failed to load existing jobs.");
             }
         }
+
+      
 
         private async Task CheckJobStatus(long jobId)
         {
@@ -103,6 +106,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         }
 
         public abstract IJobStatusService GetJobStatusService(IUnitOfWorkScope scope);
+
+        public abstract Task<List<long>> GetCurrentJobs(IJobStorageService jobStorage);
+        
        
 
         public void StartMonitoringJob(long jobId, JobType jobType)

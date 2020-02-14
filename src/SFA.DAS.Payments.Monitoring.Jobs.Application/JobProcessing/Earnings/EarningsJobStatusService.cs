@@ -72,35 +72,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
             if (!await base.CompleteJob(job, status, endTime, cancellationToken))
                 return false;
 
-            if (IsPeriodEndJob(job.JobType) && job.Status != JobStatus.TimedOut)
-            {
-                await EventPublisher.PeriodEndJobFinished(job, true);
-            }
-
-            if (!job.DcJobSucceeded.HasValue && !IsPeriodEndJob(job.JobType))
+            if (!job.DcJobSucceeded.HasValue)
                 return false;
             if (job.JobType == JobType.EarningsJob || job.JobType == JobType.ComponentAcceptanceTestEarningsJob)
                 await EventPublisher.SubmissionFinished(status == JobStatus.Completed || status == JobStatus.CompletedWithErrors, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
             return true;
-        }
-
-        protected override async Task<bool> IsJobTimedOut(JobModel job, CancellationToken cancellationToken)
-        {
-            var isJobTimedOut = await base.IsJobTimedOut(job, cancellationToken);
-            if (isJobTimedOut && IsPeriodEndJob(job.JobType))
-            {
-                await EventPublisher.PeriodEndJobFinished(job, false);
-            }
-
-            return isJobTimedOut;
-        }
-
-        private bool IsPeriodEndJob(JobType jobType)
-        {
-            return jobType == JobType.PeriodEndStartJob ||
-                   jobType == JobType.PeriodEndRunJob ||
-                   jobType == JobType.PeriodEndStopJob ||
-                   jobType == JobType.ComponentAcceptanceTestMonthEndJob;
         }
 
         private async Task CompleteDataLocks(long jobId, List<CompletedMessage> completedMessages,

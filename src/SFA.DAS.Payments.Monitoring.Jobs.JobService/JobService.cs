@@ -20,14 +20,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
     public class JobService : StatefulService, IJobService
     {
         private readonly IPaymentLogger logger;
-        private readonly IJobStatusManager jobStatusManager;
+        private readonly IEarningsJobStatusManager earningsJobStatusManager;
+        private readonly IPeriodEndJobStatusManager periodEndJobStatusManager;
         private readonly ILifetimeScope lifetimeScope;
 
-        public JobService(StatefulServiceContext context, IPaymentLogger logger, IJobStatusManager jobStatusManager, ILifetimeScope lifetimeScope)
+        public JobService(StatefulServiceContext context, IPaymentLogger logger, IEarningsJobStatusManager earningsJobStatusManager,IPeriodEndJobStatusManager periodEndJobStatusManager,  ILifetimeScope lifetimeScope)
             : base(context)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.jobStatusManager = jobStatusManager ?? throw new ArgumentNullException(nameof(jobStatusManager));
+            this.earningsJobStatusManager = earningsJobStatusManager ?? throw new ArgumentNullException(nameof(earningsJobStatusManager));
+            this.periodEndJobStatusManager = periodEndJobStatusManager ?? throw new ArgumentNullException(nameof(periodEndJobStatusManager));
             this.lifetimeScope = lifetimeScope;
         }
 
@@ -53,7 +55,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
 
         protected override Task RunAsync(CancellationToken cancellationToken)
         {
-            return Task.WhenAll(RunSendOnlyEndpoint(), jobStatusManager.Start(cancellationToken));
+            return Task.WhenAll(RunSendOnlyEndpoint(),
+                earningsJobStatusManager.Start(cancellationToken),
+                periodEndJobStatusManager.Start(cancellationToken));
         }
 
         private async Task RunSendOnlyEndpoint()
