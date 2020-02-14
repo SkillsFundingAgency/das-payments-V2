@@ -1,3 +1,4 @@
+
 CREATE TABLE [Payments2].[RequiredPaymentEvent]
 (
 	Id BIGINT NOT NULL IDENTITY(1,1) CONSTRAINT PK_RequiredPaymentEvent PRIMARY KEY CLUSTERED,	

@@ -275,6 +275,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{03
 		Scripts\Database\DevDBInitialSetup.sql = Scripts\Database\DevDBInitialSetup.sql
 		Scripts\Database\MetricsDCEarnings.sql = Scripts\Database\MetricsDCEarnings.sql
 		Scripts\Database\MetricsQuery.sql = Scripts\Database\MetricsQuery.sql
+		Scripts\Database\MetricsQueryJobId.sql = Scripts\Database\MetricsQueryJobId.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Metrics", "Metrics", "{F3F3B467-DCBE-4D11-9BD1-08D628E2C1BE}"
