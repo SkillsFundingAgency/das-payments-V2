@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
             var uln = message.Learner.Uln;
             var learnerRef = message.Learner.ReferenceNumber;
             logger.LogDebug($"Processing DataLockProxyProxyService event for learner with learner ref {learnerRef}");
-            var actorId = new ActorId(uln);
+            var actorId = new ActorId(uln.ToString());
 
             logger.LogVerbose($"Creating actor proxy for learner with learner ref {learnerRef}");
             var actor = proxyFactory.CreateActorProxy<IDataLockService>(new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/DataLockServiceActorService"), actorId);
