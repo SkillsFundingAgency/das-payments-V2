@@ -7,6 +7,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
+using FluentAssertions;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
 {
@@ -54,7 +55,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
         public async Task StoreNewJob_Validates_DCJobId()
         {
             job.DcJobId = null;
-            Assert.ThrowsAsync<InvalidOperationException>( async () => await jobsStorageService.StoreNewJob(job, CancellationToken.None));
+            Func<Task> action = async () => { await jobsStorageService.StoreNewJob(job, CancellationToken.None); };
+            action.Should().Throw<InvalidOperationException>();
         }
 
         [Test]
@@ -69,7 +71,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
         {
             jobModelRepository.Setup(x => x.GetJob(dcJobId, It.IsAny<CancellationToken>())).ReturnsAsync(job);
             var actualResult = await jobsStorageService.StoreNewJob(job, CancellationToken.None);
-            Assert.That(actualResult, Is.False);
+            actualResult.Should().BeFalse();
         }
 
         [Test]
@@ -83,7 +85,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
         public async Task StoreNewJob_Returns_True_When_Job_Is_Stored()
         {
             var actualResult = await jobsStorageService.StoreNewJob(job, CancellationToken.None);
-            Assert.That(actualResult, Is.True);
+            actualResult.Should().BeTrue();
         }
 
         [Test]
@@ -97,7 +99,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
         [Test]
         public async Task SaveJobStatus_Throws_Exception_When_Job_Not_In_Cache()
         {
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await jobsStorageService.SaveJobStatus(dcJobId, updatedJobStatus, updatedEndTime, CancellationToken.None));
+            Func<Task> action = async () => { await jobsStorageService.SaveJobStatus(dcJobId, updatedJobStatus, updatedEndTime, CancellationToken.None); };
+            action.Should().Throw<InvalidOperationException>();
         }
 
         [Test]
@@ -133,7 +136,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
         [Test]
         public async Task StoreDcJobStatus_Throws_Exception_When_Job_Not_In_Cache()
         {
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await jobsStorageService.StoreDcJobStatus(dcJobId, true, CancellationToken.None));
+            Func<Task> action = async () => { await jobsStorageService.StoreDcJobStatus(dcJobId, true, CancellationToken.None); };
+            action.Should().Throw<InvalidOperationException>();
         }
 
         [Test]
@@ -193,7 +197,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
             jobModelRepository.Setup(x => x.GetJob(dcJobId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(returnedJobModel);
             var actualResult = await jobsStorageService.GetJob(dcJobId, CancellationToken.None);
-            Assert.That(actualResult, Is.EqualTo(returnedJobModel));
+            actualResult.Should().Be(returnedJobModel);
         }
 
         [Test]
@@ -209,7 +213,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
 
             var actualMessages = await jobsStorageService.GetInProgressMessages(dcJobId, CancellationToken.None);
 
-            Assert.That(actualMessages, Is.EqualTo(expectedMessages));
+            actualMessages.Should().BeSameAs(expectedMessages);
             inProgressMessageRepository.Verify(x => x.GetInProgressMessages(dcJobId, It.IsAny<CancellationToken>()));
         }
 
@@ -257,7 +261,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
 
             var actualMessages = await jobsStorageService.GetCompletedMessages(dcJobId, CancellationToken.None);
 
-            Assert.That(actualMessages, Is.EqualTo(expectedMessages));
+            actualMessages.Should().BeSameAs(expectedMessages);
             completedMessageRepository.Verify(x => x.GetCompletedMessages(dcJobId, It.IsAny<CancellationToken>()));
         }
 
@@ -297,7 +301,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
 
             var actualStatus = await jobsStorageService.GetJobStatus(dcJobId, CancellationToken.None);
 
-            Assert.That(actualStatus, Is.EqualTo(expectedStatus));
+            actualStatus.Should().Be(expectedStatus);
             jobStatusRepository.Verify(x => x.GetJobStatus(dcJobId, It.IsAny<CancellationToken>()));
         }
 
