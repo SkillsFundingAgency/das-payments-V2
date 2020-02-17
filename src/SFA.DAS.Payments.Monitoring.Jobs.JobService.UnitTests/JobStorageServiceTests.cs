@@ -12,7 +12,7 @@ using FluentAssertions;
 namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
 {
     [TestFixture]
-    public class JobStorageService_Tests
+    public class JobStorageServiceTests
     {
         private JobStorageService jobsStorageService;
         private Mock<IJobModelRepository> jobModelRepository;
