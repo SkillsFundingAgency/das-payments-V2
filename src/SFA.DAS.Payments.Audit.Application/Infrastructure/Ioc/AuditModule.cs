@@ -34,13 +34,13 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
                 .As<IPaymentsEventModelDataTable<FundingSourceEventModel>>();
 
             builder.RegisterType<RequiredPaymentDataTable>()
-                .As<IPaymentsEventModelDataTable<RequiredPaymentEventModel>>();
+                .As<IPaymentsEventModelDataTable<Audit.Model.RequiredPaymentEventModel>>();
 
             builder.RegisterType<EarningEventDataTable>()
                 .As<IPaymentsEventModelDataTable<EarningEventModel>>();
 
             builder.RegisterType<DataLockEventDataTable>()
-                .As<IPaymentsEventModelDataTable<DataLockEventModel>>();
+                .As<IPaymentsEventModelDataTable<Audit.Model.DataLockEventModel>>();
 
             builder.RegisterGeneric(typeof(PaymentsEventModelBatchService<>))
                 .AsImplementedInterfaces()

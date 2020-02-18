@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extras.Moq;
 using AutoMapper;
+using Castle.Components.DictionaryAdapter;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -321,6 +323,119 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             actualRequiredPayment[0].LearningAim.FundingLineType.Should().Be(earningEvent.PriceEpisodes[0].FundingLineType);
         }
 
+        [Test]
+        public async Task TestRefundedCompletionPaymentShouldNotBeHeldBack()
+        {
+            // arrange
+            var earningEvent = GeneratePayableDataLockEvent(1920, 2, 0m);
+
+            var paymentHistoryEntities = new[] {new PaymentHistoryEntity
+            {
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1920, 2),
+                DeliveryPeriod = 2,
+                LearnAimReference = earningEvent.LearningAim.Reference,
+                TransactionType = (int) OnProgrammeEarningType.Completion,
+                Amount = 350
+            }};
+
+            var requiredPayments = new List<RequiredPayment>
+            {
+                new RequiredPayment
+                {
+                    Amount = -350,
+                    EarningType = EarningType.Levy,
+                },
+            };
+
+            paymentHistoryCacheMock
+                .Setup(c => c.TryGet(It.Is<string>(key => key == CacheKeys.PaymentHistoryKey), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities))
+                .Verifiable();
+
+            requiredPaymentsService.Setup(p => p.GetRequiredPayments(It.IsAny<Earning>(), It.IsAny<List<Payment>>()))
+                .Returns(requiredPayments)
+                .Verifiable();
+
+            // act           
+            var actualRequiredPayment = await processor.HandleEarningEvent(earningEvent, paymentHistoryCacheMock.Object, CancellationToken.None);
+
+            // assert
+            actualRequiredPayment.Should().HaveCount(1);
+            actualRequiredPayment.First().AmountDue.Should().Be(-350);
+        }
+
+        [Test]
+        public async Task TestZeroAmountPaymentShouldNotBeHeldBack()
+        {
+            // arrange
+            var earningEvent = GeneratePayableDataLockEvent(1920, 2, 0m);
+            var requiredPayments = new List<RequiredPayment>
+            {
+                new RequiredPayment
+                {
+                    Amount = 0m,
+                    EarningType = EarningType.Levy,
+                },
+            };
+
+            paymentHistoryCacheMock
+                .Setup(c => c.TryGet(It.Is<string>(key => key == CacheKeys.PaymentHistoryKey), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, new PaymentHistoryEntity[]{}))
+                .Verifiable();
+
+            requiredPaymentsService.Setup(p => p.GetRequiredPayments(It.IsAny<Earning>(), It.IsAny<List<Payment>>()))
+                .Returns(requiredPayments)
+                .Verifiable();
+
+            // act           
+            var actualRequiredPayment = await processor.HandleEarningEvent(earningEvent, paymentHistoryCacheMock.Object, CancellationToken.None);
+
+            // assert
+            actualRequiredPayment.Should().BeEmpty();
+        }
+
+        private PayableEarningEvent GeneratePayableDataLockEvent(short academicYear,byte deliveryPeriod, decimal periodAmount)
+        {
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(academicYear, deliveryPeriod);
+            return new PayableEarningEvent
+            {
+                Ukprn = 1,
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(academicYear, deliveryPeriod),
+                CollectionYear = period.AcademicYear,
+                Learner = EarningEventDataHelper.CreateLearner(),
+                LearningAim = EarningEventDataHelper.CreateLearningAim(),
+                OnProgrammeEarnings = new List<OnProgrammeEarning>()
+                {
+                    new OnProgrammeEarning
+                    {
+                        Type = OnProgrammeEarningType.Completion,
+                        Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod>()
+                        {
+                            new EarningPeriod
+                            {
+                                Amount = periodAmount,
+                                Period = period.Period,
+                                SfaContributionPercentage = 0.9m,
+                            },
+                        })
+                    }
+                },
+                PriceEpisodes = new List<PriceEpisode>
+                {
+                    new PriceEpisode
+                    {
+                        Identifier = "1",
+                        EffectiveTotalNegotiatedPriceStartDate = DateTime.UtcNow,
+                        PlannedEndDate = DateTime.UtcNow,
+                        ActualEndDate = DateTime.UtcNow,
+                        CompletionAmount = 350M,
+                        InstalmentAmount = 200M,
+                        NumberOfInstalments = 16,
+                        FundingLineType = "19+ Apprenticeship Non-Levy Contract (procured)"
+                    }
+                }
+            };
+        }
 
     }
 }

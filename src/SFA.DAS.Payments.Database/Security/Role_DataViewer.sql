@@ -10,3 +10,11 @@ GRANT
 ON SCHEMA::[Payments2]
 	TO [DataViewer]
 GO
+
+GRANT 
+	REFERENCES, 
+	SELECT, 
+	VIEW DEFINITION 
+ON SCHEMA::[Metrics]
+	TO [DataViewer]
+GO
