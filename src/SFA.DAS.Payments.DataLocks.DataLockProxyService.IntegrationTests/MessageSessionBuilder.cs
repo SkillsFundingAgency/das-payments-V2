@@ -14,15 +14,13 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests
         {
             var conf = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                    .AddJsonFile("appsettings.development.json", optional: true, reloadOnChange: true)
                     .AddEnvironmentVariables()
                 .Build();
 
             var connectionString = conf["ServiceBusConnectionString"];
             if (string.IsNullOrWhiteSpace(connectionString))
             {
-                throw new Exception("Please include an appsettings.development.json file " +
-                                    "and include the connection string or set the environment " +
+                throw new Exception("Please set the environment " +
                                     "variable: 'ServiceBusConnectionString'");
             }
 
