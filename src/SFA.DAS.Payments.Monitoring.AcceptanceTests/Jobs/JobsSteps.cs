@@ -19,6 +19,9 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
     [Binding]
     public class JobsSteps : StepsBase
     {
+
+        private const string ProcessLearnerCommandNs = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand";
+
         protected JobsDataContext DataContext => Scope.Resolve<JobsDataContext>();
 
         protected JobModel Job
@@ -93,19 +96,19 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 new GeneratedMessage
                 {
                     StartTime = DateTimeOffset.UtcNow,
-                    MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand",
+                    MessageName = ProcessLearnerCommandNs,
                     MessageId = Guid.NewGuid()
                 },
                 new GeneratedMessage
                 {
                     StartTime = DateTimeOffset.UtcNow,
-                    MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand",
+                    MessageName = ProcessLearnerCommandNs,
                     MessageId = Guid.NewGuid()
                 },
                 new GeneratedMessage
                 {
                     StartTime = DateTimeOffset.UtcNow,
-                    MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand",
+                    MessageName = ProcessLearnerCommandNs,
                     MessageId = Guid.NewGuid()
                 },
             };
@@ -159,19 +162,19 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 new GeneratedMessage
                 {
                     StartTime = DateTimeOffset.UtcNow,
-                    MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand",
+                    MessageName = ProcessLearnerCommandNs,
                     MessageId = Guid.NewGuid()
                 },
                 new GeneratedMessage
                 {
                     StartTime = DateTimeOffset.UtcNow,
-                    MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand",
+                    MessageName = ProcessLearnerCommandNs,
                     MessageId = Guid.NewGuid()
                 },
                 new GeneratedMessage
                 {
                     StartTime = DateTimeOffset.UtcNow,
-                    MessageName = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand",
+                    MessageName = ProcessLearnerCommandNs,
                     MessageId = Guid.NewGuid()
                 },
             };
@@ -379,7 +382,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         public async Task WhenData_CollectionsConfirmsTheFailureOfTheJob()
         {
             var earningsJob = JobDetails as RecordEarningsJob ??
-                              throw new InvalidOperationException("Expected job to be a ");
+                              throw new InvalidOperationException($"Expected job to be a  {nameof(RecordEarningsJob)}");
             await MessageSession.Send(PartitionEndpointName, new RecordEarningsJobFailed
             {
                 JobId = JobDetails.JobId,
@@ -521,7 +524,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             {
                 var job = DataContext.Jobs.AsNoTracking()
                     .FirstOrDefault(x =>
-                        x.DcJobId == JobDetails.JobId && x.DcJobSucceeded.HasValue && !x.DcJobSucceeded.Value);
+                        x.DcJobId == JobDetails.JobId && x.DcJobSucceeded == false);
 
                 if (job == null)
                     return false;
