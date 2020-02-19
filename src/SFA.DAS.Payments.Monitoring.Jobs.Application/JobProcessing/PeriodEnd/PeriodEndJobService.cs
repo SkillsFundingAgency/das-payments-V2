@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
             };
 
             await RecordNewJob(jobDetails,periodEndJob.GeneratedMessages,  cancellationToken).ConfigureAwait(false);
-            logger.LogInfo($"Sent request to record period end stop job. Job Id: {periodEndJob.JobId}, collection period: {periodEndJob.CollectionYear}-{periodEndJob.CollectionPeriod}");
+            logger.LogInfo($"Sent request to record {periodEndJob.GetType().Name}. Job Id: {periodEndJob.JobId}, collection period: {periodEndJob.CollectionYear}-{periodEndJob.CollectionPeriod}");
 
         }
 

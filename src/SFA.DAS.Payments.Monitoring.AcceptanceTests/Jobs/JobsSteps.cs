@@ -364,7 +364,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         public async Task WhenData_CollectionsConfirmsTheSuccessfulCompletionOfTheJob()
         {
             var earningsJob = JobDetails as RecordEarningsJob ??
-                              throw new InvalidOperationException("Expected job to be a ");
+                              throw new InvalidOperationException($"Expected job to be a {nameof(RecordEarningsJob)}");
             await MessageSession.Send(PartitionEndpointName, new RecordEarningsJobSucceeded
             {
                 JobId = JobDetails.JobId,
@@ -477,16 +477,16 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         }
 
 
-        [Then(@"the monitoring service should notify other services that the start job has completed successfully")]
-        public async Task ThenTheMonitoringServiceShouldNotifyOtherServicesThatTheStartJobHasCompletedSuccessfully()
+        [Then(@"the monitoring service should notify other services that the period end start job has completed successfully")]
+        public async Task ThenTheMonitoringServiceShouldNotifyOtherServicesThatThePeriodEndStartJobHasCompletedSuccessfully()
         {
             await WaitForIt(() => PeriodEndStartSuccessHandler.ReceivedEvents.Any(ev => ev.JobId == JobDetails.JobId),
                     $"Failed to receive the period end start job succeeded event for job id: {JobDetails.JobId}")
                 .ConfigureAwait(false);
         }
 
-        [Then(@"the monitoring service should notify other services that the run job has completed successfully")]
-        public async Task ThenTheMonitoringServiceShouldNotifyOtherServicesThatTheRunJobHasCompletedSuccessfully()
+        [Then(@"the monitoring service should notify other services that the period end run job has completed successfully")]
+        public async Task ThenTheMonitoringServiceShouldNotifyOtherServicesThatThePeriodEndRunJobHasCompletedSuccessfully()
         {
             await WaitForIt(() => PeriodEndRunSuccessHandler.ReceivedEvents.Any(ev => ev.JobId == JobDetails.JobId),
                     $"Failed to receive the period end run job succeeded event for job id: {JobDetails.JobId}")
@@ -494,8 +494,8 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         }
 
         
-        [Then(@"the monitoring service should notify other services that the stop job has completed successfully")]
-        public async Task ThenTheMonitoringServiceShouldNotifyOtherServicesThatTheStopJobHasCompletedSuccessfully()
+        [Then(@"the monitoring service should notify other services that the period end stop job has completed successfully")]
+        public async Task ThenTheMonitoringServiceShouldNotifyOtherServicesThatThePeriodEndStopJobHasCompletedSuccessfully()
         {
             await WaitForIt(() => PeriodEndStopSuccessHandler.ReceivedEvents.Any(ev => ev.JobId == JobDetails.JobId),
                     $"Failed to receive the period end stop job succeeded event for job id: {JobDetails.JobId}")
