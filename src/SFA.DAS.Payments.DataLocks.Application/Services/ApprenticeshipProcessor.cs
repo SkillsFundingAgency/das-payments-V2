@@ -63,21 +63,34 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         {
             try
             {
-                logger.LogDebug(
-                    $"Now processing the apprenticeship created event. Apprenticeship id: {createdEvent.ApprenticeshipId}, employer account id: {createdEvent.AccountId}, Ukprn: {createdEvent.ProviderId}.");
+                logger.LogDebug($"Now processing the apprenticeship created event. " +
+                                $"Apprenticeship id: {createdEvent.ApprenticeshipId}, " +
+                                $"employer account id: {createdEvent.AccountId}, " +
+                                $"Ukprn: {createdEvent.ProviderId}.");
                 var model = mapper.Map<ApprenticeshipModel>(createdEvent);
                 var duplicates = await apprenticeshipService.NewApprenticeship(model).ConfigureAwait(false);
+                logger.LogDebug($"Apprenticeship saved to database. " +
+                                $"Apprenticeship id: {createdEvent.ApprenticeshipId}, " +
+                                $"employer account id: {createdEvent.AccountId}, " +
+                                $"Ukprn: {createdEvent.ProviderId}.");
+
                 var updatedEvent = mapper.Map<ApprenticeshipUpdated>(model);
                 updatedEvent.Duplicates = duplicates.Select(duplicate => new ApprenticeshipDuplicate
                     {Ukprn = duplicate.Ukprn, ApprenticeshipId = duplicate.ApprenticeshipId}).ToList();
                 var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
                 await endpointInstance.Publish(updatedEvent).ConfigureAwait(false);
-                logger.LogInfo(
-                    $"Finished processing the apprenticeship created event. Apprenticeship id: {createdEvent.ApprenticeshipId}, employer account id: {createdEvent.AccountId}, Ukprn: {createdEvent.ProviderId}.");
+                
+                logger.LogInfo($"Finished processing the apprenticeship created event. " +
+                               $"Apprenticeship id: {createdEvent.ApprenticeshipId}, " +
+                               $"employer account id: {createdEvent.AccountId}, " +
+                               $"Ukprn: {createdEvent.ProviderId}.");
             }
             catch (InvalidOperationException e)
             {
-                logger.LogWarning($"Apprenticeship already exists: {e.Message}");
+                logger.LogError($"Unhandled exception while adding apprenticeship: {e.Message}\n" +
+                                $"Apprenticeship id: {createdEvent.ApprenticeshipId}, " +
+                                $"employer account id: {createdEvent.AccountId}, " +
+                                $"Ukprn: {createdEvent.ProviderId}.", e);
             }
             catch (Exception ex)
             {
