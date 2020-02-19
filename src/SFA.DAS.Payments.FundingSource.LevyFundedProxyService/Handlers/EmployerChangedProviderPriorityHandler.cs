@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
         {
             paymentLogger.LogInfo($"Processing EmployerChangedProviderPriority event. Message Id: {context.MessageId}, Account Id: {message.EmployerAccountId}");
            
-            var actorId = new ActorId(message.EmployerAccountId);
+            var actorId = new ActorId(message.EmployerAccountId.ToString());
             var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
             await actor.HandleEmployerProviderPriorityChange(message).ConfigureAwait(false);
 
