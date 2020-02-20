@@ -10,6 +10,7 @@ using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.Exceptions;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Services
 {
@@ -79,11 +80,18 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     {Ukprn = duplicate.Ukprn, ApprenticeshipId = duplicate.ApprenticeshipId}).ToList();
                 var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
                 await endpointInstance.Publish(updatedEvent).ConfigureAwait(false);
-                
+
                 logger.LogInfo($"Finished processing the apprenticeship created event. " +
                                $"Apprenticeship id: {createdEvent.ApprenticeshipId}, " +
                                $"employer account id: {createdEvent.AccountId}, " +
                                $"Ukprn: {createdEvent.ProviderId}.");
+            }
+            catch (ApprenticeshipAlreadyExistsException e)
+            {
+                logger.LogError($"Apprenticeship already exists while trying to add a new apprenticeship: {e.Message}\n" +
+                                $"Apprenticeship id: {createdEvent.ApprenticeshipId}, " +
+                                $"employer account id: {createdEvent.AccountId}, " +
+                                $"Ukprn: {createdEvent.ProviderId}.", e);
             }
             catch (InvalidOperationException e)
             {
@@ -91,6 +99,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                                 $"Apprenticeship id: {createdEvent.ApprenticeshipId}, " +
                                 $"employer account id: {createdEvent.AccountId}, " +
                                 $"Ukprn: {createdEvent.ProviderId}.", e);
+                throw;
             }
             catch (Exception ex)
             {

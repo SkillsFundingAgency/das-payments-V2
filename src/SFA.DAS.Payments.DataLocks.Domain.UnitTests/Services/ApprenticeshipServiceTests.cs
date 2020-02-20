@@ -12,6 +12,7 @@ using NUnit.Framework.Internal;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.Exceptions;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 {
@@ -70,7 +71,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 .Setup(x => x.Get(It.Is<long>(id => id == apprenticeship.Id)))
                 .ReturnsAsync(apprenticeship);
             var service = mocker.Create<ApprenticeshipService>();
-            Assert.ThrowsAsync<InvalidOperationException>(() => service.NewApprenticeship(apprenticeship));
+            Assert.ThrowsAsync<ApprenticeshipAlreadyExistsException>(() => service.NewApprenticeship(apprenticeship));
         }
 
         [Test]
