@@ -1,8 +1,9 @@
-﻿using SFA.DAS.Payments.Model.Core;
+﻿using SFA.DAS.Payments.Messages.Core;
+using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands
 {
-    public class ProcessTriggerMonthComplete
+    public class ProcessTriggerMonthComplete : IMonitoredMessage
     {
         public ProcessTriggerMonthComplete(CollectionPeriod collectionPeriod)
         {
@@ -10,5 +11,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands
         }
 
         public CollectionPeriod CollectionPeriod { get; set; }
+        public long JobId { get; set; }
     }
 }
