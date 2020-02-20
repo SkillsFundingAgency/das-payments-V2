@@ -20,6 +20,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.Amount).HasColumnName(@"Amount").IsRequired();
             builder.Property(x => x.SfaContributionPercentage).HasColumnName(@"SfaContributionPercentage");
             builder.Property(x => x.CensusDate).HasColumnName(@"CensusDate");
+            builder.HasOne(x => x.EarningEvent).WithMany(ee => ee.Periods).HasForeignKey(x => x.EarningEventId);
         }
     }
 }

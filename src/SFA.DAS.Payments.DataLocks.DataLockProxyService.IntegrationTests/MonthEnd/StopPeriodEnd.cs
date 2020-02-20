@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests.Month
             serviceStatus.Should().BeFalse("Approvals service is running prior to test start");
 
             var periodEndEvent = new PeriodEndStoppedEvent();
-            await messageSession.Send(periodEndEvent).ConfigureAwait(false);
+            await messageSession.Publish(periodEndEvent).ConfigureAwait(false);
 
             var result = await new TimeService()
                 .WaitForBoolean(async () =>
