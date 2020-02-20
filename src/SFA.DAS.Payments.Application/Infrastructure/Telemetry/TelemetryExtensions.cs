@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Messages.Core.Commands;
 using SFA.DAS.Payments.Messages.Core.Events;
 
 namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
@@ -48,6 +49,28 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
                 {"JobId", paymentEvent.JobId.ToString()},
                 {TelemetryKeys.Ukprn, paymentEvent.Ukprn.ToString()},
             };
+
+            TrackDuration(telemetry, eventName, duration, props, employerAccountId);
+        }
+
+        public static void TrackDuration(this ITelemetry telemetry, string eventName, Stopwatch stopwatch, IPaymentsCommand paymentCommand, long? employerAccountId = null)
+        {
+            stopwatch.Stop();
+            TrackDuration(telemetry, eventName, stopwatch.Elapsed, paymentCommand, employerAccountId);
+        }
+
+        public static void TrackDuration(this ITelemetry telemetry, string eventName, TimeSpan duration, IPaymentsCommand paymentCommand, long? employerAccountId = null)
+        {
+            var props = new Dictionary<string, string>
+            {
+                {"JobId", paymentCommand.JobId.ToString()},
+            };
+            
+            TrackDuration(telemetry, eventName, duration, props, employerAccountId);
+        }
+
+        private static void TrackDuration(ITelemetry telemetry, string eventName, TimeSpan duration, Dictionary<string, string> props, long? employerAccountId = null)
+        {
             if (employerAccountId.HasValue)
                 props.Add("Employer", employerAccountId.ToString());
 
@@ -55,7 +78,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
                 props,
                 new Dictionary<string, double>
                 {
-                    { TelemetryKeys.Duration, duration.TotalMilliseconds }
+                    {TelemetryKeys.Duration, duration.TotalMilliseconds}
                 });
         }
     }
