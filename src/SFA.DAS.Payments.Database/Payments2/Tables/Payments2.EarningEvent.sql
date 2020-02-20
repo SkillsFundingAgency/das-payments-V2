@@ -40,3 +40,8 @@ CREATE INDEX IX_EarningEvent_ApprenticeshipEarningQuery ON [Payments2].[EarningE
    CreationDate
 )
 GO
+
+CREATE NONCLUSTERED INDEX IX_EarningEvent__AcademicYear_CollectionPeriod_JobId
+ON [Payments2].[EarningEvent] (AcademicYear, CollectionPeriod, JobId)
+INCLUDE ([EventId])
+GO

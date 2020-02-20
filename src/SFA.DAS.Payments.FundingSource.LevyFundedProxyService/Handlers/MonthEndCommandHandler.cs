@@ -40,6 +40,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
                     else
                         await context.Publish(fundingSourcePaymentEvent).ConfigureAwait(false);
                 }
+
                 //await Task.WhenAll(fundingSourceEvents.Select(context.Publish));
                 telemetry.StopOperation(operation);
             }
