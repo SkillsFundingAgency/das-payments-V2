@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             this.reliableTransactionProvider = reliableTransactionProvider ?? throw new ArgumentNullException(nameof(reliableTransactionProvider));
         }
 
-        private async Task<IReliableDictionary2<Guid, InProgressMessage>> GetInProgressMessagesCollection(long jobId)
+        private async Task<IReliableDictionary2<Guid, InProgressMessage>> GetOrAddInProgressMessagesCollection(long jobId)
         {
             return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<Guid, InProgressMessage>>(
                 $"{InProgressMessagesCacheKey}_{jobId}");
@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
 
         public async Task<List<InProgressMessage>> GetOrAddInProgressMessages(long jobId, CancellationToken cancellationToken)
         {
-            var inProgressCollection = await GetInProgressMessagesCollection(jobId).ConfigureAwait(false);
+            var inProgressCollection = await GetOrAddInProgressMessagesCollection(jobId).ConfigureAwait(false);
             var enumerator = (await inProgressCollection.CreateEnumerableAsync(reliableTransactionProvider.Current)).GetAsyncEnumerator();
             var identifiers = new List<InProgressMessage>();
 
@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
 
         public async Task RemoveInProgressMessages(long jobId, List<Guid> messageIdentifiers, CancellationToken cancellationToken)
         {
-            var inProgressCollection = await GetInProgressMessagesCollection(jobId).ConfigureAwait(false);
+            var inProgressCollection = await GetOrAddInProgressMessagesCollection(jobId).ConfigureAwait(false);
             foreach (var messageIdentifier in messageIdentifiers)
             {
                 await inProgressCollection.TryRemoveAsync(reliableTransactionProvider.Current, messageIdentifier,
@@ -57,7 +57,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
         public async Task StoreInProgressMessages(long jobId, List<InProgressMessage> inProgressMessages, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var inProgressMessagesCollection = await GetInProgressMessagesCollection(jobId);
+            var inProgressMessagesCollection = await GetOrAddInProgressMessagesCollection(jobId);
             foreach (var inProgressMessage in inProgressMessages)
             {
                 await inProgressMessagesCollection.AddOrUpdateAsync(reliableTransactionProvider.Current, inProgressMessage.MessageId,

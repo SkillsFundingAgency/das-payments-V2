@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             this.reliableTransactionProvider = reliableTransactionProvider ?? throw new ArgumentNullException(nameof(reliableTransactionProvider));
         }
 
-        private async Task<IReliableDictionary2<Guid, CompletedMessage>> GetCompletedMessagesCollection(long jobId)
+        private async Task<IReliableDictionary2<Guid, CompletedMessage>> GetOrAddCompletedMessagesCollection(long jobId)
         {
             return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<Guid, CompletedMessage>>(
                 $"{CompletedMessagesCacheKey}_{jobId}").ConfigureAwait(false);
@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
 
         public async Task<List<CompletedMessage>> GetOrAddCompletedMessages(long jobId, CancellationToken cancellationToken)
         {
-            var completedMessageCollection = await GetCompletedMessagesCollection(jobId).ConfigureAwait(false);
+            var completedMessageCollection = await GetOrAddCompletedMessagesCollection(jobId).ConfigureAwait(false);
             var enumerator = (await completedMessageCollection.CreateEnumerableAsync(reliableTransactionProvider.Current)).GetAsyncEnumerator();
             var identifiers = new List<CompletedMessage>();
 
@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
 
         public async Task RemoveCompletedMessages(long jobId, List<Guid> completedMessages, CancellationToken cancellationToken)
         {
-            var completedMessagesCollection = await GetCompletedMessagesCollection(jobId).ConfigureAwait(false);
+            var completedMessagesCollection = await GetOrAddCompletedMessagesCollection(jobId).ConfigureAwait(false);
             foreach (var completedMessage in completedMessages)
             {
                 await completedMessagesCollection.TryRemoveAsync(reliableTransactionProvider.Current, completedMessage,
@@ -57,7 +57,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
         {
             cancellationToken.ThrowIfCancellationRequested();
             var completedMessagesCollection =
-                await GetCompletedMessagesCollection(completedMessage.JobId).ConfigureAwait(false);
+                await GetOrAddCompletedMessagesCollection(completedMessage.JobId).ConfigureAwait(false);
             await completedMessagesCollection.AddOrUpdateAsync(reliableTransactionProvider.Current,
                     completedMessage.MessageId,
                     completedMessage, (key, value) => completedMessage, TransactionTimeout, cancellationToken)

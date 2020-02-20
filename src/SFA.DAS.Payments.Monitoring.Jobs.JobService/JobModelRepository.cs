@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
         }
 
-        private async Task<IReliableDictionary2<long, JobModel>> GetJobCollection()
+        private async Task<IReliableDictionary2<long, JobModel>> GetOrAddJobCollection()
         {
             return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<long, JobModel>>(JobCacheKey);
         }
@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
                 throw new InvalidOperationException($"No dc job id specified for the job. Job type: {job.JobType:G}");
             cancellationToken.ThrowIfCancellationRequested();
 
-            var jobCache = await GetJobCollection();
+            var jobCache = await GetOrAddJobCollection();
             await jobCache.AddOrUpdateAsync(reliableTransactionProvider.Current, job.DcJobId.Value,
                     id => job, (id, existingJob) => job, TransactionTimeout, cancellationToken)
                 .ConfigureAwait(false);
@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
 
         public async Task<JobModel> GetJob(long jobId, CancellationToken cancellationToken)
         {
-            var collection = await GetJobCollection().ConfigureAwait(false);
+            var collection = await GetOrAddJobCollection().ConfigureAwait(false);
             var item = await collection
                 .TryGetValueAsync(reliableTransactionProvider.Current, jobId, TransactionTimeout, cancellationToken)
                 .ConfigureAwait(false);
@@ -58,7 +58,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
 
         public async Task<List<long>> GetJobIdsByQuery(Func<JobModel, bool> query, CancellationToken cancellationToken)
         {
-            var collection = await GetJobCollection().ConfigureAwait(false);
+            var collection = await GetOrAddJobCollection().ConfigureAwait(false);
             var jobIds = new List<long>();
             var enumerator = (await collection.CreateEnumerableAsync(reliableTransactionProvider.Current)).GetAsyncEnumerator();
             while (await enumerator.MoveNextAsync(cancellationToken))
