@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
                 $"{InProgressMessagesCacheKey}_{jobId}");
         }
 
-        public async Task<List<InProgressMessage>> GetInProgressMessages(long jobId, CancellationToken cancellationToken)
+        public async Task<List<InProgressMessage>> GetOrAddInProgressMessages(long jobId, CancellationToken cancellationToken)
         {
             var inProgressCollection = await GetInProgressMessagesCollection(jobId).ConfigureAwait(false);
             var enumerator = (await inProgressCollection.CreateEnumerableAsync(reliableTransactionProvider.Current)).GetAsyncEnumerator();

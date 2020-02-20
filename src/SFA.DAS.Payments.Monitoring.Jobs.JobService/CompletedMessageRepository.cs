@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
                 $"{CompletedMessagesCacheKey}_{jobId}").ConfigureAwait(false);
         }
 
-        public async Task<List<CompletedMessage>> GetCompletedMessages(long jobId, CancellationToken cancellationToken)
+        public async Task<List<CompletedMessage>> GetOrAddCompletedMessages(long jobId, CancellationToken cancellationToken)
         {
             var completedMessageCollection = await GetCompletedMessagesCollection(jobId).ConfigureAwait(false);
             var enumerator = (await completedMessageCollection.CreateEnumerableAsync(reliableTransactionProvider.Current)).GetAsyncEnumerator();

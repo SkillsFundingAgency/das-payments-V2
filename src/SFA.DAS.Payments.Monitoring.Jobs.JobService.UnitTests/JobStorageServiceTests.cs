@@ -208,13 +208,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
                 new InProgressMessage{ JobId = dcJobId, MessageId = Guid.NewGuid(), MessageName = "TestOne" },
                 new InProgressMessage{ JobId = dcJobId, MessageId = Guid.NewGuid(), MessageName = "TestTwo" }
             };
-            inProgressMessageRepository.Setup(x => x.GetInProgressMessages(dcJobId, It.IsAny<CancellationToken>()))
+            inProgressMessageRepository.Setup(x => x.GetOrAddInProgressMessages(dcJobId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedMessages);
 
             var actualMessages = await jobsStorageService.GetInProgressMessages(dcJobId, CancellationToken.None);
 
             actualMessages.Should().BeSameAs(expectedMessages);
-            inProgressMessageRepository.Verify(x => x.GetInProgressMessages(dcJobId, It.IsAny<CancellationToken>()));
+            inProgressMessageRepository.Verify(x => x.GetOrAddInProgressMessages(dcJobId, It.IsAny<CancellationToken>()));
         }
 
         [Test]
@@ -256,13 +256,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.UnitTests
                 new CompletedMessage{ JobId = dcJobId, MessageId = Guid.NewGuid(), Succeeded = true },
                 new CompletedMessage{ JobId = dcJobId, MessageId = Guid.NewGuid(), Succeeded = false }
             };
-            completedMessageRepository.Setup(x => x.GetCompletedMessages(dcJobId, It.IsAny<CancellationToken>()))
+            completedMessageRepository.Setup(x => x.GetOrAddCompletedMessages(dcJobId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expectedMessages);
 
             var actualMessages = await jobsStorageService.GetCompletedMessages(dcJobId, CancellationToken.None);
 
             actualMessages.Should().BeSameAs(expectedMessages);
-            completedMessageRepository.Verify(x => x.GetCompletedMessages(dcJobId, It.IsAny<CancellationToken>()));
+            completedMessageRepository.Verify(x => x.GetOrAddCompletedMessages(dcJobId, It.IsAny<CancellationToken>()));
         }
 
         [Test]

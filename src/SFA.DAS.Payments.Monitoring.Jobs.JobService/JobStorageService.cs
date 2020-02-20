@@ -89,7 +89,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
 
         public async Task<List<InProgressMessage>> GetInProgressMessages(long jobId, CancellationToken cancellationToken)
         {
-            return await inProgressMessageRepository.GetInProgressMessages(jobId, cancellationToken);
+            return await inProgressMessageRepository.GetOrAddInProgressMessages(jobId, cancellationToken);
         }
 
         public async Task RemoveInProgressMessages(long jobId, List<Guid> messageIdentifiers, CancellationToken cancellationToken)
@@ -104,7 +104,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
 
         public async Task<List<CompletedMessage>> GetCompletedMessages(long jobId, CancellationToken cancellationToken)
         {
-            return await completedMessageRepository.GetCompletedMessages(jobId, cancellationToken);
+            return await completedMessageRepository.GetOrAddCompletedMessages(jobId, cancellationToken);
         }
 
         public async Task RemoveCompletedMessages(long jobId, List<Guid> completedMessages, CancellationToken cancellationToken)
