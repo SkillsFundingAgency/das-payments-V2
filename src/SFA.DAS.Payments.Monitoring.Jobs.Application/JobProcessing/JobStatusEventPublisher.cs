@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             var periodEndEvent = CreatePeriodEndEvent(jobModel.JobType, succeeded);
             periodEndEvent.JobId = jobModel.DcJobId.Value;
             periodEndEvent.CollectionPeriod = jobModel.CollectionPeriod;
-            periodEndEvent.CollectionYear = jobModel.AcademicYear;
+            periodEndEvent.AcademicYear = jobModel.AcademicYear;
 
             logger.LogDebug(
                 $"Publishing {periodEndEvent.GetType().Name} event. Event: {periodEndEvent.ToJson()}");

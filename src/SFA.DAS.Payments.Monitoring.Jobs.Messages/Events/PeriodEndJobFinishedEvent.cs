@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Messages.Events
     {
         public Guid EventId { get; set; }
         public DateTimeOffset EventTime { get; set; }
-        public short CollectionYear { get; set; }
+        public short AcademicYear { get; set; }
         public byte CollectionPeriod { get; set; }
         public long JobId { get; set; }
         public PeriodEndJobFinishedEvent()
