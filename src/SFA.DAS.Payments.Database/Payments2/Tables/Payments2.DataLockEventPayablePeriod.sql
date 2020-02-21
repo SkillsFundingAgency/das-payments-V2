@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [Payments2].[DataLockEventPayablePeriod]
 (
 	Id BIGINT NOT NULL IDENTITY(1,1) CONSTRAINT PK_DataLockEventPayablePeriod PRIMARY KEY CLUSTERED,	
-	DataLockEventId UNIQUEIDENTIFIER NOT NULL CONSTRAINT FK_DataLockEventPayablePeriod__DataLockEvent FOREIGN KEY REFERENCES [Payments2].[DataLockEvent] (EventId) ON DELETE CASCADE, 
+	DataLockEventId UNIQUEIDENTIFIER NOT NULL CONSTRAINT FK_DataLockEventPayablePeriod__DataLockEvent FOREIGN KEY REFERENCES [Payments2].[DataLockEvent] (EventId), 
 	PriceEpisodeIdentifier NVARCHAR(50) NULL,
 	TransactionType TINYINT NOT NULL, 
 	DeliveryPeriod TINYINT NOT NULL, 
