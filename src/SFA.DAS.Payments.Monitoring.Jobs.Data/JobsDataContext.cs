@@ -12,6 +12,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
     public interface IJobsDataContext
     {
         Task SaveNewJob(JobModel jobDetails, CancellationToken cancellationToken = default(CancellationToken));
+        Task UpdateJob(JobModel job, CancellationToken cancellationToken = default(CancellationToken));
         Task<long> GetJobIdFromDcJobId(long dcJobId);
         Task<JobModel> GetJobByDcJobId(long dcJobId);
         Task SaveJobSteps(List<JobStepModel> jobSteps);
