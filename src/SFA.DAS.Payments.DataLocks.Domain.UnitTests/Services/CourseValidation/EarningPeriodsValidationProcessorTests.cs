@@ -453,27 +453,18 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 
             };
 
-            mocker.Mock<ICalculatePeriodStartAndEndDate>()
-                .Setup(x => x.GetPeriodDate(2, AcademicYear))
-                .Returns(() => (new DateTime(2018, 9, 1), new DateTime(2018, 9, 30)));
+            var earningPeriodsValidationProcessor = new EarningPeriodsValidationProcessor(
+                new CourseValidationProcessor(
+                    new StartDateValidator(),
+                    new CompletionStoppedValidator(),
+                    new OnProgrammeAndIncentiveStoppedValidator(new CalculatePeriodStartAndEndDate()),
+                    new List<ICourseValidator> { new StandardCodeValidator() }
+                ),
+                new FunctionalSkillValidationProcessor(new List<ICourseValidator>()),
+                new CalculatePeriodStartAndEndDate());
 
-            mocker.Mock<ICourseValidationProcessor>()
-                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(o => o.Apprenticeship.Id == apprenticeships.Last().Id)))
-                .Returns(() => new CourseValidationResult
-                {
-                    DataLockFailures = new List<DataLockFailure>
-                    {
-                        new DataLockFailure
-                        {
-                            ApprenticeshipId = apprenticeships.Last().Id,
-                            ApprenticeshipPriceEpisodeIds = apprenticeships.Last().ApprenticeshipPriceEpisodes.Select(x => x.Id).ToList(),
-                            DataLockError = DataLockErrorCode.DLOCK_04
-                        }
-                    },
-                    MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel()
-                });
 
-            var periods = mocker.Create<EarningPeriodsValidationProcessor>()
+            var periods = earningPeriodsValidationProcessor
                 .ValidatePeriods(ukprn, 1, priceEpisodes, earning.Periods.ToList(), (TransactionType)earning.Type, apprenticeships, aim, AcademicYear);
 
             mocker.Mock<ICourseValidationProcessor>()
@@ -710,10 +701,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
               }.AsReadOnly()
             };
             
-
             var earningPeriodsValidationProcessor = new EarningPeriodsValidationProcessor(
                 new CourseValidationProcessor(
-                    new StartDateValidator(new CalculatePeriodStartAndEndDate()),
+                    new StartDateValidator(),
                     new CompletionStoppedValidator(),
                     new OnProgrammeAndIncentiveStoppedValidator(new CalculatePeriodStartAndEndDate()),
                     new List<ICourseValidator> { new StandardCodeValidator() }
@@ -735,5 +725,123 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             periods.ValidPeriods.Count.Should().Be(2);
            
         }
+
+        [Test]
+        public void OnlyValidateCommitmentsThatStartedBeforePriceEpisodes()
+        {
+            AcademicYear = 1920;
+            aim = new LearningAim
+            {
+                FrameworkCode = 490,
+                PathwayCode = 1,
+                ProgrammeType = 3,
+                StandardCode = 0
+            };
+            apprenticeships = new List<ApprenticeshipModel>
+            {
+                new ApprenticeshipModel
+                {
+                    Id = 1,
+                    Uln = 1,
+                    AccountId = 21,
+                    Ukprn = ukprn,
+                    EstimatedStartDate = new DateTime(2018, 8, 1),
+                    EstimatedEndDate = new DateTime(2019, 8, 1),
+                    Status = ApprenticeshipStatus.Active,
+                    PathwayCode = 490,
+                    FrameworkCode = 1,
+                    ProgrammeType = 3,
+                    StandardCode = 0,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            Id = 1,
+                            Cost = 2000,
+                            StartDate = new DateTime(2018, 8, 1),
+                            EndDate = new DateTime(2019, 8, 1),
+                        }
+                    },
+                },
+                new ApprenticeshipModel
+                {
+                    Id = 2,
+                    Uln = 1,
+                    AccountId = 21,
+                    Ukprn = ukprn,
+                    EstimatedStartDate = new DateTime(2019, 9, 1),
+                    EstimatedEndDate = new DateTime(2020, 10, 1),
+                    Status = ApprenticeshipStatus.Active,
+                    StandardCode = 196,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel {
+                            Id = 1,
+                            Cost = 5000,
+                            StartDate = new DateTime(2019, 9, 1),
+                            EndDate = new DateTime(2020, 10, 1)
+                        }
+                    },
+                },
+            };
+            priceEpisodes = new List<PriceEpisode>
+           {
+               new PriceEpisode
+               {
+                   Identifier = "pe-1",
+                   TotalNegotiatedPrice1 = 2000m,
+                   AgreedPrice = 2000m,
+                   EffectiveTotalNegotiatedPriceStartDate = new DateTime(2018,8,30),
+                   PlannedEndDate =  new DateTime(2019,8,30),
+                   ActualEndDate = new DateTime(2019,9,2),
+               }
+           };
+
+            var earning = new OnProgrammeEarning
+            {
+                Type = OnProgrammeEarningType.Completion,
+                Periods = new List<EarningPeriod>
+                {
+                    new EarningPeriod
+                    {
+                        Amount = 1,
+                        PriceEpisodeIdentifier = "pe-1",
+                        Period = 1
+                    },
+                    new EarningPeriod
+                    {
+                        Amount = 2,
+                        PriceEpisodeIdentifier = "pe-1",
+                        Period = 2
+                    },
+                }.AsReadOnly()
+            };
+
+            var earningPeriodsValidationProcessor = new EarningPeriodsValidationProcessor(
+                new CourseValidationProcessor(
+                    new StartDateValidator(),
+                    new CompletionStoppedValidator(),
+                    new OnProgrammeAndIncentiveStoppedValidator(new CalculatePeriodStartAndEndDate()),
+                    new List<ICourseValidator> { new StandardCodeValidator() }
+                ),
+                new FunctionalSkillValidationProcessor(new List<ICourseValidator>()),
+                new CalculatePeriodStartAndEndDate());
+
+            var periods = earningPeriodsValidationProcessor
+                .ValidatePeriods(
+                ukprn,
+                1,
+                priceEpisodes,
+                earning.Periods.ToList(),
+                (TransactionType)earning.Type,
+                apprenticeships,
+                aim,
+                AcademicYear);
+
+            periods.ValidPeriods.Count.Should().Be(2);
+            periods.ValidPeriods.All(x => x.ApprenticeshipId == 1).Should().BeTrue();
+
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -6,35 +7,43 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
-    public interface ICompletionStoppedValidator : ICourseValidator { }
-
-    public class CompletionStoppedValidator : BaseCourseValidator, ICompletionStoppedValidator
+    public interface ICompletionStoppedValidator
     {
-        protected override DataLockErrorCode DataLockerErrorCode { get; } = DataLockErrorCode.DLOCK_10;
+        (List<ApprenticeshipModel> validApprenticeships, List<DataLockFailure> dataLockFailures) Validate(PriceEpisode ilrPriceEpisode, List<ApprenticeshipModel> apprenticeships, TransactionType transactionType);
+         
+        }
 
-        protected override List<ApprenticeshipPriceEpisodeModel> GetValidApprenticeshipPriceEpisodes(
-            DataLockValidationModel dataLockValidationModel)
+    public class CompletionStoppedValidator : ICompletionStoppedValidator
+    {
+        public (List<ApprenticeshipModel> validApprenticeships, List<DataLockFailure> dataLockFailures) Validate
+            (PriceEpisode ilrPriceEpisode, List<ApprenticeshipModel> apprenticeships, TransactionType transactionType)
         {
 
-            // Only DLOCK_10 when apprenticeship is stopped
-            if (dataLockValidationModel.Apprenticeship.Status != ApprenticeshipStatus.Stopped)
+            // Only deal with Transaction Type 2 & 3 (Completion and balancing)
+            if (transactionType != TransactionType.Completion && transactionType != TransactionType.Balancing)
             {
-                return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes;
+                return (apprenticeships, new List<DataLockFailure>());
             }
 
-            // Only deal with Transactin Type 2 & 3 (Completion and balancing)
-            if (dataLockValidationModel.TransactionType != TransactionType.Completion &&
-                dataLockValidationModel.TransactionType != TransactionType.Balancing)
-            {
-                return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes;
-            }
+            var matchedApprenticeships = apprenticeships
+                .Where(a => (ilrPriceEpisode.ActualEndDate <= a.StopDate || a.Status != ApprenticeshipStatus.Stopped))
+                .ToList();
 
-            if (dataLockValidationModel.PriceEpisode.ActualEndDate <= dataLockValidationModel.Apprenticeship.StopDate)
+            if (matchedApprenticeships.Any())
             {
-                return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes;
+                return (matchedApprenticeships, new List<DataLockFailure>());
             }
+            
+            var dataLockFailures = apprenticeships.Select(a => new DataLockFailure
+            {
+                ApprenticeshipId = a.Id,
+                ApprenticeshipPriceEpisodeIds = a.ApprenticeshipPriceEpisodes
+                    .Where(o => !o.Removed)
+                    .Select(x => x.Id).ToList(),
+                DataLockError = DataLockErrorCode.DLOCK_10
+            }).ToList();
 
-            return new List<ApprenticeshipPriceEpisodeModel>();
+            return (new List<ApprenticeshipModel>(), dataLockFailures);
         }
     }
 }

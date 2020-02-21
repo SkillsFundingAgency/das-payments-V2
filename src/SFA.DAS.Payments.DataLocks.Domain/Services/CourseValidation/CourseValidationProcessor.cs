@@ -29,8 +29,14 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 
             var validators = new List<ICourseValidator>
             {
-                startDateValidator, completionStoppedValidator, onProgrammeAndIncentiveStoppedValidator
+                 onProgrammeAndIncentiveStoppedValidator
             };
+
+
+            //var validators = new List<ICourseValidator>
+            //{
+            //    startDateValidator, completionStoppedValidator, onProgrammeAndIncentiveStoppedValidator
+            //};
 
             foreach (var validator in validators)
             {

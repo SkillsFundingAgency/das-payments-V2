@@ -7,6 +7,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoFixture.NUnit3;
 using Moq;
 using SFA.DAS.Payments.DataLocks.Domain.Services;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
@@ -16,7 +17,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
     [TestFixture]
     public class StartDateValidatorTest
     {
-        private readonly DateTime startDate = DateTime.Today;
         private readonly string priceEpisodeIdentifier = "pe-1";
         private EarningPeriod period;
         private Mock<ICalculatePeriodStartAndEndDate> calculatePeriodStartAndEndDate;
@@ -35,177 +35,101 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 .Returns(() => (new DateTime(2018, 8, 1), new DateTime(2018, 8, 31)));
         }
 
-        [Test]
-        public void ReturnsMatchedPriceEpisodes()
+        [AutoData]
+        public void ReturnsOnlyCommitmentsThatStartOnOrBeforePriceEpisode(List<ApprenticeshipModel> apprenticeshipModels, PriceEpisode priceEpisode)
         {
-            var validation = new DataLockValidationModel
-            {
-                PriceEpisode = new PriceEpisode { EffectiveTotalNegotiatedPriceStartDate = startDate, Identifier = priceEpisodeIdentifier },
-                EarningPeriod = period,
-                Apprenticeship = new ApprenticeshipModel
-                {
-                    Id = 1,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
-                        new ApprenticeshipPriceEpisodeModel
-                        {
-                            Id = 99,
-                            StartDate = startDate.AddDays(-1)
-                        }
-                    }
-                }
-            };
+            priceEpisode.EffectiveTotalNegotiatedPriceStartDate = new DateTime(2018, 8, 1);
 
-            var validator = new StartDateValidator(calculatePeriodStartAndEndDate.Object);
-            var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().BeNull();
-            result.ApprenticeshipPriceEpisodes.Any(ape => ape.Id == 99).Should().BeTrue();
+            apprenticeshipModels[0].ApprenticeshipPriceEpisodes[0].StartDate = new DateTime(2018, 6, 1);
+            apprenticeshipModels[0].ApprenticeshipPriceEpisodes[0].EndDate = new DateTime(2018, 8, 1);
+
+            apprenticeshipModels[1].ApprenticeshipPriceEpisodes[0].StartDate = new DateTime(2018, 8, 1);
+            apprenticeshipModels[1].ApprenticeshipPriceEpisodes[0].EndDate = new DateTime(2019, 8, 30);
+
+            apprenticeshipModels[2].ApprenticeshipPriceEpisodes[0].StartDate = new DateTime(2019, 9, 1);
+            apprenticeshipModels[2].ApprenticeshipPriceEpisodes[0].EndDate = new DateTime(2020, 9, 30);
+
+            var validator = new StartDateValidator();
+            (List<ApprenticeshipModel> validApprenticeships, List<DataLockFailure> dataLockFailures) result = validator.Validate(priceEpisode, apprenticeshipModels);
+
+            result.dataLockFailures.Should().BeEmpty();
+            result.validApprenticeships.Should().NotBeNull();
+            result.validApprenticeships.Any(x => x.Id == apprenticeshipModels[0].Id).Should().BeTrue();
+            result.validApprenticeships.Any(x => x.Id == apprenticeshipModels[1].Id).Should().BeTrue();
         }
 
-        [Test]
-        public void AssignsAllValidPriceEpisodes()
+        [AutoData]
+        public void ReturnsDLock09WhenNoCommitmentsStartOnOrBeforePriceEpisode(ApprenticeshipModel apprenticeshipA, ApprenticeshipModel apprenticeshipB,PriceEpisode priceEpisode)
         {
-            var validation = new DataLockValidationModel
-            {
-                PriceEpisode = new PriceEpisode { EffectiveTotalNegotiatedPriceStartDate = startDate, Identifier = priceEpisodeIdentifier },
-                EarningPeriod = period,
-                Apprenticeship = new ApprenticeshipModel
-                {
-                    Id = 1,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
-                        new ApprenticeshipPriceEpisodeModel
-                        {
-                            Id = 1,
-                            StartDate = startDate.AddDays(-6),
-                            EndDate = startDate.AddDays(-5),
-                        },
-                        new ApprenticeshipPriceEpisodeModel
-                        {
-                            Id = 2,
-                            StartDate = startDate.AddDays(-2),
-                            EndDate = startDate.AddDays(-1)
-                        },
-                        new ApprenticeshipPriceEpisodeModel
-                        {
-                            Id = 3,
-                            StartDate = startDate
-                        },
-                        new ApprenticeshipPriceEpisodeModel
-                        {
-                            Id = 4,
-                            StartDate = startDate.AddDays(-4),
-                            EndDate = startDate.AddDays(-3),
-                        },
-                    }
-                }
-            };
+            priceEpisode.EffectiveTotalNegotiatedPriceStartDate = new DateTime(2018, 8, 1);
 
-            var validator = new StartDateValidator(calculatePeriodStartAndEndDate.Object);
-            var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().BeNull();
-            result.ApprenticeshipPriceEpisodes[0].Id.Should().Be(1);
-            result.ApprenticeshipPriceEpisodes[1].Id.Should().Be(2);
-            result.ApprenticeshipPriceEpisodes[2].Id.Should().Be(3);
-            result.ApprenticeshipPriceEpisodes[3].Id.Should().Be(4);
-        }
+            apprenticeshipA.ApprenticeshipPriceEpisodes.ForEach(x => x.Removed =true);
+            apprenticeshipA.ApprenticeshipPriceEpisodes[0].StartDate = new DateTime(2018, 9, 1);
+            apprenticeshipA.ApprenticeshipPriceEpisodes[0].EndDate = new DateTime(2019, 9, 30);
+            apprenticeshipA.ApprenticeshipPriceEpisodes[0].Removed = false;
 
-        [Test]
-        public void ReturnsDataLockErrorWhenNoCoveringPriceEpisodeFound()
-        {
 
-            var validation = new DataLockValidationModel
-            {
-                PriceEpisode = new PriceEpisode { EffectiveTotalNegotiatedPriceStartDate = startDate, Identifier = priceEpisodeIdentifier },
-                EarningPeriod = period,
-                Apprenticeship = new ApprenticeshipModel
-                {
-                    Id = 1,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
-                        new ApprenticeshipPriceEpisodeModel
-                        {
-                            StartDate = startDate.AddDays(1)
-                        }
-                    }
-                }
-            };
-
-            var validator = new StartDateValidator(calculatePeriodStartAndEndDate.Object);
-            var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().NotBeNull();
-            result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_09);
-        }
-
-        [Test]
-        public void ShouldNotMatchRemovedApprenticeshipPriceEpisodes()
-        {
-            var validation = new DataLockValidationModel
-            {
-                PriceEpisode = new PriceEpisode { EffectiveTotalNegotiatedPriceStartDate = startDate, Identifier = priceEpisodeIdentifier },
-                EarningPeriod = period,
-                Apprenticeship = new ApprenticeshipModel
-                {
-                    Id = 1,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
-                        new ApprenticeshipPriceEpisodeModel
-                        {
-                            StartDate = startDate.AddDays(-1),
-                            Removed = true
-                        }
-                    }
-                }
-            };
-
-            var validator = new StartDateValidator(calculatePeriodStartAndEndDate.Object);
-            var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().NotBeNull();
-            result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_09);
-        }
-
-        [Test]
-        public void ApprenticeshipsNotWithinADeliveryPeriodShouldReturnDLock09()
-        {
-            period = new EarningPeriod
-            {
-                Period = 1
-            };
-
-            var validation = new DataLockValidationModel
-            {
-                PriceEpisode = new PriceEpisode
-                {
-                    EffectiveTotalNegotiatedPriceStartDate = startDate,
-                    Identifier = priceEpisodeIdentifier
-                },
-                EarningPeriod = period,
-                Apprenticeship = new ApprenticeshipModel
-                {
-                    Id = 1,
-                    AccountId = 21,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
-                    {
-                        new ApprenticeshipPriceEpisodeModel{Id = 90},
-                        new ApprenticeshipPriceEpisodeModel{Id = 91},
-                        new ApprenticeshipPriceEpisodeModel{Id = 92},
-                        new ApprenticeshipPriceEpisodeModel{Id = 93},
-                    },
-                    EstimatedStartDate = new DateTime(2018, 9, 15)
-                }
-            };
+            apprenticeshipB.ApprenticeshipPriceEpisodes.ForEach(x => x.Removed = true);
+            apprenticeshipB.ApprenticeshipPriceEpisodes[0].StartDate = new DateTime(2019, 9, 1);
+            apprenticeshipB.ApprenticeshipPriceEpisodes[0].EndDate = new DateTime(2020, 9, 30);
+            apprenticeshipB.ApprenticeshipPriceEpisodes[0].Removed = false;
             
-            calculatePeriodStartAndEndDate
-              .Setup(x => x.GetPeriodDate(1, 1819))
-              .Returns(() => (new DateTime(2018, 8, 1), new DateTime(2018, 8, 31)));
-            
+            List<ApprenticeshipModel> apprenticeshipModels = new List<ApprenticeshipModel> {apprenticeshipA, apprenticeshipB};
 
-            var validator = new StartDateValidator(calculatePeriodStartAndEndDate.Object);
-            var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().NotBeNull();
-            result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_09);
-            result.ApprenticeshipPriceEpisodes.Should().BeEmpty();
+            var validator = new StartDateValidator();
+            (List<ApprenticeshipModel> validApprenticeships, List<DataLockFailure> dataLockFailures) result = validator
+                .Validate(priceEpisode, apprenticeshipModels);
+
+            result.validApprenticeships.Should().BeEmpty();
+            result.dataLockFailures.Should().HaveCount(2);
+            result.dataLockFailures.Should().ContainEquivalentOf(
+                new
+                {
+                    ApprenticeshipId = apprenticeshipA.Id,
+                    ApprenticeshipPriceEpisodeIds = new List<long>(){ apprenticeshipA.ApprenticeshipPriceEpisodes[0].Id},
+                    DataLockError = DataLockErrorCode.DLOCK_09,
+                });
+
+            result.dataLockFailures.Should().ContainEquivalentOf(
+                new
+                {
+                    ApprenticeshipId = apprenticeshipModels[1].Id,
+                    ApprenticeshipPriceEpisodeIds = new List<long>() { apprenticeshipB.ApprenticeshipPriceEpisodes[0].Id },
+                    DataLockError = DataLockErrorCode.DLOCK_09,
+                });
         }
-        
+
+
+        //[Test]
+        //public void ApprenticeshipsNotWithinADeliveryPeriodShouldReturnDLock09()
+        //{
+        //    var priceEpisode = new PriceEpisode
+        //    {
+        //        EffectiveTotalNegotiatedPriceStartDate = DateTime.Today,
+        //        Identifier = priceEpisodeIdentifier
+        //    };
+
+        //    var apprenticeship = new ApprenticeshipModel
+        //    {
+        //        Id = 1,
+        //        AccountId = 21,
+        //        ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+        //        {
+        //            new ApprenticeshipPriceEpisodeModel {Id = 90},
+        //            new ApprenticeshipPriceEpisodeModel {Id = 91},
+        //            new ApprenticeshipPriceEpisodeModel {Id = 92},
+        //            new ApprenticeshipPriceEpisodeModel {Id = 93},
+        //        },
+        //        EstimatedStartDate = new DateTime(2018, 9, 15)
+        //    };
+           
+        //    var validator = new StartDateValidator();
+        //    var result = validator.Validate(priceEpisode,new List<ApprenticeshipModel>{apprenticeship});
+        //    result.dataLockFailures.Should().NotBeNull();
+        //    result.dataLockFailures[0].DataLockError.Should().Be(DataLockErrorCode.DLOCK_09);
+        //    result.validApprenticeships.Should().BeEmpty();
+        //}
+
+
     }
 }
