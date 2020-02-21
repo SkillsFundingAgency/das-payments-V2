@@ -134,10 +134,12 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             paymentLogger.LogVerbose($"Handling ProcessLevyPaymentsOnMonthEndCommand for {Id}, Job: {command.JobId}, Account: {command.AccountId}");
             try
             {
-                using (var operation = telemetry.StartOperation())
+                using (var operation = telemetry.StartOperation("LevyFundedService.HandleMonthEnd", command.CommandId.ToString()))
                 {
                     var stopwatch = Stopwatch.StartNew();
                     var fundingSourceEvents = await fundingSourceService.HandleMonthEnd(command.AccountId, command.JobId);
+                    telemetry.AddProperty("NumberOfFundingSourceEvents", fundingSourceEvents.Count.ToString());
+                    telemetry.TrackDuration("LevyFundedService.HandleMonthEnd", stopwatch, command, command.AccountId);
                     telemetry.StopOperation(operation);
                     return fundingSourceEvents;
                 }
