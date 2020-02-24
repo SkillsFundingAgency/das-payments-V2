@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests.TestU
         {
             var conf = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile("appsettings.development.json", optional: false, reloadOnChange: true)
+                .AddEnvironmentVariables()
                 .Build();
 
             if (TimeSpan.TryParse(conf["TimeToWait"], out var result))

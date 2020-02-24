@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.ProviderAdjustments.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <Parameters>
+    <Parameter Name="ProviderAdjustmentsService_InstanceCount" Value="-1" />
+    <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
+    <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
+    <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
+    <Parameter Name="PaymentsConnectionString" Value="__DasPaymentsConnectionStringRW__" />
+    <Parameter Name="LogLevel" Value="__LogLevel__" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
+    <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
+    <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
+    <Parameter Name="EasApiEndpoint" Value="__EasApiEndpoint__" />
+    <Parameter Name="EasApiUsername" Value="__EasApiUsername__" />
+    <Parameter Name="EasApiPassword" Value="__EasApiPassword__" />
+    <Parameter Name="ProviderAdjustmentService_EndpointName" Value="__ProviderAdjustmentService_EndpointName__" />
+    <Parameter Name="ProviderAdjustmentService_FailedMessagesQueue" Value="__ProviderAdjustmentService_FailedMessagesQueue__" />
+    <Parameter Name="EasCertificateThumbprint" Value="__EasCertificateThumbprint__" />
+    <Parameter Name="EasPageSize" Value="__EasPageSize__" />
+  </Parameters>
+</Application>

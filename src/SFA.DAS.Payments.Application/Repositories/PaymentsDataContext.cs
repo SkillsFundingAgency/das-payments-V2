@@ -28,6 +28,10 @@ namespace SFA.DAS.Payments.Application.Repositories
         public virtual DbSet<DataLockEventNonPayablePeriodFailureModel> DataLockEventNonPayablePeriodFailure { get; set; }
         public virtual DbSet<RequiredPaymentEventModel> RequiredPaymentEvent { get; set; }
 
+
+        
+        public virtual DbSet<ProviderAdjustmentModel> ProviderAdjustments { get; protected set; }
+
         public PaymentsDataContext(string connectionString)
         {
             this.connectionString = connectionString;
@@ -58,6 +62,7 @@ namespace SFA.DAS.Payments.Application.Repositories
             modelBuilder.ApplyConfiguration(new DataLockEventNonPayablePeriodModelConfiguration());
             modelBuilder.ApplyConfiguration(new DataLockEventNonPayablePeriodFailureModelConfiguration());
             modelBuilder.ApplyConfiguration(new RequiredPaymentEventModelConfiguration());
+            modelBuilder.ApplyConfiguration(new ProviderAdjustmentsModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

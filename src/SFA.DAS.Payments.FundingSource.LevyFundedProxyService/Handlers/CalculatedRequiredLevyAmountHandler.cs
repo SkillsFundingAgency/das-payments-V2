@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
 
             var accountToUse = levyMessageRoutingService.GetDestinationAccountId(message);
             paymentLogger.LogDebug($"Sending levy message to levy actor: {accountToUse}.  Account: {message.AccountId}, sender: {message.TransferSenderAccountId}. ");
-            var actorId = new ActorId(accountToUse);
+            var actorId = new ActorId(accountToUse.ToString());
             var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
             await actor.HandleRequiredPayment(message).ConfigureAwait(false);
             paymentLogger.LogInfo($"Successfully processed LevyFundedProxyService event for Actor Id {actorId}, Job: {message.JobId}, UKPRN: {message.Ukprn}");
