@@ -48,7 +48,7 @@
             this.PublishLogPage = new System.Windows.Forms.TabPage();
             this.PublishOutputText = new System.Windows.Forms.TextBox();
             this.UpdateConfig = new System.Windows.Forms.Button();
-            this.PublishServices = new System.Windows.Forms.Button();
+            this.InstallServices = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.VSCommandLinePath = new System.Windows.Forms.TextBox();
             this.PublishProgress = new System.Windows.Forms.ProgressBar();
@@ -56,6 +56,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.PublishProjectComboBox = new System.Windows.Forms.ComboBox();
             this.UninstallServices = new System.Windows.Forms.Button();
+            this.StartLocalAzureEmulator = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MissingParameters)).BeginInit();
@@ -177,7 +178,7 @@
             this.MissingParameters.Margin = new System.Windows.Forms.Padding(4);
             this.MissingParameters.Name = "MissingParameters";
             this.MissingParameters.RowHeadersWidth = 51;
-            this.MissingParameters.Size = new System.Drawing.Size(1521, 419);
+            this.MissingParameters.Size = new System.Drawing.Size(1521, 416);
             this.MissingParameters.TabIndex = 0;
             // 
             // tabPage3
@@ -287,7 +288,8 @@
             this.PublishOutputText.Multiline = true;
             this.PublishOutputText.Name = "PublishOutputText";
             this.PublishOutputText.ReadOnly = true;
-            this.PublishOutputText.Size = new System.Drawing.Size(1602, 678);
+            this.PublishOutputText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.PublishOutputText.Size = new System.Drawing.Size(1530, 427);
             this.PublishOutputText.TabIndex = 0;
             // 
             // UpdateConfig
@@ -304,18 +306,18 @@
             this.UpdateConfig.UseVisualStyleBackColor = true;
             this.UpdateConfig.Click += new System.EventHandler(this.UpdateConfig_Click);
             // 
-            // PublishServices
+            // InstallServices
             // 
-            this.PublishServices.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.PublishServices.Enabled = false;
-            this.PublishServices.Location = new System.Drawing.Point(1268, 592);
-            this.PublishServices.Margin = new System.Windows.Forms.Padding(4);
-            this.PublishServices.Name = "PublishServices";
-            this.PublishServices.Size = new System.Drawing.Size(129, 49);
-            this.PublishServices.TabIndex = 8;
-            this.PublishServices.Text = "Publish Services";
-            this.PublishServices.UseVisualStyleBackColor = true;
-            this.PublishServices.Click += new System.EventHandler(this.PublishServices_Click);
+            this.InstallServices.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.InstallServices.Enabled = false;
+            this.InstallServices.Location = new System.Drawing.Point(1268, 592);
+            this.InstallServices.Margin = new System.Windows.Forms.Padding(4);
+            this.InstallServices.Name = "InstallServices";
+            this.InstallServices.Size = new System.Drawing.Size(129, 49);
+            this.InstallServices.TabIndex = 8;
+            this.InstallServices.Text = "Install Services";
+            this.InstallServices.UseVisualStyleBackColor = true;
+            this.InstallServices.Click += new System.EventHandler(this.InstallServices_Click);
             // 
             // label4
             // 
@@ -391,19 +393,32 @@
             this.UninstallServices.UseVisualStyleBackColor = true;
             this.UninstallServices.Click += new System.EventHandler(this.UninstallServices_Click);
             // 
+            // StartLocalAzureEmulator
+            // 
+            this.StartLocalAzureEmulator.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.StartLocalAzureEmulator.Location = new System.Drawing.Point(933, 92);
+            this.StartLocalAzureEmulator.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.StartLocalAzureEmulator.Name = "StartLocalAzureEmulator";
+            this.StartLocalAzureEmulator.Size = new System.Drawing.Size(266, 19);
+            this.StartLocalAzureEmulator.TabIndex = 18;
+            this.StartLocalAzureEmulator.Text = "Start Local Azure Storage Emulator";
+            this.StartLocalAzureEmulator.UseVisualStyleBackColor = true;
+            // 
             // ConfigUpdater
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(1551, 652);
+            this.Controls.Add(this.StartLocalAzureEmulator);
             this.Controls.Add(this.UninstallServices);
             this.Controls.Add(this.PublishProjectComboBox);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.PublishProgress);
             this.Controls.Add(this.VSCommandLinePath);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.PublishServices);
+            this.Controls.Add(this.InstallServices);
             this.Controls.Add(this.UpdateConfig);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.DetermineConfig);
@@ -453,7 +468,6 @@
         private System.Windows.Forms.Button UpdateConfig;
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.DataGridView MismatchedParameters;
-        private System.Windows.Forms.Button PublishServices;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox VSCommandLinePath;
         private System.Windows.Forms.ProgressBar PublishProgress;
@@ -463,6 +477,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox PublishProjectComboBox;
         private System.Windows.Forms.Button UninstallServices;
+        private System.Windows.Forms.Button InstallServices;
+        private System.Windows.Forms.CheckBox StartLocalAzureEmulator;
     }
 }
 

@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.ConfigUpdater
 
                 printLog($"Started Building {projectName}");
 
-                var build = $"msbuild \"{projectName}.sfproj\" /t:clean,Package  /nologo /verbosity:quiet";
+                var build = $"msbuild \"{projectName}.sfproj\" /t:clean,Package /m /nologo /verbosity:quiet";
 
                 sw.WriteLine(build);
 
@@ -120,12 +120,13 @@ namespace SFA.DAS.Payments.ConfigUpdater
             var runspace = RunspaceFactory.CreateRunspace(runspaceConfiguration);
             runspace.Open();
             var pipeline = runspace.CreatePipeline();
-
-            pipeline.Commands.AddScript("Connect-ServiceFabricCluster -ConnectionEndpoint localhost:19000");
-
+            
             var myCommand = new Command(deployScript);
-            myCommand.Parameters.Add("applicationName", new DirectoryInfo(path).Name);
+            var applicationName = new DirectoryInfo(path).Name;
 
+            //Datalocks Directory Name has lowercase l but ServiceFabric App has capital L and because of that the uninstall is silently failing
+            myCommand.Parameters.Add("applicationName", applicationName.Contains("Datalocks") ? "SFA.DAS.Payments.DataLocks.ServiceFabric" : applicationName);
+            
             pipeline.Commands.Add(myCommand);
 
             var results = pipeline.Invoke();
@@ -137,7 +138,7 @@ namespace SFA.DAS.Payments.ConfigUpdater
                 {
                     var result = invoke.ToString();
                     if (result != "System.Fabric.Description.ApplicationDescription")
-                        sw.WriteLine(result);
+                        sw.WriteLine($"{applicationName} {result}");
                 }
 
                 output = sw.ToString();
