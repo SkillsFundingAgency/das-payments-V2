@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [Payments2].[DataLockEventPriceEpisode]
 (
 	Id BIGINT NOT NULL IDENTITY(1,1) CONSTRAINT PK_DataLockEventPriceEpisode PRIMARY KEY CLUSTERED,
-	DataLockEventId UNIQUEIDENTIFIER NOT NULL CONSTRAINT FK_DataLockEventPriceEpisode__DataLockEvent FOREIGN KEY REFERENCES [Payments2].[DataLockEvent] (EventId), 
+	DataLockEventId UNIQUEIDENTIFIER NOT NULL CONSTRAINT FK_DataLockEventPriceEpisode__DataLockEvent FOREIGN KEY REFERENCES [Payments2].[DataLockEvent] (EventId) ON DELETE CASCADE, 
 	PriceEpisodeIdentifier NVARCHAR(50) NOT NULL,
 	SfaContributionPercentage DECIMAL(15,5) NOT NULL,
 	TotalNegotiatedPrice1 DECIMAL(15,5) NOT NULL,
