@@ -54,6 +54,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 
             result.dataLockFailures.Should().BeEmpty();
             result.validApprenticeships.Should().NotBeNull();
+            result.validApprenticeships.Should().HaveCount(2);
             result.validApprenticeships.Any(x => x.Id == apprenticeshipModels[0].Id).Should().BeTrue();
             result.validApprenticeships.Any(x => x.Id == apprenticeshipModels[1].Id).Should().BeTrue();
         }

@@ -10,8 +10,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
     public interface ICompletionStoppedValidator
     {
         (List<ApprenticeshipModel> validApprenticeships, List<DataLockFailure> dataLockFailures) Validate(PriceEpisode ilrPriceEpisode, List<ApprenticeshipModel> apprenticeships, TransactionType transactionType);
-         
-        }
+    }
 
     public class CompletionStoppedValidator : ICompletionStoppedValidator
     {
@@ -26,14 +25,17 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             }
 
             var matchedApprenticeships = apprenticeships
-                .Where(a => (ilrPriceEpisode.ActualEndDate <= a.StopDate || a.Status != ApprenticeshipStatus.Stopped))
-                .ToList();
+                .Where(a =>
+                {
+                    if (a.Status != ApprenticeshipStatus.Stopped) return true;
+                    return ilrPriceEpisode.ActualEndDate <= a.StopDate;
+                }).ToList();
 
             if (matchedApprenticeships.Any())
             {
                 return (matchedApprenticeships, new List<DataLockFailure>());
             }
-            
+
             var dataLockFailures = apprenticeships.Select(a => new DataLockFailure
             {
                 ApprenticeshipId = a.Id,

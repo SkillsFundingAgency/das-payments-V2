@@ -5,48 +5,18 @@ using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
-    public class CourseValidationProcessor : BaseCourseValidationProcessor,ICourseValidationProcessor
+    public class CourseValidationProcessor : BaseCourseValidationProcessor, ICourseValidationProcessor
     {
-        private readonly IStartDateValidator startDateValidator;
-        private readonly ICompletionStoppedValidator completionStoppedValidator;
-        private readonly IOnProgrammeAndIncentiveStoppedValidator onProgrammeAndIncentiveStoppedValidator;
         private readonly List<ICourseValidator> learnerAimValidators;
 
-        public CourseValidationProcessor(IStartDateValidator startDateValidator,
-            ICompletionStoppedValidator completionStoppedValidator,
-            IOnProgrammeAndIncentiveStoppedValidator onProgrammeAndIncentiveStoppedValidator,
-            List<ICourseValidator> courseValidators)
+        public CourseValidationProcessor(List<ICourseValidator> courseValidators)
         {
-            this.startDateValidator = startDateValidator;
-            this.completionStoppedValidator = completionStoppedValidator;
-            this.onProgrammeAndIncentiveStoppedValidator = onProgrammeAndIncentiveStoppedValidator;
             this.learnerAimValidators = new List<ICourseValidator>(courseValidators);
         }
 
         public CourseValidationResult ValidateCourse(DataLockValidationModel dataLockValidationModel)
         {
             var allApprenticeshipPriceEpisodeIds = GetAllApprenticeshipPriceEpisodeIds(dataLockValidationModel);
-
-            var validators = new List<ICourseValidator>
-            {
-                 onProgrammeAndIncentiveStoppedValidator
-            };
-
-
-            //var validators = new List<ICourseValidator>
-            //{
-            //    startDateValidator, completionStoppedValidator, onProgrammeAndIncentiveStoppedValidator
-            //};
-
-            foreach (var validator in validators)
-            {
-                var result = Validate(validator, dataLockValidationModel, allApprenticeshipPriceEpisodeIds);
-                if (result.dataLockFailures.Any())
-                {
-                    return CreateValidationResult(dataLockValidationModel, result.dataLockFailures, result.invalidApprenticeshipPriceEpisodeIds);
-                }
-            }
-            
             var validationResults = Validate(learnerAimValidators,dataLockValidationModel, allApprenticeshipPriceEpisodeIds);
             return validationResults;
         }

@@ -27,7 +27,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             };
         }
 
-
         [AutoData]
         public void ReturnsOnlyCommitmentsThatAreNotStopped(ApprenticeshipModel apprenticeshipA, ApprenticeshipModel apprenticeshipB, PriceEpisode priceEpisode)
         {
@@ -36,17 +35,17 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 
             apprenticeshipA.StopDate = new DateTime(2019, 8, 1);
             apprenticeshipA.Status = ApprenticeshipStatus.Stopped;
-            apprenticeshipA.ApprenticeshipPriceEpisodes[0].StartDate = new DateTime(2019, 8, 1);
-            apprenticeshipA.ApprenticeshipPriceEpisodes[0].EndDate = new DateTime(2020, 8, 30);
+            apprenticeshipA.ApprenticeshipPriceEpisodes[0].StartDate = new DateTime(2018, 8, 1);
+            apprenticeshipA.ApprenticeshipPriceEpisodes[0].EndDate = new DateTime(2019, 8, 30);
 
             apprenticeshipB.Status = ApprenticeshipStatus.Active;
-            apprenticeshipB.ApprenticeshipPriceEpisodes[0].StartDate = new DateTime(2018, 8, 1);
-            apprenticeshipB.ApprenticeshipPriceEpisodes[0].EndDate = new DateTime(2019, 8, 30);
+            apprenticeshipB.ApprenticeshipPriceEpisodes[0].StartDate = new DateTime(2019, 8, 1);
+            apprenticeshipB.ApprenticeshipPriceEpisodes[0].EndDate = new DateTime(2020, 8, 30);
 
             var apprenticeships = new List<ApprenticeshipModel> { apprenticeshipA, apprenticeshipB };
 
             var validator = new CompletionStoppedValidator();
-            (List<ApprenticeshipModel> validApprenticeships, List<DataLockFailure> dataLockFailures) result = validator.Validate(priceEpisode, apprenticeships, TransactionType.Completion);
+            var result = validator.Validate(priceEpisode, apprenticeships, TransactionType.Completion);
 
             result.dataLockFailures.Should().BeEmpty();
             result.validApprenticeships.Should().NotBeNull();
