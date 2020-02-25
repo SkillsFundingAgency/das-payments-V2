@@ -110,8 +110,8 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Infrastructure
 
             if (config.ProcessMessageSequentially) endpointConfiguration.LimitMessageProcessingConcurrencyTo(1);
 
-            endpointConfiguration.Pipeline.Register(typeof(ExceptionHandlingBehavior),
-                "Logs exceptions to the payments logger");
+            endpointConfiguration.Pipeline.Register(typeof(ExceptionHandlingBehavior), "Logs exceptions to the payments logger");
+            
             endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton((IPaymentLogger)logger));
             endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton(lifetimeScope.Resolve<IContainerScopeFactory>()));
             endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton(lifetimeScope.Resolve<IEndpointInstanceFactory>()));
