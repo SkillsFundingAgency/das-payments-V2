@@ -17,22 +17,6 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
             telemetry.TrackDependency(dependencyType.ToString("G"), dependencyName, startTime, duration, success);
         }
 
-        public static void AddContextInfo(this ITelemetry telemetry, long jobId)
-        {
-            telemetry.AddProperty("Job Id", jobId.ToString());
-        }
-
-        public static void AddContextInfo(this ITelemetry telemetry, long jobId, long ukprn)
-        {
-            AddContextInfo(telemetry, jobId);
-            telemetry.AddProperty("Ukprn", ukprn.ToString());
-        }
-        public static void AddContextInfo(this ITelemetry telemetry, long jobId, long ukprn, string learnerReference)
-        {
-            AddContextInfo(telemetry, jobId, ukprn);
-            telemetry.AddProperty("Learner Reference", learnerReference);
-        }
-
         public static void TrackDuration(this ITelemetry telemetry, string eventName, Stopwatch stopwatch, IPaymentsEvent paymentEvent, long? employerAccountId = null)
         {
             stopwatch.Stop();
@@ -50,7 +34,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
                 {TelemetryKeys.Ukprn, paymentEvent.Ukprn.ToString()},
             };
 
-            TrackDuration(telemetry, eventName, duration, props, employerAccountId);
+            TrackDuration(telemetry, eventName, duration, props, employerAccountId, null);
         }
 
         public static void TrackDuration(this ITelemetry telemetry, string eventName, Stopwatch stopwatch, IPaymentsCommand paymentCommand, long? employerAccountId = null)
@@ -65,21 +49,38 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
             {
                 {"JobId", paymentCommand.JobId.ToString()},
             };
-            
-            TrackDuration(telemetry, eventName, duration, props, employerAccountId);
+
+            TrackDuration(telemetry, eventName, duration, props, employerAccountId, null);
         }
 
-        private static void TrackDuration(ITelemetry telemetry, string eventName, TimeSpan duration, Dictionary<string, string> props, long? employerAccountId = null)
+        public static void TrackDurationWithMetrics(this ITelemetry telemetry, string eventName, Stopwatch stopwatch, IPaymentsCommand paymentCommand, long? employerAccountId = null, Dictionary<string, double> metrics = null)
+        {
+            stopwatch.Stop();
+            var props = new Dictionary<string, string>
+            {
+                { "JobId", paymentCommand.JobId.ToString() },
+            };
+            TrackDuration(telemetry, eventName, stopwatch.Elapsed, props, employerAccountId, null);
+        }
+
+        private static void TrackDuration(ITelemetry telemetry, string eventName, TimeSpan duration, Dictionary<string, string> props, long? employerAccountId = null, Dictionary<string, double> metrics = null)
         {
             if (employerAccountId.HasValue)
                 props.Add("Employer", employerAccountId.ToString());
 
-            telemetry.TrackEvent(eventName,
-                props,
-                new Dictionary<string, double>
+            if (metrics != null)
+            {
+                metrics.Add(TelemetryKeys.Duration, duration.TotalMilliseconds);
+            }
+            else
+            {
+                metrics = new Dictionary<string, double>
                 {
-                    {TelemetryKeys.Duration, duration.TotalMilliseconds}
-                });
+                    { TelemetryKeys.Duration, duration.TotalMilliseconds }
+                };
+            }
+
+            telemetry.TrackEvent(eventName, props, metrics);
         }
     }
 }
