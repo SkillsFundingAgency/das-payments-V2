@@ -1,8 +1,8 @@
-using System;
 using System.Linq;
 using System.Net;
-using System.Web;
 using Autofac;
+using Microsoft.Azure.ServiceBus;
+using Microsoft.Azure.ServiceBus.Core;
 using NServiceBus;
 using NServiceBus.Features;
 using NServiceBus.Logging;
@@ -64,6 +64,8 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 if (config.ProcessMessageSequentially) endpointConfiguration.LimitMessageProcessingConcurrencyTo(1);
 
                 endpointConfiguration.Pipeline.Register(typeof(ExceptionHandlingBehavior), "Logs exceptions to the payments logger");
+                endpointConfiguration.Pipeline.Register(typeof(DoNotProcessLockLostMessagesBehavior), "Do Not Process Message If Message Lock Is Lost");
+                endpointConfiguration.Pipeline.Register(typeof(ExtendLockDurationBehaviour), "Extend Lock Duration");
 
                 var recoverability = endpointConfiguration.Recoverability();
                 recoverability.Immediate(immediate => immediate.NumberOfRetries(config.ImmediateMessageRetries));
@@ -79,11 +81,17 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
             .SingleInstance();
 
             builder.RegisterType<TelemetryHandlerBehaviour>();
-            builder.RegisterType<EndpointInstanceFactory>()
-                .As<IEndpointInstanceFactory>()
-                .SingleInstance();
-            builder.RegisterType<ExceptionHandlingBehavior>()
-                .SingleInstance();
+            builder.RegisterType<EndpointInstanceFactory>().As<IEndpointInstanceFactory>().SingleInstance();
+            builder.RegisterType<ExceptionHandlingBehavior>().SingleInstance();
+            builder.RegisterType<DoNotProcessLockLostMessagesBehavior>().SingleInstance();
+            builder.Register(c =>
+                   {
+                       var config = c.Resolve<IApplicationConfiguration>();
+                       var paymentLogger = c.Resolve<IPaymentLogger>();
+                       var messageReceiver = new MessageReceiver(new ServiceBusConnection(config.ServiceBusConnectionString), config.EndpointName, ReceiveMode.PeekLock, RetryPolicy.Default);
+                       return new ExtendLockDurationBehaviour(messageReceiver, paymentLogger);
+                   })
+                   .SingleInstance();
         }
     }
 
