@@ -120,7 +120,6 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                     telemetry.StopOperation(operation);
                     return fundingSourcePayments;
                 }
-
             }
             catch (Exception e)
             {
@@ -134,10 +133,20 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             paymentLogger.LogVerbose($"Handling ProcessLevyPaymentsOnMonthEndCommand for {Id}, Job: {command.JobId}, Account: {command.AccountId}");
             try
             {
-                using (var operation = telemetry.StartOperation())
+                using (var operation = telemetry.StartOperation("LevyFundedService.HandleMonthEnd", command.CommandId.ToString()))
                 {
                     var stopwatch = Stopwatch.StartNew();
                     var fundingSourceEvents = await fundingSourceService.HandleMonthEnd(command.AccountId, command.JobId);
+                    
+                    telemetry.TrackDurationWithMetrics("LevyFundedService.HandleMonthEnd",
+                                                       stopwatch,
+                                                       command,
+                                                       command.AccountId,
+                                                       new Dictionary<string, double>
+                                                       {
+                                                           { TelemetryKeys.Count, fundingSourceEvents.Count }
+                                                       });
+                    
                     telemetry.StopOperation(operation);
                     return fundingSourceEvents;
                 }
@@ -166,6 +175,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 throw;
             }
         }
+
         public async Task RemoveCurrentSubmission(SubmissionJobFailed message)
         {
             paymentLogger.LogVerbose($"Handling ProcessCurrentSubmissionDeletionCommand for {Id}, Job: {message.JobId}");
@@ -199,28 +209,24 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 transferPaymentSortKeysCache = new ReliableCollectionCache<List<TransferPaymentSortKeyModel>>(StateManager);
                 requiredPaymentSortKeysCache = new ReliableCollectionCache<List<RequiredPaymentSortKeyModel>>(StateManager);
 
-                generateSortedPaymentKeys = new GenerateSortedPaymentKeys(
-                    employerProviderPriorities,
-                    refundSortKeysCache,
-                    transferPaymentSortKeysCache,
-                    requiredPaymentSortKeysCache
-                );
+                generateSortedPaymentKeys = new GenerateSortedPaymentKeys(employerProviderPriorities,
+                                                                          refundSortKeysCache,
+                                                                          transferPaymentSortKeysCache,
+                                                                          requiredPaymentSortKeysCache);
 
-                fundingSourceService = new RequiredLevyAmountFundingSourceService(
-                    lifetimeScope.Resolve<IPaymentProcessor>(),
-                    lifetimeScope.Resolve<IMapper>(),
-                    requiredPaymentsCache,
-                    lifetimeScope.Resolve<ILevyFundingSourceRepository>(),
-                    lifetimeScope.Resolve<ILevyBalanceService>(),
-                    lifetimeScope.Resolve<IPaymentLogger>(),
-                    monthEndCache,
-                    levyAccountCache,
-                    employerProviderPriorities,
-                    refundSortKeysCache,
-                    transferPaymentSortKeysCache,
-                    requiredPaymentSortKeysCache,
-                    generateSortedPaymentKeys
-                );
+                fundingSourceService = new RequiredLevyAmountFundingSourceService(lifetimeScope.Resolve<IPaymentProcessor>(),
+                                                                                  lifetimeScope.Resolve<IMapper>(),
+                                                                                  requiredPaymentsCache,
+                                                                                  lifetimeScope.Resolve<ILevyFundingSourceRepository>(),
+                                                                                  lifetimeScope.Resolve<ILevyBalanceService>(),
+                                                                                  lifetimeScope.Resolve<IPaymentLogger>(),
+                                                                                  monthEndCache,
+                                                                                  levyAccountCache,
+                                                                                  employerProviderPriorities,
+                                                                                  refundSortKeysCache,
+                                                                                  transferPaymentSortKeysCache,
+                                                                                  requiredPaymentSortKeysCache,
+                                                                                  generateSortedPaymentKeys);
 
                 await Initialise().ConfigureAwait(false);
                 await base.OnActivateAsync().ConfigureAwait(false);
@@ -231,6 +237,14 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
 
         private async Task Initialise()
         {
+            long accountId = 0;
+            if (!long.TryParse(Id.ToString(), out accountId))
+            {
+                throw new InvalidCastException($"Unable to cast Actor Id {Id} to valid account Id ");
+            }
+
+            ;
+
             if (await actorCache.IsInitialiseFlagIsSet().ConfigureAwait(false))
             {
                 paymentLogger.LogVerbose($"Actor already initialised for employer {Id}");
@@ -238,39 +252,37 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             }
 
             var stopwatch = Stopwatch.StartNew();
-            paymentLogger.LogInfo($"Initialising actor for employer {Id.GetLongId()}");
+            paymentLogger.LogInfo($"Initialising actor for employer {Id}");
 
-            var paymentPriorities = await levyFundingSourceRepository.GetPaymentPriorities(Id.GetLongId()).ConfigureAwait(false);
+            var paymentPriorities = await levyFundingSourceRepository.GetPaymentPriorities(accountId).ConfigureAwait(false);
             await employerProviderPriorities
-                    .AddOrReplace(CacheKeys.EmployerPaymentPriorities, paymentPriorities, default(CancellationToken))
-                    .ConfigureAwait(false);
+                  .AddOrReplace(CacheKeys.EmployerPaymentPriorities, paymentPriorities, default(CancellationToken))
+                  .ConfigureAwait(false);
 
             await actorCache.SetInitialiseFlag().ConfigureAwait(false);
-            paymentLogger.LogInfo($"Initialised actor for employer {Id.GetLongId()}");
+            paymentLogger.LogInfo($"Initialised actor for employer {Id}");
             TrackInfrastructureEvent("LevyFundedService.Initialise", stopwatch);
         }
 
         public async Task Reset()
         {
-            paymentLogger.LogInfo($"Resetting actor for employer {Id.GetLongId()}");
+            paymentLogger.LogInfo($"Resetting actor for employer {Id}");
             await actorCache.ResetInitialiseFlag().ConfigureAwait(false);
         }
-
 
         private void TrackInfrastructureEvent(string eventName, Stopwatch stopwatch)
         {
             stopwatch.Stop();
             telemetry.TrackEvent(eventName,
-                new Dictionary<string, string>
-                {
-                    { "ActorId",Id.ToString()},
-                    { "Employer", Id.ToString()},
-                },
-                new Dictionary<string, double>
-                {
-                    { TelemetryKeys.Duration, stopwatch.ElapsedMilliseconds }
-                });
+                                 new Dictionary<string, string>
+                                 {
+                                     { "ActorId", Id.ToString() },
+                                     { "Employer", Id.ToString() },
+                                 },
+                                 new Dictionary<string, double>
+                                 {
+                                     { TelemetryKeys.Duration, stopwatch.ElapsedMilliseconds }
+                                 });
         }
-
     }
 }
