@@ -17,22 +17,6 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
             telemetry.TrackDependency(dependencyType.ToString("G"), dependencyName, startTime, duration, success);
         }
 
-        public static void AddContextInfo(this ITelemetry telemetry, long jobId)
-        {
-            telemetry.AddProperty("Job Id", jobId.ToString());
-        }
-
-        public static void AddContextInfo(this ITelemetry telemetry, long jobId, long ukprn)
-        {
-            AddContextInfo(telemetry, jobId);
-            telemetry.AddProperty("Ukprn", ukprn.ToString());
-        }
-        public static void AddContextInfo(this ITelemetry telemetry, long jobId, long ukprn, string learnerReference)
-        {
-            AddContextInfo(telemetry, jobId, ukprn);
-            telemetry.AddProperty("Learner Reference", learnerReference);
-        }
-
         public static void TrackDuration(this ITelemetry telemetry, string eventName, Stopwatch stopwatch, IPaymentsEvent paymentEvent, long? employerAccountId = null)
         {
             stopwatch.Stop();

@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
                         await context.Publish(fundingSourcePaymentEvent).ConfigureAwait(false);
                 }
 
-                telemetry.AddProperty("NumberOfMessagesSent", fundingSourceEvents.Count.ToString());
+                telemetry.TrackEvent("LevyFundedProxyService.ProcessLevyPaymentsOnMonthEndCommand.fundingSourcePaymentEventCount", fundingSourceEvents.Count);
                 telemetry.TrackDuration("LevyFundedProxyService.ProcessLevyPaymentsOnMonthEndCommand", stopwatch, command, command.AccountId);
                 telemetry.StopOperation(operation);
             }

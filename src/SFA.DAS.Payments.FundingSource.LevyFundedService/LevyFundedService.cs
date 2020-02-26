@@ -138,7 +138,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 {
                     var stopwatch = Stopwatch.StartNew();
                     var fundingSourceEvents = await fundingSourceService.HandleMonthEnd(command.AccountId, command.JobId);
-                    telemetry.AddProperty("NumberOfFundingSourceEvents", fundingSourceEvents.Count.ToString());
+                    telemetry.TrackEvent("LevyFundedService.HandleMonthEnd.FundingSourcePaymentEventCount", fundingSourceEvents.Count);
                     telemetry.TrackDuration("LevyFundedService.HandleMonthEnd", stopwatch, command, command.AccountId);
                     telemetry.StopOperation(operation);
                     return fundingSourceEvents;
