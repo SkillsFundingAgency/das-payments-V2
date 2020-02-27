@@ -145,19 +145,19 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                 return (new List<ApprenticeshipModel>(), startDateValidationResult.dataLockFailures);
             }
             
-            var onProgrammeValidationResult = onProgrammeAndIncentiveStoppedValidator.Validate( apprenticeships, transactionType,period,academicYear);
+            var onProgrammeValidationResult = onProgrammeAndIncentiveStoppedValidator.Validate(startDateValidationResult.validApprenticeships, transactionType,period,academicYear);
             if (onProgrammeValidationResult.dataLockFailures.Any())
             {
                 return (new List<ApprenticeshipModel>(), onProgrammeValidationResult.dataLockFailures);
             }
 
-            var completionStoppedResult = completionStoppedValidator.Validate(ilrPriceEpisode,apprenticeships, transactionType);
+            var completionStoppedResult = completionStoppedValidator.Validate(ilrPriceEpisode, onProgrammeValidationResult.validApprenticeships, transactionType);
             if (completionStoppedResult.dataLockFailures.Any())
             {
                 return (new List<ApprenticeshipModel>(), completionStoppedResult.dataLockFailures);
             }
 
-            return (apprenticeships, new List<DataLockFailure>());
+            return (completionStoppedResult.validApprenticeships, new List<DataLockFailure>());
         }
 
         protected override CourseValidationResult ValidateApprenticeship(long uln, TransactionType transactionType, LearningAim aim, int academicYear, EarningPeriod period, ApprenticeshipModel apprenticeship, List<PriceEpisode> priceEpisodes = null)
