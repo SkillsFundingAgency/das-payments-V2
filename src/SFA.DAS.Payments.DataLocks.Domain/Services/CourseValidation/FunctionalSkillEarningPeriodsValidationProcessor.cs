@@ -22,10 +22,14 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
     public class FunctionalSkillEarningPeriodsValidationProcessor : BaseEarningPeriodsValidationProcessor , IFunctionalSkillEarningPeriodsValidationProcessor
     {
         private readonly IFunctionalSkillValidationProcessor functionalSkillValidationProcessor;
+        private readonly ICalculatePeriodStartAndEndDate calculatePeriodStartAndEndDate;
 
-        public FunctionalSkillEarningPeriodsValidationProcessor(IFunctionalSkillValidationProcessor functionalSkillValidationProcessor)
+        public FunctionalSkillEarningPeriodsValidationProcessor(
+            IFunctionalSkillValidationProcessor functionalSkillValidationProcessor,
+            ICalculatePeriodStartAndEndDate calculatePeriodStartAndEndDate)
         {
             this.functionalSkillValidationProcessor = functionalSkillValidationProcessor;
+            this.calculatePeriodStartAndEndDate = calculatePeriodStartAndEndDate;
         }
 
         protected override (List<ApprenticeshipModel> validApprenticeships, List<DataLockFailure> dataLockFailures) ValidateApprenticeships(
@@ -36,7 +40,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             TransactionType transactionType,
             List<PriceEpisode> priceEpisodes)
         {
-            return (apprenticeships, new List<DataLockFailure>());
+            var apprenticeshipsToUseThisPeriod = GetApprenticeshipsToUseThisPeriod(ukprn, apprenticeships, academicYear, period);
+            return (apprenticeshipsToUseThisPeriod, new List<DataLockFailure>());
         }
 
         protected override CourseValidationResult ValidateApprenticeship(
@@ -71,5 +76,62 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
         {
             return base.ValidateEarningPeriods(ukprn, uln, periods, transactionType, apprenticeships, aim, academicYear);
         }
+
+
+        private List<ApprenticeshipModel> GetApprenticeshipsToUseThisPeriod(long ukprn, List<ApprenticeshipModel> apprenticeships, int academicYear, EarningPeriod period)
+        {
+            var apprenticeshipsToUseThisPeriod = new List<ApprenticeshipModel>();
+
+            var apprenticeshipsWithinPeriod = apprenticeships
+                .Where(a => a.Ukprn == ukprn && ApprenticeshipStartWithinPeriod(a, period.Period, academicYear))
+                .ToList();
+
+            var activeApprenticeships =
+                apprenticeshipsWithinPeriod
+                    .Where(x => x.Status == ApprenticeshipStatus.Active)
+                    .ToList();
+
+            if (!activeApprenticeships.Any())
+            {
+                var mostRecentApprenticeship = apprenticeshipsWithinPeriod
+                    .OrderByDescending(x => x.Id)
+                    .FirstOrDefault();
+                if (mostRecentApprenticeship != null)
+                {
+                    apprenticeshipsToUseThisPeriod.Add(mostRecentApprenticeship);
+                }
+            }
+            else
+            {
+                var mostRecentApprenticeship = activeApprenticeships
+                    .OrderByDescending(x => x.EstimatedStartDate)
+                    .FirstOrDefault();
+
+                apprenticeshipsToUseThisPeriod.Add(mostRecentApprenticeship);
+            }
+
+            if (apprenticeshipsToUseThisPeriod.Count == 0)
+            {
+                apprenticeshipsToUseThisPeriod = apprenticeships
+                    .OrderByDescending(x => x.EstimatedStartDate)
+                    .Take(1)
+                    .ToList();
+            }
+            
+            return apprenticeshipsToUseThisPeriod;
+        }
+
+        private bool ApprenticeshipStartWithinPeriod(ApprenticeshipModel apprenticeship, byte deliveryPeriod, int academicYear)
+        {
+            var periodDates = calculatePeriodStartAndEndDate.GetPeriodDate(deliveryPeriod, academicYear);
+
+            if (apprenticeship.EstimatedStartDate > periodDates.periodEndDate)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
     }
 }

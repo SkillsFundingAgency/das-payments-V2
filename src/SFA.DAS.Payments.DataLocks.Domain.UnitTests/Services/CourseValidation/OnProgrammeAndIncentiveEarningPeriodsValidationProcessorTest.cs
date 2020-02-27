@@ -190,6 +190,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         {
             return new ApprenticeshipContractType1EarningEvent
             {
+                Ukprn = 1,
                 Learner = new Learner
                 {
                     Uln = 1

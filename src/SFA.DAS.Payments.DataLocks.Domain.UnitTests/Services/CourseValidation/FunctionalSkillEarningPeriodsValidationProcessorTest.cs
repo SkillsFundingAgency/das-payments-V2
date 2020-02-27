@@ -26,7 +26,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         public void SetUp()
         {
             mocker = AutoMock.GetLoose();
-            mocker.Provide<IFunctionalSkillValidationProcessor>( new FunctionalSkillValidationProcessor(new List<ICourseValidator>
+            mocker.Provide<ICalculatePeriodStartAndEndDate, CalculatePeriodStartAndEndDate>();
+            mocker.Provide<IFunctionalSkillValidationProcessor>(new FunctionalSkillValidationProcessor(new List<ICourseValidator>
             {
                 new ApprenticeshipPauseValidator()
             }));
@@ -37,8 +38,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         {
             var apprenticeships = CreateApprenticeships();
             var earningEvent = CreateEarningEventTestData();
-             earningEvent.Earnings[0].Type = FunctionalSkillType.LearningSupport;
-             var earningPeriods = new List<EarningPeriod> { earningEvent.Earnings[0].Periods[0] };
+            earningEvent.Earnings[0].Type = FunctionalSkillType.LearningSupport;
+            var earningPeriods = new List<EarningPeriod> { earningEvent.Earnings[0].Periods[0] };
 
             var earningProcessor = mocker.Create<FunctionalSkillEarningPeriodsValidationProcessor>();
             var periods = earningProcessor.ValidatePeriods(
@@ -55,11 +56,75 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 .All(p => p.ApprenticeshipPriceEpisodeId == apprenticeships[0].ApprenticeshipPriceEpisodes[0].Id)
                 .Should().Be(true);
         }
-        
+
+        [Test]
+        public void ShouldReturnDataLockFailuresInInvalidPeriods()
+        {
+            var apprenticeships = CreateApprenticeships();
+            var earningEvent = CreateEarningEventTestData();
+
+            apprenticeships[0].Status = ApprenticeshipStatus.Paused;
+
+            earningEvent.Earnings[0].Type = FunctionalSkillType.LearningSupport;
+            var earningPeriods = new List<EarningPeriod> { earningEvent.Earnings[0].Periods[0] };
+
+
+            var earningProcessor = mocker.Create<FunctionalSkillEarningPeriodsValidationProcessor>();
+            var periods = earningProcessor.ValidatePeriods(
+                earningEvent.Ukprn,
+                earningEvent.Learner.Uln,
+                earningPeriods,
+                (TransactionType)earningEvent.Earnings[0].Type,
+                apprenticeships,
+                earningEvent.LearningAim,
+                earningEvent.CollectionPeriod.AcademicYear);
+            
+            periods.InValidPeriods.Should().HaveCount(1);
+            periods.InValidPeriods.All(p => p.DataLockFailures.All(x =>
+                x.ApprenticeshipId == apprenticeships[0].Id &&
+                x.DataLockError == DataLockErrorCode.DLOCK_12 &&
+                x.ApprenticeshipPriceEpisodeIds.All(o => apprenticeships[0].ApprenticeshipPriceEpisodes.Select(a => a.Id).Contains(o)))
+            ).Should().BeTrue();
+            
+        }
+
+        [Test]
+        public void ShouldReturnValidAndInvalidPeriods()
+        {
+            var apprenticeships = CreateApprenticeships();
+            var earningEvent = CreateEarningEventTestData();
+
+            apprenticeships[0].Status = ApprenticeshipStatus.Paused;
+            earningEvent.Earnings[0].Type = FunctionalSkillType.LearningSupport;
+
+            var earningProcessor = mocker.Create<FunctionalSkillEarningPeriodsValidationProcessor>();
+            var periods = earningProcessor.ValidatePeriods(
+                earningEvent.Ukprn,
+                earningEvent.Learner.Uln,
+                earningEvent.Earnings[0].Periods.ToList(),
+                (TransactionType)earningEvent.Earnings[0].Type,
+                apprenticeships,
+                earningEvent.LearningAim,
+                earningEvent.CollectionPeriod.AcademicYear);
+            
+            periods.InValidPeriods.Should().HaveCount(1);
+            periods.InValidPeriods.All(p => p.DataLockFailures.All(x =>
+                x.ApprenticeshipId == apprenticeships[0].Id &&
+                x.DataLockError == DataLockErrorCode.DLOCK_12 &&
+                x.ApprenticeshipPriceEpisodeIds.All(o => apprenticeships[0].ApprenticeshipPriceEpisodes.Select(a => a.Id).Contains(o)))
+            ).Should().BeTrue();
+
+            periods.ValidPeriods.Count.Should().Be(1);
+            periods.ValidPeriods
+                .All(p => p.ApprenticeshipPriceEpisodeId == apprenticeships[1].ApprenticeshipPriceEpisodes[0].Id)
+                .Should().Be(true);
+        }
+
         private Act1FunctionalSkillEarningsEvent CreateEarningEventTestData()
         {
             return new Act1FunctionalSkillEarningsEvent
             {
+                Ukprn = 1,
                 Learner = new Learner
                 {
                     Uln = 1
