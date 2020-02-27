@@ -26,6 +26,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         public void SetUp()
         {
             mocker = AutoMock.GetLoose();
+            mocker.Provide<IStartDateValidator, StartDateValidator>();
+            mocker.Provide<ICalculatePeriodStartAndEndDate, CalculatePeriodStartAndEndDate>();
+            mocker.Provide<IOnProgrammeAndIncentiveStoppedValidator, OnProgrammeAndIncentiveStoppedValidator>();
+            mocker.Provide<ICompletionStoppedValidator, CompletionStoppedValidator>();
+            mocker.Provide<ICourseValidationProcessor>(new CourseValidationProcessor(new List<ICourseValidator> {new StandardCodeValidator()}));
         }
 
         [Test]
@@ -33,39 +38,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         {
             var apprenticeships = CreateApprenticeships();
             var earningEvent = CreateEarningEventTestData();
-
             var earningPeriods = new List<EarningPeriod>{ earningEvent.OnProgrammeEarnings[0].Periods[0]};
-
-            mocker.Mock<IStartDateValidator>()
-                    .Setup(x => x.Validate(It.IsAny<PriceEpisode>(), It.IsAny<List<ApprenticeshipModel>>()))
-                    .Returns((apprenticeships, new List<DataLockFailure>()));
-
-            mocker.Mock<IOnProgrammeAndIncentiveStoppedValidator>()
-                .Setup(x => x.Validate(
-                    It.IsAny<List<ApprenticeshipModel>>(),
-                    It.IsAny<TransactionType>(),
-                    It.IsAny<EarningPeriod>(), It.IsAny<int>()))
-                .Returns((apprenticeships, new List<DataLockFailure>()));
-
-            mocker.Mock<ICompletionStoppedValidator>()
-                .Setup(x => x.Validate(
-                    It.IsAny<PriceEpisode>(),
-                    It.IsAny<List<ApprenticeshipModel>>(),
-                    It.IsAny<TransactionType>()))
-                .Returns((apprenticeships, new List<DataLockFailure>()));
-
-            mocker.Mock<ICourseValidationProcessor>()
-                .Setup(x => x.ValidateCourse(
-                    It.Is<DataLockValidationModel>(o => o.Apprenticeship.Id == apprenticeships[0].Id)))
-                .Returns(() => new CourseValidationResult
-                {
-                    MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel
-                    {
-                        Id = apprenticeships[0].ApprenticeshipPriceEpisodes[0].Id
-                    },
-                    DataLockFailures = new List<DataLockFailure>()
-                });
-
             var earningProcessor = mocker.Create<OnProgrammeAndIncentiveEarningPeriodsValidationProcessor>();
 
             var periods = earningProcessor.ValidatePeriods(
@@ -94,49 +67,12 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 allApprenticeships .First()
             };
 
-            mocker.Mock<IStartDateValidator>()
-                .Setup(x => x.Validate(It.IsAny<PriceEpisode>(), It.IsAny<List<ApprenticeshipModel>>()))
-                .Returns((new List<ApprenticeshipModel>(), new List<DataLockFailure>
-                {
-                    new DataLockFailure
-                    {
-                        ApprenticeshipPriceEpisodeIds = apprenticeships[0].ApprenticeshipPriceEpisodes.Select(x => x.Id).ToList(),
-                        ApprenticeshipId = apprenticeships[0].Id,
-                        DataLockError = DataLockErrorCode.DLOCK_09
-                    }
-                }));
-
-            mocker.Mock<IOnProgrammeAndIncentiveStoppedValidator>()
-                .Setup(x => x.Validate(
-                    It.IsAny<List<ApprenticeshipModel>>(),
-                    It.IsAny<TransactionType>(),
-                    It.IsAny<EarningPeriod>(), It.IsAny<int>()))
-                .Returns((new List<ApprenticeshipModel>(), new List<DataLockFailure>
-                {
-                    new DataLockFailure
-                    {
-                        ApprenticeshipPriceEpisodeIds = apprenticeships[0].ApprenticeshipPriceEpisodes.Select(x => x.Id).ToList(),
-                        ApprenticeshipId = apprenticeships[0].Id,
-                        DataLockError = DataLockErrorCode.DLOCK_10
-                    }
-                }));
-
-            mocker.Mock<ICompletionStoppedValidator>()
-                .Setup(x => x.Validate(
-                    It.IsAny<PriceEpisode>(),
-                    It.IsAny<List<ApprenticeshipModel>>(),
-                    It.IsAny<TransactionType>()))
-                .Returns((apprenticeships, new List<DataLockFailure>()));
-
-            mocker.Mock<ICourseValidationProcessor>()
-                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 1)))
-                .Returns(() => new CourseValidationResult
-                {
-                    MatchedPriceEpisode = new ApprenticeshipPriceEpisodeModel
-                    {
-                        Id = apprenticeships[0].ApprenticeshipPriceEpisodes[0].Id
-                    }
-                });
+            var earningPeriods = earningEvent.OnProgrammeEarnings[0].Periods.Take(1).ToList();
+            earningEvent.OnProgrammeEarnings[0].Type = OnProgrammeEarningType.Completion;
+            apprenticeships[0].Status = ApprenticeshipStatus.Stopped;
+            apprenticeships[0].EstimatedStartDate = earningEvent.PriceEpisodes[0].ActualEndDate.GetValueOrDefault().AddDays(3);
+            apprenticeships[0].ApprenticeshipPriceEpisodes
+                .ForEach(x => x.StartDate = apprenticeships[0].EstimatedStartDate);
 
             var earningProcessor = mocker.Create<OnProgrammeAndIncentiveEarningPeriodsValidationProcessor>();
 
@@ -169,55 +105,17 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 allApprenticeships .First()
             };
 
+            var earningPeriods = earningEvent.OnProgrammeEarnings[0].Periods.Take(1).ToList();
             earningEvent.OnProgrammeEarnings[0].Type = OnProgrammeEarningType.Completion;
-
-            mocker.Mock<IStartDateValidator>()
-                .Setup(x => x.Validate(It.IsAny<PriceEpisode>(), It.IsAny<List<ApprenticeshipModel>>()))
-                .Returns((apprenticeships, new List<DataLockFailure>()));
-
-            mocker.Mock<IOnProgrammeAndIncentiveStoppedValidator>()
-                .Setup(x => x.Validate(
-                    It.IsAny<List<ApprenticeshipModel>>(),
-                    It.IsAny<TransactionType>(),
-                    It.IsAny<EarningPeriod>(), It.IsAny<int>()))
-                .Returns((apprenticeships, new List<DataLockFailure>()));
-
-            mocker.Mock<ICompletionStoppedValidator>()
-                .Setup(x => x.Validate(
-                    It.IsAny<PriceEpisode>(),
-                    It.IsAny<List<ApprenticeshipModel>>(),
-                    It.IsAny<TransactionType>()))
-                .Returns((new List<ApprenticeshipModel>(), new List<DataLockFailure>
-                {
-                    new DataLockFailure
-                    {
-                        ApprenticeshipPriceEpisodeIds = apprenticeships[0].ApprenticeshipPriceEpisodes.Select(x => x.Id).ToList(),
-                        ApprenticeshipId = apprenticeships[0].Id,
-                        DataLockError = DataLockErrorCode.DLOCK_10
-                    }
-                }));
-
-            mocker.Mock<ICourseValidationProcessor>()
-                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 1)))
-                .Returns(() => new CourseValidationResult
-                {
-                    DataLockFailures = new List<DataLockFailure>
-                    {
-                        new DataLockFailure
-                        {
-                            ApprenticeshipPriceEpisodeIds = apprenticeships[0].ApprenticeshipPriceEpisodes.Select(x => x.Id).ToList(),
-                            ApprenticeshipId = apprenticeships[0].Id,
-                            DataLockError = DataLockErrorCode.DLOCK_07
-                        }
-                    }
-                });
+            apprenticeships[0].Status = ApprenticeshipStatus.Stopped;
+            apprenticeships[0].StopDate = earningEvent.PriceEpisodes[0].ActualEndDate.GetValueOrDefault().AddDays(-5);
 
             var earningProcessor = mocker.Create<OnProgrammeAndIncentiveEarningPeriodsValidationProcessor>();
             var periods = earningProcessor.ValidatePeriods(
                 earningEvent.Ukprn,
                 earningEvent.Learner.Uln,
                 earningEvent.PriceEpisodes,
-                earningEvent.OnProgrammeEarnings[0].Periods.ToList(),
+                earningPeriods,
                 (TransactionType)earningEvent.OnProgrammeEarnings[0].Type,
                 apprenticeships,
                 earningEvent.LearningAim,
@@ -235,50 +133,15 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         [Test]
         public void GivenThereIsOnProgrammeAndIncentiveStoppedDLock10NoOtherDLockShouldBeGenerated()
         {
-            var apprenticeships = CreateApprenticeships();
+            var allApprenticeships = CreateApprenticeships();
             var earningEvent = CreateEarningEventTestData();
+
             earningEvent.OnProgrammeEarnings[0].Type = OnProgrammeEarningType.Learning;
-
-            mocker.Mock<IStartDateValidator>()
-                .Setup(x => x.Validate(It.IsAny<PriceEpisode>(), It.IsAny<List<ApprenticeshipModel>>()))
-                .Returns((apprenticeships, new List<DataLockFailure>()));
-
-            mocker.Mock<IOnProgrammeAndIncentiveStoppedValidator>()
-                .Setup(x => x.Validate(
-                    It.IsAny<List<ApprenticeshipModel>>(),
-                    It.IsAny<TransactionType>(),
-                    It.IsAny<EarningPeriod>(), It.IsAny<int>()))
-                .Returns((new List<ApprenticeshipModel>(), new List<DataLockFailure>
-                {
-                    new DataLockFailure
-                    {
-                        ApprenticeshipPriceEpisodeIds = apprenticeships[0].ApprenticeshipPriceEpisodes.Select(x => x.Id).ToList(),
-                        ApprenticeshipId = apprenticeships[0].Id,
-                        DataLockError = DataLockErrorCode.DLOCK_10
-                    }
-                }));
-
-            mocker.Mock<ICompletionStoppedValidator>()
-                .Setup(x => x.Validate(
-                    It.IsAny<PriceEpisode>(),
-                    It.IsAny<List<ApprenticeshipModel>>(),
-                    It.IsAny<TransactionType>()))
-                .Returns((apprenticeships, new List<DataLockFailure>()));
-
-            mocker.Mock<ICourseValidationProcessor>()
-                .Setup(x => x.ValidateCourse(It.Is<DataLockValidationModel>(model => model.Apprenticeship.Id == 1)))
-                .Returns(() => new CourseValidationResult
-                {
-                    DataLockFailures = new List<DataLockFailure>
-                    {
-                        new DataLockFailure
-                        {
-                            ApprenticeshipPriceEpisodeIds = apprenticeships[0].ApprenticeshipPriceEpisodes.Select(x => x.Id).ToList(),
-                            ApprenticeshipId = apprenticeships[0].Id,
-                            DataLockError = DataLockErrorCode.DLOCK_07
-                        }
-                    }
-                });
+            var apprenticeships = new List<ApprenticeshipModel> {allApprenticeships .First()};
+            var earningPeriods = earningEvent.OnProgrammeEarnings[0].Periods.Take(1).ToList();
+            earningEvent.OnProgrammeEarnings[0].Type = OnProgrammeEarningType.Completion;
+            apprenticeships[0].Status = ApprenticeshipStatus.Stopped;
+            apprenticeships[0].StopDate = earningEvent.PriceEpisodes[0].ActualEndDate.GetValueOrDefault().AddDays(-5);
 
             var earningProcessor = mocker.Create<OnProgrammeAndIncentiveEarningPeriodsValidationProcessor>();
             var periods = earningProcessor.ValidatePeriods(
@@ -307,16 +170,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             var earningEvent = CreateEarningEventTestData();
 
             earningEvent.PriceEpisodes[0].EffectiveTotalNegotiatedPriceStartDate = new DateTime(2018, 8, 30);
-
-
-
-            var earningProcessor = new OnProgrammeAndIncentiveEarningPeriodsValidationProcessor(
-                new StartDateValidator(),
-                new OnProgrammeAndIncentiveStoppedValidator(new CalculatePeriodStartAndEndDate()),
-                new CompletionStoppedValidator(),
-                new CourseValidationProcessor(new List<ICourseValidator> { new StandardCodeValidator() })
-            );
-
+            
+            var earningProcessor = mocker.Create<OnProgrammeAndIncentiveEarningPeriodsValidationProcessor>();
             var periods = earningProcessor.ValidatePeriods(
                 earningEvent.Ukprn,
                 earningEvent.Learner.Uln,

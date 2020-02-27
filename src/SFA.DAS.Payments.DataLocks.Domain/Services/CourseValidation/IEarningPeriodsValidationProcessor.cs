@@ -17,31 +17,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             int academicYear);
     }
 
-    public interface IOnProgrammeAndIncentiveEarningPeriodsValidationProcessor
-    {
-        (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(
-            long ukprn, 
-            long uln,
-            List<PriceEpisode> priceEpisodes,
-            List<EarningPeriod> periods,
-            TransactionType transactionType,
-            List<ApprenticeshipModel> apprenticeships,
-            LearningAim aim,
-            int academicYear);
-    }
+ 
 
-
-    public interface IFunctionalSkillEarningPeriodsValidationProcessor
-    {
-        (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(
-            long ukprn, 
-            long uln,
-            List<EarningPeriod> periods,
-            TransactionType transactionType,
-            List<ApprenticeshipModel> apprenticeships,
-            LearningAim aim,
-            int academicYear);
-    }
-
+   
 
 }
