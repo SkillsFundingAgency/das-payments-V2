@@ -228,22 +228,22 @@ WHEN NOT MATCHED BY SOURCE THEN
  DELETE;
  GO
 
-ALTER TABLE [Payments2].[DataLockEventNonPayablePeriod] DROP CONSTRAINT FK_DataLockEventNonPayablePeriod__DataLockEvent
+ALTER TABLE [Payments2].[DataLockEventNonPayablePeriod] DROP CONSTRAINT IF EXISTS FK_DataLockEventNonPayablePeriod__DataLockEvent 
 GO
 ALTER TABLE [Payments2].[DataLockEventNonPayablePeriod] ADD CONSTRAINT FK_DataLockEventNonPayablePeriod__DataLockEvent FOREIGN KEY (DataLockEventId) REFERENCES [Payments2].[DataLockEvent] (EventId)
 GO
 
-ALTER TABLE [Payments2].[DataLockEventNonPayablePeriodFailures] DROP CONSTRAINT FK_DataLockEventNonPayablePeriodFailures__DataLockEventNonPayablePeriod
+ALTER TABLE [Payments2].[DataLockEventNonPayablePeriodFailures] DROP CONSTRAINT IF EXISTS FK_DataLockEventNonPayablePeriodFailures__DataLockEventNonPayablePeriod
 GO
-ALTER TABLE [Payments2].[DataLockEventNonPayablePeriodFailures] ADD CONSTRAINT FK_DataLockEventNonPayablePeriodFailures__DataLockEventNonPayablePeriod FOREIGN KEY (DataLockEventNonPayablePeriodId) REFERENCES [Payments2].[DataLockEventNonPayablePeriod] (DataLockEventNonPayablePeriodId)
+ALTER TABLE [Payments2].[DataLockEventNonPayablePeriodFailures] WITH NOCHECK ADD CONSTRAINT FK_DataLockEventNonPayablePeriodFailures__DataLockEventNonPayablePeriod FOREIGN KEY (DataLockEventNonPayablePeriodId) REFERENCES [Payments2].[DataLockEventNonPayablePeriod] (DataLockEventNonPayablePeriodId) 
 GO
-
-ALTER TABLE [Payments2].[DataLockEventPayablePeriod] DROP CONSTRAINT FK_DataLockEventPayablePeriod__DataLockEvent
+​
+ALTER TABLE [Payments2].[DataLockEventPayablePeriod] DROP CONSTRAINT IF EXISTS FK_DataLockEventPayablePeriod__DataLockEvent
 GO
-ALTER TABLE [Payments2].[DataLockEventPayablePeriod] ADD CONSTRAINT FK_DataLockEventPayablePeriod__DataLockEvent FOREIGN KEY (DataLockEventId) REFERENCES [Payments2].[DataLockEvent] (EventId)
+ALTER TABLE [Payments2].[DataLockEventPayablePeriod] WITH NOCHECK ADD CONSTRAINT FK_DataLockEventPayablePeriod__DataLockEvent FOREIGN KEY (DataLockEventId) REFERENCES [Payments2].[DataLockEvent] (EventId)
 GO
-
-ALTER TABLE [Payments2].[DataLockEventPriceEpisode] DROP CONSTRAINT FK_DataLockEventPriceEpisode__DataLockEvent
+​
+ALTER TABLE [Payments2].[DataLockEventPriceEpisode] DROP CONSTRAINT IF EXISTS FK_DataLockEventPriceEpisode__DataLockEvent
 GO
-ALTER TABLE [Payments2].[DataLockEventPriceEpisode] ADD CONSTRAINT FK_DataLockEventPriceEpisode__DataLockEvent FOREIGN KEY (DataLockEventId) REFERENCES [Payments2].[DataLockEvent] (EventId)
-GO
+ALTER TABLE [Payments2].[DataLockEventPriceEpisode] WITH NOCHECK ADD CONSTRAINT FK_DataLockEventPriceEpisode__DataLockEvent FOREIGN KEY (DataLockEventId) REFERENCES [Payments2].[DataLockEvent] (EventId)
+GO 
