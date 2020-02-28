@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
-using Microsoft.Extensions.Logging.Abstractions;
 using NServiceBus.Pipeline;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 
@@ -21,9 +21,19 @@ namespace SFA.DAS.Payments.Application.Messaging
 
         public override async Task Invoke(IIncomingLogicalMessageContext context, Func<Task> next)
         {
-            var message = context.Extensions.Get<Message>();
-
-            var lockedUntilUtc = context.Extensions.Get<Message>().SystemProperties.LockedUntilUtc;
+            Message message;
+            try
+            {
+                message = context.Extensions.Get<Message>();
+            }
+            catch (KeyNotFoundException)
+            {
+                logger.LogWarning("Error getting Azure service bus Message from IIncomingLogicalMessageContext");
+                await next().ConfigureAwait(false);
+                return;
+            }
+            
+            var lockedUntilUtc = message.SystemProperties.LockedUntilUtc;
 
             //logger.LogVerbose($"ExtendLockDurationBehaviour: current time: {DateTime.UtcNow:G}, type: {message.UserProperties["NServiceBus.EnclosedMessageTypes"]}");
 
