@@ -381,6 +381,9 @@
     <Compile Include="Handlers\EarningEventHandler.cs" />
     <Compile Include="Handlers\ProviderPaymentEventHandler.cs" />
     <Compile Include="Helpers\ApprenticeshipHelper.cs" />
+    <Compile Include="Helpers\ApprovalBuilder.cs" />
+    <Compile Include="Helpers\FM36GlobalDeserialiser.cs" />
+    <Compile Include="Helpers\FM36GlobalHelper.cs" />
     <Compile Include="Infrastructure\EndpointNames.cs" />
     <Compile Include="Infrastructure\FeatureScopedBootstrapper.cs" />
     <Compile Include="Infrastructure\IoC\AutoMapperModule.cs" />
@@ -511,6 +514,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-levy Learner over funding band cap - PV2-529.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\DataLocks\PV2-1825-DLock09-Two-Price-Episodes-Happy-Path.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1825-DLock09-Two-Price-Episodes-Happy-Path.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Disadvantaged Uplift\Framework-uplift-on-time-PV2-487.feature.cs">
       <AutoGen>True</AutoGen>
@@ -888,7 +896,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-590 - Levy Learner framework uplift and 16-18 incentives payments finishes on time.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Holding Back Completion Payments\PV2-1653 Employer payments rounded down.feature.cs" >
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-1653 Employer payments rounded down.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-1653 Employer payments rounded down.feature</DependentUpon>
@@ -1629,14 +1637,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-736 - Levy learner paid via transfer.feature</DependentUpon>
     </Compile>
-	
-	<Compile Include="Tests\Submission Events\PV2-1395 - Successful submission removes previous submission payments.feature.cs">
+    <Compile Include="Tests\Submission Events\PV2-1395 - Successful submission removes previous submission payments.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-1395 - Successful submission removes previous submission payments.feature</DependentUpon>
     </Compile>
-	
-	<Compile Include="Tests\Submission Events\PV2-1396 - Failed submission job removes payments for failed job.feature.cs">
+    <Compile Include="Tests\Submission Events\PV2-1396 - Failed submission job removes payments for failed job.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-1396 - Failed submission job removes payments for failed job.feature</DependentUpon>
@@ -1656,6 +1662,7 @@
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>true</IsTransformFile>
     </None>
+    <EmbeddedResource Include="FM36TestFiles\PV2-1825-R02.json" />
     <None Include="packages.config" />
     <None Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1744,6 +1751,10 @@
     <None Include="Tests\Capping\Non-levy Learner over funding band cap - PV2-529.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy Learner over funding band cap - PV2-529.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\DataLocks\PV2-1825-DLock09-Two-Price-Episodes-Happy-Path.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1825-DLock09-Two-Price-Episodes-Happy-Path.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Disadvantaged Uplift\Framework-uplift-on-time-PV2-487.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2045,7 +2056,7 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-590 - Levy Learner framework uplift and 16-18 incentives payments finishes on time.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Holding Back Completion Payments\PV2-1653 Employer payments rounded down.feature" >
+    <None Include="Tests\Holding Back Completion Payments\PV2-1653 Employer payments rounded down.feature">
       <Generator>SpecFlowSIngleFileGenerator</Generator>
       <LastGenOutput>Tests\Holding Back Completion Payments\PV2-1653 Employer payments rounded down.feature.cs</LastGenOutput>
     </None>

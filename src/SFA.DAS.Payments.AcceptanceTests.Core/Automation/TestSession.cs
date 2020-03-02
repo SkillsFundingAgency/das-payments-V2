@@ -3,6 +3,8 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
@@ -32,6 +34,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public Provider Provider => GetProviderByIdentifier(TestProvider);
         public long Ukprn => Provider.Ukprn;
         public long JobId => Provider.JobId;
+
+        public FM36Global FM36Global { get; set; }
+
+        public Dictionary<string, ApprenticeshipModel> Apprenticeships { get; set; }
 
         private readonly IUkprnService ukprnService;
         private readonly IUlnService ulnService;
@@ -77,7 +83,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             Learners = new List<Learner>();
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
             Employers = new List<Employer>();
-
+            Apprenticeships = new Dictionary<string, ApprenticeshipModel>();
         }
 
         public long GenerateId(int maxValue = 1000000)
@@ -111,6 +117,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             {
                 provider = GenerateProvider();
                 provider.Identifier = identifier;
+                Providers.Add(provider);
+            }
+
+            return provider;
+        }
+
+        public Provider GetProviderByUkprn(int ukprn)
+        {
+            var provider = Providers.SingleOrDefault(x => x.Ukprn == ukprn);
+            if (provider == null)
+            {
+                provider = new Provider
+                {
+                    Ukprn = ukprn,
+                    JobId = GenerateId(),
+                    IlrSubmissionTime = DateTime.UtcNow,
+                    Identifier = ukprn.ToString()
+                };
                 Providers.Add(provider);
             }
 

@@ -349,7 +349,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"only the following payments will be calculated")]
         public async Task ThenTheFollowingPaymentsWillBeCalculated(Table table)
         {
-            await MatchRequiredPayments(table, TestSession.Provider).ConfigureAwait(false);
+            await MatchRequiredPaymentsFromTable(table, TestSession.Provider).ConfigureAwait(false);
         }
 
         [Then(@"at month end only the following payments will be calculated")]
@@ -371,7 +371,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenAtMonthEndOnlyTheFollowingPaymentsWillBeCalculatedFor(string providerIdentifier, Table table)
         {
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
-            await MatchRequiredPayments(table, provider).ConfigureAwait(false);
+            await MatchRequiredPaymentsFromTable(table, provider).ConfigureAwait(false);
         }
 
         [Then(@"no payments will be calculated")]

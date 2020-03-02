@@ -8,4 +8,8 @@
         public bool IsLevyPayer { get; set; }
         public decimal TransferAllowance { get; set; }
     }
+
+    //todo write apprenticeship and price episode to datacontext
+    //create a builder for this - max levy by default
+    //write this to DB too
 }
