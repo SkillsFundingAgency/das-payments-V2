@@ -8,7 +8,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 
 namespace SFA.DAS.Payments.Application.Messaging
 {
-    public class ExtendLockDurationBehaviour : Behavior<IIncomingLogicalMessageContext>
+    public class ExtendLockDurationBehaviour : Behavior<ITransportReceiveContext>
     {
         private readonly IMessageReceiver messageReceiver;
         private readonly IPaymentLogger logger;
@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.Application.Messaging
             this.messageReceiver = messageReceiver ?? throw new ArgumentNullException(nameof(messageReceiver));
         }
 
-        public override async Task Invoke(IIncomingLogicalMessageContext context, Func<Task> next)
+        public override async Task Invoke(ITransportReceiveContext context, Func<Task> next)
         {
             Message message;
             try

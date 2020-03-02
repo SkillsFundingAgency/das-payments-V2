@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.Application.UnitTests
 {
     public class ExtendLockDurationBehaviourTests
     {
-        private TestableIncomingLogicalMessageContext context;
+        private TestableTransportReceiveContext context;
         private ExtendLockDurationBehaviour behavior;
         private Mock<IMessageReceiver> messageReceiver;
 
@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.Application.UnitTests
             {
                 messageReceiver = mocker.Mock<IMessageReceiver>();
                 behavior = mocker.Create<ExtendLockDurationBehaviour>();
-                context = new TestableIncomingLogicalMessageContext();
+                context = new TestableTransportReceiveContext();
             }
         }
 
