@@ -33,9 +33,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         }
 
         [AutoData]
-        public void ReturnsOnlyCommitmentsThatAreNotStopped(
-            ApprenticeshipModel apprenticeshipA,
-            ApprenticeshipModel apprenticeshipB)
+        public void ReturnsOnlyCommitmentsThatAreNotStopped(ApprenticeshipModel apprenticeshipA, ApprenticeshipModel apprenticeshipB)
         {
             period.Period = 2;
 
@@ -82,7 +80,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                             Removed = true
                         },
                     },
-                    StopDate = commitmentStopDate, // Last day of 1819
+                    StopDate = commitmentStopDate,
                     Status = ApprenticeshipStatus.Stopped,
                 }
             };
