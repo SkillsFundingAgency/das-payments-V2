@@ -155,8 +155,5 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             result.validApprenticeships[0].Id.Should().Be(1, errorMessage);
             result.validApprenticeships[0].ApprenticeshipPriceEpisodes[0].Id.Should().Be(100);
         }
-
-
-
     }
 }
