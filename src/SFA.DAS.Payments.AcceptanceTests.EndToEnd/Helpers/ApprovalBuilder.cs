@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.Model.Core.Entities;
 
@@ -7,39 +9,52 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
 {
     public class ApprovalBuilder
     {
-        private ApprenticeshipModel approval;
+        private ApprenticeshipModel _approval;
+        private FM36Learner _learner;
+        private int _aimSeqNumber;
 
-        public ApprovalBuilder BuildSimpleLevyApproval(TestSession session, int? ukprn = null, long? uln = null)
+        //todo this need to be refactored to take in an FM36Learner and match all the values in there
+        public ApprovalBuilder BuildSimpleApproval(TestSession session, FM36Learner learner, int aimSeqNumber)
         {
-            if (approval == null) approval = new ApprenticeshipModel();
+            if (_approval == null) _approval = new ApprenticeshipModel();
+            _learner = learner;
+            _aimSeqNumber = aimSeqNumber;
 
-            approval.Id = session.GenerateId();
-            approval.Ukprn = ukprn != null ? session.GetProviderByUkprn(ukprn.Value).Ukprn : session.GetProviderByIdentifier(Guid.NewGuid().ToString()).Ukprn;
-            approval.AccountId = session.Employer.AccountId;
-            approval.Uln = uln ?? session.GenerateId();
-            approval.StandardCode = session.GenerateId();
-            approval.ProgrammeType = 25;
-            approval.Status = ApprenticeshipStatus.Active;
-            approval.LegalEntityName = "Test SFA";
-            approval.EstimatedStartDate = new DateTime(2018, 08, 01);
-            approval.EstimatedEndDate = new DateTime(2019, 08, 06);
-            approval.AgreedOnDate = DateTime.UtcNow;
-            approval.IsLevyPayer = true;
-            approval.ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy;
+            _approval.Id = session.GenerateId();
+            _approval.Ukprn = session.Provider.Ukprn;
+            _approval.AccountId = session.Employer.AccountId;
+            _approval.Uln = session.Learner.Uln;
+            _approval.StandardCode = _learner.LearningDeliveries.Single(x => x.AimSeqNumber == _aimSeqNumber).LearningDeliveryValues.StdCode ?? 0;
+            _approval.ProgrammeType = _learner.LearningDeliveries.Single(x => x.AimSeqNumber == _aimSeqNumber).LearningDeliveryValues.ProgType;
+            _approval.Status = ApprenticeshipStatus.Active;
+            _approval.LegalEntityName = session.Employer.AccountName;
+            _approval.EstimatedStartDate = new DateTime(2018, 08, 01);
+            _approval.EstimatedEndDate = new DateTime(2019, 08, 06);
+            _approval.AgreedOnDate = DateTime.UtcNow;
+            _approval.FrameworkCode = _learner.LearningDeliveries.Single(x => x.AimSeqNumber == _aimSeqNumber).LearningDeliveryValues.FworkCode;
+            _approval.PathwayCode = _learner.LearningDeliveries.Single(x => x.AimSeqNumber == _aimSeqNumber).LearningDeliveryValues.PwayCode;
 
             return this;
         }
 
-        public ApprovalBuilder WithSimplePriceEpisode(TestSession session, long? id = null)
+        public ApprovalBuilder WithALevyPayingEmployer()
         {
-            if (approval == null) approval = new ApprenticeshipModel();
-            if (approval.ApprenticeshipPriceEpisodes == null) approval.ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>();
+            _approval.IsLevyPayer = true;
+            _approval.ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy;
 
-            approval.ApprenticeshipPriceEpisodes.Add(new ApprenticeshipPriceEpisodeModel
+            return this;
+        }
+
+        public ApprovalBuilder WithApprenticeshipPriceEpisode()
+        {
+            if (_approval == null) _approval = new ApprenticeshipModel();
+            if (_approval.ApprenticeshipPriceEpisodes == null) _approval.ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>();
+
+            _approval.ApprenticeshipPriceEpisodes.Add(new ApprenticeshipPriceEpisodeModel
             {
-                ApprenticeshipId = approval.Id,
-                Id = id ?? session.GenerateId(),
-                Cost = 15000,
+                ApprenticeshipId = _approval.Id,
+                //todo de-hardcode
+                Cost = _learner.PriceEpisodes.Single(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == _aimSeqNumber && x.PriceEpisodeIdentifier == "PE-1").PriceEpisodeValues.PriceEpisodeTotalTNPPrice.GetValueOrDefault(),
                 StartDate = new DateTime(2018, 08, 01),
                 EndDate = new DateTime(2019, 07, 31)
             });
@@ -49,12 +64,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
 
         public ApprovalBuilder WithExplicitId(long id)
         {
-            if (approval == null) approval = new ApprenticeshipModel();
+            if (_approval == null) _approval = new ApprenticeshipModel();
 
-            approval.Id = id;
+            _approval.Id = id;
 
-            if (approval.ApprenticeshipPriceEpisodes == null) return this;
-            foreach (var episode in approval.ApprenticeshipPriceEpisodes)
+            if (_approval.ApprenticeshipPriceEpisodes == null) return this;
+            foreach (var episode in _approval.ApprenticeshipPriceEpisodes)
             {
                 episode.ApprenticeshipId = id;
             }
@@ -64,8 +79,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
 
         public ApprovalBuilder WithExplicitStartDate(DateTime startDate)
         {
-            approval.EstimatedStartDate = startDate;
-            foreach (var episode in approval.ApprenticeshipPriceEpisodes)
+            _approval.EstimatedStartDate = startDate;
+            foreach (var episode in _approval.ApprenticeshipPriceEpisodes)
             {
                 episode.StartDate = startDate;
             }
@@ -74,7 +89,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
 
         public ApprenticeshipModel ToApprenticeshipModel()
         {
-            return approval;
+            return _approval;
         }
     }
 }

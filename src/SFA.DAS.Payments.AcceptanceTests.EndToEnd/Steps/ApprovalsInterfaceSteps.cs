@@ -60,22 +60,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"there is an ILR with 2 price episodes, the end date of one occurs in the same month as the start date of the other")]
         public void GivenThereIsAnILRWith()
         {
+            //todo sort automatically finding file name from convention
             TestSession.FM36Global = FM36GlobalDeserialiser.Deserialise("SFA.DAS.Payments.AcceptanceTests.EndToEnd.FM36TestFiles.PV2-1825-R02.json");
         }
 
         [Given("end date of PE-(.*) and the start date of PE-(.*) occur in the same month")]
         public void EmptyStep(string episode1, string episode2)
         {
-            //todo we will changed the price episode identifer in the json file to match the passed in specflow wildcards for this and other PE- referencing steps
         }
 
         [Given("PE-(.*) in the ILR matches to both Commitments (.*) and (.*), on ULN and UKPRN")]
-        public void PriceEpisodeMatchToCommitments(int priceEpisodeIndex, string commitmentIdentifier1, string commitmentIdentifier2)
-        { 
-            //to achieve below use default provider on TestSession
-            //todo randomly generate UKPRN, ULN, and LearnerRefNumber, and update the FM36Global and the commitments created in this step to match
-            var commitment1 = new ApprovalBuilder().BuildSimpleLevyApproval(TestSession, TestSession.Provider.Ukprn, TestSession.Learner.Uln).WithSimplePriceEpisode(TestSession).ToApprenticeshipModel();
-            var commitment2 = new ApprovalBuilder().BuildSimpleLevyApproval(TestSession, TestSession.Provider.Ukprn, TestSession.Learner.Uln).WithSimplePriceEpisode(TestSession).ToApprenticeshipModel();
+        public async Task PriceEpisodeMatchToCommitments(int priceEpisodeIndex, string commitmentIdentifier1, string commitmentIdentifier2)
+        {
+            var commitment1 = new ApprovalBuilder().BuildSimpleApproval(TestSession, TestSession.FM36Global.Learners.Single(x => x.PriceEpisodes.Any(y => y.PriceEpisodeIdentifier == $"PE-{priceEpisodeIndex}")), 2).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode().ToApprenticeshipModel();
+            var commitment2 = new ApprovalBuilder().BuildSimpleApproval(TestSession, TestSession.FM36Global.Learners.Single(x => x.PriceEpisodes.Any(y => y.PriceEpisodeIdentifier == $"PE-{priceEpisodeIndex}")), 2).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode().ToApprenticeshipModel();
             TestSession.Apprenticeships.Add(commitmentIdentifier1, commitment1);
             TestSession.Apprenticeships.Add(commitmentIdentifier2, commitment2);
             TestSession.FM36Global.UKPRN = TestSession.Provider.Ukprn;
@@ -86,12 +84,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 TestDataContext.Apprenticeship.Add(commitment1);
                 TestDataContext.Apprenticeship.Add(commitment2);
-                TestDataContext.ApprenticeshipPriceEpisode.AddRange(commitment1.ApprenticeshipPriceEpisodes);
+                TestDataContext.ApprenticeshipPriceEpisode.AddRange(commitment1.ApprenticeshipPriceEpisodes); //todo check if this is needed
                 TestDataContext.ApprenticeshipPriceEpisode.AddRange(commitment2.ApprenticeshipPriceEpisodes);
+
                 var levyModel = TestSession.Employer.ToModel();
                 levyModel.Balance = 1000000000;
                 TestDataContext.LevyAccount.Add(levyModel);
-                TestDataContext.SaveChanges();
+
+                await TestDataContext.SaveChangesAsync();
             }
             catch (Exception e)
             {
@@ -102,6 +102,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             
         }
 
+        //todo wildcard whole PE - so "PE-1" rather than "1"
         [Given("the start date of PE-(.*) is after the start date for Commitment (.*)")]
         public void GivenTheStartDateOfPriceEpisodeIsAfterTheStartDateForCommitment(int priceEpisodeIndex, string commitmentIdentifier)
         {
@@ -109,7 +110,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var priceEpisodeStartDate = TestSession.FM36Global.Learners.Single().PriceEpisodes.Single(x => x.PriceEpisodeIdentifier == $"PE-{priceEpisodeIndex}").PriceEpisodeValues.EpisodeStartDate;
 
             //set date of commitment to be before that PE's start date
-            TestSession.Apprenticeships[commitmentIdentifier].EstimatedStartDate = priceEpisodeStartDate.Value.AddDays(-1);
+            TestSession.Apprenticeships[commitmentIdentifier].EstimatedStartDate = priceEpisodeStartDate.GetValueOrDefault().AddDays(-1);
         }
 
         [Given("the start date of PE-(.*) is before the start date for Commitment (.*)")]
@@ -119,7 +120,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var priceEpisodeStartDate = TestSession.FM36Global.Learners.Single().PriceEpisodes.Single(x => x.PriceEpisodeIdentifier == $"PE-{priceEpisodeIndex}").PriceEpisodeValues.EpisodeStartDate;
 
             //set date of commitment to be after that PE's start date
-            TestSession.Apprenticeships[commitmentIdentifier].EstimatedStartDate = priceEpisodeStartDate.Value.AddDays(1);
+            TestSession.Apprenticeships[commitmentIdentifier].EstimatedStartDate = priceEpisodeStartDate.GetValueOrDefault().AddDays(1);
         }
 
         [When("the Provider submits the 2 price episodes in the ILR for the collection period (.*)")]
@@ -142,35 +143,48 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             await WaitForIt(async () =>
             {
-                var result = PayableEarningEventHandler.ReceivedEvents.Any(earningEvent => 
-                    earningEvent.Ukprn == TestSession.Provider.Ukprn
-                    && earningEvent.Learner.Uln == TestSession.Learner.Uln
-                    && earningEvent.Learner.ReferenceNumber == TestSession.Learner.LearnRefNumber
-                    && earningEvent.PriceEpisodes.Any(priceEpisode => TestSession.FM36Global.Learners.Select(learner => learner.PriceEpisodes.Single().PriceEpisodeIdentifier).Contains(priceEpisode.Identifier))
-                );
-
-                var events = PayableEarningEventHandler.ReceivedEvents;
-
-                var dataLockEvents = EarningFailedDataLockMatchingHandler.ReceivedEvents;
-
-                if (events.Any())
+                try
                 {
-                    var breakpoint = "";
-                }
+                    //todo 2 methods here once Dlocks are working - one for PayableEarningEventHandler.ReceivedEvents and one for EarningFailedDataLockMatchingHandler.ReceivedEvents
+                    var result = PayableEarningEventHandler.ReceivedEvents.Any(earningEvent =>
+                        earningEvent.Ukprn == TestSession.Provider.Ukprn
+                        && earningEvent.Learner.Uln == TestSession.Learner.Uln
+                        && earningEvent.Learner.ReferenceNumber == TestSession.Learner.LearnRefNumber
+                    );
 
-                if(dataLockEvents.Any())
+                    var events = PayableEarningEventHandler.ReceivedEvents;
+
+                    var dataLockEvents = EarningFailedDataLockMatchingHandler.ReceivedEvents.Where(earningEvent =>
+                        earningEvent.Ukprn == TestSession.Provider.Ukprn
+                        && earningEvent.Learner.Uln == TestSession.Learner.Uln
+                        && earningEvent.Learner.ReferenceNumber == TestSession.Learner.LearnRefNumber
+                    );
+
+                    if (events.Any())
+                    {
+                        var breakpoint = "";
+                    }
+
+                    if (dataLockEvents.Any())
+                    {
+                        var filteredDataLockEvents = dataLockEvents.Where(x => x.Learner.Uln == TestSession.Learner.Uln);
+                        filteredDataLockEvents = filteredDataLockEvents.Where(x => x.PriceEpisodes.Any(y => y.Identifier == "PE-1" || y.Identifier == "PE-2"));
+                        filteredDataLockEvents = filteredDataLockEvents.Where(x => x.LearningAim.SequenceNumber == 2);
+
+
+
+                        var onProgrammeDataLocks = dataLockEvents.SelectMany(x => x.OnProgrammeEarnings.SelectMany(y =>
+                            y.Periods.SelectMany(z => z.DataLockFailures.Select(a => a.DataLockError)))).Distinct();
+                        var breakpoint = "";
+                    }
+
+                    return result;
+                }
+                catch (Exception e)
                 {
-                    var filteredDataLockEvents = dataLockEvents.Where(x => x.Learner.Uln == TestSession.Learner.Uln);
-                    filteredDataLockEvents = filteredDataLockEvents.Where(x => x.PriceEpisodes.Any(y => y.Identifier == "PE-1" || y.Identifier == "PE-2"));
-
-
-
-                    var onProgrammeDataLocks = dataLockEvents.Select(x => x.OnProgrammeEarnings.Select(y =>
-                        y.Periods.Select(z => z.DataLockFailures.Select(a => a.DataLockError))));
-                    var breakpoint = "";
+                    Console.WriteLine(e);
+                    throw;
                 }
-
-                return result;
             }, "Failed to find all the stored apprenticeships.");
             //todo use the wait for function (see approval steps) to wait for:
             //PayableEarningEventHandler.ReceivedEvents.Where(......) don't use job id, check PayableEarningEventMatcher for example
