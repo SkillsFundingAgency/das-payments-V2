@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             modelBuilder.ApplyConfiguration(new DataLockEventNonPayablePeriodModelConfiguration());
             modelBuilder.ApplyConfiguration(new DataLockEventNonPayablePeriodFailureModelConfiguration());
             modelBuilder.ApplyConfiguration(new RequiredPaymentEventModelConfiguration());
-
+            modelBuilder.ApplyConfiguration(new PaymentModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
