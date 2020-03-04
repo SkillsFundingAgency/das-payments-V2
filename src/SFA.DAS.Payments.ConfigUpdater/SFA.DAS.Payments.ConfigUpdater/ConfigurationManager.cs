@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using System.Xml.Linq;
 
 namespace SFA.DAS.Payments.ConfigUpdater
@@ -107,7 +108,14 @@ namespace SFA.DAS.Payments.ConfigUpdater
             var currentConfigValues = new Dictionary<string, string>();
             foreach (var parameter in parameters)
             {
-                currentConfigValues.Add(parameter.Name, parameter.Value);
+                if (!currentConfigValues.ContainsKey(parameter.Name))
+                {
+                    currentConfigValues.Add(parameter.Name, parameter.Value);
+                }
+                else
+                {
+                    MessageBox.Show($"Paramenter: {parameter.Name} is repeated in file: {configFileToUpdate}");
+                }
             }
 
             return currentConfigValues;

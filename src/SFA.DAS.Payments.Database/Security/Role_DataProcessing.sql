@@ -14,3 +14,15 @@ GRANT
 ON SCHEMA::[Payments2]
 	TO [DataProcessing]
 GO
+
+GRANT 
+	DELETE, 
+	EXECUTE, 
+	INSERT, 
+	REFERENCES, 
+	SELECT, 
+	UPDATE, 
+	VIEW DEFINITION 
+ON SCHEMA::[Metrics]
+	TO [DataProcessing]
+GO

@@ -72,7 +72,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             }
             catch (Exception e)
             {
-                logger.LogError("Failed to load existing jobs.");
+                logger.LogError($"Failed to load existing jobs. Error: {e.Message}", e);
             }
         }
 

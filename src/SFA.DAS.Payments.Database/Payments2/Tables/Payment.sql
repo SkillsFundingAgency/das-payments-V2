@@ -80,3 +80,18 @@ CREATE INDEX [IX_Payment__Audit] ON [Payments2].[Payment]
 )  
 
 GO
+
+CREATE NONCLUSTERED INDEX [IX_Payment__Metrics_Paid_DataLocks] ON [Payments2].[Payment]
+(
+	[Ukprn],
+    [LearnerReferenceNumber] ASC,
+    [LearningAimReference] ASC,
+    [LearningAimProgrammeType] ASC,
+    [LearningAimStandardCode] ASC,
+    [LearningAimFrameworkCode] ASC,
+    [LearningAimPathwayCode] ASC,
+	[CollectionPeriod]
+)
+include(Amount, [TransactionType], [DeliveryPeriod])
+
+GO

@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
                 throw new ArgumentException($"Employer AccountId cannot be null. Event Id: {message.EventId}");
 
             logger.LogDebug($"Sending message to actor: {message.AccountId.Value}.");
-            var actorId = new ActorId(message.AccountId.Value);
+            var actorId = new ActorId(message.AccountId.Value.ToString());
             var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
             var fundingSourceEvents = await actor.UnableToFundTransfer(message).ConfigureAwait(false);
             await Task.WhenAll(fundingSourceEvents.Select(context.Publish));

@@ -3,6 +3,7 @@ using FluentAssertions;
 using NServiceBus;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests.TestUtilities;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 
 namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests.MonthEnd
@@ -18,8 +19,8 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests.Month
             var serviceStatus = await ServiceFabricManager.IsApprovalsServiceRunning();
             serviceStatus.Should().BeTrue("Approvals service is not running prior to test");
 
-            var periodEndEvent = new PeriodEndStartedEvent();
-            await messageSession.Send(periodEndEvent).ConfigureAwait(false);
+            var periodEndEvent = new PeriodEndStartedEvent{CollectionPeriod = new CollectionPeriod{AcademicYear = 1920, Period = 6}};
+            await messageSession.Publish(periodEndEvent).ConfigureAwait(false);
 
             var result = await new TimeService()
                 .WaitForBoolean(async () =>
