@@ -127,24 +127,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             return provider;
         }
 
-        public Provider GetProviderByUkprn(int ukprn)
-        {
-            var provider = Providers.SingleOrDefault(x => x.Ukprn == ukprn);
-            if (provider == null)
-            {
-                provider = new Provider
-                {
-                    Ukprn = ukprn,
-                    JobId = GenerateId(),
-                    IlrSubmissionTime = DateTime.UtcNow,
-                    Identifier = ukprn.ToString()
-                };
-                Providers.Add(provider);
-            }
-
-            return provider;
-        }
-
         public string GenerateLearnerReference(string learnerId)
         {
             return string.IsNullOrEmpty(learnerId) ? Learner.LearnRefNumber : LearnRefNumberGenerator.Generate(Ukprn, learnerId);
