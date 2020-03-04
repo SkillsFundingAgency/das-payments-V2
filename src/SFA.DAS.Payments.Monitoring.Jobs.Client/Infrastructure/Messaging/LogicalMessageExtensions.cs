@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging
         //TODO: need to duplicate both methods for now until NSB has base class/interface for Incoming/Outgoing Logical Messages.  
         public static Guid GetMessageId(this IIncomingLogicalMessageContext context)
         {
-            return (context.Message.Instance as IPaymentsEvent)?.EventId ??
+            return (context.Message.Instance as IEvent)?.EventId ??
                    (context.Message.Instance as IPaymentsCommand)?.CommandId ?? Guid.Empty;
         }
 
@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging
 
         public static Guid GetMessageId(this IOutgoingLogicalMessageContext context)
         {
-            return (context.Message.Instance as IPaymentsEvent)?.EventId ??
+            return (context.Message.Instance as IEvent)?.EventId ??
                    (context.Message.Instance as IPaymentsCommand)?.CommandId ?? Guid.Empty;
         }
 

@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.endpointInstanceFactory = endpointInstanceFactory ??
-                                           throw new ArgumentNullException(nameof(endpointInstanceFactory));
+                                            throw new ArgumentNullException(nameof(endpointInstanceFactory));
             this.jobClient = jobClient ?? throw new ArgumentNullException(nameof(jobClient));
             this.jobStatusService = jobStatusService ?? throw new ArgumentNullException(nameof(jobStatusService));
         }
