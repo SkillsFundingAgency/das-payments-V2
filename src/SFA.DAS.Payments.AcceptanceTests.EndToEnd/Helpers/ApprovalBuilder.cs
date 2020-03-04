@@ -3,57 +3,54 @@ using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
 {
     public class ApprovalBuilder
     {
-        private ApprenticeshipModel _approval;
-        private FM36Learner _learner;
-        private int _aimSeqNumber;
+        private ApprenticeshipModel approval;
 
         //todo this need to be refactored to take in an FM36Learner and match all the values in there
-        public ApprovalBuilder BuildSimpleApproval(TestSession session, FM36Learner learner, int aimSeqNumber)
+        public ApprovalBuilder BuildSimpleApproval(TestSession session, LearningDeliveryValues learningDeliveryValues)
         {
-            if (_approval == null) _approval = new ApprenticeshipModel();
-            _learner = learner;
-            _aimSeqNumber = aimSeqNumber;
-
-            _approval.Id = session.GenerateId();
-            _approval.Ukprn = session.Provider.Ukprn;
-            _approval.AccountId = session.Employer.AccountId;
-            _approval.Uln = session.Learner.Uln;
-            _approval.StandardCode = _learner.LearningDeliveries.Single(x => x.AimSeqNumber == _aimSeqNumber).LearningDeliveryValues.StdCode ?? 0;
-            _approval.ProgrammeType = _learner.LearningDeliveries.Single(x => x.AimSeqNumber == _aimSeqNumber).LearningDeliveryValues.ProgType;
-            _approval.Status = ApprenticeshipStatus.Active;
-            _approval.LegalEntityName = session.Employer.AccountName;
-            _approval.EstimatedStartDate = new DateTime(2018, 08, 01);
-            _approval.EstimatedEndDate = new DateTime(2019, 08, 06);
-            _approval.AgreedOnDate = DateTime.UtcNow;
-            _approval.FrameworkCode = _learner.LearningDeliveries.Single(x => x.AimSeqNumber == _aimSeqNumber).LearningDeliveryValues.FworkCode;
-            _approval.PathwayCode = _learner.LearningDeliveries.Single(x => x.AimSeqNumber == _aimSeqNumber).LearningDeliveryValues.PwayCode;
+            if (approval == null) approval = new ApprenticeshipModel();
+            approval.Id = session.GenerateId();
+            approval.Ukprn = session.Provider.Ukprn;
+            approval.AccountId = session.Employer.AccountId;
+            approval.Uln = session.Learner.Uln;
+            approval.StandardCode = learningDeliveryValues.StdCode ?? 0;
+            approval.ProgrammeType = learningDeliveryValues.ProgType;
+            approval.Status = ApprenticeshipStatus.Active;
+            approval.LegalEntityName = session.Employer.AccountName;
+            approval.EstimatedStartDate = new DateTime(2018, 08, 01);
+            approval.EstimatedEndDate = new DateTime(2019, 08, 06);
+            approval.AgreedOnDate = DateTime.UtcNow;
+            approval.FrameworkCode = learningDeliveryValues.FworkCode;
+            approval.PathwayCode = learningDeliveryValues.PwayCode;
 
             return this;
         }
 
         public ApprovalBuilder WithALevyPayingEmployer()
         {
-            _approval.IsLevyPayer = true;
-            _approval.ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy;
+            approval.IsLevyPayer = true;
+            approval.ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy;
 
             return this;
         }
 
-        public ApprovalBuilder WithApprenticeshipPriceEpisode(string identifier)
+        public ApprovalBuilder WithApprenticeshipPriceEpisode(PriceEpisodeValues fm36PriceEpisodeValues)
         {
-            if (_approval == null) _approval = new ApprenticeshipModel();
-            if (_approval.ApprenticeshipPriceEpisodes == null) _approval.ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>();
+            if (approval == null) approval = new ApprenticeshipModel();
+            if (approval.ApprenticeshipPriceEpisodes == null) approval.ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>();
 
-            _approval.ApprenticeshipPriceEpisodes.Add(new ApprenticeshipPriceEpisodeModel
+            approval.ApprenticeshipPriceEpisodes.Add(new ApprenticeshipPriceEpisodeModel
             {
-                ApprenticeshipId = _approval.Id,
-                Cost = _learner.PriceEpisodes.Single(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == _aimSeqNumber && x.PriceEpisodeIdentifier == identifier).PriceEpisodeValues.PriceEpisodeTotalTNPPrice.GetValueOrDefault(),
+                ApprenticeshipId = approval.Id,
+                Cost = fm36PriceEpisodeValues.PriceEpisodeTotalTNPPrice.GetValueOrDefault(),
                 StartDate = new DateTime(2018, 08, 01),
                 EndDate = new DateTime(2019, 07, 31)
             });
@@ -63,12 +60,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
 
         public ApprovalBuilder WithExplicitId(long id)
         {
-            if (_approval == null) _approval = new ApprenticeshipModel();
+            if (approval == null) approval = new ApprenticeshipModel();
 
-            _approval.Id = id;
+            approval.Id = id;
 
-            if (_approval.ApprenticeshipPriceEpisodes == null) return this;
-            foreach (var episode in _approval.ApprenticeshipPriceEpisodes)
+            if (approval.ApprenticeshipPriceEpisodes == null) return this;
+            foreach (var episode in approval.ApprenticeshipPriceEpisodes)
             {
                 episode.ApprenticeshipId = id;
             }
@@ -78,8 +75,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
 
         public ApprovalBuilder WithExplicitStartDate(DateTime startDate)
         {
-            _approval.EstimatedStartDate = startDate;
-            foreach (var episode in _approval.ApprenticeshipPriceEpisodes)
+            approval.EstimatedStartDate = startDate;
+            foreach (var episode in approval.ApprenticeshipPriceEpisodes)
             {
                 episode.StartDate = startDate;
             }
@@ -88,7 +85,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
 
         public ApprenticeshipModel ToApprenticeshipModel()
         {
-            return _approval;
+            return approval;
         }
     }
 }
