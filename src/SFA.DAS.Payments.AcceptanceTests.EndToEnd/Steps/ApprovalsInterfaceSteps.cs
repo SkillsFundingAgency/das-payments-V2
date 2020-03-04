@@ -128,13 +128,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [When("the Provider submits the 2 price episodes in the ILR for the collection period (.*)")]
         public async Task WhenTheProviderSubmitsThePriceEpisodesInTheILR(string collectionPeriodText)
         {
-            var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build();
+            TestSession.CollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build();
+
             var dcHelper = Scope.Resolve<IDcHelper>();
             await dcHelper.SendIlrSubmission(
                 TestSession.FM36Global.Learners,
                 TestSession.Provider.Ukprn,
-                collectionPeriod.AcademicYear,
-                collectionPeriod.Period,
+                TestSession.CollectionPeriod.AcademicYear,
+                TestSession.CollectionPeriod.Period,
                 TestSession.Provider.JobId);
 
 
@@ -148,8 +149,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     dataLockEvent.Ukprn == TestSession.Provider.Ukprn
                     && dataLockEvent.Learner.Uln == TestSession.Learner.Uln
                     && dataLockEvent.Learner.ReferenceNumber == TestSession.Learner.LearnRefNumber
-                    && dataLockEvent.CollectionYear == academicYear)
-                    //&& dataLockEvent.CollectionPeriod.Period == ) //todo sort this from session
+                    && dataLockEvent.CollectionYear == academicYear
+                    && dataLockEvent.CollectionPeriod.Period == TestSession.CollectionPeriod.Period)
                 .SelectMany(dataLockEvent =>
                     dataLockEvent.OnProgrammeEarnings.SelectMany(earning => earning.Periods.SelectMany(period => period.DataLockFailures.Select(a => a.DataLockError))));
         }
@@ -159,7 +160,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return GetOnProgrammeDataLockErrorsForLearnerPriceEpisodes(academicYear).Any();
         }
 
-        private bool PayableEarningsHaveBeenRecievedForLearner()
+        private bool PayableEarningsHaveBeenReceivedForLearner()
         {
             return PayableEarningEventHandler.ReceivedEvents.Any(earningEvent =>
                 earningEvent.Ukprn == TestSession.Provider.Ukprn
@@ -171,10 +172,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then("there is a single match for PE-1 with Commitment A")]
         public async Task ThereIsASingleMatchForPEWithCommitment()
         {
-            await WaitForIt(async () =>
-            {
-                return PayableEarningsHaveBeenRecievedForLearner() && !HasDataLockErrors(short.Parse(TestSession.FM36Global.Year));
-            }, "Failed to find a matching earning event and no datalocks.");
+            await WaitForIt(() => PayableEarningsHaveBeenReceivedForLearner() && !HasDataLockErrors(short.Parse(TestSession.FM36Global.Year)), "Failed to find a matching earning event and no datalocks.");
         }
     }
 

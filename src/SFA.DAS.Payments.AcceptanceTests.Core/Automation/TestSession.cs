@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
@@ -23,6 +25,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public Employer Employer => GetEmployer(TestEmployer);
 
         public DateTime IlrSubmissionTime { get; set; }
+
+        public CollectionPeriod CollectionPeriod { get; set; }
 
         public bool AtLeastOneScenarioCompleted { get; private set; }
 
