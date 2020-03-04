@@ -5,7 +5,7 @@ Scenario: PV2-1825-DLock09-Two-Price-Episodes-Happy-Path
 #this one will be creating 2 commitments with no start dates (randomly genned ULN and UKPRNs to be accessible in later steps)
 
 #Given there is an ILR with
-Given there is an ILR with 2 price episodes, the end date of one occurs in the same month as the start date of the other
+Given there is an ILR for the collection period R02/current academic year with 2 price episodes, the end date of one occurs in the same month as the start date of the other
 #maybe store the dates we are going to use on the context....... this should match the file so it's a bit brittle
 #
 And end date of PE-1 and the start date of PE-2 occur in the same month
@@ -20,7 +20,7 @@ And the start date of PE-1 is after the start date for Commitment A
 And the start date of PE-1 is before the start date for Commitment B
 ##so here we write the date of commitment B
 #
-When the Provider submits the 2 price episodes in the ILR for the collection period R02/current academic year
+When the Provider submits the 2 price episodes in the ILR
 ##submit the FM36Global / Learner / whatever / DO the action / fire the message
 #
 Then there is a single match for PE-1 with Commitment A

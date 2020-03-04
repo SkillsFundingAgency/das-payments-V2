@@ -1,55 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
 {
-    public class ApprovalBuilder
+    public class ApprenticeshipBuilder
     {
-        private ApprenticeshipModel approval;
+        private ApprenticeshipModel apprenticeship;
 
-        //todo this need to be refactored to take in an FM36Learner and match all the values in there
-        public ApprovalBuilder BuildSimpleApproval(TestSession session, LearningDeliveryValues learningDeliveryValues)
+        public ApprenticeshipBuilder BuildSimpleApprenticeship(TestSession session, LearningDeliveryValues learningDeliveryValues)
         {
-            if (approval == null) approval = new ApprenticeshipModel();
-            approval.Id = session.GenerateId();
-            approval.Ukprn = session.Provider.Ukprn;
-            approval.AccountId = session.Employer.AccountId;
-            approval.Uln = session.Learner.Uln;
-            approval.StandardCode = learningDeliveryValues.StdCode ?? 0;
-            approval.ProgrammeType = learningDeliveryValues.ProgType;
-            approval.Status = ApprenticeshipStatus.Active;
-            approval.LegalEntityName = session.Employer.AccountName;
-            approval.EstimatedStartDate = new DateTime(2018, 08, 01);
-            approval.EstimatedEndDate = new DateTime(2019, 08, 06);
-            approval.AgreedOnDate = DateTime.UtcNow;
-            approval.FrameworkCode = learningDeliveryValues.FworkCode;
-            approval.PathwayCode = learningDeliveryValues.PwayCode;
+            if (apprenticeship == null) apprenticeship = new ApprenticeshipModel();
+            apprenticeship.Id = session.GenerateId();
+            apprenticeship.Ukprn = session.Provider.Ukprn;
+            apprenticeship.AccountId = session.Employer.AccountId;
+            apprenticeship.Uln = session.Learner.Uln;
+            apprenticeship.StandardCode = learningDeliveryValues.StdCode ?? 0;
+            apprenticeship.ProgrammeType = learningDeliveryValues.ProgType;
+            apprenticeship.Status = ApprenticeshipStatus.Active;
+            apprenticeship.LegalEntityName = session.Employer.AccountName;
+            apprenticeship.EstimatedStartDate = new DateTime(2018, 08, 01);
+            apprenticeship.EstimatedEndDate = new DateTime(2019, 08, 06);
+            apprenticeship.AgreedOnDate = DateTime.UtcNow;
+            apprenticeship.FrameworkCode = learningDeliveryValues.FworkCode;
+            apprenticeship.PathwayCode = learningDeliveryValues.PwayCode;
 
             return this;
         }
 
-        public ApprovalBuilder WithALevyPayingEmployer()
+        public ApprenticeshipBuilder WithALevyPayingEmployer()
         {
-            approval.IsLevyPayer = true;
-            approval.ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy;
+            apprenticeship.IsLevyPayer = true;
+            apprenticeship.ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy;
 
             return this;
         }
 
-        public ApprovalBuilder WithApprenticeshipPriceEpisode(PriceEpisodeValues fm36PriceEpisodeValues)
+        public ApprenticeshipBuilder WithApprenticeshipPriceEpisode(PriceEpisodeValues fm36PriceEpisodeValues)
         {
-            if (approval == null) approval = new ApprenticeshipModel();
-            if (approval.ApprenticeshipPriceEpisodes == null) approval.ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>();
+            if (apprenticeship == null) apprenticeship = new ApprenticeshipModel();
+            if (apprenticeship.ApprenticeshipPriceEpisodes == null) apprenticeship.ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>();
 
-            approval.ApprenticeshipPriceEpisodes.Add(new ApprenticeshipPriceEpisodeModel
+            apprenticeship.ApprenticeshipPriceEpisodes.Add(new ApprenticeshipPriceEpisodeModel
             {
-                ApprenticeshipId = approval.Id,
+                ApprenticeshipId = apprenticeship.Id,
                 Cost = fm36PriceEpisodeValues.PriceEpisodeTotalTNPPrice.GetValueOrDefault(),
                 StartDate = new DateTime(2018, 08, 01),
                 EndDate = new DateTime(2019, 07, 31)
@@ -58,34 +54,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
             return this;
         }
 
-        public ApprovalBuilder WithExplicitId(long id)
-        {
-            if (approval == null) approval = new ApprenticeshipModel();
-
-            approval.Id = id;
-
-            if (approval.ApprenticeshipPriceEpisodes == null) return this;
-            foreach (var episode in approval.ApprenticeshipPriceEpisodes)
-            {
-                episode.ApprenticeshipId = id;
-            }
-
-            return this;
-        }
-
-        public ApprovalBuilder WithExplicitStartDate(DateTime startDate)
-        {
-            approval.EstimatedStartDate = startDate;
-            foreach (var episode in approval.ApprenticeshipPriceEpisodes)
-            {
-                episode.StartDate = startDate;
-            }
-            return this;
-        }
-
         public ApprenticeshipModel ToApprenticeshipModel()
         {
-            return approval;
+            return apprenticeship;
         }
     }
 }

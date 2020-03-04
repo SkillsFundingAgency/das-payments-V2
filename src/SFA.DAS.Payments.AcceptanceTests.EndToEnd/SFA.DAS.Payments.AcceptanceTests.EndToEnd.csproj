@@ -404,6 +404,7 @@
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
     <Compile Include="Extensions\FeatureInfoNumberExtractor.cs" />
+    <Compile Include="Steps\PV2_1825_Steps.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
     <Compile Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature.cs">
       <DependentUpon>Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature</DependentUpon>
@@ -1662,7 +1663,7 @@
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>true</IsTransformFile>
     </None>
-    <EmbeddedResource Include="FM36TestFiles\PV2-1825-R02.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-1825-DLock09-Two-Price-Episodes-Happy-Path-R02.json" />
     <None Include="packages.config" />
     <None Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
