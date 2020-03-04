@@ -381,7 +381,7 @@
     <Compile Include="Handlers\EarningEventHandler.cs" />
     <Compile Include="Handlers\ProviderPaymentEventHandler.cs" />
     <Compile Include="Helpers\ApprenticeshipHelper.cs" />
-    <Compile Include="Helpers\ApprovalBuilder.cs" />
+    <Compile Include="Helpers\ApprenticeshipBuilder.cs" />
     <Compile Include="Helpers\FM36GlobalDeserialiser.cs" />
     <Compile Include="Helpers\FM36GlobalHelper.cs" />
     <Compile Include="Infrastructure\EndpointNames.cs" />
