@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
             logger.LogDebug($"Processing {batch.Count} records: {string.Join(", ", batch.Select(m => m.EventId))}");
 
             var data = dataTable.GetDataTable(batch);
-            using (var scope = TransactionScopeFactory.CreateWriteOnlyTransaction())
+
             using (var sqlConnection = new SqlConnection(connectionString))
             {
                 try
@@ -77,7 +77,9 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                             }
 
                             foreach (DataColumn dataColumn in table.Columns)
+                            {
                                 bulkCopy.ColumnMappings.Add(dataColumn.ColumnName, dataColumn.ColumnName);
+                            }
 
                             try
                             {
@@ -85,22 +87,18 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                             }
                             catch (SystemException ex)
                             {
-                                logger.LogWarning($"Error bulk writing to server. Processing single records. \n\n" +
-                                                  $"{ex.Message}\n\n" +
-                                                  $"{ex.StackTrace}");
+                                logger.LogWarning($"Error bulk writing to server. Processing single records. \n\n" + $"{ex.Message}\n\n" + $"{ex.StackTrace}");
                                 await TrySingleRecord(bulkCopy, table, sqlConnection).ConfigureAwait(false);
                             }
                         }
 
                         logger.LogDebug($"Finished bulk copying {batch.Count} of {typeof(T).Name} records.");
                     }
-
-                    scope.Complete();
                 }
                 catch (Exception e)
                 {
                     logger.LogError($"Error performing bulk copy for model type: {typeof(T).Name}. Error: {e.Message}", e);
-                    throw;
+                    //throw;
                 }
             }
 
@@ -119,7 +117,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                 var dataSchema = dataReader.GetSchemaTable();
                 foreach (DataRow row in dataSchema.Rows)
                 {
-                    singleRecordTable.Columns.Add(new DataColumn(row["ColumnName"].ToString(), (Type)row["DataType"]));
+                    singleRecordTable.Columns.Add(new DataColumn(row["ColumnName"].ToString(), (Type) row["DataType"]));
                 }
 
                 while (dataReader.Read())
@@ -134,12 +132,12 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                         {
                             await connection.OpenAsync().ConfigureAwait(false);
                         }
+
                         await bulkCopy.WriteToServerAsync(singleRecordTable).ConfigureAwait(false);
                     }
                     catch (SystemException ex)
                     {
-                        logger.LogError($"Single record failure with {bulkCopy.DestinationTableName}:\n\n" +
-                                        $" {ToLogString(singleRecordTable.Rows[0])}", ex);
+                        logger.LogError($"Single record failure with {bulkCopy.DestinationTableName}:\n\n" + $" {ToLogString(singleRecordTable.Rows[0])}", ex);
                         errors++;
                     }
                 }
@@ -155,9 +153,9 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
             for (var i = 0; i < tableRow.ItemArray.Length; i++)
             {
                 logStringBuilder.Append(tableRow.Table.Columns[i].ColumnName)
-                    .Append(": ")
-                    .Append(tableRow.ItemArray[i] ?? "null")
-                    .AppendLine(", ");
+                                .Append(": ")
+                                .Append(tableRow.ItemArray[i] ?? "null")
+                                .AppendLine(", ");
             }
 
             return logStringBuilder.ToString();
