@@ -21,12 +21,14 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Messages.Core;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using ApprenticeshipEmployerType = SFA.DAS.CommitmentsV2.Types.ApprenticeshipEmployerType;
+using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 using Payment = SFA.DAS.Payments.AcceptanceTests.Core.Data.Payment;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
@@ -69,11 +71,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
         }
 
-        [Given("PE-(.*) in the ILR matches to both Commitments (.*) and (.*), on ULN and UKPRN")]
-        public async Task PriceEpisodeMatchToCommitments(int priceEpisodeIndex, string commitmentIdentifier1, string commitmentIdentifier2)
+        [Given("(.*) in the ILR matches to both Commitments (.*) and (.*), on ULN and UKPRN")]
+        public async Task PriceEpisodeMatchToCommitments(string priceEpisodeIdentifier, string commitmentIdentifier1, string commitmentIdentifier2)
         {
-            var commitment1 = new ApprovalBuilder().BuildSimpleApproval(TestSession, TestSession.FM36Global.Learners.Single(x => x.PriceEpisodes.Any(y => y.PriceEpisodeIdentifier == $"PE-{priceEpisodeIndex}")), 2).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode().ToApprenticeshipModel();
-            var commitment2 = new ApprovalBuilder().BuildSimpleApproval(TestSession, TestSession.FM36Global.Learners.Single(x => x.PriceEpisodes.Any(y => y.PriceEpisodeIdentifier == $"PE-{priceEpisodeIndex}")), 2).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode().ToApprenticeshipModel();
+            var commitment1 = new ApprovalBuilder().BuildSimpleApproval(TestSession, TestSession.FM36Global.Learners.Single(x => x.PriceEpisodes.Any(y => y.PriceEpisodeIdentifier == priceEpisodeIdentifier)), 2).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode(priceEpisodeIdentifier).ToApprenticeshipModel();
+            var commitment2 = new ApprovalBuilder().BuildSimpleApproval(TestSession, TestSession.FM36Global.Learners.Single(x => x.PriceEpisodes.Any(y => y.PriceEpisodeIdentifier == priceEpisodeIdentifier)), 2).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode(priceEpisodeIdentifier).ToApprenticeshipModel();
             TestSession.Apprenticeships.Add(commitmentIdentifier1, commitment1);
             TestSession.Apprenticeships.Add(commitmentIdentifier2, commitment2);
             TestSession.FM36Global.UKPRN = TestSession.Provider.Ukprn;
@@ -138,62 +140,41 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         }
 
+        private IEnumerable<DataLockErrorCode> GetOnProgrammeDataLockErrorsForLearnerPriceEpisodes(short academicYear)
+        {
+            return EarningFailedDataLockMatchingHandler
+                .ReceivedEvents
+                .Where(dataLockEvent =>
+                    dataLockEvent.Ukprn == TestSession.Provider.Ukprn
+                    && dataLockEvent.Learner.Uln == TestSession.Learner.Uln
+                    && dataLockEvent.Learner.ReferenceNumber == TestSession.Learner.LearnRefNumber
+                    && dataLockEvent.CollectionYear == academicYear)
+                    //&& dataLockEvent.CollectionPeriod.Period == ) //todo sort this from session
+                .SelectMany(dataLockEvent =>
+                    dataLockEvent.OnProgrammeEarnings.SelectMany(earning => earning.Periods.SelectMany(period => period.DataLockFailures.Select(a => a.DataLockError))));
+        }
+
+        private bool HasDataLockErrors(short academicYear)
+        {
+            return GetOnProgrammeDataLockErrorsForLearnerPriceEpisodes(academicYear).Any();
+        }
+
+        private bool PayableEarningsHaveBeenRecievedForLearner()
+        {
+            return PayableEarningEventHandler.ReceivedEvents.Any(earningEvent =>
+                earningEvent.Ukprn == TestSession.Provider.Ukprn
+                && earningEvent.Learner.Uln == TestSession.Learner.Uln
+                && earningEvent.Learner.ReferenceNumber == TestSession.Learner.LearnRefNumber
+            );
+        }
+
         [Then("there is a single match for PE-1 with Commitment A")]
         public async Task ThereIsASingleMatchForPEWithCommitment()
         {
             await WaitForIt(async () =>
             {
-                try
-                {
-                    //todo 2 methods here once Dlocks are working - one for PayableEarningEventHandler.ReceivedEvents and one for EarningFailedDataLockMatchingHandler.ReceivedEvents
-                    var result = PayableEarningEventHandler.ReceivedEvents.Any(earningEvent =>
-                        earningEvent.Ukprn == TestSession.Provider.Ukprn
-                        && earningEvent.Learner.Uln == TestSession.Learner.Uln
-                        && earningEvent.Learner.ReferenceNumber == TestSession.Learner.LearnRefNumber
-                    );
-
-                    var events = PayableEarningEventHandler.ReceivedEvents;
-
-                    var dataLockEvents = EarningFailedDataLockMatchingHandler.ReceivedEvents.Where(earningEvent =>
-                        earningEvent.Ukprn == TestSession.Provider.Ukprn
-                        && earningEvent.Learner.Uln == TestSession.Learner.Uln
-                        && earningEvent.Learner.ReferenceNumber == TestSession.Learner.LearnRefNumber
-                    );
-
-                    if (events.Any())
-                    {
-                        var breakpoint = "";
-                    }
-
-                    if (dataLockEvents.Any())
-                    {
-                        var filteredDataLockEvents = dataLockEvents.Where(x => x.Learner.Uln == TestSession.Learner.Uln);
-                        filteredDataLockEvents = filteredDataLockEvents.Where(x => x.PriceEpisodes.Any(y => y.Identifier == "PE-1" || y.Identifier == "PE-2"));
-                        filteredDataLockEvents = filteredDataLockEvents.Where(x => x.LearningAim.SequenceNumber == 2);
-
-
-
-                        var onProgrammeDataLocks = dataLockEvents.SelectMany(x => x.OnProgrammeEarnings.SelectMany(y =>
-                            y.Periods.SelectMany(z => z.DataLockFailures.Select(a => a.DataLockError)))).Distinct();
-                        var breakpoint = "";
-                    }
-
-                    return result;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
-            }, "Failed to find all the stored apprenticeships.");
-            //todo use the wait for function (see approval steps) to wait for:
-            //PayableEarningEventHandler.ReceivedEvents.Where(......) don't use job id, check PayableEarningEventMatcher for example
-            //price episode, delivery period, collection period, learner, academic year
-            //var expectedPayments = new List<Data.Payment>
-            //{
-
-            //};
-            //await MatchRequiredPayments(expectedPayments, TestSession.GetProviderByUkprn(TestSession.FM36Global.UKPRN));
+                return PayableEarningsHaveBeenRecievedForLearner() && !HasDataLockErrors(short.Parse(TestSession.FM36Global.Year));
+            }, "Failed to find a matching earning event and no datalocks.");
         }
     }
 

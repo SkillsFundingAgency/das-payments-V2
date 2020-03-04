@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
             return this;
         }
 
-        public ApprovalBuilder WithApprenticeshipPriceEpisode()
+        public ApprovalBuilder WithApprenticeshipPriceEpisode(string identifier)
         {
             if (_approval == null) _approval = new ApprenticeshipModel();
             if (_approval.ApprenticeshipPriceEpisodes == null) _approval.ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>();
@@ -53,8 +53,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
             _approval.ApprenticeshipPriceEpisodes.Add(new ApprenticeshipPriceEpisodeModel
             {
                 ApprenticeshipId = _approval.Id,
-                //todo de-hardcode
-                Cost = _learner.PriceEpisodes.Single(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == _aimSeqNumber && x.PriceEpisodeIdentifier == "PE-1").PriceEpisodeValues.PriceEpisodeTotalTNPPrice.GetValueOrDefault(),
+                Cost = _learner.PriceEpisodes.Single(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == _aimSeqNumber && x.PriceEpisodeIdentifier == identifier).PriceEpisodeValues.PriceEpisodeTotalTNPPrice.GetValueOrDefault(),
                 StartDate = new DateTime(2018, 08, 01),
                 EndDate = new DateTime(2019, 07, 31)
             });
