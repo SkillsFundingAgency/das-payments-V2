@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
 {
     public static class FM36GlobalDeserialiser
     {
-        public static FM36Global DeserialiseByFeatureTitle(string featureTitle, string collectionPeriodText)
+        public static FM36Global DeserialiseByFeatureForPeriod(string featureTitle, string collectionPeriodText)
         {
             FM36Global result;
 
