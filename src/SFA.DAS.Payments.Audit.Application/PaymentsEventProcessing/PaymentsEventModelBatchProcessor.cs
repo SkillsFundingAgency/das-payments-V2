@@ -98,7 +98,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
                 catch (Exception e)
                 {
                     logger.LogError($"Error performing bulk copy for model type: {typeof(T).Name}. Error: {e.Message}", e);
-                    //throw;
+                    throw;
                 }
             }
 
