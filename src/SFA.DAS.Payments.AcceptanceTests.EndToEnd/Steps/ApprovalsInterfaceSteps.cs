@@ -24,6 +24,7 @@ using ApprenticeshipEmployerType = SFA.DAS.CommitmentsV2.Types.ApprenticeshipEmp
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
+
     [Binding]
     public class ApprovalsInterfaceSteps : EndToEndStepsBase
     {
