@@ -47,9 +47,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given("end date of (.*) and the start date of (.*) occur in the same month")]
-        public void GivenEndDateOfEpisode1AndStartDateOfEpisode2OccurInTheSameMonth(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2)
-        {
-        }
+        public void GivenEndDateOfEpisode1AndStartDateOfEpisode2OccurInTheSameMonth(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2) {}
 
         [Given("both (.*) and (.*) in the ILR matches to both Commitments (.*) and (.*), on ULN and UKPRN")]
         public async Task GivenPriceEpisodeInIlrMatchesCommitments(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2, string commitmentIdentifier1, string commitmentIdentifier2)
@@ -61,13 +59,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var priceEpisode1 = learner.PriceEpisodes.Single(y => y.PriceEpisodeIdentifier == priceEpisodeIdentifier1);
             var learningDelivery1 = learner.LearningDeliveries.Single(x => x.AimSeqNumber == priceEpisode1.PriceEpisodeValues.PriceEpisodeAimSeqNumber);
 
-            var commitment1 = new ApprenticeshipBuilder().BuildSimpleApprenticeship(TestSession, learningDelivery1.LearningDeliveryValues).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode(priceEpisode.PriceEpisodeValues).ToApprenticeshipModel();
-            var commitment2 = new ApprenticeshipBuilder().BuildSimpleApprenticeship(TestSession, learningDelivery1.LearningDeliveryValues).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode(priceEpisode.PriceEpisodeValues).ToApprenticeshipModel();
+            var commitment1 = new ApprenticeshipBuilder().BuildSimpleApprenticeship(TestSession, learningDelivery1.LearningDeliveryValues).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode(priceEpisode1.PriceEpisodeValues).ToApprenticeshipModel();
+            var commitment2 = new ApprenticeshipBuilder().BuildSimpleApprenticeship(TestSession, learningDelivery1.LearningDeliveryValues).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode(priceEpisode1.PriceEpisodeValues).ToApprenticeshipModel();
             TestSession.Apprenticeships.Add(commitmentIdentifier1, commitment1);
             TestSession.Apprenticeships.Add(commitmentIdentifier2, commitment2);
             testDataContext.Apprenticeship.Add(commitment1);
             testDataContext.Apprenticeship.Add(commitment2);
-            testDataContext.ApprenticeshipPriceEpisode.AddRange(commitment1.ApprenticeshipPriceEpisodes); //todo check if this is needed
+            testDataContext.ApprenticeshipPriceEpisode.AddRange(commitment1.ApprenticeshipPriceEpisodes);
             testDataContext.ApprenticeshipPriceEpisode.AddRange(commitment2.ApprenticeshipPriceEpisodes);
 
             var levyModel = TestSession.Employer.ToModel();
@@ -91,6 +89,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             await testDataContext.SaveChangesAsync();
         }
+
+        [Given("the course in (.*) matches the course in Commitment (.*)")]
+        public async Task GivenTheCourseInPriceEpisodeMatchesTheCourseInCommitment(string priceEpisodeIdentifier, string commitmentIdentifier)
+        {
+            var learner = TestSession.FM36Global.Learners.Single();
+            var priceEpisode = learner.PriceEpisodes.Single(y => y.PriceEpisodeIdentifier == priceEpisodeIdentifier);
+            var learningDelivery = learner.LearningDeliveries.Single(x => x.AimSeqNumber == priceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber);
+
+            TestSession.Apprenticeships[commitmentIdentifier].ProgrammeType = learningDelivery.LearningDeliveryValues.ProgType;
+            TestSession.Apprenticeships[commitmentIdentifier].FrameworkCode = learningDelivery.LearningDeliveryValues.FworkCode;
+            TestSession.Apprenticeships[commitmentIdentifier].PathwayCode = learningDelivery.LearningDeliveryValues.PwayCode;
+            TestSession.Apprenticeships[commitmentIdentifier].StandardCode = learningDelivery.LearningDeliveryValues.StdCode;
+            TestSession.Apprenticeships[commitmentIdentifier].ApprenticeshipPriceEpisodes.Single().Cost = priceEpisode.PriceEpisodeValues.TNP1 ?? 0;
+
+            await testDataContext.SaveChangesAsync();
+        }
+
+        [Given("the course in (.*) does not match the course for Commitment (.*)")]
+        public void GivenTheCourseInPriceEpisodeDoesNotMatchTheCourseInCommitment() {}
 
         [When("the Provider submits the 2 price episodes in the ILR")]
         public async Task WhenTheProviderSubmitsThePriceEpisodesInTheIlr()
