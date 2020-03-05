@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             mocker.Provide<ICalculatePeriodStartAndEndDate, CalculatePeriodStartAndEndDate>();
             mocker.Provide<IOnProgrammeAndIncentiveStoppedValidator, OnProgrammeAndIncentiveStoppedValidator>();
             mocker.Provide<ICompletionStoppedValidator, CompletionStoppedValidator>();
-            mocker.Provide<ICourseValidationProcessor>(new CourseValidationProcessor(new List<ICourseValidator> {new StandardCodeValidator()}));
+            mocker.Provide<ICourseValidationProcessor>(new CourseValidationProcessor(new List<ICourseValidator> { new StandardCodeValidator()}));
         }
 
         [Test]
@@ -38,20 +38,19 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         {
             var apprenticeships = CreateApprenticeships();
             var earningEvent = CreateEarningEventTestData();
-            var earningPeriods = new List<EarningPeriod>{ earningEvent.OnProgrammeEarnings[0].Periods[0]};
             var earningProcessor = mocker.Create<OnProgrammeAndIncentiveEarningPeriodsValidationProcessor>();
 
             var periods = earningProcessor.ValidatePeriods(
                 earningEvent.Ukprn,
                 earningEvent.Learner.Uln,
                 earningEvent.PriceEpisodes,
-                earningPeriods,
+                earningEvent.OnProgrammeEarnings[0].Periods.ToList(),
                 (TransactionType)earningEvent.OnProgrammeEarnings[0].Type,
                 apprenticeships,
                 earningEvent.LearningAim,
                 earningEvent.CollectionPeriod.AcademicYear);
 
-            periods.ValidPeriods.Count.Should().Be(1);
+            periods.ValidPeriods.Count.Should().Be(3);
             periods.ValidPeriods.All(p => p.ApprenticeshipPriceEpisodeId == apprenticeships[0].ApprenticeshipPriceEpisodes[0].Id)
                 .Should().Be(true);
         }
@@ -67,7 +66,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 allApprenticeships .First()
             };
 
-            var earningPeriods = earningEvent.OnProgrammeEarnings[0].Periods.Take(1).ToList();
             earningEvent.OnProgrammeEarnings[0].Type = OnProgrammeEarningType.Completion;
             apprenticeships[0].Status = ApprenticeshipStatus.Stopped;
             apprenticeships[0].EstimatedStartDate = earningEvent.PriceEpisodes[0].ActualEndDate.GetValueOrDefault().AddDays(3);
@@ -137,7 +135,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             var earningEvent = CreateEarningEventTestData();
 
             earningEvent.OnProgrammeEarnings[0].Type = OnProgrammeEarningType.Learning;
-            var apprenticeships = new List<ApprenticeshipModel> {allApprenticeships .First()};
+            var apprenticeships = new List<ApprenticeshipModel> { allApprenticeships.First() };
             var earningPeriods = earningEvent.OnProgrammeEarnings[0].Periods.Take(1).ToList();
             earningEvent.OnProgrammeEarnings[0].Type = OnProgrammeEarningType.Completion;
             apprenticeships[0].Status = ApprenticeshipStatus.Stopped;
@@ -153,7 +151,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 apprenticeships,
                 earningEvent.LearningAim,
                 earningEvent.CollectionPeriod.AcademicYear);
-            
+
             periods.ValidPeriods.Should().BeEmpty();
             periods.InValidPeriods.All(p => p.DataLockFailures.All(x =>
                 x.ApprenticeshipId == apprenticeships[0].Id &&
@@ -170,7 +168,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             var earningEvent = CreateEarningEventTestData();
 
             earningEvent.PriceEpisodes[0].EffectiveTotalNegotiatedPriceStartDate = new DateTime(2018, 8, 30);
-            
+
             var earningProcessor = mocker.Create<OnProgrammeAndIncentiveEarningPeriodsValidationProcessor>();
             var periods = earningProcessor.ValidatePeriods(
                 earningEvent.Ukprn,
@@ -182,7 +180,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 earningEvent.LearningAim,
                 earningEvent.CollectionPeriod.AcademicYear);
 
-            periods.ValidPeriods.Count.Should().Be(2);
+            periods.ValidPeriods.Count.Should().Be(3);
             periods.ValidPeriods.All(x => x.ApprenticeshipId == 1).Should().BeTrue();
         }
 
@@ -217,29 +215,43 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                         EffectiveTotalNegotiatedPriceStartDate = new DateTime(2018,8,30),
                         PlannedEndDate =  new DateTime(2019,8,30),
                         ActualEndDate = new DateTime(2019,9,2),
+                    },
+                    new PriceEpisode
+                    {
+                        Identifier = "pe-2",
+                        TotalNegotiatedPrice1 = 5000m,
+                        AgreedPrice = 5000m,
+                        EffectiveTotalNegotiatedPriceStartDate = new DateTime(2019,9,3),
+                        PlannedEndDate =  new DateTime(2020,8,30),
                     }
                 },
                 OnProgrammeEarnings = new List<OnProgrammeEarning>
                 {
-                        new OnProgrammeEarning
+                    new OnProgrammeEarning
+                    {
+                        Type = OnProgrammeEarningType.Completion,
+                        Periods = new List<EarningPeriod>
                         {
-                            Type = OnProgrammeEarningType.Completion,
-                            Periods = new List<EarningPeriod>
+                            new EarningPeriod
                             {
-                                new EarningPeriod
-                                {
-                                    Amount = 1,
-                                    PriceEpisodeIdentifier = "pe-1",
-                                    Period = 1
-                                },
-                                new EarningPeriod
-                                {
-                                    Amount = 2,
-                                    PriceEpisodeIdentifier = "pe-1",
-                                    Period = 2
-                                },
-                            }.AsReadOnly()
-                        }
+                                Amount = 1,
+                                PriceEpisodeIdentifier = "pe-1",
+                                Period = 1
+                            },
+                            new EarningPeriod
+                            {
+                                Amount = 2,
+                                PriceEpisodeIdentifier = "pe-1",
+                                Period = 2
+                            },
+                            new EarningPeriod
+                            {
+                                Amount = 3,
+                                PriceEpisodeIdentifier = "pe-2",
+                                Period = 3
+                            },
+                        }.AsReadOnly()
+                    }
               }
             };
         }
@@ -266,7 +278,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                         new ApprenticeshipPriceEpisodeModel
                         {
                             Id = 1,
-                            Cost = 2000,
+                            ApprenticeshipId = 1,
+                            Cost = 2000m,
                             StartDate = new DateTime(2018, 8, 1),
                             EndDate = new DateTime(2019, 8, 1),
                         }
@@ -285,8 +298,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                     ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                     {
                         new ApprenticeshipPriceEpisodeModel {
-                            Id = 1,
-                            Cost = 5000,
+                            Id = 2,
+                            ApprenticeshipId = 2,
+                            Cost = 2000m,
                             StartDate = new DateTime(2019, 9, 1),
                             EndDate = new DateTime(2020, 10, 1)
                         }

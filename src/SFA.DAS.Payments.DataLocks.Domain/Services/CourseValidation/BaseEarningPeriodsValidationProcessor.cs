@@ -48,47 +48,50 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                     continue;
                 }
 
-                var initialValidationResult = ValidateApprenticeships(ukprn, apprenticeships, academicYear, period,transactionType, priceEpisodes);
+                var newEarningPeriod = CreateEarningPeriod(period);
+
+                var initialValidationResult = ValidateApprenticeships(ukprn, apprenticeships, academicYear, period, transactionType, priceEpisodes);
                 if (initialValidationResult.dataLockFailures.Any())
                 {
-                    var newEarningPeriod = CreateEarningPeriod(period);
                     newEarningPeriod.DataLockFailures = initialValidationResult.dataLockFailures;
                     invalidPeriods.Add(newEarningPeriod);
-
                     continue;
                 }
 
-                foreach (var apprenticeship in initialValidationResult.validApprenticeships)
+                var validationResults = initialValidationResult.validApprenticeships
+                    .Select(a => ValidateApprenticeship(uln, transactionType, aim, academicYear, period, a, priceEpisodes))
+                    .ToList();
+
+                var matchedApprenticeships = initialValidationResult.validApprenticeships
+                    .Where(a => validationResults.Any(x => x.MatchedPriceEpisode != null && x.MatchedPriceEpisode.ApprenticeshipId == a.Id))
+                    .ToList();
+
+                var apprenticeshipsWithError = initialValidationResult.validApprenticeships
+                    .Where(a => validationResults.Any(x => x.DataLockFailures.Any() && x.DataLockFailures.Any(d => d.ApprenticeshipId == a.Id)))
+                    .ToList();
+
+                var validApprenticeshipIds = matchedApprenticeships.Select(x => x.Id).Except(apprenticeshipsWithError.Select(o => o.Id)).ToList();
+
+                if (!validApprenticeshipIds.Any())
                 {
-                    var validationResult = ValidateApprenticeship(uln, transactionType, aim, academicYear, period, apprenticeship, priceEpisodes);
-
-                    var newEarningPeriod = CreateEarningPeriod(period);
-                    if (validationResult.DataLockFailures.Any())
-                    {
-                        var invalidPeriod = invalidPeriods.FirstOrDefault(x => x.Period == period.Period);
-
-                        if (invalidPeriod == null)
-                        {
-                            newEarningPeriod.DataLockFailures = validationResult.DataLockFailures;
-                            invalidPeriods.Add(newEarningPeriod);
-                        }
-                        else
-                        {
-                            invalidPeriod.DataLockFailures.AddRange(validationResult.DataLockFailures);
-                        }
-                    }
-                    else
-                    {
-                        newEarningPeriod.AccountId = apprenticeship.AccountId;
-                        newEarningPeriod.ApprenticeshipId = apprenticeship.Id;
-                        newEarningPeriod.ApprenticeshipPriceEpisodeId = validationResult.MatchedPriceEpisode.Id;
-                        newEarningPeriod.TransferSenderAccountId = apprenticeship.TransferSendingEmployerAccountId;
-                        newEarningPeriod.Priority = apprenticeship.Priority;
-                        newEarningPeriod.AgreedOnDate = apprenticeship.AgreedOnDate;
-                        newEarningPeriod.ApprenticeshipEmployerType = apprenticeship.ApprenticeshipEmployerType;
-                        validPeriods.Add(newEarningPeriod);
-                    }
+                    var periodDataLockFailures = validationResults.SelectMany(x => x.DataLockFailures).ToList();
+                    newEarningPeriod.DataLockFailures = periodDataLockFailures;
+                    invalidPeriods.Add(newEarningPeriod);
+                    continue;
                 }
+
+                var validApprenticeshipId = validApprenticeshipIds.Max(); //todo trigger DLOCK_08 if more than one apprenticeship
+                var apprenticeship = initialValidationResult.validApprenticeships.First(x => x.Id == validApprenticeshipId);
+                var apprenticeCourseValidationResult = validationResults.First(v => v.MatchedPriceEpisode.ApprenticeshipId == validApprenticeshipId);
+                newEarningPeriod.AccountId = apprenticeship.AccountId;
+                newEarningPeriod.ApprenticeshipId = apprenticeship.Id;
+                newEarningPeriod.ApprenticeshipPriceEpisodeId = apprenticeCourseValidationResult.MatchedPriceEpisode.Id;
+                newEarningPeriod.TransferSenderAccountId = apprenticeship.TransferSendingEmployerAccountId;
+                newEarningPeriod.Priority = apprenticeship.Priority;
+                newEarningPeriod.AgreedOnDate = apprenticeship.AgreedOnDate;
+                newEarningPeriod.ApprenticeshipEmployerType = apprenticeship.ApprenticeshipEmployerType;
+                validPeriods.Add(newEarningPeriod);
+
             }
 
             return (validPeriods, invalidPeriods);

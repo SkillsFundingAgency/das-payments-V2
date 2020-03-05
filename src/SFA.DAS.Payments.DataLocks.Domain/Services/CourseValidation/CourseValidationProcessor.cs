@@ -20,21 +20,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             var validationResults = Validate(learnerAimValidators,dataLockValidationModel, allApprenticeshipPriceEpisodeIds);
             return validationResults;
         }
-        
-        private (List<DataLockFailure> dataLockFailures, List<long> invalidApprenticeshipPriceEpisodeIds) Validate(
-            ICourseValidator courseValidator, DataLockValidationModel dataLockValidationModel, List<long> allApprenticeshipPriceEpisodeIds)
-        {
-            var dataLockFailures = new List<DataLockFailure>();
-            var invalidApprenticeshipPriceEpisodeIds = new List<long>();
-
-            CheckAndAddValidationResults(
-                courseValidator,
-                 dataLockValidationModel,
-                 dataLockFailures,
-                 allApprenticeshipPriceEpisodeIds,
-                 invalidApprenticeshipPriceEpisodeIds);
-
-            return (dataLockFailures, invalidApprenticeshipPriceEpisodeIds);
-        }
+       
     }
 }

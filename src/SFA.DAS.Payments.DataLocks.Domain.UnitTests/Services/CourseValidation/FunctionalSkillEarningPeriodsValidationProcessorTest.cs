@@ -188,6 +188,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                         new ApprenticeshipPriceEpisodeModel
                         {
                             Id = 1,
+                            ApprenticeshipId = 1,
                             Cost = 2000,
                             StartDate = new DateTime(2018, 8, 1),
                             EndDate = new DateTime(2019, 8, 1),
@@ -208,6 +209,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                     {
                         new ApprenticeshipPriceEpisodeModel {
                             Id = 1,
+                            ApprenticeshipId = 2,
                             Cost = 5000,
                             StartDate = new DateTime(2019, 9, 1),
                             EndDate = new DateTime(2020, 10, 1)
