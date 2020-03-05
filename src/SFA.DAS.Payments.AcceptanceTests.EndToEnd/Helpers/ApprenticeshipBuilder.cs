@@ -10,10 +10,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
     {
         private ApprenticeshipModel apprenticeship;
 
-        public ApprenticeshipBuilder BuildSimpleApprenticeship(TestSession session, LearningDeliveryValues learningDeliveryValues)
+        public ApprenticeshipBuilder BuildSimpleApprenticeship(TestSession session, LearningDeliveryValues learningDeliveryValues, long id)
         {
             if (apprenticeship == null) apprenticeship = new ApprenticeshipModel();
-            apprenticeship.Id = session.GenerateId();
+            apprenticeship.Id = id;
             apprenticeship.Ukprn = session.Provider.Ukprn;
             apprenticeship.AccountId = session.Employer.AccountId;
             apprenticeship.Uln = session.Learner.Uln;
@@ -24,8 +24,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
             apprenticeship.EstimatedStartDate = new DateTime(2018, 08, 01);
             apprenticeship.EstimatedEndDate = new DateTime(2019, 08, 06);
             apprenticeship.AgreedOnDate = DateTime.UtcNow;
-            apprenticeship.FrameworkCode = learningDeliveryValues.FworkCode;
-            apprenticeship.PathwayCode = learningDeliveryValues.PwayCode;
+            apprenticeship.FrameworkCode = learningDeliveryValues.FworkCode ?? 0;
+            apprenticeship.PathwayCode = learningDeliveryValues.PwayCode ?? 0;
 
             return this;
         }
