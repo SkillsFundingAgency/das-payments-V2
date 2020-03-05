@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
@@ -50,18 +51,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
         }
 
-        [Given("(.*) in the ILR matches to both Commitments (.*) and (.*), on ULN and UKPRN")]
-        public async Task GivenPriceEpisodeInIlrMatchesCommitments(string priceEpisodeIdentifier, string commitmentIdentifier1, string commitmentIdentifier2)
+        [Given("both (.*) and (.*) in the ILR matches to both Commitments (.*) and (.*), on ULN and UKPRN")]
+        public async Task GivenPriceEpisodeInIlrMatchesCommitments(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2, string commitmentIdentifier1, string commitmentIdentifier2)
         {
             var learner = TestSession.FM36Global.Learners.Single();
             learner.ULN = TestSession.Learner.Uln;
             learner.LearnRefNumber = TestSession.Learner.LearnRefNumber;
 
-            var priceEpisode = learner.PriceEpisodes.Single(y => y.PriceEpisodeIdentifier == priceEpisodeIdentifier);
-            var learningDelivery = learner.LearningDeliveries.Single(x => x.AimSeqNumber == priceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber);
+            var priceEpisode1 = learner.PriceEpisodes.Single(y => y.PriceEpisodeIdentifier == priceEpisodeIdentifier1);
+            var learningDelivery1 = learner.LearningDeliveries.Single(x => x.AimSeqNumber == priceEpisode1.PriceEpisodeValues.PriceEpisodeAimSeqNumber);
 
-            var commitment1 = new ApprenticeshipBuilder().BuildSimpleApprenticeship(TestSession, learningDelivery.LearningDeliveryValues).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode(priceEpisode.PriceEpisodeValues).ToApprenticeshipModel();
-            var commitment2 = new ApprenticeshipBuilder().BuildSimpleApprenticeship(TestSession, learningDelivery.LearningDeliveryValues).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode(priceEpisode.PriceEpisodeValues).ToApprenticeshipModel();
+            var commitment1 = new ApprenticeshipBuilder().BuildSimpleApprenticeship(TestSession, learningDelivery1.LearningDeliveryValues).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode(priceEpisode.PriceEpisodeValues).ToApprenticeshipModel();
+            var commitment2 = new ApprenticeshipBuilder().BuildSimpleApprenticeship(TestSession, learningDelivery1.LearningDeliveryValues).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode(priceEpisode.PriceEpisodeValues).ToApprenticeshipModel();
             TestSession.Apprenticeships.Add(commitmentIdentifier1, commitment1);
             TestSession.Apprenticeships.Add(commitmentIdentifier2, commitment2);
             testDataContext.Apprenticeship.Add(commitment1);
@@ -78,22 +79,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             TestSession.FM36Global.UKPRN = TestSession.Provider.Ukprn;
         }
 
-        [Given("the start date of (.*) is after the start date for Commitment (.*)")]
-        public async Task GivenTheStartDateOfPriceEpisodeIsAfterTheStartDateForCommitment(string priceEpisodeIdentifier, string commitmentIdentifier)
+        [Given("the start date of (.*) ((.*)) is after the start date for Commitment (.*) ((.*))")]
+        [Given("the start date of (.*) ((.*)) is before the start date for Commitment (.*) ((.*))")]
+        [Given("the start date of (.*) ((.*)) is on or after the start date for Commitment (.*) ((.*))")]
+        public async Task GivenTheStartDateOfPriceEpisodeIsAfterTheStartDateForCommitment(string priceEpisodeIdentifier, DateTime priceEpisodeStartDate, string commitmentIdentifier, DateTime commitmentStartDate)
         {
-            var priceEpisodeStartDate = TestSession.FM36Global.Learners.Single().PriceEpisodes.Single(x => x.PriceEpisodeIdentifier == priceEpisodeIdentifier).PriceEpisodeValues.EpisodeStartDate;
+            var actualPriceEpisodeStartDate = TestSession.FM36Global.Learners.Single().PriceEpisodes.Single(x => x.PriceEpisodeIdentifier == priceEpisodeIdentifier).PriceEpisodeValues.EpisodeStartDate;
+            if (priceEpisodeStartDate != actualPriceEpisodeStartDate) throw new InvalidAssumptionOnFm36GlobalFileException();
 
-            TestSession.Apprenticeships[commitmentIdentifier].EstimatedStartDate = priceEpisodeStartDate.GetValueOrDefault().AddDays(-1);
-
-            await testDataContext.SaveChangesAsync();
-        }
-
-        [Given("the start date of (.*) is before the start date for Commitment (.*)")]
-        public async Task GivenTheStartDateOfPriceEpisodeIsBeforeTheStartDateForCommitment(string priceEpisodeIdentifier, string commitmentIdentifier)
-        {
-            var priceEpisodeStartDate = TestSession.FM36Global.Learners.Single().PriceEpisodes.Single(x => x.PriceEpisodeIdentifier == priceEpisodeIdentifier).PriceEpisodeValues.EpisodeStartDate;
-
-            TestSession.Apprenticeships[commitmentIdentifier].EstimatedStartDate = priceEpisodeStartDate.GetValueOrDefault().AddDays(1);
+            TestSession.Apprenticeships[commitmentIdentifier].EstimatedStartDate = commitmentStartDate;
 
             await testDataContext.SaveChangesAsync();
         }
@@ -147,4 +141,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForIt(() => !HasDataLockErrorsForPriceEpisode(priceEpisodeIdentifier, short.Parse(TestSession.FM36Global.Year)) && PayableEarningsHaveBeenReceivedForLearner(), "Failed to find a matching earning event and no datalocks.");
         }
     }
+
+    public class InvalidAssumptionOnFm36GlobalFileException : Exception {}
 }

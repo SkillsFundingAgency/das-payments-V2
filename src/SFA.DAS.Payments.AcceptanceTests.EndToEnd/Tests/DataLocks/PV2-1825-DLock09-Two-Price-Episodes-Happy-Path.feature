@@ -11,15 +11,20 @@ Given there is an ILR for the collection period R02/current academic year with 2
 And end date of PE-1 and the start date of PE-2 occur in the same month
 ##could do the logic mentioned in the previous step here, or nothing
 #
-And PE-1 in the ILR matches to both Commitments A and B, on ULN and UKPRN
+And both PE-1 and PE-2 in the ILR matches to both Commitments A and B, on ULN and UKPRN
 ##update ULN and UKPRN to match the commitments
 #
-And the start date of PE-1 is after the start date for Commitment A
+And the start date of PE-1 (2018-08-30) is after the start date for Commitment A (2018-08-01)
 ##so here we write the date of commitment A
 #
-And the start date of PE-1 is before the start date for Commitment B
+And the start date of PE-1 (2018-08-30) is before the start date for Commitment B (2019-09-01)
 ##so here we write the date of commitment B
 #
+
+And the start date of PE-2 (2019-09-25) is after the start date for Commitment A (2018-08-01)
+
+And the start date of PE-2 (2019-09-25) is on or after the start date for Commitment B (2019-09-01)
+
 When the Provider submits the 2 price episodes in the ILR
 ##submit the FM36Global / Learner / whatever / DO the action / fire the message
 #
