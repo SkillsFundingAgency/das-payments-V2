@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using DCT.TestDataGenerator.Functor;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
@@ -10,9 +11,11 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
+using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -48,7 +51,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given("end date of (.*) and the start date of (.*) occur in the same month")]
-        public void GivenEndDateOfEpisode1AndStartDateOfEpisode2OccurInTheSameMonth(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2) {}
+        public void GivenEndDateOfEpisode1AndStartDateOfEpisode2OccurInTheSameMonth(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2) { }
 
         [Given("both (.*) and (.*) in the ILR matches to both Commitments (.*) and (.*), on ULN and UKPRN")]
         public async Task GivenPriceEpisodeInIlrMatchesCommitments(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2, string commitmentIdentifier1, string commitmentIdentifier2)
@@ -63,7 +66,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var priceEpisode2 = learner.PriceEpisodes.Single(y => y.PriceEpisodeIdentifier == priceEpisodeIdentifier2);
             var learningDelivery2 = learner.LearningDeliveries.Single(x => x.AimSeqNumber == priceEpisode2.PriceEpisodeValues.PriceEpisodeAimSeqNumber);
 
-            var ids = new List<long>{ TestSession.GenerateId(), TestSession.GenerateId() };
+            var ids = new List<long> { TestSession.GenerateId(), TestSession.GenerateId() };
 
             var commitment1 = new ApprenticeshipBuilder().BuildSimpleApprenticeship(TestSession, learningDelivery1.LearningDeliveryValues, ids.Min()).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode(priceEpisode1.PriceEpisodeValues).ToApprenticeshipModel();
             var commitment2 = new ApprenticeshipBuilder().BuildSimpleApprenticeship(TestSession, learningDelivery2.LearningDeliveryValues, ids.Max()).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode(priceEpisode2.PriceEpisodeValues).ToApprenticeshipModel();
@@ -86,20 +89,56 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             TestSession.FM36Global.UKPRN = TestSession.Provider.Ukprn;
         }
 
-        [Given("the start date of (.*) - (.*) is after the start date for Commitment (.*) - (.*)")]
-        [Given("the start date of (.*) - (.*) is before the start date for Commitment (.*) - (.*)")]
-        [Given("the start date of (.*) - (.*) is on or after the start date for Commitment (.*) - (.*)")]
-        public async Task GivenTheStartDateOfPriceEpisodeIsAfterTheStartDateForCommitment(string priceEpisodeIdentifier, DateTime priceEpisodeStartDate, string commitmentIdentifier, DateTime commitmentStartDate)
+        //[Given("the start date of (.*) - (.*) is after the start date for Commitment (.*) - (.*)")]
+        //[Given("the start date of (.*) - (.*) is before the start date for Commitment (.*) - (.*)")]
+        //[Given("the start date of (.*) - (.*) is on or after the start date for Commitment (.*) - (.*)")]
+        //public async Task GivenTheStartDateOfPriceEpisodeIsAfterTheStartDateForCommitment(string priceEpisodeIdentifier, DateTime priceEpisodeStartDate, string commitmentIdentifier, DateTime commitmentStartDate)
+        //{
+        //    var actualPriceEpisodeStartDate = TestSession.FM36Global.Learners.Single().PriceEpisodes.Single(x => x.PriceEpisodeIdentifier == priceEpisodeIdentifier).PriceEpisodeValues.EpisodeEffectiveTNPStartDate;
+        //    if (priceEpisodeStartDate.Date != actualPriceEpisodeStartDate.GetValueOrDefault().Date) throw new InvalidAssumptionOnFm36GlobalFileException();
+
+        //    TestSession.Apprenticeships[commitmentIdentifier].EstimatedStartDate = commitmentStartDate;
+        //    TestSession.Apprenticeships[commitmentIdentifier].ApprenticeshipPriceEpisodes.Single().StartDate =
+        //        commitmentStartDate;
+
+        //    await testDataContext.SaveChangesAsync();
+        //}
+
+        [Given(@"(.*) and (.*) start date is after the start date for Commitment (.*)")]
+        public async Task GivenPEAndPEStartDateIsAfterTheStartDateForCommitmentA(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2, string commitmentIdentifier)
         {
-            var actualPriceEpisodeStartDate = TestSession.FM36Global.Learners.Single().PriceEpisodes.Single(x => x.PriceEpisodeIdentifier == priceEpisodeIdentifier).PriceEpisodeValues.EpisodeEffectiveTNPStartDate;
-            if (priceEpisodeStartDate.Date != actualPriceEpisodeStartDate.GetValueOrDefault().Date) throw new InvalidAssumptionOnFm36GlobalFileException();
+            var priceEpisodeDates = new[]
+            {
+                GetPriceEpisodeByIdentifier(priceEpisodeIdentifier1).PriceEpisodeValues.EpisodeEffectiveTNPStartDate.GetValueOrDefault(),
+                GetPriceEpisodeByIdentifier(priceEpisodeIdentifier2).PriceEpisodeValues.EpisodeEffectiveTNPStartDate.GetValueOrDefault(),
+            };
 
-            TestSession.Apprenticeships[commitmentIdentifier].EstimatedStartDate = commitmentStartDate;
-            TestSession.Apprenticeships[commitmentIdentifier].ApprenticeshipPriceEpisodes.Single().StartDate =
-                commitmentStartDate;
+            var minimumEpisodeStartDate = priceEpisodeDates.Min();
 
-
+            var apprenticeship = TestSession.Apprenticeships[commitmentIdentifier];
+            apprenticeship.EstimatedStartDate = minimumEpisodeStartDate.AddDays(-1);
+            apprenticeship.ApprenticeshipPriceEpisodes.Single().StartDate = minimumEpisodeStartDate.AddDays(-1);
+            testDataContext.Apprenticeship.Update(apprenticeship);
             await testDataContext.SaveChangesAsync();
+        }
+        
+        [Given(@"(.*) start date is before commitment while (.*) is on or after the start date for Commitment (.*)")]
+        public async Task GivenPEStartDateIsBeforeCommitmentWhilePEIsOnOrAfterTheStartDateForCommitmentB(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2, string commitmentIdentifier)
+        {
+            var priceEpisode2 = GetPriceEpisodeByIdentifier(priceEpisodeIdentifier2);
+            var apprenticeship = TestSession.Apprenticeships[commitmentIdentifier];
+            apprenticeship.EstimatedStartDate = priceEpisode2.PriceEpisodeValues.EpisodeEffectiveTNPStartDate.GetValueOrDefault().AddDays(-1);
+            apprenticeship.ApprenticeshipPriceEpisodes.Single().StartDate = apprenticeship.EstimatedStartDate;
+            testDataContext.Apprenticeship.Update(apprenticeship);
+            await testDataContext.SaveChangesAsync();
+
+        }
+        
+        private PriceEpisode GetPriceEpisodeByIdentifier(string priceEpisodeIdentifier)
+        {
+            var learner = TestSession.FM36Global.Learners.Single();
+            var priceEpisode = learner.PriceEpisodes.Single(y => y.PriceEpisodeIdentifier == priceEpisodeIdentifier);
+            return priceEpisode;
         }
 
         //[Given("the start date of (.*) is after the start date for Commitment (.*)")]
@@ -146,7 +185,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given("the course in (.*) does not match the course for Commitment (.*)")]
-        public void GivenTheCourseInPriceEpisodeDoesNotMatchTheCourseInCommitment(string priceEpisodeIdentifier, string commitmentIdentifier) {}
+        public void GivenTheCourseInPriceEpisodeDoesNotMatchTheCourseInCommitment(string priceEpisodeIdentifier, string commitmentIdentifier) { }
 
         [When("the Provider submits the 2 price episodes in the ILR")]
         public async Task WhenTheProviderSubmitsThePriceEpisodesInTheIlr()
@@ -200,13 +239,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then("there is a single match for (.*) with Commitment (.*)")]
         public async Task ThereIsASingleMatchForPeWithCommitment(string priceEpisodeIdentifier, string commitmentIdentifier)
         {
-            await WaitForIt(() => 
-                !HasDataLockErrorsForPriceEpisode(priceEpisodeIdentifier, short.Parse(TestSession.FM36Global.Year)) 
+            await WaitForIt(() =>
+                !HasDataLockErrorsForPriceEpisode(priceEpisodeIdentifier, short.Parse(TestSession.FM36Global.Year))
                 && HasSingleMatchForPriceEpisodeAndCommitment(priceEpisodeIdentifier, commitmentIdentifier),
                 "Failed to find a matching earning event and no datalocks."
             );
         }
     }
 
-    public class InvalidAssumptionOnFm36GlobalFileException : Exception {}
+    public class InvalidAssumptionOnFm36GlobalFileException : Exception { }
 }
