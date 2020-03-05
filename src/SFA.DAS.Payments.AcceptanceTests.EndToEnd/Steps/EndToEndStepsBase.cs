@@ -878,13 +878,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return payments;
         }
 
-        protected async Task MatchRequiredPaymentsFromTable(Table table, Provider provider)
+        protected async Task MatchRequiredPayments(Table table, Provider provider)
         {
-            await MatchRequiredPayments(CreatePayments(table, provider.Ukprn), provider);
-        }
-
-        protected async Task MatchRequiredPayments(List<Payment> expectedPayments, Provider provider)
-        {
+            var expectedPayments = CreatePayments(table, provider.Ukprn);
             var matcher = new RequiredPaymentEventMatcher(provider, CurrentCollectionPeriod, expectedPayments, CurrentIlr, CurrentPriceEpisodes);
             await WaitForIt(() => matcher.MatchPayments(), "Required Payment event check failure");
         }
@@ -1278,11 +1274,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected async Task HandleIlrReSubmissionForTheLearners(string collectionPeriodText, Provider provider)
         {
-            await HandleIlrReSubmissionForTheLearnersByUkprn(collectionPeriodText, provider.Ukprn);
-        }
-
-        protected async Task HandleIlrReSubmissionForTheLearnersByUkprn(string collectionPeriodText, long ukprn)
-        {
             var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build();
 
             if (ProvidersWithCacheCleared == null)
@@ -1296,10 +1287,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
 
             //TODO: Is this still required?
-            if (!ProvidersWithCacheCleared.Contains((collectionPeriod.Period, collectionPeriod.AcademicYear, ukprn)))
+            if (!ProvidersWithCacheCleared.Contains((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn)))
             {
 
-                ProvidersWithCacheCleared.Add((collectionPeriod.Period, collectionPeriod.AcademicYear, ukprn));
+                ProvidersWithCacheCleared.Add((collectionPeriod.Period, collectionPeriod.AcademicYear, provider.Ukprn));
             }
 
             SetCollectionPeriod(collectionPeriodText);
@@ -1342,7 +1333,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected async Task ValidateRequiredPaymentsAtMonthEnd(Table table, Provider provider)
         {
-            await MatchRequiredPaymentsFromTable(table, provider);
+            await MatchRequiredPayments(table, provider);
             await Task.Delay(TimeSpan.FromSeconds(1));
             await SendLevyMonthEnd();
         }
