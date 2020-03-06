@@ -7,10 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
-using SFA.DAS.Payments.DataLocks.Messages.Events;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
@@ -120,38 +117,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         }
 
-        private IEnumerable<DataLockErrorCode> GetOnProgrammeDataLockErrorsForLearnerAndPriceEpisode(string priceEpisodeIdentifier, short academicYear)
-        {
-            return EarningFailedDataLockMatchingHandler
-                .ReceivedEvents
-                .Where(dataLockEvent =>
-                    dataLockEvent.Ukprn == TestSession.Provider.Ukprn
-                    && dataLockEvent.Learner.Uln == TestSession.Learner.Uln
-                    && dataLockEvent.Learner.ReferenceNumber == TestSession.Learner.LearnRefNumber
-                    && dataLockEvent.CollectionYear == academicYear
-                    && dataLockEvent.CollectionPeriod.Period == TestSession.CollectionPeriod.Period
-                    && dataLockEvent.PriceEpisodes.Any(episode => episode.Identifier == priceEpisodeIdentifier))
-                .SelectMany(dataLockEvent =>
-                    dataLockEvent.OnProgrammeEarnings.SelectMany(earning => earning.Periods.SelectMany(period => period.DataLockFailures.Select(a => a.DataLockError))));
-        }
-
         private bool HasDataLockErrorsForPriceEpisode(string priceEpisodeIdentifier, short academicYear)
         {
-            return GetOnProgrammeDataLockErrorsForLearnerAndPriceEpisode(priceEpisodeIdentifier, academicYear).Any();
-        }
-
-        private IEnumerable<PayableEarningEvent> PayableEarningsHaveBeenReceivedForLearner()
-        {
-            return PayableEarningEventHandler.ReceivedEvents.Where(earningEvent =>
-                earningEvent.Ukprn == TestSession.Provider.Ukprn
-                && earningEvent.Learner.Uln == TestSession.Learner.Uln
-                && earningEvent.Learner.ReferenceNumber == TestSession.Learner.LearnRefNumber
-            );
+            return EarningEventsHelper.GetOnProgrammeDataLockErrorsForLearnerAndPriceEpisode(priceEpisodeIdentifier, academicYear, TestSession).Any();
         }
 
         private bool HasSingleMatchForPriceEpisodeAndCommitment(string priceEpisodeIdentifier)
         {
-            return PayableEarningsHaveBeenReceivedForLearner().Count(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier)) == 1;
+            return EarningEventsHelper.PayableEarningsHaveBeenReceivedForLearner(TestSession).Count(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier)) == 1;
         }
 
         [Then("there is a single match for (.*) with Commitment (.*)")]
