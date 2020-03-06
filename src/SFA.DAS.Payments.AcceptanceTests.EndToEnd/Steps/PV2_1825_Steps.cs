@@ -155,7 +155,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Then("there is a single match for (.*) with Commitment (.*)")]
-        public async Task ThereIsASingleMatchForPeWithCommitment(string priceEpisodeIdentifier)
+        public async Task ThereIsASingleMatchForPeWithCommitment(string priceEpisodeIdentifier, string commitmentIdentifier)
         {
             await WaitForIt(() => 
                 !HasDataLockErrorsForPriceEpisode(priceEpisodeIdentifier, short.Parse(TestSession.FM36Global.Year)) 
