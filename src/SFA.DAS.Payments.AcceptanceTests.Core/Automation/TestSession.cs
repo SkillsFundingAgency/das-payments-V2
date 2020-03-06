@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
@@ -41,7 +42,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public FM36Global FM36Global { get; set; }
 
-        public Dictionary<string, ApprenticeshipModel> Apprenticeships { get; set; }
+        public ConcurrentDictionary<string, ApprenticeshipModel> Apprenticeships { get; set; }
 
         private readonly IUkprnService ukprnService;
         private readonly IUlnService ulnService;
@@ -87,7 +88,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             Learners = new List<Learner>();
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
             Employers = new List<Employer>();
-            Apprenticeships = new Dictionary<string, ApprenticeshipModel>();
+            Apprenticeships = new ConcurrentDictionary<string, ApprenticeshipModel>();
         }
 
         public long GenerateId(int maxValue = 1000000)
