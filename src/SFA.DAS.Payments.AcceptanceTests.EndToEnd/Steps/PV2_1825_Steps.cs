@@ -124,7 +124,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private bool HasSingleMatchForPriceEpisodeAndCommitment(string priceEpisodeIdentifier)
         {
-            return EarningEventsHelper.PayableEarningsHaveBeenReceivedForLearner(TestSession).Count(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier)) == 1;
+            return EarningEventsHelper.PayableEarningsReceivedForLearner(TestSession).Count(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier)) == 1;
         }
 
         [Then("there is a single match for (.*) with Commitment (.*)")]

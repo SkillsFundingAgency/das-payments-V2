@@ -405,6 +405,7 @@
     <Compile Include="Steps\EndToEndStepsBase.cs" />
     <Compile Include="Extensions\FeatureInfoNumberExtractor.cs" />
     <Compile Include="Steps\PV2_1825_Steps.cs" />
+    <Compile Include="Steps\PV2_1826_Steps.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
     <Compile Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature.cs">
       <DependentUpon>Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature</DependentUpon>
@@ -515,6 +516,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-levy Learner over funding band cap - PV2-529.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\DataLocks\PV2-1826-DLock09-Two-Price-Episodes-Unhappy-Path.feature.cs">
+      <DependentUpon>PV2-1826-DLock09-Two-Price-Episodes-Unhappy-Path.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Tests\DataLocks\PV2-1825-DLock09-Two-Price-Episodes-Happy-Path.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1753,6 +1759,10 @@
     <None Include="Tests\Capping\Non-levy Learner over funding band cap - PV2-529.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy Learner over funding band cap - PV2-529.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\DataLocks\PV2-1826-DLock09-Two-Price-Episodes-Unhappy-Path.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1826-DLock09-Two-Price-Episodes-Unhappy-Path.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\DataLocks\PV2-1825-DLock09-Two-Price-Episodes-Happy-Path.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
