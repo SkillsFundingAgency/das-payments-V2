@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
@@ -94,10 +95,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var actualPriceEpisodeStartDate = TestSession.FM36Global.Learners.Single().PriceEpisodes.Single(x => x.PriceEpisodeIdentifier == priceEpisodeIdentifier).PriceEpisodeValues.EpisodeEffectiveTNPStartDate;
             if (priceEpisodeStartDate.Date != actualPriceEpisodeStartDate.GetValueOrDefault().Date) throw new InvalidAssumptionOnFm36GlobalFileException();
 
-            TestSession.Apprenticeships[commitmentIdentifier].EstimatedStartDate = commitmentStartDate;
-            TestSession.Apprenticeships[commitmentIdentifier].ApprenticeshipPriceEpisodes.Single().StartDate =
-                commitmentStartDate;
-
+            var apprenticeship = testDataContext.Apprenticeship.Include(x => x.ApprenticeshipPriceEpisodes).Single(x => x.Id == TestSession.Apprenticeships[commitmentIdentifier].Id);
+            apprenticeship.EstimatedStartDate = commitmentStartDate;
+            apprenticeship.ApprenticeshipPriceEpisodes.Single().StartDate = commitmentStartDate;
 
             await testDataContext.SaveChangesAsync();
         }
