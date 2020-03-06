@@ -72,12 +72,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             TestSession.Apprenticeships.Add(commitmentIdentifier1, commitment1);
             testDataContext.Apprenticeship.Add(commitment1);
             testDataContext.ApprenticeshipPriceEpisode.AddRange(commitment1.ApprenticeshipPriceEpisodes);
-            //await testDataContext.SaveChangesAsync();
 
             TestSession.Apprenticeships.Add(commitmentIdentifier2, commitment2);
             testDataContext.Apprenticeship.Add(commitment2);
             testDataContext.ApprenticeshipPriceEpisode.AddRange(commitment2.ApprenticeshipPriceEpisodes);
-            //await testDataContext.SaveChangesAsync();
 
             var levyModel = TestSession.Employer.ToModel();
             levyModel.Balance = 1000000000;
@@ -102,48 +100,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await testDataContext.SaveChangesAsync();
         }
 
-        //[Given("the start date of (.*) is after the start date for Commitment (.*)")]
-        //[Given("the start date of (.*) is on or after the start date for Commitment (.*)")]
-        //public async Task GivenTheStartDateOfPriceEpisodeIsAfterTheStartDateForCommitment(string priceEpisodeIdentifier,
-        //    string commitmentIdentifier)
-        //{
-        //    var priceEpisodeStartDate = TestSession.FM36Global.Learners.Single().PriceEpisodes.Single(x => x.PriceEpisodeIdentifier == priceEpisodeIdentifier).PriceEpisodeValues.EpisodeEffectiveTNPStartDate;
-        //    var commitmentStartDate = priceEpisodeStartDate.GetValueOrDefault().AddDays(-7);
-
-        //    TestSession.Apprenticeships[commitmentIdentifier].EstimatedStartDate = commitmentStartDate;
-        //    TestSession.Apprenticeships[commitmentIdentifier].ApprenticeshipPriceEpisodes.Single().StartDate = commitmentStartDate;
-
-        //    await testDataContext.SaveChangesAsync();
-        //}
-
-        //[Given("the start date of (.*) is before the start date for Commitment (.*)")]
-        //public async Task GivenTheStartDateOfPriceEpisodeIsBeforeTheStartDateForCommitment(string priceEpisodeIdentifier,
-        //    string commitmentIdentifier)
-        //{
-        //    var priceEpisodeStartDate = TestSession.FM36Global.Learners.Single().PriceEpisodes.Single(x => x.PriceEpisodeIdentifier == priceEpisodeIdentifier).PriceEpisodeValues.EpisodeEffectiveTNPStartDate;
-        //    var commitmentStartDate = priceEpisodeStartDate.GetValueOrDefault().AddDays(7);
-
-        //    TestSession.Apprenticeships[commitmentIdentifier].EstimatedStartDate = commitmentStartDate;
-        //    TestSession.Apprenticeships[commitmentIdentifier].ApprenticeshipPriceEpisodes.Single().StartDate = commitmentStartDate;
-
-        //    await testDataContext.SaveChangesAsync();
-        //}
-
         [Given("the course in (.*) matches the course in Commitment (.*)")]
-        public async Task GivenTheCourseInPriceEpisodeMatchesTheCourseInCommitment(string priceEpisodeIdentifier, string commitmentIdentifier)
-        {
-            //var learner = TestSession.FM36Global.Learners.Single();
-            //var priceEpisode = learner.PriceEpisodes.Single(y => y.PriceEpisodeIdentifier == priceEpisodeIdentifier);
-            //var learningDelivery = learner.LearningDeliveries.Single(x => x.AimSeqNumber == priceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber);
-
-            //TestSession.Apprenticeships[commitmentIdentifier].ProgrammeType = learningDelivery.LearningDeliveryValues.ProgType;
-            //TestSession.Apprenticeships[commitmentIdentifier].FrameworkCode = learningDelivery.LearningDeliveryValues.FworkCode;
-            //TestSession.Apprenticeships[commitmentIdentifier].PathwayCode = learningDelivery.LearningDeliveryValues.PwayCode;
-            //TestSession.Apprenticeships[commitmentIdentifier].StandardCode = learningDelivery.LearningDeliveryValues.StdCode;
-            //TestSession.Apprenticeships[commitmentIdentifier].ApprenticeshipPriceEpisodes.Single().Cost = priceEpisode.PriceEpisodeValues.TNP1 ?? 0;
-
-            //await testDataContext.SaveChangesAsync();
-        }
+        public void GivenTheCourseInPriceEpisodeMatchesTheCourseInCommitment(string priceEpisodeIdentifier, string commitmentIdentifier) {}
 
         [Given("the course in (.*) does not match the course for Commitment (.*)")]
         public void GivenTheCourseInPriceEpisodeDoesNotMatchTheCourseInCommitment(string priceEpisodeIdentifier, string commitmentIdentifier) {}
@@ -191,18 +149,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             );
         }
 
-        private bool HasSingleMatchForPriceEpisodeAndCommitment(string priceEpisodeIdentifier,
-            string commitmentIdentifier)
+        private bool HasSingleMatchForPriceEpisodeAndCommitment(string priceEpisodeIdentifier)
         {
             return PayableEarningsHaveBeenReceivedForLearner().Count(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier)) == 1;
         }
 
         [Then("there is a single match for (.*) with Commitment (.*)")]
-        public async Task ThereIsASingleMatchForPeWithCommitment(string priceEpisodeIdentifier, string commitmentIdentifier)
+        public async Task ThereIsASingleMatchForPeWithCommitment(string priceEpisodeIdentifier)
         {
             await WaitForIt(() => 
                 !HasDataLockErrorsForPriceEpisode(priceEpisodeIdentifier, short.Parse(TestSession.FM36Global.Year)) 
-                && HasSingleMatchForPriceEpisodeAndCommitment(priceEpisodeIdentifier, commitmentIdentifier),
+                && HasSingleMatchForPriceEpisodeAndCommitment(priceEpisodeIdentifier),
                 "Failed to find a matching earning event and no datalocks."
             );
         }
