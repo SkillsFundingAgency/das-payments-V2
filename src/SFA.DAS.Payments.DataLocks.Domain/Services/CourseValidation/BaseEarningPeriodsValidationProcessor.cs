@@ -82,7 +82,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 
                 var validApprenticeshipId = validApprenticeshipIds.Max(); //todo trigger DLOCK_08 if more than one apprenticeship
                 var apprenticeship = initialValidationResult.validApprenticeships.First(x => x.Id == validApprenticeshipId);
-                var apprenticeCourseValidationResult = validationResults.First(v => v.MatchedPriceEpisode.ApprenticeshipId == validApprenticeshipId);
+                var apprenticeCourseValidationResult = validationResults.First(v => v.MatchedPriceEpisode != null && v.MatchedPriceEpisode.ApprenticeshipId == validApprenticeshipId);
                 newEarningPeriod.AccountId = apprenticeship.AccountId;
                 newEarningPeriod.ApprenticeshipId = apprenticeship.Id;
                 newEarningPeriod.ApprenticeshipPriceEpisodeId = apprenticeCourseValidationResult.MatchedPriceEpisode.Id;
