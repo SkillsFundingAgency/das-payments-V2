@@ -171,11 +171,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
                                 submissionSummary.HeldBackCompletionPayments.ContractType2
             };
             submissionMetrics.DifferenceContractType1 =
-                submissionMetrics.ContractType1 - submissionSummary.DasEarnings.ContractType1;
+                submissionMetrics.ContractType1 - submissionSummary.DcEarnings.ContractType1;
             submissionMetrics.DifferenceContractType2 =
-                submissionMetrics.ContractType2 - submissionSummary.DasEarnings.ContractType2;
-            submissionMetrics.PercentageContractType1 = GetPercentage(submissionMetrics.ContractType1, submissionSummary.DasEarnings.ContractType1);
-            submissionMetrics.PercentageContractType2 = GetPercentage(submissionMetrics.ContractType2, submissionSummary.DasEarnings.ContractType2);
+                submissionMetrics.ContractType2 - submissionSummary.DcEarnings.ContractType2;
+            submissionMetrics.PercentageContractType1 = GetPercentage(submissionMetrics.ContractType1, submissionSummary.DcEarnings.ContractType1);
+            submissionMetrics.PercentageContractType2 = GetPercentage(submissionMetrics.ContractType2, submissionSummary.DcEarnings.ContractType2);
             return submissionMetrics;
         }
 
