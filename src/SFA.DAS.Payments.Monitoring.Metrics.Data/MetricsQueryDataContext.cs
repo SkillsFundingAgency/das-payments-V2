@@ -18,9 +18,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
     public interface IMetricsQueryDataContext
     {
 //        DbSet<DataLockCountsModel> DataLockedEarnings { get; }
-        DbSet<EarningsModel> Earnings { get; }
         DbSet<EarningEventPeriodModel> EarningEventPeriods { get; }
-        DbSet<RequiredPaymentsModel> RequiredPayments { get; }
+        //DbSet<RequiredPaymentsModel> RequiredPayments { get; }
         DbSet<DataLockEventNonPayablePeriodModel> DataLockEventNonPayablePeriods { get; }
         DbSet<RequiredPaymentEventModel> RequiredPaymentEvents { get; }
         DbSet<PaymentModel> Payments { get; }
@@ -39,8 +38,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         public virtual DbQuery<DataLockCount> DataLockCounts { get; set; }
 
         private readonly string connectionString;
-        public virtual DbSet<EarningsModel> Earnings { get; set; }
-        public virtual DbSet<RequiredPaymentsModel> RequiredPayments { get; set; }
+        //public virtual DbSet<EarningsModel> Earnings { get; set; }
+        //public virtual DbSet<RequiredPaymentsModel> RequiredPayments { get; set; }
         public virtual DbSet<EarningEventModel> EarningEvent { get; protected set; }
         public virtual DbSet<EarningEventPeriodModel> EarningEventPeriods { get; protected set; }
         public virtual DbSet<DataLockEventModel> DataLockEvent { get; set; }
@@ -112,7 +111,7 @@ select
 				LearnerReferenceNumber, 
 				DataLockFailureId
 				from Payments2.DataLockEvent dle
-				join Payments2.DataLockEventNonPayablePeriods npp on dle.EventId = npp.DataLockEventId
+				join Payments2.DataLockEventNonPayablePeriod npp on dle.EventId = npp.DataLockEventId
 				join Payments2.DataLockEventNonPayablePeriodFailures nppf on npp.DataLockEventNonPayablePeriodId = nppf.DataLockEventNonPayablePeriodId
 				where dle.Ukprn = @ukprn
 				and JobId = @jobId
