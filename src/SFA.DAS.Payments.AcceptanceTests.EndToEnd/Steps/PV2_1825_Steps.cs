@@ -82,26 +82,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             TestSession.FM36Global.UKPRN = TestSession.Provider.Ukprn;
         }
 
-        [Given("the start date of (.*) - (.*) is after the start date for Commitment (.*) - (.*)")]
-        [Given("the start date of (.*) - (.*) is before the start date for Commitment (.*) - (.*)")]
-        [Given("the start date of (.*) - (.*) is on or after the start date for Commitment (.*) - (.*)")]
-        public async Task GivenTheStartDateOfPriceEpisodeIsAfterTheStartDateForCommitment(string priceEpisodeIdentifier, DateTime priceEpisodeStartDate, string commitmentIdentifier, DateTime commitmentStartDate)
+        [Given(@"the course in (.*) matches the course in Commitment (.*)")]
+        public void GivenTheCourseInPEMatchesTheCourseInCommitment(string priceEpisodeIdentifier, string commitmentIdentifier)
         {
-            var actualPriceEpisodeStartDate = TestSession.FM36Global.Learners.Single().PriceEpisodes.Single(x => x.PriceEpisodeIdentifier == priceEpisodeIdentifier).PriceEpisodeValues.EpisodeEffectiveTNPStartDate;
-            if (priceEpisodeStartDate.Date != actualPriceEpisodeStartDate.GetValueOrDefault().Date) throw new InvalidAssumptionOnFm36GlobalFileException();
-
-            var apprenticeship = testDataContext.Apprenticeship.Include(x => x.ApprenticeshipPriceEpisodes).Single(x => x.Id == TestSession.Apprenticeships[commitmentIdentifier].Id);
-            apprenticeship.EstimatedStartDate = commitmentStartDate;
-            apprenticeship.ApprenticeshipPriceEpisodes.Single().StartDate = commitmentStartDate;
-
-            await testDataContext.SaveChangesAsync();
+            //TODO: Copy course to apprenticeship 
         }
-
-        [Given("the course in (.*) matches the course in Commitment (.*)")]
-        public void GivenTheCourseInPriceEpisodeMatchesTheCourseInCommitment(string priceEpisodeIdentifier, string commitmentIdentifier) {}
-
-        [Given("the course in (.*) does not match the course for Commitment (.*)")]
-        public void GivenTheCourseInPriceEpisodeDoesNotMatchTheCourseInCommitment(string priceEpisodeIdentifier, string commitmentIdentifier) {}
+        
+        [Then(@"the course in (.*) does not match the course for Commitment (.*)")]
+        public void ThenTheCourseInPEDoesNotMatchTheCourseForCommitment(string priceEpisodeIdentifier, string commitmentIdentifier)
+        {
+            //TODO Assert Course do not match
+        }
 
 
         [When(@"the Provider submits the single price episode PE-1 in the ILR")]
