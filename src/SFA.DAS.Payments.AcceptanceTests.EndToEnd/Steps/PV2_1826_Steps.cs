@@ -14,33 +14,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
     [Binding]
     // ReSharper disable once InconsistentNaming
-    public class PV2_1826_Steps : EndToEndStepsBase
+    public class PV2_1826_Steps : FM36_ILR_Base_Steps
     {
-        private readonly FeatureContext featureContext;
-        private TestPaymentsDataContext testDataContext;
-
-        [BeforeStep()]
-        public void InitialiseNewTestDataContext()
-        {
-            testDataContext = Scope.Resolve<TestPaymentsDataContext>();
-        }
-
-        [AfterStep()]
-        public void DeScopeTestDataContext()
-        {
-            testDataContext = null;
-        }
-
+     
         public PV2_1826_Steps(FeatureContext context) : base(context)
         {
-            featureContext = context;
         }
 
         [Given(@"there are 2 price episodes in the ILR submitted for (.*), PE-1 and PE-2")]
         public void GivenAreTwoPriceEpisodesInTheILR(string collectionPeriodText)
         {
-            TestSession.CollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build();
-            TestSession.FM36Global = FM36GlobalDeserialiser.DeserialiseByFeatureForPeriod(featureContext.FeatureInfo.Title, TestSession.CollectionPeriod.Period.ToPeriodText());
+            GetFM36LearnerForCollectionPeriod(collectionPeriodText);
         }
 
         [Given("(.*) in the ILR matches to both Commitments (.*) and (.*), on ULN and UKPRN")]
@@ -93,5 +77,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                                && HasNoEarningEventMatch(priceEpisodeIdentifier),
                             "Failed to find a matching DLOCK-09 event and no earning events.");
         }
+
+       
     }
 }
