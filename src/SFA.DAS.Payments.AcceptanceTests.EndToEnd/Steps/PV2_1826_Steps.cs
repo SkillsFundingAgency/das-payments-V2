@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             GetFM36LearnerForCollectionPeriod(collectionPeriodText);
         }
 
-        [Given("(.*) in the ILR matches to both Commitments (.*) and (.*), on ULN and UKPRN")]
+        [Given("price episode (.*) in the ILR matches to both Commitments (.*) and (.*), on ULN and UKPRN")]
         public async Task GivenPriceEpisodeInIlrMatchesCommitments(string priceEpisodeIdentifier, string commitmentIdentifier1, string commitmentIdentifier2)
         {
             var learner = TestSession.FM36Global.Learners.Single();

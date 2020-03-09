@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public void GivenEndDateOfEpisode1AndStartDateOfEpisode2OccurInTheSameMonth(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2) {}
 
         [Given("both (.*) and (.*) in the ILR matches to both Commitments (.*) and (.*), on ULN and UKPRN")]
-        public async Task GivenPriceEpisodeInIlrMatchesCommitments(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2, string commitmentIdentifier1, string commitmentIdentifier2)
+        public async Task GivenTwoPriceEpisodeInIlrMatchesTwoCommitments(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2, string commitmentIdentifier1, string commitmentIdentifier2)
         {
             var learner = TestSession.FM36Global.Learners.Single();
             learner.ULN = TestSession.Learner.Uln;
