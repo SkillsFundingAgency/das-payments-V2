@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
@@ -16,7 +17,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     public class PV2_1826_Steps : EndToEndStepsBase
     {
         private readonly FeatureContext featureContext;
-        protected TestPaymentsDataContext testDataContext;
+        private TestPaymentsDataContext testDataContext;
 
         [BeforeStep()]
         public void InitialiseNewTestDataContext()
@@ -43,8 +44,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given("(.*) in the ILR matches to both Commitments (.*) and (.*), on ULN and UKPRN")]
-        public async Task GivenPriceEpisodeInIlrMatchesCommitments(string priceEpisodeIdentifier,
-            string commitmentIdentifier1, string commitmentIdentifier2)
+        public async Task GivenPriceEpisodeInIlrMatchesCommitments(string priceEpisodeIdentifier, string commitmentIdentifier1, string commitmentIdentifier2)
         {
             var learner = TestSession.FM36Global.Learners.Single();
             learner.ULN = TestSession.Learner.Uln;
@@ -53,14 +53,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var priceEpisode = learner.PriceEpisodes.Single(y => y.PriceEpisodeIdentifier == priceEpisodeIdentifier);
             var learningDelivery = learner.LearningDeliveries.Single(x => x.AimSeqNumber == priceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber);
 
+            var ids = new List<long>{ TestSession.GenerateId(), TestSession.GenerateId() };
+            
             var commitment1 = new ApprenticeshipBuilder().BuildSimpleApprenticeship(TestSession, learningDelivery.LearningDeliveryValues, ids.Min()).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode(priceEpisode.PriceEpisodeValues).ToApprenticeshipModel();
             var commitment2 = new ApprenticeshipBuilder().BuildSimpleApprenticeship(TestSession, learningDelivery.LearningDeliveryValues, ids.Max()).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode(priceEpisode.PriceEpisodeValues).ToApprenticeshipModel();
 
-            TestSession.Apprenticeships.Add(commitmentIdentifier1, commitment1);
+            TestSession.Apprenticeships.GetOrAdd(commitmentIdentifier1, commitment1);
             testDataContext.Apprenticeship.Add(commitment1);
             testDataContext.ApprenticeshipPriceEpisode.AddRange(commitment1.ApprenticeshipPriceEpisodes);
 
-            TestSession.Apprenticeships.Add(commitmentIdentifier2, commitment2);
+            TestSession.Apprenticeships.GetOrAdd(commitmentIdentifier2, commitment2);
             testDataContext.Apprenticeship.Add(commitment2);
             testDataContext.ApprenticeshipPriceEpisode.AddRange(commitment2.ApprenticeshipPriceEpisodes);
 
@@ -72,14 +74,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             TestSession.FM36Global.UKPRN = TestSession.Provider.Ukprn;
         }
 
-        public bool HasDLock9ErrorForPriceEpisode(string priceEpisodeIdentifier, short academicYear)
+        private bool HasDLock9ErrorForPriceEpisode(string priceEpisodeIdentifier, short academicYear)
         {
             return EarningEventsHelper
-                .GetOnProgrammeDataLockErrorsForLearnerAndPriceEpisode(priceEpisodeIdentifier, academicYear,
-                    TestSession).Any(x => x == DataLockErrorCode.DLOCK_09);
+                   .GetOnProgrammeDataLockErrorsForLearnerAndPriceEpisode(priceEpisodeIdentifier, academicYear, TestSession)
+                   .Any(x => x == DataLockErrorCode.DLOCK_09);
         }
 
-        public bool HasNoEarningEventMatch(string priceEpisodeIdentifier)
+        private bool HasNoEarningEventMatch(string priceEpisodeIdentifier)
         {
             return !EarningEventsHelper.PayableEarningsReceivedForLearner(TestSession).Any(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier));
         }
@@ -87,11 +89,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then("there is a DLOCK-09 triggered for (.*) and no match in DAS")]
         public async Task ThenThereIsNoMatchForPriceEpisodeInDas(string priceEpisodeIdentifier)
         {
-            await WaitForIt(() =>
-                    HasDLock9ErrorForPriceEpisode(priceEpisodeIdentifier, short.Parse(TestSession.FM36Global.Year))
-                    && HasNoEarningEventMatch(priceEpisodeIdentifier),
-                "Failed to find a matching DLOCK-09 event and no earning events."
-            );
+            await WaitForIt(() => HasDLock9ErrorForPriceEpisode(priceEpisodeIdentifier, short.Parse(TestSession.FM36Global.Year))
+                               && HasNoEarningEventMatch(priceEpisodeIdentifier),
+                            "Failed to find a matching DLOCK-09 event and no earning events.");
         }
     }
 }

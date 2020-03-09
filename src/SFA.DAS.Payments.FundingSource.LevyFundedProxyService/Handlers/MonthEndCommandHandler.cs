@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
@@ -43,8 +44,15 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
                         await context.Publish(fundingSourcePaymentEvent).ConfigureAwait(false);
                 }
 
-                telemetry.AddProperty("NumberOfMessagesSent", fundingSourceEvents.Count.ToString());
-                telemetry.TrackDuration("LevyFundedProxyService.ProcessLevyPaymentsOnMonthEndCommand", stopwatch, command, command.AccountId);
+                telemetry.TrackDurationWithMetrics("LevyFundedProxyService.ProcessLevyPaymentsOnMonthEndCommand",
+                                                   stopwatch,
+                                                   command,
+                                                   command.AccountId,
+                                                   new Dictionary<string, double>
+                                                   {
+                                                       { TelemetryKeys.Count, fundingSourceEvents.Count }
+                                                   });
+                
                 telemetry.StopOperation(operation);
             }
         }

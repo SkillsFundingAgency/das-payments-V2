@@ -66,11 +66,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var commitment1 = new ApprenticeshipBuilder().BuildSimpleApprenticeship(TestSession, learningDelivery1.LearningDeliveryValues, ids.Min()).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode(priceEpisode1.PriceEpisodeValues).ToApprenticeshipModel();
             var commitment2 = new ApprenticeshipBuilder().BuildSimpleApprenticeship(TestSession, learningDelivery2.LearningDeliveryValues, ids.Max()).WithALevyPayingEmployer().WithApprenticeshipPriceEpisode(priceEpisode2.PriceEpisodeValues).ToApprenticeshipModel();
 
-            TestSession.Apprenticeships.Add(commitmentIdentifier1, commitment1);
+            TestSession.Apprenticeships.GetOrAdd(commitmentIdentifier1, commitment1);
             testDataContext.Apprenticeship.Add(commitment1);
             testDataContext.ApprenticeshipPriceEpisode.AddRange(commitment1.ApprenticeshipPriceEpisodes);
 
-            TestSession.Apprenticeships.Add(commitmentIdentifier2, commitment2);
+            TestSession.Apprenticeships.GetOrAdd(commitmentIdentifier2, commitment2);
             testDataContext.Apprenticeship.Add(commitment2);
             testDataContext.ApprenticeshipPriceEpisode.AddRange(commitment2.ApprenticeshipPriceEpisodes);
 
@@ -103,6 +103,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("the course in (.*) does not match the course for Commitment (.*)")]
         public void GivenTheCourseInPriceEpisodeDoesNotMatchTheCourseInCommitment(string priceEpisodeIdentifier, string commitmentIdentifier) {}
 
+
+        [When(@"the Provider submits the single price episode PE-1 in the ILR")]
         [When("the Provider submits the 2 price episodes in the ILR")]
         public async Task WhenTheProviderSubmitsThePriceEpisodesInTheIlr()
         {
