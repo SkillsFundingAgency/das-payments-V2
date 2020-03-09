@@ -47,3 +47,6 @@ INCLUDE([EventId],[LearnerReferenceNumber], [LearningAimReference],
     [LearningAimFrameworkCode],
     [LearningAimPathwayCode] ) 
 go
+
+CREATE INDEX IX_DataLockEvent__JobId_Ukprn_IsPayable ON [Payments2].[DataLockEvent] (JobId, Ukprn, IsPayable)
+ 
