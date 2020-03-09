@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             mocker.Provide<ICalculatePeriodStartAndEndDate, CalculatePeriodStartAndEndDate>();
             mocker.Provide<IOnProgrammeAndIncentiveStoppedValidator, OnProgrammeAndIncentiveStoppedValidator>();
             mocker.Provide<ICompletionStoppedValidator, CompletionStoppedValidator>();
-            mocker.Provide<ICourseValidationProcessor>(new CourseValidationProcessor(new List<ICourseValidator> { new StandardCodeValidator()}));
+            mocker.Provide<ICourseValidationProcessor>(new CourseValidationProcessor(new List<ICourseValidator> { new StandardCodeValidator() }));
         }
 
         [Test]
@@ -54,6 +54,34 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             periods.ValidPeriods.All(p => p.ApprenticeshipPriceEpisodeId == apprenticeships[0].ApprenticeshipPriceEpisodes[0].Id)
                 .Should().Be(true);
         }
+
+        [Test]
+        public void PopulatesTransferSenderAccountIdForMatchedApprenticeship()
+        {
+            var apprenticeships = CreateApprenticeships();
+            var earningEvent = CreateEarningEventTestData();
+            var earningProcessor = mocker.Create<OnProgrammeAndIncentiveEarningPeriodsValidationProcessor>();
+
+            apprenticeships[0].TransferSendingEmployerAccountId = 99;
+
+            var periods = earningProcessor.ValidatePeriods(
+                earningEvent.Ukprn,
+                earningEvent.Learner.Uln,
+                earningEvent.PriceEpisodes,
+                earningEvent.OnProgrammeEarnings[0].Periods.ToList(),
+                (TransactionType)earningEvent.OnProgrammeEarnings[0].Type,
+                apprenticeships,
+                earningEvent.LearningAim,
+                earningEvent.CollectionPeriod.AcademicYear);
+
+            periods.ValidPeriods.Count.Should().Be(3);
+            periods.ValidPeriods
+                .All(p => 
+                    p.ApprenticeshipPriceEpisodeId == apprenticeships[0].ApprenticeshipPriceEpisodes[0].Id &&
+                    p.TransferSenderAccountId == 99)
+                .Should().Be(true);
+        }
+
 
         [Test]
         public void GivenThereIsStartDateDLock09NoOtherDLockShouldBeGenerated()
@@ -160,7 +188,30 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             ).Should().BeTrue();
 
         }
+        
+        [Test]
+        public void ZeroAmountPeriodsAreAddedToValidPeriod()
+        {
+            var allApprenticeships = CreateApprenticeships();
+            var earningEvent = CreateEarningEventTestData();
+            earningEvent.OnProgrammeEarnings[0].Periods.ToList().ForEach(x => x.Amount = 0m);
+            
+            var earningProcessor = mocker.Create<OnProgrammeAndIncentiveEarningPeriodsValidationProcessor>();
+            var periods = earningProcessor.ValidatePeriods(
+                earningEvent.Ukprn,
+                earningEvent.Learner.Uln,
+                earningEvent.PriceEpisodes,
+                earningEvent.OnProgrammeEarnings[0].Periods.ToList(),
+                (TransactionType)earningEvent.OnProgrammeEarnings[0].Type,
+                allApprenticeships,
+                earningEvent.LearningAim,
+                earningEvent.CollectionPeriod.AcademicYear);
 
+            periods.InValidPeriods.Should().BeEmpty();
+            periods.ValidPeriods.Should().HaveCount(3);
+            periods.ValidPeriods.All(x => x.Amount == 0).Should().BeTrue();
+        }
+        
         [Test]
         public void OnlyValidateCommitmentsThatStartedBeforePriceEpisodes()
         {
