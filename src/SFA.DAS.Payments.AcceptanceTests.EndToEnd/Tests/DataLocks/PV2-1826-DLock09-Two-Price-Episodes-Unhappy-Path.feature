@@ -6,6 +6,6 @@ And end date of PE-1 and the start date of PE-2 occur in the same month
 And price episode PE-1 in the ILR matches to both Commitments A and B, on ULN and UKPRN
 And the start date in the PE-1 is before the start date for Commitment A
 And the start date in the PE-1 is before the start date for Commitment B
-When the Provider submits the 2 price episodes in the ILR
 
+When the Provider submits the 2 price episodes in the ILR
 Then there is a DLOCK-09 triggered for PE-1 and no match in DAS

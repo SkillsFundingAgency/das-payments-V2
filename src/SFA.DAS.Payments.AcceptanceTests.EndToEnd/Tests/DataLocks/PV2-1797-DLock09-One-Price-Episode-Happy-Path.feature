@@ -6,5 +6,6 @@ And there is a single price episode in the ILR, PE-1
 And price episode PE-1 in the ILR matches to both Commitments A and B, on ULN and UKPRN
 And the start date in the PE-1 is on or after the start date for Commitment A
 And the start date in the PE-1 is before the start date for Commitment B
+
 When the Provider submits the single price episode PE-1 in the ILR
 Then there is a single match for PE-1 with Commitment A
