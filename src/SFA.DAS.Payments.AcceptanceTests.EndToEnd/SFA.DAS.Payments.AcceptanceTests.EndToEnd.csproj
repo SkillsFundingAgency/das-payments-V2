@@ -519,15 +519,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-levy Learner over funding band cap - PV2-529.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\DataLocks\PV2-1797-Data Lock09-Single price episode-Happy-Path.feature.cs">
+    <Compile Include="Tests\DataLocks\PV2-1797-DLock09-One-Price-Episode-Happy-Path.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-1797-Data Lock09-Single price episode-Happy-Path.feature</DependentUpon>
+      <DependentUpon>PV2-1797-DLock09-One-Price-Episode-Happy-Path.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\DataLocks\PV2-1824-DLock09-One_Price-Episode-UnHappy-Path.feature.cs">
+    <Compile Include="Tests\DataLocks\PV2-1824-DLock09-One-Price-Episode-UnHappy-Path.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-1824-DLock09-One_Price-Episode-UnHappy-Path.feature</DependentUpon>
+      <DependentUpon>PV2-1824-DLock09-One-Price-Episode-UnHappy-Path.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\DataLocks\PV2-1825-DLock09-Two-Price-Episodes-Happy-Path.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1682,7 +1682,7 @@
       <IsTransformFile>true</IsTransformFile>
     </None>
     <EmbeddedResource Include="FM36TestFiles\PV2-1825-DLock09-Two-Price-Episodes-Happy-Path-R02.json" />
-    <EmbeddedResource Include="FM36TestFiles\PV2-1797-DataLock09-Single-Price-Episode-Happy-Path-R02.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-1797-DLock09-One-Price-Episode-Happy-Path-R02.json" />
     <None Include="packages.config" />
     <None Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1772,13 +1772,13 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy Learner over funding band cap - PV2-529.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\DataLocks\PV2-1797-Data Lock09-Single price episode-Happy-Path.feature">
+    <None Include="Tests\DataLocks\PV2-1797-DLock09-One-Price-Episode-Happy-Path.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-1797-Data Lock09-Single price episode-Happy-Path.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-1797-DLock09-One-Price-Episode-Happy-Path.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\DataLocks\PV2-1824-DLock09-One_Price-Episode-UnHappy-Path.feature">
+    <None Include="Tests\DataLocks\PV2-1824-DLock09-One-Price-Episode-UnHappy-Path.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-1824-DLock09-One_Price-Episode-UnHappy-Path.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-1824-DLock09-One-Price-Episode-UnHappy-Path.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\DataLocks\PV2-1825-DLock09-Two-Price-Episodes-Happy-Path.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
