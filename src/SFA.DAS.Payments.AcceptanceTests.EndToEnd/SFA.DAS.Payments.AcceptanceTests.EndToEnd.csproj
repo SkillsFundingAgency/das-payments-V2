@@ -2776,7 +2776,9 @@
     <Folder Include="Tests\Disadvantage - Uplift\" />
     <Folder Include="Tests\Levy Learner\Employer Change of Circumstances\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="FM36TestFiles\PV2-1826-DLock09-Two-Price-Episodes-Unhappy-Path.json" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
