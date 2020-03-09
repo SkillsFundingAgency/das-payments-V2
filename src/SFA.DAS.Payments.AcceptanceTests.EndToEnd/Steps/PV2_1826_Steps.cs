@@ -67,7 +67,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private bool HasNoEarningEventMatch(string priceEpisodeIdentifier)
         {
-            return !EarningEventsHelper.PayableEarningsReceivedForLearner(TestSession).Any(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier));
+            return !EarningEventsHelper.PayableEarningsReceivedForLearner(TestSession)
+                .Any(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier) &&
+                          x.OnProgrammeEarnings.Any(d => d.Periods.Any(p => p.Amount != 0)) &&
+                          x.IncentiveEarnings.Any(d => d.Periods.Any(p => p.Amount != 0))
+                );
         }
 
         [Then("there is a DLOCK-09 triggered for (.*) and no match in DAS")]
