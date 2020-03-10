@@ -32,7 +32,10 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
                 throw new ApprenticeshipAlreadyExistsException(newApprenticeship.Id);
             }
 
-            using (var scope = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled))
+            using (var scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions
+            {
+                IsolationLevel = IsolationLevel.ReadCommitted,
+            }, TransactionScopeAsyncFlowOption.Enabled))
             {
                 await repository.Add(newApprenticeship);
                 var duplicates = await repository.GetDuplicates(newApprenticeship.Uln);
