@@ -7,7 +7,7 @@ And both PE-1 and PE-2 in the ILR matches to both Commitments A and B, on ULN an
 And the start date in the PE-1 is on or after the start date for Commitment A
 And the start date in the PE-1 is before the start date for Commitment B
 And the start date in the PE-2 is on or after the start date for Commitment A
-And the start date in the PE-2 is before the start date for Commitment B
+And the start date in the PE-2 is on or after the start date for Commitment B
 And the course in PE-1 matches the course in Commitment A
 And the course in PE-2 matches the course in Commitment B
 

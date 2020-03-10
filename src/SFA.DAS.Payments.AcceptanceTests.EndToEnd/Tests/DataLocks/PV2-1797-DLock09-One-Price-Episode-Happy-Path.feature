@@ -1,5 +1,5 @@
-Feature: PV2-1797-DataLock09-Single-Price-Episode-Happy-Path
-Scenario: PV2-1797-DataLock09-Single-Price-Episode-Happy-Path-R02
+Feature: PV2-1797-DLock09-One-Price-Episode-Happy-Path
+Scenario: PV2-1797-DataLock09-One-Price-Episode-Happy-Path-R02
 
 Given there are 2 Commitments in DAS, Commitment A and Commitment B in collection period R02/current academic year 
 And there is a single price episode in the ILR, PE-1
