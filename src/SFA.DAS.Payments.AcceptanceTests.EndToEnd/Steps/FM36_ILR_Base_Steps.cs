@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Autofac;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using Microsoft.EntityFrameworkCore;
+using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
@@ -63,6 +64,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var actualPriceEpisodeStartDate = TestSession.FM36Global.Learners.Single().PriceEpisodes.Single(x => x.PriceEpisodeIdentifier == priceEpisodeIdentifier).PriceEpisodeValues.EpisodeEffectiveTNPStartDate.GetValueOrDefault();
             var apprenticeship = await testDataContext.Apprenticeship.Include(x => x.ApprenticeshipPriceEpisodes).SingleAsync(x => x.Id == TestSession.Apprenticeships[commitmentIdentifier].Id);
 
+            TestContext.WriteLine($"the start date in the {priceEpisodeIdentifier} - {actualPriceEpisodeStartDate} is before the start date for Commitment {commitmentIdentifier} - {apprenticeship.EstimatedStartDate}");
+
             if (actualPriceEpisodeStartDate < apprenticeship.EstimatedStartDate) return;
 
             apprenticeship.EstimatedStartDate = actualPriceEpisodeStartDate.AddDays(1);
@@ -75,6 +78,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var actualPriceEpisodeStartDate = TestSession.FM36Global.Learners.Single().PriceEpisodes.Single(x => x.PriceEpisodeIdentifier == priceEpisodeIdentifier).PriceEpisodeValues.EpisodeEffectiveTNPStartDate.GetValueOrDefault();
             var apprenticeship = await testDataContext.Apprenticeship.Include(x => x.ApprenticeshipPriceEpisodes).SingleAsync(x => x.Id == TestSession.Apprenticeships[commitmentIdentifier].Id);
+
+            TestContext.WriteLine($"the start date in the {priceEpisodeIdentifier} - {actualPriceEpisodeStartDate} is on or after the start date for Commitment {commitmentIdentifier} - {apprenticeship.EstimatedStartDate}");
 
             if (actualPriceEpisodeStartDate >= apprenticeship.EstimatedStartDate) return;
 
@@ -219,7 +224,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         public void Dispose()
         {
-            ((IDisposable) featureContext)?.Dispose();
+            ((IDisposable)featureContext)?.Dispose();
             testDataContext?.Dispose();
         }
     }
