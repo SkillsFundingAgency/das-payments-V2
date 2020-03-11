@@ -86,12 +86,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                                $"employer account id: {createdEvent.AccountId}, " +
                                $"Ukprn: {createdEvent.ProviderId}.");
             }
-            catch (ApprenticeshipAlreadyExistsException e)
+            catch (ApprenticeshipAlreadyExistsException)
             {
-                logger.LogError($"Apprenticeship already exists while trying to add a new apprenticeship: {e.Message}\n" +
+                logger.LogWarning($"Apprenticeship already exists while trying to add a new apprenticeship: {e.Message}\n" +
                                 $"Apprenticeship id: {createdEvent.ApprenticeshipId}, " +
                                 $"employer account id: {createdEvent.AccountId}, " +
-                                $"Ukprn: {createdEvent.ProviderId}.", e);
+                                $"Ukprn: {createdEvent.ProviderId}.");
             }
             catch (InvalidOperationException e)
             {
