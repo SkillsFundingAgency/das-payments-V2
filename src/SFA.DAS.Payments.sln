@@ -320,6 +320,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{63236EA5
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.ProviderAdjustments.UnitTests", "SFA.DAS.Payments.ProviderAdjustments.UnitTests\SFA.DAS.Payments.ProviderAdjustments.UnitTests.csproj", "{CF41288C-6BDA-4E4E-B834-C539A1DD1C5C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AdHoc", "AdHoc", "{F5EAFCE3-B153-46DC-89D4-146895CCC7AF}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\Database\RemoveDuplicatesFromEePeriods.sql = Scripts\Database\RemoveDuplicatesFromEePeriods.sql
+		Scripts\Database\RemoveDuplicatesFromEePriceEpisodes.sql = Scripts\Database\RemoveDuplicatesFromEePriceEpisodes.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1477,6 +1483,7 @@ Global
 		{144752B8-60D8-4CFD-8925-25C15A993CE4} = {C2D2FEC2-7C2F-4559-9B14-173D88AE8AA5}
 		{63236EA5-16BC-49D2-B26D-ABCFFCBC90A6} = {C2D2FEC2-7C2F-4559-9B14-173D88AE8AA5}
 		{CF41288C-6BDA-4E4E-B834-C539A1DD1C5C} = {63236EA5-16BC-49D2-B26D-ABCFFCBC90A6}
+		{F5EAFCE3-B153-46DC-89D4-146895CCC7AF} = {03E21E69-E578-4F96-A564-A32D26738660}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E9E6D1E-3C3C-41C9-AED4-9B6DC9118F1F}
