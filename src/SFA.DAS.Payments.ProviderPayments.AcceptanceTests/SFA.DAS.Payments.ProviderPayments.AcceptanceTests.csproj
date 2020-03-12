@@ -298,6 +298,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ILR Resubmission.feature</DependentUpon>
     </Compile>
+    <Compile Include="Month End\SendsMonthEndAct1CompletionPaymentsEvent.feature.cs">
+      <DependentUpon>SendsMonthEndAct1CompletionPaymentsEvent.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Month End\Month End.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -331,6 +336,10 @@
     <None Include="ILR Resubmission\ILR Resubmission.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ILR Resubmission.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Month End\SendsMonthEndAct1CompletionPaymentsEvent.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>SendsMonthEndAct1CompletionPaymentsEvent.feature.cs</LastGenOutput>
     </None>
     <None Include="Month End\Month End.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
