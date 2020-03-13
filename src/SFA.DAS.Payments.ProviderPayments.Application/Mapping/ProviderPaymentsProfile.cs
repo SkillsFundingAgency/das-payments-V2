@@ -4,10 +4,11 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Messages;
 using SFA.DAS.Payments.ProviderPayments.Model;
 using System;
+using System.Collections.Generic;
+using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
 {
-
     public class ProviderPaymentsProfile : Profile
     {
         public ProviderPaymentsProfile()
@@ -56,7 +57,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.ReportingAimFundingLineType, opt => opt.ResolveUsing<ReportingAimFundingLineTypeValueResolver>())
                 .ForMember(dest => dest.NonPaymentReason, opt => opt.Ignore())
                 ;
-
 
             CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
             CreateMap<SfaCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
@@ -127,6 +127,46 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
             CreateMap<SfaFullyFundedFundingSourcePaymentEvent, SfaFullyFundedProviderPaymentEvent>();
             CreateMap<LevyFundingSourcePaymentEvent, LevyProviderPaymentEvent>();
             CreateMap<TransferFundingSourcePaymentEvent, TransferProviderPaymentEvent>();
+
+            CreateMap<FundingSourceModel, EarningDetails>();
+            CreateMap<PaymentModel, RecordedAct1CompletionPaymentEvent>()
+                .ForMember(dest => dest.EventId, opt => opt.ResolveUsing(src => Guid.NewGuid()))
+                .ForMember(dest => dest.EventTime, opt => opt.MapFrom(src => DateTimeOffset.UtcNow))
+                .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
+                .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => source.DeliveryPeriod))
+                .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => source.CollectionPeriod.Period))
+                .ForMember(dest => dest.Learner,
+                           opt => opt.MapFrom(source =>
+                                                  new Learner
+                                                  {
+                                                      Uln = source.LearnerUln,
+                                                      ReferenceNumber = source.LearnerReferenceNumber
+                                                  }))
+                .ForMember(dest => dest.LearningAim, opt => opt.MapFrom(source =>
+                                                  new LearningAim
+                                                  {
+                                                      Reference = source.LearningAimReference,
+                                                      FrameworkCode = source.LearningAimFrameworkCode,
+                                                      PathwayCode = source.LearningAimPathwayCode,
+                                                      ProgrammeType = source.LearningAimProgrammeType,
+                                                      StandardCode = source.LearningAimStandardCode,
+                                                      FundingLineType = source.ReportingAimFundingLineType,
+                                                      StartDate = source.LearningStartDate.GetValueOrDefault()
+                                                  }))
+                .ForMember(dest => dest.IlrSubmissionDateTime, opt => opt.MapFrom(source => source.IlrSubmissionDateTime))
+                .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => source.TransactionType))
+                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(source => source.SfaContributionPercentage))
+                .ForMember(dest => dest.FundingSource, opt => opt.MapFrom(source => source.FundingSource))
+                .ForMember(dest => dest.AmountDue, opt => opt.MapFrom(source => source.Amount))
+                .ForMember(dest => dest.AccountId, opt => opt.MapFrom(source => source.AccountId))
+                .ForMember(dest => dest.TransferSenderAccountId, opt => opt.MapFrom(source => source.TransferSenderAccountId))
+                .ForMember(dest => dest.EarningDetails, opt => opt.MapFrom(source => source.FundingSourceDetails))
+                .ForMember(dest => dest.ApprenticeshipId, opt => opt.MapFrom(source => source.ApprenticeshipId))
+                .ForMember(dest => dest.ApprenticeshipEmployerType, opt => opt.MapFrom(source => source.ApprenticeshipEmployerType))
+                .ForMember(dest => dest.ReportingAimFundingLineType, opt => opt.MapFrom(source => source.ReportingAimFundingLineType))
+                .ForMember(dest => dest.ContractType, opt => opt.MapFrom(source => source.ContractType))
+                .ForAllOtherMembers(dest => dest.Ignore())
+                ;
         }
     }
 }
