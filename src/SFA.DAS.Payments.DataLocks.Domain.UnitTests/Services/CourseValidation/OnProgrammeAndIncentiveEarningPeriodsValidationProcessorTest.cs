@@ -343,6 +343,16 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 x.StandardCode = 0;
                 x.ProgrammeType = 0;
             });
+
+            apprenticeships[0].EstimatedStartDate = earningEvent.PriceEpisodes[0].EffectiveTotalNegotiatedPriceStartDate.AddDays(-10);
+            apprenticeships[0].ApprenticeshipPriceEpisodes.ForEach(o => o.StartDate = apprenticeships[0].EstimatedStartDate);
+            apprenticeships[0].StandardCode = 0;
+            apprenticeships[0].ProgrammeType = 0;
+
+            apprenticeships[1].EstimatedStartDate = earningEvent.PriceEpisodes[0].EffectiveTotalNegotiatedPriceStartDate.AddDays(-1);
+            apprenticeships[1].ApprenticeshipPriceEpisodes.ForEach(o => o.StartDate = apprenticeships[1].EstimatedStartDate);
+            apprenticeships[1].StandardCode = 0;
+            apprenticeships[1].ProgrammeType = 0;
             
             var latestApprenticeship = apprenticeships[1];
 
