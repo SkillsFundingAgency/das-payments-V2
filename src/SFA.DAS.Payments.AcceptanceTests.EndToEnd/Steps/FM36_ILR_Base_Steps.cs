@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using Autofac;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using Microsoft.EntityFrameworkCore;
-using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
@@ -61,31 +61,28 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"the start date in the (.*) is before the start date for Commitment (.*)")]
         public async Task GivenTheStartDateInThePeIsBeforeTheStartDateForCommitmentB(string priceEpisodeIdentifier, string commitmentIdentifier)
         {
-            var actualPriceEpisodeStartDate = TestSession.FM36Global.Learners.Single().PriceEpisodes.Single(x => x.PriceEpisodeIdentifier == priceEpisodeIdentifier).PriceEpisodeValues.EpisodeEffectiveTNPStartDate.GetValueOrDefault();
-            var apprenticeship = await testDataContext.Apprenticeship.Include(x => x.ApprenticeshipPriceEpisodes).SingleAsync(x => x.Id == TestSession.Apprenticeships[commitmentIdentifier].Id);
+            bool StartDateIsBefore(DateTime actualPriceEpisodeStartDate, DateTime estimatedStartDate) => actualPriceEpisodeStartDate < estimatedStartDate;
 
-            TestContext.WriteLine($"the start date in the {priceEpisodeIdentifier} - {actualPriceEpisodeStartDate} is before the start date for Commitment {commitmentIdentifier} - {apprenticeship.EstimatedStartDate}");
-
-            if (actualPriceEpisodeStartDate < apprenticeship.EstimatedStartDate) return;
-
-            apprenticeship.EstimatedStartDate = actualPriceEpisodeStartDate.AddDays(1);
-            apprenticeship.ApprenticeshipPriceEpisodes.Single().StartDate = actualPriceEpisodeStartDate.AddDays(1);
-            await testDataContext.SaveChangesAsync();
+            await SetPriceEpisodeStartDate(priceEpisodeIdentifier, commitmentIdentifier, 1, StartDateIsBefore);
         }
 
         [Given(@"the start date in the (.*) is on or after the start date for Commitment (.*)")]
         public async Task GivenTheStartDateInThePEIsOnOrAfterTheStartDateForCommitmentA(string priceEpisodeIdentifier, string commitmentIdentifier)
         {
+            bool StartDateIsOnOrAfter(DateTime actualPriceEpisodeStartDate, DateTime estimatedStartDate) => actualPriceEpisodeStartDate >= estimatedStartDate;
+            
+            await SetPriceEpisodeStartDate(priceEpisodeIdentifier, commitmentIdentifier, -1, StartDateIsOnOrAfter);
+        }
+
+        private async Task SetPriceEpisodeStartDate(string priceEpisodeIdentifier, string commitmentIdentifier, int numberOfDays, Func<DateTime, DateTime, bool> startDateIsAlreadyCorrect)
+        {
             var actualPriceEpisodeStartDate = TestSession.FM36Global.Learners.Single().PriceEpisodes.Single(x => x.PriceEpisodeIdentifier == priceEpisodeIdentifier).PriceEpisodeValues.EpisodeEffectiveTNPStartDate.GetValueOrDefault();
             var apprenticeship = await testDataContext.Apprenticeship.Include(x => x.ApprenticeshipPriceEpisodes).SingleAsync(x => x.Id == TestSession.Apprenticeships[commitmentIdentifier].Id);
 
-            TestContext.WriteLine($"the start date in the {priceEpisodeIdentifier} - {actualPriceEpisodeStartDate} is on or after the start date for Commitment {commitmentIdentifier} - {apprenticeship.EstimatedStartDate}");
+            if (startDateIsAlreadyCorrect(actualPriceEpisodeStartDate, apprenticeship.EstimatedStartDate)) return;
 
-            if (actualPriceEpisodeStartDate >= apprenticeship.EstimatedStartDate) return;
-
-            apprenticeship.EstimatedStartDate = actualPriceEpisodeStartDate.AddDays(-1);
-            apprenticeship.ApprenticeshipPriceEpisodes.Single().StartDate = actualPriceEpisodeStartDate.AddDays(-1);
-
+            apprenticeship.EstimatedStartDate = actualPriceEpisodeStartDate.AddDays(numberOfDays);
+            apprenticeship.ApprenticeshipPriceEpisodes.Single().StartDate = actualPriceEpisodeStartDate.AddDays(numberOfDays);
             await testDataContext.SaveChangesAsync();
         }
 
