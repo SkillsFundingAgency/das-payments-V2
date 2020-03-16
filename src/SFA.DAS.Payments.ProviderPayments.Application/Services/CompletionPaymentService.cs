@@ -9,7 +9,7 @@ using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
-    public class CompletionPaymentService : IPaymentCompletionService
+    public class CompletionPaymentService : ICompletionPaymentService
     {
         private readonly IPaymentLogger logger;
         private readonly IMapper mapper;
