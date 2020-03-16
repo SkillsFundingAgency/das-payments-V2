@@ -128,7 +128,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
             CreateMap<LevyFundingSourcePaymentEvent, LevyProviderPaymentEvent>();
             CreateMap<TransferFundingSourcePaymentEvent, TransferProviderPaymentEvent>();
 
-            CreateMap<FundingSourceModel, EarningDetails>();
             CreateMap<PaymentModel, RecordedAct1CompletionPaymentEvent>()
                 .ForMember(dest => dest.EventId, opt => opt.ResolveUsing(src => Guid.NewGuid()))
                 .ForMember(dest => dest.EventTime, opt => opt.MapFrom(src => DateTimeOffset.UtcNow))
@@ -142,7 +141,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                                                       Uln = source.LearnerUln,
                                                       ReferenceNumber = source.LearnerReferenceNumber
                                                   }))
-                .ForMember(dest => dest.LearningAim, opt => opt.MapFrom(source =>
+                .ForMember(dest => dest.LearningAim,
+                           opt => opt.MapFrom(source =>
                                                   new LearningAim
                                                   {
                                                       Reference = source.LearningAimReference,
@@ -160,7 +160,18 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.AmountDue, opt => opt.MapFrom(source => source.Amount))
                 .ForMember(dest => dest.AccountId, opt => opt.MapFrom(source => source.AccountId))
                 .ForMember(dest => dest.TransferSenderAccountId, opt => opt.MapFrom(source => source.TransferSenderAccountId))
-                .ForMember(dest => dest.EarningDetails, opt => opt.MapFrom(source => source.FundingSourceDetails))
+                .ForMember(dest => dest.EarningDetails,
+                           opt => opt.MapFrom(source =>
+                                                  new EarningDetails
+                                                  {
+                                                      CompletionAmount = source.CompletionAmount,
+                                                      CompletionStatus = source.CompletionStatus,
+                                                      InstalmentAmount = source.InstalmentAmount,
+                                                      StartDate = source.StartDate,
+                                                      ActualEndDate = source.ActualEndDate,
+                                                      NumberOfInstalments = source.NumberOfInstalments,
+                                                      PlannedEndDate = source.PlannedEndDate
+                                                  }))
                 .ForMember(dest => dest.ApprenticeshipId, opt => opt.MapFrom(source => source.ApprenticeshipId))
                 .ForMember(dest => dest.ApprenticeshipEmployerType, opt => opt.MapFrom(source => source.ApprenticeshipEmployerType))
                 .ForMember(dest => dest.ReportingAimFundingLineType, opt => opt.MapFrom(source => source.ReportingAimFundingLineType))
