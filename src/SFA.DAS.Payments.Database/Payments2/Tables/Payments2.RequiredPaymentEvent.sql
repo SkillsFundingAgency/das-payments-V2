@@ -1,3 +1,4 @@
+
 CREATE TABLE [Payments2].[RequiredPaymentEvent]
 (
 	Id BIGINT NOT NULL IDENTITY(1,1) CONSTRAINT PK_RequiredPaymentEvent PRIMARY KEY CLUSTERED,	
@@ -40,16 +41,28 @@ CREATE TABLE [Payments2].[RequiredPaymentEvent]
 	ApprenticeshipEmployerType TINYINT NULL, 
     [NonPaymentReason] TINYINT NULL,
 )
-
 GO
 
 CREATE INDEX [IX_RequiredPaymentEvent__Audit] ON [Payments2].[RequiredPaymentEvent]
 (
   [EarningEventId]
 )  
-
 GO
 
 CREATE NONCLUSTERED INDEX [IX_RequiredPaymentEvent_Submission] ON [Payments2].[RequiredPaymentEvent] 
 ([AcademicYear], [CollectionPeriod], [Ukprn], [IlrSubmissionDateTime]) 
 WITH (ONLINE = ON)
+GO
+
+Create NONCLUSTERED INDEX [IX_RequiredPaymentEvent__Metrics] ON [Payments2].[RequiredPaymentEvent] 
+(
+	Ukprn,
+	JobId,
+	NonPaymentReason
+) include (ContractType, TransactionType, Amount)
+Go
+
+CREATE INDEX IX_RequiredPaymentEvent__AcademicYear_CollectionPeriod_JobId
+ON Payments2.RequiredPaymentEvent (AcademicYear, CollectionPeriod, JobId)
+INCLUDE (EventId)
+GO

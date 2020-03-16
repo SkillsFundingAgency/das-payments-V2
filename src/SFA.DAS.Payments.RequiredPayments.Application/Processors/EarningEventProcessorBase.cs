@@ -167,6 +167,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             if (type != (int)OnProgrammeEarningType.Completion)
                 return false;
 
+            if (earning.Amount <= 0m)
+                return false;
+
             var priceEpisode = earningEvent.PriceEpisodes.Single(p => p.Identifier == earning.PriceEpisodeIdentifier);
             var key = apprenticeshipKeyProvider.GetCurrentKey();
             var employerPayments = await paymentHistoryRepository.GetEmployerCoInvestedPaymentHistoryTotal(key, cancellationToken).ConfigureAwait(false);

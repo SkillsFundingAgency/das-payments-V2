@@ -19,7 +19,11 @@ namespace SFA.DAS.Payments.RequiredPayments.RemovedLearnerService
         public RemovedLearnerService(ActorService actorService, ActorId actorId, IRemovedLearnerAimIdentificationService removedLearnerAimIdentificationService) : base(actorService, actorId)
         {
             this.removedLearnerAimIdentificationService = removedLearnerAimIdentificationService;
-            ukprn = actorId.GetLongId();
+
+            if (!long.TryParse(actorId.ToString(), out ukprn))
+            {
+                throw new InvalidCastException($"Unable to cast Actor Id {Id} to valid ukprn");
+            }
         }
 
         public async Task<IList<IdentifiedRemovedLearningAim>> HandleReceivedProviderEarningsEvent(short academicYear, byte collectionPeriod, DateTime ilrSubmissionDateTime, CancellationToken cancellationToken)
@@ -28,3 +32,4 @@ namespace SFA.DAS.Payments.RequiredPayments.RemovedLearnerService
         }
     }
 }
+

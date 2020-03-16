@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
@@ -28,9 +29,10 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
         {
             paymentLogger.LogInfo($"Processing ProcessLevyPaymentsOnMonthEndCommand. Message Id : {context.MessageId}, Job: {command.JobId}");
 
-            using (var operation = telemetry.StartOperation())
+            using (var operation = telemetry.StartOperation("LevyFundedProxyService.ProcessLevyPaymentsOnMonthEndCommand", command.CommandId.ToString()))
             {
-                var actorId = new ActorId(command.AccountId);
+                var stopwatch = Stopwatch.StartNew();
+                var actorId = new ActorId(command.AccountId.ToString());
                 var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
                 var fundingSourceEvents = await actor.HandleMonthEnd(command).ConfigureAwait(false);
                 foreach (var fundingSourcePaymentEvent in fundingSourceEvents)
@@ -40,7 +42,9 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
                     else
                         await context.Publish(fundingSourcePaymentEvent).ConfigureAwait(false);
                 }
-                //await Task.WhenAll(fundingSourceEvents.Select(context.Publish));
+
+                telemetry.AddProperty("NumberOfMessagesSent", fundingSourceEvents.Count.ToString());
+                telemetry.TrackDuration("LevyFundedProxyService.ProcessLevyPaymentsOnMonthEndCommand", stopwatch, command, command.AccountId);
                 telemetry.StopOperation(operation);
             }
         }
