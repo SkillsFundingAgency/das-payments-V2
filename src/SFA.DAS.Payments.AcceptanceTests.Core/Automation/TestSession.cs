@@ -1,8 +1,13 @@
 ﻿using Bogus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
+using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
@@ -22,6 +27,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public DateTime IlrSubmissionTime { get; set; }
 
+        public CollectionPeriod CollectionPeriod { get; set; }
+
         public bool AtLeastOneScenarioCompleted { get; private set; }
 
         public List<Employer> Employers { get; }
@@ -32,6 +39,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public Provider Provider => GetProviderByIdentifier(TestProvider);
         public long Ukprn => Provider.Ukprn;
         public long JobId => Provider.JobId;
+
+        public FM36Global FM36Global { get; set; }
+
+        public ConcurrentDictionary<string, ApprenticeshipModel> Apprenticeships { get; set; }
 
         private readonly IUkprnService ukprnService;
         private readonly IUlnService ulnService;
@@ -77,7 +88,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             Learners = new List<Learner>();
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
             Employers = new List<Employer>();
-
+            Apprenticeships = new ConcurrentDictionary<string, ApprenticeshipModel>();
         }
 
         public long GenerateId(int maxValue = 1000000)
