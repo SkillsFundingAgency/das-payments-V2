@@ -46,6 +46,6 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
         public string ReportingAimFundingLineType { get; set; }
         
-        public virtual FundingSourceModel FundingSourceDetails { get; set; }
+
     }
 }

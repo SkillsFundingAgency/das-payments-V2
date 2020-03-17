@@ -1,0 +1,28 @@
+﻿using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Tests.Core.Builders;
+
+namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data
+{
+    public class RecordedPayment
+    {
+        public TransactionType Type => EnumHelper.ToTransactionType(TransactionType);
+
+        public string TransactionType { get; set; }
+
+
+        public byte DeliveryPeriod { get; set; }
+
+        public ContractType ContractType { get; set; }
+
+        public decimal Amount { get; set; }
+
+        public string CollectionPeriod { get; set; }
+        private CollectionPeriod parsedCollectionPeriod;
+
+        public CollectionPeriod ParsedCollectionPeriod => parsedCollectionPeriod ??
+                                                          (parsedCollectionPeriod = new CollectionPeriodBuilder()
+                                                              .WithSpecDate(this.CollectionPeriod).Build());
+    }
+}

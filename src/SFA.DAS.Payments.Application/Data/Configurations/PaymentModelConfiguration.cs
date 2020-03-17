@@ -55,7 +55,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.ApprenticeshipEmployerType).HasColumnName(@"ApprenticeshipEmployerType").IsRequired();
             builder.Property(x => x.ReportingAimFundingLineType).HasColumnName(@"ReportingAimFundingLineType").IsRequired();
             
-            builder.HasOne<FundingSourceModel>(x => x.FundingSourceDetails).WithMany().HasForeignKey(p => p.FundingSourceEventId);
+           
         }
     }
 }

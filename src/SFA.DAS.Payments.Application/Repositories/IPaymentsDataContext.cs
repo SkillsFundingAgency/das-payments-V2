@@ -30,6 +30,9 @@ namespace SFA.DAS.Payments.Application.Repositories
         DbSet<ReceivedDataLockEvent> ReceivedDataLockEvents { get; set; }
         DbSet<CurrentPriceEpisode> CurrentPriceEpisodes { get; set; }
         DbSet<ProviderAdjustmentModel> ProviderAdjustments { get; }
+
+
+
         DatabaseFacade Database { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
         int SaveChanges();
