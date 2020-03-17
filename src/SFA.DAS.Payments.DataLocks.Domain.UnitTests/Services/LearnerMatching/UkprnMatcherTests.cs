@@ -1,46 +1,77 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
-using Moq;
 using NUnit.Framework;
-using SFA.DAS.Payments.DataLocks.Domain.Models;
-using SFA.DAS.Payments.DataLocks.Domain.Services;
 using SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.LearnerMatching
 {
     [TestFixture]
     public class UkprnMatcherTests
     {
-        private Mock<IDataLockLearnerCache> dataLockLearnerCache;
-
         [Test]
-        public async Task ShouldReturnDataLockOneWhenCacheIsEmpty()
+        public void Should_Return_DataLock_01_When_No_Apprenticeships_Match_Ukprn()
         {
-            dataLockLearnerCache = new Mock<IDataLockLearnerCache>();
-            dataLockLearnerCache
-                .Setup(o => o.UkprnExists(It.IsAny<long>()))
-                .Returns(Task.FromResult(false));
+            var apprenticeships = new List<ApprenticeshipModel> { new ApprenticeshipModel { Ukprn = 123456 } };
 
-            var ukprnMatcher = new UkprnMatcher(dataLockLearnerCache.Object);
+            var ukprnMatcher = new UkprnMatcher();
 
-            var result = await ukprnMatcher.MatchUkprn(12345).ConfigureAwait(false);
+            var result = ukprnMatcher.MatchUkprn(12345, apprenticeships);
 
             result.Should().NotBeNull();
-            result.Should().Be(DataLockErrorCode.DLOCK_01);
+            result.DataLockErrorCode.Should().NotBeNull();
+            result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_01);
         }
 
         [Test]
-        public async Task ShouldReturnNullWhenCacheHasLearnerRecords()
+        public void Should_Return_DataLock_01_When_No_Apprenticeships()
         {
-            dataLockLearnerCache = new Mock<IDataLockLearnerCache>();
-            dataLockLearnerCache
-                .Setup(o => o.UkprnExists(It.IsAny<long>()))
-                .Returns(Task.FromResult(true));
+            var apprenticeships = new List<ApprenticeshipModel>();
 
-            var ukprnMatcher = new UkprnMatcher(dataLockLearnerCache.Object);
-            var result = await ukprnMatcher.MatchUkprn(1234).ConfigureAwait(false);
-            result.Should().BeNull();
+            var ukprnMatcher = new UkprnMatcher();
+
+            var result = ukprnMatcher.MatchUkprn(12345, apprenticeships);
+
+            result.Should().NotBeNull();
+            result.DataLockErrorCode.Should().NotBeNull();
+            result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_01);
+        }
+
+        [Test]
+        public void Should_Not_Return_DataLock_01_When_Apprenticeships_Match_Ukprn()
+        {
+            var apprenticeships = new List<ApprenticeshipModel> { new ApprenticeshipModel { Ukprn = 12345 } };
+
+            var ukprnMatcher = new UkprnMatcher();
+
+            var result = ukprnMatcher.MatchUkprn(12345, apprenticeships);
+
+            result.Should().NotBeNull();
+            result.DataLockErrorCode.Should().BeNull();
+        }
+
+        [Test]
+        public void Should_Return_Matched_Apprenticeships()
+        {
+            var apprenticeships = new List<ApprenticeshipModel>
+            {
+                new ApprenticeshipModel { Ukprn = 12345, Uln = 1 },
+                new ApprenticeshipModel { Ukprn = 12345, Uln = 2 },
+                new ApprenticeshipModel { Ukprn = 12345, Uln = 3 },
+                new ApprenticeshipModel { Ukprn = 123456, Uln = 4 }
+            };
+
+            var ukprnMatcher = new UkprnMatcher();
+
+            var result = ukprnMatcher.MatchUkprn(12345, apprenticeships);
+
+            result.Should().NotBeNull();
+            result.Apprenticeships.Count(a => a.Uln == 1).Should().Be(1);
+            result.Apprenticeships.Count(a => a.Uln == 2).Should().Be(1);
+            result.Apprenticeships.Count(a => a.Uln == 3).Should().Be(1);
+            result.Apprenticeships.Count(a => a.Uln == 4).Should().Be(0);
         }
     }
 }

@@ -1,11 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching
 {
     public interface IUkprnMatcher
     {
-        Task<DataLockErrorCode?> MatchUkprn(long ukprn);
+        LearnerMatchResult MatchUkprn(long ukprn, List<ApprenticeshipModel> apprenticeships);
     }
 }
