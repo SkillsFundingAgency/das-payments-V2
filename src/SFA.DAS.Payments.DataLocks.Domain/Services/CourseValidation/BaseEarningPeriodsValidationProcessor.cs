@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                 var initialValidationResult = ValidateApprenticeships(ukprn, apprenticeships, academicYear, period, transactionType, priceEpisodes);
                 if (initialValidationResult.dataLockFailures.Any())
                 {
-                    newEarningPeriod.DataLockFailures = initialValidationResult.dataLockFailures;
+                    newEarningPeriod.DataLockFailures = GetLatestApprenticeshipDataLocks(initialValidationResult.dataLockFailures, apprenticeships);
                     invalidPeriods.Add(newEarningPeriod);
                     continue;
                 }
@@ -75,8 +75,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 
                 if (!validApprenticeshipIds.Any())
                 {
-                    var periodDataLockFailures = validationResults.SelectMany(x => x.DataLockFailures).ToList();
-                    newEarningPeriod.DataLockFailures = periodDataLockFailures;
+                    var allPeriodDataLockFailures = validationResults.SelectMany(x => x.DataLockFailures).ToList();
+                    newEarningPeriod.DataLockFailures = GetLatestApprenticeshipDataLocks(allPeriodDataLockFailures, apprenticeshipsWithError);
                     invalidPeriods.Add(newEarningPeriod);
                     continue;
                 }
@@ -107,6 +107,16 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             return newEarningPeriod;
         }
 
+
+        private List<DataLockFailure> GetLatestApprenticeshipDataLocks(List<DataLockFailure> allDataLockFailures, List<ApprenticeshipModel> apprenticeships)
+        {
+            var maxStartDate = apprenticeships.Max(x => x.EstimatedStartDate);
+            var latestApprenticeshipId =  apprenticeships
+                .Where(x => x.EstimatedStartDate == maxStartDate)
+                .Max(x => x.Id);
+
+            return allDataLockFailures.Where(x => x.ApprenticeshipId == latestApprenticeshipId).ToList();
+        }
 
         private EarningPeriod CreateEarningPeriod(EarningPeriod period)
         {
