@@ -111,8 +111,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
                                          && p.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear 
                                          && p.TransactionType == TransactionType.Completion 
                                          && p.ContractType == ContractType.Act1)
-                       
-                         .Distinct()
                          .ToListAsync(cancellationToken);
         }
     }

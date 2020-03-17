@@ -10,20 +10,19 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
     public class ProcessMonthEndAct1CompletionPaymentCommandHandler : IHandleMessages<ProcessMonthEndAct1CompletionPaymentCommand>
     {
         private readonly IPaymentLogger paymentLogger;
-        private readonly IPaymentCompletionService paymentCompletionService;
+        private readonly ICompletionPaymentService completionPaymentService;
 
-        public ProcessMonthEndAct1CompletionPaymentCommandHandler(IPaymentLogger paymentLogger,
-                                                                  IPaymentCompletionService paymentCompletionService)
+        public ProcessMonthEndAct1CompletionPaymentCommandHandler(IPaymentLogger paymentLogger, ICompletionPaymentService completionPaymentService)
         {
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
-            this.paymentCompletionService = paymentCompletionService ?? throw new ArgumentNullException(nameof(paymentCompletionService));
+            this.completionPaymentService = completionPaymentService ?? throw new ArgumentNullException(nameof(completionPaymentService));
         }
 
         public async Task Handle(ProcessMonthEndAct1CompletionPaymentCommand message, IMessageHandlerContext context)
         {
             paymentLogger.LogInfo($"Processing Month End Act1 Completion Payment Command for Message Id : {context.MessageId}");
 
-            var paymentEvents = await paymentCompletionService.GetAct1CompletionPaymentEvents(message);
+            var paymentEvents = await completionPaymentService.GetAct1CompletionPaymentEvents(message);
 
             foreach (var paymentEvent in paymentEvents)
             {
