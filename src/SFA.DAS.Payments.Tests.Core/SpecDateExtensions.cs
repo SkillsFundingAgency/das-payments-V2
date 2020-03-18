@@ -122,6 +122,11 @@ namespace SFA.DAS.Payments.Tests.Core
             return (short)(short.Parse(part) + 2000);
         }
 
+        public static string ToPeriodText(this byte period)
+        {
+            return $"R{period:D2}";
+        }
+
         public static string ToAcademicYear(this string yearName)
         {
             int year;
