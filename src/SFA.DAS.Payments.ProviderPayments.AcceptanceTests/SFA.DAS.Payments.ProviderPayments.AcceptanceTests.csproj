@@ -40,6 +40,9 @@
     <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.Jobs.Model, Version=0.2.63.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Jobs.Model.0.2.63-beta0001\lib\netstandard2.0\ESFA.DC.Jobs.Model.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.Logging, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Logging.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.Logging.dll</HintPath>
     </Reference>
@@ -291,12 +294,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\FundingSourcePayment.cs" />
+    <Compile Include="Data\RecordedPayment.cs" />
     <Compile Include="EndpointNames.cs" />
     <Compile Include="Handlers\ProviderPaymentEventHandler.cs" />
     <Compile Include="ILR Resubmission\ILR Resubmission.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ILR Resubmission.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Month End\SendsMonthEndAct1CompletionPaymentsEvent.feature.cs">
+      <DependentUpon>SendsMonthEndAct1CompletionPaymentsEvent.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Month End\Month End.feature.cs">
       <AutoGen>True</AutoGen>
@@ -315,6 +324,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Steps\BindingBootstrapper.cs" />
+    <Compile Include="Steps\MonthEndCompletionPaymentSteps.cs" />
     <Compile Include="Steps\ProviderPaymentsSteps.cs" />
     <Compile Include="Steps\ProviderPaymentsStepsBase.cs" />
     <Compile Include="Steps\ProviderResubmitsILRSteps.cs" />
@@ -331,6 +341,10 @@
     <None Include="ILR Resubmission\ILR Resubmission.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ILR Resubmission.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Month End\SendsMonthEndAct1CompletionPaymentsEvent.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>SendsMonthEndAct1CompletionPaymentsEvent.feature.cs</LastGenOutput>
     </None>
     <None Include="Month End\Month End.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
