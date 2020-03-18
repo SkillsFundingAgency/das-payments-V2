@@ -25,11 +25,6 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
             };
         }
 
-        public void AddProperty(string propertyName, string value)
-        {
-            properties.Add(propertyName, value);
-        }
-
         public void TrackEvent(string eventName)
         {
             telemetryClient.TrackEvent($"Event: {eventName}", properties);
