@@ -319,6 +319,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.ProviderAdjustments.UnitTests", "SFA.DAS.Payments.ProviderAdjustments.UnitTests\SFA.DAS.Payments.ProviderAdjustments.UnitTests.csproj", "{CF41288C-6BDA-4E4E-B834-C539A1DD1C5C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AdHoc", "AdHoc", "{F726A2C6-2EC5-4EAB-9970-50F4F87FBB2D}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\Database\AdHoc\RemoveDuplicatesFromEePeriods.sql = Scripts\Database\AdHoc\RemoveDuplicatesFromEePeriods.sql
+		Scripts\Database\AdHoc\RemoveDuplicatesFromEePriceEpisodes.sql = Scripts\Database\AdHoc\RemoveDuplicatesFromEePriceEpisodes.sql
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "V1", "V1", "{E1FFBAB5-CC3F-472A-AF84-6E20285F7A33}"
 	ProjectSection(SolutionItems) = preProject
