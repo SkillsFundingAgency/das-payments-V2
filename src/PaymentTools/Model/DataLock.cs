@@ -1,4 +1,6 @@
-﻿namespace PaymentTools.Model
+﻿using SFA.DAS.Payments.Model.Core;
+
+namespace PaymentTools.Model
 {
     public class DataLock : ICommitmentItem
     {
@@ -6,7 +8,7 @@
 
         public decimal Amount { get; set; }
 
-        public int DataLockNumber { get; set; }
+        public DataLockErrorCode DataLockErrorCode { get; set; }
 
         public string Type => "Data Lock";
     }

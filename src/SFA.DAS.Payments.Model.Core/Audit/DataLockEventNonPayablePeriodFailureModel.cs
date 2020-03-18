@@ -6,7 +6,7 @@ namespace SFA.DAS.Payments.Model.Core.Audit
     public class DataLockEventNonPayablePeriodFailureModel
     {
         public long Id { get; set; }
-        public Guid DataLockEventNonPayablePeriodId { get; set; }
+        public Guid DataLockEventNonPayablePeriodId { get; set; } //todo reset this back to non nullable if possible
         public virtual DataLockEventNonPayablePeriodModel DataLockEventNonPayablePeriod { get; set; }
         public DataLockErrorCode DataLockFailure { get; set; }
         public virtual ApprenticeshipModel Apprenticeship { get; set; }

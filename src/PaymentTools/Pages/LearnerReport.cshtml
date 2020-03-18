@@ -61,7 +61,7 @@ else
                                                 }
                                                 @foreach (var locked in commitment.DataLocked)
                                                 {
-                                                    <li>Data Locked - @locked.Amount</li>
+                                            <li>Data Locked - @locked.Amount - @locked.DataLockErrorCode.ToString() - (DataLockEventNonPayablePeriodFailure Id: @locked.Id) </li>
                                                 }
                                             </ul>
                                         }
