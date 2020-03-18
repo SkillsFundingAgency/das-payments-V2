@@ -88,8 +88,6 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Infrastructu
             endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton(lifetimeScope.Resolve<IContainerScopeFactory>()));
             endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton(lifetimeScope.Resolve<IEndpointInstanceFactory>()));
             
-            endpointConfiguration.SendOnly();
-
             return endpointConfiguration;
         }
     }
