@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
@@ -62,8 +64,15 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         [When(@"month end stop event is received")]
         public async Task WhenMonthEndStopEventIsReceived()
         {
-            var dcHelper = Scope.Resolve<IDcHelper>();
-            await dcHelper.SendPeriodEndTask(AcademicYear, CollectionPeriod, TestSession.JobId, "PeriodEndStop").ConfigureAwait(false);
+            var periodEndEvent = new PeriodEndStoppedEvent
+            {
+                CollectionPeriod =  new CollectionPeriod{Period = CollectionPeriod, AcademicYear = AcademicYear},
+                EventId = Guid.NewGuid(),
+                EventTime = DateTimeOffset.UtcNow,
+                JobId = 124
+            };
+
+            await MessageSession.Send(periodEndEvent).ConfigureAwait(false);
         }
         
         [Then(@"only learners with completion payments should have events generated")]
