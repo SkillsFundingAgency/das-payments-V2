@@ -6,6 +6,7 @@ using SFA.DAS.Payments.ProviderPayments.Model;
 using System;
 using System.Collections.Generic;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Factories;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
 {
@@ -133,7 +134,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.EventTime, opt => opt.MapFrom(src => DateTimeOffset.UtcNow))
                 .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
                 .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => source.DeliveryPeriod))
-                .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => source.CollectionPeriod.Period))
+                .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(src.CollectionPeriod.AcademicYear, src.CollectionPeriod.Period)))
                 .ForMember(dest => dest.Learner,
                            opt => opt.MapFrom(source =>
                                                   new Learner
