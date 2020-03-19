@@ -293,11 +293,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DasHandlers\RecordedAct1CompletionPaymentEventHandler.cs" />
     <Compile Include="Data\FundingSourcePayment.cs" />
     <Compile Include="Data\RecordedPayment.cs" />
     <Compile Include="EndpointNames.cs" />
     <Compile Include="Handlers\ProviderPaymentEventHandler.cs" />
-    <Compile Include="Handlers\RecordedAct1CompletionPaymentEventHandler.cs" />
     <Compile Include="ILR Resubmission\ILR Resubmission.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

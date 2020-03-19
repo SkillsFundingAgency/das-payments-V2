@@ -24,6 +24,4 @@ Scenario: upon month end stop, approvals are notified of any completion payments
 	| Act2          | R03/Current Academic Year | First16To18EmployerIncentive (TT4) | 7000   |
 	When month end stop event is received
 	Then DAS approvals service should be notified of payments for learners with completion payments
-	And only learners with completion payments should have events generated
-
 	

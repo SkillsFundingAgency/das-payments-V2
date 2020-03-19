@@ -14,6 +14,7 @@ using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.Messages;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using TechTalk.SpecFlow;
+// ReSharper disable UnusedMember.Global
 
 namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 {
@@ -64,19 +65,15 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
             transport
                 .ConnectionString(TestConfiguration.DasServiceBusConnectionString)
-                .Transactions(TransportTransactionMode.ReceiveOnly)
-                .RuleNameShortener(ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
+                .UseForwardingTopology()
+                .Transactions(TransportTransactionMode.ReceiveOnly);
 
-            //endpointConfiguration.SendFailedMessagesTo(config.FailedMessagesQueue);
+            var strategy = transport.Sanitization().UseStrategy<ValidateAndHashIfNeeded>();
+
+            strategy.RuleNameSanitization(ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
+
             endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
             endpointConfiguration.EnableInstallers();
-
-            //if (config.ProcessMessageSequentially) endpointConfiguration.LimitMessageProcessingConcurrencyTo(1);
-
-            //endpointConfiguration.Pipeline.Register(typeof(ExceptionHandlingBehavior), "Logs exceptions to the payments logger");
-            //endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton(logger));
-            //endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton(Container.Resolve<IContainerScopeFactory>()));
-            //endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton(Container.Resolve<IEndpointInstanceFactory>()));
 
             DasEndpointInstance = await Endpoint.Start(endpointConfiguration).ConfigureAwait(false);
 
