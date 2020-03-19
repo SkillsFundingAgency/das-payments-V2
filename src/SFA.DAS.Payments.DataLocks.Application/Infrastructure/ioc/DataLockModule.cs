@@ -30,28 +30,23 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
 
             builder.RegisterAssemblyTypes(typeof(ICourseValidator).Assembly).As<ICourseValidator>().InstancePerLifetimeScope();
 
-            builder.RegisterType<EarningPeriodsValidationProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<OnProgrammeAndIncentiveEarningPeriodsValidationProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<CourseValidationProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            
+
+            builder.RegisterType<StartDateValidator>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<CompletionStoppedValidator>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<OnProgrammeAndIncentiveStoppedValidator>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
             builder.Register(ctx =>
             {
-                var otherCourseValidators = ctx.Resolve<IEnumerable<ICourseValidator>>()
-                    .Where(x => x.GetType() != typeof(StartDateValidator) ||
-                                x.GetType() != typeof(CompletionStoppedValidator) ||
-                                x.GetType() != typeof(OnProgrammeAndIncentiveStoppedValidator))
-                    .ToList();
-                
-            return new CourseValidationProcessor(
-                    new StartDateValidator(ctx.Resolve<ICalculatePeriodStartAndEndDate>()),
-                    new CompletionStoppedValidator(),
-                    new OnProgrammeAndIncentiveStoppedValidator(ctx.Resolve<ICalculatePeriodStartAndEndDate>()),
-                    otherCourseValidators);
+                return new CourseValidationProcessor(ctx.Resolve<IEnumerable<ICourseValidator>>().ToList());
             }).AsImplementedInterfaces().InstancePerLifetimeScope();
             
             builder.RegisterType<CalculatePeriodStartAndEndDate>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<DataLockStatusService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-
+            builder.RegisterType<FunctionalSkillEarningPeriodsValidationProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
+          
             builder.RegisterType<BatchedDataCache<PriceEpisodeStatusChange>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<CachingEventProcessor<PriceEpisodeStatusChange>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ReliableStateManagerTransactionProvider>().AsImplementedInterfaces().InstancePerLifetimeScope();
@@ -65,10 +60,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<LegacyDataLockEventErrorBulkCopyConfiguration>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<LegacyDataLockEventPeriodBulkCopyConfiguration>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
+
+          
+
             builder.Register(ctx => new FunctionalSkillValidationProcessor(new List<ICourseValidator>
             {
-                new CompletionStoppedValidator(),
-                new OnProgrammeAndIncentiveStoppedValidator(ctx.Resolve<ICalculatePeriodStartAndEndDate>()),
                 new ApprenticeshipPauseValidator()
             })).As<IFunctionalSkillValidationProcessor>().InstancePerLifetimeScope();
 
