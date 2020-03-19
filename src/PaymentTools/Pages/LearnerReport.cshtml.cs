@@ -19,7 +19,7 @@ namespace PaymentTools.Pages
             this.context = context;
         }
         [BindProperty(SupportsGet = true)]
-        public long LearnerUln { get; set; } = 607978;
+        public long LearnerUln { get; set; } = 377103;
 
         public IEnumerable<CollectionPeriod> CollectionPeriods { get; private set; }
         
@@ -78,7 +78,7 @@ namespace PaymentTools.Pages
                     Cost = x.Cost,
                     Payments = paidCommitments
                         .Where(y => y.PriceEpisodeIdentifier == episode.PriceEpisodeIdentifier)
-                        .Where(y => y.CollectionPeriod.Period <= earning.CollectionPeriod)
+                        .Where(y => y.CollectionPeriod.Period == earning.CollectionPeriod)
                         .Select(y => new Payment
                         {
                             Id = y.Id,
