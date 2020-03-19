@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.ProviderPayments.Messages;
 
-namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Handlers
+namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.DasHandlers
 {
   public  class RecordedAct1CompletionPaymentEventHandler : IHandleMessages<RecordedAct1CompletionPaymentEvent>
     {

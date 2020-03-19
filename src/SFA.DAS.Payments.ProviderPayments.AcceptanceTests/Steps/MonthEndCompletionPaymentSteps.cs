@@ -10,6 +10,7 @@ using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.PeriodEnd.Messages.Events;
+using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.DasHandlers;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Handlers;
 using SFA.DAS.Payments.Tests.Core.Builders;

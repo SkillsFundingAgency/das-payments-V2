@@ -1,5 +1,8 @@
-﻿using Autofac;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Autofac;
 using NServiceBus;
+using NServiceBus.Features;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
@@ -40,7 +43,47 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             routing.RouteToEndpoint(typeof(EmployerCoInvestedFundingSourcePaymentEvent), EndpointNames.ProviderPaymentEndPointName);
             routing.RouteToEndpoint(typeof(ProcessProviderMonthEndCommand), EndpointNames.ProviderPaymentEndPointName);
             routing.RouteToEndpoint(typeof(ReceivedProviderEarningsEvent), EndpointNames.ProviderPaymentEndPointName);
-            routing.RouteToEndpoint(typeof(PeriodEndStartedEvent).Assembly,  EndpointNames.ProviderPaymentEndPointName);
+            routing.RouteToEndpoint(typeof(PeriodEndStartedEvent).Assembly, EndpointNames.ProviderPaymentEndPointName);
+            
+            var autoSubscribe = endpointConfiguration.AutoSubscribe();
+            autoSubscribe.DisableFor<RecordedAct1CompletionPaymentEvent>();
         }
+
+        [BeforeTestRun(Order = 52)]
+        public static async Task AddDasEndPoint()
+        {
+            var endpointConfiguration = new EndpointConfiguration("sfa-das-payments-providerpayments");
+
+            var conventions = endpointConfiguration.Conventions();
+            conventions.DefiningEventsAs(t => t.IsAssignableTo<RecordedAct1CompletionPaymentEvent>());
+
+            var persistence = endpointConfiguration.UsePersistence<AzureStoragePersistence>();
+            persistence.ConnectionString(TestConfiguration.StorageConnectionString);
+
+            endpointConfiguration.DisableFeature<TimeoutManager>();
+            var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
+            transport
+                .ConnectionString(TestConfiguration.DasServiceBusConnectionString)
+                .Transactions(TransportTransactionMode.ReceiveOnly)
+                .RuleNameShortener(ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
+
+            //endpointConfiguration.SendFailedMessagesTo(config.FailedMessagesQueue);
+            endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
+            endpointConfiguration.EnableInstallers();
+
+            //if (config.ProcessMessageSequentially) endpointConfiguration.LimitMessageProcessingConcurrencyTo(1);
+
+            //endpointConfiguration.Pipeline.Register(typeof(ExceptionHandlingBehavior), "Logs exceptions to the payments logger");
+            //endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton(logger));
+            //endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton(Container.Resolve<IContainerScopeFactory>()));
+            //endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton(Container.Resolve<IEndpointInstanceFactory>()));
+
+            DasEndpointInstance = await Endpoint.Start(endpointConfiguration).ConfigureAwait(false);
+
+            await DasEndpointInstance.Subscribe<RecordedAct1CompletionPaymentEvent>()
+                                     .ConfigureAwait(false);
+        }
+
+        public static IEndpointInstance DasEndpointInstance { get; set; }
     }
 }
