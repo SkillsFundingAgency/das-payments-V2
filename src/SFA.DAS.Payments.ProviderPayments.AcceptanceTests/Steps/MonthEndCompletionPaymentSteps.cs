@@ -11,6 +11,7 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data;
+using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Handlers;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -58,7 +59,20 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         [Then(@"DAS approvals service should be notified of payments for learners with completion payments")]
         public async Task ThenDASApprovalsServiceShouldBeNotifiedOfPaymentsForLearnersWithCompletionPayments()
         {
-           
+            await WaitForIt(() =>
+            {
+              return   RecordedAct1CompletionPaymentEventHandler.ReceivedEvents.Count == 1;
+            }, "Got our stuff");
+            //await WaitForIt(() =>
+            //{
+            //    return  RecordedAct1CompletionPaymentEventHandler.ReceivedEvents.All(expectedEvent =>
+            //        {
+            //            expectedEven
+
+            //        }
+
+            //        ));
+            //}, $"Failed to find all the provider payment events. Found '{ProviderPaymentEventHandler.ReceivedEvents.Count}' events ");
         }
 
         [When(@"month end stop event is received")]
