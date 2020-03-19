@@ -12,6 +12,7 @@ using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.DasHandlers;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Handlers;
+using SFA.DAS.Payments.ProviderPayments.Messages;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -74,18 +75,30 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 .Where(p =>
                 p.TransactionType == TransactionType.Completion &&
                 p.ContractType == ContractType.Act1 &&
-                p.CollectionPeriod == new CollectionPeriod { AcademicYear = AcademicYear, Period = CollectionPeriod })
+                p.CollectionPeriod.AcademicYear == AcademicYear &&
+                p.CollectionPeriod.Period == CollectionPeriod)
                 .ToList();
 
             await WaitForIt(() =>
             {
-                return RecordedAct1CompletionPaymentEventHandler.ReceivedEvents.All(p =>
-                   p.CollectionPeriod == new CollectionPeriod { AcademicYear = AcademicYear, Period = CollectionPeriod } &&
-                   p.ContractType == ContractType.Act1 &&
-                   p.TransactionType == TransactionType.Completion &&
-                   completedPayments.Select(cp => cp.Amount).Contains(p.AmountDue)
-                   );
+                var countResult = RecordedAct1CompletionPaymentEventHandler
+                           .ReceivedEvents
+                           .Count(p =>
+                               p.CollectionPeriod.AcademicYear == AcademicYear &&
+                               p.CollectionPeriod.Period == CollectionPeriod &&
+                               p.ContractType == ContractType.Act1 &&
+                               p.TransactionType == TransactionType.Completion)
+                    == completedPayments.Count;
+                //var compareResult = CompletionEventCompare(null, null);
+                return countResult;
             }, $"Failed to find all the provider payment events. Found '{ProviderPaymentEventHandler.ReceivedEvents.Count}' events ");
+        }
+
+
+        private bool CompletionEventCompare(RecordedAct1CompletionPaymentEvent paymentEvent, PaymentModel paymentModel)
+        {
+            //TODO: check import properties
+            return true;
         }
 
         [When(@"month end stop event is received")]
