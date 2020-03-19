@@ -30,6 +30,6 @@ Scenario Outline: upon month end stop, approvals are notified of any completion 
 	
 	Examples: 
 	 | Collection_Period         |
-	# | R01/Current Academic Year |
+	 | R01/Current Academic Year |
 	 | R02/Current Academic Year |
-	 #| R03/Current Academic Year |
+	 | R03/Current Academic Year |
