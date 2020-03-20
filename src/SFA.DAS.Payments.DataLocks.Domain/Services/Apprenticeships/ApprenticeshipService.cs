@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.Exceptions;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
 {
@@ -28,10 +29,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
             var apprenticeship = await repository.Get(newApprenticeship.Id);
             if (apprenticeship != null)
             {
-                throw new InvalidOperationException($"Cannot store new apprenticeship as it already exists. Apprenticeship id: {newApprenticeship.Id}, employer: {newApprenticeship.AccountId}, ukprn: {newApprenticeship.Ukprn}");
+                throw new ApprenticeshipAlreadyExistsException(newApprenticeship.Id);
             }
 
-            using (var scope = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled))
+            using (var scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions
+            {
+                IsolationLevel = IsolationLevel.ReadCommitted,
+            }, TransactionScopeAsyncFlowOption.Enabled))
             {
                 await repository.Add(newApprenticeship);
                 var duplicates = await repository.GetDuplicates(newApprenticeship.Uln);
