@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
     public static class EarningEventsHelper
     {
-        public static IEnumerable<PayableEarningEvent> PayableEarningsHaveBeenReceivedForLearner(TestSession session)
+        public static IEnumerable<PayableEarningEvent> PayableEarningsReceivedForLearner(TestSession session)
         {
             return PayableEarningEventHandler.ReceivedEvents.Where(earningEvent =>
                 earningEvent.Ukprn == session.Provider.Ukprn
