@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -7,9 +8,12 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
-    public interface IOnProgrammeAndIncentiveStoppedValidator : ICourseValidator { }
+    public interface IOnProgrammeAndIncentiveStoppedValidator
+    {
+        (List<ApprenticeshipModel> validApprenticeships, List<DataLockFailure> dataLockFailures) Validate(List<ApprenticeshipModel> apprenticeships, TransactionType transactionType, EarningPeriod earningPeriod, int academicYear);
+    }
 
-    public class OnProgrammeAndIncentiveStoppedValidator : BaseCourseValidator, IOnProgrammeAndIncentiveStoppedValidator
+    public class OnProgrammeAndIncentiveStoppedValidator : IOnProgrammeAndIncentiveStoppedValidator
     {
         private readonly ICalculatePeriodStartAndEndDate calculatePeriodStartAndEndDate;
 
@@ -18,34 +22,52 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             this.calculatePeriodStartAndEndDate = calculatePeriodStartAndEndDate;
         }
 
-        protected override DataLockErrorCode DataLockerErrorCode { get; } = DataLockErrorCode.DLOCK_10;
-
-        protected override List<ApprenticeshipPriceEpisodeModel> GetValidApprenticeshipPriceEpisodes(
-            DataLockValidationModel dataLockValidationModel)
+        public (List<ApprenticeshipModel> validApprenticeships, List<DataLockFailure> dataLockFailures)
+            Validate(List<ApprenticeshipModel> apprenticeships, TransactionType transactionType, EarningPeriod earningPeriod, int academicYear)
         {
-            // Only DLOCK_10 when apprenticeship is stopped
-            if (dataLockValidationModel.Apprenticeship.Status != ApprenticeshipStatus.Stopped)
-            {
-                return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes;
-            }
 
             // Only deal with Transaction Type 1 OnProgramme and incentives
-            if (dataLockValidationModel.TransactionType == TransactionType.Balancing ||
-                dataLockValidationModel.TransactionType == TransactionType.Completion )
+            if (transactionType == TransactionType.Balancing || transactionType == TransactionType.Completion)
             {
-                return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes;
+                return (apprenticeships, new List<DataLockFailure>());
             }
 
-            var periodDate = calculatePeriodStartAndEndDate.GetPeriodDate(dataLockValidationModel.EarningPeriod.Period, dataLockValidationModel.AcademicYear);
+            var periodDate = calculatePeriodStartAndEndDate.GetPeriodDate(earningPeriod.Period, academicYear);
 
-            if (dataLockValidationModel.Apprenticeship.StopDate >= periodDate.periodEndDate)
+            var matchedApprenticeships = apprenticeships
+                .Where(a =>
+                {
+                    if (a.Status != ApprenticeshipStatus.Stopped)
+                    {
+                        return true;
+                    }
+
+                    if (a.StopDate >= periodDate.periodEndDate)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                })
+                .ToList();
+
+            if (matchedApprenticeships.Any())
             {
-                return dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes;
+                return (matchedApprenticeships, new List<DataLockFailure>());
             }
 
-            return new List<ApprenticeshipPriceEpisodeModel>();
+            var dataLockFailures = apprenticeships.Select(a => new DataLockFailure
+            {
+                ApprenticeshipId = a.Id,
+                ApprenticeshipPriceEpisodeIds = a.ApprenticeshipPriceEpisodes
+                    .Where(o => !o.Removed)
+                    .Select(x => x.Id).ToList(),
+                DataLockError = DataLockErrorCode.DLOCK_10
+            }).ToList();
+
+            return (new List<ApprenticeshipModel>(), dataLockFailures);
         }
-        
-     
+
+
     }
 }

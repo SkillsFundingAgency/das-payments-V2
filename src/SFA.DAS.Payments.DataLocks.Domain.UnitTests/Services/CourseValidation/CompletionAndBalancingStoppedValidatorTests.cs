@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
@@ -25,6 +27,30 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             };
         }
 
+        [AutoData]
+        public void ReturnsOnlyCommitmentsThatAreNotStopped(ApprenticeshipModel apprenticeshipA, ApprenticeshipModel apprenticeshipB, PriceEpisode priceEpisode)
+        {
+            priceEpisode.EffectiveTotalNegotiatedPriceStartDate = new DateTime(2018, 8, 1);
+            priceEpisode.ActualEndDate = new DateTime(2020, 8, 30);
+
+            apprenticeshipA.StopDate = new DateTime(2019, 8, 1);
+            apprenticeshipA.Status = ApprenticeshipStatus.Stopped;
+            apprenticeshipA.ApprenticeshipPriceEpisodes[0].StartDate = new DateTime(2018, 8, 1);
+            apprenticeshipA.ApprenticeshipPriceEpisodes[0].EndDate = new DateTime(2019, 8, 30);
+
+            apprenticeshipB.Status = ApprenticeshipStatus.Active;
+            apprenticeshipB.ApprenticeshipPriceEpisodes[0].StartDate = new DateTime(2019, 8, 1);
+            apprenticeshipB.ApprenticeshipPriceEpisodes[0].EndDate = new DateTime(2020, 8, 30);
+
+            var apprenticeships = new List<ApprenticeshipModel> { apprenticeshipA, apprenticeshipB };
+
+            var validator = new CompletionStoppedValidator();
+            var result = validator.Validate(priceEpisode, apprenticeships, TransactionType.Completion);
+
+            result.dataLockFailures.Should().BeEmpty();
+            result.validApprenticeships.Should().NotBeNull();
+            result.validApprenticeships.All(x => x.Id == apprenticeshipB.Id).Should().BeTrue();
+        }
 
         [TestCase("Stop date from a prior period should produce DLOCK_10", TransactionType.Completion, "2020/07/01", "2019/07/31")]
         [TestCase("Stop date from a prior period should produce DLOCK_10", TransactionType.Balancing, "2020/07/01", "2019/07/31")]
@@ -32,37 +58,44 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         [TestCase("Stop date is before end date and should produce DLOCK_10", TransactionType.Balancing, "2019/08/25", "2019/08/20")]
         public void ScenariosThatCreateDlockErrors(string errorMessage, TransactionType transactionType, DateTime ilrDate, DateTime commitmentDate)
         {
-            var validation = new DataLockValidationModel
+            var priceEpisode = new PriceEpisode
             {
-                PriceEpisode = new PriceEpisode
+                Identifier = PriceEpisodeIdentifier,
+                ActualEndDate = ilrDate,
+            };
+            var apprenticeships = new List<ApprenticeshipModel>
+            {
+                new ApprenticeshipModel
                 {
-                    Identifier = PriceEpisodeIdentifier,
-                    ActualEndDate = ilrDate,
-                },
-                EarningPeriod = period,
-                Apprenticeship = new ApprenticeshipModel
-                {
-                    Id = 1 ,
+                    Id = 1,
                     ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                     {
                         new ApprenticeshipPriceEpisodeModel
                         {
                             Id = 100,
                         },
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            Id = 200,
+                            Removed = true
+                        },
                     },
                     StopDate = commitmentDate, // Last day of 1819
                     Status = ApprenticeshipStatus.Stopped,
-                },
-                AcademicYear = 1920,
-                TransactionType = transactionType,
+                }
             };
-
+        
             var validator = new CompletionStoppedValidator();
-            var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().Be(DataLockErrorCode.DLOCK_10, errorMessage);
-            result.ApprenticeshipPriceEpisodes.Should().BeEmpty(errorMessage);
-        }
+            var result = validator.Validate(priceEpisode,apprenticeships,transactionType);
+            result.validApprenticeships.Should().BeEmpty(errorMessage);
+            result.dataLockFailures.Should().HaveCount(1);
+            result.dataLockFailures[0].DataLockError.Should().Be(DataLockErrorCode.DLOCK_10);
+            result.dataLockFailures[0].ApprenticeshipId.Should().Be(1);
 
+            result.dataLockFailures[0].ApprenticeshipPriceEpisodeIds.Should().HaveCount(1);
+            result.dataLockFailures[0].ApprenticeshipPriceEpisodeIds[0].Should().Be(100);
+
+        }
 
         [TestCase("When commitment stop date is after the end date then no datalock expected", TransactionType.Completion, "2019/08/15", "2019/08/31")]
         [TestCase("When commitment stop date is after the end date then no datalock expected", TransactionType.Balancing, "2019/08/15", "2019/08/31")]
@@ -74,36 +107,33 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         [TestCase("Stop date is before end date, but transaction type is First16To18ProviderIncentive then no datalock expected", TransactionType.First16To18ProviderIncentive, "2019/08/25", "2019/08/20")]
         public void ScenariosThatDoNotCreateDlockErrors(string errorMessage, TransactionType transactionType, DateTime ilrDate, DateTime commitmentDate)
         {
-            var validation = new DataLockValidationModel
+            var priceEpisode = new PriceEpisode
             {
-                PriceEpisode = new PriceEpisode
+                Identifier = PriceEpisodeIdentifier,
+                ActualEndDate = ilrDate,
+            };
+            var apprenticeships = new List<ApprenticeshipModel>
+            {
+                new ApprenticeshipModel
                 {
-                    Identifier = PriceEpisodeIdentifier,
-                    ActualEndDate = ilrDate,
-                },
-                EarningPeriod = period,
-                Apprenticeship = new ApprenticeshipModel
-                {
-                    Id = 1,
+                    Id = 2,
                     Status = ApprenticeshipStatus.Stopped,
                     ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
                     {
                         new ApprenticeshipPriceEpisodeModel
                         {
-                            Id = 100,
-                        },
+                            Id = 200,
+                        }
                     },
-                    StopDate = commitmentDate, 
+                    StopDate = commitmentDate,
                 },
-                AcademicYear = 1920,
-                TransactionType = transactionType,
             };
 
             var validator = new CompletionStoppedValidator();
-            var result = validator.Validate(validation);
-            result.DataLockErrorCode.Should().BeNull();
-            result.ApprenticeshipPriceEpisodes.Should().HaveCount(1);
-            result.ApprenticeshipPriceEpisodes[0].Id.Should().Be(100);
+            var result = validator.Validate(priceEpisode, apprenticeships, transactionType);
+            result.dataLockFailures.Should().BeEmpty();
+            result.validApprenticeships[0].Id.Should().Be(2);
+            result.validApprenticeships[0].ApprenticeshipPriceEpisodes[0].Id.Should().Be(200);
         }
     }
 }
