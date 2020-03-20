@@ -57,6 +57,7 @@ CREATE NONCLUSTERED INDEX [IX_FundingSourceEvent__Submission] ON [Payments2].[Fu
 ([AcademicYear], [CollectionPeriod], [Ukprn], [IlrSubmissionDateTime]) 
 WITH (ONLINE = ON)
 
+GO
 
 CREATE INDEX IX_FundingSourceEvent__JobId
 ON Payments2.FundingSourceEvent (JobId)
