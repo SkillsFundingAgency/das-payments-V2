@@ -8,7 +8,6 @@ using AutoMapper;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -75,10 +74,13 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 .ReturnsAsync(payments)
                 .Verifiable();
 
-            Mapper.Initialize(cfg => { cfg.AddProfile<ProviderPaymentsProfile>(); });
+            var config = new MapperConfiguration(c => c.AddProfile(typeof(ProviderPaymentsProfile)));
+
+            var mapper = new Mapper(config);
+
             var logger = mocker.Mock<IPaymentLogger>();
 
-            completionPaymentService = new CompletionPaymentService(logger.Object, Mapper.Instance, providerPaymentsRepository.Object);
+            completionPaymentService = new CompletionPaymentService(logger.Object, mapper, providerPaymentsRepository.Object);
         }
 
         [Test]
