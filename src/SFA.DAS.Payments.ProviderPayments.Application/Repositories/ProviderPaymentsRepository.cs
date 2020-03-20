@@ -103,7 +103,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             await paymentsDataContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<List<PaymentModel>> GetMonthEndAct1CompletionPayments(CollectionPeriod collectionPeriod, CancellationToken cancellationToken = default)
+        public async Task<List<PaymentModel>> GetMonthEndAct1CompletionPayments(CollectionPeriod collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await paymentsDataContext
                          .Payment.Where(p =>
