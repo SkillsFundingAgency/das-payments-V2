@@ -11,9 +11,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
         {
             FM36Global result;
 
+            var fileName = $"SFA.DAS.Payments.AcceptanceTests.EndToEnd.FM36TestFiles.{featureTitle}-{collectionPeriodMonthText}.json";
+
             using (var stream = Assembly
                 .GetExecutingAssembly()
-                .GetManifestResourceStream($"SFA.DAS.Payments.AcceptanceTests.EndToEnd.FM36TestFiles.{featureTitle}-{collectionPeriodMonthText}.json")
+                .GetManifestResourceStream(fileName)
             )
             using (var reader = new StreamReader(stream))
             {
