@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Repositories
         }
 
         [Test]
-        public async Task GetMonthEndAct1CompletionPayments_Returns_all_Payments()
+        public async Task GetMonthEndAct1CompletionPayments_Returns_all_Act1_Completion_Payments()
         {
             var payments = CreateTestPayment();
             payments.First().Amount = 100.99m;
