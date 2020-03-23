@@ -21,8 +21,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
             apprenticeship.ProgrammeType = learningDeliveryValues.ProgType;
             apprenticeship.Status = ApprenticeshipStatus.Active;
             apprenticeship.LegalEntityName = session.Employer.AccountName;
-            apprenticeship.EstimatedStartDate = new DateTime(2018, 08, 01);
-            apprenticeship.EstimatedEndDate = new DateTime(2019, 08, 06);
+            apprenticeship.EstimatedStartDate = new DateTime(2019, 08, 01);
+            apprenticeship.EstimatedEndDate = new DateTime(2020, 08, 06);
             apprenticeship.AgreedOnDate = DateTime.UtcNow;
             apprenticeship.FrameworkCode = learningDeliveryValues.FworkCode ?? 0;
             apprenticeship.PathwayCode = learningDeliveryValues.PwayCode ?? 0;
@@ -47,8 +47,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
             {
                 ApprenticeshipId = apprenticeship.Id,
                 Cost = fm36PriceEpisodeValues.PriceEpisodeTotalTNPPrice.GetValueOrDefault(),
-                StartDate = new DateTime(2018, 08, 01),
-                EndDate = new DateTime(2019, 07, 31)
+                StartDate = new DateTime(2019, 08, 01),
+                EndDate = new DateTime(2020, 07, 31)
             });
 
             return this;
