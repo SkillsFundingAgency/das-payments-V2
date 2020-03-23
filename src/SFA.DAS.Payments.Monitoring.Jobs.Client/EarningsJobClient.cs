@@ -58,7 +58,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 while ((batch = generatedMessages.Skip(skip).Take(1000).ToList()).Count > 0)
                 {
                     skip += batchSize;
-                    var providerEarningsAdditionalMessages = new RecordEarningsJobAdditionalMessages
+                    var providerEarningsAdditionalMessages = new RecordJobAdditionalMessages
                     {
                         JobId = jobId,
                         GeneratedMessages = batch,

@@ -38,8 +38,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Infrastructure.Ioc
                 .As<IHandleMessageBatches<RecordEarningsJob>>()
                 .InstancePerLifetimeScope();
 
-            builder.RegisterType<RecordEarningsJobAdditionalMessageBatchHandler>()
-                .As<IHandleMessageBatches<RecordEarningsJobAdditionalMessages>>()
+            builder.RegisterType<RecordJobAdditionalMessageBatchHandler>()
+                .As<IHandleMessageBatches<RecordJobAdditionalMessages>>()
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<RecordPeriodEndStopJobHandler>()

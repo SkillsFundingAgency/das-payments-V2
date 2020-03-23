@@ -306,7 +306,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             var batch = new List<GeneratedMessage>();
             while ((batch = GeneratedMessages.Skip(skip).Take(1000).ToList()).Count > 0)
             {
-                await MessageSession.Send(PartitionEndpointName, new RecordEarningsJobAdditionalMessages
+                await MessageSession.Send(PartitionEndpointName, new RecordJobAdditionalMessages
                 {
                     GeneratedMessages = batch,
                     JobId = JobDetails.JobId,

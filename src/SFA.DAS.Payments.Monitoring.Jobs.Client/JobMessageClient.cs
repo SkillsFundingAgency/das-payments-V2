@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -34,19 +35,36 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
             try
             {
                 logger.LogVerbose($"Sending request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
+               
+                var batchSize = 1000; //TODO: this should come from config
+                List<GeneratedMessage> batch;
+                
                 var itemProcessedEvent = new RecordJobMessageProcessingStatus
                 {
                     JobId = jobId,
                     Id = messageId,
                     MessageName = messageName,
                     EndTime = DateTimeOffset.UtcNow,
-                    GeneratedMessages = generatedMessages ?? new List<GeneratedMessage>(),
+                    GeneratedMessages = generatedMessages.Take(batchSize).ToList() ?? new List<GeneratedMessage>(),
                     Succeeded = true,
                 };
 
                 var partitionedEndpointName = config.GetMonitoringEndpointName(jobId);
                 await messageSession.Send(partitionedEndpointName, itemProcessedEvent).ConfigureAwait(false);
-                logger.LogDebug($"Sent request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
+            
+                var skip = batchSize;
+                while ((batch = generatedMessages.Skip(skip).Take(batchSize).ToList()).Count > 0)
+                {
+                    skip += batchSize;
+                    var providerEarningsAdditionalMessages = new RecordJobAdditionalMessages
+                    {
+                        JobId = jobId,
+                        GeneratedMessages = batch,
+                    };
+                    await messageSession.Send(partitionedEndpointName, providerEarningsAdditionalMessages).ConfigureAwait(false);
+                }
+                logger.LogDebug(
+                    $"Sent request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
             }
             catch (Exception ex)
             {
