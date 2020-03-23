@@ -99,10 +99,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
             act1CompletionPaymentEvents.Count.Should().Be(1);
             act1CompletionPaymentEvents.First().Ukprn.Should().Be(Ukprn);
             act1CompletionPaymentEvents.First().AmountDue.Should().Be(Amount);
-
-            providerPaymentsRepository.Verify(o =>
-                                                  o.GetMonthEndAct1CompletionPayments(It.IsAny<CollectionPeriod>(), CancellationToken.None),
-                                              Times.Once);
         }
     }
 }

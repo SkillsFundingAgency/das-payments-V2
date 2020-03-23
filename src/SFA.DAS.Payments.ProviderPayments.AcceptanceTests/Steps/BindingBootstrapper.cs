@@ -14,7 +14,6 @@ using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.Messages;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using TechTalk.SpecFlow;
-// ReSharper disable UnusedMember.Global
 
 namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 {

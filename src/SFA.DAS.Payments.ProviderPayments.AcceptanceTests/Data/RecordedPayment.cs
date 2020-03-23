@@ -19,10 +19,8 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data
         public decimal Amount { get; set; }
 
         public string CollectionPeriod { get; set; }
-        private CollectionPeriod parsedCollectionPeriod;
 
-        public CollectionPeriod ParsedCollectionPeriod => parsedCollectionPeriod ??
-                                                          (parsedCollectionPeriod = new CollectionPeriodBuilder()
-                                                              .WithSpecDate(this.CollectionPeriod).Build());
+        public CollectionPeriod ParsedCollectionPeriod => new CollectionPeriodBuilder()
+                                                              .WithSpecDate(this.CollectionPeriod).Build();
     }
 }

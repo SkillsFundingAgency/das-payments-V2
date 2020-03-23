@@ -71,7 +71,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         [Then(@"DAS approvals service should be notified of payments for learners with completion payments")]
         public async Task ThenDASApprovalsServiceShouldBeNotifiedOfPaymentsForLearnersWithCompletionPayments()
         {
-            var completedPayments = PaymentModels
+            var completionPayments = PaymentModels
                 .Where(p =>
                 p.TransactionType == TransactionType.Completion &&
                 p.ContractType == ContractType.Act1 &&
@@ -81,35 +81,23 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 
             await WaitForIt(() =>
             {
-                var countResult = RecordedAct1CompletionPaymentEventHandler
+                return RecordedAct1CompletionPaymentEventHandler
                            .ReceivedEvents
                            .Count(p =>
                                p.CollectionPeriod.AcademicYear == AcademicYear &&
                                p.CollectionPeriod.Period == CollectionPeriod &&
                                p.ContractType == ContractType.Act1 &&
                                p.TransactionType == TransactionType.Completion)
-                    == completedPayments.Count;
-                //var compareResult = CompletionEventCompare(null, null);
-                return countResult;
+                    == completionPayments.Count;
             }, $"Failed to find all the provider payment events. Found '{ProviderPaymentEventHandler.ReceivedEvents.Count}' events ");
         }
-
-
-        private bool CompletionEventCompare(RecordedAct1CompletionPaymentEvent paymentEvent, PaymentModel paymentModel)
-        {
-            //TODO: check import properties
-            return true;
-        }
-
+        
         [When(@"month end stop event is received")]
         public async Task WhenMonthEndStopEventIsReceived()
         {
             var periodEndEvent = new PeriodEndStoppedEvent
             {
-                CollectionPeriod = new CollectionPeriod { Period = CollectionPeriod, AcademicYear = AcademicYear },
-                EventId = Guid.NewGuid(),
-                EventTime = DateTimeOffset.UtcNow,
-                JobId = 124
+                CollectionPeriod = new CollectionPeriod { Period = CollectionPeriod, AcademicYear = AcademicYear }
             };
 
             await MessageSession.Send(periodEndEvent).ConfigureAwait(false);
