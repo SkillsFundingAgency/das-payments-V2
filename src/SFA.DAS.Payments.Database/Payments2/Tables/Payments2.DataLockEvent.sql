@@ -48,5 +48,10 @@ INCLUDE([EventId],[LearnerReferenceNumber], [LearningAimReference],
     [LearningAimPathwayCode] ) 
 go
 
-CREATE INDEX IX_DataLockEvent__JobId_Ukprn_IsPayable ON [Payments2].[DataLockEvent] (JobId, Ukprn, IsPayable)
- 
+CREATE NONCLUSTERED INDEX [IX_DataLockEvent__Metrics_Paid_DataLocks_2] 
+ON [Payments2].[DataLockEvent] 	([JobId], [Ukprn], [IsPayable]) 
+INCLUDE ([CollectionPeriod], [EventId], [LearnerReferenceNumber], [LearningAimFrameworkCode], 
+	[LearningAimPathwayCode], [LearningAimProgrammeType], [LearningAimReference], [LearningAimStandardCode] ) 
+WITH (ONLINE = ON)
+
+GO
