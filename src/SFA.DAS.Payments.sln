@@ -320,6 +320,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.ProviderAd
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Monitoring.Metrics.Messages", "SFA.DAS.Payments.Monitoring.Metrics.Messages\SFA.DAS.Payments.Monitoring.Metrics.Messages.csproj", "{B706A441-ACE0-4D57-A60D-1B7DA8AB36CE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AdHoc", "AdHoc", "{F726A2C6-2EC5-4EAB-9970-50F4F87FBB2D}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\Database\AdHoc\RemoveDuplicatesFromEePeriods.sql = Scripts\Database\AdHoc\RemoveDuplicatesFromEePeriods.sql
+		Scripts\Database\AdHoc\RemoveDuplicatesFromEePriceEpisodes.sql = Scripts\Database\AdHoc\RemoveDuplicatesFromEePriceEpisodes.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "V1", "V1", "{E1FFBAB5-CC3F-472A-AF84-6E20285F7A33}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\Database\AdHoc\V1\Correct_Failed_1920_07_AcountTransfers.sql = Scripts\Database\AdHoc\V1\Correct_Failed_1920_07_AcountTransfers.sql
+		Scripts\Database\AdHoc\V1\DeleteDuplicate1920_07_Payments.sql = Scripts\Database\AdHoc\V1\DeleteDuplicate1920_07_Payments.sql
+		Scripts\Database\AdHoc\V1\DeleteDuplicateEarnings.sql = Scripts\Database\AdHoc\V1\DeleteDuplicateEarnings.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1439,7 +1452,6 @@ Global
 		{C367DA42-6ED6-4028-B754-F39148F5D2C8} = {6B05550F-FBCB-47A1-856D-1A333A0CEDEC}
 		{3E0A8CEB-C94D-4B47-83D3-ABE646385C86} = {0CA32AC5-24E0-4D96-9D31-AA51556A64D5}
 		{2D2930BB-77E7-4AA1-B18C-BD3E072894F5} = {0CA32AC5-24E0-4D96-9D31-AA51556A64D5}
-		{E307A71F-9F25-4D11-8F50-57B84EF4AA5E} = {6B05550F-FBCB-47A1-856D-1A333A0CEDEC}
 		{63D92999-F026-4068-9C92-47C0235D978E} = {45300BA0-FCE3-41CA-8BC0-FDBFF89352F3}
 		{37BE2A88-61FA-4C09-A3CB-00A4BCB39EA1} = {5C3C9553-2EF8-47A2-A0C2-3DDD5F45893E}
 		{B85480D3-6B5D-4EF8-85AD-4333353212CE} = {45300BA0-FCE3-41CA-8BC0-FDBFF89352F3}
@@ -1486,6 +1498,8 @@ Global
 		{63236EA5-16BC-49D2-B26D-ABCFFCBC90A6} = {C2D2FEC2-7C2F-4559-9B14-173D88AE8AA5}
 		{CF41288C-6BDA-4E4E-B834-C539A1DD1C5C} = {63236EA5-16BC-49D2-B26D-ABCFFCBC90A6}
 		{B706A441-ACE0-4D57-A60D-1B7DA8AB36CE} = {F3F3B467-DCBE-4D11-9BD1-08D628E2C1BE}
+		{F726A2C6-2EC5-4EAB-9970-50F4F87FBB2D} = {03E21E69-E578-4F96-A564-A32D26738660}
+		{E1FFBAB5-CC3F-472A-AF84-6E20285F7A33} = {F726A2C6-2EC5-4EAB-9970-50F4F87FBB2D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E9E6D1E-3C3C-41C9-AED4-9B6DC9118F1F}

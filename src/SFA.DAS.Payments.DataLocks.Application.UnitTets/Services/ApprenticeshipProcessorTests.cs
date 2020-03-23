@@ -18,6 +18,7 @@ using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.Exceptions;
 
 namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 {
@@ -56,7 +57,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             mocker.Mock<IApprenticeshipService>().Setup(x => x.NewApprenticeship(It.Is<ApprenticeshipModel>(model =>
                 model.AccountId == 12345 &&
                 model.TransferSendingEmployerAccountId == 123456
-            ))).Throws<InvalidOperationException>();
+            ))).Throws(new ApprenticeshipAlreadyExistsException(1));
 
             var sut = mocker.Create<ApprenticeshipProcessor>();
 
