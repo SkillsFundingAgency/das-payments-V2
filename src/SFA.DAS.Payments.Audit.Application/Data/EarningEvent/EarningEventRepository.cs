@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
 {
@@ -10,6 +12,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
     {
         Task RemovePriorEvents(long ukprn, short academicYear, byte collectionPeriod, DateTime latestIlrSubmissionTime, CancellationToken cancellationToken);
         Task RemoveFailedSubmissionEvents(long jobId, CancellationToken cancellationToken);
+        Task SaveEarningEvents(List<EarningEventModel> earningEvents, CancellationToken cancellationToken);
     }
 
     public class EarningEventRepository: IEarningEventRepository
@@ -42,6 +45,12 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
                     Where 
                         JobId = {jobId}", cancellationToken)
                 .ConfigureAwait(false);
+        }
+
+        public async Task SaveEarningEvents(List<EarningEventModel> earningEvents, CancellationToken cancellationToken)
+        {
+            await dataContext.EarningEvent.AddRangeAsync(earningEvents, cancellationToken).ConfigureAwait(false);
+            await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }
