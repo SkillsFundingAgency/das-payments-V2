@@ -40,28 +40,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 new PaymentModel
                 {
                     Ukprn = Ukprn,
-                    FundingSource = FundingSourceType.CoInvestedEmployer,
-                    SfaContributionPercentage = 0.9m,
-                    JobId = 1,
-                    DeliveryPeriod = 7,
-                    CollectionPeriod = new CollectionPeriod
-                    {
-                        AcademicYear = 1819,
-                        Period = 8
-                    },
-                    IlrSubmissionDateTime = DateTime.UtcNow,
-                    ContractType = ContractType.Act1,
-                    PriceEpisodeIdentifier = "P-1",
-                    LearnerReferenceNumber = "100500",
-                    EventId = Guid.NewGuid(),
-                    LearningAimFundingLineType = "16-18",
-                    LearningAimPathwayCode = 1,
-                    LearningAimReference = "1",
-                    LearningAimFrameworkCode = 1,
-                    TransactionType = TransactionType.Learning,
-                    LearnerUln = 1000,
-                    LearningAimProgrammeType = 1,
-                    LearningAimStandardCode = 1,
                     Amount = Amount
                 }
             };
