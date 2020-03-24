@@ -4,6 +4,7 @@ using System.Fabric;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Services.Runtime;
+using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc;
 
 namespace SFA.DAS.Payments.Audit.EarningEventsService
 {
