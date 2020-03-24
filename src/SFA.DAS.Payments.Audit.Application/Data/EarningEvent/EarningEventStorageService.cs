@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -11,16 +12,19 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
     {
         private readonly IEarningEventMapper mapper;
         private readonly IPaymentLogger logger;
+        private readonly IEarningEventRepository repository;
 
-        public EarningEventStorageService(IEarningEventMapper mapper, IPaymentLogger logger)
+        public EarningEventStorageService(IEarningEventMapper mapper, IPaymentLogger logger, IEarningEventRepository repository)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        public async Task StoreEarnings(List<EarningEvents.Messages.Events.EarningEvent> earningEvent, CancellationToken cancellationToken)
+        public async Task StoreEarnings(List<EarningEvents.Messages.Events.EarningEvent> earningEvents, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var models = earningEvents.Select(earningEvent => mapper.Map(earningEvent)).ToList();
+            await repository.SaveEarningEvents(models, cancellationToken);
         }
     }
 }

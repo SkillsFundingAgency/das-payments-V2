@@ -6,16 +6,28 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
 {
     public interface IEarningEventMapper
     {
-        EarningEventModel Map(ApprenticeshipContractType1EarningEvent earningEvent);
+        EarningEventModel Map(EarningEvent earningEvent);
     }
 
     public class EarningEventMapper : IEarningEventMapper
     {
-        public EarningEventModel Map(ApprenticeshipContractType1EarningEvent earningEvent)
+        public EarningEventModel Map(EarningEvent earningEvent)
         {
             var earningEventModel = MapCommon(earningEvent);
-            earningEventModel.ContractType = ContractType.Act1;
+
+            switch (earningEvent)
+            {
+                case ApprenticeshipContractType1EarningEvent act1OnProgEarning:
+                    MapAct1Earning(act1OnProgEarning, earningEventModel);
+                    break;
+            }
+
             return earningEventModel;
+        }
+
+        protected void MapAct1Earning(ApprenticeshipContractType1EarningEvent earningEvent, EarningEventModel model)
+        {
+            model.ContractType = ContractType.Act1;
         }
 
         protected virtual EarningEventModel MapCommon(EarningEvent earningEvent)
