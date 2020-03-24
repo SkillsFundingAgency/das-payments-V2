@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoMapper;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -8,6 +9,20 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
     public interface IEarningEventMapper
     {
         EarningEventModel Map(EarningEvent earningEvent);
+    }
+
+    public class AutoMapperEarningEventMapper : IEarningEventMapper
+    {
+        private readonly IMapper mapper;
+
+        public AutoMapperEarningEventMapper(IMapper mapper)
+        {
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        }
+        public EarningEventModel Map(EarningEvent earningEvent)
+        {
+            return mapper.Map<EarningEventModel>(earningEvent);
+        }
     }
 
     public class EarningEventMapper : IEarningEventMapper
@@ -34,32 +49,6 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
 
         protected virtual EarningEventModel MapCommon(EarningEvent earningEvent)
         {
-
-            //earningEventModel.EventId.Should().Be(earningEvent.EventId);
-            //earningEventModel.EventTime.Should().Be(earningEvent.EventTime);
-            //earningEventModel.JobId.Should().Be(earningEvent.JobId);
-            //earningEventModel.IlrFileName.Should().Be(earningEvent.IlrFileName);
-            //earningEventModel.IlrSubmissionDateTime.Should().Be(earningEvent.IlrSubmissionDateTime);
-            //earningEventModel.AcademicYear.Should().Be(earningEvent.CollectionPeriod.AcademicYear);
-            //earningEventModel.CollectionPeriod.Should().Be(earningEvent.CollectionPeriod.Period);
-            //earningEventModel.LearnerReferenceNumber.Should().Be(earningEvent.Learner.ReferenceNumber);
-            //earningEventModel.LearnerUln.Should().Be(earningEvent.Learner.Uln);
-            //earningEventModel.LearningStartDate.Should().Be(earningEvent.LearningAim.StartDate);
-            //earningEventModel.LearningAimSequenceNumber.Should().Be(earningEvent.LearningAim?.SequenceNumber);
-            //earningEventModel.LearningAimFrameworkCode.Should().Be(earningEvent.LearningAim.FrameworkCode);
-            //earningEventModel.LearningAimPathwayCode.Should().Be(earningEvent.LearningAim.PathwayCode);
-            //earningEventModel.LearningAimProgrammeType.Should().Be(earningEvent.LearningAim.ProgrammeType);
-            //earningEventModel.LearningAimStandardCode.Should().Be(earningEvent.LearningAim.StandardCode);
-            //earningEventModel.LearningAimReference.Should().Be(earningEvent.LearningAim.Reference);
-            //earningEventModel.LearningAimFundingLineType.Should().Be(earningEvent.LearningAim.FundingLineType);
-
-            //builder.Ignore(x => x.ActualEndDate);
-            //builder.Ignore(x => x.CompletionAmount);
-            //builder.Ignore(x => x.CompletionStatus);
-            //builder.Ignore(x => x.InstalmentAmount);
-            //builder.Ignore(x => x.PlannedEndDate);
-            //builder.Ignore(x => x.StartDate);
-            //builder.Ignore(x => x.NumberOfInstalments);
             var model = new EarningEventModel
             {
                 EventId = earningEvent.EventId,

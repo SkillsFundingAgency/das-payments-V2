@@ -25,7 +25,11 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.EarningEvent
         public void SetUp()
         {
             moqer = new AutoMoqer();
-            moqer.SetInstance((IEarningEventMapper)new EarningEventMapper());
+            moqer.GetMock<IEarningEventMapper>()
+                .Setup(mapper => mapper.Map(It.IsAny<EarningEvents.Messages.Events.EarningEvent>()))
+                .Returns<EarningEvents.Messages.Events.EarningEvent>(earningEvent =>
+                    new EarningEventModel {EventId = earningEvent.EventId});
+
         }
 
         [Test]

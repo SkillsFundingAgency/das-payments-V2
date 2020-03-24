@@ -8,7 +8,12 @@ using SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents;
 
 namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
 {
-    public class EarningEventStorageService
+    public interface IEarningEventStorageService
+    {
+        Task StoreEarnings(List<EarningEvents.Messages.Events.EarningEvent> earningEvents, CancellationToken cancellationToken);
+    }
+
+    public class EarningEventStorageService : IEarningEventStorageService
     {
         private readonly IEarningEventMapper mapper;
         private readonly IPaymentLogger logger;
