@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Autofac;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.PeriodEnd.Messages.Events;
@@ -108,11 +110,11 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             var returnPayments = new List<PaymentModel>();
             foreach (var recordedPayment in payments)
             {
-                var payment = new PaymentModel()
+                var payment = new PaymentModel
                 {
                     CollectionPeriod = recordedPayment.ParsedCollectionPeriod,
                     ContractType = recordedPayment.ContractType,
-                    TransactionType = recordedPayment.Type,
+                    TransactionType = EnumHelper.ToTransactionType(recordedPayment.TransactionType),
                     Amount = recordedPayment.Amount,
                     DeliveryPeriod = 7,
                     Ukprn = 1000001,

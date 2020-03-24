@@ -13,11 +13,11 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.DasHandlers
         public static ConcurrentBag<RecordedAct1CompletionPaymentEvent> ReceivedEvents { get; } = new ConcurrentBag<RecordedAct1CompletionPaymentEvent>();
 
 
-        public async Task Handle(RecordedAct1CompletionPaymentEvent message, IMessageHandlerContext context)
+        public Task Handle(RecordedAct1CompletionPaymentEvent message, IMessageHandlerContext context)
         {
             Console.WriteLine(message.ToJson());
             ReceivedEvents.Add(message);
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 }

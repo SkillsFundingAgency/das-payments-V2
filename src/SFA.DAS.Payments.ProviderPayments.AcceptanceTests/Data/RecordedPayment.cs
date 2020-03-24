@@ -1,5 +1,4 @@
-﻿using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.Model.Core;
+﻿using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core.Builders;
 
@@ -7,8 +6,6 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data
 {
     public class RecordedPayment
     {
-        public TransactionType Type => EnumHelper.ToTransactionType(TransactionType);
-
         public string TransactionType { get; set; }
 
 

@@ -40,8 +40,12 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
                 new PaymentModel
                 {
                     Ukprn = Ukprn,
-                    Amount = Amount
-                }
+                    Amount = Amount,
+                    CollectionPeriod = new CollectionPeriod
+                    {
+                        Period = 1, AcademicYear = 1920
+                    }
+                },
             };
 
             providerPaymentsRepository = mocker.Mock<IProviderPaymentsRepository>();
@@ -68,7 +72,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
             {
                 CollectionPeriod = new CollectionPeriod
                 {
-                    Period = 1, AcademicYear = 1920
+                    Period = 1,
+                    AcademicYear = 1920
                 }
             };
 
