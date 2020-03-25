@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Audit.Application.Data.EarningEvent;
+using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEvent;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.Audit.EarningEventsService.Handlers

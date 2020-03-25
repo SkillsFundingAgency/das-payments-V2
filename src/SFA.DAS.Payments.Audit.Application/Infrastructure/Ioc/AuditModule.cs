@@ -102,6 +102,10 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
             builder.RegisterType<AutoMapperEarningEventMapper>()
                 .As<IEarningEventMapper>()
                 .InstancePerLifetimeScope();
+
+            builder.RegisterType<EarningsDuplicateEliminator>()
+                .As<IEarningsDuplicateEliminator>()
+                .InstancePerLifetimeScope();
         }
     }
 }

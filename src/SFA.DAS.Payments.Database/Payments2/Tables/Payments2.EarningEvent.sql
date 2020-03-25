@@ -45,3 +45,24 @@ CREATE NONCLUSTERED INDEX IX_EarningEvent__AcademicYear_CollectionPeriod_JobId
 ON [Payments2].[EarningEvent] (AcademicYear, CollectionPeriod, JobId)
 INCLUDE ([EventId])
 GO
+
+Create NONCLUSTERED INDEX IX_EarningEvent__Duplicate_Earnings ON [Payments2].[EarningEvent] 
+	(
+       [Ukprn]
+      ,[ContractType]
+      ,[CollectionPeriod]
+      ,[AcademicYear]
+      ,[LearnerReferenceNumber]
+      ,[LearnerUln]
+      ,[LearningAimReference]
+      ,[LearningAimProgrammeType]
+      ,[LearningAimStandardCode]
+      ,[LearningAimFrameworkCode]
+      ,[LearningAimPathwayCode]
+      ,[LearningAimFundingLineType]
+      ,[LearningStartDate]
+      ,[JobId]
+      ,[LearningAimSequenceNumber]
+      ,[EventType]
+	)
+GO
