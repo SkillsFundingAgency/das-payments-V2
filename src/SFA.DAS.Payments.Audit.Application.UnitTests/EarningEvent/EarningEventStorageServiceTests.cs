@@ -33,6 +33,9 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.EarningEvent
             moqer.GetMock<IEarningsDuplicateEliminator>()
                 .Setup(x => x.RemoveDuplicates(It.IsAny<List<EarningEvents.Messages.Events.EarningEvent>>()))
                 .Returns<List<EarningEvents.Messages.Events.EarningEvent>>(items => items);
+            moqer.GetMock<IEarningsDuplicateEliminator>()
+                .Setup(x => x.RemoveDuplicates(It.IsAny<List<EarningEventModel>>(),It.IsAny<CancellationToken>()))
+                .Returns<List<EarningEventModel>,CancellationToken>((lst,token)=>  Task.FromResult(lst));
         }
 
         [Test]
