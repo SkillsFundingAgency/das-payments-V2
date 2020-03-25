@@ -32,9 +32,16 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEven
 
         public async Task StoreEarnings(List<EarningEvents.Messages.Events.EarningEvent> earningEvents, CancellationToken cancellationToken)
         {
+            logger.LogDebug($"Removing duplicate earning events. Count: {earningEvents.Count}");
             var deDuplicatedEvents = duplicateEliminator.RemoveDuplicates(earningEvents);
+            logger.LogDebug($"De-duplicated earning events count: {deDuplicatedEvents.Count}");
+
             var models = deDuplicatedEvents.Select(earningEvent => mapper.Map(earningEvent)).ToList();
-            await repository.SaveEarningEvents(models, cancellationToken);
+            logger.LogDebug($"Now removing duplicate earning events already stored in the db.");
+            var deDuplicatedModels = await duplicateEliminator.RemoveDuplicates(models, cancellationToken).ConfigureAwait(false);
+            if (models.Count>deDuplicatedModels.Count)
+                logger.LogInfo($"Removed {models.Count- deDuplicatedModels.Count} duplicates.");
+            await repository.SaveEarningEvents(deDuplicatedModels, cancellationToken);
         }
 
     }
