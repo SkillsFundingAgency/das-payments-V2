@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
             CancellationToken cancellationToken);
     }
 
-    public class EarningEventRepository: IEarningEventRepository
+    public class EarningEventRepository : IEarningEventRepository
     {
         private readonly IPaymentsDataContext dataContext;
 
@@ -54,11 +54,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
 
         public async Task SaveEarningEvents(List<EarningEventModel> earningEvents, CancellationToken cancellationToken)
         {
-            using (var tx = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions{IsolationLevel = IsolationLevel.ReadUncommitted}, TransactionScopeAsyncFlowOption.Enabled))
-            {
-                await dataContext.EarningEvent.AddRangeAsync(earningEvents, cancellationToken).ConfigureAwait(false);
-                await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-            }
+            await dataContext.EarningEvent.AddRangeAsync(earningEvents, cancellationToken).ConfigureAwait(false);
+            await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<List<EarningEventModel>> GetDuplicateEarnings(List<EarningEventModel> earnings, CancellationToken cancellationToken)
@@ -70,24 +67,42 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
                 .Join(earnings,
                     storedEarning => new
                     {
-                        storedEarning.Ukprn, storedEarning.ContractType, storedEarning.CollectionPeriod,
-                        storedEarning.AcademicYear, storedEarning.LearnerReferenceNumber, storedEarning.LearnerUln,
-                        storedEarning.LearningAimReference, storedEarning.LearningAimProgrammeType,
-                        storedEarning.LearningAimStandardCode, storedEarning.LearningAimFrameworkCode,
-                        storedEarning.LearningAimPathwayCode, storedEarning.LearningAimFundingLineType,
-                        storedEarning.LearningStartDate, storedEarning.JobId, storedEarning.LearningAimSequenceNumber,
+                        storedEarning.Ukprn,
+                        storedEarning.ContractType,
+                        storedEarning.CollectionPeriod,
+                        storedEarning.AcademicYear,
+                        storedEarning.LearnerReferenceNumber,
+                        storedEarning.LearnerUln,
+                        storedEarning.LearningAimReference,
+                        storedEarning.LearningAimProgrammeType,
+                        storedEarning.LearningAimStandardCode,
+                        storedEarning.LearningAimFrameworkCode,
+                        storedEarning.LearningAimPathwayCode,
+                        storedEarning.LearningAimFundingLineType,
+                        storedEarning.LearningStartDate,
+                        storedEarning.JobId,
+                        storedEarning.LearningAimSequenceNumber,
                         storedEarning.EventType
                     },
                     receivedEarning => new
                     {
-                        receivedEarning.Ukprn, receivedEarning.ContractType, receivedEarning.CollectionPeriod,
-                        receivedEarning.AcademicYear, receivedEarning.LearnerReferenceNumber,
-                        receivedEarning.LearnerUln, receivedEarning.LearningAimReference,
-                        receivedEarning.LearningAimProgrammeType, receivedEarning.LearningAimStandardCode,
-                        receivedEarning.LearningAimFrameworkCode, receivedEarning.LearningAimPathwayCode,
-                        receivedEarning.LearningAimFundingLineType, receivedEarning.LearningStartDate,
-                        receivedEarning.JobId, receivedEarning.LearningAimSequenceNumber, receivedEarning.EventType
-                    }, (storedEarning,receivedEarning) => receivedEarning)
+                        receivedEarning.Ukprn,
+                        receivedEarning.ContractType,
+                        receivedEarning.CollectionPeriod,
+                        receivedEarning.AcademicYear,
+                        receivedEarning.LearnerReferenceNumber,
+                        receivedEarning.LearnerUln,
+                        receivedEarning.LearningAimReference,
+                        receivedEarning.LearningAimProgrammeType,
+                        receivedEarning.LearningAimStandardCode,
+                        receivedEarning.LearningAimFrameworkCode,
+                        receivedEarning.LearningAimPathwayCode,
+                        receivedEarning.LearningAimFundingLineType,
+                        receivedEarning.LearningStartDate,
+                        receivedEarning.JobId,
+                        receivedEarning.LearningAimSequenceNumber,
+                        receivedEarning.EventType
+                    }, (storedEarning, receivedEarning) => receivedEarning)
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
         }
