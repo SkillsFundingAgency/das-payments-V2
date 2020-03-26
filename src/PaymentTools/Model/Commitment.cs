@@ -24,5 +24,11 @@ namespace PaymentTools.Model
         public decimal Cost { get; internal set; }
         public ApprenticeshipStatus Status { get; internal set; }
         public string Course { get; internal set; }
+        public long? StandardCode { get; set; }
+        public int? FrameworkCode { get; set; }
+        public int? PathwayCode { get; set; }
+        public int? ProgrammeType { get; set; }
+        public long Ukprn { get; set; }
+        public long Uln { get; set; }
     }
 }

@@ -10,6 +10,8 @@ namespace PaymentTools.Model
 
         public DataLockErrorCode DataLockErrorCode { get; set; }
 
+        public byte DeliveryPeriod { get; set; }
+
         public string Type => "Data Lock";
     }
 }
