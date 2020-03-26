@@ -59,8 +59,10 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
 
         public async Task<List<EarningEventModel>> GetDuplicateEarnings(List<EarningEventModel> earnings, CancellationToken cancellationToken)
         {
+            var minEventTime = earnings.Min(earningEvent => earningEvent.EventTime).AddMinutes(-10);
             return await dataContext.EarningEvent
                 .AsNoTracking()
+                .Where(earningEvent => earningEvent.EventTime > minEventTime)
                 .Join(earnings,
                     storedEarning => new
                     {

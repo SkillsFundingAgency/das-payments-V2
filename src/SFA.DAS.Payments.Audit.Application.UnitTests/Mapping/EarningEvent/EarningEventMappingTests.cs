@@ -56,11 +56,4 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
             model.LearningAimSequenceNumber.Should().Be(101);
         }
     }
-
-
-    [TestFixture]
-    public class EarningEventMapperTests
-    {
-
-    }
 }
