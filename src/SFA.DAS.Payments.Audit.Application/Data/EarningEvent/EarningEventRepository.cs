@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Audit;
@@ -53,8 +54,11 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
 
         public async Task SaveEarningEvents(List<EarningEventModel> earningEvents, CancellationToken cancellationToken)
         {
-            await dataContext.EarningEvent.AddRangeAsync(earningEvents, cancellationToken).ConfigureAwait(false);
-            await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            using (var tx = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions{IsolationLevel = IsolationLevel.ReadUncommitted}, TransactionScopeAsyncFlowOption.Enabled))
+            {
+                await dataContext.EarningEvent.AddRangeAsync(earningEvents, cancellationToken).ConfigureAwait(false);
+                await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            }
         }
 
         public async Task<List<EarningEventModel>> GetDuplicateEarnings(List<EarningEventModel> earnings, CancellationToken cancellationToken)
