@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
     public interface IEarningsJobService
     {
         Task RecordNewJob(RecordEarningsJob earningsJobRequest, CancellationToken cancellationToken);
-        Task RecordNewJobAdditionalMessages(RecordEarningsJobAdditionalMessages earningsJobRequest, CancellationToken cancellationToken);
+        Task RecordNewJobAdditionalMessages(RecordJobAdditionalMessages jobRequest, CancellationToken cancellationToken);
         Task RecordDcJobCompleted(long jobId, bool succeeded, CancellationToken cancellationToken);
     }
 
@@ -40,11 +40,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
                 .ConfigureAwait(false);
         }
 
-        public async Task RecordNewJobAdditionalMessages(RecordEarningsJobAdditionalMessages earningsJobRequest, CancellationToken cancellationToken)
-        {
-            await RecordJobInProgressMessages(earningsJobRequest.JobId, earningsJobRequest.GeneratedMessages, cancellationToken).ConfigureAwait(false);
-            Logger.LogInfo($"Finished storing new job messages for job: {earningsJobRequest.JobId}");
-        }
+     
 
         public async Task RecordDcJobCompleted(long jobId, bool succeeded, CancellationToken cancellationToken)
         {
