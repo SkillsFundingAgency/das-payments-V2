@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.Submission
         private readonly IEarningsJobService earningsJobService;
         private readonly IJobStatusManager jobStatusManager;
 
-        public RecordEarningsJobBatchHandler(IPaymentLogger logger, IEarningsJobService earningsJobService, IJobStatusManager jobStatusManager)
+        public RecordEarningsJobBatchHandler(IPaymentLogger logger, IEarningsJobService earningsJobService, IEarningsJobStatusManager jobStatusManager)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.earningsJobService = earningsJobService ?? throw new ArgumentNullException(nameof(earningsJobService));

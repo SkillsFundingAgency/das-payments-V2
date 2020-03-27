@@ -77,8 +77,24 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
                 .ConfigureAwait(false);
             await dataContext.SaveJobStatus(jobId, jobStatus, endTime, cancellationToken).ConfigureAwait(false);
         }
+        
+        public async Task<List<long>> GetCurrentEarningJobs(CancellationToken cancellationToken)
+        {
+            return await GetCurrentJobs(model => model.JobType == JobType.EarningsJob || model.JobType == JobType.ComponentAcceptanceTestEarningsJob ,cancellationToken);
+        }
 
-        public async Task<List<long>> GetCurrentJobs(CancellationToken cancellationToken)
+        public async Task<List<long>> GetCurrentPeriodEndJobs(CancellationToken cancellationToken)
+        {
+            return await GetCurrentJobs(model =>
+            {
+                return model.JobType == JobType.PeriodEndStartJob ||
+                       model.JobType == JobType.PeriodEndRunJob ||
+                       model.JobType == JobType.PeriodEndStopJob ||
+                       model.JobType == JobType.ComponentAcceptanceTestMonthEndJob;
+            },cancellationToken);
+        }
+
+        private async Task<List<long>> GetCurrentJobs(Func<JobModel, bool> filter, CancellationToken cancellationToken)
         {
             var collection = await GetJobCollection().ConfigureAwait(false);
             var jobs = new List<long>();
@@ -88,7 +104,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 var job = enumerator.Current.Value;
-                if (job.Status == JobStatus.InProgress && job.DcJobId.HasValue)
+                if (job.Status == JobStatus.InProgress && job.DcJobId.HasValue & filter(job))
                         jobs.Add(job.DcJobId.Value);
             }
 
