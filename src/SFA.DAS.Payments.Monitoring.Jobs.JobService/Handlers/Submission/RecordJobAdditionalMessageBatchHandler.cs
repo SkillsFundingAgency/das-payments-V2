@@ -10,22 +10,22 @@ using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.Submission
 {
-    public class RecordEarningsJobAdditionalMessageBatchHandler: IHandleMessageBatches<RecordEarningsJobAdditionalMessages>
+    public class RecordJobAdditionalMessageBatchHandler: IHandleMessageBatches<RecordJobAdditionalMessages>
     {
-        private readonly IEarningsJobService earningsJobService;
+        private readonly ICommonJobService commonJobService;
         private readonly IPaymentLogger logger;
 
-        public RecordEarningsJobAdditionalMessageBatchHandler(IEarningsJobService earningsJobService, IPaymentLogger logger)
+        public RecordJobAdditionalMessageBatchHandler(ICommonJobService earningsJobService, IPaymentLogger logger)
         {
-            this.earningsJobService = earningsJobService ?? throw new ArgumentNullException(nameof(earningsJobService));
+            this.commonJobService = earningsJobService ?? throw new ArgumentNullException(nameof(earningsJobService));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task Handle(IList<RecordEarningsJobAdditionalMessages> messages, CancellationToken cancellationToken)
+        public async Task Handle(IList<RecordJobAdditionalMessages> messages, CancellationToken cancellationToken)
         {
             foreach (var message in messages)
             {
-                await earningsJobService.RecordNewJobAdditionalMessages(message, cancellationToken).ConfigureAwait(false);
+                await commonJobService.RecordNewJobAdditionalMessages(message, cancellationToken).ConfigureAwait(false);
             }
         }
     }

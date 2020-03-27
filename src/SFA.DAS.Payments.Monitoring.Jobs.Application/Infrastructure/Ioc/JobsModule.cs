@@ -9,6 +9,7 @@ using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
@@ -34,27 +35,35 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
                     TimeSpan.Parse(configHelper.GetSettingOrDefault("JobStatusCheck_Interval", "00:00:10")),
                     TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForJobToComplete", "00:20:00"))
                     );
-
             })
                 .As<IJobServiceConfiguration>()
                 .SingleInstance();
-            builder.RegisterType<JobStatusManager>()
-                .As<IJobStatusManager>()
+            builder.RegisterType<EarningsJobStatusManager>()
+                .As<IEarningsJobStatusManager>()
                 .SingleInstance();
-
+            builder.RegisterType<PeriodEndJobStatusManager>()
+                .As<IPeriodEndJobStatusManager>()
+                .SingleInstance();
+            builder.RegisterType<JobService>()
+                .As<ICommonJobService>()
+                .InstancePerLifetimeScope();
             builder.RegisterType<EarningsJobService>()
                 .As<IEarningsJobService>()
+                .InstancePerLifetimeScope();
+            builder.RegisterType<PeriodEndJobService>()
+                .As<IPeriodEndJobService>()
                 .InstancePerLifetimeScope();
             builder.RegisterType<JobMessageService>()
                 .As<IJobMessageService>()
                 .InstancePerLifetimeScope();
-            builder.RegisterType<MonthEndJobService>()
-                .As<IMonthEndJobService>()
-                .InstancePerLifetimeScope();
             builder.RegisterType<EarningsJobStatusService>()
-                .As<IJobStatusService>()
+                .As<IEarningsJobStatusService>()
                 .InstancePerLifetimeScope();
-
+            builder.RegisterType<PeriodEndJobStatusService>()
+                .As<IPeriodEndJobStatusService>()
+                .InstancePerLifetimeScope();
+           
+            
             builder.Register((c, p) => new MemoryCache(new MemoryCacheOptions()))
                 .As<IMemoryCache>()
                 .SingleInstance();
