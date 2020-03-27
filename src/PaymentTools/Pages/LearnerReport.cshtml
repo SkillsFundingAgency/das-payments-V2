@@ -18,7 +18,7 @@
         border-style: dashed;
         border-width: 1px;
     }
-    table { border-style: dashed; border-width: 1px; }
+    table { border-style: dashed; border-width: 1px; font-size: 11px; }
 
     .dlock-matched {
         background-color: darkseagreen;
@@ -67,104 +67,13 @@ else
                     {
                         <li>
                             Price Episode @episode.EpisodeName ◈ Price @($"{episode.Price:C}") ◈ @episode.Act
-                            <!--Price Episode Dropdown-->
 
-                            <!--Commitment Dropdown-->
-                            @*<ul>
-                                @foreach (var commitment in episode.Commitments)
-                                {
-                                    <li>
-                                        Commitment <i>@commitment.Id</i>
-                                        <table>
-                                            <tr><th></th><td>Commitment</td></tr>
-                                            <tr><th>☉ Id</th><td>@commitment.Id</td></tr>
-                                            <tr><th>☴ Description</th><td>@commitment.Description</td></tr>
-                                            <tr><th>🏭 Employer Account Id</th><td>@commitment.Employer</td></tr>
-                                            <tr><th>🎓 Provider Id</th><td>@commitment.Provider</td></tr>
-                                            <tr><th>⛳ Course</th><td>@commitment.Course</td></tr>
-                                            <tr><th>☼ Status</th><td>@commitment.Status</td></tr>
-                                            <tr><th>⛁ Cost</th><td>@commitment.Cost</td></tr>
-                                        </table>
-                                        @if (commitment.Items.Any())
-                                        {
-                                            <ul>
-                                                @foreach (var payment in commitment.Payments)
-                                                {
-                                                    <li>
-                                                        Payment <small>@payment.Id</small>:
-                                                        @($"{@payment.Amount:C}")
-                                                        @payment.TransactionType
-                                                        (@($"{payment.PriceEpisodeIdentifier} ⸗ {payment.CollectionPeriod.AcademicYear}-R{payment.CollectionPeriod.Period:D2}"))
-                                                        Delivery Period: @(payment.DeliveryPeriod)
-                                                    </li>
-                                                }
-                                                @foreach (var locked in commitment.DataLocked)
-                                                {
-                                                    <li>Data Locked - @locked.Amount - @locked.DataLockErrorCode.ToString() - (DataLockEventNonPayablePeriodFailure Id: @locked.Id) - Delivery Period: @(locked.DeliveryPeriod) </li>
-                                                }
-                                            </ul>
-                                        }
-                                    </li>
-                                }
-                            </ul>*@
-                            
-                            <!--Comparison Dropdown-->
                             <ul>
                                 @foreach (var commitment in episode.Commitments)
                                 {
                                     <li>
                                         Commitment <i>@commitment.Id</i>
-                                                   <table>
-                                                       <tr><th></th><td>Commitment</td><td>Price Episode</td><td>Possible Data Lock</td></tr>
-                                                       <tr class="@(commitment.Ukprn == episode.Ukprn ? "dlock-matched" : "dlock-unmatched")">
-                                                           <th>☉ Ukprn</th>
-                                                           <td>@commitment.Ukprn</td>
-                                                           <td>@episode.Ukprn</td>
-                                                           <td>@(commitment.Ukprn == episode.Ukprn ? "" : "DLOCK_01")</td>
-                                                       </tr>
-                                                       <tr class="@(commitment.Uln == episode.Uln ? "dlock-matched" : "dlock-unmatched")">
-                                                           <th>☉ Uln</th>
-                                                           <td>@commitment.Uln</td>
-                                                           <td>@episode.Uln</td>
-                                                           <td>@(commitment.Uln == episode.Uln ? "" : "DLOCK_02")</td>
-                                                       </tr>
-                                                       <tr class="@(commitment.StandardCode == episode.StandardCode ? "dlock-matched" : "dlock-unmatched")">
-                                                           <th>☼ Standard Code</th>
-                                                           <td>@commitment.StandardCode</td>
-                                                           <td>@episode.StandardCode</td>
-                                                           <td>@(commitment.StandardCode == episode.StandardCode ? "" : "DLOCK_03")</td>
-                                                       </tr>
-                                                       <tr class="@(commitment.FrameworkCode == episode.FrameworkCode ? "dlock-matched" : "dlock-unmatched")">
-                                                           <th>☼ Framework Code</th>
-                                                           <td>@commitment.FrameworkCode</td>
-                                                           <td>@episode.FrameworkCode</td>
-                                                           <td>@(commitment.FrameworkCode == episode.FrameworkCode ? "" : "DLOCK_04")</td>
-                                                       </tr>
-                                                       <tr class="@(commitment.ProgrammeType == episode.ProgrammeType ? "dlock-matched" : "dlock-unmatched")">
-                                                           <th>☼ Programme Type</th>
-                                                           <td>@commitment.ProgrammeType</td>
-                                                           <td>@episode.ProgrammeType</td>
-                                                           <td>@(commitment.ProgrammeType == episode.ProgrammeType ? "" : "DLOCK_05")</td>
-                                                       </tr>
-                                                       <tr class="@(commitment.PathwayCode == episode.PathwayCode ? "dlock-matched" : "dlock-unmatched")">
-                                                           <th>☼ Pathway Code</th>
-                                                           <td>@commitment.PathwayCode</td>
-                                                           <td>@episode.PathwayCode</td>
-                                                           <td>@(commitment.PathwayCode == episode.PathwayCode ? "" : "DLOCK_06")</td>
-                                                       </tr>
-                                                       <tr class="@(commitment.Cost == episode.Price ? "dlock-matched" : "dlock-unmatched")">
-                                                           <th>⛁ Cost</th>
-                                                           <td>@commitment.Cost</td>
-                                                           <td>@episode.Price</td>
-                                                           <td>@(commitment.Cost == episode.Price ? "" : "DLOCK_07")</td>
-                                                       </tr>
-                                                       <tr class="@(commitment.Start == episode.StartDate ? "dlock-matched" : "dlock-unmatched")">
-                                                           <th>⚐ Start Date</th>
-                                                           <td>@commitment.Start</td>
-                                                           <td>@episode.StartDate</td>
-                                                           <td>@(commitment.Start == episode.StartDate ? "" : "DLOCK_09")</td>
-                                                       </tr>
-                                                   </table>
+
                                         @if (commitment.Items.Any())
                                         {
                                             <ul>
@@ -178,12 +87,69 @@ else
                                                         Delivery Period: @(payment.DeliveryPeriod)
                                                     </li>
                                                 }
-                                                @foreach (var locked in commitment.DataLocked)
+                                                @if (commitment.DataLocked.Any())
                                                 {
-                                                    <li>Data Locked - @locked.Amount - @locked.DataLockErrorCode.ToString() - (DataLockEventNonPayablePeriodFailure Id: @locked.Id) - Delivery Period: @(locked.DeliveryPeriod) </li>
+                                                    <p>Actual Data Locks</p>
+                                                    @foreach (var locked in commitment.DataLocked.OrderBy(x => x.DeliveryPeriod))
+                                                     {
+                                                         <li>Data Locked - @locked.Amount - @locked.DataLockErrorCode.ToString() - (DataLockEventNonPayablePeriodFailure Id: @locked.Id) - Delivery Period: @(locked.DeliveryPeriod) </li>
+                                                     }
                                                 }
                                             </ul>
                                         }
+
+                                        <table>
+                                            <tr><th></th><td>Current Commitment Data</td><td>Submitted Price Episode Data</td><td>Possible Data Lock</td></tr>
+                                            <tr class="@(commitment.Ukprn == episode.Ukprn ? "dlock-matched" : "dlock-unmatched")">
+                                                <th>☉ Ukprn</th>
+                                                <td>@commitment.Ukprn</td>
+                                                <td>@episode.Ukprn</td>
+                                                <td>@(commitment.Ukprn == episode.Ukprn ? "" : "DLOCK_01")</td>
+                                            </tr>
+                                            <tr class="@(commitment.Uln == episode.Uln ? "dlock-matched" : "dlock-unmatched")">
+                                                <th>☉ Uln</th>
+                                                <td>@commitment.Uln</td>
+                                                <td>@episode.Uln</td>
+                                                <td>@(commitment.Uln == episode.Uln ? "" : "DLOCK_02")</td>
+                                            </tr>
+                                            <tr class="@(commitment.StandardCode == episode.StandardCode ? "dlock-matched" : "dlock-unmatched")">
+                                                <th>☼ Standard Code</th>
+                                                <td>@commitment.StandardCode</td>
+                                                <td>@episode.StandardCode</td>
+                                                <td>@(commitment.StandardCode == episode.StandardCode ? "" : "DLOCK_03")</td>
+                                            </tr>
+                                            <tr class="@(commitment.FrameworkCode == episode.FrameworkCode ? "dlock-matched" : "dlock-unmatched")">
+                                                <th>☼ Framework Code</th>
+                                                <td>@commitment.FrameworkCode</td>
+                                                <td>@episode.FrameworkCode</td>
+                                                <td>@(commitment.FrameworkCode == episode.FrameworkCode ? "" : "DLOCK_04")</td>
+                                            </tr>
+                                            <tr class="@(commitment.ProgrammeType == episode.ProgrammeType ? "dlock-matched" : "dlock-unmatched")">
+                                                <th>☼ Programme Type</th>
+                                                <td>@commitment.ProgrammeType</td>
+                                                <td>@episode.ProgrammeType</td>
+                                                <td>@(commitment.ProgrammeType == episode.ProgrammeType ? "" : "DLOCK_05")</td>
+                                            </tr>
+                                            <tr class="@(commitment.PathwayCode == episode.PathwayCode ? "dlock-matched" : "dlock-unmatched")">
+                                                <th>☼ Pathway Code</th>
+                                                <td>@commitment.PathwayCode</td>
+                                                <td>@episode.PathwayCode</td>
+                                                <td>@(commitment.PathwayCode == episode.PathwayCode ? "" : "DLOCK_06")</td>
+                                            </tr>
+                                            <tr class="@(commitment.Cost == episode.Price ? "dlock-matched" : "dlock-unmatched")">
+                                                <th>⛁ Cost</th>
+                                                <td>@commitment.Cost</td>
+                                                <td>@episode.Price</td>
+                                                <td>@(commitment.Cost == episode.Price ? "" : "DLOCK_07")</td>
+                                            </tr>
+                                            <tr class="@(commitment.Start == episode.StartDate ? "dlock-matched" : "dlock-unmatched")">
+                                                <th>⚐ Start Date</th>
+                                                <td>@commitment.Start</td>
+                                                <td>@episode.StartDate</td>
+                                                <td>@(commitment.Start == episode.StartDate ? "" : "DLOCK_09")</td>
+                                            </tr>
+                                        </table>
+
                                     </li>
                                 }
                             </ul>
