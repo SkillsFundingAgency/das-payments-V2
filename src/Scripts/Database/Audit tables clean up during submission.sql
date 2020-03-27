@@ -18,8 +18,14 @@ UNION
 SELECT DISTINCT JobId FROM Payments2.DataLockEvent
 WHERE CollectionPeriod = @collectionPeriod AND AcademicYear = @academicYear;
 
---keep all sucessful jobs and all in progress jobs, 
-DELETE FROM #JobDataToBeDeleted WHERE JobId IN ( SELECT DcJobId FROM Payments2.LatestSuccessfulDataLockJobs);
+-- keep all sucessful Jobs, 
+DELETE FROM #JobDataToBeDeleted WHERE JobId IN ( SELECT DcJobId FROM Payments2.LatestSuccessfulJobs );
+
+-- and Keep all in progress and Timed-out and Failed on DC Jobs
+DELETE FROM #JobDataToBeDeleted WHERE JobId IN ( SELECT DcJobId FROM Payments2.Job WHERE [Status] in (1, 4, 5) );
+
+-- and any jobs completed on our side but DC status is unknown
+DELETE FROM #JobDataToBeDeleted WHERE JobId IN ( SELECT DcJobId FROM Payments2.Job Where [Status] in (2, 3) AND Dcjobsucceeded IS NULL );
 
 PRINT 'select jobid finished ' + CONVERT(VARCHAR(150), SYSDATETIME());
 
