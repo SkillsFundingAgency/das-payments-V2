@@ -44,35 +44,5 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.SubmissionService
                 new ServiceInstanceListener(context =>listener = lifetimeScope.Resolve<IStatelessEndpointCommunicationListener>())
             };
         }
-
-        protected override async Task RunAsync(CancellationToken cancellationToken)
-        {
-            try
-            {
-                var jobs = new List<(long Job, long Ukprn, byte collectionPeriod, DateTime ildSubmissionDate)>()
-                {
-                    //(68217,10033440,8,DateTime.Parse("2020-03-23 17:10:11.093")),
-                };
-                var factory = lifetimeScope.Resolve<IEndpointInstanceFactory>();
-                var endpoint = await factory.GetEndpointInstance();
-                foreach (var job in jobs)
-                {
-                    await endpoint.Publish(new SubmissionJobSucceeded
-                    {
-                        CollectionPeriod = job.collectionPeriod,
-                        JobId = job.Job,
-                        Ukprn = job.Ukprn,
-                        AcademicYear = 1920,
-                        IlrSubmissionDateTime = job.ildSubmissionDate
-                    }).ConfigureAwait(false);
-                }
-            }
-            catch (Exception e)
-            {
-                
-                logger.LogWarning($"Failed to publish jobs. Error: {e.Message}");
-            }
-
-        }
     }
 }
