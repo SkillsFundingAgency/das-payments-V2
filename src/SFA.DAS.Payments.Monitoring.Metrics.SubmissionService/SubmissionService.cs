@@ -1,10 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Fabric;
+using System.Threading;
+using System.Threading.Tasks;
 using Autofac;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
+using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.SubmissionService
@@ -32,6 +37,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.SubmissionService
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
             logger.LogInfo("Creating Service Instance Listeners For SubmissionService");
+
 
             return new List<ServiceInstanceListener>
             {
