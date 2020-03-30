@@ -61,50 +61,40 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
         public async Task<List<EarningEventModel>> GetDuplicateEarnings(List<EarningEventModel> earnings, CancellationToken cancellationToken)
         {
             var minEventTime = earnings.Min(earningEvent => earningEvent.EventTime).AddMinutes(-10);
+            //EF Core 2.2 produces very inefficient sql for joins between in-memory collection and sql table
+            var sqlWhereClause = earnings.Aggregate(string.Empty, (currentSql, model) => $"Or (JobId = {model.JobId} And Ukprn = {model.Ukprn} and AcademicYear = {model.AcademicYear} and CollectionPeriod = {model.CollectionPeriod} and ContractType = {model} and LearnerUln = {model.LearnerUln} and LearnerReferenceNumber = '{model.LearnerReferenceNumber}' and LearningAimReference = '{model.LearningAimReference}' and LearningAimProgrammeType = {model.LearningAimProgrammeType} and LearningAimStandardCode = {model.LearningAimStandardCode} and LearningAimFrameworkCode = {model.LearningAimFrameworkCode} and LearningAimPathwayCode = {model.LearningAimPathwayCode} and LearningAimFundingLineType = {model.LearningAimFundingLineType} and LearningAimSequenceNumber = {model.LearningAimSequenceNumber} and LearningStartDate = '{model.StartDate:yyyy-MM-dd hh:mm:ss}' and EventType = '{model.GetType().FullName}')\n\r");
+            var sql = $@"Select [Id]
+                    ,[EventId]
+                ,[Ukprn]
+                ,[ContractType]
+                ,[CollectionPeriod]
+                ,[AcademicYear]
+                ,[LearnerReferenceNumber]
+                ,[LearnerUln]
+                ,[LearningAimReference]
+                ,[LearningAimProgrammeType]
+                ,[LearningAimStandardCode]
+                ,[LearningAimFrameworkCode]
+                ,[LearningAimPathwayCode]
+                ,[LearningAimFundingLineType]
+                ,[LearningStartDate]
+                ,[AgreementId]
+                ,[IlrSubmissionDateTime]
+                ,[JobId]
+                ,[EventTime]
+                ,[CreationDate]
+                ,[LearningAimSequenceNumber]
+                ,[SfaContributionPercentage]
+                ,[IlrFileName]
+                ,[EventType] 
+                From Payments2.Payment
+                Where 1=0
+                {sqlWhereClause}";
+            cancellationToken.ThrowIfCancellationRequested();
             return await dataContext.EarningEvent
                 .AsNoTracking()
-                .Where(earningEvent => earningEvent.EventTime > minEventTime)
-                .Join(earnings,
-                    storedEarning => new
-                    {
-                        storedEarning.Ukprn,
-                        storedEarning.ContractType,
-                        storedEarning.CollectionPeriod,
-                        storedEarning.AcademicYear,
-                        storedEarning.LearnerReferenceNumber,
-                        storedEarning.LearnerUln,
-                        storedEarning.LearningAimReference,
-                        storedEarning.LearningAimProgrammeType,
-                        storedEarning.LearningAimStandardCode,
-                        storedEarning.LearningAimFrameworkCode,
-                        storedEarning.LearningAimPathwayCode,
-                        storedEarning.LearningAimFundingLineType,
-                        storedEarning.LearningStartDate,
-                        storedEarning.JobId,
-                        storedEarning.LearningAimSequenceNumber,
-                        storedEarning.EventType
-                    },
-                    receivedEarning => new
-                    {
-                        receivedEarning.Ukprn,
-                        receivedEarning.ContractType,
-                        receivedEarning.CollectionPeriod,
-                        receivedEarning.AcademicYear,
-                        receivedEarning.LearnerReferenceNumber,
-                        receivedEarning.LearnerUln,
-                        receivedEarning.LearningAimReference,
-                        receivedEarning.LearningAimProgrammeType,
-                        receivedEarning.LearningAimStandardCode,
-                        receivedEarning.LearningAimFrameworkCode,
-                        receivedEarning.LearningAimPathwayCode,
-                        receivedEarning.LearningAimFundingLineType,
-                        receivedEarning.LearningStartDate,
-                        receivedEarning.JobId,
-                        receivedEarning.LearningAimSequenceNumber,
-                        receivedEarning.EventType
-                    }, (storedEarning, receivedEarning) => receivedEarning)
-                .ToListAsync(cancellationToken)
-                .ConfigureAwait(false);
+                .FromSql(sql)
+                .ToListAsync(cancellationToken);
         }
     }
 }

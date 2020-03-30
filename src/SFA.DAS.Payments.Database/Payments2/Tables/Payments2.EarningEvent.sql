@@ -48,21 +48,21 @@ GO
 
 Create NONCLUSTERED INDEX IX_EarningEvent__Duplicate_Earnings ON [Payments2].[EarningEvent] 
 	(
-       [Ukprn]
-      ,[ContractType]
-      ,[CollectionPeriod]
+      [JobId]
+      ,[Ukprn]
       ,[AcademicYear]
-      ,[LearnerReferenceNumber]
+      ,[CollectionPeriod]
+      ,[ContractType]
       ,[LearnerUln]
+      ,[LearnerReferenceNumber]
       ,[LearningAimReference]
       ,[LearningAimProgrammeType]
       ,[LearningAimStandardCode]
       ,[LearningAimFrameworkCode]
       ,[LearningAimPathwayCode]
       ,[LearningAimFundingLineType]
-      ,[LearningStartDate]
-      ,[JobId]
       ,[LearningAimSequenceNumber]
+      ,[LearningStartDate]
       ,[EventType]
 	)
 GO
