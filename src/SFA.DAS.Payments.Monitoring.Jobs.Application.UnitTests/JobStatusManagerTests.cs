@@ -7,6 +7,7 @@ using NUnit.Framework;
 using SFA.DAS.Payments.Application.Infrastructure.UnitOfWork;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
@@ -20,11 +21,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         public void SetUp()
         {
             mocker = AutoMock.GetLoose();
-            var mockStatusService = mocker.Mock<IJobStatusService>();
+            var mockStatusService = mocker.Mock<IEarningsJobStatusService>();
             mockStatusService.Setup(x => x.ManageStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
             var mockScope = mocker.Mock<IUnitOfWorkScope>();
-            mockScope.Setup(x => x.Resolve<IJobStatusService>())
+            mockScope.Setup(x => x.Resolve<IEarningsJobStatusService>())
                 .Returns(mockStatusService.Object);
             mocker.Mock<IUnitOfWorkScopeFactory>()
                 .Setup(x => x.Create(It.IsAny<string>()))
@@ -37,7 +38,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         [Test]
         public async Task Starts_Monitoring_Job()
         {
-            var manager = mocker.Create<JobStatusManager>();
+            var manager = mocker.Create<EarningsJobStatusManager>();
             var cancellationTokenSource = new CancellationTokenSource();
             cancellationTokenSource.CancelAfter(10000);
             try
@@ -48,7 +49,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             }
             catch (TaskCanceledException) { }
             catch (OperationCanceledException) { }
-            mocker.Mock<IJobStatusService>()
+            mocker.Mock<IEarningsJobStatusService>()
                 .Verify(svc => svc.ManageStatus(It.Is<long>(id => id == 99), It.IsAny<CancellationToken>()));
         }
     }
