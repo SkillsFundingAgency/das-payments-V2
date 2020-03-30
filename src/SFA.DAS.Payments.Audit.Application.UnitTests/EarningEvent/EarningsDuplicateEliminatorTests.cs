@@ -142,7 +142,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.EarningEvent
             };
 
             moqer.GetMock<IEarningEventRepository>()
-                .Setup(x => x.GetDuplicateEarnings(It.IsAny<List<EarningEventModel>>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.GetAlreadyStoredEarnings(It.IsAny<List<EarningEventModel>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(earnings.Take(2).ToList());
             var service = moqer.Create<EarningsDuplicateEliminator>();
             var deDuplicatedEvents = await service.RemoveDuplicates(earnings, CancellationToken.None).ConfigureAwait(false);

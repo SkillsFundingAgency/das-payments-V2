@@ -56,8 +56,24 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEven
 
         public async Task<List<EarningEventModel>> RemoveDuplicates(List<EarningEventModel> models, CancellationToken cancellationToken)
         {
-            var alreadyStored = await repository.GetDuplicateEarnings(models, cancellationToken).ConfigureAwait(false);
-            models.RemoveAll(model => alreadyStored.Any(stored => stored.EventId == model.EventId));
+            var alreadyStored = await repository.GetAlreadyStoredEarnings(models, cancellationToken).ConfigureAwait(false);
+            models.RemoveAll(model => alreadyStored.Any(storedEarning => 
+                        storedEarning.Ukprn == model.Ukprn && 
+                        storedEarning.ContractType == model.ContractType &&
+                        storedEarning.CollectionPeriod == model.CollectionPeriod &&
+                        storedEarning.AcademicYear == model.AcademicYear &&
+                        storedEarning.LearnerReferenceNumber == model.LearnerReferenceNumber &&
+                        storedEarning.LearnerUln == model.LearnerUln &&
+                        storedEarning.LearningAimReference == model.LearningAimReference &&
+                        storedEarning.LearningAimProgrammeType == model.LearningAimProgrammeType &&
+                        storedEarning.LearningAimStandardCode == model.LearningAimStandardCode &&
+                        storedEarning.LearningAimFrameworkCode == model.LearningAimFrameworkCode &&
+                        storedEarning.LearningAimPathwayCode == model.LearningAimPathwayCode &&
+                        storedEarning.LearningAimFundingLineType == model.LearningAimFundingLineType &&
+                        storedEarning.LearningStartDate == model.LearningStartDate &&
+                        storedEarning.JobId == model.JobId &&
+                        storedEarning.LearningAimSequenceNumber == model.LearningAimSequenceNumber &&
+                        storedEarning.EventType == model.EventType));
             return models;
         }
     }

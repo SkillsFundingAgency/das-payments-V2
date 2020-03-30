@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
         Task RemoveFailedSubmissionEvents(long jobId, CancellationToken cancellationToken);
         Task SaveEarningEvents(List<EarningEventModel> earningEvents, CancellationToken cancellationToken);
 
-        Task<List<EarningEventModel>> GetDuplicateEarnings(List<EarningEventModel> earnings,
+        Task<List<EarningEventModel>> GetAlreadyStoredEarnings(List<EarningEventModel> earnings,
             CancellationToken cancellationToken);
     }
 
@@ -58,13 +58,13 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
             await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<List<EarningEventModel>> GetDuplicateEarnings(List<EarningEventModel> earnings, CancellationToken cancellationToken)
+        public async Task<List<EarningEventModel>> GetAlreadyStoredEarnings(List<EarningEventModel> earnings, CancellationToken cancellationToken)
         {
             var minEventTime = earnings.Min(earningEvent => earningEvent.EventTime).AddMinutes(-10);
             //EF Core 2.2 produces very inefficient sql for joins between in-memory collection and sql table
-            var sqlWhereClause = earnings.Aggregate(string.Empty, (currentSql, model) => $"Or (JobId = {model.JobId} And Ukprn = {model.Ukprn} and AcademicYear = {model.AcademicYear} and CollectionPeriod = {model.CollectionPeriod} and ContractType = {model} and LearnerUln = {model.LearnerUln} and LearnerReferenceNumber = '{model.LearnerReferenceNumber}' and LearningAimReference = '{model.LearningAimReference}' and LearningAimProgrammeType = {model.LearningAimProgrammeType} and LearningAimStandardCode = {model.LearningAimStandardCode} and LearningAimFrameworkCode = {model.LearningAimFrameworkCode} and LearningAimPathwayCode = {model.LearningAimPathwayCode} and LearningAimFundingLineType = {model.LearningAimFundingLineType} and LearningAimSequenceNumber = {model.LearningAimSequenceNumber} and LearningStartDate = '{model.StartDate:yyyy-MM-dd hh:mm:ss}' and EventType = '{model.GetType().FullName}')\n\r");
+            var sqlWhereClause = earnings.Aggregate(string.Empty, (currentSql, model) => $"{currentSql} Or (JobId = {model.JobId} And Ukprn = {model.Ukprn} and AcademicYear = {model.AcademicYear} and CollectionPeriod = {model.CollectionPeriod} and ContractType = {model.ContractType:D} and LearnerUln = {model.LearnerUln} and LearnerReferenceNumber = '{model.LearnerReferenceNumber}' and LearningAimReference = '{model.LearningAimReference}' and LearningAimProgrammeType = {model.LearningAimProgrammeType} and LearningAimStandardCode = {model.LearningAimStandardCode} and LearningAimFrameworkCode = {model.LearningAimFrameworkCode} and LearningAimPathwayCode = {model.LearningAimPathwayCode} and LearningAimFundingLineType = '{model.LearningAimFundingLineType}' and LearningAimSequenceNumber = {model.LearningAimSequenceNumber} and LearningStartDate = '{model.LearningStartDate:yyyy-MM-dd hh:mm:ss}' and EventType = '{model.EventType}')\n\r");
             var sql = $@"Select [Id]
-                    ,[EventId]
+                ,[EventId]
                 ,[Ukprn]
                 ,[ContractType]
                 ,[CollectionPeriod]
@@ -87,7 +87,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
                 ,[SfaContributionPercentage]
                 ,[IlrFileName]
                 ,[EventType] 
-                From Payments2.Payment
+                From Payments2.EarningEvent
                 Where 1=0
                 {sqlWhereClause}";
             cancellationToken.ThrowIfCancellationRequested();
