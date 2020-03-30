@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,6 +33,12 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEven
         }
 
         public async Task StoreEarnings(List<EarningEvents.Messages.Events.EarningEvent> earningEvents, CancellationToken cancellationToken)
+        {
+            await TryStoreEarnings(earningEvents, cancellationToken).ConfigureAwait(false);
+        }
+
+        private async Task TryStoreEarnings(List<EarningEvents.Messages.Events.EarningEvent> earningEvents,
+            CancellationToken cancellationToken)
         {
             using (var tx = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }, TransactionScopeAsyncFlowOption.Enabled))
             {
