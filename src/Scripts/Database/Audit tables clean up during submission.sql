@@ -1,5 +1,3 @@
-BEGIN TRAN;
-
 PRINT 'start ' + CONVERT(VARCHAR(150), SYSDATETIME());
 
 DECLARE @collectionPeriod AS TINYINT= 8;
@@ -26,6 +24,8 @@ DELETE FROM #JobDataToBeDeleted WHERE JobId IN ( SELECT DcJobId FROM Payments2.J
 
 -- and any jobs completed on our side but DC status is unknown
 DELETE FROM #JobDataToBeDeleted WHERE JobId IN ( SELECT DcJobId FROM Payments2.Job Where [Status] in (2, 3) AND Dcjobsucceeded IS NULL );
+
+BEGIN TRAN;
 
 PRINT 'select jobid finished ' + CONVERT(VARCHAR(150), SYSDATETIME());
 
@@ -56,6 +56,11 @@ WHERE EventId IN ( SELECT EventId FROM #EarningEventIdsToDelete );
 
 PRINT 'delete EarningEvent finished ' + CONVERT(VARCHAR(150), SYSDATETIME());
 
+COMMIT TRAN;
+--ROLLBACK TRAN;
+
+BEGIN TRAN;
+
 IF OBJECT_ID('tempdb..#RequiredPaymentsToDelete') IS NOT NULL DROP TABLE #RequiredPaymentsToDelete;
 
 SELECT EventId INTO #RequiredPaymentsToDelete
@@ -78,6 +83,11 @@ DELETE Payments2.RequiredPaymentEvent
 WHERE EventId IN ( SELECT EventId FROM #RequiredPaymentsToDelete );
 ​
 PRINT 'delete RequiredPaymentEvent finished ' + CONVERT(VARCHAR(150), SYSDATETIME());
+
+COMMIT TRAN;
+--ROLLBACK TRAN;
+
+BEGIN TRAN;
 
 IF OBJECT_ID('tempdb..#DatalocksToDelete') IS NOT NULL DROP TABLE #DatalocksToDelete;
 ​
@@ -121,4 +131,5 @@ WHERE EventId IN ( SELECT EventId FROM #DatalocksToDelete );
 
 PRINT 'delete DataLockEvent finished ' + CONVERT(VARCHAR(150), SYSDATETIME());
 
-ROLLBACK TRAN;
+COMMIT TRAN;
+--ROLLBACK TRAN;
