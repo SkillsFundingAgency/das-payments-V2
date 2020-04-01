@@ -73,6 +73,7 @@
     <Folder Include="Metrics\Schemas" />
   </ItemGroup>
   <ItemGroup>
+    <Build Include="Payments2\Views\Payments2.LatestSuccessfulDataLockJobs.sql" />
     <Build Include="Security\User_RO.sql" />
     <Build Include="Security\User_RW.sql" />
     <Build Include="Security\Role_DataProcessing.sql" />

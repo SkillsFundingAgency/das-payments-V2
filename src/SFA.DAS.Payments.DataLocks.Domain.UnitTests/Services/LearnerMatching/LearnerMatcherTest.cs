@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
@@ -45,8 +46,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.LearnerMatching
 
             DataLockErrorCode? expectedDataLockErrorCode = DataLockErrorCode.DLOCK_01;
             ukprnMatcher
-                .Setup(o => o.MatchUkprn(It.IsAny<long>()))
-                .Returns(Task.FromResult(expectedDataLockErrorCode))
+                .Setup(o => o.MatchUkprn(It.IsAny<long>(), It.IsAny<List<ApprenticeshipModel>>()))
+                .Returns(new LearnerMatchResult{ DataLockErrorCode = expectedDataLockErrorCode } )
                 .Verifiable();
 
             var learnerMatcher = new LearnerMatcher(ukprnMatcher.Object, ulnLearnerMatcher.Object);
@@ -88,8 +89,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.LearnerMatching
             };
 
             ukprnMatcher
-                .Setup(o => o.MatchUkprn(It.IsAny<long>()))
-                .Returns(Task.FromResult(default(DataLockErrorCode?)))
+                .Setup(o => o.MatchUkprn(It.IsAny<long>(), It.IsAny<List<ApprenticeshipModel>>()))
+                .Returns(expectedLearnerMatchResult)
                 .Verifiable();
 
             ulnLearnerMatcher

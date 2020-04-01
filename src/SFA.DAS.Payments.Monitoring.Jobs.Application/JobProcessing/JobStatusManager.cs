@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.UnitOfWork;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
@@ -16,14 +18,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         void StartMonitoringJob(long jobId, JobType jobType);
     }
 
-    public class JobStatusManager : IJobStatusManager
+    public abstract class JobStatusManager : IJobStatusManager
     {
         private readonly IPaymentLogger logger;
         private readonly IUnitOfWorkScopeFactory scopeFactory;
         private readonly ConcurrentDictionary<long, bool> currentJobs;
-        private CancellationToken cancellationToken;
+        protected CancellationToken cancellationToken;
         private readonly TimeSpan interval;
-        public JobStatusManager(IPaymentLogger logger, IUnitOfWorkScopeFactory scopeFactory, IJobServiceConfiguration configuration)
+        protected JobStatusManager(IPaymentLogger logger, IUnitOfWorkScopeFactory scopeFactory, IJobServiceConfiguration configuration)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
@@ -61,7 +63,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 using (var scope = scopeFactory.Create("LoadExistingJobs"))
                 {
                     var jobStorage = scope.Resolve<IJobStorageService>();
-                    var jobs = await jobStorage.GetCurrentJobs(cancellationToken).ConfigureAwait(false);
+                    var jobs = await GetCurrentJobs(jobStorage);
                     foreach (var job in jobs)
                     {
                         StartMonitoringJob(job, JobType.EarningsJob);
@@ -74,6 +76,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             }
         }
 
+      
+
         private async Task CheckJobStatus(long jobId)
         {
             try
@@ -82,7 +86,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 {
                     try
                     {
-                        var jobStatusService = scope.Resolve<IJobStatusService>();
+                        var jobStatusService = GetJobStatusService(scope);
                         var finished = await jobStatusService.ManageStatus(jobId, cancellationToken).ConfigureAwait(false);
                         await scope.Commit();
                         currentJobs[jobId] = finished;
@@ -100,6 +104,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 throw;
             }
         }
+
+        public abstract IJobStatusService GetJobStatusService(IUnitOfWorkScope scope);
+
+        public abstract Task<List<long>> GetCurrentJobs(IJobStorageService jobStorage);
+        
+       
 
         public void StartMonitoringJob(long jobId, JobType jobType)
         {

@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.Application.Messaging
                 var add = AdditionalProperties(context.Message);
                 var props = string.Join(", ", add.Select(x => $"{x.Key}: {x.Value}"));
 
-                throw new MessageProcessingFailedException($"Couldn't process message `{messageType}` from `{sendingEndpoint}`.\n{props}", context.Message, ex);
+                throw new MessageProcessingFailedException($"Couldn't process message `{messageType}` from `{sendingEndpoint}`.\n{props}\n{ex.Message}", context.Message, ex);
             }
         }
 
