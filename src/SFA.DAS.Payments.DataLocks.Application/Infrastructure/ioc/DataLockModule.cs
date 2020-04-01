@@ -7,6 +7,7 @@ using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.Application.Batch;
+using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
@@ -38,14 +39,25 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
 
             builder.Register(ctx =>
             {
+                var configHelper = ctx.Resolve<IConfigurationHelper>();
+                var disableDatalocksConfig = configHelper.GetSetting("DisableDatalocks");
+
+                var configExists = bool.TryParse(disableDatalocksConfig, out var disableDatalocks);
+
+                if (configExists && disableDatalocks)
+                {
+                    return new CourseValidationProcessor(
+                        new List<ICourseValidator> {new ApprenticeshipPauseValidator()});
+                }
+
                 return new CourseValidationProcessor(ctx.Resolve<IEnumerable<ICourseValidator>>().ToList());
             }).AsImplementedInterfaces().InstancePerLifetimeScope();
-            
+
             builder.RegisterType<CalculatePeriodStartAndEndDate>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<DataLockStatusService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.RegisterType<FunctionalSkillEarningPeriodsValidationProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
-          
+
             builder.RegisterType<BatchedDataCache<PriceEpisodeStatusChange>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<CachingEventProcessor<PriceEpisodeStatusChange>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ReliableStateManagerTransactionProvider>().AsImplementedInterfaces().InstancePerLifetimeScope();
@@ -59,16 +71,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<LegacyDataLockEventErrorBulkCopyConfiguration>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<LegacyDataLockEventPeriodBulkCopyConfiguration>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-
-          
-
             builder.Register(ctx => new FunctionalSkillValidationProcessor(new List<ICourseValidator>
             {
                 new ApprenticeshipPauseValidator()
             })).As<IFunctionalSkillValidationProcessor>().InstancePerLifetimeScope();
 
             builder.RegisterType<DataLockProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
-          
+
             builder.RegisterType<ApprenticeshipProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ApprenticeshipService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ApprenticeshipUpdatedProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
@@ -80,7 +89,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<PriceEpisodeStatusChangeBuilder>().InstancePerLifetimeScope();
             builder.RegisterType<PriceEpisodesReceivedService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ManageReceivedDataLockEvent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            
         }
     }
 }
