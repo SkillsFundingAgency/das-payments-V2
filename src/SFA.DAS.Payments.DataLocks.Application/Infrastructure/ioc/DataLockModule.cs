@@ -12,7 +12,6 @@ using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
-using SFA.DAS.Payments.ServiceFabric.Core;
 using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc

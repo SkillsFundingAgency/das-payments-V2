@@ -14,7 +14,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 
     public class StartDateValidator : IStartDateValidator
     {
-        public (List<ApprenticeshipModel> validApprenticeships, List<DataLockFailure> dataLockFailures) Validate(PriceEpisode ilrPriceEpisode, List<ApprenticeshipModel> apprenticeships)
+        public (List<ApprenticeshipModel> validApprenticeships, List<DataLockFailure> dataLockFailures) 
+            Validate(PriceEpisode ilrPriceEpisode, List<ApprenticeshipModel> apprenticeships)
         {
             var dataLockFailures = new List<DataLockFailure>();
 
