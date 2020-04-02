@@ -4,6 +4,7 @@ DECLARE @collectionPeriod AS TINYINT= 8;
 DECLARE @academicYear AS SMALLINT= 1920;
 
 IF OBJECT_ID('tempdb..#JobDataToBeDeleted') IS NOT NULL DROP TABLE #JobDataToBeDeleted;
+
 SELECT DISTINCT JobId INTO #JobDataToBeDeleted FROM Payments2.EarningEvent
 WHERE CollectionPeriod = @collectionPeriod AND AcademicYear = @academicYear
 UNION
@@ -24,6 +25,10 @@ DELETE FROM #JobDataToBeDeleted WHERE JobId IN ( SELECT DcJobId FROM Payments2.J
 
 -- and any jobs completed on our side but DC status is unknown
 DELETE FROM #JobDataToBeDeleted WHERE JobId IN ( SELECT DcJobId FROM Payments2.Job Where [Status] in (2, 3) AND Dcjobsucceeded IS NULL );
+
+PRINT 'Final list includes Jobs not in Payments2.Job '
+
+SELECT JobId FROM #JobDataToBeDeleted
 
 BEGIN TRAN;
 
