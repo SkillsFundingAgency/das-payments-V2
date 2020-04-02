@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using AutoMapper;
+using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
@@ -14,10 +15,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
     public class FunctionalSkillEarningEventBuilder : EarningEventBuilderBase, IFunctionalSkillEarningsEventBuilder
     {
         private readonly IMapper mapper;
+        private readonly IRedundancyEarningSplitter redundancyEarningSplitter;
 
-        public FunctionalSkillEarningEventBuilder(IMapper mapper)
+        public FunctionalSkillEarningEventBuilder(IMapper mapper, IRedundancyEarningSplitter redundancyEarningSplitter)
         {
             this.mapper = mapper;
+            this.redundancyEarningSplitter = redundancyEarningSplitter ?? throw new ArgumentNullException(nameof(redundancyEarningSplitter));
         }
 
         public List<FunctionalSkillEarningsEvent> Build(ProcessLearnerCommand learnerSubmission)
@@ -27,6 +30,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             foreach (var intermediateLearningAim in intermediateResults)
             {
+                var redundancyDates = intermediateLearningAim.PriceEpisodes
+                    .Where(pe => pe.PriceEpisodeValues.PriceEpisodeRedStatusCode == 1)
+                    .Select( pe =>new { pe.PriceEpisodeValues.PriceEpisodeRedStartDate, pe.PriceEpisodeIdentifier}).FirstOrDefault();
+
+
+
                 if (intermediateLearningAim.Aims.All(x => x.IsMainAim()))
                 {
                     continue;
@@ -72,8 +81,15 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
                         earning.Periods = earningPeriods.AsReadOnly();
                     }
-
-                    results.Add(functionalSkillEarning);
+                    if (redundancyDates != null && functionalSkillEarning.PriceEpisodes.Any(pe=>pe.Identifier == redundancyDates.PriceEpisodeIdentifier))
+                    {
+                        results.AddRange(redundancyEarningSplitter.SplitFunctionSkillEarningByRedundancyDate(functionalSkillEarning, redundancyDates.PriceEpisodeRedStartDate.Value));
+                    }
+                    else
+                    {
+                        results.Add(functionalSkillEarning);
+                    }
+                 
                 }
             }
 

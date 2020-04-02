@@ -55,6 +55,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .Ignore(x => x.ContractType)
                 ;
 
+            CreateMap<ApprenticeshipContractType1EarningEvent,
+                ApprenticeshipContractType1RedundancyEarningEvent>();
+            CreateMap<ApprenticeshipContractType2EarningEvent,
+                ApprenticeshipContractType2RedundancyEarningEvent>();
+
             CreateMap<FM36Learner, Learner>()
                 .ForMember(dest => dest.ReferenceNumber, opt => opt.MapFrom(source => source.LearnRefNumber))
                 .ForMember(dest => dest.Uln, opt => opt.MapFrom(source => source.ULN));

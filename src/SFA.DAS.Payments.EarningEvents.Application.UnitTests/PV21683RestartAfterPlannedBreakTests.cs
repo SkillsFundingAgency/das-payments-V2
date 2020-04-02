@@ -6,9 +6,12 @@ using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
 using Microsoft.Extensions.FileProviders;
+using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
+using SFA.DAS.Payments.EarningEvents.Application.UnitTests.Helpers;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
@@ -19,18 +22,23 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
     public class Pv21683RestartAfterPlannedBreakTests
     {
         private IMapper mapper;
+        private const string filename = "PV21683_FM36OutputOnRestart.json";
+        private const string learnerRefNo = "01LSF01BR34";
+        private  Mock<IRedundancyEarningSplitter> redundancyEarningSplitterMock;
 
-        [OneTimeSetUp]
+
+            [OneTimeSetUp]
         public void InitialiseMapper()
         {
             mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<EarningsEventProfile>()));
+            redundancyEarningSplitterMock = new Mock<IRedundancyEarningSplitter>();
         }
 
         [Test]
         public void RestartAfterPlannedBreakShouldHaveOneMainAim()
         {
-            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(new ApprenticeshipContractTypeEarningsEventFactory(), mapper);
-            var events = builder.Build(CreateFromFile());
+            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningSplitterMock.Object, mapper);
+            var events = builder.Build(FileHelpers.CreateFromFile(filename, learnerRefNo));
 
             events.Should().HaveCount(1);
             events.First().PriceEpisodes.Should().HaveCount(2);
@@ -57,8 +65,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         [Test]
         public void RestartAfterPlannedBreakMainAimShouldHaveValidLearnStartDate()
         {
-            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(new ApprenticeshipContractTypeEarningsEventFactory(), mapper);
-            var events = builder.Build(CreateFromFile());
+            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningSplitterMock.Object, mapper);
+            var events = builder.Build(FileHelpers.CreateFromFile(filename, learnerRefNo));
 
             events.First().LearningAim.StartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
             events.First().StartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
@@ -67,8 +75,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         [Test]
         public void RestartAfterPlannedBreakShouldHaveTwoFunctionalSkills()
         {
-            var builder = new FunctionalSkillEarningEventBuilder(mapper);
-            var events = builder.Build(CreateFromFile());
+            var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningSplitterMock.Object);
+            var events = builder.Build(FileHelpers.CreateFromFile(filename, learnerRefNo));
 
             events.Should().HaveCount(2);
             events.First(e => e.LearningAim.Reference.Equals("5010987X")).Earnings
@@ -85,8 +93,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         [Test]
         public void RestartAfterPlannedBreakFunctionalSkillsEarningsShouldHaveValidFundingLineTypes()
         {
-            var builder = new FunctionalSkillEarningEventBuilder(mapper);
-            var events = builder.Build(CreateFromFile());
+            var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningSplitterMock.Object);
+            var events = builder.Build(FileHelpers.CreateFromFile(filename, learnerRefNo));
 
             var functionalSkillEvent_5010987X = events.FirstOrDefault(e => e.LearningAim.Reference.Equals("5010987X"));
             functionalSkillEvent_5010987X.Should().NotBeNull();
@@ -100,8 +108,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         [Test]
         public void RestartAfterPlannedBreakFunctionalSkillsEarningsShouldHaveValidStartDates()
         {
-            var builder = new FunctionalSkillEarningEventBuilder(mapper);
-            var events = builder.Build(CreateFromFile());
+            var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningSplitterMock.Object);
+            var events = builder.Build(FileHelpers.CreateFromFile(filename, learnerRefNo));
 
             var functionalSkillEvent_5010987X = events.First(e => e.LearningAim.Reference.Equals("5010987X"));
             functionalSkillEvent_5010987X.LearningAim.StartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
@@ -116,30 +124,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         public void RestartAfterPlannedBreakShouldHaveTwoSubmittedLearnerAims()
         {
             var builder = new SubmittedLearnerAimBuilder(mapper);
-            var events = builder.Build(CreateFromFile());
+            var events = builder.Build(FileHelpers.CreateFromFile(filename, learnerRefNo));
 
             events.Should().HaveCount(3);
             events.Where(x => x.LearningAimReference.Equals("ZPROG001")).Should().HaveCount(1);
             events.Where(x => !x.LearningAimReference.Equals("ZPROG001")).Should().HaveCount(2);
         }
 
-        private ProcessLearnerCommand CreateFromFile()
-        {
-            var embeddedProvider = new EmbeddedFileProvider(Assembly.GetExecutingAssembly());
-            using (var reader = embeddedProvider.GetFileInfo("DataFiles\\PV21683_FM36OutputOnRestart.json").CreateReadStream())
-            {
-                using (var sr = new StreamReader(reader))
-                {
-                    var fm36Global = JsonConvert.DeserializeObject<FM36Global>(sr.ReadToEnd());
-                    return new ProcessLearnerCommand
-                    {
-                        CollectionPeriod = 3,
-                        CollectionYear = short.Parse(fm36Global.Year),
-                        Ukprn = fm36Global.UKPRN,
-                        Learner = fm36Global.Learners.Single(l => l.LearnRefNumber.Equals("01LSF01BR34"))
-                    };
-                }
-            }
-        }
+        
     }
 }

@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             apprenticeshipKey = apprenticeshipKeyService.ParseApprenticeshipKey(apprenticeshipKeyString);
         }
 
-        public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleApprenticeship2ContractTypeEarningsEvent(ApprenticeshipContractType2EarningEvent earningEvent, CancellationToken cancellationToken)
+        public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleApprenticeship2ContractTypeEarningsEvent(ApprenticeshipContractTypeEarningsEvent earningEvent, CancellationToken cancellationToken)
         {
             paymentLogger.LogVerbose($"Handling ApprenticeshipContractType2EarningEvent for {apprenticeshipKeyString}");
 
@@ -81,6 +81,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
                 return requiredPaymentEvents;
             }
         }
+
 
         public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleFunctionalSkillEarningsEvent(Act2FunctionalSkillEarningsEvent earningEvent, CancellationToken cancellationToken)
         {

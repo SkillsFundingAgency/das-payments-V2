@@ -4,7 +4,9 @@ using System.Linq;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
+using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Incentives;
@@ -17,11 +19,15 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
     {
 
         private IMapper mapper;
+        private  Mock<IRedundancyEarningSplitter> redundancyEarningSplitterMock;
+        private const string filename = "FundingFm36Output-R05-Refund.json";
+        private const string learnerRefNo = "01fm361845";
 
         [OneTimeSetUp]
         public void InitialiseMapper()
         {
             mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<EarningsEventProfile>()));
+            redundancyEarningSplitterMock = new Mock<IRedundancyEarningSplitter>();
         }
 
 
@@ -224,7 +230,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                 }
             };
 
-            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(new ApprenticeshipContractTypeEarningsEventFactory(), mapper);
+            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningSplitterMock.Object,mapper);
 
             var events = builder.Build(processLearnerCommand);
             events.Should().NotBeNull();
@@ -702,8 +708,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             };
 
             var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
-                new ApprenticeshipContractTypeEarningsEventFactory(),
-                mapper);
+                new ApprenticeshipContractTypeEarningsEventFactory(),redundancyEarningSplitterMock.Object,mapper);
 
             var events = builder.Build(processLearnerCommand);
 
@@ -716,7 +721,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var processLearnerCommand = CreateLearnerSubmissionWithLearningSupport();
 
             var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
-                new ApprenticeshipContractTypeEarningsEventFactory(),
+                new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningSplitterMock.Object,
                 mapper);
 
             var events = builder.Build(processLearnerCommand);
@@ -726,6 +731,17 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             events.Single().OnProgrammeEarnings.Single(x => x.Type == OnProgrammeEarningType.Learning).Periods.Should().HaveCount(12);
             events.Single().IncentiveEarnings.Should().HaveCount(11);
             events.Single().IncentiveEarnings.Single(x => x.Type == IncentiveEarningType.LearningSupport).Periods.Should().HaveCount(12);
+        }
+
+
+        [Test]
+        public void Test()
+        {
+            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
+                new ApprenticeshipContractTypeEarningsEventFactory(), new RedundancyEarningSplitter(new RedundancyEarningEventFactory(mapper)),
+                mapper);
+          var results = builder.Build(Helpers.FileHelpers.CreateFromFile(filename, learnerRefNo));
+
         }
 
         private static ProcessLearnerCommand CreateLearnerSubmissionWithLearningSupport()
