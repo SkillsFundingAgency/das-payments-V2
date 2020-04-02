@@ -47,7 +47,7 @@ steps:
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
   inputs:
     Contents: '**/*.nupkg'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)ProviderPayments'    
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/ProviderPayments'    
 
 - task: PublishBuildArtifacts@1
   displayName: '$(build.artifactstagingdirectory)/ProviderPayments'
