@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Remotion.Linq.Clauses;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
@@ -22,9 +23,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         public List<ApprenticeshipContractTypeEarningsEvent> SplitContractEarningByRedundancyDate(ApprenticeshipContractTypeEarningsEvent earningEvent, DateTime redundancyDate)
         {
             List<ApprenticeshipContractTypeEarningsEvent> splitResults = new List<ApprenticeshipContractTypeEarningsEvent>();
-           
-            
-            var redundancyPeriod = 4;  //get period from redundancy date
+
+
+            var redundancyPeriod = GetPeriodFromDate(redundancyDate);  //get period from redundancy date
 
             //map earning event to correct redundancy type
             var redundancyEarningEvent = redundancyEarningEventFactory.CreateRedundancyContractType(earningEvent);
@@ -85,7 +86,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             DateTime priceEpisodeRedStartDate)
         {
             List<FunctionalSkillEarningsEvent> splitResults = new List<FunctionalSkillEarningsEvent>();
-            var redundancyPeriod = 4;  //get period from redundancy date
+            var redundancyPeriod = GetPeriodFromDate(priceEpisodeRedStartDate);  //get period from redundancy date
 
             //map earning event to correct redundancy type
             var redundancyEarningEvent = redundancyEarningEventFactory.CreateRedundancyFunctionalSkillType(functionalSkillEarning);
@@ -118,6 +119,23 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             splitResults.Add(redundancyEarningEvent);
 
             return splitResults;
+        }
+
+
+        private byte GetPeriodFromDate(DateTime date)
+        {
+            byte period;
+            var month = date.Month;
+
+            if (month < 8)
+            {
+                period = (byte) (month + 5);
+            }
+            else
+            {
+                period = (byte) (month - 7);
+            }
+            return period;
         }
     }
 }

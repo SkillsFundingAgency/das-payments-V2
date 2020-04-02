@@ -10,11 +10,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="DataFiles\FundingFm36Output-R05-Refund.json" />
     <None Remove="DataFiles\PV21683_FM36OutputOnRestart.json" />
+    <None Remove="DataFiles\Redundancy.json" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="DataFiles\PV21683_FM36OutputOnRestart.json" />
+    <EmbeddedResource Include="DataFiles\Redundancy.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +40,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Domain\SFA.DAS.Payments.EarningEvents.Domain.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.JobContextMessageHandling\SFA.DAS.Payments.JobContextMessageHandling.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="DataFiles\FundingFm36Output-R05-Refund.json" />
   </ItemGroup>
 
 </Project>

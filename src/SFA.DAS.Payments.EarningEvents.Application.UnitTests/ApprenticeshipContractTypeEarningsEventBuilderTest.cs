@@ -8,6 +8,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
@@ -20,7 +21,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
 
         private IMapper mapper;
         private  Mock<IRedundancyEarningSplitter> redundancyEarningSplitterMock;
-        private const string filename = "FundingFm36Output-R05-Refund.json";
+        private const string filename = "Redundancy.json";
         private const string learnerRefNo = "01fm361845";
 
         [OneTimeSetUp]
@@ -735,12 +736,32 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
 
 
         [Test]
-        public void Test()
+        public void RedundantLearner_shouldSplitEarningEventAtPeriodWhereRedundancyTakesPlace()
         {
             var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
                 new ApprenticeshipContractTypeEarningsEventFactory(), new RedundancyEarningSplitter(new RedundancyEarningEventFactory(mapper)),
                 mapper);
-          var results = builder.Build(Helpers.FileHelpers.CreateFromFile(filename, learnerRefNo));
+            var processLearnerCommand = Helpers.FileHelpers.CreateFromFile(filename, learnerRefNo);
+            var redundancyDate = processLearnerCommand.Learner.PriceEpisodes.First().PriceEpisodeValues
+                .PriceEpisodeRedStartDate.Value;
+
+            var redundancyPeriod = GetPeriodFromDate(redundancyDate);
+
+            var results = builder.Build(processLearnerCommand);
+
+            results.Should().HaveCount(2);
+            results.First().Should().BeOfType<ApprenticeshipContractType2EarningEvent>();
+            //results.First().OnProgrammeEarnings.Should().SatisfyRespectively(ope =>
+            //    ope.Periods.Where(p => p.Period >= redundancyPeriod).All(p => p.Amount == 0));
+            results.First().OnProgrammeEarnings.All(ope => ope.Periods.Where(p => p.Period >= redundancyPeriod)
+                .All(p => p.Amount == 0));
+
+            results.Last().OnProgrammeEarnings.All(ope => ope.Periods.Where(p => p.Period < redundancyPeriod)
+                .All(p => p.Amount == 1000m));
+            results.Last().OnProgrammeEarnings.All(ope => ope.Periods.Where(p => p.Period >= redundancyPeriod)
+                .All(p => p.SfaContributionPercentage == 1m));
+
+
 
         }
 
@@ -1028,6 +1049,23 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                     }
                 }
             };
+        }
+
+        
+        private byte GetPeriodFromDate(DateTime date)
+        {
+            byte period;
+            var month = date.Month;
+
+            if (month < 8)
+            {
+                period = (byte) (month + 5);
+            }
+            else
+            {
+                period = (byte) (month - 7);
+            }
+            return period;
         }
     }
 }
