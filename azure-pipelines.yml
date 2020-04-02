@@ -126,6 +126,32 @@ steps:
 #Task group has not been exported, task groups are not supported yet
 
 - task: DotNetCoreCLI@2
+  displayName: 'Restore Provider Payments Messages'
+  inputs:
+    command: restore
+    projects: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build Provider Payments Messages'
+  inputs:
+    projects: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
+  enabled: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Pack Provider Payments Messages'
+  inputs:
+    command: pack
+    packagesToPack: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
+    versioningScheme: byBuildNumber
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: SFA.DAS.Payments.ProviderPayments.Messages
+    Contents: '**/*.nupkg'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)\ProviderPayments'    
+
+- task: DotNetCoreCLI@2
   displayName: 'Build Period End Project'
   inputs:
     projects: '**/SFA.DAS.Payments.PeriodEnd.TestEndpoint.csproj'
