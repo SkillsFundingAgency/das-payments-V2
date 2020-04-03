@@ -15,12 +15,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
     public class FunctionalSkillEarningEventBuilder : EarningEventBuilderBase, IFunctionalSkillEarningsEventBuilder
     {
         private readonly IMapper mapper;
-        private readonly IRedundancyEarningSplitter redundancyEarningSplitter;
+        private readonly IRedundancyEarningService redundancyEarningService;
 
-        public FunctionalSkillEarningEventBuilder(IMapper mapper, IRedundancyEarningSplitter redundancyEarningSplitter)
+        public FunctionalSkillEarningEventBuilder(IMapper mapper, IRedundancyEarningService redundancyEarningService)
         {
             this.mapper = mapper;
-            this.redundancyEarningSplitter = redundancyEarningSplitter ?? throw new ArgumentNullException(nameof(redundancyEarningSplitter));
+            this.redundancyEarningService = redundancyEarningService ?? throw new ArgumentNullException(nameof(redundancyEarningService));
         }
 
         public List<FunctionalSkillEarningsEvent> Build(ProcessLearnerCommand learnerSubmission)
@@ -83,7 +83,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                     }
                     if (redundancyDates != null && functionalSkillEarning.PriceEpisodes.Any(pe=>pe.Identifier == redundancyDates.PriceEpisodeIdentifier))
                     {
-                        results.AddRange(redundancyEarningSplitter.SplitFunctionSkillEarningByRedundancyDate(functionalSkillEarning, redundancyDates.PriceEpisodeRedStartDate.Value));
+                        results.AddRange(redundancyEarningService.SplitFunctionSkillEarningByRedundancyDate(functionalSkillEarning, redundancyDates.PriceEpisodeRedStartDate.Value));
                     }
                     else
                     {

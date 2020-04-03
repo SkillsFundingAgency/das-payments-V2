@@ -17,15 +17,15 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         IApprenticeshipContractTypeEarningsEventBuilder
     {
         private readonly IApprenticeshipContractTypeEarningsEventFactory factory;
-        private readonly IRedundancyEarningSplitter redundancyEarningSplitter;
+        private readonly IRedundancyEarningService redundancyEarningService;
         private readonly IMapper mapper;
 
         public ApprenticeshipContractTypeEarningsEventBuilder(IApprenticeshipContractTypeEarningsEventFactory factory,
-            IRedundancyEarningSplitter redundancyEarningSplitter,
+            IRedundancyEarningService redundancyEarningService,
             IMapper mapper)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
-            this.redundancyEarningSplitter = redundancyEarningSplitter ?? throw new ArgumentNullException(nameof(redundancyEarningSplitter));
+            this.redundancyEarningService = redundancyEarningService ?? throw new ArgumentNullException(nameof(redundancyEarningService));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -54,7 +54,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
                     if (redundancyDates != null && earningEvent.PriceEpisodes.Any(pe=>pe.Identifier == redundancyDates.PriceEpisodeIdentifier))
                     {
-                        results.AddRange(redundancyEarningSplitter.SplitContractEarningByRedundancyDate(earningEvent, redundancyDates.PriceEpisodeRedStartDate.Value));
+                        results.AddRange(redundancyEarningService.SplitContractEarningByRedundancyDate(earningEvent, redundancyDates.PriceEpisodeRedStartDate.Value));
                     }
                     else
                     {

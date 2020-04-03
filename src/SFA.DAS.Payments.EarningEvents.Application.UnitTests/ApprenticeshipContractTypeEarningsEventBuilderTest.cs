@@ -8,6 +8,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
+using SFA.DAS.Payments.EarningEvents.Application.Services;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Incentives;
@@ -20,7 +21,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
     {
 
         private IMapper mapper;
-        private  Mock<IRedundancyEarningSplitter> redundancyEarningSplitterMock;
+        private  Mock<IRedundancyEarningService> redundancyEarningSplitterMock;
         private const string filename = "Redundancy.json";
         private const string learnerRefNo = "01fm361845";
 
@@ -28,7 +29,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         public void InitialiseMapper()
         {
             mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<EarningsEventProfile>()));
-            redundancyEarningSplitterMock = new Mock<IRedundancyEarningSplitter>();
+            redundancyEarningSplitterMock = new Mock<IRedundancyEarningService>();
         }
 
 
@@ -739,7 +740,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         public void RedundantLearner_shouldSplitEarningEventAtPeriodWhereRedundancyTakesPlace()
         {
             var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
-                new ApprenticeshipContractTypeEarningsEventFactory(), new RedundancyEarningSplitter(new RedundancyEarningEventFactory(mapper)),
+                new ApprenticeshipContractTypeEarningsEventFactory(), new RedundancyEarningService(new RedundancyEarningEventFactory(mapper)),
                 mapper);
             var processLearnerCommand = Helpers.FileHelpers.CreateFromFile(filename, learnerRefNo);
             var redundancyDate = processLearnerCommand.Learner.PriceEpisodes.First().PriceEpisodeValues

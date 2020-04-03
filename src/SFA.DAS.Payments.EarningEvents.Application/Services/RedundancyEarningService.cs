@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using Remotion.Linq.Clauses;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Factories;
 
-namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
+namespace SFA.DAS.Payments.EarningEvents.Application.Services
 {
-    public class RedundancyEarningSplitter : IRedundancyEarningSplitter
+    public class RedundancyEarningService : IRedundancyEarningService
     {
         private readonly IRedundancyEarningEventFactory redundancyEarningEventFactory;
 
 
-        public RedundancyEarningSplitter(IRedundancyEarningEventFactory redundancyEarningEventFactory)
+        public RedundancyEarningService(IRedundancyEarningEventFactory redundancyEarningEventFactory)
         {
             this.redundancyEarningEventFactory = redundancyEarningEventFactory ?? throw new ArgumentNullException(nameof(redundancyEarningEventFactory));
         }

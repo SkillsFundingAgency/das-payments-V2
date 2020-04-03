@@ -24,14 +24,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         private IMapper mapper;
         private const string filename = "PV21683_FM36OutputOnRestart.json";
         private const string learnerRefNo = "01LSF01BR34";
-        private  Mock<IRedundancyEarningSplitter> redundancyEarningSplitterMock;
+        private  Mock<IRedundancyEarningService> redundancyEarningSplitterMock;
 
 
             [OneTimeSetUp]
         public void InitialiseMapper()
         {
             mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<EarningsEventProfile>()));
-            redundancyEarningSplitterMock = new Mock<IRedundancyEarningSplitter>();
+            redundancyEarningSplitterMock = new Mock<IRedundancyEarningService>();
         }
 
         [Test]

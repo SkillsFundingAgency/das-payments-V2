@@ -4,7 +4,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Interfaces
 {
-    public interface IRedundancyEarningSplitter
+    public interface IRedundancyEarningService
     {
         List<ApprenticeshipContractTypeEarningsEvent> SplitContractEarningByRedundancyDate(
             ApprenticeshipContractTypeEarningsEvent earningEvent, DateTime redundancyDate);
