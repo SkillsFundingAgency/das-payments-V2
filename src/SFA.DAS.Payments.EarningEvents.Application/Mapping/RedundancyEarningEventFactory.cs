@@ -32,7 +32,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         public FunctionalSkillEarningsEvent CreateRedundancyFunctionalSkillType(
             FunctionalSkillEarningsEvent functionalSkillEarning)
         {
-            throw new NotImplementedException();
+            switch (functionalSkillEarning)
+            {
+                case Act1FunctionalSkillEarningsEvent act1:
+                    return mapper.Map<Act1RedundancyFunctionalSkillEarningsEvent>(act1);
+                case Act2FunctionalSkillEarningsEvent act2:
+                     return  mapper.Map<Act2RedundancyFunctionalSkillEarningsEvent>(act2);
+                default: return null;
+            }
         }
     }
 }

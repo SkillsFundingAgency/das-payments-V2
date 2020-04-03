@@ -5,6 +5,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Factories;
+using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
@@ -60,12 +61,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 ApprenticeshipContractType1RedundancyEarningEvent>()
                 ;
             CreateMap<ApprenticeshipContractType2EarningEvent,
-                ApprenticeshipContractType2RedundancyEarningEvent>()
-                .ForMember(destinationMember=> destinationMember.OnProgrammeEarnings, opt =>opt.MapFrom(source => source.OnProgrammeEarnings));
+                ApprenticeshipContractType2RedundancyEarningEvent>();
 
+            CreateMap<Act1FunctionalSkillEarningsEvent, Act1RedundancyFunctionalSkillEarningsEvent>();
+            CreateMap<Act2FunctionalSkillEarningsEvent, Act2RedundancyFunctionalSkillEarningsEvent>();
+
+            CreateMap<FunctionalSkillEarning, FunctionalSkillEarning>();
             CreateMap<OnProgrammeEarning, OnProgrammeEarning>();
             CreateMap<EarningPeriod, EarningPeriod>();
-
 
             CreateMap<FM36Learner, Learner>()
                 .ForMember(dest => dest.ReferenceNumber, opt => opt.MapFrom(source => source.LearnRefNumber))

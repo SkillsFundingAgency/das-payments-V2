@@ -9,6 +9,7 @@ using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
 using SFA.DAS.Payments.EarningEvents.Application.Services;
+using SFA.DAS.Payments.EarningEvents.Application.UnitTests.Helpers;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Incentives;
@@ -746,7 +747,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var redundancyDate = processLearnerCommand.Learner.PriceEpisodes.First().PriceEpisodeValues
                 .PriceEpisodeRedStartDate.Value;
 
-            var redundancyPeriod = GetPeriodFromDate(redundancyDate);
+            var redundancyPeriod = redundancyDate.GetCollectionPeriodFromDate();
 
             var events = builder.Build(processLearnerCommand);
 
@@ -1080,21 +1081,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             };
         }
 
-        
-        private byte GetPeriodFromDate(DateTime date)
-        {
-            byte period;
-            var month = date.Month;
 
-            if (month < 8)
-            {
-                period = (byte) (month + 5);
-            }
-            else
-            {
-                period = (byte) (month - 7);
-            }
-            return period;
-        }
     }
 }

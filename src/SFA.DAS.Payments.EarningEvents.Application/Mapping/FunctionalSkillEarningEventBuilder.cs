@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             foreach (var intermediateLearningAim in intermediateResults)
             {
-                var redundancyDates = intermediateLearningAim.PriceEpisodes
+                var redundancyDates = learnerSubmission.Learner.PriceEpisodes
                     .Where(pe => pe.PriceEpisodeValues.PriceEpisodeRedStatusCode == 1)
                     .Select( pe =>new { pe.PriceEpisodeValues.PriceEpisodeRedStartDate, pe.PriceEpisodeIdentifier}).FirstOrDefault();
 
@@ -81,7 +81,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
                         earning.Periods = earningPeriods.AsReadOnly();
                     }
-                    if (redundancyDates != null && functionalSkillEarning.PriceEpisodes.Any(pe=>pe.Identifier == redundancyDates.PriceEpisodeIdentifier))
+                    if (redundancyDates != null)
                     {
                         results.AddRange(redundancyEarningService.SplitFunctionSkillEarningByRedundancyDate(functionalSkillEarning, redundancyDates.PriceEpisodeRedStartDate.Value));
                     }

@@ -9,7 +9,9 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
+using SFA.DAS.Payments.EarningEvents.Application.Services;
 using SFA.DAS.Payments.EarningEvents.Application.UnitTests.Builders;
+using SFA.DAS.Payments.EarningEvents.Application.UnitTests.Helpers;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core;
@@ -25,6 +27,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         private IMapper mapper;
         private ProcessLearnerCommand learnerSubmission;
         private  Mock<IRedundancyEarningService> redundancyEarningSplitterMock;
+        private const string filename = "Redundancy.json";
+        private const string learnerRefNo = "01fm361845";
 
         [OneTimeSetUp]
         public void InitialiseMapper()
@@ -840,6 +844,48 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             events.Should().HaveCount(1);
             events.Single().Earnings.Should().HaveCount(3);
             events.Single().Earnings.Single(x => x.Type == FunctionalSkillType.LearningSupport).Periods.Should().HaveCount(12);
+        }
+
+          [Test]
+        public void RedundantLearner_shouldSplitEarningEventAtPeriodWhereRedundancyTakesPlace()
+        {
+            var builder = new FunctionalSkillEarningEventBuilder(mapper,
+                new RedundancyEarningService(new RedundancyEarningEventFactory(mapper))
+                );
+            var processLearnerCommand = Helpers.FileHelpers.CreateFromFile(filename, learnerRefNo);
+            var redundancyDate = processLearnerCommand.Learner.PriceEpisodes.First().PriceEpisodeValues
+                .PriceEpisodeRedStartDate.Value;
+
+            var redundancyPeriod = redundancyDate.GetCollectionPeriodFromDate();
+
+            var events = builder.Build(processLearnerCommand);
+
+            events.Should().HaveCount(2);
+            var act2EarningEvent = events.First();
+
+            act2EarningEvent.Should().BeOfType<Act2FunctionalSkillEarningsEvent>();
+            foreach (var onProgrammeEarning in act2EarningEvent.Earnings)
+            {
+                var redundancyPeriods = onProgrammeEarning.Periods.Where(p => p.Period >= redundancyPeriod).ToList();
+                redundancyPeriods.Should().HaveCount(9);
+                foreach (var earningPeriod in redundancyPeriods)
+                {
+                    earningPeriod.Amount.Should().Be(0m, "This will be transferred to a redundancy earning");
+                }
+            }
+            var redundancyEarningEvent = events.Last();
+
+            foreach (var earning in redundancyEarningEvent.Earnings)
+            {
+                var redundancyPeriods = earning.Periods.Where(p => p.Period >= redundancyPeriod).ToList();
+                redundancyPeriods.Should().HaveCount(9);
+                foreach (var earningPeriod in redundancyPeriods)
+                {
+                    earningPeriod.SfaContributionPercentage.Should().Be(1m, "This will now be paid by 100% co-funded contribution");
+                }
+            }
+
+            Assert.IsTrue(redundancyEarningEvent.Earnings[1].Periods.All(p => p.Amount == 39.25m));
         }
     }
 }
