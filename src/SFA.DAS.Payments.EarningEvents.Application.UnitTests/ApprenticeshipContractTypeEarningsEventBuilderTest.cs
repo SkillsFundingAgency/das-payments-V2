@@ -747,22 +747,50 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
 
             var redundancyPeriod = GetPeriodFromDate(redundancyDate);
 
-            var results = builder.Build(processLearnerCommand);
+            var events = builder.Build(processLearnerCommand);
 
-            results.Should().HaveCount(2);
-            results.First().Should().BeOfType<ApprenticeshipContractType2EarningEvent>();
-            //results.First().OnProgrammeEarnings.Should().SatisfyRespectively(ope =>
-            //    ope.Periods.Where(p => p.Period >= redundancyPeriod).All(p => p.Amount == 0));
-            results.First().OnProgrammeEarnings.All(ope => ope.Periods.Where(p => p.Period >= redundancyPeriod)
-                .All(p => p.Amount == 0));
+            events.Should().HaveCount(2);
+            var act2EarningEvent = events.First();
 
-            results.Last().OnProgrammeEarnings.All(ope => ope.Periods.Where(p => p.Period < redundancyPeriod)
-                .All(p => p.Amount == 1000m));
-            results.Last().OnProgrammeEarnings.All(ope => ope.Periods.Where(p => p.Period >= redundancyPeriod)
-                .All(p => p.SfaContributionPercentage == 1m));
+            act2EarningEvent.Should().BeOfType<ApprenticeshipContractType2EarningEvent>();
+            foreach (var onProgrammeEarning in act2EarningEvent.OnProgrammeEarnings)
+            {
+                var redundancyPeriods = onProgrammeEarning.Periods.Where(p => p.Period >= redundancyPeriod).ToList();
+                foreach (var earningPeriod in redundancyPeriods)
+                {
+                    earningPeriod.Amount.Should().Be(0m, "This will be transferred to a redundancy earning");
+                }
+            }
+            
+            foreach (var onProgrammeEarning in act2EarningEvent.IncentiveEarnings)
+            {
+                var redundancyPeriods = onProgrammeEarning.Periods.Where(p => p.Period >= redundancyPeriod).ToList();
+                foreach (var earningPeriod in redundancyPeriods)
+                {
+                    earningPeriod.Amount.Should().Be(0m, "This will be transferred to a redundancy earning");
+                }
+            }
+            
+            var redundancyEarningEvent = events.Last();
+                   
+            foreach (var onProgrammeEarning in redundancyEarningEvent.OnProgrammeEarnings)
+            {
+                var redundancyPeriods = onProgrammeEarning.Periods.Where(p => p.Period >= redundancyPeriod).ToList();
+                foreach (var earningPeriod in redundancyPeriods)
+                {
+                    earningPeriod.SfaContributionPercentage.Should().Be(1m, "This will now be paid by 100% co-funded contribution");
+                }
+            }
+                     
+            foreach (var onProgrammeEarning in redundancyEarningEvent.IncentiveEarnings)
+            {
+                var redundancyPeriods = onProgrammeEarning.Periods.Where(p => p.Period >= redundancyPeriod).ToList();
+                foreach (var earningPeriod in redundancyPeriods)
+                {
+                    earningPeriod.SfaContributionPercentage.Should().Be(1m, "This will now be paid by 100% co-funded contribution");
 
-
-
+                }
+            }
         }
 
         private static ProcessLearnerCommand CreateLearnerSubmissionWithLearningSupport()
