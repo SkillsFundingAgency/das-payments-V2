@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Castle.Core.Internal;
 using FluentAssertions;
 using NUnit.Framework;
@@ -16,10 +17,13 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
     [TestFixture]
     public class EarningEventMapperTests
     {
-        [SetUp]
-        public void SetUp()
+        protected IMapper Mapper { get; private set; }
+        
+        [OneTimeSetUp]
+        public void InitialiseMapper()
         {
-
+            var config = new MapperConfiguration(cfg => cfg.AddProfile<EarningEventProfile>());
+            Mapper = new Mapper(config);
         }
 
         [Test]
@@ -93,8 +97,10 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
                 },
                 StartDate = DateTime.Now
             };
+             
+            
 
-            var mapper = new EarningEventMapper();
+            var mapper = new EarningEventMapper(Mapper);
             var earningEventModel = mapper.Map(earningEvent);
             earningEventModel.Should().NotBeNull("Earning event model was null");
             CompareCommonProperties(earningEvent, earningEventModel);

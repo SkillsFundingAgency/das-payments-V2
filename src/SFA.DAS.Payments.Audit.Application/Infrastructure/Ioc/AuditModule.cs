@@ -99,7 +99,7 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
                 .As<IEarningEventStorageService>()
                 .InstancePerLifetimeScope();
 
-            builder.RegisterType<AutoMapperEarningEventMapper>()
+            builder.RegisterType<EarningEventMapper>()
                 .As<IEarningEventMapper>()
                 .InstancePerLifetimeScope();
 

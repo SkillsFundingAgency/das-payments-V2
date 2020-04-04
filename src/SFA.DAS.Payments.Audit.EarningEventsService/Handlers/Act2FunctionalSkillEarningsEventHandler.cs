@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -25,7 +26,7 @@ namespace SFA.DAS.Payments.Audit.EarningEventsService.Handlers
         {
             var earningEvents = new List<EarningEvent>();
             earningEvents.AddRange(messages);
-            await storageService.StoreEarnings(earningEvents, cancellationToken).ConfigureAwait(false);
+            await storageService.StoreEarnings(messages.Cast<EarningEvent>().ToList(), cancellationToken).ConfigureAwait(false);
         }
     }
 }
