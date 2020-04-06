@@ -31,6 +31,6 @@
     <Parameter Name="TimeToWaitForJobToComplete" Value="01:00:00" />
     <Parameter Name="NumberOfNServiceBusThreads" Value="4" />
     <Parameter Name="DasNServiceBusLicenseKey" Value=""/>
-
+    <Parameter Name="MetricsGenerationDelay" Value="00:05:00"/>
   </Section>
 </Settings>
