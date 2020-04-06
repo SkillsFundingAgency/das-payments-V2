@@ -54,3 +54,17 @@ INCLUDE
 WITH (ONLINE = ON)
 
 GO
+
+CREATE NONCLUSTERED INDEX [IX_DataLockEvent__Manual_Metrics_Paid_DataLocks] ON [Payments2].[DataLockEvent]
+(
+	[Ukprn] ,
+	[CollectionPeriod],
+	[JobId],
+	[IsPayable]
+)
+INCLUDE([EventId],[LearnerReferenceNumber], [LearningAimReference],
+    [LearningAimProgrammeType] ,
+    [LearningAimStandardCode] ,
+    [LearningAimFrameworkCode],
+    [LearningAimPathwayCode] ) 
+go
