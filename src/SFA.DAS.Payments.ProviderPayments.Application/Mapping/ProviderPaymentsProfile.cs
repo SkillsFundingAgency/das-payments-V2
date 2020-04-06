@@ -176,7 +176,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 PathwayCode = source.LearningAimPathwayCode,
                 ProgrammeType = source.LearningAimProgrammeType,
                 StandardCode = source.LearningAimStandardCode,
-                FundingLineType = source.ReportingAimFundingLineType,
+                FundingLineType = source.LearningAimFundingLineType,
                 StartDate = source.LearningStartDate.GetValueOrDefault()
             };
         }
