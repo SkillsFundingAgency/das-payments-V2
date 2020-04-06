@@ -75,7 +75,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.LearningAim.PathwayCode.Should().Be(paymentModel.LearningAimPathwayCode);
             payment.LearningAim.ProgrammeType.Should().Be(paymentModel.LearningAimProgrammeType);
             payment.LearningAim.StandardCode.Should().Be(paymentModel.LearningAimStandardCode);
-            payment.LearningAim.FundingLineType.Should().Be(paymentModel.ReportingAimFundingLineType);
+            payment.LearningAim.FundingLineType.Should().Be(paymentModel.LearningAimFundingLineType);
             payment.LearningAim.StartDate.Should().Be(paymentModel.LearningStartDate.GetValueOrDefault());
             payment.IlrSubmissionDateTime.Should().Be(paymentModel.IlrSubmissionDateTime);
             payment.TransactionType.Should().Be(paymentModel.TransactionType);
