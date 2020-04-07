@@ -15,7 +15,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                 int academicYear,
                 EarningPeriod period,
                 TransactionType transactionType1,
-                List<PriceEpisode> priceEpisodes);
+                List<PriceEpisode> priceEpisodes,
+                bool disableDatalocks);
 
         protected abstract CourseValidationResult ValidateApprenticeship(
             long uln,
@@ -35,6 +36,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
              List<ApprenticeshipModel> apprenticeships,
              LearningAim aim,
              int academicYear,
+             bool disableDatalocks,
              List<PriceEpisode> priceEpisodes = null)
         {
             var validPeriods = new List<EarningPeriod>();
@@ -50,7 +52,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 
                 var newEarningPeriod = CreateEarningPeriod(period);
 
-                var initialValidationResult = ValidateApprenticeships(ukprn, apprenticeships, academicYear, period, transactionType, priceEpisodes);
+                var initialValidationResult = ValidateApprenticeships(ukprn, apprenticeships, academicYear, 
+                    period, transactionType, priceEpisodes, disableDatalocks);
                 if (initialValidationResult.dataLockFailures.Any())
                 {
                     newEarningPeriod.DataLockFailures = GetLatestApprenticeshipDataLocks(initialValidationResult.dataLockFailures, apprenticeships);

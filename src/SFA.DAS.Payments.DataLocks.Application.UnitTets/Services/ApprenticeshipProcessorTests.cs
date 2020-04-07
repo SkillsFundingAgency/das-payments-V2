@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         }
 
         [Test]
-        public async Task ProcessCreatedEvent_WithExistingApprenticeship_DoesNotFail()
+        public void ProcessCreatedEvent_WithExistingApprenticeship_DoesNotFail()
         {
             var approvalsEvent = new ApprenticeshipCreatedEvent
             {

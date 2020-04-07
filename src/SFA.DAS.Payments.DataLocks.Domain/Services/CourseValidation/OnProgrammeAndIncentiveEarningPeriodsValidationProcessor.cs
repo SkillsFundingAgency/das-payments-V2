@@ -17,7 +17,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             TransactionType transactionType,
             List<ApprenticeshipModel> apprenticeships,
             LearningAim aim,
-            int academicYear);
+            int academicYear,
+            bool disableDatalocks);
     }
 
     public class OnProgrammeAndIncentiveEarningPeriodsValidationProcessor : BaseEarningPeriodsValidationProcessor, IOnProgrammeAndIncentiveEarningPeriodsValidationProcessor
@@ -39,23 +40,38 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             this.courseValidationProcessor = courseValidationProcessor;
         }
 
-        public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(long ukprn, long uln, List<PriceEpisode> priceEpisodes, List<EarningPeriod> periods, TransactionType transactionType, List<ApprenticeshipModel> apprenticeships, LearningAim aim, int academicYear)
+        public (List<EarningPeriod> ValidPeriods, List<EarningPeriod> InValidPeriods) ValidatePeriods(
+            long ukprn, long uln, List<PriceEpisode> priceEpisodes, List<EarningPeriod> periods, 
+            TransactionType transactionType, List<ApprenticeshipModel> apprenticeships, LearningAim aim, 
+            int academicYear, bool disableDatalocks)
         {
-            return base.ValidateEarningPeriods(ukprn, uln, periods, transactionType, apprenticeships, aim, academicYear, priceEpisodes);
+            return base.ValidateEarningPeriods(ukprn, uln, periods, transactionType, apprenticeships, 
+                aim, academicYear, disableDatalocks, priceEpisodes);
         }
 
-        protected override (List<ApprenticeshipModel> validApprenticeships, List<DataLockFailure> dataLockFailures) ValidateApprenticeships(long ukprn, List<ApprenticeshipModel> apprenticeships, int academicYear, EarningPeriod period,TransactionType transactionType, List<PriceEpisode> priceEpisodes)
+        protected override (List<ApprenticeshipModel> validApprenticeships, List<DataLockFailure> dataLockFailures) 
+            ValidateApprenticeships(long ukprn, List<ApprenticeshipModel> apprenticeships, int academicYear, 
+                EarningPeriod period,TransactionType transactionType, List<PriceEpisode> priceEpisodes, 
+                bool disableDatalocks)
         {
             var ilrPriceEpisode = priceEpisodes.SingleOrDefault(o => o.Identifier.Equals(period.PriceEpisodeIdentifier, StringComparison.OrdinalIgnoreCase))
                                   ?? throw new InvalidOperationException($"Failed to find price episode: {period.PriceEpisodeIdentifier} for ukprn: {ukprn}, earning: {transactionType:G}, period: {period.Period}");
 
-            var startDateValidationResult = startDateValidator.Validate(ilrPriceEpisode, apprenticeships);
-            if (startDateValidationResult.dataLockFailures.Any())
+            (List<ApprenticeshipModel> validApprenticeships, List<DataLockFailure> dataLockFailures) validationResult;
+            if (disableDatalocks)
             {
-                return (new List<ApprenticeshipModel>(), startDateValidationResult.dataLockFailures);
+                validationResult = (apprenticeships, new List<DataLockFailure>());
+            }
+            else
+            {
+                validationResult = startDateValidator.Validate(ilrPriceEpisode, apprenticeships);
+                if (validationResult.dataLockFailures.Any())
+                {
+                    return (new List<ApprenticeshipModel>(), validationResult.dataLockFailures);
+                }
             }
             
-            var onProgrammeValidationResult = onProgrammeAndIncentiveStoppedValidator.Validate(startDateValidationResult.validApprenticeships, transactionType,period,academicYear);
+            var onProgrammeValidationResult = onProgrammeAndIncentiveStoppedValidator.Validate(validationResult.validApprenticeships, transactionType,period,academicYear);
             if (onProgrammeValidationResult.dataLockFailures.Any())
             {
                 return (new List<ApprenticeshipModel>(), onProgrammeValidationResult.dataLockFailures);

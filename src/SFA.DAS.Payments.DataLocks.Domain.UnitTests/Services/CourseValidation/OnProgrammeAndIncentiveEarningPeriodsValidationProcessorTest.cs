@@ -52,7 +52,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 (TransactionType)earningEvent.OnProgrammeEarnings[0].Type,
                 apprenticeships,
                 earningEvent.LearningAim,
-                earningEvent.CollectionPeriod.AcademicYear);
+                earningEvent.CollectionPeriod.AcademicYear,
+                false);
 
             periods.ValidPeriods.Count.Should().Be(3);
             periods.ValidPeriods.All(p => p.ApprenticeshipPriceEpisodeId == apprenticeships[0].ApprenticeshipPriceEpisodes[0].Id)
@@ -76,7 +77,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 (TransactionType)earningEvent.OnProgrammeEarnings[0].Type,
                 apprenticeships,
                 earningEvent.LearningAim,
-                earningEvent.CollectionPeriod.AcademicYear);
+                earningEvent.CollectionPeriod.AcademicYear,
+                false);
 
             periods.ValidPeriods.Count.Should().Be(3);
             periods.ValidPeriods
@@ -113,7 +115,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 (TransactionType)earningEvent.OnProgrammeEarnings[0].Type,
                 apprenticeships,
                 earningEvent.LearningAim,
-                earningEvent.CollectionPeriod.AcademicYear);
+                earningEvent.CollectionPeriod.AcademicYear,
+                false);
 
             periods.ValidPeriods.Should().BeEmpty();
             periods.InValidPeriods.All(p => p.DataLockFailures.All(x =>
@@ -121,6 +124,39 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 x.DataLockError == DataLockErrorCode.DLOCK_09 &&
                 x.ApprenticeshipPriceEpisodeIds.All(o => apprenticeships[0].ApprenticeshipPriceEpisodes.Select(a => a.Id).Contains(o)))
             ).Should().BeTrue();
+        }
+
+        [Test]
+        public void GivenThereIsStartDateDLock09AndDatalocksAreDisabledNoDLockShouldBeGenerated()
+        {
+            var allApprenticeships = CreateApprenticeships();
+            var earningEvent = CreateEarningEventTestData();
+
+            var apprenticeships = new List<ApprenticeshipModel>
+            {
+                allApprenticeships .First()
+            };
+
+            earningEvent.OnProgrammeEarnings[0].Type = OnProgrammeEarningType.Completion;
+            apprenticeships[0].Status = ApprenticeshipStatus.Active;
+            apprenticeships[0].EstimatedStartDate = earningEvent.PriceEpisodes[0].ActualEndDate.GetValueOrDefault().AddDays(3);
+            apprenticeships[0].ApprenticeshipPriceEpisodes
+                .ForEach(x => x.StartDate = apprenticeships[0].EstimatedStartDate);
+
+            var earningProcessor = mocker.Create<OnProgrammeAndIncentiveEarningPeriodsValidationProcessor>();
+
+            var periods = earningProcessor.ValidatePeriods(
+                earningEvent.Ukprn,
+                1,
+                earningEvent.PriceEpisodes,
+                earningEvent.OnProgrammeEarnings[0].Periods.ToList(),
+                (TransactionType)earningEvent.OnProgrammeEarnings[0].Type,
+                apprenticeships,
+                earningEvent.LearningAim,
+                earningEvent.CollectionPeriod.AcademicYear,
+                true);
+
+            periods.InValidPeriods.Should().BeEmpty();
         }
 
         [Test]
@@ -148,7 +184,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 (TransactionType)earningEvent.OnProgrammeEarnings[0].Type,
                 apprenticeships,
                 earningEvent.LearningAim,
-                earningEvent.CollectionPeriod.AcademicYear);
+                earningEvent.CollectionPeriod.AcademicYear,
+                false);
 
             periods.ValidPeriods.Should().BeEmpty();
             periods.InValidPeriods.All(p => p.DataLockFailures.All(x =>
@@ -181,7 +218,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 (TransactionType)earningEvent.OnProgrammeEarnings[0].Type,
                 apprenticeships,
                 earningEvent.LearningAim,
-                earningEvent.CollectionPeriod.AcademicYear);
+                earningEvent.CollectionPeriod.AcademicYear,
+                false);
 
             periods.ValidPeriods.Should().BeEmpty();
             periods.InValidPeriods.All(p => p.DataLockFailures.All(x =>
@@ -226,7 +264,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 (TransactionType)earningEvent.OnProgrammeEarnings[0].Type,
                 apprenticeships,
                 earningEvent.LearningAim,
-                earningEvent.CollectionPeriod.AcademicYear);
+                earningEvent.CollectionPeriod.AcademicYear,
+                false);
 
             periods.ValidPeriods.Should().BeEmpty();
             periods.InValidPeriods.All(p => p.DataLockFailures.All(x =>
@@ -253,7 +292,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 (TransactionType)earningEvent.OnProgrammeEarnings[0].Type,
                 allApprenticeships,
                 earningEvent.LearningAim,
-                earningEvent.CollectionPeriod.AcademicYear);
+                earningEvent.CollectionPeriod.AcademicYear,
+                false);
 
             periods.InValidPeriods.Should().BeEmpty();
             periods.ValidPeriods.Should().HaveCount(3);
@@ -279,7 +319,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 (TransactionType)earningEvent.OnProgrammeEarnings[0].Type,
                 apprenticeships,
                 earningEvent.LearningAim,
-                earningEvent.CollectionPeriod.AcademicYear);
+                earningEvent.CollectionPeriod.AcademicYear,
+                false);
 
             periods.ValidPeriods.Count.Should().Be(3);
             periods.ValidPeriods.All(x =>
@@ -314,7 +355,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 (TransactionType)earningEvent.OnProgrammeEarnings[0].Type,
                 apprenticeships,
                 earningEvent.LearningAim,
-                earningEvent.CollectionPeriod.AcademicYear);
+                earningEvent.CollectionPeriod.AcademicYear,
+                false);
 
             periods.ValidPeriods.Should().BeEmpty();
             periods.InValidPeriods.All(p => p.DataLockFailures.All(x =>
@@ -365,7 +407,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 (TransactionType)earningEvent.OnProgrammeEarnings[0].Type,
                 apprenticeships,
                 earningEvent.LearningAim,
-                earningEvent.CollectionPeriod.AcademicYear);
+                earningEvent.CollectionPeriod.AcademicYear,
+                false);
 
             periods.ValidPeriods.Should().BeEmpty();
 

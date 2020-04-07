@@ -16,7 +16,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             TransactionType transactionType,
             List<ApprenticeshipModel> apprenticeships,
             LearningAim aim,
-            int academicYear);
+            int academicYear,
+            bool disableDatalocks);
     }
 
     public class FunctionalSkillEarningPeriodsValidationProcessor : BaseEarningPeriodsValidationProcessor , IFunctionalSkillEarningPeriodsValidationProcessor
@@ -38,7 +39,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             int academicYear, 
             EarningPeriod period, 
             TransactionType transactionType,
-            List<PriceEpisode> priceEpisodes)
+            List<PriceEpisode> priceEpisodes,
+            bool disableDatalocks)
         {
             var apprenticeshipsToUseThisPeriod = GetApprenticeshipsToUseThisPeriod(ukprn, apprenticeships, academicYear, period);
             return (apprenticeshipsToUseThisPeriod, new List<DataLockFailure>());
@@ -72,9 +74,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
             TransactionType transactionType,
             List<ApprenticeshipModel> apprenticeships,
             LearningAim aim,
-            int academicYear)
+            int academicYear,
+            bool disableDatalocks)
         {
-            return base.ValidateEarningPeriods(ukprn, uln, periods, transactionType, apprenticeships, aim, academicYear);
+            return base.ValidateEarningPeriods(ukprn, uln, periods, transactionType,
+                apprenticeships, aim, academicYear, disableDatalocks);
         }
 
 
