@@ -22,13 +22,13 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
         
-        public async Task<IList<RecordedAct1CompletionPaymentEvent>> GetAct1CompletionPaymentEvents(ProcessMonthEndAct1CompletionPaymentCommand message)
+        public async Task<IList<RecordedAct1CompletionPayment>> GetAct1CompletionPaymentEvents(ProcessMonthEndAct1CompletionPaymentCommand message)
         {
             logger.LogInfo($"now building Act1 Completion Payment Events for collection period: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}, job: {message.JobId}");
             
             var payments = await repository.GetMonthEndAct1CompletionPayments(message.CollectionPeriod).ConfigureAwait(false);
 
-            var recordedAct1CompletionPaymentEvents = mapper.Map<IList<RecordedAct1CompletionPaymentEvent>>(payments);
+            var recordedAct1CompletionPaymentEvents = mapper.Map<IList<RecordedAct1CompletionPayment>>(payments);
 
             logger.LogInfo($"Finished creating the provider period end events for collection period: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}, job: {message.JobId}");
             

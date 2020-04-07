@@ -5,7 +5,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.ProviderPayments.Messages
 {
-    public class RecordedAct1CompletionPaymentEvent : IPaymentsEvent
+    public class RecordedAct1CompletionPayment : IPaymentsEvent
     {
         public long JobId { get;  }
         public Guid EventId { get; } = Guid.NewGuid();

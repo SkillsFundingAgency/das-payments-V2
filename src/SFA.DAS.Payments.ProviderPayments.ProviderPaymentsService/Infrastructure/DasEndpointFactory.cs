@@ -64,7 +64,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Infrastructu
             var conventions = endpointConfiguration.Conventions();
             conventions
                 .DefiningEventsAs(t =>
-                    t.IsAssignableTo<RecordedAct1CompletionPaymentEvent>()
+                    t.IsAssignableTo<RecordedAct1CompletionPayment>()
                 );
                 
             var persistence = endpointConfiguration.UsePersistence<AzureStoragePersistence>();

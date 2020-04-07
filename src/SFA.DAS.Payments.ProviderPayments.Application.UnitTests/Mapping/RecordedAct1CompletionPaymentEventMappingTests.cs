@@ -62,7 +62,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
 
             };
 
-            var payment = Mapper.Map<PaymentModel, RecordedAct1CompletionPaymentEvent>(paymentModel);
+            var payment = Mapper.Map<PaymentModel, RecordedAct1CompletionPayment>(paymentModel);
             
             payment.EventId.Should().NotBeEmpty();
             payment.EventTime.Should().BeCloseTo(DateTimeOffset.UtcNow, TimeSpan.FromSeconds(5));

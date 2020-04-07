@@ -128,7 +128,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
             CreateMap<LevyFundingSourcePaymentEvent, LevyProviderPaymentEvent>();
             CreateMap<TransferFundingSourcePaymentEvent, TransferProviderPaymentEvent>();
 
-            CreateMap<PaymentModel, RecordedAct1CompletionPaymentEvent>()
+            CreateMap<PaymentModel, RecordedAct1CompletionPayment>()
                 .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
                 .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => source.DeliveryPeriod))
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(src.CollectionPeriod.AcademicYear, src.CollectionPeriod.Period)))

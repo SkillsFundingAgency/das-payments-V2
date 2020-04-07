@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             routing.RouteToEndpoint(typeof(PeriodEndStartedEvent).Assembly, EndpointNames.ProviderPaymentEndPointName);
             
             var autoSubscribe = endpointConfiguration.AutoSubscribe();
-            autoSubscribe.DisableFor<RecordedAct1CompletionPaymentEvent>();
+            autoSubscribe.DisableFor<RecordedAct1CompletionPayment>();
         }
 
         [BeforeTestRun(Order = 52)]
@@ -55,7 +55,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             var endpointConfiguration = new EndpointConfiguration("sfa-das-payments-providerpayments");
 
             var conventions = endpointConfiguration.Conventions();
-            conventions.DefiningEventsAs(t => t.IsAssignableTo<RecordedAct1CompletionPaymentEvent>());
+            conventions.DefiningEventsAs(t => t.IsAssignableTo<RecordedAct1CompletionPayment>());
 
             var persistence = endpointConfiguration.UsePersistence<AzureStoragePersistence>();
             persistence.ConnectionString(TestConfiguration.StorageConnectionString);
@@ -76,7 +76,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 
             DasEndpointInstance = await Endpoint.Start(endpointConfiguration).ConfigureAwait(false);
 
-            await DasEndpointInstance.Subscribe<RecordedAct1CompletionPaymentEvent>()
+            await DasEndpointInstance.Subscribe<RecordedAct1CompletionPayment>()
                                      .ConfigureAwait(false);
         }
 

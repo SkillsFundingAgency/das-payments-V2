@@ -7,6 +7,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
     public interface ICompletionPaymentService
     {
-        Task<IList<RecordedAct1CompletionPaymentEvent>> GetAct1CompletionPaymentEvents(ProcessMonthEndAct1CompletionPaymentCommand message);
+        Task<IList<RecordedAct1CompletionPayment>> GetAct1CompletionPaymentEvents(ProcessMonthEndAct1CompletionPaymentCommand message);
     }
 }
