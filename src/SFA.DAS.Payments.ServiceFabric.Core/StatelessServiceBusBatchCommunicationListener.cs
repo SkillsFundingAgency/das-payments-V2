@@ -19,8 +19,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
-using SFA.DAS.Payments.Core.Configuration;
-using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core
 {
@@ -119,9 +117,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                             messageReceivers.Select(receiver => ReceiveMessages(receiver, cancellationToken)).ToList();
                         await Task.WhenAll(receiveTasks).ConfigureAwait(false);
 
-                        var messages = new List<(object Message, BatchMessageReceiver MessageReceiver, Message ReceivedMessage)>();
-                        messages.AddRange(receiveTasks.SelectMany(task => task.Result));
-
+                        var messages = receiveTasks.SelectMany(task => task.Result).ToList(); 
                         if (!messages.Any())
                         {
                             await Task.Delay(1000, cancellationToken);
@@ -235,7 +231,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
 
                     var listType = typeof(List<>).MakeGenericType(groupType);
                     var list = (IList)Activator.CreateInstance(listType);
-                    messages.Select(msg => msg.Message).ToList().ForEach(message => list.Add(message));
+                    messages.ForEach(message => list.Add(message.Message));
 
                     var handlerStopwatch = Stopwatch.StartNew();
                     await (Task)methodInfo.Invoke(handler, new object[] { list, cancellationToken });
@@ -313,8 +309,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error ensuring queue: {e.Message}.");
-                Console.WriteLine(e);
+                logger.LogFatal($"Error ensuring queue: {e.Message}.", e);
                 throw;
             }
         }

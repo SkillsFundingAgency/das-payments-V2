@@ -42,17 +42,6 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             await messageReceiver.CompleteAsync(lockTokens).ConfigureAwait(false);
         }
 
-        public async Task Complete(Message message)
-        {
-            await messageReceiver.CompleteAsync(message.SystemProperties.LockToken).ConfigureAwait(false);
-        }
-
-        public async Task Abandon()
-        {
-            await Task.WhenAll(messages.Select(message => messageReceiver.AbandonAsync(message.SystemProperties.LockToken)))
-                .ConfigureAwait(false);
-        }
-
         public async Task Abandon(IList<string> lockTokens)
         {
             await Task.WhenAll(lockTokens.Select(token => messageReceiver.AbandonAsync(token)))
