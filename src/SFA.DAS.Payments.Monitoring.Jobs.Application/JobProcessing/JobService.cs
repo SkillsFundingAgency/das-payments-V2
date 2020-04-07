@@ -12,17 +12,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 {
     public interface ICommonJobService
     {
-        Task RecordNewJobAdditionalMessages(RecordJobAdditionalMessages jobRequest,
-            CancellationToken cancellationToken);
+        Task RecordNewJobAdditionalMessages(RecordJobAdditionalMessages jobRequest, CancellationToken cancellationToken);
     }
 
-    public abstract class JobService : ICommonJobService
+    public class JobService : ICommonJobService
     {
         protected IPaymentLogger Logger { get;  }
         protected IJobStorageService JobStorageService { get;  }
         protected ITelemetry Telemetry { get;  }
 
-        protected JobService(IPaymentLogger logger, IJobStorageService jobStorageService, ITelemetry telemetry)
+        public JobService(IPaymentLogger logger, IJobStorageService jobStorageService, ITelemetry telemetry)
         {
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.JobStorageService = jobStorageService ?? throw new ArgumentNullException(nameof(jobStorageService));
