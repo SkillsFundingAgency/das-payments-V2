@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
+using Castle.Core.Internal;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Audit;
@@ -62,7 +63,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
         {
             var minEventTime = earnings.Min(earningEvent => earningEvent.EventTime).AddMinutes(-10);
             //EF Core 2.2 produces very inefficient sql for joins between in-memory collection and sql table
-            var sqlWhereClause = earnings.Aggregate(string.Empty, (currentSql, model) => $@"{currentSql} Or (JobId = {model.JobId} 
+            var sqlWhereClause = earnings.Aggregate(string.Empty, (currentSql, model) => $@"{currentSql}
+            Or (JobId = {model.JobId} 
                 And Ukprn = {model.Ukprn} 
                 and AcademicYear = {model.AcademicYear} 
                 and CollectionPeriod = {model.CollectionPeriod} 
@@ -74,10 +76,10 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
                 and LearningAimStandardCode = {model.LearningAimStandardCode} 
                 and LearningAimFrameworkCode = {model.LearningAimFrameworkCode} 
                 and LearningAimPathwayCode = {model.LearningAimPathwayCode} 
-                and LearningAimFundingLineType = '{model.LearningAimFundingLineType}' 
+                and LearningAimFundingLineType { (string.IsNullOrWhiteSpace(model.LearningAimFundingLineType) ? "is null" : $" = '{model.LearningAimFundingLineType}'") } 
                 and LearningAimSequenceNumber = {model.LearningAimSequenceNumber} 
-                and LearningStartDate = '{model.LearningStartDate:yyyy-MM-dd hh:mm:ss}' 
-                and EventType = '{model.EventType}')\n\r");
+                and LearningStartDate = '{model.LearningStartDate:yyyy-MM-dd HH:mm:ss}' 
+                and EventType = '{model.EventType}')");
 
             var sql = $@"Select [Id]
                 ,[EventId]
