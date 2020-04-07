@@ -102,7 +102,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 MessageId = Guid.NewGuid(),
                 MessageName = "MessageB",
             };
-            var jobStarted = new RecordEarningsJobAdditionalMessages
+            var jobStarted = new RecordJobAdditionalMessages
             {
                 GeneratedMessages = new List<GeneratedMessage> { generatedMessageA, generatedMessageB },
                 JobId = 1,

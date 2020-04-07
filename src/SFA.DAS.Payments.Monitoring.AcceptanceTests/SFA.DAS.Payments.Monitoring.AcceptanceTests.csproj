@@ -180,9 +180,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EndpointNames.cs" />
+    <Compile Include="Handlers\PeriodEndRunFailedHandler.cs" />
+    <Compile Include="Handlers\PeriodEndStopSuccessHandler.cs" />
+    <Compile Include="Handlers\PeriodEndRunSuccessHandler.cs" />
+    <Compile Include="Handlers\PeriodEndStartFailedHandler.cs" />
+    <Compile Include="Handlers\PeriodEndStartSuccessHandler.cs" />
+    <Compile Include="Handlers\PeriodEndStopFailedHandler.cs" />
     <Compile Include="Handlers\SubmissionJobFailedHandler.cs" />
     <Compile Include="Handlers\SubmissionJobSucceededHandler.cs" />
     <Compile Include="Infrastructure\BindingBootstrapper.cs" />
+    <Compile Include="Jobs\PeriodEndJobs.feature.cs">
+      <DependentUpon>PeriodEndJobs.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Jobs\Jobs.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -203,6 +214,10 @@
     <None Include="App.Release.config">
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>true</IsTransformFile>
+    </None>
+    <None Include="Jobs\PeriodEndJobs.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PeriodEndJobs.feature.cs</LastGenOutput>
     </None>
     <None Include="Jobs\Jobs.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
