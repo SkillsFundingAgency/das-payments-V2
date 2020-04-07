@@ -367,12 +367,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 ;
             // End Required Payment --> RequiredPaymentEvent
 
-            CreateMap<ApprenticeshipContractType1RedundancyEarningEvent, PayableEarningEvent>()
-                .ForMember(destinationMember => destinationMember.EarningEventId, opt => opt.MapFrom(source => source.EventId))
-                .ForMember(destinationMember => destinationMember.EventId, opt => opt.Ignore());
-            CreateMap<Act1RedundancyFunctionalSkillEarningsEvent, PayableFunctionalSkillEarningEvent>()
-                .ForMember(destinationMember => destinationMember.EarningEventId, opt => opt.MapFrom(source => source.EventId))
-                .ForMember(destinationMember => destinationMember.EventId, opt => opt.Ignore());
-        }
+              }
     }
 }
