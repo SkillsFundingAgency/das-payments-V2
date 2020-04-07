@@ -129,8 +129,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
             CreateMap<TransferFundingSourcePaymentEvent, TransferProviderPaymentEvent>();
 
             CreateMap<PaymentModel, RecordedAct1CompletionPaymentEvent>()
-                .ForMember(dest => dest.EventId, opt => opt.ResolveUsing(src => Guid.NewGuid()))
-                .ForMember(dest => dest.EventTime, opt => opt.MapFrom(src => DateTimeOffset.UtcNow))
+                .ForMember(dest => dest.EventId, opt => opt.UseValue(Guid.NewGuid()))
+                .ForMember(dest => dest.EventTime, opt => opt.UseValue(DateTimeOffset.UtcNow))
                 .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
                 .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => source.DeliveryPeriod))
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(src.CollectionPeriod.AcademicYear, src.CollectionPeriod.Period)))

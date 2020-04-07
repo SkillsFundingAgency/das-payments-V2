@@ -64,6 +64,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
 
             var payment = Mapper.Map<PaymentModel, RecordedAct1CompletionPaymentEvent>(paymentModel);
             
+            payment.EventId.Should().NotBeEmpty();
+            payment.EventTime.Should().BeCloseTo(DateTimeOffset.UtcNow, TimeSpan.FromSeconds(5));
             payment.Ukprn.Should().Be(paymentModel.Ukprn);
             payment.DeliveryPeriod.Should().Be(paymentModel.DeliveryPeriod);
             payment.CollectionPeriod.Period.Should().Be(paymentModel.CollectionPeriod.Period);

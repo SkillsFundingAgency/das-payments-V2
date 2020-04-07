@@ -7,9 +7,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Messages
 {
     public class RecordedAct1CompletionPaymentEvent : IPaymentsEvent
     {
-        public long JobId { get; }
-        public Guid EventId { get; }
-        public DateTimeOffset EventTime { get; }
+        public long JobId { get;  }
+        public Guid EventId { get;  set; }
+        public DateTimeOffset EventTime { get;  set; }
         public long Ukprn { get; set; }
         public Learner Learner { get; set; }
         public LearningAim LearningAim { get; set; }
