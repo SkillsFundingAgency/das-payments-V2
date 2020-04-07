@@ -5,25 +5,30 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Audit;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 {
-    public interface IMetricsDataContext
+    public interface IMetricsQueryDataContext
     {
-        DbSet<SubmissionSummaryModel> SubmissionSummaries { get; }
-        DbSet<DataLockCountsModel> DataLockedEarnings { get; }
-        DbSet<EarningsModel> Earnings { get; }
-        DbSet<RequiredPaymentsModel> RequiredPayments { get; }
-        Task Save(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken);
+//        DbSet<DataLockCountsModel> DataLockedEarnings { get; }
+        DbSet<EarningEventPeriodModel> EarningEventPeriods { get; }
+        //DbSet<RequiredPaymentsModel> RequiredPayments { get; }
+        DbSet<DataLockEventNonPayablePeriodModel> DataLockEventNonPayablePeriods { get; }
+        DbSet<RequiredPaymentEventModel> RequiredPaymentEvents { get; }
+        DbSet<PaymentModel> Payments { get; }
         Task<decimal> GetAlreadyPaidDataLocksAmount(long ukprn, long jobId, CancellationToken cancellationToken);
         Task<DataLockTypeCounts> GetDataLockCounts(long ukprn, long jobId, CancellationToken cancellationToken);
+        void SetTimeout(TimeSpan timeout);
     }
 
-    public class MetricsDataContext : DbContext, IMetricsDataContext
+    public class MetricsQueryDataContext : DbContext, IMetricsQueryDataContext
     {
         public class DataLockCount
         {
@@ -33,13 +38,16 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         public virtual DbQuery<DataLockCount> DataLockCounts { get; set; }
 
         private readonly string connectionString;
-        public virtual DbSet<SubmissionSummaryModel> SubmissionSummaries { get; set; }
-        public virtual DbSet<DataLockCountsModel> DataLockedEarnings { get; set; }
-        public virtual DbSet<EarningsModel> Earnings { get; set; }
-        public virtual DbSet<RequiredPaymentsModel> RequiredPayments { get; set; }
+        //public virtual DbSet<EarningsModel> Earnings { get; set; }
+        //public virtual DbSet<RequiredPaymentsModel> RequiredPayments { get; set; }
+        public virtual DbSet<EarningEventModel> EarningEvent { get; protected set; }
+        public virtual DbSet<EarningEventPeriodModel> EarningEventPeriods { get; protected set; }
+        public virtual DbSet<DataLockEventModel> DataLockEvent { get; set; }
+        public virtual DbSet<DataLockEventNonPayablePeriodModel> DataLockEventNonPayablePeriods { get; set; }
+        public virtual DbSet<RequiredPaymentEventModel> RequiredPaymentEvents { get; set; }
+        public virtual DbSet<PaymentModel> Payments { get; set; }
 
-
-        public MetricsDataContext(string connectionString)
+        public MetricsQueryDataContext(string connectionString)
         {
             this.connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
         }
@@ -47,11 +55,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.HasDefaultSchema("Metrics");
-            modelBuilder.ApplyConfiguration(new SubmissionSummaryModelConfiguration());
-            modelBuilder.ApplyConfiguration(new DataLockedEarningsModelConfiguration());
-            modelBuilder.ApplyConfiguration(new EarningsModelConfiguration());
-            modelBuilder.ApplyConfiguration(new RequiredPaymentsModelConfiguration());
+            modelBuilder.HasDefaultSchema("Payments2");
+            modelBuilder.ApplyConfiguration(new EarningEventModelConfiguration());
+            modelBuilder.ApplyConfiguration(new EarningEventPeriodModelConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockEventModelConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockEventNonPayablePeriodModelConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockEventNonPayablePeriodFailureModelConfiguration());
+            modelBuilder.ApplyConfiguration(new RequiredPaymentEventModelConfiguration());
+            modelBuilder.ApplyConfiguration(new PaymentModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -129,29 +140,9 @@ select
             };
         }
 
-        public async Task Save(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken)
+        public void SetTimeout(TimeSpan timeout)
         {
-            var transaction = await Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
-            try
-            {
-                await Database.ExecuteSqlCommandAsync($@"
-                    Delete 
-                        From [Metrics].[SubmissionSummary] 
-                    Where 
-                        Ukprn = {submissionSummary.Ukprn}
-                        And AcademicYear = {submissionSummary.AcademicYear}
-                        And CollectionPeriod = {submissionSummary.CollectionPeriod}
-                    "
-                    , cancellationToken);
-                SubmissionSummaries.Add(submissionSummary);
-                await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-                transaction.Commit();
-            }
-            catch
-            {
-                transaction.Rollback();
-                throw;
-            }
+            Database.SetCommandTimeout(timeout);
         }
     }
 }
