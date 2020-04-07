@@ -10,8 +10,8 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
         public void Configure(EntityTypeBuilder<EarningEventModel> builder)
         {
             builder.ToTable("EarningEvent", "Payments2");
-            builder.HasKey(x =>  x.EventId);
-            //builder.Property(x => x.Id).HasColumnName(@"Id");
+            builder.HasKey(x =>  x.Id);
+            builder.Property(x => x.Id).HasColumnName(@"Id");
             builder.Property(x => x.EventId).HasColumnName(@"EventId");
             builder.Property(x => x.Ukprn).HasColumnName(@"Ukprn");
             builder.Property(x => x.ContractType).HasColumnName(@"ContractType");
@@ -44,10 +44,10 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
 
             builder.HasMany<EarningEventPeriodModel>(x => x.Periods)
                 .WithOne(x => x.EarningEvent)
-                //.HasPrincipalKey(x => x.EventId)
+                .HasPrincipalKey(x => x.EventId)
                 .HasForeignKey(x => x.EarningEventId);
             builder.HasMany<EarningEventPriceEpisodeModel>(x => x.PriceEpisodes).WithOne()
-//                .HasPrincipalKey(p => p.EventId)
+                .HasPrincipalKey(p => p.EventId)
                 .HasForeignKey(pe => pe.EarningEventId);
         }
     }

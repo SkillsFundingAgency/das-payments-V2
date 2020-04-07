@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.CensusDate).HasColumnName(@"CensusDate");
             builder.HasOne(x => x.EarningEvent)
                 .WithMany(ee => ee.Periods)
-                //.HasPrincipalKey(x => x.EventId)
+                .HasPrincipalKey(x => x.EventId)
                 .HasForeignKey(x => x.EarningEventId);
         }
     }
