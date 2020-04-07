@@ -14,7 +14,7 @@ using SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC;
 
 namespace SFA.DAS.Payments.ScheduledJobs
 {
-    [DependencyInjectionConfig(typeof(DIConfig))]
+    [DependencyInjectionConfig(typeof(DependencyInjectionConfig))]
     public static class LevyAccountImport
     {
         [FunctionName("LevyAccountImport")]

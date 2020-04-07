@@ -21,10 +21,10 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
                              {
                                  var config = c.Resolve<IScheduledJobsConfiguration>();
                                  var endpointConfiguration = new EndpointConfiguration(config.EndpointName);
+                                 var logger = c.Resolve<MessagingLogger>();
 
                                  endpointConfiguration.CustomDiagnosticsWriter(diagnostics =>
                                                                                {
-                                                                                   var logger = c.Resolve<MessagingLogger>();
                                                                                    logger.Info(diagnostics);
                                                                                    return Task.CompletedTask;
                                                                                });

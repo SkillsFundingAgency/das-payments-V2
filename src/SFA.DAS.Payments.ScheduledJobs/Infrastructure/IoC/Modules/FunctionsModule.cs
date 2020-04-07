@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using SFA.DAS.Payments.Core.Configuration;
+using SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp;
 using SFA.DAS.Payments.ScheduledJobs.Infrastructure.Configuration;
 
 namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
@@ -9,6 +10,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<FunctionsConfigurationHelper>().As<IConfigurationHelper>().SingleInstance();
+            builder.RegisterType<AuditDataCleanUpService>().As<IAuditDataCleanUpService>().InstancePerLifetimeScope();
         }
     }
 }

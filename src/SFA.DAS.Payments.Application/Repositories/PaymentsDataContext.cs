@@ -32,6 +32,9 @@ namespace SFA.DAS.Payments.Application.Repositories
         
         public virtual DbSet<ProviderAdjustmentModel> ProviderAdjustments { get; protected set; }
 
+        
+        public virtual DbQuery<SubmissionJobsToBeDeletedModel> SubmissionJobsToBeDeleted { get; set; }
+
         public PaymentsDataContext(string connectionString)
         {
             this.connectionString = connectionString;
