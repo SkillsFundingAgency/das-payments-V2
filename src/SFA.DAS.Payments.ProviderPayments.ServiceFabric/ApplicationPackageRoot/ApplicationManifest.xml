@@ -24,6 +24,7 @@
     <Parameter Name="Placement_Constraints" DefaultValue="" />
     <Parameter Name="DasNServiceBusLicenseKey" DefaultValue="" />
     <Parameter Name="DasPeriodEndConnectionString" DefaultValue="" />
+    <Parameter Name="DASServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LegacyExportBatchSize" DefaultValue="10000" />
     <Parameter Name="ImmediateMessageRetries" DefaultValue="1" />
     <Parameter Name="DelayedMessageRetries" DefaultValue="3" />
@@ -69,6 +70,7 @@
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
             <Parameter Name="DasPeriodEndConnectionString" Value="[DasPeriodEndConnectionString]" />
+            <Parameter Name="DASServiceBusConnectionString" Value="[DASServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[ProviderPaymentsService_EndpointName]" />
