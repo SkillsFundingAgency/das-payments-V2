@@ -7,5 +7,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests
         public static string StorageConnectionString =>ConfigurationManager.ConnectionStrings["StorageConnectionString"]?.ConnectionString;
 
         public static string ServiceBusConnectionString => ConfigurationManager.ConnectionStrings["ServiceBusConnectionString"]?.ConnectionString;
+        
+        public static string DasServiceBusConnectionString => ConfigurationManager.ConnectionStrings["DASServiceBusConnectionString"]?.ConnectionString;
     }
 }

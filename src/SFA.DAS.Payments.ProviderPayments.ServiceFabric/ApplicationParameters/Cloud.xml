@@ -21,6 +21,7 @@
     <Parameter Name="BatchIntervalInSeconds" Value="__BatchIntervalInSeconds__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
+    <Parameter Name="DASServiceBusConnectionString" Value="__DASServiceBusConnectionString__" />
     <Parameter Name="DasPeriodEndConnectionString" Value="__DasPeriodEndConnectionString__" />
     <Parameter Name="LegacyExportBatchSize" Value="__LegacyExportBatchSize__" />
     <Parameter Name="ImmediateMessageRetries" Value="__ImmediateMessageRetries__" />
