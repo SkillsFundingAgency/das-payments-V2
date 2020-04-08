@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -104,7 +105,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await SetupTestData(priceEpisodeIdentifier, null, commitmentIdentifier1, commitmentIdentifier2);
         }
 
-        private async Task SetupTestData(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2, string commitmentIdentifier1, string commitmentIdentifier2)
+        protected async Task SetupTestData(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2, string commitmentIdentifier1, string commitmentIdentifier2, bool createDataLock = false)
         {
             var learner = TestSession.FM36Global.Learners.Single();
             learner.ULN = TestSession.Learner.Uln;
@@ -135,30 +136,43 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                               .WithApprenticeshipPriceEpisode(priceEpisode1.PriceEpisodeValues)
                               .ToApprenticeshipModel();
 
-            var commitment2 = new ApprenticeshipBuilder()
-                              .BuildSimpleApprenticeship(TestSession, learningDelivery2.LearningDeliveryValues, ids.Max())
-                              .WithALevyPayingEmployer()
-                              .WithApprenticeshipPriceEpisode(priceEpisode2.PriceEpisodeValues)
-                              .ToApprenticeshipModel();
+            if (createDataLock)
+            {
+                commitment1.FrameworkCode += 1;
+            }
 
             TestSession.Apprenticeships.GetOrAdd(commitmentIdentifier1, commitment1);
             testDataContext.Apprenticeship.Add(commitment1);
             testDataContext.ApprenticeshipPriceEpisode.AddRange(commitment1.ApprenticeshipPriceEpisodes);
 
-            TestSession.Apprenticeships.GetOrAdd(commitmentIdentifier2, commitment2);
-            testDataContext.Apprenticeship.Add(commitment2);
-            testDataContext.ApprenticeshipPriceEpisode.AddRange(commitment2.ApprenticeshipPriceEpisodes);
+            if (commitmentIdentifier2 != null)
+            {
+                var commitment2 = new ApprenticeshipBuilder()
+                    .BuildSimpleApprenticeship(TestSession, learningDelivery2.LearningDeliveryValues, ids.Max())
+                    .WithALevyPayingEmployer()
+                    .WithApprenticeshipPriceEpisode(priceEpisode2.PriceEpisodeValues)
+                    .ToApprenticeshipModel();
+
+                TestSession.Apprenticeships.GetOrAdd(commitmentIdentifier2, commitment2);
+                testDataContext.Apprenticeship.Add(commitment2);
+                testDataContext.ApprenticeshipPriceEpisode.AddRange(commitment2.ApprenticeshipPriceEpisodes);
+            }
 
             var levyModel = TestSession.Employer.ToModel();
             levyModel.Balance = 1000000000;
-            testDataContext.LevyAccount.Add(levyModel);
-            await testDataContext.SaveChangesAsync();
+
+            if (!testDataContext.LevyAccount.Any(x => x.AccountId == levyModel.AccountId))
+            {
+                testDataContext.LevyAccount.Add(levyModel);
+                await testDataContext.SaveChangesAsync();
+            }
 
             TestSession.FM36Global.UKPRN = TestSession.Provider.Ukprn;
         }
 
         [When(@"the Provider submits the single price episode PE-1 in the ILR")]
         [When("the Provider submits the 2 price episodes in the ILR")]
+        [When("the Provider submission is processed for payment")]
         public async Task WhenTheProviderSubmitsThePriceEpisodesInTheIlr()
         {
             var dcHelper = Scope.Resolve<IDcHelper>();
@@ -183,6 +197,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                          .PayableEarningsReceivedForLearner(TestSession)
                          .Count(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier)) == 1;
             return result;
+        }
+
+        private bool FundingSourceTest()
+        {
+            var fundingSource = ProviderPaymentEventHandler.ReceivedEvents.First().FundingSourceType;
+            return true;
         }
 
         [Then("there is a single match for (.*) with Commitment (.*)")]

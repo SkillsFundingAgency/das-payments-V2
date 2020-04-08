@@ -33,4 +33,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     dataLockEvent.OnProgrammeEarnings.SelectMany(earning => earning.Periods.SelectMany(period => period.DataLockFailures.Select(a => a.DataLockError))));
         }
     }
+
+    //public static class PaymentEventsHelper
+    //{
+    //    public static IEnumerable<PayableEarningEvent> PayableEarningsReceivedForLearner(TestSession session)
+    //    {
+    //        return ProviderPaymentEventHandler.ReceivedEvents.Where(event =>
+    //            )
+    //    }
+    //}
 }
