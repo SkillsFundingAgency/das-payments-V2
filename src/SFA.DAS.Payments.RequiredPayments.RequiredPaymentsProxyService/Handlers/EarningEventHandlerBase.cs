@@ -41,10 +41,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             paymentLogger.LogInfo($"Processing RequiredPaymentsProxyService event. Message Id : {context.MessageId}");
             executionContext.JobId = message.JobId.ToString();
 
-            var contractType = message is PayableEarningEvent ? ContractType.Act1 :
-                message is ApprenticeshipContractType2EarningEvent ? ContractType.Act2 :
-                (message as IFunctionalSkillEarningEvent)?.ContractType
-                ?? throw new InvalidOperationException($"Cannot resolve contract type for {typeof(T).FullName}");
+            var contractType = GetContractTypeFromMessage(message);
 
             var key = apprenticeshipKeyService.GenerateApprenticeshipKey(
                 message.Ukprn,
@@ -59,7 +56,9 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             );
 
             var actorId = new ActorId(key);
-            var actor = proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
+            var actor = proxyFactory.CreateActorProxy<IRequiredPaymentsService>(
+                new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"),
+                actorId);
             IReadOnlyCollection<PeriodisedRequiredPaymentEvent> requiredPaymentEvent;
 
             requiredPaymentEvent = await HandleEarningEvent(message, actor).ConfigureAwait(false);
@@ -70,6 +69,24 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             paymentLogger.LogInfo($"Successfully processed RequiredPaymentsProxyService event for Actor Id {actorId}");
         }
 
-        protected abstract Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleEarningEvent(T message, IRequiredPaymentsService actor);
+        private ContractType GetContractTypeFromMessage(T message)
+        {
+            switch (message)
+            {
+                case PayableEarningEvent payableEarningEvent:
+                case ApprenticeshipContractType1RedundancyEarningEvent contractType1RedundancyEarning:
+                    return ContractType.Act1;
+                case ApprenticeshipContractType2EarningEvent apprenticeshipContractType2Earning:
+                case ApprenticeshipContractType2RedundancyEarningEvent apprenticeshipContractType2RedundancyEarning:
+                    return ContractType.Act2;
+                case IFunctionalSkillEarningEvent funcSkill:
+                    return funcSkill.ContractType;
+                default:
+                    throw new InvalidOperationException($"Cannot resolve contract type for {typeof(T).FullName}");
+            }
+        }
+
+        protected abstract Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleEarningEvent(T message,
+            IRequiredPaymentsService actor);
     }
 }

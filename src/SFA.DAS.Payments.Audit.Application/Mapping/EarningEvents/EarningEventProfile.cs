@@ -14,6 +14,8 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
             CreateMap<EarningEvent, EarningEventModel>()
                 .Include<ApprenticeshipContractType2EarningEvent, EarningEventModel>()
                 .Include<ApprenticeshipContractType1EarningEvent, EarningEventModel>()
+                .Include<ApprenticeshipContractType1RedundancyEarningEvent, EarningEventModel>()
+                .Include<ApprenticeshipContractType2RedundancyEarningEvent, EarningEventModel>()
                 .Include<FunctionalSkillEarningsEvent, EarningEventModel>()
                 .Include<Act1FunctionalSkillEarningsEvent, EarningEventModel>()
                 .Include<Act2FunctionalSkillEarningsEvent, EarningEventModel>()
@@ -26,6 +28,19 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                 .ForMember(dest => dest.IlrFileName, opt => opt.MapFrom(x => x.IlrFileName))
                 .ForMember(dest => dest.EventType, opt => opt.MapFrom(x => x.GetType().FullName))
                 ;
+
+            CreateMap<ApprenticeshipContractType1RedundancyEarningEvent, EarningEventModel>()
+                .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act1))
+                .ForMember(dest => dest.AgreementId, opt => opt.MapFrom(source => source.AgreementId))
+                .ForMember(dest => dest.Periods, opt => opt.ResolveUsing<ApprenticeshipContractTypeEarningPeriodResolver>())
+                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage));
+
+           
+            CreateMap<ApprenticeshipContractType2RedundancyEarningEvent, EarningEventModel>()
+                .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act1))
+                .ForMember(dest => dest.Periods, opt => opt.ResolveUsing<ApprenticeshipContractTypeEarningPeriodResolver>())
+                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage));
+
 
             CreateMap<ApprenticeshipContractType1EarningEvent, EarningEventModel>()
                 .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act1))

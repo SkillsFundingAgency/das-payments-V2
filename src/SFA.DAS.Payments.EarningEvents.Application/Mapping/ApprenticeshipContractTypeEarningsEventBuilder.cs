@@ -6,9 +6,6 @@ using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices.ComTypes;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
@@ -47,7 +44,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                     var learnerWithSortedPriceEpisodes =
                         intermediateLearningAim.CopyReplacingPriceEpisodes(priceEpisodes);
 
-                    var earningEvent = factory.Create(priceEpisodes.Key);
+                     var earningEvent = factory.Create(priceEpisodes.Key);
                     if (!earningEvent.IsPayable) continue;
 
                     mapper.Map(learnerWithSortedPriceEpisodes, earningEvent);
