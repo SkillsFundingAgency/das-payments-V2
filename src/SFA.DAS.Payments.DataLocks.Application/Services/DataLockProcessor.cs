@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching;
 using SFA.DAS.Payments.Messages.Core.Events;
@@ -23,28 +22,21 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         private readonly ILearnerMatcher learnerMatcher;
         private readonly IOnProgrammeAndIncentiveEarningPeriodsValidationProcessor onProgrammeAndIncentiveEarningPeriodsValidationProcessor;
         private readonly IFunctionalSkillEarningPeriodsValidationProcessor functionalSkillEarningPeriodsValidationProcessor;
-        private readonly bool disableDatalocks;
         
         public DataLockProcessor(IMapper mapper, ILearnerMatcher learnerMatcher,
             IOnProgrammeAndIncentiveEarningPeriodsValidationProcessor onProgrammeAndIncentiveEarningPeriodsValidationProcessor,
-            IFunctionalSkillEarningPeriodsValidationProcessor functionalSkillEarningPeriodsValidationProcessor,
-            IConfigurationHelper configurationHelper)
+            IFunctionalSkillEarningPeriodsValidationProcessor functionalSkillEarningPeriodsValidationProcessor)
         {
             this.mapper = mapper;
             this.learnerMatcher = learnerMatcher;
             this.onProgrammeAndIncentiveEarningPeriodsValidationProcessor = onProgrammeAndIncentiveEarningPeriodsValidationProcessor;
             this.functionalSkillEarningPeriodsValidationProcessor = functionalSkillEarningPeriodsValidationProcessor;
-            if (bool.TryParse(configurationHelper.GetSetting("DisableDatalocks"), out bool result))
-            {
-                disableDatalocks = result;
-            }
         }
 
         public async Task<List<DataLockEvent>> GetPaymentEvents(ApprenticeshipContractType1EarningEvent earningEvent, CancellationToken cancellationToken)
         {
             var dataLockEvents = new List<DataLockEvent>();
 
-            // DLOCK 1 & 2
             var learnerMatchResult = await learnerMatcher.MatchLearner(earningEvent.Ukprn, earningEvent.Learner.Uln).ConfigureAwait(false);
             if (learnerMatchResult.DataLockErrorCode.HasValue)
             {
@@ -152,8 +144,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                         (TransactionType)onProgrammeEarning.Type,
                         apprenticeshipsForUln, 
                         earningEvent.LearningAim,
-                        earningEvent.CollectionYear,
-                        disableDatalocks);
+                        earningEvent.CollectionYear);
 
                 if (validationResult.ValidPeriods.Any())
                 {
@@ -185,8 +176,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                         (TransactionType)functionalSkillEarning.Type,
                         apprenticeshipsForUln,
                         earningEvent.LearningAim,
-                        earningEvent.CollectionYear,
-                        disableDatalocks);
+                        earningEvent.CollectionYear);
 
                 if (validationResult.ValidPeriods.Any())
                 {
@@ -220,8 +210,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                         (TransactionType)incentiveEarning.Type,
                         apprenticeshipsForUln,
                         earningEvent.LearningAim,
-                        earningEvent.CollectionYear,
-                        disableDatalocks);
+                        earningEvent.CollectionYear);
 
                 if (validationResult.ValidPeriods.Any())
                 {

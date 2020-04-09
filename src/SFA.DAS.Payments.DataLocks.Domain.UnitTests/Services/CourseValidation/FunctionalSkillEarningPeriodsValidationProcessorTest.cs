@@ -49,8 +49,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 (TransactionType)earningEvent.Earnings[0].Type,
                 apprenticeships,
                 earningEvent.LearningAim,
-                earningEvent.CollectionPeriod.AcademicYear,
-                false);
+                earningEvent.CollectionPeriod.AcademicYear);
 
             periods.ValidPeriods.Count.Should().Be(1);
             periods.ValidPeriods
@@ -78,8 +77,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 (TransactionType)earningEvent.Earnings[0].Type,
                 apprenticeships,
                 earningEvent.LearningAim,
-                earningEvent.CollectionPeriod.AcademicYear,
-                false);
+                earningEvent.CollectionPeriod.AcademicYear);
             
             periods.InValidPeriods.Should().HaveCount(1);
             periods.InValidPeriods.All(p => p.DataLockFailures.All(x =>
@@ -107,8 +105,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 (TransactionType)earningEvent.Earnings[0].Type,
                 apprenticeships,
                 earningEvent.LearningAim,
-                earningEvent.CollectionPeriod.AcademicYear,
-                false);
+                earningEvent.CollectionPeriod.AcademicYear);
             
             periods.InValidPeriods.Should().HaveCount(1);
             periods.InValidPeriods.All(p => p.DataLockFailures.All(x =>
