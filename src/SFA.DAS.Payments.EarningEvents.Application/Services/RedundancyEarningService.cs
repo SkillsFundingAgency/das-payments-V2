@@ -61,6 +61,25 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Services
                 }
             });
 
+            //clear earlier period for redundancy periods
+            redundancyEarningEvent.OnProgrammeEarnings.ForEach(ope =>
+            {
+                foreach (var onProgPeriod in ope.Periods)
+                {
+                    if (onProgPeriod.Period < redundancyPeriod)
+                        onProgPeriod.Amount= 0m;
+                }
+            });
+            redundancyEarningEvent.IncentiveEarnings.ForEach(ie =>
+            {
+                foreach (var incentivePeriod in ie.Periods)
+                {
+                    if (incentivePeriod.Period < redundancyPeriod)
+                        incentivePeriod.Amount = 0m;
+                }
+            });
+
+
             splitResults.Add(earningEvent);
             splitResults.Add(redundancyEarningEvent);
             
@@ -106,6 +125,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Services
                     if (period.Period >= redundancyPeriod)
                     {
                         period.SfaContributionPercentage = 1m;
+                    }
+                    if (period.Period < redundancyPeriod)
+                    {
+                        period.Amount = 0m;
                     }
                 }
             }

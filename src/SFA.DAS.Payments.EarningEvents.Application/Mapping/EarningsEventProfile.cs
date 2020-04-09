@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
@@ -58,13 +59,22 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 ;
 
             CreateMap<ApprenticeshipContractType1EarningEvent,
-                ApprenticeshipContractType1RedundancyEarningEvent>()
-                ;
+                    ApprenticeshipContractType1RedundancyEarningEvent>()
+                .ForMember(destinationMember => destinationMember.EventId, opt => opt.UseValue(Guid.NewGuid()));
+          
+                
             CreateMap<ApprenticeshipContractType2EarningEvent,
-                ApprenticeshipContractType2RedundancyEarningEvent>();
+                ApprenticeshipContractType2RedundancyEarningEvent>()
+                .ForMember(destinationMember => destinationMember.EventId, opt => opt.UseValue(Guid.NewGuid()));
 
-            CreateMap<Act1FunctionalSkillEarningsEvent, Act1RedundancyFunctionalSkillEarningsEvent>();
-            CreateMap<Act2FunctionalSkillEarningsEvent, Act2RedundancyFunctionalSkillEarningsEvent>();
+
+            CreateMap<Act1FunctionalSkillEarningsEvent, Act1RedundancyFunctionalSkillEarningsEvent>()
+                .ForMember(destinationMember => destinationMember.EventId, opt => opt.UseValue(Guid.NewGuid()));
+
+
+              CreateMap<Act2FunctionalSkillEarningsEvent, Act2RedundancyFunctionalSkillEarningsEvent>()
+                .ForMember(destinationMember => destinationMember.EventId, opt => opt.UseValue(Guid.NewGuid()));
+
 
             CreateMap<FunctionalSkillEarning, FunctionalSkillEarning>();
             CreateMap<OnProgrammeEarning, OnProgrammeEarning>();

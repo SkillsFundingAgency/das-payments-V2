@@ -885,7 +885,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                 }
             }
 
-            Assert.IsTrue(redundancyEarningEvent.Earnings[1].Periods.All(p => p.Amount == 39.25m));
+           
+            Assert.AreNotEqual(act2EarningEvent.EventId, redundancyEarningEvent.EventId);
         }
     }
 }

@@ -46,5 +46,70 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             Assert.AreEqual(expectedType, earningEvent.GetType());
         }
 
+
+        [Test]
+        public void CreateRedundancyContractType_ForAct1ContractType_ShouldCreateANewEventId()
+        {
+            // arrange
+            var factory = new RedundancyEarningEventFactory(Mapper.Instance);
+            var earningEvent = new ApprenticeshipContractType1EarningEvent();
+            earningEvent.EventId = Guid.NewGuid();
+
+            // act
+            var createdEvent = factory.CreateRedundancyContractType(earningEvent);
+            // assert
+            Assert.AreNotEqual(createdEvent.EventId, earningEvent.EventId );
+        }
+        [Test]
+        public void CreateRedundancyContractType_ForAct2ContractType_ShouldCreateANewEventId()
+        {
+            // arrange
+            var factory = new RedundancyEarningEventFactory(Mapper.Instance);
+            var earningEvent = new ApprenticeshipContractType2EarningEvent();
+            earningEvent.EventId = Guid.NewGuid();
+
+            // act
+            var createdEvent = factory.CreateRedundancyContractType(earningEvent);
+            // assert
+            Assert.AreNotEqual(createdEvent.EventId, earningEvent.EventId );
+        }
+
+        //[Test]
+        //public void CreateRedundancyContractType_ForAct1RedundancyFunctionalSkillEarningsEvent_ShouldCreateANewEventId()
+        //{
+        //    // arrange
+        //    var factory = new RedundancyEarningEventFactory(Mapper.Instance);
+        //    var earningEvent = new Act1FunctionalSkillEarningsEvent();
+        //    earningEvent.EventId = Guid.NewGuid();
+
+        //    // act
+        //    try
+        //    {
+        //        var createdEvent = factory.CreateRedundancyFunctionalSkillType(earningEvent);
+        //        Assert.AreNotEqual(createdEvent.EventId, earningEvent.EventId);
+        //    }
+        //    catch (Exception e)
+        //    {
+              
+        //        throw;
+        //    }
+        //    // assert
+         
+        //}
+
+        //[Test]
+        //public void CreateRedundancyContractType_ForAct2RedundancyFunctionalSkillEarningsEvent_ShouldCreateANewEventId()
+        //{
+        //    // arrange
+        //    var factory = new RedundancyEarningEventFactory(Mapper.Instance);
+        //    var earningEvent = new Act2RedundancyFunctionalSkillEarningsEvent();
+        //    earningEvent.EventId = Guid.NewGuid();
+
+        //    // act
+        //    var createdEvent = factory.CreateRedundancyFunctionalSkillType(earningEvent);
+        //    // assert
+        //    Assert.AreNotEqual(createdEvent.EventId, earningEvent.EventId );
+        //}
+
     }
 }

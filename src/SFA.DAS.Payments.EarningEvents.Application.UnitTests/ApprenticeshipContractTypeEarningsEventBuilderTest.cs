@@ -793,6 +793,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
 
                 }
             }
+
+            Assert.AreNotEqual(act2EarningEvent.EventId, redundancyEarningEvent.EventId);
         }
 
         private static ProcessLearnerCommand CreateLearnerSubmissionWithLearningSupport()

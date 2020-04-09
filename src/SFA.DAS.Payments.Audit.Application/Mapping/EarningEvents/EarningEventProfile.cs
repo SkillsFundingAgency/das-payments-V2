@@ -19,6 +19,8 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                 .Include<FunctionalSkillEarningsEvent, EarningEventModel>()
                 .Include<Act1FunctionalSkillEarningsEvent, EarningEventModel>()
                 .Include<Act2FunctionalSkillEarningsEvent, EarningEventModel>()
+                .Include<Act1RedundancyFunctionalSkillEarningsEvent, EarningEventModel>()
+                .Include<Act2RedundancyFunctionalSkillEarningsEvent, EarningEventModel>()
                 .MapCommon()
                 .ForMember(dest => dest.ContractType, opt => opt.Ignore())
                 .ForMember(dest => dest.AgreementId, opt => opt.Ignore())
@@ -57,10 +59,20 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                 .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act1));
             CreateMap<Act2FunctionalSkillEarningsEvent, EarningEventModel>()
                 .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2));
+            CreateMap<Act1RedundancyFunctionalSkillEarningsEvent, EarningEventModel>()
+                .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act1));
+            CreateMap<Act2RedundancyFunctionalSkillEarningsEvent, EarningEventModel>()
+                .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2));
+
+
+
+
 
             CreateMap<FunctionalSkillEarningsEvent, EarningEventModel>()
                 .Include<Act1FunctionalSkillEarningsEvent, EarningEventModel>()
                 .Include<Act2FunctionalSkillEarningsEvent, EarningEventModel>()
+                .Include<Act1RedundancyFunctionalSkillEarningsEvent, EarningEventModel>()
+                .Include<Act2RedundancyFunctionalSkillEarningsEvent, EarningEventModel>()
                 .ForMember(dest => dest.Periods, opt => opt.ResolveUsing<FunctionalSkillEarningResolver>());
 
             CreateMap<PriceEpisode, EarningEventPriceEpisodeModel>()
