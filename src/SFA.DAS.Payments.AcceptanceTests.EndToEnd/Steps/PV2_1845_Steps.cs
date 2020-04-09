@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.Provider.Ukprn,
                 TestSession.CollectionPeriod.AcademicYear,
                 TestSession.CollectionPeriod.Period,
-                TestSession.Provider.JobId);
+                TestSession.Provider.JobId + 1);
         }
 
         [Given("there are less than 6 months remaining of the planned learning")]
