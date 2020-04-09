@@ -113,7 +113,7 @@
     <Build Include="Payments2\Views\Payments2.DataMatchReport.sql" />
     <Build Include="Payments2\Tables\Payments2.ReceivedDataLockEvent.sql" />
     <Build Include="Payments2\Tables\Payments2.CurrentPriceEpisode.sql" />
-    <Build Include="Metrics\Tables\Metrics.ProviderDataLockedEarning.sql" />
+    <Build Include="Metrics\Tables\Metrics.ProviderDataLockCounts.sql" />
     <Build Include="Metrics\Tables\Metrics.ProviderRequiredPayment.sql" />
     <Build Include="Metrics\Tables\Metrics.SubmissionSummary.sql" />
     <Build Include="Metrics\Tables\Metrics.SubmissionEarningType.sql" />

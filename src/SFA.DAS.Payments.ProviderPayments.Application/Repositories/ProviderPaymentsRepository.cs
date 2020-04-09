@@ -102,5 +102,16 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             await paymentsDataContext.Payment.AddAsync(paymentData, cancellationToken);
             await paymentsDataContext.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task<List<PaymentModel>> GetMonthEndAct1CompletionPayments(CollectionPeriod collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await paymentsDataContext
+                         .Payment.Where(p =>
+                                            p.CollectionPeriod.Period == collectionPeriod.Period 
+                                         && p.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear 
+                                         && p.TransactionType == TransactionType.Completion 
+                                         && p.ContractType == ContractType.Act1)
+                         .ToListAsync(cancellationToken);
+        }
     }
 }

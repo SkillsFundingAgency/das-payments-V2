@@ -85,6 +85,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
                 JobId = JobId,
                 Ukprn = Ukprn,
                 DcEarnings = GetDcEarnings(),
+                AlreadyPaidDataLockedEarnings = alreadyPaidDataLocked,
+                TotalDataLockedEarnings = actualTotalDataLocked,
                 DataLockedEarnings = actualTotalDataLocked - alreadyPaidDataLocked,
                 DataLockMetrics = new List<DataLockCountsModel> { new DataLockCountsModel { Amounts = dataLocked } },
                 HeldBackCompletionPayments = heldBackCompletionPayments,

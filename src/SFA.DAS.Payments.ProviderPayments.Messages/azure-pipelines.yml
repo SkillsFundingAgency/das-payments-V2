@@ -1,0 +1,55 @@
+name: $(VersionNumberMajor).$(VersionNumberMinor)$(Rev:.rrrr)
+
+resources:
+- repo: self
+  fetchDepth: 15
+
+variables:  
+  VersionNumberMajor: '0'
+  VersionNumberMinor: '0'
+  BuildConfiguration: 'Release'
+  BuildPlatform: 'Any CPU'
+  BuildPlatformX64: 'x64'  
+
+pool:
+  name: DCT
+  demands:
+  - IsBuildServer
+  - IsBuildServerDAS
+  - msbuild
+
+steps:
+- task: DotNetCoreInstaller@0
+  displayName: 'Use .NET Core sdk 2.2.106'
+  inputs:
+    version: 2.2.106
+
+- task: DotNetCoreCLI@2
+  displayName: 'Restore Provider Payments Messages'
+  inputs:
+    command: restore
+    projects: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build Provider Payments Messages'
+  inputs:
+    projects: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
+  enabled: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Pack Provider Payments Messages'
+  inputs:
+    command: pack
+    packagesToPack: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
+    versioningScheme: byBuildNumber
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    Contents: '**/*.nupkg'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/ProviderPayments'    
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Packages'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'

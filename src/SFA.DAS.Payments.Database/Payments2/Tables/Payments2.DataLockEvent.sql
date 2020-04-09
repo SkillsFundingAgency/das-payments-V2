@@ -34,7 +34,28 @@ Create index IX_DataLockEvent__Metrics ON [Payments2].[DataLockEvent] ([Academic
 	INCLUDE ([DataLockSourceId], [EarningEventId], [EventId], [IlrSubmissionDateTime], [LearnerReferenceNumber], [LearnerUln]) WITH (ONLINE = ON)
 Go
 
-CREATE NONCLUSTERED INDEX [IX_DataLockEvent__Metrics_Paid_DataLocks] ON [Payments2].[DataLockEvent]
+CREATE NONCLUSTERED INDEX [IX_DataLockEvent__Metrics_Paid_DataLocks] ON [Payments2].[DataLockEvent] 
+( 
+[JobId],
+[Ukprn],
+[IsPayable] 
+) 
+INCLUDE
+(
+[CollectionPeriod], 
+[EventId], 
+[LearnerReferenceNumber], 
+[LearningAimFrameworkCode], 
+[LearningAimPathwayCode], 
+[LearningAimProgrammeType], 
+[LearningAimReference], 
+[LearningAimStandardCode]
+) 
+WITH (ONLINE = ON)
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_DataLockEvent__Manual_Metrics_Paid_DataLocks] ON [Payments2].[DataLockEvent]
 (
 	[Ukprn] ,
 	[CollectionPeriod],
