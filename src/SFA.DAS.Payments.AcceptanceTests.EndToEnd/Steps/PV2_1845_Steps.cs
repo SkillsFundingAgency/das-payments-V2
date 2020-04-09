@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             GetFm36LearnerForCollectionPeriod("R03/current academic year");
             await SetupTestData(priceEpisodeIdentifier, null, commitmentIdentifier, null);
 
-            CreateDataLockForCommitment(commitmentIdentifier);
+            //CreateDataLockForCommitment(commitmentIdentifier);
 
             var dcHelper = Scope.Resolve<IDcHelper>();
             await dcHelper.SendIlrSubmission(TestSession.FM36Global.Learners,
@@ -82,10 +82,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return EarningEventsHelper.PayableEarningsReceivedForLearner(TestSession).Count(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier)) == 2;
         }
 
-        //private bool HasCorrectlyFunded()
-        //{
-        //    var 
-        //}
+        private bool HasCorrectlyFunded(short academicYear, int fundingSource, int sfaPercentage)
+        {
+            var events = PaymentEventsHelper.ProviderPaymentsReceivedForLearner(priceEpisodeIdentifier, academicYear, TestSession);
+            return events.Any();
+        }
 
         [Then("bypass the data lock rules")]
         public async Task BypassTheDataLockRules()
@@ -94,11 +95,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 "Failed to find a Payable Earning and no Data Locks");
         }
 
-        //[Then(@"fund the remaining monthly instalments of the learning from Funding Source (.*) \((.*)% SFA funding\) from the date of the Price episode read start date")]
-        //public async Task ThenFundTheRemainingInstallmentsCorrectly(int fundingSource, int sfaPercentage)
-        //{
-        //    await WaitForIt(() => HasCorrectlyFunded(),
-        //        "Failed to find correctly funded remaining installments");
-        //}
+        [Then(@"fund the remaining monthly instalments of the learning from Funding Source (.*) \((.*)% SFA funding\) from the date of the Price episode read start date")]
+        public async Task ThenFundTheRemainingInstallmentsCorrectly(int fundingSource, int sfaPercentage)
+        {
+            await WaitForIt(() => HasCorrectlyFunded(short.Parse(TestSession.FM36Global.Year), fundingSource, sfaPercentage),
+                "Failed to find correctly funded remaining installments");
+        }
     }
 }
