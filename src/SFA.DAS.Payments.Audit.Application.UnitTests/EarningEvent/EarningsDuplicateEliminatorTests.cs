@@ -130,23 +130,5 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.EarningEvent
             var deDuplicatedEvents = service.RemoveDuplicates(earnings);
             deDuplicatedEvents.Count.Should().Be(2);
         }
-
-        [Test]
-        public async Task Removes_Duplicate_Earnings_Already_Stored_In_Db()
-        {
-            var earnings = new List<EarningEventModel>
-            {
-                CreateEarningEventModel(null),
-                CreateEarningEventModel(null),
-                CreateEarningEventModel(model => model.EventType = typeof(ApprenticeshipContractType2EarningEvent).FullName),
-            };
-
-            moqer.GetMock<IEarningEventRepository>()
-                .Setup(x => x.GetAlreadyStoredEarnings(It.IsAny<List<EarningEventModel>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(earnings.Take(2).ToList());
-            var service = moqer.Create<EarningsDuplicateEliminator>();
-            var deDuplicatedEvents = await service.RemoveDuplicates(earnings, CancellationToken.None).ConfigureAwait(false);
-            deDuplicatedEvents.Count.Should().Be(1);
-        }
     }
 }

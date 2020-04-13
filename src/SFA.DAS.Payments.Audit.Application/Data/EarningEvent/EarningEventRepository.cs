@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
-using Castle.Core.Internal;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Audit;
@@ -16,9 +13,6 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
         Task RemovePriorEvents(long ukprn, short academicYear, byte collectionPeriod, DateTime latestIlrSubmissionTime, CancellationToken cancellationToken);
         Task RemoveFailedSubmissionEvents(long jobId, CancellationToken cancellationToken);
         Task SaveEarningEvents(List<EarningEventModel> earningEvents, CancellationToken cancellationToken);
-
-        Task<List<EarningEventModel>> GetAlreadyStoredEarnings(List<EarningEventModel> earnings,
-            CancellationToken cancellationToken);
     }
 
     public class EarningEventRepository : IEarningEventRepository
@@ -57,62 +51,6 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
         {
             await dataContext.EarningEvent.AddRangeAsync(earningEvents, cancellationToken).ConfigureAwait(false);
             await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-        }
-
-        public async Task<List<EarningEventModel>> GetAlreadyStoredEarnings(List<EarningEventModel> earnings, CancellationToken cancellationToken)
-        {
-            var minEventTime = earnings.Min(earningEvent => earningEvent.EventTime).AddMinutes(-10);
-            //EF Core 2.2 produces very inefficient sql for joins between in-memory collection and sql table
-            var sqlWhereClause = earnings.Aggregate(string.Empty, (currentSql, model) => $@"{currentSql}
-            Or (JobId = {model.JobId} 
-                And Ukprn = {model.Ukprn} 
-                and AcademicYear = {model.AcademicYear} 
-                and CollectionPeriod = {model.CollectionPeriod} 
-                and ContractType = {model.ContractType:D} 
-                and LearnerUln = {model.LearnerUln} 
-                and LearnerReferenceNumber = '{model.LearnerReferenceNumber}' 
-                and LearningAimReference = '{model.LearningAimReference}' 
-                and LearningAimProgrammeType = {model.LearningAimProgrammeType} 
-                and LearningAimStandardCode = {model.LearningAimStandardCode} 
-                and LearningAimFrameworkCode = {model.LearningAimFrameworkCode} 
-                and LearningAimPathwayCode = {model.LearningAimPathwayCode} 
-                and LearningAimFundingLineType { (string.IsNullOrWhiteSpace(model.LearningAimFundingLineType) ? "is null" : $" = '{model.LearningAimFundingLineType}'") } 
-                and LearningAimSequenceNumber = {model.LearningAimSequenceNumber} 
-                and LearningStartDate = '{model.LearningStartDate:yyyy-MM-dd HH:mm:ss}' 
-                and EventType = '{model.EventType}')");
-
-            var sql = $@"Select [Id]
-                ,[EventId]
-                ,[Ukprn]
-                ,[ContractType]
-                ,[CollectionPeriod]
-                ,[AcademicYear]
-                ,[LearnerReferenceNumber]
-                ,[LearnerUln]
-                ,[LearningAimReference]
-                ,[LearningAimProgrammeType]
-                ,[LearningAimStandardCode]
-                ,[LearningAimFrameworkCode]
-                ,[LearningAimPathwayCode]
-                ,[LearningAimFundingLineType]
-                ,[LearningStartDate]
-                ,[AgreementId]
-                ,[IlrSubmissionDateTime]
-                ,[JobId]
-                ,[EventTime]
-                ,[CreationDate]
-                ,[LearningAimSequenceNumber]
-                ,[SfaContributionPercentage]
-                ,[IlrFileName]
-                ,[EventType] 
-                From Payments2.EarningEvent
-                Where 1=0
-                {sqlWhereClause}";
-            cancellationToken.ThrowIfCancellationRequested();
-            return await dataContext.EarningEvent
-                .AsNoTracking()
-                .FromSql(sql)
-                .ToListAsync(cancellationToken);
         }
     }
 }
