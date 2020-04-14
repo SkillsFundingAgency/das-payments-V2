@@ -10,6 +10,7 @@ using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEvent;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.FundingSource;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.RequiredPayment;
 using SFA.DAS.Payments.Audit.Model;
+using SFA.DAS.Payments.Messaging.Serialization;
 using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
@@ -100,8 +101,7 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<EarningEventMapper>()
-                .As<IEarningEventMapper>()
-                .InstancePerLifetimeScope();
+                .As<IEarningEventMapper>();
 
             builder.RegisterType<EarningsDuplicateEliminator>()
                 .As<IEarningsDuplicateEliminator>()
@@ -110,6 +110,9 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
             builder.RegisterType<DataContextFactory>()
                 .As<IDataContextFactory>()
                 .InstancePerLifetimeScope();
+
+            builder.RegisterType<EarningEventMessageModifier>()
+                .As<IApplicationMessageModifier>();
         }
     }
 }

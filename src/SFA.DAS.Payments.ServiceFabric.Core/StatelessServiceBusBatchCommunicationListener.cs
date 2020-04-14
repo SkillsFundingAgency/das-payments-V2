@@ -19,6 +19,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.Messaging.Serialization;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core
 {
@@ -33,17 +34,21 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         private readonly IPaymentLogger logger;
         private readonly IContainerScopeFactory scopeFactory;
         private readonly ITelemetry telemetry;
+        private readonly IMessageDeserializer messageDeserializer;
+        private readonly IApplicationMessageModifier messageModifier;
         private readonly string connectionString;
         public string EndpointName { get; set; }
         private readonly string errorQueueName;
         private CancellationToken startingCancellationToken;
 
         public StatelessServiceBusBatchCommunicationListener(string connectionString, string endpointName, string errorQueueName, IPaymentLogger logger,
-            IContainerScopeFactory scopeFactory, ITelemetry telemetry)
+            IContainerScopeFactory scopeFactory, ITelemetry telemetry, IMessageDeserializer messageDeserializer, IApplicationMessageModifier messageModifier)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
+            this.messageDeserializer = messageDeserializer ?? throw new ArgumentNullException(nameof(messageDeserializer));
+            this.messageModifier = messageModifier ?? throw new ArgumentNullException(nameof(messageModifier));
             this.connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             EndpointName = endpointName ?? throw new ArgumentNullException(nameof(endpointName));
             this.errorQueueName = errorQueueName ?? endpointName + "-Errors";
@@ -73,7 +78,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         private async Task<List<(Object Message, BatchMessageReceiver Receiver, Message ReceivedMessage)>> ReceiveMessages(BatchMessageReceiver messageReceiver, CancellationToken cancellationToken)
         {
             var applicationMessages = new List<(Object Message, BatchMessageReceiver Receiver, Message ReceivedMessage)>();
-            var messages = await messageReceiver.ReceiveMessages(500, cancellationToken).ConfigureAwait(false);
+            var messages = await messageReceiver.ReceiveMessages(200, cancellationToken).ConfigureAwait(false);
             if (!messages.Any())
                 return applicationMessages;
 
@@ -82,7 +87,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                 cancellationToken.ThrowIfCancellationRequested();
                 try
                 {
-                    var applicationMessage = DeserializeMessage(message);
+                    var applicationMessage = GetApplicationMessage(message);
                     applicationMessages.Add((applicationMessage, messageReceiver, message));
                 }
                 catch (Exception e)
@@ -120,7 +125,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                         var messages = receiveTasks.SelectMany(task => task.Result).ToList(); 
                         if (!messages.Any())
                         {
-                            await Task.Delay(1000, cancellationToken);
+                            await Task.Delay(2000, cancellationToken);
                             continue;
                         }
                         receiveTimer.Stop();
@@ -172,17 +177,17 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
 
         private void RecordBatchProcessTelemetry(long elapsedMilliseconds, int count)
         {
-            RecordMetric("BatchedServiceBusCommunicationListener.ProcessBatches", elapsedMilliseconds, count);
+            RecordMetric("StatelessServiceBusBatchCommunicationListener.ProcessBatches", elapsedMilliseconds, count);
         }
 
         private void RecordAllBatchProcessTelemetry(long elapsedMilliseconds, int count)
         {
-            RecordMetric("BatchedServiceBusCommunicationListener.ProcessAllBatches", elapsedMilliseconds, count);
+            RecordMetric("StatelessServiceBusBatchCommunicationListener.ProcessAllBatches", elapsedMilliseconds, count);
         }
 
         private void RecordPipelineTelemetry(long elapsedMilliseconds, int count)
         {
-            RecordMetric("BatchedServiceBusCommunicationListener.Pipeline", elapsedMilliseconds, count);
+            RecordMetric("StatelessServiceBusBatchCommunicationListener.Pipeline", elapsedMilliseconds, count);
         }
 
         private void RecordMetric(string eventName, long elapsedMilliseconds, int count)
@@ -195,18 +200,15 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             telemetry.TrackEvent(eventName, metrics);
         }
 
+        private object GetApplicationMessage(Message message)
+        {
+            var applicationMessage = DeserializeMessage(message);
+            return messageModifier.Modify(applicationMessage);
+        }
+
         private object DeserializeMessage(Message message)
         {
-            if (!message.UserProperties.ContainsKey(NServiceBus.Headers.EnclosedMessageTypes))
-                throw new InvalidOperationException($"Cannot deserialise the message, no 'enclosed message types' header was found. Message id: {message.MessageId}, label: {message.Label}");
-            var enclosedTypes = (string)message.UserProperties[NServiceBus.Headers.EnclosedMessageTypes];
-            var typeName = enclosedTypes.Split(';').FirstOrDefault();
-            if (string.IsNullOrEmpty(typeName))
-                throw new InvalidOperationException($"Message type not found when trying to deserialise the message.  Message id: {message.MessageId}, label: {message.Label}");
-            var messageType = Type.GetType(typeName, assemblyName => { assemblyName.Version = null; return Assembly.Load(assemblyName); },null );
-            var sanitisedMessageJson = GetMessagePayload(message);
-            var deserialisedMessage = JsonConvert.DeserializeObject(sanitisedMessageJson, messageType);
-            return deserialisedMessage;
+            return messageDeserializer.DeserializeMessage(message);
         }
 
         protected async Task ProcessMessages(Type groupType, List<(object Message, BatchMessageReceiver MessageReceiver, Message ReceivedMessage)> messages,

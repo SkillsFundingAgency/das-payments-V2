@@ -15,6 +15,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEven
     public interface IEarningEventStorageService
     {
         Task StoreEarnings(List<EarningEvents.Messages.Events.EarningEvent> earningEvents, CancellationToken cancellationToken);
+        Task StoreEarnings(List<EarningEventModel> earningEvents, CancellationToken cancellationToken);
     }
 
     public class EarningEventStorageService : IEarningEventStorageService
@@ -38,6 +39,25 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEven
             var deDuplicatedEvents = duplicateEliminator.RemoveDuplicates(earningEvents);
             logger.LogDebug($"De-duplicated earning events count: {deDuplicatedEvents.Count}");
             var models = deDuplicatedEvents.Select(earningEvent => mapper.Map(earningEvent)).ToList();
+            try
+            {
+                await repository.SaveEarningEvents(models, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                var sqlException = e.GetException<SqlException>();
+                if (!sqlException.IsUniqueKeyConstraint()) throw;
+                logger.LogInfo($"Batch contained a duplicate earning.  Will store each individually and discard duplicate.");
+                await repository.SaveEarningsIndividually(models.Select(model => mapper.Map(model)).ToList(), cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        public async Task StoreEarnings(List<EarningEventModel> models, CancellationToken cancellationToken)
+        {
+            //logger.LogDebug($"Removing duplicate earning events. Count: {models.Count}");
+            //var deDuplicatedEvents = duplicateEliminator.RemoveDuplicates(earningEvents);
+            //logger.LogDebug($"De-duplicated earning events count: {deDuplicatedEvents.Count}");
+            //var models = deDuplicatedEvents.Select(earningEvent => mapper.Map(earningEvent)).ToList();
             try
             {
                 await repository.SaveEarningEvents(models, cancellationToken);
