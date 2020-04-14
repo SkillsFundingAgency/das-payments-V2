@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         public void SetUp()
         {
             mocker = AutoMock.GetLoose();
-            mocker.Provide<IStartDateValidator, StartDateValidator>();
+            mocker.Provide<IStartDateValidator>(new StartDateValidator(false));
             mocker.Provide<ICalculatePeriodStartAndEndDate, CalculatePeriodStartAndEndDate>();
             mocker.Provide<IOnProgrammeAndIncentiveStoppedValidator, OnProgrammeAndIncentiveStoppedValidator>();
             mocker.Provide<ICompletionStoppedValidator, CompletionStoppedValidator>();

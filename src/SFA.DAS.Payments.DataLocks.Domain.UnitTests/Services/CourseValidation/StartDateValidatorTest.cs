@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -8,9 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoFixture.NUnit3;
-using Moq;
-using SFA.DAS.Payments.DataLocks.Domain.Services;
-using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 {
@@ -32,7 +28,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             apprenticeshipModels[2].ApprenticeshipPriceEpisodes[0].StartDate = new DateTime(2019, 9, 1);
             apprenticeshipModels[2].ApprenticeshipPriceEpisodes[0].EndDate = new DateTime(2020, 9, 30);
 
-            var validator = new StartDateValidator();
+            var validator = new StartDateValidator(false);
             var result = validator.Validate(priceEpisode, apprenticeshipModels);
 
             result.dataLockFailures.Should().BeEmpty();
@@ -59,7 +55,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
             
             List<ApprenticeshipModel> apprenticeshipModels = new List<ApprenticeshipModel> {apprenticeshipA, apprenticeshipB};
 
-            var validator = new StartDateValidator();
+            var validator = new StartDateValidator(false);
             var  result = validator.Validate(priceEpisode, apprenticeshipModels);
 
             result.validApprenticeships.Should().BeEmpty();

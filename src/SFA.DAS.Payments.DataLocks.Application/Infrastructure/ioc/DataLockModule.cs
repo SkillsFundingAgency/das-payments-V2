@@ -33,18 +33,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<OnProgrammeAndIncentiveEarningPeriodsValidationProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<CourseValidationProcessor>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-            builder.RegisterType<StartDateValidator>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<CompletionStoppedValidator>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<OnProgrammeAndIncentiveStoppedValidator>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.Register(ctx =>
             {
                 var configHelper = ctx.Resolve<IConfigurationHelper>();
-                var disableDatalocksConfig = configHelper.GetSetting("DisableDatalocks");
-
-                var configExists = bool.TryParse(disableDatalocksConfig, out var disableDatalocks);
-
-                if (configExists && disableDatalocks)
+                var disableDatalocks = configHelper.GetSettingOrDefault("DisableDatalocks", false);
+                
+                if (disableDatalocks)
                 {
                     return new CourseValidationProcessor(
                         new List<ICourseValidator> {new ApprenticeshipPauseValidator()});
@@ -53,6 +50,14 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
                 return new CourseValidationProcessor(ctx.Resolve<IEnumerable<ICourseValidator>>().ToList());
             }).AsImplementedInterfaces().InstancePerLifetimeScope();
 
+            builder.Register(ctx =>
+            {
+                var configHelper = ctx.Resolve<IConfigurationHelper>();
+                var disableDatalocks = configHelper.GetSettingOrDefault("DisableDatalocks", false);
+
+                return new StartDateValidator(disableDatalocks);
+            }).AsImplementedInterfaces().InstancePerLifetimeScope();
+            
             builder.RegisterType<CalculatePeriodStartAndEndDate>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<DataLockStatusService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
