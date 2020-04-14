@@ -41,12 +41,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
                 var configHelper = ctx.Resolve<IConfigurationHelper>();
                 var disableDatalocks = configHelper.GetSettingOrDefault("DisableDatalocks", false);
                 
+                // If datalocks are disabled (PV2-1887) then the only validator that we want
+                //  enabled is the Pause validator (DLOCK_12)
                 if (disableDatalocks)
                 {
                     return new CourseValidationProcessor(
                         new List<ICourseValidator> {new ApprenticeshipPauseValidator()});
                 }
 
+                // Otherwise all of the validators
                 return new CourseValidationProcessor(ctx.Resolve<IEnumerable<ICourseValidator>>().ToList());
             }).AsImplementedInterfaces().InstancePerLifetimeScope();
 
