@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Payments.Model.Core.Entities;
+﻿using System;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 {
@@ -7,6 +8,7 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
         public Act1RedundancyFunctionalSkillEarningsEvent()
         {
             ContractType = ContractType.Act1;
+            EventId = Guid.NewGuid();
         }
     }
 }

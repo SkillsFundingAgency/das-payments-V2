@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Payments.Messages.Core;
+﻿using System;
+using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Messages.Core.Events;
 
 namespace SFA.DAS.Payments.EarningEvents.Messages.Events
@@ -8,6 +9,7 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
         public ApprenticeshipContractType1RedundancyEarningEvent()
         {
             SfaContributionPercentage = 1m;
+            EventId = Guid.NewGuid();
         }
         public string AgreementId { get; set; }
     }

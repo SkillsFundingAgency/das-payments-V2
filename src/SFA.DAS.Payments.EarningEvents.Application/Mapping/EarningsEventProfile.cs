@@ -60,20 +60,20 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             CreateMap<ApprenticeshipContractType1EarningEvent,
                     ApprenticeshipContractType1RedundancyEarningEvent>()
-                .ForMember(destinationMember => destinationMember.EventId, opt => opt.UseValue(Guid.NewGuid()));
+                .Ignore(x => x.EventId);
           
                 
             CreateMap<ApprenticeshipContractType2EarningEvent,
                 ApprenticeshipContractType2RedundancyEarningEvent>()
-                .ForMember(destinationMember => destinationMember.EventId, opt => opt.UseValue(Guid.NewGuid()));
+                .Ignore(x => x.EventId);
 
 
             CreateMap<Act1FunctionalSkillEarningsEvent, Act1RedundancyFunctionalSkillEarningsEvent>()
-                .ForMember(destinationMember => destinationMember.EventId, opt => opt.UseValue(Guid.NewGuid()));
+                .Ignore(x => x.EventId);
 
 
               CreateMap<Act2FunctionalSkillEarningsEvent, Act2RedundancyFunctionalSkillEarningsEvent>()
-                .ForMember(destinationMember => destinationMember.EventId, opt => opt.UseValue(Guid.NewGuid()));
+                  .Ignore(x => x.EventId);
 
 
             CreateMap<FunctionalSkillEarning, FunctionalSkillEarning>();
