@@ -50,6 +50,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await SetupTestData(priceEpisodeIdentifier, null, commitmentIdentifier, null);
 
             //CreateDataLockForCommitment(commitmentIdentifier);
+            TestSession.RegenerateJobId();
 
             var dcHelper = Scope.Resolve<IDcHelper>();
             await dcHelper.SendIlrSubmission(TestSession.FM36Global.Learners,

@@ -113,6 +113,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             };
         }
 
+        public void RegenerateJobId()
+        {
+            Provider.JobId = GenerateId();
+        }
+
         public Provider GetProviderByIdentifier(string identifier)
         {
             if (identifier == null) return Provider;
