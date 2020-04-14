@@ -34,14 +34,20 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEven
 
         public async Task StoreEarnings(List<EarningEvents.Messages.Events.EarningEvent> earningEvents, CancellationToken cancellationToken)
         {
-            using (var tx = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }, TransactionScopeAsyncFlowOption.Enabled))
+            logger.LogDebug($"Removing duplicate earning events. Count: {earningEvents.Count}");
+            var deDuplicatedEvents = duplicateEliminator.RemoveDuplicates(earningEvents);
+            logger.LogDebug($"De-duplicated earning events count: {deDuplicatedEvents.Count}");
+            var models = deDuplicatedEvents.Select(earningEvent => mapper.Map(earningEvent)).ToList();
+            try
             {
-                logger.LogDebug($"Removing duplicate earning events. Count: {earningEvents.Count}");
-                var deDuplicatedEvents = duplicateEliminator.RemoveDuplicates(earningEvents);
-                logger.LogDebug($"De-duplicated earning events count: {deDuplicatedEvents.Count}");
-                var models = deDuplicatedEvents.Select(earningEvent => mapper.Map(earningEvent)).ToList();
                 await repository.SaveEarningEvents(models, cancellationToken);
-                tx.Complete();
+            }
+            catch (Exception e)
+            {
+                var sqlException = e.GetException<SqlException>();
+                if (!sqlException.IsUniqueKeyConstraint()) throw;
+                logger.LogInfo($"Batch contained a duplicate earning.  Will store each individually and discard duplicate.");
+                await repository.SaveEarningsIndividually(models.Select(model => mapper.Map(model)).ToList(), cancellationToken).ConfigureAwait(false);
             }
         }
     }

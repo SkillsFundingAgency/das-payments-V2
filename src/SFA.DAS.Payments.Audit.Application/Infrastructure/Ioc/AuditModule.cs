@@ -93,7 +93,7 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
 
             builder.RegisterType<EarningEventRepository>()
                 .AsImplementedInterfaces()
-                .InstancePerLifetimeScope();
+                .InstancePerDependency();
 
             builder.RegisterType<EarningEventStorageService>()
                 .As<IEarningEventStorageService>()
@@ -105,6 +105,10 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
 
             builder.RegisterType<EarningsDuplicateEliminator>()
                 .As<IEarningsDuplicateEliminator>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<DataContextFactory>()
+                .As<IDataContextFactory>()
                 .InstancePerLifetimeScope();
         }
     }

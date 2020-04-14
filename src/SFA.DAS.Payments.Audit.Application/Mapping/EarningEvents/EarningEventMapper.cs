@@ -9,6 +9,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
     public interface IEarningEventMapper
     {
         EarningEventModel Map(EarningEvent earningEvent);
+        EarningEventModel Map(EarningEventModel earningEventModel);
     }
 
     public class EarningEventMapper : IEarningEventMapper
@@ -22,6 +23,11 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
         public EarningEventModel Map(EarningEvent earningEvent)
         {
             return mapper.Map<EarningEventModel>(earningEvent);
+        }
+
+        public EarningEventModel Map(EarningEventModel earningEventModel)
+        {
+            return mapper.Map<EarningEventModel, EarningEventModel>(earningEventModel);
         }
     }
 }
