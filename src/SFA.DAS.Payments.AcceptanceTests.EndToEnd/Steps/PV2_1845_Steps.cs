@@ -43,6 +43,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.Period,
                 TestSession.Provider.JobId);
             
+
             //await dcHelper.SendPeriodEndTask(20, 3, TestSession.Provider.JobId, "PeriodEndRun");
             await dcHelper.SendLevyMonthEndForEmployers(
                 TestSession.GenerateId(),
@@ -68,6 +69,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.AcademicYear,
                 TestSession.CollectionPeriod.Period,
                 TestSession.Provider.JobId);
+
             //await dcHelper.SendPeriodEndTask(20, 4, TestSession.Provider.JobId, "PeriodEndRun");
             await dcHelper.SendLevyMonthEndForEmployers(
                 TestSession.GenerateId(),
