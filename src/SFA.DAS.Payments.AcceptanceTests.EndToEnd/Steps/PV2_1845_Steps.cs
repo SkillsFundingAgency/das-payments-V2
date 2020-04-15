@@ -61,10 +61,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.AcademicYear,
                 TestSession.CollectionPeriod.Period,
                 TestSession.Provider.JobId);
-
-
-            await dcHelper.SendPeriodEndTask(TestSession.CollectionPeriod.AcademicYear,
-                TestSession.CollectionPeriod.Period, TestSession.JobId, "PeriodEndRun");
         }
 
         private void CreateDataLockForCommitment(string commitmentIdentifier)
