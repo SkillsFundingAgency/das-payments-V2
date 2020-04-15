@@ -8,11 +8,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC
     {
         public DIConfig(string functionName)
         {
-            DependencyInjection.Initialize(builder =>
-            {
-                RegisterModules(builder);
-
-            }, functionName);
+            DependencyInjection.Initialize(RegisterModules, functionName);
         }
 
         private static void RegisterModules(ContainerBuilder builder)

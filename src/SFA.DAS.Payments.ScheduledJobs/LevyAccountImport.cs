@@ -7,6 +7,7 @@ using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.FundingSource.Messages.Commands;
 using SFA.DAS.Payments.ScheduledJobs.Infrastructure.Configuration;
 using SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC;
+// ReSharper disable UnusedMember.Global
 
 namespace SFA.DAS.Payments.ScheduledJobs
 {

@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Net;
 using Autofac;
@@ -18,7 +17,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
                     var endpointConfiguration = new EndpointConfiguration(config.EndpointName);
 
                     var conventions = endpointConfiguration.Conventions();
-                    conventions.DefiningCommandsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (type.Namespace?.Contains(".Messages.Commands") ?? false));
+                    conventions.DefiningCommandsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && ((bool) type.Namespace?.Contains(".Messages.Commands")));
 
                     if (!string.IsNullOrEmpty(config.NServiceBusLicense))
                     {

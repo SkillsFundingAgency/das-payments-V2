@@ -5,10 +5,6 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.Configuration
 {
     public class FunctionsConfigurationHelper : IConfigurationHelper
     {
-        public FunctionsConfigurationHelper()
-        {
-        }
-
         public bool HasSetting(string sectionName, string settingName)
         {
             return Environment.GetEnvironmentVariables(EnvironmentVariableTarget.Process).Contains(settingName);

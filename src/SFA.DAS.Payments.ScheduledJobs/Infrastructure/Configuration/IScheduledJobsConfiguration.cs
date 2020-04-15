@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.Configuration
+﻿namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.Configuration
 {
     public interface IScheduledJobsConfiguration
     {
