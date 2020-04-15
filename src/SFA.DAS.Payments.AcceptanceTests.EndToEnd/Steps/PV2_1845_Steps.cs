@@ -4,6 +4,7 @@ using Autofac;
 using Microsoft.EntityFrameworkCore.Internal;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.Model.Core.Entities;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
@@ -41,8 +42,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.AcademicYear,
                 TestSession.CollectionPeriod.Period,
                 TestSession.Provider.JobId);
-            await dcHelper.SendPeriodEndTask(TestSession.CollectionPeriod.AcademicYear,
-                TestSession.CollectionPeriod.Period, TestSession.JobId, "PeriodEndRun");
+            
+            //await dcHelper.SendPeriodEndTask(20, 3, TestSession.Provider.JobId, "PeriodEndRun");
+            await dcHelper.SendLevyMonthEndForEmployers(
+                TestSession.GenerateId(),
+                TestSession.Employers.Select(x => x.AccountId),
+                TestSession.CollectionPeriod.AcademicYear,
+                TestSession.CollectionPeriod.Period,
+                MessageSession);
         }
 
         [Given("there are less than 6 months remaining of the planned learning")]
@@ -61,6 +68,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.AcademicYear,
                 TestSession.CollectionPeriod.Period,
                 TestSession.Provider.JobId);
+            //await dcHelper.SendPeriodEndTask(20, 4, TestSession.Provider.JobId, "PeriodEndRun");
+            await dcHelper.SendLevyMonthEndForEmployers(
+                TestSession.GenerateId(),
+                TestSession.Employers.Select(x => x.AccountId),
+                TestSession.CollectionPeriod.AcademicYear,
+                TestSession.CollectionPeriod.Period,
+                MessageSession);
         }
 
         private void CreateDataLockForCommitment(string commitmentIdentifier)
@@ -88,10 +102,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             //return result;
         }
 
-        private bool HasCorrectlyFundedR04(short academicYear, int fundingSource, int sfaPercentage)
+        private bool HasCorrectlyFundedR04(short academicYear)
         {
-            var events = PaymentEventsHelper.ProviderPaymentsReceivedForLearner(priceEpisodeIdentifier, academicYear, TestSession);
-            return events.Any();
+            //var events = PaymentEventsHelper.ProviderPaymentsReceivedForLearner(priceEpisodeIdentifier, academicYear, TestSession);
+            var events = FundingSourcePaymentEventsHelper.FundingSourcePaymentsReceivedForLearner(priceEpisodeIdentifier, academicYear, TestSession);
+
+            var filter1 = events.Where(x => x.FundingSourceType == FundingSourceType.CoInvestedSfa);
+            //var filter2 = 
+
+            var count = FundingSourcePaymentEventsHelper
+                .FundingSourcePaymentsReceivedForLearner(priceEpisodeIdentifier, academicYear, TestSession)
+                .Count(x =>
+                    x.FundingSourceType == FundingSourceType.CoInvestedSfa
+                    && x.SfaContributionPercentage == 1.0m
+                    && x.ContractType == ContractType.Act1
+                    && x.AmountDue == 1000m);
+            return count == 1;
         }
 
         [Then("bypass the data lock rules")]
@@ -104,7 +130,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"fund the remaining monthly instalments of the learning from Funding Source (.*) \((.*)% SFA funding\) from the date of the Price episode read start date")]
         public async Task ThenFundTheRemainingInstallmentsCorrectly(int fundingSource, int sfaPercentage)
         {
-            await WaitForIt(() => HasCorrectlyFundedR04(short.Parse(TestSession.FM36Global.Year), fundingSource, sfaPercentage),
+            await WaitForIt(() => HasCorrectlyFundedR04(short.Parse(TestSession.FM36Global.Year)),
                 "Failed to find correctly funded remaining installments");
         }
     }

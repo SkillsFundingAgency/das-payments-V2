@@ -3,6 +3,7 @@ using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.ProviderPayments.Messages;
 
@@ -61,6 +62,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 && ppEvent.CollectionPeriod.AcademicYear == academicYear
                 && ppEvent.CollectionPeriod.Period == session.CollectionPeriod.Period
                 && ppEvent.PriceEpisodeIdentifier == priceEpisodeIdentifier);
+        }
+    }
+
+    public static class FundingSourcePaymentEventsHelper
+    {
+        public static IEnumerable<FundingSourcePaymentEvent> FundingSourcePaymentsReceivedForLearner(string priceEpisodeIdentifier, short academicYear, TestSession session)
+        {
+            return FundingSourcePaymentEventHandler.ReceivedEvents.Where(fspEvent =>
+                fspEvent.Ukprn == session.Provider.Ukprn
+                && fspEvent.Learner.Uln == session.Learner.Uln
+                && fspEvent.Learner.ReferenceNumber == session.Learner.LearnRefNumber
+                && fspEvent.CollectionPeriod.AcademicYear == academicYear
+                && fspEvent.CollectionPeriod.Period == session.CollectionPeriod.Period
+                && fspEvent.PriceEpisodeIdentifier == priceEpisodeIdentifier);
         }
     }
 }

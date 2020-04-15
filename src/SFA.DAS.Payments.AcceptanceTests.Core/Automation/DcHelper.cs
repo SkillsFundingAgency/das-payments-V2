@@ -15,7 +15,10 @@ using ESFA.DC.Queueing.Interface;
 using ESFA.DC.Queueing.Interface.Configuration;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
+using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
+using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
@@ -208,6 +211,32 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+        public async Task SendLevyMonthEndForEmployers(long monthEndJobId, IEnumerable<long> employerAccountIds, short academicYear, byte collectionPeriod, IMessageSession messageSession)
+        {
+            var submissionDate = DateTime.UtcNow;
+            Console.WriteLine($"Month end job id: {monthEndJobId}");
+
+            foreach (var employerAccountId in employerAccountIds)
+            {
+                var processLevyFundsAtMonthEndCommand = new ProcessLevyPaymentsOnMonthEndCommand
+                {
+                    JobId = monthEndJobId,
+                    CollectionPeriod = new CollectionPeriod { AcademicYear = academicYear, Period = collectionPeriod },
+                    RequestTime = DateTime.Now,
+                    SubmissionDate = submissionDate,
+                    AccountId = employerAccountId,
+                };
+
+                await messageSession.Send(processLevyFundsAtMonthEndCommand).ConfigureAwait(false);
+            }
+
+            //TestSession.Providers.ForEach(p =>
+            //{
+            //    p.JobId = monthEndJobId;
+            //    p.MonthEndJobIdGenerated = true;
+            //});
         }
 
         public static void AddDcConfig(ContainerBuilder builder)
