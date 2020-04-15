@@ -4,7 +4,7 @@ using SFA.DAS.Payments.Messages.Core.Events;
 
 namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 {
-    public class ApprenticeshipContractType1RedundancyEarningEvent : ApprenticeshipContractTypeEarningsEvent, IContractType1EarningEvent, IMonitoredMessage
+    public class ApprenticeshipContractType1RedundancyEarningEvent : ApprenticeshipContractTypeEarningsEvent, IContractType1EarningEvent, IMonitoredMessage,IRedundancyEarningEvent
     {
         public ApprenticeshipContractType1RedundancyEarningEvent()
         {

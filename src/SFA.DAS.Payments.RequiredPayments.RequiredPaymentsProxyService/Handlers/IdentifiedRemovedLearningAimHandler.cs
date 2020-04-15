@@ -44,7 +44,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                 message.LearningAim.StandardCode,
                 message.LearningAim.Reference,
                 message.CollectionPeriod.AcademicYear,
-                message.ContractType);
+                message.ContractType,false);
 
             var actorId = new ActorId(key);
             var actor = proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);

@@ -3,7 +3,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 {
-    public class Act1RedundancyFunctionalSkillEarningsEvent :FunctionalSkillEarningsEvent
+    public class Act1RedundancyFunctionalSkillEarningsEvent :FunctionalSkillEarningsEvent,IRedundancyEarningEvent
     {
         public Act1RedundancyFunctionalSkillEarningsEvent()
         {

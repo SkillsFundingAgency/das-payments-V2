@@ -14,5 +14,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
         public string LearnAimRef { get; set; }
         public short AcademicYear { get; set; }
         public ContractType ContractType { get; set; }
+        public bool IsRedundancyPayment { get; set; }
     }
 }
