@@ -41,6 +41,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.AcademicYear,
                 TestSession.CollectionPeriod.Period,
                 TestSession.Provider.JobId + 1);
+            await dcHelper.SendPeriodEndTask(TestSession.CollectionPeriod.AcademicYear,
+                TestSession.CollectionPeriod.Period, TestSession.JobId, "PeriodEndRun");
         }
 
         [Given("there are less than 6 months remaining of the planned learning")]
@@ -50,7 +52,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await SetupTestData(priceEpisodeIdentifier, null, commitmentIdentifier, null, true);
             //await SetupTestData(priceEpisodeIdentifier, null, commitmentIdentifier, null);
 
-            //CreateDataLockForCommitment(commitmentIdentifier);
+            CreateDataLockForCommitment(commitmentIdentifier);
             TestSession.RegenerateJobId();
 
             var dcHelper = Scope.Resolve<IDcHelper>();
@@ -59,6 +61,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.AcademicYear,
                 TestSession.CollectionPeriod.Period,
                 TestSession.Provider.JobId);
+
+
+            await dcHelper.SendPeriodEndTask(TestSession.CollectionPeriod.AcademicYear,
+                TestSession.CollectionPeriod.Period, TestSession.JobId, "PeriodEndRun");
         }
 
         private void CreateDataLockForCommitment(string commitmentIdentifier)
