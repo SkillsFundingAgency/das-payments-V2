@@ -8,8 +8,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Messages
     public class RecordedAct1CompletionPayment : IPaymentsEvent
     {
         public long JobId { get;  }
-        public Guid EventId { get; } = Guid.NewGuid();
-        public DateTimeOffset EventTime { get; } = DateTimeOffset.UtcNow;
+        public Guid EventId { get; set; }
+        public DateTimeOffset EventTime { get; set; }
         public long Ukprn { get; set; }
         public Learner Learner { get; set; }
         public LearningAim LearningAim { get; set; }
