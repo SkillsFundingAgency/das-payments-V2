@@ -32,18 +32,69 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
 
 
         [Test]
-        public void SplitContractEarningByRedundancyDate_ShouldCreateSplitOriginalEarningAtCorrectPeriodAndRemoveCorrectPeriods()
+        public void SplitFunctionSkillEarningByRedundancyDate_ShouldCreateSplitOriginalEarningAtCorrectPeriodAndRemoveCorrectPeriods()
         {
-            var act1Builder = new ContractTypeEarningEventBuilder<ApprenticeshipContractType1EarningEvent>();
-            var act1Earning = act1Builder.Build();
-            ValidateEarningSplitAndType(act1Earning, typeof(ApprenticeshipContractType1RedundancyEarningEvent));
+            var act1FandSBuilder = new Builders.TestFunctionalSkillsEarningEventBuilder<Act1FunctionalSkillEarningsEvent>();
+            var act1FandSEarning = act1FandSBuilder.Build();
 
-             var act2Builder = new ContractTypeEarningEventBuilder<ApprenticeshipContractType2EarningEvent>();
-            var act2Earning = act2Builder.Build();
-            ValidateEarningSplitAndType(act2Earning, typeof(ApprenticeshipContractType2RedundancyEarningEvent));
+            ValidateFunctionalSkillEarningsSplitAndType(act1FandSEarning, typeof(Act1RedundancyFunctionalSkillEarningsEvent));
+
+
+            var act2FandSBuilder = new Builders.TestFunctionalSkillsEarningEventBuilder<Act2FunctionalSkillEarningsEvent>();
+            var act2FandSEarning = act2FandSBuilder.Build();
+
+            ValidateFunctionalSkillEarningsSplitAndType(act2FandSEarning, typeof(Act2RedundancyFunctionalSkillEarningsEvent));
         }
 
-        private void ValidateEarningSplitAndType(ApprenticeshipContractTypeEarningsEvent earning, Type expectedRedundancyType
+        private void ValidateFunctionalSkillEarningsSplitAndType(FunctionalSkillEarningsEvent act1FandSEarning, Type expectedRedundancyType)
+        {
+            var redundancyDate = new DateTime(1920, 7, 1);
+            var redundancyPeriod = redundancyDate.GetCollectionPeriodFromDate();
+            act1FandSEarning.Earnings.ToList().ForEach(fse => fse.Periods.Should().HaveCount(12));
+
+            var events = service.SplitFunctionSkillEarningByRedundancyDate(act1FandSEarning, redundancyDate);
+            events.Should().HaveCount(2);
+            var originalEvent = events[0];
+
+            originalEvent.Should().BeOfType(act1FandSEarning.GetType());
+            originalEvent.Earnings.Should().HaveCount(3);
+
+            var expectedOriginalCount = redundancyPeriod - 1;
+
+            originalEvent.Earnings.ToList().ForEach(ope =>
+            {
+                ope.Periods.Should().HaveCount(expectedOriginalCount);
+                Assert.IsTrue(!ope.Periods.ToList().Any(p => p.Period >= redundancyPeriod));
+                Assert.IsTrue(ope.Periods.ToList().All(p => p.Period < redundancyPeriod));
+            });
+
+            var redundancyEvent = events[1];
+
+            var expectedRedundancyPeriod = 12 - redundancyPeriod + 1;
+            redundancyEvent.Should().BeOfType(expectedRedundancyType);
+            redundancyEvent.Earnings.Should().HaveCount(3);
+            redundancyEvent.Earnings.ToList().ForEach(ope =>
+            {
+                ope.Periods.Should().HaveCount(expectedRedundancyPeriod);
+                Assert.IsTrue(!ope.Periods.ToList().Any(p => p.Period < redundancyPeriod));
+                Assert.IsTrue(ope.Periods.ToList().All(p => p.Period >= redundancyPeriod));
+                Assert.IsTrue(ope.Periods.ToList().All(p => p.SfaContributionPercentage == 1m));
+            });
+        }
+
+        [Test]
+        public void SplitContractEarningByRedundancyDate_ShouldCreateSplitOriginalEarningAtCorrectPeriodAndRemoveCorrectPeriods()
+        {
+            var act1Builder = new TestContractTypeEarningEventBuilder<ApprenticeshipContractType1EarningEvent>();
+            var act1Earning = act1Builder.Build();
+            ValidateContractTypeEarningsSplitAndType(act1Earning, typeof(ApprenticeshipContractType1RedundancyEarningEvent));
+
+             var act2Builder = new TestContractTypeEarningEventBuilder<ApprenticeshipContractType2EarningEvent>();
+            var act2Earning = act2Builder.Build();
+            ValidateContractTypeEarningsSplitAndType(act2Earning, typeof(ApprenticeshipContractType2RedundancyEarningEvent));
+        }
+
+        private void ValidateContractTypeEarningsSplitAndType(ApprenticeshipContractTypeEarningsEvent earning, Type expectedRedundancyType
             )
         {
             

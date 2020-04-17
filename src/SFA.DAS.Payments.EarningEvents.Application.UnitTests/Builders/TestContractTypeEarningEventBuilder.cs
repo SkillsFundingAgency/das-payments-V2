@@ -8,12 +8,12 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Builders
 {
-    public class ContractTypeEarningEventBuilder<T> where T : ApprenticeshipContractTypeEarningsEvent, new()
+    public class TestContractTypeEarningEventBuilder<T> where T : ApprenticeshipContractTypeEarningsEvent, new()
     {
         private readonly T contractTypeEarningsEvent;
         Random rand = new Random();
 
-        public ContractTypeEarningEventBuilder()
+        public TestContractTypeEarningEventBuilder()
         {
             contractTypeEarningsEvent = new T
             {
@@ -90,7 +90,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Builders
            return periods.AsReadOnly();
         }
 
-        public ContractTypeEarningEventBuilder<T> WithLearner(string learnerRefNo, long uln)
+        public TestContractTypeEarningEventBuilder<T> WithLearner(string learnerRefNo, long uln)
         {
             contractTypeEarningsEvent.Learner = new Learner()
                 {ReferenceNumber = learnerRefNo,Uln = uln};
@@ -98,13 +98,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Builders
             return this;
         }
 
-        public ContractTypeEarningEventBuilder<T> WithUkPrn( long ukprn)
+        public TestContractTypeEarningEventBuilder<T> WithUkPrn( long ukprn)
         {
             contractTypeEarningsEvent.Ukprn = ukprn;
             return this;
         }
 
-        public ContractTypeEarningEventBuilder<T> WithCollectionPeriod(short academicYear, byte period)
+        public TestContractTypeEarningEventBuilder<T> WithCollectionPeriod(short academicYear, byte period)
         {
             contractTypeEarningsEvent.CollectionPeriod = new CollectionPeriod()
                 {AcademicYear = academicYear, Period = period};

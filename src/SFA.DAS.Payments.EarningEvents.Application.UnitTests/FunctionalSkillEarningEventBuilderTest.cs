@@ -846,47 +846,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             events.Single().Earnings.Single(x => x.Type == FunctionalSkillType.LearningSupport).Periods.Should().HaveCount(12);
         }
 
-          [Test]
-        public void RedundantLearner_shouldSplitEarningEventAtPeriodWhereRedundancyTakesPlace()
-        {
-            var builder = new FunctionalSkillEarningEventBuilder(mapper,
-                new RedundancyEarningService(new RedundancyEarningEventFactory(mapper))
-                );
-            var processLearnerCommand = Helpers.FileHelpers.CreateFromFile(filename, learnerRefNo);
-            var redundancyDate = processLearnerCommand.Learner.PriceEpisodes.First().PriceEpisodeValues
-                .PriceEpisodeRedStartDate.Value;
-
-            var redundancyPeriod = redundancyDate.GetCollectionPeriodFromDate();
-
-            var events = builder.Build(processLearnerCommand);
-
-            events.Should().HaveCount(2);
-            var act2EarningEvent = events.First();
-
-            act2EarningEvent.Should().BeOfType<Act2FunctionalSkillEarningsEvent>();
-            foreach (var onProgrammeEarning in act2EarningEvent.Earnings)
-            {
-                var redundancyPeriods = onProgrammeEarning.Periods.Where(p => p.Period >= redundancyPeriod).ToList();
-                redundancyPeriods.Should().HaveCount(9);
-                foreach (var earningPeriod in redundancyPeriods)
-                {
-                    earningPeriod.Amount.Should().Be(0m, "This will be transferred to a redundancy earning");
-                }
-            }
-            var redundancyEarningEvent = events.Last();
-
-            foreach (var earning in redundancyEarningEvent.Earnings)
-            {
-                var redundancyPeriods = earning.Periods.Where(p => p.Period >= redundancyPeriod).ToList();
-                redundancyPeriods.Should().HaveCount(9);
-                foreach (var earningPeriod in redundancyPeriods)
-                {
-                    earningPeriod.SfaContributionPercentage.Should().Be(1m, "This will now be paid by 100% co-funded contribution");
-                }
-            }
-
-           
-            Assert.AreNotEqual(act2EarningEvent.EventId, redundancyEarningEvent.EventId);
-        }
+    
     }
 }
