@@ -2,8 +2,10 @@ using System.Linq;
 using System.Net;
 using Autofac;
 using NServiceBus;
+using NServiceBus.Features;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.ScheduledJobs.Infrastructure.Configuration;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 
 namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
 {
@@ -11,6 +13,9 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<MessagingLoggerFactory>();
+            builder.RegisterType<MessagingLogger>();
+            
             builder.Register((c, p) =>
                 {
                     var config = c.Resolve<IScheduledJobsConfiguration>();
@@ -19,6 +24,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
                     var conventions = endpointConfiguration.Conventions();
                     conventions.DefiningCommandsAs(type => (type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false) && (bool) type.Namespace?.Contains(".Messages.Commands"));
 
+                    endpointConfiguration.DisableFeature<TimeoutManager>();
                     if (!string.IsNullOrEmpty(config.NServiceBusLicense))
                     {
                         var license = WebUtility.HtmlDecode(config.NServiceBusLicense);
