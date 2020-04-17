@@ -62,46 +62,5 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             return results;
         }
-
-        private void AdjustRedundancyPayments(DateTime? priceEpisodeRedStartDate, ApprenticeshipContractTypeEarningsEvent earningEvent)
-        {
-            if (!priceEpisodeRedStartDate.HasValue)
-            {
-                throw new ArgumentOutOfRangeException(nameof(priceEpisodeRedStartDate));
-            }
-
-            var relevantPriceEpisode = earningEvent.PriceEpisodes.SingleOrDefault(pe =>
-                pe.StartDate <= priceEpisodeRedStartDate.Value
-                &&
-                pe.PlannedEndDate >= priceEpisodeRedStartDate.Value);
-
-
-            if (relevantPriceEpisode == null)
-            {
-                return;
-            }
-
-            var remainingTime = relevantPriceEpisode.PlannedEndDate -
-                                priceEpisodeRedStartDate.Value;
-
-
-            var onProgrammeEarning =
-                earningEvent.OnProgrammeEarnings.FirstOrDefault(ope => ope.Type == OnProgrammeEarningType.Learning);
-
-            if (onProgrammeEarning != null)
-            {
-                //adjust earnings of current period to pay full amount 
-               var currentPeriods =   onProgrammeEarning.Periods;
-
-               var collectionPeriod = earningEvent.CollectionPeriod;
-               var currentEarningPeriod = currentPeriods.FirstOrDefault(cp => cp.Period == collectionPeriod.Period);
-               if (currentEarningPeriod != null)
-               {
-                   //pay installment amount at full value
-                       currentEarningPeriod.Amount = relevantPriceEpisode.InstalmentAmount;
-                       currentEarningPeriod.SfaContributionPercentage = 1m;
-               }
-            }
-        }
-    }
+     }
 }

@@ -58,22 +58,17 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .Ignore(x => x.ContractType)
                 ;
 
-            CreateMap<ApprenticeshipContractType1EarningEvent,
-                    ApprenticeshipContractType1RedundancyEarningEvent>()
-                .Ignore(x => x.EventId);
-          
-                
-            CreateMap<ApprenticeshipContractType2EarningEvent,
-                ApprenticeshipContractType2RedundancyEarningEvent>()
+            CreateMap<ApprenticeshipContractType1EarningEvent, ApprenticeshipContractType1RedundancyEarningEvent>()
                 .Ignore(x => x.EventId);
 
+            CreateMap<ApprenticeshipContractType2EarningEvent, ApprenticeshipContractType2RedundancyEarningEvent>()
+                .Ignore(x => x.EventId);
 
             CreateMap<Act1FunctionalSkillEarningsEvent, Act1RedundancyFunctionalSkillEarningsEvent>()
                 .Ignore(x => x.EventId);
 
-
-              CreateMap<Act2FunctionalSkillEarningsEvent, Act2RedundancyFunctionalSkillEarningsEvent>()
-                  .Ignore(x => x.EventId);
+            CreateMap<Act2FunctionalSkillEarningsEvent, Act2RedundancyFunctionalSkillEarningsEvent>()
+                .Ignore(x => x.EventId);
 
 
             CreateMap<FunctionalSkillEarning, FunctionalSkillEarning>();
