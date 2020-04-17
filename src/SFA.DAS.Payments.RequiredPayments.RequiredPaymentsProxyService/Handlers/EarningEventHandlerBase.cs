@@ -73,7 +73,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
 
         private bool IsPaymentTypeOfRedundancy(T message)
         {
-            return typeof(T).IsAssignableFrom(typeof(IRedundancyEarningEvent));
+            return typeof(IRedundancyEarningEvent).IsAssignableFrom(typeof(T));
         }
 
         private ContractType GetContractTypeFromMessage(T message)

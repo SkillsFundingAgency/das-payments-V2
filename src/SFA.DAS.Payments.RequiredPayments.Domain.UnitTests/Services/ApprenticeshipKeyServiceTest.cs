@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             var learnAimRef = "6";
             short academicYear = 1819;
             // act
-            var key = new ApprenticeshipKeyService().GenerateApprenticeshipKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef, academicYear, ContractType.Act1);
+            var key = new ApprenticeshipKeyService().GenerateApprenticeshipKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef, academicYear, ContractType.Act1, false);
 
             // assert
             Assert.AreEqual(0, key.IndexOf("2", StringComparison.Ordinal), "UKPRN should go first");
@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             short academicYear = 1819;
 
             // act
-            var key = new ApprenticeshipKeyService().GenerateApprenticeshipKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef, academicYear, ContractType.Act1);
+            var key = new ApprenticeshipKeyService().GenerateApprenticeshipKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef, academicYear, ContractType.Act1, false);
 
             // assert
             Assert.IsFalse(key.Contains("A"));
@@ -72,7 +72,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             var learnAimRef = "6";
             short academicYear = 1819;
             var service = new ApprenticeshipKeyService();
-            var key = service.GenerateApprenticeshipKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef, academicYear, ContractType.Act1);
+            var key = service.GenerateApprenticeshipKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef, academicYear, ContractType.Act1, false);
 
             // act
             var apprenticeshipKey = service.ParseApprenticeshipKey(key);
@@ -102,7 +102,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             short academicYear = 1819;
             var service = new ApprenticeshipKeyService();
             var contractType = ContractType.Act1;
-            var key = service.GenerateApprenticeshipKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef, academicYear, contractType);
+            var key = service.GenerateApprenticeshipKey(ukprn, learnerReferenceNumber, frameworkCode, pathwayCode, programmeType, standardCode, learnAimRef, academicYear, contractType, false);
 
             // act
             var apprenticeshipKey = service.ParseApprenticeshipKey(key);
