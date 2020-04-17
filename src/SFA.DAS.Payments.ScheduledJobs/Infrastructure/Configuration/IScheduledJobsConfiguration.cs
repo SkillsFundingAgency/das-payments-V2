@@ -4,7 +4,7 @@
     {
         string EndpointName { get; }
         string ServiceBusConnectionString { get; }
-        string NServiceBusLicense { get; }
+        string DasNServiceBusLicenseKey { get; }
         string LevyAccountBalanceEndpoint { get; }
     }
 }

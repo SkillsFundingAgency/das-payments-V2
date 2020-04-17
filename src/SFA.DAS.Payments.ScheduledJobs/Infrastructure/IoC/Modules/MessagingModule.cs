@@ -33,9 +33,9 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
                                  conventions.DefiningCommandsAs(type => ( type.Namespace?.StartsWith("SFA.DAS.Payments") ?? false ) && (bool) type.Namespace?.Contains(".Messages.Commands"));
 
                                  endpointConfiguration.DisableFeature<TimeoutManager>();
-                                 if (!string.IsNullOrEmpty(config.NServiceBusLicense))
+                                 if (!string.IsNullOrEmpty(config.DasNServiceBusLicenseKey))
                                  {
-                                     var license = WebUtility.HtmlDecode(config.NServiceBusLicense);
+                                     var license = WebUtility.HtmlDecode(config.DasNServiceBusLicenseKey);
                                      endpointConfiguration.License(license);
                                  }
 
