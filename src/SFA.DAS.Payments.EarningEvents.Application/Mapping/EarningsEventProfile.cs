@@ -78,6 +78,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             CreateMap<FunctionalSkillEarning, FunctionalSkillEarning>();
             CreateMap<OnProgrammeEarning, OnProgrammeEarning>();
+            CreateMap<IncentiveEarning, IncentiveEarning>();
             CreateMap<EarningPeriod, EarningPeriod>();
 
             CreateMap<FM36Learner, Learner>()

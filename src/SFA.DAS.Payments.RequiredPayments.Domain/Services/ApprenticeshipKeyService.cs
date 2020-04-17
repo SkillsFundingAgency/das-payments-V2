@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 
         public string GenerateApprenticeshipKey(long ukprn, string learnerReferenceNumber, int frameworkCode,
             int pathwayCode, int programmeType, int standardCode, string learnAimRef, short academicYear,
-            ContractType contractType, bool isRedundancyPayment)
+            ContractType contractType)
         {
             return string.Join(keyDelimiter,
                 new[]
@@ -23,8 +23,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                     standardCode.ToString(CultureInfo.InvariantCulture),
                     learnAimRef, // we may need to remove this as apprenticeship should handle both zprog and maths&eng
                     academicYear.ToString(CultureInfo.InvariantCulture),
-                    contractType.ToString(),
-                    isRedundancyPayment.ToString(CultureInfo.InvariantCulture)
+                    contractType.ToString()
                 }
             ).ToLowerInvariant();
         }
@@ -32,7 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
         public ApprenticeshipKey ParseApprenticeshipKey(string apprenticeshipKey)
         {
             var keyParts = apprenticeshipKey.Split(Convert.ToChar(keyDelimiter));
-            if (keyParts.Length != 10)
+            if (keyParts.Length != 9)
                 throw new InvalidOperationException($"Cannot parse the apprenticeship key. invalid number of parts.  Expected 8 but was {keyParts.Length}. Key: {apprenticeshipKey}");
             return new ApprenticeshipKey
             {
@@ -44,16 +43,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 StandardCode = ParseToInt(keyParts[5], "StandardCode"),
                 LearnAimRef = keyParts[6],
                 AcademicYear = ParseToShort(keyParts[7], "AcademicYear"),
-                ContractType = ParseToContractType(keyParts[8], "ContractType"),
-                IsRedundancyPayment = ParseToBool(keyParts[9], "IsRedundancyPayment")
+                ContractType = ParseToContractType(keyParts[8], "ContractType")
             };
-        }
-
-        private bool ParseToBool(string source, string destinationName)
-        {
-            if (!bool.TryParse(source, out var result))
-                throw new ArgumentException($"Cannot parse the key part to a bool. Destination: {destinationName}, source value: '{source}'");
-            return result;
         }
 
         private int ParseToInt(string source, string destinationName)

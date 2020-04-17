@@ -42,7 +42,6 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             executionContext.JobId = message.JobId.ToString();
 
             var contractType = GetContractTypeFromMessage(message);
-            var isRedundancyPayment = IsPaymentTypeOfRedundancy(message);
 
             var key = apprenticeshipKeyService.GenerateApprenticeshipKey(
                 message.Ukprn,
@@ -53,8 +52,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                 message.LearningAim.StandardCode,
                 message.LearningAim.Reference,
                 message.CollectionPeriod.AcademicYear,
-                contractType,
-                isRedundancyPayment
+                contractType
             );
 
             var actorId = new ActorId(key);
@@ -69,11 +67,6 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                 await Task.WhenAll(requiredPaymentEvent.Select(context.Publish)).ConfigureAwait(false);
 
             paymentLogger.LogInfo($"Successfully processed RequiredPaymentsProxyService event for Actor Id {actorId}");
-        }
-
-        private bool IsPaymentTypeOfRedundancy(T message)
-        {
-            return typeof(IRedundancyEarningEvent).IsAssignableFrom(typeof(T));
         }
 
         private ContractType GetContractTypeFromMessage(T message)
