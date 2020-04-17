@@ -40,11 +40,11 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
                     return endpointConfiguration;
                 })
             .As<EndpointConfiguration>()
-            .SingleInstance();
+            .InstancePerLifetimeScope();
 
             builder.RegisterType<EndpointInstanceFactory>()
                 .As<IEndpointInstanceFactory>()
-                .SingleInstance();
+                .InstancePerLifetimeScope();
         }
     }
 }
