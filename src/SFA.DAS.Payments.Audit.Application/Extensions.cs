@@ -33,5 +33,9 @@ namespace SFA.DAS.Payments.Audit.Application
 
             return innerEx as T;
         }
+        public static bool IsDeadLock(this SqlException sqlException)
+        {
+            return sqlException != null && sqlException.Number == 1205;
+        }
     }
 }

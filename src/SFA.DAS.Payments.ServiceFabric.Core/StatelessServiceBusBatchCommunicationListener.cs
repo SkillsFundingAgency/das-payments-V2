@@ -78,7 +78,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         private async Task<List<(Object Message, BatchMessageReceiver Receiver, Message ReceivedMessage)>> ReceiveMessages(BatchMessageReceiver messageReceiver, CancellationToken cancellationToken)
         {
             var applicationMessages = new List<(Object Message, BatchMessageReceiver Receiver, Message ReceivedMessage)>();
-            var messages = await messageReceiver.ReceiveMessages(200, cancellationToken).ConfigureAwait(false);
+            var messages = await messageReceiver.ReceiveMessages(20, cancellationToken).ConfigureAwait(false);
             if (!messages.Any())
                 return applicationMessages;
 

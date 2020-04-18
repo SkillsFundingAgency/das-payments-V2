@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEven
             catch (Exception e)
             {
                 var sqlException = e.GetException<SqlException>();
-                if (!sqlException.IsUniqueKeyConstraint()) throw;
+                if (!sqlException.IsUniqueKeyConstraint() && !sqlException.IsDeadLock()) throw;
                 logger.LogInfo($"Batch contained a duplicate earning.  Will store each individually and discard duplicate.");
                 await repository.SaveEarningsIndividually(models.Select(model => mapper.Map(model)).ToList(), cancellationToken).ConfigureAwait(false);
             }
@@ -54,10 +54,6 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEven
 
         public async Task StoreEarnings(List<EarningEventModel> models, CancellationToken cancellationToken)
         {
-            //logger.LogDebug($"Removing duplicate earning events. Count: {models.Count}");
-            //var deDuplicatedEvents = duplicateEliminator.RemoveDuplicates(earningEvents);
-            //logger.LogDebug($"De-duplicated earning events count: {deDuplicatedEvents.Count}");
-            //var models = deDuplicatedEvents.Select(earningEvent => mapper.Map(earningEvent)).ToList();
             try
             {
                 await repository.SaveEarningEvents(models, cancellationToken);
@@ -65,7 +61,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEven
             catch (Exception e)
             {
                 var sqlException = e.GetException<SqlException>();
-                if (!sqlException.IsUniqueKeyConstraint()) throw;
+                if (!sqlException.IsUniqueKeyConstraint() && !sqlException.IsDeadLock()) throw;
                 logger.LogInfo($"Batch contained a duplicate earning.  Will store each individually and discard duplicate.");
                 await repository.SaveEarningsIndividually(models.Select(model => mapper.Map(model)).ToList(), cancellationToken).ConfigureAwait(false);
             }

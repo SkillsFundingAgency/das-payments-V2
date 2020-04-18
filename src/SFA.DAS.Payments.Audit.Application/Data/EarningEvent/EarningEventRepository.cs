@@ -58,7 +58,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
 
         public async Task SaveEarningEvents(List<EarningEventModel> earningEvents, CancellationToken cancellationToken)
         {
-            using (var tx = await ((DbContext)dataContext).Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken).ConfigureAwait(false))
+            using (var tx = await ((DbContext)dataContext).Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted, cancellationToken).ConfigureAwait(false))
             {
                 await dataContext.EarningEvent.AddRangeAsync(earningEvents, cancellationToken).ConfigureAwait(false);
                 await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
@@ -69,7 +69,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
         public async Task SaveEarningsIndividually(List<EarningEventModel> earningEvents, CancellationToken cancellationToken)
         {
             var mainContext = retryDataContextFactory.Create();
-            using (var tx = await ((DbContext)mainContext).Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, cancellationToken).ConfigureAwait(false))
+            using (var tx = await ((DbContext)mainContext).Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted, cancellationToken).ConfigureAwait(false))
             {
                 foreach (var earningEventModel in earningEvents)
                 {
