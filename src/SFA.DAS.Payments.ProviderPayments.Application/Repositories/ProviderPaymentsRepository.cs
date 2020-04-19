@@ -33,26 +33,27 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
         public List<PaymentModelWithRequiredPaymentId> GetMonthEndPayments(CollectionPeriod collectionPeriod, int pageSize,
             int page)
         {
-            var payments = paymentsDataContext.PaymentsWithRequiredPayments.FromSql($@"
-                SELECT R.EventId [RequiredPaymentEventId], P.*, E.LearningAimSequenceNumber, R.Amount [AmountDue]
-                  FROM [Payments2].[Payment] P
-                JOIN Payments2.FundingSourceEvent F
-	                ON F.EventId = P.FundingSourceEventId
-                JOIN Payments2.RequiredPaymentEvent R
-	                ON R.EventId = F.RequiredPaymentEventId
-                JOIN Payments2.EarningEvent E
-	                ON E.EventId = P.EarningEventId
-                WHERE P.AcademicYear = {collectionPeriod.AcademicYear}
-                    AND P.CollectionPeriod = {collectionPeriod.Period}
-                ORDER BY P.Id
-                OFFSET {pageSize*page} ROWS
-                FETCH NEXT {pageSize} ROWS ONLY
-                "
-                )
-                .AsNoTracking()
-                .ToList();
+            //var payments = paymentsDataContext.PaymentsWithRequiredPayments.FromSql($@"
+            //    SELECT R.EventId [RequiredPaymentEventId], P.*, E.LearningAimSequenceNumber, R.Amount [AmountDue]
+            //      FROM [Payments2].[Payment] P
+            //    JOIN Payments2.FundingSourceEvent F
+	           //     ON F.EventId = P.FundingSourceEventId
+            //    JOIN Payments2.RequiredPaymentEvent R
+	           //     ON R.EventId = F.RequiredPaymentEventId
+            //    JOIN Payments2.EarningEvent E
+	           //     ON E.EventId = P.EarningEventId
+            //    WHERE P.AcademicYear = {collectionPeriod.AcademicYear}
+            //        AND P.CollectionPeriod = {collectionPeriod.Period}
+            //    ORDER BY P.Id
+            //    OFFSET {pageSize*page} ROWS
+            //    FETCH NEXT {pageSize} ROWS ONLY
+            //    "
+            //    )
+            //    .AsNoTracking()
+            //    .ToList();
 
-            return payments;
+            //return payments;
+            throw new NotImplementedException();
         }
 
         public async Task<List<long>> GetMonthEndProviders(CollectionPeriod collectionPeriod,

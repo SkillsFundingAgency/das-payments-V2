@@ -45,8 +45,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEven
             }
             catch (Exception e)
             {
-                var sqlException = e.GetException<SqlException>();
-                if (!sqlException.IsUniqueKeyConstraint() && !sqlException.IsDeadLock()) throw;
+                if (!e.IsUniqueKeyConstraintException() && !e.IsDeadLockException()) throw;
                 logger.LogInfo($"Batch contained a duplicate earning.  Will store each individually and discard duplicate.");
                 await repository.SaveEarningsIndividually(models.Select(model => mapper.Map(model)).ToList(), cancellationToken).ConfigureAwait(false);
             }
@@ -60,8 +59,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEven
             }
             catch (Exception e)
             {
-                var sqlException = e.GetException<SqlException>();
-                if (!sqlException.IsUniqueKeyConstraint() && !sqlException.IsDeadLock()) throw;
+                if (!e.IsUniqueKeyConstraintException() && !e.IsDeadLockException()) throw;
                 logger.LogInfo($"Batch contained a duplicate earning.  Will store each individually and discard duplicate.");
                 await repository.SaveEarningsIndividually(models.Select(model => mapper.Map(model)).ToList(), cancellationToken).ConfigureAwait(false);
             }

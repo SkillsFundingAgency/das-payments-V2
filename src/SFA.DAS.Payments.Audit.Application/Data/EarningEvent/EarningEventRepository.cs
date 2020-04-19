@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -22,11 +24,11 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
 
     public class EarningEventRepository : IEarningEventRepository
     {
-        private readonly IPaymentsDataContext dataContext;
-        private readonly IDataContextFactory retryDataContextFactory;
+        private readonly IAuditDataContext dataContext;
+        private readonly IAuditDataContextFactory retryDataContextFactory;
         private readonly IPaymentLogger logger;
 
-        public EarningEventRepository(IPaymentsDataContext dataContext, IDataContextFactory retryDataContextFactory, IPaymentLogger logger)
+        public EarningEventRepository(IAuditDataContext dataContext, IAuditDataContextFactory retryDataContextFactory, IPaymentLogger logger)
         {
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
             this.retryDataContextFactory = retryDataContextFactory ?? throw new ArgumentNullException(nameof(retryDataContextFactory));
@@ -58,10 +60,16 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
 
         public async Task SaveEarningEvents(List<EarningEventModel> earningEvents, CancellationToken cancellationToken)
         {
-            using (var tx = await ((DbContext)dataContext).Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted, cancellationToken).ConfigureAwait(false))
+            using (var tx = await dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted, cancellationToken).ConfigureAwait(false))
             {
-                await dataContext.EarningEvent.AddRangeAsync(earningEvents, cancellationToken).ConfigureAwait(false);
-                await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                var bulkConfig = new BulkConfig
+                    {SetOutputIdentity = false, BulkCopyTimeout = 60, PreserveInsertOrder = false};
+                await ((DbContext) dataContext).BulkInsertAsync(earningEvents, bulkConfig, null, cancellationToken)
+                    .ConfigureAwait(false);
+                await ((DbContext)dataContext).BulkInsertAsync(earningEvents.SelectMany(earning => earning.Periods).ToList(), bulkConfig, null, cancellationToken)
+                    .ConfigureAwait(false);
+                await ((DbContext)dataContext).BulkInsertAsync(earningEvents.SelectMany(earning => earning.PriceEpisodes).ToList(), bulkConfig, null, cancellationToken)
+                    .ConfigureAwait(false);
                 tx.Commit();
             }
         }
@@ -77,12 +85,11 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
                     {
                         var retryDataContext = retryDataContextFactory.Create(tx.GetDbTransaction());
                         await retryDataContext.EarningEvent.AddAsync(earningEventModel, cancellationToken).ConfigureAwait(false);
-                        await retryDataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                        await retryDataContext.SaveChanges(cancellationToken).ConfigureAwait(false);
                     }
                     catch (Exception e)
                     {
-                        var sqlException = e.GetException<SqlException>();
-                        if (sqlException.IsUniqueKeyConstraint())
+                        if (e.IsUniqueKeyConstraintException())
                         {
                             logger.LogInfo($"Discarding duplicate earning event. Event Id: {earningEventModel.EventId}, JobId: {earningEventModel.JobId}, Learn ref: {earningEventModel.LearnerReferenceNumber},  Event Type: {earningEventModel.EventType}");
                             continue;
