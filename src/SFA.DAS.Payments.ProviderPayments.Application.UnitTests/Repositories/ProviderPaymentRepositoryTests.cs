@@ -8,6 +8,7 @@ using NUnit.Framework;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.ProviderPayments.Application.Data;
 using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Repositories
@@ -15,7 +16,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Repositories
     [TestFixture]
     public class ProviderPaymentRepositoryTests
     {
-        private IPaymentsDataContext context;
+        private IProviderPaymentsDataContext context;
         private ProviderPaymentsRepository sut;
 
         [SetUp]
@@ -23,10 +24,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Repositories
         {
             var dbName = Guid.NewGuid().ToString();
 
-            var contextBuilder = new DbContextOptionsBuilder<PaymentsDataContext>()
+            var contextBuilder = new DbContextOptionsBuilder<ProviderPaymentsDataContext>()
                                  .UseInMemoryDatabase(databaseName: dbName)
                                  .Options;
-            context = new PaymentsDataContext(contextBuilder);
+            context = new ProviderPaymentsDataContext(contextBuilder);
             sut = new ProviderPaymentsRepository(context);
         }
 
@@ -37,7 +38,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Repositories
             payments.First().Amount = 100.99m;
 
             context.Payment.AddRange(payments);
-            context.SaveChanges();
+            await context.SaveChanges();
 
             var collectionperiod = new CollectionPeriod { Period = 1, AcademicYear = 1920 };
             var actual = await sut.GetMonthEndAct1CompletionPayments(collectionperiod);

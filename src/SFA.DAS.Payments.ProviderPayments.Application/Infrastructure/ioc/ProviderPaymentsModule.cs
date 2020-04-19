@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using SFA.DAS.Payments.Audit.Application.Data;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
+using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.ProviderPayments.Application.Data;
 using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
@@ -41,6 +42,15 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Infrastructure.ioc
             builder.RegisterType<PaymentMapper>().AsImplementedInterfaces();
             
             builder.RegisterType<CompletionPaymentService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            builder.Register(ctx =>
+                {
+                    var configHelper = ctx.Resolve<IConfigurationHelper>();
+                    var dbContext = new ProviderPaymentsDataContext(configHelper.GetConnectionString("PaymentsConnectionString"));
+                    return dbContext;
+                })
+                .As<IProviderPaymentsDataContext>()
+                .InstancePerDependency();
         }
     }
 }
