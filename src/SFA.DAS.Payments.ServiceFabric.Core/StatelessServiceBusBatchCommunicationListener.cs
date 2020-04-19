@@ -40,6 +40,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         public string EndpointName { get; set; }
         private readonly string errorQueueName;
         private CancellationToken startingCancellationToken;
+        protected string TelemetryPrefix => GetType().Name;
 
         public StatelessServiceBusBatchCommunicationListener(string connectionString, string endpointName, string errorQueueName, IPaymentLogger logger,
             IContainerScopeFactory scopeFactory, ITelemetry telemetry, IMessageDeserializer messageDeserializer, IApplicationMessageModifier messageModifier)
@@ -78,7 +79,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         private async Task<List<(Object Message, BatchMessageReceiver Receiver, Message ReceivedMessage)>> ReceiveMessages(BatchMessageReceiver messageReceiver, CancellationToken cancellationToken)
         {
             var applicationMessages = new List<(Object Message, BatchMessageReceiver Receiver, Message ReceivedMessage)>();
-            var messages = await messageReceiver.ReceiveMessages(20, cancellationToken).ConfigureAwait(false);
+            var messages = await messageReceiver.ReceiveMessages(200, cancellationToken).ConfigureAwait(false);
             if (!messages.Any())
                 return applicationMessages;
 
@@ -122,15 +123,14 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                             messageReceivers.Select(receiver => ReceiveMessages(receiver, cancellationToken)).ToList();
                         await Task.WhenAll(receiveTasks).ConfigureAwait(false);
 
-                        var messages = receiveTasks.SelectMany(task => task.Result).ToList(); 
+                        var messages = receiveTasks.SelectMany(task => task.Result).ToList();
+                        receiveTimer.Stop();
                         if (!messages.Any())
                         {
                             await Task.Delay(2000, cancellationToken);
                             continue;
                         }
-                        receiveTimer.Stop();
-                        RecordMetric("StatelessServiceBusBatchCommunicationListener.ReceiveMessages", receiveTimer.ElapsedMilliseconds, messages.Count);
-
+                        RecordMetric("ReceiveMessages", receiveTimer.ElapsedMilliseconds, messages.Count);
                         var groupedMessages = new Dictionary<Type, List<(object Message, BatchMessageReceiver MessageReceiver, Message ReceivedMessage)>>();
                         foreach (var message in messages)
                         {
@@ -146,10 +146,9 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                         await Task.WhenAll(groupedMessages.Select(group =>
                             ProcessMessages(group.Key, group.Value, cancellationToken)));
                         stopwatch.Stop();
-                        //RecordAllBatchProcessTelemetry(stopwatch.ElapsedMilliseconds, messages.Count);
+                        RecordProcessedAllBatchesTelemetry(stopwatch.ElapsedMilliseconds, messages.Count);
                         pipeLineStopwatch.Stop();
-                        //RecordPipelineTelemetry(pipeLineStopwatch.ElapsedMilliseconds, messages.Count);
-
+                        RecordPipelineTelemetry(pipeLineStopwatch.ElapsedMilliseconds, messages.Count);
                     }
                     catch (TaskCanceledException)
                     {
@@ -175,29 +174,31 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             }
         }
 
-        private void RecordBatchProcessTelemetry(long elapsedMilliseconds, int count)
+        private void RecordProcessedBatchTelemetry(long elapsedMilliseconds, int count, string batchType)
         {
-            RecordMetric("StatelessServiceBusBatchCommunicationListener.ProcessBatches", elapsedMilliseconds, count);
+            RecordMetric("ProcessedBatch", elapsedMilliseconds, count, (properties, metrics) => properties.Add("MessageBatchType", batchType));
         }
 
-        private void RecordAllBatchProcessTelemetry(long elapsedMilliseconds, int count)
+        private void RecordProcessedAllBatchesTelemetry(long elapsedMilliseconds, int count)
         {
-            RecordMetric("StatelessServiceBusBatchCommunicationListener.ProcessAllBatches", elapsedMilliseconds, count);
+            RecordMetric("ProcessedAllBatches", elapsedMilliseconds, count);
         }
 
         private void RecordPipelineTelemetry(long elapsedMilliseconds, int count)
         {
-            RecordMetric("StatelessServiceBusBatchCommunicationListener.Pipeline", elapsedMilliseconds, count);
+            RecordMetric("Pipeline", elapsedMilliseconds, count);
         }
 
-        private void RecordMetric(string eventName, long elapsedMilliseconds, int count)
+        private void RecordMetric(string eventName, long elapsedMilliseconds, int count, Action<Dictionary<string, string>, Dictionary<string, double>> metricsAction = null)
         {
             var metrics = new Dictionary<string, double>
             {
                 {TelemetryKeys.Duration, elapsedMilliseconds},
                 {TelemetryKeys.Count, count}
             };
-            telemetry.TrackEvent(eventName, metrics);
+            var properties = new Dictionary<string, string>();
+            metricsAction?.Invoke(properties, metrics);
+            telemetry.TrackEvent($"{TelemetryPrefix}.{eventName}", properties, metrics);
         }
 
         private object GetApplicationMessage(Message message)
@@ -216,9 +217,9 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         {
             try
             {
+                var stopwatch = Stopwatch.StartNew();
                 using (var containerScope = scopeFactory.CreateScope())
                 {
-                    var stopwatch = Stopwatch.StartNew();
                     if (!containerScope.TryResolve(typeof(IHandleMessageBatches<>).MakeGenericType(groupType),
                         out object handler))
                     {
@@ -240,8 +241,8 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                     RecordMetric(handler.GetType().FullName, handlerStopwatch.ElapsedMilliseconds, list.Count);
                     await Task.WhenAll(messages.GroupBy(msg => msg.MessageReceiver).Select(group =>
                         group.Key.Complete(group.Select(msg => msg.ReceivedMessage.SystemProperties.LockToken)))).ConfigureAwait(false);
-                    RecordAllBatchProcessTelemetry(stopwatch.ElapsedMilliseconds, messages.Count);
                 }
+                RecordProcessedBatchTelemetry(stopwatch.ElapsedMilliseconds, messages.Count, groupType.FullName);
             }
             catch (Exception e)
             {

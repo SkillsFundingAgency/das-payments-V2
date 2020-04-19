@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
@@ -18,9 +19,22 @@ namespace SFA.DAS.Payments.Audit.Application
                 $"Type: {submissionEvent.GetType().Name}, Event Time: {submissionEvent.EventTime:G}, Ukprn: {submissionEvent.Ukprn}, Job Id: {submissionEvent.JobId}, Collection Period: {submissionEvent.AcademicYear}-{submissionEvent.CollectionPeriod}";
         }
 
-        public static bool IsUniqueKeyConstraint(this SqlException sqlException)
+        public static bool IsUniqueKeyConstraintException(this Exception exception)
         {
-            return sqlException != null && (sqlException.Number == 2601 || sqlException.Number == 2627);
+            var sqlException = exception.GetException<Microsoft.Data.SqlClient.SqlException>();
+            if (sqlException != null)
+                return sqlException.Number == 2601 || sqlException.Number == 2627;
+            var sqlEx = exception.GetException<SqlException>();
+            return sqlEx != null && (sqlEx.Number == 2601 || sqlEx.Number == 2627);
+        }
+
+        public static bool IsDeadLockException(this Exception exception)
+        {
+            var sqlException = exception.GetException<Microsoft.Data.SqlClient.SqlException>();
+            if (sqlException != null)
+                return sqlException.Number == 1205;
+            var sqlEx = exception.GetException<SqlException>();
+            return sqlEx != null && sqlEx.Number == 1205;
         }
 
         public static T GetException<T>(this Exception e) where T : Exception
@@ -33,9 +47,16 @@ namespace SFA.DAS.Payments.Audit.Application
 
             return innerEx as T;
         }
-        public static bool IsDeadLock(this SqlException sqlException)
+
+        public static void AddSqlParameter(this List<SqlParameter> sqlParameters, int index, object value)
         {
-            return sqlException != null && sqlException.Number == 1205;
+            sqlParameters.Add(new SqlParameter($@"p{index}_{sqlParameters.Count}", value));
         }
+
+        public static void AddSqlParameter(this List<SqlParameter> sqlParameters, int index, int childIndex, object value)
+        {
+            sqlParameters.Add(new SqlParameter($@"p{index}_{childIndex}_{sqlParameters.Count}", value));
+        }
+
     }
 }
