@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             if (connection == null) throw new ArgumentNullException(nameof(connection));
             if (endpointName == null) throw new ArgumentNullException(nameof(endpointName));
             messageReceiver = new MessageReceiver(connection, endpointName, ReceiveMode.PeekLock,
-                RetryPolicy.Default, 600);
+                RetryPolicy.Default, 0);
             messages = new List<Message>();
         }
 
