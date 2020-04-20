@@ -10,7 +10,7 @@ using TechTalk.SpecFlow;
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
     [Binding]
-    [Scope(Feature = "PV2-1851-Levy-Learner-Made-Redundant-In-Last-6-Months")]
+    [Scope(Feature = "PV2-1851-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months")]
     // ReSharper disable once InconsistentNaming
     public class PV2_1851_Steps : FM36_ILR_Base_Steps
     {
