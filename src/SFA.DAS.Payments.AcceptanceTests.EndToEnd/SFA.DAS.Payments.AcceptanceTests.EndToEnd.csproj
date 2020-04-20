@@ -1693,8 +1693,8 @@
     <EmbeddedResource Include="FM36TestFiles\PV2-1824-DLock09-One_Price-Episode-UnHappy-Path-R02.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1850-Non-Levy-Learner-Made-Redundant-In-Last-6-Months-R03.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1850-Non-Levy-Learner-Made-Redundant-In-Last-6-Months-R04.json" />
-    <EmbeddedResource Include="FM36TestFiles\PV2-1851-Levy-Learner-Made-Redundant-Outside-Last-6-Months-R03.json" />
-    <EmbeddedResource Include="FM36TestFiles\PV2-1851-Levy-Learner-Made-Redundant-Outside-Last-6-Months-R04.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-1851-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months-R03.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-1851-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months-R04.json" />
     <None Include="packages.config" />
     <None Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
