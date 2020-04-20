@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
@@ -231,12 +232,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
                 await messageSession.Send(processLevyFundsAtMonthEndCommand).ConfigureAwait(false);
             }
+        }
 
-            //TestSession.Providers.ForEach(p =>
-            //{
-            //    p.JobId = monthEndJobId;
-            //    p.MonthEndJobIdGenerated = true;
-            //});
+        public int GetPaymentsCount(long ukprn, CollectionPeriod collectionPeriod)
+        {
+            return dataContext.Payment.Count(x => x.Ukprn == ukprn && x.CollectionPeriod.Period == collectionPeriod.Period && x.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear);
         }
 
         public static void AddDcConfig(ContainerBuilder builder)

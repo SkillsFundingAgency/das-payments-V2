@@ -239,6 +239,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                             "Failed to find a matching DLOCK-09 event and no earning events.");
         }
 
+        protected async Task WaitForPayments(int count)
+        {
+            await WaitForIt(() => Scope.Resolve<IDcHelper>().GetPaymentsCount(TestSession.Provider.Ukprn, TestSession.CollectionPeriod) == count,
+                "Failed to wait for payments expected number of payments");
+        }
+
         public void Dispose()
         {
             ((IDisposable)featureContext)?.Dispose();

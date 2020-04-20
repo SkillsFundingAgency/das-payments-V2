@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using NServiceBus;
+using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
@@ -14,5 +15,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         Task SendPeriodEndTask(short collectionYear, byte collectionPeriod, long jobId, string taskName);
 
         Task SendLevyMonthEndForEmployers(long monthEndJobId, IEnumerable<long> employerAccountIds, short academicYear, byte collectionPeriod, IMessageSession messageSession);
+
+        int GetPaymentsCount(long ukprn, CollectionPeriod collectionPeriod);
     }
 }

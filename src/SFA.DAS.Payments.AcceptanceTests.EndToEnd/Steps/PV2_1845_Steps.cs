@@ -51,6 +51,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.AcademicYear,
                 TestSession.CollectionPeriod.Period,
                 MessageSession);
+
+            await WaitForPayments(3);
         }
 
         [Given("there are less than 6 months remaining of the planned learning")]
