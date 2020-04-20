@@ -239,6 +239,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             return dataContext.Payment.Count(x => x.Ukprn == ukprn && x.CollectionPeriod.Period == collectionPeriod.Period && x.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear);
         }
 
+        public int GetRequiredPaymentsCount(long ukprn, CollectionPeriod collectionPeriod)
+        {
+            return dataContext.RequiredPaymentEvent.Count(x => x.Ukprn == ukprn && x.CollectionPeriod.Period == collectionPeriod.Period && x.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear);
+        }
+
         public static void AddDcConfig(ContainerBuilder builder)
         {
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>();

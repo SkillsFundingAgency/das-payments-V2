@@ -242,7 +242,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected async Task WaitForPayments(int count)
         {
             await WaitForIt(() => Scope.Resolve<IDcHelper>().GetPaymentsCount(TestSession.Provider.Ukprn, TestSession.CollectionPeriod) == count,
-                "Failed to wait for payments expected number of payments");
+                "Failed to wait for expected number of payments");
+        }
+
+        protected async Task WaitForRequiredPayments(int count)
+        {
+            await WaitForIt(() => Scope.Resolve<IDcHelper>().GetRequiredPaymentsCount(TestSession.Provider.Ukprn, TestSession.CollectionPeriod) == count,
+                "Failed to wait for expected number of required payments");
         }
 
         public void Dispose()

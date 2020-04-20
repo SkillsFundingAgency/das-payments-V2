@@ -17,5 +17,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         Task SendLevyMonthEndForEmployers(long monthEndJobId, IEnumerable<long> employerAccountIds, short academicYear, byte collectionPeriod, IMessageSession messageSession);
 
         int GetPaymentsCount(long ukprn, CollectionPeriod collectionPeriod);
+
+        int GetRequiredPaymentsCount(long ukprn, CollectionPeriod collectionPeriod);
     }
 }

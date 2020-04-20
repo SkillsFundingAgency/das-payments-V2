@@ -42,7 +42,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.AcademicYear,
                 TestSession.CollectionPeriod.Period,
                 TestSession.Provider.JobId);
-            
+
+            await WaitForRequiredPayments(6);
 
             //await dcHelper.SendPeriodEndTask(20, 3, TestSession.Provider.JobId, "PeriodEndRun");
             await dcHelper.SendLevyMonthEndForEmployers(
@@ -52,7 +53,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.Period,
                 MessageSession);
 
-            await WaitForPayments(3);
+            await WaitForPayments(6);
         }
 
         [Given("there are less than 6 months remaining of the planned learning")]

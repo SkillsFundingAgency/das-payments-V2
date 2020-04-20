@@ -19,5 +19,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             byte collectionPeriod, IMessageSession messageSession) => Task.CompletedTask;
 
         public int GetPaymentsCount(long ukprn, CollectionPeriod collectionPeriod) => 0;
+        public int GetRequiredPaymentsCount(long ukprn, CollectionPeriod collectionPeriod) => 0;
     }
 }
