@@ -755,44 +755,23 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var act2EarningEvent = events.First();
 
             act2EarningEvent.Should().BeOfType<ApprenticeshipContractType2EarningEvent>();
-            foreach (var onProgrammeEarning in act2EarningEvent.OnProgrammeEarnings)
-            {
-                var redundancyPeriods = onProgrammeEarning.Periods.Where(p => p.Period >= redundancyPeriod).ToList();
-                foreach (var earningPeriod in redundancyPeriods)
-                {
-                    earningPeriod.Amount.Should().Be(0m, "This will be transferred to a redundancy earning");
-                }
-            }
-            
-            foreach (var onProgrammeEarning in act2EarningEvent.IncentiveEarnings)
-            {
-                var redundancyPeriods = onProgrammeEarning.Periods.Where(p => p.Period >= redundancyPeriod).ToList();
-                foreach (var earningPeriod in redundancyPeriods)
-                {
-                    earningPeriod.Amount.Should().Be(0m, "This will be transferred to a redundancy earning");
-                }
-            }
+
+            act2EarningEvent.OnProgrammeEarnings.Where(ope => ope.Periods.Any(p => p.Period >= redundancyPeriod))
+                .Should().HaveCount(0);
+            act2EarningEvent.IncentiveEarnings.Where(ope => ope.Periods.Any(p => p.Period >= redundancyPeriod))
+                .Should().HaveCount(0);
             
             var redundancyEarningEvent = events.Last();
                    
-            foreach (var onProgrammeEarning in redundancyEarningEvent.OnProgrammeEarnings)
-            {
-                var redundancyPeriods = onProgrammeEarning.Periods.Where(p => p.Period >= redundancyPeriod).ToList();
-                foreach (var earningPeriod in redundancyPeriods)
-                {
-                    earningPeriod.SfaContributionPercentage.Should().Be(1m, "This will now be paid by 100% co-funded contribution");
-                }
-            }
-                     
-            foreach (var onProgrammeEarning in redundancyEarningEvent.IncentiveEarnings)
-            {
-                var redundancyPeriods = onProgrammeEarning.Periods.Where(p => p.Period >= redundancyPeriod).ToList();
-                foreach (var earningPeriod in redundancyPeriods)
-                {
-                    earningPeriod.SfaContributionPercentage.Should().Be(1m, "This will now be paid by 100% co-funded contribution");
+            redundancyEarningEvent.OnProgrammeEarnings.Where(ope => ope.Periods.Any(p => p.Period < redundancyPeriod))
+                .Should().HaveCount(0);
+            redundancyEarningEvent.IncentiveEarnings.Where(ope => ope.Periods.Any(p => p.Period < redundancyPeriod))
+                .Should().HaveCount(0);
 
-                }
-            }
+            redundancyEarningEvent.OnProgrammeEarnings.Where(ope => ope.Periods.Any(p => p.SfaContributionPercentage != 1m))
+                .Should().HaveCount(0);
+            redundancyEarningEvent.IncentiveEarnings.Where(ope => ope.Periods.Any(p => p.SfaContributionPercentage != 1m))
+                .Should().HaveCount(0);
 
             Assert.AreNotEqual(act2EarningEvent.EventId, redundancyEarningEvent.EventId);
         }
