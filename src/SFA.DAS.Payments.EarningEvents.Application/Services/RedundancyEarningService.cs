@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Services
 {
     public class RedundancyEarningService : IRedundancyEarningService
     {
         private readonly IRedundancyEarningEventFactory redundancyEarningEventFactory;
-
 
         public RedundancyEarningService(IRedundancyEarningEventFactory redundancyEarningEventFactory)
         {
@@ -27,25 +27,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Services
             var redundancyEarningEvent = redundancyEarningEventFactory.CreateRedundancyContractType(earningEvent);
 
             //remove redundancy periods from Earning event
-            earningEvent.OnProgrammeEarnings.ForEach(ope =>
-            {
-                var periods = ope.Periods.ToList();
-                periods.RemoveAll(p => p.Period >= redundancyPeriod);
-                ope.Periods = periods.AsReadOnly();
-            });
-            earningEvent.IncentiveEarnings.ForEach(ie =>
-            {
-                var periods = ie.Periods.ToList();
-                periods.RemoveAll(p => p.Period >= redundancyPeriod);
-                ie.Periods = periods.AsReadOnly();
-            });
+            earningEvent.OnProgrammeEarnings.ForEach(ope => { RemoveRedundancyEarningPeriods(ope, redundancyPeriod); });
+            earningEvent.IncentiveEarnings.ForEach(ie => { RemoveRedundancyEarningPeriods(ie, redundancyPeriod); }); 
 
             //set correct values for redundancy periods
             redundancyEarningEvent.OnProgrammeEarnings.ForEach(ope =>
             {
-                var periods = ope.Periods.ToList();
-                periods.RemoveAll(p => p.Period < redundancyPeriod);
-                ope.Periods = periods.AsReadOnly();
+                RemovePreRedundancyEarningPeriods(ope, redundancyPeriod);
 
                 foreach (var onProgPeriod in ope.Periods)
                 {
@@ -55,9 +43,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Services
             });
             redundancyEarningEvent.IncentiveEarnings.ForEach(ie =>
             {
-                var periods = ie.Periods.ToList();
-                periods.RemoveAll(p => p.Period < redundancyPeriod);
-                ie.Periods = periods.AsReadOnly();
+                RemovePreRedundancyEarningPeriods(ie, redundancyPeriod);
 
                 foreach (var incentivePeriod in ie.Periods)
                 {
@@ -72,14 +58,18 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Services
             return splitResults;
         }
 
-        public List<ApprenticeshipContractTypeEarningsEvent> SplitContractEarningsByRedundancyDate(List<ApprenticeshipContractTypeEarningsEvent> earningEvents, DateTime redundancyDate)
+        private void RemoveRedundancyEarningPeriods(Earning earning, byte redundancyPeriod)
         {
-            List<ApprenticeshipContractTypeEarningsEvent> results = new List<ApprenticeshipContractTypeEarningsEvent>();
-            foreach (var apprenticeshipContractTypeEarningsEvent in earningEvents)
-            {
-                results.AddRange(SplitContractEarningByRedundancyDate(apprenticeshipContractTypeEarningsEvent, redundancyDate));
-            }
-            return results;
+            var periods = earning.Periods.ToList();
+            periods.RemoveAll(p => p.Period >= redundancyPeriod);
+            earning.Periods = periods.AsReadOnly();
+        }
+
+        private void RemovePreRedundancyEarningPeriods(Earning earning, byte redundancyPeriod)
+        {
+            var periods = earning.Periods.ToList();
+            periods.RemoveAll(p => p.Period < redundancyPeriod);
+            earning.Periods = periods.AsReadOnly();
         }
 
         public List<FunctionalSkillEarningsEvent> SplitFunctionSkillEarningByRedundancyDate(FunctionalSkillEarningsEvent functionalSkillEarning,

@@ -9,9 +9,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Interfaces
         List<ApprenticeshipContractTypeEarningsEvent> SplitContractEarningByRedundancyDate(
             ApprenticeshipContractTypeEarningsEvent earningEvent, DateTime redundancyDate);
 
-        List<ApprenticeshipContractTypeEarningsEvent> SplitContractEarningsByRedundancyDate(
-            List<ApprenticeshipContractTypeEarningsEvent> earningEvents, DateTime redundancyDate);
-
         List<FunctionalSkillEarningsEvent> SplitFunctionSkillEarningByRedundancyDate(FunctionalSkillEarningsEvent functionalSkillEarning, DateTime priceEpisodeRedStartDate);
     }
 }
