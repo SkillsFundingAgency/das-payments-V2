@@ -1,5 +1,5 @@
-Feature: PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months
-Scenario: PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months
+Feature: PV2-1851-Levy-Learner-Made-Redundant-In-Last-6-Months
+Scenario: PV2-1851-Levy-Learner-Made-Redundant-In-Last-6-Months
 
 
 Given a learner funded by a levy paying employer is made redundant
