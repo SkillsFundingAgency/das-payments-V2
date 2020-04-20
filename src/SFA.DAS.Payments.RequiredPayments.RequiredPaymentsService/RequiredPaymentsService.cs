@@ -66,7 +66,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             apprenticeshipKey = apprenticeshipKeyService.ParseApprenticeshipKey(apprenticeshipKeyString);
         }
 
-        public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleApprenticeship2ContractTypeEarningsEvent(ApprenticeshipContractTypeEarningsEvent earningEvent, CancellationToken cancellationToken)
+        public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleApprenticeship2ContractTypeEarningsEvent(ApprenticeshipContractType2EarningEvent earningEvent, CancellationToken cancellationToken)
         {
             paymentLogger.LogVerbose($"Handling ApprenticeshipContractType2EarningEvent for {apprenticeshipKeyString}");
 
@@ -85,8 +85,26 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             }
         }
 
+        public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleAct2RedundancyEarningEvent(ApprenticeshipContractType2RedundancyEarningEvent earningEvent,
+            CancellationToken cancellationToken)
+        {
+            paymentLogger.LogVerbose($"Handling ApprenticeshipContractType2RedundancyEarningEvent for {apprenticeshipKeyString}");
 
-   
+            using (var operation = telemetry.StartOperation("RequiredPaymentsService.HandleAct2RedundancyEarningEvent", earningEvent.EventId.ToString()))
+            {
+                var stopwatch = Stopwatch.StartNew();
+                await ResetPaymentHistoryCacheIfDifferentCollectionPeriod(earningEvent.CollectionPeriod)
+                    .ConfigureAwait(false);
+
+                await Initialise(earningEvent.CollectionPeriod.Period).ConfigureAwait(false);
+                var requiredPaymentEvents = await contractType2EarningsEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
+                Log(requiredPaymentEvents);
+                telemetry.TrackDuration("RequiredPaymentsService.HandleAct2RedundancyEarningEvent", stopwatch, earningEvent);
+                telemetry.StopOperation(operation);
+                return requiredPaymentEvents;
+            }
+
+        }
 
 
         public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleFunctionalSkillEarningsEvent(FunctionalSkillEarningsEvent earningEvent, CancellationToken cancellationToken)
