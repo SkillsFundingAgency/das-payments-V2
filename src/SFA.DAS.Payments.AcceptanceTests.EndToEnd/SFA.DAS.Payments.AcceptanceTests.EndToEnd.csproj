@@ -409,7 +409,7 @@
     <Compile Include="Steps\PV2_1824_Steps.cs" />
     <Compile Include="Steps\PV2_1825_Steps.cs" />
     <Compile Include="Steps\PV2_1826_Steps.cs" />
-    <Compile Include="Steps\PV2_1845_Steps.cs" />
+    <Compile Include="Steps\PV2_1851_Steps.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
     <Compile Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature.cs">
       <DependentUpon>Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature</DependentUpon>

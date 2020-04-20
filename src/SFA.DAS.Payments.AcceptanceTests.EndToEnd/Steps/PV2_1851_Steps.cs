@@ -10,16 +10,16 @@ using TechTalk.SpecFlow;
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
     [Binding]
-    [Scope(Feature = "PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months")]
+    [Scope(Feature = "PV2-1851-Levy-Learner-Made-Redundant-In-Last-6-Months")]
     // ReSharper disable once InconsistentNaming
-    public class PV2_1845_Steps : FM36_ILR_Base_Steps
+    public class PV2_1851_Steps : FM36_ILR_Base_Steps
     {
-        public PV2_1845_Steps(FeatureContext context) : base(context)
+        public PV2_1851_Steps(FeatureContext context) : base(context)
         {
         }
 
-        private const string priceEpisodeIdentifier = "PE-1845";
-        private const string commitmentIdentifier = "A-1845";
+        private const string priceEpisodeIdentifier = "PE-1851";
+        private const string commitmentIdentifier = "A-1851";
 
         [Given("the learner does not find alternative employment")]
         [Given("the ILR submission for the learner contains 'Price episode read status code' not equal to '0'")]
