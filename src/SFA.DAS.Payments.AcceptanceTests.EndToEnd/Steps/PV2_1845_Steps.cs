@@ -46,9 +46,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.Period,
                 TestSession.Provider.JobId);
 
-            await WaitForRequiredPayments(6);
+            await WaitForRequiredPayments(14);
 
-            //await dcHelper.SendPeriodEndTask(20, 3, TestSession.Provider.JobId, "PeriodEndRun");
             await dcHelper.SendLevyMonthEndForEmployers(
                 TestSession.GenerateId(),
                 TestSession.Employers.Select(x => x.AccountId),
@@ -56,13 +55,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.Period,
                 MessageSession);
 
-            await WaitForPayments(6);
+            await WaitForPayments(14);
         }
 
         [Given("there are less than 6 months remaining of the planned learning")]
         public async Task ThereAreLessThan6MonthsRemainingOfPlannedLearning()
         {
-            GetFm36LearnerForCollectionPeriod("R08/current academic year");
+            GetFm36LearnerForCollectionPeriod("R12/current academic year");
             await SetupTestData(priceEpisodeIdentifier, null, commitmentIdentifier, null, true);
             //await SetupTestData(priceEpisodeIdentifier, null, commitmentIdentifier, null);
 
@@ -76,13 +75,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.Period,
                 TestSession.Provider.JobId);
 
-            //await dcHelper.SendPeriodEndTask(20, 4, TestSession.Provider.JobId, "PeriodEndRun");
-            await dcHelper.SendLevyMonthEndForEmployers(
-                TestSession.GenerateId(),
-                TestSession.Employers.Select(x => x.AccountId),
-                TestSession.CollectionPeriod.AcademicYear,
-                TestSession.CollectionPeriod.Period,
-                MessageSession);
         }
 
         private void CreateDataLockForCommitment(string commitmentIdentifier)
@@ -94,16 +86,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             context.SaveChanges();
         }
 
-        private bool HasNoDataLocksForPriceEpisodeInR04(string priceEpisodeIdentifier, short academicYear)
+        private bool HasNoDataLocksForPriceEpisodeInR08(string priceEpisodeIdentifier, short academicYear)
         {
             var dataLocks =
                 EarningEventsHelper.GetOnProgrammeDataLockErrorsForLearnerAndPriceEpisodeAndDeliveryPeriod(
-                    priceEpisodeIdentifier, academicYear, TestSession, 4); //todo take this out
+                    priceEpisodeIdentifier, academicYear, TestSession, 8); 
             var payableEarningEvents = EarningEventsHelper.PayableEarningsReceivedForLearner(TestSession);
 
             var result = !EnumerableExtensions.Any(EarningEventsHelper
                 .GetOnProgrammeDataLockErrorsForLearnerAndPriceEpisodeAndDeliveryPeriod(priceEpisodeIdentifier,
-                    academicYear, TestSession, 4));
+                    academicYear, TestSession, 8));
             return result;
         }
 
@@ -111,28 +103,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             return EarningEventsHelper.PayableEarningsReceivedForLearner(TestSession)
                 .Any(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier));
-            //var result = EarningEventsHelper.PayableEarningsReceivedForLearner(TestSession).Count(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier)) == 2;
-            //return result;
-        }
+         }
 
-        private bool HasCorrectlyFundedR04(short academicYear)
+        private bool HasCorrectlyFundedFromR08(short academicYear, int fundingSource, int sfaPercentage )
         {
-            //var events = PaymentEventsHelper.ProviderPaymentsReceivedForLearner(priceEpisodeIdentifier, academicYear, TestSession);
+
             var events =
                 FundingSourcePaymentEventsHelper.FundingSourcePaymentsReceivedForLearner(priceEpisodeIdentifier,
                     academicYear, TestSession);
 
-            var filter1 = events.Where(x => x.FundingSourceType == FundingSourceType.CoInvestedSfa);
-            //var filter2 = 
-
             var count = FundingSourcePaymentEventsHelper
                 .FundingSourcePaymentsReceivedForLearner(priceEpisodeIdentifier, academicYear, TestSession)
                 .Count(x =>
-                    x.FundingSourceType == FundingSourceType.CoInvestedSfa
-                    && x.SfaContributionPercentage == 1.0m
+                    x.FundingSourceType == (FundingSourceType) fundingSource
+                    && x.SfaContributionPercentage == (decimal) sfaPercentage/100
                     && x.ContractType == ContractType.Act1
                     && x.AmountDue == 1000m);
-            return count == 1;
+            return count == 5;
         }
 
         [Then("bypass the data lock rules")]
@@ -140,7 +127,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             await WaitForIt(
                 () => HasPayableEarningEventsForPriceEpisode(priceEpisodeIdentifier) &&
-                      HasNoDataLocksForPriceEpisodeInR04(priceEpisodeIdentifier,
+                      HasNoDataLocksForPriceEpisodeInR08(priceEpisodeIdentifier,
                           short.Parse(TestSession.FM36Global.Year)),
                 "Failed to find a Payable Earning and no Data Locks");
         }
@@ -149,7 +136,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             @"fund the remaining monthly instalments of the learning from Funding Source (.*) \((.*)% SFA funding\) from the date of the Price episode read start date")]
         public async Task ThenFundTheRemainingInstallmentsCorrectly(int fundingSource, int sfaPercentage)
         {
-            await WaitForIt(() => HasCorrectlyFundedR04(short.Parse(TestSession.FM36Global.Year)),
+            await WaitForIt(() => HasCorrectlyFundedFromR08(short.Parse(TestSession.FM36Global.Year), fundingSource, sfaPercentage),
                 "Failed to find correctly funded remaining installments");
         }
     }

@@ -1554,7 +1554,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>One Levy learner changes provider but remains with the same employer-PV2-317.feature</DependentUpon>
     </Compile>
-	    <Compile Include="Tests\Redundancy\PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months.feature.cs">
+    <Compile Include="Tests\Redundancy\PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months.feature.cs">
       <DependentUpon>PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1702,7 +1702,7 @@
     <EmbeddedResource Include="FM36TestFiles\PV2-1851-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months-R03.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1851-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months-R04.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months-R07.json" />
-    <EmbeddedResource Include="FM36TestFiles\PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months-R08.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months-R12.json" />
     <None Include="packages.config" />
     <None Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2614,10 +2614,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy learner changes provider but remains with the same employer-PV2-317.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Redundancy\PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months.feature" >
-	      <Generator>SpecFlowSingleFileGenerator</Generator>
+    <None Include="Tests\Redundancy\PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months.feature.cs</LastGenOutput>
-	  </None>
+    </None>
     <None Include="Tests\Redundancy\PV2-1851-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-1851-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months.feature.cs</LastGenOutput>
