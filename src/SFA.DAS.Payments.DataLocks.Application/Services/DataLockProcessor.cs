@@ -3,7 +3,6 @@ using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -23,7 +22,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         private readonly ILearnerMatcher learnerMatcher;
         private readonly IOnProgrammeAndIncentiveEarningPeriodsValidationProcessor onProgrammeAndIncentiveEarningPeriodsValidationProcessor;
         private readonly IFunctionalSkillEarningPeriodsValidationProcessor functionalSkillEarningPeriodsValidationProcessor;
-
+        
         public DataLockProcessor(IMapper mapper, ILearnerMatcher learnerMatcher,
             IOnProgrammeAndIncentiveEarningPeriodsValidationProcessor onProgrammeAndIncentiveEarningPeriodsValidationProcessor,
             IFunctionalSkillEarningPeriodsValidationProcessor functionalSkillEarningPeriodsValidationProcessor)
@@ -234,9 +233,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             foreach (var onProgrammeEarning in nonPayableEarning.OnProgrammeEarnings)
             {
-                var validPeriods = new List<EarningPeriod>();
-                var invalidPeriods = new List<EarningPeriod>();
-
                 foreach (var period in onProgrammeEarning.Periods)
                 {
                     period.DataLockFailures = new List<DataLockFailure>
