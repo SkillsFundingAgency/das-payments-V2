@@ -58,7 +58,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThereAreLessThan6MonthsRemainingOfPlannedLearning()
         {
             GetFm36LearnerForCollectionPeriod("R12/current academic year");
-            await SetupTestData(PriceEpisodeIdentifier, null, CommitmentIdentifier, null, true);
+            await SetupTestData(PriceEpisodeIdentifier, null, CommitmentIdentifier, null);
 
             CreateDataLockForCommitment(CommitmentIdentifier);
             TestSession.RegenerateJobId();

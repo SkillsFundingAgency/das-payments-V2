@@ -105,7 +105,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await SetupTestData(priceEpisodeIdentifier, null, commitmentIdentifier1, commitmentIdentifier2);
         }
 
-        protected async Task SetupTestData(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2, string commitmentIdentifier1, string commitmentIdentifier2, bool createDataLock = false)
+        protected async Task SetupTestData(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2, string commitmentIdentifier1, string commitmentIdentifier2)
         {
             var learner = TestSession.FM36Global.Learners.Single();
             learner.ULN = TestSession.Learner.Uln;
@@ -135,11 +135,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                               .WithALevyPayingEmployer()
                               .WithApprenticeshipPriceEpisode(priceEpisode1.PriceEpisodeValues)
                               .ToApprenticeshipModel();
-
-            if (createDataLock)
-            {
-                commitment1.FrameworkCode += 1;
-            }
 
             TestSession.Apprenticeships.GetOrAdd(commitmentIdentifier1, commitment1);
             testDataContext.Apprenticeship.Add(commitment1);
