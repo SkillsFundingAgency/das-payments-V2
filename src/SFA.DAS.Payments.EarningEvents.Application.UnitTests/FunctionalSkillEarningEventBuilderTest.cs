@@ -9,12 +9,9 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
-using SFA.DAS.Payments.EarningEvents.Application.Services;
 using SFA.DAS.Payments.EarningEvents.Application.UnitTests.Builders;
-using SFA.DAS.Payments.EarningEvents.Application.UnitTests.Helpers;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
-using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
@@ -26,15 +23,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
     {
         private IMapper mapper;
         private ProcessLearnerCommand learnerSubmission;
-        private  Mock<IRedundancyEarningService> redundancyEarningSplitterMock;
-        private const string filename = "Redundancy.json";
-        private const string learnerRefNo = "01fm361845";
+        private  Mock<IRedundancyEarningService> redundancyEarningService;
 
         [OneTimeSetUp]
         public void InitialiseMapper()
         {
             mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<EarningsEventProfile>()));
-            redundancyEarningSplitterMock = new Mock<IRedundancyEarningService>();
+            redundancyEarningService = new Mock<IRedundancyEarningService>();
         }
 
         [SetUp]
@@ -578,7 +573,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                 }
             };
 
-            var sut = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningSplitterMock.Object);
+            var sut = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningService.Object);
 
             // act
             var events = sut.Build(learnerSubmission2);
@@ -596,7 +591,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         public void FunctionalSkillBuild()
         {
             // arrange
-            var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningSplitterMock.Object);
+            var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningService.Object);
             var learnerSubmissionModel = new ProcessLearnerCommand
             {
                 CollectionPeriod = 1,
@@ -772,7 +767,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         public void MixedContractTypeBuild()
         {
             // arrange
-            var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningSplitterMock.Object);
+            var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningService.Object);
 
             // act
             var events = builder.Build(learnerSubmission);
@@ -808,7 +803,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         public void MapFundingLineTypeCorrectly()
         {
             // arrange
-            var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningSplitterMock.Object);
+            var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningService.Object);
             
             // act
             var events = builder.Build(learnerSubmission);
@@ -834,7 +829,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             // arrange
             var processLearnerCommand = new ProcessLearnerCommandBuilder().WithExtendedLearningSupport().Build();
 
-            var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningSplitterMock.Object);
+            var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningService.Object);
             
             // act
             var events = builder.Build(processLearnerCommand);
