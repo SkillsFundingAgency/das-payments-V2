@@ -21,17 +21,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         [Given("the learner does not find alternative employment")]
         [Given("the ILR submission for the learner contains 'Price episode read status code' not equal to '0'")]
-        [Given("the 'Price episode read start date' shows date of redundancy is within 6mths of planned end date")]
+        [Given("the 'Price episode read start date' shows date of redundancy is more than 6mths of planned learning")]
         [When("the submission is processed for payment")]
+        [Then("continue to fund the monthly instalments prior to redundancy date as per existing ACT2 rules, Funding Source 2 (95%) and Funding Source 3 (5%)")]
         public void EmptyIlrSetupStep()
         {
             //NOTE: This is handled by the FM36 we import
         }
 
-        [Given("a learner funded by a levy paying employer is made redundant")]
-        public async Task LevyLearnerMadeRedundant()
+        [Given("a learner co-funded by a non-levy paying employer is made redundant")]
+        public async Task NonLevyLearnerMadeRedundant()
         {
-            //submit R03
             GetFm36LearnerForCollectionPeriod("R03/current academic year");
             await SetupTestData(PriceEpisodeIdentifier, null, CommitmentIdentifier, null);
             var dcHelper = Scope.Resolve<IDcHelper>();
@@ -44,7 +44,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForPayments(9);
         }
 
-        [Given("there are less than 6 months remaining of the planned learning")]
+        [Given("there is more than 6 months remaining of the planned learning")]
         public async Task ThereAreLessThan6MonthsRemainingOfPlannedLearning()
         {
             GetFm36LearnerForCollectionPeriod("R04/current academic year");
@@ -71,8 +71,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     && x.AmountDue == 1000m) == 1;
         }
 
-        [Then(@"fund the remaining monthly instalments of the learning from Funding Source (.*) \((.*)% SFA funding\) from the date of the Price episode read start date")]
-        public async Task ThenFundTheRemainingInstallmentsCorrectly(int fundingSource, int sfaPercentage)
+        [Then(@"fund 12 weeks of the learning from Funding Source 2, with 100% SFA funding, from the date of the 'Price episode read start date'")]
+        public async Task ThenFundTheRemainingInstallmentsCorrectly()
         {
             await WaitForIt(() => HasCorrectlyFundedR04(short.Parse(TestSession.FM36Global.Year)),
                 "Failed to find correctly funded remaining installments");
