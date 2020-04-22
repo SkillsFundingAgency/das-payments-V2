@@ -76,30 +76,27 @@
             // 
             // SourceFolderPath
             // 
-            this.SourceFolderPath.Location = new System.Drawing.Point(189, 15);
-            this.SourceFolderPath.Margin = new System.Windows.Forms.Padding(4);
+            this.SourceFolderPath.Location = new System.Drawing.Point(142, 12);
             this.SourceFolderPath.Name = "SourceFolderPath";
             this.SourceFolderPath.ReadOnly = true;
-            this.SourceFolderPath.Size = new System.Drawing.Size(459, 22);
+            this.SourceFolderPath.Size = new System.Drawing.Size(345, 20);
             this.SourceFolderPath.TabIndex = 0;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(19, 18);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(14, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(163, 17);
+            this.label1.Size = new System.Drawing.Size(122, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "Payments Source Folder";
             // 
             // SetSourceFolder
             // 
             this.SetSourceFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SetSourceFolder.Location = new System.Drawing.Point(649, 14);
-            this.SetSourceFolder.Margin = new System.Windows.Forms.Padding(4);
+            this.SetSourceFolder.Location = new System.Drawing.Point(487, 11);
             this.SetSourceFolder.Name = "SetSourceFolder";
-            this.SetSourceFolder.Size = new System.Drawing.Size(36, 26);
+            this.SetSourceFolder.Size = new System.Drawing.Size(27, 21);
             this.SetSourceFolder.TabIndex = 2;
             this.SetSourceFolder.Text = "...";
             this.SetSourceFolder.UseVisualStyleBackColor = true;
@@ -108,27 +105,24 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(67, 55);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Location = new System.Drawing.Point(50, 45);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(114, 17);
+            this.label2.Size = new System.Drawing.Size(87, 13);
             this.label2.TabIndex = 3;
             this.label2.Text = "Config to Update";
             // 
             // ConfigToUpdate
             // 
-            this.ConfigToUpdate.Location = new System.Drawing.Point(189, 52);
-            this.ConfigToUpdate.Margin = new System.Windows.Forms.Padding(4);
+            this.ConfigToUpdate.Location = new System.Drawing.Point(142, 42);
             this.ConfigToUpdate.Name = "ConfigToUpdate";
-            this.ConfigToUpdate.Size = new System.Drawing.Size(459, 22);
+            this.ConfigToUpdate.Size = new System.Drawing.Size(345, 20);
             this.ConfigToUpdate.TabIndex = 4;
             // 
             // DetermineConfig
             // 
-            this.DetermineConfig.Location = new System.Drawing.Point(189, 87);
-            this.DetermineConfig.Margin = new System.Windows.Forms.Padding(4);
+            this.DetermineConfig.Location = new System.Drawing.Point(142, 71);
             this.DetermineConfig.Name = "DetermineConfig";
-            this.DetermineConfig.Size = new System.Drawing.Size(139, 28);
+            this.DetermineConfig.Size = new System.Drawing.Size(104, 23);
             this.DetermineConfig.TabIndex = 5;
             this.DetermineConfig.Text = "Determine Config";
             this.DetermineConfig.UseVisualStyleBackColor = true;
@@ -144,21 +138,19 @@
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Controls.Add(this.PublishLogPage);
-            this.tabControl1.Location = new System.Drawing.Point(4, 123);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(4);
+            this.tabControl1.Location = new System.Drawing.Point(3, 100);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1544, 462);
+            this.tabControl1.Size = new System.Drawing.Size(1158, 375);
             this.tabControl1.TabIndex = 6;
             // 
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.MissingParameters);
-            this.tabPage1.Location = new System.Drawing.Point(4, 25);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage1.Size = new System.Drawing.Size(1536, 433);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage1.Size = new System.Drawing.Size(1150, 349);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Missing Parameters";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -174,20 +166,18 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.MissingParameters.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.MissingParameters.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.MissingParameters.Location = new System.Drawing.Point(4, 4);
-            this.MissingParameters.Margin = new System.Windows.Forms.Padding(4);
+            this.MissingParameters.Location = new System.Drawing.Point(1, 1);
             this.MissingParameters.Name = "MissingParameters";
             this.MissingParameters.RowHeadersWidth = 51;
-            this.MissingParameters.Size = new System.Drawing.Size(1521, 416);
+            this.MissingParameters.Size = new System.Drawing.Size(1146, 345);
             this.MissingParameters.TabIndex = 0;
             // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.AllParameterValues);
-            this.tabPage3.Location = new System.Drawing.Point(4, 25);
-            this.tabPage3.Margin = new System.Windows.Forms.Padding(4);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(1536, 433);
+            this.tabPage3.Size = new System.Drawing.Size(1150, 349);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "All Values";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -203,21 +193,19 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.AllParameterValues.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.AllParameterValues.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.AllParameterValues.Location = new System.Drawing.Point(4, 4);
-            this.AllParameterValues.Margin = new System.Windows.Forms.Padding(4);
+            this.AllParameterValues.Location = new System.Drawing.Point(1, 1);
             this.AllParameterValues.Name = "AllParameterValues";
             this.AllParameterValues.RowHeadersWidth = 51;
-            this.AllParameterValues.Size = new System.Drawing.Size(1593, 670);
+            this.AllParameterValues.Size = new System.Drawing.Size(1146, 345);
             this.AllParameterValues.TabIndex = 0;
             // 
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.ConsolidatedParameters);
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage2.Size = new System.Drawing.Size(1536, 433);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage2.Size = new System.Drawing.Size(1150, 349);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Consolidated Parameters";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -232,21 +220,19 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ConsolidatedParameters.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.ConsolidatedParameters.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.ConsolidatedParameters.Location = new System.Drawing.Point(4, 4);
-            this.ConsolidatedParameters.Margin = new System.Windows.Forms.Padding(4);
+            this.ConsolidatedParameters.Location = new System.Drawing.Point(1, 1);
             this.ConsolidatedParameters.Name = "ConsolidatedParameters";
             this.ConsolidatedParameters.RowHeadersWidth = 51;
-            this.ConsolidatedParameters.Size = new System.Drawing.Size(1593, 670);
+            this.ConsolidatedParameters.Size = new System.Drawing.Size(1146, 345);
             this.ConsolidatedParameters.TabIndex = 0;
             this.ConsolidatedParameters.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.ConsolidatedParameters_CellValueChanged);
             // 
             // tabPage4
             // 
             this.tabPage4.Controls.Add(this.MismatchedParameters);
-            this.tabPage4.Location = new System.Drawing.Point(4, 25);
-            this.tabPage4.Margin = new System.Windows.Forms.Padding(4);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(1536, 433);
+            this.tabPage4.Size = new System.Drawing.Size(1150, 349);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Mismatched Parameters";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -261,20 +247,20 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.MismatchedParameters.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.MismatchedParameters.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.MismatchedParameters.Location = new System.Drawing.Point(7, 5);
-            this.MismatchedParameters.Margin = new System.Windows.Forms.Padding(4);
+            this.MismatchedParameters.Location = new System.Drawing.Point(1, 1);
             this.MismatchedParameters.Name = "MismatchedParameters";
             this.MismatchedParameters.RowHeadersWidth = 51;
-            this.MismatchedParameters.Size = new System.Drawing.Size(1593, 670);
+            this.MismatchedParameters.Size = new System.Drawing.Size(1146, 345);
             this.MismatchedParameters.TabIndex = 1;
             // 
             // PublishLogPage
             // 
             this.PublishLogPage.Controls.Add(this.PublishOutputText);
-            this.PublishLogPage.Location = new System.Drawing.Point(4, 25);
+            this.PublishLogPage.Location = new System.Drawing.Point(4, 22);
+            this.PublishLogPage.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.PublishLogPage.Name = "PublishLogPage";
-            this.PublishLogPage.Padding = new System.Windows.Forms.Padding(3);
-            this.PublishLogPage.Size = new System.Drawing.Size(1536, 433);
+            this.PublishLogPage.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.PublishLogPage.Size = new System.Drawing.Size(1150, 349);
             this.PublishLogPage.TabIndex = 4;
             this.PublishLogPage.Text = "Publish Log";
             this.PublishLogPage.UseVisualStyleBackColor = true;
@@ -284,12 +270,13 @@
             this.PublishOutputText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.PublishOutputText.Location = new System.Drawing.Point(3, 3);
+            this.PublishOutputText.Location = new System.Drawing.Point(1, 1);
+            this.PublishOutputText.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.PublishOutputText.Multiline = true;
             this.PublishOutputText.Name = "PublishOutputText";
             this.PublishOutputText.ReadOnly = true;
             this.PublishOutputText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.PublishOutputText.Size = new System.Drawing.Size(1530, 427);
+            this.PublishOutputText.Size = new System.Drawing.Size(1146, 345);
             this.PublishOutputText.TabIndex = 0;
             // 
             // UpdateConfig
@@ -297,10 +284,9 @@
             this.UpdateConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.UpdateConfig.Enabled = false;
             this.UpdateConfig.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.UpdateConfig.Location = new System.Drawing.Point(1131, 590);
-            this.UpdateConfig.Margin = new System.Windows.Forms.Padding(4);
+            this.UpdateConfig.Location = new System.Drawing.Point(848, 479);
             this.UpdateConfig.Name = "UpdateConfig";
-            this.UpdateConfig.Size = new System.Drawing.Size(129, 49);
+            this.UpdateConfig.Size = new System.Drawing.Size(97, 40);
             this.UpdateConfig.TabIndex = 7;
             this.UpdateConfig.Text = "Update Config";
             this.UpdateConfig.UseVisualStyleBackColor = true;
@@ -310,10 +296,9 @@
             // 
             this.InstallServices.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.InstallServices.Enabled = false;
-            this.InstallServices.Location = new System.Drawing.Point(1268, 592);
-            this.InstallServices.Margin = new System.Windows.Forms.Padding(4);
+            this.InstallServices.Location = new System.Drawing.Point(951, 481);
             this.InstallServices.Name = "InstallServices";
-            this.InstallServices.Size = new System.Drawing.Size(129, 49);
+            this.InstallServices.Size = new System.Drawing.Size(97, 40);
             this.InstallServices.TabIndex = 8;
             this.InstallServices.Text = "Install Services";
             this.InstallServices.UseVisualStyleBackColor = true;
@@ -324,10 +309,9 @@
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(768, 21);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Location = new System.Drawing.Point(576, 17);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(157, 17);
+            this.label4.Size = new System.Drawing.Size(119, 13);
             this.label4.TabIndex = 10;
             this.label4.Text = "VS Command Line Path";
             // 
@@ -335,18 +319,18 @@
             // 
             this.VSCommandLinePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.VSCommandLinePath.Location = new System.Drawing.Point(933, 16);
-            this.VSCommandLinePath.Margin = new System.Windows.Forms.Padding(4);
+            this.VSCommandLinePath.Location = new System.Drawing.Point(700, 13);
             this.VSCommandLinePath.Name = "VSCommandLinePath";
-            this.VSCommandLinePath.Size = new System.Drawing.Size(600, 22);
+            this.VSCommandLinePath.Size = new System.Drawing.Size(451, 20);
             this.VSCommandLinePath.TabIndex = 12;
             // 
             // PublishProgress
             // 
             this.PublishProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.PublishProgress.Location = new System.Drawing.Point(12, 592);
+            this.PublishProgress.Location = new System.Drawing.Point(9, 481);
+            this.PublishProgress.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.PublishProgress.Name = "PublishProgress";
-            this.PublishProgress.Size = new System.Drawing.Size(1097, 48);
+            this.PublishProgress.Size = new System.Drawing.Size(823, 39);
             this.PublishProgress.Step = 1;
             this.PublishProgress.TabIndex = 13;
             this.PublishProgress.Visible = false;
@@ -363,10 +347,9 @@
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(729, 60);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(547, 49);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(196, 17);
+            this.label3.Size = new System.Drawing.Size(148, 13);
             this.label3.TabIndex = 14;
             this.label3.Text = "Publish Service Fabric Project";
             // 
@@ -375,19 +358,19 @@
             this.PublishProjectComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.PublishProjectComboBox.FormattingEnabled = true;
-            this.PublishProjectComboBox.Location = new System.Drawing.Point(933, 57);
+            this.PublishProjectComboBox.Location = new System.Drawing.Point(700, 46);
+            this.PublishProjectComboBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.PublishProjectComboBox.Name = "PublishProjectComboBox";
-            this.PublishProjectComboBox.Size = new System.Drawing.Size(600, 24);
+            this.PublishProjectComboBox.Size = new System.Drawing.Size(451, 21);
             this.PublishProjectComboBox.TabIndex = 15;
             // 
             // UninstallServices
             // 
             this.UninstallServices.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.UninstallServices.Enabled = false;
-            this.UninstallServices.Location = new System.Drawing.Point(1405, 593);
-            this.UninstallServices.Margin = new System.Windows.Forms.Padding(4);
+            this.UninstallServices.Location = new System.Drawing.Point(1054, 482);
             this.UninstallServices.Name = "UninstallServices";
-            this.UninstallServices.Size = new System.Drawing.Size(129, 49);
+            this.UninstallServices.Size = new System.Drawing.Size(97, 40);
             this.UninstallServices.TabIndex = 16;
             this.UninstallServices.Text = "Uninstall Services";
             this.UninstallServices.UseVisualStyleBackColor = true;
@@ -397,20 +380,20 @@
             // 
             this.StartLocalAzureEmulator.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.StartLocalAzureEmulator.Location = new System.Drawing.Point(933, 92);
-            this.StartLocalAzureEmulator.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.StartLocalAzureEmulator.Location = new System.Drawing.Point(700, 75);
+            this.StartLocalAzureEmulator.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.StartLocalAzureEmulator.Name = "StartLocalAzureEmulator";
-            this.StartLocalAzureEmulator.Size = new System.Drawing.Size(266, 19);
+            this.StartLocalAzureEmulator.Size = new System.Drawing.Size(200, 15);
             this.StartLocalAzureEmulator.TabIndex = 18;
             this.StartLocalAzureEmulator.Text = "Start Local Azure Storage Emulator";
             this.StartLocalAzureEmulator.UseVisualStyleBackColor = true;
             // 
             // ConfigUpdater
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1551, 652);
+            this.ClientSize = new System.Drawing.Size(1163, 530);
             this.Controls.Add(this.StartLocalAzureEmulator);
             this.Controls.Add(this.UninstallServices);
             this.Controls.Add(this.PublishProjectComboBox);
@@ -428,7 +411,6 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.SourceFolderPath);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "ConfigUpdater";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Text = "Configuration Manager";
