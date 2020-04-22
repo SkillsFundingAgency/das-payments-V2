@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Linq;
 using AutoMapper;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore.Internal;
-using Moq;
 using NUnit.Framework;
-using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
 using SFA.DAS.Payments.EarningEvents.Application.Services;
 using SFA.DAS.Payments.EarningEvents.Application.UnitTests.Builders;
@@ -19,7 +14,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
     [TestFixture]
     public class RedundancyEarningServiceTests
     {
-        private IPaymentLogger logger;
         private IMapper mapper;
         private RedundancyEarningService service;
 
@@ -34,37 +28,35 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         [Test]
         public void SplitFunctionSkillEarningByRedundancyDate_ShouldCreateSplitOriginalEarningAtCorrectPeriodAndRemoveCorrectPeriods()
         {
-            var act1FandSBuilder = new Builders.TestFunctionalSkillsEarningEventBuilder<Act1FunctionalSkillEarningsEvent>();
-            var act1FandSEarning = act1FandSBuilder.Build();
+            var act1FsBuilder = new TestFunctionalSkillsEarningEventBuilder<Act1FunctionalSkillEarningsEvent>();
+            var act1FsEarning = act1FsBuilder.Build();
 
-            ValidateFunctionalSkillEarningsSplitAndType(act1FandSEarning, typeof(Act1RedundancyFunctionalSkillEarningsEvent));
+            ValidateFunctionalSkillEarningsSplitAndType(act1FsEarning, typeof(Act1RedundancyFunctionalSkillEarningsEvent));
 
 
-            var act2FandSBuilder = new Builders.TestFunctionalSkillsEarningEventBuilder<Act2FunctionalSkillEarningsEvent>();
-            var act2FandSEarning = act2FandSBuilder.Build();
+            var act2FsBuilder = new TestFunctionalSkillsEarningEventBuilder<Act2FunctionalSkillEarningsEvent>();
+            var act2FsEarning = act2FsBuilder.Build();
 
-            ValidateFunctionalSkillEarningsSplitAndType(act2FandSEarning, typeof(Act2RedundancyFunctionalSkillEarningsEvent));
+            ValidateFunctionalSkillEarningsSplitAndType(act2FsEarning, typeof(Act2RedundancyFunctionalSkillEarningsEvent));
         }
 
-        private void ValidateFunctionalSkillEarningsSplitAndType(FunctionalSkillEarningsEvent act1FandSEarning, Type expectedRedundancyType)
+        private void ValidateFunctionalSkillEarningsSplitAndType(FunctionalSkillEarningsEvent act1FsEarning, Type expectedRedundancyType)
         {
             var redundancyDate = new DateTime(1920, 7, 1);
             var redundancyPeriod = redundancyDate.GetCollectionPeriodFromDate();
-            act1FandSEarning.Earnings.ToList().ForEach(fse => fse.Periods.Should().HaveCount(12));
+            act1FsEarning.Earnings.ToList().ForEach(fse => fse.Periods.Should().HaveCount(12));
 
-            var events = service.SplitFunctionSkillEarningByRedundancyDate(act1FandSEarning, redundancyDate);
+            var events = service.SplitFunctionSkillEarningByRedundancyDate(act1FsEarning, redundancyDate);
             events.Should().HaveCount(2);
             var originalEvent = events[0];
 
-            originalEvent.Should().BeOfType(act1FandSEarning.GetType());
-            originalEvent.Earnings.Should().HaveCount(3);
+            originalEvent.Should().BeOfType(act1FsEarning.GetType());
 
             var expectedOriginalCount = redundancyPeriod - 1;
 
             originalEvent.Earnings.ToList().ForEach(ope =>
             {
                 ope.Periods.Should().HaveCount(expectedOriginalCount);
-                Assert.IsTrue(!ope.Periods.ToList().Any(p => p.Period >= redundancyPeriod));
                 Assert.IsTrue(ope.Periods.ToList().All(p => p.Period < redundancyPeriod));
             });
 
@@ -72,11 +64,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
 
             var expectedRedundancyPeriod = 12 - redundancyPeriod + 1;
             redundancyEvent.Should().BeOfType(expectedRedundancyType);
-            redundancyEvent.Earnings.Should().HaveCount(3);
             redundancyEvent.Earnings.ToList().ForEach(ope =>
             {
                 ope.Periods.Should().HaveCount(expectedRedundancyPeriod);
-                Assert.IsTrue(!ope.Periods.ToList().Any(p => p.Period < redundancyPeriod));
                 Assert.IsTrue(ope.Periods.ToList().All(p => p.Period >= redundancyPeriod));
                 Assert.IsTrue(ope.Periods.ToList().All(p => p.SfaContributionPercentage == 1m));
             });
@@ -116,13 +106,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             originalEarningEvent.OnProgrammeEarnings.ForEach(ope =>
             {
                 ope.Periods.Should().HaveCount(expectedOriginalCount);
-                Assert.IsTrue(!ope.Periods.ToList().Any(p => p.Period >= redundancyPeriod));
                 Assert.IsTrue(ope.Periods.ToList().All(p => p.Period < redundancyPeriod));
             });
             originalEarningEvent.IncentiveEarnings.ForEach(ie =>
             {
                 ie.Periods.Should().HaveCount(expectedOriginalCount);
-                Assert.IsTrue(!ie.Periods.ToList().Any(p => p.Period >= redundancyPeriod));
                 Assert.IsTrue(ie.Periods.ToList().All(p => p.Period < redundancyPeriod));
             });
 
@@ -134,14 +122,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             redundancyEvent.OnProgrammeEarnings.ForEach(ope =>
             {
                 ope.Periods.Should().HaveCount(expectedRedundancyPeriod);
-                Assert.IsTrue(!ope.Periods.ToList().Any(p => p.Period < redundancyPeriod));
                 Assert.IsTrue(ope.Periods.ToList().All(p => p.Period >= redundancyPeriod));
                 Assert.IsTrue(ope.Periods.ToList().All(p => p.SfaContributionPercentage == 1m));
             });
             redundancyEvent.IncentiveEarnings.ForEach(ie =>
             {
                 ie.Periods.Should().HaveCount(expectedRedundancyPeriod);
-                Assert.IsTrue(!ie.Periods.ToList().Any(p => p.Period < redundancyPeriod));
                 Assert.IsTrue(ie.Periods.ToList().All(p => p.Period >= redundancyPeriod));
             });
         }
