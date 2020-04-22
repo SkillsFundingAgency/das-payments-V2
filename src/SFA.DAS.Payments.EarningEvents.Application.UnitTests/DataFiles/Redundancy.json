@@ -1,12 +1,12 @@
 ﻿{
-  "UKPRN": 10036143,
+  "UKPRN": "00000000",
   "LARSVersion": "Version_007",
   "RulebaseVersion": "1920.02.04",
   "Year": "1920",
   "Learners": [
     {
       "LearnRefNumber": "01fm361845",
-      "ULN": 9000000105,
+      "ULN": 9000001845,
       "PriceEpisodes": [
         {
           "PriceEpisodeIdentifier": "20-593-1-06/08/2019",
