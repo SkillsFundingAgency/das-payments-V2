@@ -5,11 +5,11 @@
   "Year": "1920",
   "Learners": [
     {
-      "LearnRefNumber": "01FMACT11851",
+      "LearnRefNumber": "01FMACT11849",
       "ULN": 9999999999,
       "PriceEpisodes": [
         {
-          "PriceEpisodeIdentifier": "PE-1851",
+          "PriceEpisodeIdentifier": "PE-1849",
           "PriceEpisodeValues": {
             "EpisodeStartDate": "2019-08-06T00:00:00+00:00",
             "TNP1": 15000,
@@ -29,13 +29,13 @@
             "PriceEpisodeTotalTNPPrice": 15000,
             "PriceEpisodeUpperLimitAdjustment": 0,
             "PriceEpisodePlannedInstalments": 12,
-            "PriceEpisodeActualInstalments": 12,
+            "PriceEpisodeActualInstalments": 6,
             "PriceEpisodeInstalmentsThisPeriod": null,
             "PriceEpisodeCompletionElement": 3000,
             "PriceEpisodePreviousEarnings": 0,
             "PriceEpisodeInstalmentValue": 1000,
             "PriceEpisodeOnProgPayment": 0,
-            "PriceEpisodeTotalEarnings": 12000,
+            "PriceEpisodeTotalEarnings": 6000,
             "PriceEpisodeBalanceValue": 0,
             "PriceEpisodeBalancePayment": 0,
             "PriceEpisodeCompleted": false,
@@ -68,11 +68,11 @@
             "PriceEpisodeProgFundIndMaxEmpCont": 0,
             "PriceEpisodeTotalPMRs": 0,
             "PriceEpisodeCumulativePMRs": 0,
-            "PriceEpisodeCompExemCode": 0,
+            "PriceEpisodeCompExemCode": 1,
             "PriceEpisodeLearnerAdditionalPaymentThresholdDate": null,
             "PriceEpisodeAgreeId": "None",
-            "PriceEpisodeRedStartDate": "9999-09-09T00:00:00+00:00",
-            "PriceEpisodeRedStatusCode": 0
+            "PriceEpisodeRedStartDate": "2019-11-20T00:00:00+00:00",
+            "PriceEpisodeRedStatusCode": 1
           },
           "PriceEpisodePeriodisedValues": [
             {
@@ -218,12 +218,12 @@
               "Period4": 1,
               "Period5": 1,
               "Period6": 1,
-              "Period7": 1,
-              "Period8": 1,
-              "Period9": 1,
-              "Period10": 1,
-              "Period11": 1,
-              "Period12": 1
+              "Period7": 0,
+              "Period8": 0,
+              "Period9": 0,
+              "Period10": 0,
+              "Period11": 0,
+              "Period12": 0
             },
             {
               "AttributeName": "PriceEpisodeLearnerAdditionalPayment",
@@ -278,42 +278,42 @@
               "Period4": 1000,
               "Period5": 1000,
               "Period6": 1000,
-              "Period7": 1000,
-              "Period8": 1000,
-              "Period9": 1000,
-              "Period10": 1000,
-              "Period11": 1000,
-              "Period12": 1000
+              "Period7": 0,
+              "Period8": 0,
+              "Period9": 0,
+              "Period10": 0,
+              "Period11": 0,
+              "Period12": 0
             },
             {
               "AttributeName": "PriceEpisodeProgFundIndMaxEmpCont",
               "Period1": 50,
               "Period2": 50,
               "Period3": 50,
-              "Period4": 50,
-              "Period5": 50,
-              "Period6": 50,
-              "Period7": 50,
-              "Period8": 50,
-              "Period9": 50,
-              "Period10": 50,
-              "Period11": 50,
-              "Period12": 50
+              "Period4": 0,
+              "Period5": 0,
+              "Period6": 0,
+              "Period7": 0,
+              "Period8": 0,
+              "Period9": 0,
+              "Period10": 0,
+              "Period11": 0,
+              "Period12": 0
             },
             {
               "AttributeName": "PriceEpisodeProgFundIndMinCoInvest",
               "Period1": 950,
               "Period2": 950,
               "Period3": 950,
-              "Period4": 950,
-              "Period5": 950,
-              "Period6": 950,
-              "Period7": 950,
-              "Period8": 950,
-              "Period9": 950,
-              "Period10": 950,
-              "Period11": 950,
-              "Period12": 950
+              "Period4": 1000,
+              "Period5": 1000,
+              "Period6": 1000,
+              "Period7": 0,
+              "Period8": 0,
+              "Period9": 0,
+              "Period10": 0,
+              "Period11": 0,
+              "Period12": 0
             },
             {
               "AttributeName": "PriceEpisodeSecondDisadvantagePayment",
@@ -365,9 +365,9 @@
               "Period1": 0.95,
               "Period2": 0.95,
               "Period3": 0.95,
-              "Period4": 0.95,
-              "Period5": 0.95,
-              "Period6": 0.95,
+              "Period4": 1,
+              "Period5": 1,
+              "Period6": 1,
               "Period7": 0.95,
               "Period8": 0.95,
               "Period9": 0.95,
@@ -383,12 +383,12 @@
               "Period4": 1000,
               "Period5": 1000,
               "Period6": 1000,
-              "Period7": 1000,
-              "Period8": 1000,
-              "Period9": 1000,
-              "Period10": 1000,
-              "Period11": 1000,
-              "Period12": 1000
+              "Period7": 0,
+              "Period8": 0,
+              "Period9": 0,
+              "Period10": 0,
+              "Period11": 0,
+              "Period12": 0
             }
           ]
         },
@@ -452,11 +452,11 @@
             "PriceEpisodeProgFundIndMaxEmpCont": 0,
             "PriceEpisodeTotalPMRs": 0,
             "PriceEpisodeCumulativePMRs": 0,
-            "PriceEpisodeCompExemCode": 0,
+            "PriceEpisodeCompExemCode": 1,
             "PriceEpisodeLearnerAdditionalPaymentThresholdDate": null,
             "PriceEpisodeAgreeId": "None",
-            "PriceEpisodeRedStartDate": "9999-09-09T00:00:00+00:00",
-            "PriceEpisodeRedStatusCode": 0
+            "PriceEpisodeRedStartDate": "2019-11-20T00:00:00+00:00",
+            "PriceEpisodeRedStatusCode": 1
           },
           "PriceEpisodePeriodisedValues": [
             {
@@ -829,8 +829,8 @@
             "LearnDelAccDaysILCareLeavers": 361,
             "LearnDelPrevAccDaysILCareLeavers": 0,
             "LearnDelLearnerAddPayThresholdDate": null,
-            "LearnDelRedCode": 0,
-            "LearnDelRedStartDate": "9999-09-09T00:00:00+00:00"
+            "LearnDelRedCode": 1,
+            "LearnDelRedStartDate": "2019-11-20T00:00:00+00:00"
           },
           "LearningDeliveryPeriodisedValues": [
             {
@@ -871,12 +871,12 @@
               "Period4": 1,
               "Period5": 1,
               "Period6": 1,
-              "Period7": 1,
-              "Period8": 1,
-              "Period9": 1,
-              "Period10": 1,
-              "Period11": 1,
-              "Period12": 1
+              "Period7": 0,
+              "Period8": 0,
+              "Period9": 0,
+              "Period10": 0,
+              "Period11": 0,
+              "Period12": 0
             },
             {
               "AttributeName": "LDApplic1618FrameworkUpliftBalancingPayment",
@@ -1033,9 +1033,9 @@
               "Period1": 0.95,
               "Period2": 0.95,
               "Period3": 0.95,
-              "Period4": 0.95,
-              "Period5": 0.95,
-              "Period6": 0.95,
+              "Period4": 1,
+              "Period5": 1,
+              "Period6": 1,
               "Period7": 0.95,
               "Period8": 0.95,
               "Period9": 0.95,
@@ -1171,42 +1171,42 @@
               "Period4": 1000,
               "Period5": 1000,
               "Period6": 1000,
-              "Period7": 1000,
-              "Period8": 1000,
-              "Period9": 1000,
-              "Period10": 1000,
-              "Period11": 1000,
-              "Period12": 1000
+              "Period7": 0,
+              "Period8": 0,
+              "Period9": 0,
+              "Period10": 0,
+              "Period11": 0,
+              "Period12": 0
             },
             {
               "AttributeName": "ProgrammeAimProgFundIndMaxEmpCont",
               "Period1": 50,
               "Period2": 50,
               "Period3": 50,
-              "Period4": 50,
-              "Period5": 50,
-              "Period6": 50,
-              "Period7": 50,
-              "Period8": 50,
-              "Period9": 50,
-              "Period10": 50,
-              "Period11": 50,
-              "Period12": 50
+              "Period4": 0,
+              "Period5": 0,
+              "Period6": 0,
+              "Period7": 0,
+              "Period8": 0,
+              "Period9": 0,
+              "Period10": 0,
+              "Period11": 0,
+              "Period12": 0
             },
             {
               "AttributeName": "ProgrammeAimProgFundIndMinCoInvest",
               "Period1": 950,
               "Period2": 950,
               "Period3": 950,
-              "Period4": 950,
-              "Period5": 950,
-              "Period6": 950,
-              "Period7": 950,
-              "Period8": 950,
-              "Period9": 950,
-              "Period10": 950,
-              "Period11": 950,
-              "Period12": 950
+              "Period4": 1000,
+              "Period5": 1000,
+              "Period6": 1000,
+              "Period7": 0,
+              "Period8": 0,
+              "Period9": 0,
+              "Period10": 0,
+              "Period11": 0,
+              "Period12": 0
             },
             {
               "AttributeName": "ProgrammeAimTotProgFund",
@@ -1216,12 +1216,12 @@
               "Period4": 1000,
               "Period5": 1000,
               "Period6": 1000,
-              "Period7": 1000,
-              "Period8": 1000,
-              "Period9": 1000,
-              "Period10": 1000,
-              "Period11": 1000,
-              "Period12": 1000
+              "Period7": 0,
+              "Period8": 0,
+              "Period9": 0,
+              "Period10": 0,
+              "Period11": 0,
+              "Period12": 0
             }
           ],
           "LearningDeliveryPeriodisedTextValues": [
@@ -1758,7 +1758,7 @@
           "HistoricTNP3Output": 0,
           "HistoricTNP4Output": 0,
           "HistoricTotal1618UpliftPaymentsInTheYear": 0,
-          "HistoricTotalProgAimPaymentsInTheYear": 12000,
+          "HistoricTotalProgAimPaymentsInTheYear": 6000,
           "HistoricULNOutput": 9900093207,
           "HistoricUptoEndDateOutput": "2020-07-31T00:00:00+00:00",
           "HistoricVirtualTNP3EndofThisYearOutput": 0,
