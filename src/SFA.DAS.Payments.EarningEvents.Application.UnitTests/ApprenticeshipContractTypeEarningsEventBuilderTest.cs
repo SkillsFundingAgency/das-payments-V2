@@ -8,7 +8,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
-using SFA.DAS.Payments.EarningEvents.Application.Services;
 using SFA.DAS.Payments.EarningEvents.Application.UnitTests.Helpers;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
@@ -22,7 +21,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
     {
 
         private IMapper mapper;
-        private  Mock<IRedundancyEarningService> redundancyEarningSplitterMock;
+        private  Mock<IRedundancyEarningService> redundancyEarningService;
         private const string filename = "Redundancy.json";
         private const string learnerRefNo = "01fm361845";
 
@@ -30,7 +29,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         public void InitialiseMapper()
         {
             mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<EarningsEventProfile>()));
-            redundancyEarningSplitterMock = new Mock<IRedundancyEarningService>();
+            redundancyEarningService = new Mock<IRedundancyEarningService>();
         }
 
 
@@ -233,7 +232,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                 }
             };
 
-            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningSplitterMock.Object,mapper);
+            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningService.Object,mapper);
 
             var events = builder.Build(processLearnerCommand);
             events.Should().NotBeNull();
@@ -711,7 +710,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             };
 
             var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
-                new ApprenticeshipContractTypeEarningsEventFactory(),redundancyEarningSplitterMock.Object,mapper);
+                new ApprenticeshipContractTypeEarningsEventFactory(),redundancyEarningService.Object,mapper);
 
             var events = builder.Build(processLearnerCommand);
 
@@ -724,7 +723,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var processLearnerCommand = CreateLearnerSubmissionWithLearningSupport();
 
             var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
-                new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningSplitterMock.Object,
+                new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningService.Object,
                 mapper);
 
             var events = builder.Build(processLearnerCommand);
@@ -741,39 +740,16 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         public void RedundantLearner_shouldSplitEarningEventAtPeriodWhereRedundancyTakesPlace()
         {
             var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
-                new ApprenticeshipContractTypeEarningsEventFactory(), new RedundancyEarningService(new RedundancyEarningEventFactory(mapper)),
+                new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningService.Object,
                 mapper);
-            var processLearnerCommand = Helpers.FileHelpers.CreateFromFile(filename, learnerRefNo);
-            var redundancyDate = processLearnerCommand.Learner.PriceEpisodes.First().PriceEpisodeValues
-                .PriceEpisodeRedStartDate.Value;
+            var processLearnerCommand = FileHelpers.CreateFromFile(filename, learnerRefNo);
 
-            var redundancyPeriod = redundancyDate.GetCollectionPeriodFromDate();
+            redundancyEarningService.Setup(x => x.SplitContractEarningByRedundancyDate(It.IsAny<ApprenticeshipContractType2EarningEvent>(), It.IsAny<DateTime>()))
+                .Returns(new List<ApprenticeshipContractTypeEarningsEvent>());
 
-            var events = builder.Build(processLearnerCommand);
+            builder.Build(processLearnerCommand);
 
-            events.Should().HaveCount(2);
-            var act2EarningEvent = events.First();
-
-            act2EarningEvent.Should().BeOfType<ApprenticeshipContractType2EarningEvent>();
-
-            act2EarningEvent.OnProgrammeEarnings.Where(ope => ope.Periods.Any(p => p.Period >= redundancyPeriod))
-                .Should().HaveCount(0);
-            act2EarningEvent.IncentiveEarnings.Where(ope => ope.Periods.Any(p => p.Period >= redundancyPeriod))
-                .Should().HaveCount(0);
-            
-            var redundancyEarningEvent = events.Last();
-                   
-            redundancyEarningEvent.OnProgrammeEarnings.Where(ope => ope.Periods.Any(p => p.Period < redundancyPeriod))
-                .Should().HaveCount(0);
-            redundancyEarningEvent.IncentiveEarnings.Where(ope => ope.Periods.Any(p => p.Period < redundancyPeriod))
-                .Should().HaveCount(0);
-
-            redundancyEarningEvent.OnProgrammeEarnings.Where(ope => ope.Periods.Any(p => p.SfaContributionPercentage != 1m))
-                .Should().HaveCount(0);
-            redundancyEarningEvent.IncentiveEarnings.Where(ope => ope.Periods.Any(p => p.SfaContributionPercentage != 1m))
-                .Should().HaveCount(0);
-
-            Assert.AreNotEqual(act2EarningEvent.EventId, redundancyEarningEvent.EventId);
+            redundancyEarningService.Verify(x => x.SplitContractEarningByRedundancyDate(It.IsAny<ApprenticeshipContractType2EarningEvent>(), It.IsAny<DateTime>()));
         }
 
         private static ProcessLearnerCommand CreateLearnerSubmissionWithLearningSupport()
