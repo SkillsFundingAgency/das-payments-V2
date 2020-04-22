@@ -31,8 +31,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             foreach (var intermediateLearningAim in intermediateResults)
             {
                 var redundancyDates = learnerSubmission.Learner.PriceEpisodes
-                    .Where(pe => pe.PriceEpisodeValues.PriceEpisodeRedStatusCode == 1)
-                    .Select( pe =>new { pe.PriceEpisodeValues.PriceEpisodeRedStartDate, pe.PriceEpisodeIdentifier}).FirstOrDefault();
+                    .Where(pe => pe.PriceEpisodeValues.PriceEpisodeRedStatusCode == 1 && pe.PriceEpisodeValues.PriceEpisodeRedStartDate.HasValue)
+                    .OrderBy(pe => pe.PriceEpisodeValues.PriceEpisodeRedStartDate)
+                    .Select(pe => new { pe.PriceEpisodeValues.PriceEpisodeRedStartDate, pe.PriceEpisodeIdentifier }).FirstOrDefault();
 
 
 
