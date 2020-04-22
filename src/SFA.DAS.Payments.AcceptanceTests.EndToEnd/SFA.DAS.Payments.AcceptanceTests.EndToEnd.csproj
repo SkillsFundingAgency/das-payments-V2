@@ -405,6 +405,8 @@
     <Compile Include="Steps\EndToEndStepsBase.cs" />
     <Compile Include="Extensions\FeatureInfoNumberExtractor.cs" />
     <Compile Include="Steps\FM36_ILR_Base_Steps.cs" />
+    <Compile Include="Steps\FundingSourcePaymentEventsHelper.cs" />
+    <Compile Include="Steps\PaymentEventsHelper.cs" />
     <Compile Include="Steps\PV2_1797_Steps.cs" />
     <Compile Include="Steps\PV2_1824_Steps.cs" />
     <Compile Include="Steps\PV2_1825_Steps.cs" />

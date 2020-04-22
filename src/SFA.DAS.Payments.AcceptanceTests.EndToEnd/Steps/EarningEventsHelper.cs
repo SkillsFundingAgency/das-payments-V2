@@ -3,9 +3,7 @@ using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
-using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.ProviderPayments.Messages;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -48,34 +46,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     && dataLockEvent.PriceEpisodes.Any(episode => episode.Identifier == priceEpisodeIdentifier))
                 .SelectMany(dataLockEvent =>
                     dataLockEvent.OnProgrammeEarnings.SelectMany(earning => earning.Periods.Where(period => period.Period == deliveryPeriod).SelectMany(period => period.DataLockFailures.Select(a => a.DataLockError))));
-        }
-    }
-
-    public static class PaymentEventsHelper
-    {
-        public static IEnumerable<ProviderPaymentEvent> ProviderPaymentsReceivedForLearner(string priceEpisodeIdentifier, short academicYear, TestSession session)
-        {
-            return ProviderPaymentEventHandler.ReceivedEvents.Where(ppEvent =>
-                ppEvent.Ukprn == session.Provider.Ukprn
-                && ppEvent.Learner.Uln == session.Learner.Uln
-                && ppEvent.Learner.ReferenceNumber == session.Learner.LearnRefNumber
-                && ppEvent.CollectionPeriod.AcademicYear == academicYear
-                && ppEvent.CollectionPeriod.Period == session.CollectionPeriod.Period
-                && ppEvent.PriceEpisodeIdentifier == priceEpisodeIdentifier);
-        }
-    }
-
-    public static class FundingSourcePaymentEventsHelper
-    {
-        public static IEnumerable<FundingSourcePaymentEvent> FundingSourcePaymentsReceivedForLearner(string priceEpisodeIdentifier, short academicYear, TestSession session)
-        {
-            return FundingSourcePaymentEventHandler.ReceivedEvents.Where(fspEvent =>
-                fspEvent.Ukprn == session.Provider.Ukprn
-                && fspEvent.Learner.Uln == session.Learner.Uln
-                && fspEvent.Learner.ReferenceNumber == session.Learner.LearnRefNumber
-                && fspEvent.CollectionPeriod.AcademicYear == academicYear
-                && fspEvent.CollectionPeriod.Period == session.CollectionPeriod.Period
-                && fspEvent.PriceEpisodeIdentifier == priceEpisodeIdentifier);
         }
     }
 }

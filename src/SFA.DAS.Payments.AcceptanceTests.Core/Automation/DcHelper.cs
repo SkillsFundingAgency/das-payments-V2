@@ -216,7 +216,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public async Task SendLevyMonthEndForEmployers(long monthEndJobId, IEnumerable<long> employerAccountIds, short academicYear, byte collectionPeriod, IMessageSession messageSession)
         {
-            var submissionDate = DateTime.UtcNow;
             Console.WriteLine($"Month end job id: {monthEndJobId}");
 
             foreach (var employerAccountId in employerAccountIds)
@@ -226,7 +225,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     JobId = monthEndJobId,
                     CollectionPeriod = new CollectionPeriod { AcademicYear = academicYear, Period = collectionPeriod },
                     RequestTime = DateTime.Now,
-                    SubmissionDate = submissionDate,
+                    SubmissionDate = DateTime.UtcNow,
                     AccountId = employerAccountId,
                 };
 

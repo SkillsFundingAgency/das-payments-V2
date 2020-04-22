@@ -164,15 +164,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             if (!testDataContext.LevyAccount.Any(x => x.AccountId == levyModel.AccountId))
             {
                 testDataContext.LevyAccount.Add(levyModel);
-                await testDataContext.SaveChangesAsync();
             }
+            await testDataContext.SaveChangesAsync();
 
             TestSession.FM36Global.UKPRN = TestSession.Provider.Ukprn;
         }
 
         [When(@"the Provider submits the single price episode PE-1 in the ILR")]
         [When("the Provider submits the 2 price episodes in the ILR")]
-        [When("the Provider submission is processed for payment")]
         public async Task WhenTheProviderSubmitsThePriceEpisodesInTheIlr()
         {
             var dcHelper = Scope.Resolve<IDcHelper>();
@@ -197,12 +196,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                          .PayableEarningsReceivedForLearner(TestSession)
                          .Count(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier)) == 1;
             return result;
-        }
-
-        private bool FundingSourceTest()
-        {
-            var fundingSource = ProviderPaymentEventHandler.ReceivedEvents.First().FundingSourceType;
-            return true;
         }
 
         [Then("there is a single match for (.*) with Commitment (.*)")]
