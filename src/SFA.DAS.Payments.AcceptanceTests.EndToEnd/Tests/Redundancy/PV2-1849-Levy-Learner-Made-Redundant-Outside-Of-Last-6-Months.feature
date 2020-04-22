@@ -10,4 +10,4 @@ And the 'Price episode read start date' shows date of redundancy is within 6mths
 When the submission is processed for payment
 Then bypass the data lock rules
 And fund the remaining monthly instalments of the learning from Funding Source 2 (100% SFA funding) from the date of the Price episode read start date
-#And continue to fund the monthly instalments prior to redundancy date as per existing ACT1 rules (Funding Source 1)
+And continue to fund the monthly instalments prior to redundancy date as per existing ACT1 rules (Funding Source 1)
