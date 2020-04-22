@@ -1,9 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
-using Microsoft.EntityFrameworkCore.Internal;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
-using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Model.Core.Entities;
 using TechTalk.SpecFlow;
 
@@ -18,8 +16,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
         }
 
-        private const string priceEpisodeIdentifier = "PE-1851";
-        private const string commitmentIdentifier = "A-1851";
+        private const string PriceEpisodeIdentifier = "PE-1851";
+        private const string CommitmentIdentifier = "A-1851";
 
         [Given("the learner does not find alternative employment")]
         [Given("the ILR submission for the learner contains 'Price episode read status code' not equal to '0'")]
@@ -35,7 +33,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             //submit R03
             GetFm36LearnerForCollectionPeriod("R03/current academic year");
-            await SetupTestData(priceEpisodeIdentifier, null, commitmentIdentifier, null);
+            await SetupTestData(PriceEpisodeIdentifier, null, CommitmentIdentifier, null);
             var dcHelper = Scope.Resolve<IDcHelper>();
             await dcHelper.SendIlrSubmission(TestSession.FM36Global.Learners,
                 TestSession.Provider.Ukprn,
@@ -50,10 +48,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThereAreLessThan6MonthsRemainingOfPlannedLearning()
         {
             GetFm36LearnerForCollectionPeriod("R04/current academic year");
-            await SetupTestData(priceEpisodeIdentifier, null, commitmentIdentifier, null, false);
-            //await SetupTestData(priceEpisodeIdentifier, null, commitmentIdentifier, null);
+            await SetupTestData(PriceEpisodeIdentifier, null, CommitmentIdentifier, null);
 
-            //CreateDataLockForCommitment(commitmentIdentifier);
             TestSession.RegenerateJobId();
 
             var dcHelper = Scope.Resolve<IDcHelper>();
@@ -64,55 +60,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.Provider.JobId);
         }
 
-        private void CreateDataLockForCommitment(string commitmentIdentifier)
-        {
-            var context = Scope.Resolve<TestPaymentsDataContext>();
-            var apprenticeship = context.Apprenticeship.Single(x => x.Id == TestSession.Apprenticeships[commitmentIdentifier].Id);
-            apprenticeship.FrameworkCode += 1;
-            context.SaveChanges();
-        }
-
-        private bool HasNoDataLocksForPriceEpisodeInR04(string priceEpisodeIdentifier, short academicYear)
-        {
-            var dataLocks = EarningEventsHelper.GetOnProgrammeDataLockErrorsForLearnerAndPriceEpisodeAndDeliveryPeriod(priceEpisodeIdentifier, academicYear, TestSession, 4); //todo take this out
-            var payableEarningEvents = EarningEventsHelper.PayableEarningsReceivedForLearner(TestSession);
-
-            var result = !EnumerableExtensions.Any(EarningEventsHelper
-                    .GetOnProgrammeDataLockErrorsForLearnerAndPriceEpisodeAndDeliveryPeriod(priceEpisodeIdentifier, academicYear, TestSession, 4));
-            return result;
-        }
-
-        private bool HasPayableEarningEventsForPriceEpisode(string priceEpisodeIdentifier)
-        {
-            return EarningEventsHelper.PayableEarningsReceivedForLearner(TestSession).Any(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier));
-            //var result = EarningEventsHelper.PayableEarningsReceivedForLearner(TestSession).Count(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier)) == 2;
-            //return result;
-        }
-
         private bool HasCorrectlyFundedR04(short academicYear)
         {
-            //var events = PaymentEventsHelper.ProviderPaymentsReceivedForLearner(priceEpisodeIdentifier, academicYear, TestSession);
-            var events = FundingSourcePaymentEventsHelper.FundingSourcePaymentsReceivedForLearner(priceEpisodeIdentifier, academicYear, TestSession);
-
-            var filter1 = events.Where(x => x.FundingSourceType == FundingSourceType.CoInvestedSfa);
-            //var filter2 = 
-
-            var count = FundingSourcePaymentEventsHelper
-                .FundingSourcePaymentsReceivedForLearner(priceEpisodeIdentifier, academicYear, TestSession)
+            return FundingSourcePaymentEventsHelper
+                .FundingSourcePaymentsReceivedForLearner(PriceEpisodeIdentifier, academicYear, TestSession)
                 .Count(x =>
                     x.FundingSourceType == FundingSourceType.CoInvestedSfa
                     && x.SfaContributionPercentage == 1.0m
                     && x.ContractType == ContractType.Act2
-                    && x.AmountDue == 1000m);
-            return count == 1;
+                    && x.AmountDue == 1000m) == 1;
         }
-
-        //[Then("bypass the data lock rules")]
-        //public async Task BypassTheDataLockRules()
-        //{
-        //    await WaitForIt(() => HasPayableEarningEventsForPriceEpisode(priceEpisodeIdentifier) && HasNoDataLocksForPriceEpisodeInR04(priceEpisodeIdentifier, short.Parse(TestSession.FM36Global.Year)),
-        //        "Failed to find a Payable Earning and no Data Locks");
-        //}
 
         [Then(@"fund the remaining monthly instalments of the learning from Funding Source (.*) \((.*)% SFA funding\) from the date of the Price episode read start date")]
         public async Task ThenFundTheRemainingInstallmentsCorrectly(int fundingSource, int sfaPercentage)

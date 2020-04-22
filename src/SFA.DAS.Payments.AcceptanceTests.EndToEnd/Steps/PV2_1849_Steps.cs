@@ -25,6 +25,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("the ILR submission for the learner contains 'Price episode read status code' not equal to '0'")]
         [Given("the 'Price episode read start date' shows date of redundancy is within 6mths of planned end date")]
         [When("the submission is processed for payment")]
+        [Then("continue to fund the monthly instalments prior to redundancy date as per existing ACT1 rules (Funding Source 1)")]
         public void EmptyIlrSetupStep()
         {
             //NOTE: This is handled by the FM36 we import
