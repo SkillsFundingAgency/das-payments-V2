@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         [Given("the learner does not find alternative employment")]
         [Given("the ILR submission for the learner contains 'Price episode read status code' not equal to '0'")]
-        [Given("the 'Price episode read start date' shows date of redundancy is within 6mths of planned end date")]
+        [Given("the 'Price episode read start date' shows date of redundancy is more than 6mths of planned learning")]
         [When("the submission is processed for payment")]
         [Then(@"continue to fund the monthly instalments prior to redundancy date as per existing ACT1 rules \(Funding Source 1\)")]
         public void EmptyIlrSetupStep()
@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForPayments(6);
         }
 
-        [Given("there are less than 6 months remaining of the planned learning")]
+        [Given("there is more than 6 months remaining of the planned learning")]
         public async Task ThereAreLessThan6MonthsRemainingOfPlannedLearning()
         {
             GetFm36LearnerForCollectionPeriod("R04/current academic year");
