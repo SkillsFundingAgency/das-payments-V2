@@ -23,7 +23,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("the ILR submission for the learner contains 'Price episode read status code' not equal to '0'")]
         [Given("the 'Price episode read start date' shows date of redundancy is more than 6mths of planned learning")]
         [When("the submission is processed for payment")]
-        [Then("continue to fund the monthly instalments prior to redundancy date as per existing ACT2 rules, Funding Source 2 (95%) and Funding Source 3 (5%)")]
         public void EmptyIlrSetupStep()
         {
             //NOTE: This is handled by the FM36 we import
@@ -60,22 +59,28 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.Provider.JobId);
         }
 
-        private bool HasCorrectlyFundedR04(short academicYear)
+        private bool HasCorrectlyFundedR04(short academicYear, int fundingSource, int sfaPercentage)
         {
             return FundingSourcePaymentEventsHelper
                 .FundingSourcePaymentsReceivedForLearner(PriceEpisodeIdentifier, academicYear, TestSession)
                 .Count(x =>
-                    x.FundingSourceType == FundingSourceType.CoInvestedSfa
-                    && x.SfaContributionPercentage == 1.0m
+                    x.FundingSourceType == (FundingSourceType)fundingSource
+                    && x.SfaContributionPercentage == (decimal)sfaPercentage / 100
                     && x.ContractType == ContractType.Act2
                     && x.AmountDue == 1000m) == 1;
         }
 
-        [Then(@"fund 12 weeks of the learning from Funding Source 2, with 100% SFA funding, from the date of the 'Price episode read start date'")]
-        public async Task ThenFundTheRemainingInstallmentsCorrectly()
+        [Then(@"fund 12 weeks of the learning from Funding Source (.*), with (.*)% SFA funding, from the date of the 'Price episode read start date'")]
+        public async Task ThenFundTheRemainingInstallmentsCorrectly(int fundingSource, int sfaPercentage)
         {
-            await WaitForIt(() => HasCorrectlyFundedR04(short.Parse(TestSession.FM36Global.Year)),
+            await WaitForIt(() => HasCorrectlyFundedR04(short.Parse(TestSession.FM36Global.Year), fundingSource, sfaPercentage),
                 "Failed to find correctly funded remaining installments");
+        }
+
+        [Then(@"continue to fund the monthly instalments prior to redundancy date as per existing ACT2 rules, Funding Source 2 \(95%\) and Funding Source 3 \(5%\)")]
+        public void ThenContinueToFundTheMonthlyInstalmentsPriorToRedundancyDateAsPerExistingAct2RulesFundingSources()
+        {
+            //covered by step 1
         }
     }
 }

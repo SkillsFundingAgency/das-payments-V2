@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
-using Microsoft.EntityFrameworkCore.Internal;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -69,7 +68,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.AcademicYear,
                 TestSession.CollectionPeriod.Period,
                 TestSession.Provider.JobId);
-
         }
 
         private void CreateDataLockForCommitment(string commitmentIdentifier)
@@ -83,15 +81,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private bool HasNoDataLocksForPriceEpisodeInR08(string priceEpisodeIdentifier, short academicYear)
         {
-            var dataLocks =
-                EarningEventsHelper.GetOnProgrammeDataLockErrorsForLearnerAndPriceEpisodeAndDeliveryPeriod(
-                    priceEpisodeIdentifier, academicYear, TestSession, 8); 
-            var payableEarningEvents = EarningEventsHelper.PayableEarningsReceivedForLearner(TestSession);
-
-            var result = !EnumerableExtensions.Any(EarningEventsHelper
-                .GetOnProgrammeDataLockErrorsForLearnerAndPriceEpisodeAndDeliveryPeriod(priceEpisodeIdentifier,
-                    academicYear, TestSession, 8));
-            return result;
+            return !EarningEventsHelper
+                .GetOnProgrammeDataLockErrorsForLearnerAndPriceEpisodeAndDeliveryPeriod(priceEpisodeIdentifier, academicYear, TestSession, 8)
+                .Any();
         }
 
         private bool HasPayableEarningEventsForPriceEpisode(string priceEpisodeIdentifier)
@@ -102,19 +94,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private bool HasCorrectlyFundedFromR08(short academicYear, int fundingSource, int sfaPercentage )
         {
-
-            var events =
-                FundingSourcePaymentEventsHelper.FundingSourcePaymentsReceivedForLearner(PriceEpisodeIdentifier,
-                    academicYear, TestSession);
-
-            var count = FundingSourcePaymentEventsHelper
+            return FundingSourcePaymentEventsHelper
                 .FundingSourcePaymentsReceivedForLearner(PriceEpisodeIdentifier, academicYear, TestSession)
                 .Count(x =>
                     x.FundingSourceType == (FundingSourceType) fundingSource
                     && x.SfaContributionPercentage == (decimal) sfaPercentage/100
                     && x.ContractType == ContractType.Act1
-                    && x.AmountDue == 1000m);
-            return count == 5;
+                    && x.AmountDue == 1000m) == 5;
         }
 
         [Then("bypass the data lock rules")]
@@ -136,7 +122,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Then(@"continue to fund the monthly instalments prior to redundancy date as per existing ACT1 rules \(Funding Source 1\)")]
-        public void ThenContinueToFundTheMonthlyInstalmentsPriorToRedundancyDateAsPerExistingACTRulesFundingSource()
+        public void ThenContinueToFundTheMonthlyInstalmentsPriorToRedundancyDateAsPerExistingAct1RulesFundingSource1()
         {
            //covered by step 1
         }

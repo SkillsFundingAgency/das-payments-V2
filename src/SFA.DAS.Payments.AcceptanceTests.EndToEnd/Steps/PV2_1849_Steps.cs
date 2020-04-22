@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
-using Microsoft.EntityFrameworkCore.Internal;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -25,7 +24,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("the ILR submission for the learner contains 'Price episode read status code' not equal to '0'")]
         [Given("the 'Price episode read start date' shows date of redundancy is more than 6mths of planned learning")]
         [When("the submission is processed for payment")]
-        [Then(@"continue to fund the monthly instalments prior to redundancy date as per existing ACT1 rules \(Funding Source 1\)")]
         public void EmptyIlrSetupStep()
         {
             //NOTE: This is handled by the FM36 we import
@@ -34,7 +32,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("a learner funded by a levy paying employer is made redundant")]
         public async Task LevyLearnerMadeRedundant()
         {
-            //submit R03
             GetFm36LearnerForCollectionPeriod("R03/current academic year");
             await SetupTestData(PriceEpisodeIdentifier, null, CommitmentIdentifier, null);
             var dcHelper = Scope.Resolve<IDcHelper>();
@@ -90,9 +87,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private bool HasNoDataLocksForPriceEpisodeInR04(string priceEpisodeIdentifier, short academicYear)
         {
-            var result = !EnumerableExtensions.Any(EarningEventsHelper
-                    .GetOnProgrammeDataLockErrorsForLearnerAndPriceEpisodeAndDeliveryPeriod(priceEpisodeIdentifier, academicYear, TestSession, 4));
-            return result;
+            return !EarningEventsHelper.
+                GetOnProgrammeDataLockErrorsForLearnerAndPriceEpisodeAndDeliveryPeriod(priceEpisodeIdentifier, academicYear, TestSession, 4)
+                .Any();
         }
 
         private bool HasPayableEarningEventsForPriceEpisode(string priceEpisodeIdentifier)
@@ -100,13 +97,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return EarningEventsHelper.PayableEarningsReceivedForLearner(TestSession).Any(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier));
         }
 
-        private bool HasCorrectlyFundedR04(short academicYear)
+        private bool HasCorrectlyFundedR04(short academicYear, int fundingSource, int sfaPercentage)
         {
             return FundingSourcePaymentEventsHelper
                 .FundingSourcePaymentsReceivedForLearner(PriceEpisodeIdentifier, academicYear, TestSession)
                 .Count(x =>
-                    x.FundingSourceType == FundingSourceType.CoInvestedSfa
-                    && x.SfaContributionPercentage == 1.0m
+                    x.FundingSourceType == (FundingSourceType)fundingSource
+                    && x.SfaContributionPercentage == (decimal)sfaPercentage / 100
                     && x.ContractType == ContractType.Act1
                     && x.AmountDue == 1000m) == 1;
         }
@@ -121,8 +118,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"fund the remaining monthly instalments of the learning from Funding Source (.*) \((.*)% SFA funding\) from the date of the Price episode read start date")]
         public async Task ThenFundTheRemainingInstallmentsCorrectly(int fundingSource, int sfaPercentage)
         {
-            await WaitForIt(() => HasCorrectlyFundedR04(short.Parse(TestSession.FM36Global.Year)),
+            await WaitForIt(() => HasCorrectlyFundedR04(short.Parse(TestSession.FM36Global.Year), fundingSource, sfaPercentage),
                 "Failed to find correctly funded remaining installments");
+        }
+
+        [Then(@"continue to fund the monthly instalments prior to redundancy date as per existing ACT1 rules \(Funding Source 1\)")]
+        public void ThenContinueToFundTheMonthlyInstalmentsPriorToRedundancyDateAsPerExistingAct1RulesFundingSource1()
+        {
+            //covered by step 1
         }
     }
 }
