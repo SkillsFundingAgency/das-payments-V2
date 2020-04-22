@@ -6,7 +6,6 @@ using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
@@ -35,7 +34,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             {
                 var episodesByContractType = intermediateLearningAim.PriceEpisodes.GroupBy(x =>x.PriceEpisodeValues.PriceEpisodeContractType );
                 var redundancyDates = intermediateLearningAim.PriceEpisodes
-                    .Where(pe => pe.PriceEpisodeValues.PriceEpisodeRedStatusCode == 1)
+                    .Where(pe => pe.PriceEpisodeValues.PriceEpisodeRedStatusCode == 1 && pe.PriceEpisodeValues.PriceEpisodeRedStartDate.HasValue)
+                    .OrderBy(pe => pe.PriceEpisodeValues.PriceEpisodeRedStartDate)
                     .Select( pe =>new { pe.PriceEpisodeValues.PriceEpisodeRedStartDate, pe.PriceEpisodeIdentifier}).FirstOrDefault();
 
 
