@@ -139,5 +139,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForIt(() => HasCorrectlyFundedFromR08(short.Parse(TestSession.FM36Global.Year), fundingSource, sfaPercentage),
                 "Failed to find correctly funded remaining installments");
         }
+
+        [Then(
+            @"continue to fund the monthly instalments prior to redundancy date as per existing ACT1 rules (Funding Source 1)")]
+        public async Task FundToPreviousRules()
+        {
+            //This is covered in step 1
+        }
     }
 }
