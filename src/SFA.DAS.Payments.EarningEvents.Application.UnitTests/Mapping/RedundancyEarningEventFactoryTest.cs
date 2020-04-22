@@ -22,7 +22,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         }
 
 
-        [Test]
         [TestCase(typeof(ApprenticeshipContractType1EarningEvent),
             typeof(ApprenticeshipContractType1RedundancyEarningEvent))]
         [TestCase(typeof(ApprenticeshipContractType2EarningEvent),

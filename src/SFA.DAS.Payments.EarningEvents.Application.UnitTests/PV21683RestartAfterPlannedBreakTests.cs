@@ -1,18 +1,12 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using AutoMapper;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
-using Microsoft.Extensions.FileProviders;
 using Moq;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
 using SFA.DAS.Payments.EarningEvents.Application.UnitTests.Helpers;
-using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
@@ -24,20 +18,20 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         private IMapper mapper;
         private const string filename = "PV21683_FM36OutputOnRestart.json";
         private const string learnerRefNo = "01LSF01BR34";
-        private  Mock<IRedundancyEarningService> redundancyEarningSplitterMock;
+        private  Mock<IRedundancyEarningService> redundancyEarningService;
 
 
             [OneTimeSetUp]
         public void InitialiseMapper()
         {
             mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<EarningsEventProfile>()));
-            redundancyEarningSplitterMock = new Mock<IRedundancyEarningService>();
+            redundancyEarningService = new Mock<IRedundancyEarningService>();
         }
 
         [Test]
         public void RestartAfterPlannedBreakShouldHaveOneMainAim()
         {
-            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningSplitterMock.Object, mapper);
+            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningService.Object, mapper);
             var events = builder.Build(FileHelpers.CreateFromFile(filename, learnerRefNo));
 
             events.Should().HaveCount(1);
@@ -65,7 +59,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         [Test]
         public void RestartAfterPlannedBreakMainAimShouldHaveValidLearnStartDate()
         {
-            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningSplitterMock.Object, mapper);
+            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningService.Object, mapper);
             var events = builder.Build(FileHelpers.CreateFromFile(filename, learnerRefNo));
 
             events.First().LearningAim.StartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
@@ -75,7 +69,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         [Test]
         public void RestartAfterPlannedBreakShouldHaveTwoFunctionalSkills()
         {
-            var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningSplitterMock.Object);
+            var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningService.Object);
             var events = builder.Build(FileHelpers.CreateFromFile(filename, learnerRefNo));
 
             events.Should().HaveCount(2);
@@ -93,7 +87,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         [Test]
         public void RestartAfterPlannedBreakFunctionalSkillsEarningsShouldHaveValidFundingLineTypes()
         {
-            var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningSplitterMock.Object);
+            var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningService.Object);
             var events = builder.Build(FileHelpers.CreateFromFile(filename, learnerRefNo));
 
             var functionalSkillEvent_5010987X = events.FirstOrDefault(e => e.LearningAim.Reference.Equals("5010987X"));
@@ -108,7 +102,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         [Test]
         public void RestartAfterPlannedBreakFunctionalSkillsEarningsShouldHaveValidStartDates()
         {
-            var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningSplitterMock.Object);
+            var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningService.Object);
             var events = builder.Build(FileHelpers.CreateFromFile(filename, learnerRefNo));
 
             var functionalSkillEvent_5010987X = events.First(e => e.LearningAim.Reference.Equals("5010987X"));
