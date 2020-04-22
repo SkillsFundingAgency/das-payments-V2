@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
 
            
             CreateMap<ApprenticeshipContractType2RedundancyEarningEvent, EarningEventModel>()
-                .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act1))
+                .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2))
                 .ForMember(dest => dest.Periods, opt => opt.ResolveUsing<ApprenticeshipContractTypeEarningPeriodResolver>())
                 .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage));
 
