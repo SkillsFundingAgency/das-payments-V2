@@ -71,19 +71,16 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
 
         private ContractType GetContractTypeFromMessage(T message)
         {
-            switch (message)
-            {
-                case PayableEarningEvent payableEarningEvent:
-                case ApprenticeshipContractType1RedundancyEarningEvent contractType1RedundancyEarning:
-                    return ContractType.Act1;
-                case ApprenticeshipContractType2EarningEvent apprenticeshipContractType2Earning:
-                case ApprenticeshipContractType2RedundancyEarningEvent apprenticeshipContractType2RedundancyEarning:
-                    return ContractType.Act2;
-                case IFunctionalSkillEarningEvent funcSkill:
-                    return funcSkill.ContractType;
-                default:
-                    throw new InvalidOperationException($"Cannot resolve contract type for {typeof(T).FullName}");
-            }
+            if (message is PayableEarningEvent || message is ApprenticeshipContractType1RedundancyEarningEvent)
+                return ContractType.Act1;
+
+            if (message is ApprenticeshipContractType2EarningEvent || message is ApprenticeshipContractType2RedundancyEarningEvent)
+                return ContractType.Act2;
+
+            if (message is IFunctionalSkillEarningEvent funcSkill)
+                return funcSkill.ContractType;
+
+            throw new InvalidOperationException($"Cannot resolve contract type for {typeof(T).FullName}");
         }
 
         protected abstract Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleEarningEvent(T message,

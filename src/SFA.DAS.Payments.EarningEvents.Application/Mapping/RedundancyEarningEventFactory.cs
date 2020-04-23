@@ -17,27 +17,25 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
         public ApprenticeshipContractTypeEarningsEvent CreateRedundancyContractTypeEarningsEvent(
             ApprenticeshipContractTypeEarningsEvent earningEvent)
         {
-            switch (earningEvent)
-            {
-                case ApprenticeshipContractType1EarningEvent act1:
-                    return mapper.Map<ApprenticeshipContractType1RedundancyEarningEvent>(act1);
-                case ApprenticeshipContractType2EarningEvent act2:
-                    return mapper.Map<ApprenticeshipContractType2RedundancyEarningEvent>(act2);
-                default: return null;
-            }
+            if (earningEvent is ApprenticeshipContractType1EarningEvent act1)
+                return mapper.Map<ApprenticeshipContractType1RedundancyEarningEvent>(act1);
+
+            if (earningEvent is ApprenticeshipContractType2EarningEvent act2)
+                return mapper.Map<ApprenticeshipContractType2RedundancyEarningEvent>(act2);
+
+            return null;
         }
 
         public FunctionalSkillEarningsEvent CreateRedundancyFunctionalSkillTypeEarningsEvent(
             FunctionalSkillEarningsEvent functionalSkillEarning)
         {
-            switch (functionalSkillEarning)
-            {
-                case Act1FunctionalSkillEarningsEvent act1:
-                    return mapper.Map<Act1RedundancyFunctionalSkillEarningsEvent>(act1);
-                case Act2FunctionalSkillEarningsEvent act2:
-                     return  mapper.Map<Act2RedundancyFunctionalSkillEarningsEvent>(act2);
-                default: return null;
-            }
+            if (functionalSkillEarning is Act1FunctionalSkillEarningsEvent act1)
+                return mapper.Map<Act1RedundancyFunctionalSkillEarningsEvent>(act1);
+
+            if (functionalSkillEarning is Act2FunctionalSkillEarningsEvent act2)
+                return mapper.Map<Act2RedundancyFunctionalSkillEarningsEvent>(act2);
+
+            return null;
         }
     }
 }
