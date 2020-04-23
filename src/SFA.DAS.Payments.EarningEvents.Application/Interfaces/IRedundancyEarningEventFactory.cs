@@ -4,9 +4,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Interfaces
 {
     public interface IRedundancyEarningEventFactory
     {
-        ApprenticeshipContractTypeEarningsEvent CreateRedundancyContractType(
+        ApprenticeshipContractTypeEarningsEvent CreateRedundancyContractTypeEarningsEvent(
             ApprenticeshipContractTypeEarningsEvent earningEvent);
 
-        FunctionalSkillEarningsEvent CreateRedundancyFunctionalSkillType(FunctionalSkillEarningsEvent functionalSkillEarning);
+        FunctionalSkillEarningsEvent CreateRedundancyFunctionalSkillTypeEarningsEvent(FunctionalSkillEarningsEvent functionalSkillEarning);
     }
 }

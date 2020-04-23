@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public ApprenticeshipContractTypeEarningsEvent CreateRedundancyContractType(
+        public ApprenticeshipContractTypeEarningsEvent CreateRedundancyContractTypeEarningsEvent(
             ApprenticeshipContractTypeEarningsEvent earningEvent)
         {
             switch (earningEvent)
@@ -22,14 +22,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 case ApprenticeshipContractType1EarningEvent act1:
                     return mapper.Map<ApprenticeshipContractType1RedundancyEarningEvent>(act1);
                 case ApprenticeshipContractType2EarningEvent act2:
-                    var apprenticeshipContractType2RedundancyEarningEvent = mapper.Map<ApprenticeshipContractType2RedundancyEarningEvent>(act2);
-                    apprenticeshipContractType2RedundancyEarningEvent.SfaContributionPercentage = 1m;
-                    return apprenticeshipContractType2RedundancyEarningEvent;
+                    return mapper.Map<ApprenticeshipContractType2RedundancyEarningEvent>(act2);
                 default: return null;
             }
         }
 
-        public FunctionalSkillEarningsEvent CreateRedundancyFunctionalSkillType(
+        public FunctionalSkillEarningsEvent CreateRedundancyFunctionalSkillTypeEarningsEvent(
             FunctionalSkillEarningsEvent functionalSkillEarning)
         {
             switch (functionalSkillEarning)

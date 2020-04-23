@@ -18,11 +18,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Services
 
         public List<ApprenticeshipContractTypeEarningsEvent> SplitContractEarningByRedundancyDate(ApprenticeshipContractTypeEarningsEvent earningEvent, DateTime redundancyDate)
         {
-            List<ApprenticeshipContractTypeEarningsEvent> splitResults = new List<ApprenticeshipContractTypeEarningsEvent>();
+            var splitResults = new List<ApprenticeshipContractTypeEarningsEvent>();
 
             var redundancyPeriod = GetPeriodFromDate(redundancyDate); 
 
-            var redundancyEarningEvent = redundancyEarningEventFactory.CreateRedundancyContractType(earningEvent);
+            var redundancyEarningEvent = redundancyEarningEventFactory.CreateRedundancyContractTypeEarningsEvent(earningEvent);
 
             earningEvent.OnProgrammeEarnings.ForEach(ope => { RemoveRedundancyEarningPeriods(ope, redundancyPeriod); });
             earningEvent.IncentiveEarnings.ForEach(ie => { RemoveRedundancyEarningPeriods(ie, redundancyPeriod); }); 
@@ -69,10 +69,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Services
         public List<FunctionalSkillEarningsEvent> SplitFunctionSkillEarningByRedundancyDate(FunctionalSkillEarningsEvent functionalSkillEarning,
             DateTime priceEpisodeRedStartDate)
         {
-            List<FunctionalSkillEarningsEvent> splitResults = new List<FunctionalSkillEarningsEvent>();
+            var splitResults = new List<FunctionalSkillEarningsEvent>();
             var redundancyPeriod = GetPeriodFromDate(priceEpisodeRedStartDate);
 
-            var redundancyEarningEvent = redundancyEarningEventFactory.CreateRedundancyFunctionalSkillType(functionalSkillEarning);
+            var redundancyEarningEvent = redundancyEarningEventFactory.CreateRedundancyFunctionalSkillTypeEarningsEvent(functionalSkillEarning);
             
             foreach (var earning in functionalSkillEarning.Earnings)
             {
