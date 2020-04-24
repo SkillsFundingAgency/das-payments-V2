@@ -13,4 +13,9 @@
     <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.4.641" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Application\SFA.DAS.Payments.FundingSource.Application.csproj" />
+  </ItemGroup>
+
 </Project>

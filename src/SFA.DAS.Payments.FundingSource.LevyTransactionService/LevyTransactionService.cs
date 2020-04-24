@@ -4,8 +4,11 @@ using System.Fabric;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.FundingSource.LevyTransactionService
 {
@@ -14,9 +17,15 @@ namespace SFA.DAS.Payments.FundingSource.LevyTransactionService
     /// </summary>
     internal sealed class LevyTransactionService : StatelessService
     {
-        public LevyTransactionService(StatelessServiceContext context)
+        private readonly IPaymentLogger logger;
+        private readonly ILifetimeScope lifetimeScope;
+
+        public LevyTransactionService(StatelessServiceContext context, IPaymentLogger logger, ILifetimeScope lifetimeScope)
             : base(context)
-        { }
+        {
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
+        }
 
         /// <summary>
         /// Optional override to create listeners (e.g., TCP, HTTP) for this service replica to handle client or user requests.
@@ -24,27 +33,17 @@ namespace SFA.DAS.Payments.FundingSource.LevyTransactionService
         /// <returns>A collection of listeners.</returns>
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            return new ServiceInstanceListener[0];
-        }
-
-        /// <summary>
-        /// This is the main entry point for your service instance.
-        /// </summary>
-        /// <param name="cancellationToken">Canceled when Service Fabric needs to shut down this service instance.</param>
-        protected override async Task RunAsync(CancellationToken cancellationToken)
-        {
-            // TODO: Replace the following sample code with your own logic 
-            //       or remove this RunAsync override if it's not needed in your service.
-
-            long iterations = 0;
-
-            while (true)
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                ServiceEventSource.Current.ServiceMessage(this.Context, "Working-{0}", ++iterations);
-
-                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+                return new List<ServiceInstanceListener>
+                {
+                    new ServiceInstanceListener(context => lifetimeScope.Resolve<IStatelessServiceBusBatchCommunicationListener>())
+                };
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"Error starting the service instance listener: {e.Message}", e);
+                throw;
             }
         }
     }
