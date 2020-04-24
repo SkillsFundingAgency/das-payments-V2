@@ -15,10 +15,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
         DbSet<EmployerProviderPriorityModel>
             EmployerProviderPriorities { get; }
 
-        // DbSet<LevyTransactionModel> LevyTransactions { get; }
-        // Task<int> SaveChanges(CancellationToken cancellationToken);
-        // Task<List<LevyTransactionModel>> GetEmployerLevyTransactions(long employerAccountId);
-        // Task SaveBatch(IList<LevyTransactionModel> batch, CancellationToken cancellationToken);
+        DbSet<LevyTransactionModel> LevyTransactions { get; }
+        Task<int> SaveChanges(CancellationToken cancellationToken);
+        Task<List<LevyTransactionModel>> GetEmployerLevyTransactions(long employerAccountId);
+        Task SaveBatch(IList<LevyTransactionModel> batch, CancellationToken cancellationToken);
     }
 
 

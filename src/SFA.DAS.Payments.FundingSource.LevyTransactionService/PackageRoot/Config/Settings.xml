@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Settings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <!-- Add your custom configuration sections and parameters here -->
-  <!--
-  <Section Name="MyConfigSection">
-    <Parameter Name="MyParameter" Value="Value1" />
+  <Section Name="ConnectionStringsSection">
+    <Parameter Name="StorageConnectionString" Value="" />
+    <Parameter Name="LoggingConnectionString" Value="" />
+    <Parameter Name="ServiceBusConnectionString" Value="" />
+    <Parameter Name="PaymentsConnectionString" Value="" />
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="" />
   </Section>
-  -->
+  <Section Name="Settings">
+    <Parameter Name="EndpointName" Value="" />
+    <Parameter Name="FailedMessagesQueue" Value="" />
+    <Parameter Name="LogLevel" Value="" />
+    <Parameter Name="ConsoleLogLevel" Value="" />
+    <Parameter Name="ProcessMessageSequentially" Value="" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+    <Parameter Name="DasNServiceBusLicenseKey" Value="" />
+    <Parameter Name="ImmediateMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetryDelay" Value="" />
+  </Section>
 </Settings>
