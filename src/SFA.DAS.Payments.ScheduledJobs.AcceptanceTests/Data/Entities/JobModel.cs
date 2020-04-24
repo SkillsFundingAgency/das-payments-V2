@@ -25,20 +25,20 @@ namespace SFA.DAS.Payments.ScheduledJobs.AcceptanceTests.Data.Entities
     public enum JobStatus : byte
     {
         InProgress = 1,
-        Completed,
-        CompletedWithErrors,
-        TimedOut,
-        DcTasksFailed
+        Completed = 2,
+        CompletedWithErrors = 3,
+        TimedOut = 4,
+        DcTasksFailed = 5
     }
 
     public enum JobType : byte
     {
         EarningsJob = 1,
-        PeriodEndStartJob,
-        ComponentAcceptanceTestEarningsJob,
-        ComponentAcceptanceTestMonthEndJob,
-        PeriodEndRunJob,
-        PeriodEndStopJob
+        PeriodEndStartJob = 2,
+        ComponentAcceptanceTestEarningsJob = 3,
+        ComponentAcceptanceTestMonthEndJob = 4,
+        PeriodEndRunJob = 5,
+        PeriodEndStopJob = 6
     }
 
     public class JobModelConfiguration : IEntityTypeConfiguration<JobModel>
