@@ -1,5 +1,4 @@
 ﻿using System;
-using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.EarningEvents.Messages.Events
