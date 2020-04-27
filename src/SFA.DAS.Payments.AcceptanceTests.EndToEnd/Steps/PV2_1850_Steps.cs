@@ -66,7 +66,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private void ImportR12Fm36ToMakeLearnerRedundant() { GetFm36LearnerForCollectionPeriod("R12/current academic year"); }
 
-        private async Task SetUpMatchingCommitment() { await SetupTestData(PriceEpisodeIdentifier, null, CommitmentIdentifier, null); }
+        private async Task SetUpMatchingCommitment() { await SetupTestCommitmentData(CommitmentIdentifier, PriceEpisodeIdentifier); }
 
         private bool HasCorrectlyFundedR08Onwards(short academicYear, int fundingSource, int sfaPercentage)
         {

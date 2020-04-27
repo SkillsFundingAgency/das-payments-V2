@@ -85,7 +85,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private void ImportR04Fm36ToMakeLearnerRedundant() { GetFm36LearnerForCollectionPeriod("R04/current academic year"); }
 
-        private async Task SetUpMatchingCommitment() { await SetupTestData(PriceEpisodeIdentifier, null, CommitmentIdentifier, null); }
+        private async Task SetUpMatchingCommitment() { await SetupTestCommitmentData(CommitmentIdentifier, PriceEpisodeIdentifier); }
 
         private void CreateDataLockForCommitment(string commitmentIdentifier)
         {

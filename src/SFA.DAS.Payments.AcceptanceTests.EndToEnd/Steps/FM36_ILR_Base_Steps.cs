@@ -96,17 +96,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("both (.*) and (.*) in the ILR matches to both Commitments (.*) and (.*), on ULN and UKPRN")]
         public async Task GivenTwoPriceEpisodeInIlrMatchesTwoCommitments(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2, string commitmentIdentifier1, string commitmentIdentifier2)
         {
-            await SetupTestData(priceEpisodeIdentifier1, priceEpisodeIdentifier2, commitmentIdentifier1, commitmentIdentifier2);
+            await SetupTestCommitmentData(commitmentIdentifier1, priceEpisodeIdentifier1, commitmentIdentifier2, priceEpisodeIdentifier2);
         }
 
         [Given("price episode (.*) in the ILR matches to both Commitments (.*) and (.*), on ULN and UKPRN")]
         public async Task GivenPriceEpisodeInIlrMatchesCommitments(string priceEpisodeIdentifier, string commitmentIdentifier1, string commitmentIdentifier2)
         {
-            await SetupTestData(priceEpisodeIdentifier, null, commitmentIdentifier1, commitmentIdentifier2);
+            await SetupTestCommitmentData(commitmentIdentifier1, priceEpisodeIdentifier, commitmentIdentifier2, null);
         }
 
         //todo rename this to have commitment in the method name. Convert the pairs of commitment and pe ids to key value pairs and defaults second one to null
-        protected async Task SetupTestData(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2, string commitmentIdentifier1, string commitmentIdentifier2)
+        protected async Task SetupTestCommitmentData(string commitmentIdentifier1, string priceEpisodeIdentifier1,
+            string commitmentIdentifier2 = null, string priceEpisodeIdentifier2 = null)
         {
             var learner = TestSession.FM36Global.Learners.Single();
             learner.ULN = TestSession.Learner.Uln;
