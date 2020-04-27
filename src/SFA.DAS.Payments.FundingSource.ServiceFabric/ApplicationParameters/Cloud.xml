@@ -1,12 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="SFA.DAS.Payments.FundingSource.LevyTransactionService_InstanceCount" Value="-1" />
+    <Parameter Name="LevyTransactionService_InstanceCount" Value="-1" />
     <Parameter Name="LevyAccountBalanceService_PartitionCount" Value="__LevyAccountBalanceService_PartitionCount__" />
     <Parameter Name="LevyAccountBalanceService_MinReplicaSetSize" Value="__LevyAccountBalanceService_MinReplicaSetSize__" />
     <Parameter Name="LevyAccountBalanceService_TargetReplicaSetSize" Value="__LevyAccountBalanceService_TargetReplicaSetSize__" />
     <Parameter Name="NonLevyFundedService_InstanceCount" Value="__NonLevyFundedService_InstanceCount__" />
     <Parameter Name="LevyFundedProxyService_InstanceCount" Value="__LevyFundedProxyService_InstanceCount__" />
+    <Parameter Name="LevyTransactionService_EndpointName" Value="__LevyTransaction_EndpointName__" />
+    <Parameter Name="LevyTransactionService_FailedMessagesQueue" Value="__LevyTransaction_FailedMessagesQueue__" />
     <Parameter Name="LevyFundedServiceActorService_PartitionCount" Value="__LevyFundedServiceActorService_PartitionCount__" />
     <Parameter Name="LevyFundedServiceActorService_TargetReplicaSetSize" Value="__LevyFundedServiceActorService_TargetReplicaSetSize__" />
     <Parameter Name="LevyFundedServiceActorService_MinReplicaSetSize" Value="__LevyFundedServiceActorService_MinReplicaSetSize__" />

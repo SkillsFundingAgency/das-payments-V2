@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.FundingSource.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="SFA.DAS.Payments.FundingSource.LevyTransactionService_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="LevyTransactionService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="LevyAccountBalanceService_MinReplicaSetSize" DefaultValue="3" />
     <Parameter Name="LevyAccountBalanceService_PartitionCount" DefaultValue="10" />
     <Parameter Name="LevyAccountBalanceService_TargetReplicaSetSize" DefaultValue="3" />
@@ -20,6 +20,8 @@
     <Parameter Name="NonLevyFundedService_FailedMessagesQueue" DefaultValue="sfa-das-payments-fundingsource-nonlevy-error" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="LevyFundedService_FailedMessagesQueue" DefaultValue="sfa-das-payments-fundingsource-levy-errors" />
+    <Parameter Name="LevyTransactionService_EndpointName" DefaultValue="sfa-das-payments-fundingsource-levy-transaction" />
+    <Parameter Name="LevyTransactionService_FailedMessagesQueue" DefaultValue="sfa-das-payments-fundingsource-levy-transaction-errors" />
     <Parameter Name="LevyFundedServiceActorService_PartitionCount" DefaultValue="10" />
     <Parameter Name="LevyFundedServiceActorService_MinReplicaSetSize" DefaultValue="3" />
     <Parameter Name="LevyFundedServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
@@ -43,7 +45,31 @@
        ServiceManifest.xml file. -->
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.FundingSource.LevyTransactionServicePkg" ServiceManifestVersion="1.0.0" />
-    <ConfigOverrides />
+    <ConfigOverrides>
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="ConnectionStringsSection">
+            <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
+            <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
+          </Section>
+          <Section Name="Settings">
+            <Parameter Name="EndpointName" Value="[LevyTransactionService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[LevyTransactionService_FailedMessagesQueue]" />
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
+            <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+            <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
+            <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
+            <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
+            <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+    </ConfigOverrides>
   </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.FundingSource.LevyAccountBalanceServicePkg" ServiceManifestVersion="1.0.0" />
@@ -159,8 +185,9 @@
   </ServiceManifestImport>
   <DefaultServices>
     <Service Name="SFA.DAS.Payments.FundingSource.LevyTransactionService" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="SFA.DAS.Payments.FundingSource.LevyTransactionServiceType" InstanceCount="[SFA.DAS.Payments.FundingSource.LevyTransactionService_InstanceCount]">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.FundingSource.LevyTransactionServiceType" InstanceCount="[LevyTransactionService_InstanceCount]">
         <SingletonPartition />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
     </Service>
     <Service Name="SFA.DAS.Payments.FundingSource.LevyAccountBalanceService" ServicePackageActivationMode="ExclusiveProcess">

@@ -65,7 +65,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyTransactionService.Infrastructure.I
             endpointConfiguration.DisableFeature<TimeoutManager>();
             var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
             transport
-                .ConnectionString(configHelper.GetConnectionString("MonitoringServiceBusConnectionString"))
+                .ConnectionString(configHelper.GetConnectionString("ServiceBusConnectionString"))
                 .Transactions(TransportTransactionMode.ReceiveOnly)
                 .RuleNameShortener(ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
 
