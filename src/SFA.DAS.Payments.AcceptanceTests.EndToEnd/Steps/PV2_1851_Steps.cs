@@ -31,8 +31,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("a learner co-funded by a non-levy paying employer is made redundant")]
         public async Task NonLevyLearnerMadeRedundant()
         {
-            GetFm36LearnerForCollectionPeriod("R03/current academic year");
-            await SetupTestData(PriceEpisodeIdentifier, null, CommitmentIdentifier, null);
+            ImportR03Fm36ForNonRedundantNonLevyLearner();
+
+            await SetUpMatchingCommitment();
+
             var dcHelper = Scope.Resolve<IDcHelper>();
             await dcHelper.SendIlrSubmission(TestSession.FM36Global.Learners,
                 TestSession.Provider.Ukprn,
@@ -46,8 +48,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("there is more than 6 months remaining of the planned learning")]
         public async Task ThereAreLessThan6MonthsRemainingOfPlannedLearning()
         {
-            GetFm36LearnerForCollectionPeriod("R04/current academic year");
-            await SetupTestData(PriceEpisodeIdentifier, null, CommitmentIdentifier, null);
+            ImportR04Fm36ToMakeLearnerRedundant();
+
+            await SetUpMatchingCommitment();
 
             TestSession.RegenerateJobId();
 
@@ -58,6 +61,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.Period,
                 TestSession.Provider.JobId);
         }
+
+        private void ImportR03Fm36ForNonRedundantNonLevyLearner() { GetFm36LearnerForCollectionPeriod("R03/current academic year"); }
+
+        private void ImportR04Fm36ToMakeLearnerRedundant() { GetFm36LearnerForCollectionPeriod("R04/current academic year"); }
+
+        private async Task SetUpMatchingCommitment() { await SetupTestData(PriceEpisodeIdentifier, null, CommitmentIdentifier, null); }
 
         private bool HasCorrectlyFundedR04(short academicYear, int fundingSource, int sfaPercentage)
         {
@@ -80,7 +89,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"continue to fund the monthly instalments prior to redundancy date as per existing ACT2 rules, Funding Source 2 \(95%\) and Funding Source 3 \(5%\)")]
         public void ThenContinueToFundTheMonthlyInstalmentsPriorToRedundancyDateAsPerExistingAct2RulesFundingSources()
         {
-            //covered by step 1
+            //covered by waiting for payments in the first Given statement
         }
     }
 }

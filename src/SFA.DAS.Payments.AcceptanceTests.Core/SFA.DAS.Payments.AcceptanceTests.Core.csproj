@@ -384,8 +384,11 @@
     <Compile Include="Automation\DcConfiguration.cs" />
     <Compile Include="Automation\DcHelper.cs" />
     <Compile Include="Automation\DcNullHelper.cs" />
+    <Compile Include="Automation\EmployerMonthEndHelper.cs" />
     <Compile Include="Automation\IDcHelper.cs" />
+    <Compile Include="Automation\IPaymentsHelper.cs" />
     <Compile Include="Automation\LearnRefNumberGenerator.cs" />
+    <Compile Include="Automation\PaymentsHelper.cs" />
     <Compile Include="Automation\TestSession.cs" />
     <Compile Include="BindingsBase.cs" />
     <Compile Include="Data\Configurations\ProviderModelConfiguration.cs" />

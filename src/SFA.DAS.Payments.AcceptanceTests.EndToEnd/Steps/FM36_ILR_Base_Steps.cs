@@ -105,6 +105,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await SetupTestData(priceEpisodeIdentifier, null, commitmentIdentifier1, commitmentIdentifier2);
         }
 
+        //todo rename this to have commitment in the method name. Convert the pairs of commitment and pe ids to key value pairs and defaults second one to null
         protected async Task SetupTestData(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2, string commitmentIdentifier1, string commitmentIdentifier2)
         {
             var learner = TestSession.FM36Global.Learners.Single();
@@ -229,13 +230,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected async Task WaitForPayments(int count)
         {
-            await WaitForIt(() => Scope.Resolve<IDcHelper>().GetPaymentsCount(TestSession.Provider.Ukprn, TestSession.CollectionPeriod) == count,
+            await WaitForIt(() => Scope.Resolve<IPaymentsHelper>().GetPaymentsCount(TestSession.Provider.Ukprn, TestSession.CollectionPeriod) == count,
                 "Failed to wait for expected number of payments");
         }
 
         protected async Task WaitForRequiredPayments(int count)
         {
-            await WaitForIt(() => Scope.Resolve<IDcHelper>().GetRequiredPaymentsCount(TestSession.Provider.Ukprn, TestSession.CollectionPeriod) == count,
+            await WaitForIt(() => Scope.Resolve<IPaymentsHelper>().GetRequiredPaymentsCount(TestSession.Provider.Ukprn, TestSession.CollectionPeriod) == count,
                 "Failed to wait for expected number of required payments");
         }
 

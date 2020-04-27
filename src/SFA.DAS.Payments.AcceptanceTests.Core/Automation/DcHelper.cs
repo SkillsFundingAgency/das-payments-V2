@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
@@ -16,10 +15,7 @@ using ESFA.DC.Queueing.Interface;
 using ESFA.DC.Queueing.Interface.Configuration;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
-using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
-using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
-using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
@@ -212,35 +208,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 Console.WriteLine(e);
                 throw;
             }
-        }
-
-        public async Task SendLevyMonthEndForEmployers(long monthEndJobId, IEnumerable<long> employerAccountIds, short academicYear, byte collectionPeriod, IMessageSession messageSession)
-        {
-            Console.WriteLine($"Month end job id: {monthEndJobId}");
-
-            foreach (var employerAccountId in employerAccountIds)
-            {
-                var processLevyFundsAtMonthEndCommand = new ProcessLevyPaymentsOnMonthEndCommand
-                {
-                    JobId = monthEndJobId,
-                    CollectionPeriod = new CollectionPeriod { AcademicYear = academicYear, Period = collectionPeriod },
-                    RequestTime = DateTime.Now,
-                    SubmissionDate = DateTime.UtcNow,
-                    AccountId = employerAccountId,
-                };
-
-                await messageSession.Send(processLevyFundsAtMonthEndCommand).ConfigureAwait(false);
-            }
-        }
-
-        public int GetPaymentsCount(long ukprn, CollectionPeriod collectionPeriod)
-        {
-            return dataContext.Payment.Count(x => x.Ukprn == ukprn && x.CollectionPeriod.Period == collectionPeriod.Period && x.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear);
-        }
-
-        public int GetRequiredPaymentsCount(long ukprn, CollectionPeriod collectionPeriod)
-        {
-            return dataContext.RequiredPaymentEvent.Count(x => x.Ukprn == ukprn && x.CollectionPeriod.Period == collectionPeriod.Period && x.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear);
         }
 
         public static void AddDcConfig(ContainerBuilder builder)
