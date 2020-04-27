@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
@@ -26,18 +28,18 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Services
 
             var redundancyEarningEvent = redundancyEarningEventFactory.CreateRedundancyContractTypeEarningsEvent(earningEvent);
 
-            earningEvent.OnProgrammeEarnings.ForEach(ope => { RemoveRedundancyEarningPeriods(ope, redundancyPeriod); });
-            earningEvent.IncentiveEarnings.ForEach(ie => { RemoveRedundancyEarningPeriods(ie, redundancyPeriod); }); 
+            earningEvent.OnProgrammeEarnings.ForEach(ope => { ope.Periods= RemoveRedundancyPeriods(ope.Periods, redundancyPeriod); });
+            earningEvent.IncentiveEarnings.ForEach(ie => { ie.Periods= RemoveRedundancyPeriods(ie.Periods, redundancyPeriod); }); 
 
             redundancyEarningEvent.OnProgrammeEarnings.ForEach(ope =>
             {
-                RemovePreRedundancyEarningPeriods(ope, redundancyPeriod);
-                SetRedundancyPeriodsToFullContribution(ope);
+              ope.Periods=  RemovePreRedundancyPeriods(ope.Periods, redundancyPeriod); 
+              SetPeriodsToFullContribution(ope.Periods);
             });
             redundancyEarningEvent.IncentiveEarnings.ForEach(ie =>
             {
-                RemovePreRedundancyEarningPeriods(ie, redundancyPeriod);
-                SetRedundancyPeriodsToFullContribution(ie);
+               ie.Periods= RemovePreRedundancyPeriods(ie.Periods, redundancyPeriod);
+                SetPeriodsToFullContribution(ie.Periods);
             });
 
             splitResults.Add(earningEvent);
@@ -46,45 +48,23 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Services
             return splitResults;
         }
 
-        private static void SetRedundancyPeriodsToFullContribution(Earning ope)
-        {
-            foreach (var onProgPeriod in ope.Periods)
-            {
-                onProgPeriod.SfaContributionPercentage = 1m;
-            }
-        }
-
-        private void RemoveRedundancyEarningPeriods(Earning earning, byte redundancyPeriod)
-        {
-            var periods = earning.Periods.ToList();
-            periods.RemoveAll(p => p.Period >= redundancyPeriod);
-            earning.Periods = periods.AsReadOnly();
-        }
-
-        private void RemovePreRedundancyEarningPeriods(Earning earning, byte redundancyPeriod)
-        {
-            var periods = earning.Periods.ToList();
-            periods.RemoveAll(p => p.Period < redundancyPeriod);
-            earning.Periods = periods.AsReadOnly();
-        }
-
         public List<FunctionalSkillEarningsEvent> SplitFunctionSkillEarningByRedundancyDate(FunctionalSkillEarningsEvent functionalSkillEarning,
             DateTime priceEpisodeRedStartDate)
         {
             var splitResults = new List<FunctionalSkillEarningsEvent>();
-            var redundancyPeriod = GetPeriodFromDate(priceEpisodeRedStartDate);
+            var redundancyPeriod = priceEpisodeRedStartDate.GetPeriodFromDate();
 
             var redundancyEarningEvent = redundancyEarningEventFactory.CreateRedundancyFunctionalSkillTypeEarningsEvent(functionalSkillEarning);
             
             foreach (var earning in functionalSkillEarning.Earnings)
             {
-                RemoveRedundancyFsPeriods(earning, redundancyPeriod);
+               earning.Periods = RemoveRedundancyPeriods(earning.Periods, redundancyPeriod);
             } 
             
             foreach (var earning in redundancyEarningEvent.Earnings)
             {
-                RemovePreRedundancyFsPeriods(earning, redundancyPeriod);
-                SetRedundancyFsPeriodToFullContribution(earning, redundancyPeriod);
+               earning.Periods = RemovePreRedundancyPeriods(earning.Periods, redundancyPeriod);
+               SetPeriodsToFullContribution(earning.Periods);
             }
 
             splitResults.Add(functionalSkillEarning);
@@ -92,32 +72,27 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Services
 
             return splitResults;
         }
-
-        private static void SetRedundancyFsPeriodToFullContribution(FunctionalSkillEarning earning, byte redundancyPeriod)
+        
+        private static void SetPeriodsToFullContribution(IEnumerable<EarningPeriod> periods)
         {
-            foreach (var period in earning.Periods)
+            foreach (var onProgPeriod in periods)
             {
-                if (period.Period >= redundancyPeriod)
-                {
-                    period.SfaContributionPercentage = 1m;
-                }
+                onProgPeriod.SfaContributionPercentage = 1m;
             }
         }
 
-        private static void RemovePreRedundancyFsPeriods(FunctionalSkillEarning earning, byte redundancyPeriod)
+        private ReadOnlyCollection<EarningPeriod> RemoveRedundancyPeriods(IEnumerable<EarningPeriod> periods, byte redundancyPeriod)
         {
-            var periods = earning.Periods.ToList();
-            periods.RemoveAll(p => p.Period < redundancyPeriod);
-            earning.Periods = periods.AsReadOnly();
+            var allPeriods = periods.ToList();
+            allPeriods.RemoveAll(p => p.Period >= redundancyPeriod);
+            return allPeriods.AsReadOnly();
         }
 
-        private static void RemoveRedundancyFsPeriods(FunctionalSkillEarning earning, byte redundancyPeriod)
+        private ReadOnlyCollection<EarningPeriod> RemovePreRedundancyPeriods(IEnumerable<EarningPeriod> periods, byte redundancyPeriod)
         {
-            var periods = earning.Periods.ToList();
-            periods.RemoveAll(p => p.Period >= redundancyPeriod);
-            earning.Periods = periods.AsReadOnly();
+            var allPeriods = periods.ToList();
+            allPeriods.RemoveAll(p => p.Period < redundancyPeriod);
+            return allPeriods.AsReadOnly();
         }
-
-       
     }
 }
