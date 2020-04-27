@@ -29,13 +29,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         public void CreateRedundancyContractType_CreatesCorrectContractTypeEvents(Type inputType, Type expectedType)
         {
             var factory = new RedundancyEarningEventFactory(Mapper.Instance);
-            ApprenticeshipContractTypeEarningsEvent earningEvent;
 
-            earningEvent =
-                factory.CreateRedundancyContractTypeEarningsEvent(
-                    (ApprenticeshipContractTypeEarningsEvent) Activator.CreateInstance(inputType));
-
-            Assert.AreEqual(expectedType, earningEvent.GetType());
+            var earningEvent = factory.CreateRedundancyContractTypeEarningsEvent(
+                (ApprenticeshipContractTypeEarningsEvent) Activator.CreateInstance(inputType));
+            earningEvent.GetType().Should().Be(expectedType);
         }
 
 
@@ -47,8 +44,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
 
             var createdEvent = factory.CreateRedundancyContractTypeEarningsEvent(earningEvent);
 
-            Assert.AreNotEqual(createdEvent.EventId, earningEvent.EventId);
-            Assert.AreNotEqual(createdEvent.EventId, Guid.Empty);
+            earningEvent.EventId.Should().NotBe(createdEvent.EventId);
+            createdEvent.EventId.Should().NotBe(Guid.Empty);
         }
 
         [Test]
@@ -59,8 +56,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
 
             var createdEvent = factory.CreateRedundancyContractTypeEarningsEvent(earningEvent);
 
-            Assert.AreNotEqual(createdEvent.EventId, earningEvent.EventId);
-            Assert.AreNotEqual(createdEvent.EventId, Guid.Empty);
+            earningEvent.EventId.Should().NotBe(createdEvent.EventId);
+            createdEvent.EventId.Should().NotBe(Guid.Empty);
         }
 
         [Test]
@@ -76,7 +73,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var createdEvent = factory.CreateRedundancyFunctionalSkillTypeEarningsEvent(earningEvent);
 
             createdEvent.EventId.Should().NotBe(earningEvent.EventId);
-            Assert.AreNotEqual(createdEvent.EventId, Guid.Empty);
+            createdEvent.EventId.Should().NotBe(Guid.Empty);
         }
 
         [Test]
@@ -91,8 +88,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
 
             var createdEvent = factory.CreateRedundancyFunctionalSkillTypeEarningsEvent(earningEvent);
 
-            createdEvent.EventId.Should().NotBe(earningEvent.EventId);
-            Assert.AreNotEqual(createdEvent.EventId, Guid.Empty);
+            earningEvent.EventId.Should().NotBe(createdEvent.EventId);
+            createdEvent.EventId.Should().NotBe(Guid.Empty);
         }
     }
 }

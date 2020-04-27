@@ -3,10 +3,10 @@ using System.Linq;
 using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
+using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
 using SFA.DAS.Payments.EarningEvents.Application.Services;
 using SFA.DAS.Payments.EarningEvents.Application.UnitTests.Builders;
-using SFA.DAS.Payments.EarningEvents.Application.UnitTests.Helpers;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         private void ValidateFunctionalSkillEarningsSplitAndType(FunctionalSkillEarningsEvent act1FsEarning, Type expectedRedundancyType)
         {
             var redundancyDate = new DateTime(1920, 7, 1);
-            var redundancyPeriod = redundancyDate.GetCollectionPeriodFromDate();
+            var redundancyPeriod =redundancyDate.GetPeriodFromDate();
             act1FsEarning.Earnings.ToList().ForEach(fse => fse.Periods.Should().HaveCount(12));
 
             var events = service.SplitFunctionSkillEarningByRedundancyDate(act1FsEarning, redundancyDate);
@@ -84,12 +84,25 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             ValidateContractTypeEarningsSplitAndType(act2Earning, typeof(ApprenticeshipContractType2RedundancyEarningEvent));
         }
 
+        [Test]
+        public void
+            SplitContractEarningByRedundancyDate_GiveRedundancyDateOutsideLearningPeriod_LeaveEarningEventUnaffected()
+        {
+            var act1Builder = new TestContractTypeEarningEventBuilder<ApprenticeshipContractType1EarningEvent>();
+            var act1Earning = act1Builder.Build();
+
+            var redundancyDate = new DateTime(1921, 5, 1);
+
+            var events = service.SplitContractEarningByRedundancyDate(act1Earning, redundancyDate);
+            events.Should().HaveCount(2);
+        }
+
         private void ValidateContractTypeEarningsSplitAndType(ApprenticeshipContractTypeEarningsEvent earning, Type expectedRedundancyType
             )
         {
             
             var redundancyDate = new DateTime(1920, 5, 1);
-            var redundancyPeriod = redundancyDate.GetCollectionPeriodFromDate();
+            var redundancyPeriod = redundancyDate.GetPeriodFromDate();
 
             earning.OnProgrammeEarnings.ForEach(ope => { ope.Periods.Should().HaveCount(12); });
             earning.IncentiveEarnings.ForEach(ie => { ie.Periods.Should().HaveCount(12); });
