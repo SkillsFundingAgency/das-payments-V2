@@ -27,6 +27,22 @@ namespace SFA.DAS.Payments.Core
         {
             return unrounded.HasValue ? AsRounded((decimal?) unrounded.Value) : default(decimal?);
         }
+
+        public static byte GetPeriodFromDate(this DateTime date)
+        {
+            byte period;
+            var month = date.Month;
+
+            if (month < 8)
+            {
+                period = (byte) (month + 5);
+            }
+            else
+            {
+                period = (byte) (month - 7);
+            }
+            return period;
+        }
     }
 }
 
