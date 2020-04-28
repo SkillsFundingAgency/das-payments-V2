@@ -54,6 +54,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
 
         public Task<string> OpenAsync(CancellationToken cancellationToken)
         {
+            //todo consider creating queue and subscription here - maybe use similar method to EnsureQueue called EnsureSubscription
             startingCancellationToken = cancellationToken;
             _ = ListenForMessages(cancellationToken);
             return Task.FromResult(EndpointName);
