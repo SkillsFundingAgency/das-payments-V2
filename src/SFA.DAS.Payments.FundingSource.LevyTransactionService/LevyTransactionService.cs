@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using Autofac;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
+using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.FundingSource.LevyTransactionService
@@ -46,5 +48,20 @@ namespace SFA.DAS.Payments.FundingSource.LevyTransactionService
                 throw;
             }
         }
+
+        protected override Task RunAsync(CancellationToken cancellationToken)
+        {
+            return Task.WhenAll(RunSendOnlyEndpoint());
+        }
+
+
+        private async Task RunSendOnlyEndpoint()
+        {	        {
+            var endpoint = lifetimeScope.Resolve<EndpointConfiguration>();
+            endpoint.SendOnly();
+            var factory = lifetimeScope.Resolve<IEndpointInstanceFactory>();
+            await factory.GetEndpointInstance();
+        }	        }
+
     }
 }

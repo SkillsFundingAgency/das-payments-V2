@@ -13,6 +13,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core.Configuration;
+using SFA.DAS.Payments.FundingSource.Application.Data;
 using SFA.DAS.Payments.FundingSource.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
@@ -92,7 +93,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
 
             builder.RegisterType<ProcessLevyAccountBalanceService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
+            builder.RegisterType<LevyTransactionBatchStorageService>().AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
 
+            builder.Register((c, p) =>
+            {
+                var config = c.Resolve<IConfigurationHelper>();
+                return new FundingSourceDataContext(config.GetConnectionString("PaymentsConnectionString"));
+            }).As<IFundingSourceDataContext>();
 
             builder.RegisterServiceFabricSupport();
         }
