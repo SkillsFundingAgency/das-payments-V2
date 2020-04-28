@@ -146,19 +146,12 @@ namespace SFA.DAS.Payments.ConfigUpdater
         {
             if (grid.Columns.Count == 0) return;
 
-            for (var i = 0; i < grid.Columns.Count - 1; i++)
-            {
-                grid.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            }
-
-            grid.Columns[grid.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
             for (var i = 0; i < grid.Columns.Count; i++)
             {
                 var colw = grid.Columns[i].Width;
                 grid.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                 grid.Columns[i].Width = colw;
-                grid.Columns[i].SortMode = DataGridViewColumnSortMode.Automatic;
+                grid.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
         }
 
