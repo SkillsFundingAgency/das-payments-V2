@@ -7,7 +7,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
     public interface IProcessLevyAccountBalanceService
     {
-        Task RunAsync(TimeSpan refreshInterval, CancellationToken cancellationToken = default(CancellationToken));
+        Task RefreshLevyAccountDetails(int pageNumber, CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> GetTotalNumberOfPages();
     }
 
     public class ProcessLevyAccountBalanceService : IProcessLevyAccountBalanceService
@@ -21,41 +22,36 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.paymentLogger = paymentLogger;
         }
 
-        public async Task RunAsync(TimeSpan refreshInterval, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> GetTotalNumberOfPages()
+        {
+            return await this.accountBalanceService.GetTotalPageSize();
+        }
+
+        public async Task RefreshLevyAccountDetails(int pageNumber, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                var isPeriodStarted = true; //TODO  read value from cache
+                paymentLogger.LogInfo($"Starting to refresh page of Levy Accounts Details (Page {pageNumber})");
 
-                while (isPeriodStarted)
+                try
                 {
-                    paymentLogger.LogInfo("Starting to refresh all Levy Accounts Details");
-
-                    try
-                    {
-                        await accountBalanceService.RefreshLevyAccountDetails(cancellationToken);
-                    }
-                    catch (Exception e)
-                    {
-                        paymentLogger.LogError("Error While trying to refresh all Levy Accounts Details", e);
-                    }
-
-                    // isPeriodStarted = true //TODO  read value from cache
-
-                    await Task.Delay(refreshInterval, cancellationToken);
+                    await accountBalanceService.RefreshLevyAccountDetails(pageNumber, cancellationToken);
                 }
+                catch (Exception e)
+                {
+                    paymentLogger.LogError($"Error While trying to refresh page of Levy Accounts Details (Page {pageNumber})", e);
+                }
+
             }
             catch (TaskCanceledException e)
             {
-                paymentLogger.LogError("Levy Accounts Refresh Task was Canceled", e);
+                paymentLogger.LogError($"Levy Accounts Refresh Task was Canceled (Page {pageNumber})", e);
             }
             catch (Exception e)
             {
-                paymentLogger.LogError("Error While trying to refresh all Levy Accounts Details", e);
+                paymentLogger.LogError($"Error While trying to refresh page of Levy Accounts Details (Page {pageNumber})", e);
                 throw;
             }
-
-
         }
     }
 }

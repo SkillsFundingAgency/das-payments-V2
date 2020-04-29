@@ -1,10 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.FundingSource.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="LevyAccountBalanceService_MinReplicaSetSize" DefaultValue="3" />
-    <Parameter Name="LevyAccountBalanceService_PartitionCount" DefaultValue="10" />
-    <Parameter Name="LevyAccountBalanceService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="NonLevyFundedService_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="LevyAccountBalanceService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="LevyFundedProxyService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
@@ -154,10 +152,10 @@
   </ServiceManifestImport>
   <DefaultServices>
     <Service Name="SFA.DAS.Payments.FundingSource.LevyAccountBalanceService" ServicePackageActivationMode="ExclusiveProcess">
-      <StatefulService ServiceTypeName="SFA.DAS.Payments.FundingSource.LevyAccountBalanceServiceType" TargetReplicaSetSize="[LevyAccountBalanceService_TargetReplicaSetSize]" MinReplicaSetSize="[LevyAccountBalanceService_MinReplicaSetSize]">
-        <UniformInt64Partition PartitionCount="[LevyAccountBalanceService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.FundingSource.LevyAccountBalanceServiceType" InstanceCount="[LevyAccountBalanceService_InstanceCount]">
+        <SingletonPartition />
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
-      </StatefulService>
+      </StatelessService>
     </Service>
     <Service Name="SFA.DAS.Payments.FundingSource.NonLevyFundedService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.FundingSource.NonLevyFundedServiceType" InstanceCount="[NonLevyFundedService_InstanceCount]">

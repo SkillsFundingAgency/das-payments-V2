@@ -282,3 +282,6 @@ src/SFA.DAS.Payments.AcceptanceTests.EndToEnd/App.Debug.config-das
 /src/SFA.DAS.Payments.DataLocks.DataLockProxyService.IntegrationTests/appsettings.development.json
 /src/NDependOut
 /src/SFA.DAS.Payments.ndproj
+
+# Azure Functions localsettings file
+local.settings.json
