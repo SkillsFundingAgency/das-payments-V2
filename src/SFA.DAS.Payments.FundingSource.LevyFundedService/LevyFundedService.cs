@@ -48,6 +48,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         private IActorDataCache<bool> actorCache;
         private readonly ILifetimeScope lifetimeScope;
         private readonly ILevyFundingSourceRepository levyFundingSourceRepository;
+        private readonly ILevyTransactionFundingSourceService levyTransactionFundingSourceService;
 
         public LevyFundedService(
             ActorService actorService,
@@ -55,13 +56,15 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             IPaymentLogger paymentLogger,
             ITelemetry telemetry,
             ILifetimeScope lifetimeScope,
-            ILevyFundingSourceRepository levyFundingSourceRepository)
+            ILevyFundingSourceRepository levyFundingSourceRepository,
+            ILevyTransactionFundingSourceService levyTransactionFundingSourceService)
             : base(actorService, actorId)
         {
             this.paymentLogger = paymentLogger;
             this.telemetry = telemetry;
             this.lifetimeScope = lifetimeScope;
             this.levyFundingSourceRepository = levyFundingSourceRepository;
+            this.levyTransactionFundingSourceService = levyTransactionFundingSourceService ?? throw new ArgumentNullException(nameof(levyTransactionFundingSourceService));
         }
 
         public async Task HandleRequiredPayment(CalculatedRequiredLevyAmount message)
@@ -136,7 +139,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 using (var operation = telemetry.StartOperation("LevyFundedService.HandleMonthEnd", command.CommandId.ToString()))
                 {
                     var stopwatch = Stopwatch.StartNew();
-                    var fundingSourceEvents = await fundingSourceService.HandleMonthEnd(command.AccountId, command.JobId);
+                    var fundingSourceEvents = await levyTransactionFundingSourceService.HandleMonthEnd(command.AccountId, command.JobId);
                     
                     telemetry.TrackDurationWithMetrics("LevyFundedService.HandleMonthEnd",
                                                        stopwatch,
