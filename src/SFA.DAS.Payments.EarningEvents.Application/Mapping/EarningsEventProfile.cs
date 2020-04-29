@@ -1,10 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Factories;
+using SFA.DAS.Payments.Model.Core.Incentives;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
@@ -54,6 +57,24 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(destinationMember => destinationMember.StartDate, opt => opt.MapFrom(source => source.Aims.Min(aim => aim.LearningDeliveryValues.LearnStartDate)))
                 .Ignore(x => x.ContractType)
                 ;
+
+            CreateMap<ApprenticeshipContractType1EarningEvent, ApprenticeshipContractType1RedundancyEarningEvent>()
+                .Ignore(x => x.EventId);
+
+            CreateMap<ApprenticeshipContractType2EarningEvent, ApprenticeshipContractType2RedundancyEarningEvent>()
+                .Ignore(x => x.EventId);
+
+            CreateMap<Act1FunctionalSkillEarningsEvent, Act1RedundancyFunctionalSkillEarningsEvent>()
+                .Ignore(x => x.EventId);
+
+            CreateMap<Act2FunctionalSkillEarningsEvent, Act2RedundancyFunctionalSkillEarningsEvent>()
+                .Ignore(x => x.EventId);
+
+
+            CreateMap<FunctionalSkillEarning, FunctionalSkillEarning>();
+            CreateMap<OnProgrammeEarning, OnProgrammeEarning>();
+            CreateMap<IncentiveEarning, IncentiveEarning>();
+            CreateMap<EarningPeriod, EarningPeriod>();
 
             CreateMap<FM36Learner, Learner>()
                 .ForMember(dest => dest.ReferenceNumber, opt => opt.MapFrom(source => source.LearnRefNumber))
