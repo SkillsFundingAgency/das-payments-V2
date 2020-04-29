@@ -24,6 +24,9 @@
 	[SfaContributionPercentage] [decimal](15, 5) NULL,
 	IlrFileName  NVARCHAR(400) NULL,
 	EventType NVARCHAR(4000) NULL,
+    Constraint UQ_EarningEvent Unique ([JobId], [Ukprn], [AcademicYear], [CollectionPeriod], [ContractType], [LearnerUln], [LearnerReferenceNumber], 
+        [LearningAimReference], [LearningAimProgrammeType], [LearningAimStandardCode], [LearningAimFrameworkCode], [LearningAimPathwayCode], [LearningAimFundingLineType],
+        [LearningAimSequenceNumber], [LearningStartDate], [EventType])
 )
 GO
 
@@ -42,6 +45,6 @@ CREATE INDEX IX_EarningEvent_ApprenticeshipEarningQuery ON [Payments2].[EarningE
 GO
 
 CREATE NONCLUSTERED INDEX IX_EarningEvent__AcademicYear_CollectionPeriod_JobId
-ON [Payments2].[EarningEvent] (AcademicYear, CollectionPeriod, JobId)
-INCLUDE ([EventId])
+	ON [Payments2].[EarningEvent] (AcademicYear, CollectionPeriod, JobId)
+	INCLUDE ([EventId])
 GO

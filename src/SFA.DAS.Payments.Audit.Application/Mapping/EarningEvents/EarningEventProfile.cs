@@ -91,6 +91,15 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                 .ForMember(dest => dest.TotalNegotiatedPrice4, opt => opt.MapFrom(source => source.TotalNegotiatedPrice4))
                 .ForMember(dest => dest.AgreedPrice, opt => opt.MapFrom(source => source.AgreedPrice))
                 .ForMember(dest => dest.CourseStartDate, opt => opt.MapFrom(source => source.CourseStartDate));
+
+            CreateMap<EarningEventModel, EarningEventModel>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+            CreateMap<EarningEventPriceEpisodeModel, EarningEventPriceEpisodeModel>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+            CreateMap<EarningEventPeriodModel, EarningEventPeriodModel>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
         }
     }
 }
