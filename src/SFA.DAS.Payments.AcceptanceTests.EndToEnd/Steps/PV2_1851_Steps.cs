@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("there is more than 6 months remaining of the planned learning")]
         public async Task ThereAreLessThan6MonthsRemainingOfPlannedLearning()
         {
-            ImportR04Fm36ToMakeLearnerRedundant();
+            ImportR07Fm36ToMakeLearnerRedundant();
 
             await SetUpMatchingCommitment();
 
@@ -64,11 +64,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private void ImportR03Fm36ForNonRedundantNonLevyLearner() { GetFm36LearnerForCollectionPeriod("R03/current academic year"); }
 
-        private void ImportR04Fm36ToMakeLearnerRedundant() { GetFm36LearnerForCollectionPeriod("R04/current academic year"); }
+        private void ImportR07Fm36ToMakeLearnerRedundant() { GetFm36LearnerForCollectionPeriod("R07/current academic year"); }
 
         private async Task SetUpMatchingCommitment() { await SetupTestCommitmentData(CommitmentIdentifier, PriceEpisodeIdentifier); }
 
-        private bool HasCorrectlyFundedR04(short academicYear, int fundingSource, int sfaPercentage)
+        private bool HasCorrectlyFundedUpToR07(short academicYear, int fundingSource, int sfaPercentage)
         {
             return FundingSourcePaymentEventsHelper
                 .FundingSourcePaymentsReceivedForLearner(PriceEpisodeIdentifier, academicYear, TestSession)
@@ -76,13 +76,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     x.FundingSourceType == (FundingSourceType)fundingSource
                     && x.SfaContributionPercentage == (decimal)sfaPercentage / 100
                     && x.ContractType == ContractType.Act2
-                    && x.AmountDue == 1000m) == 1;
+                    && x.AmountDue == 1000m) == 3; //Should be 3 payments for R04,5,6 but not 7
         }
 
         [Then(@"fund 12 weeks of the learning from Funding Source (.*), with (.*)% SFA funding, from the date of the 'Price episode read start date'")]
         public async Task ThenFundTheRemainingInstallmentsCorrectly(int fundingSource, int sfaPercentage)
         {
-            await WaitForIt(() => HasCorrectlyFundedR04(short.Parse(TestSession.FM36Global.Year), fundingSource, sfaPercentage),
+            await WaitForIt(() => HasCorrectlyFundedUpToR07(short.Parse(TestSession.FM36Global.Year), fundingSource, sfaPercentage),
                 "Failed to find correctly funded remaining installments");
         }
 
