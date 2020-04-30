@@ -17,6 +17,7 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public decimal Amount { get; set; }
         public string MessagePayload { get; set; }
         public string MessageType { get; set; }
+        public DateTime IlrSubmissionDateTime { get; set; }
         
     }
 }

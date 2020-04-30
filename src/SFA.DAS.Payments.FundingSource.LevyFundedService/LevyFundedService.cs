@@ -50,6 +50,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         private IActorDataCache<bool> actorCache;
         private readonly ILifetimeScope lifetimeScope;
         private readonly ILevyFundingSourceRepository levyFundingSourceRepository;
+        private readonly ISubmissionCleanUpService submissionCleanUpService;
         
 
         public LevyFundedService(
@@ -58,13 +59,15 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             IPaymentLogger paymentLogger,
             ITelemetry telemetry,
             ILifetimeScope lifetimeScope,
-            ILevyFundingSourceRepository levyFundingSourceRepository)
+            ILevyFundingSourceRepository levyFundingSourceRepository,
+            ISubmissionCleanUpService submissionCleanUpService)
             : base(actorService, actorId)
         {
             this.paymentLogger = paymentLogger;
             this.telemetry = telemetry;
             this.lifetimeScope = lifetimeScope;
             this.levyFundingSourceRepository = levyFundingSourceRepository;
+            this.submissionCleanUpService = submissionCleanUpService;
         }
 
         public async Task HandleRequiredPayment(CalculatedRequiredLevyAmount message)
@@ -168,7 +171,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             {
                 using (var operation = telemetry.StartOperation())
                 {
-                    await fundingSourceService.RemovePreviousSubmissions(message.JobId, message.CollectionPeriod, message.AcademicYear, message.IlrSubmissionDateTime, message.Ukprn);
+                    await submissionCleanUpService.RemovePreviousSubmissions(message.JobId, message.CollectionPeriod, message.AcademicYear, message.IlrSubmissionDateTime, message.Ukprn);
                     telemetry.StopOperation(operation);
                 }
             }

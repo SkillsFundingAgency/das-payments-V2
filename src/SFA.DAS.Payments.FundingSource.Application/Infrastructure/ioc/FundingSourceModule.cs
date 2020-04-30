@@ -46,7 +46,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
             builder.RegisterType<LevyAccountBulkCopyConfiguration>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<LevyAccountBulkCopyRepository>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<FundingSourceEventGenerationService>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            
+            builder.RegisterType<SubmissionCleanUpService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
             builder.Register(c => new CoInvestedFundingSourceService
             (
                 new List<ICoInvestedPaymentProcessorOld>()

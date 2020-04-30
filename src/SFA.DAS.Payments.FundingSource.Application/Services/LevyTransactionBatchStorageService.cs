@@ -45,7 +45,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 RequiredPaymentEventId = levyTransaction.EventId,
                 TransferSenderAccountId = levyTransaction.TransferSenderAccountId,
                 MessagePayload = levyTransaction.ToJson(),
-                MessageType = levyTransaction.GetType().FullName
+                MessageType = levyTransaction.GetType().FullName,
+                IlrSubmissionDateTime = levyTransaction.IlrSubmissionDateTime
             }).ToList();
             cancellationToken.ThrowIfCancellationRequested();
 

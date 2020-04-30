@@ -20,6 +20,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.JobId).HasColumnName(@"JobId");
             builder.Property(x => x.MessagePayload).HasColumnName(@"MessagePayload");
             builder.Property(x => x.MessageType).HasColumnName(@"MessageType");
+            builder.Property(x => x.IlrSubmissionDateTime).HasColumnName(@"IlrSubmissionDateTime");
         }
     }
 }
