@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
 
         DbSet<LevyTransactionModel> LevyTransactions { get; }
         Task<int> SaveChanges(CancellationToken cancellationToken);
-        Task<List<LevyTransactionModel>> GetEmployerLevyTransactions(long employerAccountId);
+        IQueryable<LevyTransactionModel> GetEmployerLevyTransactions(long employerAccountId);
         Task SaveBatch(IList<LevyTransactionModel> batch, CancellationToken cancellationToken);
     }
 
@@ -53,10 +53,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
             if (connectionString != null) optionsBuilder.UseSqlServer(connectionString);
         }
 
-        public async Task<List<LevyTransactionModel>> GetEmployerLevyTransactions(long employerAccountId)
+        public IQueryable<LevyTransactionModel> GetEmployerLevyTransactions(long employerAccountId)
         {
-            return await LevyTransactions.Where(transaction => transaction.AccountId == employerAccountId)
-                .ToListAsync();
+            return LevyTransactions.Where(transaction => transaction.AccountId == employerAccountId);
         }
 
         public async Task SaveBatch(IList<LevyTransactionModel> batch, CancellationToken cancellationToken)

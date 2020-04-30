@@ -13,10 +13,30 @@ namespace SFA.DAS.Payments.FundingSource.Application.Interfaces
     {
         Task AddRequiredPayment(CalculatedRequiredLevyAmount paymentEvent);
         Task<ReadOnlyCollection<FundingSourcePaymentEvent>> ProcessReceiverTransferPayment(ProcessUnableToFundTransferFundingSourcePayment message);
-        Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(long employerAccountId, long jobId);
+        //Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(long employerAccountId, long jobId);
         Task StoreEmployerProviderPriority(EmployerChangedProviderPriority providerPriorityEvent);
         Task RemovePreviousSubmissions(long commandJobId, byte collectionPeriod, short academicYear, DateTime commandSubmissionDate, long ukprn);
 
         Task RemoveCurrentSubmission(long commandJobId, byte collectionPeriod, short academicYear, DateTime commandSubmissionDate, long ukprn);
+    }
+
+    public interface ISubmissionCleanUpService
+    {
+        Task RemovePreviousSubmissions(long commandJobId, byte collectionPeriod, short academicYear, DateTime commandSubmissionDate, long ukprn);
+        Task RemoveCurrentSubmission(long commandJobId, byte collectionPeriod, short academicYear, DateTime commandSubmissionDate, long ukprn);
+    }
+
+    public interface IEmployerProviderPriorityStorageService
+    {
+        Task StoreEmployerProviderPriority(EmployerChangedProviderPriority providerPriorityEvent);
+    }
+
+    public interface IFundingSourceEventGenerationService
+    {
+        Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(long employerAccountId, long jobId);
+    }
+    public interface ITransferFundingSourceEventGenerationService
+    {
+        Task<ReadOnlyCollection<FundingSourcePaymentEvent>> ProcessReceiverTransferPayment(ProcessUnableToFundTransferFundingSourcePayment message);
     }
 }

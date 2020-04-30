@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.FundingSource.Application.Data;
@@ -15,12 +16,7 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
-    public interface ILevyTransactionFundingSourceService
-    {
-        Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(long employerAccountId, long jobId);
-    }
-    
-    public class LevyTransactionFundingSourceService : ILevyTransactionFundingSourceService
+    public class FundingSourceEventGenerationService : IFundingSourceEventGenerationService
     {
         private readonly IPaymentLogger logger;
         private readonly IFundingSourceDataContext dataContext;
@@ -29,7 +25,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly IPaymentProcessor processor;
         private readonly ILevyFundingSourceRepository levyFundingSourceRepository;
 
-        public LevyTransactionFundingSourceService(IPaymentLogger logger, IFundingSourceDataContext dataContext, ILevyBalanceService levyBalanceService, IMapper mapper, IPaymentProcessor processor, ILevyFundingSourceRepository levyFundingSourceRepository)
+        public FundingSourceEventGenerationService(IPaymentLogger logger, IFundingSourceDataContext dataContext, ILevyBalanceService levyBalanceService, IMapper mapper, IPaymentProcessor processor, ILevyFundingSourceRepository levyFundingSourceRepository)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
@@ -44,13 +40,15 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             var levyAccount = await levyFundingSourceRepository.GetLevyAccount(employerAccountId);
             levyBalanceService.Initialise(levyAccount.Balance, levyAccount.TransferAllowance);
 
-            var requiredLevyPayments = await GetCalculatedRequiredLevyAmounts(employerAccountId).ConfigureAwait(false);
+            var orderedRequiredLevyPayments = await GetOrderedCalculatedRequiredLevyAmounts(employerAccountId).ConfigureAwait(false);
            
             //todo: ordering logic
+            //order by refunds>transfers>payments
+            //order by employerproviderpaymentpriority
             
-            logger.LogDebug($"Processing {requiredLevyPayments.Count} required payments, levy balance {levyAccount.Balance}, account {employerAccountId}, job id {jobId}");
+            logger.LogDebug($"Processing {orderedRequiredLevyPayments.Count} required payments, levy balance {levyAccount.Balance}, account {employerAccountId}, job id {jobId}");
             var fundingSourceEvents = new List<FundingSourcePaymentEvent>();
-            fundingSourceEvents.AddRange(requiredLevyPayments.SelectMany(payment =>
+            fundingSourceEvents.AddRange(orderedRequiredLevyPayments.SelectMany(payment =>
                 CreateFundingSourcePaymentsForRequiredPayment(payment, employerAccountId, jobId)));
 
             logger.LogDebug($"Created {fundingSourceEvents.Count} payments - {GetFundsDebugString(fundingSourceEvents)}, account {employerAccountId}, job id {jobId}");
@@ -59,11 +57,20 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             return fundingSourceEvents.AsReadOnly();
         }
 
-        private async Task<List<CalculatedRequiredLevyAmount>> GetCalculatedRequiredLevyAmounts(long employerAccountId)
+        private async Task<List<CalculatedRequiredLevyAmount>> GetOrderedCalculatedRequiredLevyAmounts(long employerAccountId)
         {
-            var transactions = await dataContext.GetEmployerLevyTransactions(employerAccountId).ConfigureAwait(false);
-            return transactions.Select(transaction => JsonConvert.DeserializeObject<CalculatedRequiredLevyAmount>(transaction.MessagePayload))
-                .ToList();
+            var priorities = dataContext.EmployerProviderPriorities.Where(x => x.EmployerAccountId == employerAccountId);
+
+            var prioritisedTransactions = dataContext
+                .GetEmployerLevyTransactions(employerAccountId)
+                .Join(priorities, x => new { AccountId = x.AccountId, Ukprn = x.Ukprn }, x => new { AccountId = x.EmployerAccountId, Ukprn = x.Ukprn}, (transaction, priority) => new { Transaction = transaction, Priority = priority })
+                .OrderByDescending(pt => pt.Transaction.Amount < 0)
+                .ThenByDescending(pt => pt.Transaction.TransferSenderAccountId.HasValue &&
+                                        pt.Transaction.TransferSenderAccountId != 0 &&
+                                        pt.Transaction.AccountId != pt.Transaction.TransferSenderAccountId)
+                .ThenBy(pt => pt.Priority.Order);
+
+            return await prioritisedTransactions.Select(pt => JsonConvert.DeserializeObject<CalculatedRequiredLevyAmount>(pt.Transaction.MessagePayload)).ToListAsync();
         }
 
         private List<FundingSourcePaymentEvent> CreateFundingSourcePaymentsForRequiredPayment(CalculatedRequiredLevyAmount requiredPaymentEvent, long employerAccountId, long jobId)
