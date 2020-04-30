@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,6 +21,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
         Task<int> SaveChanges(CancellationToken cancellationToken);
         IQueryable<LevyTransactionModel> GetEmployerLevyTransactions(long employerAccountId);
         Task SaveBatch(IList<LevyTransactionModel> batch, CancellationToken cancellationToken);
+
+        Task DeletePreviousSubmissions(long jobId, byte collectionPeriod, short academicYear,
+            DateTime ilrSubmissionDateTime, long ukprn);
     }
 
 
@@ -63,6 +68,22 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
             ChangeTracker.AutoDetectChangesEnabled = false;
             await LevyTransactions.AddRangeAsync(batch, cancellationToken).ConfigureAwait(false);
             await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task DeletePreviousSubmissions(long jobId, byte collectionPeriod, short academicYear, DateTime ilrSubmissionDateTime,
+            long ukprn)
+        {
+            await Database.ExecuteSqlCommandAsync(@"DELETE FROM [Payments2].[FundingSourceLevyTransaction]
+                WHERE [AcademicYear] = @academicYear
+                AND [CollectionPeriod] = @collectionPeriod
+                AND [JobId] != @jobId
+                AND [IlrSubmissionDateTime] < @ilrSubmissionDateTime
+                AND [Ukprn] = @ukprn", 
+            new SqlParameter("academicYear", academicYear),
+            new SqlParameter("collectionPeriod", collectionPeriod),
+            new SqlParameter("jobId", jobId),
+            new SqlParameter("ilrSubmissionDateTime", ilrSubmissionDateTime),
+            new SqlParameter("ukprn", ukprn));
         }
     }
 }

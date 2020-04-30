@@ -27,14 +27,16 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                             $"academic year {academicYear}, " +
                             $"ukprn {ukprn}");
 
-            dataContext.LevyTransactions.RemoveRange(dataContext.LevyTransactions.Where(transaction =>
-                transaction.AcademicYear == academicYear
-                && transaction.CollectionPeriod == collectionPeriod
-                && transaction.JobId != commandJobId
-                //todo ilrSubmissionDateTime
-                && transaction.Ukprn == ukprn));
+            //dataContext.LevyTransactions.RemoveRange(dataContext.LevyTransactions.Where(transaction =>
+            //    transaction.AcademicYear == academicYear
+            //    && transaction.CollectionPeriod == collectionPeriod
+            //    && transaction.JobId != commandJobId
+            //    //todo ilrSubmissionDateTime
+            //    && transaction.Ukprn == ukprn));
 
-            await dataContext.SaveChanges(CancellationToken.None);
+            //await dataContext.SaveChanges(CancellationToken.None);
+            await dataContext.DeletePreviousSubmissions(commandJobId, collectionPeriod, academicYear,
+                commandSubmissionDate, ukprn);
 
             logger.LogInfo("Finished removing previous submission payments.");
         }
