@@ -7,11 +7,14 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.Application.Data;
+using SFA.DAS.Payments.FundingSource.Application.Infrastructure;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
@@ -24,8 +27,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly IMapper mapper;
         private readonly IPaymentProcessor processor;
         private readonly ILevyFundingSourceRepository levyFundingSourceRepository;
+        private readonly IDataCache<LevyAccountModel> levyAccountCache;
 
-        public FundingSourceEventGenerationService(IPaymentLogger logger, IFundingSourceDataContext dataContext, ILevyBalanceService levyBalanceService, IMapper mapper, IPaymentProcessor processor, ILevyFundingSourceRepository levyFundingSourceRepository)
+        public FundingSourceEventGenerationService(IPaymentLogger logger, IFundingSourceDataContext dataContext, ILevyBalanceService levyBalanceService, IMapper mapper, IPaymentProcessor processor, ILevyFundingSourceRepository levyFundingSourceRepository, IDataCache<LevyAccountModel> levyAccountCache)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
@@ -33,6 +37,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.processor = processor ?? throw new ArgumentNullException(nameof(processor));
             this.levyFundingSourceRepository = levyFundingSourceRepository ?? throw new ArgumentNullException(nameof(levyFundingSourceRepository));
+            this.levyAccountCache = levyAccountCache ?? throw new ArgumentNullException(nameof(levyAccountCache));
         }
 
         public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(long employerAccountId, long jobId)
@@ -41,17 +46,17 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             levyBalanceService.Initialise(levyAccount.Balance, levyAccount.TransferAllowance);
 
             var orderedRequiredLevyPayments = await GetOrderedCalculatedRequiredLevyAmounts(employerAccountId).ConfigureAwait(false);
-           
-            //todo: ordering logic
-            //order by refunds>transfers>payments
-            //order by employerproviderpaymentpriority
-            
+
             logger.LogDebug($"Processing {orderedRequiredLevyPayments.Count} required payments, levy balance {levyAccount.Balance}, account {employerAccountId}, job id {jobId}");
             var fundingSourceEvents = new List<FundingSourcePaymentEvent>();
             fundingSourceEvents.AddRange(orderedRequiredLevyPayments.SelectMany(payment =>
                 CreateFundingSourcePaymentsForRequiredPayment(payment, employerAccountId, jobId)));
 
             logger.LogDebug($"Created {fundingSourceEvents.Count} payments - {GetFundsDebugString(fundingSourceEvents)}, account {employerAccountId}, job id {jobId}");
+
+            levyAccount.Balance = levyBalanceService.RemainingBalance;
+            levyAccount.TransferAllowance = levyBalanceService.RemainingTransferAllowance;
+            await levyAccountCache.AddOrReplace(CacheKeys.LevyBalanceKey, levyAccount);
 
             logger.LogInfo($"Finished generating levy and/or co-invested payments for the account: {employerAccountId}, number of payments: {fundingSourceEvents.Count}.");
             return fundingSourceEvents.AsReadOnly();

@@ -13,6 +13,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.FundingSource.Application.Data;
 using SFA.DAS.Payments.FundingSource.Application.Infrastructure;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Application.Services;
@@ -36,6 +37,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         private readonly ITelemetry telemetry;
         private IRequiredLevyAmountFundingSourceService fundingSourceService;
         private IGenerateSortedPaymentKeys generateSortedPaymentKeys;
+        private IFundingSourceEventGenerationService fundingSourceEventGenerationService;
 
         private IDataCache<CalculatedRequiredLevyAmount> requiredPaymentsCache;
         private IDataCache<bool> monthEndCache;
@@ -48,7 +50,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         private IActorDataCache<bool> actorCache;
         private readonly ILifetimeScope lifetimeScope;
         private readonly ILevyFundingSourceRepository levyFundingSourceRepository;
-        private readonly IFundingSourceEventGenerationService fundingSourceEventGenerationService;
+        
 
         public LevyFundedService(
             ActorService actorService,
@@ -56,15 +58,13 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             IPaymentLogger paymentLogger,
             ITelemetry telemetry,
             ILifetimeScope lifetimeScope,
-            ILevyFundingSourceRepository levyFundingSourceRepository,
-            IFundingSourceEventGenerationService levyTransactionFundingSourceService)
+            ILevyFundingSourceRepository levyFundingSourceRepository)
             : base(actorService, actorId)
         {
             this.paymentLogger = paymentLogger;
             this.telemetry = telemetry;
             this.lifetimeScope = lifetimeScope;
             this.levyFundingSourceRepository = levyFundingSourceRepository;
-            this.fundingSourceEventGenerationService = levyTransactionFundingSourceService ?? throw new ArgumentNullException(nameof(levyTransactionFundingSourceService));
         }
 
         public async Task HandleRequiredPayment(CalculatedRequiredLevyAmount message)
@@ -230,6 +230,16 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                                                                                   transferPaymentSortKeysCache,
                                                                                   requiredPaymentSortKeysCache,
                                                                                   generateSortedPaymentKeys);
+
+                fundingSourceEventGenerationService = new FundingSourceEventGenerationService(
+                    lifetimeScope.Resolve<IPaymentLogger>(),
+                    lifetimeScope.Resolve<IFundingSourceDataContext>(),
+                    lifetimeScope.Resolve<ILevyBalanceService>(),
+                    lifetimeScope.Resolve<IMapper>(),
+                    lifetimeScope.Resolve<IPaymentProcessor>(),
+                    lifetimeScope.Resolve<ILevyFundingSourceRepository>(),
+                    levyAccountCache
+                );
 
                 await Initialise().ConfigureAwait(false);
                 await base.OnActivateAsync().ConfigureAwait(false);
