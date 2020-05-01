@@ -24,6 +24,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
 
         Task DeletePreviousSubmissions(long jobId, byte collectionPeriod, short academicYear,
             DateTime ilrSubmissionDateTime, long ukprn);
+
+        Task DeleteCurrentSubmissions(long jobId, byte collectionPeriod, short academicYear, long ukprn);
     }
 
 
@@ -84,6 +86,19 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
             new SqlParameter("jobId", jobId),
             new SqlParameter("ilrSubmissionDateTime", ilrSubmissionDateTime),
             new SqlParameter("ukprn", ukprn));
+        }
+
+        public async Task DeleteCurrentSubmissions(long jobId, byte collectionPeriod, short academicYear, long ukprn)
+        {
+            await Database.ExecuteSqlCommandAsync(@"DELETE FROM [Payments2].[FundingSourceLevyTransaction]
+                WHERE [AcademicYear] = @academicYear
+                AND [CollectionPeriod] = @collectionPeriod
+                AND [JobId] = @jobId
+                AND [Ukprn] = @ukprn", 
+                new SqlParameter("academicYear", academicYear),
+                new SqlParameter("collectionPeriod", collectionPeriod),
+                new SqlParameter("jobId", jobId),
+                new SqlParameter("ukprn", ukprn));
         }
     }
 }
