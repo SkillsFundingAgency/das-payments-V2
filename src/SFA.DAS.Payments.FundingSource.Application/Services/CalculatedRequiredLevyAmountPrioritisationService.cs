@@ -13,29 +13,60 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         {
             var orderedReturnList = new List<CalculatedRequiredLevyAmount>();
 
-            orderedReturnList.AddRange(sourceList.WhereAndRemove(x => IsRefund(x)));
-
-
-            orderedReturnList.AddRange(sourceList); //todo change this at the end
+            orderedReturnList.AddRange(sourceList.WhereAndRemove(x => x.IsRefund()));
+            orderedReturnList.AddRange(sourceList.WhereAndRemove(x=>x.IsTransfer()).PerformDefaultPaymentsSort());
+            orderedReturnList.AddRange(AddRequiredPayments(sourceList, providerPriorities));
+            orderedReturnList.AddRange(sourceList.WhereAndRemove(x =>true).PerformDefaultPaymentsSort());
 
             return orderedReturnList;
         }
 
-        
-
-        private bool IsRefund(CalculatedRequiredLevyAmount calculatedRequiredLevyAmount)
+        private List<CalculatedRequiredLevyAmount> AddRequiredPayments(List<CalculatedRequiredLevyAmount> sourceList, List<(long Ukprn, int Order)> providerPriorities)
         {
-            return calculatedRequiredLevyAmount.AmountDue < 0;
+            var sortedRequiredPayments = new List<CalculatedRequiredLevyAmount>();
+
+            foreach (var providerPriority in providerPriorities.OrderBy(pp=>pp.Order))
+            {
+                var prioritisedPayments
+                    = sourceList
+                    .WhereAndRemove(x => x.Ukprn == providerPriority.Ukprn)
+                    .ToList();
+                sortedRequiredPayments.AddRange(prioritisedPayments.PerformDefaultPaymentsSort());
+            }
+
+            return sortedRequiredPayments;
         }
     }
 
-    public static class CalculatedRequiredLevyAmountListExtensions
+    public static class CalculatedRequiredLevyAmountExtensions
     {
         public static List<CalculatedRequiredLevyAmount> WhereAndRemove(this List<CalculatedRequiredLevyAmount> sourceList, Func<CalculatedRequiredLevyAmount, bool> action)
         {
             var matchedItems = sourceList.Where(action).ToList();
             matchedItems.ForEach(x => sourceList.Remove(x));
             return matchedItems;
+        }
+
+        public static bool IsTransfer(this CalculatedRequiredLevyAmount calculatedRequiredLevyAmount)
+        {
+
+            return calculatedRequiredLevyAmount.TransferSenderAccountId.HasValue &&
+                   calculatedRequiredLevyAmount.AccountId != calculatedRequiredLevyAmount.TransferSenderAccountId &&
+                   calculatedRequiredLevyAmount.TransferSenderAccountId != 0;
+        }
+        
+
+        public static bool IsRefund(this CalculatedRequiredLevyAmount calculatedRequiredLevyAmount)
+        {
+            return calculatedRequiredLevyAmount.AmountDue < 0;
+        }
+
+        public static List<CalculatedRequiredLevyAmount> PerformDefaultPaymentsSort(this List<CalculatedRequiredLevyAmount> calculatedRequiredLevyAmounts)
+        {
+            return calculatedRequiredLevyAmounts
+                .OrderBy(x => x.AgreedOnDate)
+                .ThenBy(x => x.Learner.Uln)
+                .ToList();
         }
     }
 }
