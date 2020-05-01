@@ -1,10 +1,6 @@
 ﻿CREATE VIEW [Payments2].[SubmissionJobsToBeDeleted]
 AS
-     SELECT DCJobId
-     FROM Payments2.Job
-     WHERE STATUS = 5 --get all jobs where STATUS is DCTasksFailed
-     UNION
-     SELECT OldJob.DCJobId
+     SELECT DISTINCT OldJob.DCJobId
      FROM Payments2.Job NewJob
      INNER JOIN Payments2.Job OldJob
      ON NewJob.Ukprn = OldJob.Ukprn
