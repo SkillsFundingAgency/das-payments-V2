@@ -66,6 +66,12 @@ namespace SFA.DAS.Payments.ScheduledJobs.AcceptanceTests.Steps
             }
         }
 
+        [Given(@"Submission (.*) has DCJobSucceeded (.*) from collection period (.*)")]
+        public async Task GivenSubmissionAHasDcJobSucceededNullFromCollectionPeriod(string submissionId, string dcJobSucceeded, byte collectionPeriod)
+        {
+            await SetDcJobSucceeded(submissions.SingleOrDefault(s => s.SubmissionId == submissionId && s.CollectionPeriod == collectionPeriod), dcJobSucceeded);
+        }
+
         [When(@"Audit Data Cleanup Function is executed")]
         public async Task WhenAuditDataCleanupFunctionIsExecuted()
         {
@@ -108,15 +114,24 @@ namespace SFA.DAS.Payments.ScheduledJobs.AcceptanceTests.Steps
 
         private async Task SetJobStatus(SubmissionData submission, string status)
         {
-            var isValidStatus = Enum.TryParse<JobStatus>(status, out var jobStatus);
+            var isValid = Enum.TryParse<JobStatus>(status, out var jobStatus);
 
-            if (submission == null || !isValidStatus)
+            if (submission == null || !isValid)
             {
                 Assert.Fail("Invalid spec parameters");
                 return;
             }
 
             submission.JobModel.Status = jobStatus;
+            submissionDataContext.Jobs.Update(submission.JobModel);
+            await submissionDataContext.SaveChangesAsync();
+        }
+
+        private async Task SetDcJobSucceeded(SubmissionData submission, string dcJobSucceeded)
+        {
+            var isValid = bool.TryParse(dcJobSucceeded, out var dcJobSucceededVal);
+
+            submission.JobModel.DcJobSucceeded = (isValid == false ? (bool?)null : dcJobSucceededVal);
             submissionDataContext.Jobs.Update(submission.JobModel);
             await submissionDataContext.SaveChangesAsync();
         }

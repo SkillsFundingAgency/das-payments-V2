@@ -11,5 +11,11 @@ AS
         AND NewJob.AcademicYear = OldJob.AcademicYear
         AND NewJob.CollectionPeriod = OldJob.CollectionPeriod
         AND NewJob.IlrSubmissionTime > OldJob.IlrSubmissionTime --new job must be in future
-     WHERE OldJob.JobId IS NOT NULL
-           AND NewJob.STATUS IN (2, 3, 4); -- get all old jobs where a new job exists with STATUS IN (Completed, CompletedWithErrors, TimedOut)
+        AND NewJob.[Status] IN (2, 3) -- when comparing jobs Only include new jobs with statu IN (Completed, CompletedWithErrors). i.e ignore InProgress, TimedOut, DcTasksFailed 
+	    AND NewJob.DCJobSucceeded IS NOT NULL -- exclude all New jobs with DCJobSucceeded is null
+	    AND OldJob.[Status] IN (2, 3) -- when comparing jobs Only include new jobs with statu IN (Completed, CompletedWithErrors). i.e ignore InProgress, TimedOut, DcTasksFailed 
+	    AND OldJob.DCJobSucceeded IS NOT NULL -- exclude all old jobs with DCJobSucceeded is null
+--compare old and new jobs with statu IN (Completed, CompletedWithErrors) and DCJobSucceeded IS NOT NULL, 
+--this means it will ignore InProgress and DcTasksFailed regardless as well as ignore all jobs where DCJobSucceeded IS NULL
+--and after that produces a list of DcJobIds to be removed
+;
