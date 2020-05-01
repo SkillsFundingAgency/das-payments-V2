@@ -9,6 +9,7 @@ using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.FundingSource.LevyTransactionService.Handlers;
 using SFA.DAS.Payments.FundingSource.LevyTransactionService.Infrastructure.Messaging;
+using SFA.DAS.Payments.Messaging.Serialization;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.ServiceFabric.Core;
@@ -29,7 +30,9 @@ namespace SFA.DAS.Payments.FundingSource.LevyTransactionService.Infrastructure.I
                         appConfig.FailedMessagesQueue,
                         c.Resolve<IPaymentLogger>(),
                         c.Resolve<IContainerScopeFactory>(),
-                        c.Resolve<ITelemetry>());
+                        c.Resolve<ITelemetry>(),
+                        c.Resolve<IMessageDeserializer>(),
+                        c.Resolve<IApplicationMessageModifier>());
                 })
                 .As<IStatelessServiceBusBatchCommunicationListener>()
                 .SingleInstance();
