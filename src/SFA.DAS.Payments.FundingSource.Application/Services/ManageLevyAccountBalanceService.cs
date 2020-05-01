@@ -22,66 +22,70 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
     public interface IManageLevyAccountBalanceService
     {
-        Task RefreshLevyAccountDetails(CancellationToken cancellationToken = default(CancellationToken));
+        Task RefreshLevyAccountDetails(int pageNumber, CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> GetTotalPageSize();
     }
 
     public class ManageLevyAccountBalanceService : IManageLevyAccountBalanceService
     {
-        private readonly ILevyFundingSourceRepository repository;
         private readonly IAccountApiClient accountApiClient;
         private readonly IPaymentLogger logger;
         private readonly ILevyAccountBulkCopyRepository levyAccountBulkWriter;
         private readonly int batchSize;
-        private int totalPageSize;
-        private readonly AsyncRetryPolicy retryPolicy;
         private readonly IEndpointInstanceFactory endpointInstanceFactory;
 
-        public ManageLevyAccountBalanceService(ILevyFundingSourceRepository repository,
-            IAccountApiClient accountApiClient,
+        public ManageLevyAccountBalanceService(IAccountApiClient accountApiClient,
             IPaymentLogger logger,
             ILevyAccountBulkCopyRepository levyAccountBulkWriter,
             int batchSize,
             IEndpointInstanceFactory endpointInstanceFactory)
         {
-            this.repository = repository;
             this.accountApiClient = accountApiClient;
             this.logger = logger;
             this.levyAccountBulkWriter = levyAccountBulkWriter;
             this.batchSize = batchSize;
             this.endpointInstanceFactory = endpointInstanceFactory;
-
-            retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(5, i => TimeSpan.FromMinutes(1));
         }
 
-        public async Task RefreshLevyAccountDetails(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task RefreshLevyAccountDetails(int pageNumber, CancellationToken cancellationToken = default(CancellationToken))
         {
             logger.LogInfo("Now Trying to Refresh All Accounts Balance Details");
 
-            var page = 1;
+            cancellationToken.ThrowIfCancellationRequested();
 
-            await retryPolicy.ExecuteAsync(GetTotalPageSize).ConfigureAwait(false);
-
-            while (page <= totalPageSize)
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                var pagedAccountsRecords = await accountApiClient.GetPageOfAccounts(pageNumber, batchSize).ConfigureAwait(false);
+                var pagedLevyAccountModels = MapToLevyAccountModel(pagedAccountsRecords);
+                await BatchUpdateLevyAccounts(pagedLevyAccountModels, cancellationToken).ConfigureAwait(false);
+                await PublishNotLevyPayerEmployerEvents(pagedLevyAccountModels).ConfigureAwait(false);
 
-                try
-                {
-                    var pagedAccountsRecords = await accountApiClient.GetPageOfAccounts(page, batchSize).ConfigureAwait(false);
-                    var pagedLevyAccountModels = MapToLevyAccountModel(pagedAccountsRecords);
-                    await BatchUpdateLevyAccounts(pagedLevyAccountModels, cancellationToken).ConfigureAwait(false);
-                    await PublishNotLevyPayerEmployerEvents(pagedLevyAccountModels).ConfigureAwait(false);
-
-                    logger.LogInfo($"Successfully retrieved Account Balance Details for Page {page} of Levy Accounts");
-                }
-                catch (Exception e)
-                {
-                    logger.LogError($"Error while retrieving Account Balance Details for Page {page} of Levy Accounts", e);
-                }
-
-                page++;
+                logger.LogInfo($"Successfully retrieved Account Balance Details for Page {pageNumber} of Levy Accounts");
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"Error while retrieving Account Balance Details for Page {pageNumber} of Levy Accounts", e);
             }
         }
+
+        public async Task<int> GetTotalPageSize()
+        {
+            try
+            {
+                var pagedAccountsRecord = await accountApiClient.GetPageOfAccounts(1, batchSize).ConfigureAwait(false);
+                var totalPages = pagedAccountsRecord.TotalPages;
+
+                logger.LogInfo($"Total Levy Account to process {totalPages} ");
+
+                return totalPages;
+            }
+            catch (Exception e)
+            {
+                logger.LogError("Error while trying to get Total number of Levy Accounts", e);
+                throw;
+            }
+        }
+
         private async Task BatchUpdateLevyAccounts(List<LevyAccountModel> levyAccountModels, CancellationToken cancellationToken)
         {
             try
@@ -108,23 +112,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             }).ToList();
 
             return levyAccountModels;
-
-        }
-
-        private async Task GetTotalPageSize()
-        {
-            try
-            {
-                var pagedAccountsRecord = await accountApiClient.GetPageOfAccounts(1, batchSize).ConfigureAwait(false);
-                totalPageSize = pagedAccountsRecord.TotalPages;
-
-                logger.LogInfo($"Total Levy Account to process {totalPageSize} ");
-            }
-            catch (Exception e)
-            {
-                logger.LogError("Error while trying to get Total number of Levy Accounts", e);
-                throw;
-            }
 
         }
 

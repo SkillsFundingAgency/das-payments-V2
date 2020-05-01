@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -37,26 +37,9 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             return messages.AsReadOnly();
         }
 
-        public async Task Complete()
-        {
-            await messageReceiver.CompleteAsync(messages.Select(message => message.SystemProperties.LockToken))
-                .ConfigureAwait(false);
-        }
-
         public async Task Complete(IEnumerable<string> lockTokens)
         {
             await messageReceiver.CompleteAsync(lockTokens).ConfigureAwait(false);
-        }
-
-        public async Task Complete(Message message)
-        {
-            await messageReceiver.CompleteAsync(message.SystemProperties.LockToken).ConfigureAwait(false);
-        }
-
-        public async Task Abandon()
-        {
-            await Task.WhenAll(messages.Select(message => messageReceiver.AbandonAsync(message.SystemProperties.LockToken)))
-                .ConfigureAwait(false);
         }
 
         public async Task Abandon(IList<string> lockTokens)

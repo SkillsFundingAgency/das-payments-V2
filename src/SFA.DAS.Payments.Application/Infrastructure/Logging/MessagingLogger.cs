@@ -4,7 +4,7 @@ using System;
 
 namespace SFA.DAS.Payments.Application.Infrastructure.Logging
 {
-    internal class MessagingLogger : ILog
+    public class MessagingLogger : ILog
     {
         private readonly IPaymentLogger logger;
         private readonly ESFA.DC.Logging.Enums.LogLevel minimum;

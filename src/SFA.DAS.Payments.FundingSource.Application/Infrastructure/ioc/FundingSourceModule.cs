@@ -82,13 +82,12 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
                     var batchSize = configHelper.GetSettingOrDefault("BatchSize", 1000);
-                    var repository = c.Resolve<ILevyFundingSourceRepository>();
                     var accountApiClient = c.Resolve<IAccountApiClient>();
                     var logger = c.Resolve<IPaymentLogger>();
                     var bulkWriter = c.Resolve<ILevyAccountBulkCopyRepository>();
                     var endpointInstanceFactory = new EndpointInstanceFactory(CreateEndpointConfiguration(c));
 
-                    return new ManageLevyAccountBalanceService(repository, accountApiClient, logger, bulkWriter, batchSize, endpointInstanceFactory);
+                    return new ManageLevyAccountBalanceService(accountApiClient, logger, bulkWriter, batchSize, endpointInstanceFactory);
                 })
                 .As<IManageLevyAccountBalanceService>()
                 .InstancePerLifetimeScope();
