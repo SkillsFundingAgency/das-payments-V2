@@ -34,8 +34,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 
             var amounts = new List<CalculatedRequiredLevyAmount>
             {
-                new CalculatedRequiredLevyAmount { AmountDue = 1000, EventId = expectedSecondEventId, AgreedOnDate = DateTime.UtcNow, Learner = new Learner(){Uln = 1}},
-                new CalculatedRequiredLevyAmount { AmountDue = -1000, EventId = expectedFirstEventId }
+                new CalculatedRequiredLevyAmount { AmountDue = 1000, EventId = expectedSecondEventId, AgreedOnDate = DateTime.UtcNow, Learner = new Learner(){Uln = 1}, AccountId = 112 },
+                new CalculatedRequiredLevyAmount { AmountDue = -1000, EventId = expectedFirstEventId, AccountId = 112 }
             };
 
             var result = await calculatedRequiredLevyAmountPrioritisationService.Prioritise(amounts, new List<(long, int)>());
@@ -69,11 +69,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             //should be sorted by agreed on date then learner uln 
             var amounts = new List<CalculatedRequiredLevyAmount>
             {
-                new CalculatedRequiredLevyAmount {  EventId = expectedFifthEventId, TransferSenderAccountId = null, AgreedOnDate = agreedOnDate, Learner  = learner1},
-                new CalculatedRequiredLevyAmount {  EventId = expectedFirstEventId, TransferSenderAccountId = 100000001, AgreedOnDate = agreedOnDate, Learner  = learner1},
-                new CalculatedRequiredLevyAmount {  EventId = expectedThirdEventId, TransferSenderAccountId = 100000003,AgreedOnDate = agreedOnDate.AddMinutes(5), Learner  = learner1},
-                new CalculatedRequiredLevyAmount {  EventId = expectedSecondEventId, TransferSenderAccountId = 100000002,AgreedOnDate = agreedOnDate, Learner  = learner2},
-                new CalculatedRequiredLevyAmount {  EventId = expectedFourthEventId, TransferSenderAccountId = 100000005,AgreedOnDate = agreedOnDate.AddMinutes(5), Learner = learner2}
+                new CalculatedRequiredLevyAmount {  EventId = expectedFifthEventId, TransferSenderAccountId = null, AgreedOnDate = agreedOnDate, Learner  = learner1, AccountId = 112 },
+                new CalculatedRequiredLevyAmount {  EventId = expectedFirstEventId, TransferSenderAccountId = 100000001, AgreedOnDate = agreedOnDate, Learner  = learner1, AccountId = 112 },
+                new CalculatedRequiredLevyAmount {  EventId = expectedThirdEventId, TransferSenderAccountId = 100000003,AgreedOnDate = agreedOnDate.AddMinutes(5), Learner  = learner1, AccountId = 112 },
+                new CalculatedRequiredLevyAmount {  EventId = expectedSecondEventId, TransferSenderAccountId = 100000002,AgreedOnDate = agreedOnDate, Learner  = learner2, AccountId = 112 },
+                new CalculatedRequiredLevyAmount {  EventId = expectedFourthEventId, TransferSenderAccountId = 100000005,AgreedOnDate = agreedOnDate.AddMinutes(5), Learner = learner2, AccountId = 112 }
             };
 
             var result = await calculatedRequiredLevyAmountPrioritisationService.Prioritise(amounts, new List<(long, int)>());
@@ -98,9 +98,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             var learner2 = new Learner {Uln = 10000002};
             var amounts = new List<CalculatedRequiredLevyAmount>
             {
-                new CalculatedRequiredLevyAmount { EventId = expectedThirdEventId, AmountDue = 1000, AgreedOnDate = DateTime.UtcNow, Learner  = new Learner(){Uln = 1} },
-                new CalculatedRequiredLevyAmount { EventId = expectedFirstEventId, AmountDue = -1000 , AgreedOnDate = DateTime.UtcNow, Learner  = new Learner(){Uln = 1} },
-                new CalculatedRequiredLevyAmount {  EventId = expectedSecondEventId, TransferSenderAccountId = 100000001, AgreedOnDate = DateTime.UtcNow, Learner  = learner2},
+                new CalculatedRequiredLevyAmount { EventId = expectedThirdEventId, AmountDue = 1000, AgreedOnDate = DateTime.UtcNow, Learner  = new Learner(){Uln = 1}, AccountId = 112 },
+                new CalculatedRequiredLevyAmount { EventId = expectedFirstEventId, AmountDue = -1000 , AgreedOnDate = DateTime.UtcNow, Learner  = new Learner(){Uln = 1}, AccountId = 112 },
+                new CalculatedRequiredLevyAmount {  EventId = expectedSecondEventId, TransferSenderAccountId = 100000001, AgreedOnDate = DateTime.UtcNow, Learner  = learner2, AccountId = 112 },
             };
 
             var result = await calculatedRequiredLevyAmountPrioritisationService.Prioritise(amounts, new List<(long, int)>());
@@ -125,9 +125,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             var providerPriorities = new List<(long ukprn, int order)> {(1, 2), (2, 1), (3, 3)};
             var amounts = new List<CalculatedRequiredLevyAmount>
             {
-                new CalculatedRequiredLevyAmount { EventId = expectedSecondEventId, AmountDue = 1000, Ukprn = 1, AgreedOnDate = DateTime.UtcNow, Learner = learner1},
-                new CalculatedRequiredLevyAmount { EventId = expectedFirstEventId, AmountDue = 1000 , Ukprn = 2, AgreedOnDate = DateTime.UtcNow, Learner = learner1},
-                new CalculatedRequiredLevyAmount { EventId = expectedThirdEventId, AmountDue = 1000 , Ukprn = 3, AgreedOnDate = DateTime.UtcNow, Learner = learner1}
+                new CalculatedRequiredLevyAmount { EventId = expectedSecondEventId, AmountDue = 1000, Ukprn = 1, AgreedOnDate = DateTime.UtcNow, Learner = learner1, AccountId = 112 },
+                new CalculatedRequiredLevyAmount { EventId = expectedFirstEventId, AmountDue = 1000 , Ukprn = 2, AgreedOnDate = DateTime.UtcNow, Learner = learner1, AccountId = 112 },
+                new CalculatedRequiredLevyAmount { EventId = expectedThirdEventId, AmountDue = 1000 , Ukprn = 3, AgreedOnDate = DateTime.UtcNow, Learner = learner1, AccountId = 112 }
                };
 
             var result = await calculatedRequiredLevyAmountPrioritisationService.Prioritise(amounts, providerPriorities);
@@ -151,8 +151,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             var providerPriorities = new List<(long ukprn, int order)> {(1, 2)};
             var amounts = new List<CalculatedRequiredLevyAmount>
             {
-                new CalculatedRequiredLevyAmount { EventId = expectedFirstEventId, AmountDue = 1000, Ukprn = 1, AgreedOnDate = DateTime.UtcNow, Learner = learner1},
-                new CalculatedRequiredLevyAmount { EventId = expectedSecondEventId, AmountDue = 1000 , Ukprn = 2, AgreedOnDate = DateTime.UtcNow, Learner = learner1},
+                new CalculatedRequiredLevyAmount { EventId = expectedFirstEventId, AmountDue = 1000, Ukprn = 1, AgreedOnDate = DateTime.UtcNow, Learner = learner1, AccountId = 112 },
+                new CalculatedRequiredLevyAmount { EventId = expectedSecondEventId, AmountDue = 1000 , Ukprn = 2, AgreedOnDate = DateTime.UtcNow, Learner = learner1, AccountId = 112 },
             };
 
             var result = await calculatedRequiredLevyAmountPrioritisationService.Prioritise(amounts, providerPriorities);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.FundingSource.Application.Extensions;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
@@ -35,38 +36,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             }
 
             return sortedRequiredPayments;
-        }
-    }
-
-    public static class CalculatedRequiredLevyAmountExtensions
-    {
-        public static List<CalculatedRequiredLevyAmount> WhereAndRemove(this List<CalculatedRequiredLevyAmount> sourceList, Func<CalculatedRequiredLevyAmount, bool> action)
-        {
-            var matchedItems = sourceList.Where(action).ToList();
-            matchedItems.ForEach(x => sourceList.Remove(x));
-            return matchedItems;
-        }
-
-        public static bool IsTransfer(this CalculatedRequiredLevyAmount calculatedRequiredLevyAmount)
-        {
-
-            return calculatedRequiredLevyAmount.TransferSenderAccountId.HasValue &&
-                   calculatedRequiredLevyAmount.AccountId != calculatedRequiredLevyAmount.TransferSenderAccountId &&
-                   calculatedRequiredLevyAmount.TransferSenderAccountId != 0;
-        }
-        
-
-        public static bool IsRefund(this CalculatedRequiredLevyAmount calculatedRequiredLevyAmount)
-        {
-            return calculatedRequiredLevyAmount.AmountDue < 0;
-        }
-
-        public static List<CalculatedRequiredLevyAmount> PerformDefaultPaymentsSort(this List<CalculatedRequiredLevyAmount> calculatedRequiredLevyAmounts)
-        {
-            return calculatedRequiredLevyAmounts
-                .OrderBy(x => x.AgreedOnDate)
-                .ThenBy(x => x.Learner.Uln)
-                .ToList();
         }
     }
 }
