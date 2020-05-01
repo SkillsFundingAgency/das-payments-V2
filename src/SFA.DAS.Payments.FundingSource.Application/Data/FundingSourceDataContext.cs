@@ -21,10 +21,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
         Task<int> SaveChanges(CancellationToken cancellationToken);
         IQueryable<LevyTransactionModel> GetEmployerLevyTransactions(long employerAccountId);
         Task SaveBatch(IList<LevyTransactionModel> batch, CancellationToken cancellationToken);
-
         Task DeletePreviousSubmissions(long jobId, byte collectionPeriod, short academicYear,
             DateTime ilrSubmissionDateTime, long ukprn);
-
         Task DeleteCurrentSubmissions(long jobId, byte collectionPeriod, short academicYear, long ukprn);
     }
 
@@ -95,10 +93,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
                 AND [CollectionPeriod] = @collectionPeriod
                 AND [JobId] = @jobId
                 AND [Ukprn] = @ukprn", 
-                new SqlParameter("academicYear", academicYear),
-                new SqlParameter("collectionPeriod", collectionPeriod),
-                new SqlParameter("jobId", jobId),
-                new SqlParameter("ukprn", ukprn));
+            new SqlParameter("academicYear", academicYear),
+            new SqlParameter("collectionPeriod", collectionPeriod),
+            new SqlParameter("jobId", jobId),
+            new SqlParameter("ukprn", ukprn));
         }
     }
 }

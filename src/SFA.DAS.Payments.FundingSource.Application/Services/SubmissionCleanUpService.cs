@@ -25,6 +25,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             logger.LogDebug($"Removing previous submissions for job id {commandJobId}, " +
                             $"collection period {collectionPeriod}, " +
                             $"academic year {academicYear}, " +
+                            $"submission date {commandSubmissionDate}, " +
                             $"ukprn {ukprn}");
 
             await dataContext.DeletePreviousSubmissions(commandJobId, collectionPeriod, academicYear,
@@ -41,7 +42,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                             $"ukprn {ukprn}");
 
             await dataContext.DeleteCurrentSubmissions(commandJobId, collectionPeriod, academicYear,ukprn);
-
 
             logger.LogInfo("Finished removing previous submission payments.");
         }
