@@ -3,10 +3,13 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using Autofac;
+using Microsoft.Azure.ServiceBus;
+using Microsoft.Azure.ServiceBus.Core;
 using NServiceBus;
 using NServiceBus.Features;
 using NServiceBus.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Messaging.Telemetry;
 using SFA.DAS.Payments.Core.Configuration;
@@ -45,7 +48,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                     var license = WebUtility.HtmlDecode(config.NServiceBusLicense);
                     endpointConfiguration.License(license);
                 }
-            
+
                 var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
                 transport
                     .ConnectionString(config.ServiceBusConnectionString)
@@ -84,7 +87,14 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 .SingleInstance();
             builder.RegisterType<ExceptionHandlingBehavior>()
                 .SingleInstance();
-            builder.RegisterType<MessageTimeOutBehaviour>();
+            builder.Register(c =>
+                {
+                    var config = c.Resolve<IApplicationConfiguration>();
+                    var logger = c.Resolve<IPaymentLogger>();
+                    var messageReceiver = new MessageReceiver(new ServiceBusConnection(config.ServiceBusConnectionString), config.EndpointName, ReceiveMode.PeekLock, RetryPolicy.Default);
+                    return new MessageTimeOutBehaviour(messageReceiver, logger, c.Resolve<ITelemetry>());
+                })
+                .SingleInstance();
         }
     }
 

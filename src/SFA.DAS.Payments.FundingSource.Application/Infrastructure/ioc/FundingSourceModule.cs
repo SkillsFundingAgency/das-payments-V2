@@ -72,8 +72,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
                 })
                 .As<IAccountApiConfiguration>()
                 .InstancePerLifetimeScope();
-            builder.RegisterBuildCallback(c => c.Resolve<EndpointConfiguration>()
-                .Pipeline.Register(typeof(MessageTimeOutBehaviour),"Behaviour to handle message lock renewal and timeout"));
             builder.RegisterType<AccountApiClient>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.Register((c, p) =>
