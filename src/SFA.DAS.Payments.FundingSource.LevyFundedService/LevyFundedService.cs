@@ -241,7 +241,9 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                     lifetimeScope.Resolve<IMapper>(),
                     lifetimeScope.Resolve<IPaymentProcessor>(),
                     lifetimeScope.Resolve<ILevyFundingSourceRepository>(),
-                    levyAccountCache
+                    levyAccountCache, 
+                    lifetimeScope.Resolve<ICalculatedRequiredLevyAmountPrioritisationService>()
+
                 );
 
                 await Initialise().ConfigureAwait(false);
