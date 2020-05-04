@@ -109,8 +109,8 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
                         WHERE DL.JobId = @DcJobId",
                         new SqlParameter("DcJobId", job.DcJobId));
 
-                    await dataContext.Database.ExecuteSqlCommandAsync(@"DELETE Payments2.DataLockEventNonPayablePeriod 
-                        FROM Payments2.DataLockEventNonPayablePeriod AS DLEPP
+                    await dataContext.Database.ExecuteSqlCommandAsync(@"DELETE Payments2.DataLockEventPayablePeriod 
+                        FROM Payments2.DataLockEventPayablePeriod AS DLEPP
                             INNER JOIN Payments2.DataLockEvent AS DL ON DLEPP.DataLockEventId = DL.EventId
                         WHERE DL.JobId = @DcJobId",
                         new SqlParameter("DcJobId", job.DcJobId));
