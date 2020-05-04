@@ -84,6 +84,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 .SingleInstance();
             builder.RegisterType<ExceptionHandlingBehavior>()
                 .SingleInstance();
+            builder.RegisterType<MessageTimeOutBehaviour>();
         }
     }
 
