@@ -135,8 +135,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 
                     if (await jobStatusService.WaitForJobToFinish(message.JobId, cancellationToken))
                     {
-                        logger.LogInfo(
-                            $"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");
+                        logger.LogInfo($"Successfully processed ILR Submission. " +
+                                       $"Job Id: {message.JobId}, " +
+                                       $"Ukprn: {fm36Output.UKPRN}, " +
+                                       $"Submission Time: {message.SubmissionDateTimeUtc}");
                         return true;
                     }
                     logger.LogError($"Job failed to finished within the allocated time. Job Id: {message.JobId}");
@@ -161,8 +163,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             {
                 if (message.TopicPointer > message.Topics.Count - 1)
                 {
-                    logger.LogError(
-                        $"Topic Pointer points outside the number of items in the collection of Topics. JobId: {message.JobId}");
+                    logger.LogError($"Topic Pointer points outside the number of items " +
+                                    $"in the collection of Topics. JobId: {message.JobId}");
                     return true;
                 }
 
@@ -210,7 +212,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                         { TelemetryKeys.Duration, 0}
                     });
                 telemetry.StopOperation(operation);
-                logger.LogInfo($"Successfully sent {eventType}. Job Id: {message.JobId}, Ukprn: {submissionEvent.Ukprn}, Submission Time: {submissionEvent.IlrSubmissionDateTime}");
+                logger.LogInfo($"Successfully sent {eventType}. " +
+                               $"Job Id: {message.JobId}, " +
+                               $"Ukprn: {submissionEvent.Ukprn}, " +
+                               $"Submission Time: {submissionEvent.IlrSubmissionDateTime}");
             }
         }
 
@@ -230,11 +235,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 
         private async Task ClearSubmittedLearnerAims(int period, string academicYear, DateTime newIlrSubmissionDateTime, long ukprn, CancellationToken cancellationToken)
         {
-            logger.LogDebug($"Deleting aims for UKPRN {ukprn} {academicYear}-{period} submitted before {newIlrSubmissionDateTime}");
+            logger.LogDebug($"Deleting aims for UKPRN {ukprn} {academicYear}-{period} " +
+                            $"submitted before {newIlrSubmissionDateTime}");
 
             var records = await submittedLearnerAimRepository.DeletePreviouslySubmittedAims(ukprn, (byte)period, short.Parse(academicYear), newIlrSubmissionDateTime, cancellationToken).ConfigureAwait(false);
 
-            logger.LogInfo($"Deleted {records} aims for UKPRN {ukprn} {academicYear}-{period} submitted before {newIlrSubmissionDateTime}");
+            logger.LogInfo($"Deleted {records} aims for UKPRN {ukprn} {academicYear}-{period} " +
+                           $"submitted before {newIlrSubmissionDateTime}");
         }
 
         private async Task SendReceivedEarningsEvent(long jobId, DateTime ilrSubmissionDateTime, string academicYear, int collectionPeriod, long ukprn)
@@ -282,11 +289,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 fm36Output = serializationService.Deserialize<FM36Global>(stream);
             }
             stopwatch.Stop();
-            logger.LogDebug($"Finished getting FM36Output for Job: {message.JobId}, took {stopwatch.ElapsedMilliseconds}ms.");
+            logger.LogDebug($"Finished getting FM36Output for Job: {message.JobId}, " +
+                            $"took {stopwatch.ElapsedMilliseconds}ms.");
 
             if (fm36Output == null)
             {
-                logger.LogWarning($"No FM36Global data found for job: {message.JobId}, file reference: {fileReference}, container: {container}");
+                logger.LogWarning($"No FM36Global data found for job: {message.JobId}, " +
+                                  $"file reference: {fileReference}, container: {container}");
 
                 telemetry.TrackEvent("Failed To Deserialise FM36Global",
                     new Dictionary<string, string>
@@ -384,11 +393,15 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     var aims = submittedLearnerAimBuilder.Build(learnerCommand);
                     await Task.WhenAll(aims.Select(aim => submittedAimWriter.Write(aim, cancellationToken))).ConfigureAwait(false);
 
-                    logger.LogVerbose($"Successfully sent ProcessLearnerCommand JobId: {learnerCommand.JobId}, Ukprn: {fm36Output.UKPRN}, LearnRefNumber: {learnerCommand.Learner.LearnRefNumber}, SubmissionTime: {message.SubmissionDateTimeUtc}, Collection Year: {fm36Output.Year}, Collection period: {collectionPeriod}");
+                    logger.LogVerbose($"Successfully sent ProcessLearnerCommand JobId: {learnerCommand.JobId}, " +
+                                      $"Ukprn: {fm36Output.UKPRN}, LearnRefNumber: {learnerCommand.Learner.LearnRefNumber}, " +
+                                      $"SubmissionTime: {message.SubmissionDateTimeUtc}, " +
+                                      $"Collection Year: {fm36Output.Year}, Collection period: {collectionPeriod}");
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError($"Error sending the command: ProcessLearnerCommand. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Error: {ex.Message}", ex);
+                    logger.LogError($"Error sending the command: ProcessLearnerCommand. " +
+                                    $"Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Error: {ex.Message}", ex);
                     throw;
                 }
             }
