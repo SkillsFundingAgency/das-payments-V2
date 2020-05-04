@@ -28,8 +28,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly IPaymentProcessor processor;
         private readonly ILevyFundingSourceRepository levyFundingSourceRepository;
         private readonly IDataCache<LevyAccountModel> levyAccountCache;
+        private readonly ICalculatedRequiredLevyAmountPrioritisationService calculatedRequiredLevyAmountPrioritisationService;
 
-        public FundingSourceEventGenerationService(IPaymentLogger logger, IFundingSourceDataContext dataContext, ILevyBalanceService levyBalanceService, IMapper mapper, IPaymentProcessor processor, ILevyFundingSourceRepository levyFundingSourceRepository, IDataCache<LevyAccountModel> levyAccountCache)
+        public FundingSourceEventGenerationService(IPaymentLogger logger, IFundingSourceDataContext dataContext, ILevyBalanceService levyBalanceService, IMapper mapper, IPaymentProcessor processor, ILevyFundingSourceRepository levyFundingSourceRepository, IDataCache<LevyAccountModel> levyAccountCache, ICalculatedRequiredLevyAmountPrioritisationService calculatedRequiredLevyAmountPrioritisationService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
@@ -38,6 +39,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.processor = processor ?? throw new ArgumentNullException(nameof(processor));
             this.levyFundingSourceRepository = levyFundingSourceRepository ?? throw new ArgumentNullException(nameof(levyFundingSourceRepository));
             this.levyAccountCache = levyAccountCache ?? throw new ArgumentNullException(nameof(levyAccountCache));
+            this.calculatedRequiredLevyAmountPrioritisationService = calculatedRequiredLevyAmountPrioritisationService ?? throw new ArgumentNullException(nameof(calculatedRequiredLevyAmountPrioritisationService));
         }
 
         public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(long employerAccountId, long jobId)
@@ -64,18 +66,17 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
         private async Task<List<CalculatedRequiredLevyAmount>> GetOrderedCalculatedRequiredLevyAmounts(long employerAccountId)
         {
-            var priorities = dataContext.EmployerProviderPriorities.Where(x => x.EmployerAccountId == employerAccountId);
+            var priorities = dataContext.EmployerProviderPriorities.Where(x => x.EmployerAccountId == employerAccountId)
+                .Select(p => Tuple.Create(p.Ukprn, p.Order).ToValueTuple()).ToList();
 
-            var prioritisedTransactions = dataContext
-                .GetEmployerLevyTransactions(employerAccountId)
-                .Join(priorities, x => new { AccountId = x.AccountId, Ukprn = x.Ukprn }, x => new { AccountId = x.EmployerAccountId, Ukprn = x.Ukprn}, (transaction, priority) => new { Transaction = transaction, Priority = priority })
-                .OrderByDescending(pt => pt.Transaction.Amount < 0)
-                .ThenByDescending(pt => pt.Transaction.TransferSenderAccountId.HasValue &&
-                                        pt.Transaction.TransferSenderAccountId != 0 &&
-                                        pt.Transaction.AccountId != pt.Transaction.TransferSenderAccountId)
-                .ThenBy(pt => pt.Priority.Order);
+            var transactions = dataContext
+                .GetEmployerLevyTransactions(employerAccountId).ToList();
 
-            return await prioritisedTransactions.Select(pt => JsonConvert.DeserializeObject<CalculatedRequiredLevyAmount>(pt.Transaction.MessagePayload)).ToListAsync();
+            var calculatedRequiredLevyAmounts = transactions.Select(pt =>
+                    JsonConvert.DeserializeObject<CalculatedRequiredLevyAmount>(pt.MessagePayload))
+                .ToList();
+
+           return await calculatedRequiredLevyAmountPrioritisationService.Prioritise(calculatedRequiredLevyAmounts,priorities);
         }
 
         private List<FundingSourcePaymentEvent> CreateFundingSourcePaymentsForRequiredPayment(CalculatedRequiredLevyAmount requiredPaymentEvent, long employerAccountId, long jobId)
