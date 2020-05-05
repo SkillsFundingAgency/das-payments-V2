@@ -6,5 +6,7 @@
         string ServiceBusConnectionString { get; }
         string DasNServiceBusLicenseKey { get; }
         string LevyAccountBalanceEndpoint { get; }
+        string CollectionPeriod { get; }
+        string AcademicYear { get; }
     }
 }

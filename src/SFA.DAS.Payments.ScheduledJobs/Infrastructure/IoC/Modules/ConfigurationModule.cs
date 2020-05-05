@@ -16,7 +16,9 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
                         EndpointName = configHelper.GetSetting("EndpointName"),
                         ServiceBusConnectionString = configHelper.GetConnectionString("ServiceBusConnectionString"),
                         DasNServiceBusLicenseKey = configHelper.GetSetting("DasNServiceBusLicenseKey"),
-                        LevyAccountBalanceEndpoint = configHelper.GetSetting("LevyAccountBalanceEndpoint")
+                        LevyAccountBalanceEndpoint = configHelper.GetSetting("LevyAccountBalanceEndpoint"),
+                        CollectionPeriod = configHelper.GetSetting("CollectionPeriod"),
+                        AcademicYear = configHelper.GetSetting("AcademicYear"),
                     };
                 })
                 .As<IScheduledJobsConfiguration>()

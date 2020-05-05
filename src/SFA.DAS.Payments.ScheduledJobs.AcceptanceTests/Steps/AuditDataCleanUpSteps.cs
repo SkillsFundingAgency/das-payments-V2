@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using SFA.DAS.Payments.ScheduledJobs.AcceptanceTests.Data;
 using SFA.DAS.Payments.ScheduledJobs.AcceptanceTests.Data.Entities;
@@ -31,11 +33,11 @@ namespace SFA.DAS.Payments.ScheduledJobs.AcceptanceTests.Steps
             submissions = new List<SubmissionData>();
         }
 
-        [Given(@"a Provider has done two submissions, First Submission (.*) and Second Submission (.*)")]
-        public async Task GivenAProviderHasDoneTwoSubmissions(string submissionId1, string submissionId2)
+        [Given(@"a Provider has done two submissions, First Submission (.*) and Second Submission (.*) in collectionPeriod (.*)")]
+        public async Task GivenAProviderHasDoneTwoSubmissions(string submissionId1, string submissionId2, byte collectionPeriod)
         {
-            submissions.Add(await CreateSubmission(submissionId1, 1, 1920));
-            submissions.Add(await CreateSubmission(submissionId2, 1, 1920));
+            submissions.Add(await CreateSubmission(submissionId1, collectionPeriod, 1920));
+            submissions.Add(await CreateSubmission(submissionId2, collectionPeriod, 1920));
         }
 
         [Given(@"Now does two new submissions, First Submission (.*) and Second Submission (.*) in collection period (.*)")]
@@ -72,7 +74,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.AcceptanceTests.Steps
             await SetDcJobSucceeded(submissions.SingleOrDefault(s => s.SubmissionId == submissionId && s.CollectionPeriod == collectionPeriod), dcJobSucceeded);
         }
 
-        [When(@"Audit Data Cleanup Function is executed")]
+        [When(@"Audit Data Cleanup Function is executed in collectionPeriod 2")]
         public async Task WhenAuditDataCleanupFunctionIsExecuted()
         {
             var httpClient = new HttpClient();
@@ -88,14 +90,14 @@ namespace SFA.DAS.Payments.ScheduledJobs.AcceptanceTests.Steps
             dataLocEventresult.EnsureSuccessStatusCode();
         }
 
-        [Then(@"Submission (.*) is deleted")]
-        public void ThenSubmissionIsDeleted(string submissionId)
+        [Then(@"Submission (.*) is deleted from collection period (.*)")]
+        public void ThenSubmissionIsDeleted(string submissionId, byte collectionPeriod)
         {
-            AssertSubmission(submissions.SingleOrDefault(s => s.SubmissionId == submissionId), false);
+            AssertSubmission(submissions.SingleOrDefault(s => s.SubmissionId == submissionId && s.CollectionPeriod == collectionPeriod), false);
         }
 
         [Then(@"Submission (.*) is NOT deleted from collection period (.*)")]
-        public void ThenSubmissionIsDeleted(string submissionId, byte collectionPeriod)
+        public void ThenSubmissionIsNotDeleted(string submissionId, byte collectionPeriod)
         {
             AssertSubmission(submissions.SingleOrDefault(s => s.SubmissionId == submissionId && s.CollectionPeriod == collectionPeriod), true);
         }
@@ -110,6 +112,39 @@ namespace SFA.DAS.Payments.ScheduledJobs.AcceptanceTests.Steps
         public void ThenSubmissionAAndSubmissionBIsNotDeleted(string submissionId1, string submissionId2)
         {
             AssertSubmissions(submissions.Where(s => s.SubmissionId == submissionId1 || s.SubmissionId == submissionId2), true);
+        }
+
+        [After]
+        public async Task CleanupData()
+        {
+            foreach (var submission in submissions)
+            {
+                await submissionDataContext.Database.ExecuteSqlCommandAsync
+                (
+                   @"DELETE FROM Payments2.Job where JobId = @JobId;
+                     DELETE FROM Payments2.DataLockEventNonPayablePeriodFailures where Id = @DataLockEventNonPayablePeriodFailureId;
+                     DELETE FROM Payments2.DataLockEventNonPayablePeriod where Id = @DataLockEventNonPayablePeriodId;
+                     DELETE FROM Payments2.DataLockEventPayablePeriod where Id = @DataLockEventPayablePeriodId;
+                     DELETE FROM Payments2.DataLockEventPriceEpisode where Id = @DataLockEventPriceEpisodeId;
+                     DELETE FROM Payments2.DataLockEvent where Id = @DataLockEventId;
+                     DELETE FROM Payments2.RequiredPaymentEvent where Id = @RequiredPaymentEventId;
+                     DELETE FROM Payments2.FundingSourceEvent where Id = @FundingSourceEventId;
+                     DELETE FROM Payments2.EarningEventPriceEpisode where Id = @EarningEventPriceEpisodeId;
+                     DELETE FROM Payments2.EarningEventPeriod where Id = @EarningEventPeriodId;
+                     DELETE FROM Payments2.EarningEvent where Id = @EarningEventId;",
+
+       new SqlParameter("JobId", submission.JobModel.Id),
+                     new SqlParameter("DataLockEventNonPayablePeriodFailureId", submission.DataLockEventNonPayablePeriodFailures),
+                     new SqlParameter("DataLockEventNonPayablePeriodId", submission.DataLockEventNonPayablePeriodFailures),
+                     new SqlParameter("DataLockEventPayablePeriodId", submission.DataLockPayablePeriod),
+                     new SqlParameter("DataLockEventPriceEpisodeId", submission.DataLockEventPriceEpisode),
+                     new SqlParameter("DataLockEventId", submission.DataLockEvent),
+                     new SqlParameter("RequiredPaymentEventId", submission.RequiredPaymentEvent),
+                     new SqlParameter("FundingSourceEventId", submission.FundingSourceEvent),
+                     new SqlParameter("EarningEventPriceEpisodeId", submission.EarningEventPriceEpisode),
+                     new SqlParameter("EarningEventPeriodId", submission.EarningEventPeriod),
+                     new SqlParameter("EarningEventId", submission.EarningEvent));
+            }
         }
 
         private async Task SetJobStatus(SubmissionData submission, string status)
