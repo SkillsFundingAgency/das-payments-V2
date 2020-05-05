@@ -46,4 +46,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Interfaces
     {
         Task<List<CalculatedRequiredLevyAmount>> Prioritise(List<CalculatedRequiredLevyAmount> sourceList, List<(long Ukprn, int Order)> providerPriorities);
     }
+
+    public interface IFundingSourcePaymentEventBuilder
+    {
+        List<FundingSourcePaymentEvent> BuildFundingSourcePaymentsForRequiredPayment(CalculatedRequiredLevyAmount requiredPaymentEvent, long employerAccountId, long jobId);
+    }
 }
