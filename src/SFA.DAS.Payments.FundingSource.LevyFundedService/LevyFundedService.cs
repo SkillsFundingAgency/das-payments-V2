@@ -12,7 +12,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Application.Data;
 using SFA.DAS.Payments.FundingSource.Application.Infrastructure;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
@@ -51,7 +50,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         private readonly ILifetimeScope lifetimeScope;
         private readonly ILevyFundingSourceRepository levyFundingSourceRepository;
         private readonly ISubmissionCleanUpService submissionCleanUpService;
-        
+        private readonly IEmployerProviderPriorityStorageService employerProviderPriorityStorageService;
+
 
         public LevyFundedService(
             ActorService actorService,
@@ -60,7 +60,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             ITelemetry telemetry,
             ILifetimeScope lifetimeScope,
             ILevyFundingSourceRepository levyFundingSourceRepository,
-            ISubmissionCleanUpService submissionCleanUpService)
+            ISubmissionCleanUpService submissionCleanUpService,
+            IEmployerProviderPriorityStorageService employerProviderPriorityStorageService)
             : base(actorService, actorId)
         {
             this.paymentLogger = paymentLogger;
@@ -68,6 +69,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             this.lifetimeScope = lifetimeScope;
             this.levyFundingSourceRepository = levyFundingSourceRepository;
             this.submissionCleanUpService = submissionCleanUpService;
+            this.employerProviderPriorityStorageService = employerProviderPriorityStorageService;
         }
 
         public async Task HandleRequiredPayment(CalculatedRequiredLevyAmount message)
@@ -99,7 +101,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 {
                     var stopwatch = Stopwatch.StartNew();
                     paymentLogger.LogDebug($"Storing EmployerChangedProviderPriority event for {Id},  Account Id: {message.EmployerAccountId}");
-                    await fundingSourceService.StoreEmployerProviderPriority(message).ConfigureAwait(false);
+                    await employerProviderPriorityStorageService.StoreEmployerProviderPriority(message).ConfigureAwait(false);
                     paymentLogger.LogInfo($"Finished Storing EmployerChangedProviderPriority event for {Id},  Account Id: {message.EmployerAccountId}");
                     TrackInfrastructureEvent("LevyFundedService.HandleEmployerProviderPriorityChange", stopwatch);
                     telemetry.StopOperation(operation);

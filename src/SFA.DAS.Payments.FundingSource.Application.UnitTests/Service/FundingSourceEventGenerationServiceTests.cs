@@ -131,8 +131,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             levyFundingSourceRepository.Setup(x => x.GetLevyAccount(employerAccountId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(levyAccount);
 
-            dataContext.Setup(x => x.GetEmployerProviderPriorities(employerAccountId))
-                .Returns(priorities.AsQueryable());
+            dataContext.Setup(x => x.GetEmployerProviderPriorities(employerAccountId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(priorities);
 
             dataContext.Setup(x => x.GetEmployerLevyTransactions(employerAccountId))
                 .Returns(levyTransactions.AsQueryable());
@@ -183,7 +183,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         {
             await service.HandleMonthEnd(employerAccountId, jobId);
 
-            dataContext.Verify(x => x.GetEmployerProviderPriorities(employerAccountId));
+            dataContext.Verify(x => x.GetEmployerProviderPriorities(employerAccountId, It.IsAny<CancellationToken>()));
         }
 
         [Test]

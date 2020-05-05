@@ -48,6 +48,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
             builder.RegisterType<SubmissionCleanUpService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<CalculatedRequiredLevyAmountPrioritisationService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<FundingSourcePaymentEventBuilder>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<EmployerProviderPriorityStorageService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.Register(c => new CoInvestedFundingSourceService
             (

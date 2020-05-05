@@ -13,10 +13,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
     public interface IFundingSourceDataContext
     {
         DbSet<LevyAccountModel> LevyAccounts { get; }
-
-        DbSet<EmployerProviderPriorityModel>
-            EmployerProviderPriorities { get; }
-
         DbSet<LevyTransactionModel> LevyTransactions { get; }
         Task<int> SaveChanges(CancellationToken cancellationToken);
         IQueryable<LevyTransactionModel> GetEmployerLevyTransactions(long employerAccountId);
@@ -24,8 +20,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
         Task DeletePreviousSubmissions(long jobId, byte collectionPeriod, short academicYear,
             DateTime ilrSubmissionDateTime, long ukprn);
         Task DeleteCurrentSubmissions(long jobId, byte collectionPeriod, short academicYear, long ukprn);
-
-        IQueryable<EmployerProviderPriorityModel> GetEmployerProviderPriorities(long employerAccountId);
+        Task<List<EmployerProviderPriorityModel>> GetEmployerProviderPriorities(long employerAccountId, CancellationToken cancellationToken);
+        Task ReplaceEmployerProviderPriorities(long employerAccountId, List<EmployerProviderPriorityModel> paymentPriorityModels, CancellationToken cancellationToken);
     }
 
 
@@ -101,9 +97,24 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
             new SqlParameter("ukprn", ukprn));
         }
 
-        public IQueryable<EmployerProviderPriorityModel> GetEmployerProviderPriorities(long employerAccountId)
+        public async Task<List<EmployerProviderPriorityModel>> GetEmployerProviderPriorities(long employerAccountId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return EmployerProviderPriorities.Where(x => x.EmployerAccountId == employerAccountId);
+            var paymentPriorities = await EmployerProviderPriorities.AsNoTracking()
+                .Where(paymentPriority => paymentPriority.EmployerAccountId == employerAccountId)
+                .ToListAsync(cancellationToken);
+
+            return paymentPriorities;
+        }
+
+        public async Task ReplaceEmployerProviderPriorities(long employerAccountId, List<EmployerProviderPriorityModel> paymentPriorityModels, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var previousEmployerPriorities = EmployerProviderPriorities
+                .Where(paymentPriority => paymentPriority.EmployerAccountId == employerAccountId);
+            EmployerProviderPriorities.RemoveRange(previousEmployerPriorities);
+
+            await EmployerProviderPriorities
+                .AddRangeAsync(paymentPriorityModels, cancellationToken)
+                .ConfigureAwait(false);
         }
     }
 }

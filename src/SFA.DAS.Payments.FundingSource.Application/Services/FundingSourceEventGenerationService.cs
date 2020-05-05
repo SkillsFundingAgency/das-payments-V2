@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Newtonsoft.Json;
@@ -69,8 +70,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
         private async Task<List<CalculatedRequiredLevyAmount>> GetOrderedCalculatedRequiredLevyAmounts(long employerAccountId)
         {
-            var priorities = dataContext.GetEmployerProviderPriorities(employerAccountId)
-                .Select(p => Tuple.Create(p.Ukprn, p.Order).ToValueTuple()).ToList();
+            var priorities = await dataContext.GetEmployerProviderPriorities(employerAccountId, CancellationToken.None);
+            var prioritiesTuple =    priorities.Select(p => Tuple.Create(p.Ukprn, p.Order).ToValueTuple()).ToList();
 
             var transactions = dataContext
                 .GetEmployerLevyTransactions(employerAccountId).ToList();
@@ -79,7 +80,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                     JsonConvert.DeserializeObject<CalculatedRequiredLevyAmount>(pt.MessagePayload))
                 .ToList();
 
-           return await calculatedRequiredLevyAmountPrioritisationService.Prioritise(calculatedRequiredLevyAmounts,priorities);
+           return await calculatedRequiredLevyAmountPrioritisationService.Prioritise(calculatedRequiredLevyAmounts, prioritiesTuple);
         }
 
         private static string GetFundsDebugString(List<FundingSourcePaymentEvent> fundingSourceEvents)
