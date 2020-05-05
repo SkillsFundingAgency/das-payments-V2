@@ -394,7 +394,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     await Task.WhenAll(aims.Select(aim => submittedAimWriter.Write(aim, cancellationToken))).ConfigureAwait(false);
 
                     logger.LogVerbose($"Successfully sent ProcessLearnerCommand JobId: {learnerCommand.JobId}, " +
-                                      $"Ukprn: {fm36Output.UKPRN}, LearnRefNumber: {learnerCommand.Learner.LearnRefNumber}, " +
+                                      $"LearnRefNumber: {learnerCommand.Learner.LearnRefNumber}, " +
                                       $"SubmissionTime: {message.SubmissionDateTimeUtc}, " +
                                       $"Collection Year: {fm36Output.Year}, Collection period: {collectionPeriod}");
                 }
