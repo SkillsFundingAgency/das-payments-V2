@@ -16,13 +16,17 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Handlers
 
         protected override async Task HandleMessage(ApprenticeshipUpdatedApprovedEvent message, IMessageHandlerContext context, ILifetimeScope scope)
         {
-            Logger.LogDebug($"Handling apprenticeship updated event. Now resolving the apprenticeship processor service to handle Updated apprenticeship. Apprenticeship Id: {message.ApprenticeshipId}");
+            Logger.LogDebug($"Handling apprenticeship updated event.  " +
+                            $"Now resolving the apprenticeship processor service to handle Updated apprenticeship. " +
+                            $"Apprenticeship Id: {message.ApprenticeshipId}");
 
             var processor = scope.Resolve<IApprenticeshipProcessor>();
 
             await processor.ProcessUpdatedApprenticeship(message);
 
-            Logger.LogInfo($"Finished handling apprenticeship updated event. Now resolving the apprenticeship processor service to handle the new apprenticeship. Apprenticeship Id: {message.ApprenticeshipId}");
+            Logger.LogInfo($"Finished handling apprenticeship updated event.  " +
+                           $"Now resolving the apprenticeship processor service to handle the new apprenticeship. " +
+                           $"Apprenticeship Id: {message.ApprenticeshipId}");
         }
     }
 }
