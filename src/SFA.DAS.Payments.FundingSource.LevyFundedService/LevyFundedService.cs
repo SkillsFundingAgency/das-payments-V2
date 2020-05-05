@@ -32,11 +32,11 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
     [StatePersistence(StatePersistence.Persisted)]
     public class LevyFundedService : Actor, ILevyFundedService
     {
-        private readonly IPaymentLogger paymentLogger;
-        private readonly ITelemetry telemetry;
+        private IActorDataCache<bool> actorCache;
         private IRequiredLevyAmountFundingSourceService fundingSourceService;
         private IGenerateSortedPaymentKeys generateSortedPaymentKeys;
         private IFundingSourceEventGenerationService fundingSourceEventGenerationService;
+        private ITransferFundingSourceEventGenerationService transferFundingSourceEventGenerationService;
 
         private IDataCache<CalculatedRequiredLevyAmount> requiredPaymentsCache;
         private IDataCache<bool> monthEndCache;
@@ -46,7 +46,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         private IDataCache<List<TransferPaymentSortKeyModel>> transferPaymentSortKeysCache;
         private IDataCache<List<RequiredPaymentSortKeyModel>> requiredPaymentSortKeysCache;
 
-        private IActorDataCache<bool> actorCache;
+        private readonly IPaymentLogger paymentLogger;
+        private readonly ITelemetry telemetry;
         private readonly ILifetimeScope lifetimeScope;
         private readonly ILevyFundingSourceRepository levyFundingSourceRepository;
         private readonly ISubmissionCleanUpService submissionCleanUpService;
@@ -236,14 +237,26 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                                                                                   requiredPaymentSortKeysCache,
                                                                                   generateSortedPaymentKeys);
 
+                var logger = lifetimeScope.Resolve<IPaymentLogger>();
+                var levyBalanceService = lifetimeScope.Resolve<ILevyBalanceService>();
+
                 fundingSourceEventGenerationService = new FundingSourceEventGenerationService(
-                    lifetimeScope.Resolve<IPaymentLogger>(),
+                    logger,
                     lifetimeScope.Resolve<IFundingSourceDataContext>(),
-                    lifetimeScope.Resolve<ILevyBalanceService>(),
+                    levyBalanceService,
                     lifetimeScope.Resolve<ILevyFundingSourceRepository>(),
                     levyAccountCache, 
                     lifetimeScope.Resolve<ICalculatedRequiredLevyAmountPrioritisationService>(),
                     lifetimeScope.Resolve<IFundingSourcePaymentEventBuilder>()
+                );
+                transferFundingSourceEventGenerationService = new TransferFundingSourceEventGenerationService(
+                    logger,
+                    lifetimeScope.Resolve<IMapper>(),
+                    monthEndCache,
+                    levyAccountCache,
+                    levyBalanceService,
+                    lifetimeScope.Resolve<IFundingSourcePaymentEventBuilder>(),
+                    lifetimeScope.Resolve<ILevyTransactionBatchStorageService>()
                 );
 
                 await Initialise().ConfigureAwait(false);
