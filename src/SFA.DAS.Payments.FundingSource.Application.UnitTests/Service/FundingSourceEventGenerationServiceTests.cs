@@ -211,8 +211,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             ), It.Is<List<(long ukprn, int order)>>(
                 employerPriorities =>
                     employerPriorities.Count == 2
-                    && employerPriorities.Any(priority => priority.ukprn == priorities[0].Ukprn && priority.order == priorities[0].Order)
-                    && employerPriorities.Any(priority => priority.ukprn == priorities[1].Ukprn && priority.order == priorities[1].Order)
+                    && employerPriorities.Any(employerPriority => employerPriority.ukprn == priorities[0].Ukprn && employerPriority.order == priorities[0].Order)
+                    && employerPriorities.Any(employerPriority => employerPriority.ukprn == priorities[1].Ukprn && employerPriority.order == priorities[1].Order)
             )));
         }
 
