@@ -61,10 +61,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                         foreach(var error in changeEvent.Errors)
                             await SaveErrorCode(error, changeEvent, cancellationToken);
 
-                        logger.LogDebug($"Saved PriceEpisodeStatusChange event " +
-                                        $"{changeEvent.DataLock.DataLockEventId} for UKPRN {changeEvent.DataLock.UKPRN}. " +
-                                        $"Commitment versions: {changeEvent.CommitmentVersions.Length}, " +
-                                        $"periods: {changeEvent.Periods.Length}, errors: {changeEvent.Errors.Length}");
+                        logger.LogDebug($"Saved PriceEpisodeStatusChange event {changeEvent.DataLock.DataLockEventId} for UKPRN {changeEvent.DataLock.UKPRN}. Commitment versions: {changeEvent.CommitmentVersions.Length}, periods: {changeEvent.Periods.Length}, errors: {changeEvent.Errors.Length}");
                     }
 
                     await dataLockEventWriter.Flush(cancellationToken);
