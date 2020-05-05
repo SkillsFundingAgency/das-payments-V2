@@ -186,7 +186,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                 await PublishApprenticeshipUpdate(updatedApprenticeship);
 
-                logger.LogInfo($"Finished processing the apprenticeship paused event. Apprenticeship id: {updatedApprenticeship.Id}, employer account id: {updatedApprenticeship.AccountId}, Ukprn: {updatedApprenticeship.Ukprn}.");
+                logger.LogInfo($"Finished processing the apprenticeship paused event. " +
+                               $"Apprenticeship id: {updatedApprenticeship.Id}, " +
+                               $"employer account id: {updatedApprenticeship.AccountId}, " +
+                               $"Ukprn: {updatedApprenticeship.Ukprn}.");
             }
             catch (Exception ex)
             {
@@ -210,7 +213,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
                  await PublishApprenticeshipUpdate(updatedApprenticeship);
 
-                logger.LogInfo($"Finished processing the apprenticeship resumed event. Apprenticeship id: {updatedApprenticeship.Id}, employer account id: {updatedApprenticeship.AccountId}, Ukprn: {updatedApprenticeship.Ukprn}.");
+                logger.LogInfo($"Finished processing the apprenticeship resumed event. " +
+                               $"Apprenticeship id: {updatedApprenticeship.Id}, " +
+                               $"employer account id: {updatedApprenticeship.AccountId}, " +
+                               $"Ukprn: {updatedApprenticeship.Ukprn}.");
             }
             catch (Exception ex)
             {
@@ -287,7 +293,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 var updatedApprenticeship = await apprenticeshipStoppedService.UpdateApprenticeship(model).ConfigureAwait(false);
                 await PublishApprenticeshipUpdate(updatedApprenticeship);
 
-                logger.LogInfo($"Finished processing the stopped apprenticeship event. Apprenticeship id: {updatedApprenticeship.Id}, employer account id: {updatedApprenticeship.AccountId}, Ukprn: {updatedApprenticeship.Ukprn}.");
+                logger.LogInfo($"Finished processing the stopped apprenticeship event. " +
+                               $"Apprenticeship id: {updatedApprenticeship.Id}, " +
+                               $"employer account id: {updatedApprenticeship.AccountId}, " +
+                               $"Ukprn: {updatedApprenticeship.Ukprn}.");
             }
             catch (Exception ex)
             {

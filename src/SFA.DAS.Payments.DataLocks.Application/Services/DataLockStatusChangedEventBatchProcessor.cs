@@ -61,10 +61,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                         foreach(var error in changeEvent.Errors)
                             await SaveErrorCode(error, changeEvent, cancellationToken);
 
-                        logger.LogDebug(
-                            $"Saved PriceEpisodeStatusChange event {changeEvent.DataLock.DataLockEventId} for UKPRN {changeEvent.DataLock.UKPRN}. " +
-                            $"Commitment versions: {changeEvent.CommitmentVersions.Length}, " +
-                            $"periods: {changeEvent.Periods.Length}, errors: {changeEvent.Errors.Length}");
+                        logger.LogDebug($"Saved PriceEpisodeStatusChange event " +
+                                        $"{changeEvent.DataLock.DataLockEventId} for UKPRN {changeEvent.DataLock.UKPRN}. " +
+                                        $"Commitment versions: {changeEvent.CommitmentVersions.Length}, " +
+                                        $"periods: {changeEvent.Periods.Length}, errors: {changeEvent.Errors.Length}");
                     }
 
                     await dataLockEventWriter.Flush(cancellationToken);
@@ -86,25 +86,32 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         private async Task SaveErrorCode(LegacyDataLockEventError error, PriceEpisodeStatusChange dataLockStatusChangedEvent, CancellationToken cancellationToken)
         {
-            logger.LogVerbose($"Saving DataLockEventError {error} for legacy DataLockEvent {dataLockStatusChangedEvent.DataLock.DataLockEventId} for UKPRN {dataLockStatusChangedEvent.DataLock.UKPRN}");
+            logger.LogVerbose($"Saving DataLockEventError {error} " +
+                              $"for legacy DataLockEvent {dataLockStatusChangedEvent.DataLock.DataLockEventId} " +
+                              $"for UKPRN {dataLockStatusChangedEvent.DataLock.UKPRN}");
             await dataLockEventErrorWriter.Write(error, cancellationToken);
         }
 
         private async Task SaveEventPeriods(LegacyDataLockEventPeriod period, PriceEpisodeStatusChange dataLockStatusChangedEvent, CancellationToken cancellationToken)
         {
-            logger.LogVerbose($"Saving DataLockEventPeriod {period.CollectionPeriodName} for legacy DataLockEvent {dataLockStatusChangedEvent.DataLock.DataLockEventId} for UKPRN {dataLockStatusChangedEvent.DataLock.UKPRN}");
+            logger.LogVerbose($"Saving DataLockEventPeriod {period.CollectionPeriodName} " +
+                              $"for legacy DataLockEvent {dataLockStatusChangedEvent.DataLock.DataLockEventId} " +
+                              $"for UKPRN {dataLockStatusChangedEvent.DataLock.UKPRN}");
             await dataLockEventPeriodWriter.Write(period, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task SaveCommitmentVersion(LegacyDataLockEventCommitmentVersion commitment, PriceEpisodeStatusChange dataLockStatusChangedEvent, CancellationToken cancellationToken)
         {
-            logger.LogVerbose($"Saving DataLockEventCommitmentVersion {commitment} for PriceEpisodeStatusChange {dataLockStatusChangedEvent.DataLock.DataLockEventId} for UKPRN {dataLockStatusChangedEvent.DataLock.UKPRN}");
+            logger.LogVerbose($"Saving DataLockEventCommitmentVersion {commitment} " +
+                              $"for PriceEpisodeStatusChange {dataLockStatusChangedEvent.DataLock.DataLockEventId} " +
+                              $"for UKPRN {dataLockStatusChangedEvent.DataLock.UKPRN}");
             await dataLockEventCommitmentVersionWriter.Write(commitment, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task SaveDataLockEvent(CancellationToken cancellationToken, PriceEpisodeStatusChange priceEpisodeStatus)
         {
-            logger.LogVerbose($"Saving legacy DataLockEvent {priceEpisodeStatus.DataLock.DataLockEventId} for UKPRN {priceEpisodeStatus.DataLock.UKPRN}");
+            logger.LogVerbose($"Saving legacy DataLockEvent {priceEpisodeStatus.DataLock.DataLockEventId} " +
+                              $"for UKPRN {priceEpisodeStatus.DataLock.UKPRN}");
             await dataLockEventWriter.Write(priceEpisodeStatus.DataLock, cancellationToken);
         }
 
