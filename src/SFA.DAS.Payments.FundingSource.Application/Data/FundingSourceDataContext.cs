@@ -24,6 +24,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
         Task DeletePreviousSubmissions(long jobId, byte collectionPeriod, short academicYear,
             DateTime ilrSubmissionDateTime, long ukprn);
         Task DeleteCurrentSubmissions(long jobId, byte collectionPeriod, short academicYear, long ukprn);
+
+        IQueryable<EmployerProviderPriorityModel> GetEmployerProviderPriorities(long employerAccountId);
     }
 
 
@@ -97,6 +99,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
             new SqlParameter("collectionPeriod", collectionPeriod),
             new SqlParameter("jobId", jobId),
             new SqlParameter("ukprn", ukprn));
+        }
+
+        public IQueryable<EmployerProviderPriorityModel> GetEmployerProviderPriorities(long employerAccountId)
+        {
+            return EmployerProviderPriorities.Where(x => x.EmployerAccountId == employerAccountId);
         }
     }
 }

@@ -66,7 +66,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
         private async Task<List<CalculatedRequiredLevyAmount>> GetOrderedCalculatedRequiredLevyAmounts(long employerAccountId)
         {
-            var priorities = dataContext.EmployerProviderPriorities.Where(x => x.EmployerAccountId == employerAccountId)
+            var priorities = dataContext.GetEmployerProviderPriorities(employerAccountId)
                 .Select(p => Tuple.Create(p.Ukprn, p.Order).ToValueTuple()).ToList();
 
             var transactions = dataContext
