@@ -32,6 +32,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         private Mock<ILevyFundingSourceRepository> levyFundingSourceRepository;
         private Mock<IDataCache<LevyAccountModel>> levyAccountCache;
         private Mock<ICalculatedRequiredLevyAmountPrioritisationService> calculatedRequiredLevyAmountPrioritisationService;
+        private Mock<IFundingSourcePaymentEventBuilder> fundingSourcePaymentEventBuilder;
 
         private FundingSourceEventGenerationService service;
 
@@ -108,6 +109,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             levyBalanceService = new Mock<ILevyBalanceService>();
             levyAccountCache = new Mock<IDataCache<LevyAccountModel>>();
             calculatedRequiredLevyAmountPrioritisationService = new Mock<ICalculatedRequiredLevyAmountPrioritisationService>();
+            fundingSourcePaymentEventBuilder = new Mock<IFundingSourcePaymentEventBuilder>();
 
             levyFundingSourceRepository.Setup(x => x.GetLevyAccount(employerAccountId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(levyAccount);
@@ -129,11 +131,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 logger.Object,
                 dataContext.Object,
                 levyBalanceService.Object,
-                mapper.Object,
-                processor.Object,
                 levyFundingSourceRepository.Object,
                 levyAccountCache.Object,
-                calculatedRequiredLevyAmountPrioritisationService.Object);
+                calculatedRequiredLevyAmountPrioritisationService.Object,
+                fundingSourcePaymentEventBuilder.Object);
         }
 
         [Test]
