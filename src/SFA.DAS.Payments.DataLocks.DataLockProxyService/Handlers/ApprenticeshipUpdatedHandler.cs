@@ -29,10 +29,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
                 throw new InvalidOperationException("Invalid 'ApprenticeshipUpdated' received. Uln was 0.");
             }
 
-            logger.LogDebug($"Now handling the apprenticeship updated event.  " +
-                            $"Apprenticeship: {message.Id}, " +
-                            $"employer: {message.EmployerAccountId}, " +
-                            $"ukprn: {message.Ukprn}");
+            logger.LogDebug($"Now handling the apprenticeship updated event. Apprenticeship: {message.Id}, employer: {message.EmployerAccountId}, ukprn: {message.Ukprn}");
             var actorId = new ActorId(message.Uln.ToString());
             logger.LogVerbose($"Creating actor proxy.");
             var actor = actorProxyFactory.CreateActorProxy<IDataLockService>(new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/DataLockServiceActorService"), actorId);
@@ -59,10 +56,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
             //    logger.LogDebug($"Data lock event published for learner with learner uln {message.Uln}");
             //}
                 
-            logger.LogInfo($"Finished handling the apprenticeship updated event.  " +
-                           $"Apprenticeship: {message.Id}, " +
-                           $"employer: {message.EmployerAccountId}, " +
-                           $"provider: {message.Ukprn}");
+            logger.LogInfo($"Finished handling the apprenticeship updated event. Apprenticeship: {message.Id}, employer: {message.EmployerAccountId}, provider: {message.Ukprn}");
         }
     }
 }
