@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Autofac.Extras.Moq;
+﻿using System.Collections.Generic;
 using AutoMapper;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.FundingSource.Application.Builders;
-using SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
@@ -21,13 +18,12 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Builders
         private long employerAccountId;
         private long jobId;
 
-        private IMapper mapper;
+        private Mock<IMapper> mapper;
         private Mock<IPaymentProcessor> processor;
 
 
         private FundingSourcePaymentEventBuilder service;
         private List<FundingSourcePayment> fundingSourcePayments;
-        private MapperConfiguration mapperConfiguration;
 
 
         [SetUp]
@@ -36,15 +32,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Builders
             employerAccountId = 112;
             jobId = 114;
 
-            mapperConfiguration = AutoMapperConfigurationFactory.CreateMappingConfig();
-             mapper = mapperConfiguration.CreateMapper();
+            mapper = new Mock<IMapper>();
             processor = new Mock<IPaymentProcessor>();
 
-            service = new FundingSourcePaymentEventBuilder(mapper, processor.Object);
+            service = new FundingSourcePaymentEventBuilder(mapper.Object, processor.Object);
         }
 
         [Test]
-        public void Process_CreatesFundingSourceEvents_WithCorrectInformation()
+        public void Process_BuildsFundingSourceEvents_Correctly()
         {
             var amount = new CalculatedRequiredLevyAmount
             {
@@ -63,8 +58,15 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Builders
             processor.Setup(x => x.Process(It.IsAny<RequiredPayment>()))
                 .Returns(fundingSourcePayments);
 
+            mapper.Setup(x => x.Map<FundingSourcePaymentEvent>(It.IsAny<EmployerCoInvestedPayment>())).Returns(new EmployerCoInvestedFundingSourcePaymentEvent());
+            mapper.Setup(x => x.Map<FundingSourcePaymentEvent>(It.IsAny<LevyPayment>())).Returns(new LevyFundingSourcePaymentEvent());
+            mapper.Setup(x => x.Map<FundingSourcePaymentEvent>(It.IsAny<TransferPayment>())).Returns(new TransferFundingSourcePaymentEvent());
+
             var results = service.BuildFundingSourcePaymentsForRequiredPayment(amount, employerAccountId, jobId);
             processor.Verify(x=>x.Process(It.IsAny<RequiredPayment>()),Times.Once);
+
+            mapper.VerifyAll();
+            mapper.Verify(x => x.Map(It.IsAny<CalculatedRequiredLevyAmount>(), It.IsAny<FundingSourcePaymentEvent>()), Times.Exactly(3));
 
             results.Count.Should().Be(3);
 
@@ -72,10 +74,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Builders
             results.Should().Contain(x => x.GetType() == typeof(EmployerCoInvestedFundingSourcePaymentEvent));
             results.Should().Contain(x => x.GetType() == typeof(TransferFundingSourcePaymentEvent));
 
-            results.Should().Contain(x => x.FundingSourceType == FundingSourceType.Levy);
-            results.Should().Contain(x => x.FundingSourceType == FundingSourceType.CoInvestedSfa);
-            results.Should().Contain(x => x.FundingSourceType == FundingSourceType.Transfer);
-            results.ForEach(x=>x.AccountId.Should().Be(employerAccountId));
             results.ForEach(x=>x.JobId.Should().Be(jobId));
         }
 
