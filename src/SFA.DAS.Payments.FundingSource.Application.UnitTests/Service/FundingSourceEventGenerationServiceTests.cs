@@ -209,10 +209,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                     && levyAmounts[1].AmountDue == firstPriorityCalculatedRequiredLevyAmountAmountDue
                     && levyAmounts[1].Ukprn == firstPriorityUkprn
             ), It.Is<List<(long ukprn, int order)>>(
-                employerPriorities => 
-                    priorities.Count == 2
-                    && priorities.Any(priority => priority.Ukprn == priorities[0].Ukprn && priority.Order == priorities[0].Order)
-                    && priorities.Any(priority => priority.Ukprn == priorities[1].Ukprn && priority.Order == priorities[1].Order)
+                employerPriorities =>
+                    employerPriorities.Count == 2
+                    && employerPriorities.Any(priority => priority.ukprn == priorities[0].Ukprn && priority.order == priorities[0].Order)
+                    && employerPriorities.Any(priority => priority.ukprn == priorities[1].Ukprn && priority.order == priorities[1].Order)
             )));
         }
 
