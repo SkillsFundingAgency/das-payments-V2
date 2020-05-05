@@ -123,7 +123,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                 {
                     var stopwatch = Stopwatch.StartNew();
                     paymentLogger.LogDebug($"Handling UnableToFundTransfer for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Receiver Account: {message.AccountId}, Sender Account: {message.TransferSenderAccountId}");
-                    var fundingSourcePayments = await fundingSourceService.ProcessReceiverTransferPayment(message).ConfigureAwait(false);
+                    var fundingSourcePayments = await transferFundingSourceEventGenerationService.ProcessReceiverTransferPayment(message).ConfigureAwait(false);
                     paymentLogger.LogInfo($"Finished handling required payment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.AccountId}");
                     telemetry.TrackDuration("LevyFundedService.UnableToFundTransfer", stopwatch, message);
                     telemetry.StopOperation(operation);
