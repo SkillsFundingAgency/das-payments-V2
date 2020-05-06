@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
 
         public async Task Handle(PeriodEndStartedEvent message, IMessageHandlerContext context)
         {
-            logger.LogDebug($"Received period end started event. JobId: {message.JobId}, Collection Period: {message.CollectionPeriod}");
+            logger.LogDebug($"Received period end started event. Details: {message.ToJson()}");
 
             var fabricClient = new FabricClient();
             var serviceDescription = new DeleteServiceDescription(new Uri(ServiceNames.DatalockApprovalsService)) 
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
 
             await fabricClient.ServiceManager.DeleteServiceAsync(serviceDescription);
 
-            logger.LogInfo($"Finished period end started handler. JobId: {message.JobId}, Collection Period: {message.CollectionPeriod}");
+            logger.LogInfo($"Finished period end started handler. Details: {message.ToJson()}");
         }
     }
 }

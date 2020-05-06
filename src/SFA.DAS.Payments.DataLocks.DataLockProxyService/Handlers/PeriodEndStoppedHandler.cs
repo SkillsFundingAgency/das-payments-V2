@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
 
         public async Task Handle(PeriodEndStoppedEvent message, IMessageHandlerContext context)
         {
-            logger.LogDebug($"Received period end stopped event. JobId: {message.JobId}, Collection Period: {message.CollectionPeriod}");
+            logger.LogDebug($"Received period end stopped event. Details: {message.ToJson()}");
 
             var fabricClient = new FabricClient();
             var serviceDescription = new StatelessServiceDescription
@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
             };
 
             await fabricClient.ServiceManager.CreateServiceAsync(serviceDescription);
-            logger.LogInfo($"Finished period end stopped handler. JobId: {message.JobId}, Collection Period: {message.CollectionPeriod}");
+            logger.LogInfo($"Finished period end stopped handler. Details: {message.ToJson()}");
         }
     }
 }
