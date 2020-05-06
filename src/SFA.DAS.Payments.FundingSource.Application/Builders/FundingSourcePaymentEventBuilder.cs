@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using AutoMapper;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
@@ -15,8 +16,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Builders
 
         public FundingSourcePaymentEventBuilder(IMapper mapper, IPaymentProcessor processor)
         {
-            this.mapper = mapper;
-            this.processor = processor;
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            this.processor = processor ?? throw new ArgumentNullException(nameof(processor));
         }
 
         public List<FundingSourcePaymentEvent> BuildFundingSourcePaymentsForRequiredPayment(CalculatedRequiredLevyAmount requiredPaymentEvent,

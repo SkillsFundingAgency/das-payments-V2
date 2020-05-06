@@ -36,10 +36,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             Database.ExecuteSqlCommand(DeleteUkprnData, ukprn);
         }
 
+        public Task<int> ClearFundingSourcePayments(long ukprn)
+        {
+            return Database.ExecuteSqlCommandAsync(DeleteLevyTransactionPayments, ukprn);
+        }
+
         public Task<int> ClearPaymentsDataAsync(long ukprn)
         {
             return Database.ExecuteSqlCommandAsync(DeleteUkprnData, ukprn);
         }
+
+        private const string DeleteLevyTransactionPayments =
+            "delete from Payments2.FundingSourceLevyTransaction where Ukprn = {0}";
 
         private const string DeleteUkprnData = @"
             delete from Payments2.LevyAccount where AccountId in
@@ -89,6 +97,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             delete from Payments2.Payment where Ukprn = {0}
 
             delete from Payments2.SubmittedLearnerAim where Ukprn = {0}
+
+            delete from Payments2.FundingSourceLevyTransaction where Ukprn = {0}
         ";
 
         public async Task ClearApprenticeshipData(long apprenticeshipId, long uln)

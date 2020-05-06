@@ -35,13 +35,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [BeforeScenario()]
         public void ResetJob()
         {
+            var testPaymentDataContext = Scope.Resolve<TestPaymentsDataContext>();
             if (!Context.ContainsKey("new_feature"))
                 NewFeature = true;
-            TestSession.Providers.ForEach(p =>
+            TestSession.Providers.ForEach(async p =>
             {
                 var newJobId = TestSession.GenerateId();
-                Console.WriteLine($"Using new job. Previous job id: { p.JobId }, new job id: {newJobId} for ukprn: {p.Ukprn}");
+                Console.WriteLine(
+                    $"Using new job. Previous job id: {p.JobId}, new job id: {newJobId} for ukprn: {p.Ukprn}");
                 p.JobId = newJobId;
+
+                await testPaymentDataContext.ClearFundingSourcePayments(p.Ukprn);
             });
         }
 
