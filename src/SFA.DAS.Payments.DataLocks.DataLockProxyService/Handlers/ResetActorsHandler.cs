@@ -28,10 +28,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
             foreach (var uln in message.Ulns)
             {
                 var actorId = new ActorId(uln.ToString());
-                // Currently only called from tests. Removing log as it mentions ULN
-                //logger.LogVerbose($"Creating actor proxy, for learner: {message}.");
                 var actor = proxyFactory.CreateActorProxy<IDataLockService>(new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/DataLockServiceActorService"), actorId);
-                //logger.LogVerbose($"Actor proxy created. Actor id: {uln}, now resetting the cache.");
                 resetTasks.Add(actor.Reset());
             }
 
