@@ -38,7 +38,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         public async Task ProcessApprenticeshipUpdate(ApprenticeshipUpdated updatedApprenticeship)
         {
-            logger.LogDebug($"Getting apprenticeships cache item using uln for apprenticeship id: {updatedApprenticeship.Id}");
+            logger.LogDebug(
+                $"Getting apprenticeships cache item using uln for apprenticeship id: {updatedApprenticeship.Id}");
             var cacheItem = await dataCache.TryGet(updatedApprenticeship.Uln.ToString(), CancellationToken.None);
             logger.LogDebug(cacheItem.HasValue
                 ? "Item found in the cache."
@@ -51,7 +52,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             logger.LogDebug("Finished mapping the apprenticeship model, now adding to the cache.");
             apprenticeships.Add(model);
             await dataCache.AddOrReplace(model.Uln.ToString(), apprenticeships, CancellationToken.None);
-            logger.LogInfo($"Finished storing the apprenticeship details in the cache. Apprenticeship id: {model.Id}, Account: {model.AccountId}, Provider: {model.Ukprn}");
+            logger.LogInfo(
+                $"Finished storing the apprenticeship details in the cache. Apprenticeship id: {model.Id}, Account: {model.AccountId}, Provider: {model.Ukprn}");
             await AddUkprnToProviderCache(updatedApprenticeship.Ukprn);
         }
 
