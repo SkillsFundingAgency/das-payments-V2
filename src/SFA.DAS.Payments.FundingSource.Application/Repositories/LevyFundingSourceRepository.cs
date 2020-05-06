@@ -34,28 +34,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
             return levyAccounts.First();
         }
 
-        public async Task<List<EmployerProviderPriorityModel>> GetPaymentPriorities(long employerAccountId, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var paymentPriorities = await dataContext.EmployerProviderPriority.AsNoTracking()
-                .Where(paymentPriority => paymentPriority.EmployerAccountId == employerAccountId)
-                .ToListAsync(cancellationToken);
-
-            return paymentPriorities;
-        }
-
-        public async Task ReplaceEmployerProviderPriorities(long employerAccountId, List<EmployerProviderPriorityModel> paymentPriorityModels, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var previousEmployerPriorities =  dataContext.EmployerProviderPriority
-                .Where(paymentPriority => paymentPriority.EmployerAccountId == employerAccountId);
-                dataContext.EmployerProviderPriority.RemoveRange(previousEmployerPriorities);
-               
-                await dataContext.EmployerProviderPriority
-                    .AddRangeAsync(paymentPriorityModels, cancellationToken)
-                    .ConfigureAwait(false);
-
-                await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-        }
-
         public async Task<List<long>> GetEmployerAccounts(CancellationToken cancellationToken)
         {
             var transferSenders = (await dataContext.Apprenticeship
