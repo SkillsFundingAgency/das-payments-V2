@@ -123,10 +123,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
 
         public async Task Reset()
         {
-            // This method is only used from tests currently. Removing log for ULN
-            //paymentLogger.LogVerbose($"Resetting actor for id {Id}");
             await apprenticeships.ResetInitialiseFlag().ConfigureAwait(false);
-            //paymentLogger.LogInfo($"Reset actor for Id {Id}");
         }
 
         protected override async Task OnActivateAsync()
