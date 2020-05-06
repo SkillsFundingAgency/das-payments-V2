@@ -74,7 +74,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             var prioritiesTuple =    priorities.Select(p => Tuple.Create(p.Ukprn, p.Order).ToValueTuple()).ToList();
 
             var transactions = dataContext
-                .GetEmployerLevyTransactions(employerAccountId).ToList();
+                .GetTransactionsToBePaidByEmployer(employerAccountId).ToList();
 
             var calculatedRequiredLevyAmounts = transactions.Select(pt =>
                     JsonConvert.DeserializeObject<CalculatedRequiredLevyAmount>(pt.MessagePayload))

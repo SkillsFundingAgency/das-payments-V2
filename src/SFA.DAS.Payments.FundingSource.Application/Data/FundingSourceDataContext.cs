@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
         DbSet<LevyAccountModel> LevyAccounts { get; }
         DbSet<LevyTransactionModel> LevyTransactions { get; }
         Task<int> SaveChanges(CancellationToken cancellationToken);
-        IQueryable<LevyTransactionModel> GetEmployerLevyTransactions(long employerAccountId);
+        IQueryable<LevyTransactionModel> GetTransactionsToBePaidByEmployer(long employerAccountId);
         Task SaveBatch(IList<LevyTransactionModel> batch, CancellationToken cancellationToken);
         Task DeletePreviousSubmissions(long jobId, byte collectionPeriod, short academicYear,
             DateTime ilrSubmissionDateTime, long ukprn);
@@ -23,7 +23,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
         Task<List<EmployerProviderPriorityModel>> GetEmployerProviderPriorities(long employerAccountId, CancellationToken cancellationToken);
         Task ReplaceEmployerProviderPriorities(long employerAccountId, List<EmployerProviderPriorityModel> paymentPriorityModels, CancellationToken cancellationToken);
     }
-
 
     public class FundingSourceDataContext : DbContext, IFundingSourceDataContext
     {
@@ -56,9 +55,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
             if (connectionString != null) optionsBuilder.UseSqlServer(connectionString);
         }
 
-        public IQueryable<LevyTransactionModel> GetEmployerLevyTransactions(long employerAccountId)
+        public IQueryable<LevyTransactionModel> GetTransactionsToBePaidByEmployer(long employerAccountId)
         {
-            return LevyTransactions.Where(transaction => transaction.AccountId == employerAccountId);
+            return LevyTransactions.Where(transaction =>
+                (transaction.AccountId == employerAccountId && transaction.TransferSenderAccountId == null) 
+                ||
+                (transaction.TransferSenderAccountId != transaction.AccountId &&
+                 transaction.TransferSenderAccountId == employerAccountId) 
+            );
         }
 
         public async Task SaveBatch(IList<LevyTransactionModel> batch, CancellationToken cancellationToken)
