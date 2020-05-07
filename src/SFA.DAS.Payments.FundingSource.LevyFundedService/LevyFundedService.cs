@@ -233,11 +233,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
 
         private async Task Initialise()
         {
-            long accountId = 0;
-            if (!long.TryParse(Id.ToString(), out accountId))
+            if (!long.TryParse(Id.ToString(), out _))
                 throw new InvalidCastException($"Unable to cast Actor Id {Id} to valid account Id ");
-
-            ;
 
             if (await actorCache.IsInitialiseFlagIsSet().ConfigureAwait(false))
             {

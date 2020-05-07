@@ -5,8 +5,8 @@
     <Parameter Name="NonLevyFundedService_InstanceCount" Value="__NonLevyFundedService_InstanceCount__" />
     <Parameter Name="LevyAccountBalanceService_InstanceCount" Value="__LevyAccountBalanceService_InstanceCount__" />
     <Parameter Name="LevyFundedProxyService_InstanceCount" Value="__LevyFundedProxyService_InstanceCount__" />
-    <Parameter Name="LevyTransactionService_EndpointName" Value="__LevyTransaction_EndpointName__" />
-    <Parameter Name="LevyTransactionService_FailedMessagesQueue" Value="__LevyTransaction_FailedMessagesQueue__" />
+    <Parameter Name="LevyTransactionService_EndpointName" Value="__LevyTransactionService_EndpointName__" />
+    <Parameter Name="LevyTransactionService_FailedMessagesQueue" Value="__LevyTransactionService_FailedMessagesQueue__" />
     <Parameter Name="LevyFundedServiceActorService_PartitionCount" Value="__LevyFundedServiceActorService_PartitionCount__" />
     <Parameter Name="LevyFundedServiceActorService_TargetReplicaSetSize" Value="__LevyFundedServiceActorService_TargetReplicaSetSize__" />
     <Parameter Name="LevyFundedServiceActorService_MinReplicaSetSize" Value="__LevyFundedServiceActorService_MinReplicaSetSize__" />

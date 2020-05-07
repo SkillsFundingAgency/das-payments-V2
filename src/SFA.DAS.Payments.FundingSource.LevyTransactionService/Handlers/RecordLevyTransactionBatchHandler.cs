@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.FundingSource.Application.Services;
+using SFA.DAS.Payments.Monitoring.Jobs.Client;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.LevyTransactionService.Handlers
@@ -13,14 +15,17 @@ namespace SFA.DAS.Payments.FundingSource.LevyTransactionService.Handlers
     {
         private readonly IPaymentLogger logger;
         private readonly ILevyTransactionBatchStorageService levyTransactionBatchStorageService;
+        private readonly IJobMessageClientFactory factory;
 
         public RecordLevyTransactionBatchHandler(IPaymentLogger logger,
-            ILevyTransactionBatchStorageService levyTransactionBatchStorageService)
+            ILevyTransactionBatchStorageService levyTransactionBatchStorageService,
+            IJobMessageClientFactory factory)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.levyTransactionBatchStorageService = levyTransactionBatchStorageService ??
                                                       throw new ArgumentNullException(
                                                           nameof(levyTransactionBatchStorageService));
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         public async Task Handle(IList<CalculatedRequiredLevyAmount> messages, CancellationToken cancellationToken)
@@ -28,6 +33,16 @@ namespace SFA.DAS.Payments.FundingSource.LevyTransactionService.Handlers
             logger.LogInfo($"Received {messages.Count} messages");
             await levyTransactionBatchStorageService.StoreLevyTransactions(messages, cancellationToken)
                 .ConfigureAwait(false);
+
+            foreach (var calculatedRequiredLevyAmount in messages)
+            {
+                var client =  factory.Create();
+                await client.ProcessedJobMessage(calculatedRequiredLevyAmount.JobId,
+                    calculatedRequiredLevyAmount.EventId,
+                    calculatedRequiredLevyAmount.GetType().ToString(),
+                    new List<GeneratedMessage>()
+                );
+            }
         }
     }
 }
