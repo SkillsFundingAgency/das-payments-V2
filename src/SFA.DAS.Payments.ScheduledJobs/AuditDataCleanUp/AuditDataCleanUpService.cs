@@ -63,8 +63,6 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
 
                 paymentLogger.LogInfo($"Started {methodName}");
 
-                paymentLogger.LogInfo($"Database command timeout is {dataContext.Database.GetCommandTimeout()}");
-
                 foreach (var sqlParameters in jobsToBeDeleted)
                 {
                     var sqlParamName = string.Join(", ", sqlParameters.Select(pn => pn.ParameterName));
