@@ -14,12 +14,11 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC
 
         private static void RegisterModules(ContainerBuilder builder)
         {
-            builder.RegisterModule<PaymentDataContextModule>();
-
             builder.RegisterModule<TelemetryModule>();
             builder.RegisterModule<LoggingModule>();
-
             builder.RegisterModule<FunctionsModule>();
+
+            builder.RegisterModule<Modules.PaymentDataContextModule>();
             builder.RegisterModule<Modules.ConfigurationModule>();
             builder.RegisterModule<Modules.MessagingModule>();
         }

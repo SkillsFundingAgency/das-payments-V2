@@ -5,7 +5,7 @@ using SFA.DAS.Payments.Core.Configuration;
 
 namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
 {
-    public class PaymentsDataContextModule : Module
+    public class PaymentDataContextModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
