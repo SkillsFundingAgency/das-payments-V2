@@ -15,17 +15,17 @@ namespace SFA.DAS.Payments.FundingSource.LevyTransactionService.Handlers
     {
         private readonly IPaymentLogger logger;
         private readonly ILevyTransactionBatchStorageService levyTransactionBatchStorageService;
-        private readonly IJobMessageClientFactory factory;
+        private readonly IJobMessageClientFactory monitoringClientFactory;
 
         public RecordLevyTransactionBatchHandler(IPaymentLogger logger,
             ILevyTransactionBatchStorageService levyTransactionBatchStorageService,
-            IJobMessageClientFactory factory)
+            IJobMessageClientFactory monitoringClientFactory)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.levyTransactionBatchStorageService = levyTransactionBatchStorageService ??
                                                       throw new ArgumentNullException(
                                                           nameof(levyTransactionBatchStorageService));
-            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            this.monitoringClientFactory = monitoringClientFactory ?? throw new ArgumentNullException(nameof(monitoringClientFactory));
         }
 
         public async Task Handle(IList<CalculatedRequiredLevyAmount> messages, CancellationToken cancellationToken)
@@ -36,8 +36,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyTransactionService.Handlers
 
             foreach (var calculatedRequiredLevyAmount in messages)
             {
-                var client =  factory.Create();
-                await client.ProcessedJobMessage(calculatedRequiredLevyAmount.JobId,
+                var monitoringClient =  monitoringClientFactory.Create();
+                await monitoringClient.ProcessedJobMessage(calculatedRequiredLevyAmount.JobId,
                     calculatedRequiredLevyAmount.EventId,
                     calculatedRequiredLevyAmount.GetType().ToString(),
                     new List<GeneratedMessage>()
