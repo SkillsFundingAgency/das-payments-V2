@@ -13,9 +13,10 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
             builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
-                    var context = new PaymentsDataContext(configHelper.GetConnectionString("PaymentsConnectionString"));
-                    context.Database.SetCommandTimeout(TimeSpan.FromSeconds(270));
-                    return context;
+                    var dbContextOptions = new DbContextOptionsBuilder<PaymentsDataContext>()
+                        .UseSqlServer(configHelper.GetSetting("PaymentsConnectionString"), 
+                            optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
+                    return new PaymentsDataContext(dbContextOptions);
                 })
                 .As<IPaymentsDataContext>()
                 .InstancePerLifetimeScope();
