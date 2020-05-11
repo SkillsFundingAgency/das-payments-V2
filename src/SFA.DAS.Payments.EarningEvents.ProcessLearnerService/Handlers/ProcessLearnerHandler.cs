@@ -6,7 +6,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.EarningEvents.Domain;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 
-namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
+namespace SFA.DAS.Payments.EarningEvents.ProcessLearnerService.Handlers
 {
     public class ProcessLearnerHandler : IHandleMessages<ProcessLearnerCommand>
     {
@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             var processorResult = learnerSubmissionProcessor.GenerateEarnings(message);
             if (processorResult.Validation.Failed)
             {
-                logger.LogInfo($"ILR Learner Submission failed validation. Job: {message.JobId}, Ukprn: {message.Ukprn}, Collection year: {message.CollectionYear}, Learner: {message.Learner.LearnRefNumber}");
+                logger.LogWarning($"ILR Learner Submission failed validation. Job: {message.JobId}, Ukprn: {message.Ukprn}, Collection year: {message.CollectionYear}, Learner: {message.Learner.LearnRefNumber}");
                 context.DoNotContinueDispatchingCurrentMessageToHandlers();
                 return;
             }
