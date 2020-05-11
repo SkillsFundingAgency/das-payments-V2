@@ -42,6 +42,8 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         private CancellationToken startingCancellationToken;
         protected string TelemetryPrefix => GetType().Name;
 
+        private const string TopicPath = "bundle-1";
+
         public StatelessServiceBusBatchCommunicationListener(string connectionString, string endpointName, string errorQueueName, IPaymentLogger logger,
             IContainerScopeFactory scopeFactory, ITelemetry telemetry, IMessageDeserializer messageDeserializer, IApplicationMessageModifier messageModifier)
         {
@@ -65,6 +67,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         protected virtual async Task ListenForMessages(CancellationToken cancellationToken)
         {
             await EnsureQueue(EndpointName).ConfigureAwait(false);
+            await EnsureSubscriptions(EndpointName, cancellationToken).ConfigureAwait(false);
             await EnsureQueue(errorQueueName).ConfigureAwait(false);
             try
             {
@@ -74,6 +77,78 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             {
                 logger.LogFatal($"Encountered fatal error. Error: {ex.Message}", ex);
             }
+        }
+
+        private Task EnsureSubscriptions(string endpointName,CancellationToken cancellationToken)
+        {
+            //get class names that are subscribing to IHandleBatchMessages
+            List<Type> subscribedMessageTypes = GetBatchHandledMessageTypes();
+            if (!subscribedMessageTypes.Any()) return Task.CompletedTask;
+            
+            //GetCurrentSubscriptions
+            var subscription = GetOrCreateSubscription(endpointName, cancellationToken);
+
+            var existingRules = GetExistingRules(endpointName, cancellationToken);
+
+            foreach (var type in subscribedMessageTypes)
+            {
+                var typeName = type.Name;
+
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private async Task<IList<RuleDescription>> GetExistingRules(string subscriptionName, CancellationToken cancellationToken)
+        {
+            var manageClient = new ManagementClient(connectionString);
+          return await  manageClient.GetRulesAsync(TopicPath, subscriptionName, cancellationToken: cancellationToken);
+        }
+
+        private async Task<SubscriptionDescription> GetOrCreateSubscription(string endpointName,CancellationToken cancellationToken)
+        {
+            var manageClient = new ManagementClient(connectionString);
+             
+                SubscriptionDescription subscriptionDescription = null;
+                if (!await  manageClient.SubscriptionExistsAsync(TopicPath, endpointName ,cancellationToken))
+                {
+                     subscriptionDescription = new SubscriptionDescription(TopicPath, endpointName)
+                    {
+                        ForwardTo = endpointName, UserMetadata = endpointName, EnableBatchedOperations = true,
+                        MaxDeliveryCount = Int32.MaxValue
+                    };
+                    await manageClient.CreateSubscriptionAsync(
+                        subscriptionDescription, cancellationToken);
+                }
+                else
+                {
+                    subscriptionDescription =
+                        await manageClient.GetSubscriptionAsync(TopicPath, endpointName, cancellationToken);
+                }
+
+                return subscriptionDescription;
+        }
+
+        private List<Type> GetBatchHandledMessageTypes()
+        {
+            List<Type> genericTypes = new List<Type>();
+
+            var types = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(assembly => assembly.GetTypes());
+
+            foreach (var type in types)
+            {
+                foreach (Type intType in type.GetInterfaces())
+                {
+                    if (intType.IsGenericType && intType.GetGenericTypeDefinition()
+                        == typeof(IHandleMessageBatches<>))
+                    {
+                        genericTypes.Add(intType.GetGenericArguments()[0]);
+                    }
+                }
+            }
+
+            return genericTypes;
         }
 
         private async Task<List<(Object Message, BatchMessageReceiver Receiver, Message ReceivedMessage)>> ReceiveMessages(BatchMessageReceiver messageReceiver, CancellationToken cancellationToken)
