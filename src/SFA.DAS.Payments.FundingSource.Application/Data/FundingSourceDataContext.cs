@@ -58,10 +58,17 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
         public IQueryable<LevyTransactionModel> GetTransactionsToBePaidByEmployer(long employerAccountId)
         {
             return LevyTransactions.Where(transaction =>
-                (transaction.AccountId == employerAccountId && transaction.TransferSenderAccountId == null) 
+                (//standard payments
+                    transaction.AccountId == employerAccountId 
+                    &&
+                    (transaction.TransferSenderAccountId == null || transaction.AccountId == transaction.TransferSenderAccountId)
+                )
                 ||
-                (transaction.TransferSenderAccountId != transaction.AccountId &&
-                 transaction.TransferSenderAccountId == employerAccountId) 
+                (//transfers
+                    transaction.TransferSenderAccountId != transaction.AccountId 
+                    &&
+                    transaction.TransferSenderAccountId == employerAccountId
+                )
             );
         }
 
