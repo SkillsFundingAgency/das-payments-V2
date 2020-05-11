@@ -135,7 +135,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .ReturnsAsync(priorities);
 
             dataContext.Setup(x => x.GetTransactionsToBePaidByEmployer(employerAccountId))
-                .Returns(levyTransactions.AsQueryable());
+                .ReturnsAsync(levyTransactions);
 
             calculatedRequiredLevyAmountPrioritisationService
                 .Setup(x => x.Prioritise(It.IsAny<List<CalculatedRequiredLevyAmount>>(), It.IsAny<List<(long Ukprn, int Order)>>()))

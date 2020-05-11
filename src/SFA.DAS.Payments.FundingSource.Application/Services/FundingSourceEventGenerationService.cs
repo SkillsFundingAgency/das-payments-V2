@@ -73,8 +73,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             var priorities = await dataContext.GetEmployerProviderPriorities(employerAccountId, CancellationToken.None);
             var prioritiesTuple =    priorities.Select(p => Tuple.Create(p.Ukprn, p.Order).ToValueTuple()).ToList();
 
-            var transactions = dataContext
-                .GetTransactionsToBePaidByEmployer(employerAccountId).ToList();
+            var transactions = await dataContext
+                .GetTransactionsToBePaidByEmployer(employerAccountId);
 
             var calculatedRequiredLevyAmounts = transactions.Select(pt =>
                     JsonConvert.DeserializeObject<CalculatedRequiredLevyAmount>(pt.MessagePayload))
