@@ -79,15 +79,9 @@ namespace SFA.DAS.Payments.ScheduledJobs.AcceptanceTests.Steps
         {
             var httpClient = new HttpClient();
 
-            var earningEventresult = await httpClient.GetAsync(TestConfiguration.EarningFunctionUrl);
-            var fundingSourceEventresult = await httpClient.GetAsync(TestConfiguration.FundingSourceFunctionUrl);
-            var requiredPaymentEventresult = await httpClient.GetAsync(TestConfiguration.RequiredPaymentFunctionUrl);
-            var dataLocEventresult = await httpClient.GetAsync(TestConfiguration.DataLockEvenFunctionUrl);
+            var earningEventresult = await httpClient.GetAsync(TestConfiguration.AuditDataCleanupFunctionUrl);
 
             earningEventresult.EnsureSuccessStatusCode();
-            fundingSourceEventresult.EnsureSuccessStatusCode();
-            requiredPaymentEventresult.EnsureSuccessStatusCode();
-            dataLocEventresult.EnsureSuccessStatusCode();
         }
 
         [Then(@"Submission (.*) is deleted from collection period (.*)")]

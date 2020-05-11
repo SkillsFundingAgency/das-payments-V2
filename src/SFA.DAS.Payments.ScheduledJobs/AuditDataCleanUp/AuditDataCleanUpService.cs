@@ -7,85 +7,70 @@ using AzureFunctions.Autofac;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.Model.Core.Audit;
-using SFA.DAS.Payments.ScheduledJobs.Infrastructure.Configuration;
 
 namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
 {
-    public interface IAuditDataCleanUpService
-    {
-        Task EarningEventAuditDataCleanUp();
-        Task FundingSourceEventAuditDataCleanUp();
-        Task RequiredPaymentEventAuditDataCleanUp();
-        Task DataLockEventAuditDataCleanUp();
-    }
-
     public class AuditDataCleanUpService : IAuditDataCleanUpService
     {
         private readonly IPaymentsDataContext dataContext;
-        private readonly IScheduledJobsConfiguration configuration;
         private readonly IPaymentLogger paymentLogger;
 
-        public AuditDataCleanUpService([Inject] IPaymentsDataContext dataContext, [Inject] IScheduledJobsConfiguration configuration, [Inject] IPaymentLogger paymentLogger)
+        public AuditDataCleanUpService([Inject] IPaymentsDataContext dataContext, [Inject] IPaymentLogger paymentLogger)
         {
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
-            this.configuration = configuration ?? throw new ArgumentNullException(nameof(paymentLogger));
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
         }
 
-        public async Task EarningEventAuditDataCleanUp()
+        public async Task EarningEventAuditDataCleanUp(SubmissionJobsToBeDeletedBatch batch)
         {
-            await AuditDataCleanUp(DeleteEarningEventData);
+            await AuditDataCleanUp(DeleteEarningEventData, batch);
         }
 
-        public async Task FundingSourceEventAuditDataCleanUp()
+        public async Task FundingSourceEventAuditDataCleanUp(SubmissionJobsToBeDeletedBatch batch)
         {
-            await AuditDataCleanUp(DeleteFundingSourceEvent);
+            await AuditDataCleanUp(DeleteFundingSourceEvent, batch);
         }
 
-        public async Task RequiredPaymentEventAuditDataCleanUp()
+        public async Task RequiredPaymentEventAuditDataCleanUp(SubmissionJobsToBeDeletedBatch batch)
         {
-            await AuditDataCleanUp(DeleteRequiredPaymentEvent);
+            await AuditDataCleanUp(DeleteRequiredPaymentEvent, batch);
         }
 
-        public async Task DataLockEventAuditDataCleanUp()
+        public async Task DataLockEventAuditDataCleanUp(SubmissionJobsToBeDeletedBatch batch)
         {
-            await  AuditDataCleanUp(DeleteDataLockEvent);
+            await AuditDataCleanUp(DeleteDataLockEvent, batch);
         }
 
-        private async Task AuditDataCleanUp(Func<IList<SqlParameter>, string, string, Task> deleteAuditData)
+        private async Task AuditDataCleanUp(Func<IList<SqlParameter>, string, string, Task> deleteAuditData, SubmissionJobsToBeDeletedBatch batch)
         {
             try
             {
-                var jobsToBeDeleted = await GetSubmissionJobsToBeDeleted();
+                var sqlParameters = batch.JobsToBeDeleted.ToSqlParameters();
 
-                var methodName = deleteAuditData.Method.Name;
+                var deleteMethodName = deleteAuditData.Method.Name;
 
-                paymentLogger.LogInfo($"Started {methodName}");
+                paymentLogger.LogInfo($"Started {deleteMethodName}");
 
-                foreach (var sqlParameters in jobsToBeDeleted)
-                {
-                    var sqlParamName = string.Join(", ", sqlParameters.Select(pn => pn.ParameterName));
-                    var paramValues = string.Join(", ", sqlParameters.Select(pn => pn.Value));
-                    
-                    await deleteAuditData(sqlParameters, sqlParamName, paramValues);
-                }
+                var sqlParamName = string.Join(", ", sqlParameters.Select(pn => pn.ParameterName));
+                var paramValues = string.Join(", ", sqlParameters.Select(pn => pn.Value));
 
-                paymentLogger.LogInfo($"Finished {methodName}");
+                await deleteAuditData(sqlParameters, sqlParamName, paramValues);
+
+                paymentLogger.LogInfo($"Finished {deleteMethodName}");
             }
             catch (Exception e)
             {
                 paymentLogger.LogWarning($"Error Deleting Audit Data, internal Exception {e}");
             }
         }
-        
+
         private async Task DeleteEarningEventData(IList<SqlParameter> sqlParameters, string sqlParamName, string paramValues)
         {
             var earningEventPeriodCount = await dataContext.Database.ExecuteSqlCommandAsync(
                     $@"DELETE Payments2.EarningEventPeriod 
                        FROM Payments2.EarningEventPeriod AS EEP 
                            INNER JOIN Payments2.EarningEvent AS EE ON EEP.EarningEventId = EE.EventId 
-                       WHERE EE.JobId IN ({sqlParamName})", 
+                       WHERE EE.JobId IN ({sqlParamName})",
                        sqlParameters);
 
             paymentLogger.LogInfo($"DELETED {earningEventPeriodCount} earningEventPeriods for JobIds {paramValues}");
@@ -100,16 +85,16 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
             paymentLogger.LogInfo($"DELETED {earningEventPriceEpisodeCount} earningEventPriceEpisodes for JobIds {paramValues}");
 
             var earningEventCount = await dataContext.Database.ExecuteSqlCommandAsync(
-                    $"DELETE Payments2.EarningEvent WHERE JobId IN ({sqlParamName})", 
+                    $"DELETE Payments2.EarningEvent WHERE JobId IN ({sqlParamName})",
                     sqlParameters);
 
             paymentLogger.LogInfo($"DELETED {earningEventCount} EarningEvents for JobIds {paramValues}");
         }
-        
+
         private async Task DeleteFundingSourceEvent(IList<SqlParameter> sqlParameters, string sqlParamName, string paramValues)
         {
             var fundingSourceEventCount = await dataContext.Database.ExecuteSqlCommandAsync(
-                    $"DELETE Payments2.FundingSourceEvent WHERE JobId IN ({sqlParamName})", 
+                    $"DELETE Payments2.FundingSourceEvent WHERE JobId IN ({sqlParamName})",
                     sqlParameters);
 
             paymentLogger.LogInfo($"DELETED {fundingSourceEventCount} FundingSourceEvents for JobIds {paramValues}");
@@ -118,7 +103,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
         private async Task DeleteRequiredPaymentEvent(IList<SqlParameter> sqlParameters, string sqlParamName, string paramValues)
         {
             var requiredPaymentEventCount = await dataContext.Database.ExecuteSqlCommandAsync(
-                    $"DELETE Payments2.RequiredPaymentEvent WHERE JobId IN ({sqlParamName})", 
+                    $"DELETE Payments2.RequiredPaymentEvent WHERE JobId IN ({sqlParamName})",
                     sqlParameters);
 
             paymentLogger.LogInfo($"DELETED {requiredPaymentEventCount} RequiredPaymentEvents for JobIds {paramValues}");
@@ -164,13 +149,13 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
             paymentLogger.LogInfo($"DELETED {dataLockEventPriceEpisodeCount} DataLockEventPriceEpisodes for JobIds {paramValues}");
 
             var dataLockEventCount = await dataContext.Database.ExecuteSqlCommandAsync(
-                    $"DELETE Payments2.DataLockEvent WHERE JobId IN ({sqlParamName})", 
+                    $"DELETE Payments2.DataLockEvent WHERE JobId IN ({sqlParamName})",
                     sqlParameters);
 
             paymentLogger.LogInfo($"DELETED {dataLockEventCount} DataLockEvents for JobIds {paramValues}");
         }
 
-        private async Task<IEnumerable<IList<SqlParameter>>> GetSubmissionJobsToBeDeleted()
+        public async Task<IEnumerable<SubmissionJobsToBeDeletedBatch>> GetSubmissionJobsToBeDeletedBatches(string collectionPeriod, string academicYear)
         {
             // ReSharper disable once ConvertToConstant.Local
             var selectJobsToBeDeleted = @"
@@ -199,21 +184,12 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
 
                 SELECT JobId AS DcJobId FROM #JobDataToBeDeleted";
 
-            return ( await dataContext.SubmissionJobsToBeDeleted
-                .FromSql(selectJobsToBeDeleted, 
-                    new SqlParameter("collectionPeriod", configuration.CollectionPeriod), 
-                    new SqlParameter("academicYear", configuration.AcademicYear)).ToListAsync() )
-                .ToSqlParameterBatch(100);
-        }
-    }
-
-    public static class BatchExtensions
-    {
-        public static IEnumerable<IList<SqlParameter>> ToSqlParameterBatch(this IEnumerable<SubmissionJobsToBeDeletedModel> items, int maxItems)
-        {
-            return items.Select((item, index) => new { item, index })
-                        .GroupBy(x => x.index / maxItems)
-                        .Select(g => g.Select((job, index) => new SqlParameter($"@DcJobId{index}", job.item.DcJobId)).ToList());
+            return (await dataContext.SubmissionJobsToBeDeleted
+                .FromSql(selectJobsToBeDeleted,
+                    new SqlParameter("collectionPeriod", collectionPeriod),
+                    new SqlParameter("academicYear", academicYear))
+                .ToListAsync())
+                .ToBatch(100);
         }
     }
 }

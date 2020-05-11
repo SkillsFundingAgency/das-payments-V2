@@ -17,6 +17,10 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
                         ServiceBusConnectionString = configHelper.GetConnectionString("ServiceBusConnectionString"),
                         DasNServiceBusLicenseKey = configHelper.GetSetting("DasNServiceBusLicenseKey"),
                         LevyAccountBalanceEndpoint = configHelper.GetSetting("LevyAccountBalanceEndpoint"),
+                        EarningAuditDataCleanUpQueue = configHelper.GetSetting("EarningAuditDataCleanUpQueue"),
+                        DataLockAuditDataCleanUpQueue = configHelper.GetSetting("DataLockAuditDataCleanUpQueue"),
+                        FundingSourceAuditDataCleanUpQueue = configHelper.GetSetting("FundingSourceAuditDataCleanUpQueue"),
+                        RequiredPaymentAuditDataCleanUpQueue = configHelper.GetSetting("RequiredPaymentAuditDataCleanUpQueue"),
                         CollectionPeriod = configHelper.GetSetting("CollectionPeriod"),
                         AcademicYear = configHelper.GetSetting("AcademicYear"),
                     };
