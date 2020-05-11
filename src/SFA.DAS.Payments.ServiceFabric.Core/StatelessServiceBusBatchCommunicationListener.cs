@@ -79,24 +79,48 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             }
         }
 
-        private Task EnsureSubscriptions(string endpointName,CancellationToken cancellationToken)
+        private  async Task EnsureSubscriptions(string endpointName,CancellationToken cancellationToken)
         {
             //get class names that are subscribing to IHandleBatchMessages
             List<Type> subscribedMessageTypes = GetBatchHandledMessageTypes();
-            if (!subscribedMessageTypes.Any()) return Task.CompletedTask;
+            if (!subscribedMessageTypes.Any()) return;
             
             //GetCurrentSubscriptions
-            var subscription = GetOrCreateSubscription(endpointName, cancellationToken);
+             _ = await GetOrCreateSubscription(endpointName, cancellationToken);
 
-            var existingRules = GetExistingRules(endpointName, cancellationToken);
-
+            var existingRules =  await GetExistingRules(endpointName, cancellationToken);
+            
             foreach (var type in subscribedMessageTypes)
             {
-                var typeName = type.Name;
-
+                if (!existingRules.Any(x =>x.Name == type.Name))
+                {
+                    CreateNewSubscriptionRule(type, endpointName, cancellationToken);
+                }
             }
+            await UpdateDefaultRule(cancellationToken);
+        }
 
-            return Task.CompletedTask;
+        private async Task UpdateDefaultRule(CancellationToken cancellationToken)
+        {
+            var manageClient = new ManagementClient(connectionString);
+            var defaultRule = await manageClient.GetRuleAsync(TopicPath, EndpointName, "$Default", cancellationToken);
+            if (defaultRule != null)
+            {
+                defaultRule.Filter = new SqlFilter("1=0");
+                await manageClient.UpdateRuleAsync(TopicPath, EndpointName, defaultRule, cancellationToken);
+            }
+        }
+
+        private void CreateNewSubscriptionRule(Type type, string endpointName, CancellationToken cancellationToken)
+        {
+            var manageClient = new ManagementClient(connectionString);
+            var ruleDescription = new RuleDescription
+            {
+                Filter = new SqlFilter($"[NServiceBus.EnclosedMessageTypes] LIKE '%{type.FullName}%'"),
+                Name = type.Name
+            };
+
+            manageClient.CreateRuleAsync(TopicPath, endpointName, ruleDescription, cancellationToken);
         }
 
         private async Task<IList<RuleDescription>> GetExistingRules(string subscriptionName, CancellationToken cancellationToken)
@@ -115,7 +139,8 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                      subscriptionDescription = new SubscriptionDescription(TopicPath, endpointName)
                     {
                         ForwardTo = endpointName, UserMetadata = endpointName, EnableBatchedOperations = true,
-                        MaxDeliveryCount = Int32.MaxValue
+                        MaxDeliveryCount = Int32.MaxValue,EnableDeadLetteringOnFilterEvaluationExceptions = false,
+                        LockDuration = TimeSpan.FromMinutes(5)
                     };
                     await manageClient.CreateSubscriptionAsync(
                         subscriptionDescription, cancellationToken);
