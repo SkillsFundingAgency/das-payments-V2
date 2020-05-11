@@ -54,11 +54,18 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
 
         public async Task<List<LevyTransactionModel>> GetTransactionsToBePaidByEmployer(long employerAccountId)
         {
-            return await LevyTransactions.Where(transaction =>
-                (transaction.AccountId == employerAccountId && transaction.TransferSenderAccountId == null) 
+            return  await LevyTransactions.Where(transaction =>
+                (//standard payments
+                    transaction.AccountId == employerAccountId 
+                    &&
+                    (transaction.TransferSenderAccountId == null || transaction.AccountId == transaction.TransferSenderAccountId)
+                )
                 ||
-                (transaction.TransferSenderAccountId != transaction.AccountId &&
-                 transaction.TransferSenderAccountId == employerAccountId) 
+                (//transfers
+                    transaction.TransferSenderAccountId != transaction.AccountId 
+                    &&
+                    transaction.TransferSenderAccountId == employerAccountId
+                )
             ).ToListAsync();
         }
 
