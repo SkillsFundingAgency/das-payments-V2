@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using AutoMapper;
@@ -12,6 +13,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Application.Data;
+using SFA.DAS.Payments.FundingSource.Application.Infrastructure;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
@@ -100,6 +102,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                         $"Handling UnableToFundTransfer for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Receiver Account: {message.AccountId}, Sender Account: {message.TransferSenderAccountId}");
                     var fundingSourcePayments = await transferFundingSourceEventGenerationService
                         .ProcessReceiverTransferPayment(message).ConfigureAwait(false);
+                    
+                   
                     paymentLogger.LogInfo(
                         $"Finished handling required payment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.AccountId}");
                     telemetry.TrackDuration("LevyFundedService.UnableToFundTransfer", stopwatch, message);
@@ -125,8 +129,12 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                     telemetry.StartOperation("LevyFundedService.HandleMonthEnd", command.CommandId.ToString()))
                 {
                     var stopwatch = Stopwatch.StartNew();
+
+
                     var fundingSourceEvents =
                         await fundingSourceEventGenerationService.HandleMonthEnd(command.AccountId, command.JobId);
+
+                    await monthEndCache.AddOrReplace(CacheKeys.MonthEndCacheKey, true, CancellationToken.None);
 
                     telemetry.TrackDurationWithMetrics("LevyFundedService.HandleMonthEnd",
                         stopwatch,
