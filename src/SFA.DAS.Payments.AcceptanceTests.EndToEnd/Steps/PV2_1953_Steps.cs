@@ -45,23 +45,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.Period,
                 TestSession.Provider.JobId);
 
-            await WaitForPayments(20);
-        }
-
-        private bool HasPaymentsTillR03(short academicYear)
-        {
-            return FundingSourcePaymentEventsHelper
-                .FundingSourcePaymentsReceivedForLearner(PriceEpisodeIdentifier, academicYear, TestSession)
-                .Count(x =>
-                    x.ContractType == ContractType.Act2 &&
-                    x.TransactionType == TransactionType.Learning) == 3;
+            await WaitForPayments(14);
         }
 
         [Then(@"there should be payments refunding and repaying periods 1-3")]
-        public async Task ThenFundTheRemainingInstallmentsCorrectly(int fundingSource, int sfaPercentage)
+        public async Task ThenFundTheRemainingInstallmentsCorrectly()
         {
-            await WaitForIt(() => HasPaymentsTillR03(short.Parse(TestSession.FM36Global.Year)),
-                "Failed to find payments till R03");
+            
         }
     }
 }
