@@ -81,23 +81,36 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
 
         private  async Task EnsureSubscriptions(string endpointName,CancellationToken cancellationToken)
         {
-            //get class names that are subscribing to IHandleBatchMessages
-            List<Type> subscribedMessageTypes = GetBatchHandledMessageTypes();
-            if (!subscribedMessageTypes.Any()) return;
-            
-            //GetCurrentSubscriptions
-             _ = await GetOrCreateSubscription(endpointName, cancellationToken);
-
-            var existingRules =  await GetExistingRules(endpointName, cancellationToken);
-            
-            foreach (var type in subscribedMessageTypes)
+            try
             {
-                if (!existingRules.Any(x =>x.Name == type.Name))
+                //get class names that are subscribing to IHandleBatchMessages
+                List<Type> subscribedMessageTypes = GetBatchHandledMessageTypes();
+                if (!subscribedMessageTypes.Any()) return;
+
+                //GetCurrentSubscriptions
+                _ = await GetOrCreateSubscription(endpointName, cancellationToken);
+
+                var existingRules = await GetExistingRules(endpointName, cancellationToken);
+
+                foreach (var type in subscribedMessageTypes)
                 {
-                    CreateNewSubscriptionRule(type, endpointName, cancellationToken);
+                    if (!existingRules.Any(x => x.Name == type.Name))
+                    {
+                        CreateNewSubscriptionRule(type, endpointName, cancellationToken);
+                    }
                 }
+
+                await UpdateDefaultRule(cancellationToken);
             }
-            await UpdateDefaultRule(cancellationToken);
+            catch (MessagingEntityAlreadyExistsException ex)
+            {
+                logger.LogInfo($"The message queue entity already exists: {ex.Message}. This could be because another instance of the service has already ensured the entity exists");
+            }
+            catch (Exception e)
+            {
+                logger.LogFatal($"Error ensuring subscription, or rule: {e.Message}.", e);
+                throw;
+            }
         }
 
         private async Task UpdateDefaultRule(CancellationToken cancellationToken)
@@ -133,7 +146,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         {
             var manageClient = new ManagementClient(connectionString);
              
-                SubscriptionDescription subscriptionDescription = null;
+                SubscriptionDescription subscriptionDescription;
                 if (!await  manageClient.SubscriptionExistsAsync(TopicPath, endpointName ,cancellationToken))
                 {
                      subscriptionDescription = new SubscriptionDescription(TopicPath, endpointName)
@@ -397,7 +410,8 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                     return;
                 }
 
-                logger.LogInfo($"Creating queue '{queuePath}' with properties: TimeToLive: 7 days, Lock Duration: 5 Minutes, Max Delivery Count: 50, Max Size: 5Gb.");
+                logger.LogInfo(
+                    $"Creating queue '{queuePath}' with properties: TimeToLive: 7 days, Lock Duration: 5 Minutes, Max Delivery Count: 50, Max Size: 5Gb.");
                 var queueDescription = new QueueDescription(queuePath)
                 {
                     DefaultMessageTimeToLive = TimeSpan.FromDays(7),
@@ -409,6 +423,10 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                 };
 
                 await manageClient.CreateQueueAsync(queueDescription, startingCancellationToken).ConfigureAwait(false);
+            }
+            catch (MessagingEntityAlreadyExistsException ex)
+            {
+                logger.LogInfo($"Queue already exists: {ex.Message}. This could be because another instance of the service has already ensured the queue exists");
             }
             catch (Exception e)
             {
