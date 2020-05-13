@@ -135,8 +135,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 
                     if (await jobStatusService.WaitForJobToFinish(message.JobId, cancellationToken))
                     {
-                        logger.LogInfo(
-                            $"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");
+                        logger.LogInfo($"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");
                         return true;
                     }
                     logger.LogError($"Job failed to finished within the allocated time. Job Id: {message.JobId}");
@@ -161,8 +160,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             {
                 if (message.TopicPointer > message.Topics.Count - 1)
                 {
-                    logger.LogError(
-                        $"Topic Pointer points outside the number of items in the collection of Topics. JobId: {message.JobId}");
+                    logger.LogError($"Topic Pointer points outside the number of items in the collection of Topics. JobId: {message.JobId}");
                     return true;
                 }
 
@@ -384,7 +382,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     var aims = submittedLearnerAimBuilder.Build(learnerCommand);
                     await Task.WhenAll(aims.Select(aim => submittedAimWriter.Write(aim, cancellationToken))).ConfigureAwait(false);
 
-                    logger.LogVerbose($"Successfully sent ProcessLearnerCommand JobId: {learnerCommand.JobId}, Ukprn: {fm36Output.UKPRN}, LearnRefNumber: {learnerCommand.Learner.LearnRefNumber}, SubmissionTime: {message.SubmissionDateTimeUtc}, Collection Year: {fm36Output.Year}, Collection period: {collectionPeriod}");
+                    logger.LogVerbose($"Successfully sent ProcessLearnerCommand JobId: {learnerCommand.JobId}, LearnRefNumber: {learnerCommand.Learner.LearnRefNumber}, SubmissionTime: {message.SubmissionDateTimeUtc}, Collection Year: {fm36Output.Year}, Collection period: {collectionPeriod}");
                 }
                 catch (Exception ex)
                 {
