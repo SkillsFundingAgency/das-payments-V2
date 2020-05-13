@@ -35,5 +35,13 @@ namespace SFA.DAS.Payments.FundingSource.Application.Extensions
                 .ThenBy(x => x.Learner.Uln)
                 .ToList();
         }
+
+        public static long CalculateFundingAccountId(this CalculatedRequiredLevyAmount levyTransaction, bool isFailedTransfer)
+        {
+            if (isFailedTransfer)
+                return levyTransaction.AccountId.GetValueOrDefault();
+
+            return levyTransaction.IsTransfer() ? levyTransaction.TransferSenderAccountId.GetValueOrDefault() : levyTransaction.AccountId.GetValueOrDefault();
+        }
     }
 }

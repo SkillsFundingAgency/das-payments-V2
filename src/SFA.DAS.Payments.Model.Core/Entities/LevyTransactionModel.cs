@@ -18,6 +18,6 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public string MessagePayload { get; set; }
         public string MessageType { get; set; }
         public DateTime IlrSubmissionDateTime { get; set; }
-        
+        public long FundingAccountId { get; set; }
     }
 }

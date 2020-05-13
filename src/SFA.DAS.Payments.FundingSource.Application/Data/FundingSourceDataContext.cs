@@ -42,7 +42,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.HasDefaultSchema("Payments2");
-            modelBuilder.ApplyConfiguration(new LevyAccountModelConfiguration());
             modelBuilder.ApplyConfiguration(new EmployerProviderPriorityModelConfiguration());
             modelBuilder.ApplyConfiguration(new LevyTransactionModelConfiguration());
         }
@@ -54,19 +53,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
 
         public async Task<List<LevyTransactionModel>> GetTransactionsToBePaidByEmployer(long employerAccountId)
         {
-            return  await LevyTransactions.Where(transaction =>
-                (//standard payments
-                    transaction.AccountId == employerAccountId 
-                    &&
-                    (transaction.TransferSenderAccountId == null || transaction.AccountId == transaction.TransferSenderAccountId)
-                )
-                ||
-                (//transfers
-                    transaction.TransferSenderAccountId != transaction.AccountId 
-                    &&
-                    transaction.TransferSenderAccountId == employerAccountId
-                )
-            ).ToListAsync();
+            return await LevyTransactions.Where(transaction => transaction.FundingAccountId == employerAccountId).ToListAsync();
         }
 
         public async Task SaveBatch(IList<LevyTransactionModel> batch, CancellationToken cancellationToken)

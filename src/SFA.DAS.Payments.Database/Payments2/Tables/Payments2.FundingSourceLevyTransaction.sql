@@ -6,7 +6,7 @@
 	[AcademicYear] SMALLINT NOT NULL,
 	[DeliveryPeriod] TINYINT NOT NULL,
 	[JobId]  BIGINT NOT NULL,
-	[AccountId] BIGINT NULL, 
+	[AccountId] BIGINT NOT NULL, 
 	[TransferSenderAccountId] BIGINT NULL, 
 	[RequiredPaymentEventId] UNIQUEIDENTIFIER NOT NULL,
 	[EarningEventId] UNIQUEIDENTIFIER NOT NULL,
@@ -14,11 +14,12 @@
 	[Amount] DECIMAL(15,5) NOT NULL,
 	[MessagePayload] nvarchar(max) not null,
 	[MessageType] nvarchar(max) not null, 
-    [IlrSubmissionDateTime] DATETIME NOT NULL
+    [IlrSubmissionDateTime] DATETIME NOT NULL, 
+    [FundingAccountId] BIGINT NOT NULL
 )
 GO
 
 CREATE NONCLUSTERED INDEX [IX_FundingSourceLevyTransaction__PeriodEnd] ON [Payments2].[FundingSourceLevyTransaction] 
-([JobId], [AccountId], [TransferSenderAccountId], [IlrSubmissionDateTime]) include (Amount) 
+([JobId], [AccountId], [TransferSenderAccountId], [IlrSubmissionDateTime], [FundingAccountId]) include (Amount) 
 WITH (ONLINE = ON)
 GO

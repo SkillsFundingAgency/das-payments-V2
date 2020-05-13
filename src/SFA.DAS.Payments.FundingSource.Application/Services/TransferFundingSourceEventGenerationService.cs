@@ -81,7 +81,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
         private async Task AddRequiredPayment(CalculatedRequiredLevyAmount calculatedRequiredLevyAmount)
         {
-            await levyTransactionBatchStorageService.StoreLevyTransactions(new List<CalculatedRequiredLevyAmount>{ calculatedRequiredLevyAmount }, CancellationToken.None);
+            await levyTransactionBatchStorageService.StoreLevyTransactions(new List<CalculatedRequiredLevyAmount>{ calculatedRequiredLevyAmount }, CancellationToken.None, true);
         }
     }
 }

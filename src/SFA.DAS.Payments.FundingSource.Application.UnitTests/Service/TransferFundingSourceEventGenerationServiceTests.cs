@@ -122,7 +122,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             levyTransactionBatchStorageService.Verify(storageService => storageService.StoreLevyTransactions(It.Is<List<CalculatedRequiredLevyAmount>>(levyAmounts =>
                 levyAmounts.Any(levyAmount => levyAmount == calculatedRequiredLevyAmount)
                 && levyAmounts.Count == 1
-            ), It.IsAny<CancellationToken>()));
+            ), It.IsAny<CancellationToken>(), true));
         }
 
         [Test]
