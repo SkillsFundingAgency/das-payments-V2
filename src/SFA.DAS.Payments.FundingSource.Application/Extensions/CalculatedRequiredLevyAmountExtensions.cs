@@ -36,9 +36,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.Extensions
                 .ToList();
         }
 
-        public static long CalculateFundingAccountId(this CalculatedRequiredLevyAmount levyTransaction, bool isFailedTransfer)
+        public static long CalculateFundingAccountId(this CalculatedRequiredLevyAmount levyTransaction, bool isReceiverTransferPayment)
         {
-            if (isFailedTransfer)
+            if (isReceiverTransferPayment)
                 return levyTransaction.AccountId.GetValueOrDefault();
 
             return levyTransaction.IsTransfer() ? levyTransaction.TransferSenderAccountId.GetValueOrDefault() : levyTransaction.AccountId.GetValueOrDefault();

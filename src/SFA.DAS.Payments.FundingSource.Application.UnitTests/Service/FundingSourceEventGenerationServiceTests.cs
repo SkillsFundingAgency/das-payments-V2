@@ -13,6 +13,7 @@ using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
@@ -47,6 +48,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         private decimal remainingTransferAllowance;
         private long firstPriorityUkprn;
         private long secondPriorityUkprn;
+        private CollectionPeriod collectionPeriod;
 
         [SetUp]
         public void SetUp()
@@ -57,6 +59,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             initialTransferAllowance = 1000;
             remainingBalance = 900;
             remainingTransferAllowance = 800;
+            collectionPeriod = new CollectionPeriod{ AcademicYear = 1920, Period = 4 };
 
             levyAccount = new LevyAccountModel
             {
@@ -134,7 +137,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             dataContext.Setup(x => x.GetEmployerProviderPriorities(employerAccountId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(priorities);
 
-            dataContext.Setup(x => x.GetTransactionsToBePaidByEmployer(employerAccountId))
+            dataContext.Setup(x => x.GetTransactionsToBePaidByEmployer(employerAccountId, collectionPeriod))
                 .ReturnsAsync(levyTransactions);
 
             calculatedRequiredLevyAmountPrioritisationService
@@ -165,7 +168,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         [Test]
         public async Task HandleMonthEnd_ShouldGetLevyAccount()
         {
-            await service.HandleMonthEnd(employerAccountId, jobId);
+            await service.HandleMonthEnd(employerAccountId, jobId, collectionPeriod);
 
             levyFundingSourceRepository.Verify(x => x.GetLevyAccount(employerAccountId, It.IsAny<CancellationToken>()));
         }
@@ -173,7 +176,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         [Test]
         public async Task HandleMonthEnd_ShouldInitialiseLevyBalanceService()
         {
-            await service.HandleMonthEnd(employerAccountId, jobId);
+            await service.HandleMonthEnd(employerAccountId, jobId, collectionPeriod);
 
             levyBalanceService.Verify(x => x.Initialise(initialLevyBalance, initialTransferAllowance));
         }
@@ -181,7 +184,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         [Test]
         public async Task HandleMonthEnd_ShouldGetEmployerProviderPriorities()
         {
-            await service.HandleMonthEnd(employerAccountId, jobId);
+            await service.HandleMonthEnd(employerAccountId, jobId, collectionPeriod);
 
             dataContext.Verify(x => x.GetEmployerProviderPriorities(employerAccountId, It.IsAny<CancellationToken>()));
         }
@@ -189,15 +192,15 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         [Test]
         public async Task HandleMonthEnd_ShouldGetEmployerLevyTransactions()
         {
-            await service.HandleMonthEnd(employerAccountId, jobId);
+            await service.HandleMonthEnd(employerAccountId, jobId, collectionPeriod);
 
-            dataContext.Verify(x => x.GetTransactionsToBePaidByEmployer(employerAccountId));
+            dataContext.Verify(x => x.GetTransactionsToBePaidByEmployer(employerAccountId, collectionPeriod));
         }
 
         [Test]
         public async Task HandleMonthEnd_ShouldPrioritise()
         {
-            await service.HandleMonthEnd(employerAccountId, jobId);
+            await service.HandleMonthEnd(employerAccountId, jobId, collectionPeriod);
 
             calculatedRequiredLevyAmountPrioritisationService.Verify(prioritisationService => prioritisationService.Prioritise(It.Is<List<CalculatedRequiredLevyAmount>>(
                 levyAmounts =>
@@ -219,7 +222,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         [Test]
         public async Task HandleMonthEnd_ShouldBuildFundingSourcePayments()
         {
-            await service.HandleMonthEnd(employerAccountId, jobId);
+            await service.HandleMonthEnd(employerAccountId, jobId, collectionPeriod);
 
             fundingSourcePaymentEventBuilder.Verify(x => x.BuildFundingSourcePaymentsForRequiredPayment(prioritisedTransactions[0], employerAccountId, jobId));
             fundingSourcePaymentEventBuilder.Verify(x => x.BuildFundingSourcePaymentsForRequiredPayment(prioritisedTransactions[1], employerAccountId, jobId));
@@ -228,7 +231,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         [Test]
         public async Task HandleMonthEnd_ShouldUpdateLevyAccountCache()
         {
-            await service.HandleMonthEnd(employerAccountId, jobId);
+            await service.HandleMonthEnd(employerAccountId, jobId, collectionPeriod);
 
             levyAccountCache
                 .Verify(x => x.AddOrReplace(CacheKeys.LevyBalanceKey, It.Is<LevyAccountModel>(model => 
@@ -240,7 +243,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         [Test]
         public async Task HandleMonthEnd_ShouldReturnExpectedFundingSourcePaymentEvents()
         {
-            var result = await service.HandleMonthEnd(employerAccountId, jobId);
+            var result = await service.HandleMonthEnd(employerAccountId, jobId, collectionPeriod);
 
             //Should be 4 total
             Assert.That(result.Count == 4);

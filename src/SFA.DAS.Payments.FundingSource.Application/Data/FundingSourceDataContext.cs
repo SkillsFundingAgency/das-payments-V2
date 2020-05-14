@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Data.Configurations;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Data
@@ -13,7 +14,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
     public interface IFundingSourceDataContext
     {
         Task<int> SaveChanges(CancellationToken cancellationToken);
-        Task<List<LevyTransactionModel>> GetTransactionsToBePaidByEmployer(long employerAccountId);
+        Task<List<LevyTransactionModel>> GetTransactionsToBePaidByEmployer(long employerAccountId, CollectionPeriod collectionPeriod);
         Task SaveBatch(IList<LevyTransactionModel> batch, CancellationToken cancellationToken);
         Task DeletePreviousSubmissions(long jobId, byte collectionPeriod, short academicYear,
             DateTime ilrSubmissionDateTime, long ukprn);
@@ -51,9 +52,12 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
             if (connectionString != null) optionsBuilder.UseSqlServer(connectionString);
         }
 
-        public async Task<List<LevyTransactionModel>> GetTransactionsToBePaidByEmployer(long employerAccountId)
+        public async Task<List<LevyTransactionModel>> GetTransactionsToBePaidByEmployer(long employerAccountId, CollectionPeriod collectionPeriod)
         {
-            return await LevyTransactions.Where(transaction => transaction.FundingAccountId == employerAccountId).ToListAsync();
+            return await LevyTransactions.Where(transaction =>
+                transaction.FundingAccountId == employerAccountId 
+                && transaction.CollectionPeriod == collectionPeriod.Period 
+                && transaction.AcademicYear == collectionPeriod.AcademicYear).ToListAsync();
         }
 
         public async Task SaveBatch(IList<LevyTransactionModel> batch, CancellationToken cancellationToken)

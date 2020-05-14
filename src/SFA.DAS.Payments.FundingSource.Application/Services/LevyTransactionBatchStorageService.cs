@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
     public interface ILevyTransactionBatchStorageService
     {
-        Task StoreLevyTransactions(IList<CalculatedRequiredLevyAmount> levyTransactions, CancellationToken cancellationToken, bool isFailedTransfer = false);
+        Task StoreLevyTransactions(IList<CalculatedRequiredLevyAmount> levyTransactions, CancellationToken cancellationToken, bool isReceiverTransferPayment = false);
     }
 
     public class LevyTransactionBatchStorageService : ILevyTransactionBatchStorageService
@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
         }
 
-        public async Task StoreLevyTransactions(IList<CalculatedRequiredLevyAmount> calculatedRequiredLevyAmounts, CancellationToken cancellationToken, bool isFailedTransfer = false)
+        public async Task StoreLevyTransactions(IList<CalculatedRequiredLevyAmount> calculatedRequiredLevyAmounts, CancellationToken cancellationToken, bool isReceiverTransferPayment = false)
         {
             logger.LogDebug($"Got {calculatedRequiredLevyAmounts.Count} levy transactions.");
 
@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 MessagePayload = levyAmount.ToJson(),
                 MessageType = levyAmount.GetType().FullName,
                 IlrSubmissionDateTime = levyAmount.IlrSubmissionDateTime,
-                FundingAccountId = levyAmount.CalculateFundingAccountId(isFailedTransfer),
+                FundingAccountId = levyAmount.CalculateFundingAccountId(isReceiverTransferPayment),
             }).ToList();
             cancellationToken.ThrowIfCancellationRequested();
 

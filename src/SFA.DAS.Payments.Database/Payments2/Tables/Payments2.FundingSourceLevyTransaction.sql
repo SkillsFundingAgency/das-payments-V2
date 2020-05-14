@@ -20,6 +20,6 @@
 GO
 
 CREATE NONCLUSTERED INDEX [IX_FundingSourceLevyTransaction__PeriodEnd] ON [Payments2].[FundingSourceLevyTransaction] 
-([JobId], [AccountId], [TransferSenderAccountId], [IlrSubmissionDateTime], [FundingAccountId]) include (Amount) 
+([JobId], [IlrSubmissionDateTime], [FundingAccountId], [CollectionPeriod], [AcademicYear]) include (Amount) 
 WITH (ONLINE = ON)
 GO

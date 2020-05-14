@@ -13,6 +13,7 @@ using SFA.DAS.Payments.FundingSource.Application.Infrastructure;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
@@ -46,12 +47,12 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.fundingSourcePaymentEventBuilder = fundingSourcePaymentEventBuilder ?? throw new ArgumentNullException(nameof(fundingSourcePaymentEventBuilder));
         }
 
-        public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(long employerAccountId, long jobId)
+        public async Task<ReadOnlyCollection<FundingSourcePaymentEvent>> HandleMonthEnd(long employerAccountId, long jobId, CollectionPeriod collectionPeriod)
         {
             var levyAccount = await levyFundingSourceRepository.GetLevyAccount(employerAccountId);
             levyBalanceService.Initialise(levyAccount.Balance, levyAccount.TransferAllowance);
 
-            var orderedRequiredLevyPayments = await GetOrderedCalculatedRequiredLevyAmounts(employerAccountId).ConfigureAwait(false);
+            var orderedRequiredLevyPayments = await GetOrderedCalculatedRequiredLevyAmounts(employerAccountId, collectionPeriod).ConfigureAwait(false);
 
             logger.LogDebug($"Processing {orderedRequiredLevyPayments.Count} required payments, levy balance {levyAccount.Balance}, account {employerAccountId}, job id {jobId}");
             var fundingSourceEvents = new List<FundingSourcePaymentEvent>();
@@ -68,13 +69,13 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             return fundingSourceEvents.AsReadOnly();
         }
 
-        private async Task<List<CalculatedRequiredLevyAmount>> GetOrderedCalculatedRequiredLevyAmounts(long employerAccountId)
+        private async Task<List<CalculatedRequiredLevyAmount>> GetOrderedCalculatedRequiredLevyAmounts(long employerAccountId, CollectionPeriod collectionPeriod)
         {
             var priorities = await dataContext.GetEmployerProviderPriorities(employerAccountId, CancellationToken.None);
             var prioritiesTuple =    priorities.Select(p => Tuple.Create(p.Ukprn, p.Order).ToValueTuple()).ToList();
 
             var transactions = await dataContext
-                .GetTransactionsToBePaidByEmployer(employerAccountId);
+                .GetTransactionsToBePaidByEmployer(employerAccountId, collectionPeriod);
 
             var calculatedRequiredLevyAmounts = transactions.Select(pt =>
                     JsonConvert.DeserializeObject<CalculatedRequiredLevyAmount>(pt.MessagePayload))
