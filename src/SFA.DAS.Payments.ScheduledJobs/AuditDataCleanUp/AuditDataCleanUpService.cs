@@ -61,6 +61,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
             catch (Exception e)
             {
                 paymentLogger.LogWarning($"Error Deleting Audit Data, internal Exception {e}");
+                throw;
             }
         }
 
