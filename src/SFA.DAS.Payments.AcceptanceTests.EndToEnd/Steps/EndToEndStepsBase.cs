@@ -923,7 +923,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             };
             var tasks = new List<Task>
             {
-                MessageSession.Send($"sfa-das-payments-monitoring-jobs{new JobMonitorPartition().PartitionNameForJob(provider.JobId, provider.Ukprn)}", dcStartedMonthEndJobCommand),
+               // MessageSession.Send($"sfa-das-payments-monitoring-jobs{new JobMonitorPartition().PartitionNameForJob(provider.JobId, provider.Ukprn)}", dcStartedMonthEndJobCommand),
                 MessageSession.Send(processProviderPaymentsAtMonthEndCommand)
             };
 
