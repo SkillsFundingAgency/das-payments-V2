@@ -14,11 +14,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             bool success) => Task.CompletedTask;
 
         public Task SendPeriodEndTask(short collectionYear, byte collectionPeriod, long jobId, string taskName) => Task.CompletedTask;
-
-        public Task SendLevyMonthEndForEmployers(long monthEndJobId, IEnumerable<long> employerAccountIds, short academicYear,
-            byte collectionPeriod, IMessageSession messageSession) => Task.CompletedTask;
-
-        public int GetPaymentsCount(long ukprn, CollectionPeriod collectionPeriod) => 0;
-        public int GetRequiredPaymentsCount(long ukprn, CollectionPeriod collectionPeriod) => 0;
     }
 }

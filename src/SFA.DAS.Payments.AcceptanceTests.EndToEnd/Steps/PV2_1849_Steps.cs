@@ -32,8 +32,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("a learner funded by a levy paying employer is made redundant")]
         public async Task LevyLearnerMadeRedundant()
         {
-            GetFm36LearnerForCollectionPeriod("R03/current academic year");
-            await SetupTestData(PriceEpisodeIdentifier, null, CommitmentIdentifier, null);
+            ImportR03Fm36ForNonRedundantLevyLearner();
+
+            await SetUpMatchingCommitment();
+
             var dcHelper = Scope.Resolve<IDcHelper>();
             await dcHelper.SendIlrSubmission(TestSession.FM36Global.Learners,
                 TestSession.Provider.Ukprn,
@@ -43,7 +45,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             await WaitForRequiredPayments(6);
 
-            await dcHelper.SendLevyMonthEndForEmployers(
+            await EmployerMonthEndHelper.SendLevyMonthEndForEmployers(
                 TestSession.GenerateId(),
                 TestSession.Employers.Select(x => x.AccountId),
                 TestSession.CollectionPeriod.AcademicYear,
@@ -56,10 +58,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("there is more than 6 months remaining of the planned learning")]
         public async Task ThereAreLessThan6MonthsRemainingOfPlannedLearning()
         {
-            GetFm36LearnerForCollectionPeriod("R04/current academic year");
-            await SetupTestData(PriceEpisodeIdentifier, null, CommitmentIdentifier, null);
+            ImportR07Fm36ToMakeLearnerRedundant();
+
+            await SetUpMatchingCommitment();
 
             CreateDataLockForCommitment(CommitmentIdentifier);
+
             TestSession.RegenerateJobId();
 
             var dcHelper = Scope.Resolve<IDcHelper>();
@@ -69,13 +73,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.Period,
                 TestSession.Provider.JobId);
 
-            await dcHelper.SendLevyMonthEndForEmployers(
+            await EmployerMonthEndHelper.SendLevyMonthEndForEmployers(
                 TestSession.GenerateId(),
                 TestSession.Employers.Select(x => x.AccountId),
                 TestSession.CollectionPeriod.AcademicYear,
                 TestSession.CollectionPeriod.Period,
                 MessageSession);
         }
+
+        private void ImportR03Fm36ForNonRedundantLevyLearner() { GetFm36LearnerForCollectionPeriod("R03/current academic year"); }
+
+        private void ImportR07Fm36ToMakeLearnerRedundant() { GetFm36LearnerForCollectionPeriod("R07/current academic year"); }
+
+        private async Task SetUpMatchingCommitment() { await SetupTestCommitmentData(CommitmentIdentifier, PriceEpisodeIdentifier); }
 
         private void CreateDataLockForCommitment(string commitmentIdentifier)
         {
@@ -97,7 +107,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return EarningEventsHelper.PayableEarningsReceivedForLearner(TestSession).Any(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier));
         }
 
-        private bool HasCorrectlyFundedR04(short academicYear, int fundingSource, int sfaPercentage)
+        private bool HasCorrectlyFundedUpToR07(short academicYear, int fundingSource, int sfaPercentage)
         {
             return FundingSourcePaymentEventsHelper
                 .FundingSourcePaymentsReceivedForLearner(PriceEpisodeIdentifier, academicYear, TestSession)
@@ -105,7 +115,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     x.FundingSourceType == (FundingSourceType)fundingSource
                     && x.SfaContributionPercentage == (decimal)sfaPercentage / 100
                     && x.ContractType == ContractType.Act1
-                    && x.AmountDue == 1000m) == 1;
+                    && x.AmountDue == 1000m) == 3; //Should be 3 payments for R04,5,6 but not 7
         }
 
         [Then("bypass the data lock rules")]
@@ -115,17 +125,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 "Failed to find a Payable Earning and no Data Locks");
         }
 
-        [Then(@"fund the remaining monthly instalments of the learning from Funding Source (.*) \((.*)% SFA funding\) from the date of the Price episode read start date")]
+        [Then(@"fund 12 weeks of the learning from Funding Source (.*), with (.*)% SFA funding, from the date of the Price episode read start date")]
         public async Task ThenFundTheRemainingInstallmentsCorrectly(int fundingSource, int sfaPercentage)
         {
-            await WaitForIt(() => HasCorrectlyFundedR04(short.Parse(TestSession.FM36Global.Year), fundingSource, sfaPercentage),
+            await WaitForIt(() => HasCorrectlyFundedUpToR07(short.Parse(TestSession.FM36Global.Year), fundingSource, sfaPercentage),
                 "Failed to find correctly funded remaining installments");
         }
 
         [Then(@"continue to fund the monthly instalments prior to redundancy date as per existing ACT1 rules \(Funding Source 1\)")]
         public void ThenContinueToFundTheMonthlyInstalmentsPriorToRedundancyDateAsPerExistingAct1RulesFundingSource1()
         {
-            //covered by step 1
+            //covered by waiting for payments in the first Given statement
         }
     }
 }

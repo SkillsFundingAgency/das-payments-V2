@@ -32,8 +32,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("a learner funded by a levy paying employer is made redundant")]
         public async Task LevyLearnerMadeRedundant()
         {
-            GetFm36LearnerForCollectionPeriod("R07/current academic year");
-            await SetupTestData(PriceEpisodeIdentifier, null, CommitmentIdentifier, null);
+            ImportR07Fm36ForNonRedundantLevyLearner();
+
+            await SetUpMatchingCommitment();
+
             var dcHelper = Scope.Resolve<IDcHelper>();
             await dcHelper.SendIlrSubmission(TestSession.FM36Global.Learners,
                 TestSession.Provider.Ukprn,
@@ -43,7 +45,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             await WaitForRequiredPayments(14);
 
-            await dcHelper.SendLevyMonthEndForEmployers(
+            await EmployerMonthEndHelper.SendLevyMonthEndForEmployers(
                 TestSession.GenerateId(),
                 TestSession.Employers.Select(x => x.AccountId),
                 TestSession.CollectionPeriod.AcademicYear,
@@ -56,8 +58,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("there are less than 6 months remaining of the planned learning")]
         public async Task ThereAreLessThan6MonthsRemainingOfPlannedLearning()
         {
-            GetFm36LearnerForCollectionPeriod("R12/current academic year");
-            await SetupTestData(PriceEpisodeIdentifier, null, CommitmentIdentifier, null);
+            ImportR12Fm36ToMakeLearnerRedundant();
+
+            await SetUpMatchingCommitment();
 
             CreateDataLockForCommitment(CommitmentIdentifier);
             TestSession.RegenerateJobId();
@@ -69,6 +72,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.Period,
                 TestSession.Provider.JobId);
         }
+
+        private void ImportR07Fm36ForNonRedundantLevyLearner() { GetFm36LearnerForCollectionPeriod("R07/current academic year"); }
+
+        private void ImportR12Fm36ToMakeLearnerRedundant() { GetFm36LearnerForCollectionPeriod("R12/current academic year"); }
+
+        private async Task SetUpMatchingCommitment() { await SetupTestCommitmentData(CommitmentIdentifier, PriceEpisodeIdentifier); }
 
         private void CreateDataLockForCommitment(string commitmentIdentifier)
         {
@@ -124,7 +133,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"continue to fund the monthly instalments prior to redundancy date as per existing ACT1 rules \(Funding Source 1\)")]
         public void ThenContinueToFundTheMonthlyInstalmentsPriorToRedundancyDateAsPerExistingAct1RulesFundingSource1()
         {
-           //covered by step 1
+            //covered by waiting for payments in the first Given statement
         }
     }
 }

@@ -4,7 +4,7 @@ using NServiceBus.Logging;
 
 namespace SFA.DAS.Payments.Application.Infrastructure.Logging
 {
-    internal class MessagingLoggerFactory : ILoggerFactory
+    public class MessagingLoggerFactory : ILoggerFactory
     {
         private readonly IPaymentLogger logger;
         private readonly IApplicationLoggerSettings settings;
