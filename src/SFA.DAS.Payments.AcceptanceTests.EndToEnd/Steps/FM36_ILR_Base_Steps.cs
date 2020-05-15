@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -95,16 +96,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("both (.*) and (.*) in the ILR matches to both Commitments (.*) and (.*), on ULN and UKPRN")]
         public async Task GivenTwoPriceEpisodeInIlrMatchesTwoCommitments(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2, string commitmentIdentifier1, string commitmentIdentifier2)
         {
-            await SetupTestData(priceEpisodeIdentifier1, priceEpisodeIdentifier2, commitmentIdentifier1, commitmentIdentifier2);
+            await SetupTestCommitmentData(commitmentIdentifier1, priceEpisodeIdentifier1, commitmentIdentifier2, priceEpisodeIdentifier2);
         }
 
         [Given("price episode (.*) in the ILR matches to both Commitments (.*) and (.*), on ULN and UKPRN")]
         public async Task GivenPriceEpisodeInIlrMatchesCommitments(string priceEpisodeIdentifier, string commitmentIdentifier1, string commitmentIdentifier2)
         {
-            await SetupTestData(priceEpisodeIdentifier, null, commitmentIdentifier1, commitmentIdentifier2);
+            await SetupTestCommitmentData(commitmentIdentifier1, priceEpisodeIdentifier, commitmentIdentifier2, null);
         }
 
-        private async Task SetupTestData(string priceEpisodeIdentifier1, string priceEpisodeIdentifier2, string commitmentIdentifier1, string commitmentIdentifier2)
+        //todo rename this to have commitment in the method name. Convert the pairs of commitment and pe ids to key value pairs and defaults second one to null
+        protected async Task SetupTestCommitmentData(string commitmentIdentifier1, string priceEpisodeIdentifier1,
+            string commitmentIdentifier2 = null, string priceEpisodeIdentifier2 = null)
         {
             var learner = TestSession.FM36Global.Learners.Single();
             learner.ULN = TestSession.Learner.Uln;
@@ -135,23 +138,30 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                               .WithApprenticeshipPriceEpisode(priceEpisode1.PriceEpisodeValues)
                               .ToApprenticeshipModel();
 
-            var commitment2 = new ApprenticeshipBuilder()
-                              .BuildSimpleApprenticeship(TestSession, learningDelivery2.LearningDeliveryValues, ids.Max())
-                              .WithALevyPayingEmployer()
-                              .WithApprenticeshipPriceEpisode(priceEpisode2.PriceEpisodeValues)
-                              .ToApprenticeshipModel();
-
             TestSession.Apprenticeships.GetOrAdd(commitmentIdentifier1, commitment1);
             testDataContext.Apprenticeship.Add(commitment1);
             testDataContext.ApprenticeshipPriceEpisode.AddRange(commitment1.ApprenticeshipPriceEpisodes);
 
-            TestSession.Apprenticeships.GetOrAdd(commitmentIdentifier2, commitment2);
-            testDataContext.Apprenticeship.Add(commitment2);
-            testDataContext.ApprenticeshipPriceEpisode.AddRange(commitment2.ApprenticeshipPriceEpisodes);
+            if (commitmentIdentifier2 != null)
+            {
+                var commitment2 = new ApprenticeshipBuilder()
+                    .BuildSimpleApprenticeship(TestSession, learningDelivery2.LearningDeliveryValues, ids.Max())
+                    .WithALevyPayingEmployer()
+                    .WithApprenticeshipPriceEpisode(priceEpisode2.PriceEpisodeValues)
+                    .ToApprenticeshipModel();
+
+                TestSession.Apprenticeships.GetOrAdd(commitmentIdentifier2, commitment2);
+                testDataContext.Apprenticeship.Add(commitment2);
+                testDataContext.ApprenticeshipPriceEpisode.AddRange(commitment2.ApprenticeshipPriceEpisodes);
+            }
 
             var levyModel = TestSession.Employer.ToModel();
             levyModel.Balance = 1000000000;
-            testDataContext.LevyAccount.Add(levyModel);
+
+            if (!testDataContext.LevyAccount.Any(x => x.AccountId == levyModel.AccountId))
+            {
+                testDataContext.LevyAccount.Add(levyModel);
+            }
             await testDataContext.SaveChangesAsync();
 
             TestSession.FM36Global.UKPRN = TestSession.Provider.Ukprn;
@@ -217,6 +227,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForIt(() => HasDLock9ErrorForPriceEpisode(priceEpisodeIdentifier, short.Parse(TestSession.FM36Global.Year))
                                && HasNoEarningEventMatch(priceEpisodeIdentifier),
                             "Failed to find a matching DLOCK-09 event and no earning events.");
+        }
+
+        protected async Task WaitForPayments(int count)
+        {
+            await WaitForIt(() => Scope.Resolve<IPaymentsHelper>().GetPaymentsCount(TestSession.Provider.Ukprn, TestSession.CollectionPeriod) == count,
+                "Failed to wait for expected number of payments");
+        }
+
+        protected async Task WaitForRequiredPayments(int count)
+        {
+            await WaitForIt(() => Scope.Resolve<IPaymentsHelper>().GetRequiredPaymentsCount(TestSession.Provider.Ukprn, TestSession.CollectionPeriod) == count,
+                "Failed to wait for expected number of required payments");
         }
 
         public void Dispose()
