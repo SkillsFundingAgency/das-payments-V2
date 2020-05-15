@@ -99,8 +99,6 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                         CreateNewSubscriptionRule(type, endpointName, cancellationToken);
                     }
                 }
-
-                await UpdateDefaultRule(cancellationToken);
             }
             catch (MessagingEntityAlreadyExistsException ex)
             {
@@ -110,17 +108,6 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             {
                 logger.LogFatal($"Error ensuring subscription, or rule: {e.Message}.", e);
                 throw;
-            }
-        }
-
-        private async Task UpdateDefaultRule(CancellationToken cancellationToken)
-        {
-            var manageClient = new ManagementClient(connectionString);
-            var defaultRule = await manageClient.GetRuleAsync(TopicPath, EndpointName, "$Default", cancellationToken);
-            if (defaultRule != null)
-            {
-                defaultRule.Filter = new SqlFilter("1=0");
-                await manageClient.UpdateRuleAsync(TopicPath, EndpointName, defaultRule, cancellationToken);
             }
         }
 
@@ -155,8 +142,9 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                         MaxDeliveryCount = Int32.MaxValue,EnableDeadLetteringOnFilterEvaluationExceptions = false,
                         LockDuration = TimeSpan.FromMinutes(5)
                     };
-                    await manageClient.CreateSubscriptionAsync(
-                        subscriptionDescription, cancellationToken);
+                     var defaultRule = new RuleDescription("$default") {Filter = new SqlFilter("1=0")};
+                     await manageClient.CreateSubscriptionAsync(
+                        subscriptionDescription, defaultRule,  cancellationToken);
                 }
                 else
                 {
