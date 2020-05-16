@@ -11,10 +11,12 @@
 
   <ItemGroup>
     <None Remove="DataFiles\PV21683_FM36OutputOnRestart.json" />
+    <None Remove="DataFiles\Redundancy.json" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="DataFiles\PV21683_FM36OutputOnRestart.json" />
+    <EmbeddedResource Include="DataFiles\Redundancy.json" />
   </ItemGroup>
 
   <ItemGroup>
