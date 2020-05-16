@@ -13,6 +13,8 @@ using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
@@ -97,6 +99,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Infrastructure.ioc
             builder.RegisterType<PriceEpisodeStatusChangeBuilder>().InstancePerLifetimeScope();
             builder.RegisterType<PriceEpisodesReceivedService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ManageReceivedDataLockEvent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            builder.RegisterType<ActorReliableCollectionCache<PaymentsEvent>>().AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+            builder.RegisterType<ReceivedEarningEventService>().As<IReceivedEarningEventService>()
+                .InstancePerLifetimeScope();
         }
     }
 }

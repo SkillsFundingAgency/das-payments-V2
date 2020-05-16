@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
@@ -22,20 +23,29 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         private readonly ILearnerMatcher learnerMatcher;
         private readonly IOnProgrammeAndIncentiveEarningPeriodsValidationProcessor onProgrammeAndIncentiveEarningPeriodsValidationProcessor;
         private readonly IFunctionalSkillEarningPeriodsValidationProcessor functionalSkillEarningPeriodsValidationProcessor;
-        
+        private readonly IReceivedEarningEventService receivedEarningEventService;
+
         public DataLockProcessor(IMapper mapper, ILearnerMatcher learnerMatcher,
             IOnProgrammeAndIncentiveEarningPeriodsValidationProcessor onProgrammeAndIncentiveEarningPeriodsValidationProcessor,
-            IFunctionalSkillEarningPeriodsValidationProcessor functionalSkillEarningPeriodsValidationProcessor)
+            IFunctionalSkillEarningPeriodsValidationProcessor functionalSkillEarningPeriodsValidationProcessor,
+            IReceivedEarningEventService receivedEarningEventService)
         {
             this.mapper = mapper;
             this.learnerMatcher = learnerMatcher;
             this.onProgrammeAndIncentiveEarningPeriodsValidationProcessor = onProgrammeAndIncentiveEarningPeriodsValidationProcessor;
             this.functionalSkillEarningPeriodsValidationProcessor = functionalSkillEarningPeriodsValidationProcessor;
+            this.receivedEarningEventService = receivedEarningEventService ?? throw new ArgumentNullException(nameof(receivedEarningEventService));
         }
 
         public async Task<List<DataLockEvent>> GetPaymentEvents(ApprenticeshipContractType1EarningEvent earningEvent, CancellationToken cancellationToken)
         {
             var dataLockEvents = new List<DataLockEvent>();
+
+            if (await receivedEarningEventService.AlreadyReceived(earningEvent, cancellationToken)
+                .ConfigureAwait(false))
+            {
+                return dataLockEvents;
+            }
 
             var learnerMatchResult = await learnerMatcher.MatchLearner(earningEvent.Ukprn, earningEvent.Learner.Uln).ConfigureAwait(false);
             if (learnerMatchResult.DataLockErrorCode.HasValue)
@@ -71,6 +81,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             Act1FunctionalSkillEarningsEvent earningEvent, CancellationToken cancellationToken)
         {
             var dataLockEvents = new List<FunctionalSkillDataLockEvent>();
+            if (await receivedEarningEventService.AlreadyReceived(earningEvent, cancellationToken)
+                .ConfigureAwait(false))
+            {
+                return dataLockEvents;
+            }
 
             var learnerMatchResult = await learnerMatcher.MatchLearner(earningEvent.Ukprn, earningEvent.Learner.Uln).ConfigureAwait(false);
             if (learnerMatchResult.DataLockErrorCode.HasValue)
