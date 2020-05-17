@@ -6,6 +6,6 @@ namespace SFA.DAS.Payments.Application.Messaging
 {
     public interface IDuplicateEarningEventService
     {
-        Task<bool> IsDuplicate(PaymentsEvent earningEvent, CancellationToken cancellationToken);
+        Task<bool> IsDuplicate(IPaymentsEvent earningEvent, CancellationToken cancellationToken);
     }
 }

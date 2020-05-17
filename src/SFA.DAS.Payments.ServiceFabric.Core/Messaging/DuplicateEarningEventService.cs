@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Messaging
             this.cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
 
-        public async Task<bool> IsDuplicate(PaymentsEvent earningEvent, CancellationToken cancellationToken)
+        public async Task<bool> IsDuplicate(IPaymentsEvent earningEvent, CancellationToken cancellationToken)
         {
             logger.LogDebug($"Checking if earning event of type {earningEvent.GetType().Name} with guid: {earningEvent.EventId} has already been received.");
             var earningEventKey = new EarningEventKey(earningEvent);

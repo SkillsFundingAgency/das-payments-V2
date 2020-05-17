@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Messaging
 
         }
 
-        public EarningEventKey(PaymentsEvent earningEvent)
+        public EarningEventKey(IPaymentsEvent earningEvent)
         {
             if (earningEvent == null) throw new ArgumentNullException(nameof(earningEvent));
             JobId = earningEvent.JobId;

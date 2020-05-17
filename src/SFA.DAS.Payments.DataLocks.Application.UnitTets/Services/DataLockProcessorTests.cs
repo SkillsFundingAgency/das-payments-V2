@@ -20,6 +20,7 @@ using Autofac.Extras.Moq;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching;
+using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core.Incentives;
 
 namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
@@ -70,7 +71,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             onProgValidationMock = mocker.Mock<IOnProgrammeAndIncentiveEarningPeriodsValidationProcessor>();
             functionalSkillsValidationMock = mocker.Mock<IFunctionalSkillEarningPeriodsValidationProcessor>();
             mocker.Mock<IDuplicateEarningEventService>()
-                .Setup(x => x.IsDuplicate(It.IsAny<EarningEvent>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.IsDuplicate(It.IsAny<IPaymentsEvent>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
         }
 
@@ -524,7 +525,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     )).Verifiable();
             
             mocker.Mock<IDuplicateEarningEventService>()
-                .Setup(x => x.IsDuplicate(It.IsAny<EarningEvent>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.IsDuplicate(It.IsAny<IPaymentsEvent>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
             var dataLockProcessor = mocker.Create<DataLockProcessor>(); 
             var dataLockEvents = await dataLockProcessor.GetPaymentEvents(earningEvent, default(CancellationToken));
