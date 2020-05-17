@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching;
 using SFA.DAS.Payments.Messages.Core.Events;
@@ -23,25 +24,25 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         private readonly ILearnerMatcher learnerMatcher;
         private readonly IOnProgrammeAndIncentiveEarningPeriodsValidationProcessor onProgrammeAndIncentiveEarningPeriodsValidationProcessor;
         private readonly IFunctionalSkillEarningPeriodsValidationProcessor functionalSkillEarningPeriodsValidationProcessor;
-        private readonly IReceivedEarningEventService receivedEarningEventService;
+        private readonly IDuplicateEarningEventService duplicateEarningEventService;
 
         public DataLockProcessor(IMapper mapper, ILearnerMatcher learnerMatcher,
             IOnProgrammeAndIncentiveEarningPeriodsValidationProcessor onProgrammeAndIncentiveEarningPeriodsValidationProcessor,
             IFunctionalSkillEarningPeriodsValidationProcessor functionalSkillEarningPeriodsValidationProcessor,
-            IReceivedEarningEventService receivedEarningEventService)
+            IDuplicateEarningEventService duplicateEarningEventService)
         {
             this.mapper = mapper;
             this.learnerMatcher = learnerMatcher;
             this.onProgrammeAndIncentiveEarningPeriodsValidationProcessor = onProgrammeAndIncentiveEarningPeriodsValidationProcessor;
             this.functionalSkillEarningPeriodsValidationProcessor = functionalSkillEarningPeriodsValidationProcessor;
-            this.receivedEarningEventService = receivedEarningEventService ?? throw new ArgumentNullException(nameof(receivedEarningEventService));
+            this.duplicateEarningEventService = duplicateEarningEventService ?? throw new ArgumentNullException(nameof(duplicateEarningEventService));
         }
 
         public async Task<List<DataLockEvent>> GetPaymentEvents(ApprenticeshipContractType1EarningEvent earningEvent, CancellationToken cancellationToken)
         {
             var dataLockEvents = new List<DataLockEvent>();
 
-            if (await receivedEarningEventService.AlreadyReceived(earningEvent, cancellationToken)
+            if (await duplicateEarningEventService.IsDuplicate(earningEvent, cancellationToken)
                 .ConfigureAwait(false))
             {
                 return dataLockEvents;
@@ -81,7 +82,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             Act1FunctionalSkillEarningsEvent earningEvent, CancellationToken cancellationToken)
         {
             var dataLockEvents = new List<FunctionalSkillDataLockEvent>();
-            if (await receivedEarningEventService.AlreadyReceived(earningEvent, cancellationToken)
+            if (await duplicateEarningEventService.IsDuplicate(earningEvent, cancellationToken)
                 .ConfigureAwait(false))
             {
                 return dataLockEvents;

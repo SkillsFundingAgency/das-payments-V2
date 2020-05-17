@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching;
 using SFA.DAS.Payments.Model.Core.Incentives;
@@ -68,8 +69,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             learnerMatcherMock = mocker.Mock<ILearnerMatcher>();
             onProgValidationMock = mocker.Mock<IOnProgrammeAndIncentiveEarningPeriodsValidationProcessor>();
             functionalSkillsValidationMock = mocker.Mock<IFunctionalSkillEarningPeriodsValidationProcessor>();
-            mocker.Mock<IReceivedEarningEventService>()
-                .Setup(x => x.AlreadyReceived(It.IsAny<EarningEvent>(), It.IsAny<CancellationToken>()))
+            mocker.Mock<IDuplicateEarningEventService>()
+                .Setup(x => x.IsDuplicate(It.IsAny<EarningEvent>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
         }
 
@@ -98,7 +99,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     new List<EarningPeriod>()
                     )).Verifiable();
 
-            var dataLockProcessor = mocker.Create<DataLockProcessor>();  //new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object, functionalSkillsValidationMock.Object);
+            var dataLockProcessor = mocker.Create<DataLockProcessor>();  
             var dataLockEvents = await dataLockProcessor.GetPaymentEvents(earningEvent, default(CancellationToken));
 
             dataLockEvents.Should().NotBeNull();
@@ -129,7 +130,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     Apprenticeships = new List<ApprenticeshipModel>(apprenticeships)
                 }).Verifiable();
 
-            var dataLockProcessor = mocker.Create<DataLockProcessor>(); // new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object, functionalSkillsValidationMock.Object);
+            var dataLockProcessor = mocker.Create<DataLockProcessor>();
             var dataLockEvents = await dataLockProcessor.GetPaymentEvents(earningEvent, default(CancellationToken));
             dataLockEvents.Should().NotBeNull();
             dataLockEvents.Should().HaveCount(1);
@@ -154,7 +155,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     Apprenticeships = new List<ApprenticeshipModel>(apprenticeships)
                 }).Verifiable();
 
-            var dataLockProcessor = mocker.Create<DataLockProcessor>(); // new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object, functionalSkillsValidationMock.Object);
+            var dataLockProcessor = mocker.Create<DataLockProcessor>();
             var dataLockEvents = await dataLockProcessor.GetPaymentEvents(earningEvent, default(CancellationToken));
             dataLockEvents.Should().NotBeNull();
             dataLockEvents.Should().HaveCount(1);
@@ -210,7 +211,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 }))
                 .Verifiable();
 
-            var dataLockProcessor = mocker.Create<DataLockProcessor>(); // new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object, functionalSkillsValidationMock.Object);
+            var dataLockProcessor = mocker.Create<DataLockProcessor>(); 
             var actual = await dataLockProcessor.GetPaymentEvents(testEarningEvent, default(CancellationToken))
                 .ConfigureAwait(false);
 
@@ -285,7 +286,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 }))
                 .Verifiable();
 
-            var dataLockProcessor = mocker.Create<DataLockProcessor>(); // new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object, functionalSkillsValidationMock.Object);
+            var dataLockProcessor = mocker.Create<DataLockProcessor>(); 
             var actualDataLockEvents = await dataLockProcessor.GetPaymentEvents(testEarningEvent, default(CancellationToken))
                 .ConfigureAwait(false);
 
@@ -381,7 +382,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 }))
                 .Verifiable();
 
-            var dataLockProcessor = mocker.Create<DataLockProcessor>(); // new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object, functionalSkillsValidationMock.Object);
+            var dataLockProcessor = mocker.Create<DataLockProcessor>();
             var actualDataLockEvents = await dataLockProcessor.GetFunctionalSkillPaymentEvents(testEarningEvent, default(CancellationToken))
                 .ConfigureAwait(false);
 
@@ -522,10 +523,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     new List<EarningPeriod>()
                     )).Verifiable();
             
-            mocker.Mock<IReceivedEarningEventService>()
-                .Setup(x => x.AlreadyReceived(It.IsAny<EarningEvent>(), It.IsAny<CancellationToken>()))
+            mocker.Mock<IDuplicateEarningEventService>()
+                .Setup(x => x.IsDuplicate(It.IsAny<EarningEvent>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
-            var dataLockProcessor = mocker.Create<DataLockProcessor>(); // new DataLockProcessor(mapper, learnerMatcherMock.Object, onProgValidationMock.Object, functionalSkillsValidationMock.Object);
+            var dataLockProcessor = mocker.Create<DataLockProcessor>(); 
             var dataLockEvents = await dataLockProcessor.GetPaymentEvents(earningEvent, default(CancellationToken));
 
             dataLockEvents.Should().NotBeNull();
