@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             if (!Context.ContainsKey("new_feature"))
                 NewFeature = true;
-            TestSession.Providers.ForEach(async p =>
+            TestSession.Providers.ForEach(p =>
             {
                 var newJobId = TestSession.GenerateId();
                 Console.WriteLine(
