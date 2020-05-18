@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using SFA.DAS.Payments.FundingSource.Application.Extensions;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
@@ -10,7 +8,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
     public class CalculatedRequiredLevyAmountPrioritisationService : ICalculatedRequiredLevyAmountPrioritisationService
     {
-        public async Task<List<CalculatedRequiredLevyAmount>> Prioritise(List<CalculatedRequiredLevyAmount> sourceList, List<(long Ukprn, int Order)> providerPriorities)
+        public List<CalculatedRequiredLevyAmount> Prioritise(List<CalculatedRequiredLevyAmount> sourceList, List<(long Ukprn, int Order)> providerPriorities)
         {
             var orderedReturnList = new List<CalculatedRequiredLevyAmount>();
 

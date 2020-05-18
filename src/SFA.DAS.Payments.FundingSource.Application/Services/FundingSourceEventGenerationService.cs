@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using Newtonsoft.Json;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
@@ -81,7 +80,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                     JsonConvert.DeserializeObject<CalculatedRequiredLevyAmount>(pt.MessagePayload))
                 .ToList();
 
-           return await calculatedRequiredLevyAmountPrioritisationService.Prioritise(calculatedRequiredLevyAmounts, prioritiesTuple);
+           return calculatedRequiredLevyAmountPrioritisationService.Prioritise(calculatedRequiredLevyAmounts, prioritiesTuple);
         }
 
         private static string GetFundsDebugString(List<FundingSourcePaymentEvent> fundingSourceEvents)
