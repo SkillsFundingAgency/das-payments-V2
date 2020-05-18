@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Audit;
@@ -14,9 +13,13 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
             CreateMap<EarningEvent, EarningEventModel>()
                 .Include<ApprenticeshipContractType2EarningEvent, EarningEventModel>()
                 .Include<ApprenticeshipContractType1EarningEvent, EarningEventModel>()
+                .Include<ApprenticeshipContractType1RedundancyEarningEvent, EarningEventModel>()
+                .Include<ApprenticeshipContractType2RedundancyEarningEvent, EarningEventModel>()
                 .Include<FunctionalSkillEarningsEvent, EarningEventModel>()
                 .Include<Act1FunctionalSkillEarningsEvent, EarningEventModel>()
                 .Include<Act2FunctionalSkillEarningsEvent, EarningEventModel>()
+                .Include<Act1RedundancyFunctionalSkillEarningsEvent, EarningEventModel>()
+                .Include<Act2RedundancyFunctionalSkillEarningsEvent, EarningEventModel>()
                 .MapCommon()
                 .ForMember(dest => dest.ContractType, opt => opt.Ignore())
                 .ForMember(dest => dest.AgreementId, opt => opt.Ignore())
@@ -26,6 +29,19 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                 .ForMember(dest => dest.IlrFileName, opt => opt.MapFrom(x => x.IlrFileName))
                 .ForMember(dest => dest.EventType, opt => opt.MapFrom(x => x.GetType().FullName))
                 ;
+
+            CreateMap<ApprenticeshipContractType1RedundancyEarningEvent, EarningEventModel>()
+                .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act1))
+                .ForMember(dest => dest.AgreementId, opt => opt.MapFrom(source => source.AgreementId))
+                .ForMember(dest => dest.Periods, opt => opt.ResolveUsing<ApprenticeshipContractTypeEarningPeriodResolver>())
+                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage));
+
+           
+            CreateMap<ApprenticeshipContractType2RedundancyEarningEvent, EarningEventModel>()
+                .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2))
+                .ForMember(dest => dest.Periods, opt => opt.ResolveUsing<ApprenticeshipContractTypeEarningPeriodResolver>())
+                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage));
+
 
             CreateMap<ApprenticeshipContractType1EarningEvent, EarningEventModel>()
                 .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act1))
@@ -42,10 +58,20 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                 .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act1));
             CreateMap<Act2FunctionalSkillEarningsEvent, EarningEventModel>()
                 .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2));
+            CreateMap<Act1RedundancyFunctionalSkillEarningsEvent, EarningEventModel>()
+                .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act1));
+            CreateMap<Act2RedundancyFunctionalSkillEarningsEvent, EarningEventModel>()
+                .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2));
+
+
+
+
 
             CreateMap<FunctionalSkillEarningsEvent, EarningEventModel>()
                 .Include<Act1FunctionalSkillEarningsEvent, EarningEventModel>()
                 .Include<Act2FunctionalSkillEarningsEvent, EarningEventModel>()
+                .Include<Act1RedundancyFunctionalSkillEarningsEvent, EarningEventModel>()
+                .Include<Act2RedundancyFunctionalSkillEarningsEvent, EarningEventModel>()
                 .ForMember(dest => dest.Periods, opt => opt.ResolveUsing<FunctionalSkillEarningResolver>());
 
             CreateMap<PriceEpisode, EarningEventPriceEpisodeModel>()

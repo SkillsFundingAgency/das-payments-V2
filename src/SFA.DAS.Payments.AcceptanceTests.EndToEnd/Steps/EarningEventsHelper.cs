@@ -32,5 +32,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 .SelectMany(dataLockEvent =>
                     dataLockEvent.OnProgrammeEarnings.SelectMany(earning => earning.Periods.SelectMany(period => period.DataLockFailures.Select(a => a.DataLockError))));
         }
+
+        public static IEnumerable<DataLockErrorCode> GetOnProgrammeDataLockErrorsForLearnerAndPriceEpisodeAndDeliveryPeriod(string priceEpisodeIdentifier, short academicYear, TestSession session, byte deliveryPeriod)
+        {
+            return EarningFailedDataLockMatchingHandler
+                .ReceivedEvents
+                .Where(dataLockEvent =>
+                    dataLockEvent.Ukprn == session.Provider.Ukprn
+                    && dataLockEvent.Learner.Uln == session.Learner.Uln
+                    && dataLockEvent.Learner.ReferenceNumber == session.Learner.LearnRefNumber
+                    && dataLockEvent.CollectionYear == academicYear
+                    && dataLockEvent.CollectionPeriod.Period == session.CollectionPeriod.Period
+                    && dataLockEvent.PriceEpisodes.Any(episode => episode.Identifier == priceEpisodeIdentifier))
+                .SelectMany(dataLockEvent =>
+                    dataLockEvent.OnProgrammeEarnings.SelectMany(earning => earning.Periods.Where(period => period.Period == deliveryPeriod).SelectMany(period => period.DataLockFailures.Select(a => a.DataLockError))));
+        }
     }
 }
