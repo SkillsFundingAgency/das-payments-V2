@@ -12,10 +12,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         {
             var orderedReturnList = new List<CalculatedRequiredLevyAmount>();
 
-            orderedReturnList.AddRange(sourceList.WhereAndRemove(x => x.IsRefund()));
-            orderedReturnList.AddRange(sourceList.WhereAndRemove(x=>x.IsTransfer()).PerformDefaultPaymentsSort());
+            orderedReturnList.AddRange(sourceList.GetMatchedItemsAndRemoveFromSource(x => x.IsRefund()));
+            orderedReturnList.AddRange(sourceList.GetMatchedItemsAndRemoveFromSource(x=>x.IsTransfer()).PerformDefaultPaymentsSort());
             orderedReturnList.AddRange(AddRequiredPayments(sourceList, providerPriorities));
-            orderedReturnList.AddRange(sourceList.WhereAndRemove(x =>true).PerformDefaultPaymentsSort());
+            orderedReturnList.AddRange(sourceList.GetMatchedItemsAndRemoveFromSource(x =>true).PerformDefaultPaymentsSort());
 
             return orderedReturnList;
         }
@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             {
                 var prioritisedPayments
                     = sourceList
-                    .WhereAndRemove(x => x.Ukprn == providerPriority.Ukprn)
+                    .GetMatchedItemsAndRemoveFromSource(x => x.Ukprn == providerPriority.Ukprn)
                     .ToList();
                 sortedRequiredPayments.AddRange(prioritisedPayments.PerformDefaultPaymentsSort());
             }

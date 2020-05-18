@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Extensions
                    message.AccountId != message.TransferSenderAccountId;
         }
 
-        public static List<CalculatedRequiredLevyAmount> WhereAndRemove(this List<CalculatedRequiredLevyAmount> sourceList, Func<CalculatedRequiredLevyAmount, bool> action)
+        public static List<CalculatedRequiredLevyAmount> GetMatchedItemsAndRemoveFromSource(this List<CalculatedRequiredLevyAmount> sourceList, Func<CalculatedRequiredLevyAmount, bool> action)
         {
             var matchedItems = sourceList.Where(action).ToList();
             matchedItems.ForEach(x => sourceList.Remove(x));
