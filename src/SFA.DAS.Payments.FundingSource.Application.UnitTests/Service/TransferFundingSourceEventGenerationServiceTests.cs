@@ -184,9 +184,19 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             monthEndCache.Setup(x => x.TryGet(CacheKeys.MonthEndCacheKey, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ConditionalValue<bool>(true, true));
 
+            var remainingBalance = 1000m;
+            levyBalanceService.SetupGet(x => x.RemainingBalance).Returns(remainingBalance);
+            var remainingTransferAllowance = 500;
+            levyBalanceService.SetupGet(x => x.RemainingTransferAllowance).Returns(remainingTransferAllowance);
+
+
             await service.ProcessReceiverTransferPayment(message);
 
-            levyAccountCache.Verify(x => x.AddOrReplace(CacheKeys.LevyBalanceKey, mappedLevyAccountModel, It.IsAny<CancellationToken>()));
+            levyAccountCache.Verify(x => x.AddOrReplace(
+                CacheKeys.LevyBalanceKey,
+            It.Is<LevyAccountModel>(y => y.Balance == remainingBalance
+                && y.TransferAllowance == remainingTransferAllowance),
+            It.IsAny<CancellationToken>()));
         }
     }
 }
