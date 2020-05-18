@@ -71,8 +71,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private async Task<List<CalculatedRequiredLevyAmount>> GetOrderedCalculatedRequiredLevyAmounts(long employerAccountId, CollectionPeriod collectionPeriod)
         {
             var priorities = await dataContext.GetEmployerProviderPriorities(employerAccountId, CancellationToken.None);
-            var prioritiesTuple =    priorities.Select(p => Tuple.Create(p.Ukprn, p.Order).ToValueTuple()).ToList();
-
+            var prioritiesTuple = priorities.Select(p => (p.Ukprn, p.Order)).ToList();
             var transactions = await dataContext
                 .GetTransactionsToBePaidByEmployer(employerAccountId, collectionPeriod);
 
