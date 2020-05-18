@@ -6,7 +6,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.FundingSource.Application.Data;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Application.Services;
-using SFA.DAS.Payments.Messages.Core.Commands;
 
 namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 {
@@ -34,7 +33,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             var collectionPeriod = (byte)1;
             var academicYear = (short)1920;
             var commandSubmissionDate = DateTime.Now;
-            var ukprn = 10000001l;
+            var ukprn = 10000001L;
            
 
           await  submissionCleanUpService.RemovePreviousSubmissions(commandJobId, collectionPeriod, academicYear, commandSubmissionDate, ukprn);
@@ -48,7 +47,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             var commandJobId = 10001;
             var collectionPeriod = (byte)1;
             var academicYear = (short)1920;
-            var ukprn = 10000001l;
+            var ukprn = 10000001L;
 
             await  submissionCleanUpService.RemoveCurrentSubmission(commandJobId, collectionPeriod, academicYear, ukprn);
 
