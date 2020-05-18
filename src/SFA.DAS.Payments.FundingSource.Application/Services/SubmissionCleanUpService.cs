@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.FundingSource.Application.Data;
