@@ -71,7 +71,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Builders
             mapper.Setup(x => x.Map<FundingSourcePaymentEvent>(It.IsAny<TransferPayment>())).Returns(new TransferFundingSourcePaymentEvent());
 
             var results = service.BuildFundingSourcePaymentsForRequiredPayment(amount, transferSenderEmployerAccountId, jobId);
-            processor.Verify(x=>x.Process(It.IsAny<RequiredPayment>()),Times.Once);
             processor.Verify(x => x.Process(It.Is<RequiredPayment>(rp =>
                 rp.SfaContributionPercentage == sfaContributionPercentage
                 && rp.AmountDue == amountDue
