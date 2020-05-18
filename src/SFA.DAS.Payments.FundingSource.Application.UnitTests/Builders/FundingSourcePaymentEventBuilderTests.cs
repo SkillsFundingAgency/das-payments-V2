@@ -15,8 +15,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Builders
     [TestFixture]
     public class FundingSourcePaymentEventBuilderTests
     {
-        private long employerAccountId;
+        private long eventEmployerAccountId;
+        private long transferSenderEmployerAccountId;
         private long jobId;
+        private decimal sfaContributionPercentage;
+        private decimal amountDue;
 
         private Mock<IMapper> mapper;
         private Mock<IPaymentProcessor> processor;
@@ -29,8 +32,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Builders
         [SetUp]
         public void SetUp()
         {
-            employerAccountId = 112;
+            eventEmployerAccountId = 112;
             jobId = 114;
+            sfaContributionPercentage = 0.44m;
+            amountDue = 3000m;
+            transferSenderEmployerAccountId = 219;
 
             mapper = new Mock<IMapper>();
             processor = new Mock<IPaymentProcessor>();
@@ -43,9 +49,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Builders
         {
             var amount = new CalculatedRequiredLevyAmount
             {
-                AccountId = employerAccountId,
-                AmountDue = 3000,
-                AgreementId = "Agreement Two"
+                AccountId = eventEmployerAccountId,
+                AmountDue = amountDue,
+                AgreementId = "Agreement Two",
+                SfaContributionPercentage = sfaContributionPercentage,
+                TransferSenderAccountId = transferSenderEmployerAccountId
             };
 
             fundingSourcePayments = new List<FundingSourcePayment>
@@ -62,8 +70,13 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Builders
             mapper.Setup(x => x.Map<FundingSourcePaymentEvent>(It.IsAny<LevyPayment>())).Returns(new LevyFundingSourcePaymentEvent());
             mapper.Setup(x => x.Map<FundingSourcePaymentEvent>(It.IsAny<TransferPayment>())).Returns(new TransferFundingSourcePaymentEvent());
 
-            var results = service.BuildFundingSourcePaymentsForRequiredPayment(amount, employerAccountId, jobId);
+            var results = service.BuildFundingSourcePaymentsForRequiredPayment(amount, transferSenderEmployerAccountId, jobId);
             processor.Verify(x=>x.Process(It.IsAny<RequiredPayment>()),Times.Once);
+            processor.Verify(x => x.Process(It.Is<RequiredPayment>(rp =>
+                rp.SfaContributionPercentage == sfaContributionPercentage
+                && rp.AmountDue == amountDue
+                && rp.IsTransfer
+            )), Times.Once);
 
             mapper.VerifyAll();
             mapper.Verify(x => x.Map(It.IsAny<CalculatedRequiredLevyAmount>(), It.IsAny<FundingSourcePaymentEvent>()), Times.Exactly(3));

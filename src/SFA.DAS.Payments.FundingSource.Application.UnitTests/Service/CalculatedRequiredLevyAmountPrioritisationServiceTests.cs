@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.Model.Core;
@@ -21,7 +20,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         }
 
         [Test]
-        public async Task ShouldSortRefundsToBeFirst()
+        public void ShouldSortRefundsToBeFirst()
         {
             var expectedFirstEventId = Guid.NewGuid();
             var expectedSecondEventId = Guid.NewGuid();
@@ -38,14 +37,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 new CalculatedRequiredLevyAmount { AmountDue = -1000, EventId = expectedFirstEventId, AccountId = 112 }
             };
 
-            var result = await calculatedRequiredLevyAmountPrioritisationService.Prioritise(amounts, new List<(long, int)>());
+            var result = calculatedRequiredLevyAmountPrioritisationService.Prioritise(amounts, new List<(long, int)>());
 
            Assert.IsTrue( expectedSequence.SequenceEqual(result.Select(r => r.EventId)));
   
         }
 
         [Test]
-        public async Task ShouldSortTransferToBeFirst()
+        public void ShouldSortTransferToBeFirst()
         {
             var expectedFirstEventId = Guid.NewGuid();
             var expectedSecondEventId = Guid.NewGuid();
@@ -76,13 +75,13 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 new CalculatedRequiredLevyAmount {  EventId = expectedFourthEventId, TransferSenderAccountId = 100000005,AgreedOnDate = agreedOnDate.AddMinutes(5), Learner = learner2, AccountId = 112 }
             };
 
-            var result = await calculatedRequiredLevyAmountPrioritisationService.Prioritise(amounts, new List<(long, int)>());
+            var result = calculatedRequiredLevyAmountPrioritisationService.Prioritise(amounts, new List<(long, int)>());
 
             Assert.IsTrue( expectedSequence.SequenceEqual(result.Select(r => r.EventId)));
         }
 
         [Test]
-        public async Task ShouldSortStandardPaymentToBeLast()
+        public void ShouldSortStandardPaymentToBeLast()
         {
             var expectedFirstEventId = Guid.NewGuid();
             var expectedSecondEventId = Guid.NewGuid();
@@ -103,13 +102,13 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 new CalculatedRequiredLevyAmount {  EventId = expectedSecondEventId, TransferSenderAccountId = 100000001, AgreedOnDate = DateTime.UtcNow, Learner  = learner, AccountId = 112 },
             };
 
-            var result = await calculatedRequiredLevyAmountPrioritisationService.Prioritise(amounts, new List<(long, int)>());
+            var result = calculatedRequiredLevyAmountPrioritisationService.Prioritise(amounts, new List<(long, int)>());
             Assert.IsTrue( expectedSequence.SequenceEqual(result.Select(r => r.EventId)));
         }
 
         
         [Test]
-        public async Task ShouldSortStandardPaymentsByProviderPriority()
+        public void ShouldSortStandardPaymentsByProviderPriority()
         {
             var expectedFirstEventId = Guid.NewGuid();
             var expectedSecondEventId = Guid.NewGuid();
@@ -130,14 +129,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 new CalculatedRequiredLevyAmount { EventId = expectedThirdEventId, AmountDue = 1000 , Ukprn = 3, AgreedOnDate = DateTime.UtcNow, Learner = learner, AccountId = 112 }
                };
 
-            var result = await calculatedRequiredLevyAmountPrioritisationService.Prioritise(amounts, providerPriorities);
+            var result = calculatedRequiredLevyAmountPrioritisationService.Prioritise(amounts, providerPriorities);
             Assert.IsTrue( expectedSequence.SequenceEqual(result.Select(r => r.EventId)));
         }
 
 
                 
         [Test]
-        public async Task ShouldSortUnprioritisedPaymentsAtBottomInCorrectOrder()
+        public void ShouldSortUnprioritisedPaymentsAtBottomInCorrectOrder()
         {
             var expectedFirstEventId = Guid.NewGuid();
             var expectedSecondEventId = Guid.NewGuid();
@@ -155,7 +154,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 new CalculatedRequiredLevyAmount { EventId = expectedSecondEventId, AmountDue = 1000 , Ukprn = 2, AgreedOnDate = DateTime.UtcNow, Learner = learner, AccountId = 112 },
             };
 
-            var result = await calculatedRequiredLevyAmountPrioritisationService.Prioritise(amounts, providerPriorities);
+            var result = calculatedRequiredLevyAmountPrioritisationService.Prioritise(amounts, providerPriorities);
             Assert.IsTrue( expectedSequence.SequenceEqual(result.Select(r => r.EventId)));
         }
 

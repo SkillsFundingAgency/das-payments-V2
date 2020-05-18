@@ -142,7 +142,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 
             calculatedRequiredLevyAmountPrioritisationService
                 .Setup(x => x.Prioritise(It.IsAny<List<CalculatedRequiredLevyAmount>>(), It.IsAny<List<(long Ukprn, int Order)>>()))
-                .ReturnsAsync(prioritisedTransactions);
+                .Returns(prioritisedTransactions);
 
             fundingSourcePaymentEventBuilder
                 .Setup(x => x.BuildFundingSourcePaymentsForRequiredPayment(It.Is<CalculatedRequiredLevyAmount>(y => y.Ukprn == firstPriorityUkprn), employerAccountId, jobId))
