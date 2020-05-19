@@ -6,15 +6,15 @@ CREATE TABLE [Payments2].[Payment]
 	FundingSourceEventId UNIQUEIDENTIFIER NOT NULL,
 	EventTime DATETIMEOFFSET NOT NULL,
 	JobId BIGINT NOT NULL,
-    DeliveryPeriod TINYINT NOT NULL,
+	DeliveryPeriod TINYINT NOT NULL,
 	CollectionPeriod TINYINT NOT NULL,
-    AcademicYear SMALLINT CONSTRAINT DF_Payment__AcademicYear DEFAULT ((0)) NOT NULL,
+	AcademicYear SMALLINT CONSTRAINT DF_Payment__AcademicYear DEFAULT ((0)) NOT NULL,
 	Ukprn BIGINT NOT NULL,
-	LearnerReferenceNumber  NVARCHAR(50) NOT NULL,
-	LearnerUln  BIGINT NOT NULL,
+	LearnerReferenceNumber NVARCHAR(50) NOT NULL,
+	LearnerUln BIGINT NOT NULL,
 	PriceEpisodeIdentifier NVARCHAR(50) NOT NULL,
-    Amount DECIMAL(15,5) NOT NULL,
-	LearningAimReference   NVARCHAR(8) NOT NULL,
+	Amount DECIMAL(15,5) NOT NULL,
+	LearningAimReference  NVARCHAR(8) NOT NULL,
 	LearningAimProgrammeType INT NOT NULL ,
 	LearningAimStandardCode INT NOT NULL,
 	LearningAimFrameworkCode INT NOT NULL,
@@ -37,59 +37,58 @@ CREATE TABLE [Payments2].[Payment]
 	EarningsInstalmentAmount DECIMAL (15,5) NULL,
 	EarningsNumberOfInstalments SMALLINT NULL,
 	LearningStartDate DATETIME2 NULL,
-    ApprenticeshipId BIGINT NULL,
-    ApprenticeshipPriceEpisodeId BIGINT NULL,
+	ApprenticeshipId BIGINT NULL,
+	ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL,
 	ReportingAimFundingLineType NVARCHAR(120) NULL, 
-    [NonPaymentReason] TINYINT NULL,
-
+	[NonPaymentReason] TINYINT NULL,
 );
 GO
 
 CREATE NONCLUSTERED INDEX [IX_Payment__ApprenticeshipKey] ON [Payments2].[Payment]
 (
 	[Ukprn] ASC,
-    [AcademicYear] ASC,
-    [LearnerReferenceNumber] ASC,
-    [LearningAimReference] ASC,
-    [LearningAimProgrammeType] ASC,
-    [LearningAimStandardCode] ASC,
-    [LearningAimFrameworkCode] ASC,
-    [LearningAimPathwayCode] ASC,
-    [ContractType] ASC,
-    [LearnerUln] ASC
+  [AcademicYear] ASC,
+  [LearnerReferenceNumber] ASC,
+  [LearningAimReference] ASC,
+  [LearningAimProgrammeType] ASC,
+  [LearningAimStandardCode] ASC,
+  [LearningAimFrameworkCode] ASC,
+  [LearningAimPathwayCode] ASC,
+  [ContractType] ASC,
+  [LearnerUln] ASC
 )
 
 GO
 
 CREATE INDEX [IX_Payment__UkprnPeriodSearch] ON [Payments2].[Payment]
 (
-  [Ukprn],
-  CollectionPeriod,
-  AcademicYear,
-  DeliveryPeriod,
-  JobId
-)  
+ [Ukprn],
+ CollectionPeriod,
+ AcademicYear,
+ DeliveryPeriod,
+ JobId
+) 
 
 GO
 
 CREATE INDEX [IX_Payment__Audit] ON [Payments2].[Payment]
 (
-  [EarningEventId],
-  FundingSourceEventId
-)  
+ [EarningEventId],
+ FundingSourceEventId
+) 
 
 GO
 
 CREATE NONCLUSTERED INDEX [IX_Payment__Metrics_Paid_DataLocks] ON [Payments2].[Payment]
 (
 	[Ukprn],
-    [LearnerReferenceNumber] ASC,
-    [LearningAimReference] ASC,
-    [LearningAimProgrammeType] ASC,
-    [LearningAimStandardCode] ASC,
-    [LearningAimFrameworkCode] ASC,
-    [LearningAimPathwayCode] ASC,
+  [LearnerReferenceNumber] ASC,
+  [LearningAimReference] ASC,
+  [LearningAimProgrammeType] ASC,
+  [LearningAimStandardCode] ASC,
+  [LearningAimFrameworkCode] ASC,
+  [LearningAimPathwayCode] ASC,
 	[CollectionPeriod]
 )
 include(Amount, [TransactionType], [DeliveryPeriod])

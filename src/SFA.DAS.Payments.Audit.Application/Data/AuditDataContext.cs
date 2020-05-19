@@ -12,7 +12,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data
         DbSet<EarningEventModel> EarningEvent { get; }
         DbSet<EarningEventPeriodModel> EarningEventPeriod { get;  }
         DbSet<EarningEventPriceEpisodeModel> EarningEventPriceEpisode { get; }
-
+        DbSet<RequiredPaymentEventModel> RequiredPayment { get; }
+        DbSet<FundingSourceEventModel> FundingSourceEvent { get; }
         DatabaseFacade Database { get; }
         Task<int> SaveChanges(CancellationToken cancellationToken = default(CancellationToken));
     }
@@ -24,6 +25,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data
         public virtual DbSet<EarningEventModel> EarningEvent { get; protected set; }
         public virtual DbSet<EarningEventPeriodModel> EarningEventPeriod { get; protected set; }
         public virtual DbSet<EarningEventPriceEpisodeModel> EarningEventPriceEpisode { get; protected set; }
+        public virtual DbSet<RequiredPaymentEventModel> RequiredPayment { get; protected set; }
+        public virtual DbSet<FundingSourceEventModel> FundingSourceEvent { get; protected set; }
 
         public AuditDataContext(string connectionString)
         {
@@ -41,6 +44,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             modelBuilder.ApplyConfiguration(new EarningEventModelConfiguration());
             modelBuilder.ApplyConfiguration(new EarningEventPeriodModelConfiguration());
             modelBuilder.ApplyConfiguration(new EarningEventPriceEpisodeModelConfiguration());
+            modelBuilder.ApplyConfiguration(new RequiredPaymentEventModelConfiguration());
+            modelBuilder.ApplyConfiguration(new FundingSourceEventModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

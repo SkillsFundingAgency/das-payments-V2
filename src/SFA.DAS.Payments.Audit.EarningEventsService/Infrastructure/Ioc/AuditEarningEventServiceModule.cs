@@ -3,6 +3,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEvent;
 using SFA.DAS.Payments.Audit.EarningEventsService.Handlers;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
@@ -31,7 +32,8 @@ namespace SFA.DAS.Payments.Audit.EarningEventsService.Infrastructure.Ioc
                 })
                 .As<IStatelessServiceBusBatchCommunicationListener>()
                 .SingleInstance();
-
+            builder.RegisterType<EarningEventMessageModifier>()
+                .As<IApplicationMessageModifier>();
             builder.RegisterType<ApprenticeshipContractType1EarningEventHandler>()
                 .As<IHandleMessageBatches<ApprenticeshipContractType1EarningEvent>>()
                 .InstancePerLifetimeScope();

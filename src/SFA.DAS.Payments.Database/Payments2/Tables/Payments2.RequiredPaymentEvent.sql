@@ -40,6 +40,11 @@ CREATE TABLE [Payments2].[RequiredPaymentEvent]
     ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL, 
     [NonPaymentReason] TINYINT NULL,
+	EventType NVARCHAR(4000) NULL,
+    Constraint UQ_RequiredPaymentEvent Unique ([JobId], [Ukprn], [AcademicYear], [CollectionPeriod], [DeliveryPeriod], [ContractType], [TransactionType], [Amount], [SfaContributionPercentage], [LearnerUln], [LearnerReferenceNumber], 
+        [LearningAimReference], [LearningAimProgrammeType], [LearningAimStandardCode], [LearningAimFrameworkCode], [LearningAimPathwayCode], [LearningAimFundingLineType],
+        [LearningStartDate],  [EventType], [ApprenticeshipId], [AccountId], [TransferSenderAccountId], [ApprenticeshipEmployerType])
+
 )
 GO
 
