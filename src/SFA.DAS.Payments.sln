@@ -341,7 +341,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ScheduledJobs", "ScheduledJ
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service Fabric", "Service Fabric", "{C24A8D53-2BD0-487A-BFEB-CB12F0879D7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.ServiceFabric.Core.UnitTests", "SFA.DAS.Payments.ServiceFabric.Core.UnitTests\SFA.DAS.Payments.ServiceFabric.Core.UnitTests.csproj", "{30857CBC-9DDF-431B-9072-F045D6F56CBD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.ServiceFabric.Core.UnitTests", "SFA.DAS.Payments.ServiceFabric.Core.UnitTests\SFA.DAS.Payments.ServiceFabric.Core.UnitTests.csproj", "{30857CBC-9DDF-431B-9072-F045D6F56CBD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Delete Duplicates", "Delete Duplicates", "{DB27B388-5F2F-4AF3-B1A4-E7E158181C40}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\Database\Remove Duplicates\Delete Earning Event Duplicates.sql = Scripts\Database\Remove Duplicates\Delete Earning Event Duplicates.sql
+		Scripts\Database\Remove Duplicates\Delete Funding Source Event Duplicates.sql = Scripts\Database\Remove Duplicates\Delete Funding Source Event Duplicates.sql
+		Scripts\Database\Remove Duplicates\Delete Required payment Duplicates.sql = Scripts\Database\Remove Duplicates\Delete Required payment Duplicates.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1537,6 +1544,7 @@ Global
 		{BA205339-8296-496F-A815-894B2BF93E24} = {DBE41294-5C69-4F10-9EC2-BB6FDBC21DDD}
 		{38655219-BDDB-4F2A-8B8C-B30D1434A762} = {F2AA36D4-90C5-4850-9AA2-29AFAFACD785}
 		{30857CBC-9DDF-431B-9072-F045D6F56CBD} = {C24A8D53-2BD0-487A-BFEB-CB12F0879D7E}
+		{DB27B388-5F2F-4AF3-B1A4-E7E158181C40} = {03E21E69-E578-4F96-A564-A32D26738660}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E9E6D1E-3C3C-41C9-AED4-9B6DC9118F1F}
