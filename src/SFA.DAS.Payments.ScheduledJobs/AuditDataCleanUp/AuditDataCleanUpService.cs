@@ -4,21 +4,94 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using AzureFunctions.Autofac;
+using NServiceBus;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.Core;
+using SFA.DAS.Payments.ScheduledJobs.Infrastructure.Configuration;
 
 namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
 {
     public class AuditDataCleanUpService : IAuditDataCleanUpService
     {
         private readonly IPaymentsDataContext dataContext;
+        private readonly IEndpointInstanceFactory endpointInstanceFactory;
+        private readonly IScheduledJobsConfiguration config;
         private readonly IPaymentLogger paymentLogger;
 
-        public AuditDataCleanUpService([Inject] IPaymentsDataContext dataContext, [Inject] IPaymentLogger paymentLogger)
+        public AuditDataCleanUpService(
+            [Inject] IScheduledJobsConfiguration config,
+            [Inject] IPaymentsDataContext dataContext,
+            [Inject] IEndpointInstanceFactory endpointInstanceFactory,
+            [Inject] IPaymentLogger paymentLogger)
         {
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
+            this.endpointInstanceFactory = endpointInstanceFactory ?? throw new ArgumentNullException(nameof(endpointInstanceFactory));
+            this.config = config ?? throw new ArgumentNullException(nameof(config));
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
+        }
+
+        public async Task TriggerAuditDataCleanup()
+        {
+            var submissionJobsToBeDeletedBatches = await GetSubmissionJobsToBeDeletedBatches(config.CollectionPeriod, config.AcademicYear);
+            
+            var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
+
+            foreach (var batch in submissionJobsToBeDeletedBatches)
+            {
+                await EnqueueAuditDataCleanupMessages(endpointInstance, batch);
+            }
+        }
+        
+        private async Task EnqueueAuditDataCleanupMessages(IEndpointInstance endpointInstance, SubmissionJobsToBeDeletedBatch batch)
+        {
+            await endpointInstance.Send(config.EarningAuditDataCleanUpQueue, batch).ConfigureAwait(false);
+            await endpointInstance.Send(config.DataLockAuditDataCleanUpQueue, batch).ConfigureAwait(false);
+            await endpointInstance.Send(config.FundingSourceAuditDataCleanUpQueue, batch).ConfigureAwait(false);
+            await endpointInstance.Send(config.RequiredPaymentAuditDataCleanUpQueue, batch).ConfigureAwait(false);
+        }
+
+        private async Task SplitBatchAndEnqueueMessages(SubmissionJobsToBeDeletedBatch batch)
+        {
+            var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
+
+            foreach (var jobsToBeDeletedModel in batch.JobsToBeDeleted)
+            {
+                await EnqueueAuditDataCleanupMessages(endpointInstance, new SubmissionJobsToBeDeletedBatch {JobsToBeDeleted = new[] {jobsToBeDeletedModel}});
+            }
+        }
+        
+        private async Task AuditDataCleanUp(Func<IList<SqlParameter>, string, string, Task> deleteAuditData, SubmissionJobsToBeDeletedBatch batch)
+        {
+            try
+            {
+                var sqlParameters = batch.JobsToBeDeleted.ToSqlParameters();
+
+                var deleteMethodName = deleteAuditData.Method.Name;
+
+                paymentLogger.LogInfo($"Started {deleteMethodName}");
+
+                var sqlParamName = string.Join(", ", sqlParameters.Select(pn => pn.ParameterName));
+                var paramValues = string.Join(", ", sqlParameters.Select(pn => pn.Value));
+
+                await deleteAuditData(sqlParameters, sqlParamName, paramValues);
+
+                paymentLogger.LogInfo($"Finished {deleteMethodName}");
+            }
+            catch (Exception e)
+            {
+                //we have already tried in single batch mode nothing more can be done here
+                if (batch.JobsToBeDeleted.Length == 1) 
+                {
+                    paymentLogger.LogWarning($"Error Deleting Audit Data, internal Exception {e}");
+                    throw;
+                }
+                
+                //if SQL TimeOut or Dead-lock and we haven't already tried with single item Mode then try again with Batch Split into single items
+                if (e.IsTimeOutException() || e.IsDeadLockException()) await SplitBatchAndEnqueueMessages(batch);
+            }
         }
 
         public async Task EarningEventAuditDataCleanUp(SubmissionJobsToBeDeletedBatch batch)
@@ -39,30 +112,6 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
         public async Task DataLockEventAuditDataCleanUp(SubmissionJobsToBeDeletedBatch batch)
         {
             await AuditDataCleanUp(DeleteDataLockEvent, batch);
-        }
-
-        private async Task AuditDataCleanUp(Func<IList<SqlParameter>, string, string, Task> deleteAuditData, SubmissionJobsToBeDeletedBatch batch)
-        {
-            try
-            {
-                var sqlParameters = batch.JobsToBeDeleted.ToSqlParameters();
-
-                var deleteMethodName = deleteAuditData.Method.Name;
-
-                paymentLogger.LogInfo($"Started {deleteMethodName}");
-
-                var sqlParamName = string.Join(", ", sqlParameters.Select(pn => pn.ParameterName));
-                var paramValues = string.Join(", ", sqlParameters.Select(pn => pn.Value));
-
-                await deleteAuditData(sqlParameters, sqlParamName, paramValues);
-
-                paymentLogger.LogInfo($"Finished {deleteMethodName}");
-            }
-            catch (Exception e)
-            {
-                paymentLogger.LogWarning($"Error Deleting Audit Data, internal Exception {e}");
-                throw;
-            }
         }
 
         private async Task DeleteEarningEventData(IList<SqlParameter> sqlParameters, string sqlParamName, string paramValues)
@@ -156,7 +205,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
             paymentLogger.LogInfo($"DELETED {dataLockEventCount} DataLockEvents for JobIds {paramValues}");
         }
 
-        public async Task<IEnumerable<SubmissionJobsToBeDeletedBatch>> GetSubmissionJobsToBeDeletedBatches(string collectionPeriod, string academicYear)
+        private async Task<IEnumerable<SubmissionJobsToBeDeletedBatch>> GetSubmissionJobsToBeDeletedBatches(string collectionPeriod, string academicYear)
         {
             // ReSharper disable once ConvertToConstant.Local
             var selectJobsToBeDeleted = @"
