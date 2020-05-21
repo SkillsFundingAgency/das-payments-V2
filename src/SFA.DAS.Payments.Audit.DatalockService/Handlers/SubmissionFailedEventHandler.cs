@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.Audit.DataLockService.Handlers
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error handling {logString}. {ex.Message}"); //todo decision
+                logger.LogError($"Error handling {logString}. {ex.Message}");
                 throw;
             }
         }
