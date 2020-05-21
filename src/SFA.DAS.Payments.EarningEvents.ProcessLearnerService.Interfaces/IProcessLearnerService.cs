@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Remoting.FabricTransport;
 using Microsoft.ServiceFabric.Services.Remoting;
@@ -15,6 +16,6 @@ namespace SFA.DAS.Payments.EarningEvents.ProcessLearnerService.Interfaces
     /// </summary>
     public interface IProcessLearnerService : IActor
     {
-       List<EarningEvent> CreateLearnerEarningEvents(ProcessLearnerCommand processLearnerCommand);
+       Task<List<EarningEvent>> CreateLearnerEarningEvents(ProcessLearnerCommand processLearnerCommand);
     }
 }

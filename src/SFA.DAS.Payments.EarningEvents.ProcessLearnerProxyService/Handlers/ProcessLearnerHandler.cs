@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.EarningEvents.ProcessLearnerProxyService.Handlers
                 new Uri("fabric:/SFA.DAS.Payments.EarningEvents.ServiceFabric/ProcessLearnerServiceActorService"),
                 actorId);
 
-            var learnerEarningEvents = actor.CreateLearnerEarningEvents(message);
+            var learnerEarningEvents = await actor.CreateLearnerEarningEvents(message);
 
             foreach (var earningEvent in learnerEarningEvents)
             {

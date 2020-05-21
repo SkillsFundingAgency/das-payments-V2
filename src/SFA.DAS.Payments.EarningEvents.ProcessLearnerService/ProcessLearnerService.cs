@@ -55,16 +55,16 @@ namespace SFA.DAS.Payments.EarningEvents.ProcessLearnerService
         }
 
 
-        public List<EarningEvent> CreateLearnerEarningEvents(ProcessLearnerCommand processLearnerCommand)
+        public Task<List<EarningEvent>> CreateLearnerEarningEvents(ProcessLearnerCommand processLearnerCommand)
         {
             logger.LogDebug($"Handling ILR learner submission. Job: {processLearnerCommand.JobId}, Ukprn: {processLearnerCommand.Ukprn}, Collection year: {processLearnerCommand.CollectionYear}, Learner: {processLearnerCommand.Learner.LearnRefNumber}");
             var processorResult = learnerSubmissionProcessor.GenerateEarnings(processLearnerCommand);
             if (processorResult.Validation.Failed)
             {
                 logger.LogInfo($"ILR Learner Submission failed validation. Job: {processLearnerCommand.JobId}, Ukprn: {processLearnerCommand.Ukprn}, Collection year: {processLearnerCommand.CollectionYear}, Learner: {processLearnerCommand.Learner.LearnRefNumber}");
-                return new List<EarningEvent>();
+                return  Task.FromResult(new List<EarningEvent>());
             }
-            return processorResult.EarningEvents;
+            return Task.FromResult(processorResult.EarningEvents);
         }
     }
 }
