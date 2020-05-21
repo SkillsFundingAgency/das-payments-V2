@@ -4,6 +4,7 @@ using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using System.Linq;
+using SFA.DAS.Payments.EarningEvents.Application.Services;
 
 namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
 {
@@ -12,6 +13,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.UnitTests
     {
         ApprenticeshipContractTypeEarningsEventBuilder sut = new ApprenticeshipContractTypeEarningsEventBuilder(
             new ApprenticeshipContractTypeEarningsEventFactory(),
+            new RedundancyEarningService(new RedundancyEarningEventFactory(new Mapper(new MapperConfiguration(c => { })))), 
             new Mapper(new MapperConfiguration(c => { })));
 
         [Test]

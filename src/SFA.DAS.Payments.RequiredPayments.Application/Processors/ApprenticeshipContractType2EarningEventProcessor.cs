@@ -9,7 +9,7 @@ using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
     public class ApprenticeshipContractType2EarningEventProcessor 
-        : ApprenticeshipContractTypeEarningEventProcessor<ApprenticeshipContractType2EarningEvent>, IApprenticeshipContractType2EarningsEventProcessor
+        : ApprenticeshipContractTypeEarningEventProcessor<ApprenticeshipContractTypeEarningsEvent>, IApprenticeshipContractType2EarningsEventProcessor
     {
         public ApprenticeshipContractType2EarningEventProcessor(
             IMapper mapper,
