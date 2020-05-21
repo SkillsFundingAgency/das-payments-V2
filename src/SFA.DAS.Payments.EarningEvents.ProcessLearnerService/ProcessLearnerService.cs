@@ -1,6 +1,12 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.EarningEvents.Domain;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.EarningEvents.ProcessLearnerService.Interfaces;
 
 
@@ -15,17 +21,22 @@ namespace SFA.DAS.Payments.EarningEvents.ProcessLearnerService
     ///  - None: State is kept in memory only and not replicated.
     /// </remarks>
     [StatePersistence(StatePersistence.Persisted)]
-    internal class ProcessLearnerService : Actor, IProcessLearnerService
+    public class ProcessLearnerService : Actor, IProcessLearnerService
     {
-        /// <summary>
-        /// Initializes a new instance of ProcessLearnerService
-        /// </summary>
-        /// <param name="actorService">The Microsoft.ServiceFabric.Actors.Runtime.ActorService that will host this actor instance.</param>
-        /// <param name="actorId">The Microsoft.ServiceFabric.Actors.ActorId for this actor instance.</param>
-        public ProcessLearnerService(ActorService actorService, ActorId actorId) 
-            : base(actorService, actorId)
+        private readonly ILearnerSubmissionProcessor learnerSubmissionProcessor;
+        private readonly IPaymentLogger logger;
+
+        public ProcessLearnerService(
+            ActorService actorService,
+            ActorId actorId,
+            ILearnerSubmissionProcessor learnerSubmissionProcessor, 
+            IPaymentLogger logger
+            ) : base(actorService, actorId)
         {
+            this.learnerSubmissionProcessor = learnerSubmissionProcessor ?? throw new ArgumentNullException(nameof(learnerSubmissionProcessor));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
+
 
         /// <summary>
         /// This method is called whenever an actor is activated.
@@ -43,6 +54,17 @@ namespace SFA.DAS.Payments.EarningEvents.ProcessLearnerService
             return this.StateManager.TryAddStateAsync("count", 0);
         }
 
-        
+
+        public List<EarningEvent> CreateLearnerEarningEvents(ProcessLearnerCommand processLearnerCommand)
+        {
+            logger.LogDebug($"Handling ILR learner submission. Job: {processLearnerCommand.JobId}, Ukprn: {processLearnerCommand.Ukprn}, Collection year: {processLearnerCommand.CollectionYear}, Learner: {processLearnerCommand.Learner.LearnRefNumber}");
+            var processorResult = learnerSubmissionProcessor.GenerateEarnings(processLearnerCommand);
+            if (processorResult.Validation.Failed)
+            {
+                logger.LogInfo($"ILR Learner Submission failed validation. Job: {processLearnerCommand.JobId}, Ukprn: {processLearnerCommand.Ukprn}, Collection year: {processLearnerCommand.CollectionYear}, Learner: {processLearnerCommand.Learner.LearnRefNumber}");
+                return new List<EarningEvent>();
+            }
+            return processorResult.EarningEvents;
+        }
     }
 }

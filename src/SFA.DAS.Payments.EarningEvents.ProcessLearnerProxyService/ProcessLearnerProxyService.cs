@@ -8,7 +8,7 @@ using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.EarningEvents.ProcessLearnerProxyService
 {
-    internal sealed class ProcessLearnerProxyService : StatelessService
+    public class ProcessLearnerProxyService : StatelessService
     {
         private IStatelessEndpointCommunicationListener listener;
         private readonly ILifetimeScope lifetimeScope;

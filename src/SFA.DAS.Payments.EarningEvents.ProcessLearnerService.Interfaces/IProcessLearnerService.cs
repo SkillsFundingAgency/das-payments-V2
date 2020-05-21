@@ -1,6 +1,10 @@
+using System.Collections.Generic;
+using System.Threading;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Remoting.FabricTransport;
 using Microsoft.ServiceFabric.Services.Remoting;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 
 [assembly: FabricTransportActorRemotingProvider(RemotingListenerVersion = RemotingListenerVersion.V2_1, RemotingClientVersion = RemotingClientVersion.V2_1)]
 namespace SFA.DAS.Payments.EarningEvents.ProcessLearnerService.Interfaces
@@ -11,6 +15,6 @@ namespace SFA.DAS.Payments.EarningEvents.ProcessLearnerService.Interfaces
     /// </summary>
     public interface IProcessLearnerService : IActor
     {
-        
+       List<EarningEvent> CreateLearnerEarningEvents(ProcessLearnerCommand processLearnerCommand);
     }
 }
