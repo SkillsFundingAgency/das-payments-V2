@@ -203,19 +203,19 @@ namespace SFA.DAS.Payments.ScheduledJobs.AcceptanceTests.Steps
             var dataLockEventNonPayablePeriods = submissionDataContext.DataLockEventNonPayablePeriods.Any(x => x.Id == submission.DataLockEventNonPayablePeriod);
             var dataLockEventNonPayablePeriodFailures = submissionDataContext.DataLockEventNonPayablePeriodFailures.Any(x => x.Id == submission.DataLockEventNonPayablePeriodFailures);
 
-            earningEvents.Should().Be(asExpected);
-            earningEventPeriods.Should().Be(asExpected);
-            earningEventPriceEpisodes.Should().Be(asExpected);
+            earningEvents.Should().Be(asExpected, $"Expected earningEvents to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
+            earningEventPeriods.Should().Be(asExpected, $"Expected earningEventPeriods to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
+            earningEventPriceEpisodes.Should().Be(asExpected, $"Expected earningEventPriceEpisodes to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
 
-            fundingSourceEvents.Should().Be(asExpected);
+            fundingSourceEvents.Should().Be(asExpected, $"Expected fundingSourceEvents to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
 
-            requiredPaymentEvents.Should().Be(asExpected);
+            requiredPaymentEvents.Should().Be(asExpected, $"Expected requiredPaymentEvents to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
 
-            dataLockEvents.Should().Be(asExpected);
-            dataLockPayablePeriods.Should().Be(asExpected);
-            dataLockEventPriceEpisodes.Should().Be(asExpected);
-            dataLockEventNonPayablePeriods.Should().Be(asExpected);
-            dataLockEventNonPayablePeriodFailures.Should().Be(asExpected);
+            dataLockEvents.Should().Be(asExpected, $"Expected dataLockEvents to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
+            dataLockPayablePeriods.Should().Be(asExpected, $"Expected dataLockPayablePeriods to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
+            dataLockEventPriceEpisodes.Should().Be(asExpected, $"Expected dataLockEventPriceEpisodes to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
+            dataLockEventNonPayablePeriods.Should().Be(asExpected, $"Expected dataLockEventNonPayablePeriods to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
+            dataLockEventNonPayablePeriodFailures.Should().Be(asExpected, $"Expected dataLockEventNonPayablePeriodFailures to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
         }
 
         private async Task<SubmissionData> CreateSubmission(string submissionId, byte collectionPeriod, short academicYear)

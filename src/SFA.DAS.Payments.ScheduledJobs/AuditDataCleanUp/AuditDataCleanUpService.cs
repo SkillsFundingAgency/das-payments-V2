@@ -230,7 +230,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
                 DELETE FROM #JobDataToBeDeleted WHERE JobId IN ( SELECT DcJobId FROM Payments2.Job WHERE [Status] in (1, 4, 5) );
 
                 -- and any jobs completed on our side but DC status is unknown
-                DELETE FROM #JobDataToBeDeleted WHERE JobId IN ( SELECT DcJobId FROM Payments2.Job Where [Status] in (2, 3) AND (Dcjobsucceeded IS NULL OR Dcjobsucceeded = 0));
+                DELETE FROM #JobDataToBeDeleted WHERE JobId IN ( SELECT DcJobId FROM Payments2.Job Where [Status] in (2, 3) AND Dcjobsucceeded IS NULL);
 
                 SELECT JobId AS DcJobId FROM #JobDataToBeDeleted";
 

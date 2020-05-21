@@ -137,6 +137,15 @@ Scenario: upon Audit Data Cleanup Schedule Function is executed, Old CompletedWi
 	Then Submission A is deleted from collection period 2
 	And Submission B is NOT deleted from collection period 2
 
+Scenario: upon Audit Data Cleanup Schedule Function is executed, Old Completed Submission And DCJobSucceeded False Audit Data is deleted
+	Given a Provider has done two submissions, First Submission A and Second Submission B in collectionPeriod 2
+	And Both Submission has status Completed in collection period 2
+	And Submission A has DCJobSucceeded false from collection period 2
+	And Submission B has DCJobSucceeded true from collection period 2
+	When Audit Data Cleanup Function is executed in collectionPeriod 2
+	Then Submission A is deleted from collection period 2
+	And Submission B is NOT deleted from collection period 2
+
 Scenario: upon Audit Data Cleanup Schedule Function is executed, Old Completed Submission And DCJobSucceeded Audit Data is NOT deleted
 	Given a Provider has done two submissions, First Submission A and Second Submission B in collectionPeriod 2
 	And Both Submission has status Completed in collection period 2
@@ -144,7 +153,7 @@ Scenario: upon Audit Data Cleanup Schedule Function is executed, Old Completed S
 	And Submission B has DCJobSucceeded false from collection period 2
 	When Audit Data Cleanup Function is executed in collectionPeriod 2
 	Then Submission A is NOT deleted from collection period 2
-	And Submission B is NOT deleted from collection period 2
+	And Submission B is deleted from collection period 2
 
 Scenario: upon Audit Data Cleanup Schedule Function is executed, Only Completed Submission Audit Data is deleted
 	Given a Provider has done one submissions, Submission A in collection period 2
