@@ -8,7 +8,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.FundingSource.LevyTransactionService.Handlers;
-using SFA.DAS.Payments.FundingSource.LevyTransactionService.Infrastructure.Messaging;
 using SFA.DAS.Payments.Messaging.Serialization;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
@@ -43,15 +42,6 @@ namespace SFA.DAS.Payments.FundingSource.LevyTransactionService.Infrastructure.I
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<JobMessageClientFactory>().AsImplementedInterfaces().InstancePerLifetimeScope();
-
-            builder.Register((c, p) =>
-                {
-                    var logger = c.Resolve<IPaymentLogger>();
-                    var endpointConfig = CreateEndpointConfiguration(c, logger);
-                    return new MessageSessionFactory(endpointConfig);
-                })
-                .As<IMessageSessionFactory>()
-                .SingleInstance();
         }
 
         private static EndpointConfiguration CreateEndpointConfiguration(IComponentContext container,

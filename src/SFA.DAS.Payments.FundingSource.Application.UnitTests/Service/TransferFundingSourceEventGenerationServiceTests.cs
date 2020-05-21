@@ -136,7 +136,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         [Test]
         public async Task ProcessReceiverTransferPayment_WhenMonthEndStarted_ShouldQueryLevyAccountCache()
         {
-            monthEndCache.Setup(x => x.TryGet(CacheKeys.MonthEndCacheKey, It.IsAny<CancellationToken>()))
+            monthEndCache.Setup(x => x.TryGet(CacheKeys.MonthEndStartedForThisAccountCacheKey, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ConditionalValue<bool>(true, true));
 
             await service.ProcessReceiverTransferPayment(message);
@@ -147,7 +147,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         [Test]
         public void ProcessReceiverTransferPayment_WhenMonthEndStarted_ShouldValidateLevyAccountCacheItem()
         {
-            monthEndCache.Setup(x => x.TryGet(CacheKeys.MonthEndCacheKey, It.IsAny<CancellationToken>()))
+            monthEndCache.Setup(x => x.TryGet(CacheKeys.MonthEndStartedForThisAccountCacheKey, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ConditionalValue<bool>(true, true));
 
             levyAccountCache.Setup(x => x.TryGet(CacheKeys.LevyBalanceKey, It.IsAny<CancellationToken>()))
@@ -159,7 +159,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         [Test]
         public async Task ProcessReceiverTransferPayment_WhenMonthEndStarted_ShouldInitialiseLevyBalanceService()
         {
-            monthEndCache.Setup(x => x.TryGet(CacheKeys.MonthEndCacheKey, It.IsAny<CancellationToken>()))
+            monthEndCache.Setup(x => x.TryGet(CacheKeys.MonthEndStartedForThisAccountCacheKey, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ConditionalValue<bool>(true, true));
 
             await service.ProcessReceiverTransferPayment(message);
@@ -170,7 +170,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         [Test]
         public async Task ProcessReceiverTransferPayment_WhenMonthEndStarted_ShouldMapLevyAccountModel()
         {
-            monthEndCache.Setup(x => x.TryGet(CacheKeys.MonthEndCacheKey, It.IsAny<CancellationToken>()))
+            monthEndCache.Setup(x => x.TryGet(CacheKeys.MonthEndStartedForThisAccountCacheKey, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ConditionalValue<bool>(true, true));
 
             await service.ProcessReceiverTransferPayment(message);
@@ -181,7 +181,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         [Test]
         public async Task ProcessReceiverTransferPayment_WhenMonthEndStarted_ShouldUpdateLevyAccountCache()
         {
-            monthEndCache.Setup(x => x.TryGet(CacheKeys.MonthEndCacheKey, It.IsAny<CancellationToken>()))
+            monthEndCache.Setup(x => x.TryGet(CacheKeys.MonthEndStartedForThisAccountCacheKey, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ConditionalValue<bool>(true, true));
 
             var remainingBalance = 1000m;

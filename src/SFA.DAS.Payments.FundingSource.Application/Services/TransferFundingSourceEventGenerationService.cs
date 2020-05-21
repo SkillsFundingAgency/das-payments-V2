@@ -54,8 +54,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             var requiredPayment = mapper.Map<CalculatedRequiredLevyAmount>(message);
             paymentLogger.LogVerbose("Mapped ProcessUnableToFundTransferFundingSourcePayment to CalculatedRequiredLevyAmount");
             var payments = new List<FundingSourcePaymentEvent>();
-            var monthEndStartedCacheItem = await monthEndCache.TryGet(CacheKeys.MonthEndCacheKey);
-            if (!monthEndStartedCacheItem.HasValue || !monthEndStartedCacheItem.Value)
+            var monthEndStartedForThisAccount = await monthEndCache.TryGet(CacheKeys.MonthEndStartedForThisAccountCacheKey);
+            if (!monthEndStartedForThisAccount.HasValue || !monthEndStartedForThisAccount.Value)
             {
                 paymentLogger.LogDebug("Month end has not been started yet so adding the payment to the cache.");
                 await AddRequiredPayment(requiredPayment);

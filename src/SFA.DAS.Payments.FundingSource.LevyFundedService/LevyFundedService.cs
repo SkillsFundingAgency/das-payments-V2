@@ -134,7 +134,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                     var fundingSourceEvents =
                         await fundingSourceEventGenerationService.HandleMonthEnd(command.AccountId, command.JobId, command.CollectionPeriod);
 
-                    await monthEndCache.AddOrReplace(CacheKeys.MonthEndCacheKey, true, CancellationToken.None);
+                    await monthEndCache.AddOrReplace(CacheKeys.MonthEndStartedForThisAccountCacheKey, true, CancellationToken.None);
 
                     telemetry.TrackDurationWithMetrics("LevyFundedService.HandleMonthEnd",
                         stopwatch,
