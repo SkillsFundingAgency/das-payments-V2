@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.Audit.DataLockService.Handlers
 
         public async Task Handle(SubmissionJobFailed message, IMessageHandlerContext context)
         {
-            var logString = $"{typeof(SubmissionFailedEvent).Name}. UKPRN: {message.Ukprn} {message.AcademicYear}-R{message.CollectionPeriod:D2}, ILR Submission: {message.IlrSubmissionDateTime:s}, Job ID: {message.JobId}";
+            var logString = $"{typeof(SubmissionFailedEvent).Name}. {message.AcademicYear}-R{message.CollectionPeriod:D2}, ILR Submission: {message.IlrSubmissionDateTime:s}, Job ID: {message.JobId}";
 
             logger.LogInfo("Handling " + logString);
 
@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.Audit.DataLockService.Handlers
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error handling {logString}. {ex.Message}");
+                logger.LogError($"Error handling {logString}. {ex.Message}"); //todo decision
                 throw;
             }
         }

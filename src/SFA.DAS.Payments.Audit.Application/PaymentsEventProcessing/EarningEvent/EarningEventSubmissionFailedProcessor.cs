@@ -30,12 +30,12 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEven
 
         public async Task Process(SubmissionJobFailed message, CancellationToken cancellationToken)
         {
-            logger.LogVerbose($"Flushing cached earning events before removing data for job: {message.JobId}, provider: {message.Ukprn}, collection period: {message.CollectionPeriod}");
+            logger.LogVerbose($"Flushing cached earning events before removing data for job: {message.JobId}, collection period: {message.CollectionPeriod}");
             await batchService.StorePayments(cancellationToken).ConfigureAwait(false);
-            logger.LogDebug($"Flushed data. Now removing earning events for job: {message.JobId}, provider: {message.Ukprn}, collection period: {message.CollectionPeriod}");
+            logger.LogDebug($"Flushed data. Now removing earning events for job: {message.JobId}, collection period: {message.CollectionPeriod}");
             await repository.RemoveFailedSubmissionEvents(message.JobId, cancellationToken)
                 .ConfigureAwait(false);
-            logger.LogInfo($"Finished removing earning events for job: {message.JobId}, provider: {message.Ukprn}, collection period: {message.CollectionPeriod}");
+            logger.LogInfo($"Finished removing earning events for job: {message.JobId}, collection period: {message.CollectionPeriod}");
         }
     }
 }
