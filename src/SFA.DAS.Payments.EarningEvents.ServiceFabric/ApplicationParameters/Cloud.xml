@@ -1,6 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.EarningEvents.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
+    <Parameter Name="ProcessLearnerProxyService_InstanceCount" Value="__ProcessLearnerProxyService_InstanceCount__" />
+    <Parameter Name="ProcessLearnerActorService_PartitionCount" Value="__ProcessLearnerActorService_PartitionCount__" />
+    <Parameter Name="ProcessLearnerActorService_MinReplicaSetSize" Value="__ProcessLearnerActorService_MinReplicaSetSize__" />
+    <Parameter Name="ProcessLearnerActorService_TargetReplicaSetSize" Value="__ProcessLearnerActorService_TargetReplicaSetSize__" />
     <Parameter Name="EarningEventsService_InstanceCount" Value="__EarningEventsService_InstanceCount__" />
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
     <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
