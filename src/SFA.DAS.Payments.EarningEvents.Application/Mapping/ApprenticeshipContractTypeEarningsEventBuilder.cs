@@ -9,14 +9,19 @@ using System.Linq;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
-    public class ApprenticeshipContractTypeEarningsEventBuilder : EarningEventBuilderBase, IApprenticeshipContractTypeEarningsEventBuilder
+    public class ApprenticeshipContractTypeEarningsEventBuilder : EarningEventBuilderBase,
+        IApprenticeshipContractTypeEarningsEventBuilder
     {
         private readonly IApprenticeshipContractTypeEarningsEventFactory factory;
+        private readonly IRedundancyEarningService redundancyEarningService;
         private readonly IMapper mapper;
 
-        public ApprenticeshipContractTypeEarningsEventBuilder(IApprenticeshipContractTypeEarningsEventFactory factory, IMapper mapper)
+        public ApprenticeshipContractTypeEarningsEventBuilder(IApprenticeshipContractTypeEarningsEventFactory factory,
+            IRedundancyEarningService redundancyEarningService,
+            IMapper mapper)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            this.redundancyEarningService = redundancyEarningService ?? throw new ArgumentNullException(nameof(redundancyEarningService));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -27,22 +32,35 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             foreach (var intermediateLearningAim in intermediateResults)
             {
-                var episodesByContractType = intermediateLearningAim.PriceEpisodes.GroupBy(x => x.PriceEpisodeValues.PriceEpisodeContractType);
+                var episodesByContractType = intermediateLearningAim.PriceEpisodes.GroupBy(x =>x.PriceEpisodeValues.PriceEpisodeContractType );
+                var redundancyDates = intermediateLearningAim.PriceEpisodes
+                    .Where(pe => pe.PriceEpisodeValues.PriceEpisodeRedStatusCode == 1 && pe.PriceEpisodeValues.PriceEpisodeRedStartDate.HasValue)
+                    .OrderBy(pe => pe.PriceEpisodeValues.PriceEpisodeRedStartDate)
+                    .Select( pe =>new { pe.PriceEpisodeValues.PriceEpisodeRedStartDate, pe.PriceEpisodeIdentifier}).FirstOrDefault();
+
 
                 foreach (var priceEpisodes in episodesByContractType)
                 {
-                    var learnerWithSortedPriceEpisodes = intermediateLearningAim.CopyReplacingPriceEpisodes(priceEpisodes);
+                    var learnerWithSortedPriceEpisodes =
+                        intermediateLearningAim.CopyReplacingPriceEpisodes(priceEpisodes);
 
-                    var earningEvent = factory.Create(priceEpisodes.Key);
+                     var earningEvent = factory.Create(priceEpisodes.Key);
                     if (!earningEvent.IsPayable) continue;
 
                     mapper.Map(learnerWithSortedPriceEpisodes, earningEvent);
 
-                    results.Add(earningEvent);
+                    if (redundancyDates != null && earningEvent.PriceEpisodes.Any(pe=>pe.Identifier == redundancyDates.PriceEpisodeIdentifier))
+                    {
+                        results.AddRange(redundancyEarningService.SplitContractEarningByRedundancyDate(earningEvent, redundancyDates.PriceEpisodeRedStartDate.Value));
+                    }
+                    else
+                    {
+                        results.Add(earningEvent);
+                    }
                 }
             }
 
             return results;
         }
-    }
+     }
 }
