@@ -67,7 +67,6 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
         public async Task WhenIfTheEventIsDuplicated()
         {
           var command =  Context.Get<ProcessLearnerCommand>(ProcessLearnerCommand);
-          command.Ukprn++;
           await MessageSession.Send(command);
         }
 
