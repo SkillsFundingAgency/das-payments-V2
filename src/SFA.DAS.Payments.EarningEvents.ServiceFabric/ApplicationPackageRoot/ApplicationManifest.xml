@@ -98,6 +98,7 @@
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[EarningEventsService_EndpointName]" />
+            <Parameter Name="ProcessLearnerEndpoint" Value="[ProcessLearnerService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[EarningEventsService_FailedMessagesQueue]" />
             <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
             <Parameter Name="SubscriptionName" Value="[SubscriptionName]" />
@@ -137,6 +138,7 @@
           </Section>
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[EarningEventsService_EndpointName]" />
+            <Parameter Name="ProcessLearnerEndpoint" Value="[ProcessLearnerService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[EarningEventsService_FailedMessagesQueue]" />
             <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
             <Parameter Name="SubscriptionName" Value="[SubscriptionName]" />

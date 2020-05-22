@@ -14,6 +14,7 @@
 
   <Section Name="Settings">
     <Parameter Name="EndpointName" Value=""/>
+    <Parameter Name="ProcessLearnerEndpoint" Value=""/>
     <Parameter Name="FailedMessagesQueue" Value=""/>
     <Parameter Name="AuditQueueName" Value="" />
     <Parameter Name="SubscriptionName" Value="" />
