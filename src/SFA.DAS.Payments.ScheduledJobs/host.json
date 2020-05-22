@@ -1,4 +1,13 @@
 {
     "version": "2.0",
-    "functionTimeout": "00:06:00"
+    "functionTimeout": "00:05:00",
+    "extensions": {
+        "serviceBus": {
+            "prefetchCount": 100,
+            "messageHandlerOptions": {
+                "maxConcurrentCalls": 1,
+                "maxAutoRenewDuration": "00:05:00"
+            }
+        }
+    }
 }

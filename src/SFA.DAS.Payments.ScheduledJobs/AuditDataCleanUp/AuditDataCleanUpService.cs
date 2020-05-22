@@ -87,7 +87,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
                 //if SQL TimeOut or Dead-lock and we haven't already tried with single item Mode then try again with Batch Split into single items
                 if (e.IsTimeOutException() || e.IsDeadLockException())
                 {
-                    paymentLogger.LogInfo($"Starting Audit Data Deletion in Single Item mode");
+                    paymentLogger.LogWarning($"Starting Audit Data Deletion in Single Item mode");
                     
                     await SplitBatchAndEnqueueMessages(batch, queueName);
                 }
