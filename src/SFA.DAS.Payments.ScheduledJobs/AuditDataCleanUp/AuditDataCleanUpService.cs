@@ -36,34 +36,29 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
         public async Task TriggerAuditDataCleanup()
         {
             var submissionJobsToBeDeletedBatches = await GetSubmissionJobsToBeDeletedBatches(config.CollectionPeriod, config.AcademicYear);
-            
+
             var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
 
             foreach (var batch in submissionJobsToBeDeletedBatches)
             {
-                await EnqueueAuditDataCleanupMessages(endpointInstance, batch);
+                await endpointInstance.Send(config.EarningAuditDataCleanUpQueue, batch).ConfigureAwait(false);
+                await endpointInstance.Send(config.DataLockAuditDataCleanUpQueue, batch).ConfigureAwait(false);
+                await endpointInstance.Send(config.FundingSourceAuditDataCleanUpQueue, batch).ConfigureAwait(false);
+                await endpointInstance.Send(config.RequiredPaymentAuditDataCleanUpQueue, batch).ConfigureAwait(false);
             }
         }
-        
-        private async Task EnqueueAuditDataCleanupMessages(IEndpointInstance endpointInstance, SubmissionJobsToBeDeletedBatch batch)
-        {
-            await endpointInstance.Send(config.EarningAuditDataCleanUpQueue, batch).ConfigureAwait(false);
-            await endpointInstance.Send(config.DataLockAuditDataCleanUpQueue, batch).ConfigureAwait(false);
-            await endpointInstance.Send(config.FundingSourceAuditDataCleanUpQueue, batch).ConfigureAwait(false);
-            await endpointInstance.Send(config.RequiredPaymentAuditDataCleanUpQueue, batch).ConfigureAwait(false);
-        }
 
-        private async Task SplitBatchAndEnqueueMessages(SubmissionJobsToBeDeletedBatch batch)
+        private async Task SplitBatchAndEnqueueMessages(SubmissionJobsToBeDeletedBatch batch, string queueName)
         {
             var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
 
             foreach (var jobsToBeDeletedModel in batch.JobsToBeDeleted)
             {
-                await EnqueueAuditDataCleanupMessages(endpointInstance, new SubmissionJobsToBeDeletedBatch {JobsToBeDeleted = new[] {jobsToBeDeletedModel}});
+                await endpointInstance.Send(queueName, new SubmissionJobsToBeDeletedBatch { JobsToBeDeleted = new[] { jobsToBeDeletedModel } }).ConfigureAwait(false);
             }
         }
-        
-        private async Task AuditDataCleanUp(Func<IList<SqlParameter>, string, string, Task> deleteAuditData, SubmissionJobsToBeDeletedBatch batch)
+
+        private async Task AuditDataCleanUp(Func<IList<SqlParameter>, string, string, Task> deleteAuditData, SubmissionJobsToBeDeletedBatch batch, string queueName)
         {
             try
             {
@@ -83,35 +78,35 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
             catch (Exception e)
             {
                 //we have already tried in single batch mode nothing more can be done here
-                if (batch.JobsToBeDeleted.Length == 1) 
+                if (batch.JobsToBeDeleted.Length == 1)
                 {
                     paymentLogger.LogWarning($"Error Deleting Audit Data, internal Exception {e}");
                     throw;
                 }
-                
+
                 //if SQL TimeOut or Dead-lock and we haven't already tried with single item Mode then try again with Batch Split into single items
-                if (e.IsTimeOutException() || e.IsDeadLockException()) await SplitBatchAndEnqueueMessages(batch);
+                if (e.IsTimeOutException() || e.IsDeadLockException()) await SplitBatchAndEnqueueMessages(batch, queueName);
             }
         }
 
         public async Task EarningEventAuditDataCleanUp(SubmissionJobsToBeDeletedBatch batch)
         {
-            await AuditDataCleanUp(DeleteEarningEventData, batch);
+            await AuditDataCleanUp(DeleteEarningEventData, batch, config.EarningAuditDataCleanUpQueue);
         }
 
         public async Task FundingSourceEventAuditDataCleanUp(SubmissionJobsToBeDeletedBatch batch)
         {
-            await AuditDataCleanUp(DeleteFundingSourceEvent, batch);
+            await AuditDataCleanUp(DeleteFundingSourceEvent, batch, config.FundingSourceAuditDataCleanUpQueue);
         }
 
         public async Task RequiredPaymentEventAuditDataCleanUp(SubmissionJobsToBeDeletedBatch batch)
         {
-            await AuditDataCleanUp(DeleteRequiredPaymentEvent, batch);
+            await AuditDataCleanUp(DeleteRequiredPaymentEvent, batch, config.RequiredPaymentAuditDataCleanUpQueue);
         }
 
         public async Task DataLockEventAuditDataCleanUp(SubmissionJobsToBeDeletedBatch batch)
         {
-            await AuditDataCleanUp(DeleteDataLockEvent, batch);
+            await AuditDataCleanUp(DeleteDataLockEvent, batch, config.DataLockAuditDataCleanUpQueue);
         }
 
         private async Task DeleteEarningEventData(IList<SqlParameter> sqlParameters, string sqlParamName, string paramValues)
