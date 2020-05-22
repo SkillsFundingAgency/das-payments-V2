@@ -79,7 +79,33 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
         public async Task ThenOnlyOneSetOfEarningEventsIsGeneratedForTheLearner()
         {
             await WaitForIt(() => ApprenticeshipContractType1EarningEventHandler.ReceivedEvents.Count == 1,
-                "Failed to find a Payable Earning and no Data Locks");
+                "Failed to find exactly one earning event");
         }
+
+
+
+        [When(@"if the event is duplicated but with a different commandId on the process learner command")]
+        public async Task WhenIfTheEventIsDuplicatedButWithADifferentCommandIdOnTheProcessLearnerCommand()
+        {
+            var command =  Context.Get<ProcessLearnerCommand>(ProcessLearnerCommand);
+            command.CommandId = Guid.NewGuid();
+            await MessageSession.Send(command);
+        }
+        
+        [When(@"if the same learner is submitted but with a different ukprn")]
+        public async Task WhenIfTheSameLearnerIsSubmittedButWithADifferentUkprn()
+        {
+            var command =  Context.Get<ProcessLearnerCommand>(ProcessLearnerCommand);
+            command.Ukprn =  TestSession.GenerateId();
+            await MessageSession.Send(command);
+        }
+        
+        [Then(@"two sets of earning events is generated for the learner")]
+        public async Task ThenTwoSetsOfEarningEventsIsGeneratedForTheLearner()
+        {
+            await WaitForIt(() => ApprenticeshipContractType1EarningEventHandler.ReceivedEvents.Count == 2,
+                "Failed to find two earning events");
+        }
+
     }
 }
