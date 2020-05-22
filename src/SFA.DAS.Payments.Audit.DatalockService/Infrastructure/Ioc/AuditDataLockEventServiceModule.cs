@@ -3,17 +3,15 @@ using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
-using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEvent;
-using SFA.DAS.Payments.Audit.EarningEventsService.Handlers;
+using SFA.DAS.Payments.Audit.DataLockService.Handlers;
 using SFA.DAS.Payments.Core.Configuration;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messaging.Serialization;
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.ServiceFabric.Core;
 
-namespace SFA.DAS.Payments.Audit.EarningEventsService.Infrastructure.Ioc
+namespace SFA.DAS.Payments.Audit.DataLockService.Infrastructure.Ioc
 {
-    public class AuditEarningEventServiceModule : Module
+    public class AuditDataLockEventServiceModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
@@ -33,10 +31,10 @@ namespace SFA.DAS.Payments.Audit.EarningEventsService.Infrastructure.Ioc
                 .As<IStatelessServiceBusBatchCommunicationListener>()
                 .SingleInstance();
 
-            builder.RegisterType<EarningEventMessageModifier>()
+            builder.RegisterType<DataLockEventMessageModifier>()
                 .As<IApplicationMessageModifier>();
 
-           builder.RegisterType<EarningEventModelHandler>()
+            builder.RegisterType<DataLockEventModelHandler>()
                 .As<IHandleMessageBatches<EarningEventModel>>()
                 .InstancePerLifetimeScope();
         }

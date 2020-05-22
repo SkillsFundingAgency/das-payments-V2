@@ -1,18 +1,14 @@
 ﻿using Autofac;
 using SFA.DAS.Payments.Audit.Application.Data;
+using SFA.DAS.Payments.Audit.Application.Data.DataLock;
 using SFA.DAS.Payments.Audit.Application.Data.EarningEvent;
 using SFA.DAS.Payments.Audit.Application.Data.FundingSource;
 using SFA.DAS.Payments.Audit.Application.Data.RequiredPayment;
 using SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents;
 using SFA.DAS.Payments.Audit.Application.Mapping.RequiredPaymentEvents;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
-using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.DataLock;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEvent;
-using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.FundingSource;
-using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.RequiredPayment;
-using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.Core.Configuration;
-using SFA.DAS.Payments.Messaging.Serialization;
 using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
@@ -24,9 +20,7 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
             builder.RegisterType<EarningEventProcessor>()
                 .As<IEarningEventProcessor>()
                 .InstancePerLifetimeScope();
-            builder.RegisterType<DataLockEventProcessor>()
-                .As<IDataLockEventProcessor>()
-                .InstancePerLifetimeScope();
+
 
             builder.RegisterType<EarningEventDataTable>()
                 .As<IPaymentsEventModelDataTable<EarningEventModel>>();
@@ -39,10 +33,6 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
                 .SingleInstance();
 
             builder.RegisterGeneric(typeof(PaymentsEventModelBatchProcessor<>))
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope();
-
-            builder.RegisterType<SubmissionEventProcessor>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
 

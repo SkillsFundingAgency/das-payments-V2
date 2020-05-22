@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Audit.Application.Data;
+using SFA.DAS.Payments.Audit.Application.Data.DataLock;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.DataLock;
 using SFA.DAS.Payments.Audit.Model;

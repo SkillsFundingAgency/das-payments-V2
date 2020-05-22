@@ -2,7 +2,7 @@
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 
-namespace SFA.DAS.Payments.Audit.Application.Mapping
+namespace SFA.DAS.Payments.Audit.Application.Mapping.DataLock
 {
     public class DataLockProfile : Profile
     {
