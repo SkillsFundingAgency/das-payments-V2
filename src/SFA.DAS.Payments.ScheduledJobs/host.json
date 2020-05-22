@@ -3,7 +3,7 @@
     "functionTimeout": "00:06:00",
     "extensions": {
         "serviceBus": {
-            "prefetchCount": 100,
+            "prefetchCount": 1,
             "messageHandlerOptions": {
                 "maxConcurrentCalls": 1,
                 "maxAutoRenewDuration": "00:05:00"
