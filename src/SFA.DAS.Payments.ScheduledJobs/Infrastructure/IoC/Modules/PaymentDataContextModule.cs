@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
                     var configHelper = c.Resolve<IConfigurationHelper>();
                     var dbContextOptions = new DbContextOptionsBuilder<PaymentsDataContext>()
                         .UseSqlServer(configHelper.GetConnectionString("PaymentsConnectionString"), 
-                            optionsBuilder => optionsBuilder.CommandTimeout(590)).Options;  //Max Timeout for Function execution is 10 min so setting SQL timeOut to 9.50 == 590 sec
+                            optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
                     return new PaymentsDataContext(dbContextOptions);
                 })
                 .As<IPaymentsDataContext>()
