@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.Audit.DataLockService.Infrastructure.Ioc
                 .As<IApplicationMessageModifier>();
 
             builder.RegisterType<DataLockEventModelHandler>()
-                .As<IHandleMessageBatches<EarningEventModel>>()
+                .As<IHandleMessageBatches<DataLockEventModel>>()
                 .InstancePerLifetimeScope();
         }
     }

@@ -1,19 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.Audit.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="Audit_DataLockService_MinReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="Audit_EarningEventsService_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="Audit_DataLockService_InstanceCount" DefaultValue="1" />
+    <Parameter Name="Audit_RequiredPaymentService_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="Audit_FundingSourceService_InstanceCount" DefaultValue="-1" />
+    <!--<Parameter Name="Audit_DataLockService_MinReplicaSetSize" DefaultValue="3" />
     <Parameter Name="Audit_DataLockService_PartitionCount" DefaultValue="1" />
     <Parameter Name="Audit_DataLockService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="Audit_RequiredPaymentService_MinReplicaSetSize" DefaultValue="3" />
-    <Parameter Name="Audit_RequiredPaymentService_InstanceCount" DefaultValue="-11" />
     <Parameter Name="Audit_RequiredPaymentService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="Audit_FundingSourceService_MinReplicaSetSize" DefaultValue="3" />
-    <Parameter Name="Audit_FundingSourceService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="Audit_FundingSourceService_TargetReplicaSetSize" DefaultValue="3" />
-    <Parameter Name="Audit_EarningEventsService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="Audit_EarningEventsService_MinReplicaSetSize" DefaultValue="3" />
     <Parameter Name="Audit_EarningEventsService_PartitionCount" DefaultValue="1" />
-    <Parameter Name="Audit_EarningEventsService_TargetReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="Audit_EarningEventsService_TargetReplicaSetSize" DefaultValue="3" />-->
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="MonitoringServiceBusConnectionString" DefaultValue="" />
@@ -163,12 +164,6 @@
         <SingletonPartition />
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
-    </Service>
-    <Service Name="SFA.DAS.Payments.Audit.DataLockService" ServicePackageActivationMode="ExclusiveProcess">
-      <StatefulService ServiceTypeName="SFA.DAS.Payments.Audit.DataLockServiceType" TargetReplicaSetSize="[Audit_DataLockService_TargetReplicaSetSize]" MinReplicaSetSize="[Audit_DataLockService_MinReplicaSetSize]">
-        <UniformInt64Partition PartitionCount="[Audit_DataLockService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
-        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
-      </StatefulService>
     </Service>
     <Service Name="SFA.DAS.Payments.Audit.RequiredPaymentService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.Audit.RequiredPaymentServiceType" InstanceCount="[Audit_RequiredPaymentService_InstanceCount]">
