@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Model.Core.Audit
@@ -6,6 +7,7 @@ namespace SFA.DAS.Payments.Model.Core.Audit
     public class DataLockEventModel : PaymentsEventModel
     {
         public long Id { get; set; }
+        public Guid EarningEventId { get; set; }
         public ContractType ContractType { get; set; }
         public string AgreementId { get; set; }
         public long? LearningAimSequenceNumber { get; set; }

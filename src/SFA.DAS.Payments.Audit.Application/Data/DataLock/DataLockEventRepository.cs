@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.DataLock
                     .ConfigureAwait(false);
                 await ((DbContext)dataContext).BulkInsertAsync(dataLockEvents.SelectMany(earning => earning.NonPayablePeriods.SelectMany(npp => npp.Failures)).ToList(), bulkConfig, null, cancellationToken)
                     .ConfigureAwait(false);
-                tx.Commit();
+                await tx.CommitAsync(cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -74,7 +74,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.DataLock
                         throw;
                     }
                 }
-                tx.Commit();
+                await tx.CommitAsync(cancellationToken);
             }
         }
     }

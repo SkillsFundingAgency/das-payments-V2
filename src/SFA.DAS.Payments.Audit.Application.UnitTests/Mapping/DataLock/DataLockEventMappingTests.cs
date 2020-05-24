@@ -8,6 +8,7 @@ using SFA.DAS.Payments.Audit.Application.Mapping.DataLock;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
 {

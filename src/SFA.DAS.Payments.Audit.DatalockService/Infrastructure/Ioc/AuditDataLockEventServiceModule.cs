@@ -3,6 +3,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.DataLock;
 using SFA.DAS.Payments.Audit.DataLockService.Handlers;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Messaging.Serialization;

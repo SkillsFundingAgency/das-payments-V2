@@ -1,6 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Fabric.Management.ServiceModel;
+using AutoMapper;
 using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Audit.Application.Mapping.DataLock
 {
@@ -11,34 +14,80 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.DataLock
             CreateMap<DataLockEvent, DataLockEventModel>()
                 .Include<PayableEarningEvent, DataLockEventModel>()
                 .Include<EarningFailedDataLockMatching, DataLockEventModel>()
-                .ForMember(x => x.AcademicYear, opt => opt.MapFrom(s => s.CollectionPeriod.AcademicYear))
-                .ForMember(x => x.CollectionYear, opt => opt.MapFrom(s => s.CollectionPeriod.AcademicYear))
-                .ForMember(x => x.CollectionPeriod, opt => opt.MapFrom(s => s.CollectionPeriod.Period))
-                .ForMember(x => x.Earnings, opt => opt.Ignore())
-                .ForMember(x => x.ContractType, opt => opt.Ignore());
-
+                .MapCommon()
+                .ForMember(dest => dest.ContractType, opt => opt.Ignore())
+                .ForMember(dest => dest.AgreementId, opt => opt.MapFrom(source => source.AgreementId))
+                .ForMember(dest => dest.PriceEpisodes, opt => opt.ResolveUsing<DataLockEventPriceEpisodeModelListResolver>())
+                .ForMember(dest => dest.LearningAimSequenceNumber, opt => opt.MapFrom(x => x.LearningAim.SequenceNumber))
+                .ForMember(dest => dest.LearningStartDate, opt => opt.MapFrom(src => src.LearningAim.StartDate))
+                .ForMember(dest => dest.IlrFileName, opt => opt.MapFrom(x => x.IlrFileName))
+                .ForMember(dest => dest.EventType, opt => opt.MapFrom(x => x.GetType().FullName))
+                ;
 
             CreateMap<PayableEarningEvent, DataLockEventModel>()
-                .ForMember(x => x.IsPayable, opt => opt.UseValue(true));
+                .ForMember(x => x.IsPayable, opt => opt.UseValue(true))
+                .ForMember(dest => dest.PayablePeriods, opt => opt.ResolveUsing<PayablePeriodResolver>())
+                ;
 
             CreateMap<EarningFailedDataLockMatching, DataLockEventModel>()
-                .ForMember(x => x.IsPayable, opt => opt.UseValue(false));
-            
+                .ForMember(x => x.IsPayable, opt => opt.UseValue(false))
+                .ForMember(dest => dest.NonPayablePeriods, opt => opt.ResolveUsing<NonPayablePeriodResolver>())
+                ;
+
             CreateMap<FunctionalSkillDataLockEvent, DataLockEventModel>()
                 .Include<PayableFunctionalSkillEarningEvent, DataLockEventModel>()
                 .Include<FunctionalSkillEarningFailedDataLockMatching, DataLockEventModel>()
-                .ForMember(x => x.AcademicYear, opt => opt.MapFrom(s => s.CollectionPeriod.AcademicYear))
-                .ForMember(x => x.CollectionYear, opt => opt.MapFrom(s => s.CollectionPeriod.AcademicYear))
-                .ForMember(x => x.CollectionPeriod, opt => opt.MapFrom(s => s.CollectionPeriod.Period))
-                .ForMember(x => x.AgreementId, opt => opt.Ignore())
-                .ForMember(x => x.OnProgrammeEarnings, opt => opt.Ignore())
-                .ForMember(x => x.IncentiveEarnings, opt => opt.Ignore());
-
+                .MapCommon()
+                .ForMember(dest => dest.ContractType, opt => opt.Ignore())
+                .ForMember(dest => dest.AgreementId, opt => opt.MapFrom(source => source.AgreementId))
+                .ForMember(dest => dest.PriceEpisodes, opt => opt.ResolveUsing<DataLockEventPriceEpisodeModelListResolver>())
+                .ForMember(dest => dest.LearningAimSequenceNumber, opt => opt.MapFrom(x => x.LearningAim.SequenceNumber))
+                .ForMember(dest => dest.LearningStartDate, opt => opt.MapFrom(src => src.LearningAim.StartDate))
+                .ForMember(dest => dest.IlrFileName, opt => opt.MapFrom(x => x.IlrFileName))
+                .ForMember(dest => dest.EventType, opt => opt.MapFrom(x => x.GetType().FullName))
+                ;
             CreateMap<PayableFunctionalSkillEarningEvent, DataLockEventModel>()
+                .ForMember(dest => dest.PayablePeriods, opt => opt.ResolveUsing<PayablePeriodResolver>())
                 .ForMember(x => x.IsPayable, opt => opt.UseValue(true));
 
             CreateMap<FunctionalSkillEarningFailedDataLockMatching, DataLockEventModel>()
-                .ForMember(x => x.IsPayable, opt => opt.UseValue(false));
+                .ForMember(x => x.IsPayable, opt => opt.UseValue(false))
+                .ForMember(dest => dest.NonPayablePeriods, opt => opt.ResolveUsing<NonPayablePeriodResolver>())
+                ;
+
+
+            CreateMap<PriceEpisode, DataLockEventPriceEpisodeModel>()
+                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.Ignore())
+                .ForMember(dest => dest.ActualEndDate, opt => opt.MapFrom(source => source.ActualEndDate))
+                .ForMember(dest => dest.Completed, opt => opt.MapFrom(source => source.Completed))
+                .ForMember(dest => dest.CompletionAmount, opt => opt.MapFrom(source => source.CompletionAmount))
+                .ForMember(dest => dest.DataLockEventId, opt => opt.Ignore())
+                .ForMember(dest => dest.InstalmentAmount, opt => opt.MapFrom(source => source.InstalmentAmount))
+                .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(source => source.NumberOfInstalments))
+                .ForMember(dest => dest.PlannedEndDate, opt => opt.MapFrom(source => source.PlannedEndDate))
+                .ForMember(dest => dest.PriceEpisodeIdentifier, opt => opt.MapFrom(source => source.Identifier))
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(source => source.EffectiveTotalNegotiatedPriceStartDate))
+                .ForMember(dest => dest.TotalNegotiatedPrice1, opt => opt.MapFrom(source => source.TotalNegotiatedPrice1))
+                .ForMember(dest => dest.TotalNegotiatedPrice2, opt => opt.MapFrom(source => source.TotalNegotiatedPrice2))
+                .ForMember(dest => dest.TotalNegotiatedPrice3, opt => opt.MapFrom(source => source.TotalNegotiatedPrice3))
+                .ForMember(dest => dest.TotalNegotiatedPrice4, opt => opt.MapFrom(source => source.TotalNegotiatedPrice4))
+                .ForMember(dest => dest.AgreedPrice, opt => opt.MapFrom(source => source.AgreedPrice))
+                .ForMember(dest => dest.CourseStartDate, opt => opt.MapFrom(source => source.CourseStartDate));
+
+            CreateMap<DataLockEventModel, DataLockEventModel>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+            CreateMap<DataLockEventPriceEpisodeModel, DataLockEventPriceEpisodeModel>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+            CreateMap<DataLockEventPayablePeriodModel, DataLockEventPayablePeriodModel>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+            CreateMap<DataLockEventNonPayablePeriodModel, DataLockEventNonPayablePeriodModel>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            
+            CreateMap<DataLockEventNonPayablePeriodFailureModel, DataLockEventNonPayablePeriodFailureModel>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
         }
     }
 }

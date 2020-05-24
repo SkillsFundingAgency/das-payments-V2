@@ -10,7 +10,12 @@ using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.DataLock
 {
-    public class DataLockEventStorageService 
+    public interface IDataLockEventStorageService
+    {
+        Task StoreDataLocks(List<DataLockEventModel> models, CancellationToken cancellationToken);
+    }
+
+    public class DataLockEventStorageService : IDataLockEventStorageService
     {
         private readonly IDataLockEventMapper mapper;
         private readonly IPaymentLogger logger;
