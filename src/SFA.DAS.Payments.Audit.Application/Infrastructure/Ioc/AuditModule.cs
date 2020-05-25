@@ -1,14 +1,13 @@
 ﻿using Autofac;
 using SFA.DAS.Payments.Audit.Application.Data;
 using SFA.DAS.Payments.Audit.Application.Data.DataLock;
-using SFA.DAS.Payments.Audit.Application.Data.EarningEvent;
 using SFA.DAS.Payments.Audit.Application.Data.FundingSource;
 using SFA.DAS.Payments.Audit.Application.Data.RequiredPayment;
-using SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents;
+using SFA.DAS.Payments.Audit.Application.Mapping.DataLock;
+using SFA.DAS.Payments.Audit.Application.Mapping.FundingSource;
 using SFA.DAS.Payments.Audit.Application.Mapping.RequiredPaymentEvents;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.DataLock;
-using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEvent;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.FundingSource;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.RequiredPayment;
 using SFA.DAS.Payments.Core.Configuration;
@@ -20,23 +19,11 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<EarningEventProcessor>()
-                .As<IEarningEventProcessor>()
-                .InstancePerLifetimeScope();
-
             builder.RegisterGeneric(typeof(PaymentsEventModelBatchService<>))
                 .AsImplementedInterfaces()
                 .SingleInstance();
 
             builder.RegisterGeneric(typeof(PaymentsEventModelBatchProcessor<>))
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope();
-
-            builder.RegisterType<EarningEventSubmissionSucceededProcessor>()
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope();
-            
-            builder.RegisterType<EarningEventSubmissionFailedProcessor>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
 
@@ -52,23 +39,14 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
 
-            builder.RegisterType<EarningEventRepository>()
-                .AsImplementedInterfaces()
-                .InstancePerDependency();
-
-            builder.RegisterType<EarningEventStorageService>()
-                .As<IEarningEventStorageService>()
-                .InstancePerLifetimeScope();
-
-            builder.RegisterType<EarningEventMapper>()
-                .As<IEarningEventMapper>();
-
             builder.RegisterType<RequiredPaymentEventMapper>()
                 .As<IRequiredPaymentEventMapper>();
 
-            builder.RegisterType<EarningsDuplicateEliminator>()
-                .As<IEarningsDuplicateEliminator>()
-                .InstancePerLifetimeScope();
+            builder.RegisterType<FundingSourceEventMapper>()
+                .As<IFundingSourceEventMapper>();
+
+            builder.RegisterType<DataLockEventMapper>()
+                .As<IDataLockEventMapper>();
 
             builder.RegisterType<AuditDataContextFactory>()
                 .As<IAuditDataContextFactory>()
@@ -79,11 +57,11 @@ namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<RequiredPaymentEventStorageService>()
-                .As<IDataLockEventStorageService>()
+                .As<IRequiredPaymentEventStorageService>()
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<FundingSourceEventStorageService>()
-                .As<IDataLockEventStorageService>()
+                .As<IFundingSourceEventStorageService>()
                 .InstancePerLifetimeScope();
 
             builder.Register(ctx =>

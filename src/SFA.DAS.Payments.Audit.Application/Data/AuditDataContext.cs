@@ -2,7 +2,10 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using SFA.DAS.Payments.Application.Data.Configurations;
+using SFA.DAS.Payments.Audit.Application.Data.DataLock;
+using SFA.DAS.Payments.Audit.Application.Data.EarningEvent;
+using SFA.DAS.Payments.Audit.Application.Data.FundingSource;
+using SFA.DAS.Payments.Audit.Application.Data.RequiredPayment;
 using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Audit.Application.Data
