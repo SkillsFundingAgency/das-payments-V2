@@ -1,3 +1,5 @@
+using System;
+using System.Data.SqlTypes;
 using AutoMapper;
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -31,8 +33,8 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.RequiredPaymentEvents
                 .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => source.DeliveryPeriod))
                 .ForMember(dest => dest.AgreementId, opt => opt.Ignore())
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(source => source.StartDate))
-                .ForMember(dest => dest.PlannedEndDate, opt => opt.MapFrom(source => source.PlannedEndDate))
-                .ForMember(dest => dest.ActualEndDate, opt => opt.MapFrom(source => source.ActualEndDate))
+                .ForMember(dest => dest.PlannedEndDate, opt => opt.ResolveUsing(source => source.PlannedEndDate == DateTime.MinValue ? (DateTime?)SqlDateTime.MinValue : source.PlannedEndDate))
+                .ForMember(dest => dest.ActualEndDate, opt => opt.ResolveUsing(source => source.ActualEndDate == DateTime.MinValue ? (DateTime?)SqlDateTime.MinValue : source.ActualEndDate))
                 .ForMember(dest => dest.CompletionStatus, opt => opt.MapFrom(source => source.CompletionStatus))
                 .ForMember(dest => dest.CompletionAmount, opt => opt.MapFrom(source => source.CompletionAmount))
                 .ForMember(dest => dest.InstalmentAmount, opt => opt.MapFrom(source => source.InstalmentAmount))
