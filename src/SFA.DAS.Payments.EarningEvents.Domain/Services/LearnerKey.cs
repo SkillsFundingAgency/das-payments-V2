@@ -9,6 +9,7 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.Services
         public short AcademicYear { get; set; }
         public int CollectionPeriod { get; set; }
         public long LearnerUln { get; set; }
+        public string LearnerRefNo { get; set; }
         public virtual string Key => CreateKey();
         public virtual string LogSafeKey => CreateLogSafeKey();
 
@@ -24,16 +25,17 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.Services
             AcademicYear = processLearnerCommand.CollectionYear;
             CollectionPeriod = processLearnerCommand.CollectionPeriod;
             LearnerUln = processLearnerCommand.Learner.ULN;
+            LearnerRefNo = processLearnerCommand.Learner.LearnRefNumber;
         }
 
         public string CreateKey()
         {
-            return $"{LearnerUln}-{JobId}-{AcademicYear}-{CollectionPeriod}-{GetType().Name}";
+            return $"{JobId}-{Ukprn}-{LearnerRefNo}-{LearnerUln}-{AcademicYear}-{CollectionPeriod}";
         }
 
         public string CreateLogSafeKey()
         {
-            return $"{JobId}-{AcademicYear}-{CollectionPeriod}-{GetType().Name}";
+            return $"{JobId}-{Ukprn}-{LearnerRefNo}-{AcademicYear}-{CollectionPeriod}";
         }
     }
 }

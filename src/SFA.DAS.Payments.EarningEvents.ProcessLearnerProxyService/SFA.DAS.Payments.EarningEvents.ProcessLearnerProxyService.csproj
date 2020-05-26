@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Domain\SFA.DAS.Payments.EarningEvents.Domain.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages.Internal\SFA.DAS.Payments.EarningEvents.Messages.Internal.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.ProcessLearnerService.Interfaces\SFA.DAS.Payments.EarningEvents.ProcessLearnerService.Interfaces.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Client\SFA.DAS.Payments.Monitoring.Jobs.Client.csproj" />

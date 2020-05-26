@@ -921,13 +921,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     MessageId = processProviderPaymentsAtMonthEndCommand.CommandId
                 }}
             };
-            var tasks = new List<Task>
-            {
-                MessageSession.Send($"sfa-das-payments-monitoring-jobs{new JobMonitorPartition().PartitionNameForJob(provider.JobId, provider.Ukprn)}", dcStartedMonthEndJobCommand),
-                MessageSession.Send(processProviderPaymentsAtMonthEndCommand)
-            };
 
-            await Task.WhenAll(tasks).ConfigureAwait(false);
+            await MessageSession.Send(processProviderPaymentsAtMonthEndCommand).ConfigureAwait(false);
 
             provider.MonthEndJobIdGenerated = true;
         }

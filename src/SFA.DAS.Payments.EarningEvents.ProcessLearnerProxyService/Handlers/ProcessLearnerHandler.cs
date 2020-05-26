@@ -5,6 +5,7 @@ using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.EarningEvents.Domain.Services;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.EarningEvents.ProcessLearnerService.Interfaces;
 
@@ -26,7 +27,7 @@ namespace SFA.DAS.Payments.EarningEvents.ProcessLearnerProxyService.Handlers
             logger.LogDebug(
                 $"Handling ILR learner submission. Job: {message.JobId}, Ukprn: {message.Ukprn}, Collection year: {message.CollectionYear}, Learner: {message.Learner.LearnRefNumber}");
 
-            string key = $"{message.Ukprn}-{message.Learner.LearnRefNumber}";
+            var key = new LearnerKey(message).Key;
             var actorId = new ActorId(key);
             var actor = proxyFactory.CreateActorProxy<IProcessLearnerService>(
                 new Uri("fabric:/SFA.DAS.Payments.EarningEvents.ServiceFabric/ProcessLearnerServiceActorService"),
