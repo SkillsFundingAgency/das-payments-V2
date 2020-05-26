@@ -71,6 +71,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
         public async Task AddRequiredPayment(CalculatedRequiredLevyAmount paymentEvent)
         {
+
+
             if (paymentEvent.AmountDue < 0)
             {
                 await AddRefundPaymentToCache(paymentEvent);
