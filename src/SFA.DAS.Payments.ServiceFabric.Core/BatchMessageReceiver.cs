@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             for (var i = 0; i < 10 && messages.Count <= batchSize; i++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var receivedMessages = await messageReceiver.ReceiveAsync(batchSize, TimeSpan.FromSeconds(2))
+                var receivedMessages = await messageReceiver.ReceiveAsync(batchSize, TimeSpan.FromMilliseconds(500))
                     .ConfigureAwait(false);
                 if (receivedMessages == null || !receivedMessages.Any())
                     break;
