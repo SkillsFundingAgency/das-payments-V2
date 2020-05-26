@@ -1,11 +1,7 @@
 ﻿using Autofac;
 using SFA.DAS.Payments.Audit.Application.Data;
-using SFA.DAS.Payments.Audit.Application.Data.FundingSource;
-using SFA.DAS.Payments.Audit.Application.Mapping.FundingSource;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
-using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.FundingSource;
 using SFA.DAS.Payments.Core.Configuration;
-using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Audit.Application.Infrastructure.Ioc
 {

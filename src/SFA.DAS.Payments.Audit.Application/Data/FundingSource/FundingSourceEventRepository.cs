@@ -13,11 +13,6 @@ namespace SFA.DAS.Payments.Audit.Application.Data.FundingSource
 {
     public interface IFundingSourceEventRepository
     {
-        Task RemovePriorEvents(long ukprn, short academicYear, byte collectionPeriod, DateTime latestIlrSubmissionTime,
-            CancellationToken cancellationToken);
-
-        Task RemoveFailedSubmissionEvents(long jobId, CancellationToken cancellationToken);
-
         Task SaveSaveFundingSourceEvents(List<FundingSourceEventModel> fundingSourceEvents,
             CancellationToken cancellationToken);
 
@@ -39,29 +34,6 @@ namespace SFA.DAS.Payments.Audit.Application.Data.FundingSource
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task RemovePriorEvents(long ukprn, short academicYear, byte collectionPeriod, DateTime latestIlrSubmissionTime, CancellationToken cancellationToken)
-        {
-            await dataContext.Database.ExecuteSqlCommandAsync($@"
-                    Delete 
-                        From [Payments2].[FundingSourceEvent] 
-                    Where 
-                        Ukprn = {ukprn}
-                        And AcademicYear = {academicYear}
-                        And CollectionPeriod = {collectionPeriod}
-                        And IlrSubmissionDateTime < {latestIlrSubmissionTime}", cancellationToken)
-                .ConfigureAwait(false);
-        }
-
-        public async Task RemoveFailedSubmissionEvents(long jobId, CancellationToken cancellationToken)
-        {
-            await dataContext.Database.ExecuteSqlCommandAsync($@"
-                    Delete 
-                        From [Payments2].[FundingSourceEvent] 
-                    Where 
-                        JobId = {jobId}", cancellationToken)
-                .ConfigureAwait(false);
-        }
-
         public async Task SaveSaveFundingSourceEvents(List<FundingSourceEventModel> fundingSourceEvents, CancellationToken cancellationToken)
         {
             using (var tx = await dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted, cancellationToken).ConfigureAwait(false))
@@ -70,7 +42,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.FundingSource
                 { SetOutputIdentity = false, BulkCopyTimeout = 60, PreserveInsertOrder = false };
                 await ((DbContext)dataContext).BulkInsertAsync(fundingSourceEvents, bulkConfig, null, cancellationToken)
                     .ConfigureAwait(false);
-                tx.Commit();
+                await tx.CommitAsync(cancellationToken);
             }
         }
 
@@ -97,7 +69,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.FundingSource
                         throw;
                     }
                 }
-                tx.Commit();
+                await tx.CommitAsync(cancellationToken);
             }
         }
     }

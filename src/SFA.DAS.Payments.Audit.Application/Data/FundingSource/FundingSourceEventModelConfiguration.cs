@@ -8,7 +8,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.FundingSource
     {
         public void Configure(EntityTypeBuilder<FundingSourceEventModel> builder)
         {
-            builder.ToTable("Payment", "Payments2");
+            builder.ToTable("FundingSourceEvent", "Payments2");
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id).HasColumnName(@"Id");
