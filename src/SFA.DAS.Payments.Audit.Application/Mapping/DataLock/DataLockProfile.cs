@@ -71,8 +71,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.DataLock
                 .ForMember(dest => dest.TotalNegotiatedPrice2, opt => opt.MapFrom(source => source.TotalNegotiatedPrice2))
                 .ForMember(dest => dest.TotalNegotiatedPrice3, opt => opt.MapFrom(source => source.TotalNegotiatedPrice3))
                 .ForMember(dest => dest.TotalNegotiatedPrice4, opt => opt.MapFrom(source => source.TotalNegotiatedPrice4))
-                .ForMember(dest => dest.AgreedPrice, opt => opt.MapFrom(source => source.AgreedPrice))
-                .ForMember(dest => dest.CourseStartDate, opt => opt.MapFrom(source => source.CourseStartDate));
+                ;
 
             CreateMap<DataLockEventModel, DataLockEventModel>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());

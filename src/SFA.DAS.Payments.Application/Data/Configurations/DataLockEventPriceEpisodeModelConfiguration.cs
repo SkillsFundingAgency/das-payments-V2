@@ -28,8 +28,6 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.Completed).HasColumnName(@"Completed");
             builder.Property(x => x.EmployerContribution).HasColumnName(@"EmployerContribution");
             builder.Property(x => x.CompletionHoldBackExemptionCode).HasColumnName(@"CompletionHoldBackExemptionCode");
-            builder.Property(x => x.AgreedPrice).HasColumnName(@"AgreedPrice");
-            builder.Property(x => x.CourseStartDate).HasColumnName(@"CourseStartDate");
         }
     }
 }
