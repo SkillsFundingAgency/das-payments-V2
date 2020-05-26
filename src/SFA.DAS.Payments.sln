@@ -343,11 +343,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service Fabric", "Service F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.ServiceFabric.Core.UnitTests", "SFA.DAS.Payments.ServiceFabric.Core.UnitTests\SFA.DAS.Payments.ServiceFabric.Core.UnitTests.csproj", "{30857CBC-9DDF-431B-9072-F045D6F56CBD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Delete Duplicates", "Delete Duplicates", "{DB27B388-5F2F-4AF3-B1A4-E7E158181C40}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Duplicates", "Duplicates", "{DB27B388-5F2F-4AF3-B1A4-E7E158181C40}"
 	ProjectSection(SolutionItems) = preProject
-		Scripts\Database\Remove Duplicates\Delete Earning Event Duplicates.sql = Scripts\Database\Remove Duplicates\Delete Earning Event Duplicates.sql
-		Scripts\Database\Remove Duplicates\Delete Funding Source Event Duplicates.sql = Scripts\Database\Remove Duplicates\Delete Funding Source Event Duplicates.sql
-		Scripts\Database\Remove Duplicates\Delete Required payment Duplicates.sql = Scripts\Database\Remove Duplicates\Delete Required payment Duplicates.sql
+		..\..\..\..\Users\abroo\OneDrive\Documents\SQL Server Management Studio\Identify And Stop Duplicate DataLockEvents.sql = ..\..\..\..\Users\abroo\OneDrive\Documents\SQL Server Management Studio\Identify And Stop Duplicate DataLockEvents.sql
+		..\..\..\..\Users\abroo\OneDrive\Documents\SQL Server Management Studio\Identify And Stop Duplicate FundingSourceEvents.sql = ..\..\..\..\Users\abroo\OneDrive\Documents\SQL Server Management Studio\Identify And Stop Duplicate FundingSourceEvents.sql
+		..\..\..\..\Users\abroo\OneDrive\Documents\SQL Server Management Studio\Identify And Stop Duplicate Payments.sql = ..\..\..\..\Users\abroo\OneDrive\Documents\SQL Server Management Studio\Identify And Stop Duplicate Payments.sql
+		..\..\..\..\Users\abroo\OneDrive\Documents\SQL Server Management Studio\Identify And Stop Duplicate RequiredPaymentEvents.sql = ..\..\..\..\Users\abroo\OneDrive\Documents\SQL Server Management Studio\Identify And Stop Duplicate RequiredPaymentEvents.sql
 	EndProjectSection
 EndProject
 Global
