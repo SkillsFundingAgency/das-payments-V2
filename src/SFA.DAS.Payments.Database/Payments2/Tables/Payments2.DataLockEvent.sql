@@ -23,9 +23,14 @@
 	JobId  BIGINT NOT NULL,
 	EventTime DATETIMEOFFSET NOT NULL,
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_DataLockEvent__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
+	[DuplicateNumber] INT NULL
 
 )
+GO
 
+Create Unique Index UX_DataLockEvent_LogicalDuplicates on Payments2.DataLockEvent( [JobId], [Ukprn], [AcademicYear], [CollectionPeriod], [ContractType], 
+	[LearnerUln], [LearnerReferenceNumber], [LearningAimReference], [LearningAimProgrammeType], [LearningAimStandardCode], [LearningAimFrameworkCode], 
+	[LearningAimPathwayCode], [LearningAimFundingLineType], [LearningStartDate], DuplicateNumber)
 GO
 
 CREATE INDEX [IX_DataLockEvent_Submission] ON [Payments2].[DataLockEvent] ([Ukprn], [AcademicYear], [CollectionPeriod], [IlrSubmissionDateTime])

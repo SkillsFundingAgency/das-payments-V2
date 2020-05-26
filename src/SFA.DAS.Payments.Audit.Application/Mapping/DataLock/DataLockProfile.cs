@@ -1,6 +1,4 @@
-﻿using System.Fabric.Management.ServiceModel;
-using AutoMapper;
-using SFA.DAS.Payments.Audit.Model;
+﻿using AutoMapper;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Audit;

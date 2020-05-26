@@ -41,12 +41,13 @@ CREATE TABLE [Payments2].[FundingSourceEvent]
 	ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL, 
 	[NonPaymentReason] TINYINT NULL,
-	Constraint UQ_FundingSourceEvent Unique ([JobId], [Ukprn], [AcademicYear], [CollectionPeriod], [DeliveryPeriod], [ContractType], [TransactionType],
-		[Amount], [SfaContributionPercentage], [LearnerUln], [LearnerReferenceNumber], [LearningAimReference], [LearningAimProgrammeType], 
-		[LearningAimStandardCode], [LearningAimFrameworkCode], [LearningAimPathwayCode], [LearningAimFundingLineType], [LearningStartDate],  
-		[FundingSourceType], [ApprenticeshipId], [AccountId], [TransferSenderAccountId], [ApprenticeshipEmployerType])
+	[DuplicateNumber] INT NULL
 )
+GO
 
+Create Unique Index UX_FundingSourceEvent_LogicalDuplicates on Payments2.FundingSourceEvent( [JobId], [Ukprn], [AcademicYear], [CollectionPeriod], [DeliveryPeriod], [ContractType], [TransactionType], 
+	[Amount], [SfaContributionPercentage], [LearnerUln], [LearnerReferenceNumber], [LearningAimReference], [LearningAimProgrammeType], [LearningAimStandardCode], [LearningAimFrameworkCode], 
+	[LearningAimPathwayCode], [LearningAimFundingLineType], [LearningStartDate],  [FundingSourceType], [ApprenticeshipId], [AccountId], [TransferSenderAccountId], [ApprenticeshipEmployerType], DuplicateNumber)
 GO
 
 CREATE INDEX [IX_FundingSourceEvent__Audit] ON [Payments2].[FundingSourceEvent]
