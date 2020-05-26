@@ -35,13 +35,13 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
         public async Task Handle(T message, IMessageHandlerContext context)
         {
             var messageType = message.GetType().Name;
-            logger.LogInfo($"Processing {messageType} event. Job: {message.JobId}");
+            logger.LogInfo($"Processing {messageType} event. Ukprn: {message.Ukprn}");
             ((ESFA.DC.Logging.ExecutionContext)executionContext).JobId = message.JobId.ToString();
 
             if (message.Ukprn == 0)
                 throw new ArgumentException($"Ukprn cannot be 0. Job Id: {message.JobId}");
 
-            logger.LogDebug($"Getting AccountId. Job Id: {message.JobId}.");
+            logger.LogDebug($"Getting AccountId for Ukprn: {message.Ukprn}.");
             var accountIds = await repository.GetEmployerAccountsByUkprn(message.Ukprn).ConfigureAwait(false);
             var tasks = new List<Task>();
             foreach (var account in accountIds)
@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
             }
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
-            logger.LogInfo($"Successfully processed {messageType} for Job: {message.JobId}. Skipped submission removing as no account ID found.");
+            logger.LogInfo($"Successfully processed {messageType} for Job: {message.JobId}, UKPRN: {message.Ukprn}. Skipped submission removing as no account ID found.");
         }
 
         private async Task InvokeSubmissionAction(long accountId, T message)
@@ -61,7 +61,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
             var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(uri, actorId);
 
             await HandleSubmissionEvent(message, actor);
-            logger.LogInfo($"Successfully processed {typeof(T).Name} event for Actor Id {actorId}, Job: {message.JobId}");
+            logger.LogInfo($"Successfully processed {typeof(T).Name} event for Actor Id {actorId}, Job: {message.JobId}, UKPRN: {message.Ukprn}");
         }
 
         protected abstract Task HandleSubmissionEvent(T message, ILevyFundedService fundingService);
