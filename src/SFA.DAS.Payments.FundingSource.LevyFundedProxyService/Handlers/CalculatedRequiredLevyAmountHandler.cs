@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
 
         public async Task Handle(CalculatedRequiredLevyAmount message, IMessageHandlerContext context)
         {
-            paymentLogger.LogInfo($"Processing ApprenticeshipContractType1RequiredPaymentEvent event. Message Id: {context.MessageId}, Job: {message.JobId}, UKPRN: {message.Ukprn}");
+            paymentLogger.LogInfo($"Processing ApprenticeshipContractType1RequiredPaymentEvent event. Message Id: {context.MessageId}, Job: {message.JobId}");
             executionContext.JobId = message.JobId.ToString();
 
             if(!message.AccountId.HasValue)
@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedProxyService.Handlers
             var actorId = new ActorId(accountToUse.ToString());
             var actor = proxyFactory.CreateActorProxy<ILevyFundedService>(new Uri("fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric/LevyFundedServiceActorService"), actorId);
             await actor.HandleRequiredPayment(message).ConfigureAwait(false);
-            paymentLogger.LogInfo($"Successfully processed LevyFundedProxyService event for Actor Id {actorId}, Job: {message.JobId}, UKPRN: {message.Ukprn}");
+            paymentLogger.LogInfo($"Successfully processed LevyFundedProxyService event for Actor Id {actorId}, Job: {message.JobId}");
         }
     }
 }
