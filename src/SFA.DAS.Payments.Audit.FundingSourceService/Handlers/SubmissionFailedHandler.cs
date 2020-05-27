@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.Audit.FundingSourceService.Handlers
             }
             catch (Exception ex)
             {
-                logger.LogWarning($"Failed to remove previous submission funding source events.  Error: {ex.Message}. Collection period: {message.AcademicYear}-{message.CollectionPeriod}, Failed job: {message.JobId}.");
+                logger.LogWarning($"Failed to remove previous submission funding source events.  Error: {ex.Message}. Ukprn: {message.Ukprn}, Collection period: {message.AcademicYear}-{message.CollectionPeriod}, Failed job: {message.JobId}.");
                 throw;
             }
 
