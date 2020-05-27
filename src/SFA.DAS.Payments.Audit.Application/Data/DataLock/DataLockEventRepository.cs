@@ -42,7 +42,6 @@ namespace SFA.DAS.Payments.Audit.Application.Data.DataLock
                 var failures = dataLockEvents
                     .SelectMany(earning => earning.NonPayablePeriods.SelectMany(npp => npp.Failures)).ToList();
 
-
                 await ((DbContext)dataContext).BulkInsertAsync(dataLockEvents, bulkConfig, null, cancellationToken)
                     .ConfigureAwait(false);
                 await ((DbContext)dataContext).BulkInsertAsync(priceEpisodes, bulkConfig, null, cancellationToken)
