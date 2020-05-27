@@ -72,12 +72,11 @@ namespace SFA.DAS.Payments.EarningEvents.ProcessLearnerService
                 return earningEvents;
             }
 
-            logger.LogDebug($"Handling ILR learner submission. Job: {processLearnerCommand.JobId}, Ukprn: {processLearnerCommand.Ukprn}, Collection year: {processLearnerCommand.CollectionYear}, Learner: {processLearnerCommand.Learner.LearnRefNumber}");
+            logger.LogDebug($"Handling ILR learner submission. Job: {processLearnerCommand.JobId}, Collection year: {processLearnerCommand.CollectionYear}, Learner: {processLearnerCommand.Learner.LearnRefNumber}");
             var processorResult = learnerSubmissionProcessor.GenerateEarnings(processLearnerCommand);
             if (processorResult.Validation.Failed)
             {
-                logger.LogInfo(
-                    $"ILR Learner Submission failed validation. Job: {processLearnerCommand.JobId}, Ukprn: {processLearnerCommand.Ukprn}, Collection year: {processLearnerCommand.CollectionYear}, Learner: {processLearnerCommand.Learner.LearnRefNumber}");
+                logger.LogInfo($"ILR Learner Submission failed validation. Job: {processLearnerCommand.JobId}, Collection year: {processLearnerCommand.CollectionYear}, Learner: {processLearnerCommand.Learner.LearnRefNumber}");
                 return earningEvents;
             }
 
@@ -91,7 +90,7 @@ namespace SFA.DAS.Payments.EarningEvents.ProcessLearnerService
             telemetry.TrackEvent(eventName,
                 new Dictionary<string, string>
                 {
-                    { "ActorId",Id.ToString()},
+                    { "ActorId", Id.ToString()},
                     { TelemetryKeys.Ukprn, Id.ToString()},
                 },
                 new Dictionary<string, double>
