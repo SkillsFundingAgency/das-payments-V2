@@ -2,14 +2,14 @@
 
 namespace SFA.DAS.Payments.EarningEvents.Domain.Services
 {
-    public sealed class LearnerKey
+    public class LearnerKey
     {
-        private long JobId { get; }
-        private long Ukprn { get; }
-        private short AcademicYear { get; }
-        private int CollectionPeriod { get; }
-        private long LearnerUln { get; }
-        private string LearnerRefNo { get; }
+        public long JobId { get; set; }
+        public long Ukprn { get; set; }
+        public short AcademicYear { get; set; }
+        public int CollectionPeriod { get; set; }
+        public long LearnerUln { get; set; }
+        public string LearnerRefNo { get; set; }
         public string Key => CreateKey();
         public string LogSafeKey => CreateLogSafeKey();
         
