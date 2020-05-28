@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.FundingSour
             try
             {
                 //TODO: remove duplicates in this batch
-                await repository.SaveSaveFundingSourceEvents(models, cancellationToken);
+                await repository.SaveFundingSourceEvents(models, cancellationToken);
             }
             catch (Exception e)
             {
