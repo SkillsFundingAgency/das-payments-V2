@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Transactions;
 using AutoMapper;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.Application.Extensions;
 using SFA.DAS.Payments.FundingSource.Application.Infrastructure;
@@ -38,6 +39,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly IDataCache<List<TransferPaymentSortKeyModel>> transferPaymentSortKeysCache;
         private readonly IDataCache<List<RequiredPaymentSortKeyModel>> requiredPaymentSortKeysCache;
         private readonly IGenerateSortedPaymentKeys generateSortedPaymentKeys;
+        private readonly IDuplicatePeriodisedPaymentEventService duplicateEventEventService;
 
         public RequiredLevyAmountFundingSourceService(
             IPaymentProcessor processor,
@@ -52,7 +54,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             IDataCache<List<string>> refundSortKeysCache,
             IDataCache<List<TransferPaymentSortKeyModel>> transferPaymentSortKeysCache,
             IDataCache<List<RequiredPaymentSortKeyModel>> requiredPaymentSortKeysCache,
-            IGenerateSortedPaymentKeys generateSortedPaymentKeys)
+            IGenerateSortedPaymentKeys generateSortedPaymentKeys, 
+            IDuplicatePeriodisedPaymentEventService duplicateEventEventService)
         {
             this.processor = processor ?? throw new ArgumentNullException(nameof(processor));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -67,11 +70,17 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             this.transferPaymentSortKeysCache = transferPaymentSortKeysCache ?? throw new ArgumentNullException(nameof(transferPaymentSortKeysCache));
             this.requiredPaymentSortKeysCache = requiredPaymentSortKeysCache ?? throw new ArgumentNullException(nameof(requiredPaymentSortKeysCache));
             this.generateSortedPaymentKeys = generateSortedPaymentKeys ?? throw new ArgumentNullException(nameof(generateSortedPaymentKeys));
+            this.duplicateEventEventService = duplicateEventEventService ?? throw new ArgumentNullException(nameof(duplicateEventEventService));
         }
 
         public async Task AddRequiredPayment(CalculatedRequiredLevyAmount paymentEvent)
         {
-
+            if (await duplicateEventEventService.IsDuplicate(paymentEvent, CancellationToken.None)
+                .ConfigureAwait(false))
+            {
+                paymentLogger.LogWarning($"Received duplicate required levy payment. Id: {paymentEvent.EventId}, Job: {paymentEvent.JobId}, learner: {paymentEvent.Learner.ReferenceNumber}, amount: {paymentEvent.AmountDue}");
+                return;
+            }
 
             if (paymentEvent.AmountDue < 0)
             {

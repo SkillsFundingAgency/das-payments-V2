@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Messaging
             };
         }
 
-        private string CreateKey()
+        protected virtual string CreateKey()
         {
             return $@"{JobId}-{Ukprn}-{CollectionPeriod.AcademicYear}-{CollectionPeriod.Period}-
                         {Learner.Uln}-{Learner.ReferenceNumber}-{LearningAim.Reference}-
@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Messaging
                         {LearningAim.StartDate:G}-{GetType().Name}";
         }
 
-        private string CreateLogSafeKey()
+        protected virtual string CreateLogSafeKey()
         {
             return $@"{JobId}-{CollectionPeriod.AcademicYear}-{CollectionPeriod.Period}-
                         {Learner.ReferenceNumber}-{LearningAim.Reference}-

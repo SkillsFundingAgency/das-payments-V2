@@ -229,7 +229,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 EmployerAccountId = 1,
                 OrderedProviders = new List<long> { 1, 2, 3 }
             };
-            
+
             levyAccountRepositoryMock
                 .Setup(x => x.ReplaceEmployerProviderPriorities(
                     employerChangedProviderPriority.EmployerAccountId,
@@ -641,7 +641,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             };
             var unableToFundEvent = new ProcessUnableToFundTransferFundingSourcePayment
             {
-                Ukprn =  expectedUkprn,
+                Ukprn = expectedUkprn,
                 EventId = expectedEventId,
                 AccountId = 1,
                 AmountDue = 100,
@@ -738,7 +738,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         [Test]
         public async Task ShouldRemoveOnlyCurrentSuccessfulProviderJobSubmission()
         {
-            var keys = new List<string> { "1" , "2"};
+            var keys = new List<string> { "1", "2" };
             var successfulUkprn = 23456;
             var requiredPaymentEvent1 = new CalculatedRequiredLevyAmount
             {
@@ -747,7 +747,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 SfaContributionPercentage = 11,
                 OnProgrammeEarningType = OnProgrammeEarningType.Completion,
                 Learner = new Learner(),
-                CollectionPeriod = new CollectionPeriod { AcademicYear = 1920, Period = 1},
+                CollectionPeriod = new CollectionPeriod { AcademicYear = 1920, Period = 1 },
                 Ukprn = 123456,
                 AccountId = 1,
                 JobId = 1
@@ -759,7 +759,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 SfaContributionPercentage = 11,
                 OnProgrammeEarningType = OnProgrammeEarningType.Completion,
                 Learner = new Learner(),
-                CollectionPeriod = new CollectionPeriod { AcademicYear = 1920, Period = 1},
+                CollectionPeriod = new CollectionPeriod { AcademicYear = 1920, Period = 1 },
                 Ukprn = successfulUkprn,
                 AccountId = 1,
                 JobId = 2
@@ -778,10 +778,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Verifiable();
 
             eventCacheMock.Setup(c => c.Clear("2", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
-          
+
 
             // act
-            await service.RemoveCurrentSubmission(requiredPaymentEvent2.JobId, 
+            await service.RemoveCurrentSubmission(requiredPaymentEvent2.JobId,
                                                   requiredPaymentEvent2.CollectionPeriod.Period,
                                                   requiredPaymentEvent2.CollectionPeriod.AcademicYear,
                                                   requiredPaymentEvent2.IlrSubmissionDateTime,
@@ -793,7 +793,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         [Test]
         public async Task ShouldNotRemovePreviousSuccessfulProviderJobSubmission()
         {
-            var keys = new List<string> { "1" , "2"};
+            var keys = new List<string> { "1", "2" };
             var successfulUkprn = 23456;
             var requiredPaymentEvent1 = new CalculatedRequiredLevyAmount
             {
@@ -802,7 +802,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 SfaContributionPercentage = 11,
                 OnProgrammeEarningType = OnProgrammeEarningType.Completion,
                 Learner = new Learner(),
-                CollectionPeriod = new CollectionPeriod { AcademicYear = 1920, Period = 1},
+                CollectionPeriod = new CollectionPeriod { AcademicYear = 1920, Period = 1 },
                 Ukprn = 123456,
                 AccountId = 1,
                 JobId = 1,
@@ -815,7 +815,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 SfaContributionPercentage = 11,
                 OnProgrammeEarningType = OnProgrammeEarningType.Completion,
                 Learner = new Learner(),
-                CollectionPeriod = new CollectionPeriod { AcademicYear = 1920, Period = 1},
+                CollectionPeriod = new CollectionPeriod { AcademicYear = 1920, Period = 1 },
                 Ukprn = successfulUkprn,
                 AccountId = 1,
                 JobId = 2,
@@ -835,7 +835,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Verifiable();
 
             // act
-            await service.RemovePreviousSubmissions(requiredPaymentEvent2.JobId, 
+            await service.RemovePreviousSubmissions(requiredPaymentEvent2.JobId,
                                                   requiredPaymentEvent2.CollectionPeriod.Period,
                                                   requiredPaymentEvent2.CollectionPeriod.AcademicYear,
                                                   requiredPaymentEvent2.IlrSubmissionDateTime,
@@ -848,7 +848,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         [Test]
         public async Task ShouldRemovePreviousSuccessfulProviderJobSubmission()
         {
-            var keys = new List<string> { "1" , "2"};
+            var keys = new List<string> { "1", "2" };
             var successfulUkprn = 23456;
             var requiredPaymentEvent1 = new CalculatedRequiredLevyAmount
             {
@@ -857,7 +857,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 SfaContributionPercentage = 11,
                 OnProgrammeEarningType = OnProgrammeEarningType.Completion,
                 Learner = new Learner(),
-                CollectionPeriod = new CollectionPeriod { AcademicYear = 1920, Period = 1},
+                CollectionPeriod = new CollectionPeriod { AcademicYear = 1920, Period = 1 },
                 Ukprn = successfulUkprn,
                 AccountId = 1,
                 JobId = 1,
@@ -870,7 +870,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 SfaContributionPercentage = 11,
                 OnProgrammeEarningType = OnProgrammeEarningType.Completion,
                 Learner = new Learner(),
-                CollectionPeriod = new CollectionPeriod { AcademicYear = 1920, Period = 1},
+                CollectionPeriod = new CollectionPeriod { AcademicYear = 1920, Period = 1 },
                 Ukprn = successfulUkprn,
                 AccountId = 1,
                 JobId = 2,
@@ -892,7 +892,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             eventCacheMock.Setup(c => c.Clear("1", CancellationToken.None)).Returns(Task.CompletedTask).Verifiable();
 
             // act
-            await service.RemovePreviousSubmissions(requiredPaymentEvent2.JobId, 
+            await service.RemovePreviousSubmissions(requiredPaymentEvent2.JobId,
                                                   requiredPaymentEvent2.CollectionPeriod.Period,
                                                   requiredPaymentEvent2.CollectionPeriod.AcademicYear,
                                                   requiredPaymentEvent2.IlrSubmissionDateTime,
