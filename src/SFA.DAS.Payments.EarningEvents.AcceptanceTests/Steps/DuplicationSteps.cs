@@ -21,16 +21,14 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
         const string ProcessLearnerCommand = "ProcessLearnerCommand";
         const string JobIds = "JobIds";
        
-
         public DuplicationSteps(ScenarioContext context) : base(context)
         {
         }
-
-
+        
         [When(@"a process learner command is handled by the process learner service")]
         public async Task WhenAProcessLearnerCommandIsHandledByTheProcessLearnerService()
         {
-            var command = new ProcessLearnerCommand()
+            var command = new ProcessLearnerCommand
             { 
                 JobId = TestSession.GenerateId(100000),
                 CollectionPeriod = 1,
@@ -43,15 +41,12 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
             };
 
             Context.Add(ProcessLearnerCommand, command);
-            Context.Add(JobIds, new List<long>(){ command.JobId});
+            Context.Add(JobIds, new List<long>{ command.JobId});
 
             await MessageSession.Send(command);
         }
-
-   
-
-
-        [When(@"if the event is duplicated")]
+        
+        [When(@"the event is duplicated")]
         public async Task WhenIfTheEventIsDuplicated()
         {
           var command =  Context.Get<ProcessLearnerCommand>(ProcessLearnerCommand);
@@ -61,19 +56,20 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
         [Then(@"the duplicate event is ignored")]
         public void ThenTheDuplicateEventIsIgnored()
         {
+            // This step exists to make the spec easier to read - the assert is in in 
+            //  ThenOnlyOneSetOfEarningEventsIsGeneratedForTheLearner
         }
 
         [Then(@"only one set of earning events is generated for the learner")]
         public async Task ThenOnlyOneSetOfEarningEventsIsGeneratedForTheLearner()
         {
             var command =  Context.Get<ProcessLearnerCommand>(ProcessLearnerCommand);
-            long jobid = command.JobId;
-            await WaitForIt(() => ApprenticeshipContractType1EarningEventHandler.ReceivedEvents.Count(x => x.JobId == jobid)== 1,
+            var jobid = command.JobId;
+            await WaitForIt(() => ApprenticeshipContractType1EarningEventHandler.ReceivedEvents
+                    .Count(x => x.JobId == jobid) == 1,
                 "Failed to find exactly one earning event");
         }
-
-
-
+        
         [When(@"the event is duplicated but with a different commandId on the process learner command")]
         public async Task WhenTheEventIsDuplicatedButWithADifferentCommandIdOnTheProcessLearnerCommand()
         {
@@ -100,7 +96,8 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
         public async Task ThenTwoSetsOfEarningEventsIsGeneratedForTheLearner()
         {
             var currentJobIds = Context.Get<List<long>>(JobIds);
-            await WaitForIt(() => ApprenticeshipContractType1EarningEventHandler.ReceivedEvents.Count(x=> currentJobIds.Contains(x.JobId)) == 2,
+            await WaitForIt(() => ApprenticeshipContractType1EarningEventHandler.ReceivedEvents
+                    .Count(x=> currentJobIds.Contains(x.JobId)) == 2,
                 "Failed to find two earning events");
         }
 

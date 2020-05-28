@@ -10,10 +10,10 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Handlers
 
         public static ConcurrentBag<ApprenticeshipContractType1EarningEvent> ReceivedEvents { get; } = new ConcurrentBag<ApprenticeshipContractType1EarningEvent>();
 
-        public async Task Handle(ApprenticeshipContractType1EarningEvent message, IMessageHandlerContext context)
+        public Task Handle(ApprenticeshipContractType1EarningEvent message, IMessageHandlerContext context)
         {
             ReceivedEvents.Add(message);
-            await Task.FromResult(0);
+            return Task.CompletedTask;
         }
     }
 }

@@ -2,23 +2,17 @@
 
 namespace SFA.DAS.Payments.EarningEvents.Domain.Services
 {
-    public class LearnerKey
+    public sealed class LearnerKey
     {
-        public long JobId { get; set; }
-        public long Ukprn { get; set; }
-        public short AcademicYear { get; set; }
-        public int CollectionPeriod { get; set; }
-        public long LearnerUln { get; set; }
-        public string LearnerRefNo { get; set; }
-        public virtual string Key => CreateKey();
-        public virtual string LogSafeKey => CreateLogSafeKey();
-
-
-        public LearnerKey()
-        {
-            
-        }
-
+        private long JobId { get; }
+        private long Ukprn { get; }
+        private short AcademicYear { get; }
+        private int CollectionPeriod { get; }
+        private long LearnerUln { get; }
+        private string LearnerRefNo { get; }
+        public string Key => CreateKey();
+        public string LogSafeKey => CreateLogSafeKey();
+        
         public LearnerKey(ProcessLearnerCommand processLearnerCommand)
         {
             JobId = processLearnerCommand.JobId;
@@ -26,16 +20,17 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.Services
             CollectionPeriod = processLearnerCommand.CollectionPeriod;
             LearnerUln = processLearnerCommand.Learner.ULN;
             LearnerRefNo = processLearnerCommand.Learner.LearnRefNumber;
+            Ukprn = processLearnerCommand.Ukprn;
         }
 
-        public string CreateKey()
+        private string CreateKey()
         {
             return $"{JobId}-{Ukprn}-{LearnerRefNo}-{LearnerUln}-{AcademicYear}-{CollectionPeriod}";
         }
 
-        public string CreateLogSafeKey()
+        private string CreateLogSafeKey()
         {
-            return $"{JobId}-{Ukprn}-{LearnerRefNo}-{AcademicYear}-{CollectionPeriod}";
+            return $"{JobId}-{LearnerRefNo}-{AcademicYear}-{CollectionPeriod}";
         }
     }
 }

@@ -3,7 +3,7 @@
 
 Scenario: Duplicate Process Learner Command only generates one set of earning events 
 	When a process learner command is handled by the process learner service 
-	And if the event is duplicated
+	And the event is duplicated
 	Then the duplicate event is ignored
 	And only one set of earning events is generated for the learner 
 	
