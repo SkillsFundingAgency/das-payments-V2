@@ -9,6 +9,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Application.Infrastructure;
@@ -20,6 +21,7 @@ using SFA.DAS.Payments.FundingSource.Domain.Models;
 using SFA.DAS.Payments.FundingSource.Messages.Commands;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Model;
+using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
@@ -83,6 +85,9 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Returns(Task.CompletedTask);
             levyBalanceServiceMock.SetupGet(svc => svc.RemainingBalance).Returns(100);
             levyBalanceServiceMock.SetupGet(svc => svc.RemainingTransferAllowance).Returns(50);
+            mocker.Mock<IDuplicatePeriodisedPaymentEventService>()
+                .Setup(svc => svc.IsDuplicate(It.IsAny<IPeriodisedPaymentEvent>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
         }
 
         [TearDown]
