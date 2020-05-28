@@ -16,4 +16,4 @@ Scenario: Duplicate Process Learner Command with different CommandId only genera
 Scenario: Process Learner Command with same uln but different ukprn generated earnings for each learner
 	When a process learner command is handled by the process learner service 
 	And the same learner is submitted but with a different ukprn
-	Then two sets of earning events is generated for each learner
+	Then two sets of earning events is generated for each learner 
