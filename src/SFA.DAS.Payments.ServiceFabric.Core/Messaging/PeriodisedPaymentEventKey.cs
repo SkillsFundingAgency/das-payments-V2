@@ -10,6 +10,9 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Messaging
         public long? AccountId { get; set; }
         public long? TransferSenderAccountId { get; set; }
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
+        public decimal Amount { get; set; }
+        public byte DeliveryPeriod { get; set; }
+        public string PriceEpisodeIdentifier { get; set; }
 
         protected PeriodisedPaymentEventKey() { }
         public PeriodisedPaymentEventKey(IPeriodisedPaymentEvent periodisedPaymentEvent) : base(periodisedPaymentEvent)
@@ -19,16 +22,19 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Messaging
             AccountId = periodisedPaymentEvent.AccountId;
             TransferSenderAccountId = periodisedPaymentEvent.TransferSenderAccountId;
             ApprenticeshipEmployerType = periodisedPaymentEvent.ApprenticeshipEmployerType;
+            Amount = periodisedPaymentEvent.AmountDue;
+            DeliveryPeriod = periodisedPaymentEvent.DeliveryPeriod;
+            PriceEpisodeIdentifier = periodisedPaymentEvent.PriceEpisodeIdentifier;
         }
 
         protected override string CreateKey()
         {
-            return $"{base.CreateKey()}-{ApprenticeshipId ?? 0}-{AccountId ?? 0}-{TransferSenderAccountId ?? 0}-{ApprenticeshipEmployerType}";
+            return $"{base.CreateKey()}-{Amount}-{DeliveryPeriod}-{PriceEpisodeIdentifier}-{ApprenticeshipId ?? 0}-{AccountId ?? 0}-{TransferSenderAccountId ?? 0}-{ApprenticeshipEmployerType}";
         }
 
         protected override string CreateLogSafeKey()
         {
-            return $"{base.CreateLogSafeKey()}-{ApprenticeshipId ?? 0}-{AccountId ?? 0}-{TransferSenderAccountId ?? 0}-{ApprenticeshipEmployerType}";
+            return $"{base.CreateLogSafeKey()}-{Amount}-{DeliveryPeriod}-{PriceEpisodeIdentifier}-{ApprenticeshipId ?? 0}-{AccountId ?? 0}-{TransferSenderAccountId ?? 0}-{ApprenticeshipEmployerType}";
         }
     }
 }
