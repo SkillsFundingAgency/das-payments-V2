@@ -36,11 +36,19 @@ namespace SFA.DAS.Payments.Audit.Application.Data.DataLock
             using (var tx = await dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted, cancellationToken).ConfigureAwait(false))
             {
                 var bulkConfig = new BulkConfig { SetOutputIdentity = false, BulkCopyTimeout = 60, PreserveInsertOrder = false };
-                var priceEpisodes = dataLockEvents.SelectMany(earning => earning.PriceEpisodes).ToList();
-                var payablePeriods = dataLockEvents.SelectMany(earning => earning.PayablePeriods).ToList();
-                var nonPayablePeriods = dataLockEvents.SelectMany(earning => earning.NonPayablePeriods).ToList();
+                var priceEpisodes = dataLockEvents
+                    .SelectMany(datalockEvent => datalockEvent.PriceEpisodes)
+                    .ToList();
+                var payablePeriods = dataLockEvents
+                    .SelectMany(datalockEvent => datalockEvent.PayablePeriods)
+                    .ToList();
+                var nonPayablePeriods = dataLockEvents
+                    .SelectMany(datalockEvent => datalockEvent.NonPayablePeriods)
+                    .ToList();
                 var failures = dataLockEvents
-                    .SelectMany(earning => earning.NonPayablePeriods.SelectMany(npp => npp.Failures)).ToList();
+                    .SelectMany(earning => earning.NonPayablePeriods
+                        .SelectMany(npp => npp.Failures))
+                    .ToList();
 
 
                 await ((DbContext)dataContext).BulkInsertAsync(dataLockEvents, bulkConfig, null, cancellationToken)

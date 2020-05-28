@@ -76,19 +76,16 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
         {
             Mapper.Map<DataLockEventModel>(PaymentEvent).PayablePeriods
                 .Where(npp => npp.TransactionType <= TransactionType.Completion)
-                .All(period =>
-                    period.Amount == earningPeriod.Amount &&
-                    period.DeliveryPeriod == earningPeriod.Period &&
-                    period.TransactionType == TransactionType.Learning && 
-                    period.ApprenticeshipId == earningPeriod.ApprenticeshipId &&
-                    period.SfaContributionPercentage == earningPeriod.SfaContributionPercentage &&
-                    period.ApprenticeshipPriceEpisodeId == earningPeriod.ApprenticeshipPriceEpisodeId &&
-                    period.DataLockEventId == PaymentEvent.EventId &&
-                    period.LearningStartDate == PaymentEvent.LearningAim.StartDate &&
-                    period.PriceEpisodeIdentifier == earningPeriod.PriceEpisodeIdentifier)
-                .Should()
-                .BeTrue();
-
+                .Should().AllBeEquivalentTo(new {
+                    Amount = earningPeriod.Amount,
+                    DeliveryPeriod = earningPeriod.Period,
+                    TransactionType = TransactionType.Learning,
+                    ApprenticeshipId = earningPeriod.ApprenticeshipId,
+                    SfaContributionPercentage = earningPeriod.SfaContributionPercentage,
+                    ApprenticeshipPriceEpisodeId = earningPeriod.ApprenticeshipPriceEpisodeId,
+                    DataLockEventId = PaymentEvent.EventId,
+                    LearningStartDate = PaymentEvent.LearningAim.StartDate,
+                    PriceEpisodeIdentifier = earningPeriod.PriceEpisodeIdentifier});
         }
 
         [Test]
