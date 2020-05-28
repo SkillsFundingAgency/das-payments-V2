@@ -20,18 +20,19 @@ namespace SFA.DAS.Payments.Audit.Application.Data.DataLock
 
     public class DataLockEventRepository : IDataLockEventRepository
     {
+        private readonly IAuditDataContext dataContext;
         private readonly IAuditDataContextFactory retryDataContextFactory;
         private readonly IPaymentLogger logger;
 
-        public DataLockEventRepository(IAuditDataContextFactory retryDataContextFactory, IPaymentLogger logger)
+        public DataLockEventRepository(IAuditDataContext dataContext, IAuditDataContextFactory retryDataContextFactory, IPaymentLogger logger)
         {
+            this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
             this.retryDataContextFactory = retryDataContextFactory ?? throw new ArgumentNullException(nameof(retryDataContextFactory));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task SaveDataLockEvents(List<DataLockEventModel> dataLockEvents, CancellationToken cancellationToken)
         {
-            var dataContext = retryDataContextFactory.Create();
             using (var tx = await dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted, cancellationToken).ConfigureAwait(false))
             {
                 var bulkConfig = new BulkConfig { SetOutputIdentity = false, BulkCopyTimeout = 60, PreserveInsertOrder = false };
