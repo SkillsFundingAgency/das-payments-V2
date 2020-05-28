@@ -4,7 +4,7 @@ if not exists (select * from sys.columns where name = N'DuplicateNumber' and obj
 	Alter table Payments2.Payment  add DuplicateNumber INT null 
 go
 
-;with cte as (
+;with PaymentCte as (
 select 
 	*, 
 	Row_Number() over (
@@ -13,11 +13,11 @@ select
         [LearningStartDate],  [FundingSource], [ApprenticeshipId], [AccountId], [TransferSenderAccountId], [ApprenticeshipEmployerType] order by [JobId], [Ukprn], [AcademicYear], [CollectionPeriod], [DeliveryPeriod]) as RN 
 		from Payments2.Payment 
 		)
-update Payments2.Payment 
-	Set DuplicateNumber = RN-1
-	from Payments2.Payment rp
-	join cte on rp.Id = rp.Id
-	where cte.RN > 1
+UPDATE p
+	SET DuplicateNumber = RN - 1
+	FROM Payments2.Payment p
+	JOIN PaymentCte ON PaymentCte.Id = p.Id
+	WHERE PaymentCte.RN > 1
 
 Go
 if not exists (select * from sys.indexes where name = N'UX_Payment_LogicalDuplicates' and object_id = OBJECT_ID(N'Payments2.Payment'))

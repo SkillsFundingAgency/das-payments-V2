@@ -4,7 +4,7 @@ if not exists (select * from sys.columns where name = N'DuplicateNumber' and obj
 	Alter table Payments2.FundingSourceEvent  add DuplicateNumber INT null 
 go
 
-;with cte as (
+;with FundingSourceEventCte as (
 select 
 	*, 
 	Row_Number() over (
@@ -13,11 +13,11 @@ select
         [LearningStartDate],  [FundingSourceType], [ApprenticeshipId], [AccountId], [TransferSenderAccountId], [ApprenticeshipEmployerType] order by [JobId], [Ukprn], [AcademicYear], [CollectionPeriod], [DeliveryPeriod]) as RN 
 		from Payments2.FundingSourceEvent 
 		)
-update Payments2.FundingSourceEvent 
-	Set DuplicateNumber = RN-1
-	from Payments2.FundingSourceEvent rp
-	join cte on rp.Id = rp.Id
-	where cte.RN > 1
+UPDATE fse
+	SET DuplicateNumber = RN - 1
+	FROM Payments2.FundingSourceEvent fse
+	JOIN FundingSourceEventCte ON FundingSourceEventCte.Id = fse.Id
+	WHERE FundingSourceEventCte.RN > 1
 
 Go
 if not exists (select * from sys.indexes where name = N'UX_FundingSourceEvent_LogicalDuplicates' and object_id = OBJECT_ID(N'Payments2.FundingSourceEvent'))

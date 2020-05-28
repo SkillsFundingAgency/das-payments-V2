@@ -4,7 +4,16 @@ if not exists (select * from sys.columns where name = N'DuplicateNumber' and obj
 	Alter table Payments2.RequiredPaymentEvent  add DuplicateNumber INT null 
 go
 
-;with cte as (
+IF NOT EXISTS (
+		SELECT *
+		FROM sys.columns
+		WHERE name = N'EventType'
+			AND object_id = OBJECT_ID(N'Payments2.RequiredPaymentEvent')
+		)
+		ALTER TABLE Payments2.RequiredPaymentEvent ADD EventType NVARCHAR(4000) NULL;
+go
+
+;with RequiredPaymentEventCte as (
 select 
 	*, 
 	Row_Number() over (
@@ -13,11 +22,11 @@ select
         [LearningStartDate],  [EventType], [ApprenticeshipId], [AccountId], [TransferSenderAccountId], [ApprenticeshipEmployerType] order by [JobId], [Ukprn], [AcademicYear], [CollectionPeriod], [DeliveryPeriod]) as RN 
 		from Payments2.RequiredPaymentEvent 
 		)
-update Payments2.RequiredPaymentEvent 
-	Set DuplicateNumber = RN-1
-	from Payments2.RequiredPaymentEvent rp
-	join cte on rp.Id = rp.Id
-	where cte.RN > 1
+UPDATE rpe
+	SET DuplicateNumber = RN - 1
+	FROM Payments2.RequiredPaymentEvent rpe
+	JOIN RequiredPaymentEventCte ON RequiredPaymentEventCte.Id = rpe.Id
+	WHERE RequiredPaymentEventCte.RN > 1
 
 Go
 if not exists (select * from sys.indexes where name = N'UX_RequiredPaymentEvent_LogicalDuplicates' and object_id = OBJECT_ID(N'Payments2.RequiredPaymentEvent'))

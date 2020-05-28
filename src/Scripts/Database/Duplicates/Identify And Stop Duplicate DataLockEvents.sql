@@ -4,7 +4,7 @@ if not exists (select * from sys.columns where name = N'DuplicateNumber' and obj
 	Alter table Payments2.DataLockEvent  add DuplicateNumber INT null 
 go
 
-;with cte as (
+;with DataLockEventCte as (
 select 
 	*, 
 	Row_Number() over (
@@ -13,11 +13,11 @@ select
         [LearningStartDate] order by [JobId], [Ukprn], [AcademicYear], [CollectionPeriod]) as RN 
 		from Payments2.DataLockEvent 
 		)
-update Payments2.DataLockEvent 
-	Set DuplicateNumber = RN-1
-	from Payments2.DataLockEvent rp
-	join cte on rp.Id = rp.Id
-	where cte.RN > 1
+UPDATE rp
+	SET DuplicateNumber = RN - 1
+	FROM Payments2.DataLockEvent rp
+	JOIN DataLockEventCte ON DataLockEventCte.Id = rp.Id
+	WHERE DataLockEventCte.RN > 1
 
 Go
 if not exists (select * from sys.indexes where name = N'UX_DataLockEvent_LogicalDuplicates' and object_id = OBJECT_ID(N'Payments2.DataLockEvent'))
