@@ -116,7 +116,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                         }
                     }
 
-                    if (requiredPayments.Sum(x => x.Amount) == 0)
+                    if (requiredPayments.GroupBy(x => x.SfaContributionPercentage)
+                        .All(x => x.Sum(y => y.Amount) == 0))
                     {
                         continue;
                     }

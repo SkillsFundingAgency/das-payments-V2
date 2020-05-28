@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extras.Moq;
 using AutoMapper;
-using Castle.Components.DictionaryAdapter;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -23,7 +22,6 @@ using SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Domain.Services;
-using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 using Earning = SFA.DAS.Payments.RequiredPayments.Domain.Entities.Earning;
 
@@ -219,7 +217,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             };
 
             var paymentHistoryEntities = new[] {new PaymentHistoryEntity {CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2), DeliveryPeriod = 2}};
-            var paymentHistory = new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities);
             var key = new ApprenticeshipKey();
 
             paymentHistoryCacheMock.Setup(c => c.TryGet(It.Is<string>(k => k == CacheKeys.PaymentHistoryKey),It.IsAny<CancellationToken>()))
@@ -392,6 +389,43 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             // assert
             actualRequiredPayment.Should().BeEmpty();
+        }
+
+        [Test]
+        public async Task ChangeToSfaContributionShouldResultInPaymentAndRefund()
+        {
+            var earningEvent = GeneratePayableDataLockEvent(1920, 2, 0m);
+            var requiredPayments = new List<RequiredPayment>
+            {
+                new RequiredPayment
+                {
+                    Amount = 100m,
+                    EarningType = EarningType.Levy,
+                    SfaContributionPercentage = 100,
+                },
+                new RequiredPayment
+                {
+                    Amount = -100,
+                    EarningType = EarningType.Levy,
+                    SfaContributionPercentage = 95,
+                }
+            };
+
+            var paymentHistoryEntities = new PaymentHistoryEntity[] {};
+
+            paymentHistoryCacheMock
+                .Setup(c => c.TryGet(It.Is<string>(key => key == CacheKeys.PaymentHistoryKey), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities));
+                
+            requiredPaymentsService.Setup(p => p.GetRequiredPayments(It.IsAny<Earning>(), It.IsAny<List<Payment>>()))
+                .Returns(requiredPayments);
+
+            // act           
+            var actualRequiredPayment = await processor.HandleEarningEvent(earningEvent, paymentHistoryCacheMock.Object, CancellationToken.None);
+
+            // assert
+            actualRequiredPayment.Should().HaveCount(2);
+            actualRequiredPayment.Sum(x => x.AmountDue).Should().Be(0);
         }
 
         private PayableEarningEvent GeneratePayableDataLockEvent(short academicYear,byte deliveryPeriod, decimal periodAmount)
