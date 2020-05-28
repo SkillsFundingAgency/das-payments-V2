@@ -12,7 +12,10 @@ namespace SFA.DAS.Payments.EarningEvents.Domain.Services
         public string LearnerRefNo { get; set; }
         public string Key => CreateKey();
         public string LogSafeKey => CreateLogSafeKey();
-        
+
+        public LearnerKey()
+        { }
+
         public LearnerKey(ProcessLearnerCommand processLearnerCommand)
         {
             JobId = processLearnerCommand.JobId;

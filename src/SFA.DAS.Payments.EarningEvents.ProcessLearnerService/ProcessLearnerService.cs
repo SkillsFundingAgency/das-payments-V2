@@ -50,19 +50,17 @@ namespace SFA.DAS.Payments.EarningEvents.ProcessLearnerService
         protected override async Task OnActivateAsync()
         {
             var operationName = $"{nameof(ProcessLearnerService)}.OnActivateAsync";
-            using (var operation = telemetry.StartOperation(operationName, $"{Id}_{Guid.NewGuid():N}"))
+            using (var operation = telemetry.StartOperation(operationName, $"{Guid.NewGuid():N}"))
             {
-                logger.LogDebug($"Activating process learner actor: {Id}");
-                var stopwatch = Stopwatch.StartNew();
-               
+                //logger.LogDebug($"Activating process learner actor: {Id}");
+                
                 await base.OnActivateAsync().ConfigureAwait(false);
-                TrackInfrastructureEvent("operationName", stopwatch);
+                //TrackInfrastructureEvent("operationName", stopwatch);
                 telemetry.StopOperation(operation);
-                logger.LogInfo($"Finished activating process learner actor: {Id}");
+                //logger.LogInfo($"Finished activating process learner actor: {Id}");
             }
         }
-
-
+        
         public async Task<List<EarningEvent>> CreateLearnerEarningEvents(ProcessLearnerCommand processLearnerCommand)
         {
             var earningEvents = new List<EarningEvent>();
@@ -83,20 +81,19 @@ namespace SFA.DAS.Payments.EarningEvents.ProcessLearnerService
             earningEvents = processorResult.EarningEvents;
             return earningEvents;
         }
-
-
-        private void TrackInfrastructureEvent(string eventName, Stopwatch stopwatch)
-        {
-            telemetry.TrackEvent(eventName,
-                new Dictionary<string, string>
-                {
-                    { "ActorId", Id.ToString()},
-                    { TelemetryKeys.Ukprn, Id.ToString()},
-                },
-                new Dictionary<string, double>
-                {
-                    { TelemetryKeys.Duration, stopwatch.ElapsedMilliseconds }
-                });
-        }
+        
+        //private void TrackInfrastructureEvent(string eventName, Stopwatch stopwatch)
+        //{
+        //    telemetry.TrackEvent(eventName,
+        //        new Dictionary<string, string>
+        //        {
+        //            { "ActorId", Id.ToString()},
+        //            { TelemetryKeys.Ukprn, Id.ToString()},
+        //        },
+        //        new Dictionary<string, double>
+        //        {
+        //            { TelemetryKeys.Duration, stopwatch.ElapsedMilliseconds }
+        //        });
+        //}
     }
 }
