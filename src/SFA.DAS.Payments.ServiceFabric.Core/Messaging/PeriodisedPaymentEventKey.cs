@@ -11,6 +11,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Messaging
         public long? TransferSenderAccountId { get; set; }
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
 
+        protected PeriodisedPaymentEventKey() { }
         public PeriodisedPaymentEventKey(IPeriodisedPaymentEvent periodisedPaymentEvent) : base(periodisedPaymentEvent)
         {
             if (periodisedPaymentEvent == null) throw new ArgumentNullException(nameof(periodisedPaymentEvent));
