@@ -23,5 +23,6 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         long? ApprenticeshipId { get; set; }
         long? ApprenticeshipPriceEpisodeId { get; set; }
         ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
+        TransactionType TransactionType { get; }
     }
 }
