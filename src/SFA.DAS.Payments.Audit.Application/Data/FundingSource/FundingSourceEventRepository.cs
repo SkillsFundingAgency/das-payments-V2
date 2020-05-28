@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.FundingSource
 {
     public interface IFundingSourceEventRepository
     {
-        Task SaveSaveFundingSourceEvents(List<FundingSourceEventModel> fundingSourceEvents,
+        Task SaveFundingSourceEvents(List<FundingSourceEventModel> fundingSourceEvents,
             CancellationToken cancellationToken);
 
         Task SaveFundingSourceEventsIndividually(List<FundingSourceEventModel> fundingSourceEvents,
@@ -23,19 +23,18 @@ namespace SFA.DAS.Payments.Audit.Application.Data.FundingSource
     public class FundingSourceEventRepository : IFundingSourceEventRepository
     {
         
-        private readonly IAuditDataContext dataContext;
         private readonly IAuditDataContextFactory retryDataContextFactory;
         private readonly IPaymentLogger logger;
 
-        public FundingSourceEventRepository(IAuditDataContext dataContext, IAuditDataContextFactory retryDataContextFactory, IPaymentLogger logger)
+        public FundingSourceEventRepository(IAuditDataContextFactory retryDataContextFactory, IPaymentLogger logger)
         {
-            this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
             this.retryDataContextFactory = retryDataContextFactory ?? throw new ArgumentNullException(nameof(retryDataContextFactory));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task SaveSaveFundingSourceEvents(List<FundingSourceEventModel> fundingSourceEvents, CancellationToken cancellationToken)
+        public async Task SaveFundingSourceEvents(List<FundingSourceEventModel> fundingSourceEvents, CancellationToken cancellationToken)
         {
+            var dataContext = retryDataContextFactory.Create();
             using (var tx = await dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted, cancellationToken).ConfigureAwait(false))
             {
                 var bulkConfig = new BulkConfig
