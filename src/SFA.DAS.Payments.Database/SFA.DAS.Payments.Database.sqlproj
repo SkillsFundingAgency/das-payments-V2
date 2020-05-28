@@ -156,7 +156,4 @@
   <ItemGroup>
     <None Include="SFA.DAS.Payments.Database.publish.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <PreDeploy Include="Script.PreDeployment.sql" />
-  </ItemGroup>
 </Project>
