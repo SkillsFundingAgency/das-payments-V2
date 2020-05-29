@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.DataLock
             builder.Property(x => x.DeliveryPeriod).HasColumnName(@"DeliveryPeriod").IsRequired();
             builder.Property(x => x.Amount).HasColumnName(@"Amount").IsRequired();
             builder.Property(x => x.SfaContributionPercentage).HasColumnName(@"SfaContributionPercentage");
-            builder.Property(x => x.CensusDate).HasColumnName(@"CensusDate");
+            builder.Ignore(x => x.CensusDate);
             builder.Property(x => x.LearningStartDate).HasColumnName(@"LearningStartDate");
 
             builder.HasOne(x => x.DataLockEvent).WithMany(dl => dl.NonPayablePeriods).HasForeignKey(x => x.DataLockEventId);
