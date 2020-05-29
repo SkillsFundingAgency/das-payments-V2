@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.FundingSource
                 .ForMember(dest => dest.Amount, opt => opt.MapFrom(source => source.AmountDue))
                 .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => source.DeliveryPeriod))
                 .ForMember(dest => dest.AgreementId, opt => opt.Ignore())
-                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(source => source.StartDate))
+                .ForMember(dest => dest.StartDate, opt => opt.ResolveUsing(source => source.StartDate == DateTime.MinValue ? (DateTime?)SqlDateTime.MinValue : source.StartDate))
                 .ForMember(dest => dest.PlannedEndDate, opt => opt.ResolveUsing(source => source.PlannedEndDate == DateTime.MinValue ? (DateTime?)SqlDateTime.MinValue : source.PlannedEndDate))
                 .ForMember(dest => dest.ActualEndDate, opt => opt.ResolveUsing(source => source.ActualEndDate == DateTime.MinValue ? (DateTime?)SqlDateTime.MinValue : source.ActualEndDate))
                 .ForMember(dest => dest.CompletionStatus, opt => opt.MapFrom(source => source.CompletionStatus))
@@ -44,6 +44,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.FundingSource
                 .ForMember(dest => dest.FundingSource, opt => opt.MapFrom(source => source.FundingSourceType))
                 .ForMember(dest => dest.RequiredPaymentEventId, opt => opt.MapFrom(source => source.RequiredPaymentEventId))
                 .ForMember(dest => dest.ContractType, opt => opt.MapFrom(source => source.ContractType))
+                .ForMember(dest => dest.PriceEpisodeIdentifier, opt => opt.MapFrom(source => source.PriceEpisodeIdentifier ?? string.Empty))
                 .ForMember(dest => dest.ApprenticeshipEmployerType, opt => opt.MapFrom(source => source.ApprenticeshipEmployerType))
                 ;
             CreateMap<SfaCoInvestedFundingSourcePaymentEvent, FundingSourceEventModel>();

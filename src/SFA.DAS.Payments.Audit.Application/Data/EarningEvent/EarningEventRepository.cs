@@ -24,11 +24,13 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
 
     public class EarningEventRepository : IEarningEventRepository
     {
+        private readonly IAuditDataContext dataContext;
         private readonly IAuditDataContextFactory retryDataContextFactory;
         private readonly IPaymentLogger logger;
 
-        public EarningEventRepository(IAuditDataContextFactory retryDataContextFactory, IPaymentLogger logger)
+        public EarningEventRepository(IAuditDataContext dataContext, IAuditDataContextFactory retryDataContextFactory, IPaymentLogger logger)
         {
+            this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
             this.retryDataContextFactory = retryDataContextFactory ?? throw new ArgumentNullException(nameof(retryDataContextFactory));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -60,7 +62,6 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
 
         public async Task SaveEarningEvents(List<EarningEventModel> earningEvents, CancellationToken cancellationToken)
         {
-            var dataContext = retryDataContextFactory.Create();
             using (var tx = await dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted, cancellationToken).ConfigureAwait(false))
             {
                 var bulkConfig = new BulkConfig
