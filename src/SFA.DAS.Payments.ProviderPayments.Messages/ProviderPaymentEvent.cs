@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Messages
                        .ToArray());
         }
 
-        public TransactionType TransactionType { get; set; }
+        public new TransactionType TransactionType { get; set; }
         public FundingSourceType FundingSourceType { get; set; }  //Backwards Compatibility
         public decimal SfaContributionPercentage { get; set; }
     }

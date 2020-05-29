@@ -194,7 +194,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             {
                 return new CompletionPaymentHeldBackEvent
                 {
-                    TransactionType = (TransactionType)transactionType,
+                    //TransactionType = (TransactionType)transactionType,
                 };
             }
 
