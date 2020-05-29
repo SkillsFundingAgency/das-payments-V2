@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.DataLock
         public void Configure(EntityTypeBuilder<DataLockEventModel> builder)
         {
             builder.ToTable("DataLockEvent", "Payments2");
-            builder.HasKey(x => x.EventId);
+            builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).HasColumnName(@"Id").IsRequired();
             builder.Property(x => x.EventId).HasColumnName(@"EventId").IsRequired();
             builder.Property(x => x.Ukprn).HasColumnName(@"Ukprn").IsRequired();

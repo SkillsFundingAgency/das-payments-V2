@@ -154,14 +154,14 @@
     </ConfigOverrides>
   </ServiceManifestImport>
   <DefaultServices>
-    <Service Name="SFA.DAS.Payments.Audit.RequiredPaymentService" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="SFA.DAS.Payments.Audit.RequiredPaymentServiceType" InstanceCount="[Audit_RequiredPaymentService_InstanceCount]">
+    <Service Name="SFA.DAS.Payments.Audit.DataLockService" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.Audit.DataLockServiceType" InstanceCount="[Audit_DataLockService_InstanceCount]">
         <SingletonPartition />
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
     </Service>
-    <Service Name="SFA.DAS.Payments.Audit.DataLockService" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="SFA.DAS.Payments.Audit.DataLockServiceType" InstanceCount="[Audit_DataLockService_InstanceCount]">
+    <Service Name="SFA.DAS.Payments.Audit.RequiredPaymentService" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.Audit.RequiredPaymentServiceType" InstanceCount="[Audit_RequiredPaymentService_InstanceCount]">
         <SingletonPartition />
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>

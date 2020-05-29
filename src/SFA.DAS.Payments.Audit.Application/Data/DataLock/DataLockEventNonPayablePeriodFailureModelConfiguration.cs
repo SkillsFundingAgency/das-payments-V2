@@ -15,10 +15,13 @@ namespace SFA.DAS.Payments.Audit.Application.Data.DataLock
             builder.Property(x => x.DataLockEventNonPayablePeriodId).HasColumnName(@"DataLockEventNonPayablePeriodId").IsRequired();
             builder.Property(x => x.ApprenticeshipId).HasColumnName(@"ApprenticeshipId");
 
-            builder.HasOne(nppf => nppf.DataLockEventNonPayablePeriod).WithMany()
+            builder.HasOne(nppf => nppf.DataLockEventNonPayablePeriod)
+                .WithMany(npp => npp.Failures)
                 .HasPrincipalKey(npp => npp.DataLockEventNonPayablePeriodId)
                 .HasForeignKey(nppf => nppf.DataLockEventNonPayablePeriodId);
-            builder.HasOne(x => x.Apprenticeship).WithMany().HasForeignKey(x => x.ApprenticeshipId);
+            //builder.HasOne(x => x.Apprenticeship)
+            //    .WithMany()
+            //    .HasForeignKey(x => x.ApprenticeshipId);
         }
     }
 }

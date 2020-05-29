@@ -21,7 +21,15 @@ namespace SFA.DAS.Payments.Audit.Application.Data.DataLock
             builder.Ignore(x => x.CensusDate);
             builder.Property(x => x.LearningStartDate).HasColumnName(@"LearningStartDate");
 
-            builder.HasOne(x => x.DataLockEvent).WithMany(dl => dl.NonPayablePeriods).HasForeignKey(x => x.DataLockEventId);
+            builder.HasOne(x => x.DataLockEvent)
+                .WithMany(dl => dl.NonPayablePeriods)
+                .HasPrincipalKey(x=> x.EventId)
+                .HasForeignKey(x => x.DataLockEventId);
+
+            builder.HasMany(npp => npp.Failures)
+                .WithOne(nppf => nppf.DataLockEventNonPayablePeriod)
+                .HasPrincipalKey(npp => npp.DataLockEventNonPayablePeriodId)
+                .HasForeignKey(nppf => nppf.DataLockEventNonPayablePeriodId);
         }
     }
 }

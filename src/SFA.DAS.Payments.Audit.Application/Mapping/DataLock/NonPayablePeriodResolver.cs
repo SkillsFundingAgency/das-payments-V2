@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
@@ -24,11 +25,12 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.DataLock
                         DataLockEventId = source.EventId,
                         CensusDate = item.onProgEarning.CensusDate,
                         LearningStartDate = source.LearningAim.StartDate,
+                        DataLockEventNonPayablePeriodId = Guid.NewGuid(),
                         Failures = item.period.DataLockFailures?.Select(failure => new DataLockEventNonPayablePeriodFailureModel
                         {
                             ApprenticeshipId = failure.ApprenticeshipId,
-                            DataLockFailure = failure.DataLockError
-                        }).ToList(),
+                            DataLockFailure = failure.DataLockError,
+                        }).ToList() ?? new List<DataLockEventNonPayablePeriodFailureModel>(),
                     }) ?? new List<DataLockEventNonPayablePeriodModel>()
             );
 
@@ -44,13 +46,15 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.DataLock
                         DataLockEventId = source.EventId,
                         CensusDate = item.incentiveEarning.CensusDate,
                         LearningStartDate = source.LearningAim.StartDate,
+                        DataLockEventNonPayablePeriodId = Guid.NewGuid(),
                         Failures = item.period.DataLockFailures?.Select(failure => new DataLockEventNonPayablePeriodFailureModel
                         {
                             ApprenticeshipId = failure.ApprenticeshipId,
                             DataLockFailure = failure.DataLockError
-                        }).ToList(),
+                        }).ToList() ?? new List<DataLockEventNonPayablePeriodFailureModel>(),
                     }) ?? new List<DataLockEventNonPayablePeriodModel>()
             );
+            periods.ForEach(period => period.Failures.ForEach(failure => failure.DataLockEventNonPayablePeriodId = period.DataLockEventNonPayablePeriodId));
             return periods;
         }
     }
