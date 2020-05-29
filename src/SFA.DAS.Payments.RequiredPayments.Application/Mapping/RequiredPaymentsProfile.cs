@@ -352,6 +352,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 ;
 
             CreateMap<PaymentHistoryEntity, CalculatedRequiredLevyAmount>()
+                .Ignore(x => x.TransactionType)
                 .Ignore(x => x.Priority)
                 .Ignore(x => x.ApprenticeshipId)
                 .Ignore(x => x.ApprenticeshipPriceEpisodeId)
