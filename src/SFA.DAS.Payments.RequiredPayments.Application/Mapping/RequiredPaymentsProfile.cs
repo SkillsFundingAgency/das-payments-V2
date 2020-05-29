@@ -344,10 +344,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 ;
             
             CreateMap<PaymentHistoryEntity, CalculatedRequiredCoInvestedAmount>()
+                .Ignore(x => x.TransactionType)
                 .Ignore(x => x.OnProgrammeEarningType)
                 ;
 
             CreateMap<PaymentHistoryEntity, CalculatedRequiredIncentiveAmount>()
+                .Ignore(x => x.TransactionType)
                 .Ignore(x => x.Type)
                 ;
 
