@@ -17,12 +17,11 @@ BEGIN TRAN
 
 
 ; WITH CTE AS (
-SELECT m.Id, Max(p.LearningStartDate) as LearningStartDate, Max(p.CollectionPeriod) as CollectionPeriod -- <== this ensures we always get latest collection period
-FROM [Payments2].[Payment]  AS P
-INNER JOIN [Payments2].[Payment] AS M
-ON  
-	M.Amount < 0
-AND m.[AcademicYear]			 = p.[AcademicYear]
+SELECT P.Id, MO.LearningStartDate FROM [Payments2].[Payment]  AS P
+CROSS APPLY
+(SELECT TOP (1) LearningStartDate FROM [Payments2].[Payment] AS M -- <== this ensures we always get latest collection period
+WHERE  
+	m.[AcademicYear]			 = p.[AcademicYear]
 AND m.[Ukprn]					 = p.[Ukprn]
 AND m.[LearnerReferenceNumber] 	 = p.[LearnerReferenceNumber] 
 AND m.[LearningAimReference]	 = p.[LearningAimReference]
@@ -31,11 +30,12 @@ AND m.[LearningAimStandardCode]  = p.[LearningAimStandardCode]
 AND m.[LearningAimFrameworkCode] = p.[LearningAimFrameworkCode]
 AND m.[LearningAimPathwayCode]   = p.[LearningAimPathwayCode]
 AND m.[DeliveryPeriod]			 = p.[DeliveryPeriod]
-AND p.CollectionPeriod < 5
-AND p.CollectionPeriod < m.CollectionPeriod 
-AND p.LearningStartDate IS NOT NULL
-AND M.LearningStartDate IS NULL 
-GROUP BY m.Id
+AND m.CollectionPeriod			 < p.CollectionPeriod 
+AND M.CollectionPeriod			 < 5
+AND m.LearningStartDate			 IS NOT NULL
+ORDER BY M.CollectionPeriod DESC) AS MO 
+WHERE P.Amount < 0 
+AND   P.LearningStartDate IS NULL
 )
 UPDATE P
 SET p.LearningStartDate = u.LearningStartDate
