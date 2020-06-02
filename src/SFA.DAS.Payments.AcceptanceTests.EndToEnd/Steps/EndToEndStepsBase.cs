@@ -908,25 +908,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 JobId = provider.JobId
             };
 
-            //TODO: remove when DC have implemented the Month End Task
-            var dcStartedMonthEndJobCommand = new RecordPeriodEndStartJob
-            {
-                JobId = provider.JobId,
-                CollectionPeriod = CollectionPeriod,
-                CollectionYear = AcademicYear,
-                GeneratedMessages = new List<GeneratedMessage> {new GeneratedMessage
-                {
-                    StartTime = DateTimeOffset.UtcNow,
-                    MessageName = processProviderPaymentsAtMonthEndCommand.GetType().FullName,
-                    MessageId = processProviderPaymentsAtMonthEndCommand.CommandId
-                }}
-            };
-            var tasks = new List<Task>
-            {
-                MessageSession.Send(processProviderPaymentsAtMonthEndCommand)
-            };
-
-            await Task.WhenAll(tasks).ConfigureAwait(false);
+            await MessageSession.Send(processProviderPaymentsAtMonthEndCommand).ConfigureAwait(false);
 
             provider.MonthEndJobIdGenerated = true;
         }
