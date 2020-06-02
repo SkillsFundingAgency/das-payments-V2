@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.FundingSource.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="LevyTransactionService_InstanceCount" Value="-1" />
+    <Parameter Name="LevyTransactionService_InstanceCount" Value="__LevyTransactionService_InstanceCount__" />
     <Parameter Name="NonLevyFundedService_InstanceCount" Value="__NonLevyFundedService_InstanceCount__" />
     <Parameter Name="LevyAccountBalanceService_InstanceCount" Value="__LevyAccountBalanceService_InstanceCount__" />
     <Parameter Name="LevyFundedProxyService_InstanceCount" Value="__LevyFundedProxyService_InstanceCount__" />
