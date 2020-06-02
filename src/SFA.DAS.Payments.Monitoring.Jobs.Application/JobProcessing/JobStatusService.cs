@@ -68,15 +68,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             var inProgressMessages = await JobStorageService.GetInProgressMessages(jobId, cancellationToken)
                 .ConfigureAwait(false);
             var completedItems = await GetCompletedMessages(jobId, inProgressMessages, cancellationToken).ConfigureAwait(false);
+
+            //TODO: make a little more elegant
+            Logger.LogDebug($"Inprogress count: {inProgressMessages.Count}, completed count: {completedItems.Count}");
+            inProgressMessages.GroupBy(message => message.MessageName).ToList().ForEach(group => Logger.LogDebug($"Inprogress message type: {group.Key}"));
             if (!completedItems.Any())
             {
                 Logger.LogVerbose($"Found no completed messages for job: {jobId}");
                 return false;
             }
-            
-            //TODO: make a little more elegant
-            Logger.LogDebug($"Inprogress count: {inProgressMessages.Count}, completed count: {completedItems.Count}");
-            inProgressMessages.GroupBy(message => message.MessageName).ToList().ForEach(group=> Logger.LogDebug($"Inprogress message type: {group.Key}"));
 
             cancellationToken.ThrowIfCancellationRequested();
             await ManageMessageStatus(jobId, completedItems, inProgressMessages, cancellationToken)
