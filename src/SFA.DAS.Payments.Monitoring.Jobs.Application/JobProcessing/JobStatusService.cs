@@ -74,6 +74,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 return false;
             }
             
+            //TODO: make a little more elegant
+            Logger.LogDebug($"Inprogress count: {inProgressMessages.Count}, completed count: {completedItems.Count}");
+            inProgressMessages.GroupBy(message => message.MessageName).ToList().ForEach(group=> Logger.LogDebug($"Inprogress message type: {group.Key}"));
+
             cancellationToken.ThrowIfCancellationRequested();
             await ManageMessageStatus(jobId, completedItems, inProgressMessages, cancellationToken)
                 .ConfigureAwait(false);
