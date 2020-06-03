@@ -14,6 +14,7 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
     public interface IJobStatusService
     {
         Task<bool> WaitForJobToFinish(long jobId, CancellationToken cancellationToken);
+        Task<bool> 
         Task<bool> JobCurrentlyRunning(long jobId);
     }
 

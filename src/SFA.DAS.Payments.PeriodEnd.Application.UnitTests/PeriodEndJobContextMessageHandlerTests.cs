@@ -388,7 +388,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
         }
 
         [Test]
-        [TestCase("PeriodEndStart", 0)]
+        [TestCase("PeriodEndStart", 1)]
         [TestCase("PeriodEndRun", 1)]
         [TestCase("PeriodEndStop", 0)]
         public async Task Waits_For_Job_To_Complete(string task, int numberOfTimes)

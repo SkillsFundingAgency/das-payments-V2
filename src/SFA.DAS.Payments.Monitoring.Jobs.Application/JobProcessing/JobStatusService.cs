@@ -15,6 +15,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         Task<bool> ManageStatus(long jobId, CancellationToken cancellationToken);
     }
 
+    
+
     public abstract class JobStatusService : IJobStatusService
     {
         public IJobServiceConfiguration Config { get; }
@@ -52,7 +54,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 .ConfigureAwait(false);
         }
 
-        public async Task<bool> ManageStatus(long jobId, CancellationToken cancellationToken)
+        public virtual Task<bool> AdditionalStatusChecksFail(JobModel job, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(false);
+        }
+
+        public virtual async Task<bool> ManageStatus(long jobId, CancellationToken cancellationToken)
         {
             Logger.LogVerbose($"Now determining if job {jobId} has finished.");
             var job = await JobStorageService.GetJob(jobId, cancellationToken).ConfigureAwait(false);
@@ -84,6 +91,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             if (!inProgressMessages.TrueForAll(inProgress => completedItems.Any(item => item.MessageId == inProgress.MessageId)))
             {
                 Logger.LogDebug($"Found in progress messages for job id: {jobId}.  Cannot set status for job.");
+                return false;
+            }
+
+            if(await AdditionalStatusChecksFail(job, cancellationToken))
+            {
                 return false;
             }
 

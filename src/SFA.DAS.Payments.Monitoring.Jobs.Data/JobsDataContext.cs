@@ -23,6 +23,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task<List<JobModel>> GetInProgressJobs();
         Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken);
         Task SaveDcSubmissionStatus(long jobId, bool succeeded, CancellationToken cancellationToken);
+        Task<bool> OutstandingJobsPresentAndNoFailedJobsSinceStartTime(long jobId, DateTimeOffset startTime, CancellationToken cancellationToken);
+        Task<bool> TimedOutJobsPresent(long jobid, DateTimeOffset startTime, CancellationToken cancellationToken);
     }
 
     public class JobsDataContext : DbContext, IJobsDataContext
@@ -147,6 +149,38 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             job.EndTime = endTime;
             job.Status = status;
             await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+        public Task<bool> OutstandingJobsPresentAndNoFailedJobsSinceStartTime(long jobId, 
+            DateTimeOffset startTime, CancellationToken cancellationToken)
+        {
+            var latestValidStartTime = startTime.AddHours(-2).AddMinutes(-30);
+            return Jobs.AnyAsync(x =>
+                (x.DcJobId != jobId &&
+                    x.StartTime > latestValidStartTime &&
+                    x.Status != JobStatus.InProgress) && !(
+                x.EndTime != null &&
+                x.EndTime.Value > startTime &&
+                x.DcJobId != jobId &&
+                (x.Status == JobStatus.TimedOut ||
+                    x.Status == JobStatus.CompletedWithErrors ||
+                    x.Status == JobStatus.DcTasksFailed)
+            ));
+        }
+
+        public Task<bool> TimedOutJobsPresent(long jobid, DateTimeOffset startTime, CancellationToken cancellationToken)
+        {
+            return Jobs.AnyAsync(x =>
+                x.EndTime != null &&
+                x.EndTime.Value > startTime &&
+                // Currently (June 2020) when a job times out on the AS side, then it is marked
+                //  as 'CompletedWithError' if we have a success message from DC
+                // The DcTasksFailed could be returned if it fails on the DC side. DC start 
+                //  processing after we've passed datalocks - so our job can still timeout
+                (x.Status == JobStatus.TimedOut ||
+                    x.Status == JobStatus.CompletedWithErrors ||
+                    x.Status == JobStatus.DcTasksFailed) &&
+                 x.DcJobId != jobid);
         }
     }
 }
