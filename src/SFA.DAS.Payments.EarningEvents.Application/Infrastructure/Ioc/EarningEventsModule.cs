@@ -2,7 +2,10 @@
 using SFA.DAS.Payments.Application.Batch;
 using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
+using NServiceBus;
 using SFA.DAS.Payments.Application.Data.Configurations;
+using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.EarningEvents.Application.Handlers;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
@@ -12,7 +15,9 @@ using SFA.DAS.Payments.EarningEvents.Domain;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Domain.Validation.Global;
 using SFA.DAS.Payments.EarningEvents.Domain.Validation.Learner;
+using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Configuration;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
 {
@@ -42,7 +47,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
                 .As<IEarningEventsProcessingService>()
                 .InstancePerLifetimeScope();
             builder.RegisterType<RedundancyEarningEventFactory>()
-                .As<IRedundancyEarningEventFactory>();
+                .As<IRedundancyEarningEventFactory>()
+                .InstancePerLifetimeScope();
             builder.RegisterType<RedundancyEarningService>()
                 .As<IRedundancyEarningService>()
                 .InstancePerLifetimeScope();
@@ -57,11 +63,18 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
                 .InstancePerLifetimeScope();
             builder.RegisterType<JobContextMessageHandler>()
                 .As<IMessageHandler<JobContextMessage>>();
-
-
             builder.RegisterType<SubmittedLearnerAimRepository>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
+            EndpointConfigurationEvents.ConfiguringTransport += EndpointConfigurationEvents_ConfiguringTransport;
         }
+
+        private void EndpointConfigurationEvents_ConfiguringTransport(object sender, TransportExtensions<AzureServiceBusTransport> e)
+        {
+            var configHelper = new ServiceFabricConfigurationHelper();
+            var routing = e.Routing();
+            routing.RouteToEndpoint(typeof(ProcessLearnerCommand), configHelper.GetSetting("ProcessLearnerEndpoint")); 
+        }
+
     }
 }
