@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task<List<JobModel>> GetInProgressJobs();
         Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken);
         Task SaveDcSubmissionStatus(long jobId, bool succeeded, CancellationToken cancellationToken);
-        Task<bool> OutstandingJobsPresentAndNoFailedJobsSinceStartTime(long jobId, DateTimeOffset startTime, CancellationToken cancellationToken);
+        Task<bool> OutstandingJobsPresent(long jobId, DateTimeOffset startTime, CancellationToken cancellationToken);
         Task<bool> TimedOutJobsPresent(long jobid, DateTimeOffset startTime, CancellationToken cancellationToken);
     }
 
@@ -151,7 +151,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public Task<bool> OutstandingJobsPresentAndNoFailedJobsSinceStartTime(long jobId, 
+        public Task<bool> OutstandingJobsPresent(long jobId, 
             DateTimeOffset startTime, CancellationToken cancellationToken)
         {
             var latestValidStartTime = startTime.AddHours(-2).AddMinutes(-30);

@@ -54,9 +54,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 .ConfigureAwait(false);
         }
 
-        public virtual Task<bool> AdditionalStatusChecksFail(JobModel job, CancellationToken cancellationToken)
+        public virtual Task<bool> AnyOtherJobCriteriaMet(JobModel job, CancellationToken cancellationToken)
         {
-            return Task.FromResult(false);
+            return Task.FromResult(true);
         }
 
         public virtual async Task<bool> ManageStatus(long jobId, CancellationToken cancellationToken)
@@ -70,6 +70,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
                 if (await IsJobTimedOut(job, cancellationToken))
                     return true;
+            }
+
+            if (!(await AnyOtherJobCriteriaMet(job, cancellationToken)))
+            {
+                return false;
             }
 
             var inProgressMessages = await JobStorageService.GetInProgressMessages(jobId, cancellationToken)
@@ -93,15 +98,17 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 Logger.LogDebug($"Found in progress messages for job id: {jobId}.  Cannot set status for job.");
                 return false;
             }
+                        
+            var status = await CompletedJobStatus(job, currentJobStatus.hasFailedMessages, cancellationToken);
 
-            if(await AdditionalStatusChecksFail(job, cancellationToken))
-            {
-                return false;
-            }
-
-            return await CompleteJob(jobId,
-                currentJobStatus.hasFailedMessages ? JobStatus.CompletedWithErrors : JobStatus.Completed,
+            return await CompleteJob(jobId, status,
                 currentJobStatus.endTime.Value, cancellationToken).ConfigureAwait(false);
+        }
+
+        protected virtual Task<JobStatus> CompletedJobStatus(JobModel job, 
+            bool hasFailedMessages, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(hasFailedMessages ? JobStatus.CompletedWithErrors : JobStatus.Completed);
         }
 
         protected virtual async Task ManageMessageStatus(long jobId, List<CompletedMessage> completedMessages,

@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
     public interface IPeriodEndJobStatusService : IJobStatusService { }
 
-
+    public interface IPeriodEndStartedJobStatusService : IPeriodEndJobStatusService { }
     public class PeriodEndStartJobStatusService : PeriodEndJobStatusService
     {
         private readonly IJobsDataContext context;
@@ -24,15 +24,26 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
             this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public override async Task<bool> AdditionalStatusChecksFail(JobModel job, CancellationToken cancellationToken)
+        public override async Task<bool> AnyOtherJobCriteriaMet(JobModel job, CancellationToken cancellationToken)
         {
             // Perform check
-            if(await context.OutstandingJobsPresentAndNoFailedJobsSinceStartTime(job.Id, job.StartTime, cancellationToken))
+            if(await context.OutstandingJobsPresent(job.Id, job.StartTime, cancellationToken))
             {
 
-                return true;
+                return false;
             }
-            return false;
+            return true;
+        }
+
+        protected override async Task<JobStatus> CompletedJobStatus(JobModel job, 
+            bool hasFailedMessages, CancellationToken cancellationToken)
+        {
+            if (await context.TimedOutJobsPresent(job.Id, job.StartTime, cancellationToken))
+            {
+                return JobStatus.CompletedWithErrors;
+            }
+
+            return JobStatus.Completed;
         }
     }
 
