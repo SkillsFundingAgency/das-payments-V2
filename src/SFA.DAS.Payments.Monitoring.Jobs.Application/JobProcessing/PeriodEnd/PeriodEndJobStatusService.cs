@@ -4,38 +4,13 @@ using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
-using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 {
 
     public interface IPeriodEndJobStatusService : IJobStatusService { }
-
-
-    public class PeriodEndStartJobStatusService : PeriodEndJobStatusService
-    {
-        private readonly IJobsDataContext context;
-
-        public PeriodEndStartJobStatusService(IJobStorageService jobStorageService, 
-            IPaymentLogger logger, ITelemetry telemetry, IJobStatusEventPublisher eventPublisher, 
-            IJobServiceConfiguration config, IJobsDataContext context) : base(jobStorageService, logger, telemetry, eventPublisher, config)
-        {
-            this.context = context ?? throw new ArgumentNullException(nameof(context));
-        }
-
-        public override async Task<bool> AdditionalStatusChecksFail(JobModel job, CancellationToken cancellationToken)
-        {
-            // Perform check
-            if(await context.OutstandingJobsPresentAndNoFailedJobsSinceStartTime(job.Id, job.StartTime, cancellationToken))
-            {
-
-                return true;
-            }
-            return false;
-        }
-    }
-
+    
     public class PeriodEndJobStatusService : JobStatusService, IPeriodEndJobStatusService
     {
         public PeriodEndJobStatusService(IJobStorageService jobStorageService, IPaymentLogger logger, ITelemetry telemetry, IJobStatusEventPublisher eventPublisher, IJobServiceConfiguration config) : base(jobStorageService, logger, telemetry, eventPublisher, config)

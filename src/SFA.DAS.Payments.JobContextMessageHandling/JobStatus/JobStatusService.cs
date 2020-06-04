@@ -15,6 +15,7 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
     {
         Task<bool> WaitForJobToFinish(long jobId, CancellationToken cancellationToken);
         Task<bool> JobCurrentlyRunning(long jobId);
+        Task<bool> WaitForPeriodEndStartedToFinish(long jobId, CancellationToken cancellationToken);
     }
 
     /// <summary>
@@ -61,6 +62,11 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
         {
             var job = await dataContext.GetJobByDcJobId(jobId).ConfigureAwait(false);
             return job != null && job.Status == Monitoring.Jobs.Model.JobStatus.InProgress;
+        }
+
+        public async Task<bool> WaitForPeriodEndStartedToFinish(long jobId, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -83,14 +83,21 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             return await GetCurrentJobs(model => model.JobType == JobType.EarningsJob || model.JobType == JobType.ComponentAcceptanceTestEarningsJob ,cancellationToken);
         }
 
-        public async Task<List<long>> GetCurrentPeriodEndJobs(CancellationToken cancellationToken)
+        public async Task<List<long>> GetCurrentPeriodEndExcludingStartJobs(CancellationToken cancellationToken)
         {
             return await GetCurrentJobs(model =>
             {
-                return model.JobType == JobType.PeriodEndStartJob ||
-                       model.JobType == JobType.PeriodEndRunJob ||
+                return model.JobType == JobType.PeriodEndRunJob ||
                        model.JobType == JobType.PeriodEndStopJob ||
                        model.JobType == JobType.ComponentAcceptanceTestMonthEndJob;
+            },cancellationToken);
+        }
+        
+        public async Task<List<long>> GetCurrentPeriodEndStartJobs(CancellationToken cancellationToken)
+        {
+            return await GetCurrentJobs(model =>
+            {
+                return model.JobType == JobType.PeriodEndStartJob;
             },cancellationToken);
         }
 
