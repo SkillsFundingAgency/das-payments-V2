@@ -15,6 +15,24 @@ Scenario: Provider Period End Start Job Completed
 	Then the job monitoring service should update the status of the job to show that it has completed	
 	And the monitoring service should notify other services that the period end start job has completed successfully
 
+
+
+
+Scenario: Provider Period End Run  Job Completed
+	Given the period end service has received a period end run job
+	When the period end service notifies the job monitoring service to record run job
+	And the final messages for the job are successfully processed
+	Then the job monitoring service should update the status of the job to show that it has completed	
+	And the monitoring service should notify other services that the period end run job has completed successfully
+
+Scenario: Provider Period End Stop  Job Completed
+	Given the period end service has received a period end stop job
+	When the period end service notifies the job monitoring service to record stop job
+	And the final messages for the job are successfully processed
+	Then the job monitoring service should update the status of the job to show that it has completed	
+	And the monitoring service should notify other services that the period end stop job has completed successfully
+
+
 Scenario: Provider Period End Start Job waits for submissions to complete before finishing
 	Given the earnings event service has received and is processing a provider earnings job
 	And the period end service has received a period end start job
@@ -33,18 +51,3 @@ Scenario: Provider Period End Start Job fails if outstanding submissions time ou
 	And outstanding submission job times out 
 	Then the job monitoring service should update the status of the job to show that it has failed	
 	And the monitoring service should notify other services that the period end start job has failed
-
-
-Scenario: Provider Period End Run  Job Completed
-	Given the period end service has received a period end run job
-	When the period end service notifies the job monitoring service to record run job
-	And the final messages for the job are successfully processed
-	Then the job monitoring service should update the status of the job to show that it has completed	
-	And the monitoring service should notify other services that the period end run job has completed successfully
-
-Scenario: Provider Period End Stop  Job Completed
-	Given the period end service has received a period end stop job
-	When the period end service notifies the job monitoring service to record stop job
-	And the final messages for the job are successfully processed
-	Then the job monitoring service should update the status of the job to show that it has completed	
-	And the monitoring service should notify other services that the period end stop job has completed successfully

@@ -4,16 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using TechTalk.SpecFlow;
 using NServiceBus;
 using NUnit.Framework;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Monitoring.AcceptanceTests.Handlers;
-using SFA.DAS.Payments.Monitoring.Jobs.Client;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
@@ -307,12 +304,6 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
 
         [When(@"the final messages for the job are successfully processed")]
         [When(@"the final messages for the job are successfully processed for the Period End Start job")]
-        [Then(@"when the final messages for the job are successfully processed for the submission job")]
-        public void ThenWhenTheFinalMessagesForTheJobAreSuccessfullyProcessedForTheSubmissionJob()
-        {
-            ScenarioContext.Current.Pending();
-        }
-
         public async Task WhenTheFinalMessagesForTheJobAreSuccessfullyProcessed()
         {
             foreach (var generatedMessage in GeneratedMessages)
@@ -556,16 +547,18 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         [Then(@"when the final messages for the job are successfully processed for the submission job")]
         public async Task WhenTheFinalMessagesForTheJobAreSuccessfullyProcessedForTheSubmissionJob()
         {
-            var job = await DataContext.GetJobByDcJobId(PeriodEndLargeSubmissionJobId);
+            var job = await DataContext.Jobs.SingleOrDefaultAsync(x=>x.DcJobId == PeriodEndLargeSubmissionJobId);
             job.Status = JobStatus.Completed;
+            job.EndTime = DateTimeOffset.UtcNow.AddMinutes(1);
             await DataContext.SaveChangesAsync();
         }
 
         [When(@"outstanding submission job times out")]
         public  async Task WhenOutstandingSubmissionJobTimesOut()
         {
-            var job = await DataContext.GetJobByDcJobId(PeriodEndLargeSubmissionJobId);
+            var job = await DataContext.Jobs.FirstOrDefaultAsync(x => x.DcJobId == PeriodEndLargeSubmissionJobId);
             job.Status = JobStatus.TimedOut;
+            job.EndTime = DateTimeOffset.UtcNow.AddSeconds(30);
             await DataContext.SaveChangesAsync();
         }
         

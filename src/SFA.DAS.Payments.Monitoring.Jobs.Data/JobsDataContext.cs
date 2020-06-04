@@ -23,8 +23,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task<List<JobModel>> GetInProgressJobs();
         Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken);
         Task SaveDcSubmissionStatus(long jobId, bool succeeded, CancellationToken cancellationToken);
-        Task<bool> OutstandingJobsPresent(long jobId, DateTimeOffset startTime, CancellationToken cancellationToken);
-        Task<bool> TimedOutJobsPresent(long jobid, DateTimeOffset startTime, CancellationToken cancellationToken);
+        Task<bool> OutstandingJobsPresent(long? dcJobId, DateTimeOffset startTime, CancellationToken cancellationToken);
+        Task<bool> TimedOutJobsPresent(long? dcJobId, DateTimeOffset startTime, CancellationToken cancellationToken);
     }
 
     public class JobsDataContext : DbContext, IJobsDataContext
@@ -151,24 +151,18 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public Task<bool> OutstandingJobsPresent(long jobId, 
+        public Task<bool> OutstandingJobsPresent(long? dcJobId, 
             DateTimeOffset startTime, CancellationToken cancellationToken)
         {
             var latestValidStartTime = startTime.AddHours(-2).AddMinutes(-30);
             return Jobs.AnyAsync(x =>
-                (x.DcJobId != jobId &&
+                (x.DcJobId != dcJobId &&
                     x.StartTime > latestValidStartTime &&
-                    x.Status != JobStatus.InProgress) && !(
-                x.EndTime != null &&
-                x.EndTime.Value > startTime &&
-                x.DcJobId != jobId &&
-                (x.Status == JobStatus.TimedOut ||
-                    x.Status == JobStatus.CompletedWithErrors ||
-                    x.Status == JobStatus.DcTasksFailed)
-            ));
+                    x.Status == JobStatus.InProgress) 
+            );
         }
 
-        public Task<bool> TimedOutJobsPresent(long jobid, DateTimeOffset startTime, CancellationToken cancellationToken)
+        public Task<bool> TimedOutJobsPresent(long? dcJobId, DateTimeOffset startTime, CancellationToken cancellationToken)
         {
             return Jobs.AnyAsync(x =>
                 x.EndTime != null &&
@@ -180,7 +174,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                 (x.Status == JobStatus.TimedOut ||
                     x.Status == JobStatus.CompletedWithErrors ||
                     x.Status == JobStatus.DcTasksFailed) &&
-                 x.DcJobId != jobid);
+                 x.DcJobId != dcJobId);
         }
     }
 }

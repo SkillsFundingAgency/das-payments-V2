@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
         public override async Task<bool> AnyOtherJobCriteriaMet(JobModel job, CancellationToken cancellationToken)
         {
             // Perform check
-            if (await context.OutstandingJobsPresent(job.Id, job.StartTime, cancellationToken))
+            if (await context.OutstandingJobsPresent(job.DcJobId, job.StartTime, cancellationToken))
             {
                 return false;
             }
@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
         protected override async Task<JobStatus> CompletedJobStatus(JobModel job,
             bool hasFailedMessages, CancellationToken cancellationToken)
         {
-            if (await context.TimedOutJobsPresent(job.Id, job.StartTime, cancellationToken))
+            if (await context.TimedOutJobsPresent(job.DcJobId, job.StartTime, cancellationToken))
             {
                 return JobStatus.CompletedWithErrors;
             }

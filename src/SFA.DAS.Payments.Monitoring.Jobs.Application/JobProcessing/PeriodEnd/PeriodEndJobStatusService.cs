@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
             var isComplete = await base.CompleteJob(job, status, endTime, cancellationToken);
 
             if(isComplete && job.Status != JobStatus.TimedOut)
-             await EventPublisher.PeriodEndJobFinished(job, true);
+             await EventPublisher.PeriodEndJobFinished(job, job.Status == JobStatus.Completed);
 
             return isComplete;
         }
