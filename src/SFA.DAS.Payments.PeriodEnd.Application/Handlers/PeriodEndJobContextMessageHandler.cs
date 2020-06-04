@@ -69,11 +69,11 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                     return true;
                 }
 
-                if (periodEndEvent is PeriodEndStartedEvent periodEndStartedEvent)
-                {
-                    await jobStatusService.WaitForPeriodEndStartedToFinish(periodEndStartedEvent, cancellationToken);
-                    // send PeriodEndStart message
-                }
+                //if (periodEndEvent is PeriodEndStartedEvent periodEndStartedEvent)
+                //{
+                //    await jobStatusService.WaitForPeriodEndStartedToFinish(periodEndStartedEvent, cancellationToken);
+                //    // send PeriodEndStart message
+                //}
 
                 await jobStatusService.WaitForJobToFinish(message.JobId, cancellationToken);
                 return true;
