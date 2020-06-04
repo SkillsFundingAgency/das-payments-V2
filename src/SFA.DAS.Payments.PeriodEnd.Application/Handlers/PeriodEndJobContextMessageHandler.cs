@@ -71,8 +71,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
 
                 if (periodEndEvent is PeriodEndStartedEvent periodEndStartedEvent)
                 {
-                    await jobStatusService.WaitForPeriodEndStartedToFinish(periodEndStartedEvent, cancellationToken);
-                    // send PeriodEndStart message
+                    return await jobStatusService.WaitForPeriodEndStartedToFinish(periodEndStartedEvent.JobId, cancellationToken);
                 }
 
                 await jobStatusService.WaitForJobToFinish(message.JobId, cancellationToken);
