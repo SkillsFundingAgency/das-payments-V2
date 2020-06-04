@@ -5,9 +5,9 @@ using SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules;
 
 namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC
 {
-    public class DIConfig
+    public class DependencyInjectionConfig
     {
-        public DIConfig(string functionName)
+        public DependencyInjectionConfig(string functionName)
         {
             DependencyInjection.Initialize(RegisterModules, functionName);
         }
@@ -16,8 +16,9 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC
         {
             builder.RegisterModule<TelemetryModule>();
             builder.RegisterModule<LoggingModule>();
-
             builder.RegisterModule<FunctionsModule>();
+
+            builder.RegisterModule<Modules.PaymentDataContextModule>();
             builder.RegisterModule<Modules.ConfigurationModule>();
             builder.RegisterModule<Modules.MessagingModule>();
         }
