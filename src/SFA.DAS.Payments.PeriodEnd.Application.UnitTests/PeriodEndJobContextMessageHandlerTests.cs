@@ -388,37 +388,26 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
         }
 
         [Test]
-        [TestCase("PeriodEndStart", 1)]
         [TestCase("PeriodEndRun", 1)]
         [TestCase("PeriodEndStop", 0)]
         public async Task Waits_For_Job_To_Complete(string task, int numberOfTimes)
         {
-            var jobContextMessage = new JobContextMessage
-            {
-                JobId = 1,
-                Topics = new List<ITopicItem>
-                {
-                    new TopicItem
-                    {
-                        SubscriptionName = "PeriodEnd",
-                        Tasks = new List<ITaskItem>
-                        {
-                            new TaskItem
-                            {
-                                SupportsParallelExecution = false,
-                                Tasks = new List<string>{task}
-                            }
-                        }
-                    }
-                },
-                KeyValuePairs = new Dictionary<string, object> {
-                    { JobContextMessageConstants.KeyValuePairs.ReturnPeriod, 10 },
-                    { JobContextMessageConstants.KeyValuePairs.CollectionYear, 1819 } }
-            };
+            var jobContextMessage = CreateJobContextMessage(task);
             var handler = mocker.Create<PeriodEndJobContextMessageHandler>();
             var completed = await handler.HandleAsync(jobContextMessage, CancellationToken.None);
             mocker.Mock<IJobStatusService>()
                 .Verify(svc => svc.WaitForJobToFinish(It.Is<long>(jobId => jobId == 1), CancellationToken.None),Times.Exactly(numberOfTimes));
+        }
+
+        [Test]
+        public async Task PeriodEndStart_Waits_For_Job_To_Complete()
+        {
+            var jobContextMessage = CreateJobContextMessage("PeriodEndStart");
+
+            var handler = mocker.Create<PeriodEndJobContextMessageHandler>();
+            var completed = await handler.HandleAsync(jobContextMessage, CancellationToken.None);
+            mocker.Mock<IJobStatusService>()
+                .Verify(svc => svc.WaitForPeriodEndStartedToFinish(It.Is<long>(jobId => jobId == 1), CancellationToken.None),Times.Once);
         }
 
         [Test]
@@ -453,6 +442,35 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
             var handler = mocker.Create<PeriodEndJobContextMessageHandler>();
             var completed = await handler.HandleAsync(jobContextMessage, CancellationToken.None);
             completed.Should().BeTrue();
+        }
+
+        private static JobContextMessage CreateJobContextMessage(string task)
+        {
+            var jobContextMessage = new JobContextMessage
+            {
+                JobId = 1,
+                Topics = new List<ITopicItem>
+                {
+                    new TopicItem
+                    {
+                        SubscriptionName = "PeriodEnd",
+                        Tasks = new List<ITaskItem>
+                        {
+                            new TaskItem
+                            {
+                                SupportsParallelExecution = false,
+                                Tasks = new List<string> {task}
+                            }
+                        }
+                    }
+                },
+                KeyValuePairs = new Dictionary<string, object>
+                {
+                    {JobContextMessageConstants.KeyValuePairs.ReturnPeriod, 10},
+                    {JobContextMessageConstants.KeyValuePairs.CollectionYear, 1819}
+                }
+            };
+            return jobContextMessage;
         }
     }
 }

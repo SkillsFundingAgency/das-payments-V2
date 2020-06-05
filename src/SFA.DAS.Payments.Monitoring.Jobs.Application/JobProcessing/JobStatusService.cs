@@ -34,9 +34,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             this.EventPublisher = eventPublisher ?? throw new ArgumentNullException(nameof(eventPublisher));
         }
 
-        protected virtual async Task<bool> CheckSavedJobStatus(JobModel job, CancellationToken cancellationToken)
+        protected virtual Task<bool> CheckSavedJobStatus(JobModel job, CancellationToken cancellationToken)
         {
-            return true;
+            return Task.FromResult(true);
         }
 
         protected virtual async Task<bool> IsJobTimedOut(JobModel job, CancellationToken cancellationToken)

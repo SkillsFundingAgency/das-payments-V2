@@ -36,13 +36,6 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             set => Set(value);
         }
 
-
-        public List<GeneratedMessage> PeriodEndLargeSubmissionMessages
-        {
-            get => Get<List<GeneratedMessage>>("pe_large_submission_messages");
-            set => Set(value, "pe_large_submission_messages");
-        }
-
         public long PeriodEndLargeSubmissionJobId
         {
             get => Get<long>();
@@ -54,12 +47,6 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             get => Get<JobsCommand>("job_command");
             set => Set(value, "job_command");
         }
-        public RecordEarningsJob PeriodEndLargeSubmissionJobDetails
-        {
-            get => Get<RecordEarningsJob>("pe_large_submission_job_command");
-            set => Set(value, "pe_large_submission_job_command");
-        }
-
         
         public JobsSteps(ScenarioContext context) : base(context)
         {
@@ -83,7 +70,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
 
 
         [Given(@"the period end service has received a period end job")]
-        public async Task GivenThePeriodEndServiceHasReceivedAPeriodEndJob()
+        public void GivenThePeriodEndServiceHasReceivedAPeriodEndJob()
         {
             GeneratedMessages = new List<GeneratedMessage>
             {
@@ -285,7 +272,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         [Given(@"the monitoring service has recorded the completion of a period end start job")]
         public async Task GivenTheMonitoringServiceHasRecordedTheCompletionOfAPeriodEndStartJob()
         {
-           await GivenThePeriodEndServiceHasReceivedAPeriodEndJob();
+            GivenThePeriodEndServiceHasReceivedAPeriodEndJob();
             await WhenThePeriodEndServiceNotifiesTheJobMonitoringServiceToRecordTheJob().ConfigureAwait(false);
             await WhenTheFinalMessagesForTheJobAreSuccessfullyProcessed().ConfigureAwait(false);
             await ThenTheJobMonitoringServiceShouldRecordTheJob().ConfigureAwait(false);
@@ -364,7 +351,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         public async Task WhenTheEarningsEventServiceNotifiesTheJobMonitoringServiceToRecordTheJob()
         {
             var recordEarningsJob = JobDetails as RecordEarningsJob;
-            recordEarningsJob.GeneratedMessages = GeneratedMessages.Take(1000).ToList();
+            if (recordEarningsJob != null) recordEarningsJob.GeneratedMessages = GeneratedMessages.Take(1000).ToList();
             await MessageSession.Send(PartitionEndpointName, JobDetails).ConfigureAwait(false);
             var skip = 1000;
             var batch = new List<GeneratedMessage>();
@@ -430,7 +417,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         [When(@"Data-Collections confirms the successful completion of the job")]
         public async Task WhenData_CollectionsConfirmsTheSuccessfulCompletionOfTheJob()
         {
-            var earningsJob = JobDetails as RecordEarningsJob ??
+            _ = JobDetails as RecordEarningsJob ??
                               throw new InvalidOperationException($"Expected job to be a {nameof(RecordEarningsJob)}");
             await MessageSession.Send(PartitionEndpointName, new RecordEarningsJobSucceeded
             {
@@ -445,7 +432,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         [When(@"Data-Collections confirms the failure of the job")]
         public async Task WhenData_CollectionsConfirmsTheFailureOfTheJob()
         {
-            var earningsJob = JobDetails as RecordEarningsJob ??
+            _ = JobDetails as RecordEarningsJob ??
                               throw new InvalidOperationException($"Expected job to be a  {nameof(RecordEarningsJob)}");
             await MessageSession.Send(PartitionEndpointName, new RecordEarningsJobFailed
             {

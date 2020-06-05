@@ -23,7 +23,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
         public override async Task<bool> AnyOtherJobCriteriaMet(JobModel job, CancellationToken cancellationToken)
         {
-            // Perform check
             if (await context.OutstandingJobsPresent(job.DcJobId, job.StartTime, cancellationToken))
             {
                 return false;

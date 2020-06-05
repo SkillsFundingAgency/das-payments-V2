@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 
 namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
@@ -52,7 +51,6 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
                 }
                 logger.LogVerbose($"DC Job {jobId} is still in progress");
                 await Task.Delay(config.TimeToPauseBetweenChecks);
-                continue;
             }
             logger.LogWarning($"Waiting {config.TimeToWaitForJobToComplete} but Job {jobId} still not finished.");
             return false;
