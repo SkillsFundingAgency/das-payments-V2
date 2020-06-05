@@ -158,8 +158,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             return Jobs.AnyAsync(x =>
                 (x.DcJobId != dcJobId &&
                     x.StartTime > latestValidStartTime &&
-                    x.Status == JobStatus.InProgress) 
-            );
+                    x.Status == JobStatus.InProgress), cancellationToken: cancellationToken);
         }
 
         public Task<bool> TimedOutJobsPresent(long? dcJobId, DateTimeOffset startTime, CancellationToken cancellationToken)
@@ -174,7 +173,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                 (x.Status == JobStatus.TimedOut ||
                     x.Status == JobStatus.CompletedWithErrors ||
                     x.Status == JobStatus.DcTasksFailed) &&
-                 x.DcJobId != dcJobId);
+                 x.DcJobId != dcJobId, cancellationToken: cancellationToken);
         }
     }
 }
