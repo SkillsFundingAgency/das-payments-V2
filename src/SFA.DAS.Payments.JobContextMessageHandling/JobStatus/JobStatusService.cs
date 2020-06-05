@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
     {
         Task<bool> WaitForJobToFinish(long jobId, CancellationToken cancellationToken);
         Task<bool> JobCurrentlyRunning(long jobId);
-        Task<bool> WaitForPeriodEndStartedToFinish(long jobId, CancellationToken cancellationToken);
+        Task<bool> WaitForPeriodEndStartedToFinish(long dcJobId, CancellationToken cancellationToken);
     }
 
     /// <summary>
@@ -64,9 +64,25 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
             return job != null && job.Status == Monitoring.Jobs.Model.JobStatus.InProgress;
         }
 
-        public async Task<bool> WaitForPeriodEndStartedToFinish(long jobId, CancellationToken cancellationToken)
+        public async Task<bool> WaitForPeriodEndStartedToFinish(long dcJobId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            logger.LogDebug($"Waiting for job with Dc JobId: {dcJobId} to finish.");
+            var endTime = DateTime.Now.Add(config.TimeToWaitForJobToComplete);
+            while (DateTime.Now < endTime)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var job = await dataContext.GetJobByDcJobId(dcJobId).ConfigureAwait(false);
+                if (job != null && (job.EndTime != null ||
+                                    job.Status != Monitoring.Jobs.Model.JobStatus.InProgress))
+                {
+                    logger.LogInfo($"DC Job {dcJobId} finished. Status: {job.Status:G}.  Finish time: {job.EndTime:G}");
+                    return job.Status == Monitoring.Jobs.Model.JobStatus.Completed;
+                }
+                logger.LogVerbose($"DC Job {dcJobId} is still in progress");
+                await Task.Delay(config.TimeToPauseBetweenChecks, cancellationToken);
+            }
+            logger.LogWarning($"Waiting {config.TimeToWaitForJobToComplete} but Job {dcJobId} still not finished.");
+            return false;
         }
     }
 }
