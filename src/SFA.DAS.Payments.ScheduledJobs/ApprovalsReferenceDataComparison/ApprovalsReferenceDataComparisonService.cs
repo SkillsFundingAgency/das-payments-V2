@@ -3,12 +3,10 @@ using System.Linq;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.ScheduledJobs.ApprovalsReferenceDataComparison.Repositories;
-using SFA.DAS.Payments.ScheduledJobs.ApprovalsReferenceDataComparison.Repositories.Models;
 
-namespace SFA.DAS.Payments.ScheduledJobs.ApprovalsReferenceDataComparison.Processors
+namespace SFA.DAS.Payments.ScheduledJobs.ApprovalsReferenceDataComparison
 {
-    public class ApprovalsReferenceDataComparisonProcessor : IApprovalsReferenceDataComparisonProcessor
+    public class ApprovalsReferenceDataComparisonService : IApprovalsReferenceDataComparisonService
     {
         private const string DasApproved = "DasApproved";
         private const string DasStopped = "DasStopped";
@@ -21,7 +19,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.ApprovalsReferenceDataComparison.Proces
         private readonly ICommitmentsDataContext commitmentsDataContext;
         private readonly ITelemetry telemetry;
 
-        public ApprovalsReferenceDataComparisonProcessor(IPaymentsDataContext paymentsDataContext, ICommitmentsDataContext commitmentsDataContext, ITelemetry telemetry)
+        public ApprovalsReferenceDataComparisonService(IPaymentsDataContext paymentsDataContext, ICommitmentsDataContext commitmentsDataContext, ITelemetry telemetry)
         {
             this.paymentsDataContext = paymentsDataContext;
             this.commitmentsDataContext = commitmentsDataContext;
@@ -31,10 +29,10 @@ namespace SFA.DAS.Payments.ScheduledJobs.ApprovalsReferenceDataComparison.Proces
         public void ProcessComparison()
         {
             var commitmentsApprovedCount = commitmentsDataContext.Apprenticeships.Count(x => x.IsApproved);
-            var commitmentsStoppedCount = commitmentsDataContext.Apprenticeships.Count(x => x.PaymentStatus == PaymentStatus.Withdrawn); //todo is this the right criteria?
+            var commitmentsStoppedCount = commitmentsDataContext.Apprenticeships.Count(x => x.PaymentStatus == PaymentStatus.Withdrawn);
             var commitmentsPausedCount = commitmentsDataContext.Apprenticeships.Count(x => x.PaymentStatus == PaymentStatus.Paused);
 
-            var paymentsApprovedCount = paymentsDataContext.Apprenticeship.Count(x => x.Status == ApprenticeshipStatus.Active); //todo check criteria
+            var paymentsApprovedCount = paymentsDataContext.Apprenticeship.Count(x => x.Status == ApprenticeshipStatus.Active);
             var paymentsStoppedCount = paymentsDataContext.Apprenticeship.Count(x => x.Status == ApprenticeshipStatus.Stopped);
             var paymentsPausedCount = paymentsDataContext.Apprenticeship.Count(x => x.Status == ApprenticeshipStatus.Paused);
 

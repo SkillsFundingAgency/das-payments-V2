@@ -1,5 +1,6 @@
 ﻿using Autofac;
-using SFA.DAS.Payments.ScheduledJobs.ApprovalsReferenceDataComparison.Processors;
+using ApprovalsReferenceDataComparisonService = SFA.DAS.Payments.ScheduledJobs.ApprovalsReferenceDataComparison.ApprovalsReferenceDataComparisonService;
+using IApprovalsReferenceDataComparisonService = SFA.DAS.Payments.ScheduledJobs.ApprovalsReferenceDataComparison.IApprovalsReferenceDataComparisonService;
 
 namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
 {
@@ -22,7 +23,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
             //    .As<IScheduledJobsConfiguration>()
             //    .SingleInstance();
 
-            builder.RegisterType<ApprovalsReferenceDataComparisonProcessor>().As<IApprovalsReferenceDataComparisonProcessor>().SingleInstance();
+            builder.RegisterType<ApprovalsReferenceDataComparisonService>().As<IApprovalsReferenceDataComparisonService>().SingleInstance();
         }
     }
 }

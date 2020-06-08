@@ -17,7 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages\SFA.DAS.Payments.FundingSource.Messages.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.ScheduledJobs.ApprovalsReferenceDataComparison\SFA.DAS.Payments.ScheduledJobs.ApprovalsReferenceDataComparison.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
