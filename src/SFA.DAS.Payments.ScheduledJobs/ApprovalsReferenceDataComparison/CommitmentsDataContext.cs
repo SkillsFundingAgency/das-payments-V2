@@ -8,6 +8,13 @@ namespace SFA.DAS.Payments.ScheduledJobs.ApprovalsReferenceDataComparison
         {
         }
 
-        public DbSet<ApprenticeshipModel> Apprenticeships { get; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.HasDefaultSchema("dbo");
+            modelBuilder.ApplyConfiguration(new ApprenticeshipConfiguration());
+        }
+
+        public DbSet<ApprenticeshipModel> Apprenticeship { get; set; }
     }
 }

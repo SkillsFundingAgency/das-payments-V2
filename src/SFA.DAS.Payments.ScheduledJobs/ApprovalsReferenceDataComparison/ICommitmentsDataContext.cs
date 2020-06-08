@@ -4,6 +4,6 @@ namespace SFA.DAS.Payments.ScheduledJobs.ApprovalsReferenceDataComparison
 {
     public interface ICommitmentsDataContext
     {
-        DbSet<ApprenticeshipModel> Apprenticeships { get; }
+        DbSet<ApprenticeshipModel> Apprenticeship { get; }
     }
 }

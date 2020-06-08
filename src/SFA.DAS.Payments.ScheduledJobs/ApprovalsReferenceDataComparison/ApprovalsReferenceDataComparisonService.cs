@@ -28,9 +28,9 @@ namespace SFA.DAS.Payments.ScheduledJobs.ApprovalsReferenceDataComparison
 
         public void ProcessComparison()
         {
-            var commitmentsApprovedCount = commitmentsDataContext.Apprenticeships.Count(x => x.IsApproved);
-            var commitmentsStoppedCount = commitmentsDataContext.Apprenticeships.Count(x => x.PaymentStatus == PaymentStatus.Withdrawn);
-            var commitmentsPausedCount = commitmentsDataContext.Apprenticeships.Count(x => x.PaymentStatus == PaymentStatus.Paused);
+            var commitmentsApprovedCount = commitmentsDataContext.Apprenticeship.Count(x => x.IsApproved);
+            var commitmentsStoppedCount = commitmentsDataContext.Apprenticeship.Count(x => x.PaymentStatus == PaymentStatus.Withdrawn);
+            var commitmentsPausedCount = commitmentsDataContext.Apprenticeship.Count(x => x.PaymentStatus == PaymentStatus.Paused);
 
             var paymentsApprovedCount = paymentsDataContext.Apprenticeship.Count(x => x.Status == ApprenticeshipStatus.Active);
             var paymentsStoppedCount = paymentsDataContext.Apprenticeship.Count(x => x.Status == ApprenticeshipStatus.Stopped);
