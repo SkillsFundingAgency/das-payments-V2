@@ -23,8 +23,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task<List<JobModel>> GetInProgressJobs();
         Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken);
         Task SaveDcSubmissionStatus(long jobId, bool succeeded, CancellationToken cancellationToken);
-        Task<bool> OutstandingJobsPresent(long? dcJobId, DateTimeOffset startTime, CancellationToken cancellationToken);
-        Task<bool> TimedOutJobsPresent(long? dcJobId, DateTimeOffset startTime, CancellationToken cancellationToken);
+        Task<List<(long? DcJobId, JobStatus JobStatus, bool? DcJobSucceeded, DateTimeOffset? endTime)>>GetOutstandingOrTimedOutJobs(long? dcJobId,DateTimeOffset startTime, CancellationToken cancellationToken);
     }
 
     public class JobsDataContext : DbContext, IJobsDataContext
@@ -151,29 +150,19 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public Task<bool> OutstandingJobsPresent(long? dcJobId, 
-            DateTimeOffset startTime, CancellationToken cancellationToken)
+        public async Task<List<(long? DcJobId, JobStatus JobStatus, bool? DcJobSucceeded, DateTimeOffset? endTime)>>GetOutstandingOrTimedOutJobs(long? dcJobId,
+                DateTimeOffset startTime, CancellationToken cancellationToken)
         {
             var latestValidStartTime = startTime.AddHours(-2).AddMinutes(-30);
-            return Jobs.AnyAsync(x =>
-                (x.DcJobId != dcJobId &&
-                    x.StartTime > latestValidStartTime &&
-                    x.Status == JobStatus.InProgress), cancellationToken: cancellationToken);
-        }
 
-        public Task<bool> TimedOutJobsPresent(long? dcJobId, DateTimeOffset startTime, CancellationToken cancellationToken)
-        {
-            return Jobs.AnyAsync(x =>
-                x.EndTime != null &&
-                x.EndTime.Value > startTime &&
-                // Currently (June 2020) when a job times out on the AS side, then it is marked
-                //  as 'CompletedWithError' if we have a success message from DC
-                // The DcTasksFailed could be returned if it fails on the DC side. DC start 
-                //  processing after we've passed datalocks - so our job can still timeout
-                (x.Status == JobStatus.TimedOut ||
-                    x.Status == JobStatus.CompletedWithErrors ||
-                    x.Status == JobStatus.DcTasksFailed) &&
-                 x.DcJobId != dcJobId, cancellationToken: cancellationToken);
+            var relevantJobs = await Jobs.Where(x =>
+                x.DcJobId != dcJobId &&
+                 x.JobType == JobType.EarningsJob &&
+                 x.StartTime > latestValidStartTime).
+                Select(x => new Tuple<long?, JobStatus, bool?, DateTimeOffset? >(x.DcJobId, x.Status, x.DcJobSucceeded, x.EndTime)).
+                ToListAsync(cancellationToken);
+
+           return relevantJobs.Select(x => x.ToValueTuple()).ToList();
         }
     }
 }

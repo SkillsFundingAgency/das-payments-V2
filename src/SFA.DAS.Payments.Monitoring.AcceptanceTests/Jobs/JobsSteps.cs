@@ -536,7 +536,8 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         {
             var job = await DataContext.Jobs.SingleOrDefaultAsync(x=>x.DcJobId == PeriodEndLargeSubmissionJobId);
             job.Status = JobStatus.Completed;
-            job.EndTime = DateTimeOffset.UtcNow.AddMinutes(1);
+            job.EndTime =  job.DcJobEndTime =  DateTimeOffset.UtcNow.AddMinutes(1);
+            job.DcJobSucceeded = true;
             await DataContext.SaveChangesAsync();
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -20,25 +21,31 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
-
-        public override async Task<bool> AnyOtherJobCriteriaMet(JobModel job, CancellationToken cancellationToken)
+       
+        protected override async Task<(bool IsComplete, JobStatus? OverriddenJobStatus)> PerformAdditionalJobChecks(JobModel job,  CancellationToken cancellationToken)
         {
-            if (await context.OutstandingJobsPresent(job.DcJobId, job.StartTime, cancellationToken))
+            var outstandingJobs =
+                await context.GetOutstandingOrTimedOutJobs(job.DcJobId, job.StartTime, cancellationToken);
+            
+            var timeoutsPresent = outstandingJobs.Any(x =>
+                (x.JobStatus == JobStatus.TimedOut ||
+                 x.JobStatus == JobStatus.CompletedWithErrors ||
+                 x.JobStatus == JobStatus.DcTasksFailed) &&
+                x.endTime.Value > job.StartTime);
+            if (timeoutsPresent) //fail fast
             {
-                return false;
-            }
-            return true;
-        }
-
-        protected override async Task<JobStatus> CompletedJobStatus(JobModel job,
-            bool hasFailedMessages, CancellationToken cancellationToken)
-        {
-            if (await context.TimedOutJobsPresent(job.DcJobId, job.StartTime, cancellationToken))
-            {
-                return JobStatus.CompletedWithErrors;
+                return (true, JobStatus.CompletedWithErrors);
             }
 
-            return JobStatus.Completed;
+            var processingJobsPresent =
+                outstandingJobs.Any(x =>
+                    x.JobStatus == JobStatus.InProgress &&
+                    x.DcJobSucceeded == null);
+
+            if (processingJobsPresent)
+                return (false, (JobStatus?) null);
+
+            return await base.PerformAdditionalJobChecks(job, cancellationToken);
         }
     }
 }
