@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring
         
         private void LogMissingPaymentsAccount(LevyAccountsDto levyAccountsDto)
         {
-            telemetry.TrackEvent("EmployerAccountReferenceData.Comparison", new Dictionary<string, string>
+            telemetry.TrackEvent("EmployerAccountReferenceData.Comparison.MissingLevyAccount", new Dictionary<string, string>
             {
                 { "Payments-MissingLevyAccount", $"LevyAccount with Id { GetAccountId(levyAccountsDto) } missing in Payments System" }
             }, null);
@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring
 
         private void LogMissingDasAccount(LevyAccountsDto levyAccountsDto)
         {
-            telemetry.TrackEvent("EmployerAccountReferenceData.Comparison", new Dictionary<string, string>
+            telemetry.TrackEvent("EmployerAccountReferenceData.Comparison.MissingLevyAccount", new Dictionary<string, string>
             {
                 { "Das-MissingLevyAccount", $"LevyAccount with Id { GetAccountId(levyAccountsDto) } missing in EAS System" }
             }, null);
@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring
         
         private void LogIsLevyPayerMismatch(LevyAccountsDto levyAccountsDto)
         {
-            telemetry.TrackEvent("EmployerAccountReferenceData.Comparison", new Dictionary<string, string>
+            telemetry.TrackEvent("EmployerAccountReferenceData.Comparison.IsLevyPayerMismatch", new Dictionary<string, string>
             {
                 { "IsLevyPayerMismatch", $"IsLevyPayer Does not match for LevyAccountId { GetAccountId(levyAccountsDto) }" },
                 { "Das-IsLevyPayer", levyAccountsDto.DasLevyAccount.IsLevyPayer.ToString() },
@@ -66,7 +66,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring
 
         private void LogTransferAllowanceMismatch(LevyAccountsDto levyAccountsDto)
         {
-            telemetry.TrackEvent("EmployerAccountReferenceData.Comparison", new Dictionary<string, string>
+            telemetry.TrackEvent("EmployerAccountReferenceData.Comparison.TransferAllowanceMismatch", new Dictionary<string, string>
             {
                 { "TransferAllowanceMismatch", $"TransferAllowance Does not match for LevyAccountId { GetAccountId(levyAccountsDto) }" },
                 { "Das-TransferAllowance", levyAccountsDto.DasLevyAccount.TransferAllowance.ToString(CultureInfo.InvariantCulture) },
@@ -76,7 +76,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring
 
         private void LogBalanceMismatch(LevyAccountsDto levyAccountsDto)
         {
-            telemetry.TrackEvent("EmployerAccountReferenceData.Comparison", new Dictionary<string, string>
+            telemetry.TrackEvent("EmployerAccountReferenceData.Comparison.BalanceMismatch", new Dictionary<string, string>
             {
                 { "BalanceMismatch", $"Balance Does not match for LevyAccountId { GetAccountId(levyAccountsDto) }" },
                 { "Das-Balance", levyAccountsDto.DasLevyAccount.Balance.ToString(CultureInfo.InvariantCulture) },

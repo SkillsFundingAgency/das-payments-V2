@@ -35,7 +35,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring
         
         private void LogCountMismatch(int dasLevyAccountCount, int paymentsLevyAccountCount)
         {
-            telemetry.TrackEvent("EmployerAccountReferenceData.Comparison", new Dictionary<string, double>
+            telemetry.TrackEvent("EmployerAccountReferenceData.Comparison.LevyAccountCount", new Dictionary<string, double>
             {
                 { "das-LevyAccountCount", Convert.ToDouble(dasLevyAccountCount) },
                 { "payments-LevyAccountCount", Convert.ToDouble(paymentsLevyAccountCount) },
@@ -44,7 +44,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring
         
         private void LogIsLevyPayerMismatch(decimal dasIsLevyPayerCount, decimal paymentsIsLevyPayerCount)
         {
-            telemetry.TrackEvent("EmployerAccountReferenceData.Comparison", new Dictionary<string, double>
+            telemetry.TrackEvent("EmployerAccountReferenceData.Comparison.IsLevyPayerCount", new Dictionary<string, double>
              {
                  { "das-IsLevyPayerCount", Convert.ToDouble(dasIsLevyPayerCount) },
                  { "payments-IsLevyPayerCount", Convert.ToDouble(paymentsIsLevyPayerCount) },
@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring
 
         private void LogTransferAllowanceMismatch(decimal dasTransferAllowanceTotal, decimal paymentsTransferAllowanceTotal)
         {
-            telemetry.TrackEvent("EmployerAccountReferenceData.Comparison", new Dictionary<string, double>
+            telemetry.TrackEvent("EmployerAccountReferenceData.Comparison.TransferAllowanceTotal", new Dictionary<string, double>
             {
                 { "das-TransferAllowanceTotal", Convert.ToDouble(dasTransferAllowanceTotal) },
                 { "payments-TransferAllowanceTotal", Convert.ToDouble(paymentsTransferAllowanceTotal) },
@@ -62,7 +62,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring
 
         private void LogBalanceMismatch(decimal dasLevyAccountBalanceTotal, decimal paymentsLevyAccountBalanceTotal)
         {
-            telemetry.TrackEvent("EmployerAccountReferenceData.Comparison", new Dictionary<string, double>
+            telemetry.TrackEvent("EmployerAccountReferenceData.Comparison.LevyAccountBalanceTotal", new Dictionary<string, double>
             {
                 { "das-LevyAccountBalanceTotal", Convert.ToDouble(dasLevyAccountBalanceTotal) },
                 { "payments-LevyAccountBalanceTotal", Convert.ToDouble(paymentsLevyAccountBalanceTotal) },
