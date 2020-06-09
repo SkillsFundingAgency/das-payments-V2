@@ -95,14 +95,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 return false;
             }
 
-            var jobStatus = additionalJobChecksResult.overriddenJobStatus ?? (currentJobStatus.hasFailedMessages ? JobStatus.CompletedWithErrors : JobStatus.Completed);
+            var jobStatus = additionalJobChecksResult.OverriddenJobStatus ?? (currentJobStatus.hasFailedMessages ? JobStatus.CompletedWithErrors : JobStatus.Completed);
 
             return await CompleteJob(jobId, jobStatus,
                 currentJobStatus.endTime.Value, cancellationToken).ConfigureAwait(false);
         }
 
 
-        protected virtual Task<(bool IsComplete, JobStatus? overriddenJobStatus)> PerformAdditionalJobChecks(JobModel job, 
+        protected virtual Task<(bool IsComplete, JobStatus? OverriddenJobStatus)> PerformAdditionalJobChecks(JobModel job, 
             CancellationToken cancellationToken)
         {
             return Task.FromResult((true,(JobStatus?) null));
