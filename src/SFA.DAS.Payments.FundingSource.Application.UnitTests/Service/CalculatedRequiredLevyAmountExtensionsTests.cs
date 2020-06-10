@@ -46,5 +46,47 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Should()
                 .BeTrue();
         }
+
+        [Test]
+        public void CalculateFundingAccountId_ShouldReturn_AccountId_IfFailedTransfer()
+        {
+            var accountId = 112;
+            new CalculatedRequiredLevyAmount
+                {
+                    AccountId = accountId,
+                    TransferSenderAccountId = 114
+                }
+                .CalculateFundingAccountId(true)
+                .Should()
+                .Be(accountId);
+        }
+
+        [Test]
+        public void CalculateFundingAccountId_ShouldReturn_TransferSenderAccountId_IfTransfer()
+        {
+            var transferSenderAccountId = 114;
+            new CalculatedRequiredLevyAmount
+                {
+                    AccountId = 112,
+                    TransferSenderAccountId = transferSenderAccountId
+            }
+                .CalculateFundingAccountId(false)
+                .Should()
+                .Be(transferSenderAccountId);
+        }
+
+        [Test]
+        public void CalculateFundingAccountId_ShouldReturn_AccountId_IfNotTransfer()
+        {
+            var accountId = 112;
+            new CalculatedRequiredLevyAmount
+                {
+                    AccountId = accountId,
+                    TransferSenderAccountId = null
+                }
+                .CalculateFundingAccountId(false)
+                .Should()
+                .Be(accountId);
+        }
     }
 }
