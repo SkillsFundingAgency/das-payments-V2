@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
@@ -85,8 +86,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                 .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();
-            await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
-
+            var result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+            result.Should().BeTrue();
             mocker.Mock<IJobStorageService>()
                 .Verify(
                     x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
@@ -114,11 +115,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                 .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();
-            await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+            var result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+            result.Should().BeFalse();
 
             outstandingOrTimedOutJobs[0] = CreateTimedOutSubmissionJob();
 
-            await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+            result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+            result.Should().BeTrue();
 
             mocker.Mock<IJobStorageService>()
                 .Verify(
@@ -145,12 +148,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                 .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();
-            await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false); //should not complete on first pass
-
+            var result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false); //should not complete on first pass
+            result.Should().BeFalse();
             outstandingOrTimedOutJobs.Clear();
             outstandingOrTimedOutJobs.Add(CreateCompletedSubmissionJob());
 
-            await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+            result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+            result.Should().BeTrue();
 
             mocker.Mock<IJobStorageService>()
                 .Verify(
