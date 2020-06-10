@@ -4,8 +4,12 @@ using System.Linq;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
+using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
+using SFA.DAS.Payments.EarningEvents.Application.UnitTests.Helpers;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
@@ -17,11 +21,15 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
     {
 
         private IMapper mapper;
+        private  Mock<IRedundancyEarningService> redundancyEarningService;
+        private const string filename = "Redundancy.json";
+        private const string learnerRefNo = "01fm361845";
 
         [OneTimeSetUp]
         public void InitialiseMapper()
         {
             mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<EarningsEventProfile>()));
+            redundancyEarningService = new Mock<IRedundancyEarningService>();
         }
 
 
@@ -224,7 +232,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                 }
             };
 
-            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(new ApprenticeshipContractTypeEarningsEventFactory(), mapper);
+            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningService.Object,mapper);
 
             var events = builder.Build(processLearnerCommand);
             events.Should().NotBeNull();
@@ -702,8 +710,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             };
 
             var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
-                new ApprenticeshipContractTypeEarningsEventFactory(),
-                mapper);
+                new ApprenticeshipContractTypeEarningsEventFactory(),redundancyEarningService.Object,mapper);
 
             var events = builder.Build(processLearnerCommand);
 
@@ -716,7 +723,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var processLearnerCommand = CreateLearnerSubmissionWithLearningSupport();
 
             var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
-                new ApprenticeshipContractTypeEarningsEventFactory(),
+                new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningService.Object,
                 mapper);
 
             var events = builder.Build(processLearnerCommand);
@@ -726,6 +733,23 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             events.Single().OnProgrammeEarnings.Single(x => x.Type == OnProgrammeEarningType.Learning).Periods.Should().HaveCount(12);
             events.Single().IncentiveEarnings.Should().HaveCount(11);
             events.Single().IncentiveEarnings.Single(x => x.Type == IncentiveEarningType.LearningSupport).Periods.Should().HaveCount(12);
+        }
+
+
+        [Test]
+        public void RedundantLearner_shouldSplitEarningEventAtPeriodWhereRedundancyTakesPlace()
+        {
+            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
+                new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningService.Object,
+                mapper);
+            var processLearnerCommand = FileHelpers.CreateFromFile(filename, learnerRefNo);
+
+            redundancyEarningService.Setup(x => x.SplitContractEarningByRedundancyDate(It.IsAny<ApprenticeshipContractType2EarningEvent>(), It.IsAny<DateTime>()))
+                .Returns(new List<ApprenticeshipContractTypeEarningsEvent>());
+
+            builder.Build(processLearnerCommand);
+
+            redundancyEarningService.Verify(x => x.SplitContractEarningByRedundancyDate(It.IsAny<ApprenticeshipContractType2EarningEvent>(), It.IsAny<DateTime>()));
         }
 
         private static ProcessLearnerCommand CreateLearnerSubmissionWithLearningSupport()
@@ -1013,5 +1037,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                 }
             };
         }
+
+
     }
 }

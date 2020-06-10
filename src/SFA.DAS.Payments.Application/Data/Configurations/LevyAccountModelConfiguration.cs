@@ -4,7 +4,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Application.Data.Configurations
 {
-    class LevyAccountModelConfiguration : IEntityTypeConfiguration<LevyAccountModel>
+    public class LevyAccountModelConfiguration : IEntityTypeConfiguration<LevyAccountModel>
     {
         public void Configure(EntityTypeBuilder<LevyAccountModel> builder)
         {

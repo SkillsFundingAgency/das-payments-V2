@@ -377,7 +377,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                         return stopwatch.ElapsedMilliseconds;
                     }
 
-                    await endpointInstance.SendLocal(learnerCommand).ConfigureAwait(false);
+                    await endpointInstance.Send(learnerCommand).ConfigureAwait(false);
 
                     var aims = submittedLearnerAimBuilder.Build(learnerCommand);
                     await Task.WhenAll(aims.Select(aim => submittedAimWriter.Write(aim, cancellationToken))).ConfigureAwait(false);

@@ -54,6 +54,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             Builder.RegisterType<AzureStorageKeyValuePersistenceService>().As<IStreamableKeyValuePersistenceService>().InstancePerLifetimeScope();
             Builder.RegisterType<StorageService>().As<IStorageService>().InstancePerLifetimeScope();
             Builder.RegisterType<TdgService>().As<ITdgService>().InstancePerLifetimeScope();
+            Builder.RegisterType<PaymentsHelper>().As<IPaymentsHelper>().InstancePerLifetimeScope();
 
             if (config.ValidateDcAndDasServices)
             {
