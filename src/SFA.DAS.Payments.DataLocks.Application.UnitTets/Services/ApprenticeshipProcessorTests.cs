@@ -397,7 +397,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         [Test]
         [TestCase(false)]
         [TestCase(true)]
-        public async Task Process_Apprenticeship_For_NonLevyPayer_Employer_Correctly(bool isLevyPayer)
+        public async Task Process_Apprenticeship_NonLevyPayerFlag_For_Employer_Correctly(bool isLevyPayer)
         {
             var apprenticeships = new List<ApprenticeshipModel>
             {
