@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace SFA.DAS.Payments.ScheduledJobs.ApprovalsReferenceDataComparison
+namespace SFA.DAS.Payments.ScheduledJobs.ApprenticeshipsReferenceDataComparison
 {
     public class CommitmentsDataContext : DbContext, ICommitmentsDataContext
     {

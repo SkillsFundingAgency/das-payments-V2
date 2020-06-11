@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Core.Configuration;
-using SFA.DAS.Payments.ScheduledJobs.ApprovalsReferenceDataComparison;
+using SFA.DAS.Payments.ScheduledJobs.ApprenticeshipsReferenceDataComparison;
 
 namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
 {

@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace SFA.DAS.Payments.ScheduledJobs.ApprovalsReferenceDataComparison
+namespace SFA.DAS.Payments.ScheduledJobs.ApprenticeshipsReferenceDataComparison
 {
     public class ApprenticeshipConfiguration : IEntityTypeConfiguration<ApprenticeshipModel>
     {
         public void Configure(EntityTypeBuilder<ApprenticeshipModel> builder)
         {
-            //SetTablePerHierarchy(builder);
-
             builder.Property(e => e.Cost).HasColumnType("decimal(18, 0)");
             builder.Property(e => e.CreatedOn).HasColumnType("datetime");
             builder.Property(e => e.DateOfBirth).HasColumnType("datetime");
@@ -56,29 +51,5 @@ namespace SFA.DAS.Payments.ScheduledJobs.ApprovalsReferenceDataComparison
 
             builder.Ignore(e => e.IsProviderSearch);
         }
-
-//        private void SetTablePerHierarchy(EntityTypeBuilder<ApprenticeshipModel> builder)
-//        {
-//            /*
-//             *  TPH requires a discriminator column. By default this is called Discriminator and is a string, but this can be configured.
-//             *  Here, the discriminator column is set to "IsApproved" and is a boolean.
-//             *  We cannot use PaymentStatus directly because the discriminator requires one value for each entity type which
-//             *  doesn't match the scenario since paymentstatus 0 means Draft and *all* other values mean approved.
-//             *  So we create a calculated field in the database called IsApproved which is based on payment status:
-//             * alter table [dbo].[Apprenticeship]
-//             *      add IsApproved as (CASE WHEN PaymentStatus > 0 THEN CAST(1 as bit) ELSE CAST(0 as bit) END) PERSISTED;
-//.            * Note that the value is persisted, since we will be selecting on this column.
-//             * The fact that this is calculated field means that EF does not attempt to set it (which it would normally
-//             * - do based on the discriminator for that entity type).
-//             */
-
-//            builder.ToTable("Apprenticeship")
-//                .HasDiscriminator<bool>(nameof(ApprenticeshipBase.IsApproved))
-//                .HasValue<DraftApprenticeship>(false)
-//                .HasValue<Apprenticeship>(true);
-
-//            builder.Property(p => p.IsApproved)
-//                .HasComputedColumnSql("CASE WHEN PaymentStatus > 0 THEN 1 ELSE 0 END");
-//        }
     }
 }
