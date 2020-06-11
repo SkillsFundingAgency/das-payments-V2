@@ -26,12 +26,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
         {
             var outstandingJobs =
                 await context.GetOutstandingOrTimedOutJobs(job.DcJobId, job.StartTime, cancellationToken);
-            
+
             //var timeoutsPresent = outstandingJobs.Any(x =>
             //    (x.JobStatus == JobStatus.TimedOut ||
             //     x.JobStatus == JobStatus.CompletedWithErrors ||
             //     x.JobStatus == JobStatus.DcTasksFailed) &&
-            //    x.endTime.Value > job.StartTime);
+            //    x.endTime > job.StartTime);
             //if (timeoutsPresent) //fail fast
             //{
             //    return (true, JobStatus.CompletedWithErrors);

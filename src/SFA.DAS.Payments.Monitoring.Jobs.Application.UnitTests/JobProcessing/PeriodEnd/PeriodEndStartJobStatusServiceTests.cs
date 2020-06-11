@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
         private List<CompletedMessage> completedMessages;
         private List<InProgressMessage> inProgressMessages;
 
-        private List<(long? DcJobId, JobStatus JobStatus, bool? DcJobSucceeded, DateTimeOffset? endTime)>
+        private List<OutstandingJobResult>
             outstandingOrTimedOutJobs;
 
         [SetUp]
@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
         {
             inProgressMessages = new List<InProgressMessage>();
             completedMessages = new List<CompletedMessage>();
-            outstandingOrTimedOutJobs = new List<(long? DcJobId, JobStatus JobStatus, bool? DcJobSucceeded, DateTimeOffset? endTime)>();
+            outstandingOrTimedOutJobs = new List<OutstandingJobResult>();
             mocker = AutoMock.GetLoose();
 
             job = new JobModel
@@ -165,22 +165,25 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             
         }
 
-        private (long? DcJobId, JobStatus JobStatus, bool? DcJobSucceeded, DateTimeOffset? endTime) CreateOutstandingSubmissionJob()
+        private OutstandingJobResult CreateOutstandingSubmissionJob()
         {
-            return (job.Id, JobStatus.InProgress, null, null);
+            return new OutstandingJobResult()
+                {DcJobId = job.Id, JobStatus = JobStatus.InProgress, DcJobSucceeded = null, endTime = null};
         }
 
-        private (long? DcJobId, JobStatus JobStatus, bool? DcJobSucceeded, DateTimeOffset? endTime) CreateTimedOutSubmissionJob()
+        private OutstandingJobResult CreateTimedOutSubmissionJob()
         {
-            return (job.Id, JobStatus.TimedOut, true, DateTimeOffset.UtcNow.AddSeconds(10));
+            return new OutstandingJobResult()
+                {DcJobId = job.Id, JobStatus = JobStatus.TimedOut, DcJobSucceeded = true, endTime =  DateTimeOffset.UtcNow.AddSeconds(10) };
         }
 
-        private (long? DcJobId, JobStatus JobStatus, bool? DcJobSucceeded, DateTimeOffset? endTime)
+        private OutstandingJobResult
             CreateCompletedSubmissionJob()
         {
-            (long? DcJobId, JobStatus JobStatus, bool? DcJobSucceeded, DateTimeOffset? endTime) completedSubmissionJob =
-                (job.Id, JobStatus.Completed, true, null);
-            return completedSubmissionJob;
+            return new OutstandingJobResult()
+            {
+                DcJobId = job.Id, JobStatus = JobStatus.Completed, DcJobSucceeded = true, endTime = DateTimeOffset.UtcNow.AddSeconds(10)
+            };
         }
 
         private static InProgressMessage CreateInProgressMessage(CompletedMessage completedMessage)
