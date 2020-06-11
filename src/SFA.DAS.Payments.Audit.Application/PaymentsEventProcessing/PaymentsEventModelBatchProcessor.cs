@@ -154,6 +154,8 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing
 
             for (var i = 0; i < tableRow.ItemArray.Length; i++)
             {
+                if(tableRow.Table.Columns[i].ColumnName == "LearnerUln" || tableRow.Table.Columns[i].ColumnName == "Ukprn")
+                    continue;
                 logStringBuilder.Append(tableRow.Table.Columns[i].ColumnName)
                     .Append(": ")
                     .Append(tableRow.ItemArray[i] ?? "null")

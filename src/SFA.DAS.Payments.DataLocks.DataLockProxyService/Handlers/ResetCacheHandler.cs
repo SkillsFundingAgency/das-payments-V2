@@ -32,7 +32,6 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
             foreach (var uln in ulns)
             {
                 var actorId = new ActorId(uln.ToString());
-                logger.LogVerbose($"Creating actor proxy for actor id: {uln}");
                 var actor = proxyFactory.CreateActorProxy<IDataLockService>(new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/DataLockServiceActorService"), actorId);
                 logger.LogVerbose($"Actor proxy created, now resetting the cache.");
                 resetTasks.Add(actor.Reset());
