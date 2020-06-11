@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using FluentValidation;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 
-namespace SFA.DAS.Payments.ScheduledJobs.Monitoring
+namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.LevyAccountData
 {
     public class LevyAccountValidator : AbstractValidator<LevyAccountsDto>
     {
@@ -11,7 +12,8 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring
 
         public LevyAccountValidator(ITelemetry telemetry)
         {
-            this.telemetry = telemetry;
+            this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
+            
             RuleFor(la => la.DasLevyAccount.AccountId)
                 .NotEmpty()
                 .OnFailure(LogMissingDasAccount);

@@ -8,29 +8,29 @@ using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Model.Core.Entities;
 
-namespace SFA.DAS.Payments.ScheduledJobs.Monitoring
+namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.LevyAccountData
 {
-    public interface IDasLevyAccountBalanceApiWrapper
+    public interface IDasLevyAccountApiWrapper
     {
         Task<List<LevyAccountModel>> GetDasLevyAccountDetails();
     }
-    
-    public class DasLevyAccountBalanceApiWrapper : IDasLevyAccountBalanceApiWrapper
+
+    public class DasLevyAccountApiWrapper : IDasLevyAccountApiWrapper
     {
         private readonly int accountApiBatchSize;
         private readonly IAccountApiClient accountApiClient;
         private readonly IPaymentLogger logger;
 
-        public DasLevyAccountBalanceApiWrapper(int accountApiBatchSize, IAccountApiClient accountApiClient, IPaymentLogger logger)
+        public DasLevyAccountApiWrapper(int accountApiBatchSize, IAccountApiClient accountApiClient, IPaymentLogger logger)
         {
             this.accountApiBatchSize = accountApiBatchSize;
-            this.accountApiClient = accountApiClient;
-            this.logger = logger;
+            this.accountApiClient = accountApiClient ?? throw new ArgumentNullException(nameof(accountApiClient));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<List<LevyAccountModel>> GetDasLevyAccountDetails()
         {
-            logger.LogInfo("Started Importing DAS Employer Accounts");
+            logger.LogDebug("Started Importing DAS Employer Accounts");
 
             var dasLevyAccountDetails = new List<LevyAccountModel>();
 
@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring
 
             for (var pageNumber = 1; pageNumber <= totalPages; pageNumber++)
             {
-                var levyAccountDetails = await GetLevyAccountDetails(pageNumber);
+                var levyAccountDetails = await GetPageOfLevyAccounts(pageNumber);
 
                 dasLevyAccountDetails.AddRange(levyAccountDetails);
             }
@@ -48,15 +48,13 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring
             return dasLevyAccountDetails;
         }
 
-        private async Task<List<LevyAccountModel>> GetLevyAccountDetails(int pageNumber, CancellationToken cancellationToken = default(CancellationToken))
+        private async Task<List<LevyAccountModel>> GetPageOfLevyAccounts(int pageNumber, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             try
             {
                 var pagedAccountsRecords = await accountApiClient.GetPageOfAccounts(pageNumber, accountApiBatchSize).ConfigureAwait(false);
-
-                logger.LogInfo($"Successfully retrieved Account Balance Details for Page {pageNumber} of Levy Accounts");
 
                 return MapToLevyAccountModel(pagedAccountsRecords);
             }
@@ -72,11 +70,8 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring
             try
             {
                 var pagedAccountsRecord = await accountApiClient.GetPageOfAccounts(1, accountApiBatchSize).ConfigureAwait(false);
-                var totalPages = pagedAccountsRecord.TotalPages;
 
-                logger.LogInfo($"Total Levy Account to process {totalPages} ");
-
-                return totalPages;
+                return pagedAccountsRecord.TotalPages;
             }
             catch (Exception e)
             {

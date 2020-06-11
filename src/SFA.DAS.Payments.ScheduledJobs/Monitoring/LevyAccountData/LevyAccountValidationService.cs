@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -6,39 +7,39 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Entities;
 
-namespace SFA.DAS.Payments.ScheduledJobs.Monitoring
+namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.LevyAccountData
 {
-    public interface ILevyAccountBalanceValidationService
+    public interface ILevyAccountValidationService
     {
         Task Validate();
     }
     
-    public class LevyAccountBalanceValidationService : ILevyAccountBalanceValidationService
+    public class LevyAccountValidationService : ILevyAccountValidationService
     {
-        private readonly IDasLevyAccountBalanceApiWrapper dasLevyAccountBalanceApiWrapper;
+        private readonly IDasLevyAccountApiWrapper dasLevyAccountApiWrapper;
         private readonly IPaymentsDataContext paymentsDataContext;
         private readonly IValidator<CombinedLevyAccountsDto> validator;
         private readonly IPaymentLogger paymentLogger;
 
-        public LevyAccountBalanceValidationService(
-            IDasLevyAccountBalanceApiWrapper dasLevyAccountBalanceApiWrapper,
+        public LevyAccountValidationService(
+            IDasLevyAccountApiWrapper dasLevyAccountApiWrapper,
             IPaymentsDataContext paymentsDataContext,
             IValidator<CombinedLevyAccountsDto> validator,
             IPaymentLogger paymentLogger)
         {
-            this.dasLevyAccountBalanceApiWrapper = dasLevyAccountBalanceApiWrapper;
-            this.paymentsDataContext = paymentsDataContext;
-            this.validator = validator;
-            this.paymentLogger = paymentLogger;
+            this.dasLevyAccountApiWrapper = dasLevyAccountApiWrapper ?? throw new ArgumentNullException(nameof(dasLevyAccountApiWrapper));
+            this.paymentsDataContext = paymentsDataContext ?? throw new ArgumentNullException(nameof(paymentsDataContext));
+            this.validator = validator ?? throw new ArgumentNullException(nameof(validator));
+            this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
         }
 
         public async Task Validate()
         {
             var combinedLevyAccountBalance = await GetLevyAccountDetails();
             
-            paymentLogger.LogInfo("Started Validating Employer Accounts");
+            paymentLogger.LogDebug("Started Validating Employer Accounts");
 
-            var res = await validator.ValidateAsync(combinedLevyAccountBalance);
+            await validator.ValidateAsync(combinedLevyAccountBalance);
         
             paymentLogger.LogInfo("Finished Validating Employer Accounts");
         }
@@ -55,12 +56,12 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring
 
         private async Task<List<LevyAccountModel>> GetDasLevyAccountDetails()
         {
-            return await dasLevyAccountBalanceApiWrapper.GetDasLevyAccountDetails();
+            return await dasLevyAccountApiWrapper.GetDasLevyAccountDetails();
         }
 
         private async Task<List<LevyAccountModel>> GetPaymentsLevyAccountDetails()
         {
-            paymentLogger.LogInfo("Started Importing Payments Employer Accounts");
+            paymentLogger.LogDebug("Started Importing Payments Employer Accounts");
 
             var levyAccountModels = await paymentsDataContext.LevyAccount.ToListAsync();
 

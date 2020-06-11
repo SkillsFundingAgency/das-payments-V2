@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
                         RequiredPaymentAuditDataCleanUpQueue = configHelper.GetSetting("RequiredPaymentAuditDataCleanUpQueue"),
                         CollectionPeriod = configHelper.GetSetting("CollectionPeriod"),
                         AcademicYear = configHelper.GetSetting("AcademicYear"),
-                        AccountApiBatchSize = int.Parse(configHelper.GetSetting("AccountApiBatchSize")),
+                        AccountApiBatchSize = configHelper.GetSettingOrDefault("AccountApiBatchSize", 1000),
                     };
                 })
                 .As<IScheduledJobsConfiguration>()

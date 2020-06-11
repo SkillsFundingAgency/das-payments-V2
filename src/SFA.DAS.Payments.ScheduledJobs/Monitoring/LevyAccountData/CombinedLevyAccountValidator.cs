@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using FluentValidation;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 
-namespace SFA.DAS.Payments.ScheduledJobs.Monitoring
+namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.LevyAccountData
 {
     public class CombinedLevyAccountValidator : AbstractValidator<CombinedLevyAccountsDto>
     {
@@ -11,7 +11,9 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring
 
         public CombinedLevyAccountValidator(ITelemetry telemetry, IValidator<LevyAccountsDto> levyAccountValidator)
         {
-            this.telemetry = telemetry;
+            this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
+            if(levyAccountValidator == null) throw new ArgumentNullException(nameof(levyAccountValidator));
+            
             RuleFor(act => act.DasLevyAccountCount)
                 .Equal(act => act.PaymentsLevyAccountCount)
                 .OnFailure(act => LogCountMismatch(act.DasLevyAccountCount, act.PaymentsLevyAccountCount));

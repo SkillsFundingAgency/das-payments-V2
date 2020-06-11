@@ -10,19 +10,19 @@ using NUnit.Framework;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.ScheduledJobs.Monitoring;
+using SFA.DAS.Payments.ScheduledJobs.Monitoring.LevyAccountData;
 
-namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring
+namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
 {
     [TestFixture]
-    public class LevyAccountBalanceValidationServiceTests
+    public class LevyAccountValidationServiceTests
     {
         private readonly LevyAccountBuilder levyAccountBuilder = new LevyAccountBuilder();
 
-        private LevyAccountBalanceValidationService sut;
+        private LevyAccountValidationService sut;
         private AutoMock mocker;
         private Mock<ITelemetry> telemetry;
-        private Mock<IDasLevyAccountBalanceApiWrapper> accountApiWrapper;
+        private Mock<IDasLevyAccountApiWrapper> accountApiWrapper;
         private PaymentsDataContext paymentsDataContext;
 
         [SetUp]
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring
             mocker = AutoMock.GetLoose();
             mocker.Mock<IPaymentLogger>();
 
-            accountApiWrapper = mocker.Mock<IDasLevyAccountBalanceApiWrapper>();
+            accountApiWrapper = mocker.Mock<IDasLevyAccountApiWrapper>();
 
             telemetry = mocker.Mock<ITelemetry>();
 
@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring
             paymentsDataContext.LevyAccount.AddRange(levyAccountBuilder.Build(1));
             paymentsDataContext.SaveChanges();
 
-            sut = mocker.Create<LevyAccountBalanceValidationService>(
+            sut = mocker.Create<LevyAccountValidationService>(
                 new NamedParameter("validator", combinedLevyAccountsValidator),
                 new NamedParameter("paymentsDataContext", paymentsDataContext));
         }
@@ -58,7 +58,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring
         }
 
         [Test]
-        public async Task Validate_Should_Get_Both_Das_and_Payment_LevyAccounts_And_Combine_Them_and_Run_Validation_Rules_On_Combined_Data_And_Should_NOT_Raise_Any_Validation_Events()
+        public async Task Validate_Should_Run_Validation_Rules_On_Combined_Data_And_Should_Not_Raise_Any_Validation_Events()
         {
             accountApiWrapper.Setup(x => x.GetDasLevyAccountDetails())
                              .ReturnsAsync(levyAccountBuilder.Build(1).ToList());
@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring
         }
 
         [Test]
-        public async Task Validate_Should_Raise_Das_LevyAccountCount_mismatch_Validation_Event()
+        public async Task Validate_Should_Raise_Das_LevyAccountCount_Mismatch_Validation_Event()
         {
             paymentsDataContext.RemoveRange(paymentsDataContext.LevyAccount.ToList());
             await paymentsDataContext.SaveChangesAsync();
@@ -96,7 +96,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring
         }
 
         [Test]
-        public async Task Validate_Should_Raise_Payments_LevyAccountCount_mismatch_Validation_Event()
+        public async Task Validate_Should_Raise_Payments_LevyAccountCount_Mismatch_Validation_Event()
         {
             var levyAccounts = levyAccountBuilder.Build(2).ToList();
 
@@ -106,18 +106,16 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring
             await sut.Validate();
 
             VerifyCombinedTelemetryEvent("das-LevyAccountCount");
-            // VerifyCombinedTelemetryEvent("das-IsLevyPayerCount");
             VerifyCombinedTelemetryEvent("das-TransferAllowanceTotal");
             VerifyCombinedTelemetryEvent("das-LevyAccountBalanceTotal");
 
             VerifyIndividualTelemetryEvent("Payments-MissingLevyAccount");
-            // VerifyIndividualTelemetryEvent("IsLevyPayerMismatch");
             VerifyIndividualTelemetryEvent("TransferAllowanceMismatch");
             VerifyIndividualTelemetryEvent("BalanceMismatch");
         }
 
         [Test]
-        public async Task Validate_Should_Raise_Balance_mismatch_Validation_Event()
+        public async Task Validate_Should_Raise_Balance_Mismatch_Validation_Event()
         {
             var levyAccounts = levyAccountBuilder.SetBalance(200).Build(1).ToList();
 
@@ -132,7 +130,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring
         }
 
         [Test]
-        public async Task Validate_Should_Raise_TransferAllowance_mismatch_Validation_Event()
+        public async Task Validate_Should_Raise_TransferAllowance_Mismatch_Validation_Event()
         {
             var levyAccounts = levyAccountBuilder.SetTransferAllowance(200).Build(1).ToList();
 
@@ -147,7 +145,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring
         }
 
         [Test]
-        public async Task Validate_Should_Raise_IsLevyPayer_mismatch_Validation_Event()
+        public async Task Validate_Should_Raise_IsLevyPayer_Mismatch_Validation_Event()
         {
             var levyAccounts = levyAccountBuilder.SetIsLevyPayer(false).Build(1).ToList();
 

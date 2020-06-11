@@ -2,7 +2,7 @@
 using System.Linq;
 using SFA.DAS.Payments.Model.Core.Entities;
 
-namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring
+namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
 {
     public class LevyAccountBuilder
     {
