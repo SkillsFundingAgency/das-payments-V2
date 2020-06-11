@@ -118,7 +118,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
         private async Task PublishEmployerEvents(List<LevyAccountModel> accountModels)
         {
-            var employers = accountModels.Select(x => (x.AccountId, x.IsLevyPayer)).ToList();
+            var employers = accountModels.Select(x => new {x.AccountId, x.IsLevyPayer}).ToList();
 
             var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
 
