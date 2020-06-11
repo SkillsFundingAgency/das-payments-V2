@@ -58,7 +58,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 var pagedAccountsRecords = await accountApiClient.GetPageOfAccounts(pageNumber, batchSize).ConfigureAwait(false);
                 var pagedLevyAccountModels = MapToLevyAccountModel(pagedAccountsRecords);
                 await BatchUpdateLevyAccounts(pagedLevyAccountModels, cancellationToken).ConfigureAwait(false);
-                await PublishNotLevyPayerEmployerEvents(pagedLevyAccountModels).ConfigureAwait(false);
+                await PublishEmployerEvents(pagedLevyAccountModels).ConfigureAwait(false);
 
                 logger.LogInfo($"Successfully retrieved Account Balance Details for Page {pageNumber} of Levy Accounts");
             }
@@ -115,19 +115,30 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
 
         }
 
-        private async Task PublishNotLevyPayerEmployerEvents(List<LevyAccountModel> accountModels)
-        {
-            var notLevyPayingEmployerIds = accountModels.Where(x => !x.IsLevyPayer).Select(x => x.AccountId).ToList();
 
-            if (!notLevyPayingEmployerIds.Any()) return;
-            logger.LogInfo($"Trying to Publish FoundNotLevyPayerEmployerAccount event for  Account Ids: {string.Join(",", notLevyPayingEmployerIds)}");
+        private async Task PublishEmployerEvents(List<LevyAccountModel> accountModels)
+        {
+            var employers = accountModels.Select(x => (x.AccountId, x.IsLevyPayer)).ToList();
 
             var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
-            var publishMessageTasks = notLevyPayingEmployerIds.Select(accountId => endpointInstance.Publish(new FoundNotLevyPayerEmployerAccount { AccountId = accountId }));
-            await Task.WhenAll(publishMessageTasks).ConfigureAwait(false);
 
-            logger.LogInfo($"Successfully Published FoundNotLevyPayerEmployerAccount event for  Account Ids: {string.Join(",", notLevyPayingEmployerIds)}");
+            List<Task> publishEvents = new List<Task>();
+
+            publishEvents.AddRange(employers.Where(x=> !x.IsLevyPayer).Select(employer => endpointInstance.Publish(new FoundNotLevyPayerEmployerAccount { AccountId = employer.AccountId })));
+            publishEvents.AddRange(employers.Where(x=> x.IsLevyPayer).Select(employer => endpointInstance.Publish(new FoundLevyPayerEmployerAccount { AccountId = employer.AccountId })));
+
+            var accountIds = string.Join(",", employers.Select(x=>x.AccountId));
+            var totalsString =
+                $"{employers.Count(x => x.IsLevyPayer)} Is Levy and {employers.Count(x => !x.IsLevyPayer)} Non Levy accounts";
+
+            logger.LogInfo(
+                $"Trying to Publish EmployerAccount events for Account Ids: {accountIds}. Publishing {totalsString}");
+            await Task.WhenAll(publishEvents).ConfigureAwait(false);
+
+            logger.LogInfo($"Successfully Published EmployerAccount event for  Account Ids: {accountIds}. Published {totalsString}");
         }
+
+        
 
     }
 }

@@ -11,25 +11,25 @@ using SFA.DAS.Payments.DataLocks.Messages.Events;
 
 namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
 {
-    public class FoundNotLevyPayerEmployerAccountEventHandler : IHandleMessages<FoundNotLevyPayerEmployerAccount>
+    public class FoundLevyPayerEmployerAccountEventHandler : IHandleMessages<FoundLevyPayerEmployerAccount>
     {
         private readonly IActorProxyFactory proxyFactory;
         private readonly IPaymentLogger paymentLogger;
         private readonly ILifetimeScope scope;
 
-        public FoundNotLevyPayerEmployerAccountEventHandler(IActorProxyFactory proxyFactory, IPaymentLogger paymentLogger, ILifetimeScope scope)
+        public FoundLevyPayerEmployerAccountEventHandler(IActorProxyFactory proxyFactory, IPaymentLogger paymentLogger, ILifetimeScope scope)
         {
             this.proxyFactory = proxyFactory;
             this.paymentLogger = paymentLogger;
             this.scope = scope;
         }
 
-        public async Task Handle(FoundNotLevyPayerEmployerAccount message, IMessageHandlerContext context)
+        public async Task Handle(FoundLevyPayerEmployerAccount message, IMessageHandlerContext context)
         {
-            paymentLogger.LogDebug($"Handling Found NotLevyPayer Employer Account Id: {message.AccountId}");
+            paymentLogger.LogDebug($"Handling Found LevyPayer Employer Account Id: {message.AccountId}");
             var processor = scope.Resolve<IApprenticeshipProcessor>();
-            await processor.ProcessNonLevyPayerFlagForEmployer(message.AccountId, false).ConfigureAwait(false);
-            paymentLogger.LogInfo($"Finished Handling Found NotLevyPayer Employer Account Id: {message.AccountId}");
+            await processor.ProcessNonLevyPayerFlagForEmployer(message.AccountId, true).ConfigureAwait(false);
+            paymentLogger.LogInfo($"Finished Handling Found LevyPayer Employer Account Id: {message.AccountId}");
         }
     }
 }

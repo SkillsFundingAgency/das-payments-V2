@@ -47,7 +47,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         [Test]
         public async Task Refresh_All_Levy_Account_Details_Correctly()
         {
-            var accountIds = new List<long> { 1, 2, 3 };
             int batchSize = 2;
             var pageNumber = 3;
 
@@ -89,7 +88,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 endpointInstanceFactory.Object
             );
 
-            await service.RefreshLevyAccountDetails(pageNumber, new CancellationToken()).ConfigureAwait(false);
+            await service.RefreshLevyAccountDetails(pageNumber).ConfigureAwait(false);
 
             accountApiClient
                 .Verify(x => x.GetPageOfAccounts(pageNumber, It.IsAny<int>(), It.IsAny<DateTime?>()), Times.Exactly(1));
@@ -143,7 +142,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 endpointInstanceFactory.Object
             );
 
-            await service.RefreshLevyAccountDetails(1, new CancellationToken()).ConfigureAwait(false);
+            await service.RefreshLevyAccountDetails(1).ConfigureAwait(false);
 
             accountApiClient
                 .Verify(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()), Times.Exactly(1));
@@ -163,7 +162,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         }
 
         [Test]
-        public async Task Publish_FoundNotLevyPayerEmployerAccount_Correctly()
+        public async Task Publish_FoundEmployerAccountEvents_Correctly()
         {
             int batchSize = 5;
             var pagedOneApiResponseViewModel = new PagedApiResponseViewModel<AccountWithBalanceViewModel>
@@ -178,6 +177,22 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                         RemainingTransferAllowance = 10m,
                         AccountName = "Test Ltd",
                         IsLevyPayer = false
+                    },
+                    new AccountWithBalanceViewModel
+                    {
+                        AccountId = 2,
+                        Balance = 100m,
+                        RemainingTransferAllowance = 10m,
+                        AccountName = "Test Ltd",
+                        IsLevyPayer = true
+                    },
+                    new AccountWithBalanceViewModel
+                    {
+                        AccountId = 3,
+                        Balance = 100m,
+                        RemainingTransferAllowance = 10m,
+                        AccountName = "Test Ltd",
+                        IsLevyPayer = true
                     }
                 }
             };
@@ -210,7 +225,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Verify(svc => svc.Publish(It.Is<FoundNotLevyPayerEmployerAccount>( x => x.AccountId == 1),
                     It.IsAny<PublishOptions>()), 
                     Times.Once);
-
+            endpointInstance
+                .Verify(svc => svc.Publish(It.Is<FoundLevyPayerEmployerAccount>(x => new List<long>{2,3}.Contains(x.AccountId)),
+                        It.IsAny<PublishOptions>()),
+                    Times.Exactly(2));
         }
 
 
@@ -262,7 +280,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 .Verify(svc => svc.Publish(It.Is<FoundNotLevyPayerEmployerAccount>(x => x.AccountId == 1),
                     It.IsAny<PublishOptions>()),
                     Times.Never);
-
         }
     }
 }
