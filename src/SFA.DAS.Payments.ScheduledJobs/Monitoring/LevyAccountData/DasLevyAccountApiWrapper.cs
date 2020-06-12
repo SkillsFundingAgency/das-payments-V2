@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.LevyAccountData
 
             logger.LogInfo("Finished Importing DAS Employer Accounts");
 
-            return dasLevyAccountDetails;
+            return dasLevyAccountDetails.IsNullOrEmpty() ? null : dasLevyAccountDetails;
         }
 
         private async Task<List<LevyAccountModel>> GetPageOfLevyAccounts(int pageNumber, CancellationToken cancellationToken = default(CancellationToken))

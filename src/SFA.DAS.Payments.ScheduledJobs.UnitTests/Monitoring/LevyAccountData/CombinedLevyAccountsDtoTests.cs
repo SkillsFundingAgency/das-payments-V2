@@ -13,10 +13,6 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
         [TestCase(2, 2, 200, 200)]
         [TestCase(1, 2, 100, 200)]
         [TestCase(2, 1, 200, 100)]
-        [TestCase(0, 1, 0, 100)]
-        [TestCase(-1, 1, 0, 100)]
-        [TestCase(1, 0, 100, 0)]
-        [TestCase(1, -1, 100, 0)]
         public void GetLevyAccounts_Should_CalculateTotalsFromDasAndPaymentsLevyAccountLists(int numberOfItemsDas, int numberOfItemsPayments, int expectedDasSum, int expectedPaymentsSum)
         {
             var sut = new CombinedLevyAccountsDto(levyAccountBuilder.Build(numberOfItemsDas), levyAccountBuilder.Build(numberOfItemsPayments));
@@ -106,7 +102,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
         {
             var accounts = levyAccountBuilder.Build(3).ToList();
             
-            var sut = new CombinedLevyAccountsDto(accounts.Skip(1), accounts.Take(2));
+            var sut = new CombinedLevyAccountsDto(accounts.Skip(1).ToList(), accounts.Take(2).ToList());
 
             var levyAccountsDtos = sut.LevyAccounts.ToList();
 

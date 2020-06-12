@@ -12,28 +12,43 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.LevyAccountData
         public CombinedLevyAccountValidator(ITelemetry telemetry, IValidator<LevyAccountsDto> levyAccountValidator)
         {
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
-            if(levyAccountValidator == null) throw new ArgumentNullException(nameof(levyAccountValidator));
-            
-            RuleFor(act => act.DasLevyAccountCount)
-                .Equal(act => act.PaymentsLevyAccountCount)
-                .OnFailure(act => LogCountMismatch(act.DasLevyAccountCount, act.PaymentsLevyAccountCount));
+            if (levyAccountValidator == null) throw new ArgumentNullException(nameof(levyAccountValidator));
 
-            RuleFor(act => act.DasLevyAccountBalanceTotal)
-                .Equal(act => act.PaymentsLevyAccountBalanceTotal)
-                .OnFailure(act => LogBalanceMismatch(act.DasLevyAccountBalanceTotal, act.PaymentsLevyAccountBalanceTotal));
+            RuleFor(act => act.IsNullOrEmpty)
+                .Equal(false)
+                .OnFailure(LogInvalidData);
 
-            RuleFor(act => act.DasTransferAllowanceTotal)
-                .Equal(act => act.PaymentsTransferAllowanceTotal)
-                .OnFailure(act => LogTransferAllowanceMismatch(act.DasTransferAllowanceTotal, act.PaymentsTransferAllowanceTotal));
+            When(act => !act.IsNullOrEmpty,
+                 () =>
+                 {
+                     RuleFor(act => act.DasLevyAccountCount)
+                         .Equal(act => act.PaymentsLevyAccountCount)
+                         .OnFailure(act => LogCountMismatch(act.DasLevyAccountCount, act.PaymentsLevyAccountCount));
 
-            RuleFor(act => act.DasIsLevyPayerCount)
-                .Equal(act => act.PaymentsIsLevyPayerCount)
-                .OnFailure(act => LogIsLevyPayerMismatch(act.DasIsLevyPayerCount, act.PaymentsIsLevyPayerCount));
+                     RuleFor(act => act.DasLevyAccountBalanceTotal)
+                         .Equal(act => act.PaymentsLevyAccountBalanceTotal)
+                         .OnFailure(act => LogBalanceMismatch(act.DasLevyAccountBalanceTotal, act.PaymentsLevyAccountBalanceTotal));
 
-            RuleForEach(act => act.LevyAccounts)
-                .SetValidator(levyAccountValidator);
+                     RuleFor(act => act.DasTransferAllowanceTotal)
+                         .Equal(act => act.PaymentsTransferAllowanceTotal)
+                         .OnFailure(act => LogTransferAllowanceMismatch(act.DasTransferAllowanceTotal, act.PaymentsTransferAllowanceTotal));
+
+                     RuleFor(act => act.DasIsLevyPayerCount)
+                         .Equal(act => act.PaymentsIsLevyPayerCount)
+                         .OnFailure(act => LogIsLevyPayerMismatch(act.DasIsLevyPayerCount, act.PaymentsIsLevyPayerCount));
+
+                     RuleForEach(act => act.LevyAccounts)
+                         .SetValidator(levyAccountValidator);
+                 });
         }
 
+        private void LogInvalidData(CombinedLevyAccountsDto act)
+        {
+            telemetry.TrackEvent("EmployerAccountReferenceData.Comparison.InvalidData", new Dictionary<string, string>
+             {
+                 { "LevyAccount", "Either Das or Payments levy account Data is invalid, Please check the logs" }
+             }, null);
+        }
         
         private void LogCountMismatch(int dasLevyAccountCount, int paymentsLevyAccountCount)
         {

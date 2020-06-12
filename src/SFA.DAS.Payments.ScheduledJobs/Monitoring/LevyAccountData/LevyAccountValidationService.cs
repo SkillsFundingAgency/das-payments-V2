@@ -63,7 +63,21 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.LevyAccountData
         {
             paymentLogger.LogDebug("Started Importing Payments Employer Accounts");
 
-            var levyAccountModels = await paymentsDataContext.LevyAccount.ToListAsync();
+            List<LevyAccountModel> levyAccountModels;
+
+            try
+            {
+                levyAccountModels = await paymentsDataContext.LevyAccount.ToListAsync();
+                if (levyAccountModels.IsNullOrEmpty())
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                paymentLogger.LogError("Error while retrieving Account Balance Details from PaymentsV2", e);
+                return null;
+            }
 
             paymentLogger.LogInfo("Finished Importing Payments Employer Accounts");
 

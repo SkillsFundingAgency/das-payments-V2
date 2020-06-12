@@ -9,13 +9,22 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.LevyAccountData
         private readonly List<LevyAccountModel> dasLevyAccountDetails;
         private readonly List<LevyAccountModel> paymentsLevyAccountDetails;
 
-        public CombinedLevyAccountsDto(IEnumerable<LevyAccountModel> dasLevyAccountDetails, IEnumerable<LevyAccountModel> paymentsLevyAccountDetails)
+        public CombinedLevyAccountsDto(IList<LevyAccountModel> dasLevyAccountDetails, IList<LevyAccountModel> paymentsLevyAccountDetails)
         {
-            this.dasLevyAccountDetails = dasLevyAccountDetails == null ? new List<LevyAccountModel>() : dasLevyAccountDetails.OrderBy(d => d.AccountId).ToList();
-            this.paymentsLevyAccountDetails = paymentsLevyAccountDetails == null ? new List<LevyAccountModel>() : paymentsLevyAccountDetails.OrderBy(p => p.AccountId).ToList();
+            if (dasLevyAccountDetails.IsNullOrEmpty() || paymentsLevyAccountDetails.IsNullOrEmpty())
+            {
+                IsNullOrEmpty = true;
+                return;
+            }
+            
+            this.dasLevyAccountDetails = dasLevyAccountDetails.OrderBy(d => d.AccountId).ToList();
+            this.paymentsLevyAccountDetails = paymentsLevyAccountDetails.OrderBy(p => p.AccountId).ToList();
+            
             LevyAccounts = GetLevyAccounts();
         }
 
+        public bool IsNullOrEmpty { get; }
+        
         public int DasLevyAccountCount => dasLevyAccountDetails.Count;
         
         public int PaymentsLevyAccountCount => paymentsLevyAccountDetails.Count;

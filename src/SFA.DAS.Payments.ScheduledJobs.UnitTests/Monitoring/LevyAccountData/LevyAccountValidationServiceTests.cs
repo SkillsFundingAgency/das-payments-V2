@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extras.Moq;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ScheduledJobs.Monitoring.LevyAccountData;
 
 namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
@@ -55,6 +57,37 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
         {
             paymentsDataContext.Dispose();
             mocker.Dispose();
+        }
+
+        [Test]
+        public void Validate_Should_RaiseInvalidDataValidationEventWhenDasLevyAccountApiWrapperReturnsNullOrEmptyList()
+        {
+            accountApiWrapper.Setup(x => x.GetDasLevyAccountDetails())
+                             .ReturnsAsync((List<LevyAccountModel>)null);
+
+            Func<Task> act = async () => await sut.Validate();
+
+            act.Should().NotThrow();
+
+            telemetry.Verify(x => x.TrackEvent(It.Is<string>(s => s == "EmployerAccountReferenceData.Comparison.InvalidData"), It.IsAny<Dictionary<string, string>>(), null), Times.Once);
+            telemetry.Verify(x => x.TrackEvent(It.IsAny<string>(), It.IsAny<Dictionary<string, double>>()), Times.Never);
+        }
+
+        [Test]
+        public async Task Validate_Should_RaiseInvalidDataValidationEventWhenGetPaymentsLevyAccountDetailsReturnsNullOrEmptyList()
+        {
+            paymentsDataContext.RemoveRange(paymentsDataContext.LevyAccount.ToList());
+            await paymentsDataContext.SaveChangesAsync();
+
+            accountApiWrapper.Setup(x => x.GetDasLevyAccountDetails())
+                             .ReturnsAsync(levyAccountBuilder.Build(1).ToList());
+
+            Func<Task> act = async () => await sut.Validate();
+
+            act.Should().NotThrow();
+
+            telemetry.Verify(x => x.TrackEvent(It.Is<string>(s => s == "EmployerAccountReferenceData.Comparison.InvalidData"), It.IsAny<Dictionary<string, string>>(), null), Times.Once);
+            telemetry.Verify(x => x.TrackEvent(It.IsAny<string>(), It.IsAny<Dictionary<string, double>>()), Times.Never);
         }
 
         [Test]
@@ -158,7 +191,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
             VerifyCombinedTelemetryEvent("das-IsLevyPayerCount");
             telemetry.VerifyNoOtherCalls();
         }
-        
+
         private void VerifyIndividualTelemetryEvent(string eventName)
         {
             telemetry.Verify(x =>

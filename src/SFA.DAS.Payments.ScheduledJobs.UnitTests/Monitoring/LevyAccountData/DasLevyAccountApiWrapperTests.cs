@@ -67,7 +67,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
         }
 
         [Test]
-        public async Task GetDasLevyAccountDetails_Should_Return_EmptyListWhenGetTotalPageSizeThrowsError()
+        public async Task GetDasLevyAccountDetails_Should_Return_NullWhenGetTotalPageSizeThrowsError()
         {
             accountApiClient
                 .Setup(x => x.GetPageOfAccounts(1, It.IsAny<int>(), It.IsAny<DateTime?>()))
@@ -78,12 +78,11 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
             accountApiClient
                 .Verify(x => x.GetPageOfAccounts(1, It.IsAny<int>(), It.IsAny<DateTime?>()), Times.Exactly(1));
 
-            dasLevyAccountDetails.Should().NotBeNull();
-            dasLevyAccountDetails.Count.Should().Be(0);
+            dasLevyAccountDetails.Should().BeNull();
         }
 
         [Test]
-        public async Task GetDasLevyAccountDetails_Should_ReturnEmptyListWhenGetPageOfLevyAccountsThrowsError()
+        public async Task GetDasLevyAccountDetails_Should_ReturnNullWhenGetPageOfLevyAccountsThrowsError()
         {
             accountApiClient
                 .SetupSequence(x => x.GetPageOfAccounts(1, It.IsAny<int>(), It.IsAny<DateTime?>()))
@@ -95,8 +94,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
             accountApiClient
                 .Verify(x => x.GetPageOfAccounts(1, It.IsAny<int>(), It.IsAny<DateTime?>()), Times.Exactly(2));
 
-            dasLevyAccountDetails.Should().NotBeNull();
-            dasLevyAccountDetails.Count.Should().Be(0);
+            dasLevyAccountDetails.Should().BeNull();
         }
     }
 }

@@ -31,10 +31,8 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
             return this;
         }
         
-        public IEnumerable<LevyAccountModel> Build(int count)
+        public IList<LevyAccountModel> Build(int count)
         {
-            if (count == -1) return null;
-            
             return Enumerable.Range(0, count).Select(index => new LevyAccountModel
             {
                 AccountId = index + 1,
@@ -42,7 +40,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
                 TransferAllowance = levyAccountModel.TransferAllowance,
                 IsLevyPayer = levyAccountModel.IsLevyPayer,
                 AccountName = "AccountName",
-            });
+            }).ToList();
         }
     }
 }
