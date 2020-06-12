@@ -41,6 +41,8 @@ namespace SFA.DAS.Payments.Application.Messaging
             {
                 logger.LogWarning($"Message lock lost, discarding the message");
                 telemetry.TrackEvent("MessageLockLost", (lockedUntilUtc - DateTime.UtcNow).TotalSeconds);
+                context.AbortReceiveOperation();
+                return;
             }
 
             if (lockedUntilUtc <= DateTime.UtcNow.AddMinutes(1))
