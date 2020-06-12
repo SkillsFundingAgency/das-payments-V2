@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
         [TestCase(-1, 1, 0, 100)]
         [TestCase(1, 0, 100, 0)]
         [TestCase(1, -1, 100, 0)]
-        public void GetLevyAccounts_Should_Calculate_Totals_From_Das_And_Payments_LevyAccount_Lists(int numberOfItemsDas, int numberOfItemsPayments, int expectedDasSum, int expectedPaymentsSum)
+        public void GetLevyAccounts_Should_CalculateTotalsFromDasAndPaymentsLevyAccountLists(int numberOfItemsDas, int numberOfItemsPayments, int expectedDasSum, int expectedPaymentsSum)
         {
             var sut = new CombinedLevyAccountsDto(levyAccountBuilder.Build(numberOfItemsDas), levyAccountBuilder.Build(numberOfItemsPayments));
 
@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
         }
 
         [Test]
-        public void GetLevyAccounts_Should_Returned_Joined_LevyAccounts_From_Das_And_Payments_LevyAccount_Lists()
+        public void GetLevyAccounts_Should_ReturnJoinedLevyAccountsFromDasAndPaymentsLevyAccountLists()
         {
             var sut = new CombinedLevyAccountsDto(levyAccountBuilder.Build(1), levyAccountBuilder.Build(1));
 
@@ -54,7 +54,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
         }
 
         [Test]
-        public void GetLevyAccounts_Should_Return_Default_Das_LevyAccount_When_Payments_LevyAccount_Does_Not_Have_Matching_Entity()
+        public void GetLevyAccounts_Should_ReturnDefaultDasLevyAccountWhenPaymentsLevyAccountDoesNotHaveMatchingEntity()
         {
             var sut = new CombinedLevyAccountsDto(levyAccountBuilder.Build(2), levyAccountBuilder.Build(1));
 
@@ -78,7 +78,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
         }
 
         [Test]
-        public void GetLevyAccounts_Should_Return_Default_Payments_LevyAccount_When_Das_LevyAccount_Does_Not_Have_Matching_Entity()
+        public void GetLevyAccounts_Should_ReturnDefaultPaymentsLevyAccountWhenDasLevyAccountDoesNotHaveMatchingEntity()
         {
             var sut = new CombinedLevyAccountsDto(levyAccountBuilder.Build(1), levyAccountBuilder.Build(2));
 
@@ -102,7 +102,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
         }
 
         [Test]
-        public void GetLevyAccounts_Should_Return_OuterJoined_LevyAccount_List_When_Das_Or_Payments_List_Does_Not_Have_Matching_Entity()
+        public void GetLevyAccounts_Should_ReturnOuterJoinedLevyAccountListWhenDasOrPaymentsListDoesNotHaveMatchingEntity()
         {
             var accounts = levyAccountBuilder.Build(3).ToList();
             

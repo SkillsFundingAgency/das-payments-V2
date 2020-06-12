@@ -58,7 +58,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
         }
 
         [Test]
-        public async Task Validate_Should_Run_Validation_Rules_On_Combined_Data_And_Should_Not_Raise_Any_Validation_Events()
+        public async Task Validate_Should_RunValidationRulesOnCombinedDataAndShouldNotRaiseAnyValidationEvents()
         {
             accountApiWrapper.Setup(x => x.GetDasLevyAccountDetails())
                              .ReturnsAsync(levyAccountBuilder.Build(1).ToList());
@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
         }
 
         [Test]
-        public async Task Validate_Should_Raise_Das_LevyAccountCount_Mismatch_Validation_Event()
+        public async Task Validate_Should_RaiseDasLevyAccountCountMismatchValidationEvent()
         {
             paymentsDataContext.RemoveRange(paymentsDataContext.LevyAccount.ToList());
             await paymentsDataContext.SaveChangesAsync();
@@ -96,7 +96,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
         }
 
         [Test]
-        public async Task Validate_Should_Raise_Payments_LevyAccountCount_Mismatch_Validation_Event()
+        public async Task Validate_ShouldRaisePaymentsLevyAccountCountMismatchValidationEvent()
         {
             var levyAccounts = levyAccountBuilder.Build(2).ToList();
 
@@ -115,7 +115,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
         }
 
         [Test]
-        public async Task Validate_Should_Raise_Balance_Mismatch_Validation_Event()
+        public async Task Validate_Should_RaiseBalanceMismatchValidationEvent()
         {
             var levyAccounts = levyAccountBuilder.SetBalance(200).Build(1).ToList();
 
@@ -130,7 +130,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
         }
 
         [Test]
-        public async Task Validate_Should_Raise_TransferAllowance_Mismatch_Validation_Event()
+        public async Task Validate_Should_RaiseTransferAllowanceMismatchValidationEvent()
         {
             var levyAccounts = levyAccountBuilder.SetTransferAllowance(200).Build(1).ToList();
 
@@ -145,7 +145,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
         }
 
         [Test]
-        public async Task Validate_Should_Raise_IsLevyPayer_Mismatch_Validation_Event()
+        public async Task Validate_Should_RaiseIsLevyPayerMismatchValidationEvent()
         {
             var levyAccounts = levyAccountBuilder.SetIsLevyPayer(false).Build(1).ToList();
 

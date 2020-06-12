@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
         }
 
         [Test]
-        public async Task GetDasLevyAccountDetails_Should_Call_GetPageOfAccounts_To_Get_LevyAccounts()
+        public async Task GetDasLevyAccountDetails_Should_CallGetPageOfAccountsToGetLevyAccounts()
         {
             accountApiClient
                 .Setup(x => x.GetPageOfAccounts(1, It.IsAny<int>(), It.IsAny<DateTime?>()))
@@ -67,7 +67,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
         }
 
         [Test]
-        public async Task When_GetTotalPageSize_Throws_Error_GetDasLevyAccountDetails_Should_Return_EmptyList()
+        public async Task GetDasLevyAccountDetails_Should_Return_EmptyListWhenGetTotalPageSizeThrowsError()
         {
             accountApiClient
                 .Setup(x => x.GetPageOfAccounts(1, It.IsAny<int>(), It.IsAny<DateTime?>()))
@@ -83,7 +83,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
         }
 
         [Test]
-        public async Task When_GetPageOfLevyAccounts_Throws_Error_GetDasLevyAccountDetails_Should_Return_EmptyList()
+        public async Task GetDasLevyAccountDetails_Should_ReturnEmptyListWhenGetPageOfLevyAccountsThrowsError()
         {
             accountApiClient
                 .SetupSequence(x => x.GetPageOfAccounts(1, It.IsAny<int>(), It.IsAny<DateTime?>()))
