@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.Application.Messaging
             }
             catch (KeyNotFoundException)
             {
-                logger.LogWarning("Error getting Azure service bus Message from IIncomingLogicalMessageContext");
+                logger.LogWarning("Error getting Azure service bus Message from ITransportReceiveContext");
                 await next().ConfigureAwait(false);
                 return;
             }
