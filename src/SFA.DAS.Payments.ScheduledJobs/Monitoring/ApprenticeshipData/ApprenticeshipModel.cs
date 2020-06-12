@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.Payments.ScheduledJobs.ApprenticeshipsReferenceDataComparison
+namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
 {
     public class ApprenticeshipModel
     {

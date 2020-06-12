@@ -6,13 +6,13 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC;
 
-namespace SFA.DAS.Payments.ScheduledJobs.ApprenticeshipsReferenceDataComparison
+namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
 {
     [DependencyInjectionConfig(typeof(DependencyInjectionConfig))]
-    public static class ApprenticeshipsReferenceDataComparisonTrigger
+    public static class ApprenticeshipDataTrigger
     {
         [FunctionName("TimerTriggerApprenticeshipsReferenceDataComparison")]
-        public static void TimerTriggerApprenticeshipsReferenceDataComparison([TimerTrigger("%ApprenticeshipsReferenceDataComparisonSchedule%", RunOnStartup = true)]TimerInfo myTimer, [Inject]IApprenticeshipsReferenceDataComparisonService service, [Inject] ILogger log)
+        public static void TimerTriggerApprenticeshipsReferenceDataComparison([TimerTrigger("%ApprenticeshipsReferenceDataComparisonSchedule%", RunOnStartup = true)]TimerInfo myTimer, [Inject]IApprenticeshipsDataService service, [Inject] ILogger log)
         {
             RunApprenticeshipsReferenceDataComparison(service, log);
         }
@@ -20,12 +20,12 @@ namespace SFA.DAS.Payments.ScheduledJobs.ApprenticeshipsReferenceDataComparison
         [FunctionName("HttpTriggerApprenticeshipsReferenceDataComparison")]
         public static void HttpTriggerApprenticeshipsReferenceDataComparison(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest httpRequest,
-            [Inject]IApprenticeshipsReferenceDataComparisonService service, [Inject] ILogger log)
+            [Inject]IApprenticeshipsDataService service, [Inject] ILogger log)
         {
             RunApprenticeshipsReferenceDataComparison(service, log);
         }
 
-        private static void RunApprenticeshipsReferenceDataComparison(IApprenticeshipsReferenceDataComparisonService service, ILogger log)
+        private static void RunApprenticeshipsReferenceDataComparison(IApprenticeshipsDataService service, ILogger log)
         {
             try
             {

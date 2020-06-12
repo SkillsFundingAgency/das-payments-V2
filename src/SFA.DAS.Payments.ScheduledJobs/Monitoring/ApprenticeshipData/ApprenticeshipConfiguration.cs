@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace SFA.DAS.Payments.ScheduledJobs.ApprenticeshipsReferenceDataComparison
+namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
 {
     public class ApprenticeshipConfiguration : IEntityTypeConfiguration<ApprenticeshipModel>
     {

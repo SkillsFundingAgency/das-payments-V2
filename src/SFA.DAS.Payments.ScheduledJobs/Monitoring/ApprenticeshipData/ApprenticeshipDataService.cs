@@ -4,9 +4,9 @@ using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Entities;
 
-namespace SFA.DAS.Payments.ScheduledJobs.ApprenticeshipsReferenceDataComparison
+namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
 {
-    public class ApprenticeshipsReferenceDataComparisonService : IApprenticeshipsReferenceDataComparisonService
+    public class ApprenticeshipDataService : IApprenticeshipsDataService
     {
         private const string DasApproved = "DasApproved";
         private const string DasStopped = "DasStopped";
@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.ApprenticeshipsReferenceDataComparison
         private readonly ICommitmentsDataContext commitmentsDataContext;
         private readonly ITelemetry telemetry;
 
-        public ApprenticeshipsReferenceDataComparisonService(IPaymentsDataContext paymentsDataContext, ICommitmentsDataContext commitmentsDataContext, ITelemetry telemetry)
+        public ApprenticeshipDataService(IPaymentsDataContext paymentsDataContext, ICommitmentsDataContext commitmentsDataContext, ITelemetry telemetry)
         {
             this.paymentsDataContext = paymentsDataContext;
             this.commitmentsDataContext = commitmentsDataContext;

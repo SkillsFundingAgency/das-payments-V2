@@ -1,8 +1,8 @@
 ﻿using Autofac;
 using SFA.DAS.Payments.Core.Configuration;
-using SFA.DAS.Payments.ScheduledJobs.ApprenticeshipsReferenceDataComparison;
 using SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp;
 using SFA.DAS.Payments.ScheduledJobs.Infrastructure.Configuration;
+using SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData;
 
 namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
 {
@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
         {
             builder.RegisterType<FunctionsConfigurationHelper>().As<IConfigurationHelper>().SingleInstance();
             builder.RegisterType<AuditDataCleanUpService>().As<IAuditDataCleanUpService>().InstancePerLifetimeScope();
-            builder.RegisterType<ApprenticeshipsReferenceDataComparisonService>().As<IApprenticeshipsReferenceDataComparisonService>().SingleInstance();
+            builder.RegisterType<ApprenticeshipDataService>().As<IApprenticeshipsDataService>().SingleInstance();
         }
     }
 }
