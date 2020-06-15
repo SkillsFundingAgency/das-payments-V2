@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using AzureFunctions.Autofac;
 using NServiceBus;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -21,11 +20,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
         private readonly IScheduledJobsConfiguration config;
         private readonly IPaymentLogger paymentLogger;
 
-        public AuditDataCleanUpService(
-            [Inject] IScheduledJobsConfiguration config,
-            [Inject] IPaymentsDataContext dataContext,
-            [Inject] IEndpointInstanceFactory endpointInstanceFactory,
-            [Inject] IPaymentLogger paymentLogger)
+        public AuditDataCleanUpService(IScheduledJobsConfiguration config, IPaymentsDataContext dataContext, IEndpointInstanceFactory endpointInstanceFactory, IPaymentLogger paymentLogger)
         {
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
             this.endpointInstanceFactory = endpointInstanceFactory ?? throw new ArgumentNullException(nameof(endpointInstanceFactory));
