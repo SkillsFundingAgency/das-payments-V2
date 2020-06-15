@@ -3,16 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
 using NServiceBus;
-using Polly;
-using Polly.CircuitBreaker;
-using Polly.Retry;
 using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
-using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Application.Repositories;
@@ -31,20 +26,23 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly IAccountApiClient accountApiClient;
         private readonly IPaymentLogger logger;
         private readonly ILevyAccountBulkCopyRepository levyAccountBulkWriter;
+        private readonly ILevyFundingSourceRepository levyFundingSourceRepository;
         private readonly int batchSize;
         private readonly IEndpointInstanceFactory endpointInstanceFactory;
 
         public ManageLevyAccountBalanceService(IAccountApiClient accountApiClient,
             IPaymentLogger logger,
             ILevyAccountBulkCopyRepository levyAccountBulkWriter,
+            ILevyFundingSourceRepository levyFundingSourceRepository,
             int batchSize,
             IEndpointInstanceFactory endpointInstanceFactory)
         {
-            this.accountApiClient = accountApiClient;
-            this.logger = logger;
-            this.levyAccountBulkWriter = levyAccountBulkWriter;
+            this.accountApiClient = accountApiClient ?? throw new ArgumentNullException(nameof(accountApiClient));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.levyAccountBulkWriter = levyAccountBulkWriter ?? throw new ArgumentNullException(nameof(levyAccountBulkWriter));
+            this.levyFundingSourceRepository = levyFundingSourceRepository ?? throw new ArgumentNullException(nameof(levyFundingSourceRepository));
             this.batchSize = batchSize;
-            this.endpointInstanceFactory = endpointInstanceFactory;
+            this.endpointInstanceFactory = endpointInstanceFactory ?? throw new ArgumentNullException(nameof(endpointInstanceFactory));
         }
 
         public async Task RefreshLevyAccountDetails(int pageNumber, CancellationToken cancellationToken = default(CancellationToken))
@@ -58,7 +56,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 var pagedAccountsRecords = await accountApiClient.GetPageOfAccounts(pageNumber, batchSize).ConfigureAwait(false);
                 var pagedLevyAccountModels = MapToLevyAccountModel(pagedAccountsRecords);
                 await BatchUpdateLevyAccounts(pagedLevyAccountModels, cancellationToken).ConfigureAwait(false);
-                await PublishEmployerEvents(pagedLevyAccountModels).ConfigureAwait(false);
+                await PublishEmployerEvents(pagedLevyAccountModels, cancellationToken).ConfigureAwait(false);
 
                 logger.LogInfo($"Successfully retrieved Account Balance Details for Page {pageNumber} of Levy Accounts");
             }
@@ -116,29 +114,30 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         }
 
 
-        private async Task PublishEmployerEvents(List<LevyAccountModel> accountModels)
+        private async Task PublishEmployerEvents(List<LevyAccountModel> accountModels,CancellationToken cancellationToken = default(CancellationToken))
         {
-            var employers = accountModels.Select(x => new {x.AccountId, x.IsLevyPayer}).ToList();
+            logger.LogDebug(
+                $"{nameof(PublishEmployerEvents)} for accounts: {String.Join(",",accountModels.Select(x=>x.AccountId))}");
+
+            var storedEmployers =
+               await levyFundingSourceRepository.GetCurrentEmployerStatus(accountModels.Select(x => x.AccountId).ToList(),cancellationToken);
+
+            var accountsWithChangedLevyFlags = accountModels
+                .Where(x => !storedEmployers.Contains((x.AccountId, x.IsLevyPayer))).ToList();
 
             var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
-
             List<Task> publishEvents = new List<Task>();
 
-            publishEvents.AddRange(employers.Where(x=> !x.IsLevyPayer).Select(employer => endpointInstance.Publish(new FoundNotLevyPayerEmployerAccount { AccountId = employer.AccountId })));
-            publishEvents.AddRange(employers.Where(x=> x.IsLevyPayer).Select(employer => endpointInstance.Publish(new FoundLevyPayerEmployerAccount { AccountId = employer.AccountId })));
+            publishEvents.AddRange(accountsWithChangedLevyFlags.Where(x=> !x.IsLevyPayer).Select(employer => endpointInstance.Publish(new FoundNotLevyPayerEmployerAccount { AccountId = employer.AccountId })));
+            publishEvents.AddRange(accountsWithChangedLevyFlags.Where(x=> x.IsLevyPayer).Select(employer => endpointInstance.Publish(new FoundLevyPayerEmployerAccount { AccountId = employer.AccountId })));
 
-            var accountIds = string.Join(",", employers.Select(x=>x.AccountId));
-            var totalsString =
-                $"{employers.Count(x => x.IsLevyPayer)} Is Levy and {employers.Count(x => !x.IsLevyPayer)} Non Levy accounts";
-
-            logger.LogInfo(
-                $"Trying to Publish EmployerAccount events for Account Ids: {accountIds}. Publishing {totalsString}");
             await Task.WhenAll(publishEvents).ConfigureAwait(false);
+
+            var accountIds = string.Join(",", accountsWithChangedLevyFlags.Select(x=>x.AccountId));
+            var totalsString =
+                $"{accountsWithChangedLevyFlags.Count(x => x.IsLevyPayer)} Is Levy and {accountsWithChangedLevyFlags.Count(x => !x.IsLevyPayer)} Non Levy accounts";
 
             logger.LogInfo($"Successfully Published EmployerAccount event for  Account Ids: {accountIds}. Published {totalsString}");
         }
-
-        
-
     }
 }
