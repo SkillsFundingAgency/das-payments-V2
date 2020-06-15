@@ -3,7 +3,7 @@ using AzureFunctions.Autofac;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Extensions.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC;
 
 namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
     public static class ApprenticeshipDataTrigger
     {
         [FunctionName("TimerTriggerApprenticeshipsReferenceDataComparison")]
-        public static void TimerTriggerApprenticeshipsReferenceDataComparison([TimerTrigger("%ApprenticeshipsReferenceDataComparisonSchedule%", RunOnStartup = true)]TimerInfo myTimer, [Inject]IApprenticeshipsDataService service, [Inject] ILogger log)
+        public static void TimerTriggerApprenticeshipsReferenceDataComparison([TimerTrigger("%ApprenticeshipsReferenceDataComparisonSchedule%", RunOnStartup = true)]TimerInfo myTimer, [Inject]IApprenticeshipsDataService service, [Inject] IPaymentLogger log)
         {
             RunApprenticeshipsReferenceDataComparison(service, log);
         }
@@ -20,12 +20,12 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
         [FunctionName("HttpTriggerApprenticeshipsReferenceDataComparison")]
         public static void HttpTriggerApprenticeshipsReferenceDataComparison(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest httpRequest,
-            [Inject]IApprenticeshipsDataService service, [Inject] ILogger log)
+            [Inject]IApprenticeshipsDataService service, [Inject] IPaymentLogger log)
         {
             RunApprenticeshipsReferenceDataComparison(service, log);
         }
 
-        private static void RunApprenticeshipsReferenceDataComparison(IApprenticeshipsDataService service, ILogger log)
+        private static void RunApprenticeshipsReferenceDataComparison(IApprenticeshipsDataService service, IPaymentLogger log)
         {
             try
             {
@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
             }
             catch (Exception e)
             {
-                log.Log(LogLevel.Error, e, "Error in ProcessComparison");
+                log.LogError("Error in ProcessComparison", e);
                 throw;
             }
         }
