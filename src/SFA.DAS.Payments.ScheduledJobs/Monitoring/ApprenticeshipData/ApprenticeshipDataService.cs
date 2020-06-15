@@ -37,6 +37,11 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
             var paymentsStoppedCount = paymentsDataContext.Apprenticeship.Count(x => x.Status == ApprenticeshipStatus.Stopped);
             var paymentsPausedCount = paymentsDataContext.Apprenticeship.Count(x => x.Status == ApprenticeshipStatus.Paused);
 
+            if (commitmentsApprovedCount == paymentsApprovedCount
+                && commitmentsStoppedCount == paymentsStoppedCount
+                && commitmentsPausedCount == paymentsPausedCount)
+                return;
+
             telemetry.TrackEvent(ApprovalsReferenceDataComparisonEvent, new Dictionary<string, double>
             {
                 { DasApproved, commitmentsApprovedCount },

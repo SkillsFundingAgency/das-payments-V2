@@ -13,7 +13,7 @@ using ApprenticeshipModel = SFA.DAS.Payments.ScheduledJobs.Monitoring.Apprentice
 namespace SFA.DAS.Payments.ScheduledJobs.UnitTests
 {
     [TestFixture]
-    public class ApprenticeshipDataServiceTests
+    public class ApprenticeshipDataService_AlertTests
     {
         private IPaymentsDataContext paymentsDataContext;
         private ICommitmentsDataContext commitmentsDataContext;
