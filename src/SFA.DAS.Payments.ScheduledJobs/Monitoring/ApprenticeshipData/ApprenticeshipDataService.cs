@@ -14,6 +14,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
         private const string PaymentsApproved = "PaymentsApproved";
         private const string PaymentsStopped = "PaymentsStopped";
         private const string PaymentsPaused = "PaymentsPaused";
+        private const string ApprovalsReferenceDataComparisonEvent = "ApprovalsReferenceDataComparisonEvent";
 
         private readonly IPaymentsDataContext paymentsDataContext;
         private readonly ICommitmentsDataContext commitmentsDataContext;
@@ -36,7 +37,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
             var paymentsStoppedCount = paymentsDataContext.Apprenticeship.Count(x => x.Status == ApprenticeshipStatus.Stopped);
             var paymentsPausedCount = paymentsDataContext.Apprenticeship.Count(x => x.Status == ApprenticeshipStatus.Paused);
 
-            telemetry.TrackEvent("ApprovalsReferenceDataComparisonEvent", new Dictionary<string, double>
+            telemetry.TrackEvent(ApprovalsReferenceDataComparisonEvent, new Dictionary<string, double>
             {
                 { DasApproved, commitmentsApprovedCount },
                 { DasStopped, commitmentsStoppedCount },
