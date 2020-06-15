@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
                     var configHelper = c.Resolve<IConfigurationHelper>();
                     var dbContextOptions = new DbContextOptionsBuilder<CommitmentsDataContext>()
                         .UseSqlServer(configHelper.GetConnectionString("CommitmentsConnectionString"),
-                            optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
+                            optionsBuilder => optionsBuilder.CommandTimeout(540)).Options; //540 = 9 min
                     return new CommitmentsDataContext(dbContextOptions);
                 })
                 .As<ICommitmentsDataContext>()
