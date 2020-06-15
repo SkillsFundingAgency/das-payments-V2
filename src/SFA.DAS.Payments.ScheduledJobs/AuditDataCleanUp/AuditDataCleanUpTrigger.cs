@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
         [FunctionName("TimerTriggerAuditDataCleanup")]
         public static async Task TimerTriggerAuditDataCleanup(
             [TimerTrigger("%AuditDataCleanUpSchedule%", RunOnStartup = false)] TimerInfo timerInfo,
-            [Inject]IAuditDataCleanUpService auditDataCleanUpService)
+            [Inject] IAuditDataCleanUpService auditDataCleanUpService)
         {
             await auditDataCleanUpService.TriggerAuditDataCleanup();
         }
@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
         [FunctionName("HttpTriggerAuditDataCleanup")]
         public static async Task HttpTriggerAuditDataCleanup(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest httpRequest,
-            [Inject]IAuditDataCleanUpService auditDataCleanUpService)
+            [Inject] IAuditDataCleanUpService auditDataCleanUpService)
         {
             await auditDataCleanUpService.TriggerAuditDataCleanup();
         }

@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.RequiredPay
 
         public async Task Process(SubmissionJobFailed message, CancellationToken cancellationToken)
         {
-            logger.LogVerbose($"Flushing cached payments before removing payments for provider: {message.Ukprn}, collection period: {message.CollectionPeriod}");
+            logger.LogVerbose($"Flushing cached payments before removing payments for job: {message.JobId}, provider: {message.Ukprn}, collection period: {message.CollectionPeriod}");
             await batchService.StorePayments(cancellationToken).ConfigureAwait(false);
             logger.LogDebug($"Flushed payments. Now removing earning events for job: {message.JobId}, provider: {message.Ukprn}, collection period: {message.CollectionPeriod}");
             await repository.RemoveFailedSubmissionEvents(message.JobId, cancellationToken)

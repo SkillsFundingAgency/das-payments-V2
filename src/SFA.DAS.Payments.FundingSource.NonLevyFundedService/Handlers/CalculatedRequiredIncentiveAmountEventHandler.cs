@@ -25,12 +25,12 @@ namespace SFA.DAS.Payments.FundingSource.NonLevyFundedService.Handlers
 
         public async Task Handle(CalculatedRequiredIncentiveAmount message, IMessageHandlerContext context)
         {
-            logger.LogDebug($"Now processing the incentive required payment event.  Ukprn: {message.Ukprn}, Learner ref: {message.Learner.ReferenceNumber}, Job id: {message.JobId}, Amount: {message.AmountDue}, Incentive type: {message.Type}.");
+            logger.LogDebug($"Now processing the incentive required payment event. Learner ref: {message.Learner.ReferenceNumber}, Job id: {message.JobId}, Amount: {message.AmountDue}, Incentive type: {message.Type}.");
             var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext)executionContext;
             currentExecutionContext.JobId = message.JobId.ToString();
             var sfaFullyFundedPayment = incentiveProcessor.Process(message);
             await context.Publish(sfaFullyFundedPayment);
-            logger.LogInfo($"Finished processing the incentive required payment event.  Ukprn: {message.Ukprn}, Learner ref: {message.Learner.ReferenceNumber}, Job id: {message.JobId}, Amount: {message.AmountDue}, Incentive type: {message.Type}.");
+            logger.LogInfo($"Finished processing the incentive required payment event. Learner ref: {message.Learner.ReferenceNumber}, Job id: {message.JobId}, Amount: {message.AmountDue}, Incentive type: {message.Type}.");
         }
     }
 }

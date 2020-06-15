@@ -11,10 +11,10 @@ using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
-using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core.Configuration;
+using SFA.DAS.Payments.FundingSource.Application.Builders;
+using SFA.DAS.Payments.FundingSource.Application.Data;
 using SFA.DAS.Payments.FundingSource.Application.Repositories;
-using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
 
@@ -39,11 +39,15 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
             builder.RegisterType<LevyBalanceService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ReliableCollectionCache<CalculatedRequiredLevyAmount>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ReliableCollectionCache<List<string>>>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<RequiredLevyAmountFundingSourceService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<LevyMessageRoutingService>().AsImplementedInterfaces();
             builder.RegisterType<PeriodEndService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<LevyAccountBulkCopyConfiguration>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<LevyAccountBulkCopyRepository>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<FundingSourceEventGenerationService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<SubmissionCleanUpService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<CalculatedRequiredLevyAmountPrioritisationService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<FundingSourcePaymentEventBuilder>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<EmployerProviderPriorityStorageService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.Register(c => new CoInvestedFundingSourceService
             (
@@ -91,7 +95,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
 
             builder.RegisterType<ProcessLevyAccountBalanceService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
+            builder.RegisterType<LevyTransactionBatchStorageService>().AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
 
+            builder.Register((c, p) =>
+            {
+                var config = c.Resolve<IConfigurationHelper>();
+                return new FundingSourceDataContext(config.GetConnectionString("PaymentsConnectionString"));
+            }).As<IFundingSourceDataContext>();
 
             builder.RegisterServiceFabricSupport();
         }

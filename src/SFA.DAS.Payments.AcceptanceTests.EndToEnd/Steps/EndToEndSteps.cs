@@ -40,7 +40,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             TestSession.Providers.ForEach(p =>
             {
                 var newJobId = TestSession.GenerateId();
-                Console.WriteLine($"Using new job. Previous job id: { p.JobId }, new job id: {newJobId} for ukprn: {p.Ukprn}");
+                Console.WriteLine(
+                    $"Using new job. Previous job id: {p.JobId}, new job id: {newJobId} for ukprn: {p.Ukprn}");
                 p.JobId = newJobId;
             });
         }
