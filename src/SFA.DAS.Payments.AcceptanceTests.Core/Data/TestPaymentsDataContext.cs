@@ -89,6 +89,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             delete from Payments2.Payment where Ukprn = {0}
 
             delete from Payments2.SubmittedLearnerAim where Ukprn = {0}
+
+            delete from Payments2.FundingSourceLevyTransaction where Ukprn = {0}
         ";
 
         public async Task ClearApprenticeshipData(long apprenticeshipId, long uln)
