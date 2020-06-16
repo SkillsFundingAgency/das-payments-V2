@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
     public static class ApprenticeshipDataTrigger
     {
         [FunctionName("TimerTriggerApprenticeshipsReferenceDataComparison")]
-        public static void TimerTriggerApprenticeshipsReferenceDataComparison([TimerTrigger("%ApprenticeshipValidationSchedule%", RunOnStartup = true)]TimerInfo myTimer, [Inject]IApprenticeshipsDataService service, [Inject] IPaymentLogger log)
+        public static void TimerTriggerApprenticeshipsReferenceDataComparison([TimerTrigger("%ApprenticeshipValidationSchedule%", RunOnStartup = false)]TimerInfo myTimer, [Inject]IApprenticeshipsDataService service, [Inject] IPaymentLogger log)
         {
             RunApprenticeshipsReferenceDataComparison(service, log);
         }
