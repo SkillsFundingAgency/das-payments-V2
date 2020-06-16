@@ -64,13 +64,13 @@
     <Folder Include="Properties" />
     <Folder Include="Security" />
     <Folder Include="Payments2" />
-    <Folder Include="Payments2\Views" />
     <Folder Include="Payments2\Tables" />
     <Folder Include="dbo\" />
     <Folder Include="dbo\Stored Procedures" />
     <Folder Include="Metrics" />
     <Folder Include="Metrics\Tables" />
     <Folder Include="Metrics\Schemas" />
+    <Folder Include="Payments2\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Payments2\Views\Payments2.LatestSuccessfulDataLockJobs.sql" />
