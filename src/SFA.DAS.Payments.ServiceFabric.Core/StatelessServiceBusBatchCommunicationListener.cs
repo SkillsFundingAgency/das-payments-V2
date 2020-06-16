@@ -42,6 +42,8 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         private CancellationToken startingCancellationToken;
         protected string TelemetryPrefix => GetType().Name;
 
+        private const string TopicPath = "bundle-1";
+
         public StatelessServiceBusBatchCommunicationListener(string connectionString, string endpointName, string errorQueueName, IPaymentLogger logger,
             IContainerScopeFactory scopeFactory, ITelemetry telemetry, IMessageDeserializer messageDeserializer, IApplicationMessageModifier messageModifier)
         {
@@ -65,6 +67,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         protected virtual async Task ListenForMessages(CancellationToken cancellationToken)
         {
             await EnsureQueue(EndpointName).ConfigureAwait(false);
+            await EnsureSubscriptions(EndpointName, cancellationToken).ConfigureAwait(false);
             await EnsureQueue(errorQueueName).ConfigureAwait(false);
             try
             {
@@ -74,6 +77,104 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             {
                 logger.LogFatal($"Encountered fatal error. Error: {ex.Message}", ex);
             }
+        }
+
+        private  async Task EnsureSubscriptions(string endpointName,CancellationToken cancellationToken)
+        {
+            try
+            {
+                //get class names that are subscribing to IHandleBatchMessages
+                List<Type> subscribedMessageTypes = GetBatchHandledMessageTypes();
+                if (!subscribedMessageTypes.Any()) return;
+
+                //GetCurrentSubscriptions
+                _ = await GetOrCreateSubscription(endpointName, cancellationToken);
+
+                var existingRules = await GetExistingRules(endpointName, cancellationToken);
+
+                foreach (var type in subscribedMessageTypes)
+                {
+                    if (!existingRules.Any(x => x.Name == type.Name))
+                    {
+                        CreateNewSubscriptionRule(type, endpointName, cancellationToken);
+                    }
+                }
+            }
+            catch (MessagingEntityAlreadyExistsException ex)
+            {
+                logger.LogInfo($"The message queue entity already exists: {ex.Message}. This could be because another instance of the service has already ensured the entity exists");
+            }
+            catch (Exception e)
+            {
+                logger.LogFatal($"Error ensuring subscription, or rule: {e.Message}.", e);
+                throw;
+            }
+        }
+
+        private void CreateNewSubscriptionRule(Type type, string endpointName, CancellationToken cancellationToken)
+        {
+            var manageClient = new ManagementClient(connectionString);
+            var ruleDescription = new RuleDescription
+            {
+                Filter = new SqlFilter($"[NServiceBus.EnclosedMessageTypes] LIKE '%{type.FullName}%'"),
+                Name = type.Name
+            };
+
+            manageClient.CreateRuleAsync(TopicPath, endpointName, ruleDescription, cancellationToken);
+        }
+
+        private async Task<IList<RuleDescription>> GetExistingRules(string subscriptionName, CancellationToken cancellationToken)
+        {
+            var manageClient = new ManagementClient(connectionString);
+          return await  manageClient.GetRulesAsync(TopicPath, subscriptionName, cancellationToken: cancellationToken);
+        }
+
+        private async Task<SubscriptionDescription> GetOrCreateSubscription(string endpointName,CancellationToken cancellationToken)
+        {
+            var manageClient = new ManagementClient(connectionString);
+             
+                SubscriptionDescription subscriptionDescription;
+                if (!await  manageClient.SubscriptionExistsAsync(TopicPath, endpointName ,cancellationToken))
+                {
+                     subscriptionDescription = new SubscriptionDescription(TopicPath, endpointName)
+                    {
+                        ForwardTo = endpointName, UserMetadata = endpointName, EnableBatchedOperations = true,
+                        MaxDeliveryCount = Int32.MaxValue,EnableDeadLetteringOnFilterEvaluationExceptions = false,
+                        LockDuration = TimeSpan.FromMinutes(5)
+                    };
+                     var defaultRule = new RuleDescription("$default") {Filter = new SqlFilter("1=0")};
+                     await manageClient.CreateSubscriptionAsync(
+                        subscriptionDescription, defaultRule,  cancellationToken);
+                }
+                else
+                {
+                    subscriptionDescription =
+                        await manageClient.GetSubscriptionAsync(TopicPath, endpointName, cancellationToken);
+                }
+
+                return subscriptionDescription;
+        }
+
+        private List<Type> GetBatchHandledMessageTypes()
+        {
+            List<Type> genericTypes = new List<Type>();
+
+            var types = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(assembly => assembly.GetTypes());
+
+            foreach (var type in types)
+            {
+                foreach (Type intType in type.GetInterfaces())
+                {
+                    if (intType.IsGenericType && intType.GetGenericTypeDefinition()
+                        == typeof(IHandleMessageBatches<>))
+                    {
+                        genericTypes.Add(intType.GetGenericArguments()[0]);
+                    }
+                }
+            }
+
+            return genericTypes;
         }
 
         private async Task<List<(Object Message, BatchMessageReceiver Receiver, Message ReceivedMessage)>> ReceiveMessages(BatchMessageReceiver messageReceiver, CancellationToken cancellationToken)
@@ -297,7 +398,8 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                     return;
                 }
 
-                logger.LogInfo($"Creating queue '{queuePath}' with properties: TimeToLive: 7 days, Lock Duration: 5 Minutes, Max Delivery Count: 50, Max Size: 5Gb.");
+                logger.LogInfo(
+                    $"Creating queue '{queuePath}' with properties: TimeToLive: 7 days, Lock Duration: 5 Minutes, Max Delivery Count: 50, Max Size: 5Gb.");
                 var queueDescription = new QueueDescription(queuePath)
                 {
                     DefaultMessageTimeToLive = TimeSpan.FromDays(7),
@@ -309,6 +411,10 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                 };
 
                 await manageClient.CreateQueueAsync(queueDescription, startingCancellationToken).ConfigureAwait(false);
+            }
+            catch (MessagingEntityAlreadyExistsException ex)
+            {
+                logger.LogInfo($"Queue already exists: {ex.Message}. This could be because another instance of the service has already ensured the queue exists");
             }
             catch (Exception e)
             {
