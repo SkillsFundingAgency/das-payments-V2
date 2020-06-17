@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Autofac;
+﻿using System;
+using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.DataLocks.Application.Services;
@@ -12,16 +12,16 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
         private readonly IApprenticeshipProcessor apprenticeshipProcessor;
         private readonly IPaymentLogger paymentLogger;
 
-        public FoundNotLevyPayerEmployerAccountEventHandler(IApprenticeshipProcessor apprenticeshipProcessor  ,IPaymentLogger paymentLogger)
+        public FoundNotLevyPayerEmployerAccountEventHandler(IApprenticeshipProcessor apprenticeshipProcessor, IPaymentLogger paymentLogger)
         {
-            this.apprenticeshipProcessor = apprenticeshipProcessor;
-            this.paymentLogger = paymentLogger;
+            this.apprenticeshipProcessor = apprenticeshipProcessor ?? throw new ArgumentNullException(nameof(apprenticeshipProcessor));
+            this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
         }
 
         public async Task Handle(FoundNotLevyPayerEmployerAccount message, IMessageHandlerContext context)
         {
             paymentLogger.LogDebug($"Handling Found NotLevyPayer Employer Account Id: {message.AccountId}");
-            await apprenticeshipProcessor.ProcessNonLevyPayerFlagForEmployer(message.AccountId, false).ConfigureAwait(false);
+            await apprenticeshipProcessor.ProcessIsLevyPayerFlagForEmployer(message.AccountId, false).ConfigureAwait(false);
             paymentLogger.LogInfo($"Finished Handling Found NotLevyPayer Employer Account Id: {message.AccountId}");
         }
     }

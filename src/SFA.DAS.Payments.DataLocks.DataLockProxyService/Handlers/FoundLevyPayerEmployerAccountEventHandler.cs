@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
         public async Task Handle(FoundLevyPayerEmployerAccount message, IMessageHandlerContext context)
         {
             paymentLogger.LogDebug($"Handling Found LevyPayer Employer Account Id: {message.AccountId}");
-            await apprenticeshipProcessor.ProcessNonLevyPayerFlagForEmployer(message.AccountId, true).ConfigureAwait(false);
+            await apprenticeshipProcessor.ProcessIsLevyPayerFlagForEmployer(message.AccountId, true).ConfigureAwait(false);
             paymentLogger.LogInfo($"Finished Handling Found LevyPayer Employer Account Id: {message.AccountId}");
         }
     }
