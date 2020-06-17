@@ -55,13 +55,6 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
             var paymentsStoppedCount = (paymentsStatusTask.Result.SingleOrDefault(x => x.Key == ApprenticeshipStatus.Stopped)?.Count).GetValueOrDefault();
             var paymentsPausedCount = (paymentsStatusTask.Result.SingleOrDefault(x => x.Key == ApprenticeshipStatus.Paused)?.Count).GetValueOrDefault();
 
-
-
-            if (commitmentsApprovedCount == paymentsApprovedCount
-                && commitmentsStoppedCount == paymentsStoppedCount
-                && commitmentsPausedCount == paymentsPausedCount)
-                return;
-
             telemetry.TrackEvent(ApprovalsReferenceDataComparisonEvent, new Dictionary<string, double>
             {
                 { DasApproved, commitmentsApprovedCount },
