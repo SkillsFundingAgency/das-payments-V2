@@ -126,11 +126,13 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 .Where(x => !storedEmployers.Contains((x.AccountId, x.IsLevyPayer))).ToList();
 
             var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
-            List<Task> publishEvents = new List<Task>();
 
-            publishEvents.AddRange(accountsWithChangedLevyFlags.Where(x=> !x.IsLevyPayer).Select(employer => endpointInstance.Publish(new FoundNotLevyPayerEmployerAccount { AccountId = employer.AccountId })));
-            publishEvents.AddRange(accountsWithChangedLevyFlags.Where(x=> x.IsLevyPayer).Select(employer => endpointInstance.Publish(new FoundLevyPayerEmployerAccount { AccountId = employer.AccountId })));
-
+            var publishEvents =
+                accountsWithChangedLevyFlags.Select(employer =>
+                    endpointInstance.Publish( !employer.IsLevyPayer
+                        ? new FoundNotLevyPayerEmployerAccount { AccountId = employer.AccountId }
+                        :(object) new FoundLevyPayerEmployerAccount { AccountId = employer.AccountId } ));
+           
             await Task.WhenAll(publishEvents).ConfigureAwait(false);
 
             var accountIds = string.Join(",", accountsWithChangedLevyFlags.Select(x=>x.AccountId));

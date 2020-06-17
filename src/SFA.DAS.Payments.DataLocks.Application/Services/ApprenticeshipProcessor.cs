@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         Task ProcessPausedApprenticeship(ApprenticeshipPausedEvent pausedEvent);
         Task ProcessResumedApprenticeship(ApprenticeshipResumedEvent resumedEvent);
         Task ProcessPaymentOrderChange(PaymentOrderChangedEvent paymentOrderChangedEvent);
-        Task ProcessNonLevyPayerFlagForEmployer(long accountId, bool isLevyPayer);
+        Task ProcessIsLevyPayerFlagForEmployer(long accountId, bool isLevyPayer);
     }
 
     public class ApprenticeshipProcessor : IApprenticeshipProcessor
@@ -243,7 +243,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
         }
 
-        public async Task ProcessNonLevyPayerFlagForEmployer(long accountId, bool isLevyPayer)
+        public async Task ProcessIsLevyPayerFlagForEmployer(long accountId, bool isLevyPayer)
         {
             try
             {

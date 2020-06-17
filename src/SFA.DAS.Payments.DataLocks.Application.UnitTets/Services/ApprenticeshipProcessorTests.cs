@@ -415,7 +415,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 .ReturnsAsync(apprenticeships);
             
             var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
-            await apprenticeshipProcessor.ProcessNonLevyPayerFlagForEmployer(1, isLevyPayer);
+            await apprenticeshipProcessor.ProcessIsLevyPayerFlagForEmployer(1, isLevyPayer);
             
             mocker.Mock<IEndpointInstance>()
                 .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev => ev.Id == apprenticeships[0].Id &&
@@ -436,7 +436,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 .ReturnsAsync(apprenticeships);
 
             var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
-            await apprenticeshipProcessor.ProcessNonLevyPayerFlagForEmployer(1, false);
+            await apprenticeshipProcessor.ProcessIsLevyPayerFlagForEmployer(1, false);
 
             mocker.Mock<IEndpointInstance>()
                 .Verify(svc => svc.Publish(It.IsAny<ApprenticeshipUpdated>(), It.IsAny<PublishOptions>()), Times.Never);
