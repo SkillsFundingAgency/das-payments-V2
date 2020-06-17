@@ -1,7 +1,9 @@
-﻿namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
+﻿using System.Threading.Tasks;
+
+namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
 {
     public interface IApprenticeshipsDataService
     {
-        void ProcessComparison();
+        Task ProcessComparison();
     }
 }

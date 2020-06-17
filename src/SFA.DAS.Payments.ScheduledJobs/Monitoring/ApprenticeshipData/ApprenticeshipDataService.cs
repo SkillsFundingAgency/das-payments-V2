@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -27,15 +29,33 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
             this.telemetry = telemetry;
         }
 
-        public void ProcessComparison()
+        public async Task ProcessComparison()
         {
-            var commitmentsApprovedCount = commitmentsDataContext.Apprenticeship.Count(x => x.IsApproved);
-            var commitmentsStoppedCount = commitmentsDataContext.Apprenticeship.Count(x => x.PaymentStatus == PaymentStatus.Withdrawn);
-            var commitmentsPausedCount = commitmentsDataContext.Apprenticeship.Count(x => x.PaymentStatus == PaymentStatus.Paused);
+            var commitmentsApprovedTask = commitmentsDataContext.Apprenticeship.CountAsync(x => x.IsApproved);
 
-            var paymentsApprovedCount = paymentsDataContext.Apprenticeship.Count(x => x.Status == ApprenticeshipStatus.Active);
-            var paymentsStoppedCount = paymentsDataContext.Apprenticeship.Count(x => x.Status == ApprenticeshipStatus.Stopped);
-            var paymentsPausedCount = paymentsDataContext.Apprenticeship.Count(x => x.Status == ApprenticeshipStatus.Paused);
+            var commitmentsStatusTask = commitmentsDataContext.Apprenticeship
+                .Where(a => a.PaymentStatus == PaymentStatus.Withdrawn || a.PaymentStatus == PaymentStatus.Paused)
+                .GroupBy(g => g.PaymentStatus)
+                .Select(x => new { x.Key, Count = x.Count() })
+                .ToListAsync();
+
+            var paymentsStatusTask = paymentsDataContext.Apprenticeship
+                .Where(a => a.Status == ApprenticeshipStatus.Active || a.Status == ApprenticeshipStatus.Stopped || a.Status == ApprenticeshipStatus.Paused)
+                .GroupBy(g => g.Status)
+                .Select(x => new { x.Key, Count = x.Count() })
+                .ToListAsync();
+
+            await Task.WhenAll(commitmentsApprovedTask, commitmentsStatusTask, paymentsStatusTask).ConfigureAwait(false);
+
+            var commitmentsApprovedCount = commitmentsApprovedTask.Result;
+            var commitmentsStoppedCount = (commitmentsStatusTask.Result.SingleOrDefault(x => x.Key == PaymentStatus.Withdrawn)?.Count).GetValueOrDefault();
+            var commitmentsPausedCount = (commitmentsStatusTask.Result.SingleOrDefault(x => x.Key == PaymentStatus.Paused)?.Count).GetValueOrDefault();
+
+            var paymentsApprovedCount = (paymentsStatusTask.Result.SingleOrDefault(x => x.Key == ApprenticeshipStatus.Active)?.Count).GetValueOrDefault();
+            var paymentsStoppedCount = (paymentsStatusTask.Result.SingleOrDefault(x => x.Key == ApprenticeshipStatus.Stopped)?.Count).GetValueOrDefault();
+            var paymentsPausedCount = (paymentsStatusTask.Result.SingleOrDefault(x => x.Key == ApprenticeshipStatus.Paused)?.Count).GetValueOrDefault();
+
+
 
             if (commitmentsApprovedCount == paymentsApprovedCount
                 && commitmentsStoppedCount == paymentsStoppedCount

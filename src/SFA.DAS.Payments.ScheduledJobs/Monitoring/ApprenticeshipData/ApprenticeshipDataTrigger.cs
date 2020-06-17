@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using AzureFunctions.Autofac;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs;
@@ -12,24 +13,24 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
     public static class ApprenticeshipDataTrigger
     {
         [FunctionName("TimerTriggerApprenticeshipsReferenceDataComparison")]
-        public static void TimerTriggerApprenticeshipsReferenceDataComparison([TimerTrigger("%ApprenticeshipValidationSchedule%", RunOnStartup = false)]TimerInfo myTimer, [Inject]IApprenticeshipsDataService service, [Inject] IPaymentLogger log)
+        public static async Task TimerTriggerApprenticeshipsReferenceDataComparison([TimerTrigger("%ApprenticeshipValidationSchedule%", RunOnStartup = false)]TimerInfo myTimer, [Inject]IApprenticeshipsDataService service, [Inject] IPaymentLogger log)
         {
-            RunApprenticeshipsReferenceDataComparison(service, log);
+            await RunApprenticeshipsReferenceDataComparison(service, log);
         }
 
         [FunctionName("HttpTriggerApprenticeshipsReferenceDataComparison")]
-        public static void HttpTriggerApprenticeshipsReferenceDataComparison(
+        public static async Task HttpTriggerApprenticeshipsReferenceDataComparison(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest httpRequest,
             [Inject]IApprenticeshipsDataService service, [Inject] IPaymentLogger log)
         {
-            RunApprenticeshipsReferenceDataComparison(service, log);
+            await RunApprenticeshipsReferenceDataComparison(service, log);
         }
 
-        private static void RunApprenticeshipsReferenceDataComparison(IApprenticeshipsDataService service, IPaymentLogger log)
+        private static async Task RunApprenticeshipsReferenceDataComparison(IApprenticeshipsDataService service, IPaymentLogger log)
         {
             try
             {
-                service.ProcessComparison();
+                await service.ProcessComparison();
             }
             catch (Exception e)
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
@@ -66,49 +67,49 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests
         }
 
         [Test]
-        public void WhenCallingProcessComparison_ShouldOutputTheCorrectCountOfDasApproved()
+        public async Task WhenCallingProcessComparison_ShouldOutputTheCorrectCountOfDasApproved()
         {
-            service.ProcessComparison();
+            await service.ProcessComparison();
             telemetry.Verify(x => x.TrackEvent(EventName, It.Is<Dictionary<string, double>>(metrics
                 => metrics.Any(metric => metric.Key == "DasApproved" && metric.Value == 1))));
         }
 
         [Test]
-        public void WhenCallingProcessComparison_ShouldOutputTheCorrectCountOfDasStopped()
+        public async Task WhenCallingProcessComparison_ShouldOutputTheCorrectCountOfDasStopped()
         {
-            service.ProcessComparison();
+            await service.ProcessComparison();
             telemetry.Verify(x => x.TrackEvent(EventName, It.Is<Dictionary<string, double>>(metrics
                 => metrics.Any(metric => metric.Key == "DasStopped" && metric.Value == 3))));
         }
 
         [Test]
-        public void WhenCallingProcessComparison_ShouldOutputTheCorrectCountOfDasPaused()
+        public async Task WhenCallingProcessComparison_ShouldOutputTheCorrectCountOfDasPaused()
         {
-            service.ProcessComparison();
+            await service.ProcessComparison();
             telemetry.Verify(x => x.TrackEvent(EventName, It.Is<Dictionary<string, double>>(metrics
                 => metrics.Any(metric => metric.Key == "DasPaused" && metric.Value == 2))));
         }
 
         [Test]
-        public void WhenCallingProcessComparison_ShouldOutputTheCorrectCountOfPaymentsApproved()
+        public async Task WhenCallingProcessComparison_ShouldOutputTheCorrectCountOfPaymentsApproved()
         {
-            service.ProcessComparison();
+            await service.ProcessComparison();
             telemetry.Verify(x => x.TrackEvent(EventName, It.Is<Dictionary<string, double>>(metrics
                 => metrics.Any(metric => metric.Key == "PaymentsApproved" && metric.Value == 3))));
         }
 
         [Test]
-        public void WhenCallingProcessComparison_ShouldOutputTheCorrectCountOfPaymentsStopped()
+        public async Task WhenCallingProcessComparison_ShouldOutputTheCorrectCountOfPaymentsStopped()
         {
-            service.ProcessComparison();
+            await service.ProcessComparison();
             telemetry.Verify(x => x.TrackEvent(EventName, It.Is<Dictionary<string, double>>(metrics
                 => metrics.Any(metric => metric.Key == "PaymentsStopped" && metric.Value == 1))));
         }
 
         [Test]
-        public void WhenCallingProcessComparison_ShouldOutputTheCorrectCountOfPaymentsPaused()
+        public async Task WhenCallingProcessComparison_ShouldOutputTheCorrectCountOfPaymentsPaused()
         {
-            service.ProcessComparison();
+            await service.ProcessComparison();
             telemetry.Verify(x => x.TrackEvent(EventName, It.Is<Dictionary<string, double>>(metrics
                 => metrics.Any(metric => metric.Key == "PaymentsPaused" && metric.Value == 4))));
         }

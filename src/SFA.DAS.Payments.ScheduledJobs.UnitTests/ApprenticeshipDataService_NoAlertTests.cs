@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
@@ -62,9 +62,9 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests
         }
 
         [Test]
-        public void WhenCallingProcessComparison_ShouldNotOutputWhenThereIsNoDiscrepancy()
+        public async Task WhenCallingProcessComparison_ShouldNotOutputWhenThereIsNoDiscrepancy()
         {
-            service.ProcessComparison();
+            await service.ProcessComparison();
             telemetry.Verify(x => x.TrackEvent(It.IsAny<string>(), It.IsAny<Dictionary<string, double>>()), Times.Never);
         }
     }
