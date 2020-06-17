@@ -11,10 +11,10 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData;
 using ApprenticeshipModel = SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData.ApprenticeshipModel;
 
-namespace SFA.DAS.Payments.ScheduledJobs.UnitTests
+namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.ApprenticeshipData
 {
     [TestFixture]
-    public class ApprenticeshipDataService_AlertTests
+    public class ApprenticeshipDataServiceTests
     {
         private IPaymentsDataContext paymentsDataContext;
         private ICommitmentsDataContext commitmentsDataContext;
