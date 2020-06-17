@@ -91,15 +91,19 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
         }
 
         [Test]
-        public async Task Validate_Should_RunValidationRulesOnCombinedDataAndShouldNotRaiseAnyValidationEvents()
+        public async Task Validate_Should_RunValidationRulesOnCombinedDataAndShouldRaiseCoreEventsAndShouldNotRaiseEmployerSpecificEvents()
         {
             accountApiWrapper.Setup(x => x.GetDasLevyAccountDetails())
                              .ReturnsAsync(levyAccountBuilder.Build(1).ToList());
 
             await sut.Validate();
 
-            telemetry.Verify(x => x.TrackEvent(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), null), Times.Never);
-            telemetry.Verify(x => x.TrackEvent(It.IsAny<string>(), It.IsAny<Dictionary<string, double>>()), Times.Never);
+            VerifyCombinedTelemetryEvent("das-LevyAccountCount");
+            VerifyCombinedTelemetryEvent("das-IsLevyPayerCount");
+            VerifyCombinedTelemetryEvent("das-TransferAllowanceTotal");
+            VerifyCombinedTelemetryEvent("das-LevyAccountBalanceTotal");
+
+            telemetry.Verify(x => x.TrackEvent(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), null), Times.Never);        
         }
 
         [Test]
@@ -126,6 +130,8 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
             VerifyIndividualTelemetryEvent("IsLevyPayerMismatch");
             VerifyIndividualTelemetryEvent("TransferAllowanceMismatch");
             VerifyIndividualTelemetryEvent("BalanceMismatch");
+            
+            VerifyIndividualTelemetryEvent("LevyAccountId", Times.Exactly(4));
         }
 
         [Test]
@@ -159,7 +165,6 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
 
             VerifyIndividualTelemetryEvent("BalanceMismatch");
             VerifyCombinedTelemetryEvent("das-LevyAccountBalanceTotal");
-            telemetry.VerifyNoOtherCalls();
         }
 
         [Test]
@@ -174,7 +179,6 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
 
             VerifyIndividualTelemetryEvent("TransferAllowanceMismatch");
             VerifyCombinedTelemetryEvent("das-TransferAllowanceTotal");
-            telemetry.VerifyNoOtherCalls();
         }
 
         [Test]
@@ -189,16 +193,15 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
 
             VerifyIndividualTelemetryEvent("IsLevyPayerMismatch");
             VerifyCombinedTelemetryEvent("das-IsLevyPayerCount");
-            telemetry.VerifyNoOtherCalls();
         }
 
-        private void VerifyIndividualTelemetryEvent(string eventName)
+        private void VerifyIndividualTelemetryEvent(string eventName, Times times = default)
         {
             telemetry.Verify(x =>
                                  x.TrackEvent(It.IsAny<string>(),
                                               It.Is<Dictionary<string, string>>(d => d.ContainsKey(eventName)),
                                               null),
-                             Times.Once);
+                             times == default ? Times.Once() : times);
         }
 
         private void VerifyCombinedTelemetryEvent(string eventName)

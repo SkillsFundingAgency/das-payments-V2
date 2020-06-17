@@ -21,21 +21,9 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.LevyAccountData
             When(act => !act.IsNullOrEmpty,
                  () =>
                  {
-                     RuleFor(act => act.DasLevyAccountCount)
-                         .Equal(act => act.PaymentsLevyAccountCount)
-                         .OnFailure(act => LogCountMismatch(act.DasLevyAccountCount, act.PaymentsLevyAccountCount));
-
-                     RuleFor(act => act.DasLevyAccountBalanceTotal)
-                         .Equal(act => act.PaymentsLevyAccountBalanceTotal)
-                         .OnFailure(act => LogBalanceMismatch(act.DasLevyAccountBalanceTotal, act.PaymentsLevyAccountBalanceTotal));
-
-                     RuleFor(act => act.DasTransferAllowanceTotal)
-                         .Equal(act => act.PaymentsTransferAllowanceTotal)
-                         .OnFailure(act => LogTransferAllowanceMismatch(act.DasTransferAllowanceTotal, act.PaymentsTransferAllowanceTotal));
-
-                     RuleFor(act => act.DasIsLevyPayerCount)
-                         .Equal(act => act.PaymentsIsLevyPayerCount)
-                         .OnFailure(act => LogIsLevyPayerMismatch(act.DasIsLevyPayerCount, act.PaymentsIsLevyPayerCount));
+                     RuleFor(act => act)
+                         .Must(act => false) //fake rule to raise bellow events all the time
+                         .OnFailure(RaiseCoreEmployerAccountReferenceDataEvents);
 
                      RuleForEach(act => act.LevyAccounts)
                          .SetValidator(levyAccountValidator);
@@ -50,39 +38,30 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.LevyAccountData
              }, null);
         }
         
-        private void LogCountMismatch(int dasLevyAccountCount, int paymentsLevyAccountCount)
+        private void RaiseCoreEmployerAccountReferenceDataEvents(CombinedLevyAccountsDto combinedDto)
         {
             telemetry.TrackEvent("EmployerAccountReferenceData.Comparison.LevyAccountCount", new Dictionary<string, double>
             {
-                { "das-LevyAccountCount", Convert.ToDouble(dasLevyAccountCount) },
-                { "payments-LevyAccountCount", Convert.ToDouble(paymentsLevyAccountCount) },
+                { "das-LevyAccountCount", Convert.ToDouble(combinedDto.DasLevyAccountCount) },
+                { "payments-LevyAccountCount", Convert.ToDouble(combinedDto.PaymentsLevyAccountCount) },
             });
-        }
         
-        private void LogIsLevyPayerMismatch(decimal dasIsLevyPayerCount, decimal paymentsIsLevyPayerCount)
-        {
             telemetry.TrackEvent("EmployerAccountReferenceData.Comparison.IsLevyPayerCount", new Dictionary<string, double>
              {
-                 { "das-IsLevyPayerCount", Convert.ToDouble(dasIsLevyPayerCount) },
-                 { "payments-IsLevyPayerCount", Convert.ToDouble(paymentsIsLevyPayerCount) },
+                 { "das-IsLevyPayerCount", Convert.ToDouble(combinedDto.DasIsLevyPayerCount) },
+                 { "payments-IsLevyPayerCount", Convert.ToDouble(combinedDto.PaymentsIsLevyPayerCount) },
              });
-        }
-
-        private void LogTransferAllowanceMismatch(decimal dasTransferAllowanceTotal, decimal paymentsTransferAllowanceTotal)
-        {
+        
             telemetry.TrackEvent("EmployerAccountReferenceData.Comparison.TransferAllowanceTotal", new Dictionary<string, double>
             {
-                { "das-TransferAllowanceTotal", Convert.ToDouble(dasTransferAllowanceTotal) },
-                { "payments-TransferAllowanceTotal", Convert.ToDouble(paymentsTransferAllowanceTotal) },
+                { "das-TransferAllowanceTotal", Convert.ToDouble(combinedDto.DasTransferAllowanceTotal) },
+                { "payments-TransferAllowanceTotal", Convert.ToDouble(combinedDto.PaymentsTransferAllowanceTotal) },
             });
-        }
-
-        private void LogBalanceMismatch(decimal dasLevyAccountBalanceTotal, decimal paymentsLevyAccountBalanceTotal)
-        {
+        
             telemetry.TrackEvent("EmployerAccountReferenceData.Comparison.LevyAccountBalanceTotal", new Dictionary<string, double>
             {
-                { "das-LevyAccountBalanceTotal", Convert.ToDouble(dasLevyAccountBalanceTotal) },
-                { "payments-LevyAccountBalanceTotal", Convert.ToDouble(paymentsLevyAccountBalanceTotal) },
+                { "das-LevyAccountBalanceTotal", Convert.ToDouble(combinedDto.DasLevyAccountBalanceTotal) },
+                { "payments-LevyAccountBalanceTotal", Convert.ToDouble(combinedDto.PaymentsLevyAccountBalanceTotal) },
             });
         }
     }
