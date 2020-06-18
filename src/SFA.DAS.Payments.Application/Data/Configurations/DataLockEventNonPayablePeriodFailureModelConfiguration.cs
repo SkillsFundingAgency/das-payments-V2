@@ -20,7 +20,6 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.HasOne(nppf => nppf.DataLockEventNonPayablePeriod).WithMany()
                 .HasPrincipalKey(npp => npp.DataLockEventNonPayablePeriodId)
                 .HasForeignKey(nppf => nppf.DataLockEventNonPayablePeriodId);
-            //builder.HasOne(x => x.Apprenticeship).WithMany().HasForeignKey(x => x.ApprenticeshipId);
         }
     }
 }

@@ -10,7 +10,6 @@ using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure;
@@ -192,10 +191,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         {
             if (holdBackCompletionPayment)
             {
-                return new CompletionPaymentHeldBackEvent
-                {
-                    //TransactionType = (TransactionType)transactionType,
-                };
+                return new CompletionPaymentHeldBackEvent();
             }
 
             switch (earningType)

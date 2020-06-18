@@ -19,9 +19,6 @@ namespace SFA.DAS.Payments.Audit.Application.Data.DataLock
                 .WithMany(npp => npp.Failures)
                 .HasPrincipalKey(npp => npp.DataLockEventNonPayablePeriodId)
                 .HasForeignKey(nppf => nppf.DataLockEventNonPayablePeriodId);
-            //builder.HasOne(x => x.Apprenticeship)
-            //    .WithMany()
-            //    .HasForeignKey(x => x.ApprenticeshipId);
         }
     }
 }

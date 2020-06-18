@@ -55,7 +55,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 {
                     AmountDue = aggregatedEvent.Sum(x => x.AmountDue),
                     DeliveryPeriod = aggregatedEvent.Key.DeliveryPeriod,
-                    //TransactionType = aggregatedEvent.Key.TransactionType,
                     LearningAim = new LearningAim
                     {
                         Reference = aggregatedEvent.Key.Reference,

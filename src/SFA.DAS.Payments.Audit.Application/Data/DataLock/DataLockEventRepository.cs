@@ -38,16 +38,16 @@ namespace SFA.DAS.Payments.Audit.Application.Data.DataLock
             {
                 var bulkConfig = new BulkConfig { SetOutputIdentity = false, BulkCopyTimeout = 60, PreserveInsertOrder = false };
                 var priceEpisodes = dataLockEvents
-                    .SelectMany(datalockEvent => datalockEvent.PriceEpisodes)
+                    .SelectMany(dataLockEvent => dataLockEvent.PriceEpisodes)
                     .ToList();
                 var payablePeriods = dataLockEvents
-                    .SelectMany(datalockEvent => datalockEvent.PayablePeriods)
+                    .SelectMany(dataLockEvent => dataLockEvent.PayablePeriods)
                     .ToList();
                 var nonPayablePeriods = dataLockEvents
-                    .SelectMany(datalockEvent => datalockEvent.NonPayablePeriods)
+                    .SelectMany(dataLockEvent => dataLockEvent.NonPayablePeriods)
                     .ToList();
                 var failures = dataLockEvents
-                    .SelectMany(earning => earning.NonPayablePeriods
+                    .SelectMany(dataLockEvent => dataLockEvent.NonPayablePeriods
                         .SelectMany(npp => npp.Failures))
                     .ToList();
 
@@ -82,7 +82,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.DataLock
                     {
                         if (e.IsUniqueKeyConstraintException())
                         {
-                            logger.LogInfo($"Discarding duplicate earning event. Event Id: {dataLockEvent.EventId}, JobId: {dataLockEvent.JobId}, Learn ref: {dataLockEvent.LearnerReferenceNumber},  Event Type: {dataLockEvent.EventType}");
+                            logger.LogInfo($"Discarding duplicate DataLock event. Event Id: {dataLockEvent.EventId}, JobId: {dataLockEvent.JobId}, Learn ref: {dataLockEvent.LearnerReferenceNumber},  Event Type: {dataLockEvent.EventType}");
                             continue;
                         }
                         throw;
