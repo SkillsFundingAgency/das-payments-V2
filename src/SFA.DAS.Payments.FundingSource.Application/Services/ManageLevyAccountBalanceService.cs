@@ -55,8 +55,12 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             {
                 var pagedAccountsRecords = await accountApiClient.GetPageOfAccounts(pageNumber, batchSize).ConfigureAwait(false);
                 var pagedLevyAccountModels = MapToLevyAccountModel(pagedAccountsRecords);
+
+                var storedEmployers =
+                    await levyFundingSourceRepository.GetCurrentEmployerStatus(pagedLevyAccountModels.Select(x => x.AccountId).ToList(),cancellationToken);
+
                 await BatchUpdateLevyAccounts(pagedLevyAccountModels, cancellationToken).ConfigureAwait(false);
-                await PublishEmployerEvents(pagedLevyAccountModels, cancellationToken).ConfigureAwait(false);
+                await PublishEmployerEvents(pagedLevyAccountModels, storedEmployers).ConfigureAwait(false);
 
                 logger.LogInfo($"Successfully retrieved Account Balance Details for Page {pageNumber} of Levy Accounts");
             }
@@ -114,13 +118,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         }
 
 
-        private async Task PublishEmployerEvents(List<LevyAccountModel> accountModels,CancellationToken cancellationToken = default(CancellationToken))
+        private async Task PublishEmployerEvents(List<LevyAccountModel> accountModels, List<(long AccountId, bool IsLevyPayer)> storedEmployers)
         {
             logger.LogDebug(
                 $"{nameof(PublishEmployerEvents)} for accounts: {String.Join(",",accountModels.Select(x=>x.AccountId))}");
-
-            var storedEmployers =
-               await levyFundingSourceRepository.GetCurrentEmployerStatus(accountModels.Select(x => x.AccountId).ToList(),cancellationToken);
 
             var accountsWithChangedLevyFlags = accountModels
                 .Where(x => !storedEmployers.Contains((x.AccountId, x.IsLevyPayer))).ToList();

@@ -192,7 +192,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             savedAccountStatus = accounts.Select(x => (x.AccountId, !x.IsLevyPayer)).ToList(); //opposite state to new state
             levyFundingSourceRepository
                 .Setup(x => x.GetCurrentEmployerStatus(It.IsAny<List<long>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(savedAccountStatus);
+                .ReturnsAsync(savedAccountStatus.ToList());
 
 
             accountApiClient
@@ -257,7 +257,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
 
             savedAccountStatus = new List<(long, bool)>(){ (1, true), (2, false), (3, true) }; // only first two stored states differ from new accounts
 
-            levyFundingSourceRepository.Setup(x=>x.GetCurrentEmployerStatus(It.IsAny<List<long>>(), It.IsAny<CancellationToken>())).ReturnsAsync(savedAccountStatus);
+            levyFundingSourceRepository.Setup(x=>x.GetCurrentEmployerStatus(It.IsAny<List<long>>(), It.IsAny<CancellationToken>())).ReturnsAsync(savedAccountStatus.ToList());
             
             accountApiClient
                 .Setup(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()))
