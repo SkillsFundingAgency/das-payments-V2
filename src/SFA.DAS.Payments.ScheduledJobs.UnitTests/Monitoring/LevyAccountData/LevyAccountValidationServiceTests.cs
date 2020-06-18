@@ -195,7 +195,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.LevyAccountData
             VerifyCombinedTelemetryEvent("das-IsLevyPayerCount");
         }
 
-        private void VerifyIndividualTelemetryEvent(string eventName, Times times = default(Times))
+        private void VerifyIndividualTelemetryEvent(string eventName, Times times = new Times())
         {
             telemetry.Verify(x =>
                                  x.TrackEvent(It.IsAny<string>(),
