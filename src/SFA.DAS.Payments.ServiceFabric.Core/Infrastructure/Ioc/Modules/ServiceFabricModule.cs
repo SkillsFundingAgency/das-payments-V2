@@ -2,10 +2,12 @@
 using Autofac.Integration.ServiceFabric;
 using Microsoft.ServiceFabric.Actors.Client;
 using Microsoft.ServiceFabric.Services.Remoting.Client;
-using NServiceBus.UnitOfWork;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.ServiceFabric.Core.Batch;
+using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Configuration;
+using SFA.DAS.Payments.ServiceFabric.Core.Messaging;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc.Modules
 {
@@ -21,6 +23,12 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc.Modules
             builder.RegisterType<ActorStateManagerProvider>().As<IActorStateManagerProvider>().InstancePerLifetimeScope();
             builder.RegisterType<ActorIdProvider>().As<IActorIdProvider>().InstancePerLifetimeScope();
             builder.RegisterType<ReliableStateManagerTransactionProvider>().As<IReliableStateManagerTransactionProvider>().InstancePerLifetimeScope();
+
+            builder.RegisterType<ActorReliableCollectionCache<EarningEventKey>>().AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+            builder.RegisterType<DuplicateEarningEventService>().As<IDuplicateEarningEventService>()
+                .InstancePerLifetimeScope();
+
         }
     }
 }
