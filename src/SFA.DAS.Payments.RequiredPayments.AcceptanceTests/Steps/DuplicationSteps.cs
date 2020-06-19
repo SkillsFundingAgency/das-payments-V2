@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using FluentAssertions;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.Application.Repositories;
@@ -98,13 +99,23 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             await MessageSession.Publish(@event);
         }
 
-        [Then("the duplicate event is ignored")]
+        [Then("there is only a single event produced")]
         public void IgnoreTheDuplicate()
         {
-            // This is checked in later steps
+            var @event = Context.Get<IdentifiedRemovedLearningAim>(IdentifiedRemovedLearningAim);
+            var jobid = @event.JobId;
+            PeriodisedRequiredPaymentEventHandler
+                .ReceivedEvents.Where(x => x.JobId == jobid)
+                .Should().HaveCount(1);
         }
 
-        [Then("only one set of earning events is generated for the learner")]
+        [Then("after waiting a second")]
+        public Task WaitASecond()
+        {
+            return Task.Delay(TimeSpan.FromSeconds(1));
+        }
+
+        [Then("only one set of events is generated for the learner")]
         public async Task CheckForDuplicateEvents()
         {
             var @event = Context.Get<IdentifiedRemovedLearningAim>(IdentifiedRemovedLearningAim);
