@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
 using AutoMapper;
-using ESFA.DC.Logging.Interfaces;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -15,13 +14,10 @@ using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Model.Core.Incentives;
-using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Application.Mapping;
 using SFA.DAS.Payments.RequiredPayments.Application.Processors;
 using SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers;
 using SFA.DAS.Payments.RequiredPayments.Domain;
-using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Domain.Services;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
@@ -258,7 +254,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         }
 
         [Test]
-        public async Task DoesNotProcessDuplicatesTwice()
+        public async Task DuplicatesReturnAnEmptyList()
         {
             var historicPayment = CreatePaymentHistoryEntity(FundingSourceType.FullyFundedSfa, 3, TransactionType.OnProgrammeMathsAndEnglish);
             history.Add(historicPayment);
@@ -271,7 +267,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             var sut = mocker.Create<RefundRemovedLearningAimProcessor>();
             var refunds = await sut.RefundLearningAim(identifiedLearner, mocker.Mock<IDataCache<PaymentHistoryEntity[]>>().Object, CancellationToken.None).ConfigureAwait(false);
-            refunds.Should().HaveCount(0);
+            refunds.Should().BeEmpty();
         }
 
         [Test]

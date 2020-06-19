@@ -99,6 +99,14 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
             await MessageSession.Publish(@event);
         }
 
+        [When("the event is resubmitted with a different EventId")]
+        public async Task ResubmitTheEvent()
+        {
+            var @event = Context.Get<IdentifiedRemovedLearningAim>(IdentifiedRemovedLearningAim);
+            @event.EventId = Guid.NewGuid();
+            await MessageSession.Publish(@event);
+        }
+
         [Then("there is only a single event produced")]
         public void IgnoreTheDuplicate()
         {

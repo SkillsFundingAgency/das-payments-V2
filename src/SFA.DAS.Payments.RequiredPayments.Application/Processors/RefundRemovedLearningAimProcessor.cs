@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.requiredPaymentEventFactory = requiredPaymentEventFactory ?? throw new ArgumentNullException(nameof(requiredPaymentEventFactory));
-            this.duplicateEarningEventService = duplicateEarningEventService ?? throw new ArgumentNullException(nameof(duplicateEarningEventService));;
+            this.duplicateEarningEventService = duplicateEarningEventService ?? throw new ArgumentNullException(nameof(duplicateEarningEventService));
         }
 
         public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> RefundLearningAim(IdentifiedRemovedLearningAim identifiedRemovedLearningAim, IDataCache<PaymentHistoryEntity[]> paymentHistoryCache, CancellationToken cancellationToken)
@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             logger.LogDebug($"Now processing request to generate refunds for learning aim: learner: {identifiedRemovedLearningAim.Learner.ReferenceNumber}, Aim: {identifiedRemovedLearningAim.LearningAim.Reference}");
             if (await duplicateEarningEventService.IsDuplicate(identifiedRemovedLearningAim, cancellationToken))
             {
-                logger.LogWarning($"Duplicate Identified Removed Learning Aim found for learner with Ukprn: {identifiedRemovedLearningAim.Ukprn}, " +
+                logger.LogWarning($"Duplicate Identified Removed Learning Aim found for learner with JobId: {identifiedRemovedLearningAim.JobId}, " +
                                   $"Learner Ref Number: {identifiedRemovedLearningAim.Learner.ReferenceNumber}, Aim: {identifiedRemovedLearningAim.LearningAim.Reference}");
                 return new List<PeriodisedRequiredPaymentEvent>().AsReadOnly();
             }
