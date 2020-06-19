@@ -33,7 +33,6 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.RequiredPay
         {
             try
             {
-                //TODO: remove duplicates in this batch
                 await repository.SaveRequiredPaymentEvents(models, cancellationToken);
             }
             catch (Exception e)
