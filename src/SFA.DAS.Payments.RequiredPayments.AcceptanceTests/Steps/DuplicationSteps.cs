@@ -95,16 +95,16 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         [When("the event is duplicated")]
         public async Task DuplicateEvent()
         {
-            var @event = Context.Get<IdentifiedRemovedLearningAim>(IdentifiedRemovedLearningAim);
-            await MessageSession.Publish(@event);
+            var identifiedRemovedLearningAimEvent = Context.Get<IdentifiedRemovedLearningAim>(IdentifiedRemovedLearningAim);
+            await MessageSession.Publish(identifiedRemovedLearningAimEvent);
         }
 
         [When("the event is resubmitted with a different EventId")]
         public async Task ResubmitTheEvent()
         {
-            var @event = Context.Get<IdentifiedRemovedLearningAim>(IdentifiedRemovedLearningAim);
-            @event.EventId = Guid.NewGuid();
-            await MessageSession.Publish(@event);
+            var identifiedRemovedLearningAimEvent = Context.Get<IdentifiedRemovedLearningAim>(IdentifiedRemovedLearningAim);
+            identifiedRemovedLearningAimEvent.EventId = Guid.NewGuid();
+            await MessageSession.Publish(identifiedRemovedLearningAimEvent);
         }
 
         [Then("there is only a single event produced")]
