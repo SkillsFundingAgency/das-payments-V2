@@ -110,8 +110,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         [Then("there is only a single event produced")]
         public void IgnoreTheDuplicate()
         {
-            var @event = Context.Get<IdentifiedRemovedLearningAim>(IdentifiedRemovedLearningAim);
-            var jobid = @event.JobId;
+            var identifiedRemovedLearningAimEvent = Context.Get<IdentifiedRemovedLearningAim>(IdentifiedRemovedLearningAim);
+            var jobid = identifiedRemovedLearningAimEvent.JobId;
             PeriodisedRequiredPaymentEventHandler
                 .ReceivedEvents.Where(x => x.JobId == jobid)
                 .Should().HaveCount(1);
@@ -126,8 +126,8 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
         [Then("only one set of events is generated for the learner")]
         public async Task CheckForDuplicateEvents()
         {
-            var @event = Context.Get<IdentifiedRemovedLearningAim>(IdentifiedRemovedLearningAim);
-            var jobid = @event.JobId;
+            var identifiedRemovedLearningAimEvent = Context.Get<IdentifiedRemovedLearningAim>(IdentifiedRemovedLearningAim);
+            var jobid = identifiedRemovedLearningAimEvent.JobId;
             await WaitForIt(() => PeriodisedRequiredPaymentEventHandler
                     .ReceivedEvents.Count(x => x.JobId == jobid) == 1,
                 "Failed to find exactly one event");
