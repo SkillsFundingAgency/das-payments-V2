@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.ScheduledJobs.Infrastructure.Configuration;
 
@@ -23,10 +24,27 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
                         RequiredPaymentAuditDataCleanUpQueue = configHelper.GetSetting("RequiredPaymentAuditDataCleanUpQueue"),
                         CollectionPeriod = configHelper.GetSetting("CollectionPeriod"),
                         AcademicYear = configHelper.GetSetting("AcademicYear"),
+                        AccountApiBatchSize = configHelper.GetSettingOrDefault("AccountApiBatchSize", 1000),
                     };
                 })
                 .As<IScheduledJobsConfiguration>()
                 .SingleInstance();
+            
+            builder.Register((c, p) =>
+                   {
+                       var configHelper = c.Resolve<IConfigurationHelper>();
+
+                       return new AccountApiConfiguration
+                       {
+                           ApiBaseUrl = configHelper.GetSetting("AccountApiBaseUrl"),
+                           ClientId = configHelper.GetSetting("AccountApiClientId"),
+                           ClientSecret = configHelper.GetSetting("AccountApiClientSecret"),
+                           IdentifierUri = configHelper.GetSetting("AccountApiIdentifierUri"),
+                           Tenant = configHelper.GetSetting("AccountApiTenant")
+                       };
+                   })
+                   .As<IAccountApiConfiguration>()
+                   .SingleInstance();
         }
     }
 }
