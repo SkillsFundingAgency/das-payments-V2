@@ -7,7 +7,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
-using SFA.DAS.Payments.Monitoring.Metrics.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
@@ -116,18 +115,18 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 { "DasEarningsTransactionType15" , (double) metrics.EarningsMetrics.Sum(x=>x.Amounts.TransactionType15) },
                 { "DasEarningsTransactionType16" , (double) metrics.EarningsMetrics.Sum(x=>x.Amounts.TransactionType16) },
                 { "DataLockedEarningsAmount" , (double) metrics.DataLockedEarnings},
-                { "DataLockedCountDLock1" , (double) metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock1) },
-                { "DataLockedCountDLock2" , (double) metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock2) },
-                { "DataLockedCountDLock3" , (double) metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock3) },
-                { "DataLockedCountDLock4" , (double) metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock4) },
-                { "DataLockedCountDLock5" , (double) metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock5) },
-                { "DataLockedCountDLock6" , (double) metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock6) },
-                { "DataLockedCountDLock7" , (double) metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock7) },
-                { "DataLockedCountDLock8" , (double) metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock8) },
-                { "DataLockedCountDLock9" , (double) metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock9) },
-                { "DataLockedCountDLock10" , (double) metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock10) },
-                { "DataLockedCountDLock11" , (double) metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock11) },
-                { "DataLockedCountDLock12" , (double) metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock12) },
+                { "DataLockedCountDLock1" , metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock1) },
+                { "DataLockedCountDLock2" , metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock2) },
+                { "DataLockedCountDLock3" , metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock3) },
+                { "DataLockedCountDLock4" , metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock4) },
+                { "DataLockedCountDLock5" , metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock5) },
+                { "DataLockedCountDLock6" , metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock6) },
+                { "DataLockedCountDLock7" , metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock7) },
+                { "DataLockedCountDLock8" , metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock8) },
+                { "DataLockedCountDLock9" , metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock9) },
+                { "DataLockedCountDLock10" , metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock10) },
+                { "DataLockedCountDLock11" , metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock11) },
+                { "DataLockedCountDLock12" , metrics.DataLockMetrics.Sum(x=>x.Amounts.DataLock12) },
                 { "DataLockAmountAlreadyPaid" , (double) metrics.AlreadyPaidDataLockedEarnings},
                 { "HeldBackCompletionPayments" ,(double) metrics.HeldBackCompletionPayments.Total},
                 { "RequiredPaymentsTotal" , (double) metrics.RequiredPayments.Total },
