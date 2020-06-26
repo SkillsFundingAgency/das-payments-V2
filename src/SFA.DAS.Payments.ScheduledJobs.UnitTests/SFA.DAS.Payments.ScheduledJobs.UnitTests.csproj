@@ -11,7 +11,7 @@
         <PackageReference Include="AutoMoqCore" Version="1.0.0" />
         <PackageReference Include="FluentAssertions" Version="5.9.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.1" />
-        <PackageReference Include="Moq" Version="4.14.1" />
+        <PackageReference Include="Moq" Version="4.10.0" />
         <PackageReference Include="NUnit" Version="3.12.0" />
         <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
