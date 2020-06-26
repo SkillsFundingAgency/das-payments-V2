@@ -2,8 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Monitoring.Metrics.Application.Submission;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
 using SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission;
@@ -15,7 +17,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
     [TestFixture]
     public class SubmissionMetricsServiceTests
     {
-        private Autofac.Extras.Moq.AutoMock moqer;
+        private AutoMock moqer;
         private List<TransactionTypeAmounts> dcEarnings;
         private List<TransactionTypeAmounts> dasEarnings;
         private List<TransactionTypeAmounts> requiredPayments;
@@ -146,6 +148,91 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             moqer.Mock<ISubmissionMetricsRepository>()
                 .Verify(repo => repo.SaveSubmissionMetrics(It.IsAny<SubmissionSummaryModel>(), It.IsAny<CancellationToken>()), Times.Once);
 
+        }
+
+        [Test]
+        public async Task Sends_Metrics_Telemetry()
+        {
+            moqer.Provide<ISubmissionSummaryFactory>(new SubmissionSummaryFactory());
+
+            var service = moqer.Create<SubmissionMetricsService>();
+            await service.BuildMetrics(1234, 123, 1920, 1, CancellationToken.None).ConfigureAwait(false);
+
+            moqer.Mock<ITelemetry>()
+                 .Verify(t => t.TrackEvent(
+                             It.Is<string>(s => s == "Finished Generating Submission Metrics"),
+                             It.IsAny<Dictionary<string, string>>(),
+                             It.Is<Dictionary<string, double>>(dictionary => VerifySubmissionSummaryStats(dictionary))));
+        }
+
+        private static bool VerifySubmissionSummaryStats(IDictionary<string, double> dictionary)
+        {
+            var expectedStats = new Dictionary<string, double>
+            {
+                { "Percentage",  200 },
+                { "ContractType1Percentage",  200 },
+                { "ContractType2Percentage",  200 },
+                { "EarningsContractType1Percentage",  200 },
+                { "EarningsContractType2Percentage",  200 },
+                { "DcEarningsTotal",  32600 },
+                { "DasEarningsTotal",  32600 },
+                { "DasEarningsTransactionType1",  48000 },
+                { "DasEarningsTransactionType2",  0 },
+                { "DasEarningsTransactionType3",  12000 },
+                { "DasEarningsTransactionType4",  400 },
+                { "DasEarningsTransactionType5",  400 },
+                { "DasEarningsTransactionType6",  400 },
+                { "DasEarningsTransactionType7",  400 },
+                { "DasEarningsTransactionType8",  400 },
+                { "DasEarningsTransactionType9",  400 },
+                { "DasEarningsTransactionType10",  400 },
+                { "DasEarningsTransactionType11",  400 },
+                { "DasEarningsTransactionType12",  400 },
+                { "DasEarningsTransactionType13",  400 },
+                { "DasEarningsTransactionType14",  400 },
+                { "DasEarningsTransactionType15",  400 },
+                { "DasEarningsTransactionType16",  400 },
+                { "DataLockedEarningsAmount",  3000 },
+                { "DataLockedCountDLock1",  0 },
+                { "DataLockedCountDLock2",  1000 },
+                { "DataLockedCountDLock3",  0 },
+                { "DataLockedCountDLock4",  1000 },
+                { "DataLockedCountDLock5",  0 },
+                { "DataLockedCountDLock6",  0 },
+                { "DataLockedCountDLock7",  2000 },
+                { "DataLockedCountDLock8",  0 },
+                { "DataLockedCountDLock9",  0 },
+                { "DataLockedCountDLock10",  0 },
+                { "DataLockedCountDLock11",  0 },
+                { "DataLockedCountDLock12",  0 },
+                { "DataLockAmountAlreadyPaid",  1000 },
+                { "HeldBackCompletionPayments",  3000 },
+                { "RequiredPaymentsTotal",  26600 },
+                { "RequiredPaymentsTotalTransactionType1",  21000 },
+                { "RequiredPaymentsTotalTransactionType2",  0 },
+                { "RequiredPaymentsTotalTransactionType3",  3000 },
+                { "RequiredPaymentsTotalTransactionType4",  200 },
+                { "RequiredPaymentsTotalTransactionType5",  200 },
+                { "RequiredPaymentsTotalTransactionType6",  200 },
+                { "RequiredPaymentsTotalTransactionType7",  200 },
+                { "RequiredPaymentsTotalTransactionType8",  200 },
+                { "RequiredPaymentsTotalTransactionType9",  200 },
+                { "RequiredPaymentsTotalTransactionType10",  200 },
+                { "RequiredPaymentsTotalTransactionType11",  200 },
+                { "RequiredPaymentsTotalTransactionType12",  200 },
+                { "RequiredPaymentsTotalTransactionType13",  200 },
+                { "RequiredPaymentsTotalTransactionType14",  200 },
+                { "RequiredPaymentsTotalTransactionType15",  200 },
+                { "RequiredPaymentsTotalTransactionType16",  200 },
+                { "RequiredPaymentsDasEarningsDifference",  32600 }
+            };
+
+            foreach (var keyValue in expectedStats)
+            {
+                dictionary.Should().Contain(keyValue);
+            }
+
+            return true;
         }
     }
 }
