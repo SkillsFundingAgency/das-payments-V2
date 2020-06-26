@@ -12,5 +12,6 @@
         string DataLockAuditDataCleanUpQueue { get; set; }
         string FundingSourceAuditDataCleanUpQueue { get; set; }
         string RequiredPaymentAuditDataCleanUpQueue { get; set; }
+        int AccountApiBatchSize { get; set; }
     }
 }

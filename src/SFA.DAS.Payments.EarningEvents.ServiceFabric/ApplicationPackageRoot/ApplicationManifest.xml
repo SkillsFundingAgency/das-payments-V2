@@ -35,6 +35,9 @@
     <Parameter Name="ImmediateMessageRetries" DefaultValue="1" />
     <Parameter Name="DelayedMessageRetries" DefaultValue="3" />
     <Parameter Name="DelayedMessageRetryDelay" DefaultValue="00:00:10" />
+    <Parameter Name="ProcessLearnerServiceActorService_PartitionCount" DefaultValue="10" />
+    <Parameter Name="ProcessLearnerServiceActorService_MinReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="ProcessLearnerServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
