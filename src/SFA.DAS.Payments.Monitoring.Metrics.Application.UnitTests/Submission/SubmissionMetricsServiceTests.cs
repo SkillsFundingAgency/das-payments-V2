@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
@@ -151,6 +152,21 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
         }
 
         [Test]
+        public async Task Calculates_RequiredPaymentsDasEarningsDifference_Correctly()
+        {
+            moqer.Provide<ISubmissionSummaryFactory>(new SubmissionSummaryFactory());
+
+            var service = moqer.Create<SubmissionMetricsService>();
+            await service.BuildMetrics(1234, 123, 1920, 1, CancellationToken.None).ConfigureAwait(false);
+
+            moqer.Mock<ITelemetry>()
+                 .Verify(t => t.TrackEvent(
+                             It.Is<string>(s => s == "Finished Generating Submission Metrics"),
+                             It.IsAny<Dictionary<string, string>>(),
+                             It.Is<Dictionary<string, double>>(dictionary => dictionary.Contains(new KeyValuePair<string, double>("RequiredPaymentsDasEarningsPercentageDifference",  81.6)))));
+        }
+
+        [Test]
         public async Task Sends_Metrics_Telemetry()
         {
             moqer.Provide<ISubmissionSummaryFactory>(new SubmissionSummaryFactory());
@@ -224,7 +240,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 { "RequiredPaymentsTotalTransactionType14",  200 },
                 { "RequiredPaymentsTotalTransactionType15",  200 },
                 { "RequiredPaymentsTotalTransactionType16",  200 },
-                { "RequiredPaymentsDasEarningsDifference",  32600 }
+                { "RequiredPaymentsDasEarningsPercentageDifference",  81.6 }
             };
 
             foreach (var keyValue in expectedStats)
