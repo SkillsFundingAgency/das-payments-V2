@@ -3,9 +3,9 @@
   <Parameters>
     <Parameter Name="EarningEventsService2021_InstanceCount" DefaultValue="-1" />
     <Parameter Name="ProcessLearnerProxyService_InstanceCount" DefaultValue="-1" />
-    <Parameter Name="ProcessLearnerActorService_PartitionCount" DefaultValue="10" />
-    <Parameter Name="ProcessLearnerActorService_MinReplicaSetSize" DefaultValue="3" />
-    <Parameter Name="ProcessLearnerActorService_TargetReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="ProcessLearnerServiceActorService_PartitionCount" DefaultValue="10" />
+    <Parameter Name="ProcessLearnerServiceActorService_MinReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="ProcessLearnerServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="EarningEventsService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="EarningEventsService_EndpointName" DefaultValue="sfa-das-payments-earningevents" />
     <Parameter Name="EarningEventsService2021_EndpointName" DefaultValue="sfa-das-payments-earningevents2021" />
@@ -227,8 +227,8 @@
       </StatelessService>
     </Service>
     <Service Name="ProcessLearnerServiceActorService" GeneratedIdRef="061345c6-786a-43c4-8acf-0f1a07d0ffb0|Persisted">
-      <StatefulService ServiceTypeName="ProcessLearnerServiceActorServiceType" TargetReplicaSetSize="[ProcessLearnerActorService_TargetReplicaSetSize]" MinReplicaSetSize="[ProcessLearnerActorService_MinReplicaSetSize]">
-        <UniformInt64Partition PartitionCount="[ProcessLearnerActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+      <StatefulService ServiceTypeName="ProcessLearnerServiceActorServiceType" TargetReplicaSetSize="[ProcessLearnerServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[ProcessLearnerServiceActorService_MinReplicaSetSize]">
+        <UniformInt64Partition PartitionCount="[ProcessLearnerServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
     </Service>
