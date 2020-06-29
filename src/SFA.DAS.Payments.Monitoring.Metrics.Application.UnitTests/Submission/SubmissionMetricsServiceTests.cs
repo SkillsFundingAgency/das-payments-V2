@@ -163,7 +163,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                  .Verify(t => t.TrackEvent(
                              It.Is<string>(s => s == "Finished Generating Submission Metrics"),
                              It.IsAny<Dictionary<string, string>>(),
-                             It.Is<Dictionary<string, double>>(dictionary => dictionary.Contains(new KeyValuePair<string, double>("RequiredPaymentsDasEarningsPercentageDifference",  81.6)))));
+                             It.Is<Dictionary<string, double>>(dictionary => dictionary.Contains(new KeyValuePair<string, double>("RequiredPaymentsDasEarningsPercentageComparison",  81.6)))));
         }
 
         [Test]
@@ -240,7 +240,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 { "RequiredPaymentsTotalTransactionType14",  200 },
                 { "RequiredPaymentsTotalTransactionType15",  200 },
                 { "RequiredPaymentsTotalTransactionType16",  200 },
-                { "RequiredPaymentsDasEarningsPercentageDifference",  81.6 }
+                { "RequiredPaymentsDasEarningsPercentageComparison",  81.6 }
             };
 
             foreach (var keyValue in expectedStats)
