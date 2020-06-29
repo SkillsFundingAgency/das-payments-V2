@@ -159,7 +159,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                 x.DcJobId != dcJobId &&
                  x.JobType == JobType.EarningsJob &&
                  x.StartTime > latestValidStartTime).
-                Select(x => new OutstandingJobResult(){ DcJobId = x.DcJobId, DcJobSucceeded = x.DcJobSucceeded, JobStatus = x.Status, endTime = x.EndTime}).
+                Select(x => new OutstandingJobResult(){ DcJobId = x.DcJobId, DcJobSucceeded = x.DcJobSucceeded, JobStatus = x.Status, EndTime = x.EndTime}).
                 ToListAsync(cancellationToken);
         }
     }

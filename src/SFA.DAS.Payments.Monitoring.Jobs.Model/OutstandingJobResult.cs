@@ -7,6 +7,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Model
         public long? DcJobId { get; set; }
         public JobStatus JobStatus  { get; set; }
         public bool? DcJobSucceeded  { get; set; }
-        public DateTimeOffset? endTime  { get; set; }
+        public DateTimeOffset? EndTime  { get; set; }
     }
 }

@@ -96,16 +96,21 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             }
 
             var jobStatus = additionalJobChecksResult.OverriddenJobStatus ?? (currentJobStatus.hasFailedMessages ? JobStatus.CompletedWithErrors : JobStatus.Completed);
+            var endTime =
+                (additionalJobChecksResult.completionTime.HasValue &&
+                 additionalJobChecksResult.completionTime > currentJobStatus.endTime.Value)
+                    ? additionalJobChecksResult.completionTime.Value
+                    : currentJobStatus.endTime.Value;
 
             return await CompleteJob(jobId, jobStatus,
-                currentJobStatus.endTime.Value, cancellationToken).ConfigureAwait(false);
+                endTime, cancellationToken).ConfigureAwait(false);
         }
 
 
-        protected virtual Task<(bool IsComplete, JobStatus? OverriddenJobStatus)> PerformAdditionalJobChecks(JobModel job, 
+        protected virtual Task<(bool IsComplete, JobStatus? OverriddenJobStatus, DateTimeOffset? completionTime)> PerformAdditionalJobChecks(JobModel job, 
             CancellationToken cancellationToken)
         {
-            return Task.FromResult((true,(JobStatus?) null));
+            return Task.FromResult((true,(JobStatus?) null, (DateTimeOffset?) null));
         }
 
 
@@ -153,7 +158,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             return completedItems;
         }
 
-        protected virtual async Task<(bool hasFailedMessages, DateTimeOffset? endTime)> UpdateJobStatus(long jobId, List<CompletedMessage> completedItems,
+        protected virtual async Task<(bool hasFailedMessages, DateTimeOffset? endTime)> UpdateJobStatus(long jobId, List<CompletedMessage> completedItems, 
             CancellationToken cancellationToken)
         {
             var statusChanged = false;
