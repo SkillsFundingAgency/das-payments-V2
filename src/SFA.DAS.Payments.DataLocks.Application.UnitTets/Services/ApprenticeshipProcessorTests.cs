@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Autofac.Extras.Moq;
+﻿using Autofac.Extras.Moq;
 using AutoMapper;
 using FluentAssertions;
 using Moq;
@@ -19,6 +14,11 @@ using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 {
@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         }
 
         [Test]
-        public async Task ProcessCreatedEvent_WithExistingApprenticeship_DoesNotFail()
+        public void ProcessCreatedEvent_WithExistingApprenticeship_DoesNotFail()
         {
             var approvalsEvent = new ApprenticeshipCreatedEvent
             {
@@ -395,7 +395,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         }
 
         [Test]
-        public async Task Process_Apprenticeship_For_NonLevyPayer_Employer_Correctly()
+        [TestCase(false)]
+        [TestCase(true)]
+        public async Task Process_Apprenticeship_NonLevyPayerFlag_For_Employer_Correctly(bool isLevyPayer)
         {
             var apprenticeships = new List<ApprenticeshipModel>
             {
@@ -403,17 +405,17 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 {
                     Id =100,
                     AccountId = 1,
-                    IsLevyPayer =  false
+                    IsLevyPayer =  !isLevyPayer
                 }
             };
 
             mocker.Mock<IApprenticeshipService>()
-                .Setup(svc => svc.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(apprenticeships[0].AccountId, 
+                .Setup(svc => svc.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(apprenticeships[0].AccountId,  isLevyPayer,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(apprenticeships);
             
             var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
-            await apprenticeshipProcessor.ProcessApprenticeshipForNonLevyPayerEmployer(1);
+            await apprenticeshipProcessor.ProcessIsLevyPayerFlagForEmployer(1, isLevyPayer);
             
             mocker.Mock<IEndpointInstance>()
                 .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev => ev.Id == apprenticeships[0].Id &&
@@ -429,12 +431,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var apprenticeships = new List<ApprenticeshipModel>();
          
             mocker.Mock<IApprenticeshipService>()
-                .Setup(svc => svc.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(1,
+                .Setup(svc => svc.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(1, false,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(apprenticeships);
 
             var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
-            await apprenticeshipProcessor.ProcessApprenticeshipForNonLevyPayerEmployer(1);
+            await apprenticeshipProcessor.ProcessIsLevyPayerFlagForEmployer(1, false);
 
             mocker.Mock<IEndpointInstance>()
                 .Verify(svc => svc.Publish(It.IsAny<ApprenticeshipUpdated>(), It.IsAny<PublishOptions>()), Times.Never);
