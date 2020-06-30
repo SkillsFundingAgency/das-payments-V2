@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         Task ProcessPausedApprenticeship(ApprenticeshipPausedEvent pausedEvent);
         Task ProcessResumedApprenticeship(ApprenticeshipResumedEvent resumedEvent);
         Task ProcessPaymentOrderChange(PaymentOrderChangedEvent paymentOrderChangedEvent);
-        Task ProcessApprenticeshipForNonLevyPayerEmployer(long accountId);
+        Task ProcessIsLevyPayerFlagForEmployer(long accountId, bool isLevyPayer);
     }
 
     public class ApprenticeshipProcessor : IApprenticeshipProcessor
@@ -243,30 +243,30 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
         }
 
-        public async Task ProcessApprenticeshipForNonLevyPayerEmployer(long accountId)
+        public async Task ProcessIsLevyPayerFlagForEmployer(long accountId, bool isLevyPayer)
         {
             try
             {
-                logger.LogDebug($"Processing the apprenticeship Employer Is Non Levy Payer event for Account id: {accountId}");
+                logger.LogDebug($"Processing the apprenticeship employer is levy payer flag for Account id: {accountId}");
                
-                var updatedApprenticeships = await apprenticeshipService.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(accountId).ConfigureAwait(false);
+                var updatedApprenticeships = await apprenticeshipService.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(accountId, isLevyPayer).ConfigureAwait(false);
 
                 if (!updatedApprenticeships.Any())
                 {
-                    logger.LogDebug($"Unable to update IsLevyPayerFlag no Apprenticeships found for Account id: {accountId}");
+                    logger.LogDebug($"Unable to update levy payer flag, no Apprenticeships found for Account id: {accountId} that required change");
                     return;
                 }
 
-                var updatedEvents = updatedApprenticeships.Select(x => mapper.Map<ApprenticeshipUpdated>(x));
+                var updatedEvents = updatedApprenticeships.Select(x => mapper.Map<ApprenticeshipUpdated>(x)).ToList();
                 
                 var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
                 await Task.WhenAll(updatedEvents.Select(message => endpointInstance.Publish(message))).ConfigureAwait(false);
                 
-                logger.LogInfo($"Finished Processing the apprenticeship Employer Is Non Levy Payer event for Account id: {accountId}");
+                logger.LogInfo($"Finished processing the apprenticeship employer is levy payer flag for Account id: {accountId}. Updated {updatedEvents.Count()} apprenticeships.");
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error while processing apprenticeship Employer Is Non Levy Payer event . Error: {ex.Message}", ex);
+                logger.LogError($"Error processing the apprenticeship employer is levy payer flag . Error: {ex.Message}", ex);
                 throw;
             }
         }

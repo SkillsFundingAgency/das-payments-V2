@@ -10,44 +10,15 @@ namespace SFA.DAS.Payments.Audit.Application
     {
         public static string ToDebug(this IPaymentsEvent paymentsEvent)
         {
-            return $"Type: {paymentsEvent.GetType().Name}, Id: {paymentsEvent.EventId}, Event Time: {paymentsEvent.EventTime:G}, Ukprn: {paymentsEvent.Ukprn}, Job Id: {paymentsEvent.JobId}, Collection Period: {paymentsEvent.CollectionPeriod.AcademicYear}-{paymentsEvent.CollectionPeriod.Period}, Learner: {paymentsEvent.Learner.ReferenceNumber}";
+            return $"Type: {paymentsEvent.GetType().Name}, Id: {paymentsEvent.EventId}, Event Time: {paymentsEvent.EventTime:G}, Job Id: {paymentsEvent.JobId}, Collection Period: {paymentsEvent.CollectionPeriod.AcademicYear}-{paymentsEvent.CollectionPeriod.Period}, Learner: {paymentsEvent.Learner.ReferenceNumber}";
         }
 
         public static string ToDebug(this SubmissionEvent submissionEvent)
         {
             return
-                $"Type: {submissionEvent.GetType().Name}, Event Time: {submissionEvent.EventTime:G}, Ukprn: {submissionEvent.Ukprn}, Job Id: {submissionEvent.JobId}, Collection Period: {submissionEvent.AcademicYear}-{submissionEvent.CollectionPeriod}";
+                $"Type: {submissionEvent.GetType().Name}, Event Time: {submissionEvent.EventTime:G}, Job Id: {submissionEvent.JobId}, Collection Period: {submissionEvent.AcademicYear}-{submissionEvent.CollectionPeriod}";
         }
-
-        public static bool IsUniqueKeyConstraintException(this Exception exception)
-        {
-            var sqlException = exception.GetException<Microsoft.Data.SqlClient.SqlException>();
-            if (sqlException != null)
-                return sqlException.Number == 2601 || sqlException.Number == 2627;
-            var sqlEx = exception.GetException<SqlException>();
-            return sqlEx != null && (sqlEx.Number == 2601 || sqlEx.Number == 2627);
-        }
-
-        public static bool IsDeadLockException(this Exception exception)
-        {
-            var sqlException = exception.GetException<Microsoft.Data.SqlClient.SqlException>();
-            if (sqlException != null)
-                return sqlException.Number == 1205;
-            var sqlEx = exception.GetException<SqlException>();
-            return sqlEx != null && sqlEx.Number == 1205;
-        }
-
-        public static T GetException<T>(this Exception e) where T : Exception
-        {
-            var innerEx = e;
-            while (innerEx != null && !(innerEx is T))
-            {
-                innerEx = innerEx.InnerException;
-            }
-
-            return innerEx as T;
-        }
-
+        
         public static void AddSqlParameter(this List<SqlParameter> sqlParameters, int index, object value)
         {
             sqlParameters.Add(new SqlParameter($@"p{index}_{sqlParameters.Count}", value));

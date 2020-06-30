@@ -26,7 +26,6 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
 
                                  endpointConfiguration.CustomDiagnosticsWriter(diagnostics =>
                                                                                {
-                                                                                   
                                                                                    logger.Info(diagnostics);
                                                                                    return Task.CompletedTask;
                                                                                });

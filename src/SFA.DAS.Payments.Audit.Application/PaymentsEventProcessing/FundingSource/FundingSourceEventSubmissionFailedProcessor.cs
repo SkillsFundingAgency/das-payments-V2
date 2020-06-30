@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.FundingSour
 
         public async Task Process(SubmissionJobFailed message, CancellationToken cancellationToken)
         {
-            logger.LogVerbose($"Flushing cache before removing funding source events for provider: {message.Ukprn}, collection period: {message.CollectionPeriod}");
+            logger.LogVerbose($"Flushing cache before removing funding source events for job: {message.JobId}, provider: {message.Ukprn}, collection period: {message.CollectionPeriod}");
             await batchService.StorePayments(cancellationToken).ConfigureAwait(false);
             logger.LogDebug($"Flushed cache. Now removing funding source events for job: {message.JobId}, provider: {message.Ukprn}, collection period: {message.CollectionPeriod}");
             await repository.RemoveFailedSubmissionEvents(message.JobId, cancellationToken)

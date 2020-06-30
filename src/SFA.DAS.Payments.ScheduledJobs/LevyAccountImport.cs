@@ -4,8 +4,8 @@ using AzureFunctions.Autofac;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Extensions.Logging;
 using NServiceBus;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.FundingSource.Messages.Commands;
 using SFA.DAS.Payments.ScheduledJobs.Infrastructure.Configuration;
@@ -14,22 +14,22 @@ using SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC;
 
 namespace SFA.DAS.Payments.ScheduledJobs
 {
-    [DependencyInjectionConfig(typeof(DIConfig))]
+    [DependencyInjectionConfig(typeof(DependencyInjectionConfig))]
     public static class LevyAccountImport
     {
         [FunctionName("LevyAccountImport")]
-        public static async Task Run([TimerTrigger("%LevyAccountSchedule%", RunOnStartup=true)]TimerInfo myTimer, [Inject]IEndpointInstanceFactory endpointInstanceFactory, [Inject]IScheduledJobsConfiguration config, ILogger log)
+        public static async Task Run([TimerTrigger("%LevyAccountSchedule%", RunOnStartup=true)]TimerInfo myTimer, [Inject]IEndpointInstanceFactory endpointInstanceFactory, [Inject]IScheduledJobsConfiguration config, [Inject]IPaymentLogger log)
         {
             await RunLevyAccountImport(endpointInstanceFactory, config, log);
         }
 
         [FunctionName("HttpLevyAccountImport")]
-        public static async Task HttpLevyAccountImport([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req, [Inject]IEndpointInstanceFactory endpointInstanceFactory, [Inject]IScheduledJobsConfiguration config, ILogger log)
+        public static async Task HttpLevyAccountImport([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req, [Inject]IEndpointInstanceFactory endpointInstanceFactory, [Inject]IScheduledJobsConfiguration config, [Inject]IPaymentLogger log)
         {
             await RunLevyAccountImport(endpointInstanceFactory, config, log);
         }
         
-        private static async Task RunLevyAccountImport(IEndpointInstanceFactory endpointInstanceFactory, IScheduledJobsConfiguration config, ILogger log)
+        private static async Task RunLevyAccountImport(IEndpointInstanceFactory endpointInstanceFactory, IScheduledJobsConfiguration config, IPaymentLogger log)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.ScheduledJobs
             }
             catch (Exception e)
             {
-                log.Log(LogLevel.Error, e, "Error in LevyAccountImport");
+                log.LogError("Error in LevyAccountImport", e);
                 throw;
             }
         }

@@ -123,22 +123,21 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
 
         public async Task Reset()
         {
-            paymentLogger.LogVerbose($"Resetting actor for id {Id}");
             await apprenticeships.ResetInitialiseFlag().ConfigureAwait(false);
-            paymentLogger.LogInfo($"Reset actor for Id {Id}");
         }
 
         protected override async Task OnActivateAsync()
         {
             using (var operation = telemetry.StartOperation("DataLockService.OnActivateAsync", $"{Id}_{Guid.NewGuid():N}"))
             {
-                paymentLogger.LogDebug($"Activating data-lock actor: {Id}");
+                // Not sure what to do about this... it used to log the ID (ULN)
+                paymentLogger.LogDebug($"Activating data-lock actor");
                 var stopwatch = Stopwatch.StartNew();
                 await Initialise().ConfigureAwait(false);
                 await base.OnActivateAsync().ConfigureAwait(false);
                 TrackInfrastructureEvent("DataLockService.OnActivateAsync", stopwatch);
                 telemetry.StopOperation(operation);
-                paymentLogger.LogInfo($"Finished activating data-lock actor: {Id}");
+                paymentLogger.LogInfo($"Finished activating data-lock actor");
             }
         }
 
@@ -146,11 +145,11 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
         {
             try
             {
-                paymentLogger.LogVerbose($"Actor already initialised for apprenticeship {Id}");
+                paymentLogger.LogVerbose("Actor already initialised for apprenticeship");
                 if (await this.apprenticeships.IsInitialiseFlagIsSet())
                     return;
                 var stopwatch = Stopwatch.StartNew();
-                paymentLogger.LogInfo($"Initialising actor {Id}");
+                paymentLogger.LogInfo("Initialising actor");
                 var uln = long.Parse(Id.ToString());
                 using (var repository = apprenticeshipRepository())
                 {
@@ -161,13 +160,13 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
                     await this.providers.AddOrReplace(CacheKeys.ProvidersKey, providerIds).ConfigureAwait(false);
                 }
                 await apprenticeships.SetInitialiseFlag().ConfigureAwait(false);
-                paymentLogger.LogInfo($"Initialised actor for Id {Id}");
+                paymentLogger.LogInfo($"Initialised actor");
                 stopwatch.Stop();
                 TrackInfrastructureEvent("DataLockService.Initialise", stopwatch);
             }
             catch (Exception e)
             {
-                paymentLogger.LogError($"Error initialising the actor: {Id}. Error: {e.Message}", e);
+                paymentLogger.LogError($"Error initialising the actor. Error: {e.Message}", e);
                 throw;
             }
         }
