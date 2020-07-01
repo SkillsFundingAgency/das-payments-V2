@@ -12,7 +12,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
     public interface IApprenticeshipService
     {
         Task<List<ApprenticeshipDuplicateModel>> NewApprenticeship(ApprenticeshipModel apprenticeship);
-        Task<List<ApprenticeshipModel>> GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(long accountId, CancellationToken cancellation = default(CancellationToken));
+        Task<List<ApprenticeshipModel>> GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(long accountId, bool isLevyPayer, CancellationToken cancellation = default(CancellationToken));
     }
 
     public class ApprenticeshipService : IApprenticeshipService
@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
             }
         }
 
-        public async Task<List<ApprenticeshipModel>> GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(long accountId,CancellationToken cancellation = default(CancellationToken))
+        public async Task<List<ApprenticeshipModel>> GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(long accountId, bool isLevyPayer, CancellationToken cancellation = default(CancellationToken))
         {
             var apprenticeships = await repository.GetEmployerApprenticeships(accountId, cancellation).ConfigureAwait(false);
 
@@ -79,8 +79,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
                 return  new List<ApprenticeshipModel>();
             }
 
-            apprenticeships = apprenticeships.Where(apprenticeship => apprenticeship.IsLevyPayer).ToList();
-            apprenticeships.ForEach(x => x.IsLevyPayer = false);
+            apprenticeships = apprenticeships.Where(apprenticeship => apprenticeship.IsLevyPayer == !isLevyPayer).ToList();
+            apprenticeships.ForEach(x => x.IsLevyPayer = isLevyPayer);
             await  repository.UpdateApprenticeships(apprenticeships).ConfigureAwait(false);
 
             return apprenticeships;
