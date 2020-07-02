@@ -4,11 +4,13 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Security;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Newtonsoft.Json;
 using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -118,20 +120,35 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
             return providerAdjustments;
         }
 
-        public async Task<string> GetToken()
-        {
-            var body = $"{{\"userName\":\"{apiUsername}\", \"password\": \"{apiPassword}\"}}";
-            var content = new ByteArrayContent(Encoding.UTF8.GetBytes(body));
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+        //public async Task<string> GetToken()
+        //{
+        //    var body = $"{{\"userName\":\"{apiUsername}\", \"password\": \"{apiPassword}\"}}";
+        //    var content = new ByteArrayContent(Encoding.UTF8.GetBytes(body));
+        //    content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            var httpResponse = await client.PostAsync("api/v1/token", content);
-            var responseContent = await httpResponse.Content.ReadAsStringAsync();
-            if (httpResponse.IsSuccessStatusCode)
-            {
-                return responseContent;
-            }
+        //    var httpResponse = await client.PostAsync("api/v1/token", content);
+        //    var responseContent = await httpResponse.Content.ReadAsStringAsync();
+        //    if (httpResponse.IsSuccessStatusCode)
+        //    {
+        //        return responseContent;
+        //    }
             
-            throw new InvalidOperationException($"Error getting API token: {responseContent}");
+        //    throw new InvalidOperationException($"Error getting API token: {responseContent}");
+        //}
+
+        private async Task<string> GetToken()
+        {
+            var authContext = new AuthenticationContext("https://login.microsoftonline.com/1a92889b-8ea1-4a16-8132-347814051567");
+            var clientCredential = new ClientCredential("client_id", "secret");
+
+            var authResult = await authContext.AcquireTokenAsync("scope", clientCredential);
+
+            if (authResult == null)
+            {
+                throw new AuthenticationException("Could not authenticate with the OAUTH2 claims provider after several attempts");
+            }
+
+            return authResult.AccessToken;
         }
 
         public async Task<List<ProviderAdjustment>> GetPreviousProviderAdjustments(int academicYear)
