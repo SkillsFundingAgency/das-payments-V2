@@ -152,7 +152,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
         }
 
         [Test]
-        public async Task Calculates_RequiredPaymentsDasEarningsDifference_Correctly()
+        public async Task Calculates_RequiredPaymentsDasEarningsComparison_Correctly()
         {
             moqer.Provide<ISubmissionSummaryFactory>(new SubmissionSummaryFactory());
 
