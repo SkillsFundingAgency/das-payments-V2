@@ -5,6 +5,7 @@ using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.Messages;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.ProviderPayments.Application.Mapping;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
@@ -43,7 +44,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 
         private ProviderPaymentEvent MapToProviderPaymentEvent(FundingSourcePaymentEvent fundingSourcePaymentEvent, long monthEndJobId, Guid eventId)
         {
-            paymentLogger.LogVerbose($"Mapping funding source payment: {fundingSourcePaymentEvent.ToDebug()}, funding source: {fundingSourcePaymentEvent.FundingSourceType:G}");
+            paymentLogger.LogVerbose($"Mapping funding source payment with Funding Source Payment Event: {fundingSourcePaymentEvent.ToLogString()}\n\n For JobId: {monthEndJobId}, EventId: {eventId}");
             var providerPayment = mapper.Map<ProviderPaymentEvent>(fundingSourcePaymentEvent);
             providerPayment.JobId = monthEndJobId;
             providerPayment.EventId = eventId;
