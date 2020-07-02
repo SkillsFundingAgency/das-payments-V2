@@ -34,8 +34,11 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
         private readonly IPaymentLogger logger;
         private readonly IMapper mapper;
         private readonly IBulkWriter<ProviderAdjustment> bulkWriter;
-        private readonly string apiUsername;
+        private readonly string apiClientId;
+        private readonly string apiScope;
+        private readonly string apiTenantId;
         private readonly string apiPassword;
+
         private readonly int pageSize;
 
         public ProviderAdjustmentRepository(
@@ -70,8 +73,13 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
 
             client = new HttpClient(handler){BaseAddress = new Uri(configHelper.GetSetting("EasApiEndpoint"))};
             
-            apiUsername = configHelper.GetSetting("EasApiUsername");
+            
+            apiClientId = configHelper.GetSetting("EasApiClientId");
+            apiTenantId = configHelper.GetSetting("EasApiTenantId");
+            apiScope = configHelper.GetSetting("EasApiScope");
             apiPassword = configHelper.GetSetting("EasApiPassword");
+            
+
             pageSize = configHelper.GetSettingOrDefault("EasPageSize", 10000);
             this.mapper = mapper;
             this.logger = logger;
@@ -120,28 +128,12 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
             return providerAdjustments;
         }
 
-        //public async Task<string> GetToken()
-        //{
-        //    var body = $"{{\"userName\":\"{apiUsername}\", \"password\": \"{apiPassword}\"}}";
-        //    var content = new ByteArrayContent(Encoding.UTF8.GetBytes(body));
-        //    content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-        //    var httpResponse = await client.PostAsync("api/v1/token", content);
-        //    var responseContent = await httpResponse.Content.ReadAsStringAsync();
-        //    if (httpResponse.IsSuccessStatusCode)
-        //    {
-        //        return responseContent;
-        //    }
-            
-        //    throw new InvalidOperationException($"Error getting API token: {responseContent}");
-        //}
-
         private async Task<string> GetToken()
         {
-            var authContext = new AuthenticationContext("https://login.microsoftonline.com/1a92889b-8ea1-4a16-8132-347814051567");
-            var clientCredential = new ClientCredential("client_id", "secret");
+            var authContext = new AuthenticationContext($"https://login.microsoftonline.com/{apiTenantId}");
+            var clientCredential = new ClientCredential(apiClientId, apiPassword);
 
-            var authResult = await authContext.AcquireTokenAsync("scope", clientCredential);
+            var authResult = await authContext.AcquireTokenAsync(apiScope, clientCredential);
 
             if (authResult == null)
             {
