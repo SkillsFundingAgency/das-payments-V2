@@ -88,7 +88,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             };
 
             var submissionMetrics = metrics.SubmissionMetrics;
-            var earningsMetrics = metrics.EarningsMetrics;
+            var earningsMetrics = metrics.EarningsMetrics.Where(x=>x.EarningsType == EarningsType.Das).ToList();
             var dataLockMetrics = metrics.DataLockMetrics;
             var requiredPaymentsMetrics = metrics.RequiredPaymentsMetrics;
 
