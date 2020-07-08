@@ -82,7 +82,7 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
         {
             await WaitForIt(() =>
                 {
-                    return PeriodEndStartEventHandler.ReceivedEvents.Any(ev => ev.JobId == TestSession.JobId);
+                    return PeriodEndStartedEventHandler.ReceivedEvents.Any(ev => ev.JobId == TestSession.JobId);
                 }, $"Failed to find the period end started event for job : { TestSession.JobId}");
         }
 

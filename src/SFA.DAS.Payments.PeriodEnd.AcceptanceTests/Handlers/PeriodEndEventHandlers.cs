@@ -7,7 +7,7 @@ using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 
 namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests.Handlers
 {
-    public class PeriodEndStartEventHandler: IHandleMessages<PeriodEndStartedEvent>
+    public class PeriodEndStartedEventHandler: IHandleMessages<PeriodEndStartedEvent>
     {
         public static readonly List<PeriodEndStartedEvent> ReceivedEvents = new List<PeriodEndStartedEvent>();
 
