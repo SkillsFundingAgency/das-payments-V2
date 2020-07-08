@@ -24,5 +24,6 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         public long? ApprenticeshipPriceEpisodeId { get; set; }
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
         public string ReportingAimFundingLineType { get; set; }
+        public virtual TransactionType TransactionType { get; protected set; }
     }
 }

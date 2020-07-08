@@ -341,6 +341,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.ScheduledJ
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ScheduledJobs", "ScheduledJobs", "{F2AA36D4-90C5-4850-9AA2-29AFAFACD785}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service Fabric", "Service Fabric", "{C24A8D53-2BD0-487A-BFEB-CB12F0879D7E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.ServiceFabric.Core.UnitTests", "SFA.DAS.Payments.ServiceFabric.Core.UnitTests\SFA.DAS.Payments.ServiceFabric.Core.UnitTests.csproj", "{30857CBC-9DDF-431B-9072-F045D6F56CBD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Duplicates", "Duplicates", "{F741E33F-292D-4E80-BA08-48B7601B4ED6}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\Database\Duplicates\Identify And Stop Duplicate DataLockEvents.sql = Scripts\Database\Duplicates\Identify And Stop Duplicate DataLockEvents.sql
+		Scripts\Database\Duplicates\Identify And Stop Duplicate FundingSourceEvents.sql = Scripts\Database\Duplicates\Identify And Stop Duplicate FundingSourceEvents.sql
+		Scripts\Database\Duplicates\Identify And Stop Duplicate Payments.sql = Scripts\Database\Duplicates\Identify And Stop Duplicate Payments.sql
+		Scripts\Database\Duplicates\Identify And Stop Duplicate RequiredPaymentEvents.sql = Scripts\Database\Duplicates\Identify And Stop Duplicate RequiredPaymentEvents.sql
+	EndProjectSection
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.EarningEvents.ProcessLearnerService", "SFA.DAS.Payments.EarningEvents.ProcessLearnerService\SFA.DAS.Payments.EarningEvents.ProcessLearnerService.csproj", "{CC563A8B-753B-4A7B-8424-B36DB783BA1C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.EarningEvents.ProcessLearnerProxyService", "SFA.DAS.Payments.EarningEvents.ProcessLearnerProxyService\SFA.DAS.Payments.EarningEvents.ProcessLearnerProxyService.csproj", "{9CC1AADF-C524-4D16-A65E-085F43235750}"
@@ -1447,6 +1459,14 @@ Global
 		{60C4FE2F-2879-4D5E-ACB8-3DC0E0CE438F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{60C4FE2F-2879-4D5E-ACB8-3DC0E0CE438F}.Release|x64.ActiveCfg = Release|Any CPU
 		{60C4FE2F-2879-4D5E-ACB8-3DC0E0CE438F}.Release|x64.Build.0 = Release|Any CPU
+		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Debug|x64.Build.0 = Debug|Any CPU
+		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Release|x64.ActiveCfg = Release|Any CPU
+		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1494,6 +1514,7 @@ Global
 		{41447292-B1F8-4A53-8807-B433393E9AB4} = {7435FC0F-53B7-44B4-BE0E-956122B56545}
 		{EB3326FE-6D98-4B20-93BA-D5480103381B} = {7435FC0F-53B7-44B4-BE0E-956122B56545}
 		{E2A82281-3646-4D38-8C6B-FD1FB48479E7} = {7435FC0F-53B7-44B4-BE0E-956122B56545}
+		{06D24626-497E-455A-B38C-83E8334AC5A9} = {C24A8D53-2BD0-487A-BFEB-CB12F0879D7E}
 		{11DFD25F-521A-471B-B3DB-4EA57BE62B55} = {A5C32B77-E094-43D4-8EBC-7859BE3DB3FA}
 		{B5FF4D1A-925D-4979-9363-4C8298C483B8} = {213651BD-07BA-4A57-B1BE-CF4A649BA069}
 		{25B9DFA3-DF0C-4C53-A991-1F3D3BB407A8} = {CE13B0C9-B716-4E9A-9563-95DAD13BD5DF}
@@ -1586,6 +1607,8 @@ Global
 		{BA205339-8296-496F-A815-894B2BF93E24} = {DBE41294-5C69-4F10-9EC2-BB6FDBC21DDD}
 		{A3843B32-D4A0-4227-BA03-229A34360909} = {205CA299-AED1-4F0B-971A-15CCD398A597}
 		{38655219-BDDB-4F2A-8B8C-B30D1434A762} = {F2AA36D4-90C5-4850-9AA2-29AFAFACD785}
+		{30857CBC-9DDF-431B-9072-F045D6F56CBD} = {C24A8D53-2BD0-487A-BFEB-CB12F0879D7E}
+		{F741E33F-292D-4E80-BA08-48B7601B4ED6} = {03E21E69-E578-4F96-A564-A32D26738660}
 		{CC563A8B-753B-4A7B-8424-B36DB783BA1C} = {213651BD-07BA-4A57-B1BE-CF4A649BA069}
 		{9CC1AADF-C524-4D16-A65E-085F43235750} = {213651BD-07BA-4A57-B1BE-CF4A649BA069}
 		{16A14D51-EE60-492B-8985-56EE1B2B396A} = {213651BD-07BA-4A57-B1BE-CF4A649BA069}

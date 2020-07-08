@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Application.Data.Configurations
 {
+    [Obsolete("Replaced with configuration class in audit domain")]
     public class DataLockEventModelConfiguration : IEntityTypeConfiguration<DataLockEventModel>
     {
         public void Configure(EntityTypeBuilder<DataLockEventModel> builder)
@@ -43,7 +45,20 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Ignore(x => x.StartDate);
             builder.Ignore(x => x.NumberOfInstalments);
 
-            builder.HasMany<DataLockEventNonPayablePeriodModel>(x => x.NonPayablePeriods).WithOne(y => y.DataLockEvent).HasForeignKey(p => p.DataLockEventId);
+            builder.HasMany<DataLockEventNonPayablePeriodModel>(dle => dle.NonPayablePeriods)
+                .WithOne(npp => npp.DataLockEvent)
+                .HasPrincipalKey(dle => dle.EventId)
+                .HasForeignKey(npp => npp.DataLockEventId);
+
+            builder.HasMany<DataLockEventPayablePeriodModel>(x => x.PayablePeriods)
+                .WithOne(pp => pp.DataLockEvent)
+                .HasPrincipalKey(dle => dle.EventId)
+                .HasForeignKey(pp => pp.DataLockEventId);
+
+            builder.HasMany<DataLockEventPriceEpisodeModel>(dle => dle.PriceEpisodes)
+                .WithOne()
+                .HasPrincipalKey(dle => dle.EventId)
+                .HasForeignKey(pe => pe.DataLockEventId);
         }
     }
 }
