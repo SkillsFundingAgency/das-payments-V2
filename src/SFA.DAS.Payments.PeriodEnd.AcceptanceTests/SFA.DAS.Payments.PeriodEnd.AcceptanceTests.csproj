@@ -45,6 +45,9 @@
     <Reference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model, Version=0.1.446.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.0.1.446\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.Jobs.Model, Version=0.2.76.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Jobs.Model.0.2.76-beta0001\lib\netstandard2.0\ESFA.DC.Jobs.Model.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.JobStatus.Interface, Version=0.1.12.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.JobStatus.Interface.0.1.12-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Interface.dll</HintPath>
     </Reference>
@@ -107,7 +110,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Handlers\PeriodEndStartedEventHandler.cs" />
+    <Compile Include="Handlers\PeriodEndEventHandlers.cs" />
     <Compile Include="Infrastructure\BindingBootstrapper.cs" />
     <Compile Include="Period End.feature.cs">
       <AutoGen>True</AutoGen>
@@ -151,6 +154,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.PeriodEnd.Messages\SFA.DAS.Payments.PeriodEnd.Messages.csproj">
       <Project>{07B3D8AE-B2C2-4B87-8256-FD1B7B55FB88}</Project>
       <Name>SFA.DAS.Payments.PeriodEnd.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.PeriodEnd.Model\SFA.DAS.Payments.PeriodEnd.Model.csproj">
+      <Project>{C7B276F8-1451-4818-9675-16FAD054BF30}</Project>
+      <Name>SFA.DAS.Payments.PeriodEnd.Model</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

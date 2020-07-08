@@ -12,6 +12,7 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 using SFA.DAS.Payments.PeriodEnd.Model;
 using NServiceBus;
+using Remotion.Linq.Parsing.Structure.IntermediateModel;
 using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
 using SFA.DAS.Payments.JobContextMessageHandling.JobStatus;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
@@ -53,7 +54,10 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 };
 
                 logger.LogDebug($"Got period end event: {periodEndEvent.ToJson()}");
-                await RecordPeriodEndJob(taskType, periodEndEvent).ConfigureAwait(false);
+                if (taskType != PeriodEndTaskType.PeriodEndReports && taskType != PeriodEndTaskType.PeriodEndSubmissionWindowValidation)
+                {
+                    await RecordPeriodEndJob(taskType, periodEndEvent).ConfigureAwait(false);
+                }
                 var endpointInstance = await endpointInstanceFactory.GetEndpointInstance();
                 await endpointInstance.Publish(periodEndEvent);
                 logger.LogInfo($"Finished publishing the period end event. Name: {periodEndEvent.GetType().Name}, JobId: {periodEndEvent.JobId}, Collection Period: {periodEndEvent.CollectionPeriod.Period}-{periodEndEvent.CollectionPeriod.AcademicYear}.");
@@ -64,7 +68,10 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 // PeriodEndStoppedEvent will be handled by the PeriodEndStoppedEventHandler which in turn is handled by the ProcessProviderMonthEndCommandHandler but we don't want to wait for it
 
 
-                if (periodEndEvent is PeriodEndStartedEvent || periodEndEvent is PeriodEndStoppedEvent)
+                if (periodEndEvent is PeriodEndStartedEvent 
+                    || periodEndEvent is PeriodEndStoppedEvent  
+                    || periodEndEvent is PeriodEndRequestReportsEvent  
+                    || periodEndEvent is PeriodEndRequestValidateSubmissionWindowEvent )
                 {
                     logger.LogDebug("Returning as this is either a PeriodEndStart or PeriodEndStop event");
                     return true;
@@ -132,6 +139,10 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                     return new PeriodEndRunningEvent();
                 case PeriodEndTaskType.PeriodEndStop:
                     return new PeriodEndStoppedEvent();
+                case PeriodEndTaskType.PeriodEndSubmissionWindowValidation:
+                   return new PeriodEndRequestValidateSubmissionWindowEvent(); 
+                case PeriodEndTaskType.PeriodEndReports:
+                    return  new PeriodEndRequestReportsEvent();
                 default:
                     throw new InvalidOperationException($"Cannot handle period end task type: '{taskType:G}'");
             }
