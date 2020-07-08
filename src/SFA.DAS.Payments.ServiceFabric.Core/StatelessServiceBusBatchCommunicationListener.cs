@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +13,6 @@ using Microsoft.Azure.ServiceBus.Core;
 using Microsoft.Azure.ServiceBus.InteropExtensions;
 using Microsoft.Azure.ServiceBus.Management;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
-using Newtonsoft.Json;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
@@ -79,7 +77,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             }
         }
 
-        private  async Task EnsureSubscriptions(string endpointName,CancellationToken cancellationToken)
+        private async Task EnsureSubscriptions(string endpointName, CancellationToken cancellationToken)
         {
             try
             {
@@ -126,33 +124,36 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         private async Task<IList<RuleDescription>> GetExistingRules(string subscriptionName, CancellationToken cancellationToken)
         {
             var manageClient = new ManagementClient(connectionString);
-          return await  manageClient.GetRulesAsync(TopicPath, subscriptionName, cancellationToken: cancellationToken);
+            return await manageClient.GetRulesAsync(TopicPath, subscriptionName, cancellationToken: cancellationToken);
         }
 
-        private async Task<SubscriptionDescription> GetOrCreateSubscription(string endpointName,CancellationToken cancellationToken)
+        private async Task<SubscriptionDescription> GetOrCreateSubscription(string endpointName, CancellationToken cancellationToken)
         {
             var manageClient = new ManagementClient(connectionString);
-             
-                SubscriptionDescription subscriptionDescription;
-                if (!await  manageClient.SubscriptionExistsAsync(TopicPath, endpointName ,cancellationToken))
-                {
-                     subscriptionDescription = new SubscriptionDescription(TopicPath, endpointName)
-                    {
-                        ForwardTo = endpointName, UserMetadata = endpointName, EnableBatchedOperations = true,
-                        MaxDeliveryCount = Int32.MaxValue,EnableDeadLetteringOnFilterEvaluationExceptions = false,
-                        LockDuration = TimeSpan.FromMinutes(5)
-                    };
-                     var defaultRule = new RuleDescription("$default") {Filter = new SqlFilter("1=0")};
-                     await manageClient.CreateSubscriptionAsync(
-                        subscriptionDescription, defaultRule,  cancellationToken);
-                }
-                else
-                {
-                    subscriptionDescription =
-                        await manageClient.GetSubscriptionAsync(TopicPath, endpointName, cancellationToken);
-                }
 
-                return subscriptionDescription;
+            SubscriptionDescription subscriptionDescription;
+            if (!await manageClient.SubscriptionExistsAsync(TopicPath, endpointName, cancellationToken))
+            {
+                subscriptionDescription = new SubscriptionDescription(TopicPath, endpointName)
+                {
+                    ForwardTo = endpointName,
+                    UserMetadata = endpointName,
+                    EnableBatchedOperations = true,
+                    MaxDeliveryCount = Int32.MaxValue,
+                    EnableDeadLetteringOnFilterEvaluationExceptions = false,
+                    LockDuration = TimeSpan.FromMinutes(5)
+                };
+                var defaultRule = new RuleDescription("$default") { Filter = new SqlFilter("1=0") };
+                await manageClient.CreateSubscriptionAsync(
+                   subscriptionDescription, defaultRule, cancellationToken);
+            }
+            else
+            {
+                subscriptionDescription =
+                    await manageClient.GetSubscriptionAsync(TopicPath, endpointName, cancellationToken);
+            }
+
+            return subscriptionDescription;
         }
 
         private List<Type> GetBatchHandledMessageTypes()
@@ -348,10 +349,53 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             catch (Exception e)
             {
                 logger.LogError($"Error processing messages. Error: {e.Message}", e);
-                await Task.WhenAll(messages.GroupBy(msg => msg.MessageReceiver).Select(group =>
+                await Task.WhenAll(messages.Where(msg => msg.ReceivedMessage.SystemProperties.DeliveryCount < 10).GroupBy(msg => msg.MessageReceiver).Select(group =>
                         group.Key.Abandon(group.Select(msg => msg.ReceivedMessage.SystemProperties.LockToken)
                             .ToList())))
                     .ConfigureAwait(false);
+                await RetryFailedMessages(groupType, messages.Where(msg => msg.ReceivedMessage.SystemProperties.DeliveryCount >= 10).ToList(), cancellationToken);
+            }
+        }
+
+        protected async Task RetryFailedMessages(Type groupType,
+            List<(object Message, BatchMessageReceiver MessageReceiver, Message ReceivedMessage)> messages,
+            CancellationToken cancellationToken)
+        {
+            var listType = typeof(List<>).MakeGenericType(groupType);
+            var list = (IList)Activator.CreateInstance(listType);
+            foreach (var retryMessage in messages)
+            {
+                try
+                {
+                    using (var scope = scopeFactory.CreateScope())
+                    {
+                        if (!scope.TryResolve(typeof(IHandleMessageBatches<>).MakeGenericType(groupType),
+                            out object handler))
+                        {
+                            logger.LogError($"No handler found for message: {groupType.FullName}");
+                            await Task.WhenAll(messages.Select(message => message.MessageReceiver.DeadLetter(message.ReceivedMessage)));
+                            return;
+                        }
+
+                        var methodInfo = handler.GetType().GetMethod("Handle");
+                        if (methodInfo == null)
+                            throw new InvalidOperationException($"Handle method not found on handler: {handler.GetType().Name} for message type: {groupType.FullName}");
+
+                        list.Clear();
+                        list.Add(retryMessage.Message);
+
+                        var handlerStopwatch = Stopwatch.StartNew();
+                        await (Task)methodInfo.Invoke(handler, new object[] { list, cancellationToken });
+                        RecordMetric($"{handler.GetType().FullName}:Single", handlerStopwatch.ElapsedMilliseconds, 1);
+
+                        await retryMessage.MessageReceiver.Complete(retryMessage.ReceivedMessage.SystemProperties.LockToken);
+                    }
+                }
+                catch (Exception e)
+                {
+                    logger.LogError($"Error processing message.  Error: {e.Message}.  ASB Message id: {retryMessage.ReceivedMessage.MessageId}, Message label: {retryMessage.ReceivedMessage.Label}.", e);
+                    await retryMessage.MessageReceiver.Abandon(retryMessage.ReceivedMessage.SystemProperties.LockToken);
+                }
             }
         }
 

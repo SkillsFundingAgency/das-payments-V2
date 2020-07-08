@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using Autofac;
-using Microsoft.ServiceFabric.Actors.Client;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.DataLocks.Application.Services;
@@ -13,22 +9,19 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
 {
     public class FoundNotLevyPayerEmployerAccountEventHandler : IHandleMessages<FoundNotLevyPayerEmployerAccount>
     {
-        private readonly IActorProxyFactory proxyFactory;
+        private readonly IApprenticeshipProcessor apprenticeshipProcessor;
         private readonly IPaymentLogger paymentLogger;
-        private readonly ILifetimeScope scope;
 
-        public FoundNotLevyPayerEmployerAccountEventHandler(IActorProxyFactory proxyFactory, IPaymentLogger paymentLogger, ILifetimeScope scope)
+        public FoundNotLevyPayerEmployerAccountEventHandler(IApprenticeshipProcessor apprenticeshipProcessor, IPaymentLogger paymentLogger)
         {
-            this.proxyFactory = proxyFactory;
-            this.paymentLogger = paymentLogger;
-            this.scope = scope;
+            this.apprenticeshipProcessor = apprenticeshipProcessor ?? throw new ArgumentNullException(nameof(apprenticeshipProcessor));
+            this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
         }
 
         public async Task Handle(FoundNotLevyPayerEmployerAccount message, IMessageHandlerContext context)
         {
             paymentLogger.LogDebug($"Handling Found NotLevyPayer Employer Account Id: {message.AccountId}");
-            var processor = scope.Resolve<IApprenticeshipProcessor>();
-            await processor.ProcessApprenticeshipForNonLevyPayerEmployer(message.AccountId).ConfigureAwait(false);
+            await apprenticeshipProcessor.ProcessIsLevyPayerFlagForEmployer(message.AccountId, false).ConfigureAwait(false);
             paymentLogger.LogInfo($"Finished Handling Found NotLevyPayer Employer Account Id: {message.AccountId}");
         }
     }

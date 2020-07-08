@@ -40,6 +40,8 @@ CREATE TABLE [Payments2].[RequiredPaymentEvent]
     ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL, 
     [NonPaymentReason] TINYINT NULL,
+	EventType NVARCHAR(4000) NULL,
+	[DuplicateNumber] INT NULL
 )
 GO
 

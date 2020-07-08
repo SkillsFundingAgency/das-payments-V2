@@ -20,6 +20,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC
             builder.RegisterModule<LevyAccountValidationModule>();
             
             builder.RegisterModule<Modules.PaymentDataContextModule>();
+            builder.RegisterModule<CommitmentsDataContextModule>();
             builder.RegisterModule<Modules.ConfigurationModule>();
             builder.RegisterModule<Modules.MessagingModule>();
         }
