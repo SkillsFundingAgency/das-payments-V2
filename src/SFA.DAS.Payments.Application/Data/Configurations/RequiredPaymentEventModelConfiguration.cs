@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Application.Data.Configurations
 {
+    [Obsolete("Replaced with configuration class in audit domain")]
     public class RequiredPaymentEventModelConfiguration : IEntityTypeConfiguration<RequiredPaymentEventModel>
     {
         public void Configure(EntityTypeBuilder<RequiredPaymentEventModel> builder)
@@ -50,8 +52,9 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.LearningStartDate).HasColumnName(@"LearningStartDate");
             builder.Property(x => x.ApprenticeshipId).HasColumnName(@"ApprenticeshipId");
             builder.Property(x => x.ApprenticeshipPriceEpisodeId).HasColumnName(@"ApprenticeshipPriceEpisodeId");
-            builder.Property(x => x.ApprenticeshipEmployerType).HasColumnName(@"ApprenticeshipEmployerType").IsRequired();
+            builder.Property(x => x.ApprenticeshipEmployerType).HasColumnName(@"ApprenticeshipEmployerType");
             builder.Property(x => x.NonPaymentReason).HasColumnName(@"NonPaymentReason");
+            builder.Property(x => x.EventType).HasColumnName(@"EventType");
         }
     }
 }

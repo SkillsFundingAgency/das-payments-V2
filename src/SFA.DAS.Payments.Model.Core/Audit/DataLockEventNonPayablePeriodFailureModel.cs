@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.Model.Core.Audit
         public Guid DataLockEventNonPayablePeriodId { get; set; }
         public virtual DataLockEventNonPayablePeriodModel DataLockEventNonPayablePeriod { get; set; }
         public DataLockErrorCode DataLockFailure { get; set; }
-        public virtual ApprenticeshipModel Apprenticeship { get; set; }
+        //public virtual ApprenticeshipModel Apprenticeship { get; set; }
         public long? ApprenticeshipId { get; set; }
     }
 }

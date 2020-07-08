@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SFA.DAS.Payments.Model.Core.Audit;
@@ -6,6 +7,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Application.Data.Configurations
 {
+    [Obsolete("Replaced with configuration class in audit domain")]
     public class EarningEventPriceEpisodeModelConfiguration : IEntityTypeConfiguration<EarningEventPriceEpisodeModel>
     {
         public void Configure(EntityTypeBuilder<EarningEventPriceEpisodeModel> builder)
