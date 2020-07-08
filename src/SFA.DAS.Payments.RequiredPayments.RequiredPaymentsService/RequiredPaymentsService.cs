@@ -14,7 +14,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Application;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure;
 using SFA.DAS.Payments.RequiredPayments.Domain;
