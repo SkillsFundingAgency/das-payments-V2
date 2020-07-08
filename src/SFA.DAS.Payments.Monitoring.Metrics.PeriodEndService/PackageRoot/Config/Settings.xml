@@ -6,4 +6,30 @@
     <Parameter Name="MyParameter" Value="Value1" />
   </Section>
   -->
+  <Section Name="ConnectionStringsSection">
+    <Parameter Name="StorageConnectionString" Value="UseDevelopmentStorage=true" />
+    <Parameter Name="LoggingConnectionString" Value="Server=.;Database=AppLog;User Id=SFActor; Password=SFActor;" />
+    <Parameter Name="ServiceBusConnectionString" Value="" />
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="" />
+    <Parameter Name="PaymentsConnectionString" Value="" />
+    <Parameter Name="PaymentsMonitoringConnectionString" Value="" />
+    <Parameter Name="DcEarningsConnectionString" Value="" />
+    <Parameter Name="PaymentsMetricsConnectionString" Value="" />
+  </Section>
+  <Section Name="Settings">
+    <Parameter Name="EndpointName" Value="" />
+    <Parameter Name="FailedMessagesQueue" Value="" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
+    <Parameter Name="ImmediateMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetries" Value="" />
+    <Parameter Name="DelayedMessageRetryDelay" Value="" />
+    <Parameter Name="DelayedRetryTimeInSeconds" Value="120" />
+    <Parameter Name="LogLevel" Value="" />
+    <Parameter Name="ConsoleLogLevel" Value="" />
+    <Parameter Name="JobStatusCheck_Interval" Value="00:00:10" />
+    <Parameter Name="TimeToWaitForJobToComplete" Value="01:00:00" />
+    <Parameter Name="NumberOfNServiceBusThreads" Value="4" />
+    <Parameter Name="DasNServiceBusLicenseKey" Value=""/>
+    <Parameter Name="MetricsGenerationDelay" Value="00:05:00"/>
+  </Section>
 </Settings>
