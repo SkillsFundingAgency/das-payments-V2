@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -72,7 +72,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                     || periodEndEvent is PeriodEndRequestReportsEvent  
                     || periodEndEvent is PeriodEndRequestValidateSubmissionWindowEvent )
                 {
-                    logger.LogDebug("Returning as this is either a PeriodEndStart or PeriodEndStop event");
+                    logger.LogDebug("Returning as this is either a PeriodEndStart, PeriodEndStop, PeriodEndRequestReports or PeriodEndRequestValidateSubmissionWindow event");
                     return true;
                 }
 
