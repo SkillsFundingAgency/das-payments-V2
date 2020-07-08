@@ -57,6 +57,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.AccountId)
                 .Ignore(x => x.TransferSenderAccountId)
                 .Ignore(x => x.StartDate)
+                .Ignore(x => x.TransactionType)
                 .Ignore(x => x.PlannedEndDate)
                 .Ignore(x => x.ActualEndDate)
                 .Ignore(x => x.CompletionStatus)
@@ -247,6 +248,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.NumberOfInstalments)
                 .Ignore(x => x.LearningStartDate)
                 .Ignore(x => x.ApprenticeshipId)
+                .Ignore(x => x.TransactionType)
                 .Ignore(x => x.ApprenticeshipPriceEpisodeId)
                 .Ignore(x => x.NumberOfInstalments)
                 .Ignore(x => x.ApprenticeshipEmployerType)
@@ -289,6 +291,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.CompletionStatus)
                 .Ignore(x => x.CompletionAmount)
                 .Ignore(x => x.InstalmentAmount)
+                .Ignore(x => x.TransactionType)
                 .Ignore(x => x.NumberOfInstalments)
                 .Ignore(x => x.LearningStartDate)
                 .Ignore(x => x.ApprenticeshipEmployerType)
@@ -341,14 +344,17 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 ;
             
             CreateMap<PaymentHistoryEntity, CalculatedRequiredCoInvestedAmount>()
+                .Ignore(x => x.TransactionType)
                 .Ignore(x => x.OnProgrammeEarningType)
                 ;
 
             CreateMap<PaymentHistoryEntity, CalculatedRequiredIncentiveAmount>()
+                .Ignore(x => x.TransactionType)
                 .Ignore(x => x.Type)
                 ;
 
             CreateMap<PaymentHistoryEntity, CalculatedRequiredLevyAmount>()
+                .Ignore(x => x.TransactionType)
                 .Ignore(x => x.Priority)
                 .Ignore(x => x.ApprenticeshipId)
                 .Ignore(x => x.ApprenticeshipPriceEpisodeId)
@@ -381,6 +387,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.DeliveryPeriod)
                 .Ignore(x => x.AccountId)
                 .Ignore(x => x.TransferSenderAccountId)
+                .Ignore(x => x.TransactionType)
                 .Ignore(x => x.ContractType)
                 .Ignore(x => x.JobId)
                 .Ignore(x => x.EventTime)

@@ -38,6 +38,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
 
         public async Task RemovePriorEvents(long ukprn, short academicYear, byte collectionPeriod, DateTime latestIlrSubmissionTime, CancellationToken cancellationToken)
         {
+            var dataContext = retryDataContextFactory.Create();
             await dataContext.Database.ExecuteSqlCommandAsync($@"
                     Delete 
                         From [Payments2].[EarningEvent] 
@@ -51,6 +52,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
 
         public async Task RemoveFailedSubmissionEvents(long jobId, CancellationToken cancellationToken)
         {
+            var dataContext = retryDataContextFactory.Create();
             await dataContext.Database.ExecuteSqlCommandAsync($@"
                     Delete 
                         From [Payments2].[EarningEvent] 
@@ -71,7 +73,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
                     .ConfigureAwait(false);
                 await ((DbContext)dataContext).BulkInsertAsync(earningEvents.SelectMany(earning => earning.PriceEpisodes).ToList(), bulkConfig, null, cancellationToken)
                     .ConfigureAwait(false);
-                tx.Commit();
+                await tx.CommitAsync(cancellationToken);
             }
         }
 
@@ -98,7 +100,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
                         throw;
                     }
                 }
-                tx.Commit();
+                await tx.CommitAsync(cancellationToken);
             }
         }
     }

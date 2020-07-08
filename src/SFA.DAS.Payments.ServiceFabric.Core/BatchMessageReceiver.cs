@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             for (var i = 0; i < 10 && messages.Count <= batchSize; i++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var receivedMessages = await messageReceiver.ReceiveAsync(batchSize, TimeSpan.FromSeconds(2))
+                var receivedMessages = await messageReceiver.ReceiveAsync(batchSize, TimeSpan.FromMilliseconds(500))
                     .ConfigureAwait(false);
                 if (receivedMessages == null || !receivedMessages.Any())
                     break;
@@ -42,10 +42,20 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             await messageReceiver.CompleteAsync(lockTokens).ConfigureAwait(false);
         }
 
+        public async Task Complete(string lockToken)
+        {
+            await messageReceiver.CompleteAsync(lockToken);
+        }
+
         public async Task Abandon(IList<string> lockTokens)
         {
             await Task.WhenAll(lockTokens.Select(token => messageReceiver.AbandonAsync(token)))
                 .ConfigureAwait(false);
+        }
+
+        public async Task Abandon(string lockToken)
+        {
+            await messageReceiver.AbandonAsync(lockToken);
         }
 
         public async Task DeadLetter(Message message)
