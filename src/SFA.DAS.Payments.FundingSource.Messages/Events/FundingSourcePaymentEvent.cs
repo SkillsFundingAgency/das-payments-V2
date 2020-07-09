@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Events
 
         public decimal SfaContributionPercentage { get; set; }
 
-        public TransactionType TransactionType { get; set; }
+         public new TransactionType TransactionType { get; set; }
 
         public FundingSourceType FundingSourceType { get; set; }
 

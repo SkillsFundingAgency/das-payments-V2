@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Application.Data.Configurations
 {
+    [Obsolete("Replaced with configuration class in audit domain")]
     public class DataLockEventNonPayablePeriodFailureModelConfiguration : IEntityTypeConfiguration<DataLockEventNonPayablePeriodFailureModel>
     {
         public void Configure(EntityTypeBuilder<DataLockEventNonPayablePeriodFailureModel> builder)
@@ -15,8 +17,9 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.DataLockEventNonPayablePeriodId).HasColumnName(@"DataLockEventNonPayablePeriodId").IsRequired();
             builder.Property(x => x.ApprenticeshipId).HasColumnName(@"ApprenticeshipId");
 
-            builder.HasOne(x => x.DataLockEventNonPayablePeriod).WithMany().HasPrincipalKey(x => x.DataLockEventNonPayablePeriodId);
-            builder.HasOne(x => x.Apprenticeship).WithMany().HasForeignKey(x => x.ApprenticeshipId);
+            builder.HasOne(nppf => nppf.DataLockEventNonPayablePeriod).WithMany()
+                .HasPrincipalKey(npp => npp.DataLockEventNonPayablePeriodId)
+                .HasForeignKey(nppf => nppf.DataLockEventNonPayablePeriodId);
         }
     }
 }
