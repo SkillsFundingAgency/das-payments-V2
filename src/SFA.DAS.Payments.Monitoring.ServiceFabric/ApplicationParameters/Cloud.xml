@@ -21,6 +21,9 @@
     <Parameter Name="Monitoring_JobsService_IntervalInSeconds" Value="__Monitoring_JobsService_IntervalInSeconds__" />
     <Parameter Name="Monitoring_Metrics_SubmissionService_EndpointName" Value="__Monitoring_Metrics_SubmissionService_EndpointName__" />
     <Parameter Name="Monitoring_Metrics_SubmissionService_FailedMessagesQueue" Value="__Monitoring_Metrics_SubmissionService_FailedMessagesQueue__" />
+    <Parameter Name="Monitoring_Metrics_PeriodEndService_EndpointName" Value="__Monitoring_Metrics_PeriodEndService_EndpointName__" />
+    <Parameter Name="Monitoring_Metrics_PeriodEndService_FailedMessagesQueue" Value="__Monitoring_Metrics_PeriodEndService_FailedMessagesQueue__" />
+    <Parameter Name="Monitoring_Metrics_PeriodEndService_InstanceCount" Value="__Monitoring_Metrics_PeriodEndService_InstanceCount__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
     <Parameter Name="ConsoleLogLevel" Value="__ConsoleLogLevel__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Monitoring_Placement_Constraints__" />

@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.Monitoring.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="Monitoring_Metrics_PeriodEndService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="Monitoring_Metrics_SubmissionService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="JobService_MinReplicaSetSize" DefaultValue="1" />
     <Parameter Name="JobService_PartitionCount" DefaultValue="1" />
@@ -23,12 +22,15 @@
     <Parameter Name="Monitoring_JobsService_IntervalInSeconds" DefaultValue="10" />
     <Parameter Name="Monitoring_Metrics_SubmissionService_EndpointName" DefaultValue="sfa-das-payments-monitoring-metrics-submission" />
     <Parameter Name="Monitoring_Metrics_SubmissionService_FailedMessagesQueue" DefaultValue="sfa-das-payments-monitoring-metrics-submission-errors" />
+    <Parameter Name="Monitoring_Metrics_PeriodEndService_EndpointName" DefaultValue="sfa-das-payments-monitoring-metrics-periodend" />
+    <Parameter Name="Monitoring_Metrics_PeriodEndService_FailedMessagesQueue" DefaultValue="sfa-das-payments-monitoring-metrics-periodend-errors" />
+    <Parameter Name="Monitoring_Metrics_PeriodEndService_InstanceCount" DefaultValue="1" />
+    <Parameter Name="Placement_Constraints" DefaultValue="" />
     <Parameter Name="NumberOfNServiceBusThreads" DefaultValue="4" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
     <Parameter Name="ConsoleLogLevel" DefaultValue="" />
     <Parameter Name="DelayedRetryTimeInSeconds" DefaultValue="5" />
-    <Parameter Name="Placement_Constraints" DefaultValue="" />
     <Parameter Name="JobStatusCheck_Interval" DefaultValue="00:00:10" />
     <Parameter Name="TimeToWaitForJobToComplete" DefaultValue="01:00:00" />
     <Parameter Name="DasNServiceBusLicenseKey" DefaultValue="" />
@@ -39,7 +41,38 @@
   </Parameters>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.Monitoring.Metrics.PeriodEndServicePkg" ServiceManifestVersion="1.0.0" />
-    <ConfigOverrides />
+    <ConfigOverrides>
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="ConnectionStringsSection">
+            <Parameter Name="DcEarningsConnectionString" Value="[DcEarningsConnectionString]" />
+            <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
+            <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
+            <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="PaymentsMonitoringConnectionString" Value="[PaymentsMonitoringConnectionString]" />
+            <Parameter Name="PaymentsMetricsConnectionString" Value="[PaymentsMetricsConnectionString]" />
+          </Section>
+          <Section Name="Settings">
+            <Parameter Name="EndpointName" Value="[Monitoring_Metrics_PeriodEndService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[Monitoring_Metrics_PeriodEndService_FailedMessagesQueue]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+            <Parameter Name="DelayedRetryTimeInSeconds" Value="[DelayedRetryTimeInSeconds]" />
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
+            <Parameter Name="JobStatusCheck_Interval" Value="[JobStatusCheck_Interval]" />
+            <Parameter Name="TimeToWaitForJobToComplete" Value="[TimeToWaitForJobToComplete]" />
+            <Parameter Name="NumberOfNServiceBusThreads" Value="[NumberOfNServiceBusThreads]" />
+            <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
+            <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
+            <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
+            <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
+            <Parameter Name="MetricsGenerationDelay" Value="[MetricsGenerationDelay]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+    </ConfigOverrides>
   </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.Monitoring.Metrics.SubmissionServicePkg" ServiceManifestVersion="1.0.0" />
