@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.Audit.DataLockService
         {
             try
             {
-                using (ServiceFabricContainerFactory.CreateContainerForStatefulService<DataLockService>())
+                using (ServiceFabricContainerFactory.CreateContainerForStatelessService<DataLockService>())
                 {
                     Thread.Sleep(Timeout.Infinite);
                 }

@@ -2,9 +2,9 @@
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.EarningEvents.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="ProcessLearnerProxyService_InstanceCount" DefaultValue="-1" />
-    <Parameter Name="ProcessLearnerActorService_PartitionCount" DefaultValue="10" />
-    <Parameter Name="ProcessLearnerActorService_MinReplicaSetSize" DefaultValue="3" />
-    <Parameter Name="ProcessLearnerActorService_TargetReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="ProcessLearnerServiceActorService_PartitionCount" DefaultValue="10" />
+    <Parameter Name="ProcessLearnerServiceActorService_MinReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="ProcessLearnerServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="EarningEventsService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="EarningEventsService_EndpointName" DefaultValue="sfa-das-payments-earningevents" />
     <Parameter Name="EarningEventsService_FailedMessagesQueue" DefaultValue="sfa-das-payments-earningevents-errors" />
@@ -35,9 +35,6 @@
     <Parameter Name="ImmediateMessageRetries" DefaultValue="1" />
     <Parameter Name="DelayedMessageRetries" DefaultValue="3" />
     <Parameter Name="DelayedMessageRetryDelay" DefaultValue="00:00:10" />
-    <Parameter Name="ProcessLearnerServiceActorService_PartitionCount" DefaultValue="10" />
-    <Parameter Name="ProcessLearnerServiceActorService_MinReplicaSetSize" DefaultValue="3" />
-    <Parameter Name="ProcessLearnerServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -179,8 +176,8 @@
       </StatelessService>
     </Service>
     <Service Name="ProcessLearnerServiceActorService" GeneratedIdRef="061345c6-786a-43c4-8acf-0f1a07d0ffb0|Persisted">
-      <StatefulService ServiceTypeName="ProcessLearnerServiceActorServiceType" TargetReplicaSetSize="[ProcessLearnerActorService_TargetReplicaSetSize]" MinReplicaSetSize="[ProcessLearnerActorService_MinReplicaSetSize]">
-        <UniformInt64Partition PartitionCount="[ProcessLearnerActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+      <StatefulService ServiceTypeName="ProcessLearnerServiceActorServiceType" TargetReplicaSetSize="[ProcessLearnerServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[ProcessLearnerServiceActorService_MinReplicaSetSize]">
+        <UniformInt64Partition PartitionCount="[ProcessLearnerServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
       </StatefulService>
     </Service>
   </DefaultServices>

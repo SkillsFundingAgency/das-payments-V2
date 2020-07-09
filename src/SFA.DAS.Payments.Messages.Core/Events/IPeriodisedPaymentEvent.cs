@@ -10,6 +10,7 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         decimal AmountDue { get; }
         byte DeliveryPeriod { get; }
         long? AccountId { get; }
+        long? TransferSenderAccountId { get; set; }
         ContractType ContractType { get; }
         DateTime StartDate { get; }
         DateTime? PlannedEndDate { get;}
@@ -21,6 +22,7 @@ namespace SFA.DAS.Payments.Messages.Core.Events
         DateTime? LearningStartDate { get; }
         long? ApprenticeshipId { get; set; }
         long? ApprenticeshipPriceEpisodeId { get; set; }
-
+        ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
+        TransactionType TransactionType { get; }
     }
 }
