@@ -73,5 +73,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
             mapped.InstalmentAmount.Should().Be(PaymentEvent.InstalmentAmount);
             mapped.NumberOfInstalments.Should().Be(PaymentEvent.NumberOfInstalments);
         }
+
+
     }
 }

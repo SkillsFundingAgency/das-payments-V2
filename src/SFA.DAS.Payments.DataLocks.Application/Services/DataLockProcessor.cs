@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation;
 using SFA.DAS.Payments.DataLocks.Domain.Services.LearnerMatching;
 using SFA.DAS.Payments.Messages.Core.Events;
@@ -22,20 +24,29 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         private readonly ILearnerMatcher learnerMatcher;
         private readonly IOnProgrammeAndIncentiveEarningPeriodsValidationProcessor onProgrammeAndIncentiveEarningPeriodsValidationProcessor;
         private readonly IFunctionalSkillEarningPeriodsValidationProcessor functionalSkillEarningPeriodsValidationProcessor;
-        
+        private readonly IDuplicateEarningEventService duplicateEarningEventService;
+
         public DataLockProcessor(IMapper mapper, ILearnerMatcher learnerMatcher,
             IOnProgrammeAndIncentiveEarningPeriodsValidationProcessor onProgrammeAndIncentiveEarningPeriodsValidationProcessor,
-            IFunctionalSkillEarningPeriodsValidationProcessor functionalSkillEarningPeriodsValidationProcessor)
+            IFunctionalSkillEarningPeriodsValidationProcessor functionalSkillEarningPeriodsValidationProcessor,
+            IDuplicateEarningEventService duplicateEarningEventService)
         {
             this.mapper = mapper;
             this.learnerMatcher = learnerMatcher;
             this.onProgrammeAndIncentiveEarningPeriodsValidationProcessor = onProgrammeAndIncentiveEarningPeriodsValidationProcessor;
             this.functionalSkillEarningPeriodsValidationProcessor = functionalSkillEarningPeriodsValidationProcessor;
+            this.duplicateEarningEventService = duplicateEarningEventService ?? throw new ArgumentNullException(nameof(duplicateEarningEventService));
         }
 
         public async Task<List<DataLockEvent>> GetPaymentEvents(ApprenticeshipContractType1EarningEvent earningEvent, CancellationToken cancellationToken)
         {
             var dataLockEvents = new List<DataLockEvent>();
+
+            if (await duplicateEarningEventService.IsDuplicate(earningEvent, cancellationToken)
+                .ConfigureAwait(false))
+            {
+                return dataLockEvents;
+            }
 
             var learnerMatchResult = await learnerMatcher.MatchLearner(earningEvent.Ukprn, earningEvent.Learner.Uln).ConfigureAwait(false);
             if (learnerMatchResult.DataLockErrorCode.HasValue)
@@ -71,6 +82,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             Act1FunctionalSkillEarningsEvent earningEvent, CancellationToken cancellationToken)
         {
             var dataLockEvents = new List<FunctionalSkillDataLockEvent>();
+            if (await duplicateEarningEventService.IsDuplicate(earningEvent, cancellationToken)
+                .ConfigureAwait(false))
+            {
+                return dataLockEvents;
+            }
 
             var learnerMatchResult = await learnerMatcher.MatchLearner(earningEvent.Ukprn, earningEvent.Learner.Uln).ConfigureAwait(false);
             if (learnerMatchResult.DataLockErrorCode.HasValue)

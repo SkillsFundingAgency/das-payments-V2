@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Application.Data.Configurations
 {
+    [Obsolete("Replaced with configuration class in audit domain")]
     public class EarningEventModelConfiguration : IEntityTypeConfiguration<EarningEventModel>
     {
         public void Configure(EntityTypeBuilder<EarningEventModel> builder)

@@ -32,4 +32,8 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Tests.Core\SFA.DAS.Payments.Tests.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DataLock\" />
+  </ItemGroup>
+
 </Project>
