@@ -167,6 +167,7 @@
     <Service Name="SFA.DAS.Payments.EarningEvents.ProcessLearnerProxyService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.EarningEvents.ProcessLearnerProxyServiceType" InstanceCount="[ProcessLearnerProxyService_InstanceCount]">
         <SingletonPartition />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
     </Service>
     <Service Name="SFA.DAS.Payments.EarningEvents.EarningEventsService" ServicePackageActivationMode="ExclusiveProcess">
@@ -178,6 +179,7 @@
     <Service Name="ProcessLearnerServiceActorService" GeneratedIdRef="061345c6-786a-43c4-8acf-0f1a07d0ffb0|Persisted">
       <StatefulService ServiceTypeName="ProcessLearnerServiceActorServiceType" TargetReplicaSetSize="[ProcessLearnerServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[ProcessLearnerServiceActorService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[ProcessLearnerServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
     </Service>
   </DefaultServices>
