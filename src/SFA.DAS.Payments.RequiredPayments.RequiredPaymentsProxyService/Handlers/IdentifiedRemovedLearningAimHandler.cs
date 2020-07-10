@@ -52,7 +52,11 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             logger.LogDebug($"Got {requiredPayments?.Count ?? 0} required payments.");
             if (requiredPayments != null)
                 await Task.WhenAll(requiredPayments.Select(context.Publish)).ConfigureAwait(false);
-            logger.LogInfo($"Successfully processed IdentifiedRemovedLearningAim event for Actor Id {actorId}");
+            logger.LogInfo($"Successfully processed IdentifiedRemovedLearningAim event for Actor for " +
+                           $"jobId:{message.JobId}, learnerRef:{message.Learner.ReferenceNumber}, frameworkCode:{message.LearningAim.FrameworkCode}, " +
+                           $"pathwayCode:{message.LearningAim.PathwayCode}, programmeType:{message.LearningAim.ProgrammeType}, " +
+                           $"standardCode:{message.LearningAim.StandardCode}, learningAimReference:{message.LearningAim.Reference}, " +
+                           $"academicYear:{message.CollectionPeriod.AcademicYear}, contractType:{message.ContractType}");
         }
     }
 }
