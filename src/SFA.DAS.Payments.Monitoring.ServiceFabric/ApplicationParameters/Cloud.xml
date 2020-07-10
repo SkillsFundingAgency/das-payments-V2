@@ -2,6 +2,7 @@
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.Monitoring.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="Monitoring_Metrics_SubmissionService_InstanceCount" Value="__Monitoring_Metrics_SubmissionService_InstanceCount__" />
+    <Parameter Name="Monitoring_Metrics_PeriodEndService_InstanceCount" Value="__Monitoring_Metrics_PeriodEndService_InstanceCount__" />
     <Parameter Name="JobsProxyService_InstanceCount" Value="__JobsProxyService_InstanceCount__" />
     <Parameter Name="JobService_PartitionCount" Value="__Monitoring_JobsService_PartitionCount__" />
     <Parameter Name="JobService_MinReplicaSetSize" Value="__Monitoring_JobService_MinReplicaSetSize__" />
@@ -23,7 +24,6 @@
     <Parameter Name="Monitoring_Metrics_SubmissionService_FailedMessagesQueue" Value="__Monitoring_Metrics_SubmissionService_FailedMessagesQueue__" />
     <Parameter Name="Monitoring_Metrics_PeriodEndService_EndpointName" Value="__Monitoring_Metrics_PeriodEndService_EndpointName__" />
     <Parameter Name="Monitoring_Metrics_PeriodEndService_FailedMessagesQueue" Value="__Monitoring_Metrics_PeriodEndService_FailedMessagesQueue__" />
-    <Parameter Name="Monitoring_Metrics_PeriodEndService_InstanceCount" Value="__Monitoring_Metrics_PeriodEndService_InstanceCount__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
     <Parameter Name="ConsoleLogLevel" Value="__ConsoleLogLevel__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Monitoring_Placement_Constraints__" />
