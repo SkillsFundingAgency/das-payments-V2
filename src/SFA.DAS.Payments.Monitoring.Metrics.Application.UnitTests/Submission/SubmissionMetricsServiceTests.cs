@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Monitoring.Metrics.Application.Submission;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
 using SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission;
@@ -15,7 +18,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
     [TestFixture]
     public class SubmissionMetricsServiceTests
     {
-        private Autofac.Extras.Moq.AutoMock moqer;
+        private AutoMock moqer;
         private List<TransactionTypeAmounts> dcEarnings;
         private List<TransactionTypeAmounts> dasEarnings;
         private List<TransactionTypeAmounts> requiredPayments;
@@ -146,6 +149,106 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             moqer.Mock<ISubmissionMetricsRepository>()
                 .Verify(repo => repo.SaveSubmissionMetrics(It.IsAny<SubmissionSummaryModel>(), It.IsAny<CancellationToken>()), Times.Once);
 
+        }
+
+        [Test]
+        public async Task Calculates_RequiredPaymentsDasEarningsComparison_Correctly()
+        {
+            moqer.Provide<ISubmissionSummaryFactory>(new SubmissionSummaryFactory());
+
+            var service = moqer.Create<SubmissionMetricsService>();
+            await service.BuildMetrics(1234, 123, 1920, 1, CancellationToken.None).ConfigureAwait(false);
+
+            moqer.Mock<ITelemetry>()
+                 .Verify(t => t.TrackEvent(
+                             It.Is<string>(s => s == "Finished Generating Submission Metrics"),
+                             It.IsAny<Dictionary<string, string>>(),
+                             It.Is<Dictionary<string, double>>(dictionary => dictionary.Contains(new KeyValuePair<string, double>("RequiredPaymentsDasEarningsPercentageComparison",  81.6)))));
+        }
+
+        [Test]
+        public async Task Sends_Metrics_Telemetry()
+        {
+            moqer.Provide<ISubmissionSummaryFactory>(new SubmissionSummaryFactory());
+
+            var service = moqer.Create<SubmissionMetricsService>();
+            await service.BuildMetrics(1234, 123, 1920, 1, CancellationToken.None).ConfigureAwait(false);
+
+            moqer.Mock<ITelemetry>()
+                 .Verify(t => t.TrackEvent(
+                             It.Is<string>(s => s == "Finished Generating Submission Metrics"),
+                             It.IsAny<Dictionary<string, string>>(),
+                             It.Is<Dictionary<string, double>>(dictionary => VerifySubmissionSummaryStats(dictionary))));
+        }
+
+        private static bool VerifySubmissionSummaryStats(IDictionary<string, double> dictionary)
+        {
+            var expectedStats = new Dictionary<string, double>
+            {
+                { "Percentage",  200 },
+                { "ContractType1Percentage",  200 },
+                { "ContractType2Percentage",  200 },
+                { "EarningsContractType1Percentage",  200 },
+                { "EarningsContractType2Percentage",  200 },
+                { "DcEarningsTotal",  32600 },
+                { "DasEarningsTotal",  32600 },
+                { "DasEarningsTransactionType1",  24000 },
+                { "DasEarningsTransactionType2",  0 },
+                { "DasEarningsTransactionType3",  6000 },
+                { "DasEarningsTransactionType4",  200 },
+                { "DasEarningsTransactionType5",  200 },
+                { "DasEarningsTransactionType6",  200 },
+                { "DasEarningsTransactionType7",  200 },
+                { "DasEarningsTransactionType8",  200 },
+                { "DasEarningsTransactionType9",  200 },
+                { "DasEarningsTransactionType10",  200 },
+                { "DasEarningsTransactionType11",  200 },
+                { "DasEarningsTransactionType12",  200 },
+                { "DasEarningsTransactionType13",  200 },
+                { "DasEarningsTransactionType14",  200 },
+                { "DasEarningsTransactionType15",  200 },
+                { "DasEarningsTransactionType16",  200 },
+                { "DataLockedEarningsAmount",  3000 },
+                { "DataLockedCountDLock1",  0 },
+                { "DataLockedCountDLock2",  1000 },
+                { "DataLockedCountDLock3",  0 },
+                { "DataLockedCountDLock4",  1000 },
+                { "DataLockedCountDLock5",  0 },
+                { "DataLockedCountDLock6",  0 },
+                { "DataLockedCountDLock7",  2000 },
+                { "DataLockedCountDLock8",  0 },
+                { "DataLockedCountDLock9",  0 },
+                { "DataLockedCountDLock10",  0 },
+                { "DataLockedCountDLock11",  0 },
+                { "DataLockedCountDLock12",  0 },
+                { "DataLockAmountAlreadyPaid",  1000 },
+                { "HeldBackCompletionPayments",  3000 },
+                { "RequiredPaymentsTotal",  26600 },
+                { "RequiredPaymentsTotalTransactionType1",  21000 },
+                { "RequiredPaymentsTotalTransactionType2",  0 },
+                { "RequiredPaymentsTotalTransactionType3",  3000 },
+                { "RequiredPaymentsTotalTransactionType4",  200 },
+                { "RequiredPaymentsTotalTransactionType5",  200 },
+                { "RequiredPaymentsTotalTransactionType6",  200 },
+                { "RequiredPaymentsTotalTransactionType7",  200 },
+                { "RequiredPaymentsTotalTransactionType8",  200 },
+                { "RequiredPaymentsTotalTransactionType9",  200 },
+                { "RequiredPaymentsTotalTransactionType10",  200 },
+                { "RequiredPaymentsTotalTransactionType11",  200 },
+                { "RequiredPaymentsTotalTransactionType12",  200 },
+                { "RequiredPaymentsTotalTransactionType13",  200 },
+                { "RequiredPaymentsTotalTransactionType14",  200 },
+                { "RequiredPaymentsTotalTransactionType15",  200 },
+                { "RequiredPaymentsTotalTransactionType16",  200 },
+                { "RequiredPaymentsDasEarningsPercentageComparison",  81.6 }
+            };
+
+            foreach (var keyValue in expectedStats)
+            {
+                dictionary.Should().Contain(keyValue);
+            }
+
+            return true;
         }
     }
 }
