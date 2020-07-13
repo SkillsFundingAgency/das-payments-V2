@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd;
-using SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 {
@@ -13,7 +12,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
     {
         public IPeriodEndSummary Create(long jobId, byte collectionPeriod, short academicYear)
         {
-            return  new PeriodEndSummary(jobId, collectionPeriod, academicYear);
+            return new PeriodEndSummary(jobId, collectionPeriod, academicYear);
         }
     }
 }
