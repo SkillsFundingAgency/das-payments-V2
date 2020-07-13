@@ -11,6 +11,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
     public interface IDcMetricsDataContext
     {
         Task<List<TransactionTypeAmounts>> GetEarnings(long ukprn, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<TransactionTypeAmounts>> GetEarningsSummary(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
     }
 
     public class DcMetricsDataContext : DbContext, IDcMetricsDataContext
@@ -190,6 +191,11 @@ order by UKPRN,ApprenticeshipContractType";
         public async Task<List<TransactionTypeAmounts>> GetEarnings(long ukprn, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
             return await Earnings.FromSql(DcEarningsQuery, new SqlParameter("@ukprn", ukprn), new SqlParameter("@collectionperiod", collectionPeriod)).ToListAsync(cancellationToken);
+        }
+
+        public Task<List<TransactionTypeAmounts>> GetEarningsSummary(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

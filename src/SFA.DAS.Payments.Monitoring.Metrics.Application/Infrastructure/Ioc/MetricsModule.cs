@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using SFA.DAS.Payments.Core.Configuration;
+using SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Metrics.Application.Submission;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
 
@@ -13,11 +14,19 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Ioc
                 .As<ISubmissionSummaryFactory>()
                 .SingleInstance();
 
+            builder.RegisterType<PeriodEndSummaryFactory>()
+                .As<IPeriodEndSummaryFactory>()
+                .SingleInstance();
+
             builder.RegisterType<SubmissionMetricsService>()
                 .As<ISubmissionMetricsService>()
                 .InstancePerLifetimeScope();
 
-            builder.Register((c, p) =>
+            builder.RegisterType<PeriodEndMetricsService>()
+                .As<IPeriodEndMetricsService>()
+                .InstancePerLifetimeScope();
+
+                builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
                     return new DcMetricsDataContext(configHelper.GetConnectionString("DcEarningsConnectionString"));
