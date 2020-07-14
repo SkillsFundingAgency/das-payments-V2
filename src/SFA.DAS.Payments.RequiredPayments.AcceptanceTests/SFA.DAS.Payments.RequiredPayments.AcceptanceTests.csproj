@@ -55,6 +55,9 @@
     <Reference Include="ESFA.DC.Logging.Interfaces, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Logging.Interfaces.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.Logging.Interfaces.dll</HintPath>
     </Reference>
+    <Reference Include="FluentAssertions, Version=5.6.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.5.6.0\lib\net47\FluentAssertions.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.ApplicationInsights, Version=2.8.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.2.8.1\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
     </Reference>
@@ -317,9 +320,11 @@
     <Compile Include="Data\OnProgrammeEarning.cs" />
     <Compile Include="EndpointNames.cs" />
     <Compile Include="Handlers\ApprenticeshipContractType2Handler.cs" />
+    <Compile Include="Handlers\PeriodisedRequiredPaymentEventHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\ACT2On_ProgrammePaymentsSteps.cs" />
     <Compile Include="Steps\BindingBootstrapper.cs" />
+    <Compile Include="Steps\DuplicationSteps.cs" />
     <Compile Include="Steps\EarningSteps.cs" />
     <Compile Include="Steps\FundingSteps.cs" />
     <Compile Include="Steps\HistoricalPaymentSteps.cs" />
@@ -333,6 +338,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Completion TT2 only - On time completion.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Duplication\DuplicationTests.feature.cs">
+      <DependentUpon>DuplicationTests.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Tests\Minimum\ACT 2 On-Programme Payments.feature.cs">
       <AutoGen>True</AutoGen>
@@ -442,6 +452,10 @@
     <None Include="Tests\Completion TT2 only - On time completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Completion TT2 only - On time completion.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Duplication\DuplicationTests.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>DuplicationTests.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Minimum\ACT 2 On-Programme Payments.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -568,6 +582,7 @@
   <ItemGroup>
     <Analyzer Include="..\packages\NServiceBus.7.1.5\analyzers\dotnet\cs\NServiceBus.Core.Analyzer.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
