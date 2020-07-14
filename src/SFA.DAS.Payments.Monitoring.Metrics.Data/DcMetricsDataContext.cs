@@ -6,17 +6,19 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
 
+
 namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 {
     public interface IDcMetricsDataContext
     {
         Task<List<TransactionTypeAmounts>> GetEarnings(long ukprn, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
-        Task<List<TransactionTypeAmounts>> GetEarningsSummary(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<ProviderTransactionTypeAmounts>> GetEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+  
     }
 
     public class DcMetricsDataContext : DbContext, IDcMetricsDataContext
     {
-        private static string DcEarningsQuery = @"
+        private static string BaseDcEarningsQuery = @"
 ;WITH 
 RawEarnings AS (
     SELECT
@@ -145,33 +147,63 @@ RawEarnings AS (
     FROM RawEarningsMathsAndEnglish
 )
 
-SELECT Cast([ApprenticeshipContractType] as TinyInt) as ContractType,
-	SUM(TransactionType01) [TransactionType1], 
-    SUM(TransactionType02) [TransactionType2],
-    SUM(TransactionType03) [TransactionType3],
-    SUM(TransactionType04) [TransactionType4],
-    SUM(TransactionType05) [TransactionType5],
-    SUM(TransactionType06) [TransactionType6],
-    SUM(TransactionType07) [TransactionType7],
-    SUM(TransactionType08) [TransactionType8],
-    SUM(TransactionType09) [TransactionType9],
-    SUM(TransactionType10) [TransactionType10],
-    SUM(TransactionType11) [TransactionType11],
-    SUM(TransactionType12) [TransactionType12],
-    SUM(TransactionType13) [TransactionType13],
-    SUM(TransactionType14) [TransactionType14],
-    SUM(TransactionType15) [TransactionType15],
-    SUM(TransactionType16) [TransactionType16]
+";
 
-FROM AllEarnings
-where ukprn =  @ukprn
- and ApprenticeshipContractType in (1,2)
-GROUP BY [ApprenticeshipContractType], UKPRN
-order by UKPRN,ApprenticeshipContractType";
+
+        private static string UkprnFilterSelect =
+            @"SELECT Cast([ApprenticeshipContractType] as TinyInt) as ContractType,
+        SUM(TransactionType01) [TransactionType1], 
+        SUM(TransactionType02) [TransactionType2],
+        SUM(TransactionType03) [TransactionType3],
+        SUM(TransactionType04) [TransactionType4],
+        SUM(TransactionType05) [TransactionType5],
+        SUM(TransactionType06) [TransactionType6],
+        SUM(TransactionType07) [TransactionType7],
+        SUM(TransactionType08) [TransactionType8],
+        SUM(TransactionType09) [TransactionType9],
+        SUM(TransactionType10) [TransactionType10],
+        SUM(TransactionType11) [TransactionType11],
+        SUM(TransactionType12) [TransactionType12],
+        SUM(TransactionType13) [TransactionType13],
+        SUM(TransactionType14) [TransactionType14],
+        SUM(TransactionType15) [TransactionType15],
+        SUM(TransactionType16) [TransactionType16]
+
+        FROM AllEarnings
+        where ukprn =  @ukprn
+        and ApprenticeshipContractType in (1,2)
+            GROUP BY [ApprenticeshipContractType], UKPRN
+            order by UKPRN,ApprenticeshipContractType";
+
+        private static string UkprnGroupSelect =
+            @"SELECT Ukprn, Cast([ApprenticeshipContractType] as TinyInt) as ContractType,
+        SUM(TransactionType01) [TransactionType1], 
+        SUM(TransactionType02) [TransactionType2],
+        SUM(TransactionType03) [TransactionType3],
+        SUM(TransactionType04) [TransactionType4],
+        SUM(TransactionType05) [TransactionType5],
+        SUM(TransactionType06) [TransactionType6],
+        SUM(TransactionType07) [TransactionType7],
+        SUM(TransactionType08) [TransactionType8],
+        SUM(TransactionType09) [TransactionType9],
+        SUM(TransactionType10) [TransactionType10],
+        SUM(TransactionType11) [TransactionType11],
+        SUM(TransactionType12) [TransactionType12],
+        SUM(TransactionType13) [TransactionType13],
+        SUM(TransactionType14) [TransactionType14],
+        SUM(TransactionType15) [TransactionType15],
+        SUM(TransactionType16) [TransactionType16]
+
+        FROM AllEarnings
+        where ApprenticeshipContractType in (1,2)
+            GROUP BY [ApprenticeshipContractType], UKPRN
+            order by UKPRN,ApprenticeshipContractType";
 
         private readonly string connectionString;
 
         public DbQuery<TransactionTypeAmounts> Earnings { get; set; }
+
+        public DbQuery<ProviderTransactionTypeAmounts> AllProviderEarnings { get; set; }
 
         public DcMetricsDataContext(string connectionString)
         {
@@ -190,12 +222,13 @@ order by UKPRN,ApprenticeshipContractType";
 
         public async Task<List<TransactionTypeAmounts>> GetEarnings(long ukprn, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            return await Earnings.FromSql(DcEarningsQuery, new SqlParameter("@ukprn", ukprn), new SqlParameter("@collectionperiod", collectionPeriod)).ToListAsync(cancellationToken);
+            return await Earnings.FromSql(BaseDcEarningsQuery + UkprnFilterSelect , new SqlParameter("@ukprn", ukprn), new SqlParameter("@collectionperiod", collectionPeriod)).ToListAsync(cancellationToken);
         }
 
-        public Task<List<TransactionTypeAmounts>> GetEarningsSummary(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        public async Task<List<ProviderTransactionTypeAmounts>> GetEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await AllProviderEarnings.FromSql(BaseDcEarningsQuery + UkprnGroupSelect ,  new SqlParameter("@collectionperiod", collectionPeriod)).ToListAsync(cancellationToken);
+
         }
     }
 }

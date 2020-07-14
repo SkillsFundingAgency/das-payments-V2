@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
+using SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd;
+using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 {
@@ -19,30 +24,91 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
         private readonly IPaymentLogger logger;
         private readonly IPeriodEndSummaryFactory periodEndSummaryFactory;
         private readonly IDcMetricsDataContext dcDataContext;
+        private readonly IPeriodEndMetricsRepository periodEndMetricsRepository;
 
-        public PeriodEndMetricsService(IPaymentLogger logger, IPeriodEndSummaryFactory periodEndSummaryFactory,IDcMetricsDataContext dcDataContext)
+        public PeriodEndMetricsService(IPaymentLogger logger, IPeriodEndSummaryFactory periodEndSummaryFactory,
+            IDcMetricsDataContext dcDataContext, IPeriodEndMetricsRepository periodEndMetricsRepository)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.periodEndSummaryFactory = periodEndSummaryFactory ?? throw new ArgumentNullException(nameof(periodEndSummaryFactory));
+            this.periodEndSummaryFactory = periodEndSummaryFactory ??
+                                           throw new ArgumentNullException(nameof(periodEndSummaryFactory));
             this.dcDataContext = dcDataContext ?? throw new ArgumentNullException(nameof(dcDataContext));
+            this.periodEndMetricsRepository = periodEndMetricsRepository ??
+                                              throw new ArgumentNullException(nameof(periodEndMetricsRepository));
         }
 
-        public Task BuildMetrics(long jobId, short academicYear, byte collectionPeriod,
+        public async Task BuildMetrics(long jobId, short academicYear, byte collectionPeriod,
             CancellationToken cancellationToken)
         {
-            logger.LogDebug($"Building period end metrics for {academicYear}, {collectionPeriod} using job id {jobId}");
+            try
+            {
+                logger.LogDebug(
+                    $"Building period end metrics for {academicYear}, {collectionPeriod} using job id {jobId}");
 
-            var stopwatch = Stopwatch.StartNew();
-            var periodEndSummary = periodEndSummaryFactory.Create(jobId, collectionPeriod, academicYear);
+                var stopwatch = Stopwatch.StartNew();
 
-            var dcEarningsTask = dcDataContext.GetEarningsSummary(academicYear, collectionPeriod, cancellationToken);
+                // - get DC earnings grouped by UKPRN 
+                var dcEarningsTask = dcDataContext.GetEarnings(academicYear, collectionPeriod, cancellationToken);
 
+              
+                //get payments by provider by TransactionType by contract type
+                //get payments by provider by FundingSource per contract type
+                //get payments totals by provider per contract type
+                //get data-locked amounts by provider 
+                //get held back completion payments by provider
 
+                var dataTask = Task.WhenAll(dcEarningsTask);
+                var waitTask = Task.Delay(TimeSpan.FromSeconds(270), cancellationToken);
+                Task.WaitAny(dataTask, waitTask);
+                cancellationToken.ThrowIfCancellationRequested();
+                if (!dataTask.IsCompleted)
+                    throw new InvalidOperationException(
+                        $"Took too long to get data for the period end metrics. job: {jobId}, Collection period: {collectionPeriod}, Academic Year: {academicYear}");
+                
 
-            stopwatch.Stop();
-            logger.LogInfo(
-                $"Finished building period end metrics for {academicYear}, {collectionPeriod} using job id {jobId}");
-            return Task.CompletedTask;
+                var providerSummaries = new List<ProviderPeriodEndSummaryModel>();
+
+                var allUkprn = dcEarningsTask.Result.Select(x => x.Ukprn).Distinct();
+                foreach (var ukprn in allUkprn)
+                {
+                    var providerSummary =
+                        periodEndSummaryFactory.CreatePeriodEndProviderSummary(ukprn,jobId, collectionPeriod, academicYear);
+
+                    //call method to add:
+                    providerSummary.AddDcEarning(dcEarningsTask.Result.Where(x => x.Ukprn == ukprn));
+                    //payment by provider /transactiontype/contractype
+                    //add payments by provider by funding source per contract type
+                    //add payments totals by provider per contract type
+                    //add data-locked amounts by provider 
+                    //add held back completion payments by provider
+
+                    
+                    var providerSummaryModel = providerSummary.GetMetrics();
+                    providerSummaries.Add(providerSummaryModel);
+                }
+
+                var periodEndSummary =
+                    periodEndSummaryFactory.CreatePeriodEndSummary(jobId, collectionPeriod, academicYear);
+                periodEndSummary.AddProviderSummaries(providerSummaries);
+                
+                var overallPeriodEndSummary = periodEndSummary.GetMetrics();  
+
+                stopwatch.Stop();
+                var dataDuration = stopwatch.ElapsedMilliseconds;
+                //log duration
+            
+                periodEndMetricsRepository.SaveProviderSummaries(providerSummaries);
+                periodEndMetricsRepository.SavePeriodEndSummary(overallPeriodEndSummary);
+          
+                logger.LogInfo(
+                    $"Finished building period end metrics for {academicYear}, {collectionPeriod} using job id {jobId}");
+            }
+            catch (Exception e)
+            {
+                logger.LogWarning(
+                    $"Error building period end metrics for {academicYear}, {collectionPeriod} using job id {jobId}. Error: {e}");
+                throw;
+            }
         }
     }
 }
