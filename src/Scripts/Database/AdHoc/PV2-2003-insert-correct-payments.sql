@@ -222,4 +222,4 @@ INSERT INTO Payments2.Payment (EventId, ApprenticeshipId, AccountId, LearnerUln,
 
 
 
--- ROLLBACK 
+ROLLBACK TRAN
