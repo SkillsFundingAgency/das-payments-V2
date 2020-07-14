@@ -150,7 +150,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 { "RequiredPaymentsTotalTransactionType14" , (double) requiredPaymentsMetrics.Sum(x=>x.Amounts.TransactionType14) },
                 { "RequiredPaymentsTotalTransactionType15" , (double) requiredPaymentsMetrics.Sum(x=>x.Amounts.TransactionType15) },
                 { "RequiredPaymentsTotalTransactionType16" , (double) requiredPaymentsMetrics.Sum(x=>x.Amounts.TransactionType16) },
-                { "RequiredPaymentsDasEarningsPercentageComparison" ,  Math.Round(((double) metrics.RequiredPayments.Total / (double) metrics.DasEarnings.Total) * 100, 2) }
+                { "RequiredPaymentsDasEarningsPercentageComparison" ,  Math.Round(((double) (metrics.YearToDatePayments.Total + metrics.RequiredPayments.Total) / (double) metrics.DasEarnings.Total) * 100, 2) }
             };
 
             telemetry.TrackEvent("Finished Generating Submission Metrics", properties, stats);

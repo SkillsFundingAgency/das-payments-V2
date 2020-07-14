@@ -163,7 +163,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                  .Verify(t => t.TrackEvent(
                              It.Is<string>(s => s == "Finished Generating Submission Metrics"),
                              It.IsAny<Dictionary<string, string>>(),
-                             It.Is<Dictionary<string, double>>(dictionary => dictionary.Contains(new KeyValuePair<string, double>("RequiredPaymentsDasEarningsPercentageComparison",  81.6)))));
+                             It.Is<Dictionary<string, double>>(dictionary => dictionary.Contains(new KeyValuePair<string, double>("RequiredPaymentsDasEarningsPercentageComparison",  90.8)))));
         }
 
         [Test]
@@ -185,29 +185,29 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
         {
             var expectedStats = new Dictionary<string, double>
             {
-                { "Percentage",  200 },
-                { "ContractType1Percentage",  200 },
-                { "ContractType2Percentage",  200 },
-                { "EarningsContractType1Percentage",  200 },
-                { "EarningsContractType2Percentage",  200 },
-                { "DcEarningsTotal",  32600 },
-                { "DasEarningsTotal",  32600 },
-                { "DasEarningsTransactionType1",  24000 },
+                { "Percentage",  100 },
+                { "ContractType1Percentage",  100 },
+                { "ContractType2Percentage",  100 },
+                { "EarningsContractType1Percentage",  100 },
+                { "EarningsContractType2Percentage",  100 },
+                { "DcEarningsTotal",  65200 },
+                { "DasEarningsTotal",  65200 },
+                { "DasEarningsTransactionType1",  48000 },
                 { "DasEarningsTransactionType2",  0 },
-                { "DasEarningsTransactionType3",  6000 },
-                { "DasEarningsTransactionType4",  200 },
-                { "DasEarningsTransactionType5",  200 },
-                { "DasEarningsTransactionType6",  200 },
-                { "DasEarningsTransactionType7",  200 },
-                { "DasEarningsTransactionType8",  200 },
-                { "DasEarningsTransactionType9",  200 },
-                { "DasEarningsTransactionType10",  200 },
-                { "DasEarningsTransactionType11",  200 },
-                { "DasEarningsTransactionType12",  200 },
-                { "DasEarningsTransactionType13",  200 },
-                { "DasEarningsTransactionType14",  200 },
-                { "DasEarningsTransactionType15",  200 },
-                { "DasEarningsTransactionType16",  200 },
+                { "DasEarningsTransactionType3",  12000 },
+                { "DasEarningsTransactionType4",  400 },
+                { "DasEarningsTransactionType5",  400 },
+                { "DasEarningsTransactionType6",  400 },
+                { "DasEarningsTransactionType7",  400 },
+                { "DasEarningsTransactionType8",  400 },
+                { "DasEarningsTransactionType9",  400 },
+                { "DasEarningsTransactionType10",  400 },
+                { "DasEarningsTransactionType11",  400 },
+                { "DasEarningsTransactionType12",  400 },
+                { "DasEarningsTransactionType13",  400 },
+                { "DasEarningsTransactionType14",  400 },
+                { "DasEarningsTransactionType15",  400 },
+                { "DasEarningsTransactionType16",  400 },
                 { "DataLockedEarningsAmount",  3000 },
                 { "DataLockedCountDLock1",  0 },
                 { "DataLockedCountDLock2",  1000 },
@@ -240,7 +240,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 { "RequiredPaymentsTotalTransactionType14",  200 },
                 { "RequiredPaymentsTotalTransactionType15",  200 },
                 { "RequiredPaymentsTotalTransactionType16",  200 },
-                { "RequiredPaymentsDasEarningsPercentageComparison",  81.6 }
+                { "RequiredPaymentsDasEarningsPercentageComparison",  90.8 }
             };
 
             foreach (var keyValue in expectedStats)
