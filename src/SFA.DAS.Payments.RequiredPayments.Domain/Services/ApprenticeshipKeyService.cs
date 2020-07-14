@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
         {
             var keyParts = apprenticeshipKey.Split(Convert.ToChar(keyDelimiter));
             if (keyParts.Length != 9)
-                throw new InvalidOperationException($"Cannot parse the apprenticeship key. invalid number of parts.  Expected 8 but was {keyParts.Length}. Key: {apprenticeshipKey}");
+                throw new InvalidOperationException($"Cannot parse the apprenticeship key. invalid number of parts.  Expected 9 but was {keyParts.Length}.");
             return new ApprenticeshipKey
             {
                 Ukprn = ParseToLong(keyParts[0], "Ukprn"),
