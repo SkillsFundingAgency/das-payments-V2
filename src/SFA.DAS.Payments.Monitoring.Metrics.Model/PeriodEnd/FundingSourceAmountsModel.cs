@@ -5,6 +5,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd
     public class FundingSourceAmountsModel
     {
         public long Id { get; set; }
+        public long Ukprn { get; set; }
         public long ProviderPeriodEndSummaryId { get; set; }
         public ProviderPeriodEndSummaryModel SubmissionSummary { get; set; }
         public ContractType ContractType { get; set; }
