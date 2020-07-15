@@ -30,6 +30,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             modelBuilder.ApplyConfiguration(new DataLockedEarningsModelConfiguration());
             modelBuilder.ApplyConfiguration(new EarningsModelConfiguration());
             modelBuilder.ApplyConfiguration(new RequiredPaymentsModelConfiguration());
+            modelBuilder.ApplyConfiguration(new ProviderPeriodEndSummaryModelConfiguration());
+            modelBuilder.ApplyConfiguration(new PeriodEndSummaryModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

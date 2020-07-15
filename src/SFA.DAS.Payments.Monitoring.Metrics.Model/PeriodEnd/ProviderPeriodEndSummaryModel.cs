@@ -1,7 +1,24 @@
-﻿namespace SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd
+﻿using System.Collections.Generic;
+
+namespace SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd
 {
     public class ProviderPeriodEndSummaryModel
     {
-        
+        public long Id { get; set; }
+        public long Ukprn { get; set; }
+        public short AcademicYear { get; set; }
+        public byte CollectionPeriod { get; set; }
+        public long JobId { get; set; }
+        public decimal Percentage { get; set; }
+        public ContractTypeAmountsVerbose PaymentMetrics { get; set; }
+        public ContractTypeAmounts DcEarnings { get; set; }
+        public ContractTypeAmounts Payments { get; set; }
+        public decimal DataLockedEarnings { get; set; }
+        public decimal AlreadyPaidDataLockedEarnings { get; set; }
+        public decimal TotalDataLockedEarnings { get; set; }
+        public ContractTypeAmounts HeldBackCompletionPayments { get; set; }
+        public ContractTypeAmounts YearToDatePayments { get; set; }
+        public virtual List<FundingSourceAmountsModel> FundingSourceAmounts { get; set; }
+        public virtual List<ProviderPaymentTransactionModel> TransactionTypeAmounts { get; set; }
     }
 }

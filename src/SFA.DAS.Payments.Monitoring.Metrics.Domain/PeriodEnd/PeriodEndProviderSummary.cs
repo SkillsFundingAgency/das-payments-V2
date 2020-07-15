@@ -9,6 +9,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
     {
         ProviderPeriodEndSummaryModel GetMetrics();
         void AddDcEarning(IEnumerable<ProviderTransactionTypeAmounts> providerDcEarningsByContractType);
+        void AddTransactionTypes(IEnumerable<ProviderTransactionTypeAmounts> transactionTypes);
+        void AddFundingSourceAmounts(IEnumerable<FundingSourceAmountsModel> fundingSourceAmounts);
     }
 
     public class PeriodEndProviderSummary : IPeriodEndProviderSummary
@@ -17,17 +19,22 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         public long JobId { get; }
         public byte CollectionPeriod { get; }
         public short AcademicYear { get; }
-        private List<ProviderTransactionTypeAmounts> DcEarnings;
+        private List<ProviderTransactionTypeAmounts> providerDcEarnings;
+        private List<ProviderTransactionTypeAmounts> providerTransactionsTypes;
+        private List<FundingSourceAmountsModel> providerFundingSourceAmounts;
 
 
 
         public PeriodEndProviderSummary(long ukprn, long jobId, byte collectionPeriod, short academicYear)
         {
-            this.Ukprn = ukprn;
-            this.JobId = jobId;
-            this.CollectionPeriod = collectionPeriod;
-            this.AcademicYear = academicYear;
-            this.DcEarnings = new List<ProviderTransactionTypeAmounts>();
+            Ukprn = ukprn;
+            JobId = jobId;
+            CollectionPeriod = collectionPeriod;
+            AcademicYear = academicYear;
+            providerDcEarnings = new List<ProviderTransactionTypeAmounts>();
+            providerTransactionsTypes = new List<ProviderTransactionTypeAmounts>();
+            providerFundingSourceAmounts = new List<FundingSourceAmountsModel>();
+
         }
 
 
@@ -38,7 +45,17 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
 
         public void AddDcEarning(IEnumerable<ProviderTransactionTypeAmounts> providerDcEarningsByContractType)
         {
-            DcEarnings = providerDcEarningsByContractType.ToList();
+            providerDcEarnings = providerDcEarningsByContractType.ToList();
+        }
+
+        public void AddTransactionTypes(IEnumerable<ProviderTransactionTypeAmounts> transactionTypes)
+        {
+            providerTransactionsTypes = transactionTypes.ToList();
+        }
+
+        public void AddFundingSourceAmounts(IEnumerable<FundingSourceAmountsModel> fundingSourceAmounts)
+        {
+            providerFundingSourceAmounts = fundingSourceAmounts.ToList();
         }
     }
 }

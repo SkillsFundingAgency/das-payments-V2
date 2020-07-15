@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
+using SFA.DAS.Payments.Monitoring.Metrics.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
@@ -9,8 +12,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 
     public interface IPeriodEndMetricsRepository
     {
-        void SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries);
-        void SavePeriodEndSummary(PeriodEndSummaryModel overallPeriodEndSummary);
+        Task SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, CancellationToken cancellationToken);
+        Task SavePeriodEndSummary(PeriodEndSummaryModel overallPeriodEndSummary, CancellationToken cancellationToken);
+        Task<List<ProviderTransactionTypeAmounts>> GetTransactionTypesByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<FundingSourceAmountsModel>> GetFundingSourceAmountsByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<object>> GetDataLockedAmounts
+            (short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
     }
 
     public class PeriodEndMetricsRepository : IPeriodEndMetricsRepository
@@ -27,14 +34,34 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public void SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries)
+
+        Task IPeriodEndMetricsRepository.SavePeriodEndSummary(PeriodEndSummaryModel overallPeriodEndSummary,
+            CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public void SavePeriodEndSummary(PeriodEndSummaryModel overallPeriodEndSummary)
+        public Task<List<ProviderTransactionTypeAmounts>> GetTransactionTypesByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
+
+        public Task<List<FundingSourceAmountsModel>> GetFundingSourceAmountsByContractType(short academicYear, byte collectionPeriod,
+            CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<object>> GetDataLockedAmounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task IPeriodEndMetricsRepository.SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+      
     }
 }
