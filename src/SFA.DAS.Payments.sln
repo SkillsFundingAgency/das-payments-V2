@@ -331,7 +331,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "V1", "V1", "{E1FFBAB5-CC3F-
 		Scripts\Database\AdHoc\V1\DeleteDuplicateEarnings.sql = Scripts\Database\AdHoc\V1\DeleteDuplicateEarnings.sql
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.FundingSource.LevyTransactionService", "SFA.DAS.Payments.FundingSource.LevyTransactionService\SFA.DAS.Payments.FundingSource.LevyTransactionService.csproj", "{A3843B32-D4A0-4227-BA03-229A34360909}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.FundingSource.LevyTransactionService", "SFA.DAS.Payments.FundingSource.LevyTransactionService\SFA.DAS.Payments.FundingSource.LevyTransactionService.csproj", "{A3843B32-D4A0-4227-BA03-229A34360909}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Audit.EarningEventsService", "SFA.DAS.Payments.Audit.EarningEventsService\SFA.DAS.Payments.Audit.EarningEventsService.csproj", "{BA205339-8296-496F-A815-894B2BF93E24}"
 EndProject
@@ -351,6 +351,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Duplicates", "Duplicates", 
 		Scripts\Database\Duplicates\Identify And Stop Duplicate FundingSourceEvents.sql = Scripts\Database\Duplicates\Identify And Stop Duplicate FundingSourceEvents.sql
 		Scripts\Database\Duplicates\Identify And Stop Duplicate Payments.sql = Scripts\Database\Duplicates\Identify And Stop Duplicate Payments.sql
 		Scripts\Database\Duplicates\Identify And Stop Duplicate RequiredPaymentEvents.sql = Scripts\Database\Duplicates\Identify And Stop Duplicate RequiredPaymentEvents.sql
+		Scripts\Database\Duplicates\Identify Duplicates & Stop New Ones Script.sql = Scripts\Database\Duplicates\Identify Duplicates & Stop New Ones Script.sql
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.EarningEvents.ProcessLearnerService", "SFA.DAS.Payments.EarningEvents.ProcessLearnerService\SFA.DAS.Payments.EarningEvents.ProcessLearnerService.csproj", "{CC563A8B-753B-4A7B-8424-B36DB783BA1C}"
@@ -1419,6 +1420,14 @@ Global
 		{38655219-BDDB-4F2A-8B8C-B30D1434A762}.Release|Any CPU.Build.0 = Release|Any CPU
 		{38655219-BDDB-4F2A-8B8C-B30D1434A762}.Release|x64.ActiveCfg = Release|Any CPU
 		{38655219-BDDB-4F2A-8B8C-B30D1434A762}.Release|x64.Build.0 = Release|Any CPU
+		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Debug|x64.Build.0 = Debug|Any CPU
+		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Release|x64.ActiveCfg = Release|Any CPU
+		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Release|x64.Build.0 = Release|Any CPU
 		{CC563A8B-753B-4A7B-8424-B36DB783BA1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CC563A8B-753B-4A7B-8424-B36DB783BA1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC563A8B-753B-4A7B-8424-B36DB783BA1C}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -1459,14 +1468,6 @@ Global
 		{60C4FE2F-2879-4D5E-ACB8-3DC0E0CE438F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{60C4FE2F-2879-4D5E-ACB8-3DC0E0CE438F}.Release|x64.ActiveCfg = Release|Any CPU
 		{60C4FE2F-2879-4D5E-ACB8-3DC0E0CE438F}.Release|x64.Build.0 = Release|Any CPU
-		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Debug|x64.Build.0 = Debug|Any CPU
-		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Release|x64.ActiveCfg = Release|Any CPU
-		{30857CBC-9DDF-431B-9072-F045D6F56CBD}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1582,7 +1583,7 @@ Global
 		{AED49A8C-EC1F-4649-B0FE-D0DB1DD07873} = {48AD8C3B-C2ED-4B11-AD1E-1FD0352BD534}
 		{539FDC08-236E-4570-B33A-03836EC6B26A} = {A5C32B77-E094-43D4-8EBC-7859BE3DB3FA}
 		{03E21E69-E578-4F96-A564-A32D26738660} = {5132BDC5-602C-4437-8247-DC85704860A5}
-		{F3F3B467-DCBE-4D11-9BD1-08D628E2C1BE} = {48AD8C3B-C2ED-4B11-AD1E-1FD0352BD534}
+		{F3F3B467-DCBE-4D11-9BD1-08D628E2C1BE} = {889F5FD9-D5A4-4CC5-9DB5-37D6934BFA2F}
 		{1304D68A-545A-47FB-A43E-900521B1399A} = {F3F3B467-DCBE-4D11-9BD1-08D628E2C1BE}
 		{7790AB71-54FA-402A-A100-E13A14135BEC} = {F3F3B467-DCBE-4D11-9BD1-08D628E2C1BE}
 		{768DAD00-EC74-467B-864A-2EF79B964489} = {F3F3B467-DCBE-4D11-9BD1-08D628E2C1BE}
@@ -1604,8 +1605,8 @@ Global
 		{B706A441-ACE0-4D57-A60D-1B7DA8AB36CE} = {F3F3B467-DCBE-4D11-9BD1-08D628E2C1BE}
 		{F726A2C6-2EC5-4EAB-9970-50F4F87FBB2D} = {03E21E69-E578-4F96-A564-A32D26738660}
 		{E1FFBAB5-CC3F-472A-AF84-6E20285F7A33} = {F726A2C6-2EC5-4EAB-9970-50F4F87FBB2D}
-		{BA205339-8296-496F-A815-894B2BF93E24} = {DBE41294-5C69-4F10-9EC2-BB6FDBC21DDD}
 		{A3843B32-D4A0-4227-BA03-229A34360909} = {205CA299-AED1-4F0B-971A-15CCD398A597}
+		{BA205339-8296-496F-A815-894B2BF93E24} = {DBE41294-5C69-4F10-9EC2-BB6FDBC21DDD}
 		{38655219-BDDB-4F2A-8B8C-B30D1434A762} = {F2AA36D4-90C5-4850-9AA2-29AFAFACD785}
 		{30857CBC-9DDF-431B-9072-F045D6F56CBD} = {C24A8D53-2BD0-487A-BFEB-CB12F0879D7E}
 		{F741E33F-292D-4E80-BA08-48B7601B4ED6} = {03E21E69-E578-4F96-A564-A32D26738660}
