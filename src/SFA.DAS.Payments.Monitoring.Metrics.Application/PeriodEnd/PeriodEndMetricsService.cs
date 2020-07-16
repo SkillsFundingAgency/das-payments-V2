@@ -47,9 +47,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 
                 // - get DC earnings grouped by UKPRN 
                 var dcEarningsTask = dcDataContext.GetEarnings(academicYear, collectionPeriod, cancellationToken);
-                //var transactionTypesByContractType =
-                //    periodEndMetricsRepository.GetTransactionTypesByContractType(academicYear, collectionPeriod,
-                //        cancellationToken);
+                var transactionTypesTask =
+                    periodEndMetricsRepository.GetTransactionTypesByContractType(academicYear, collectionPeriod,
+                        cancellationToken);
                 ////get payments by provider by FundingSource per contract type
                 //var fundingSourceAmounts =
                 //    periodEndMetricsRepository.GetFundingSourceAmountsByContractType(academicYear, collectionPeriod,
@@ -65,7 +65,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 //var heldBackCompletionAmountsTask = periodEndMetricsRepository.GetHeldBackCompletionPaymentsTotals(academicYear, collectionPeriod, cancellationToken);
                 ////get held back completion payments by provider
 
-                var dataTask = Task.WhenAll(dataLockedEarningsTask);
+                var dataTask = Task.WhenAll(transactionTypesTask, dataLockedEarningsTask);
                 var waitTask = Task.Delay(TimeSpan.FromSeconds(270), cancellationToken);
                 Task.WaitAny(dataTask, waitTask);
                 cancellationToken.ThrowIfCancellationRequested();
@@ -86,15 +86,16 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                             academicYear);
 
                     //call method to add:
-                    //providerSummary.AddDcEarning(dcEarningsTask.Result.Where(x => x.Ukprn == ukprn));
+                    providerSummary.AddDcEarning(dcEarningsTask.Result.Where(x => x.Ukprn == ukprn));
                     ////payment by provider /transactiontype/contractype
-                    //providerSummary.AddTransactionTypes(
-                    //    transactionTypesByContractType.Result.Where(x => x.Ukprn == ukprn));
+                    providerSummary.AddTransactionTypes(
+                        transactionTypesTask.Result.Where(x => x.Ukprn == ukprn));
                     ////add payments by provider by funding source per contract type
                     //providerSummary.AddFundingSourceAmounts(fundingSourceAmounts.Result.Where(x => x.Ukprn == ukprn));
                     //add payments totals by provider per contract type
                     //might not need this???
-                    //add data-locked amounts by provider 
+                    //add data-locked earnings
+                    providerSummary.AddDataLockedEarnings(dataLockedEarningsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn).TotalAmount);
 
                     //add held back completion payments by provider
 
