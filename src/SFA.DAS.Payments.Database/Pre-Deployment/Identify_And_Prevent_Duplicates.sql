@@ -44,7 +44,7 @@ BEGIN
 		SET DuplicateNumber = RN - 1
 		FROM Payments2.DataLockEvent rp
 		JOIN DataLockEventCte ON DataLockEventCte.Id = rp.Id
-		WHERE DataLockEventCte.RN > 1 AND DuplicateNumber IS NULL;
+		WHERE DataLockEventCte.RN > 1;
 	'
 	EXECUTE sp_executesql @DataLock
 END
@@ -92,7 +92,7 @@ BEGIN
 		SET DuplicateNumber = RN - 1
 		FROM Payments2.FundingSourceEvent fse
 		JOIN FundingSourceEventCte ON FundingSourceEventCte.Id = fse.Id
-		WHERE FundingSourceEventCte.RN > 1 AND DuplicateNumber IS NULL;
+		WHERE FundingSourceEventCte.RN > 1;
 	'
 	EXECUTE sp_executesql @FundingSource
 
@@ -142,7 +142,7 @@ BEGIN
 		SET DuplicateNumber = RN - 1
 		FROM Payments2.RequiredPaymentEvent rpe
 		JOIN RequiredPaymentEventCte ON RequiredPaymentEventCte.Id = rpe.Id
-		WHERE RequiredPaymentEventCte.RN > 1 AND DuplicateNumber IS NULL;
+		WHERE RequiredPaymentEventCte.RN > 1;
 	'
 	EXECUTE sp_executesql @RequiredPayment
 
@@ -193,7 +193,7 @@ BEGIN
 		SET DuplicateNumber = RN - 1
 		FROM Payments2.Payment p
 		JOIN PaymentCte ON PaymentCte.Id = p.Id
-		WHERE PaymentCte.RN > 1 AND DuplicateNumber IS NULL;
+		WHERE PaymentCte.RN > 1;
 	'
 	EXECUTE sp_executesql @Payment
 
