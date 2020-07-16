@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         ProviderPeriodEndSummaryModel GetMetrics();
         void AddDcEarning(IEnumerable<ProviderTransactionTypeAmounts> providerDcEarningsByContractType);
         void AddTransactionTypes(IEnumerable<ProviderTransactionTypeAmounts> transactionTypes);
-        void AddFundingSourceAmounts(IEnumerable<FundingSourceAmountsModel> fundingSourceAmounts);
+        void AddFundingSourceAmounts(IEnumerable<ProviderFundingSourceAmounts> fundingSourceAmounts);
     }
 
     public class PeriodEndProviderSummary : IPeriodEndProviderSummary
@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         public short AcademicYear { get; }
         private List<ProviderTransactionTypeAmounts> providerDcEarnings;
         private List<ProviderTransactionTypeAmounts> providerTransactionsTypes;
-        private List<FundingSourceAmountsModel> providerFundingSourceAmounts;
+        private List<ProviderFundingSourceAmounts> providerFundingSourceAmounts;
 
 
 
@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             AcademicYear = academicYear;
             providerDcEarnings = new List<ProviderTransactionTypeAmounts>();
             providerTransactionsTypes = new List<ProviderTransactionTypeAmounts>();
-            providerFundingSourceAmounts = new List<FundingSourceAmountsModel>();
+            providerFundingSourceAmounts = new List<ProviderFundingSourceAmounts>();
 
         }
 
@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             providerTransactionsTypes = transactionTypes.ToList();
         }
 
-        public void AddFundingSourceAmounts(IEnumerable<FundingSourceAmountsModel> fundingSourceAmounts)
+        public void AddFundingSourceAmounts(IEnumerable<ProviderFundingSourceAmounts> fundingSourceAmounts)
         {
             providerFundingSourceAmounts = fundingSourceAmounts.ToList();
         }

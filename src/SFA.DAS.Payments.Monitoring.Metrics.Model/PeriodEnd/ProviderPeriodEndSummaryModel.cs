@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd
         public decimal TotalDataLockedEarnings { get; set; }
         public ContractTypeAmounts HeldBackCompletionPayments { get; set; }
         public ContractTypeAmounts YearToDatePayments { get; set; }
-        public virtual List<FundingSourceAmountsModel> FundingSourceAmounts { get; set; }
+        public virtual List<ProviderPaymentFundingSourceModel> FundingSourceAmounts { get; set; }
         public virtual List<ProviderPaymentTransactionModel> TransactionTypeAmounts { get; set; }
     }
 }

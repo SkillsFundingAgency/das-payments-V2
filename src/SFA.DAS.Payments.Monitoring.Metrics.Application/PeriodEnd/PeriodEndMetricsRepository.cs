@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
         Task SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, CancellationToken cancellationToken);
         Task SavePeriodEndSummary(PeriodEndSummaryModel overallPeriodEndSummary, CancellationToken cancellationToken);
         Task<List<ProviderTransactionTypeAmounts>> GetTransactionTypesByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
-        Task<List<FundingSourceAmountsModel>> GetFundingSourceAmountsByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<ProviderFundingSourceAmounts>> GetFundingSourceAmountsByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<object>> GetDataLockedAmounts
             (short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
     }
@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             throw new NotImplementedException();
         }
 
-        public Task<List<FundingSourceAmountsModel>> GetFundingSourceAmountsByContractType(short academicYear, byte collectionPeriod,
+        public Task<List<ProviderFundingSourceAmounts>> GetFundingSourceAmountsByContractType(short academicYear, byte collectionPeriod,
             CancellationToken cancellationToken)
         {
             throw new NotImplementedException();

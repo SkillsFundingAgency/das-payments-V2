@@ -57,8 +57,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration
                 amounts.Ignore(x => x.Total);
             });
 
-            builder.HasMany(x => x.FundingSourceAmounts).WithOne(e => e.SubmissionSummary).HasForeignKey(e => e.ProviderPeriodEndSummaryId);
-            builder.HasMany(x => x.TransactionTypeAmounts).WithOne(d => d.SubmissionSummary).HasForeignKey(d => d.ProviderPeriodEndSummaryId);
+            builder.HasMany(x => x.FundingSourceAmounts).WithOne(e => e.ProviderPeriodEndSummary).HasForeignKey(e => e.ProviderPeriodEndSummaryId);
+            builder.HasMany(x => x.TransactionTypeAmounts).WithOne(d => d.ProviderPeriodEndSummary).HasForeignKey(d => d.ProviderPeriodEndSummaryId);
         
         }
     }

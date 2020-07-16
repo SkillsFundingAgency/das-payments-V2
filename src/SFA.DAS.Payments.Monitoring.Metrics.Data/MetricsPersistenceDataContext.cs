@@ -32,6 +32,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             modelBuilder.ApplyConfiguration(new RequiredPaymentsModelConfiguration());
             modelBuilder.ApplyConfiguration(new ProviderPeriodEndSummaryModelConfiguration());
             modelBuilder.ApplyConfiguration(new PeriodEndSummaryModelConfiguration());
+            modelBuilder.ApplyConfiguration(new ProviderPaymentTransactionModelConfiguration());
+            modelBuilder.ApplyConfiguration(new ProviderPaymentFundingSourceModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
