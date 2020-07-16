@@ -347,11 +347,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.ServiceFab
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Duplicates", "Duplicates", "{F741E33F-292D-4E80-BA08-48B7601B4ED6}"
 	ProjectSection(SolutionItems) = preProject
-		Scripts\Database\Duplicates\Identify And Stop Duplicate DataLockEvents.sql = Scripts\Database\Duplicates\Identify And Stop Duplicate DataLockEvents.sql
-		Scripts\Database\Duplicates\Identify And Stop Duplicate FundingSourceEvents.sql = Scripts\Database\Duplicates\Identify And Stop Duplicate FundingSourceEvents.sql
-		Scripts\Database\Duplicates\Identify And Stop Duplicate Payments.sql = Scripts\Database\Duplicates\Identify And Stop Duplicate Payments.sql
-		Scripts\Database\Duplicates\Identify And Stop Duplicate RequiredPaymentEvents.sql = Scripts\Database\Duplicates\Identify And Stop Duplicate RequiredPaymentEvents.sql
 		Scripts\Database\Duplicates\Identify Duplicates & Stop New Ones Script.sql = Scripts\Database\Duplicates\Identify Duplicates & Stop New Ones Script.sql
+		Scripts\Database\Duplicates\Rollback - Identify Duplicates & Stop New Ones Script.sql = Scripts\Database\Duplicates\Rollback - Identify Duplicates & Stop New Ones Script.sql
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.EarningEvents.ProcessLearnerService", "SFA.DAS.Payments.EarningEvents.ProcessLearnerService\SFA.DAS.Payments.EarningEvents.ProcessLearnerService.csproj", "{CC563A8B-753B-4A7B-8424-B36DB783BA1C}"
