@@ -36,8 +36,6 @@ BEGIN
 	FROM DataLockDupCte 
 	WHERE DuplicateNumber IS NULL AND RN > 1;
 	
-	SELECT @DataLockDupCte as DataLockDup
-
 	IF (@DataLockDupCte >= 1)
 	BEGIN
 		;WITH DataLockEventCte
@@ -119,8 +117,6 @@ BEGIN
 	FROM FundingSourceDupCte 
 	WHERE DuplicateNumber IS NULL AND RN > 1;
 	
-	SELECT @FundingSourceDupCte as FundingSourceDup
-
 	IF(@FundingSourceDupCte >= 1)
 	BEGIN 
 		WITH FundingSourceEventCte
@@ -211,8 +207,6 @@ BEGIN
 	FROM RequiredPaymentDupCte 
 	WHERE DuplicateNumber IS NULL AND RN > 1;
 	
-	SELECT @RequiredPaymentDupCte AS RequiredPaymentDup
-
 	IF(@RequiredPaymentDupCte >= 1)
 	BEGIN
 
@@ -303,8 +297,6 @@ BEGIN
 	SELECT @PaymentDupCte = COUNT(1) 
 	FROM PaymentDupCte 
 	WHERE DuplicateNumber IS NULL AND RN > 1;
-
-	SELECT @PaymentDupCte AS PaymentDup
 
 	IF(@PaymentDupCte >= 1)
 	BEGIN
