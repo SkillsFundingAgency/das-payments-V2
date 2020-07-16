@@ -1,17 +1,15 @@
 ﻿/* 
 PreDeployment script to cater for existing duplicates prior to adding unique constraints to prevent future duplicates
 */
---initial test to see if this script has ran before - if we have the duplicate number column on one of the tables then the predeployment script must have ran
---or the main table scripts which also include the indexes 				
-IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.Payment'))
-	SET NOEXEC ON
 
 --DataLocks
 IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.DataLockEvent'))
---AND EXISTS (SELECT COUNT(1) FROM Payments2.DataLockEvent WHERE DuplicateNumber IS NULL)
-	WITH DataLockEventCte
+BEGIN
+	DECLARE @DataLockDupCte AS INT;
+
+	;WITH DataLockDupCte
 	AS (
-		SELECT *
+		SELECT DuplicateNumber
 			,Row_Number() OVER (
 				PARTITION BY [JobId]
 				,[Ukprn]
@@ -34,21 +32,59 @@ IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_
 				) AS RN
 		FROM Payments2.DataLockEvent
 		)
-	UPDATE rp
-	SET DuplicateNumber = RN - 1
-	FROM Payments2.DataLockEvent rp
-	JOIN DataLockEventCte ON DataLockEventCte.Id = rp.Id
-	WHERE DataLockEventCte.RN > 1;
+	SELECT @DataLockDupCte = COUNT(1) 
+	FROM DataLockDupCte 
+	WHERE DuplicateNumber IS NULL AND RN > 1;
+	
+	SELECT @DataLockDupCte as DataLockDup
 
-	GO
+	IF (@DataLockDupCte >= 1)
+	BEGIN
+		;WITH DataLockEventCte
+		AS (
+			SELECT *
+				,Row_Number() OVER (
+					PARTITION BY [JobId]
+					,[Ukprn]
+					,[AcademicYear]
+					,[CollectionPeriod]
+					,[IsPayable]
+					,[ContractType]
+					,[LearnerUln]
+					,[LearnerReferenceNumber]
+					,[LearningAimReference]
+					,[LearningAimProgrammeType]
+					,[LearningAimStandardCode]
+					,[LearningAimFrameworkCode]
+					,[LearningAimPathwayCode]
+					,[LearningAimFundingLineType]
+					,[LearningStartDate] ORDER BY [JobId]
+					,[Ukprn]
+					,[AcademicYear]
+					,[CollectionPeriod]
+					) AS RN
+			FROM Payments2.DataLockEvent
+			)
+		UPDATE rp
+		SET DuplicateNumber = RN - 1
+		FROM Payments2.DataLockEvent rp
+		JOIN DataLockEventCte ON DataLockEventCte.Id = rp.Id
+		WHERE DataLockEventCte.RN > 1;
+	END
+END
+GO
 
 --FundingSourceEvent
+
 IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.FundingSourceEvent')) 
---AND EXISTS (SELECT COUNT(1) FROM Payments2.FundingSourceEvent WHERE DuplicateNumber IS NULL)
-	WITH FundingSourceEventCte
+BEGIN
+	DECLARE @FundingSourceDupCte AS INT;
+
+	WITH FundingSourceDupCte
 	AS (
-		SELECT *
-			,Row_Number() OVER (
+		SELECT 
+			DuplicateNumber,
+			Row_Number() OVER (
 				PARTITION BY [JobId]
 				,[Ukprn]
 				,[AcademicYear]
@@ -79,22 +115,68 @@ IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_
 				) AS RN
 		FROM Payments2.FundingSourceEvent
 		)
-	UPDATE fse
-	SET DuplicateNumber = RN - 1
-	FROM Payments2.FundingSourceEvent fse
-	JOIN FundingSourceEventCte ON FundingSourceEventCte.Id = fse.Id
-	WHERE FundingSourceEventCte.RN > 1;
+	SELECT @FundingSourceDupCte = COUNT(1) 
+	FROM FundingSourceDupCte 
+	WHERE DuplicateNumber IS NULL AND RN > 1;
+	
+	SELECT @FundingSourceDupCte as FundingSourceDup
 
-	GO
+	IF(@FundingSourceDupCte >= 1)
+	BEGIN 
+		WITH FundingSourceEventCte
+		AS (
+			SELECT *
+				,Row_Number() OVER (
+					PARTITION BY [JobId]
+					,[Ukprn]
+					,[AcademicYear]
+					,[CollectionPeriod]
+					,[DeliveryPeriod]
+					,[ContractType]
+					,[TransactionType]
+					,[Amount]
+					,[SfaContributionPercentage]
+					,[LearnerUln]
+					,[LearnerReferenceNumber]
+					,[LearningAimReference]
+					,[LearningAimProgrammeType]
+					,[LearningAimStandardCode]
+					,[LearningAimFrameworkCode]
+					,[LearningAimPathwayCode]
+					,[LearningAimFundingLineType]
+					,[LearningStartDate]
+					,[FundingSourceType]
+					,[ApprenticeshipId]
+					,[AccountId]
+					,[TransferSenderAccountId]
+					,[ApprenticeshipEmployerType] ORDER BY [JobId]
+						,[Ukprn]
+						,[AcademicYear]
+						,[CollectionPeriod]
+						,[DeliveryPeriod]
+					) AS RN
+			FROM Payments2.FundingSourceEvent
+			)
+		UPDATE fse
+		SET DuplicateNumber = RN - 1
+		FROM Payments2.FundingSourceEvent fse
+		JOIN FundingSourceEventCte ON FundingSourceEventCte.Id = fse.Id
+		WHERE FundingSourceEventCte.RN > 1;
+	END
+END
+GO
 
 --Required Payment event
 IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.RequiredPaymentEvent'))
---AND EXISTS (SELECT COUNT(1) FROM Payments2.RequiredPaymentEvent WHERE DuplicateNumber IS NULL)
-
-	WITH RequiredPaymentEventCte
+BEGIN
+	
+	DECLARE @RequiredPaymentDupCte AS INT;
+	
+	WITH RequiredPaymentDupCte
 	AS (
-		SELECT *
-			,Row_Number() OVER (
+		SELECT 
+			DuplicateNumber,
+			Row_Number() OVER (
 				PARTITION BY [JobId]
 				,[Ukprn]
 				,[AcademicYear]
@@ -125,19 +207,65 @@ IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_
 				) AS RN
 		FROM Payments2.RequiredPaymentEvent
 		)
-	UPDATE rpe
-	SET DuplicateNumber = RN - 1
-	FROM Payments2.RequiredPaymentEvent rpe
-	JOIN RequiredPaymentEventCte ON RequiredPaymentEventCte.Id = rpe.Id
-	WHERE RequiredPaymentEventCte.RN > 1;
+	SELECT @RequiredPaymentDupCte = COUNT(1) 
+	FROM RequiredPaymentDupCte 
+	WHERE DuplicateNumber IS NULL AND RN > 1;
+	
+	SELECT @RequiredPaymentDupCte AS RequiredPaymentDup
 
-	GO
+	IF(@RequiredPaymentDupCte >= 1)
+	BEGIN
+
+		WITH RequiredPaymentEventCte
+		AS (
+			SELECT *
+				,Row_Number() OVER (
+					PARTITION BY [JobId]
+					,[Ukprn]
+					,[AcademicYear]
+					,[CollectionPeriod]
+					,[DeliveryPeriod]
+					,[ContractType]
+					,[TransactionType]
+					,[Amount]
+					,[SfaContributionPercentage]
+					,[LearnerUln]
+					,[LearnerReferenceNumber]
+					,[LearningAimReference]
+					,[LearningAimProgrammeType]
+					,[LearningAimStandardCode]
+					,[LearningAimFrameworkCode]
+					,[LearningAimPathwayCode]
+					,[LearningAimFundingLineType]
+					,[LearningStartDate]
+					,[EventType]
+					,[ApprenticeshipId]
+					,[AccountId]
+					,[TransferSenderAccountId]
+					,[ApprenticeshipEmployerType] ORDER BY [JobId]
+						,[Ukprn]
+						,[AcademicYear]
+						,[CollectionPeriod]
+						,[DeliveryPeriod]
+					) AS RN
+			FROM Payments2.RequiredPaymentEvent
+			)
+		UPDATE rpe
+		SET DuplicateNumber = RN - 1
+		FROM Payments2.RequiredPaymentEvent rpe
+		JOIN RequiredPaymentEventCte ON RequiredPaymentEventCte.Id = rpe.Id
+		WHERE RequiredPaymentEventCte.RN > 1;
+	END
+END
+GO
 
 --payments
 IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.Payment'))
---AND EXISTS (SELECT COUNT(1) FROM Payments2.Payment WHERE DuplicateNumber IS NULL)
-
-	WITH PaymentCte
+BEGIN
+	
+	DECLARE @PaymentDupCte AS INT;
+	
+	WITH PaymentDupCte
 	AS (
 		SELECT *
 			,Row_Number() OVER (
@@ -172,12 +300,55 @@ IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_
 				) AS RN
 		FROM Payments2.Payment
 		)
-	UPDATE p
-	SET DuplicateNumber = RN - 1
-	FROM Payments2.Payment p
-	JOIN PaymentCte ON PaymentCte.Id = p.Id
-	WHERE PaymentCte.RN > 1;
+	SELECT @PaymentDupCte = COUNT(1) 
+	FROM PaymentDupCte 
+	WHERE DuplicateNumber IS NULL AND RN > 1;
 
-	GO
+	SELECT @PaymentDupCte AS PaymentDup
 
-SET NOEXEC OFF;
+	IF(@PaymentDupCte >= 1)
+	BEGIN
+
+		WITH PaymentCte
+		AS (
+			SELECT *
+				,Row_Number() OVER (
+					PARTITION BY [JobId]
+					,[Ukprn]
+					,[AcademicYear]
+					,[CollectionPeriod]
+					,[DeliveryPeriod]
+					,[ContractType]
+					,[TransactionType]
+					,[Amount]
+					,[SfaContributionPercentage]
+					,[LearnerUln]
+					,[LearnerReferenceNumber]
+					,[LearningAimReference]
+					,[LearningAimProgrammeType]
+					,[LearningAimStandardCode]
+					,[LearningAimFrameworkCode]
+					,[LearningAimPathwayCode]
+					,[LearningAimFundingLineType]
+					,[LearningStartDate]
+					,[FundingSource]
+					,[ApprenticeshipId]
+					,[AccountId]
+					,[TransferSenderAccountId]
+					,[ApprenticeshipEmployerType] 
+					ORDER BY [JobId]
+						,[Ukprn]
+						,[AcademicYear]
+						,[CollectionPeriod]
+						,[DeliveryPeriod]
+					) AS RN
+			FROM Payments2.Payment
+			)
+		UPDATE p
+		SET DuplicateNumber = RN - 1
+		FROM Payments2.Payment p
+		JOIN PaymentCte ON PaymentCte.Id = p.Id
+		WHERE PaymentCte.RN > 1;
+	END
+END
+GO
