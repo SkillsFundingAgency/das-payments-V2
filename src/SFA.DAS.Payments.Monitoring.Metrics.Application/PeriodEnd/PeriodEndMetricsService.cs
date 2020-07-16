@@ -45,15 +45,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 
                 var stopwatch = Stopwatch.StartNew();
 
-                // - get DC earnings grouped by UKPRN 
                 var dcEarningsTask = dcDataContext.GetEarnings(academicYear, collectionPeriod, cancellationToken);
                 var transactionTypesTask =
                     periodEndMetricsRepository.GetTransactionTypesByContractType(academicYear, collectionPeriod,
                         cancellationToken);
-                ////get payments by provider by FundingSource per contract type
-                //var fundingSourceAmounts =
-                //    periodEndMetricsRepository.GetFundingSourceAmountsByContractType(academicYear, collectionPeriod,
-                //        cancellationToken);
+                var fundingSourceTask =
+                    periodEndMetricsRepository.GetFundingSourceAmountsByContractType(academicYear, collectionPeriod,
+                        cancellationToken);
                 //get payments totals by provider per contract type
                 //might not need this???
                 //get data-locked amounts by provider
@@ -65,7 +63,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 //var heldBackCompletionAmountsTask = periodEndMetricsRepository.GetHeldBackCompletionPaymentsTotals(academicYear, collectionPeriod, cancellationToken);
                 ////get held back completion payments by provider
 
-                var dataTask = Task.WhenAll(transactionTypesTask, dataLockedEarningsTask);
+                var dataTask = Task.WhenAll(dcEarningsTask, transactionTypesTask, fundingSourceTask, dataLockedEarningsTask);
                 var waitTask = Task.Delay(TimeSpan.FromSeconds(270), cancellationToken);
                 Task.WaitAny(dataTask, waitTask);
                 cancellationToken.ThrowIfCancellationRequested();
@@ -91,11 +89,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                     providerSummary.AddTransactionTypes(
                         transactionTypesTask.Result.Where(x => x.Ukprn == ukprn));
                     ////add payments by provider by funding source per contract type
-                    //providerSummary.AddFundingSourceAmounts(fundingSourceAmounts.Result.Where(x => x.Ukprn == ukprn));
+                    providerSummary.AddFundingSourceAmounts(fundingSourceTask.Result.Where(x => x.Ukprn == ukprn));
                     //add payments totals by provider per contract type
                     //might not need this???
-                    //add data-locked earnings
-                    providerSummary.AddDataLockedEarnings(dataLockedEarningsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn).TotalAmount);
+                    //add data-locked earnings ??
+                    providerSummary.AddDataLockedEarnings(dataLockedEarningsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn)?.TotalAmount ?? 0m);
 
                     //add held back completion payments by provider
 

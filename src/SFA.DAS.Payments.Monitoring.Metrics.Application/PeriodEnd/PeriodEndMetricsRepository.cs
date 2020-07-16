@@ -84,10 +84,33 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 .ToList();
         }
 
-        public Task<List<ProviderFundingSourceAmounts>> GetFundingSourceAmountsByContractType(short academicYear, byte collectionPeriod,
+        public async Task<List<ProviderFundingSourceAmounts>> GetFundingSourceAmountsByContractType(short academicYear, byte collectionPeriod,
             CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+             var transactionAmounts =  await queryDataContext.Payments.Where(x=>x.CollectionPeriod.AcademicYear == academicYear && x.CollectionPeriod.Period == collectionPeriod)
+                .GroupBy(p => new { p.Ukprn, p.ContractType, p.FundingSource })
+                .Select(group => new
+                {
+                    UkPrn = group.Key.Ukprn,
+                    ContractType = group.Key.ContractType,
+                    FundingSource = group.Key.FundingSource,
+                    Amount = group.Sum(x => x.Amount)
+                })
+                .ToListAsync(cancellationToken);
+
+            return transactionAmounts
+                .GroupBy(x => new {x.UkPrn, x.ContractType})
+                .Select(group => new ProviderFundingSourceAmounts
+                {
+                    Ukprn = group.Key.UkPrn,
+                    ContractType = group.Key.ContractType,
+                    FundingSource1 = group.Where(x => x.FundingSource == FundingSourceType.Levy).Sum(x => (decimal?)x.Amount) ?? 0,
+                    FundingSource2 = group.Where(x => x.FundingSource == FundingSourceType.CoInvestedSfa).Sum(x => (decimal?)x.Amount) ?? 0,
+                    FundingSource3 = group.Where(x => x.FundingSource == FundingSourceType.CoInvestedEmployer).Sum(x => (decimal?)x.Amount) ?? 0,
+                    FundingSource4 = group.Where(x => x.FundingSource == FundingSourceType.FullyFundedSfa).Sum(x => (decimal?)x.Amount) ?? 0,
+                    FundingSource5 = group.Where(x => x.FundingSource == FundingSourceType.Transfer).Sum(x => (decimal?)x.Amount) ?? 0,
+                })
+                .ToList();
         }
 
         public Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)

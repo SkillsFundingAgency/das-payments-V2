@@ -176,7 +176,7 @@ RawEarnings AS (
             order by UKPRN,ApprenticeshipContractType";
 
         private static string UkprnGroupSelect =
-            @"SELECT Ukprn, Cast([ApprenticeshipContractType] as TinyInt) as ContractType,
+            @"SELECT CAST(Ukprn as bigint) as Ukprn, Cast([ApprenticeshipContractType] as TinyInt) as ContractType,
         SUM(TransactionType01) [TransactionType1], 
         SUM(TransactionType02) [TransactionType2],
         SUM(TransactionType03) [TransactionType3],
@@ -227,6 +227,8 @@ RawEarnings AS (
 
         public async Task<List<ProviderTransactionTypeAmounts>> GetEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
+            //todo: change DB to in line with academic year argument
+
             return await AllProviderEarnings.FromSql(BaseDcEarningsQuery + UkprnGroupSelect ,  new SqlParameter("@collectionperiod", collectionPeriod)).ToListAsync(cancellationToken);
 
         }
