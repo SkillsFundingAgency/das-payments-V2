@@ -1,9 +1,14 @@
 ﻿/* 
 PreDeployment script to cater for existing duplicates prior to adding unique constraints to prevent future duplicates
 
-NOTE:the reason this is executed using sp_executesql is because in the scenario when DuplicateNumber doesn't exists at all in database this script will thwow compiler error during deployment
-Deployment will still fail when it tries to create UX_..._LogicalDuplicates but the DuplicateNumber will be created and therefore running same release again should cause this PreDeploy script 
-Which in turn means create UX_..._LogicalDuplicates will also be successful
+this covers most of the scenarios but it will require deploying twice on any environment where DuplicateNumber doesn't exists 
+
+If this script was executed as standard script and DuplicateNumber doesn't exists at all in database the dacPack will throw compiler error during pre-deployment stage
+that is the reason this pre-Deploy script needs to be executed using sp_executesql, this error only occures for existing environments and does not affects fresh new installs
+
+after using sp_executesql Deployment will still fail for existing environments because of create UX_..._LogicalDuplicates but importantly the DuplicateNumber column will be created during the first run 
+therefore running same release again will cause this PreDeploy script to execute correcly Which in turn means create UX_..._LogicalDuplicates will also be successful
+
 */
 
 --DataLocks
@@ -39,7 +44,7 @@ BEGIN
 		SET DuplicateNumber = RN - 1
 		FROM Payments2.DataLockEvent rp
 		JOIN DataLockEventCte ON DataLockEventCte.Id = rp.Id
-		WHERE DataLockEventCte.RN > 1;
+		WHERE DataLockEventCte.RN > 1 AND DuplicateNumber IS NULL;
 	'
 	EXECUTE sp_executesql @DataLock
 END
@@ -87,7 +92,7 @@ BEGIN
 		SET DuplicateNumber = RN - 1
 		FROM Payments2.FundingSourceEvent fse
 		JOIN FundingSourceEventCte ON FundingSourceEventCte.Id = fse.Id
-		WHERE FundingSourceEventCte.RN > 1;
+		WHERE FundingSourceEventCte.RN > 1 AND DuplicateNumber IS NULL;
 	'
 	EXECUTE sp_executesql @FundingSource
 
@@ -137,7 +142,7 @@ BEGIN
 		SET DuplicateNumber = RN - 1
 		FROM Payments2.RequiredPaymentEvent rpe
 		JOIN RequiredPaymentEventCte ON RequiredPaymentEventCte.Id = rpe.Id
-		WHERE RequiredPaymentEventCte.RN > 1;
+		WHERE RequiredPaymentEventCte.RN > 1 AND DuplicateNumber IS NULL;
 	'
 	EXECUTE sp_executesql @RequiredPayment
 
@@ -188,7 +193,7 @@ BEGIN
 		SET DuplicateNumber = RN - 1
 		FROM Payments2.Payment p
 		JOIN PaymentCte ON PaymentCte.Id = p.Id
-		WHERE PaymentCte.RN > 1;
+		WHERE PaymentCte.RN > 1 AND DuplicateNumber IS NULL;
 	'
 	EXECUTE sp_executesql @Payment
 
