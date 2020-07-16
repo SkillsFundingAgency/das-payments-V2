@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -26,6 +27,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         Task<decimal> GetAlreadyPaidDataLocksAmount(long ukprn, long jobId, CancellationToken cancellationToken);
         Task<DataLockTypeCounts> GetDataLockCounts(long ukprn, long jobId, CancellationToken cancellationToken);
         void SetTimeout(TimeSpan timeout);
+        Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
     }
 
     public class MetricsQueryDataContext : DbContext, IMetricsQueryDataContext
@@ -36,6 +38,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             public byte DataLockType { get; set; }
         }
         public virtual DbQuery<DataLockCount> DataLockCounts { get; set; }
+
+        public virtual DbSet<LatestSuccessfulJobModel> LatestSuccessfulJobs { get; set; }
 
         private readonly string connectionString;
         //public virtual DbSet<EarningsModel> Earnings { get; set; }
@@ -63,6 +67,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             modelBuilder.ApplyConfiguration(new DataLockEventNonPayablePeriodFailureModelConfiguration());
             modelBuilder.ApplyConfiguration(new RequiredPaymentEventModelConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentModelConfiguration());
+            modelBuilder.ApplyConfiguration(new LatestSuccessfulJobModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -143,6 +148,17 @@ select
         public void SetTimeout(TimeSpan timeout)
         {
             Database.SetCommandTimeout(timeout);
+        }
+
+        public async Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        {
+            //todo: check need for academic year and collection period here
+            var latestSuccessfulJobIds = LatestSuccessfulJobs.Select(x => x.DcJobId);
+            return  await DataLockEventNonPayablePeriods
+                .Where(period => period.Amount != 0 && latestSuccessfulJobIds.Contains(period.DataLockEvent.JobId))
+                .GroupBy(x => x.DataLockEvent.Ukprn)
+                .Select(x => new ProviderTotal() {Ukprn = x.Key, TotalAmount = x.Sum(period => period.Amount)})
+                .ToListAsync(cancellationToken);
         }
     }
 }

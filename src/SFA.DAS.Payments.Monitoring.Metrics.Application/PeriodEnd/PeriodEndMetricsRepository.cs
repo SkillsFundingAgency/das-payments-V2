@@ -16,8 +16,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
         Task SavePeriodEndSummary(PeriodEndSummaryModel overallPeriodEndSummary, CancellationToken cancellationToken);
         Task<List<ProviderTransactionTypeAmounts>> GetTransactionTypesByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderFundingSourceAmounts>> GetFundingSourceAmountsByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
-        Task<List<object>> GetDataLockedAmounts
-            (short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<ProviderTotal>> GetAlreadyPaidDataLockedEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<ProviderTotal>> GetHeldBackCompletionPaymentsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
     }
 
     public class PeriodEndMetricsRepository : IPeriodEndMetricsRepository
@@ -27,13 +28,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
         private readonly IPaymentLogger logger;
 
 
+
         public PeriodEndMetricsRepository( IMetricsPersistenceDataContext persistenceDataContext, IMetricsQueryDataContext queryDataContext, IPaymentLogger logger)
         {
             this.persistenceDataContext = persistenceDataContext ?? throw new ArgumentNullException(nameof(persistenceDataContext));
             this.queryDataContext = queryDataContext ?? throw new ArgumentNullException(nameof(queryDataContext));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-
 
         Task IPeriodEndMetricsRepository.SavePeriodEndSummary(PeriodEndSummaryModel overallPeriodEndSummary,
             CancellationToken cancellationToken)
@@ -52,7 +53,18 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             throw new NotImplementedException();
         }
 
-        public Task<List<object>> GetDataLockedAmounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        public Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        {
+            return queryDataContext.GetDataLockedEarningsTotals(academicYear, collectionPeriod, cancellationToken);
+        }
+
+        public Task<List<ProviderTotal>> GetAlreadyPaidDataLockedEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<ProviderTotal>> GetHeldBackCompletionPaymentsTotals(short academicYear, byte collectionPeriod,
+            CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
