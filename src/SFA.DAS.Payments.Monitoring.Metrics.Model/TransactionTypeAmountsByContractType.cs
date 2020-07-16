@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Model
 {
-    public class TransactionTypeAmountsBase
+    public class TransactionTypeAmountsByContractType
     {
         public ContractType ContractType { get; set; }
         public decimal TransactionType1 { get; set; }

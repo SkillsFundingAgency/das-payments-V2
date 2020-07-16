@@ -8,8 +8,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
     public interface IPeriodEndProviderSummary
     {
         ProviderPeriodEndSummaryModel GetMetrics();
-        void AddDcEarning(IEnumerable<TransactionTypeAmountsBase> providerDcEarningsByContractType);
-        void AddTransactionTypes(IEnumerable<TransactionTypeAmountsBase> transactionTypes);
+        void AddDcEarning(IEnumerable<TransactionTypeAmountsByContractType> providerDcEarningsByContractType);
+        void AddTransactionTypes(IEnumerable<TransactionTypeAmountsByContractType> transactionTypes);
         void AddFundingSourceAmounts(IEnumerable<ProviderFundingSourceAmounts> fundingSourceAmounts);
         void AddDataLockedEarnings(decimal dataLockedEarningsTotal);
     }
@@ -20,8 +20,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         public long JobId { get; }
         public byte CollectionPeriod { get; }
         public short AcademicYear { get; }
-        private List<TransactionTypeAmountsBase> providerDcEarnings;
-        private List<TransactionTypeAmountsBase> providerTransactionsTypes;
+        private List<TransactionTypeAmountsByContractType> providerDcEarnings;
+        private List<TransactionTypeAmountsByContractType> providerTransactionsTypes;
         private List<ProviderFundingSourceAmounts> providerFundingSourceAmounts;
         private decimal providerDatalockedEarnings;
 
@@ -33,8 +33,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             JobId = jobId;
             CollectionPeriod = collectionPeriod;
             AcademicYear = academicYear;
-            providerDcEarnings = new List<TransactionTypeAmountsBase>();
-            providerTransactionsTypes = new List<TransactionTypeAmountsBase>();
+            providerDcEarnings = new List<TransactionTypeAmountsByContractType>();
+            providerTransactionsTypes = new List<TransactionTypeAmountsByContractType>();
             providerFundingSourceAmounts = new List<ProviderFundingSourceAmounts>();
 
         }
@@ -45,12 +45,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             return new ProviderPeriodEndSummaryModel();
         }
 
-        public void AddDcEarning(IEnumerable<TransactionTypeAmountsBase> providerDcEarningsByContractType)
+        public void AddDcEarning(IEnumerable<TransactionTypeAmountsByContractType> providerDcEarningsByContractType)
         {
             providerDcEarnings = providerDcEarningsByContractType.ToList();
         }
 
-        public void AddTransactionTypes(IEnumerable<TransactionTypeAmountsBase> transactionTypes)
+        public void AddTransactionTypes(IEnumerable<TransactionTypeAmountsByContractType> transactionTypes)
         {
             providerTransactionsTypes = transactionTypes.ToList();
         }
