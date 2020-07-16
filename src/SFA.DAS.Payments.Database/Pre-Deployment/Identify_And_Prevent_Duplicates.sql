@@ -7,7 +7,8 @@ IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_
 	SET NOEXEC ON
 
 --DataLocks
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.DataLockEvent'))
+IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.DataLockEvent'))
+AND EXISTS (SELECT COUNT(1) FROM Payments2.DataLockEvent WHERE DuplicateNumber IS NULL)
 	WITH DataLockEventCte
 	AS (
 		SELECT *
@@ -42,7 +43,8 @@ IF NOT EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND obj
 	GO
 
 --FundingSourceEvent
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.FundingSourceEvent'))
+IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.FundingSourceEvent')) 
+AND EXISTS (SELECT COUNT(1) FROM Payments2.FundingSourceEvent WHERE DuplicateNumber IS NULL)
 	WITH FundingSourceEventCte
 	AS (
 		SELECT *
@@ -86,13 +88,9 @@ IF NOT EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND obj
 	GO
 
 --Required Payment event
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE name = N'EventType' AND object_id = OBJECT_ID(N'Payments2.RequiredPaymentEvent'))
-	ALTER TABLE Payments2.RequiredPaymentEvent ADD EventType NVARCHAR(4000) NULL;
+IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.RequiredPaymentEvent'))
+AND EXISTS (SELECT COUNT(1) FROM Payments2.RequiredPaymentEvent WHERE DuplicateNumber IS NULL)
 
-GO
-	
-
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.RequiredPaymentEvent'))
 	WITH RequiredPaymentEventCte
 	AS (
 		SELECT *
@@ -137,6 +135,8 @@ IF NOT EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND obj
 
 --payments
 IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.Payment'))
+AND EXISTS (SELECT COUNT(1) FROM Payments2.Payment WHERE DuplicateNumber IS NULL)
+
 	WITH PaymentCte
 	AS (
 		SELECT *
