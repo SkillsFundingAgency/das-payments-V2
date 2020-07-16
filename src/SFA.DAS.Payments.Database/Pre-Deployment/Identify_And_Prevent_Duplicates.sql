@@ -1,47 +1,19 @@
 ﻿/* 
 PreDeployment script to cater for existing duplicates prior to adding unique constraints to prevent future duplicates
+
+NOTE:the reason this is executed using sp_executesql is because in the scenario when DuplicateNumber doesn't exists at all in database this script will thwow compiler error during deployment
+Deployment will still fail when it tries to create UX_..._LogicalDuplicates but the DuplicateNumber will be created and therefore running same release again should cause this PreDeploy script 
+Which in turn means create UX_..._LogicalDuplicates will also be successful
 */
 
 --DataLocks
 IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.DataLockEvent'))
 BEGIN
-	DECLARE @DataLockDupCte AS INT;
-
-	;WITH DataLockDupCte
-	AS (
-		SELECT DuplicateNumber
-			,Row_Number() OVER (
-				PARTITION BY [JobId]
-				,[Ukprn]
-				,[AcademicYear]
-				,[CollectionPeriod]
-				,[IsPayable]
-				,[ContractType]
-				,[LearnerUln]
-				,[LearnerReferenceNumber]
-				,[LearningAimReference]
-				,[LearningAimProgrammeType]
-				,[LearningAimStandardCode]
-				,[LearningAimFrameworkCode]
-				,[LearningAimPathwayCode]
-				,[LearningAimFundingLineType]
-				,[LearningStartDate] ORDER BY [JobId]
-				,[Ukprn]
-				,[AcademicYear]
-				,[CollectionPeriod]
-				) AS RN
-		FROM Payments2.DataLockEvent
-		)
-	SELECT @DataLockDupCte = COUNT(1) 
-	FROM DataLockDupCte 
-	WHERE DuplicateNumber IS NULL AND RN > 1;
-	
-	IF (@DataLockDupCte >= 1)
-	BEGIN
+	DECLARE @DataLock AS NVARCHAR(4000) = 
+	'
 		;WITH DataLockEventCte
 		AS (
-			SELECT *
-				,Row_Number() OVER (
+			SELECT Id, Row_Number() OVER (
 					PARTITION BY [JobId]
 					,[Ukprn]
 					,[AcademicYear]
@@ -68,61 +40,19 @@ BEGIN
 		FROM Payments2.DataLockEvent rp
 		JOIN DataLockEventCte ON DataLockEventCte.Id = rp.Id
 		WHERE DataLockEventCte.RN > 1;
-	END
+	'
+	EXECUTE sp_executesql @DataLock
 END
 GO
 
 --FundingSourceEvent
-
 IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.FundingSourceEvent')) 
 BEGIN
-	DECLARE @FundingSourceDupCte AS INT;
-
-	WITH FundingSourceDupCte
-	AS (
-		SELECT 
-			DuplicateNumber,
-			Row_Number() OVER (
-				PARTITION BY [JobId]
-				,[Ukprn]
-				,[AcademicYear]
-				,[CollectionPeriod]
-				,[DeliveryPeriod]
-				,[ContractType]
-				,[TransactionType]
-				,[Amount]
-				,[SfaContributionPercentage]
-				,[LearnerUln]
-				,[LearnerReferenceNumber]
-				,[LearningAimReference]
-				,[LearningAimProgrammeType]
-				,[LearningAimStandardCode]
-				,[LearningAimFrameworkCode]
-				,[LearningAimPathwayCode]
-				,[LearningAimFundingLineType]
-				,[LearningStartDate]
-				,[FundingSourceType]
-				,[ApprenticeshipId]
-				,[AccountId]
-				,[TransferSenderAccountId]
-				,[ApprenticeshipEmployerType] ORDER BY [JobId]
-					,[Ukprn]
-					,[AcademicYear]
-					,[CollectionPeriod]
-					,[DeliveryPeriod]
-				) AS RN
-		FROM Payments2.FundingSourceEvent
-		)
-	SELECT @FundingSourceDupCte = COUNT(1) 
-	FROM FundingSourceDupCte 
-	WHERE DuplicateNumber IS NULL AND RN > 1;
-	
-	IF(@FundingSourceDupCte >= 1)
-	BEGIN 
-		WITH FundingSourceEventCte
+	DECLARE @FundingSource AS NVARCHAR(4000) = 
+	'
+		;WITH FundingSourceEventCte
 		AS (
-			SELECT *
-				,Row_Number() OVER (
+			SELECT Id, Row_Number() OVER (
 					PARTITION BY [JobId]
 					,[Ukprn]
 					,[AcademicYear]
@@ -158,7 +88,9 @@ BEGIN
 		FROM Payments2.FundingSourceEvent fse
 		JOIN FundingSourceEventCte ON FundingSourceEventCte.Id = fse.Id
 		WHERE FundingSourceEventCte.RN > 1;
-	END
+	'
+	EXECUTE sp_executesql @FundingSource
+
 END
 GO
 
@@ -166,54 +98,11 @@ GO
 IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.RequiredPaymentEvent'))
 BEGIN
 	
-	DECLARE @RequiredPaymentDupCte AS INT;
-	
-	WITH RequiredPaymentDupCte
-	AS (
-		SELECT 
-			DuplicateNumber,
-			Row_Number() OVER (
-				PARTITION BY [JobId]
-				,[Ukprn]
-				,[AcademicYear]
-				,[CollectionPeriod]
-				,[DeliveryPeriod]
-				,[ContractType]
-				,[TransactionType]
-				,[Amount]
-				,[SfaContributionPercentage]
-				,[LearnerUln]
-				,[LearnerReferenceNumber]
-				,[LearningAimReference]
-				,[LearningAimProgrammeType]
-				,[LearningAimStandardCode]
-				,[LearningAimFrameworkCode]
-				,[LearningAimPathwayCode]
-				,[LearningAimFundingLineType]
-				,[LearningStartDate]
-				,[EventType]
-				,[ApprenticeshipId]
-				,[AccountId]
-				,[TransferSenderAccountId]
-				,[ApprenticeshipEmployerType] ORDER BY [JobId]
-					,[Ukprn]
-					,[AcademicYear]
-					,[CollectionPeriod]
-					,[DeliveryPeriod]
-				) AS RN
-		FROM Payments2.RequiredPaymentEvent
-		)
-	SELECT @RequiredPaymentDupCte = COUNT(1) 
-	FROM RequiredPaymentDupCte 
-	WHERE DuplicateNumber IS NULL AND RN > 1;
-	
-	IF(@RequiredPaymentDupCte >= 1)
-	BEGIN
-
-		WITH RequiredPaymentEventCte
+	DECLARE @RequiredPayment AS NVARCHAR(4000) = 
+	'
+		;WITH RequiredPaymentEventCte
 		AS (
-			SELECT *
-				,Row_Number() OVER (
+			SELECT Id, Row_Number() OVER (
 					PARTITION BY [JobId]
 					,[Ukprn]
 					,[AcademicYear]
@@ -249,7 +138,9 @@ BEGIN
 		FROM Payments2.RequiredPaymentEvent rpe
 		JOIN RequiredPaymentEventCte ON RequiredPaymentEventCte.Id = rpe.Id
 		WHERE RequiredPaymentEventCte.RN > 1;
-	END
+	'
+	EXECUTE sp_executesql @RequiredPayment
+
 END
 GO
 
@@ -257,54 +148,11 @@ GO
 IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.Payment'))
 BEGIN
 	
-	DECLARE @PaymentDupCte AS INT;
-	
-	WITH PaymentDupCte
-	AS (
-		SELECT *
-			,Row_Number() OVER (
-				PARTITION BY [JobId]
-				,[Ukprn]
-				,[AcademicYear]
-				,[CollectionPeriod]
-				,[DeliveryPeriod]
-				,[ContractType]
-				,[TransactionType]
-				,[Amount]
-				,[SfaContributionPercentage]
-				,[LearnerUln]
-				,[LearnerReferenceNumber]
-				,[LearningAimReference]
-				,[LearningAimProgrammeType]
-				,[LearningAimStandardCode]
-				,[LearningAimFrameworkCode]
-				,[LearningAimPathwayCode]
-				,[LearningAimFundingLineType]
-				,[LearningStartDate]
-				,[FundingSource]
-				,[ApprenticeshipId]
-				,[AccountId]
-				,[TransferSenderAccountId]
-				,[ApprenticeshipEmployerType] 
-				ORDER BY [JobId]
-					,[Ukprn]
-					,[AcademicYear]
-					,[CollectionPeriod]
-					,[DeliveryPeriod]
-				) AS RN
-		FROM Payments2.Payment
-		)
-	SELECT @PaymentDupCte = COUNT(1) 
-	FROM PaymentDupCte 
-	WHERE DuplicateNumber IS NULL AND RN > 1;
-
-	IF(@PaymentDupCte >= 1)
-	BEGIN
-
-		WITH PaymentCte
+	DECLARE @Payment AS NVARCHAR(4000) = 
+	'
+		;WITH PaymentCte
 		AS (
-			SELECT *
-				,Row_Number() OVER (
+			SELECT Id, Row_Number() OVER (
 					PARTITION BY [JobId]
 					,[Ukprn]
 					,[AcademicYear]
@@ -341,6 +189,8 @@ BEGIN
 		FROM Payments2.Payment p
 		JOIN PaymentCte ON PaymentCte.Id = p.Id
 		WHERE PaymentCte.RN > 1;
-	END
+	'
+	EXECUTE sp_executesql @Payment
+
 END
 GO
