@@ -8,7 +8,7 @@ IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_
 
 --DataLocks
 IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.DataLockEvent'))
-AND EXISTS (SELECT COUNT(1) FROM Payments2.DataLockEvent WHERE DuplicateNumber IS NULL)
+--AND EXISTS (SELECT COUNT(1) FROM Payments2.DataLockEvent WHERE DuplicateNumber IS NULL)
 	WITH DataLockEventCte
 	AS (
 		SELECT *
@@ -44,7 +44,7 @@ AND EXISTS (SELECT COUNT(1) FROM Payments2.DataLockEvent WHERE DuplicateNumber I
 
 --FundingSourceEvent
 IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.FundingSourceEvent')) 
-AND EXISTS (SELECT COUNT(1) FROM Payments2.FundingSourceEvent WHERE DuplicateNumber IS NULL)
+--AND EXISTS (SELECT COUNT(1) FROM Payments2.FundingSourceEvent WHERE DuplicateNumber IS NULL)
 	WITH FundingSourceEventCte
 	AS (
 		SELECT *
@@ -89,7 +89,7 @@ AND EXISTS (SELECT COUNT(1) FROM Payments2.FundingSourceEvent WHERE DuplicateNum
 
 --Required Payment event
 IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.RequiredPaymentEvent'))
-AND EXISTS (SELECT COUNT(1) FROM Payments2.RequiredPaymentEvent WHERE DuplicateNumber IS NULL)
+--AND EXISTS (SELECT COUNT(1) FROM Payments2.RequiredPaymentEvent WHERE DuplicateNumber IS NULL)
 
 	WITH RequiredPaymentEventCte
 	AS (
@@ -135,7 +135,7 @@ AND EXISTS (SELECT COUNT(1) FROM Payments2.RequiredPaymentEvent WHERE DuplicateN
 
 --payments
 IF EXISTS (SELECT * FROM sys.columns WHERE name = N'DuplicateNumber' AND object_id = OBJECT_ID(N'Payments2.Payment'))
-AND EXISTS (SELECT COUNT(1) FROM Payments2.Payment WHERE DuplicateNumber IS NULL)
+--AND EXISTS (SELECT COUNT(1) FROM Payments2.Payment WHERE DuplicateNumber IS NULL)
 
 	WITH PaymentCte
 	AS (
