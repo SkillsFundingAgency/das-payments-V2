@@ -6,6 +6,7 @@ using System.Threading;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
@@ -88,68 +89,131 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             };
 
             var submissionMetrics = metrics.SubmissionMetrics;
-            var earningsMetrics = metrics.EarningsMetrics.Where(x=>x.EarningsType == EarningsType.Das).ToList();
+            var dasEarnings = metrics.DasEarnings;
+            // ReSharper disable InconsistentNaming this is to make variable name easy to read 
+            var das_earningsMetrics = metrics.EarningsMetrics.Where(x=>x.EarningsType == EarningsType.Das).ToList();
+            var dc_earningsMetrics = metrics.EarningsMetrics.Where(x=>x.EarningsType == EarningsType.Dc).ToList();
             var dataLockMetrics = metrics.DataLockMetrics;
-            var requiredPaymentsMetrics = metrics.RequiredPaymentsMetrics;
+            var requiredPayments_Act1_Metrics = metrics.RequiredPaymentsMetrics.Where(x => x.Amounts.ContractType == ContractType.Act1).ToList();
+            var requiredPayments_Act2_Metrics = metrics.RequiredPaymentsMetrics.Where(x => x.Amounts.ContractType == ContractType.Act2).ToList();
 
             var stats = new Dictionary<string, double>
             {
                 { "ReportGenerationDuration", reportGenerationDuration },
-                { "Percentage" , (double)metrics.Percentage },
-                { "ContractType1Percentage" , (double)submissionMetrics.PercentageContractType1 },
-                { "ContractType2Percentage" , (double)submissionMetrics.PercentageContractType2 },
-                { "EarningsContractType1Percentage" , (double)submissionMetrics.PercentageContractType1 },
-                { "EarningsContractType2Percentage" , (double)submissionMetrics.PercentageContractType2 },
-                { "DcEarningsTotal" , (double) metrics.DcEarnings.Total },
-                { "DasEarningsTotal" , (double) metrics.DasEarnings.Total },
-                { "DasEarningsTransactionType1" , (double) earningsMetrics.Sum(x=>x.Amounts.TransactionType1) },
-                { "DasEarningsTransactionType2" , (double) earningsMetrics.Sum(x=>x.Amounts.TransactionType2) },
-                { "DasEarningsTransactionType3" , (double) earningsMetrics.Sum(x=>x.Amounts.TransactionType3) },
-                { "DasEarningsTransactionType4" , (double) earningsMetrics.Sum(x=>x.Amounts.TransactionType4) },
-                { "DasEarningsTransactionType5" , (double) earningsMetrics.Sum(x=>x.Amounts.TransactionType5) },
-                { "DasEarningsTransactionType6" , (double) earningsMetrics.Sum(x=>x.Amounts.TransactionType6) },
-                { "DasEarningsTransactionType7" , (double) earningsMetrics.Sum(x=>x.Amounts.TransactionType7) },
-                { "DasEarningsTransactionType8" , (double) earningsMetrics.Sum(x=>x.Amounts.TransactionType8) },
-                { "DasEarningsTransactionType9" , (double) earningsMetrics.Sum(x=>x.Amounts.TransactionType9) },
-                { "DasEarningsTransactionType10" , (double) earningsMetrics.Sum(x=>x.Amounts.TransactionType10) },
-                { "DasEarningsTransactionType11" , (double) earningsMetrics.Sum(x=>x.Amounts.TransactionType11) },
-                { "DasEarningsTransactionType12" , (double) earningsMetrics.Sum(x=>x.Amounts.TransactionType12) },
-                { "DasEarningsTransactionType13" , (double) earningsMetrics.Sum(x=>x.Amounts.TransactionType13) },
-                { "DasEarningsTransactionType14" , (double) earningsMetrics.Sum(x=>x.Amounts.TransactionType14) },
-                { "DasEarningsTransactionType15" , (double) earningsMetrics.Sum(x=>x.Amounts.TransactionType15) },
-                { "DasEarningsTransactionType16" , (double) earningsMetrics.Sum(x=>x.Amounts.TransactionType16) },
-                { "DataLockedEarningsAmount" , (double) metrics.DataLockedEarnings},
-                { "DataLockedCountDLock1" , dataLockMetrics.Sum(x=>x.Amounts.DataLock1) },
-                { "DataLockedCountDLock2" , dataLockMetrics.Sum(x=>x.Amounts.DataLock2) },
-                { "DataLockedCountDLock3" , dataLockMetrics.Sum(x=>x.Amounts.DataLock3) },
-                { "DataLockedCountDLock4" , dataLockMetrics.Sum(x=>x.Amounts.DataLock4) },
-                { "DataLockedCountDLock5" , dataLockMetrics.Sum(x=>x.Amounts.DataLock5) },
-                { "DataLockedCountDLock6" , dataLockMetrics.Sum(x=>x.Amounts.DataLock6) },
-                { "DataLockedCountDLock7" , dataLockMetrics.Sum(x=>x.Amounts.DataLock7) },
-                { "DataLockedCountDLock8" , dataLockMetrics.Sum(x=>x.Amounts.DataLock8) },
-                { "DataLockedCountDLock9" , dataLockMetrics.Sum(x=>x.Amounts.DataLock9) },
+
+                { "Percentage" ,                         (double) metrics.Percentage },
+
+                { "EarningsPercentage" ,                 (double) submissionMetrics.Percentage },
+                { "EarningsPercentageTotal" ,            (double) submissionMetrics.DifferenceTotal },
+                 
+                { "ContractType1Percentage" ,            (double) submissionMetrics.PercentageContractType1 },
+                { "ContractType2Percentage" ,            (double) submissionMetrics.PercentageContractType2 },
+                { "ContractType1Difference" ,            (double) submissionMetrics.DifferenceContractType1 },
+                { "ContractType2Difference" ,            (double) submissionMetrics.DifferenceContractType2 },
+                
+                { "DcEarningsTotal" ,                    (double) dasEarnings.Total },
+                { "DcEarningsContractType1Total" ,       (double) dasEarnings.ContractType1 },
+                { "DcEarningsContractType2Total" ,       (double) dasEarnings.ContractType2 },
+                
+                { "DasEarningsTotal" ,                   (double) dasEarnings.Total },
+                
+                { "DasEarningsPercentage" ,              (double) dasEarnings.Percentage },
+                { "DasEarningsPercentageContractType1" , (double) dasEarnings.PercentageContractType1 },
+                { "DasEarningsPercentageContractType2" , (double) dasEarnings.PercentageContractType2 },
+
+                { "DasEarningsDifferenceTotal" ,         (double) dasEarnings.DifferenceTotal },
+                { "DasEarningsDifferenceContractType1" , (double) dasEarnings.DifferenceContractType1 },
+                { "DasEarningsDifferenceContractType2" , (double) dasEarnings.DifferenceContractType2 },
+
+                { "DataLockedEarningsAmount" ,           (double) metrics.DataLockedEarnings},
+                { "DataLockAmountAlreadyPaid" ,          (double) metrics.AlreadyPaidDataLockedEarnings },
+                { "HeldBackCompletionPayments" ,         (double) metrics.HeldBackCompletionPayments.Total },
+                
+                { "DasEarningsTransactionType1" ,  (double) das_earningsMetrics.Sum(x=>x.Amounts.TransactionType1) },
+                { "DasEarningsTransactionType2" ,  (double) das_earningsMetrics.Sum(x=>x.Amounts.TransactionType2) },
+                { "DasEarningsTransactionType3" ,  (double) das_earningsMetrics.Sum(x=>x.Amounts.TransactionType3) },
+                { "DasEarningsTransactionType4" ,  (double) das_earningsMetrics.Sum(x=>x.Amounts.TransactionType4) },
+                { "DasEarningsTransactionType5" ,  (double) das_earningsMetrics.Sum(x=>x.Amounts.TransactionType5) },
+                { "DasEarningsTransactionType6" ,  (double) das_earningsMetrics.Sum(x=>x.Amounts.TransactionType6) },
+                { "DasEarningsTransactionType7" ,  (double) das_earningsMetrics.Sum(x=>x.Amounts.TransactionType7) },
+                { "DasEarningsTransactionType8" ,  (double) das_earningsMetrics.Sum(x=>x.Amounts.TransactionType8) },
+                { "DasEarningsTransactionType9" ,  (double) das_earningsMetrics.Sum(x=>x.Amounts.TransactionType9) },
+                { "DasEarningsTransactionType10" , (double) das_earningsMetrics.Sum(x=>x.Amounts.TransactionType10) },
+                { "DasEarningsTransactionType11" , (double) das_earningsMetrics.Sum(x=>x.Amounts.TransactionType11) },
+                { "DasEarningsTransactionType12" , (double) das_earningsMetrics.Sum(x=>x.Amounts.TransactionType12) },
+                { "DasEarningsTransactionType13" , (double) das_earningsMetrics.Sum(x=>x.Amounts.TransactionType13) },
+                { "DasEarningsTransactionType14" , (double) das_earningsMetrics.Sum(x=>x.Amounts.TransactionType14) },
+                { "DasEarningsTransactionType15" , (double) das_earningsMetrics.Sum(x=>x.Amounts.TransactionType15) },
+                { "DasEarningsTransactionType16" , (double) das_earningsMetrics.Sum(x=>x.Amounts.TransactionType16) },
+                
+                { "DcEarningsTransactionType1" ,  (double) dc_earningsMetrics.Sum(x=>x.Amounts.TransactionType1) },
+                { "DcEarningsTransactionType2" ,  (double) dc_earningsMetrics.Sum(x=>x.Amounts.TransactionType2) },
+                { "DcEarningsTransactionType3" ,  (double) dc_earningsMetrics.Sum(x=>x.Amounts.TransactionType3) },
+                { "DcEarningsTransactionType4" ,  (double) dc_earningsMetrics.Sum(x=>x.Amounts.TransactionType4) },
+                { "DcEarningsTransactionType5" ,  (double) dc_earningsMetrics.Sum(x=>x.Amounts.TransactionType5) },
+                { "DcEarningsTransactionType6" ,  (double) dc_earningsMetrics.Sum(x=>x.Amounts.TransactionType6) },
+                { "DcEarningsTransactionType7" ,  (double) dc_earningsMetrics.Sum(x=>x.Amounts.TransactionType7) },
+                { "DcEarningsTransactionType8" ,  (double) dc_earningsMetrics.Sum(x=>x.Amounts.TransactionType8) },
+                { "DcEarningsTransactionType9" ,  (double) dc_earningsMetrics.Sum(x=>x.Amounts.TransactionType9) },
+                { "DcEarningsTransactionType10" , (double) dc_earningsMetrics.Sum(x=>x.Amounts.TransactionType10) },
+                { "DcEarningsTransactionType11" , (double) dc_earningsMetrics.Sum(x=>x.Amounts.TransactionType11) },
+                { "DcEarningsTransactionType12" , (double) dc_earningsMetrics.Sum(x=>x.Amounts.TransactionType12) },
+                { "DcEarningsTransactionType13" , (double) dc_earningsMetrics.Sum(x=>x.Amounts.TransactionType13) },
+                { "DcEarningsTransactionType14" , (double) dc_earningsMetrics.Sum(x=>x.Amounts.TransactionType14) },
+                { "DcEarningsTransactionType15" , (double) dc_earningsMetrics.Sum(x=>x.Amounts.TransactionType15) },
+                { "DcEarningsTransactionType16" , (double) dc_earningsMetrics.Sum(x=>x.Amounts.TransactionType16) },
+                
+                { "DataLockedCountDLock1" ,  dataLockMetrics.Sum(x=>x.Amounts.DataLock1) },
+                { "DataLockedCountDLock2" ,  dataLockMetrics.Sum(x=>x.Amounts.DataLock2) },
+                { "DataLockedCountDLock3" ,  dataLockMetrics.Sum(x=>x.Amounts.DataLock3) },
+                { "DataLockedCountDLock4" ,  dataLockMetrics.Sum(x=>x.Amounts.DataLock4) },
+                { "DataLockedCountDLock5" ,  dataLockMetrics.Sum(x=>x.Amounts.DataLock5) },
+                { "DataLockedCountDLock6" ,  dataLockMetrics.Sum(x=>x.Amounts.DataLock6) },
+                { "DataLockedCountDLock7" ,  dataLockMetrics.Sum(x=>x.Amounts.DataLock7) },
+                { "DataLockedCountDLock8" ,  dataLockMetrics.Sum(x=>x.Amounts.DataLock8) },
+                { "DataLockedCountDLock9" ,  dataLockMetrics.Sum(x=>x.Amounts.DataLock9) },
                 { "DataLockedCountDLock10" , dataLockMetrics.Sum(x=>x.Amounts.DataLock10) },
                 { "DataLockedCountDLock11" , dataLockMetrics.Sum(x=>x.Amounts.DataLock11) },
                 { "DataLockedCountDLock12" , dataLockMetrics.Sum(x=>x.Amounts.DataLock12) },
-                { "DataLockAmountAlreadyPaid" , (double) metrics.AlreadyPaidDataLockedEarnings },
-                { "HeldBackCompletionPayments" ,(double) metrics.HeldBackCompletionPayments.Total },
-                { "RequiredPaymentsTotal" , (double) metrics.RequiredPayments.Total },
-                { "RequiredPaymentsTotalTransactionType1" , (double) requiredPaymentsMetrics.Sum(x=>x.Amounts.TransactionType1) },
-                { "RequiredPaymentsTotalTransactionType2" , (double) requiredPaymentsMetrics.Sum(x=>x.Amounts.TransactionType2) },
-                { "RequiredPaymentsTotalTransactionType3" , (double) requiredPaymentsMetrics.Sum(x=>x.Amounts.TransactionType3) },
-                { "RequiredPaymentsTotalTransactionType4" , (double) requiredPaymentsMetrics.Sum(x=>x.Amounts.TransactionType4) },
-                { "RequiredPaymentsTotalTransactionType5" , (double) requiredPaymentsMetrics.Sum(x=>x.Amounts.TransactionType5) },
-                { "RequiredPaymentsTotalTransactionType6" , (double) requiredPaymentsMetrics.Sum(x=>x.Amounts.TransactionType6) },
-                { "RequiredPaymentsTotalTransactionType7" , (double) requiredPaymentsMetrics.Sum(x=>x.Amounts.TransactionType7) },
-                { "RequiredPaymentsTotalTransactionType8" , (double) requiredPaymentsMetrics.Sum(x=>x.Amounts.TransactionType8) },
-                { "RequiredPaymentsTotalTransactionType9" , (double) requiredPaymentsMetrics.Sum(x=>x.Amounts.TransactionType9) },
-                { "RequiredPaymentsTotalTransactionType10" , (double) requiredPaymentsMetrics.Sum(x=>x.Amounts.TransactionType10) },
-                { "RequiredPaymentsTotalTransactionType11" , (double) requiredPaymentsMetrics.Sum(x=>x.Amounts.TransactionType11) },
-                { "RequiredPaymentsTotalTransactionType12" , (double) requiredPaymentsMetrics.Sum(x=>x.Amounts.TransactionType12) },
-                { "RequiredPaymentsTotalTransactionType13" , (double) requiredPaymentsMetrics.Sum(x=>x.Amounts.TransactionType13) },
-                { "RequiredPaymentsTotalTransactionType14" , (double) requiredPaymentsMetrics.Sum(x=>x.Amounts.TransactionType14) },
-                { "RequiredPaymentsTotalTransactionType15" , (double) requiredPaymentsMetrics.Sum(x=>x.Amounts.TransactionType15) },
-                { "RequiredPaymentsTotalTransactionType16" , (double) requiredPaymentsMetrics.Sum(x=>x.Amounts.TransactionType16) },
+                
+                { "RequiredPaymentsTotal" ,     (double) metrics.RequiredPayments.Total },
+                { "RequiredPaymentsAct1Total" , (double) metrics.RequiredPayments.ContractType1 },
+                { "RequiredPaymentsAc2Total" ,  (double) metrics.RequiredPayments.ContractType2 },
+                
+                { "RequiredPaymentsAct1TotalTransactionType1" ,  (double) requiredPayments_Act1_Metrics.Sum(x=>x.Amounts.TransactionType1) },
+                { "RequiredPaymentsAct1TotalTransactionType2" ,  (double) requiredPayments_Act1_Metrics.Sum(x=>x.Amounts.TransactionType2) },
+                { "RequiredPaymentsAct1TotalTransactionType3" ,  (double) requiredPayments_Act1_Metrics.Sum(x=>x.Amounts.TransactionType3) },
+                { "RequiredPaymentsAct1TotalTransactionType4" ,  (double) requiredPayments_Act1_Metrics.Sum(x=>x.Amounts.TransactionType4) },
+                { "RequiredPaymentsAct1TotalTransactionType5" ,  (double) requiredPayments_Act1_Metrics.Sum(x=>x.Amounts.TransactionType5) },
+                { "RequiredPaymentsAct1TotalTransactionType6" ,  (double) requiredPayments_Act1_Metrics.Sum(x=>x.Amounts.TransactionType6) },
+                { "RequiredPaymentsAct1TotalTransactionType7" ,  (double) requiredPayments_Act1_Metrics.Sum(x=>x.Amounts.TransactionType7) },
+                { "RequiredPaymentsAct1TotalTransactionType8" ,  (double) requiredPayments_Act1_Metrics.Sum(x=>x.Amounts.TransactionType8) },
+                { "RequiredPaymentsAct1TotalTransactionType9" ,  (double) requiredPayments_Act1_Metrics.Sum(x=>x.Amounts.TransactionType9) },
+                { "RequiredPaymentsAct1TotalTransactionType10" , (double) requiredPayments_Act1_Metrics.Sum(x=>x.Amounts.TransactionType10) },
+                { "RequiredPaymentsAct1TotalTransactionType11" , (double) requiredPayments_Act1_Metrics.Sum(x=>x.Amounts.TransactionType11) },
+                { "RequiredPaymentsAct1TotalTransactionType12" , (double) requiredPayments_Act1_Metrics.Sum(x=>x.Amounts.TransactionType12) },
+                { "RequiredPaymentsAct1TotalTransactionType13" , (double) requiredPayments_Act1_Metrics.Sum(x=>x.Amounts.TransactionType13) },
+                { "RequiredPaymentsAct1TotalTransactionType14" , (double) requiredPayments_Act1_Metrics.Sum(x=>x.Amounts.TransactionType14) },
+                { "RequiredPaymentsAct1TotalTransactionType15" , (double) requiredPayments_Act1_Metrics.Sum(x=>x.Amounts.TransactionType15) },
+                { "RequiredPaymentsAct1TotalTransactionType16" , (double) requiredPayments_Act1_Metrics.Sum(x=>x.Amounts.TransactionType16) },
+                
+                { "RequiredPaymentsAct2TotalTransactionType1" ,  (double) requiredPayments_Act2_Metrics.Sum(x=>x.Amounts.TransactionType1) },
+                { "RequiredPaymentsAct2TotalTransactionType2" ,  (double) requiredPayments_Act2_Metrics.Sum(x=>x.Amounts.TransactionType2) },
+                { "RequiredPaymentsAct2TotalTransactionType3" ,  (double) requiredPayments_Act2_Metrics.Sum(x=>x.Amounts.TransactionType3) },
+                { "RequiredPaymentsAct2TotalTransactionType4" ,  (double) requiredPayments_Act2_Metrics.Sum(x=>x.Amounts.TransactionType4) },
+                { "RequiredPaymentsAct2TotalTransactionType5" ,  (double) requiredPayments_Act2_Metrics.Sum(x=>x.Amounts.TransactionType5) },
+                { "RequiredPaymentsAct2TotalTransactionType6" ,  (double) requiredPayments_Act2_Metrics.Sum(x=>x.Amounts.TransactionType6) },
+                { "RequiredPaymentsAct2TotalTransactionType7" ,  (double) requiredPayments_Act2_Metrics.Sum(x=>x.Amounts.TransactionType7) },
+                { "RequiredPaymentsAct2TotalTransactionType8" ,  (double) requiredPayments_Act2_Metrics.Sum(x=>x.Amounts.TransactionType8) },
+                { "RequiredPaymentsAct2TotalTransactionType9" ,  (double) requiredPayments_Act2_Metrics.Sum(x=>x.Amounts.TransactionType9) },
+                { "RequiredPaymentsAct2TotalTransactionType10" , (double) requiredPayments_Act2_Metrics.Sum(x=>x.Amounts.TransactionType10) },
+                { "RequiredPaymentsAct2TotalTransactionType11" , (double) requiredPayments_Act2_Metrics.Sum(x=>x.Amounts.TransactionType11) },
+                { "RequiredPaymentsAct2TotalTransactionType12" , (double) requiredPayments_Act2_Metrics.Sum(x=>x.Amounts.TransactionType12) },
+                { "RequiredPaymentsAct2TotalTransactionType13" , (double) requiredPayments_Act2_Metrics.Sum(x=>x.Amounts.TransactionType13) },
+                { "RequiredPaymentsAct2TotalTransactionType14" , (double) requiredPayments_Act2_Metrics.Sum(x=>x.Amounts.TransactionType14) },
+                { "RequiredPaymentsAct2TotalTransactionType15" , (double) requiredPayments_Act2_Metrics.Sum(x=>x.Amounts.TransactionType15) },
+                { "RequiredPaymentsAct2TotalTransactionType16" , (double) requiredPayments_Act2_Metrics.Sum(x=>x.Amounts.TransactionType16) },
+                
                 { "RequiredPaymentsDasEarningsPercentageComparison" ,  Math.Round(((double) (metrics.YearToDatePayments.Total + metrics.RequiredPayments.Total) / (double) metrics.DasEarnings.Total) * 100, 2) }
             };
 
