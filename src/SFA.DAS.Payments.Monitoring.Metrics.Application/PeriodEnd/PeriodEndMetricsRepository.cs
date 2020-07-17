@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
         Task<List<ProviderFundingSourceAmounts>> GetFundingSourceAmountsByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderTotal>> GetAlreadyPaidDataLockedEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
-        Task<List<ProviderTotal>> GetHeldBackCompletionPaymentsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
     }
 
     public class PeriodEndMetricsRepository : IPeriodEndMetricsRepository
@@ -123,10 +123,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             throw new NotImplementedException();
         }
 
-        public Task<List<ProviderTotal>> GetHeldBackCompletionPaymentsTotals(short academicYear, byte collectionPeriod,
+        public async Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentsTotals(short academicYear, byte collectionPeriod,
             CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+
+           return  await queryDataContext.GetHeldBackCompletionPaymentTotals(academicYear, collectionPeriod, cancellationToken);
         }
 
         Task IPeriodEndMetricsRepository.SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, CancellationToken cancellationToken)

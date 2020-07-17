@@ -12,6 +12,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         void AddTransactionTypes(IEnumerable<TransactionTypeAmountsByContractType> transactionTypes);
         void AddFundingSourceAmounts(IEnumerable<ProviderFundingSourceAmounts> fundingSourceAmounts);
         void AddDataLockedEarnings(decimal dataLockedEarningsTotal);
+        void AddDataLockedAlreadyPaidTask(decimal dataLockedAlreadyPaidTotal);
     }
 
     public class PeriodEndProviderSummary : IPeriodEndProviderSummary
@@ -24,6 +25,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         private List<TransactionTypeAmountsByContractType> providerTransactionsTypes;
         private List<ProviderFundingSourceAmounts> providerFundingSourceAmounts;
         private decimal providerDatalockedEarnings;
+        private decimal ProviderDataLockedAlreadyPaidTotal;
 
 
 
@@ -63,6 +65,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         public void AddDataLockedEarnings(decimal dataLockedEarningsTotal)
         {
             providerDatalockedEarnings = dataLockedEarningsTotal;
+        }
+
+        public void AddDataLockedAlreadyPaidTask(decimal dataLockedAlreadyPaidTotal)
+        {
+            providerDatalockedEarnings = dataLockedAlreadyPaidTotal;
         }
     }
 }

@@ -56,14 +56,21 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 //might not need this???
                 //get data-locked amounts by provider
                 var dataLockedEarningsTask =
-                    periodEndMetricsRepository.GetDataLockedEarningsTotals(academicYear, collectionPeriod, cancellationToken);
-                //var dataLockedAlreadyPaidTask =
-                //    periodEndMetricsRepository.GetAlreadyPaidDataLockedEarnings(academicYear, collectionPeriod,
-                //        cancellationToken);
+                    periodEndMetricsRepository.GetDataLockedEarningsTotals(academicYear, collectionPeriod,
+                        cancellationToken);
+                var dataLockedAlreadyPaidTask =
+                    periodEndMetricsRepository.GetAlreadyPaidDataLockedEarnings(academicYear, collectionPeriod,
+                        cancellationToken);
                 //var heldBackCompletionAmountsTask = periodEndMetricsRepository.GetHeldBackCompletionPaymentsTotals(academicYear, collectionPeriod, cancellationToken);
                 ////get held back completion payments by provider
 
-                var dataTask = Task.WhenAll(dcEarningsTask, transactionTypesTask, fundingSourceTask, dataLockedEarningsTask);
+                var dataTask = Task.WhenAll(
+                    dcEarningsTask,
+                    transactionTypesTask,
+                    fundingSourceTask,
+                    dataLockedEarningsTask,
+                    dataLockedAlreadyPaidTask);
+
                 var waitTask = Task.Delay(TimeSpan.FromSeconds(270), cancellationToken);
                 Task.WaitAny(dataTask, waitTask);
                 cancellationToken.ThrowIfCancellationRequested();
@@ -83,18 +90,19 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                         periodEndSummaryFactory.CreatePeriodEndProviderSummary(ukprn, jobId, collectionPeriod,
                             academicYear);
 
-                    //call method to add:
+                    //DC earnings YTD
                     providerSummary.AddDcEarning(dcEarningsTask.Result.Where(x => x.Ukprn == ukprn));
-                    ////payment by provider /transactiontype/contractype
+                    //payment this collection period by transactiontype/contractype
                     providerSummary.AddTransactionTypes(
                         transactionTypesTask.Result.Where(x => x.Ukprn == ukprn));
-                    ////add payments by provider by funding source per contract type
+                    ////payment this collection period by funding source per contract type
                     providerSummary.AddFundingSourceAmounts(fundingSourceTask.Result.Where(x => x.Ukprn == ukprn));
-                    //add payments totals by provider per contract type
-                    //might not need this???
-                    //add data-locked earnings ??
-                    providerSummary.AddDataLockedEarnings(dataLockedEarningsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn)?.TotalAmount ?? 0m);
-
+                    //Total Datalocked using last successful jobs
+                    providerSummary.AddDataLockedEarnings(
+                        dataLockedEarningsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn)?.TotalAmount ?? 0m);
+                    //total datalocked already paid using last successful job
+                    providerSummary.AddDataLockedAlreadyPaidTask(
+                        dataLockedAlreadyPaidTask.Result.FirstOrDefault(x => x.Ukprn == ukprn)?.TotalAmount ?? 0m);
                     //add held back completion payments by provider
 
 

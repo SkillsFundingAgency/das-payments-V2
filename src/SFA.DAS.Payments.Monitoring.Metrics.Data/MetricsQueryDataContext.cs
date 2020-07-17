@@ -28,6 +28,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         Task<DataLockTypeCounts> GetDataLockCounts(long ukprn, long jobId, CancellationToken cancellationToken);
         void SetTimeout(TimeSpan timeout);
         Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<ProviderTotal>> GetAlreadyPaidDataLockProviderTotals(CancellationToken cancellationToken);
+        Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
     }
 
     public class MetricsQueryDataContext : DbContext, IMetricsQueryDataContext
@@ -38,6 +40,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             public byte DataLockType { get; set; }
         }
         public virtual DbQuery<DataLockCount> DataLockCounts { get; set; }
+        public virtual DbQuery<ProviderTotal> AlreadyPaidDataLockProviderTotals { get; set; }
 
         public virtual DbSet<LatestSuccessfulJobModel> LatestSuccessfulJobs { get; set; }
 
@@ -73,6 +76,62 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(connectionString);
+        }
+
+
+        public async Task<List<ProviderTotal>> GetAlreadyPaidDataLockProviderTotals(CancellationToken cancellationToken)
+        {
+            var sql = @"Select
+		        dle.ukprn as Ukprn,
+		        sum(p.Amount) as Amount
+            from Payments2.dataLockEventNonPayablePeriod npp
+            join Payments2.dataLockEvent dle on npp.DataLockEventId = dle.EventId 
+            join Payments2.payment p on dle.ukprn = p.ukprn
+	            AND dle.LearningAimFrameworkCode = P.LearningAimFrameworkCode
+	            AND dle.LearningAimPathwayCode = P.LearningAimPathwayCode
+	            AND dle.LearningAimProgrammeType = P.LearningAimProgrammeType
+	            AND dle.LearningAimReference = P.LearningAimReference
+	            AND dle.LearningAimStandardCode = P.LearningAimStandardCode
+	            and dle.learnerreferencenumber = p.learnerreferencenumber
+	            and npp.deliveryperiod = p.deliveryperiod
+	            AND npp.TransactionType = P.TransactionType
+            where 		
+	            dle.jobId in (select DcJobid from Payments2.LatestSuccessfulJobs)
+	            
+	            and npp.Amount <> 0
+	            and dle.IsPayable = 0	
+	            and p.collectionperiod < dle.CollectionPeriod
+	        group by 
+		        dle.ukprn";
+
+            return await AlreadyPaidDataLockProviderTotals.FromSql(sql)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        {
+            var latestSuccessfulJobIds = LatestSuccessfulJobs.Select(x => x.DcJobId);
+
+            var amounts = await RequiredPaymentEvents
+                .AsNoTracking()
+                .Where(rp =>
+                    latestSuccessfulJobIds.Contains(rp.JobId) && rp.NonPaymentReason != null && rp.NonPaymentReason == NonPaymentReason.InsufficientEmployerContribution)
+                .GroupBy(rp => new { rp.Ukprn, rp.ContractType})
+                .Select(group => new
+                {
+                    Ukprn = group.Key.Ukprn,
+                    ContractType = group.Key.ContractType,
+                    Amount = group.Sum(rp => rp.Amount)
+                })
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            return amounts.Select(group => new ProviderContractTypeAmounts()
+            {
+                Ukprn = group.Ukprn,
+                ContractType1 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act1)?.Amount ?? 0,
+                ContractType2 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act2)?.Amount ?? 0,
+            }).ToList();
         }
 
         public async Task<decimal> GetAlreadyPaidDataLocksAmount(long ukprn, long jobId, CancellationToken cancellationToken)

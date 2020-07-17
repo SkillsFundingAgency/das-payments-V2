@@ -5,7 +5,6 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Application.Data.Configurations
 {
-    [Obsolete]
     public class LatestSuccessfulJobModelConfiguration : IEntityTypeConfiguration<LatestSuccessfulJobModel>
     {
         public void Configure(EntityTypeBuilder<LatestSuccessfulJobModel> builder)
