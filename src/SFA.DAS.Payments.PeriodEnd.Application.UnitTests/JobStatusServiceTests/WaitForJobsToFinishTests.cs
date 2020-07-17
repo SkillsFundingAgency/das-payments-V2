@@ -5,16 +5,14 @@ using Autofac.Extras.Moq;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
 using SFA.DAS.Payments.JobContextMessageHandling.JobStatus;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
-using SFA.DAS.Payments.PeriodEnd.Application.Infrastructure;
 
-namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
+namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.JobStatusServiceTests
 {
     [TestFixture]
-    public class JobStatusServiceTests
+    public class WaitForJobsToFinishTests
     {
         private AutoMock mocker;
         private JobModel job;

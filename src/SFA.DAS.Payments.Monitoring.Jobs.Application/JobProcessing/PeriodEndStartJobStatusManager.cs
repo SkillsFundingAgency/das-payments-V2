@@ -6,24 +6,24 @@ using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
-{ 
-    public interface IPeriodEndJobStatusManager : IJobStatusManager { }
-
-    public class PeriodEndJobStatusManager : JobStatusManager, IPeriodEndJobStatusManager
+{
+    public interface IPeriodEndStartJobStatusManager : IPeriodEndJobStatusManager { }
+    
+    public class PeriodEndStartJobStatusManager : PeriodEndJobStatusManager, IPeriodEndStartJobStatusManager
     {
-        public PeriodEndJobStatusManager(IPaymentLogger logger, IUnitOfWorkScopeFactory scopeFactory, 
+        public PeriodEndStartJobStatusManager(IPaymentLogger logger, IUnitOfWorkScopeFactory scopeFactory, 
             IJobServiceConfiguration configuration) : base(logger, scopeFactory, configuration)
         {
         }
 
         public override IJobStatusService GetJobStatusService(IUnitOfWorkScope scope)
         {
-            return scope.Resolve<IPeriodEndJobStatusService>();
+            return scope.Resolve<IPeriodEndStartJobStatusService>();
         }
-
+        
         public override async Task<List<long>> GetCurrentJobs(IJobStorageService jobStorage)
         {
-            return await jobStorage.GetCurrentPeriodEndExcludingStartJobs(cancellationToken).ConfigureAwait(false);
+            return await jobStorage.GetCurrentPeriodEndStartJobs(cancellationToken).ConfigureAwait(false);
         }
     }
 }

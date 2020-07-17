@@ -63,11 +63,15 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 // PV2-1345 will handle PeriodEndStart
                 // PeriodEndStoppedEvent will be handled by the PeriodEndStoppedEventHandler which in turn is handled by the ProcessProviderMonthEndCommandHandler but we don't want to wait for it
 
-
-                if (periodEndEvent is PeriodEndStartedEvent || periodEndEvent is PeriodEndStoppedEvent)
+                if (periodEndEvent is PeriodEndStoppedEvent)
                 {
                     logger.LogDebug("Returning as this is either a PeriodEndStart or PeriodEndStop event");
                     return true;
+                }
+
+                if (periodEndEvent is PeriodEndStartedEvent periodEndStartedEvent)
+                {
+                    return await jobStatusService.WaitForPeriodEndStartedToFinish(periodEndStartedEvent.JobId, cancellationToken);
                 }
 
                 await jobStatusService.WaitForJobToFinish(message.JobId, cancellationToken);
