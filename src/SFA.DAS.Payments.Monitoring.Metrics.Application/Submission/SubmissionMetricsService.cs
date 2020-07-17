@@ -102,34 +102,38 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             {
                 { "ReportGenerationDuration", reportGenerationDuration },
 
-                { "Percentage" ,                         (double) metrics.Percentage },
-
-                { "EarningsPercentage" ,                 (double) submissionMetrics.Percentage },
-                { "EarningsPercentageTotal" ,            (double) submissionMetrics.DifferenceTotal },
-                 
+                { "Percentage" ,                         (double) submissionMetrics.Percentage },
                 { "ContractType1Percentage" ,            (double) submissionMetrics.PercentageContractType1 },
                 { "ContractType2Percentage" ,            (double) submissionMetrics.PercentageContractType2 },
-                { "ContractType1Difference" ,            (double) submissionMetrics.DifferenceContractType1 },
-                { "ContractType2Difference" ,            (double) submissionMetrics.DifferenceContractType2 },
+                
+                { "DifferenceTotal" ,                    (double) submissionMetrics.DifferenceTotal },
+                { "DifferenceContractType1" ,            (double) submissionMetrics.DifferenceContractType1 },
+                { "DifferenceContractType2" ,            (double) submissionMetrics.DifferenceContractType2 },
+                
+                { "EarningsPercentage" ,                 (double) dasEarnings.Percentage },
+                { "EarningsPercentageContractType1" ,    (double) dasEarnings.PercentageContractType1 },
+                { "EarningsPercentageContractType2" ,    (double) dasEarnings.PercentageContractType2 },
+   
+                { "EarningsDifferenceTotal" ,            (double) dasEarnings.DifferenceTotal },
+                { "EarningsDifferenceContractType1" ,    (double) dasEarnings.DifferenceContractType1 },
+                { "EarningsDifferenceContractType2" ,    (double) dasEarnings.DifferenceContractType2 },
+
+                { "DasEarningsTotal" ,                   (double) dasEarnings.Total },
+                { "DasEarningsContractType1Total" ,      (double) dasEarnings.ContractType1 },
+                { "DasEarningsContractType2Total" ,      (double) dasEarnings.ContractType2 },
                 
                 { "DcEarningsTotal" ,                    (double) dcEarnings.Total },
                 { "DcEarningsContractType1Total" ,       (double) dcEarnings.ContractType1 },
                 { "DcEarningsContractType2Total" ,       (double) dcEarnings.ContractType2 },
                 
-                { "DasEarningsTotal" ,                   (double) dasEarnings.Total },
-                
-                { "DasEarningsPercentage" ,              (double) dasEarnings.Percentage },
-                { "DasEarningsPercentageContractType1" , (double) dasEarnings.PercentageContractType1 },
-                { "DasEarningsPercentageContractType2" , (double) dasEarnings.PercentageContractType2 },
-
-                { "DasEarningsDifferenceTotal" ,         (double) dasEarnings.DifferenceTotal },
-                { "DasEarningsDifferenceContractType1" , (double) dasEarnings.DifferenceContractType1 },
-                { "DasEarningsDifferenceContractType2" , (double) dasEarnings.DifferenceContractType2 },
-
                 { "DataLockedEarningsAmount" ,                (double) metrics.DataLockedEarnings},
+                
                 { "DataLockedEarningsTotal" ,                 (double) metrics.TotalDataLockedEarnings},
+                
                 { "DataLockAmountAlreadyPaid" ,               (double) metrics.AlreadyPaidDataLockedEarnings },
+                
                 { "NonLevyRequiredPayments" ,                 (double) metrics.NonLevyRequiredPayments },
+                
                 { "HeldBackCompletionPayments" ,              (double) metrics.HeldBackCompletionPayments.Total },
                 { "HeldBackCompletionPaymentsContractType1" , (double) metrics.HeldBackCompletionPayments.ContractType1 },
                 { "HeldBackCompletionPaymentsContractType2" , (double) metrics.HeldBackCompletionPayments.ContractType1 },

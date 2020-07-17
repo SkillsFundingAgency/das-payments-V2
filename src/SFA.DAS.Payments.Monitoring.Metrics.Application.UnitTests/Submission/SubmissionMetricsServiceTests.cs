@@ -186,29 +186,28 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             var expectedStats = new Dictionary<string, double>
             {
                 { "Percentage", 100 },
-                
-                { "EarningsPercentage", 100 },
-                { "EarningsPercentageTotal", 0 },
-                
                 { "ContractType1Percentage", 100 },
                 { "ContractType2Percentage", 100 },
                 
-                { "ContractType1Difference", 0 },
-                { "ContractType2Difference", 0 },
+                { "DifferenceTotal", 0 },
+                { "DifferenceContractType1", 0 },
+                { "DifferenceContractType2", 0 },
+                
+                { "EarningsPercentage", 100 },
+                { "EarningsPercentageContractType1", 100 },
+                { "EarningsPercentageContractType2", 100 },
+                
+                { "EarningsDifferenceTotal", 0 },
+                { "EarningsDifferenceContractType1", 0 },
+                { "EarningsDifferenceContractType2", 0 },
+                
+                { "DasEarningsTotal", 65200 },
+                { "DasEarningsContractType1Total", 32600 },
+                { "DasEarningsContractType2Total", 32600 },
                 
                 { "DcEarningsTotal", 65200 },
                 { "DcEarningsContractType1Total", 32600 },
                 { "DcEarningsContractType2Total", 32600 },
-                
-                { "DasEarningsTotal", 65200 },
-                
-                { "DasEarningsPercentage", 100 },
-                { "DasEarningsPercentageContractType1", 100 },
-                { "DasEarningsPercentageContractType2", 100 },
-                
-                { "DasEarningsDifferenceTotal", 0 },
-                { "DasEarningsDifferenceContractType1", 0 },
-                { "DasEarningsDifferenceContractType2", 0 },
                 
                 { "DataLockedEarningsAmount", 3000 },
                 
@@ -259,7 +258,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 { "DcEarningsTransactionType14", 400 },
                 { "DcEarningsTransactionType15", 400 },
                 { "DcEarningsTransactionType16", 400 },
-
+                
                 { "DataLockedCountDLock1", 0 },
                 { "DataLockedCountDLock2", 1000 },
                 { "DataLockedCountDLock3", 0 },
