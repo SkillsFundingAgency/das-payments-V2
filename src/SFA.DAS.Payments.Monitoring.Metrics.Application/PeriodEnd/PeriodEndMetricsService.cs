@@ -53,7 +53,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                     periodEndMetricsRepository.GetFundingSourceAmountsByContractType(academicYear, collectionPeriod,
                         cancellationToken);
                 //get payments totals by provider per contract type
-                //might not need this???
+                var currentPaymentTotals =
+                    periodEndMetricsRepository.GetYearToDatePayments(academicYear, collectionPeriod, cancellationToken);
+
                 //get data-locked amounts by provider
                 var dataLockedEarningsTask =
                     periodEndMetricsRepository.GetDataLockedEarningsTotals(academicYear, collectionPeriod,
@@ -61,8 +63,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 var dataLockedAlreadyPaidTask =
                     periodEndMetricsRepository.GetAlreadyPaidDataLockedEarnings(academicYear, collectionPeriod,
                         cancellationToken);
-                //var heldBackCompletionAmountsTask = periodEndMetricsRepository.GetHeldBackCompletionPaymentsTotals(academicYear, collectionPeriod, cancellationToken);
-                ////get held back completion payments by provider
+                var heldBackCompletionAmountsTask = periodEndMetricsRepository.GetHeldBackCompletionPaymentsTotals(academicYear, collectionPeriod, cancellationToken);
+
+
 
                 var dataTask = Task.WhenAll(
                     dcEarningsTask,
@@ -97,6 +100,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                         transactionTypesTask.Result.Where(x => x.Ukprn == ukprn));
                     ////payment this collection period by funding source per contract type
                     providerSummary.AddFundingSourceAmounts(fundingSourceTask.Result.Where(x => x.Ukprn == ukprn));
+                    //payments year to date prior to collection period in event
+                    providerSummary.AddPaymentsYearToDate(currentPaymentTotals.Result.Where(x => x.Ukprn == ukprn));
                     //Total Datalocked using last successful jobs
                     providerSummary.AddDataLockedEarnings(
                         dataLockedEarningsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn)?.TotalAmount ?? 0m);
@@ -104,7 +109,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                     providerSummary.AddDataLockedAlreadyPaidTask(
                         dataLockedAlreadyPaidTask.Result.FirstOrDefault(x => x.Ukprn == ukprn)?.TotalAmount ?? 0m);
                     //add held back completion payments by provider
-
+                    providerSummary.AddHeldBackCompletionPayments(
+                        heldBackCompletionAmountsTask.Result.Where(x => x.Ukprn == ukprn));
 
                     var providerSummaryModel = providerSummary.GetMetrics();
                     providerSummaries.Add(providerSummaryModel);
@@ -117,9 +123,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 stopwatch.Stop();
                 var dataDuration = stopwatch.ElapsedMilliseconds;
                 //log duration
-
-                await periodEndMetricsRepository.SaveProviderSummaries(providerSummaries, cancellationToken);
-                await periodEndMetricsRepository.SavePeriodEndSummary(overallPeriodEndSummary, cancellationToken);
+                
+                await periodEndMetricsRepository.SaveProviderSummaries(providerSummaries, overallPeriodEndSummary,
+                    cancellationToken);
 
                 logger.LogInfo(
                     $"Finished building period end metrics for {academicYear}, {collectionPeriod} using job id {jobId}, DataDuration: {dataDuration} milliseconds");

@@ -15,13 +15,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 
     public interface IPeriodEndMetricsRepository
     {
-        Task SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, CancellationToken cancellationToken);
-        Task SavePeriodEndSummary(PeriodEndSummaryModel overallPeriodEndSummary, CancellationToken cancellationToken);
         Task<List<ProviderTransactionTypeAmounts>> GetTransactionTypesByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderFundingSourceAmounts>> GetFundingSourceAmountsByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderTotal>> GetAlreadyPaidDataLockedEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<ProviderContractTypeAmounts>> GetYearToDatePayments(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, PeriodEndSummaryModel overallPeriodEndSummary, CancellationToken cancellationToken);
     }
 
     public class PeriodEndMetricsRepository : IPeriodEndMetricsRepository
@@ -39,11 +39,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        Task IPeriodEndMetricsRepository.SavePeriodEndSummary(PeriodEndSummaryModel overallPeriodEndSummary,
-            CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<List<ProviderTransactionTypeAmounts>> GetTransactionTypesByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
@@ -118,23 +113,42 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             return queryDataContext.GetDataLockedEarningsTotals(academicYear, collectionPeriod, cancellationToken);
         }
 
-        public Task<List<ProviderTotal>> GetAlreadyPaidDataLockedEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        public async Task<List<ProviderTotal>> GetAlreadyPaidDataLockedEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await queryDataContext.GetAlreadyPaidDataLockProviderTotals(cancellationToken);
         }
 
         public async Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentsTotals(short academicYear, byte collectionPeriod,
             CancellationToken cancellationToken)
         {
-
            return  await queryDataContext.GetHeldBackCompletionPaymentTotals(academicYear, collectionPeriod, cancellationToken);
         }
 
-        Task IPeriodEndMetricsRepository.SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, CancellationToken cancellationToken)
+        public async Task<List<ProviderContractTypeAmounts>> GetYearToDatePayments(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var amounts = await queryDataContext.Payments
+                .AsNoTracking()
+                .Where(p => p.CollectionPeriod.AcademicYear == academicYear &&
+                            p.CollectionPeriod.Period < collectionPeriod)
+                .GroupBy(p => new {p.Ukprn, p.ContractType})
+                .Select(g => new { Ukprn = g.Key.Ukprn, ContractType = g.Key.ContractType, Amount = g.Sum(p => p.Amount) })
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            return amounts.Select(group => new ProviderContractTypeAmounts()
+            {
+                Ukprn =  group.Ukprn,
+                ContractType1 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act1)?.Amount ?? 0,
+                ContractType2 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act2)?.Amount ?? 0,
+            }).ToList();
+
         }
 
-      
+        public async Task SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, PeriodEndSummaryModel overallPeriodEndSummary,
+            CancellationToken cancellationToken)
+        {
+            await persistenceDataContext.SaveProviderSummaries(providerSummaries, overallPeriodEndSummary,
+                cancellationToken);
+        }
     }
 }

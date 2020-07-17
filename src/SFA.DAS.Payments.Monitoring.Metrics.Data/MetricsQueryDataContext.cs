@@ -83,7 +83,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         {
             var sql = @"Select
 		        dle.ukprn as Ukprn,
-		        sum(p.Amount) as Amount
+		        sum(p.Amount) as TotalAmount
             from Payments2.dataLockEventNonPayablePeriod npp
             join Payments2.dataLockEvent dle on npp.DataLockEventId = dle.EventId 
             join Payments2.payment p on dle.ukprn = p.ukprn
@@ -110,7 +110,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 
         public async Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            var latestSuccessfulJobIds = LatestSuccessfulJobs.Select(x => x.DcJobId);
+            var latestSuccessfulJobIds = LatestSuccessfulJobs.AsNoTracking().Select(x => x.DcJobId);
 
             var amounts = await RequiredPaymentEvents
                 .AsNoTracking()

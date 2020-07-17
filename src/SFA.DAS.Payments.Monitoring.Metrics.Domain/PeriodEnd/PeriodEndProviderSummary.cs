@@ -13,6 +13,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         void AddFundingSourceAmounts(IEnumerable<ProviderFundingSourceAmounts> fundingSourceAmounts);
         void AddDataLockedEarnings(decimal dataLockedEarningsTotal);
         void AddDataLockedAlreadyPaidTask(decimal dataLockedAlreadyPaidTotal);
+        void AddPaymentsYearToDate(IEnumerable<ProviderContractTypeAmounts> paymentsYearToDate);
+        void AddHeldBackCompletionPayments(IEnumerable<ProviderContractTypeAmounts> heldBackCompletionPayments);
     }
 
     public class PeriodEndProviderSummary : IPeriodEndProviderSummary
@@ -24,9 +26,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         private List<TransactionTypeAmountsByContractType> providerDcEarnings;
         private List<TransactionTypeAmountsByContractType> providerTransactionsTypes;
         private List<ProviderFundingSourceAmounts> providerFundingSourceAmounts;
-        private decimal providerDatalockedEarnings;
+        private decimal providerDataLockedEarnings;
         private decimal ProviderDataLockedAlreadyPaidTotal;
-
+        private List<ProviderContractTypeAmounts> providerPaymentsYearToDate;
+        private List<ProviderContractTypeAmounts> providerHeldBackCompletionPayments;
 
 
         public PeriodEndProviderSummary(long ukprn, long jobId, byte collectionPeriod, short academicYear)
@@ -38,13 +41,27 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             providerDcEarnings = new List<TransactionTypeAmountsByContractType>();
             providerTransactionsTypes = new List<TransactionTypeAmountsByContractType>();
             providerFundingSourceAmounts = new List<ProviderFundingSourceAmounts>();
-
+            providerPaymentsYearToDate = new List<ProviderContractTypeAmounts>();
+            providerHeldBackCompletionPayments = new List<ProviderContractTypeAmounts>();
         }
 
 
         public ProviderPeriodEndSummaryModel GetMetrics()
         {
-            return new ProviderPeriodEndSummaryModel();
+            return new ProviderPeriodEndSummaryModel
+            {
+                Ukprn =  Ukprn,
+                AcademicYear = AcademicYear,
+                CollectionPeriod = CollectionPeriod,
+                JobId = JobId,
+                DcEarnings = new ContractTypeAmounts(),
+                HeldBackCompletionPayments = new ContractTypeAmounts(),
+                PaymentMetrics = new ContractTypeAmountsVerbose(),
+                Payments = new ContractTypeAmounts(),
+                YearToDatePayments = new ContractTypeAmounts(),
+                FundingSourceAmounts = new List<ProviderPaymentFundingSourceModel>(),
+                TransactionTypeAmounts = new List<ProviderPaymentTransactionModel>()
+            };
         }
 
         public void AddDcEarning(IEnumerable<TransactionTypeAmountsByContractType> providerDcEarningsByContractType)
@@ -64,12 +81,22 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
 
         public void AddDataLockedEarnings(decimal dataLockedEarningsTotal)
         {
-            providerDatalockedEarnings = dataLockedEarningsTotal;
+            providerDataLockedEarnings = dataLockedEarningsTotal;
         }
 
         public void AddDataLockedAlreadyPaidTask(decimal dataLockedAlreadyPaidTotal)
         {
-            providerDatalockedEarnings = dataLockedAlreadyPaidTotal;
+            ProviderDataLockedAlreadyPaidTotal = dataLockedAlreadyPaidTotal;
+        }
+
+        public void AddPaymentsYearToDate(IEnumerable<ProviderContractTypeAmounts> paymentsYearToDate)
+        {
+            providerPaymentsYearToDate = paymentsYearToDate.ToList();
+        }
+
+        public void AddHeldBackCompletionPayments(IEnumerable<ProviderContractTypeAmounts> heldBackCompletionPayments)
+        {
+            providerHeldBackCompletionPayments = heldBackCompletionPayments.ToList();
         }
     }
 }

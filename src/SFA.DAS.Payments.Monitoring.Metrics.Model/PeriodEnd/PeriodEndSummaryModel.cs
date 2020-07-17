@@ -3,7 +3,6 @@
     public class PeriodEndSummaryModel
     {
         public long Id { get; set; }
-        public long Ukprn { get; set; }
         public short AcademicYear { get; set; }
         public byte CollectionPeriod { get; set; }
         public long JobId { get; set; }
