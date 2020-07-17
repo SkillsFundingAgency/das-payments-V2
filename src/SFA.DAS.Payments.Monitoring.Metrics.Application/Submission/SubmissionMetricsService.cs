@@ -90,6 +90,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
             var submissionMetrics = metrics.SubmissionMetrics;
             var dasEarnings = metrics.DasEarnings;
+            var dcEarnings = metrics.DcEarnings;
             // ReSharper disable InconsistentNaming this is to make variable name easy to read 
             var das_earningsMetrics = metrics.EarningsMetrics.Where(x=>x.EarningsType == EarningsType.Das).ToList();
             var dc_earningsMetrics = metrics.EarningsMetrics.Where(x=>x.EarningsType == EarningsType.Dc).ToList();
@@ -111,9 +112,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 { "ContractType1Difference" ,            (double) submissionMetrics.DifferenceContractType1 },
                 { "ContractType2Difference" ,            (double) submissionMetrics.DifferenceContractType2 },
                 
-                { "DcEarningsTotal" ,                    (double) dasEarnings.Total },
-                { "DcEarningsContractType1Total" ,       (double) dasEarnings.ContractType1 },
-                { "DcEarningsContractType2Total" ,       (double) dasEarnings.ContractType2 },
+                { "DcEarningsTotal" ,                    (double) dcEarnings.Total },
+                { "DcEarningsContractType1Total" ,       (double) dcEarnings.ContractType1 },
+                { "DcEarningsContractType2Total" ,       (double) dcEarnings.ContractType2 },
                 
                 { "DasEarningsTotal" ,                   (double) dasEarnings.Total },
                 
@@ -125,9 +126,17 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 { "DasEarningsDifferenceContractType1" , (double) dasEarnings.DifferenceContractType1 },
                 { "DasEarningsDifferenceContractType2" , (double) dasEarnings.DifferenceContractType2 },
 
-                { "DataLockedEarningsAmount" ,           (double) metrics.DataLockedEarnings},
-                { "DataLockAmountAlreadyPaid" ,          (double) metrics.AlreadyPaidDataLockedEarnings },
-                { "HeldBackCompletionPayments" ,         (double) metrics.HeldBackCompletionPayments.Total },
+                { "DataLockedEarningsAmount" ,                (double) metrics.DataLockedEarnings},
+                { "DataLockedEarningsTotal" ,                 (double) metrics.TotalDataLockedEarnings},
+                { "DataLockAmountAlreadyPaid" ,               (double) metrics.AlreadyPaidDataLockedEarnings },
+                { "NonLevyRequiredPayments" ,                 (double) metrics.NonLevyRequiredPayments },
+                { "HeldBackCompletionPayments" ,              (double) metrics.HeldBackCompletionPayments.Total },
+                { "HeldBackCompletionPaymentsContractType1" , (double) metrics.HeldBackCompletionPayments.ContractType1 },
+                { "HeldBackCompletionPaymentsContractType2" , (double) metrics.HeldBackCompletionPayments.ContractType1 },
+
+                { "YearToDatePaymentsTotal" ,                 (double) metrics.YearToDatePayments.Total },
+                { "YearToDatePaymentsContractType1Total",     (double) metrics.YearToDatePayments.ContractType1 },
+                { "YearToDatePaymentsContractType2Total",     (double) metrics.YearToDatePayments.ContractType2 },
                 
                 { "DasEarningsTransactionType1" ,  (double) das_earningsMetrics.Sum(x=>x.Amounts.TransactionType1) },
                 { "DasEarningsTransactionType2" ,  (double) das_earningsMetrics.Sum(x=>x.Amounts.TransactionType2) },

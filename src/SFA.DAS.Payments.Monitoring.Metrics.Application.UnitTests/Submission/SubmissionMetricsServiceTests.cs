@@ -188,7 +188,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 { "Percentage", 100 },
                 
                 { "EarningsPercentage", 100 },
-                
                 { "EarningsPercentageTotal", 0 },
                 
                 { "ContractType1Percentage", 100 },
@@ -212,8 +211,20 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 { "DasEarningsDifferenceContractType2", 0 },
                 
                 { "DataLockedEarningsAmount", 3000 },
+                
+                { "DataLockedEarningsTotal", 4000 },
+                
                 { "DataLockAmountAlreadyPaid", 1000 },
+                
+                { "NonLevyRequiredPayments", 0 },
+                
                 { "HeldBackCompletionPayments", 3000 },
+                { "HeldBackCompletionPaymentsContractType1", 2000 },
+                { "HeldBackCompletionPaymentsContractType2", 2000 },
+                
+                { "YearToDatePaymentsTotal", 32600 },
+                { "YearToDatePaymentsContractType1Total", 16300 },
+                { "YearToDatePaymentsContractType2Total", 16300 },
                 
                 { "DasEarningsTransactionType1", 48000 },
                 { "DasEarningsTransactionType2", 0 },
@@ -248,7 +259,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 { "DcEarningsTransactionType14", 400 },
                 { "DcEarningsTransactionType15", 400 },
                 { "DcEarningsTransactionType16", 400 },
-                
+
                 { "DataLockedCountDLock1", 0 },
                 { "DataLockedCountDLock2", 1000 },
                 { "DataLockedCountDLock3", 0 },
