@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -103,8 +103,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                     "
                     , cancellationToken);
                 await ProviderPeriodEndSummaries.AddRangeAsync(providerSummaries, cancellationToken);
-                await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-            }
+
+                transaction.Commit();            }
             catch 
             {
                 transaction.Rollback();
