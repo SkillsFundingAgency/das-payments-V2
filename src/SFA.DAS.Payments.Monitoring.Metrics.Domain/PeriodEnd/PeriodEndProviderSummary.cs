@@ -12,8 +12,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         void AddTransactionTypes(IEnumerable<TransactionTypeAmountsByContractType> transactionTypes);
         void AddFundingSourceAmounts(IEnumerable<ProviderFundingSourceAmounts> fundingSourceAmounts);
         void AddDataLockedEarnings(decimal dataLockedEarningsTotal);
-        void AddDataLockedAlreadyPaidTask(decimal dataLockedAlreadyPaidTotal);
-        void AddPaymentsYearToDate(IEnumerable<ProviderContractTypeAmounts> paymentsYearToDate);
+        void AddDataLockedAlreadyPaid(decimal dataLockedAlreadyPaidTotal);
+        void AddPaymentsYearToDate(ProviderContractTypeAmounts paymentsYearToDate);
         void AddHeldBackCompletionPayments(IEnumerable<ProviderContractTypeAmounts> heldBackCompletionPayments);
     }
 
@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         private List<ProviderFundingSourceAmounts> providerFundingSourceAmounts;
         private decimal providerDataLockedEarnings;
         private decimal ProviderDataLockedAlreadyPaidTotal;
-        private List<ProviderContractTypeAmounts> providerPaymentsYearToDate;
+        private ProviderContractTypeAmounts providerPaymentsYearToDate;
         private List<ProviderContractTypeAmounts> providerHeldBackCompletionPayments;
 
 
@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             providerDcEarnings = new List<TransactionTypeAmountsByContractType>();
             providerTransactionsTypes = new List<TransactionTypeAmountsByContractType>();
             providerFundingSourceAmounts = new List<ProviderFundingSourceAmounts>();
-            providerPaymentsYearToDate = new List<ProviderContractTypeAmounts>();
+            providerPaymentsYearToDate = new ProviderContractTypeAmounts();
             providerHeldBackCompletionPayments = new List<ProviderContractTypeAmounts>();
         }
 
@@ -58,9 +58,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 HeldBackCompletionPayments = new ContractTypeAmounts(),
                 PaymentMetrics = new ContractTypeAmountsVerbose(),
                 Payments = new ContractTypeAmounts(),
-                YearToDatePayments = new ContractTypeAmounts(),
+                YearToDatePayments = providerPaymentsYearToDate,
                 FundingSourceAmounts = new List<ProviderPaymentFundingSourceModel>(),
-                TransactionTypeAmounts = new List<ProviderPaymentTransactionModel>()
+                TransactionTypeAmounts = new List<ProviderPaymentTransactionModel>(),
+                AlreadyPaidDataLockedEarnings = ProviderDataLockedAlreadyPaidTotal,
+                DataLockedEarnings = providerDataLockedEarnings,
+                TotalDataLockedEarnings = providerDataLockedEarnings - ProviderDataLockedAlreadyPaidTotal
             };
         }
 
@@ -84,14 +87,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             providerDataLockedEarnings = dataLockedEarningsTotal;
         }
 
-        public void AddDataLockedAlreadyPaidTask(decimal dataLockedAlreadyPaidTotal)
+        public void AddDataLockedAlreadyPaid(decimal dataLockedAlreadyPaidTotal)
         {
             ProviderDataLockedAlreadyPaidTotal = dataLockedAlreadyPaidTotal;
         }
 
-        public void AddPaymentsYearToDate(IEnumerable<ProviderContractTypeAmounts> paymentsYearToDate)
+        public void AddPaymentsYearToDate(ProviderContractTypeAmounts paymentsYearToDate)
         {
-            providerPaymentsYearToDate = paymentsYearToDate.ToList();
+            providerPaymentsYearToDate = paymentsYearToDate;
         }
 
         public void AddHeldBackCompletionPayments(IEnumerable<ProviderContractTypeAmounts> heldBackCompletionPayments)
