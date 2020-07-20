@@ -11,7 +11,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration
             builder.ToTable("ProviderPaymentTransaction", "Metrics");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.ProviderPeriodEndSummaryId).HasColumnName(@"ProviderPeriodEndSummaryId").IsRequired();
-            builder.Property(x => x.ContractType).HasColumnName(@"ContractType").IsRequired();
             builder.OwnsOne(x => x.TransactionTypeAmounts, amounts =>
             {
                 amounts.Property(x => x.ContractType).HasColumnName("ContractType");

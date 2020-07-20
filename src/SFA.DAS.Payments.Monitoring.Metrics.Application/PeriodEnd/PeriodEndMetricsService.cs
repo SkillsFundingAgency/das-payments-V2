@@ -94,23 +94,21 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                             academicYear);
 
                     //DC earnings YTD
-                    providerSummary.AddDcEarning(dcEarningsTask.Result.Where(x => x.Ukprn == ukprn));
+                    providerSummary.AddDcEarnings(dcEarningsTask.Result.Where(x => x.Ukprn == ukprn));
                     //payment this collection period by transactiontype/contractype
                     providerSummary.AddTransactionTypes(
                         transactionTypesTask.Result.Where(x => x.Ukprn == ukprn));
                     ////payment this collection period by funding source per contract type
                     providerSummary.AddFundingSourceAmounts(fundingSourceTask.Result.Where(x => x.Ukprn == ukprn));
                     //payments year to date prior to collection period in event
-                    providerSummary.AddPaymentsYearToDate(currentPaymentTotals.Result.Where(x => x.Ukprn == ukprn));
+                    providerSummary.AddPaymentsYearToDate(currentPaymentTotals.Result.FirstOrDefault(x => x.Ukprn == ukprn));
                     //Total Datalocked using last successful jobs
                     providerSummary.AddDataLockedEarnings(
                         dataLockedEarningsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn)?.TotalAmount ?? 0m);
                     //total datalocked already paid using last successful job
-                    providerSummary.AddDataLockedAlreadyPaidTask(
-                        dataLockedAlreadyPaidTask.Result.FirstOrDefault(x => x.Ukprn == ukprn)?.TotalAmount ?? 0m);
+                    providerSummary.AddDataLockedAlreadyPaid(dataLockedAlreadyPaidTask.Result.FirstOrDefault(x => x.Ukprn == ukprn)?.TotalAmount ?? 0m);
                     //add held back completion payments by provider
-                    providerSummary.AddHeldBackCompletionPayments(
-                        heldBackCompletionAmountsTask.Result.Where(x => x.Ukprn == ukprn));
+                    providerSummary.AddHeldBackCompletionPayments(heldBackCompletionAmountsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn));
 
                     var providerSummaryModel = providerSummary.GetMetrics();
                     providerSummaries.Add(providerSummaryModel);

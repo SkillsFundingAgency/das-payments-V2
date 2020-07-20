@@ -111,7 +111,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
         };
         public static ContractTypeAmounts DefaultHeldBackCompletionPayments => new ContractTypeAmounts { ContractType1 = 2000, ContractType2 = 1000 };
 
-
         public static List<TransactionTypeAmounts> DefaultRequiredPayments => new List<TransactionTypeAmounts>
             {
                 new TransactionTypeAmounts

@@ -10,7 +10,7 @@
         public ContractTypeAmountsVerbose PaymentMetrics { get; set; }
         public ContractTypeAmounts DcEarnings { get; set; }
         public ContractTypeAmounts Payments { get; set; }
-        public decimal DataLockedEarnings { get; set; }
+        public decimal AdjustedDataLockedEarnings { get; set; }
         public decimal AlreadyPaidDataLockedEarnings { get; set; }
         public decimal TotalDataLockedEarnings { get; set; }
         public ContractTypeAmounts HeldBackCompletionPayments { get; set; }

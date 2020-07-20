@@ -15,7 +15,7 @@
     [EarningsDCContractType2]                 DECIMAL (15, 5)    NOT NULL,
     [PaymentsContractType1]                   DECIMAL (15, 5)    NOT NULL,
     [PaymentsContractType2]                   DECIMAL (15, 5)    NOT NULL,
-    [DataLockedEarnings]                      DECIMAL (15, 5)    NOT NULL,
+    [AdjustedDataLockedEarnings]              DECIMAL (15, 5)    NOT NULL,
     [AlreadyPaidDataLockedEarnings]           DECIMAL (15, 5)    CONSTRAINT [DF_ProviderPeriodEndSummary__AlreadyPaidDataLockedEarnings] DEFAULT ((0)) NOT NULL,
     [TotalDataLockedEarnings]                 DECIMAL (15, 5)    CONSTRAINT [DF_ProviderPeriodEndSummary__TotalDataLockedEarnings] DEFAULT ((0)) NOT NULL,
     [HeldBackCompletionPaymentsContractType1] DECIMAL (15, 5)    NOT NULL,

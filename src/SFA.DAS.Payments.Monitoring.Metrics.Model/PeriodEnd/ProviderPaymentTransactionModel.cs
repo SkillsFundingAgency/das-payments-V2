@@ -8,8 +8,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd
         public long Ukprn { get; set; }
         public long ProviderPeriodEndSummaryId { get; set; }
         public ProviderPeriodEndSummaryModel ProviderPeriodEndSummary { get; set; }
-
-        public ContractType ContractType { get; set; }
-        public TransactionTypeAmounts TransactionTypeAmounts { get; set; }
+        public TransactionTypeAmountsByContractType TransactionTypeAmounts { get; set; }
     }
 }

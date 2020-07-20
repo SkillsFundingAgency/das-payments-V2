@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 {
     public interface IMetricsQueryDataContext
     {
-//        DbSet<DataLockCountsModel> DataLockedEarnings { get; }
+//        DbSet<DataLockCountsModel> AdjustedDataLockedEarnings { get; }
         DbSet<EarningEventPeriodModel> EarningEventPeriods { get; }
         //DbSet<RequiredPaymentsModel> RequiredPayments { get; }
         DbSet<DataLockEventNonPayablePeriodModel> DataLockEventNonPayablePeriods { get; }
