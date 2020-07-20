@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
@@ -104,8 +102,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                     , cancellationToken);
                 await ProviderPeriodEndSummaries.AddRangeAsync(providerSummaries, cancellationToken);
 
-                transaction.Commit();            }
-            catch 
+                await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                transaction.Commit();
+            }
+            catch
             {
                 transaction.Rollback();
                 throw;
