@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
+using SFA.DAS.Payments.Monitoring.Metrics.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
@@ -101,14 +102,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                     ////payment this collection period by funding source per contract type
                     providerSummary.AddFundingSourceAmounts(fundingSourceTask.Result.Where(x => x.Ukprn == ukprn));
                     //payments year to date prior to collection period in event
-                    providerSummary.AddPaymentsYearToDate(currentPaymentTotals.Result.FirstOrDefault(x => x.Ukprn == ukprn));
+                    providerSummary.AddPaymentsYearToDate(currentPaymentTotals.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderContractTypeAmounts());
                     //Total Datalocked using last successful jobs
                     providerSummary.AddDataLockedEarnings(
                         dataLockedEarningsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn)?.TotalAmount ?? 0m);
                     //total datalocked already paid using last successful job
                     providerSummary.AddDataLockedAlreadyPaid(dataLockedAlreadyPaidTask.Result.FirstOrDefault(x => x.Ukprn == ukprn)?.TotalAmount ?? 0m);
                     //add held back completion payments by provider
-                    providerSummary.AddHeldBackCompletionPayments(heldBackCompletionAmountsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn));
+                    providerSummary.AddHeldBackCompletionPayments(heldBackCompletionAmountsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderContractTypeAmounts());
 
                     var providerSummaryModel = providerSummary.GetMetrics();
                     providerSummaries.Add(providerSummaryModel);

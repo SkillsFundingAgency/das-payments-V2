@@ -108,7 +108,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         {
             return providerFundingSourceAmounts.Select(amounts => new ProviderPaymentFundingSourceModel
             {
-                Ukprn = Ukprn, 
                 ContractType = amounts.ContractType,
                 FundingSource1 = amounts.FundingSource1,
                 FundingSource2 = amounts.FundingSource2,
@@ -123,7 +122,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             return providerTransactionsTypes.Select(amounts => new ProviderPaymentTransactionModel
             {
                 TransactionTypeAmounts = amounts,
-                Ukprn = Ukprn, 
                 }).ToList();
         }
 
