@@ -58,7 +58,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             var summary = TestHelper.DefaultPeriodEndProviderSummary;
             var yearToDateAmounts = TestHelper.DefaultYearToDateAmounts;
             summary.AddPaymentsYearToDate(yearToDateAmounts);
-            ;
             var metrics = summary.GetMetrics();
             metrics.YearToDatePayments.ContractType1.Should().Be(yearToDateAmounts.ContractType1);
             metrics.YearToDatePayments.ContractType2.Should().Be(yearToDateAmounts.ContractType2);
@@ -97,7 +96,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
         public void Calculates_Correct_HeldBack_Payments_Totals()
         {
             var summary = GetPeriodEndProviderSummary;
-            var heldBackAmounts = TestHelper.DefaultHeldBackCompletionPayments;
             summary.AddHeldBackCompletionPayments(heldBackAmounts);
             var metrics = summary.GetMetrics();
             metrics.HeldBackCompletionPayments.ContractType1.Should().Be(heldBackAmounts.ContractType1);
@@ -115,13 +113,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             metrics.TransactionTypeAmounts.Should().NotBeNull();
             metrics.TransactionTypeAmounts.Count.Should().Be(2);
             metrics.TransactionTypeAmounts
-                .FirstOrDefault(x => x.TransactionTypeAmounts.ContractType == ContractType.Act1).TransactionTypeAmounts
+                .FirstOrDefault(x => x.TransactionTypeAmounts.ContractType == ContractType.Act1)?.TransactionTypeAmounts
                 .Total.Should().Be(paymentTransactionTypes.FirstOrDefault(x => x.ContractType == ContractType.Act1)
-                    .Total);
+                    ?.Total);
             metrics.TransactionTypeAmounts
-                .FirstOrDefault(x => x.TransactionTypeAmounts.ContractType == ContractType.Act2).TransactionTypeAmounts
+                .FirstOrDefault(x => x.TransactionTypeAmounts.ContractType == ContractType.Act2)?.TransactionTypeAmounts
                 .Total.Should().Be(paymentTransactionTypes.FirstOrDefault(x => x.ContractType == ContractType.Act2)
-                    .Total);
+                    ?.Total);
         }
 
         [Test]
@@ -134,10 +132,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             metrics.FundingSourceAmounts.Count.Should().Be(2);
             metrics.FundingSourceAmounts.FirstOrDefault(x => x.ContractType == ContractType.Act1)
                 ?.Total.Should().Be(paymentFundingSources.FirstOrDefault(x => x.ContractType == ContractType.Act1)
-                    .Total);
+                    ?.Total);
             metrics.FundingSourceAmounts.FirstOrDefault(x => x.ContractType == ContractType.Act2)
                 ?.Total.Should().Be(paymentFundingSources.FirstOrDefault(x => x.ContractType == ContractType.Act2)
-                    .Total);
+                    ?.Total);
         }
 
         [Test]
