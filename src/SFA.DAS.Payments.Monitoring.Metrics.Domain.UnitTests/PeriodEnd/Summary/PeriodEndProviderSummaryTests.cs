@@ -174,7 +174,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             var precision = 0.01m;
             metrics.PaymentMetrics.PercentageContractType1.Should().BeApproximately(92.45m, precision);
             metrics.PaymentMetrics.PercentageContractType2.Should().BeApproximately(87.08m, precision );
-            metrics.PaymentMetrics.Percentage.Should().BeApproximately(89.76m, precision);
+            metrics.PaymentMetrics.Percentage.Should().BeApproximately(89.79m, precision);
         }
 
         
@@ -183,7 +183,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
         {
             var metrics = GetSubmissionSummaryMetrics();
             var precision = 0.01m;
-            metrics.Percentage.Should().BeApproximately(89.76m, precision);
+            metrics.Percentage.Should().BeApproximately(89.79m, precision);
         }
     }
 }

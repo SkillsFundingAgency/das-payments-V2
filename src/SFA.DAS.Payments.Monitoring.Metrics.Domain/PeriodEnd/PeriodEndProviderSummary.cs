@@ -91,7 +91,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 paymentMetrics.ContractType2 - summaryModel.DcEarnings.ContractType2;
             paymentMetrics.PercentageContractType1 = Helpers.GetPercentage(paymentMetrics.ContractType1, summaryModel.DcEarnings.ContractType1);
             paymentMetrics.PercentageContractType2 = Helpers.GetPercentage(paymentMetrics.ContractType2, summaryModel.DcEarnings.ContractType2);
-
+            paymentMetrics.Percentage = Helpers.GetPercentage(paymentMetrics.Total, summaryModel.DcEarnings.Total);
             return paymentMetrics;
         }
 
