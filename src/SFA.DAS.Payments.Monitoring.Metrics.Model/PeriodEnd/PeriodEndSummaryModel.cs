@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd
 {
-    public class PeriodEndSummaryModel
+    public class PeriodEndSummaryModel : IPeriodEndSummaryModel
     {
         public long Id { get; set; }
         public short AcademicYear { get; set; }

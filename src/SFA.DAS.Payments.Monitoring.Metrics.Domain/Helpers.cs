@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Payments.Monitoring.Metrics.Model;
+using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Domain
 {
@@ -14,5 +15,26 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain
                 (percentageContractType1 + percentageContractType2) / (percentageContractType1==0 ||  percentageContractType2==0 ? 1 : 2) ;
         }
 
+        public static ContractTypeAmountsVerbose CreatePaymentMetrics(IPeriodEndSummaryModel summaryModel)
+        {
+            var paymentMetrics = new ContractTypeAmountsVerbose()
+            {
+                ContractType1 = summaryModel.YearToDatePayments.ContractType1 +
+                                summaryModel.Payments.ContractType1 +
+                                summaryModel.AdjustedDataLockedEarnings +
+                                summaryModel.HeldBackCompletionPayments.ContractType1,
+                ContractType2 = summaryModel.YearToDatePayments.ContractType2 +
+                                summaryModel.Payments.ContractType2 +
+                                summaryModel.HeldBackCompletionPayments.ContractType2
+            };
+            paymentMetrics.DifferenceContractType1 =
+                paymentMetrics.ContractType1 - summaryModel.DcEarnings.ContractType1;
+            paymentMetrics.DifferenceContractType2 =
+                paymentMetrics.ContractType2 - summaryModel.DcEarnings.ContractType2;
+            paymentMetrics.PercentageContractType1 = Helpers.GetPercentage(paymentMetrics.ContractType1, summaryModel.DcEarnings.ContractType1);
+            paymentMetrics.PercentageContractType2 = Helpers.GetPercentage(paymentMetrics.ContractType2, summaryModel.DcEarnings.ContractType2);
+            paymentMetrics.Percentage = Helpers.GetPercentage(paymentMetrics.Total, summaryModel.DcEarnings.Total);
+            return paymentMetrics;
+        }
     }
 }
