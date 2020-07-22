@@ -97,10 +97,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private bool HasPayableEarningEventsForPriceEpisode(string priceEpisodeIdentifier)
         {
-            var payableEarnings = EarningEventsHelper.PayableEarningsReceivedForLearner(TestSession)
-                .Where(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier));
             return EarningEventsHelper.PayableEarningsReceivedForLearner(TestSession)
-                .Any(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier)); //todo looks like this is returning a false positive because it's a loose check. investigate and fix
+                .Any(x => x.PriceEpisodes.Any(y => y.Identifier == priceEpisodeIdentifier));
          }
 
         private bool HasCorrectlyFundedFromR08(short academicYear, int fundingSource, int sfaPercentage )
@@ -113,11 +111,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     && x.ContractType == ContractType.Act1
                     && x.AmountDue == 1000m) == 5;
         }
-
-        //private bool EarningEventsArePersisted()
-        //{
-        //    return EarningEventsHelper.
-        //}
 
         [Then("bypass the data lock rules")]
         public async Task BypassTheDataLockRules()
@@ -141,12 +134,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public void ThenContinueToFundTheMonthlyInstalmentsPriorToRedundancyDateAsPerExistingAct1RulesFundingSource1()
         {
             //covered by waiting for payments in the first Given statement
-        }
-
-        [Then(@"persist earning events to allow for auditing")]
-        public void ThenPersistEarningEventsToAllowForAuditing()
-        {
-
         }
     }
 }
