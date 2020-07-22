@@ -21,7 +21,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
         Task StoreJobStatus(long jobId, bool hasFailedMessages, DateTimeOffset? endTime, CancellationToken cancellationToken);
         Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken);
         Task<List<long>> GetCurrentEarningJobs(CancellationToken cancellationToken);
-        Task<List<long>> GetCurrentPeriodEndJobs(CancellationToken cancellationToken);
+        Task<List<long>> GetCurrentPeriodEndExcludingStartJobs(CancellationToken cancellationToken);
+        Task<List<long>> GetCurrentPeriodEndStartJobs(CancellationToken cancellationToken);
         Task StoreDcJobStatus(long jobId, bool succeeded, CancellationToken cancellationToken);
     }
 }
