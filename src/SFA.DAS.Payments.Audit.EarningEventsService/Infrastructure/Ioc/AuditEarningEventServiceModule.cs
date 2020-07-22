@@ -39,6 +39,10 @@ namespace SFA.DAS.Payments.Audit.EarningEventsService.Infrastructure.Ioc
            builder.RegisterType<EarningEventModelHandler>()
                 .As<IHandleMessageBatches<EarningEventModel>>()
                 .InstancePerLifetimeScope();
+
+           builder.RegisterType<ApprenticeshipContractType1RedundancyEarningEventHandler>()
+               .As<IHandleMessageBatches<ApprenticeshipContractType1RedundancyEarningEvent>>()
+               .InstancePerLifetimeScope();
         }
     }
 }
