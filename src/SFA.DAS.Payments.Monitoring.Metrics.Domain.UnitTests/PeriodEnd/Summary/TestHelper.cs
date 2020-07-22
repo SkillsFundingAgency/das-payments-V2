@@ -16,6 +16,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
         public static PeriodEndProviderSummary DefaultPeriodEndProviderSummary =>
             new PeriodEndProviderSummary(1234, 123, 1, 1920);
 
+        public static PeriodEndSummary DefaultPeriodEndSummary =>
+            new PeriodEndSummary(123, 1, 1920);
+
         public static decimal DefaultDataLockedTotal => 4000;
         public static decimal AlreadyPaidDataLockedEarnings => 1000;
 

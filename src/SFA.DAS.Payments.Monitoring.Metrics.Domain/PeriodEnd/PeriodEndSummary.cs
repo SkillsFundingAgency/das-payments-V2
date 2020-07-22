@@ -29,6 +29,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             this.jobId = jobId;
             this.collectionPeriod = collectionPeriod;
             this.academicYear = academicYear;
+            allSummaries = new List<ProviderPeriodEndSummaryModel>();
         }
 
         public PeriodEndSummaryModel GetMetrics()
