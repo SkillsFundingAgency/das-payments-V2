@@ -9,18 +9,18 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 
 namespace SFA.DAS.Payments.Audit.EarningEventsService.Handlers
 {
-    public class ApprenticeshipContractType1EarningEventHandler: IHandleMessageBatches<ApprenticeshipContractType1EarningEvent>
+    public class Act1RedundancyFunctionalSkillEarningsEventHandler : IHandleMessageBatches<Act1RedundancyFunctionalSkillEarningsEvent>
     {
         private readonly IPaymentLogger logger;
         private readonly IEarningEventStorageService storageService;
 
-        public ApprenticeshipContractType1EarningEventHandler(IPaymentLogger logger, IEarningEventStorageService storageService)
+        public Act1RedundancyFunctionalSkillEarningsEventHandler(IPaymentLogger logger, IEarningEventStorageService storageService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
         }
 
-        public async Task Handle(IList<ApprenticeshipContractType1EarningEvent> messages, CancellationToken cancellationToken)
+        public async Task Handle(IList<Act1RedundancyFunctionalSkillEarningsEvent> messages, CancellationToken cancellationToken)
         {
             var earningEvents = new List<EarningEvent>();
             earningEvents.AddRange(messages);
