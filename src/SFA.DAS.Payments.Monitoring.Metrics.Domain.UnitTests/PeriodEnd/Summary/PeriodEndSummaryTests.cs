@@ -9,12 +9,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
     [TestFixture]
     public class PeriodEndSummaryTests
     {
-
-        [SetUp]
-        public void SetUp()
-        {
-
-        }
         
         private PeriodEndProviderSummary GetPopulatedPeriodEndProviderSummary()
         {
@@ -32,17 +26,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             return summary;
         }
 
-
         private ProviderPeriodEndSummaryModel GetSubmissionSummaryMetrics()
         {
             var summary = GetPopulatedPeriodEndProviderSummary();
             return summary.GetMetrics();
         }
-
-
-
-       
-
 
         [Test]
         public void GetMetrics_GivenEmptyProviderSummaries_ShouldHaveEmptyTotals()
@@ -56,8 +44,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             metrics.PaymentMetrics.DifferenceContractType1.Should().Be(0m);
             metrics.PaymentMetrics.DifferenceContractType2.Should().Be(0m);
         }
-
-
 
         [Test]
         [TestCase(1)]
@@ -92,7 +78,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             metrics.Percentage.Should().Be(providerMetricsSummary.Percentage);
             metrics.AdjustedDataLockedEarnings.Should().Be(noSummaries * providerMetricsSummary.AdjustedDataLockedEarnings);
             metrics.AlreadyPaidDataLockedEarnings.Should().Be(noSummaries * providerMetricsSummary.AlreadyPaidDataLockedEarnings);
-
 
             metrics.PaymentMetrics.DifferenceContractType1.Should()
                 .Be(noSummaries * providerMetricsSummary.PaymentMetrics.DifferenceContractType1);

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests
@@ -153,7 +152,5 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests
             };
 
         public static ContractTypeAmounts DefaultYearToDateAmounts => new ContractTypeAmounts { ContractType1 = 16300, ContractType2 = 16300 };
-
-
     }
 }

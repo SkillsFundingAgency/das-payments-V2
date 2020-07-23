@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -10,17 +10,13 @@ using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
-using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 {
     public interface IMetricsQueryDataContext
     {
-//        DbSet<DataLockCountsModel> AdjustedDataLockedEarnings { get; }
         DbSet<EarningEventPeriodModel> EarningEventPeriods { get; }
-        //DbSet<RequiredPaymentsModel> RequiredPayments { get; }
         DbSet<DataLockEventNonPayablePeriodModel> DataLockEventNonPayablePeriods { get; }
         DbSet<RequiredPaymentEventModel> RequiredPaymentEvents { get; }
         DbSet<PaymentModel> Payments { get; }
@@ -39,14 +35,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             public int Count { get; set; }
             public byte DataLockType { get; set; }
         }
-        public virtual DbQuery<DataLockCount> DataLockCounts { get; set; }
-        public virtual DbQuery<ProviderTotal> AlreadyPaidDataLockProviderTotals { get; set; }
-
-        public virtual DbSet<LatestSuccessfulJobModel> LatestSuccessfulJobs { get; set; }
 
         private readonly string connectionString;
-        //public virtual DbSet<EarningsModel> Earnings { get; set; }
-        //public virtual DbSet<RequiredPaymentsModel> RequiredPayments { get; set; }
+        public virtual DbQuery<DataLockCount> DataLockCounts { get; set; }
+        public virtual DbQuery<ProviderTotal> AlreadyPaidDataLockProviderTotals { get; set; }
+        public virtual DbSet<LatestSuccessfulJobModel> LatestSuccessfulJobs { get; set; }
         public virtual DbSet<EarningEventModel> EarningEvent { get; protected set; }
         public virtual DbSet<EarningEventPeriodModel> EarningEventPeriods { get; protected set; }
         public virtual DbSet<DataLockEventModel> DataLockEvent { get; set; }
@@ -78,7 +71,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             optionsBuilder.UseSqlServer(connectionString);
         }
 
-
         public async Task<List<ProviderTotal>> GetAlreadyPaidDataLockProviderTotals(CancellationToken cancellationToken)
         {
             var sql = @"Select
@@ -107,7 +99,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             return await AlreadyPaidDataLockProviderTotals.FromSql(sql)
                 .ToListAsync(cancellationToken);
         }
-
         public async Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
             var latestSuccessfulJobIds = LatestSuccessfulJobs.AsNoTracking().Select(x => x.DcJobId);
@@ -119,8 +110,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                 .GroupBy(rp => new { rp.Ukprn, rp.ContractType})
                 .Select(group => new
                 {
-                    Ukprn = group.Key.Ukprn,
-                    ContractType = group.Key.ContractType,
+                    group.Key.Ukprn,
+                    group.Key.ContractType,
                     Amount = group.Sum(rp => rp.Amount)
                 })
                 .ToListAsync(cancellationToken)
@@ -167,24 +158,25 @@ Select
         public async Task<DataLockTypeCounts> GetDataLockCounts(long ukprn, long jobId, CancellationToken cancellationToken)
         {
             var sql = @"
-select 
-	count(*) [Count],
-	a.DataLockFailureId [DataLockType]
-	from (
-			select 	
-				LearnerReferenceNumber, 
-				DataLockFailureId
-				from Payments2.DataLockEvent dle
-				join Payments2.DataLockEventNonPayablePeriod npp on dle.EventId = npp.DataLockEventId
-				join Payments2.DataLockEventNonPayablePeriodFailures nppf on npp.DataLockEventNonPayablePeriodId = nppf.DataLockEventNonPayablePeriodId
-				where dle.Ukprn = @ukprn
-				and JobId = @jobId
-				and npp.TransactionType in (1,2,3)
-				and (dle.IsPayable = 0)
-				group by dle.LearnerReferenceNumber, nppf.DataLockFailureId
-				) a
-			group by a.DataLockFailureId
-";
+                select 
+	                count(*) [Count],
+	                a.DataLockFailureId [DataLockType]
+	                from (
+			                select 	
+				                LearnerReferenceNumber, 
+				                DataLockFailureId
+				                from Payments2.DataLockEvent dle
+				                join Payments2.DataLockEventNonPayablePeriod npp on dle.EventId = npp.DataLockEventId
+				                join Payments2.DataLockEventNonPayablePeriodFailures nppf on npp.DataLockEventNonPayablePeriodId = nppf.DataLockEventNonPayablePeriodId
+				                where dle.Ukprn = @ukprn
+				                and JobId = @jobId
+				                and npp.TransactionType in (1,2,3)
+				                and (dle.IsPayable = 0)
+				                group by dle.LearnerReferenceNumber, nppf.DataLockFailureId
+				                ) a
+			    group by
+                    a.DataLockFailureId
+                ";
             var dataLockCounts = await DataLockCounts.FromSql(sql, new SqlParameter("@jobId", jobId), new SqlParameter("@ukprn", ukprn))
                 .ToListAsync(cancellationToken);
             return new DataLockTypeCounts

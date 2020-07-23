@@ -10,7 +10,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
        PeriodEndSummaryModel GetMetrics();
        void AddProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries);
     }
-
     public class PeriodEndSummary :IPeriodEndSummary
     {
         private readonly long jobId;
