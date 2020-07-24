@@ -16,11 +16,15 @@ IF NOT EXISTS (SELECT * FROM [Payments2].[JobStatus]  WHERE [Id] = 2)
 GO	
 
 IF NOT EXISTS (SELECT * FROM [Payments2].[JobStatus]  WHERE [Id] = 3)
-	INSERT INTO [Payments2].[JobStatus]  values (3,'completed with errors')
+	INSERT INTO [Payments2].[JobStatus]  values (3,'Completed with errors')
 GO	
 
 IF NOT EXISTS (SELECT * FROM [Payments2].[JobStatus]  WHERE [Id] = 4)
-	INSERT INTO [Payments2].[JobStatus]  values (4,'Time out due to idle job')
+	INSERT INTO [Payments2].[JobStatus]  values (4,'Timed out due to idle job')
+GO
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobStatus]  WHERE [Id] = 5)
+	INSERT INTO [Payments2].[JobStatus]  values (5,'DC Tasks Failed')
 GO
 
 IF NOT EXISTS (SELECT * FROM [Payments2].[JobEventStatus]  WHERE [Id] = 1)
@@ -207,3 +211,19 @@ insert into Payments2.TestingProvider (Ukprn)
     select distinct Ukprn
     from KnownUkprns t
     where not exists (select 1 from Payments2.TestingProvider t2 where t2.Ukprn = t.Ukprn);
+GO
+
+MERGE INTO [Metrics].[SubmissionEarningType]	 AS Target
+USING (VALUES
+(1	, N'DC Earnings'),
+(2	, N'DAS Earnings')
+) AS Source ([Id],[Description])
+ON (Target.[Id] = Source.[Id])
+WHEN MATCHED AND
+  ( NULLIF(Source.[Description], Target.[Description]) IS NOT NULL) THEN
+ UPDATE SET [Description] = Source.[Description]
+WHEN NOT MATCHED BY TARGET THEN
+ INSERT([Id],[Description]) VALUES(Source.[Id],Source.[Description])
+WHEN NOT MATCHED BY SOURCE THEN 
+ DELETE;
+ GO

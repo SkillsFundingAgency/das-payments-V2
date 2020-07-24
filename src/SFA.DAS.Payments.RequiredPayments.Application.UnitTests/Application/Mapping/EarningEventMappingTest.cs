@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using AutoMapper;
@@ -121,6 +121,19 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             actual.ContractType.Should().Be(ContractType.Act2);
         }
 
+
+        [Test]
+        [TestCase( typeof(CalculatedRequiredIncentiveAmount))]
+        public void MathsAndEnglishRequiredMappingShouldMapEarningEventIdCorrectly(Type requiredPaymentEventType)
+        {
+            var earningEventId = Guid.NewGuid();
+            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
+            var earningEvent = new PayableFunctionalSkillEarningEvent {EarningEventId = earningEventId};
+            var actual = mapper.Map(earningEvent, requiredPaymentEvent);
+            actual.EarningEventId.Should().Be(earningEventId);
+        }
+
+
         [Test]
         [TestCase(typeof(CalculatedRequiredIncentiveAmount), ContractType.Act1)]
         [TestCase(typeof(CalculatedRequiredIncentiveAmount), ContractType.Act2)]
@@ -206,6 +219,36 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             Assert.AreEqual(OnProgrammeEarningType.Balancing, act1RequiredPayment.OnProgrammeEarningType);
 
         }
+
+      
+        [Test]
+        public void TestEarningPeriodToCalculatedRequiredIncentiveAmountMapping()
+        {
+            var earningPeriod = new EarningPeriod
+            {
+                ApprenticeshipId = 101,
+                ApprenticeshipPriceEpisodeId = 102,
+                Period = 1,
+                ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy
+            };
+            var requiredPayment = new CalculatedRequiredIncentiveAmount
+            {
+                Type = IncentivePaymentType.OnProgrammeMathsAndEnglish
+            };
+
+            // act
+            mapper.Map(earningPeriod, requiredPayment);
+            var mathsAndEnglishPayment = requiredPayment;
+            Assert.AreEqual(earningPeriod.Period, mathsAndEnglishPayment.DeliveryPeriod);
+            Assert.AreEqual(earningPeriod.ApprenticeshipId, mathsAndEnglishPayment.ApprenticeshipId);
+            Assert.AreEqual(earningPeriod.ApprenticeshipPriceEpisodeId,
+                mathsAndEnglishPayment.ApprenticeshipPriceEpisodeId);
+            Assert.AreEqual(earningPeriod.ApprenticeshipEmployerType,
+                mathsAndEnglishPayment.ApprenticeshipEmployerType);
+            Assert.AreEqual(IncentivePaymentType.OnProgrammeMathsAndEnglish, mathsAndEnglishPayment.Type);
+        }
+
+
 
         [Test]
         [TestCaseSource(nameof(GetFunctionalSkillEarningEvents))]

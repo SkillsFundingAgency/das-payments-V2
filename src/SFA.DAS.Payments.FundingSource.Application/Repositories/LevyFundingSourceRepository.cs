@@ -34,28 +34,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
             return levyAccounts.First();
         }
 
-        public async Task<List<EmployerProviderPriorityModel>> GetPaymentPriorities(long employerAccountId, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var paymentPriorities = await dataContext.EmployerProviderPriority.AsNoTracking()
-                .Where(paymentPriority => paymentPriority.EmployerAccountId == employerAccountId)
-                .ToListAsync(cancellationToken);
-
-            return paymentPriorities;
-        }
-
-        public async Task ReplaceEmployerProviderPriorities(long employerAccountId, List<EmployerProviderPriorityModel> paymentPriorityModels, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var previousEmployerPriorities =  dataContext.EmployerProviderPriority
-                .Where(paymentPriority => paymentPriority.EmployerAccountId == employerAccountId);
-                dataContext.EmployerProviderPriority.RemoveRange(previousEmployerPriorities);
-               
-                await dataContext.EmployerProviderPriority
-                    .AddRangeAsync(paymentPriorityModels, cancellationToken)
-                    .ConfigureAwait(false);
-
-                await dataContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-        }
-
         public async Task<List<long>> GetEmployerAccounts(CancellationToken cancellationToken)
         {
             var transferSenders = (await dataContext.Apprenticeship
@@ -72,6 +50,13 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
 
             accounts.AddRange(transferSenders);
             return accounts.Distinct().ToList();
+        }
+
+        public async Task<List<(long, bool)>> GetCurrentEmployerStatus(List<long> employerIds,CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var accountStatuses = await  dataContext.LevyAccount.Where(x => employerIds.Contains(x.AccountId))
+                .Select(x => new {x.AccountId, x.IsLevyPayer}).ToListAsync(cancellationToken);
+            return accountStatuses.Select(x => (x.AccountId, x.IsLevyPayer)).ToList();
         }
 
         public async Task<List<Tuple<long,long?>>> GetEmployerAccountsByUkprn(long ukprn, CancellationToken cancellationToken = default(CancellationToken))

@@ -22,9 +22,55 @@
 	DataLockSourceId TINYINT NOT NULL CONSTRAINT DF_DataLockEvent__DataLockSourceId DEFAULT (1),
 	JobId  BIGINT NOT NULL,
 	EventTime DATETIMEOFFSET NOT NULL,
-	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_DataLockEvent__CreationDate DEFAULT (SYSDATETIMEOFFSET())
-)
+	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_DataLockEvent__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
+	[DuplicateNumber] INT NULL
 
+)
+GO
+
+Create Unique Index UX_DataLockEvent_LogicalDuplicates on Payments2.DataLockEvent( [JobId], [Ukprn], [AcademicYear], [CollectionPeriod], [IsPayable], [ContractType], 
+	[LearnerUln], [LearnerReferenceNumber], [LearningAimReference], [LearningAimProgrammeType], [LearningAimStandardCode], [LearningAimFrameworkCode], 
+	[LearningAimPathwayCode], [LearningAimFundingLineType], [LearningStartDate], [DuplicateNumber])
 GO
 
 CREATE INDEX [IX_DataLockEvent_Submission] ON [Payments2].[DataLockEvent] ([Ukprn], [AcademicYear], [CollectionPeriod], [IlrSubmissionDateTime])
+GO
+
+Create index IX_DataLockEvent__Metrics ON [Payments2].[DataLockEvent] ([AcademicYear], [CollectionPeriod], [IsPayable], [LearningAimReference], [Ukprn], [JobId]) 
+	INCLUDE ([DataLockSourceId], [EarningEventId], [EventId], [IlrSubmissionDateTime], [LearnerReferenceNumber], [LearnerUln]) WITH (ONLINE = ON)
+Go
+
+CREATE NONCLUSTERED INDEX [IX_DataLockEvent__Metrics_Paid_DataLocks] ON [Payments2].[DataLockEvent] 
+( 
+[JobId],
+[Ukprn],
+[IsPayable] 
+) 
+INCLUDE
+(
+[CollectionPeriod], 
+[EventId], 
+[LearnerReferenceNumber], 
+[LearningAimFrameworkCode], 
+[LearningAimPathwayCode], 
+[LearningAimProgrammeType], 
+[LearningAimReference], 
+[LearningAimStandardCode]
+) 
+WITH (ONLINE = ON)
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_DataLockEvent__Manual_Metrics_Paid_DataLocks] ON [Payments2].[DataLockEvent]
+(
+	[Ukprn] ,
+	[CollectionPeriod],
+	[JobId],
+	[IsPayable]
+)
+INCLUDE([EventId],[LearnerReferenceNumber], [LearningAimReference],
+    [LearningAimProgrammeType] ,
+    [LearningAimStandardCode] ,
+    [LearningAimFrameworkCode],
+    [LearningAimPathwayCode] ) 
+go

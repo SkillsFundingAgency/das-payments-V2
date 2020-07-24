@@ -2,7 +2,6 @@
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Entities;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.DataLocks.Domain.Infrastructure;
 using SFA.DAS.Payments.DataLocks.Domain.Services;

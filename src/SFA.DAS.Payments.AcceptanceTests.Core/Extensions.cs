@@ -54,17 +54,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
 
             var durationElements = cleanStr.Split(' ');
 
-            if (Array.Exists(durationElements, x=>x.Contains("month")))
+            if (Array.Exists(durationElements, x => x.Contains("month")))
             {
-                if (durationElements.Contains("-") && Array.Exists(durationElements, x=>x.Contains("day")))
+                if (durationElements.Contains("-") && Array.Exists(durationElements, x => x.Contains("day")))
                 {
                     return startDate.ToDate().AddMonths(int.Parse(durationElements[0])).
-                               AddDays(int.Parse(durationElements[Array.FindIndex(durationElements,0, x=>x.Contains("-")) + 1]) * -1) - startDate.ToDate();
+                               AddDays(int.Parse(durationElements[Array.FindIndex(durationElements, 0, x => x.Contains("-")) + 1]) * -1) - startDate.ToDate();
                 }
 
                 return startDate.ToDate().AddMonths(int.Parse(durationElements[0])) - startDate.ToDate();
             }
-           
+
             throw new Exception($"Could not parse duration: {duration}");
         }
 

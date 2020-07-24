@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using NUnit.Framework;
-using SFA.DAS.Payments.EarningEvents.Application.Mapping;
-using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using FluentAssertions;
+using Moq;
+using NUnit.Framework;
+using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
+using SFA.DAS.Payments.EarningEvents.Application.Mapping;
+using SFA.DAS.Payments.EarningEvents.Application.UnitTests.Helpers;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
+using SFA.DAS.Payments.Model.Core.Incentives;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
 {
@@ -15,11 +21,15 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
     {
 
         private IMapper mapper;
+        private  Mock<IRedundancyEarningService> redundancyEarningService;
+        private const string filename = "Redundancy.json";
+        private const string learnerRefNo = "01fm361845";
 
         [OneTimeSetUp]
         public void InitialiseMapper()
         {
             mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<EarningsEventProfile>()));
+            redundancyEarningService = new Mock<IRedundancyEarningService>();
         }
 
 
@@ -62,7 +72,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                                 StdCode = 100,
                                 FworkCode = 200,
                                 ProgType = 300,
-                                PwayCode = 400,
+                                PwayCode = 500,
                                 LearnDelInitialFundLineType = "Funding Line Type 2",
                                 LearnStartDate = DateTime.Today.AddDays(-6)
                             },
@@ -222,7 +232,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                 }
             };
 
-            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(new ApprenticeshipContractTypeEarningsEventFactory(), mapper);
+            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningService.Object,mapper);
 
             var events = builder.Build(processLearnerCommand);
             events.Should().NotBeNull();
@@ -700,12 +710,334 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             };
 
             var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
-                new ApprenticeshipContractTypeEarningsEventFactory(),
-                mapper);
+                new ApprenticeshipContractTypeEarningsEventFactory(),redundancyEarningService.Object,mapper);
 
             var events = builder.Build(processLearnerCommand);
 
             events.Should().HaveCount(3);
         }
+
+        [Test]
+        public void CreatedTheCorrectNumberOfEarningEventsWhenLearningSupportIncluded()
+        {
+            var processLearnerCommand = CreateLearnerSubmissionWithLearningSupport();
+
+            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
+                new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningService.Object,
+                mapper);
+
+            var events = builder.Build(processLearnerCommand);
+
+            events.Should().HaveCount(1);
+            events.Single().OnProgrammeEarnings.Should().HaveCount(3);
+            events.Single().OnProgrammeEarnings.Single(x => x.Type == OnProgrammeEarningType.Learning).Periods.Should().HaveCount(12);
+            events.Single().IncentiveEarnings.Should().HaveCount(11);
+            events.Single().IncentiveEarnings.Single(x => x.Type == IncentiveEarningType.LearningSupport).Periods.Should().HaveCount(12);
+        }
+
+
+        [Test]
+        public void RedundantLearner_shouldSplitEarningEventAtPeriodWhereRedundancyTakesPlace()
+        {
+            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
+                new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningService.Object,
+                mapper);
+            var processLearnerCommand = FileHelpers.CreateFromFile(filename, learnerRefNo);
+
+            redundancyEarningService.Setup(x => x.SplitContractEarningByRedundancyDate(It.IsAny<ApprenticeshipContractType2EarningEvent>(), It.IsAny<DateTime>()))
+                .Returns(new List<ApprenticeshipContractTypeEarningsEvent>());
+
+            builder.Build(processLearnerCommand);
+
+            redundancyEarningService.Verify(x => x.SplitContractEarningByRedundancyDate(It.IsAny<ApprenticeshipContractType2EarningEvent>(), It.IsAny<DateTime>()));
+        }
+
+        private static ProcessLearnerCommand CreateLearnerSubmissionWithLearningSupport()
+        {
+            return new ProcessLearnerCommand
+            {
+                Ukprn = 1,
+                JobId = 1,
+                CollectionPeriod = 3,
+                CollectionYear = 1920,
+                IlrSubmissionDateTime = DateTime.Today,
+                SubmissionDate = DateTime.Today,
+                Learner = new FM36Learner
+                {
+                    LearnRefNumber = "learner-a",
+                    ULN = 1234678,
+                    PriceEpisodes = new List<PriceEpisode>
+                    {
+                        new PriceEpisode
+                        {
+                            PriceEpisodeIdentifier = "20-593-1-06/08/2019",
+                            PriceEpisodeValues = new PriceEpisodeValues
+                            {
+                                EpisodeStartDate = DateTime.Parse("2019-08-06T00:00:00+00:00"),
+                                PriceEpisodeActualEndDate = DateTime.Parse("2019-10-05T00:00:00+00:00"),
+                                PriceEpisodeFundLineType = "19+ Apprenticeship (Employer on App Service)",
+                                EpisodeEffectiveTNPStartDate = DateTime.Parse("2017-05-08T00:00:00+00:00"),
+                                PriceEpisodeContractType = "Contract for services with the employer",
+                                PriceEpisodeAimSeqNumber = 1,
+                                PriceEpisodePlannedEndDate = DateTime.Parse("2020-08-06T00:00:00+00:00"),
+                                PriceEpisodePlannedInstalments = 12,
+                                PriceEpisodeCompletionElement = 3000,
+                                PriceEpisodeInstalmentValue = 1000,
+                                TNP1 = 15000,
+                                TNP2 = 15000,
+                                PriceEpisodeCompleted = false,
+                                PriceEpisodeCumulativePMRs = 13,
+                                PriceEpisodeCompExemCode = 14,
+                                PriceEpisodeTotalTNPPrice = 30000
+                            },
+                            PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
+                            {
+                                new PriceEpisodePeriodisedValues
+                                {
+                                    AttributeName = "PriceEpisodeOnProgPayment",
+                                    Period1 = 750,
+                                    Period2 = 750,
+                                    Period3 = 0,
+                                    Period4 = 0,
+                                    Period5 = 0,
+                                    Period6 = 0,
+                                    Period7 = 0,
+                                    Period8 = 0,
+                                    Period9 = 0,
+                                    Period10 = 0,
+                                    Period11 = 0,
+                                    Period12 = 0,
+                                },
+                                new PriceEpisodePeriodisedValues
+                                {
+                                    AttributeName = "PriceEpisodeCompletionPayment",
+                                    Period1 = 0,
+                                    Period2 = 0,
+                                    Period3 = 0,
+                                    Period4 = 0,
+                                    Period5 = 0,
+                                    Period6 = 0,
+                                    Period7 = 0,
+                                    Period8 = 0,
+                                    Period9 = 0,
+                                    Period10 = 0,
+                                    Period11 = 0,
+                                    Period12 = 0,
+                                },
+                                new PriceEpisodePeriodisedValues
+                                {
+                                    AttributeName = "PriceEpisodeBalancePayment",
+                                    Period1 = 0,
+                                    Period2 = 0,
+                                    Period3 = 0,
+                                    Period4 = 0,
+                                    Period5 = 0,
+                                    Period6 = 0,
+                                    Period7 = 0,
+                                    Period8 = 0,
+                                    Period9 = 0,
+                                    Period10 = 0,
+                                    Period11 = 0,
+                                    Period12 = 0,
+                                },
+                                new PriceEpisodePeriodisedValues
+                                {
+                                    AttributeName = "PriceEpisodeLSFCash",
+                                    Period1 = 150,
+                                    Period2 = 150,
+                                    Period3 = 0,
+                                    Period4 = 0,
+                                    Period5 = 0,
+                                    Period6 = 0,
+                                    Period7 = 0,
+                                    Period8 = 0,
+                                    Period9 = 0,
+                                    Period10 = 0,
+                                    Period11 = 0,
+                                    Period12 = 0,
+                                }
+                            }
+                        },
+                        new PriceEpisode
+                        {
+                            PriceEpisodeIdentifier = "20-593-1-06/10/2019",
+                            PriceEpisodeValues = new PriceEpisodeValues
+                            {
+                                EpisodeStartDate = DateTime.Parse("2019-10-06T00:00:00+00:00"),
+                                PriceEpisodeActualEndDate = DateTime.Parse("2020-07-31T00:00:00+00:00"),
+                                PriceEpisodeFundLineType = "19+ Apprenticeship (Employer on App Service)",
+                                EpisodeEffectiveTNPStartDate = DateTime.Parse("2017-05-08T00:00:00+00:00"),
+                                PriceEpisodeContractType = "Contract for services with the employer",
+                                PriceEpisodeAimSeqNumber = 1,
+                                PriceEpisodePlannedEndDate = DateTime.Parse("2020-08-06T00:00:00+00:00"),
+                                PriceEpisodePlannedInstalments = 10,
+                                PriceEpisodeCompletionElement = 3000,
+                                PriceEpisodeInstalmentValue = 1000,
+                                TNP1 = 15000,
+                                TNP2 = 15000,
+                                PriceEpisodeCompleted = false,
+                                PriceEpisodeCumulativePMRs = 13,
+                                PriceEpisodeCompExemCode = 14,
+                                PriceEpisodeTotalTNPPrice = 30000
+                            },
+                            PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
+                            {
+                                new PriceEpisodePeriodisedValues
+                                {
+                                    AttributeName = "PriceEpisodeOnProgPayment",
+                                    Period1 = 0,
+                                    Period2 = 0,
+                                    Period3 = 390,
+                                    Period4 = 390,
+                                    Period5 = 390,
+                                    Period6 = 390,
+                                    Period7 = 390,
+                                    Period8 = 390,
+                                    Period9 = 390,
+                                    Period10 = 390,
+                                    Period11 = 390,
+                                    Period12 = 390,
+                                },
+                                new PriceEpisodePeriodisedValues
+                                {
+                                    AttributeName = "PriceEpisodeCompletionPayment",
+                                    Period1 = 0,
+                                    Period2 = 0,
+                                    Period3 = 0,
+                                    Period4 = 0,
+                                    Period5 = 0,
+                                    Period6 = 0,
+                                    Period7 = 0,
+                                    Period8 = 0,
+                                    Period9 = 0,
+                                    Period10 = 0,
+                                    Period11 = 0,
+                                    Period12 = 0,
+                                },
+                                new PriceEpisodePeriodisedValues
+                                {
+                                    AttributeName = "PriceEpisodeBalancePayment",
+                                    Period1 = 0,
+                                    Period2 = 0,
+                                    Period3 = 0,
+                                    Period4 = 0,
+                                    Period5 = 0,
+                                    Period6 = 0,
+                                    Period7 = 0,
+                                    Period8 = 0,
+                                    Period9 = 0,
+                                    Period10 = 0,
+                                    Period11 = 0,
+                                    Period12 = 0,
+                                },
+                                new PriceEpisodePeriodisedValues
+                                {
+                                    AttributeName = "PriceEpisodeLSFCash",
+                                    Period1 = 0,
+                                    Period2 = 0,
+                                    Period3 = 150,
+                                    Period4 = 150,
+                                    Period5 = 150,
+                                    Period6 = 150,
+                                    Period7 = 150,
+                                    Period8 = 150,
+                                    Period9 = 150,
+                                    Period10 = 150,
+                                    Period11 = 150,
+                                    Period12 = 150,
+                                },
+                            }
+                        }
+                    },
+                    LearningDeliveries = new List<LearningDelivery>
+                    {
+                        new LearningDelivery
+                        {
+                            AimSeqNumber = 1,
+                            LearningDeliveryValues = new LearningDeliveryValues
+                            {
+                                LearnAimRef = "ZPROG001",
+                                StdCode = 100,
+                                FworkCode = 200,
+                                ProgType = 300,
+                                PwayCode = 400,
+                                LearnDelInitialFundLineType = "19+ Apprenticeship (Employer on App Service)",
+                                LearnStartDate = DateTime.Parse("2019-08-06T00:00:00+00:00")
+                            },
+                            LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValues>
+                            {
+                                new LearningDeliveryPeriodisedValues
+                                {
+                                    AttributeName = "LearnSuppFundCash",
+                                    Period1 = 150,
+                                    Period2 = 150,
+                                    Period3 = 150,
+                                    Period4 = 150,
+                                    Period5 = 150,
+                                    Period6 = 150,
+                                    Period7 = 150,
+                                    Period8 = 150,
+                                    Period9 = 150,
+                                    Period10 = 150,
+                                    Period11 = 150,
+                                    Period12 = 150
+                                }
+                            }
+                        },
+                        new LearningDelivery
+                        {
+                            AimSeqNumber = 2,
+                            LearningDeliveryValues = new LearningDeliveryValues
+                            {
+                                LearnAimRef = "M&E2",
+                                StdCode = 100,
+                                FworkCode = 200,
+                                ProgType = 300,
+                                PwayCode = 400,
+                                LearnDelInitialFundLineType = "19+ Apprenticeship (Employer on App Service)",
+                                LearnStartDate = DateTime.Parse("2019-08-06T00:00:00+00:00")
+                            },
+                            LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValues>
+                            {
+                                new LearningDeliveryPeriodisedValues
+                                {
+                                    AttributeName = "MathEngOnProgPayment",
+                                    Period1 = 39.25m,
+                                    Period2 = 39.25m,
+                                    Period3 = 39.25m,
+                                    Period4 = 39.25m,
+                                    Period5 = 39.25m,
+                                    Period6 = 39.25m,
+                                    Period7 = 39.25m,
+                                    Period8 = 39.25m,
+                                    Period9 = 39.25m,
+                                    Period10 = 39.25m,
+                                    Period11 = 39.25m,
+                                    Period12 = 39.25m,
+                                },
+                                new LearningDeliveryPeriodisedValues
+                                {
+                                    AttributeName = "LearnSuppFundCash",
+                                    Period1 = 0,
+                                    Period2 = 0,
+                                    Period3 = 0,
+                                    Period4 = 0,
+                                    Period5 = 0,
+                                    Period6 = 0,
+                                    Period7 = 0,
+                                    Period8 = 0,
+                                    Period9 = 0,
+                                    Period10 = 0,
+                                    Period11 = 0,
+                                    Period12 = 0,
+                                },
+                            },
+                        },
+                    }
+                }
+            };
+        }
+
+
     }
 }

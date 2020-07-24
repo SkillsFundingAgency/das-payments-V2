@@ -88,7 +88,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
                 LegalEntityName = "Test SFA",
                 EstimatedStartDate = apprenticeshipSpec.StartDate.ToDate(),
                 EstimatedEndDate = apprenticeshipSpec.EndDate.ToDate(),
-                AgreedOnDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.AgreedOnDate)?
+                AgreedOnDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.AgreedOnDate) ?
                                 DateTime.UtcNow :
                                 apprenticeshipSpec.AgreedOnDate.ToDate(),
                 StopDate = string.IsNullOrWhiteSpace(apprenticeshipSpec.StopEffectiveFrom) ?
@@ -152,6 +152,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
 
         }
 
-        
-}
+
+    }
 }

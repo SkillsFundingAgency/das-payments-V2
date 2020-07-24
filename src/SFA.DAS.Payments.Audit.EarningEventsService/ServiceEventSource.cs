@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.Fabric;
@@ -58,7 +58,7 @@ namespace SFA.DAS.Payments.Audit.EarningEventsService
         }
 
         [NonEvent]
-        public void ServiceMessage(StatefulServiceContext serviceContext, string message, params object[] args)
+        public void ServiceMessage(StatelessServiceContext serviceContext, string message, params object[] args)
         {
             if (this.IsEnabled())
             {
@@ -66,7 +66,7 @@ namespace SFA.DAS.Payments.Audit.EarningEventsService
                 ServiceMessage(
                     serviceContext.ServiceName.ToString(),
                     serviceContext.ServiceTypeName,
-                    serviceContext.ReplicaId,
+                    serviceContext.InstanceId,
                     serviceContext.PartitionId,
                     serviceContext.CodePackageActivationContext.ApplicationName,
                     serviceContext.CodePackageActivationContext.ApplicationTypeName,

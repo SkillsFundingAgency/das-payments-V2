@@ -12,6 +12,7 @@ using NUnit.Framework.Internal;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.Exceptions;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 {
@@ -70,7 +71,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 .Setup(x => x.Get(It.Is<long>(id => id == apprenticeship.Id)))
                 .ReturnsAsync(apprenticeship);
             var service = mocker.Create<ApprenticeshipService>();
-            Assert.ThrowsAsync<InvalidOperationException>(() => service.NewApprenticeship(apprenticeship));
+            Assert.ThrowsAsync<ApprenticeshipAlreadyExistsException>(() => service.NewApprenticeship(apprenticeship));
         }
 
         [Test]
@@ -129,7 +130,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         }
 
         [Test]
-        public async Task Update_Apprenticeship_Employer_IsLevyPayer_Flag_Correctly()
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task Update_Apprenticeship_Employer_IsLevyPayer_Flag_Correctly(bool isLevyPayer)
         {
             mocker.Mock<IApprenticeshipRepository>()
                 .Setup(x => x.GetEmployerApprenticeships(1, It.IsAny<CancellationToken>()))
@@ -137,8 +140,12 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 {
                     new ApprenticeshipModel
                     {
-                        IsLevyPayer = true
-                    }
+                        IsLevyPayer = !isLevyPayer
+                    },
+                    new ApprenticeshipModel //should not be update as already has the correct flag state
+                    {
+                        IsLevyPayer = isLevyPayer
+                    },
                 });
 
 
@@ -149,14 +156,14 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
 
             var service = mocker.Create<ApprenticeshipService>();
-          var expectedUpdatedApprenticeships =  await service.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(1);
+          var expectedUpdatedApprenticeships =  await service.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(1, isLevyPayer);
 
             mocker.Mock<IApprenticeshipRepository>()
-                .Verify(x => x.UpdateApprenticeships(It.Is<List<ApprenticeshipModel>>(o => o.Count == 1 && o[0].IsLevyPayer == false)),Times.Once);
+                .Verify(x => x.UpdateApprenticeships(It.Is<List<ApprenticeshipModel>>(o => o.Count == 1 && o[0].IsLevyPayer == isLevyPayer)),Times.Once);
 
             expectedUpdatedApprenticeships.Should().NotBeNull();
             expectedUpdatedApprenticeships.Should().HaveCount(1);
-            expectedUpdatedApprenticeships[0].IsLevyPayer.Should().BeFalse();
+            expectedUpdatedApprenticeships[0].IsLevyPayer.Should().Be(isLevyPayer);
 
         }
 

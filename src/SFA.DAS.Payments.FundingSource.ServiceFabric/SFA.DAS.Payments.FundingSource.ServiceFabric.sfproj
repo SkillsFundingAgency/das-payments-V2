@@ -37,6 +37,7 @@
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.LevyAccountBalanceService\SFA.DAS.Payments.FundingSource.LevyAccountBalanceService.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.LevyFundedProxyService\SFA.DAS.Payments.FundingSource.LevyFundedProxyService.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.LevyFundedService\SFA.DAS.Payments.FundingSource.LevyFundedService.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.LevyTransactionService\SFA.DAS.Payments.FundingSource.LevyTransactionService.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.NonLevyFundedService\SFA.DAS.Payments.FundingSource.NonLevyFundedService.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />

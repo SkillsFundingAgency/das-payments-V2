@@ -64,12 +64,16 @@
     <Folder Include="Properties" />
     <Folder Include="Security" />
     <Folder Include="Payments2" />
-    <Folder Include="Payments2\Views" />
     <Folder Include="Payments2\Tables" />
     <Folder Include="dbo\" />
     <Folder Include="dbo\Stored Procedures" />
+    <Folder Include="Metrics" />
+    <Folder Include="Metrics\Tables" />
+    <Folder Include="Metrics\Schemas" />
+    <Folder Include="Payments2\Views\" />
   </ItemGroup>
   <ItemGroup>
+    <Build Include="Payments2\Views\Payments2.LatestSuccessfulDataLockJobs.sql" />
     <Build Include="Security\User_RO.sql" />
     <Build Include="Security\User_RW.sql" />
     <Build Include="Security\Role_DataProcessing.sql" />
@@ -107,6 +111,16 @@
     <Build Include="dbo\Stored Procedures\dbo.MetricsPayments.sql" />
     <Build Include="Payments2\Tables\Payments2.ProviderAdjustmentPayments.sql" />
     <Build Include="Payments2\Views\Payments2.DataMatchReport.sql" />
+    <Build Include="Payments2\Tables\Payments2.ReceivedDataLockEvent.sql" />
+    <Build Include="Payments2\Tables\Payments2.CurrentPriceEpisode.sql" />
+    <Build Include="Metrics\Tables\Metrics.ProviderDataLockCounts.sql" />
+    <Build Include="Metrics\Tables\Metrics.ProviderRequiredPayment.sql" />
+    <Build Include="Metrics\Tables\Metrics.SubmissionSummary.sql" />
+    <Build Include="Metrics\Tables\Metrics.SubmissionEarningType.sql" />
+    <Build Include="Metrics\Schemas\Metrics.sql" />
+    <Build Include="Metrics\Tables\Metrics.ProviderEarning.sql" />
+    <Build Include="Payments2\Views\Payments2.LatestSuccessfulJobs.sql" />
+    <Build Include="Payments2\Tables\Payments2.FundingSourceLevyTransaction.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />

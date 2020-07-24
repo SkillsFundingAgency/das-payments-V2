@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -30,6 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         private readonly IApprenticeshipKeyProvider apprenticeshipKeyProvider;
         private readonly INegativeEarningService negativeEarningService;
         private readonly IPaymentLogger paymentLogger;
+        private readonly IDuplicateEarningEventService duplicateEarningEventService;
 
         protected EarningEventProcessorBase(
             IMapper mapper,
@@ -38,7 +40,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             IPaymentHistoryRepository paymentHistoryRepository,
             IApprenticeshipKeyProvider apprenticeshipKeyProvider,
             INegativeEarningService negativeEarningService,
-            IPaymentLogger paymentLogger)
+            IPaymentLogger paymentLogger, 
+            IDuplicateEarningEventService duplicateEarningEventService)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.requiredPaymentProcessor = requiredPaymentProcessor ?? throw new ArgumentNullException(nameof(requiredPaymentProcessor));
@@ -47,6 +50,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             this.apprenticeshipKeyProvider = apprenticeshipKeyProvider;
             this.negativeEarningService = negativeEarningService;
             this.paymentLogger = paymentLogger;
+            this.duplicateEarningEventService = duplicateEarningEventService ?? throw new ArgumentNullException(nameof(duplicateEarningEventService));
         }
 
         public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleEarningEvent(TEarningEvent earningEvent, IDataCache<PaymentHistoryEntity[]> paymentHistoryCache, CancellationToken cancellationToken)
@@ -57,7 +61,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             try
             {
                 var result = new List<PeriodisedRequiredPaymentEvent>();
-
+                if (await duplicateEarningEventService.IsDuplicate(earningEvent, cancellationToken)
+                    .ConfigureAwait(false))
+                {
+                    return result.AsReadOnly();
+                }
                 var cachedPayments = await paymentHistoryCache.TryGet(CacheKeys.PaymentHistoryKey, cancellationToken);
                 var academicYearPayments = cachedPayments.HasValue
                     ? cachedPayments.Value
@@ -107,15 +115,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                         }
                     }
 
-                    if (requiredPayments.Sum(x => x.Amount) == 0)
+                    if (requiredPayments.GroupBy(x => x.SfaContributionPercentage)
+                        .All(x => x.Sum(y => y.Amount) == 0))
                     {
                         continue;
                     }
 
-                    if (holdBackCompletionPayments)
-                    {
-                        continue;
-                    }
                     foreach (var requiredPayment in requiredPayments)
                     {
                         var requiredPaymentEvent = CreateRequiredPaymentEvent(requiredPayment.EarningType, type, holdBackCompletionPayments);
@@ -170,6 +175,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             if (type != (int)OnProgrammeEarningType.Completion)
                 return false;
 
+            if (earning.Amount <= 0m)
+                return false;
+
             var priceEpisode = earningEvent.PriceEpisodes.Single(p => p.Identifier == earning.PriceEpisodeIdentifier);
             var key = apprenticeshipKeyProvider.GetCurrentKey();
             var employerPayments = await paymentHistoryRepository.GetEmployerCoInvestedPaymentHistoryTotal(key, cancellationToken).ConfigureAwait(false);
@@ -182,7 +190,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         protected PeriodisedRequiredPaymentEvent CreateRequiredPaymentEvent(EarningType earningType, int transactionType, bool holdBackCompletionPayment)
         {
             if (holdBackCompletionPayment)
+            {
                 return new CompletionPaymentHeldBackEvent();
+            }
 
             switch (earningType)
             {

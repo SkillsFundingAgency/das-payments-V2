@@ -2,7 +2,7 @@
 {
     public static class CacheKeys
     {
-        public const string MonthEndCacheKey = "MonthEndPaymentsProcessed";
+        public const string MonthEndStartedForThisAccountCacheKey = "MonthEndPaymentsProcessed";
         public const string KeyListKey = "keys";
         public const string LevyBalanceKey = "EmployerLevyAccountBalance";
         public const string EmployerPaymentPriorities = "EmployerPaymentPriorities";

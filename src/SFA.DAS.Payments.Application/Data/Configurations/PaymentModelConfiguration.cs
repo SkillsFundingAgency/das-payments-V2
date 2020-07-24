@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Application.Data.Configurations
 {
+    [Obsolete]
     public class PaymentModelConfiguration : IEntityTypeConfiguration<PaymentModel>
     {
         public void Configure(EntityTypeBuilder<PaymentModel> builder)

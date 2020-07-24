@@ -1,9 +1,13 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Linq;
+using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Factories;
+using SFA.DAS.Payments.Model.Core.Incentives;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
@@ -17,7 +21,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .Include<IntermediateLearningAim, Act1FunctionalSkillEarningsEvent>()
                 .Include<IntermediateLearningAim, Act2FunctionalSkillEarningsEvent>()
                 .ForMember(destinationMember => destinationMember.PriceEpisodes, opt => opt.MapFrom(source => source.PriceEpisodes))
-                .ForMember(destinationMember => destinationMember.LearningAim, opt => opt.MapFrom(source => source.Aim))
+                .ForMember(destinationMember => destinationMember.LearningAim, opt => opt.MapFrom(source => source.Aims))
                 .ForMember(destinationMember => destinationMember.CollectionYear, opt => opt.MapFrom(source => source.AcademicYear))
                 .ForMember(destinationMember => destinationMember.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
                 .ForMember(destinationMember => destinationMember.JobId, opt => opt.MapFrom(source => source.JobId))
@@ -32,7 +36,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .Include<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>()
                 .ForMember(destinationMember => destinationMember.OnProgrammeEarnings, opt => opt.ResolveUsing<OnProgrammeEarningValueResolver>())
                 .ForMember(destinationMember => destinationMember.IncentiveEarnings, opt => opt.ResolveUsing<IncentiveEarningValueResolver>())
-                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.Aim.LearningDeliveryValues.LearnStartDate))
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.Aims.Min(aim => aim.LearningDeliveryValues.LearnStartDate)))
                 .Ignore(dest => dest.SfaContributionPercentage)
                 ;
 
@@ -50,32 +54,50 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .Include<IntermediateLearningAim, Act1FunctionalSkillEarningsEvent>()
                 .Include<IntermediateLearningAim, Act2FunctionalSkillEarningsEvent>()
                 .ForMember(destinationMember => destinationMember.Earnings, opt => opt.ResolveUsing<FunctionalSkillsEarningValueResolver>())
-                .ForMember(destinationMember => destinationMember.StartDate, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.LearnStartDate))
+                .ForMember(destinationMember => destinationMember.StartDate, opt => opt.MapFrom(source => source.Aims.Min(aim => aim.LearningDeliveryValues.LearnStartDate)))
                 .Ignore(x => x.ContractType)
                 ;
+
+            CreateMap<ApprenticeshipContractType1EarningEvent, ApprenticeshipContractType1RedundancyEarningEvent>()
+                .Ignore(x => x.EventId);
+
+            CreateMap<ApprenticeshipContractType2EarningEvent, ApprenticeshipContractType2RedundancyEarningEvent>()
+                .Ignore(x => x.EventId);
+
+            CreateMap<Act1FunctionalSkillEarningsEvent, Act1RedundancyFunctionalSkillEarningsEvent>()
+                .Ignore(x => x.EventId);
+
+            CreateMap<Act2FunctionalSkillEarningsEvent, Act2RedundancyFunctionalSkillEarningsEvent>()
+                .Ignore(x => x.EventId);
+
+
+            CreateMap<FunctionalSkillEarning, FunctionalSkillEarning>();
+            CreateMap<OnProgrammeEarning, OnProgrammeEarning>();
+            CreateMap<IncentiveEarning, IncentiveEarning>();
+            CreateMap<EarningPeriod, EarningPeriod>();
 
             CreateMap<FM36Learner, Learner>()
                 .ForMember(dest => dest.ReferenceNumber, opt => opt.MapFrom(source => source.LearnRefNumber))
                 .ForMember(dest => dest.Uln, opt => opt.MapFrom(source => source.ULN));
 
             CreateMap<IntermediateLearningAim, LearningAim>()
-                .ForMember(dest => dest.PathwayCode, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.PwayCode))
-                .ForMember(dest => dest.FrameworkCode, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.FworkCode))
+                .ForMember(dest => dest.PathwayCode, opt => opt.MapFrom(source => source.Aims.First().LearningDeliveryValues.PwayCode))
+                .ForMember(dest => dest.FrameworkCode, opt => opt.MapFrom(source => source.Aims.First().LearningDeliveryValues.FworkCode))
                 .Ignore(x => x.FundingLineType)
-                .ForMember(dest => dest.ProgrammeType, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.ProgType))
-                .ForMember(dest => dest.Reference, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.LearnAimRef))
-                .ForMember(dest => dest.StandardCode, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.StdCode))
-                .ForMember(dest => dest.SequenceNumber, opt => opt.MapFrom(source => source.Aim.AimSeqNumber))
-                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(source => source.Aim.LearningDeliveryValues.LearnStartDate))
+                .ForMember(dest => dest.ProgrammeType, opt => opt.MapFrom(source => source.Aims.First().LearningDeliveryValues.ProgType))
+                .ForMember(dest => dest.Reference, opt => opt.MapFrom(source => source.Aims.First().LearningDeliveryValues.LearnAimRef))
+                .ForMember(dest => dest.StandardCode, opt => opt.MapFrom(source => source.Aims.First().LearningDeliveryValues.StdCode))
+                .ForMember(dest => dest.SequenceNumber, opt => opt.MapFrom(source => source.Aims.First().AimSeqNumber))
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(source => source.Aims.Min(aim => aim.LearningDeliveryValues.LearnStartDate)))
                 ;
 
             CreateMap<IntermediateLearningAim, SubmittedLearnerAimModel>()
                 .ForMember(model => model.LearnerReferenceNumber, opt => opt.MapFrom(aim => aim.Learner.LearnRefNumber))
-                .ForMember(model => model.LearningAimFrameworkCode, opt => opt.MapFrom(aim => aim.Aim.LearningDeliveryValues.FworkCode))
-                .ForMember(model => model.LearningAimPathwayCode, opt => opt.MapFrom(aim => aim.Aim.LearningDeliveryValues.PwayCode))
-                .ForMember(model => model.LearningAimProgrammeType, opt => opt.MapFrom(aim => aim.Aim.LearningDeliveryValues.ProgType))
-                .ForMember(model => model.LearningAimStandardCode, opt => opt.MapFrom(aim => aim.Aim.LearningDeliveryValues.StdCode))
-                .ForMember(model => model.LearningAimReference, opt => opt.MapFrom(aim => aim.Aim.LearningDeliveryValues.LearnAimRef))
+                .ForMember(model => model.LearningAimFrameworkCode, opt => opt.MapFrom(aim => aim.Aims.First().LearningDeliveryValues.FworkCode))
+                .ForMember(model => model.LearningAimPathwayCode, opt => opt.MapFrom(aim => aim.Aims.First().LearningDeliveryValues.PwayCode))
+                .ForMember(model => model.LearningAimProgrammeType, opt => opt.MapFrom(aim => aim.Aims.First().LearningDeliveryValues.ProgType))
+                .ForMember(model => model.LearningAimStandardCode, opt => opt.MapFrom(aim => aim.Aims.First().LearningDeliveryValues.StdCode))
+                .ForMember(model => model.LearningAimReference, opt => opt.MapFrom(aim => aim.Aims.First().LearningDeliveryValues.LearnAimRef))
                 .ForMember(model => model.ContractType, opt => opt.MapFrom(aim => aim.ContractType))
                 .Ignore(model => model.Id)
                 ;

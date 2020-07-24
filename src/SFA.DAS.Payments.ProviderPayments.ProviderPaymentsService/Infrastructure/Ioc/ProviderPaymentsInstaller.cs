@@ -11,9 +11,13 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Infrastructu
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<DasEndpointFactory>()
+                   .As<IDasEndpointFactory>()
+                   .SingleInstance();
+
             builder.RegisterType<IlrSubmissionCache>()
-                .As<IDataCache<ReceivedProviderEarningsEvent>>()
-                .InstancePerLifetimeScope();
+                   .As<IDataCache<ReceivedProviderEarningsEvent>>()
+                   .InstancePerLifetimeScope();
             builder.RegisterType<MonthEndCache>()
                 .As<IMonthEndCache>()
                 .InstancePerLifetimeScope();

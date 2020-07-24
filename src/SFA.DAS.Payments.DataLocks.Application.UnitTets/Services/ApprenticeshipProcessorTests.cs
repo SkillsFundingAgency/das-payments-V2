@@ -1,52 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Autofac.Extras.Moq;
+﻿using Autofac.Extras.Moq;
 using AutoMapper;
-using Castle.Components.DictionaryAdapter;
+using FluentAssertions;
 using Moq;
 using NServiceBus;
 using NUnit.Framework;
 using SFA.DAS.CommitmentsV2.Messages.Events;
 using SFA.DAS.CommitmentsV2.Types;
 using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.DataLocks.Application.Mapping;
 using SFA.DAS.Payments.DataLocks.Application.Services;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 {
     [TestFixture]
     public class ApprenticeshipProcessorTests
     {
-        private Autofac.Extras.Moq.AutoMock mocker;
+        private AutoMock mocker;
 
         [SetUp]
         public void SetUp()
         {
             mocker = AutoMock.GetLoose();
-            mocker.Mock<IMapper>()
-                .Setup(x => x.Map<ApprenticeshipModel>(It.IsAny<ApprenticeshipCreatedEvent>()))
-                .Returns<ApprenticeshipCreatedEvent>(ev => new ApprenticeshipModel
-                {
-                    AccountId = ev.AccountId,
-                    Ukprn = ev.ProviderId,
-                    Id = ev.ApprenticeshipId,
-                    Uln = long.Parse(ev.Uln)
-                });
-            mocker.Mock<IMapper>()
-                .Setup(x => x.Map<ApprenticeshipUpdated>(It.IsAny<ApprenticeshipModel>()))
-                .Returns<ApprenticeshipModel>(model => new ApprenticeshipUpdated
-                {
-                    EmployerAccountId = model.AccountId,
-                    Ukprn = model.Ukprn,
-                    Id = model.Id,
-                    Uln = model.Uln
-                });
+            var mapperConfiguration = new MapperConfiguration(expression =>
+            {
+                expression.AddProfile(typeof(DataLocksProfile));
+            });
+            mocker.Provide<IMapper>(new Mapper(mapperConfiguration));
 
             mocker.Mock<IEndpointInstance>()
                 .Setup(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()))
@@ -54,6 +43,26 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             mocker.Mock<IEndpointInstanceFactory>()
                 .Setup(x => x.GetEndpointInstance())
                 .ReturnsAsync(mocker.Mock<IEndpointInstance>().Object);
+        }
+
+        [Test]
+        public void ProcessCreatedEvent_WithExistingApprenticeship_DoesNotFail()
+        {
+            var approvalsEvent = new ApprenticeshipCreatedEvent
+            {
+                AccountId = 12345,
+                TransferSenderId = 123456,
+            };
+
+            mocker.Mock<IApprenticeshipService>().Setup(x => x.NewApprenticeship(It.Is<ApprenticeshipModel>(model =>
+                model.AccountId == 12345 &&
+                model.TransferSendingEmployerAccountId == 123456
+            ))).Throws(new ApprenticeshipAlreadyExistsException(1));
+
+            var sut = mocker.Create<ApprenticeshipProcessor>();
+
+            Func<Task> action = async () => await sut.Process(approvalsEvent);
+            action.Should().NotThrow();
         }
 
         [Test]
@@ -74,7 +83,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 TrainingType = ProgrammeType.Standard,
                 TransferSenderId = 123456,
                 Uln = "123456",
-                PriceEpisodes = new PriceEpisode[] { new PriceEpisode { FromDate = DateTime.Today, Cost = 1000M } }
+                PriceEpisodes = new [] { new PriceEpisode { FromDate = DateTime.Today, Cost = 1000M } }
             };
             mocker.Mock<IApprenticeshipService>()
                 .Setup(svc => svc.NewApprenticeship(It.IsAny<ApprenticeshipModel>()))
@@ -90,7 +99,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     && model.Ukprn == approvalsEvent.ProviderId
                     && model.Uln.ToString() == approvalsEvent.Uln)
                 ), Times.Once);
-
         }
 
         [Test]
@@ -111,7 +119,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 TrainingType = ProgrammeType.Standard,
                 TransferSenderId = 123456,
                 Uln = "123456",
-                PriceEpisodes = new PriceEpisode[] { new PriceEpisode { FromDate = DateTime.Today, Cost = 1000M } }
+                PriceEpisodes = new [] { new PriceEpisode { FromDate = DateTime.Today, Cost = 1000M } }
             };
             mocker.Mock<IApprenticeshipService>()
                 .Setup(svc => svc.NewApprenticeship(It.IsAny<ApprenticeshipModel>()))
@@ -147,7 +155,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 TrainingType = ProgrammeType.Standard,
                 TransferSenderId = 123456,
                 Uln = "123456",
-                PriceEpisodes = new PriceEpisode[] { new PriceEpisode { FromDate = DateTime.Today, Cost = 1000M } }
+                PriceEpisodes = new [] { new PriceEpisode { FromDate = DateTime.Today, Cost = 1000M } }
             };
             mocker.Mock<IApprenticeshipService>()
                 .Setup(svc => svc.NewApprenticeship(It.IsAny<ApprenticeshipModel>()))
@@ -187,9 +195,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 StartDate = DateTime.Today,
                 EndDate = DateTime.Today.AddYears(1),
                 ApprovedOn = DateTime.Today,
-                TrainingCode = "ABC",
+                TrainingCode = "98",
                 TrainingType = ProgrammeType.Standard,
-                PriceEpisodes = new PriceEpisode[1]
+                PriceEpisodes = new []
                 {
                     new PriceEpisode
                     {
@@ -209,16 +217,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
                 });
 
-            mocker.Mock<IMapper>()
-                .Setup(x => x.Map<UpdatedApprenticeshipApprovedModel>(It.IsAny<ApprenticeshipUpdatedApprovedEvent>()))
-                .Returns<ApprenticeshipUpdatedApprovedEvent>(model => new UpdatedApprenticeshipApprovedModel
-                {
-                    ApprenticeshipId = model.ApprenticeshipId,
-                    Uln = long.Parse(model.Uln),
-                    EstimatedStartDate = model.StartDate,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>()
-                });
-
             var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
             await apprenticeshipProcessor.ProcessUpdatedApprenticeship(approvalsEvent);
 
@@ -227,13 +225,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                         ev.Id == approvalsEvent.ApprenticeshipId
                         && ev.Uln.ToString() == approvalsEvent.Uln),
                     It.IsAny<PublishOptions>()), Times.Once);
-
-            mocker.Mock<IMapper>()
-                .Verify(x => x.Map<UpdatedApprenticeshipApprovedModel>(It.IsAny<ApprenticeshipUpdatedApprovedEvent>()), Times.Once);
-
         }
-
-
+        
         [Test]
         public async Task Process_Apprenticeship_DataLock_Triage()
         {
@@ -241,9 +234,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             {
                 ApprenticeshipId = 1,
                 ApprovedOn = DateTime.Today,
-                TrainingCode = "ABC",
+                TrainingCode = "98",
                 TrainingType = ProgrammeType.Standard,
-                PriceEpisodes = new PriceEpisode[1]
+                PriceEpisodes = new []
                 {
                     new PriceEpisode
                     {
@@ -253,14 +246,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     }
                 }
             };
-
-            mocker.Mock<IMapper>()
-                .Setup(x => x.Map<UpdatedApprenticeshipDataLockTriageModel>(It.IsAny<DataLockTriageApprovedEvent>()))
-                .Returns<DataLockTriageApprovedEvent>(model => new UpdatedApprenticeshipDataLockTriageModel
-                {
-                    ApprenticeshipId = model.ApprenticeshipId,
-                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>()
-                });
 
             mocker.Mock<IApprenticeshipDataLockTriageService>()
                 .Setup(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipDataLockTriageModel>()))
@@ -276,7 +261,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev =>
                         ev.Id == dataLockTriageApprovedEvent.ApprenticeshipId),
                     It.IsAny<PublishOptions>()), Times.Once);
-
         }
 
         [Test]
@@ -306,9 +290,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             mocker.Mock<IApprenticeshipStoppedService>()
                 .Verify(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipStoppedModel>()), Times.Once);
-
         }
-
 
         [Test]
         public async Task Process_Apprenticeship_Stop_Date_Changed_Correctly()
@@ -335,7 +317,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             mocker.Mock<IApprenticeshipStoppedService>()
                 .Verify(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipStoppedModel>()), Times.Once);
-
         }
 
         [Test]
@@ -362,7 +343,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             mocker.Mock<IApprenticeshipPauseService>()
                 .Verify(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipPausedModel>()), Times.Once);
-
         }
 
         [Test]
@@ -389,7 +369,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             mocker.Mock<IApprenticeshipResumedService>()
                 .Verify(svc => svc.UpdateApprenticeship(It.IsAny<UpdatedApprenticeshipResumedModel>()), Times.Once);
-
         }
 
         [Test]
@@ -398,7 +377,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var paymentOrderChangedEvent = new PaymentOrderChangedEvent()
             {
               AccountId = 1,
-              PaymentOrder = new int[]{300, 100, 200}
+              PaymentOrder = new []{300, 100, 200}
             };
             
             var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
@@ -413,11 +392,12 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                                                                      ev.OrderedProviders[2] == paymentOrderChangedEvent.PaymentOrder[2] ),
                     It.IsAny<PublishOptions>()),
                     Times.Once);
-            
         }
 
         [Test]
-        public async Task Process_Apprenticeship_For_NonLevyPayer_Employer_Correctly()
+        [TestCase(false)]
+        [TestCase(true)]
+        public async Task Process_Apprenticeship_NonLevyPayerFlag_For_Employer_Correctly(bool isLevyPayer)
         {
             var apprenticeships = new List<ApprenticeshipModel>
             {
@@ -425,17 +405,17 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 {
                     Id =100,
                     AccountId = 1,
-                    IsLevyPayer =  false
+                    IsLevyPayer =  !isLevyPayer
                 }
             };
 
             mocker.Mock<IApprenticeshipService>()
-                .Setup(svc => svc.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(apprenticeships[0].AccountId, 
+                .Setup(svc => svc.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(apprenticeships[0].AccountId,  isLevyPayer,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(apprenticeships);
             
             var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
-            await apprenticeshipProcessor.ProcessApprenticeshipForNonLevyPayerEmployer(1);
+            await apprenticeshipProcessor.ProcessIsLevyPayerFlagForEmployer(1, isLevyPayer);
             
             mocker.Mock<IEndpointInstance>()
                 .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev => ev.Id == apprenticeships[0].Id &&
@@ -443,7 +423,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                                                                               ev.IsLevyPayer == apprenticeships[0].IsLevyPayer),
                     It.IsAny<PublishOptions>()),
                     Times.Once);
-            
         }
 
         [Test]
@@ -452,16 +431,15 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var apprenticeships = new List<ApprenticeshipModel>();
          
             mocker.Mock<IApprenticeshipService>()
-                .Setup(svc => svc.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(1,
+                .Setup(svc => svc.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(1, false,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(apprenticeships);
 
             var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
-            await apprenticeshipProcessor.ProcessApprenticeshipForNonLevyPayerEmployer(1);
+            await apprenticeshipProcessor.ProcessIsLevyPayerFlagForEmployer(1, false);
 
             mocker.Mock<IEndpointInstance>()
                 .Verify(svc => svc.Publish(It.IsAny<ApprenticeshipUpdated>(), It.IsAny<PublishOptions>()), Times.Never);
         }
-
     }
 }

@@ -31,11 +31,11 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
             var uln = message.Learner.Uln;
             var learnerRef = message.Learner.ReferenceNumber;
             logger.LogDebug($"Processing DataLockProxyProxyService event for learner with learner ref {learnerRef}");
-            var actorId = new ActorId(uln);
+            var actorId = new ActorId(uln.ToString());
 
             logger.LogVerbose($"Creating actor proxy for provider with learner ref {learnerRef}");
             var actor = proxyFactory.CreateActorProxy<IDataLockService>(new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/DataLockServiceActorService"), actorId);
-            logger.LogDebug($"Actor proxy created for learner with ULN {uln}");
+            logger.LogDebug($"Actor proxy created for learner JobId: {message.JobId}, LearnRefNumber: {learnerRef}");
 
             logger.LogVerbose($"Calling actor proxy to handle functional skill earning for learner with learner ref {learnerRef}");
             var dataLockEvents = await actor.HandleFunctionalSkillEarning(message, CancellationToken.None).ConfigureAwait(false);
@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockProxyService.Handlers
                 logger.LogDebug($"Functional Skill Data lock event published for learner with learner ref {learnerRef}");
             }
 
-            logger.LogInfo($"Successfully processed DataLockProxyProxyService event for Actor Id {actorId}");
+            logger.LogInfo($"Successfully processed DataLockProxyProxyService event for Actor for learner {learnerRef}");
         }
     }
 }

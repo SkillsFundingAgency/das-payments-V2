@@ -92,8 +92,8 @@
     <Reference Include="ESFA.DC.JobContextManager, Version=0.2.11.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.JobContextManager.0.2.11-beta0001\lib\netstandard2.0\ESFA.DC.JobContextManager.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.Jobs.Model, Version=0.2.19.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.Jobs.Model.0.2.19-beta0001\lib\netstandard2.0\ESFA.DC.Jobs.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.Jobs.Model, Version=0.2.76.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Jobs.Model.0.2.76-beta0001\lib\netstandard2.0\ESFA.DC.Jobs.Model.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.JobStatus.Interface, Version=0.2.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.JobStatus.Interface.0.2.8-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Interface.dll</HintPath>
@@ -384,8 +384,11 @@
     <Compile Include="Automation\DcConfiguration.cs" />
     <Compile Include="Automation\DcHelper.cs" />
     <Compile Include="Automation\DcNullHelper.cs" />
+    <Compile Include="Automation\EmployerMonthEndHelper.cs" />
     <Compile Include="Automation\IDcHelper.cs" />
+    <Compile Include="Automation\IPaymentsHelper.cs" />
     <Compile Include="Automation\LearnRefNumberGenerator.cs" />
+    <Compile Include="Automation\PaymentsHelper.cs" />
     <Compile Include="Automation\TestSession.cs" />
     <Compile Include="BindingsBase.cs" />
     <Compile Include="Data\AdditionalIlrData.cs" />
@@ -443,6 +446,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages.Internal\SFA.DAS.Payments.EarningEvents.Messages.Internal.csproj">
       <Project>{B5FF4D1A-925D-4979-9363-4C8298C483B8}</Project>
       <Name>SFA.DAS.Payments.EarningEvents.Messages.Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages.Internal\SFA.DAS.Payments.FundingSource.Messages.Internal.csproj">
+      <Project>{95F83345-7AD6-477C-A271-3C7F8CA0529B}</Project>
+      <Name>SFA.DAS.Payments.FundingSource.Messages.Internal</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
       <Project>{678E5D09-C96D-49CC-811F-78DDCB37A474}</Project>

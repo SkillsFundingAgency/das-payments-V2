@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Tests.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core
 {
@@ -42,7 +43,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 }
 
                 return new CollectionPeriod
-                { AcademicYear = aimStartDate.AcademicYear, Period = (byte)(startPeriod + months - 1) };
+                    { AcademicYear = aimStartDate.AcademicYear, Period = (byte)(startPeriod + months - 1) };
             }
 
             return aimStartDate;

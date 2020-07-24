@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -45,12 +45,13 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                     var license = WebUtility.HtmlDecode(config.NServiceBusLicense);
                     endpointConfiguration.License(license);
                 }
-
+            
                 var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
                 transport
                     .ConnectionString(config.ServiceBusConnectionString)
                     .Transactions(TransportTransactionMode.ReceiveOnly)
                     .RuleNameShortener(ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
+                transport.PrefetchCount(20);
                 builder.RegisterInstance(transport)
                     .As<TransportExtensions<AzureServiceBusTransport>>()
                     .SingleInstance();

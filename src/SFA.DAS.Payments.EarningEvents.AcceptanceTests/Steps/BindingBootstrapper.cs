@@ -16,10 +16,10 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
         public static void AddRoutingConfig()
         {
             var endpointConfiguration = Container.Resolve<EndpointConfiguration>();
-            endpointConfiguration.Conventions().DefiningEventsAs(type => type.IsEvent<ApprenticeshipContractType2EarningEvent>());
+            endpointConfiguration.Conventions().DefiningEventsAs(type => type.IsEvent<ApprenticeshipContractTypeEarningsEvent>());
             var transportConfig = Container.Resolve<TransportExtensions<AzureServiceBusTransport>>();
             var routing = transportConfig.Routing();
-            routing.RouteToEndpoint(typeof(ProcessLearnerCommand), EndpointNames.EarningEventsService);
+            routing.RouteToEndpoint(typeof(ProcessLearnerCommand), EndpointNames.ProcessLearnerService);
         }
 
         [BeforeTestRun(Order = 2)]

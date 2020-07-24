@@ -15,14 +15,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
     public class NegativeEarningsServiceTests
     {
         private NegativeEarningsService sut;
-        private Mock<IRefundService> refundService;
         private AutoMock mocker;
         
         [SetUp]
         public void Setup()
         {
             mocker = AutoMock.GetStrict();
-            refundService = mocker.Mock<IRefundService>();
             sut = new NegativeEarningsService(new RefundService());
         }
 
@@ -57,7 +55,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 ApprenticeshipPriceEpisodeId = paymentHistory.ApprenticeshipPriceEpisodeId,
             });
         }
-
+        
         [Test, AutoData]
         public void ShouldReturnCorrectApprenticeshipEmployerType(Payment paymentHistory)
         {
@@ -78,14 +76,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             {
                 new Payment{Amount = 200, DeliveryPeriod = 1, TransactionType = 1, FundingSource = FundingSourceType.Levy},
             };
-
-            var payments = new List<RequiredPayment>
-            {
-                new RequiredPayment {Amount = -200},
-            };
-
-            refundService.Setup(x => x.GetRefund(-300, history)).Returns(payments);
-
 
             var actual = sut.ProcessNegativeEarning(-300, history, 2, It.IsAny<string>());
 
@@ -133,14 +123,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 new Payment{Amount = 100, DeliveryPeriod = 2, TransactionType = 1, FundingSource = FundingSourceType.Levy},
             };
 
-            var payments = new List<RequiredPayment>
-            {
-                new RequiredPayment(),
-            };
-
-            refundService.Setup(x => x.GetRefund(-100, history)).Returns(payments);
-
-
+            
             var actual = sut.ProcessNegativeEarning(-100, history, 3, expectedPriceEpisode);
 
             actual.First().PriceEpisodeIdentifier.Should().Be(expectedPriceEpisode);

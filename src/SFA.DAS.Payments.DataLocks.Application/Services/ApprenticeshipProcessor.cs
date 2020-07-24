@@ -10,6 +10,7 @@ using SFA.DAS.Payments.DataLocks.Domain.Models;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.Exceptions;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Services
 {
@@ -23,7 +24,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         Task ProcessPausedApprenticeship(ApprenticeshipPausedEvent pausedEvent);
         Task ProcessResumedApprenticeship(ApprenticeshipResumedEvent resumedEvent);
         Task ProcessPaymentOrderChange(PaymentOrderChangedEvent paymentOrderChangedEvent);
-        Task ProcessApprenticeshipForNonLevyPayerEmployer(long accountId);
+        Task ProcessIsLevyPayerFlagForEmployer(long accountId, bool isLevyPayer);
     }
 
     public class ApprenticeshipProcessor : IApprenticeshipProcessor
@@ -63,14 +64,42 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         {
             try
             {
-                logger.LogDebug($"Now processing the apprenticeship created event. Apprenticeship id: {createdEvent.ApprenticeshipId}, employer account id: {createdEvent.AccountId}, Ukprn: {createdEvent.ProviderId}.");
+                logger.LogDebug($"Now processing the apprenticeship created event. " +
+                                $"Apprenticeship id: {createdEvent.ApprenticeshipId}, " +
+                                $"employer account id: {createdEvent.AccountId}, " +
+                                $"Ukprn: {createdEvent.ProviderId}.");
                 var model = mapper.Map<ApprenticeshipModel>(createdEvent);
                 var duplicates = await apprenticeshipService.NewApprenticeship(model).ConfigureAwait(false);
+                logger.LogDebug($"Apprenticeship saved to database. " +
+                                $"Apprenticeship id: {createdEvent.ApprenticeshipId}, " +
+                                $"employer account id: {createdEvent.AccountId}, " +
+                                $"Ukprn: {createdEvent.ProviderId}.");
+
                 var updatedEvent = mapper.Map<ApprenticeshipUpdated>(model);
-                updatedEvent.Duplicates = duplicates.Select(duplicate => new ApprenticeshipDuplicate { Ukprn = duplicate.Ukprn, ApprenticeshipId = duplicate.ApprenticeshipId }).ToList();
+                updatedEvent.Duplicates = duplicates.Select(duplicate => new ApprenticeshipDuplicate
+                    {Ukprn = duplicate.Ukprn, ApprenticeshipId = duplicate.ApprenticeshipId}).ToList();
                 var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
                 await endpointInstance.Publish(updatedEvent).ConfigureAwait(false);
-                logger.LogInfo($"Finished processing the apprenticeship created event. Apprenticeship id: {createdEvent.ApprenticeshipId}, employer account id: {createdEvent.AccountId}, Ukprn: {createdEvent.ProviderId}.");
+
+                logger.LogInfo($"Finished processing the apprenticeship created event. " +
+                               $"Apprenticeship id: {createdEvent.ApprenticeshipId}, " +
+                               $"employer account id: {createdEvent.AccountId}, " +
+                               $"Ukprn: {createdEvent.ProviderId}.");
+            }
+            catch (ApprenticeshipAlreadyExistsException e)
+            {
+                logger.LogWarning($"Apprenticeship already exists while trying to add a new apprenticeship: {e.Message}\n" +
+                                $"Apprenticeship id: {createdEvent.ApprenticeshipId}, " +
+                                $"employer account id: {createdEvent.AccountId}, " +
+                                $"Ukprn: {createdEvent.ProviderId}.");
+            }
+            catch (InvalidOperationException e)
+            {
+                logger.LogError($"Unhandled exception while adding apprenticeship: {e.Message}\n" +
+                                $"Apprenticeship id: {createdEvent.ApprenticeshipId}, " +
+                                $"employer account id: {createdEvent.AccountId}, " +
+                                $"Ukprn: {createdEvent.ProviderId}.", e);
+                throw;
             }
             catch (Exception ex)
             {
@@ -214,30 +243,30 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
         }
 
-        public async Task ProcessApprenticeshipForNonLevyPayerEmployer(long accountId)
+        public async Task ProcessIsLevyPayerFlagForEmployer(long accountId, bool isLevyPayer)
         {
             try
             {
-                logger.LogDebug($"Processing the apprenticeship Employer Is Non Levy Payer event for Account id: {accountId}");
+                logger.LogDebug($"Processing the apprenticeship employer is levy payer flag for Account id: {accountId}");
                
-                var updatedApprenticeships = await apprenticeshipService.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(accountId).ConfigureAwait(false);
+                var updatedApprenticeships = await apprenticeshipService.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(accountId, isLevyPayer).ConfigureAwait(false);
 
                 if (!updatedApprenticeships.Any())
                 {
-                    logger.LogDebug($"Unable to update IsLevyPayerFlag no Apprenticeships found for Account id: {accountId}");
+                    logger.LogDebug($"Unable to update levy payer flag, no Apprenticeships found for Account id: {accountId} that required change");
                     return;
                 }
 
-                var updatedEvents = updatedApprenticeships.Select(x => mapper.Map<ApprenticeshipUpdated>(x));
+                var updatedEvents = updatedApprenticeships.Select(x => mapper.Map<ApprenticeshipUpdated>(x)).ToList();
                 
                 var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
                 await Task.WhenAll(updatedEvents.Select(message => endpointInstance.Publish(message))).ConfigureAwait(false);
                 
-                logger.LogInfo($"Finished Processing the apprenticeship Employer Is Non Levy Payer event for Account id: {accountId}");
+                logger.LogInfo($"Finished processing the apprenticeship employer is levy payer flag for Account id: {accountId}. Updated {updatedEvents.Count()} apprenticeships.");
             }
             catch (Exception ex)
             {
-                logger.LogError($"Error while processing apprenticeship Employer Is Non Levy Payer event . Error: {ex.Message}", ex);
+                logger.LogError($"Error processing the apprenticeship employer is levy payer flag . Error: {ex.Message}", ex);
                 throw;
             }
         }

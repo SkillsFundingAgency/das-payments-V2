@@ -64,7 +64,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             this.submittedLearnerAimRepository = submittedLearnerAimRepository;
             this.jobStatusService = jobStatusService;
         }
-        
+
         public async Task<bool> HandleAsync(JobContextMessage message, CancellationToken cancellationToken)
         {
             logger.LogDebug($"Processing Earning Event Service event for Job Id : {message.JobId}");
@@ -135,8 +135,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 
                     if (await jobStatusService.WaitForJobToFinish(message.JobId, cancellationToken))
                     {
-                        logger.LogInfo(
-                            $"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");
+                        logger.LogInfo($"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");
                         return true;
                     }
                     logger.LogError($"Job failed to finished within the allocated time. Job Id: {message.JobId}");
@@ -161,8 +160,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             {
                 if (message.TopicPointer > message.Topics.Count - 1)
                 {
-                    logger.LogError(
-                        $"Topic Pointer points outside the number of items in the collection of Topics. JobId: {message.JobId}");
+                    logger.LogError($"Topic Pointer points outside the number of items in the collection of Topics. JobId: {message.JobId}");
                     return true;
                 }
 
@@ -256,6 +254,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         {
             var endpointInstance = await factory.GetEndpointInstance().ConfigureAwait(false);
             await endpointInstance.Publish(submissionEvent).ConfigureAwait(false);
+            var jobClient = jobClientFactory.Create();
+            if (submissionEvent is SubmissionFailedEvent)
+                await jobClient.RecordJobFailure(submissionEvent.JobId, submissionEvent.Ukprn, submissionEvent.IlrSubmissionDateTime, submissionEvent.AcademicYear, submissionEvent.CollectionPeriod).ConfigureAwait(false);
+            else
+                await jobClient.RecordJobSuccess(submissionEvent.JobId, submissionEvent.Ukprn, submissionEvent.IlrSubmissionDateTime, submissionEvent.AcademicYear, submissionEvent.CollectionPeriod).ConfigureAwait(false);
         }
 
         private async Task<FM36Global> GetFm36Global(JobContextMessage message, int collectionPeriod, CancellationToken cancellationToken)
@@ -374,12 +377,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                         return stopwatch.ElapsedMilliseconds;
                     }
 
-                    await endpointInstance.SendLocal(learnerCommand).ConfigureAwait(false);
+                    await endpointInstance.Send(learnerCommand).ConfigureAwait(false);
 
                     var aims = submittedLearnerAimBuilder.Build(learnerCommand);
                     await Task.WhenAll(aims.Select(aim => submittedAimWriter.Write(aim, cancellationToken))).ConfigureAwait(false);
 
-                    logger.LogVerbose($"Successfully sent ProcessLearnerCommand JobId: {learnerCommand.JobId}, Ukprn: {fm36Output.UKPRN}, LearnRefNumber: {learnerCommand.Learner.LearnRefNumber}, SubmissionTime: {message.SubmissionDateTimeUtc}, Collection Year: {fm36Output.Year}, Collection period: {collectionPeriod}");
+                    logger.LogVerbose($"Successfully sent ProcessLearnerCommand JobId: {learnerCommand.JobId}, LearnRefNumber: {learnerCommand.Learner.LearnRefNumber}, SubmissionTime: {message.SubmissionDateTimeUtc}, Collection Year: {fm36Output.Year}, Collection period: {collectionPeriod}");
                 }
                 catch (Exception ex)
                 {

@@ -39,11 +39,11 @@
     <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.Jobs.Model, Version=0.2.19.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.Jobs.Model.0.2.19-beta0001\lib\netstandard2.0\ESFA.DC.Jobs.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.Jobs.Model, Version=0.2.76.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Jobs.Model.0.2.76-beta0001\lib\netstandard2.0\ESFA.DC.Jobs.Model.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.JobStatus.Interface, Version=0.2.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.JobStatus.Interface.0.2.8-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Interface.dll</HintPath>
+    <Reference Include="ESFA.DC.JobStatus.Interface, Version=0.1.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.JobStatus.Interface.0.1.12-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Interface.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Azure.Services.AppAuthentication, Version=1.0.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.3\lib\net452\Microsoft.Azure.Services.AppAuthentication.dll</HintPath>
@@ -180,7 +180,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EndpointNames.cs" />
+    <Compile Include="Handlers\PeriodEndRunFailedHandler.cs" />
+    <Compile Include="Handlers\PeriodEndStopSuccessHandler.cs" />
+    <Compile Include="Handlers\PeriodEndRunSuccessHandler.cs" />
+    <Compile Include="Handlers\PeriodEndStartFailedHandler.cs" />
+    <Compile Include="Handlers\PeriodEndStartSuccessHandler.cs" />
+    <Compile Include="Handlers\PeriodEndStopFailedHandler.cs" />
+    <Compile Include="Handlers\SubmissionJobFailedHandler.cs" />
+    <Compile Include="Handlers\SubmissionJobSucceededHandler.cs" />
     <Compile Include="Infrastructure\BindingBootstrapper.cs" />
+    <Compile Include="Jobs\PeriodEndJobs.feature.cs">
+      <DependentUpon>PeriodEndJobs.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Jobs\Jobs.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -202,6 +215,10 @@
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>true</IsTransformFile>
     </None>
+    <None Include="Jobs\PeriodEndJobs.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PeriodEndJobs.feature.cs</LastGenOutput>
+    </None>
     <None Include="Jobs\Jobs.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Jobs.feature.cs</LastGenOutput>
@@ -221,9 +238,21 @@
       <Project>{f6e38368-c397-488b-b041-d3e8423c1ce1}</Project>
       <Name>SFA.DAS.Payments.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj">
+      <Project>{07A36781-D09B-4CF9-8D0B-80BB929FE535}</Project>
+      <Name>SFA.DAS.Payments.EarningEvents.Messages</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
       <Project>{678e5d09-c96d-49cc-811f-78ddcb37a474}</Project>
       <Name>SFA.DAS.Payments.Messages.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj">
+      <Project>{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}</Project>
+      <Name>SFA.DAS.Payments.Model.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Client\SFA.DAS.Payments.Monitoring.Jobs.Client.csproj">
+      <Project>{66B42B94-B29B-48EA-9AB6-C96C11C1D9CE}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Jobs.Client</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Data\SFA.DAS.Payments.Monitoring.Jobs.Data.csproj">
       <Project>{d9849b05-c642-48f7-aa6d-fa917257ae45}</Project>

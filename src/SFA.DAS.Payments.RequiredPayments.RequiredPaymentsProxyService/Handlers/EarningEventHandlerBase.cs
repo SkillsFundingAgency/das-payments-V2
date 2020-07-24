@@ -41,10 +41,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             paymentLogger.LogInfo($"Processing RequiredPaymentsProxyService event. Message Id : {context.MessageId}");
             executionContext.JobId = message.JobId.ToString();
 
-            var contractType = message is PayableEarningEvent ? ContractType.Act1 :
-                message is ApprenticeshipContractType2EarningEvent ? ContractType.Act2 :
-                (message as IFunctionalSkillEarningEvent)?.ContractType
-                ?? throw new InvalidOperationException($"Cannot resolve contract type for {typeof(T).FullName}");
+            var contractType = GetContractTypeFromMessage(message);
 
             var key = apprenticeshipKeyService.GenerateApprenticeshipKey(
                 message.Ukprn,
@@ -59,7 +56,9 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             );
 
             var actorId = new ActorId(key);
-            var actor = proxyFactory.CreateActorProxy<IRequiredPaymentsService>(new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"), actorId);
+            var actor = proxyFactory.CreateActorProxy<IRequiredPaymentsService>(
+                new Uri("fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric/RequiredPaymentsServiceActorService"),
+                actorId);
             IReadOnlyCollection<PeriodisedRequiredPaymentEvent> requiredPaymentEvent;
 
             requiredPaymentEvent = await HandleEarningEvent(message, actor).ConfigureAwait(false);
@@ -67,9 +66,28 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             if (requiredPaymentEvent != null)
                 await Task.WhenAll(requiredPaymentEvent.Select(context.Publish)).ConfigureAwait(false);
 
-            paymentLogger.LogInfo($"Successfully processed RequiredPaymentsProxyService event for Actor Id {actorId}");
+            paymentLogger.LogInfo("Successfully processed RequiredPaymentsProxyService event for Actor for " + 
+            $"jobId:{message.JobId}, learnerRef:{message.Learner.ReferenceNumber}, frameworkCode:{message.LearningAim.FrameworkCode}, " +
+            $"pathwayCode:{message.LearningAim.PathwayCode}, programmeType:{message.LearningAim.ProgrammeType}, " +
+            $"standardCode:{message.LearningAim.StandardCode}, learningAimReference:{message.LearningAim.Reference}, " +
+            $"academicYear:{message.CollectionPeriod.AcademicYear}, contractType:{contractType}");
         }
 
-        protected abstract Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleEarningEvent(T message, IRequiredPaymentsService actor);
+        private ContractType GetContractTypeFromMessage(T message)
+        {
+            if (message is PayableEarningEvent || message is ApprenticeshipContractType1RedundancyEarningEvent)
+                return ContractType.Act1;
+
+            if (message is ApprenticeshipContractType2EarningEvent || message is ApprenticeshipContractType2RedundancyEarningEvent)
+                return ContractType.Act2;
+
+            if (message is IFunctionalSkillEarningEvent funcSkill)
+                return funcSkill.ContractType;
+
+            throw new InvalidOperationException($"Cannot resolve contract type for {typeof(T).FullName}");
+        }
+
+        protected abstract Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleEarningEvent(T message,
+            IRequiredPaymentsService actor);
     }
 }

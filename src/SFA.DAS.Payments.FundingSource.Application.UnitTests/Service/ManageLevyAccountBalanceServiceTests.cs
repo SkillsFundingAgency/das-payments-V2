@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
@@ -9,8 +10,6 @@ using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
-using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Application.Interfaces;
 using SFA.DAS.Payments.FundingSource.Application.Repositories;
@@ -22,17 +21,18 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
     [TestFixture]
     public class ManageLevyAccountBalanceServiceTests
     {
-        private Mock<ILevyFundingSourceRepository> repository;
         private Mock<IAccountApiClient> accountApiClient;
         private IPaymentLogger logger;
         private Mock<ILevyAccountBulkCopyRepository> bulkWriter;
-        private  Mock<IEndpointInstanceFactory> endpointInstanceFactory;
+        private Mock<IEndpointInstanceFactory> endpointInstanceFactory;
         private Mock<IEndpointInstance> endpointInstance;
+        private Mock<ILevyFundingSourceRepository> levyFundingSourceRepository;
+        private List<(long, bool)> savedAccountStatus;
+        
 
         [SetUp]
         public void Setup()
         {
-            repository = new Mock<ILevyFundingSourceRepository>(MockBehavior.Strict);
             accountApiClient = new Mock<IAccountApiClient>(MockBehavior.Strict);
             logger = Mock.Of<IPaymentLogger>();
             bulkWriter = new Mock<ILevyAccountBulkCopyRepository>(MockBehavior.Strict);
@@ -46,18 +46,35 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             endpointInstanceFactory
                 .Setup(x => x.GetEndpointInstance())
                 .ReturnsAsync(endpointInstance.Object);
+
+            bulkWriter
+                .Setup(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()))
+                .Callback<LevyAccountModel,CancellationToken>((levyAccountModel, cancellationToken) =>
+                {
+                   savedAccountStatus.RemoveAll(x => x.Item1 == levyAccountModel.AccountId);
+                       savedAccountStatus.Add((levyAccountModel.AccountId, levyAccountModel.IsLevyPayer));
+                   
+                })
+                .Returns(Task.CompletedTask);
+
+            bulkWriter
+                .Setup(x => x.DeleteAndFlush( It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            savedAccountStatus = new List<(long, bool)>();
+
+            levyFundingSourceRepository = new Mock<ILevyFundingSourceRepository>();
         }
 
 
         [Test]
         public async Task Refresh_All_Levy_Account_Details_Correctly()
         {
-            var accountIds = new List<long> { 1, 2, 3 };
             int batchSize = 2;
+            var pageNumber = 3;
 
-            var pagedOneApiResponseViewModel = new PagedApiResponseViewModel<AccountWithBalanceViewModel>
+            var apiResponseViewModel = new PagedApiResponseViewModel<AccountWithBalanceViewModel>
             {
-                TotalPages = 2,
+                TotalPages = 5,
                 Data = new List<AccountWithBalanceViewModel>
                 {
                     new AccountWithBalanceViewModel
@@ -71,76 +88,29 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 }
             };
 
-            var pagedTwoApiResponseViewModel = new PagedApiResponseViewModel<AccountWithBalanceViewModel>
-            {
-                TotalPages = 2,
-                Data = new List<AccountWithBalanceViewModel>
-                {
-                    new AccountWithBalanceViewModel
-                    {
-                        AccountId = 2,
-                        Balance = 200m,
-                        RemainingTransferAllowance = 20m,
-                        AccountName = "Test 2 Ltd",
-                        IsLevyPayer = true
-                    },
-                    new AccountWithBalanceViewModel
-                    {
-                        AccountId = 3,
-                        Balance = 300m,
-                        RemainingTransferAllowance = 30m,
-                        AccountName = "Test 3 Ltd",
-                        IsLevyPayer = false
-                    }
-                }
-            };
+            accountApiClient
+                .Setup(x => x.GetPageOfAccounts(pageNumber, It.IsAny<int>(), It.IsAny<DateTime?>()))
+                .ReturnsAsync(apiResponseViewModel);
+           
 
+            var service = CreateManageLevyAccountBalanceService(batchSize);
+
+            await service.RefreshLevyAccountDetails(pageNumber).ConfigureAwait(false);
 
             accountApiClient
-                .SetupSequence(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()))
-                .ReturnsAsync(new PagedApiResponseViewModel<AccountWithBalanceViewModel>
-                {
-                    TotalPages = 2
-                })
-                .ReturnsAsync(pagedOneApiResponseViewModel)
-                .ReturnsAsync(pagedTwoApiResponseViewModel);
+                .Verify(x => x.GetPageOfAccounts(pageNumber, It.IsAny<int>(), It.IsAny<DateTime?>()), Times.Exactly(1));
 
             bulkWriter
-                .Setup(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
+                .Verify(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
 
             bulkWriter
-                .Setup(x => x.DeleteAndFlush( It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-
-            var service = new ManageLevyAccountBalanceService
-            (
-                repository.Object,
-                accountApiClient.Object,
-                logger,
-                bulkWriter.Object,
-                batchSize,
-                endpointInstanceFactory.Object
-            );
-
-            await service.RefreshLevyAccountDetails(new CancellationToken()).ConfigureAwait(false);
-
-            accountApiClient
-                .Verify(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()), Times.Exactly(3));
-
-            bulkWriter
-                .Verify(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
-
-            bulkWriter
-                .Verify(x => x.DeleteAndFlush(It.IsAny<CancellationToken>()), Times.Exactly(2));
+                .Verify(x => x.DeleteAndFlush(It.IsAny<CancellationToken>()), Times.Exactly(1));
 
         }
 
         [Test]
         public async Task Update_Levy_Account_Details_Correctly()
         {
-            var accountIds = new List<long> { 1 };
             int batchSize = 2;
             var pagedApiResponseViewModel = new PagedApiResponseViewModel<AccountWithBalanceViewModel>
             {
@@ -159,35 +129,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             };
 
             accountApiClient
-                .SetupSequence(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()))
-                .ReturnsAsync(new PagedApiResponseViewModel<AccountWithBalanceViewModel>
-                {
-                    TotalPages = 1
-                })
+                .Setup(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()))
                 .ReturnsAsync(pagedApiResponseViewModel);
-
-            bulkWriter
-                .Setup(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-            bulkWriter
-                .Setup(x => x.DeleteAndFlush( It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-            var service = new ManageLevyAccountBalanceService
-            (
-                repository.Object,
-                accountApiClient.Object,
-                logger,
-                bulkWriter.Object,
-                batchSize,
-                endpointInstanceFactory.Object
-            );
-
-            await service.RefreshLevyAccountDetails(new CancellationToken()).ConfigureAwait(false);
+           
+            var service = CreateManageLevyAccountBalanceService(batchSize);
+            await service.RefreshLevyAccountDetails(1).ConfigureAwait(false);
 
             accountApiClient
-                .Verify(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()), Times.Exactly(2));
+                .Verify(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()), Times.Exactly(1));
 
             bulkWriter
                 .Verify(o => o.Write(It.Is<LevyAccountModel>(x => x.AccountId == pagedApiResponseViewModel.Data[0].AccountId &&
@@ -204,116 +153,143 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         }
 
         [Test]
-        public async Task Publish_FoundNotLevyPayerEmployerAccount_Correctly()
+        public async Task Publish_FoundEmployerAccountEvents_Correctly()
         {
             int batchSize = 5;
+            List<AccountWithBalanceViewModel> accounts = new List<AccountWithBalanceViewModel>
+            {
+                new AccountWithBalanceViewModel
+                {
+                    AccountId = 1,
+                    Balance = 100m,
+                    RemainingTransferAllowance = 10m,
+                    AccountName = "Test Ltd",
+                    IsLevyPayer = false
+                },
+                new AccountWithBalanceViewModel
+                {
+                    AccountId = 2,
+                    Balance = 100m,
+                    RemainingTransferAllowance = 10m,
+                    AccountName = "Test Ltd",
+                    IsLevyPayer = true
+                },
+                new AccountWithBalanceViewModel
+                {
+                    AccountId = 3,
+                    Balance = 100m,
+                    RemainingTransferAllowance = 10m,
+                    AccountName = "Test Ltd",
+                    IsLevyPayer = true
+                }
+            };
             var pagedOneApiResponseViewModel = new PagedApiResponseViewModel<AccountWithBalanceViewModel>
             {
                 TotalPages = 1,
-                Data = new List<AccountWithBalanceViewModel>
-                {
-                    new AccountWithBalanceViewModel
-                    {
-                        AccountId = 1,
-                        Balance = 100m,
-                        RemainingTransferAllowance = 10m,
-                        AccountName = "Test Ltd",
-                        IsLevyPayer = false
-                    }
-                }
+                Data = accounts
             };
 
+            savedAccountStatus = accounts.Select(x => (x.AccountId, !x.IsLevyPayer)).ToList(); //opposite state to new state
+            levyFundingSourceRepository
+                .Setup(x => x.GetCurrentEmployerStatus(It.IsAny<List<long>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(savedAccountStatus.ToList());
+
+
             accountApiClient
-                .SetupSequence(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()))
-                .ReturnsAsync(new PagedApiResponseViewModel<AccountWithBalanceViewModel>
+                .Setup(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()))
+                .ReturnsAsync(pagedOneApiResponseViewModel);
+
+
+            var service = CreateManageLevyAccountBalanceService(batchSize);
+
+            await service.RefreshLevyAccountDetails(1, CancellationToken.None).ConfigureAwait(false);
+
+            endpointInstance
+                .Verify(svc => svc.Publish(It.Is<FoundNotLevyPayerEmployerAccount>(x => x.AccountId == 1),
+                        It.IsAny<PublishOptions>()),
+                    Times.Once);
+            endpointInstance
+                .Verify(svc =>
+                        svc.Publish(
+                            It.Is<FoundLevyPayerEmployerAccount>(x => new List<long> {2, 3}.Contains(x.AccountId)),
+                            It.IsAny<PublishOptions>()),
+                    Times.Exactly(2));
+        }
+
+
+        [Test]
+        public async Task Publish_FoundEmployerAccountEventsOnlyPublishedMessageIfLevyFlagHasChangedFromRecordedState_Correctly()
+        {
+            int batchSize = 5;
+            List<AccountWithBalanceViewModel> accounts = new List<AccountWithBalanceViewModel>
+            {
+                new AccountWithBalanceViewModel
                 {
-                    TotalPages = pagedOneApiResponseViewModel.TotalPages
-                })
+                    AccountId = 1,
+                    Balance = 100m,
+                    RemainingTransferAllowance = 10m,
+                    AccountName = "Test Ltd",
+                    IsLevyPayer = false
+                },
+                new AccountWithBalanceViewModel
+                {
+                    AccountId = 2,
+                    Balance = 100m,
+                    RemainingTransferAllowance = 10m,
+                    AccountName = "Test Ltd",
+                    IsLevyPayer = true
+                },
+                new AccountWithBalanceViewModel
+                {
+                    AccountId = 3,
+                    Balance = 100m,
+                    RemainingTransferAllowance = 10m,
+                    AccountName = "Test Ltd",
+                    IsLevyPayer = true
+                }
+            };
+            var pagedOneApiResponseViewModel = new PagedApiResponseViewModel<AccountWithBalanceViewModel>
+            {
+                TotalPages = 1,
+                Data = accounts
+            };
+
+
+            savedAccountStatus = new List<(long, bool)>(){ (1, true), (2, false), (3, true) }; // only first two stored states differ from new accounts
+
+            levyFundingSourceRepository.Setup(x=>x.GetCurrentEmployerStatus(It.IsAny<List<long>>(), It.IsAny<CancellationToken>())).ReturnsAsync(savedAccountStatus.ToList());
+            
+            accountApiClient
+                .Setup(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()))
                 .ReturnsAsync(pagedOneApiResponseViewModel);
             
-            bulkWriter
-                .Setup(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
+            var service = CreateManageLevyAccountBalanceService(batchSize);
 
-            bulkWriter
-                .Setup(x => x.DeleteAndFlush(It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-
-            var service = new ManageLevyAccountBalanceService
-            (
-                repository.Object,
-                accountApiClient.Object,
-                logger,
-                bulkWriter.Object,
-                batchSize,
-                endpointInstanceFactory.Object
-            );
-
-            await service.RefreshLevyAccountDetails(CancellationToken.None).ConfigureAwait(false);
+            await service.RefreshLevyAccountDetails(1, CancellationToken.None).ConfigureAwait(false);
 
             endpointInstance
                 .Verify(svc => svc.Publish(It.Is<FoundNotLevyPayerEmployerAccount>( x => x.AccountId == 1),
                     It.IsAny<PublishOptions>()), 
                     Times.Once);
-
+            endpointInstance
+                .Verify(svc => svc.Publish(It.Is<FoundLevyPayerEmployerAccount>(x => x.AccountId == 2),
+                        It.IsAny<PublishOptions>()),
+                    Times.Once);
         }
 
-
-        [Test]
-        public async Task FoundNotLevyPayerEmployerAccount_Event_Is_Not_Published_If_All_Employer_Is_Marked_As_IsLevyPayer()
+        private ManageLevyAccountBalanceService CreateManageLevyAccountBalanceService(int batchSize)
         {
-            int batchSize = 5;
-            var pagedOneApiResponseViewModel = new PagedApiResponseViewModel<AccountWithBalanceViewModel>
-            {
-                TotalPages = 1,
-                Data = new List<AccountWithBalanceViewModel>
-                {
-                    new AccountWithBalanceViewModel
-                    {
-                        AccountId = 1,
-                        Balance = 100m,
-                        RemainingTransferAllowance = 10m,
-                        AccountName = "Test Ltd",
-                        IsLevyPayer = true
-                    }
-                }
-            };
-
-            accountApiClient
-                .SetupSequence(x => x.GetPageOfAccounts(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime?>()))
-                .ReturnsAsync(new PagedApiResponseViewModel<AccountWithBalanceViewModel>
-                {
-                    TotalPages = pagedOneApiResponseViewModel.TotalPages
-                })
-                .ReturnsAsync(pagedOneApiResponseViewModel);
-
-            bulkWriter
-                .Setup(x => x.Write(It.IsAny<LevyAccountModel>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-            bulkWriter
-                .Setup(x => x.DeleteAndFlush(It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-
             var service = new ManageLevyAccountBalanceService
             (
-                repository.Object,
                 accountApiClient.Object,
                 logger,
                 bulkWriter.Object,
+                levyFundingSourceRepository.Object,
+
                 batchSize,
                 endpointInstanceFactory.Object
             );
-
-            await service.RefreshLevyAccountDetails(CancellationToken.None).ConfigureAwait(false);
-
-            endpointInstance
-                .Verify(svc => svc.Publish(It.Is<FoundNotLevyPayerEmployerAccount>(x => x.AccountId == 1),
-                    It.IsAny<PublishOptions>()),
-                    Times.Never);
-
+            return service;
         }
     }
 }

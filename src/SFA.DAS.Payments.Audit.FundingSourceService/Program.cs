@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.Audit.FundingSourceService
         {
             try
             {
-                using (ServiceFabricContainerFactory.CreateContainerForStatefulService<FundingSourceService>())
+                using (ServiceFabricContainerFactory.CreateContainerForStatelessService<FundingSourceService>())
                 {
                     Thread.Sleep(Timeout.Infinite);
                 }
