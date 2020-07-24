@@ -5,7 +5,6 @@
     <Parameter Name="Audit_DataLockService_InstanceCount" Value="__Audit_DataLockService_InstanceCount__" />
     <Parameter Name="Audit_RequiredPaymentService_InstanceCount" Value="__Audit_RequiredPaymentService_InstanceCount__" />
     <Parameter Name="Audit_FundingSourceService_InstanceCount" Value="__Audit_FundingSourceService_InstanceCount__" />
-
     <!--no longer needed-->
     <Parameter Name="Audit_EarningEvents_EndpointName" Value="__Audit_EarningEvents_EndpointName__" />
     <Parameter Name="Audit_EarningEvents_FailedMessagesQueue" Value="__Audit_EarningEvents_FailedMessagesQueue__" />
@@ -13,7 +12,6 @@
     <Parameter Name="Audit_FundingSource_FailedMessagesQueue" Value="__Audit_FundingSource_FailedMessagesQueue__" />
     <Parameter Name="Audit_RequiredPayments_EndpointName" Value="__Audit_RequiredPayments_EndpointName__" />
     <Parameter Name="Audit_RequiredPayments_FailedMessagesQueue" Value="__Audit_RequiredPayments_FailedMessagesQueue__" />
-
     <!--no longer needed-->
     <Parameter Name="Audit_DataLock_EndpointName" Value="__Audit_DataLock_EndpointName__" />
     <Parameter Name="Audit_DataLock_FailedMessagesQueue" Value="__Audit_DataLock_FailedMessagesQueue__" />

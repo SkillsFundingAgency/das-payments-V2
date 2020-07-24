@@ -23,20 +23,15 @@ using SFA.DAS.Payments.FundingSource.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
-using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Abstract;
 using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
-using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
-using SFA.DAS.Payments.DataLocks.Messages.Events;
-using SFA.DAS.Payments.Monitoring.Jobs.Client;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
@@ -1405,11 +1400,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
-        protected async Task SubmitIlrInPeriod(string collectionPeriodText, FeatureNumber featureNumber)
-        {
-            Task ClearCache() => HandleIlrReSubmissionForTheLearners(collectionPeriodText, TestSession.Provider);
-            await Scope.Resolve<IIlrService>().PublishLearnerRequest(CurrentIlr, TestSession.Learners, collectionPeriodText, featureNumber.Extract(), ClearCache);
-        }
+        //protected async Task SubmitIlrInPeriod(string collectionPeriodText, FeatureNumber featureNumber)
+        //{
+        //    Task ClearCache() => HandleIlrReSubmissionForTheLearners(collectionPeriodText, TestSession.Provider);
+        //    await Scope.Resolve<IIlrService>().PublishLearnerRequest(CurrentIlr, TestSession.Learners, collectionPeriodText, featureNumber.Extract(), ClearCache);
+        //}
 
 
         protected void AddEmploymentStatus(IEnumerable<EmploymentStatusMonitoring> employmentStatusMonitorings)

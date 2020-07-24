@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+﻿using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
 using SFA.DAS.Payments.Application.Repositories;
@@ -9,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MoreLinq;
+using Microsoft.EntityFrameworkCore;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
 {
