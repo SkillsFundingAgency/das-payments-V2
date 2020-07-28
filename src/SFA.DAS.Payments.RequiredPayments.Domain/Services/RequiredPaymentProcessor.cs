@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 
             var amount = paymentsDue.CalculateRequiredPaymentAmount(earning.Amount, validPaymentHistory);
 
-            if (amount < 0)
+            if (earning.Amount == 0 && amount != 0)
             {
                 result.AddRange(refundService.GetRefund(amount, validPaymentHistory));
                 return result;
