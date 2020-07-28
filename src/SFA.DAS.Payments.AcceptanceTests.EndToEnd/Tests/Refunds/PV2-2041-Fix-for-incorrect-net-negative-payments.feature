@@ -1,5 +1,5 @@
-Feature: PV2-2012-refund-issues
-Scenario: PV2-2012-net-negative-earnings
+Feature: PV2-2041-Fix-for-incorrect-net-negative-payments
+Scenario: PV2-2041-net-negative-earnings
 
 
 Given a learner has submitted an ilr

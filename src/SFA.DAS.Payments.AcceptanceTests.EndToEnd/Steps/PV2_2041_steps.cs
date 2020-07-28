@@ -12,7 +12,7 @@ using TechTalk.SpecFlow.Assist;
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
     [Binding]
-    [Scope(Feature = "PV2-2041-refund-issues")]
+    [Scope(Feature = "PV2-2041-Fix-for-incorrect-net-negative-payments")]
     public class PV2_2041_steps : FM36_ILR_Base_Steps
     {
         public PV2_2041_steps(FeatureContext context) : base(context)
