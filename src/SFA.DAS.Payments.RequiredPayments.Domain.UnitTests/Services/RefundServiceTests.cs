@@ -36,8 +36,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             var sut = new RefundService();
             var actual = sut.GetRefund(-100, new List<Payment>
             {
-                new Payment{Amount = 100, FundingSource = FundingSourceType.Levy},
-                new Payment{Amount = 0, FundingSource = FundingSourceType.FullyFundedSfa},
+                new Payment{Amount = 100, FundingSource = FundingSourceType.Levy}
             });
 
             actual.Should().HaveCount(1);

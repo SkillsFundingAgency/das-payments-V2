@@ -11,13 +11,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
     {
         public List<RequiredPayment> GetRefund(decimal amount, List<Payment> paymentHistory)
         {
-            if (amount >= 0)
-            {
-                return new List<RequiredPayment>();
-            }
-
             var totalPaidInHistory = paymentHistory.Sum(x => x.Amount);
-            if (totalPaidInHistory <= 0)
+            if (totalPaidInHistory == 0)
             {
                 return new List<RequiredPayment>();
             }
@@ -55,7 +50,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                         LearningStartDate = group.Key.LearningStartDate,
                     };
                 })
-                .Where(x => x.Amount < 0)
                 .ToList();
         }
 
