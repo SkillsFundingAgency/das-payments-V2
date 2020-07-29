@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
                 PeriodNumber = submissionMessage.Period,
                 NotifyEmail = submissionMessage.NotifyEmail,
                 TermsAccepted = submissionMessage.JobType == EnumJobType.EasSubmission ? true : (bool?)null,
-                CollectionYear = submissionMessage.CollectionYear
+                CollectionYear = submissionMessage.CollectionYear,
             };
 
             var response = await httpClient.SendDataAsync("job", job);
@@ -75,9 +75,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
 
         public async Task<IEnumerable<long>> GetJobsByStatus(int ukprn, params int[] status)
         {
-            var data = await httpClient.GetDataAsync($"job/{ukprn}").ConfigureAwait(false);
+            var data = await httpClient.GetDataAsync($"job").ConfigureAwait(false);
             var jobList = JsonConvert.DeserializeObject<IEnumerable<FileUploadJob>>(data);
-            return jobList.Where(x => status.Contains((int) x.Status)).Select(j => j.JobId);
+            return jobList.Where(x => x.Ukprn == ukprn && status.Contains((int) x.Status)).Select(j => j.JobId);
         }
 
         public async Task<FileUploadJob> GetJob(long ukprn, long jobId)
