@@ -15,6 +15,26 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
     public class RefundServiceTests
     {
         [Test]
+        public void WhenTotalPaidInHistoryIsZero_ThenReturnsEmptyList()
+        {
+            var sut = new RefundService();
+
+            var actual = sut.GetRefund(0, new List<Payment>
+            {
+                new Payment
+                {
+                    Amount = 50
+                },
+                new Payment
+                {
+                    Amount = -50
+                }
+            });
+
+            actual.Should().BeEmpty();
+        }
+
+        [Test]
         public void NoEarningReturnsEmptyResult()
         {
             var sut = new RefundService();
