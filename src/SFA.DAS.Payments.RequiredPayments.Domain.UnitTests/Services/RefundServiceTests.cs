@@ -21,14 +21,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
 
             var actual = sut.GetRefund(0, new List<Payment>
             {
-                new Payment
-                {
-                    Amount = 50
-                },
-                new Payment
-                {
-                    Amount = -50
-                }
+                new Payment { Amount = 50 },
+                new Payment { Amount = -50 }
             });
 
             actual.Should().BeEmpty();
