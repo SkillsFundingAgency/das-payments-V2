@@ -26,3 +26,4 @@ Given a learner has submitted an ilr
         | R04/Current Academic Year | R03/Current Academic Year | 0                      | 0                           | -10                       | OnProgramme16To18FrameworkUplift |                   
         
 When the learner submits in R12
+Then the resulting payments are not net negative
