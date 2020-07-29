@@ -29,6 +29,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 .ToList();
         }
 
+        public List<PaymentModel> GetPayments(long ukprn)
+        {
+            return dataContext.Payment
+                .Where(x => x.Ukprn == ukprn)
+                .ToList();
+        }
+
         public int GetRequiredPaymentsCount(long ukprn, CollectionPeriod collectionPeriod)
         {
             return dataContext.RequiredPaymentEvent.Count(x => x.Ukprn == ukprn && x.CollectionPeriod.Period == collectionPeriod.Period && x.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear);

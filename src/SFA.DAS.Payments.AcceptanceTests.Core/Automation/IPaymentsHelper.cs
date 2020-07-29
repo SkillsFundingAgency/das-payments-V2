@@ -8,7 +8,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
     {
         int GetPaymentsCount(long ukprn, CollectionPeriod collectionPeriod);
         List<PaymentModel> GetPayments(long ukprn, CollectionPeriod collectionPeriod);
-
+        List<PaymentModel> GetPayments(long ukprn);
         int GetRequiredPaymentsCount(long ukprn, CollectionPeriod collectionPeriod);
     }
 }
