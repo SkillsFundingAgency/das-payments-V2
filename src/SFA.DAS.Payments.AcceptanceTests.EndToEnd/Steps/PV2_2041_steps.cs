@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.Model.Core.Entities;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -17,11 +17,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     {
         public PV2_2041_steps(FeatureContext context) : base(context)
         {
-
         }
 
         [Given("the following payments exist")]
-        public async Task GeneratePayments(Table table)
+        public async Task TheFollowingPaymentExists(Table table)
         {
             var payments = table.CreateSet<ProviderPayment>().ToList();
 
@@ -58,6 +57,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
                     EarningEventId = Guid.Empty,
                     FundingSourceEventId = Guid.Empty,
+                    ReportingAimFundingLineType = "16 - 18 Apprenticeship Non - Levy Contract(procured)"
                 };
                 if (x.SfaCoFundedPayments != 0)
                 {
@@ -85,13 +85,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given("a learner has submitted an ilr")]
-        public void SubmitIlr()
+        public void ALearnerHasSubmittedAnIlr()
         {
             GetFm36LearnerForCollectionPeriod("R12/current academic year");
+            TestSession.FM36Global.UKPRN = TestSession.Provider.Ukprn;
         }
 
         [When("the learner submits in R12")]
-        public async Task NonLevyLearnerMadeRedundant()
+        public async Task TheLearnerSubmitsInR12()
         {
             var dcHelper = Scope.Resolve<IDcHelper>();
             await dcHelper.SendIlrSubmission(TestSession.FM36Global.Learners,
@@ -100,6 +101,33 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.Period,
                 TestSession.Provider.JobId);
 
+            await WaitForRequiredPayments(9);
+
+            await EmployerMonthEndHelper.SendLevyMonthEndForEmployers(
+                TestSession.GenerateId(),
+                TestSession.Employers.Select(x => x.AccountId),
+                TestSession.CollectionPeriod.AcademicYear,
+                TestSession.CollectionPeriod.Period,
+                MessageSession);
+
+            await WaitForPayments(11);
+        }
+
+        [Then(@"the resulting payments are not net negative")]
+        public async Task ThenTheResultingPaymentsAreNotNetNegative()
+        {
+            await WaitForIt(() => HasCorrectlyFundedDeliveryPeriod3(), "Failed to find non net negative payments for delivery period 3");
+        }
+
+        private bool HasCorrectlyFundedDeliveryPeriod3()
+        {
+            var payments = Scope.Resolve<IPaymentsHelper>()
+                .GetPayments(TestSession.Provider.Ukprn)
+                .Where(x => x.DeliveryPeriod == 3 &&
+                            x.Ukprn == TestSession.FM36Global.UKPRN &&
+                            x.TransactionType == TransactionType.OnProgramme16To18FrameworkUplift);
+
+            return payments.Sum(x => x.Amount) == 0m && payments.Any();
         }
     }
 }
