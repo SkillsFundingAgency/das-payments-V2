@@ -58,8 +58,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
                 CollectionName = submissionMessage.CollectionName,
                 PeriodNumber = submissionMessage.Period,
                 NotifyEmail = submissionMessage.NotifyEmail,
-                TermsAccepted = submissionMessage.JobType == EnumJobType.EasSubmission ? true : (bool?)null,
-                CollectionYear = submissionMessage.CollectionYear,
+                CollectionYear = submissionMessage.CollectionYear + 1,
             };
 
             var response = await httpClient.SendDataAsync("job", job);
