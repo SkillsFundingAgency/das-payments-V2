@@ -79,9 +79,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             var learnerMutator = LearnerMutatorFactory.Create(featureNumber, learners);
 
             var ilrFile = await tdgService.GenerateIlrTestData(learnerMutator, (int)testSession.Provider.Ukprn);
-
-            await RefreshTestSessionLearnerFromIlr(ilrFile.Value, learners);
-
+            
+            ilrFile = new KeyValuePair<string, string>(ilrFile.Key
+                    .Replace("1920", "2021"), 
+                ilrFile.Value
+                .Replace("1920", "2021")
+                .Replace("ESFA/ILR/2019-20", "ESFA/ILR/2020-21")
+            );
+            
+            ilrFile = new KeyValuePair<string, string>(ilrFile.Key, await RefreshTestSessionLearnerFromIlr(ilrFile.Value, learners));
+            
             if (learners.Any(l => l.EarningsHistory != null) && !testSession.AtLeastOneScenarioCompleted)
             {
                 await appEarnHistoryService.DeleteHistoryAsync(testSession.Provider.Ukprn);
@@ -151,9 +158,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             learner.Aims = new List<Aim> { aim };
         }
 
-        private async Task RefreshTestSessionLearnerFromIlr(string ilrFile, IEnumerable<Learner> learners)
+        private async Task<string> RefreshTestSessionLearnerFromIlr(string ilrFile, IEnumerable<Learner> learners)
         {
-            XNamespace xsdns = tdgService.IlrNamespace;
+            XNamespace xsdns = "ESFA/ILR/2020-21"; // tdgService.IlrNamespace;
             var xDoc = XDocument.Parse(ilrFile);
             var learnerDescendants = xDoc.Descendants(xsdns + "Learner");
             var learnersEnumeration = learners as Learner[] ?? learners.ToArray();
@@ -169,6 +176,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
                 await UpdatePaymentHistoryTables(testSessionLearner.Ukprn, originalUln, testSessionLearner.Uln,
                     testSessionLearner.LearnRefNumber);
             }
+
+            var learningDeliveries = xDoc.Descendants(xsdns + "LearningDelivery");
+            foreach (var learningDelivery in learningDeliveries)
+            {
+                learningDelivery.Add(new XElement(xsdns + "PHours", 449));
+            }
+
+            return xDoc.ToString();
         }
 
 
