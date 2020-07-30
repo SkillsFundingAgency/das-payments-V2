@@ -162,7 +162,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
         {
             XNamespace xsdns = "ESFA/ILR/2020-21"; // tdgService.IlrNamespace;
             var xDoc = XDocument.Parse(ilrFile);
-            var learnerDescendants = xDoc.Descendants(xsdns + "Learner");
+
+           var filePrepDate =  xDoc.Root?.Element(xsdns + "Header")?.Element(xsdns + "CollectionDetails")
+                ?.Element(xsdns + "FilePreparationDate");
+           if (filePrepDate != null) filePrepDate.Value = "2022-01-01";
+
+           var learnerDescendants = xDoc.Descendants(xsdns + "Learner");
             var learnersEnumeration = learners as Learner[] ?? learners.ToArray();
             for (var i = 0; i < learnersEnumeration.Count(); i++)
             {
@@ -180,7 +185,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.LearnerMutators
             var learningDeliveries = xDoc.Descendants(xsdns + "LearningDelivery");
             foreach (var learningDelivery in learningDeliveries)
             {
-                learningDelivery.Add(new XElement(xsdns + "PHours", 449));
+                var fundModel = learningDelivery.Element(xsdns + "FundModel");
+                if (fundModel != null)
+                {
+                    fundModel.AddAfterSelf(new XElement(xsdns + "PHours", 449));
+                }
             }
 
             return xDoc.ToString();
