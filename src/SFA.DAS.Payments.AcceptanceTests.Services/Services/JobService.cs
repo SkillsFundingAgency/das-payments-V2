@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
@@ -72,11 +73,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
             await httpClient.DeleteAsync($"job/{jobId}");
         }
 
-        public async Task<IEnumerable<long>> GetJobsByStatus(int ukprn, params int[] status)
+        public async Task<bool> IsProviderInAnActiveJob(int ukprn)
         {
-            var data = await httpClient.GetDataAsync($"job").ConfigureAwait(false);
-            var jobList = JsonConvert.DeserializeObject<IEnumerable<FileUploadJob>>(data);
-            return jobList.Where(x => x.Ukprn == ukprn && status.Contains((int) x.Status)).Select(j => j.JobId);
+            var data = await httpClient.GetDataAsync($"job/jobsthatareprocessing").ConfigureAwait(false);
+            var result = JsonConvert.DeserializeObject<ProcessingJobsResult>(data);
+            return result.Jobs.Any(x => x.Ukprn == ukprn);
         }
 
         public async Task<FileUploadJob> GetJob(long ukprn, long jobId)
@@ -84,5 +85,33 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services
             var data = await httpClient.GetDataAsync($"job/{ukprn}/{jobId}");
             return JsonConvert.DeserializeObject<FileUploadJob>(data);
         }
+    }
+
+    public class ProcessingJobsResult
+    {
+        [JsonProperty("jobs")]
+        public List<ProcessingJob> Jobs { get; set; }
+    }
+
+    public class ProcessingJob
+    {
+        [JsonProperty("timeTakenSecond")]
+        public int TimeTakenSecond { get; set; }
+        [JsonProperty("dateDifferSecond")]
+        public int DateDifferSecond { get; set; }
+        [JsonProperty("collectionType")]
+        public string CollectionType { get; set; }
+        [JsonProperty("status")]
+        public int Status { get; set; }
+        [JsonProperty("statusDescription")]
+        public string StatusDescription { get; set; }
+        [JsonProperty("timeTaken")]
+        public string TimeTaken { get; set; }
+        [JsonProperty("averageProcessingTime")]
+        public string AverageProcessingTime { get; set; }
+        [JsonProperty("ukprn")]
+        public long Ukprn { get; set; }
+        [JsonProperty("providerName")]
+        public string ProviderName { get; set; }
     }
 }

@@ -32,15 +32,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Services
             Provider provider = null;
             using (var mutex = new Mutex(false, $"Global\\{{{appGuid}}}"))
             {
-                if (mutex.WaitOne(TimeSpan.FromMinutes(1)))
+                if (mutex.WaitOne(TimeSpan.FromMinutes(5)))
                 {
-                    provider = GetProvider();
-                    // check job queue for ukprn - looking for status 2 or 3 which will block queue
-                    var blockedList = jobService.GetJobsByStatus(provider.Ukprn, 2, 3).Result;
-                    if (blockedList.Any())
+                    var attempts = 0;
+                    while (true)
                     {
                         provider = GetProvider();
+                        var providerBusy = jobService.IsProviderInAnActiveJob(provider.Ukprn).Result;
+                        if (!providerBusy)
+                            break;
+
+                        attempts++;
+
+                        if (attempts >= 10)
+                            throw new ApplicationException("Could not find an unused provider after 10 attempts");
                     }
+                    
 
                     dataContext.ClearPaymentsData(provider.Ukprn);
                     appEarnHistoryService.DeleteHistory(provider.Ukprn);

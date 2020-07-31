@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Services.Intefaces
 
         Task DeleteJob(long jobId);
 
-        Task<IEnumerable<long>> GetJobsByStatus(int ukprn, params int[] status);
+        Task<bool> IsProviderInAnActiveJob(int ukprn);
 
         Task<FileUploadJob> GetJob(long ukprn, long jobId);
     }
