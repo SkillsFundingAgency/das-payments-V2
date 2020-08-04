@@ -1253,7 +1253,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
-        protected async Task HandleIlrReSubmissionForTheLearners(string collectionPeriodText, Provider provider)
+        protected Task HandleIlrReSubmissionForTheLearners(string collectionPeriodText, Provider provider)
         {
             var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build();
 
@@ -1275,6 +1275,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
 
             SetCollectionPeriod(collectionPeriodText);
+
+            return Task.CompletedTask;
         }
 
         protected void AddPriceDetails(Table table)

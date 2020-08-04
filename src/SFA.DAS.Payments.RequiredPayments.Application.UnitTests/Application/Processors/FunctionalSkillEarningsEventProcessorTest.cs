@@ -10,8 +10,10 @@ using Autofac.Extras.Moq;
 using AutoMapper;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.Incentives;
@@ -48,7 +50,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             mocker = AutoMock.GetLoose();
             paymentHistoryCacheMock = mocker.Mock<IDataCache<PaymentHistoryEntity[]>>();
             requiredPaymentsService = mocker.Mock<IRequiredPaymentProcessor>();
-            
+            mocker.Mock<IDuplicateEarningEventService>()
+                .Setup(x => x.IsDuplicate(It.IsAny<IPaymentsEvent>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
             eventProcessor = mocker.Create<FunctionalSkillEarningsEventProcessor>(
                 new NamedParameter("apprenticeshipKey", "key"), 
                 new NamedParameter("mapper", mapper),
@@ -196,6 +200,75 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             var actualRequiredPayment = await eventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCacheMock.Object, CancellationToken.None);
 
             // assert
+            Assert.AreEqual(0, actualRequiredPayment.Count);
+        }
+        [Test]
+        public async Task IgnoresDuplicateEvents()
+        {
+            // arrange
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2);
+            byte deliveryPeriod = 2;
+
+            var earningEvent = new Act2FunctionalSkillEarningsEvent
+            {
+                Ukprn = 1,
+                CollectionPeriod = period,
+                CollectionYear = period.AcademicYear,
+                Learner = EarningEventDataHelper.CreateLearner(),
+                LearningAim = EarningEventDataHelper.CreateLearningAim(),
+                Earnings = new ReadOnlyCollection<FunctionalSkillEarning>(new List<FunctionalSkillEarning>
+                {
+                    new FunctionalSkillEarning
+                    {
+                        Type = FunctionalSkillType.BalancingMathsAndEnglish,
+                        Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod>
+                        {
+                            new EarningPeriod
+                            {
+                                Period = deliveryPeriod,
+                                Amount = 100,
+                                PriceEpisodeIdentifier = "2",
+                                SfaContributionPercentage = 0.9m,
+                            }
+                        })
+                    }
+                })
+            };
+
+            var requiredPayments = new List<RequiredPayment>
+            {
+                new RequiredPayment
+                {
+                    Amount = 100,
+                    EarningType = EarningType.Incentive,
+                    SfaContributionPercentage = 0.9m,
+                    PriceEpisodeIdentifier = "2",
+                },
+            };
+
+            var paymentHistoryEntities = new[] {new PaymentHistoryEntity
+            {
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
+                DeliveryPeriod = 2,
+                LearnAimReference = earningEvent.LearningAim.Reference,
+                TransactionType = (int)FunctionalSkillType.BalancingMathsAndEnglish
+            }};
+
+            paymentHistoryCacheMock.Setup(c => c.TryGet(It.Is<string>(key => key == CacheKeys.PaymentHistoryKey), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities));
+
+            requiredPaymentsService.Setup(p => p.GetRequiredPayments(It.Is<Earning>(x => x.Amount == 100), It.IsAny<List<Payment>>()))
+                .Returns(requiredPayments);
+
+            mocker.Mock<IDuplicateEarningEventService>()
+                .Setup(x => x.IsDuplicate(It.IsAny<IPaymentsEvent>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            // act
+            var actualRequiredPayment = await eventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCacheMock.Object, CancellationToken.None);
+
+            // assert
+            Assert.IsNotNull(actualRequiredPayment);
             Assert.AreEqual(0, actualRequiredPayment.Count);
         }
     }

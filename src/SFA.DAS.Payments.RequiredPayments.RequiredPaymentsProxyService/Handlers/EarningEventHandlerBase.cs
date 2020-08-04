@@ -66,7 +66,11 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
             if (requiredPaymentEvent != null)
                 await Task.WhenAll(requiredPaymentEvent.Select(context.Publish)).ConfigureAwait(false);
 
-            paymentLogger.LogInfo($"Successfully processed RequiredPaymentsProxyService event for Actor Id {actorId}");
+            paymentLogger.LogInfo("Successfully processed RequiredPaymentsProxyService event for Actor for " + 
+            $"jobId:{message.JobId}, learnerRef:{message.Learner.ReferenceNumber}, frameworkCode:{message.LearningAim.FrameworkCode}, " +
+            $"pathwayCode:{message.LearningAim.PathwayCode}, programmeType:{message.LearningAim.ProgrammeType}, " +
+            $"standardCode:{message.LearningAim.StandardCode}, learningAimReference:{message.LearningAim.Reference}, " +
+            $"academicYear:{message.CollectionPeriod.AcademicYear}, contractType:{contractType}");
         }
 
         private ContractType GetContractTypeFromMessage(T message)

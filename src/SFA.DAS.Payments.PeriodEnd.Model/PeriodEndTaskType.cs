@@ -4,6 +4,8 @@
     {
         PeriodEndStart,
         PeriodEndRun,
-        PeriodEndStop
+        PeriodEndStop,
+        PeriodEndSubmissionWindowValidation,
+        PeriodEndReports
     }
 }

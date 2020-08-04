@@ -88,7 +88,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 PriceEpisodeIdentifier = payment.PriceEpisodeIdentifier,
                 Amount = GetFundingAmount(payment.Amount, fundingSource),
                 CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(AcademicYear, CollectionPeriod),
-                DeliveryPeriod = payment.Delivery_Period,
+                DeliveryPeriod = payment.DeliveryPeriod,
                 LearningAimReference = testSessionLearner.Course.LearnAimRef,
                 LearningAimProgrammeType = testSessionLearner.Course.ProgrammeType,
                 LearningAimStandardCode = testSessionLearner.Course.StandardCode,
