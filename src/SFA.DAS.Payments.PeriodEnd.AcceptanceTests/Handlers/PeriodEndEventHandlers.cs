@@ -42,4 +42,28 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests.Handlers
             return Task.CompletedTask;
         }
     }
+
+
+    public class PeriodEndRequestReportsEventHandlers: IHandleMessages<PeriodEndRequestReportsEvent>
+    {
+        public static readonly List<PeriodEndRequestReportsEvent> ReceivedEvents = new List<PeriodEndRequestReportsEvent>();
+
+        public Task Handle(PeriodEndRequestReportsEvent message, IMessageHandlerContext context)
+        {
+            Console.WriteLine($"Received message: {message.ToJson()}");
+            ReceivedEvents.Add(message);
+            return Task.CompletedTask;
+        }
+    }
+    public class PeriodEndRequestValidateSubmissionWindow: IHandleMessages<PeriodEndRequestValidateSubmissionWindowEvent>
+    {
+        public static readonly List<PeriodEndRequestValidateSubmissionWindowEvent> ReceivedEvents = new List<PeriodEndRequestValidateSubmissionWindowEvent>();
+
+        public Task Handle(PeriodEndRequestValidateSubmissionWindowEvent message, IMessageHandlerContext context)
+        {
+            Console.WriteLine($"Received message: {message.ToJson()}");
+            ReceivedEvents.Add(message);
+            return Task.CompletedTask;
+        }
+    }
 }
