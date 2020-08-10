@@ -1,13 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.EarningEvents.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="ProcessLearnerProxyService_InstanceCount" Value="__ProcessLearnerProxyService_InstanceCount__" />
     <Parameter Name="EarningEventsService_InstanceCount" Value="__EarningEventsService_InstanceCount__" />
+    <Parameter Name="EarningEventsService2021_InstanceCount" Value="__EarningEventsService2021_InstanceCount__" />
+    <Parameter Name="ProcessLearnerProxyService_InstanceCount" Value="__ProcessLearnerProxyService_InstanceCount__" />
+    <Parameter Name="ProcessLearnerServiceActorService_PartitionCount" Value="__ProcessLearnerActorService_PartitionCount__" />
+    <Parameter Name="ProcessLearnerServiceActorService_MinReplicaSetSize" Value="__ProcessLearnerActorService_MinReplicaSetSize__" />
+    <Parameter Name="ProcessLearnerServiceActorService_TargetReplicaSetSize" Value="__ProcessLearnerActorService_TargetReplicaSetSize__" />
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
     <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
     <Parameter Name="DCServiceBusConnectionString" Value="__DCServiceBusConnectionString__" />
     <Parameter Name="EarningEventsService_EndpointName" Value="__EarningEventsService_EndpointName__" />
     <Parameter Name="EarningEventsService_FailedMessagesQueue" Value="__EarningEventsService_FailedMessagesQueue__" />
+    <Parameter Name="EarningEventsService2021_EndpointName" Value="__EarningEventsService2021_EndpointName__" />
+    <Parameter Name="EarningEventsService2021_FailedMessagesQueue" Value="__EarningEventsService2021_FailedMessagesQueue__" />
     <Parameter Name="ProcessLearnerService_EndpointName" Value="__ProcessLearnerService_EndpointName__" />
     <Parameter Name="ProcessLearnerService_FailedMessagesQueue" Value="__ProcessLearnerService_FailedMessagesQueue__" />
     <Parameter Name="SubscriptionName" Value="__SubscriptionName__" />
@@ -19,6 +25,7 @@
     <Parameter Name="PaymentsConnectionString" Value="__DasPaymentsConnectionStringRW__" />
     <Parameter Name="PaymentsMonitoringConnectionString" Value="__PaymentsMonitoringConnectionString__" />
     <Parameter Name="TopicName" Value="__TopicName__" />
+    <Parameter Name="TopicName2021" Value="__TopicName2021__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
     <Parameter Name="ProcessMessageSequentially" Value="false" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
@@ -32,8 +39,5 @@
     <Parameter Name="ImmediateMessageRetries" Value="__ImmediateMessageRetries__" />
     <Parameter Name="DelayedMessageRetries" Value="__DelayedMessageRetries__" />
     <Parameter Name="DelayedMessageRetryDelay" Value="__DelayedMessageRetryDelay__" />
-    <Parameter Name="ProcessLearnerServiceActorService_PartitionCount" Value="__ProcessLearnerActorService_PartitionCount__" />
-    <Parameter Name="ProcessLearnerServiceActorService_MinReplicaSetSize" Value="__ProcessLearnerActorService_MinReplicaSetSize__" />
-    <Parameter Name="ProcessLearnerServiceActorService_TargetReplicaSetSize" Value="__ProcessLearnerActorService_TargetReplicaSetSize__" />
   </Parameters>
 </Application>
