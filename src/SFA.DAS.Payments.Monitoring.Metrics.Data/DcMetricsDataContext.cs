@@ -202,7 +202,7 @@ order by UKPRN,ApprenticeshipContractType";
 
         public DcMetricsDataContext(string connectionString)
         {
-            this.connectionString = connectionString;
+            this.connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
