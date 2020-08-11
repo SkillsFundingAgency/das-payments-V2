@@ -6,7 +6,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
-using SFA.DAS.Payments.Monitoring.Metrics.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
@@ -21,16 +20,16 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
     {
         private readonly IPaymentLogger logger;
         private readonly ISubmissionSummaryFactory submissionSummaryFactory;
-        private readonly DcMetricsDataContext.Factory dcDataContextFactory;
+        private readonly IDcMetricsDataContextFactory dcMetricsDataContextFactory;
         private readonly ISubmissionMetricsRepository submissionRepository;
         private readonly ITelemetry telemetry;
 
         public SubmissionMetricsService(IPaymentLogger logger, ISubmissionSummaryFactory submissionSummaryFactory,
-            DcMetricsDataContext.Factory dcDataContextFactory, ISubmissionMetricsRepository submissionRepository, ITelemetry telemetry)
+            IDcMetricsDataContextFactory dcMetricsDataContextFactory, ISubmissionMetricsRepository submissionRepository, ITelemetry telemetry)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.submissionSummaryFactory = submissionSummaryFactory ?? throw new ArgumentNullException(nameof(submissionSummaryFactory));
-            this.dcDataContextFactory = dcDataContextFactory ?? throw new ArgumentNullException(nameof(dcDataContextFactory));
+            this.dcMetricsDataContextFactory = dcMetricsDataContextFactory ?? throw new ArgumentNullException(nameof(dcMetricsDataContextFactory));
             this.submissionRepository = submissionRepository ?? throw new ArgumentNullException(nameof(submissionRepository));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
@@ -42,7 +41,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 logger.LogDebug($"Building metrics for job: {jobId}, provider: {ukprn}, Academic year: {academicYear}, Collection period: {collectionPeriod}");
                 var stopwatch = Stopwatch.StartNew();
                 var submissionSummary = submissionSummaryFactory.Create(ukprn, jobId, academicYear, collectionPeriod);
-                var dcEarningsTask = dcDataContextFactory.Invoke(2021).GetEarnings(ukprn, academicYear, collectionPeriod, cancellationToken);
+                var dcEarningsTask = dcMetricsDataContextFactory.Get(academicYear).GetEarnings(ukprn, academicYear, collectionPeriod, cancellationToken);
                 var dasEarningsTask = submissionRepository.GetDasEarnings(ukprn, jobId, cancellationToken);
                 var dataLocksTask = submissionRepository.GetDataLockedEarnings(ukprn, jobId, cancellationToken);
                 var dataLocksTotalTask = submissionRepository.GetDataLockedEarningsTotal(ukprn, jobId, cancellationToken);
