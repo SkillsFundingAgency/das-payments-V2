@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 logger.LogDebug($"Building metrics for job: {jobId}, provider: {ukprn}, Academic year: {academicYear}, Collection period: {collectionPeriod}");
                 var stopwatch = Stopwatch.StartNew();
                 var submissionSummary = submissionSummaryFactory.Create(ukprn, jobId, academicYear, collectionPeriod);
-                var dcEarningsTask = dcMetricsDataContextFactory.Get(academicYear).GetEarnings(ukprn, academicYear, collectionPeriod, cancellationToken);
+                var dcEarningsTask = dcMetricsDataContextFactory.CreateContext(academicYear).GetEarnings(ukprn, academicYear, collectionPeriod, cancellationToken);
                 var dasEarningsTask = submissionRepository.GetDasEarnings(ukprn, jobId, cancellationToken);
                 var dataLocksTask = submissionRepository.GetDataLockedEarnings(ukprn, jobId, cancellationToken);
                 var dataLocksTotalTask = submissionRepository.GetDataLockedEarningsTotal(ukprn, jobId, cancellationToken);

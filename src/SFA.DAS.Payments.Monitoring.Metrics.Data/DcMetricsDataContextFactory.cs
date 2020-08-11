@@ -5,7 +5,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 {
     public interface IDcMetricsDataContextFactory
     {
-        IDcMetricsDataContext Get(short academicYear);
+        IDcMetricsDataContext CreateContext(short academicYear);
     }
 
     public class DcMetricsDataContextFactory : IDcMetricsDataContextFactory
@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             contexts = new Dictionary<short, IDcMetricsDataContext>();
         }
 
-        public IDcMetricsDataContext Get(short academicYear)
+        public IDcMetricsDataContext CreateContext(short academicYear)
         {
             if (contexts.ContainsKey(academicYear))
                 return contexts[academicYear];
