@@ -14,4 +14,4 @@ FROM Payments2.Job AS J
 JOIN Validjobs AS Vj 
      ON J.Ilrsubmissiontime = Vj.Ilrsubmissiontime 
      AND J.Ukprn = Vj.Ukprn 
-     AND J.AcademicYear = VJ.AcademicYear
+     AND J.AcademicYear = VJ.AcademicYear 
