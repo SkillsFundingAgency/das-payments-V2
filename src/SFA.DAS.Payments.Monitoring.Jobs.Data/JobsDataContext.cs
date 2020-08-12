@@ -23,6 +23,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task<List<JobModel>> GetInProgressJobs();
         Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken);
         Task SaveDcSubmissionStatus(long jobId, bool succeeded, CancellationToken cancellationToken);
+        Task<List<OutstandingJobResult>>GetOutstandingOrTimedOutJobs(long? dcJobId,DateTimeOffset startTime, CancellationToken cancellationToken);
     }
 
     public class JobsDataContext : DbContext, IJobsDataContext
@@ -147,6 +148,19 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             job.EndTime = endTime;
             job.Status = status;
             await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<List<OutstandingJobResult>>GetOutstandingOrTimedOutJobs(long? dcJobId,
+                DateTimeOffset startTime, CancellationToken cancellationToken)
+        {
+            var latestValidStartTime = startTime.AddHours(-2).AddMinutes(-30);
+
+            return await Jobs.Where(x =>
+                x.DcJobId != dcJobId &&
+                 x.JobType == JobType.EarningsJob &&
+                 x.StartTime > latestValidStartTime).
+                Select(x => new OutstandingJobResult(){ DcJobId = x.DcJobId, DcJobSucceeded = x.DcJobSucceeded, JobStatus = x.Status, EndTime = x.EndTime}).
+                ToListAsync(cancellationToken);
         }
     }
 }
