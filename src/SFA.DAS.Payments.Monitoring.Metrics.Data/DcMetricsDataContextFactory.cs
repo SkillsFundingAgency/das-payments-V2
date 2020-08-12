@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 using System.Data.SqlClient;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Data
@@ -11,12 +11,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
     public class DcMetricsDataContextFactory : IDcMetricsDataContextFactory
     {
         private readonly string connectionString;
-        private readonly Dictionary<short, IDcMetricsDataContext> contexts;
+        private readonly ConcurrentDictionary<short, IDcMetricsDataContext> contexts;
 
         public DcMetricsDataContextFactory(string connectionString)
         {
             this.connectionString = connectionString;
-            contexts = new Dictionary<short, IDcMetricsDataContext>();
+            contexts = new ConcurrentDictionary<short, IDcMetricsDataContext>();
         }
 
         public IDcMetricsDataContext CreateContext(short academicYear)
@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 
             var builder = new SqlConnectionStringBuilder(connectionString);
             builder["Database"] = $"ILR{academicYear}DataStore";
-            contexts.Add(academicYear, new DcMetricsDataContext(builder.ConnectionString));
+            contexts.AddOrUpdate(academicYear, new DcMetricsDataContext(builder.ConnectionString), (ay, c) => c);
             return contexts[academicYear];
         }
     }
