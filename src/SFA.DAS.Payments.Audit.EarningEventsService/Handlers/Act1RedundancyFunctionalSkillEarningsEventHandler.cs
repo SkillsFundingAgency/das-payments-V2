@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -22,9 +23,11 @@ namespace SFA.DAS.Payments.Audit.EarningEventsService.Handlers
 
         public async Task Handle(IList<Act1RedundancyFunctionalSkillEarningsEvent> messages, CancellationToken cancellationToken)
         {
+            logger.LogDebug($"Handling ACT1 Redundancy Functional Skill Earnings Event for Job(s): { string.Join(",", messages.Select(x => x.JobId).Distinct().ToArray()) }");
             var earningEvents = new List<EarningEvent>();
             earningEvents.AddRange(messages);
             await storageService.StoreEarnings(earningEvents, cancellationToken).ConfigureAwait(false);
+            logger.LogDebug($"Finished Handling ACT1 Redundancy Functional Skill Earnings Event for Job(s): { string.Join(",", messages.Select(x => x.JobId).Distinct().ToArray()) }");
         }
     }
 }
