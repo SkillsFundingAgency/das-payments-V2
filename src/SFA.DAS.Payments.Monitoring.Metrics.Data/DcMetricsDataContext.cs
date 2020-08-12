@@ -8,6 +8,26 @@ using SFA.DAS.Payments.Monitoring.Metrics.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 {
+    public interface IDcMetricsDataContextConnectionStringProvider
+    {
+        string GetConnectionString();
+    }
+
+    public class DcMetricsDataContextConnectionStringProvider : IDcMetricsDataContextConnectionStringProvider
+    {
+        private readonly string connectionString;
+
+        public DcMetricsDataContextConnectionStringProvider(string connectionString)
+        {
+            this.connectionString = connectionString;
+        }
+
+        public string GetConnectionString()
+        {
+            return connectionString;
+        }
+    }
+
     public interface IDcMetricsDataContext
     {
         Task<List<TransactionTypeAmounts>> GetEarnings(long ukprn, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
@@ -15,6 +35,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 
     public class DcMetricsDataContext : DbContext, IDcMetricsDataContext
     {
+        public delegate DcMetricsDataContext Factory(short academicYear);
+
         private static string DcEarningsQuery = @"
 ;WITH 
 RawEarnings AS (
@@ -172,9 +194,12 @@ order by UKPRN,ApprenticeshipContractType";
 
         public DbQuery<TransactionTypeAmounts> Earnings { get; set; }
 
-        public DcMetricsDataContext(string connectionString)
+        public DcMetricsDataContext(short academicYear, IDcMetricsDataContextConnectionStringProvider provider)
         {
-            this.connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+            if (provider == null) throw new ArgumentNullException(nameof(provider));
+            var builder = new SqlConnectionStringBuilder(provider.GetConnectionString());
+            builder["Database"] = $"ILR{academicYear}DataStore";
+            this.connectionString = builder.ConnectionString;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
