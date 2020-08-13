@@ -314,10 +314,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                         PriceEpisodeIdentifier = dataLockEvent.PriceEpisodes[0].Identifier,
                         Status = PriceEpisodeStatus.New,
                         UKPRN = dataLockEvent.Ukprn,
-                        ULN = dataLockEvent.Learner.Uln
+                        ULN = dataLockEvent.Learner.Uln,
+                        AcademicYear = "1920"
                     }
                 }
             };
+
+            dataLockEvent.CollectionPeriod.AcademicYear = 1920;
 
             var result = await sut.Build(
                 new List<DataLockEvent> { dataLockEvent },
