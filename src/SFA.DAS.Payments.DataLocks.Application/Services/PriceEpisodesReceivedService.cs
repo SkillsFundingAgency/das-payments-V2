@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             this.statusChangeBuilder = statusChangeBuilder;
         }
 
-        public async Task<List<PriceEpisodeStatusChange>> GetPriceEpisodeChanges(long jobId, long ukprn)
+        public async Task<List<PriceEpisodeStatusChange>> GetPriceEpisodeChanges(long jobId, long ukprn, short currentAcademicYear)
         {
             var priceEpisodeReplacements = new List<CurrentPriceEpisode>();
             var allPriceEpisodeStatusChanges = new List<PriceEpisodeStatusChange>();
@@ -46,10 +46,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 var learnerDataLocks = dataLockEvents.Where(x => x.Learner.Uln == learnerUln).ToList();
                 var leanerPriceEpisodes = currentPriceEpisodes.Where(x => x.Uln == learnerUln).ToList();
-
                 var changes = CalculatePriceEpisodeStatus(learnerDataLocks, leanerPriceEpisodes);
                 var previousPriceEpisodesStatus = GetPreviousPriceEpisodeStatus(leanerPriceEpisodes);
-                var priceEpisodeStatusChanges = await CreateStatusChangedEvents(learnerDataLocks, changes, previousPriceEpisodesStatus);
+                
+                var priceEpisodeStatusChanges = await CreateStatusChangedEvents(learnerDataLocks, changes, previousPriceEpisodesStatus, currentAcademicYear);
                 var learnerPriceEpisodeReplacements = CreateLearnerCurrentPriceEpisodesReplacement(jobId, ukprn, learnerUln, priceEpisodeStatusChanges);
                 priceEpisodeReplacements.AddRange(learnerPriceEpisodeReplacements);
 
@@ -96,9 +96,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         private async Task<List<PriceEpisodeStatusChange>> CreateStatusChangedEvents(
             IEnumerable<DataLockEvent> dataLocks,
             List<(string identifier, PriceEpisodeStatus status)> changes,
-            List<PriceEpisodeStatusChange> previousPriceEpisodeStatusChanges )
+            List<PriceEpisodeStatusChange> previousPriceEpisodeStatusChanges , short currentAcademicYear)
         {
-            return  await statusChangeBuilder.Build(dataLocks.ToList(), changes, previousPriceEpisodeStatusChanges);
+            return  await statusChangeBuilder.Build(dataLocks.ToList(), changes, previousPriceEpisodeStatusChanges, currentAcademicYear);
         }
 
 
