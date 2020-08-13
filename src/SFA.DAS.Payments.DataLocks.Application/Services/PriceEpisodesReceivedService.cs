@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 {
     public interface IPriceEpisodesReceivedService
     {
-        Task<List<PriceEpisodeStatusChange>> GetPriceEpisodeChanges(long jobId, long ukprn);
+        Task<List<PriceEpisodeStatusChange>> GetPriceEpisodeChanges(long jobId, long ukprn, short currentAcademicYear);
     }
 
     public class PriceEpisodesReceivedService: IPriceEpisodesReceivedService

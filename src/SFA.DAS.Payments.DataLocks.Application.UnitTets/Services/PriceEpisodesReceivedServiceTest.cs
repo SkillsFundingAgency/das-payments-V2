@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             priceEpisode.AssociateWith(testCaseData.earning);
             await currentContext.Add(priceEpisode);
 
-            var changeMessages = await sut.GetPriceEpisodeChanges(testCaseData.earning.JobId, testCaseData.earning.Ukprn);
+            var changeMessages = await sut.GetPriceEpisodeChanges(testCaseData.earning.JobId, testCaseData.earning.Ukprn, testCaseData.earning.CollectionYear);
 
             changeMessages.Should().ContainEquivalentOf(
                 new
@@ -62,7 +62,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             testCaseData.CommonSetup();
 
             await testCaseData.AddDataLockEventToContext(receivedContext);
-            var changeMessages = await sut.GetPriceEpisodeChanges(testCaseData.earning.JobId, testCaseData.earning.Ukprn);
+            var changeMessages = await sut.GetPriceEpisodeChanges(testCaseData.earning.JobId, testCaseData.earning.Ukprn, testCaseData.earning.CollectionYear);
 
             changeMessages.Should().ContainEquivalentOf(
                 new
@@ -97,7 +97,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             await testCaseData.AddDataLockEventToContext(receivedContext);
 
             // When
-            var changeMessages = await sut.GetPriceEpisodeChanges(testCaseData.earning.JobId, testCaseData.earning.Ukprn);
+            var changeMessages = await sut.GetPriceEpisodeChanges(testCaseData.earning.JobId, testCaseData.earning.Ukprn, testCaseData.earning.CollectionYear);
 
             // Then
             changeMessages.Should().ContainEquivalentOf(
@@ -149,7 +149,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             removed.AssociateWith(testCaseData.earning);
             await currentContext.Add(removed);
 
-            var changeMessages = await sut.GetPriceEpisodeChanges(testCaseData.earning.JobId, testCaseData.earning.Ukprn);
+            var changeMessages = await sut.GetPriceEpisodeChanges(testCaseData.earning.JobId, testCaseData.earning.Ukprn, testCaseData.earning.CollectionYear);
 
             changeMessages.Should().ContainEquivalentOf(
                 new
@@ -181,7 +181,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             await testCaseData.AddDataLockEventToContext(receivedContext);
 
-            await sut.GetPriceEpisodeChanges(testCaseData.earning.JobId, testCaseData. earning.Ukprn);
+            await sut.GetPriceEpisodeChanges(testCaseData.earning.JobId, testCaseData. earning.Ukprn, testCaseData.earning.CollectionYear);
 
             (await receivedContext.GetDataLocks(testCaseData.earning.JobId, testCaseData.earning.Ukprn))
                 .Should().BeEmpty();
@@ -203,7 +203,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             await testCaseData.AddDataLockEventToContext(receivedContext);
 
-            await sut.GetPriceEpisodeChanges(testCaseData.earning.JobId, testCaseData.earning.Ukprn);
+            await sut.GetPriceEpisodeChanges(testCaseData.earning.JobId, testCaseData.earning.Ukprn, testCaseData.earning.CollectionYear);
 
             var expected = testCaseData.earning.PriceEpisodes.Select(x => new CurrentPriceEpisode
             {
@@ -249,7 +249,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
             await testCaseData.AddDataLockEventToContext(receivedContext);
 
-            await sut.GetPriceEpisodeChanges(testCaseData.earning.JobId, testCaseData.earning.Ukprn);
+            await sut.GetPriceEpisodeChanges(testCaseData.earning.JobId, testCaseData.earning.Ukprn, testCaseData.earning.CollectionYear);
 
             var expected = testCaseData.earning.PriceEpisodes.Select(x => new CurrentPriceEpisode
             {
@@ -328,7 +328,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 };
                 period.PriceEpisodeIdentifier = priceEpisode.Identifier;
                 var periods = new List<EarningPeriod> { period };
-
+                earning.CollectionYear = 1920;
                 earning.Learner.Uln = apprenticeship.Uln;
                 earning.OnProgrammeEarnings = new List<OnProgrammeEarning> { onProgrammeEarning };
                 earning.PriceEpisodes = new List<PriceEpisode> { priceEpisode };

@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var result = await sut.Build(
                 new List<DataLockEvent>(),
                 new List<(string identifier, PriceEpisodeStatus status)>(),
-                new List<PriceEpisodeStatusChange>());
+                new List<PriceEpisodeStatusChange>(), 2019);
 
             result.Should().BeEmpty();
         }
