@@ -18,5 +18,7 @@
     <Parameter Name="ImmediateMessageRetries" Value="" />
     <Parameter Name="DelayedMessageRetries" Value="" />
     <Parameter Name="DelayedMessageRetryDelay" Value="" />
+    <Parameter Name="IgnoreEventsForAcademicYears" Value=""/>
+
   </Section>
 </Settings>

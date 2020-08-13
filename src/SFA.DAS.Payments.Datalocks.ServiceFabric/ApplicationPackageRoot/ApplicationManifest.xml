@@ -124,6 +124,7 @@
             <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
             <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
             <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
+            <Parameter Name="IgnoreEventsForAcademicYears" Value="[IgnoreEventsForAcademicYears]" />
           </Section>
         </Settings>
       </ConfigOverride>
