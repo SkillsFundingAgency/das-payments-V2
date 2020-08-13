@@ -367,7 +367,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                             PriceEpisodeIdentifier = priceEpisode.PriceEpisodeIdentifier,
                             Status = PriceEpisodeStatus.New,
                             UKPRN = dlock.Ukprn,
-                            ULN = dlock.Learner.Uln
+                            ULN = dlock.Learner.Uln,
+                            AcademicYear = "1920"
                         }
                     }
                 });
