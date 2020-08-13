@@ -66,6 +66,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
 
             batch = paymentsToProcess;
+            if (batch.Count == 0)
+            {
+                logger.LogVerbose("No records found to process after removing ignored academic years.");
+                return 0;
+            }
 
             try
             {
