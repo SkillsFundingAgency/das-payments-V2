@@ -35,5 +35,6 @@
     <Parameter Name="DelayedMessageRetries" Value="__DelayedMessageRetries__" />
     <Parameter Name="DelayedMessageRetryDelay" Value="__DelayedMessageRetryDelay__" />
     <Parameter Name="DisableDatalocks" Value="__DisableDatalocks__" />
+    <Parameter Name="IgnoreEventsForAcademicYears" Value="__IgnoreEventsForAcademicYears__" />
   </Parameters>
 </Application>

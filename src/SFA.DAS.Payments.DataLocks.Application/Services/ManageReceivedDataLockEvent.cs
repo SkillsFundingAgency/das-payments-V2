@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.DataLocks.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
