@@ -19,7 +19,7 @@ BEGIN
 		;WITH DataLockEventCte
 		AS (
 			SELECT Id, Row_Number() OVER (
-					PARTITION BY [JobId]
+                PARTITION BY [JobId]
 					,[Ukprn]
 					,[AcademicYear]
 					,[CollectionPeriod]
@@ -33,18 +33,20 @@ BEGIN
 					,[LearningAimFrameworkCode]
 					,[LearningAimPathwayCode]
 					,[LearningAimFundingLineType]
-					,[LearningStartDate] ORDER BY [JobId]
+					,[LearningStartDate]
+	            ORDER BY [JobId]
 					,[Ukprn]
 					,[AcademicYear]
 					,[CollectionPeriod]
-					) AS RN
+	                ,[DuplicateNumber]
+                ) AS RN
 			FROM Payments2.DataLockEvent
 			)
 		UPDATE rp
 		SET DuplicateNumber = RN - 1
 		FROM Payments2.DataLockEvent rp
 		JOIN DataLockEventCte ON DataLockEventCte.Id = rp.Id
-		WHERE DataLockEventCte.RN > 1;
+		WHERE RN > 1 AND DuplicateNumber <> RN - 1;
 	'
 	EXECUTE sp_executesql @DataLock
 END
@@ -58,7 +60,7 @@ BEGIN
 		;WITH FundingSourceEventCte
 		AS (
 			SELECT Id, Row_Number() OVER (
-					PARTITION BY [JobId]
+                PARTITION BY [JobId]
 					,[Ukprn]
 					,[AcademicYear]
 					,[CollectionPeriod]
@@ -80,19 +82,21 @@ BEGIN
 					,[ApprenticeshipId]
 					,[AccountId]
 					,[TransferSenderAccountId]
-					,[ApprenticeshipEmployerType] ORDER BY [JobId]
-						,[Ukprn]
-						,[AcademicYear]
-						,[CollectionPeriod]
-						,[DeliveryPeriod]
-					) AS RN
+					,[ApprenticeshipEmployerType]
+                ORDER BY [JobId]
+                    ,[Ukprn]
+                    ,[AcademicYear]
+                    ,[CollectionPeriod]
+                    ,[DeliveryPeriod]
+	                ,[DuplicateNumber]
+                ) AS RN
 			FROM Payments2.FundingSourceEvent
 			)
 		UPDATE fse
 		SET DuplicateNumber = RN - 1
 		FROM Payments2.FundingSourceEvent fse
 		JOIN FundingSourceEventCte ON FundingSourceEventCte.Id = fse.Id
-		WHERE FundingSourceEventCte.RN > 1;
+		WHERE RN > 1 AND DuplicateNumber <> RN - 1;
 	'
 	EXECUTE sp_executesql @FundingSource
 
@@ -108,7 +112,7 @@ BEGIN
 		;WITH RequiredPaymentEventCte
 		AS (
 			SELECT Id, Row_Number() OVER (
-					PARTITION BY [JobId]
+                PARTITION BY [JobId]
 					,[Ukprn]
 					,[AcademicYear]
 					,[CollectionPeriod]
@@ -130,19 +134,21 @@ BEGIN
 					,[ApprenticeshipId]
 					,[AccountId]
 					,[TransferSenderAccountId]
-					,[ApprenticeshipEmployerType] ORDER BY [JobId]
-						,[Ukprn]
-						,[AcademicYear]
-						,[CollectionPeriod]
-						,[DeliveryPeriod]
-					) AS RN
+					,[ApprenticeshipEmployerType]
+	            ORDER BY [JobId]
+                    ,[Ukprn]
+                    ,[AcademicYear]
+                    ,[CollectionPeriod]
+                    ,[DeliveryPeriod]
+	                ,[DuplicateNumber]
+                ) AS RN
 			FROM Payments2.RequiredPaymentEvent
 			)
 		UPDATE rpe
 		SET DuplicateNumber = RN - 1
 		FROM Payments2.RequiredPaymentEvent rpe
 		JOIN RequiredPaymentEventCte ON RequiredPaymentEventCte.Id = rpe.Id
-		WHERE RequiredPaymentEventCte.RN > 1;
+		WHERE RN > 1 AND DuplicateNumber <> RN - 1;
 	'
 	EXECUTE sp_executesql @RequiredPayment
 
@@ -158,7 +164,7 @@ BEGIN
 		;WITH PaymentCte
 		AS (
 			SELECT Id, Row_Number() OVER (
-					PARTITION BY [JobId]
+                PARTITION BY [JobId]
 					,[Ukprn]
 					,[AcademicYear]
 					,[CollectionPeriod]
@@ -181,19 +187,20 @@ BEGIN
 					,[AccountId]
 					,[TransferSenderAccountId]
 					,[ApprenticeshipEmployerType] 
-					ORDER BY [JobId]
-						,[Ukprn]
-						,[AcademicYear]
-						,[CollectionPeriod]
-						,[DeliveryPeriod]
-					) AS RN
+                ORDER BY [JobId]
+                    ,[Ukprn]
+                    ,[AcademicYear]
+                    ,[CollectionPeriod]
+                    ,[DeliveryPeriod]
+				    ,[DuplicateNumber]
+                ) AS RN
 			FROM Payments2.Payment
 			)
 		UPDATE p
 		SET DuplicateNumber = RN - 1
 		FROM Payments2.Payment p
 		JOIN PaymentCte ON PaymentCte.Id = p.Id
-		WHERE PaymentCte.RN > 1;
+		WHERE RN > 1 AND DuplicateNumber <> RN - 1;
 	'
 	EXECUTE sp_executesql @Payment
 
