@@ -3,8 +3,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.DataLocks.Model.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -20,7 +18,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         private readonly IBulkWriter<LegacyDataLockEventCommitmentVersion> dataLockEventCommitmentVersionWriter;
         private readonly IBulkWriter<LegacyDataLockEventError> dataLockEventErrorWriter;
         private readonly IBulkWriter<LegacyDataLockEventPeriod> dataLockEventPeriodWriter;
-        private readonly List<string> academicYearsToIgnore = new List<string>();
 
         public DataLockStatusChangedEventBatchProcessor(
             IBatchedDataCache<PriceEpisodeStatusChange> cache,
@@ -37,10 +34,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             this.dataLockEventCommitmentVersionWriter = dataLockEventCommitmentVersionWriter;
             this.dataLockEventErrorWriter = dataLockEventErrorWriter;
             this.dataLockEventPeriodWriter = dataLockEventPeriodWriter;
-            var academicYearsToIgnoreConfiguration = configuration.GetSetting("IgnoreApprovalsPriceEpisodeEventsForAcademicYears");
-            if (academicYearsToIgnoreConfiguration != null)
-                academicYearsToIgnore.AddRange(academicYearsToIgnoreConfiguration.Split(',')
-                    .Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim()));
         }
 
         public async Task<int> Process(int batchSize, CancellationToken cancellationToken)
@@ -53,19 +46,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 return 0;
             }
 
-            var paymentsToProcess = batch;
-
-            foreach (var academicYearToIgnore in academicYearsToIgnore)
-            {
-                var paymentsToIgnore = paymentsToProcess.Where(x => 
-                    x.Periods.Any(y => y.CollectionPeriodName.Contains(academicYearToIgnore)))
-                    .ToList();
-                if (paymentsToIgnore.Any())
-                    logger.LogInfo($"Removed {paymentsToIgnore.Count} records for Academic Year: {academicYearToIgnore}");
-                paymentsToProcess = paymentsToProcess.Except(paymentsToIgnore).ToList();
-            }
-
-            batch = paymentsToProcess;
             if (batch.Count == 0)
             {
                 logger.LogVerbose("No records found to process after removing ignored academic years.");
