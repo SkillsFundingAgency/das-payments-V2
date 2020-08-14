@@ -90,19 +90,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                         ))
                         .ToList();
 
-                    var apprenticeshipEarningPeriods = priceEpisodeEarnings
-                        .SelectMany(o => o.Periods)
-                        .Where(p => (p.ApprenticeshipId.HasValue && p.ApprenticeshipId == apprenticeship.Id) ||
-                            (p.DataLockFailures != null && p.DataLockFailures.Any(d => d.ApprenticeshipId.HasValue && d.ApprenticeshipId == apprenticeship.Id)))
-                        .ToList();
-
                     var apprenticeshipErrors = priceEpisodeErrors
                         .Where(p => p.ApprenticeshipId.HasValue && p.ApprenticeshipId == apprenticeship.Id)
                         .ToList();
 
-                    var evt = MapPriceEpisodeStatusChange(
-                        apprenticeshipEarningPeriods,
-                        priceEpisodeDataLocks.First(),
+                    var evt = MapPriceEpisodeStatusChange(priceEpisodeDataLocks.First(),
                         apprenticeshipErrors,
                         priceEpisodeChange.status,
                         priceEpisode,
@@ -117,7 +109,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         }
 
         private PriceEpisodeStatusChange MapPriceEpisodeStatusChange(
-            List<EarningPeriod> apprenticeshipEarningPeriods,
             DataLockEvent dataLock,
             List<DataLockFailure> apprenticeshipErrors,
             PriceEpisodeStatus status,
