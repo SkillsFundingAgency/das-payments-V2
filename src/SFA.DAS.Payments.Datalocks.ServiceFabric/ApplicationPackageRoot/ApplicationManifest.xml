@@ -37,7 +37,7 @@
     <Parameter Name="DelayedMessageRetries" DefaultValue="3" />
     <Parameter Name="DelayedMessageRetryDelay" DefaultValue="00:00:10" />
     <Parameter Name="DisableDatalocks" DefaultValue="false" />
-    <Parameter Name="IgnoreEventsForAcademicYears" DefaultValue="" />
+    <Parameter Name="IgnoreApprovalsPriceEpisodeEventsForAcademicYears" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -67,7 +67,7 @@
             <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
             <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
             <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
-            <Parameter Name="IgnoreEventsForAcademicYears" Value="[IgnoreEventsForAcademicYears]" />
+            <Parameter Name="IgnoreApprovalsPriceEpisodeEventsForAcademicYears" Value="[IgnoreApprovalsPriceEpisodeEventsForAcademicYears]" />
           </Section>
         </Settings>
       </ConfigOverride>
@@ -124,7 +124,7 @@
             <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
             <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
             <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
-            <Parameter Name="IgnoreEventsForAcademicYears" Value="[IgnoreEventsForAcademicYears]" />
+            <Parameter Name="IgnoreApprovalsPriceEpisodeEventsForAcademicYears" Value="[IgnoreApprovalsPriceEpisodeEventsForAcademicYears]" />
           </Section>
         </Settings>
       </ConfigOverride>

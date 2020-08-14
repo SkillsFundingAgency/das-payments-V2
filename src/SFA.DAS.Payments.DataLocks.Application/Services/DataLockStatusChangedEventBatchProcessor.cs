@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             this.dataLockEventCommitmentVersionWriter = dataLockEventCommitmentVersionWriter;
             this.dataLockEventErrorWriter = dataLockEventErrorWriter;
             this.dataLockEventPeriodWriter = dataLockEventPeriodWriter;
-            var academicYearsToIgnoreConfiguration = configuration.GetSetting("IgnoreEventsForAcademicYears");
+            var academicYearsToIgnoreConfiguration = configuration.GetSetting("IgnoreApprovalsPriceEpisodeEventsForAcademicYears");
             if (academicYearsToIgnoreConfiguration != null)
                 academicYearsToIgnore.AddRange(academicYearsToIgnoreConfiguration.Split(',')
                     .Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim()));

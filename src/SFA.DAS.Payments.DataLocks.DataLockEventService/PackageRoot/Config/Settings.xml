@@ -22,7 +22,7 @@
     <Parameter Name="BatchSize" Value="500"/>
     <Parameter Name="BatchFailureTimeoutInSeconds" Value="60"/>
     <Parameter Name="DasNServiceBusLicenseKey" Value=""/>
-    <Parameter Name="IgnoreEventsForAcademicYears" Value=""/>
+    <Parameter Name="IgnoreApprovalsPriceEpisodeEventsForAcademicYears" Value=""/>
 
   </Section>
 </Settings>

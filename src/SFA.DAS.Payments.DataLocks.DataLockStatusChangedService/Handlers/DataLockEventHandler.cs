@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockStatusChangedService.Handlers
         {
             this.paymentLogger = paymentLogger;
             this.manageReceivedDataLockEvent = manageReceivedDataLockEvent;
-            var academicYearsToIgnoreConfiguration = configuration.GetSetting("IgnoreEventsForAcademicYears");
+            var academicYearsToIgnoreConfiguration = configuration.GetSetting("IgnoreApprovalsPriceEpisodeEventsForAcademicYears");
             try
             {
                 var ignoredYearsAsAList = academicYearsToIgnoreConfiguration.Split(',')
@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockStatusChangedService.Handlers
             }
             catch (FormatException)
             {
-                paymentLogger.LogWarning("Issue with the 'IgnoreEventsForAcademicYears' configuration setting");
+                paymentLogger.LogWarning("Issue with the 'IgnoreApprovalsPriceEpisodeEventsForAcademicYears' configuration setting");
             }
         }
 
