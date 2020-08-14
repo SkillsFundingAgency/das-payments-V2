@@ -6,7 +6,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
-using SFA.DAS.Payments.Core.Configuration;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Services
 {
@@ -25,8 +24,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             IBulkWriter<LegacyDataLockEvent> dataLockEventWriter,
             IBulkWriter<LegacyDataLockEventCommitmentVersion> dataLockEventCommitmentVersionWriter,
             IBulkWriter<LegacyDataLockEventError> dataLockEventErrorWriter,
-            IBulkWriter<LegacyDataLockEventPeriod> dataLockEventPeriodWriter,
-            IConfigurationHelper configuration)
+            IBulkWriter<LegacyDataLockEventPeriod> dataLockEventPeriodWriter)
         {
             this.cache = cache;
             this.logger = logger;
@@ -43,12 +41,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             if (batch.Count < 1)
             {
                 logger.LogVerbose("No records found to process.");
-                return 0;
-            }
-
-            if (batch.Count == 0)
-            {
-                logger.LogVerbose("No records found to process after removing ignored academic years.");
                 return 0;
             }
 
