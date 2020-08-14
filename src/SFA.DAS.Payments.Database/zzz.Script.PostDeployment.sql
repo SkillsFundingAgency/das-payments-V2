@@ -155,7 +155,7 @@ RAISERROR('Completed',10,1) WITH NOWAIT;
 GO
 
 /* ---- Well-known UKPRNs for DC integration testing ---- */
-with KnownUkprns as (
+;with KnownUkprns as (
 	select '10000833' as Ukprn union
 	select '10001144' union
 	select '10001326' union
