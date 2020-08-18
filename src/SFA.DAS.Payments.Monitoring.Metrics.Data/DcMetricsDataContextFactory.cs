@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 {
     public interface IDcMetricsDataContextFactory
     {
-        IDcMetricsDataContext Create(short academicYear);
+        IDcMetricsDataContext CreateContext(short academicYear);
     }
 
     public class DcMetricsDataContextFactory : IDcMetricsDataContextFactory
@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             this.lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
         }
 
-        public IDcMetricsDataContext Create(short academicYear)
+        public IDcMetricsDataContext CreateContext(short academicYear)
         {
             var foundDcDataContext = lifetimeScope.TryResolveNamed($"DcEarnings{academicYear}DataContext", typeof(IDcMetricsDataContext), out var dcDataContext);
 
