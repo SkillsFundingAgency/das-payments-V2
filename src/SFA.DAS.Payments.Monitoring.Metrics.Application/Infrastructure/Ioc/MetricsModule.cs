@@ -1,12 +1,11 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Metrics.Application.Submission;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Ioc
 {
-    public class MetricsModule: Module
+    public class MetricsModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
@@ -21,8 +20,20 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Ioc
             builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
-                    return new DcMetricsDataContextFactory(configHelper.GetConnectionString("DcEarningsConnectionString"));
+                    return new DcMetricsDataContext(configHelper.GetConnectionString("DcEarnings2021ConnectionString"));
                 })
+                .Named<IDcMetricsDataContext>("DcEarnings2021DataContext")
+                .InstancePerLifetimeScope();
+                
+            builder.Register((c, p) =>
+                {
+                    var configHelper = c.Resolve<IConfigurationHelper>();
+                    return new DcMetricsDataContext(configHelper.GetConnectionString("DcEarnings1920ConnectionString"));
+                })
+                .Named<IDcMetricsDataContext>("DcEarnings1920DataContext")
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<DcMetricsDataContextFactory>()
                 .As<IDcMetricsDataContextFactory>()
                 .InstancePerLifetimeScope();
 

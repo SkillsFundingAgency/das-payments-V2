@@ -1,33 +1,31 @@
-﻿using System.Collections.Concurrent;
-using System.Data.SqlClient;
+﻿using System;
+using System.Collections.Generic;
+using Autofac;
+using SFA.DAS.Payments.Core.Configuration;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 {
     public interface IDcMetricsDataContextFactory
     {
-        IDcMetricsDataContext CreateContext(short academicYear);
+        IDcMetricsDataContext Create(short academicYear);
     }
 
     public class DcMetricsDataContextFactory : IDcMetricsDataContextFactory
     {
-        private readonly string connectionString;
-        private readonly ConcurrentDictionary<short, IDcMetricsDataContext> contexts;
+        private readonly ILifetimeScope lifetimeScope;
 
-        public DcMetricsDataContextFactory(string connectionString)
+        public DcMetricsDataContextFactory(ILifetimeScope lifetimeScope)
         {
-            this.connectionString = connectionString;
-            contexts = new ConcurrentDictionary<short, IDcMetricsDataContext>();
+            this.lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
         }
 
-        public IDcMetricsDataContext CreateContext(short academicYear)
+        public IDcMetricsDataContext Create(short academicYear)
         {
-            if (contexts.ContainsKey(academicYear))
-                return contexts[academicYear];
+            var foundDcDataContext = lifetimeScope.TryResolveNamed($"DcEarnings{academicYear}DataContext", typeof(IDcMetricsDataContext), out var dcDataContext);
 
-            var builder = new SqlConnectionStringBuilder(connectionString);
-            builder["Database"] = $"ILR{academicYear}DataStore";
-            contexts.AddOrUpdate(academicYear, new DcMetricsDataContext(builder.ConnectionString), (ay, c) => c);
-            return contexts[academicYear];
+            if (!foundDcDataContext) throw new ApplicationException($"Error creating DcMetricsDataContext for Academic Year {academicYear}");
+
+            return (IDcMetricsDataContext)dcDataContext;
         }
     }
 }
