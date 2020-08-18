@@ -45,6 +45,35 @@ CREATE TABLE [Payments2].[FundingSourceEvent]
 )
 GO
 
+CREATE UNIQUE INDEX UX_FundingSourceEvent_LogicalDuplicates ON Payments2.FundingSourceEvent 
+(
+	[JobId]
+	,[Ukprn]
+	,[AcademicYear]
+	,[CollectionPeriod]
+	,[DeliveryPeriod]
+	,[ContractType]
+	,[TransactionType]
+	,[Amount]
+	,[SfaContributionPercentage]
+	,[LearnerUln]
+	,[LearnerReferenceNumber]
+	,[LearningAimReference]
+	,[LearningAimProgrammeType]
+	,[LearningAimStandardCode]
+	,[LearningAimFrameworkCode]
+	,[LearningAimPathwayCode]
+	,[LearningAimFundingLineType]
+	,[LearningStartDate]
+	,[FundingSourceType]
+	,[ApprenticeshipId]
+	,[AccountId]
+	,[TransferSenderAccountId]
+	,[ApprenticeshipEmployerType]
+	,DuplicateNumber
+)
+GO
+
 CREATE INDEX [IX_FundingSourceEvent__Audit] ON [Payments2].[FundingSourceEvent]
 (
  [EarningEventId],
