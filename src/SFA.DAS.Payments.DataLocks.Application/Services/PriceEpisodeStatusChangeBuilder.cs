@@ -22,11 +22,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         public async Task<List<PriceEpisodeStatusChange>> Build(List<DataLockEvent> dataLockEvents,
             List<(string identifier, PriceEpisodeStatus status)> priceEpisodeChanges,
-            List<PriceEpisodeStatusChange> currentPriceEpisodeStatusChange)
+            List<PriceEpisodeStatusChange> currentPriceEpisodeStatusChange, short currentAcademicYear)
         {
             var present = await BuildPresentEvents(dataLockEvents, priceEpisodeChanges);
-
-            var removed = BuildRemovedEvents(priceEpisodeChanges, currentPriceEpisodeStatusChange);
+            
+            var removed = BuildRemovedEvents(priceEpisodeChanges, currentPriceEpisodeStatusChange, currentAcademicYear);
 
             return present.Union(removed).ToList();
         }
@@ -90,19 +90,11 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                         ))
                         .ToList();
 
-                    var apprenticeshipEarningPeriods = priceEpisodeEarnings
-                        .SelectMany(o => o.Periods)
-                        .Where(p => (p.ApprenticeshipId.HasValue && p.ApprenticeshipId == apprenticeship.Id) ||
-                            (p.DataLockFailures != null && p.DataLockFailures.Any(d => d.ApprenticeshipId.HasValue && d.ApprenticeshipId == apprenticeship.Id)))
-                        .ToList();
-
                     var apprenticeshipErrors = priceEpisodeErrors
                         .Where(p => p.ApprenticeshipId.HasValue && p.ApprenticeshipId == apprenticeship.Id)
                         .ToList();
 
-                    var evt = MapPriceEpisodeStatusChange(
-                        apprenticeshipEarningPeriods,
-                        priceEpisodeDataLocks.First(),
+                    var evt = MapPriceEpisodeStatusChange(priceEpisodeDataLocks.First(),
                         apprenticeshipErrors,
                         priceEpisodeChange.status,
                         priceEpisode,
@@ -117,7 +109,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         }
 
         private PriceEpisodeStatusChange MapPriceEpisodeStatusChange(
-            List<EarningPeriod> apprenticeshipEarningPeriods,
             DataLockEvent dataLock,
             List<DataLockFailure> apprenticeshipErrors,
             PriceEpisodeStatus status,
@@ -326,7 +317,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
         private static List<PriceEpisodeStatusChange> BuildRemovedEvents(List<(string identifier,
             PriceEpisodeStatus status)> priceEpisodeChanges,
-            IEnumerable<PriceEpisodeStatusChange> priceEpisodeStatusChange)
+            IEnumerable<PriceEpisodeStatusChange> priceEpisodeStatusChange, short currentAcademicYear)
         {
 
             var removedPriceEpisodes = priceEpisodeStatusChange
@@ -334,7 +325,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     .Any(p => p.status == PriceEpisodeStatus.Removed && p.identifier == c.DataLock.PriceEpisodeIdentifier))
                 .ToList();
 
-            removedPriceEpisodes.ForEach(x => x.DataLock.Status = PriceEpisodeStatus.Removed);
+            //Ensure that only events for the current academic year can be flagged as removed.
+            removedPriceEpisodes.ForEach(x => x.DataLock.Status = x.DataLock.AcademicYear.Equals(currentAcademicYear.ToString(),StringComparison.OrdinalIgnoreCase) ? PriceEpisodeStatus.Removed : PriceEpisodeStatus.Updated);
 
             return removedPriceEpisodes;
         }

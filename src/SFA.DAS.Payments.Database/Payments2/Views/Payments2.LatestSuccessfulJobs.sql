@@ -1,21 +1,17 @@
 ﻿CREATE VIEW [Payments2].[LatestSuccessfulJobs]
 AS
 
-with validJobs as (
-	Select
-		max(IlrSubmissionTime) [IlrSubmissionTime],
-		Ukprn
-	from Payments2.Job
-	where status in (2,3) 
-		and DCJobSucceeded = 1
-		and JobType = 1 
-	group by Ukprn
-)
-
-Select
-	j.*
-from Payments2.Job j
-join validJobs vj 
-	on j.IlrSubmissionTime = vj.IlrSubmissionTime
-	AND J.Ukprn = VJ.Ukprn
+WITH validJobs AS (
+    SELECT MAX(IlrSubmissionTime) AS IlrSubmissionTime, Ukprn, AcademicYear
+        FROM   Payments2.Job
+        WHERE (Status IN (2, 3)) 
+        AND (DCJobSucceeded = 1) 
+        AND (JobType = 1)
+        GROUP BY Ukprn, AcademicYear)
+    SELECT j.*
+  FROM   Payments2.Job AS j 
+  INNER JOIN validJobs AS vj 
+    ON j.IlrSubmissionTime = vj.IlrSubmissionTime 
+    AND j.Ukprn = vj.Ukprn 
+    AND j.AcademicYear = vj.AcademicYear
 
