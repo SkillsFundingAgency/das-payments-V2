@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
     {
         private readonly IPaymentLogger logger;
         private readonly IPeriodEndJobService periodEndJobService;
-        private readonly IJobStatusManager jobStatusManager;
+        private readonly IPeriodEndJobStatusManager jobStatusManager;
 
         public RecordPeriodEndRunJobHandler(IPaymentLogger logger, IPeriodEndJobService periodEndJobService, IPeriodEndJobStatusManager jobStatusManager)
         {

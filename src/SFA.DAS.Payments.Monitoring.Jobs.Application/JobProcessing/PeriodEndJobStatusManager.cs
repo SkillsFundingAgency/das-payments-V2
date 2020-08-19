@@ -11,7 +11,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
     public class PeriodEndJobStatusManager : JobStatusManager, IPeriodEndJobStatusManager
     {
-        public PeriodEndJobStatusManager(IPaymentLogger logger, IUnitOfWorkScopeFactory scopeFactory, IJobServiceConfiguration configuration) : base(logger, scopeFactory, configuration)
+        public PeriodEndJobStatusManager(IPaymentLogger logger, IUnitOfWorkScopeFactory scopeFactory, 
+            IJobServiceConfiguration configuration) : base(logger, scopeFactory, configuration)
         {
         }
 
@@ -22,7 +23,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
         public override async Task<List<long>> GetCurrentJobs(IJobStorageService jobStorage)
         {
-            return await jobStorage.GetCurrentPeriodEndJobs(cancellationToken).ConfigureAwait(false);
+            return await jobStorage.GetCurrentPeriodEndExcludingStartJobs(cancellationToken).ConfigureAwait(false);
         }
     }
 }

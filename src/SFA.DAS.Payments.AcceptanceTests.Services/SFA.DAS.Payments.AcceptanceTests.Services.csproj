@@ -7,7 +7,7 @@
   <ItemGroup>
     <PackageReference Include="ESFA.DC.CollectionsManagement.Models" Version="0.1.6-beta0001" />
     <PackageReference Include="ESFA.DC.IO.AzureStorage" Version="0.1.15-beta0001" />
-	    <PackageReference Include="ESFA.DC.Jobs.Model" Version="0.2.9-beta0001" />
+	    <PackageReference Include="ESFA.DC.Jobs.Model" Version="0.2.76-beta0001" />
     <PackageReference Include="ESFA.DC.JobStatus" Version="0.1.12-beta0001" />
     
     <PackageReference Include="ESFA.DC.Serialization.Interfaces" Version="0.1.6-beta0001" />
