@@ -45,6 +45,35 @@ CREATE TABLE [Payments2].[RequiredPaymentEvent]
 )
 GO
 
+CREATE UNIQUE INDEX UX_RequiredPaymentEvent_LogicalDuplicates ON Payments2.RequiredPaymentEvent 
+(
+	[JobId]
+	,[Ukprn]
+	,[AcademicYear]
+	,[CollectionPeriod]
+	,[DeliveryPeriod]
+	,[ContractType]
+	,[TransactionType]
+	,[Amount]
+	,[SfaContributionPercentage]
+	,[LearnerUln]
+	,[LearnerReferenceNumber]
+	,[LearningAimReference]
+	,[LearningAimProgrammeType]
+	,[LearningAimStandardCode]
+	,[LearningAimFrameworkCode]
+	,[LearningAimPathwayCode]
+	,[LearningAimFundingLineType]
+	,[LearningStartDate]
+	,[EventType]
+	,[ApprenticeshipId]
+	,[AccountId]
+	,[TransferSenderAccountId]
+	,[ApprenticeshipEmployerType]
+	,DuplicateNumber
+)
+GO
+
 CREATE INDEX [IX_RequiredPaymentEvent__Audit] ON [Payments2].[RequiredPaymentEvent]
 (
   [EarningEventId]

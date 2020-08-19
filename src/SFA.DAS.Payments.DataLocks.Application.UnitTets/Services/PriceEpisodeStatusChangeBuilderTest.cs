@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var result = await sut.Build(
                 new List<DataLockEvent>(),
                 new List<(string identifier, PriceEpisodeStatus status)>(),
-                new List<PriceEpisodeStatusChange>());
+                new List<PriceEpisodeStatusChange>(), 2019);
 
             result.Should().BeEmpty();
         }
@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 {
                     (priceEpisode.Identifier, PriceEpisodeStatus.New)
                 },
-                new List<PriceEpisodeStatusChange>());
+                new List<PriceEpisodeStatusChange>(), dataLock.CollectionPeriod.AcademicYear);
 
             result.Should().ContainEquivalentOf(new
             {
@@ -98,7 +98,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 {
                     (priceEpisode.Identifier, PriceEpisodeStatus.Updated)
                 },
-                new List<PriceEpisodeStatusChange>());
+                new List<PriceEpisodeStatusChange>(), dataLock.CollectionPeriod.AcademicYear);
 
             result.Should().ContainEquivalentOf(new
             {
@@ -131,7 +131,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 {
                     (priceEpisode.Identifier, PriceEpisodeStatus.New)
                 },
-                new List<PriceEpisodeStatusChange>());
+                new List<PriceEpisodeStatusChange>(), dataLock.CollectionPeriod.AcademicYear);
 
             result.Should().ContainEquivalentOf(new
             {
@@ -165,7 +165,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 {
                     (priceEpisode.Identifier, PriceEpisodeStatus.New)
                 },
-                new List<PriceEpisodeStatusChange>());
+                new List<PriceEpisodeStatusChange>(), dataLock.CollectionPeriod.AcademicYear);
 
             result.Should().ContainEquivalentOf(new
             {
@@ -197,7 +197,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 {
                     (priceEpisode.Identifier, PriceEpisodeStatus.New)
                 },
-                new List<PriceEpisodeStatusChange>());
+                new List<PriceEpisodeStatusChange>(), dataLock.CollectionPeriod.AcademicYear);
 
             result.Should().ContainEquivalentOf(new
             {
@@ -234,7 +234,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 {
                     (priceEpisode.Identifier, PriceEpisodeStatus.New)
                 },
-                new List<PriceEpisodeStatusChange>());
+                new List<PriceEpisodeStatusChange>(), dataLock.CollectionPeriod.AcademicYear);
 
             result.Should().NotBeEmpty();
             result[0].Errors.Should().ContainEquivalentOf(new
@@ -263,7 +263,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 {
                     (dataLockEvent.PriceEpisodes[0].Identifier,PriceEpisodeStatus.New)
                 },
-                new List<PriceEpisodeStatusChange>());
+                new List<PriceEpisodeStatusChange>(), dataLockEvent.CollectionPeriod.AcademicYear);
 
             result.First().Periods.Should().ContainEquivalentOf(new
             {
@@ -288,7 +288,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             var result = await sut.Build(
                 new List<DataLockEvent> { dataLockEvent },
                 new List<(string identifier, PriceEpisodeStatus status)>(),
-                new List<PriceEpisodeStatusChange>());
+                new List<PriceEpisodeStatusChange>(), dataLockEvent.CollectionPeriod.AcademicYear);
 
             result.Should().BeEmpty();
 
@@ -314,10 +314,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                         PriceEpisodeIdentifier = dataLockEvent.PriceEpisodes[0].Identifier,
                         Status = PriceEpisodeStatus.New,
                         UKPRN = dataLockEvent.Ukprn,
-                        ULN = dataLockEvent.Learner.Uln
+                        ULN = dataLockEvent.Learner.Uln,
+                        AcademicYear = "1920"
                     }
                 }
             };
+
+            dataLockEvent.CollectionPeriod.AcademicYear = 1920;
 
             var result = await sut.Build(
                 new List<DataLockEvent> { dataLockEvent },
@@ -325,7 +328,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 {
                     (dataLockEvent.PriceEpisodes[0].Identifier, PriceEpisodeStatus.Removed)
                 },
-                episodeStatusChange);
+                episodeStatusChange, dataLockEvent.CollectionPeriod.AcademicYear);
 
             result.Should().ContainEquivalentOf(new
             {
@@ -338,6 +341,72 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 },
             });
 
+        }
+
+        [Test, AutoDomainData]
+        public async Task Build_Should_Not_Generate_Remove_Event_For_Previous_AcademicYear_PriceEpisode(
+            [Frozen] Mock<IApprenticeshipRepository> repository,
+            PriceEpisodeStatusChangeBuilder sut,
+            EarningFailedDataLockMatching dataLockEvent,
+            List<EarningPeriod> periods,
+            List<DataLockFailure> dataLockFailures,
+            List<ApprenticeshipModel> apprenticeships)
+        {
+
+            CommonTestSetup(repository, dataLockEvent, periods, apprenticeships, dataLockFailures);
+            var episodeStatusChange = new List<PriceEpisodeStatusChange>
+            {
+                new PriceEpisodeStatusChange
+                {
+                    DataLock = new LegacyDataLockEvent
+                    {
+                        PriceEpisodeIdentifier = dataLockEvent.PriceEpisodes[0].Identifier,
+                        Status = PriceEpisodeStatus.New,
+                        UKPRN = dataLockEvent.Ukprn,
+                        ULN = dataLockEvent.Learner.Uln,
+                        AcademicYear = "1920"
+                    }
+                },
+                new PriceEpisodeStatusChange
+                {
+                    DataLock = new LegacyDataLockEvent
+                    {
+                        PriceEpisodeIdentifier = dataLockEvent.PriceEpisodes[1].Identifier,
+                        Status = PriceEpisodeStatus.New,
+                        UKPRN = dataLockEvent.Ukprn,
+                        ULN = dataLockEvent.Learner.Uln,
+                        AcademicYear = "2021"
+                    }
+                }
+            };
+
+            dataLockEvent.CollectionPeriod.AcademicYear = 2021;
+
+            var result = await sut.Build(
+                new List<DataLockEvent> { dataLockEvent },
+                new List<(string identifier, PriceEpisodeStatus status)>
+                {
+                    (dataLockEvent.PriceEpisodes[0].Identifier, PriceEpisodeStatus.Removed),
+                    (dataLockEvent.PriceEpisodes[1].Identifier, PriceEpisodeStatus.Removed)
+                },
+                episodeStatusChange, dataLockEvent.CollectionPeriod.AcademicYear);
+
+            result.Count.Should().Be(2);
+            result.Select(s => s.DataLock).Should().BeEquivalentTo(new
+            {
+                PriceEpisodeIdentifier = dataLockEvent.PriceEpisodes[0].Identifier,
+                Status = PriceEpisodeStatus.Updated,
+                UKPRN = dataLockEvent.Ukprn,
+                ULN = dataLockEvent.Learner.Uln,
+                AcademicYear = "1920"
+            }, new
+            {
+                PriceEpisodeIdentifier = dataLockEvent.PriceEpisodes[1].Identifier,
+                Status = PriceEpisodeStatus.Removed,
+                UKPRN = dataLockEvent.Ukprn,
+                ULN = dataLockEvent.Learner.Uln,
+                AcademicYear = "2021"
+            });
         }
 
         [Test, AutoDomainData]
@@ -409,7 +478,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 {
                     (priceEpisode.Identifier, PriceEpisodeStatus.New)
                 },
-                new List<PriceEpisodeStatusChange>());
+                new List<PriceEpisodeStatusChange>(), dataLock.CollectionPeriod.AcademicYear);
 
             result.Should().NotBeEmpty();
             result[0].Errors.Should().HaveCount(3);
