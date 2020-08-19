@@ -12,3 +12,12 @@
 	INDEX IX_EarningEventPeriod__EarningEventId (EarningEventId),
 	INDEX IX_EarningEventPeriod__Search (EarningEventId,PriceEpisodeIdentifier)
 )
+GO
+
+CREATE NONCLUSTERED INDEX IX_EarningEventPeriod__Amount on Payments2.EarningEventPeriod 
+(
+Amount
+) 
+Include (EarningEventId, TransactionType)
+
+GO

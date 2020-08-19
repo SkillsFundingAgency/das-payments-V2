@@ -46,6 +46,35 @@ CREATE TABLE [Payments2].[Payment]
 );
 GO
 
+CREATE UNIQUE INDEX UX_Payment_LogicalDuplicates ON Payments2.Payment 
+(
+	[JobId]
+	,[Ukprn]
+	,[AcademicYear]
+	,[CollectionPeriod]
+	,[DeliveryPeriod]
+	,[ContractType]
+	,[TransactionType]
+	,[Amount]
+	,[SfaContributionPercentage]
+	,[LearnerUln]
+	,[LearnerReferenceNumber]
+	,[LearningAimReference]
+	,[LearningAimProgrammeType]
+	,[LearningAimStandardCode]
+	,[LearningAimFrameworkCode]
+	,[LearningAimPathwayCode]
+	,[LearningAimFundingLineType]
+	,[LearningStartDate]
+	,[FundingSource]
+	,[ApprenticeshipId]
+	,[AccountId]
+	,[TransferSenderAccountId]
+	,[ApprenticeshipEmployerType]
+	,DuplicateNumber
+)
+GO
+
 CREATE NONCLUSTERED INDEX [IX_Payment__ApprenticeshipKey] ON [Payments2].[Payment]
 (
 	[Ukprn] ASC,
