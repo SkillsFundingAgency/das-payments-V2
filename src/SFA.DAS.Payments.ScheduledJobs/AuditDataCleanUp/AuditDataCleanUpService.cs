@@ -219,7 +219,9 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
                 WHERE CollectionPeriod = @collectionPeriod AND AcademicYear = @academicYear;
 
                 -- keep all successful Jobs, 
-                DELETE FROM #JobDataToBeDeleted WHERE JobId IN ( SELECT DcJobId FROM Payments2.LatestSuccessfulJobs );
+                DELETE FROM #JobDataToBeDeleted WHERE JobId IN ( 
+                    SELECT DcJobId FROM Payments2.LatestSuccessfulJobs 
+                    WHERE CollectionPeriod = @collectionPeriod AND AcademicYear = @academicYear);
 
                 -- and Keep all in progress and Timed-out and Failed on DC Jobs
                 DELETE FROM #JobDataToBeDeleted WHERE JobId IN ( SELECT DcJobId FROM Payments2.Job WHERE [Status] in (1, 4, 5) );
