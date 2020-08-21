@@ -6,7 +6,7 @@ using SFA.DAS.Payments.Monitoring.Metrics.Data;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Ioc
 {
-    public class MetricsModule: Module
+    public class MetricsModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
@@ -26,12 +26,24 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Ioc
                 .As<IPeriodEndMetricsService>()
                 .InstancePerLifetimeScope();
 
-                builder.Register((c, p) =>
+            builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
-                    return new DcMetricsDataContext(configHelper.GetConnectionString("DcEarningsConnectionString"));
+                    return new DcMetricsDataContext(configHelper.GetConnectionString("DcEarnings2021ConnectionString"));
                 })
-                .As<IDcMetricsDataContext>()
+                .Named<IDcMetricsDataContext>("DcEarnings2021DataContext")
+                .InstancePerLifetimeScope();
+                
+            builder.Register((c, p) =>
+                {
+                    var configHelper = c.Resolve<IConfigurationHelper>();
+                    return new DcMetricsDataContext(configHelper.GetConnectionString("DcEarnings1920ConnectionString"));
+                })
+                .Named<IDcMetricsDataContext>("DcEarnings1920DataContext")
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<DcMetricsDataContextFactory>()
+                .As<IDcMetricsDataContextFactory>()
                 .InstancePerLifetimeScope();
 
             builder.Register((c, p) =>
@@ -53,14 +65,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Ioc
             builder.RegisterType<SubmissionMetricsRepository>()
                 .As<ISubmissionMetricsRepository>()
                 .InstancePerLifetimeScope();
-
             builder.RegisterType<PeriodEndMetricsRepository>()
                 .As<IPeriodEndMetricsRepository>()
                 .InstancePerLifetimeScope();
 
-            builder.RegisterType<SubmissionMetricsService>()
-                .As<ISubmissionMetricsService>()
-                .InstancePerLifetimeScope();
         }
     }
 }
