@@ -126,9 +126,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 { "DcEarningsContractType1Total" ,       (double) dcEarnings.ContractType1 },
                 { "DcEarningsContractType2Total" ,       (double) dcEarnings.ContractType2 },
                 
-                { "DataLockedEarningsAmount" ,                (double) metrics.DataLockedEarnings},
+                { "DataLockedEarningsAmount" ,                (double) metrics.AdjustedDataLockedEarnings },
                 
-                { "DataLockedEarningsTotal" ,                 (double) metrics.TotalDataLockedEarnings},
+                { "DataLockedEarningsTotal" ,                 (double) metrics.TotalDataLockedEarnings },
                 
                 { "DataLockAmountAlreadyPaid" ,               (double) metrics.AlreadyPaidDataLockedEarnings },
                 
