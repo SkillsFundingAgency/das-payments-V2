@@ -30,19 +30,18 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
         private readonly IMetricsQueryDataContext queryDataContext;
         private readonly IPaymentLogger logger;
 
-
-
-        public PeriodEndMetricsRepository( IMetricsPersistenceDataContext persistenceDataContext, IMetricsQueryDataContext queryDataContext, IPaymentLogger logger)
+        public PeriodEndMetricsRepository(IMetricsPersistenceDataContext persistenceDataContext, IMetricsQueryDataContext queryDataContext, IPaymentLogger logger)
         {
             this.persistenceDataContext = persistenceDataContext ?? throw new ArgumentNullException(nameof(persistenceDataContext));
             this.queryDataContext = queryDataContext ?? throw new ArgumentNullException(nameof(queryDataContext));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-
         public async Task<List<ProviderTransactionTypeAmounts>> GetTransactionTypesByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            var transactionAmounts =  await queryDataContext.Payments.Where(x=>x.CollectionPeriod.AcademicYear == academicYear && x.CollectionPeriod.Period == collectionPeriod)
+            logger.LogDebug($"Building period end metrics TransactionTypes By ContractType Amount for {academicYear}, {collectionPeriod}");
+
+            var transactionAmounts = await queryDataContext.Payments.Where(x => x.CollectionPeriod.AcademicYear == academicYear && x.CollectionPeriod.Period == collectionPeriod)
                 .GroupBy(p => new { p.Ukprn, p.ContractType, p.TransactionType })
                 .Select(group => new
                 {
@@ -53,8 +52,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 })
                 .ToListAsync(cancellationToken);
 
+            logger.LogInfo($"Finished building period end metrics TransactionTypes By ContractType Amount for {academicYear}, {collectionPeriod}");
+
             return transactionAmounts
-                .GroupBy(x => new {x.UkPrn, x.ContractType})
+                .GroupBy(x => new { x.UkPrn, x.ContractType })
                 .Select(group => new ProviderTransactionTypeAmounts
                 {
                     Ukprn = group.Key.UkPrn,
@@ -79,22 +80,25 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 .ToList();
         }
 
-        public async Task<List<ProviderFundingSourceAmounts>> GetFundingSourceAmountsByContractType(short academicYear, byte collectionPeriod,
-            CancellationToken cancellationToken)
+        public async Task<List<ProviderFundingSourceAmounts>> GetFundingSourceAmountsByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-             var transactionAmounts =  await queryDataContext.Payments.Where(x=>x.CollectionPeriod.AcademicYear == academicYear && x.CollectionPeriod.Period == collectionPeriod)
-                .GroupBy(p => new { p.Ukprn, p.ContractType, p.FundingSource })
-                .Select(group => new
-                {
-                    UkPrn = group.Key.Ukprn,
-                    ContractType = group.Key.ContractType,
-                    FundingSource = group.Key.FundingSource,
-                    Amount = group.Sum(x => x.Amount)
-                })
-                .ToListAsync(cancellationToken);
+            logger.LogDebug($"Building period end metrics FundingSource Amounts By ContractType for {academicYear}, {collectionPeriod}");
+
+            var transactionAmounts = await queryDataContext.Payments.Where(x => x.CollectionPeriod.AcademicYear == academicYear && x.CollectionPeriod.Period == collectionPeriod)
+               .GroupBy(p => new { p.Ukprn, p.ContractType, p.FundingSource })
+               .Select(group => new
+               {
+                   UkPrn = group.Key.Ukprn,
+                   ContractType = group.Key.ContractType,
+                   FundingSource = group.Key.FundingSource,
+                   Amount = group.Sum(x => x.Amount)
+               })
+               .ToListAsync(cancellationToken);
+
+            logger.LogInfo($"Finished building period end metrics FundingSource Amounts By ContractType for {academicYear}, {collectionPeriod}");
 
             return transactionAmounts
-                .GroupBy(x => new {x.UkPrn, x.ContractType})
+                .GroupBy(x => new { x.UkPrn, x.ContractType })
                 .Select(group => new ProviderFundingSourceAmounts
                 {
                     Ukprn = group.Key.UkPrn,
@@ -115,40 +119,41 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 
         public async Task<List<ProviderTotal>> GetAlreadyPaidDataLockedEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            return await queryDataContext.GetAlreadyPaidDataLockProviderTotals(cancellationToken);
+            return await queryDataContext.GetAlreadyPaidDataLockProviderTotals(academicYear, collectionPeriod, cancellationToken);
         }
 
-        public async Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentsTotals(short academicYear, byte collectionPeriod,
-            CancellationToken cancellationToken)
+        public async Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-           return  await queryDataContext.GetHeldBackCompletionPaymentTotals(academicYear, collectionPeriod, cancellationToken);
+            return await queryDataContext.GetHeldBackCompletionPaymentTotals(academicYear, collectionPeriod, cancellationToken);
         }
 
         public async Task<List<ProviderContractTypeAmounts>> GetYearToDatePayments(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
+            logger.LogDebug($"Building period end metrics Year To Date Payments Amount for {academicYear}, {collectionPeriod}");
+
             var amounts = await queryDataContext.Payments
                 .AsNoTracking()
                 .Where(p => p.CollectionPeriod.AcademicYear == academicYear &&
                             p.CollectionPeriod.Period < collectionPeriod)
-                .GroupBy(p => new {p.Ukprn, p.ContractType})
+                .GroupBy(p => new { p.Ukprn, p.ContractType })
                 .Select(g => new { Ukprn = g.Key.Ukprn, ContractType = g.Key.ContractType, Amount = g.Sum(p => p.Amount) })
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            return amounts.Select(group => new ProviderContractTypeAmounts()
+            logger.LogInfo($"Finished building period end metrics Year To Date Payments Amount for {academicYear}, {collectionPeriod}");
+
+            return amounts.Select(group => new ProviderContractTypeAmounts
             {
-                Ukprn =  group.Ukprn,
+                Ukprn = group.Ukprn,
                 ContractType1 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act1)?.Amount ?? 0,
                 ContractType2 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act2)?.Amount ?? 0,
             }).ToList();
 
         }
 
-        public async Task SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, PeriodEndSummaryModel overallPeriodEndSummary,
-            CancellationToken cancellationToken)
+        public async Task SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, PeriodEndSummaryModel overallPeriodEndSummary, CancellationToken cancellationToken)
         {
-            await persistenceDataContext.SaveProviderSummaries(providerSummaries, overallPeriodEndSummary,
-                cancellationToken);
+            await persistenceDataContext.SaveProviderSummaries(providerSummaries, overallPeriodEndSummary, cancellationToken);
         }
     }
 }

@@ -15,14 +15,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
     [TestFixture]
     public class PeriodEndMetricsServiceTests
     {
-        private Autofac.Extras.Moq.AutoMock moqer;
+        private AutoMock moqer;
 
         private Mock<IPeriodEndProviderSummary> periodEndProviderSummary;
         private Mock<IPeriodEndSummary> periodEndSummary;
         private Mock<IDcMetricsDataContext> dcMetricsDataContextMock;
         private Mock<IPeriodEndMetricsRepository> periodEndMetricsRepositoryMock;
 
-        private List<ProviderTransactionTypeAmounts> DcEarnings = PeriodEndTestHelper.SingleProviderDcEarnings;
+        private readonly List<ProviderTransactionTypeAmounts> dcEarnings = PeriodEndTestHelper.SingleProviderDcEarnings;
 
         [SetUp]
         public void SetUp()
@@ -53,7 +53,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             dcMetricsDataContextMock = moqer.Mock<IDcMetricsDataContext>();
             dcMetricsDataContextMock
                 .Setup(x => x.GetEarnings(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(DcEarnings);
+                .ReturnsAsync(dcEarnings);
+
+            var dcMetricsDataContextFactoryMock = moqer.Mock<IDcMetricsDataContextFactory>();
+            dcMetricsDataContextFactoryMock
+                .Setup(x => x.CreateContext(It.IsAny<short>()))
+                .Returns(dcMetricsDataContextMock.Object);
 
             periodEndMetricsRepositoryMock = moqer.Mock<IPeriodEndMetricsRepository>();
             periodEndMetricsRepositoryMock

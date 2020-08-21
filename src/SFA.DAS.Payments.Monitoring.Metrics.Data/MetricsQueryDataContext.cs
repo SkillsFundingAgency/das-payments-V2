@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         Task<DataLockTypeCounts> GetDataLockCounts(long ukprn, long jobId, CancellationToken cancellationToken);
         void SetTimeout(TimeSpan timeout);
         Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
-        Task<List<ProviderTotal>> GetAlreadyPaidDataLockProviderTotals(CancellationToken cancellationToken);
+        Task<List<ProviderTotal>> GetAlreadyPaidDataLockProviderTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
     }
 
@@ -71,9 +71,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             optionsBuilder.UseSqlServer(connectionString);
         }
 
-        public async Task<List<ProviderTotal>> GetAlreadyPaidDataLockProviderTotals(CancellationToken cancellationToken)
+        public async Task<List<ProviderTotal>> GetAlreadyPaidDataLockProviderTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            var sql = @"Select
+            var sql = 
+	      @"Select
 		        dle.ukprn as Ukprn,
 		        sum(p.Amount) as TotalAmount
             from Payments2.dataLockEventNonPayablePeriod npp
@@ -88,20 +89,21 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 	            and npp.deliveryperiod = p.deliveryperiod
 	            AND npp.TransactionType = P.TransactionType
             where 		
-	            dle.jobId in (select DcJobid from Payments2.LatestSuccessfulJobs)
-	            
+	            dle.jobId in (select DcJobid from Payments2.LatestSuccessfulJobs Where AcademicYear = @academicYear && CollectionPeriod == @collectionPeriod)
 	            and npp.Amount <> 0
 	            and dle.IsPayable = 0	
 	            and p.collectionperiod < dle.CollectionPeriod
 	        group by 
 		        dle.ukprn";
 
-            return await AlreadyPaidDataLockProviderTotals.FromSql(sql)
+            return await AlreadyPaidDataLockProviderTotals.FromSql(sql, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod))
                 .ToListAsync(cancellationToken);
         }
         public async Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            var latestSuccessfulJobIds = LatestSuccessfulJobs.AsNoTracking().Select(x => x.DcJobId);
+            var latestSuccessfulJobIds = LatestSuccessfulJobs.AsNoTracking()
+												            .Where(j => j.AcademicYear == academicYear && j.CollectionPeriod == collectionPeriod)
+												            .Select(x => x.DcJobId);
 
             var amounts = await RequiredPaymentEvents
                 .AsNoTracking()
@@ -128,32 +130,30 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         public async Task<decimal> GetAlreadyPaidDataLocksAmount(long ukprn, long jobId, CancellationToken cancellationToken)
         {
             var sql = @"
-Select
-    @result = sum(p.Amount)
-    from Payments2.dataLockEventNonPayablePeriod npp
-    join Payments2.dataLockEvent dle on npp.DataLockEventId = dle.EventId 
-    join Payments2.payment p on dle.ukprn = p.ukprn
-	    AND dle.LearningAimFrameworkCode = P.LearningAimFrameworkCode
-	    AND dle.LearningAimPathwayCode = P.LearningAimPathwayCode
-	    AND dle.LearningAimProgrammeType = P.LearningAimProgrammeType
-	    AND dle.LearningAimReference = P.LearningAimReference
-	    AND dle.LearningAimStandardCode = P.LearningAimStandardCode
-	    and dle.learnerreferencenumber = p.learnerreferencenumber
-	    and npp.deliveryperiod = p.deliveryperiod
-	    AND npp.TransactionType = P.TransactionType
-    where 		
-	    dle.jobId = @jobid
-	    and dle.Ukprn = @ukprn
-	    and npp.Amount <> 0
-	    and dle.IsPayable = 0	
-	    and p.collectionperiod < dle.CollectionPeriod
-";
+				Select
+					@result = sum(p.Amount)
+			    from Payments2.dataLockEventNonPayablePeriod npp
+			    join Payments2.dataLockEvent dle on npp.DataLockEventId = dle.EventId 
+			    join Payments2.payment p on dle.ukprn = p.ukprn
+				    AND dle.LearningAimFrameworkCode = P.LearningAimFrameworkCode
+				    AND dle.LearningAimPathwayCode = P.LearningAimPathwayCode
+				    AND dle.LearningAimProgrammeType = P.LearningAimProgrammeType
+				    AND dle.LearningAimReference = P.LearningAimReference
+				    AND dle.LearningAimStandardCode = P.LearningAimStandardCode
+				    and dle.learnerreferencenumber = p.learnerreferencenumber
+				    and npp.deliveryperiod = p.deliveryperiod
+				    AND npp.TransactionType = P.TransactionType
+			    where 		
+				    dle.jobId = @jobid
+				    and dle.Ukprn = @ukprn
+				    and npp.Amount <> 0
+				    and dle.IsPayable = 0	
+				    and p.collectionperiod < dle.CollectionPeriod
+			";
             var result = new SqlParameter("@result", SqlDbType.Decimal) { Direction = ParameterDirection.Output };
             await Database.ExecuteSqlCommandAsync(sql, new[] { new SqlParameter("@jobid", jobId), new SqlParameter("@ukprn", ukprn), result }, cancellationToken);
             return result.Value as decimal? ?? 0;
         }
-
-
 
         public async Task<DataLockTypeCounts> GetDataLockCounts(long ukprn, long jobId, CancellationToken cancellationToken)
         {
@@ -161,19 +161,19 @@ Select
                 select 
 	                count(*) [Count],
 	                a.DataLockFailureId [DataLockType]
-	                from (
-			                select 	
-				                LearnerReferenceNumber, 
-				                DataLockFailureId
-				                from Payments2.DataLockEvent dle
-				                join Payments2.DataLockEventNonPayablePeriod npp on dle.EventId = npp.DataLockEventId
-				                join Payments2.DataLockEventNonPayablePeriodFailures nppf on npp.DataLockEventNonPayablePeriodId = nppf.DataLockEventNonPayablePeriodId
-				                where dle.Ukprn = @ukprn
-				                and JobId = @jobId
-				                and npp.TransactionType in (1,2,3)
-				                and (dle.IsPayable = 0)
-				                group by dle.LearnerReferenceNumber, nppf.DataLockFailureId
-				                ) a
+                from (
+		                select 	
+			                LearnerReferenceNumber, 
+			                DataLockFailureId
+		                from Payments2.DataLockEvent dle
+		                join Payments2.DataLockEventNonPayablePeriod npp on dle.EventId = npp.DataLockEventId
+		                join Payments2.DataLockEventNonPayablePeriodFailures nppf on npp.DataLockEventNonPayablePeriodId = nppf.DataLockEventNonPayablePeriodId
+		                where dle.Ukprn = @ukprn
+			                and JobId = @jobId
+			                and npp.TransactionType in (1,2,3)
+			                and (dle.IsPayable = 0)
+		                group by dle.LearnerReferenceNumber, nppf.DataLockFailureId
+			                ) a
 			    group by
                     a.DataLockFailureId
                 ";
@@ -203,8 +203,9 @@ Select
 
         public async Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            //todo: check need for academic year and collection period here
-            var latestSuccessfulJobIds = LatestSuccessfulJobs.Select(x => x.DcJobId);
+            var latestSuccessfulJobIds = LatestSuccessfulJobs.AsNoTracking()
+															.Where(j => j.AcademicYear == academicYear && j.CollectionPeriod == collectionPeriod)
+															.Select(x => x.DcJobId);
             return  await DataLockEventNonPayablePeriods
                 .Where(period => period.Amount != 0 && latestSuccessfulJobIds.Contains(period.DataLockEvent.JobId))
                 .GroupBy(x => x.DataLockEvent.Ukprn)
