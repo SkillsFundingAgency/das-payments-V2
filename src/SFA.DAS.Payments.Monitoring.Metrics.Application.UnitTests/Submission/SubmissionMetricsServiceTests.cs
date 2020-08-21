@@ -34,9 +34,15 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             dataLocks = TestsHelper.DefaultDataLockedEarnings;
             requiredPayments = TestsHelper.DefaultRequiredPayments;
             totalDataLockedEarnings = TestsHelper.DefaultDataLockedTotal;
-            moqer.Mock<IDcMetricsDataContext>()
-                .Setup(ctx => ctx.GetEarnings(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
+
+            var dcMetricsDataContext = moqer.Mock<IDcMetricsDataContext>();
+            dcMetricsDataContext.Setup(ctx => ctx.GetEarnings(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(dcEarnings);
+
+            moqer.Mock<IDcMetricsDataContextFactory>()
+                .Setup(factory => factory.CreateContext(It.IsAny<short>()))
+                .Returns(dcMetricsDataContext.Object);
+
             var mockSubmissionSummary = moqer.Mock<ISubmissionSummary>();
             mockSubmissionSummary.Setup(x => x.GetMetrics())
                 .Returns(new SubmissionSummaryModel
@@ -79,7 +85,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             moqer.Mock<ISubmissionMetricsRepository>()
                 .Setup(repo => repo.GetYearToDatePaymentsTotal(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(TestsHelper.DefaultYearToDateAmounts);
-
         }
 
         [Test]
