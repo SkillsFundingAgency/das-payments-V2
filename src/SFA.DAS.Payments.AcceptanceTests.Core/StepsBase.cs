@@ -187,5 +187,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             await dataContext.SaveChangesAsync();
             Console.WriteLine($"Finished creating job and generated messages. Job id: {job.Id}, Test DC Job id: {job.DcJobId}");
         }
+
+        public async Task DeleteJob(long jobId)
+        {
+            var dataContext = Scope.Resolve<JobsDataContext>();
+
+            var job = dataContext.Jobs.First(x => x.Id == jobId);
+            
+            dataContext.Jobs.Remove(job);
+            
+            await dataContext.SaveChangesAsync();
+
+            Console.WriteLine($"Finished deleting job. Job id: {jobId}");
+        }
     }
 }
