@@ -12,6 +12,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
     public interface IJobsDataContext
     {
         Task SaveNewJob(JobModel jobDetails, CancellationToken cancellationToken = default(CancellationToken));
+        Task<long> GetJobId(JobType jobType, short academicYear, byte collectionPeriod);
         Task<long> GetJobIdFromDcJobId(long dcJobId);
         Task<JobModel> GetJobByDcJobId(long dcJobId);
         Task SaveJobSteps(List<JobStepModel> jobSteps);
@@ -24,6 +25,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken);
         Task SaveDcSubmissionStatus(long jobId, bool succeeded, CancellationToken cancellationToken);
         Task<List<OutstandingJobResult>>GetOutstandingOrTimedOutJobs(long? dcJobId,DateTimeOffset startTime, CancellationToken cancellationToken);
+        
     }
 
     public class JobsDataContext : DbContext, IJobsDataContext
@@ -54,6 +56,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         {
             Jobs.Add(jobDetails);
             await SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task<long> GetJobId(JobType jobType, short academicYear, byte collectionPeriod)
+        {
+            return await Jobs
+                .Where(x => x.JobType == jobType &&
+                            x.AcademicYear == academicYear &&
+                            x.CollectionPeriod == collectionPeriod)
+                .Select(job => job.Id)
+                .FirstOrDefaultAsync();
         }
 
         public async Task UpdateJob(JobModel job, CancellationToken cancellationToken = default(CancellationToken))
