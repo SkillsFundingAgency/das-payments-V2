@@ -12,10 +12,13 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 using SFA.DAS.Payments.PeriodEnd.Model;
 using NServiceBus;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
 using SFA.DAS.Payments.JobContextMessageHandling.JobStatus;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
+using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
 {
@@ -25,15 +28,17 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
         private readonly IEndpointInstanceFactory endpointInstanceFactory;
         private readonly IPeriodEndJobClient jobClient;
         private readonly IJobStatusService jobStatusService;
+        private readonly IJobsDataContext jobsDataContext;
 
         public PeriodEndJobContextMessageHandler(IPaymentLogger logger,
-            IEndpointInstanceFactory endpointInstanceFactory, IPeriodEndJobClient jobClient, IJobStatusService jobStatusService)
+            IEndpointInstanceFactory endpointInstanceFactory, IPeriodEndJobClient jobClient, IJobStatusService jobStatusService, IJobsDataContext jobsDataContext)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.endpointInstanceFactory = endpointInstanceFactory ??
                                             throw new ArgumentNullException(nameof(endpointInstanceFactory));
             this.jobClient = jobClient ?? throw new ArgumentNullException(nameof(jobClient));
             this.jobStatusService = jobStatusService ?? throw new ArgumentNullException(nameof(jobStatusService));
+            this.jobsDataContext = jobsDataContext ?? throw new ArgumentNullException(nameof(jobStatusService));
         }
 
         public async Task<bool> HandleAsync(JobContextMessage message, CancellationToken cancellationToken)
@@ -53,22 +58,42 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 };
 
                 logger.LogDebug($"Got period end event: {periodEndEvent.ToJson()}");
-                //todo 2071 need to check if job already exists in the database, based on criteria of task type, academic year, & collection period
-                //if so do not record, or publish, however wait for job status of the EXISTING jobid
-                if (taskType != PeriodEndTaskType.PeriodEndReports && taskType != PeriodEndTaskType.PeriodEndSubmissionWindowValidation)
+
+                var jobIdToWaitFor = message.JobId;
+
+                if (taskType == PeriodEndTaskType.PeriodEndReports ||
+                    taskType == PeriodEndTaskType.PeriodEndSubmissionWindowValidation)
                 {
-                    await RecordPeriodEndJob(taskType, periodEndEvent).ConfigureAwait(false);
+                    var endpointInstance = await endpointInstanceFactory.GetEndpointInstance();
+                    await endpointInstance.Publish(periodEndEvent);
+                    logger.LogInfo(
+                        $"Finished publishing the period end event. Name: {periodEndEvent.GetType().Name}, JobId: {periodEndEvent.JobId}, Collection Period: {periodEndEvent.CollectionPeriod.Period}-{periodEndEvent.CollectionPeriod.AcademicYear}.");
                 }
-                
-                var endpointInstance = await endpointInstanceFactory.GetEndpointInstance();
-                await endpointInstance.Publish(periodEndEvent);
-                logger.LogInfo($"Finished publishing the period end event. Name: {periodEndEvent.GetType().Name}, JobId: {periodEndEvent.JobId}, Collection Period: {periodEndEvent.CollectionPeriod.Period}-{periodEndEvent.CollectionPeriod.AcademicYear}.");
+                else
+                {
+                    var jobId = await jobsDataContext.GetJobId(GetJobType(taskType),
+                        periodEndEvent.CollectionPeriod.AcademicYear, periodEndEvent.CollectionPeriod.Period);
+
+                    if (jobId == 0)
+                    {
+                        await RecordPeriodEndJob(taskType, periodEndEvent).ConfigureAwait(false);
+
+                        var endpointInstance = await endpointInstanceFactory.GetEndpointInstance();
+                        await endpointInstance.Publish(periodEndEvent);
+                        logger.LogInfo(
+                            $"Finished publishing the period end event. Name: {periodEndEvent.GetType().Name}, JobId: {periodEndEvent.JobId}, Collection Period: {periodEndEvent.CollectionPeriod.Period}-{periodEndEvent.CollectionPeriod.AcademicYear}.");
+                    }
+                    else
+                    {
+                        jobIdToWaitFor = jobId;
+                        logger.LogWarning($"Job already exists, will not be published. Name: {periodEndEvent.GetType().Name}, JobId: {periodEndEvent.JobId}, Collection Period: {periodEndEvent.CollectionPeriod.Period}-{periodEndEvent.CollectionPeriod.AcademicYear}.");
+                    }
+                }
 
                 // TODO: This is a temporary workaround to enable the PeriodEndStart and PeriodEndStop messages to return true as otherwise the service will
                 // TODO: just hang as there is nothing implemented to handle the Start and Stop events and so the job status service will never get a completion and so this will never return true.
                 // PV2-1345 will handle PeriodEndStart
                 // PeriodEndStoppedEvent will be handled by the PeriodEndStoppedEventHandler which in turn is handled by the ProcessProviderMonthEndCommandHandler but we don't want to wait for it
-
 
                 if (periodEndEvent is PeriodEndStoppedEvent  
                     || periodEndEvent is PeriodEndRequestReportsEvent  
@@ -80,10 +105,10 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
 
                 if (periodEndEvent is PeriodEndStartedEvent periodEndStartedEvent)
                 {
-                    return await jobStatusService.WaitForPeriodEndStartedToFinish(periodEndStartedEvent.JobId, cancellationToken);
+                    return await jobStatusService.WaitForPeriodEndStartedToFinish(jobIdToWaitFor, cancellationToken);
                 }
 
-                await jobStatusService.WaitForJobToFinish(message.JobId, cancellationToken);
+                await jobStatusService.WaitForJobToFinish(jobIdToWaitFor, cancellationToken);
                 return true;
             }
             catch (Exception ex)
@@ -151,6 +176,21 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                     return  new PeriodEndRequestReportsEvent();
                 default:
                     throw new InvalidOperationException($"Cannot handle period end task type: '{taskType:G}'");
+            }
+        }
+
+        private JobType GetJobType(PeriodEndTaskType periodEndTaskType)
+        {
+            switch (periodEndTaskType)
+            {
+                case PeriodEndTaskType.PeriodEndStart:
+                    return JobType.PeriodEndStartJob;
+                case PeriodEndTaskType.PeriodEndRun:
+                    return JobType.PeriodEndRunJob;
+                case PeriodEndTaskType.PeriodEndStop:
+                    return JobType.PeriodEndStopJob;
+                default:
+                    throw new InvalidOperationException($"Cannot handle period end task type: '{periodEndTaskType:G}'");
             }
         }
 
