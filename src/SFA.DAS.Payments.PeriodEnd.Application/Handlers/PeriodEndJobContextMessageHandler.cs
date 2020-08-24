@@ -53,10 +53,13 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 };
 
                 logger.LogDebug($"Got period end event: {periodEndEvent.ToJson()}");
+                //todo 2071 need to check if job already exists in the database, based on criteria of task type, academic year, & collection period
+                //if so do not record, or publish, however wait for job status of the EXISTING jobid
                 if (taskType != PeriodEndTaskType.PeriodEndReports && taskType != PeriodEndTaskType.PeriodEndSubmissionWindowValidation)
                 {
                     await RecordPeriodEndJob(taskType, periodEndEvent).ConfigureAwait(false);
                 }
+                
                 var endpointInstance = await endpointInstanceFactory.GetEndpointInstance();
                 await endpointInstance.Publish(periodEndEvent);
                 logger.LogInfo($"Finished publishing the period end event. Name: {periodEndEvent.GetType().Name}, JobId: {periodEndEvent.JobId}, Collection Period: {periodEndEvent.CollectionPeriod.Period}-{periodEndEvent.CollectionPeriod.AcademicYear}.");
