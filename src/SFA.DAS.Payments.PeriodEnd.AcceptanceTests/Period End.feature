@@ -9,6 +9,7 @@ Background:
 Scenario: Period End Started Job
 	When the period end service is notified the the period end has started
 	Then the period end service should publish a period end started event
+	And the period end started job is persisted to the database
 
 Scenario: Period End Request Validate Submission Window Job
 	When the period end service is notified that a period end request validate submission window job has been requested 
@@ -17,6 +18,7 @@ Scenario: Period End Request Validate Submission Window Job
 Scenario: Period End Running Job
 	When the period end service is notified the the period end is running
 	Then the period end service should publish a period end running event
+	And the period end running job is persisted to the database
 
 Scenario: Period End Request Reports Job
 	When the period end service is notified that period end reports have been requested 
@@ -25,3 +27,4 @@ Scenario: Period End Request Reports Job
 Scenario: Period End Stopped Job
 	When the period end service is notified the the period end has stopped
 	Then the period end service should publish a period end stopped event
+	And the period end stopped job is persisted to the database

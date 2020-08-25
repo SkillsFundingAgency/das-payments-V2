@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -105,12 +107,29 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             await Database.ExecuteSqlCommandAsync(deleteApprenticeshipData, apprenticeshipId, uln).ConfigureAwait(false);
         }
 
-        public void ClearJobId(long jobId)
+        public void ClearJobFromDcJobId(long dcJobId)
         {
             Database.ExecuteSqlCommand($@"
-                delete e from Payments2.JobEvent e join Payments2.Job j on j.JobId = e.JobId where j.DCJobId = {jobId}
-                delete from Payments2.Job where DCJobId = {jobId}
+                delete e from Payments2.JobEvent e join Payments2.Job j on j.JobId = e.JobId where j.DCJobId = {dcJobId}
+                delete from Payments2.Job where DCJobId = {dcJobId}
             ");
+        }
+
+        public void ClearJobFromJobId(long jobId)
+        {
+            Database.ExecuteSqlCommand($@"
+                delete e from Payments2.JobEvent e where e.JobId = {jobId}
+                delete from Payments2.Job where JobId = {jobId}
+            ");
+        }
+
+        public bool JobExists(long jobId, short jobType)
+        {
+            using (var connection = (SqlConnection)Database.GetDbConnection())
+            {
+                connection.Open();
+                return new SqlCommand($"SELECT JobId FROM Payments2.Job WHERE DCJobId = {jobId} AND JobType = {jobType}", connection).ExecuteReader().HasRows;
+            }
         }
     }
 }

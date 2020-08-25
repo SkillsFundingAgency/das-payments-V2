@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.PeriodEnd.AcceptanceTests.Handlers;
 using SFA.DAS.Payments.PeriodEnd.Model;
 using TechTalk.SpecFlow;
@@ -117,6 +118,28 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
             }, $"Failed to find the period end request reports event for job : { TestSession.JobId}");
         }
 
+        [Then(@"the period end (.*) job is persisted to the database")]
+        public async Task ThenThePeriodEndJobIsPersistedToTheDatabase(string periodEndJobType)
+        {
+            short jobType;
+            switch (periodEndJobType.ToLower())
+            {
+                case "stopped":
+                    jobType = 6;
+                    break;
+                case "started":
+                    jobType = 2;
+                    break;
+                case "running":
+                    jobType = 5;
+                    break;
+                default:
+                    jobType = 5;
+                    break;
+            }
 
+            await WaitForIt(() => Container.Resolve<TestPaymentsDataContext>().JobExists(TestSession.JobId, jobType),
+                $"Failed to find the period end {periodEndJobType} job for dc job id : { TestSession.JobId}");
+        }
     }
 }

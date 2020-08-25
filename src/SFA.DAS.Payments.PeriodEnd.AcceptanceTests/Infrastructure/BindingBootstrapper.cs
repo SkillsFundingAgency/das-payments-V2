@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests.Infrastructure
         public static void DeleteJob()
         {
             var jobId = ScenarioContext.Current.Get<TestSession>().JobId;
-            Container.Resolve<TestPaymentsDataContext>().ClearJobId(jobId);
+            Container.Resolve<TestPaymentsDataContext>().ClearJobFromDcJobId(jobId);
         }
     }
 }
