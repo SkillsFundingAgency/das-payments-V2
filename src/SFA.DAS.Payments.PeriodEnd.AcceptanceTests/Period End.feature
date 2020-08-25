@@ -28,3 +28,8 @@ Scenario: Period End Stopped Job
 	When the period end service is notified the the period end has stopped
 	Then the period end service should publish a period end stopped event
 	And the period end stopped job is persisted to the database
+
+Scenario: Period End Running Job
+	When the period end service is notified the the period end is running twice
+	Then the period end service should publish a single period end running event
+	And the period end running job is persisted to the database once
