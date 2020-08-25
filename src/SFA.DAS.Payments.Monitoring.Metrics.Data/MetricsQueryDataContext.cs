@@ -89,7 +89,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 	            and npp.deliveryperiod = p.deliveryperiod
 	            AND npp.TransactionType = P.TransactionType
             where 		
-	            dle.jobId in (select DcJobid from Payments2.LatestSuccessfulJobs Where AcademicYear = @academicYear && CollectionPeriod == @collectionPeriod)
+	            dle.jobId in (select DcJobid from Payments2.LatestSuccessfulJobs Where AcademicYear = @academicYear AND CollectionPeriod = @collectionPeriod)
 	            and npp.Amount <> 0
 	            and dle.IsPayable = 0	
 	            and p.collectionperiod < dle.CollectionPeriod
