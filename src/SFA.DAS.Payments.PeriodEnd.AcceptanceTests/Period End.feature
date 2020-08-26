@@ -34,3 +34,4 @@ Scenario: Period End Running Job Not Published Twice
 	Then the period end service should publish a period end running event
 	And not publish one for the duplicate notification
 	And the period end running job is persisted to the database
+	And the duplicate period end running job is not persisted to the database

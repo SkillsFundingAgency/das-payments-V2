@@ -129,25 +129,33 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
         [Then(@"the period end (.*) job is persisted to the database")]
         public async Task ThenThePeriodEndJobIsPersistedToTheDatabase(string periodEndJobType)
         {
-            short jobType;
-            switch (periodEndJobType.ToLower())
+            await WaitForIt(() => Container.Resolve<TestPaymentsDataContext>().JobExists(TestSession.JobId, ParseJobType(periodEndJobType)),
+                $"Failed to find the period end {periodEndJobType} job for dc job id : { TestSession.JobId }");
+        }
+
+        [Then("the duplicate period end (.*) job is not persisted to the database")]
+        public async Task ThenTheDuplicatePeriodEndJobIsNotPersistedToTheDatabase(string periodEndJobType)
+        {
+            var failText = $"Found job persisted in database for duplicate job id {TestSession.DuplicateJobId}";
+            await WaitForUnexpected(() => !Container.Resolve<TestPaymentsDataContext>().JobExists(TestSession.DuplicateJobId, ParseJobType(periodEndJobType))
+                    ? (true, string.Empty)
+                    : (false, failText),
+                $"Failed to find the period end {periodEndJobType} job for dc job id : { TestSession.DuplicateJobId }");
+        }
+
+        private short ParseJobType(string jobTypeString)
+        {
+            switch (jobTypeString.ToLower())
             {
                 case "stopped":
-                    jobType = 6;
-                    break;
+                    return 6;
                 case "started":
-                    jobType = 2;
-                    break;
+                    return 2;
                 case "running":
-                    jobType = 5;
-                    break;
+                    return 5;
                 default:
-                    jobType = 5;
-                    break;
+                    return 5;
             }
-
-            await WaitForIt(() => Container.Resolve<TestPaymentsDataContext>().JobExists(TestSession.JobId, jobType),
-                $"Failed to find the period end {periodEndJobType} job for dc job id : { TestSession.JobId}");
         }
 
         [Then("not publish one for the duplicate notification")]
