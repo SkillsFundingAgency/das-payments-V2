@@ -23,6 +23,9 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.DataLock
                         SfaContributionPercentage = item.period.SfaContributionPercentage,
                         DataLockEventId = source.EventId,
                         LearningStartDate = source.LearningAim.StartDate,
+                        ApprenticeshipId = item.period.ApprenticeshipId,
+                        ApprenticeshipEmployerType = item.period.ApprenticeshipEmployerType,
+                        ApprenticeshipPriceEpisodeId = item.period.ApprenticeshipPriceEpisodeId
                     }) ?? new List<DataLockEventPayablePeriodModel>()
             );
             return periods;

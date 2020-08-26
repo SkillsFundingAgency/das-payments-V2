@@ -32,13 +32,17 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
         protected override PayableFunctionalSkillEarningEvent CreatePaymentEvent()
         {
             return new PayableFunctionalSkillEarningEvent
-                   {
-                       StartDate = DateTime.Today,
-                       IncentiveEarnings = new List<IncentiveEarning> { new IncentiveEarning { Type = IncentiveEarningType.Balancing16To18FrameworkUplift, Periods = new List<EarningPeriod>
-                       {
-                           earningPeriod
-                       }.AsReadOnly() } }
-                   };
+            {
+                StartDate = DateTime.Today,
+                Earnings = new List<FunctionalSkillEarning> {
+                           new FunctionalSkillEarning {
+                               Type = FunctionalSkillType.OnProgrammeMathsAndEnglish, Periods = new List<EarningPeriod>
+                               {
+                                   earningPeriod
+                               }.AsReadOnly()
+                           }
+                       }.AsReadOnly()
+            };
         }
 
         [Test]
@@ -63,18 +67,17 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
         [Test]
         public void Maps_Payable_Periods()
         {
-            Mapper.Map<DataLockEventModel>(PaymentEvent).PayablePeriods.All(period =>
-                    period.Amount == earningPeriod.Amount && 
-                    period.DeliveryPeriod == earningPeriod.Period &&
-                    period.TransactionType == TransactionType.Balancing16To18FrameworkUplift && 
-                    period.ApprenticeshipId == earningPeriod.ApprenticeshipId &&  
-                    period.SfaContributionPercentage == earningPeriod.SfaContributionPercentage && 
-                    period.ApprenticeshipPriceEpisodeId == earningPeriod.ApprenticeshipPriceEpisodeId && 
-                    period.DataLockEventId == PaymentEvent.EventId && 
-                    period.LearningStartDate == PaymentEvent.LearningAim.StartDate && 
-                    period.PriceEpisodeIdentifier == earningPeriod.PriceEpisodeIdentifier)
-                .Should()
-                .BeTrue();
+            var mappedPeriod = Mapper.Map<DataLockEventModel>(PaymentEvent).PayablePeriods.FirstOrDefault();
+            mappedPeriod.Should().NotBeNull();
+            mappedPeriod.Amount.Should().Be(earningPeriod.Amount);
+            mappedPeriod.DeliveryPeriod.Should().Be(earningPeriod.Period);
+            mappedPeriod.TransactionType.Should().Be(TransactionType.OnProgrammeMathsAndEnglish);
+            mappedPeriod.ApprenticeshipId.Should().Be(earningPeriod.ApprenticeshipId);
+            mappedPeriod.SfaContributionPercentage.Should().Be(earningPeriod.SfaContributionPercentage);
+            mappedPeriod.ApprenticeshipPriceEpisodeId.Should().Be(earningPeriod.ApprenticeshipPriceEpisodeId);
+            mappedPeriod.DataLockEventId.Should().Be(PaymentEvent.EventId);
+            mappedPeriod.LearningStartDate.Should().Be(PaymentEvent.LearningAim.StartDate);
+            mappedPeriod.PriceEpisodeIdentifier.Should().Be(earningPeriod.PriceEpisodeIdentifier);
         }
     }
 }
