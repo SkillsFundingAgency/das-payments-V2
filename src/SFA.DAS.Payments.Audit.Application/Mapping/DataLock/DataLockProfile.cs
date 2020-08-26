@@ -45,12 +45,12 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.DataLock
                 .ForMember(dest => dest.EventType, opt => opt.MapFrom(x => x.GetType().FullName))
                 ;
             CreateMap<PayableFunctionalSkillEarningEvent, DataLockEventModel>()
-                .ForMember(dest => dest.PayablePeriods, opt => opt.ResolveUsing<PayablePeriodResolver>())
+                .ForMember(dest => dest.PayablePeriods, opt => opt.ResolveUsing<FunctionalSkillEarningsPayablePeriodsResolver>())
                 .ForMember(x => x.IsPayable, opt => opt.UseValue(true));
 
             CreateMap<FunctionalSkillEarningFailedDataLockMatching, DataLockEventModel>()
                 .ForMember(x => x.IsPayable, opt => opt.UseValue(false))
-                .ForMember(dest => dest.NonPayablePeriods, opt => opt.ResolveUsing<NonPayablePeriodResolver>())
+                .ForMember(dest => dest.NonPayablePeriods, opt => opt.ResolveUsing<FunctionalSkillEarningsNonPayablePeriodsResolver>())
                 ;
 
 
