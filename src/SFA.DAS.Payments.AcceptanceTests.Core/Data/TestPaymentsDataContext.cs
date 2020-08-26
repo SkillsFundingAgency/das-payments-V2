@@ -115,14 +115,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             ");
         }
 
-        public void ClearJobFromJobId(long jobId)
-        {
-            Database.ExecuteSqlCommand($@"
-                delete e from Payments2.JobEvent e where e.JobId = {jobId}
-                delete from Payments2.Job where JobId = {jobId}
-            ");
-        }
-
         public bool JobExists(long jobId, short jobType)
         {
             using (var connection = (SqlConnection)Database.GetDbConnection())
