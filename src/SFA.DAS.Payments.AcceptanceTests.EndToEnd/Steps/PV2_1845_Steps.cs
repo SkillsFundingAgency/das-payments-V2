@@ -33,7 +33,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task LevyLearnerMadeRedundant()
         {
             ImportR07Fm36ForNonRedundantLevyLearner();
-            TestSession.CollectionPeriod.AcademicYear = 1920; //this should be handled by the base steps...
 
             await SetUpMatchingCommitment();
 
@@ -60,7 +59,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThereAreLessThan6MonthsRemainingOfPlannedLearning()
         {
             ImportR12Fm36ToMakeLearnerRedundant();
-            TestSession.CollectionPeriod.AcademicYear = 1920; //this should be handled by the base steps...
 
             await SetUpMatchingCommitment();
 
@@ -75,9 +73,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.Provider.JobId);
         }
 
-        private void ImportR07Fm36ForNonRedundantLevyLearner() { GetFm36LearnerForCollectionPeriod("R07/1920"); }
+        private void ImportR07Fm36ForNonRedundantLevyLearner() { GetFm36LearnerForCollectionPeriod("R07/current academic year"); }
 
-        private void ImportR12Fm36ToMakeLearnerRedundant() { GetFm36LearnerForCollectionPeriod("R12/1920"); }
+        private void ImportR12Fm36ToMakeLearnerRedundant() { GetFm36LearnerForCollectionPeriod("R12/current academic year"); }
 
         private async Task SetUpMatchingCommitment() { await SetupTestCommitmentData(CommitmentIdentifier, PriceEpisodeIdentifier); }
 
