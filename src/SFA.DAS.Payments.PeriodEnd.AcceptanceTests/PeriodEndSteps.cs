@@ -67,7 +67,15 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
             var dcHelper = Scope.Resolve<IDcHelper>();
             await dcHelper.SendPeriodEndTask(AcademicYear, CollectionPeriod, TestSession.JobId, PeriodEndTaskType.PeriodEndSubmissionWindowValidation.ToString()).ConfigureAwait(false);
         }
-        
+
+        [When(@"the period end service is notified the the period end is running twice")]
+        public async Task WhenThePeriodEndServiceIsNotifiedTheThePeriodEndIsRunningTwice()
+        {
+            var dcHelper = Scope.Resolve<IDcHelper>();
+            await dcHelper.SendPeriodEndTask(AcademicYear, CollectionPeriod, TestSession.JobId, PeriodEndTaskType.PeriodEndRun.ToString()).ConfigureAwait(false);
+            await dcHelper.SendPeriodEndTask(AcademicYear, CollectionPeriod, TestSession.DuplicateJobId, PeriodEndTaskType.PeriodEndRun.ToString()).ConfigureAwait(false);
+        }
+
         [Then(@"the period end service should publish a period end request validate submission window event")]
         public async Task ThenThePeriodEndServiceShouldPublishAPeriodEndRequestValidateSubmissionWindowEvent()
         {
@@ -140,6 +148,18 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
 
             await WaitForIt(() => Container.Resolve<TestPaymentsDataContext>().JobExists(TestSession.JobId, jobType),
                 $"Failed to find the period end {periodEndJobType} job for dc job id : { TestSession.JobId}");
+        }
+
+        [Then("not publish one for the duplicate notification")]
+        public async Task ThenNotPublishOneForTheDuplicateNotification()
+        {
+            var failText = "Found Unexpected Period End Running Event Published";
+            await WaitForUnexpected(() =>
+            {
+                return !PeriodEndRunningEventHandler.ReceivedEvents.Any(ev => ev.JobId == TestSession.DuplicateJobId)
+                    ? (true, string.Empty)
+                    : (false, failText);
+            }, failText);
         }
     }
 }
