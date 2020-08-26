@@ -71,10 +71,10 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 }
                 else
                 {
-                    var jobId = await jobsDataContext.GetJobId(GetJobType(taskType),
+                    var existingJobId = await jobsDataContext.GetJobId(GetJobType(taskType),
                         periodEndEvent.CollectionPeriod.AcademicYear, periodEndEvent.CollectionPeriod.Period);
 
-                    if (jobId == 0)
+                    if (existingJobId == 0)
                     {
                         await RecordPeriodEndJob(taskType, periodEndEvent).ConfigureAwait(false);
 
@@ -85,7 +85,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                     }
                     else
                     {
-                        jobIdToWaitFor = jobId;
+                        jobIdToWaitFor = existingJobId;
                         logger.LogWarning($"Job already exists, will not be published. Name: {periodEndEvent.GetType().Name}, JobId: {periodEndEvent.JobId}, Collection Period: {periodEndEvent.CollectionPeriod.Period}-{periodEndEvent.CollectionPeriod.AcademicYear}.");
                     }
                 }
