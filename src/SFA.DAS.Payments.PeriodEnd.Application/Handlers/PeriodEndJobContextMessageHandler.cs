@@ -71,7 +71,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 }
                 else
                 {
-                    var existingJobId = await jobsDataContext.GetJobId(GetJobType(taskType),
+                    var existingJobId = await jobsDataContext.GetNonFailedJobId(GetJobType(taskType),
                         periodEndEvent.CollectionPeriod.AcademicYear, periodEndEvent.CollectionPeriod.Period);
 
                     if (existingJobId == 0)
