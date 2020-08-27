@@ -64,7 +64,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                 .Where(x => x.JobType == jobType &&
                             x.AcademicYear == academicYear &&
                             x.CollectionPeriod == collectionPeriod &&
-                            x.Status != JobStatus.CompletedWithErrors)
+                            (x.Status == JobStatus.Completed ||
+                            x.Status == JobStatus.InProgress))
                 .Select(job => job.Id)
                 .FirstOrDefaultAsync();
         }
