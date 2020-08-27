@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Azure.Amqp.Serialization;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data.Configurations;
 using SFA.DAS.Payments.Application.Repositories;
@@ -113,6 +115,44 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
                 delete e from Payments2.JobEvent e join Payments2.Job j on j.JobId = e.JobId where j.DCJobId = {dcJobId}
                 delete from Payments2.Job where DCJobId = {dcJobId}
             ");
+        }
+
+        //public async Task<List<long>> GetMatchingJobs(short jobType, byte collectionPeriod, short academicYear, byte status)
+        //{
+        //    var matchingJobs = new List<long>();
+        //    using (var connection = (SqlConnection)Database.GetDbConnection())
+        //    {
+        //        connection.Open();
+        //        var reader = await new SqlCommand($@"
+        //            SELECT DcJobId
+        //            FROM Payments2.Job
+        //            WHERE JobType = {jobType}
+        //            AND CollectionPeriod = {collectionPeriod}
+        //            AND AcademicYear = {academicYear}
+        //            AND[Status] = {status}", connection).ExecuteReaderAsync();
+
+        //        while (reader.Read()) { matchingJobs.Add(long.Parse(reader["DcJobId"].ToString())); }
+        //    }
+        //    return matchingJobs;
+        //}
+
+        public List<long> GetMatchingJobs(short jobType, byte collectionPeriod, short academicYear, byte status)
+        {
+            var matchingJobs = new List<long>();
+            using (var connection = (SqlConnection)Database.GetDbConnection())
+            {
+                connection.Open();
+                var reader = new SqlCommand($@"
+                    SELECT DcJobId
+                    FROM Payments2.Job
+                    WHERE JobType = {jobType}
+                    AND CollectionPeriod = {collectionPeriod}
+                    AND AcademicYear = {academicYear}
+                    AND[Status] = {status}", connection).ExecuteReader();
+
+                while (reader.Read()) { matchingJobs.Add(long.Parse(reader["DcJobId"].ToString())); }
+            }
+            return matchingJobs;
         }
 
         public bool JobExists(long jobId, short jobType)
