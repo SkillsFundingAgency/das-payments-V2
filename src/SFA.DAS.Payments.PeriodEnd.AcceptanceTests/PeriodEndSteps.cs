@@ -76,6 +76,15 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
             await dcHelper.SendPeriodEndTask(AcademicYear, CollectionPeriod, TestSession.DuplicateJobId, PeriodEndTaskType.PeriodEndRun.ToString()).ConfigureAwait(false);
         }
 
+        [When(@"the period end service is notified the the period end is running twice with the same job id")]
+        public async Task WhenThePeriodEndServiceIsNotifiedTheThePeriodEndIsRunningTwiceWithTheSameJodIb()
+        {
+            TestSession.DuplicateJobId = TestSession.JobId;
+            var dcHelper = Scope.Resolve<IDcHelper>();
+            await dcHelper.SendPeriodEndTask(AcademicYear, CollectionPeriod, TestSession.JobId, PeriodEndTaskType.PeriodEndRun.ToString()).ConfigureAwait(false);
+            await dcHelper.SendPeriodEndTask(AcademicYear, CollectionPeriod, TestSession.DuplicateJobId, PeriodEndTaskType.PeriodEndRun.ToString()).ConfigureAwait(false);
+        }
+
         [When(@"the period end service is notified the the period end is running twice after the first run fails")]
         public async Task WhenThePeriodEndServiceIsNotifiedTheThePeriodEndIsRunningTwiceAfterTheFirstRunFails()
         {
@@ -115,6 +124,21 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
             }, $"Failed to find the period end running event for job : { TestSession.JobId}");
         }
 
+        [Then(@"the period end service should publish a single period end running event")]
+        public async Task ThenTheSinglePeriodEndServiceShouldPublishAPeriodEndRunningEvent()
+        {
+            var failText = $"Single Period End Running Event Not Published for job : { TestSession.JobId}";
+            await WaitForIt(() =>
+            {
+                return PeriodEndRunningEventHandler.ReceivedEvents.Any(ev => ev.JobId == TestSession.JobId);
+            }, failText);
+            await WaitForUnexpected(() =>
+            {
+                return PeriodEndRunningEventHandler.ReceivedEvents.Count(ev => ev.JobId == TestSession.JobId) == 1
+                    ? (true, string.Empty)
+                    : (false, failText);
+            }, failText);
+        }
 
         [Then(@"the period end service should publish a period end stopped event")]
         public async Task ThenThePeriodEndServiceShouldPublishAPeriodEndStoppedEvent()
@@ -125,9 +149,6 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
             }, $"Failed to find the period end stopped event for job : { TestSession.JobId}");
         }
 
-
-     
-        
         [Then(@"the period end service should publish a period end request reports event")]
         public async Task ThenThePeriodEndServiceShouldPublishAPeriodEndRequestReportsEvent()
         {
@@ -161,6 +182,18 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
             await WaitForUnexpected(() =>
             {
                 return !PeriodEndRunningEventHandler.ReceivedEvents.Any(ev => ev.JobId == TestSession.DuplicateJobId)
+                    ? (true, string.Empty)
+                    : (false, failText);
+            }, failText);
+        }
+
+        [Then("a duplicate period end running job is not persisted to the database")]
+        public async Task APeriodEndRunningJobIsPersistedToTheDatabase()
+        {
+            var failText = "Single Period End Running Event Not Found In Database";
+            await WaitForUnexpected(() =>
+            {
+                return Container.Resolve<TestPaymentsDataContext>().SingleJobExists(TestSession.JobId, ParseJobType("running"))
                     ? (true, string.Empty)
                     : (false, failText);
             }, failText);

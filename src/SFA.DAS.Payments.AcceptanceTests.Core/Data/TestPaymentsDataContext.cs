@@ -124,6 +124,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             }
         }
 
+        public bool SingleJobExists(long jobId, short jobType)
+        {
+            using (var connection = (SqlConnection)Database.GetDbConnection())
+            {
+                connection.Open();
+                return int.Parse(new SqlCommand($"SELECT COUNT (*) FROM Payments2.Job WHERE DCJobId = {jobId} AND JobType = {jobType}", connection).ExecuteScalar().ToString()) == 1;
+            }
+        }
+
         public bool JobCompleted(long jobId, short jobType)
         {
             using (var connection = (SqlConnection)Database.GetDbConnection())
