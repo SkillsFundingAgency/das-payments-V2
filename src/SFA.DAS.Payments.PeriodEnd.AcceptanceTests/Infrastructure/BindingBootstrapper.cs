@@ -28,10 +28,10 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests.Infrastructure
         }
 
         [AfterScenario]
-        public static void DeleteJob()
+        public static void DeleteJobs()
         {
-            var jobId = ScenarioContext.Current.Get<TestSession>().JobId;
-            Container.Resolve<TestPaymentsDataContext>().ClearJobFromDcJobId(jobId);
+            Container.Resolve<TestPaymentsDataContext>().ClearJobFromDcJobId(ScenarioContext.Current.Get<TestSession>().JobId);
+            Container.Resolve<TestPaymentsDataContext>().ClearJobFromDcJobId(ScenarioContext.Current.Get<TestSession>().DuplicateJobId);
         }
     }
 }

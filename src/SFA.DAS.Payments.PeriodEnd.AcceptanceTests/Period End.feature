@@ -35,3 +35,10 @@ Scenario: Period End Running Job Not Published Twice
 	And not publish one for the duplicate notification
 	And the period end running job is persisted to the database
 	And the duplicate period end running job is not persisted to the database
+
+Scenario: Period End Running After Failed Run
+	When the period end service is notified the the period end is running twice after the first run fails
+	Then the period end service should publish a period end running event
+	And the period end service should publish a period end running event for the second notification
+	And the period end running job is persisted to the database
+	And the second period end running job is persisted to the database

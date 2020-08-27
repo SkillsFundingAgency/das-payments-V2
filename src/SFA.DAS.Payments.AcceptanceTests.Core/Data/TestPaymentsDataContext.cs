@@ -123,5 +123,21 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
                 return new SqlCommand($"SELECT JobId FROM Payments2.Job WHERE DCJobId = {jobId} AND JobType = {jobType}", connection).ExecuteReader().HasRows;
             }
         }
+
+        public bool JobCompleted(long jobId, short jobType)
+        {
+            using (var connection = (SqlConnection)Database.GetDbConnection())
+            {
+                connection.Open();
+                return new SqlCommand($"SELECT JobId FROM Payments2.Job WHERE DCJobId = {jobId} AND JobType = {jobType} AND [Status] = 2", connection).ExecuteReader().HasRows;
+            }
+        }
+
+        public void SetJobToCompletedWithErrors(long dcJobId)
+        {
+            Database.ExecuteSqlCommand($@"
+                UPDATE Payments2.Job SET [Status] = 3 WHERE DCJobId = {dcJobId}
+            ");
+        }
     }
 }

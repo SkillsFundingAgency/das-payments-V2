@@ -76,6 +76,17 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
             await dcHelper.SendPeriodEndTask(AcademicYear, CollectionPeriod, TestSession.DuplicateJobId, PeriodEndTaskType.PeriodEndRun.ToString()).ConfigureAwait(false);
         }
 
+        [When(@"the period end service is notified the the period end is running twice after the first run fails")]
+        public async Task WhenThePeriodEndServiceIsNotifiedTheThePeriodEndIsRunningTwiceAfterTheFirstRunFails()
+        {
+            var dcHelper = Scope.Resolve<IDcHelper>();
+            await dcHelper.SendPeriodEndTask(AcademicYear, CollectionPeriod, TestSession.JobId, PeriodEndTaskType.PeriodEndRun.ToString()).ConfigureAwait(false);
+            await WaitForIt(() => Container.Resolve<TestPaymentsDataContext>().JobCompleted(TestSession.JobId, ParseJobType("running")),
+                $"Failed to find the completed period end running job for dc job id : { TestSession.JobId }");
+            Container.Resolve<TestPaymentsDataContext>().SetJobToCompletedWithErrors(TestSession.JobId);
+            await dcHelper.SendPeriodEndTask(AcademicYear, CollectionPeriod, TestSession.DuplicateJobId, PeriodEndTaskType.PeriodEndRun.ToString()).ConfigureAwait(false);
+        }
+
         [Then(@"the period end service should publish a period end request validate submission window event")]
         public async Task ThenThePeriodEndServiceShouldPublishAPeriodEndRequestValidateSubmissionWindowEvent()
         {
@@ -143,6 +154,34 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
                 $"Failed to find the period end {periodEndJobType} job for dc job id : { TestSession.DuplicateJobId }");
         }
 
+        [Then("not publish one for the duplicate notification")]
+        public async Task ThenNotPublishOneForTheDuplicateNotification()
+        {
+            var failText = "Found Unexpected Period End Running Event Published";
+            await WaitForUnexpected(() =>
+            {
+                return !PeriodEndRunningEventHandler.ReceivedEvents.Any(ev => ev.JobId == TestSession.DuplicateJobId)
+                    ? (true, string.Empty)
+                    : (false, failText);
+            }, failText);
+        }
+
+        [Then(@"the period end service should publish a period end running event for the second notification")]
+        public async Task ThenThePeriodEndServiceShouldPublishAPeriodEndRunningEventForTheSecondNotification()
+        {
+            await WaitForIt(() =>
+            {
+                return PeriodEndRunningEventHandler.ReceivedEvents.Any(ev => ev.JobId == TestSession.DuplicateJobId);
+            }, $"Failed to find the period end running event for (second/duplicate) job : { TestSession.DuplicateJobId}");
+        }
+
+        [Then(@"the second period end (.*) job is persisted to the database")]
+        public async Task ThenTheSecondPeriodEndJobIsPersistedToTheDatabase(string periodEndJobType)
+        {
+            await WaitForIt(() => Container.Resolve<TestPaymentsDataContext>().JobExists(TestSession.DuplicateJobId, ParseJobType(periodEndJobType)),
+                $"Failed to find the period end {periodEndJobType} job for (duplicate/second) dc job id : { TestSession.DuplicateJobId }");
+        }
+
         private short ParseJobType(string jobTypeString)
         {
             switch (jobTypeString.ToLower())
@@ -156,18 +195,6 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
                 default:
                     return 5;
             }
-        }
-
-        [Then("not publish one for the duplicate notification")]
-        public async Task ThenNotPublishOneForTheDuplicateNotification()
-        {
-            var failText = "Found Unexpected Period End Running Event Published";
-            await WaitForUnexpected(() =>
-            {
-                return !PeriodEndRunningEventHandler.ReceivedEvents.Any(ev => ev.JobId == TestSession.DuplicateJobId)
-                    ? (true, string.Empty)
-                    : (false, failText);
-            }, failText);
         }
     }
 }
