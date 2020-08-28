@@ -117,25 +117,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             ");
         }
 
-        //public async Task<List<long>> GetMatchingJobs(short jobType, byte collectionPeriod, short academicYear, byte status)
-        //{
-        //    var matchingJobs = new List<long>();
-        //    using (var connection = (SqlConnection)Database.GetDbConnection())
-        //    {
-        //        connection.Open();
-        //        var reader = await new SqlCommand($@"
-        //            SELECT DcJobId
-        //            FROM Payments2.Job
-        //            WHERE JobType = {jobType}
-        //            AND CollectionPeriod = {collectionPeriod}
-        //            AND AcademicYear = {academicYear}
-        //            AND[Status] = {status}", connection).ExecuteReaderAsync();
-
-        //        while (reader.Read()) { matchingJobs.Add(long.Parse(reader["DcJobId"].ToString())); }
-        //    }
-        //    return matchingJobs;
-        //}
-
         public List<long> GetMatchingJobs(short jobType, byte collectionPeriod, short academicYear, byte status)
         {
             var matchingJobs = new List<long>();
@@ -153,24 +134,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
                 while (reader.Read()) { matchingJobs.Add(long.Parse(reader["DcJobId"].ToString())); }
             }
             return matchingJobs;
-        }
-
-        public bool JobExists(long jobId, short jobType)
-        {
-            using (var connection = (SqlConnection)Database.GetDbConnection())
-            {
-                connection.Open();
-                return new SqlCommand($"SELECT JobId FROM Payments2.Job WHERE DCJobId = {jobId} AND JobType = {jobType}", connection).ExecuteReader().HasRows;
-            }
-        }
-
-        public bool SingleJobExists(long jobId, short jobType)
-        {
-            using (var connection = (SqlConnection)Database.GetDbConnection())
-            {
-                connection.Open();
-                return int.Parse(new SqlCommand($"SELECT COUNT (*) FROM Payments2.Job WHERE DCJobId = {jobId} AND JobType = {jobType}", connection).ExecuteScalar().ToString()) == 1;
-            }
         }
 
         public bool JobCompleted(long jobId, short jobType)
