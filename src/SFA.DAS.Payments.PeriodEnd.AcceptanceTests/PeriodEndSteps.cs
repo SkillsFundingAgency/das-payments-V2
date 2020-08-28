@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core;
@@ -158,34 +159,29 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
             }, $"Failed to find the period end request reports event for job : { TestSession.JobId}");
         }
 
-        [Then(@"the period end (.*) job is persisted to the database with a status of (.*)")]
-        public async Task ThenThePeriodEndJobIsPersistedToTheDatabaseWithAStatusOf(string periodEndJobType,
+        [Then(@"the second period end (.*) job is persisted to the database with a status of (.*)")]
+        public async Task ThenTheSecondPeriodEndJobIsPersistedToTheDatabaseWithAStatusOf(string periodEndJobType,
             string jobStatus)
         {
-            await WaitForIt(() =>
-                {
-                    return Container
-                        .Resolve<TestPaymentsDataContext>()
-                        .GetMatchingJobs(ParseJobType(periodEndJobType), CollectionPeriod, AcademicYear, byte.Parse(jobStatus))
-                        .Any(x => x == TestSession.JobId);
-                },
-                $"Failed to find the period end {periodEndJobType} job for dc job id : { TestSession.JobId }");
+            await CheckJobExists(periodEndJobType, byte.Parse(jobStatus), true);
         }
 
         [Then(@"the period end (.*) job is persisted to the database")]
         public async Task ThenThePeriodEndJobIsPersistedToTheDatabase(string periodEndJobType)
         {
-            await ThenThePeriodEndJobIsPersistedToTheDatabaseWithAStatusOf(periodEndJobType, "Completed");
+            await CheckJobExists(periodEndJobType, 2, false);
         }
 
-        [Then("the duplicate period end (.*) job is not persisted to the database")]
-        public async Task ThenTheDuplicatePeriodEndJobIsNotPersistedToTheDatabase(string periodEndJobType)
+        [Then("a duplicate period end (.*) job is not persisted to the database")]
+        public async Task ThenADuplicatePeriodEndJobIsNotPersistedToTheDatabase(string periodEndJobType)
         {
-            var failText = $"Found job persisted in database for duplicate job id {TestSession.DuplicateJobId}";
-            await WaitForUnexpected(() => !Container.Resolve<TestPaymentsDataContext>().JobExists(TestSession.DuplicateJobId, ParseJobType(periodEndJobType))
+            var failText = $"Found job persisted in database for duplicate job";
+            await WaitForUnexpected(() => Container
+                        .Resolve<TestPaymentsDataContext>()
+                        .GetMatchingJobs(ParseJobType(periodEndJobType), CollectionPeriod, AcademicYear, 2)
+                        .Count() == 1
                     ? (true, string.Empty)
-                    : (false, failText),
-                $"Failed to find the period end {periodEndJobType} job for dc job id : { TestSession.DuplicateJobId }");
+                    : (false, failText), failText);
         }
 
         [Then("not publish one for the duplicate notification")]
@@ -200,18 +196,6 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
             }, failText);
         }
 
-        [Then("a duplicate period end running job with the same id is not persisted to the database")]
-        public async Task APeriodEndRunningJobIsPersistedToTheDatabase()
-        {
-            var failText = "Single Period End Running Event Not Found In Database";
-            await WaitForUnexpected(() =>
-            {
-                return Container.Resolve<TestPaymentsDataContext>().SingleJobExists(TestSession.JobId, ParseJobType("running"))
-                    ? (true, string.Empty)
-                    : (false, failText);
-            }, failText);
-        }
-
         [Then(@"the period end service should publish a period end running event for the second notification")]
         public async Task ThenThePeriodEndServiceShouldPublishAPeriodEndRunningEventForTheSecondNotification()
         {
@@ -219,13 +203,6 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
             {
                 return PeriodEndRunningEventHandler.ReceivedEvents.Any(ev => ev.JobId == TestSession.DuplicateJobId);
             }, $"Failed to find the period end running event for (second/duplicate) job : { TestSession.DuplicateJobId}");
-        }
-
-        [Then(@"the second period end (.*) job is persisted to the database")]
-        public async Task ThenTheSecondPeriodEndJobIsPersistedToTheDatabase(string periodEndJobType)
-        {
-            await WaitForIt(() => Container.Resolve<TestPaymentsDataContext>().JobExists(TestSession.DuplicateJobId, ParseJobType(periodEndJobType)),
-                $"Failed to find the period end {periodEndJobType} job for (duplicate/second) dc job id : { TestSession.DuplicateJobId }");
         }
 
         private short ParseJobType(string jobTypeString)
@@ -241,6 +218,22 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
                 default:
                     return 5;
             }
+        }
+
+        private async Task CheckJobExists(string periodEndJobType,
+            byte jobStatus,
+            bool useDuplicate)
+        {
+            var jobId = useDuplicate ? TestSession.DuplicateJobId : TestSession.JobId;
+
+            await WaitForIt(() =>
+                {
+                    return Container
+                        .Resolve<TestPaymentsDataContext>()
+                        .GetMatchingJobs(ParseJobType(periodEndJobType), CollectionPeriod, AcademicYear, jobStatus)
+                        .Any(x => x == jobId);
+                },
+                $"Failed to find the period end {periodEndJobType} job for dc job id : { jobId }");
         }
     }
 }
