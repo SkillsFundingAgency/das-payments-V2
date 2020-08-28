@@ -125,7 +125,7 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
         }
 
         [Then(@"the period end service should publish a single period end running event")]
-        public async Task ThenTheSinglePeriodEndServiceShouldPublishAPeriodEndRunningEvent()
+        public async Task ThenThePeriodEndServiceShouldPublishASinglePeriodEndRunningEvent()
         {
             var failText = $"Single Period End Running Event Not Published for job : { TestSession.JobId}";
             await WaitForIt(() =>

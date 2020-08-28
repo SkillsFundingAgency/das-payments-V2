@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                                             throw new ArgumentNullException(nameof(endpointInstanceFactory));
             this.jobClient = jobClient ?? throw new ArgumentNullException(nameof(jobClient));
             this.jobStatusService = jobStatusService ?? throw new ArgumentNullException(nameof(jobStatusService));
-            this.jobsDataContext = jobsDataContext ?? throw new ArgumentNullException(nameof(jobStatusService));
+            this.jobsDataContext = jobsDataContext ?? throw new ArgumentNullException(nameof(jobsDataContext));
         }
 
         public async Task<bool> HandleAsync(JobContextMessage message, CancellationToken cancellationToken)
