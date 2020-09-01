@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
@@ -38,10 +39,14 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
         {
             return new FunctionalSkillEarningFailedDataLockMatching
             {
-                IncentiveEarnings = new List<IncentiveEarning>
+                Earnings = new List<FunctionalSkillEarning>
                 {
-                    new IncentiveEarning { Type = IncentiveEarningType.Balancing16To18FrameworkUplift, Periods = new List<EarningPeriod> { earningPeriod }.ToList().AsReadOnly() }
-                }
+                    new FunctionalSkillEarning
+                    {
+                        Type = FunctionalSkillType.OnProgrammeMathsAndEnglish,
+                        Periods = new List<EarningPeriod>{earningPeriod}.AsReadOnly()
+                    }
+                }.AsReadOnly()
             };
         }
 
@@ -52,7 +57,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
         }
 
         [Test]
-        public void Maps_NonPayable_Incentive_Periods()
+        public void Maps_NonPayable_Earnings_Periods()
         {
             Mapper.Map<DataLockEventModel>(PaymentEvent).NonPayablePeriods.Count(period => period.TransactionType > TransactionType.Completion).Should().Be(1);
             var periodToTest = Mapper.Map<DataLockEventModel>(PaymentEvent).NonPayablePeriods
@@ -61,7 +66,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
 
             periodToTest.Amount.Should().Be(earningPeriod.Amount);
             periodToTest.DeliveryPeriod.Should().Be(earningPeriod.Period);
-            periodToTest.TransactionType.Should().Be(TransactionType.Balancing16To18FrameworkUplift);
+            periodToTest.TransactionType.Should().Be(TransactionType.OnProgrammeMathsAndEnglish);
             periodToTest.SfaContributionPercentage.Should().Be(earningPeriod.SfaContributionPercentage);
             periodToTest.DataLockEventId.Should().Be(PaymentEvent.EventId);
             periodToTest.LearningStartDate.Should().Be(PaymentEvent.LearningAim.StartDate);
