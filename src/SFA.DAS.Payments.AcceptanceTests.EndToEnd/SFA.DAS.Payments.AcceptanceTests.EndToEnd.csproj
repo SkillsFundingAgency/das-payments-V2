@@ -1024,6 +1024,11 @@
     <Compile Include="Tests\Inconsistent Submission Data\PV2-1663 Non Levy Learner inconsistent clawback on retrospective gap in learning.feature.cs">
       <DependentUpon>PV2-1663 Non Levy Learner inconsistent clawback on retrospective gap in learning.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Inconsistent Submission Data\PV2-2094 Prevent duplicate payment claw backs when a learner is deleted from the ILR.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-2094 Prevent duplicate payment claw backs when a learner is deleted from the ILR.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Inconsistent Submission Data\PV2-256 Levy learner, price is changed, originally mix funded.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2210,6 +2215,10 @@
     </None>
     <None Include="Tests\Inconsistent Submission Data\PV2-1627 Learner Removed at end of AY in R14.feature" />
     <None Include="Tests\Inconsistent Submission Data\PV2-1663 Non Levy Learner inconsistent clawback on retrospective gap in learning.feature" />
+    <None Include="Tests\Inconsistent Submission Data\PV2-2094 Prevent duplicate payment claw backs when a learner is deleted from the ILR.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-2094 Prevent duplicate payment claw backs when a learner is deleted from the ILR.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Inconsistent Submission Data\PV2-256 Levy learner, price is changed, originally mix funded.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-256 Levy learner, price is changed, originally mix funded.feature.cs</LastGenOutput>
