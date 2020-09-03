@@ -86,10 +86,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
         }
 
-        [When("After Period-end Run (.*) Payments are generated")]
-        public async Task AfterPeriodEndRunPaymentsAreGenerated(int paymentsCount)
+        [When("After Period-end following provider payments will be generated in database")]
+        [Then("After Period-end following provider payments will be generated in database")]
+        public async Task AfterPeriodEndRunPaymentsAreGenerated(Table table)
         {
-            await WaitForRequiredPayments(paymentsCount);
+            await WaitForRequiredPayments(table.RowCount);
 
             await EmployerMonthEndHelper.SendLevyMonthEndForEmployers(
                 TestSession.GenerateId(),
@@ -98,12 +99,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.CollectionPeriod.Period,
                 MessageSession);
 
-            await WaitForPayments(paymentsCount);
-        }
-
-        [Then("only the following provider payments will be generated in database")]
-        public async Task ThenOnlyTheFollowingProviderPaymentsWillBeGeneratedInDatabase(Table table)
-        {
             var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
             expectedPayments.ForEach(ep => ep.Uln = ep.LearnerId == "learner a" ? learnerA.Uln : learnerB.Uln);
 
