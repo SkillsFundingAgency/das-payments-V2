@@ -71,6 +71,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private void ResetFm36LearnerDetails()
         {
+            TestSession.RegenerateJobId();
+
             var fm36LearnerA = TestSession.FM36Global.Learners.SingleOrDefault(l => l.ULN == 9999999999);
             if (fm36LearnerA != null)
             {
