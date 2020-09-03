@@ -162,7 +162,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 var json = serializationService.Serialize(ilrSubmission);
 
                 var storageContainer = DcConfiguration.DcBlobStorageContainer;
-                var subscriptionName = DcConfiguration.SubscriptionName;
 
                 using (var stream = await azureFileService.OpenWriteStreamAsync(messagePointer, storageContainer, new CancellationToken()))
                 using (var writer = new StreamWriter(stream))
@@ -175,12 +174,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     JobId = jobId,
                     KeyValuePairs = new Dictionary<string, object>
                     {
-                        {JobContextMessageKey.FundingFm36Output, messagePointer},
-                        {JobContextMessageKey.Filename, messagePointer},
-                        {JobContextMessageKey.UkPrn, ukprn},
-                        {JobContextMessageKey.Container, storageContainer },
-                        {JobContextMessageKey.ReturnPeriod, collectionPeriod },
-                        {JobContextMessageKey.Username, "PV2-Automated" }
+                        { JobContextMessageKey.FundingFm36Output, messagePointer},
+                        { JobContextMessageKey.Filename, messagePointer},
+                        { JobContextMessageKey.UkPrn, ukprn},
+                        { JobContextMessageKey.Container, storageContainer },
+                        { JobContextMessageKey.ReturnPeriod, collectionPeriod },
+                        { JobContextMessageKey.Username, "PV2-Automated" }
                     },
                     SubmissionDateTimeUtc = DateTime.UtcNow,
                     TopicPointer = 0,
@@ -188,7 +187,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     {
                         new TopicItemDto
                         {
-                            SubscriptionName = subscriptionName,
+                            SubscriptionName = DcConfiguration.SubscriptionName,
                             Tasks = new List<TaskItemDto>
                             {
                                 new TaskItemDto
@@ -202,6 +201,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 };
 
                 await topicPublishingService.PublishAsync(dto, new Dictionary<string, object> { { "To", "GenerateFM36Payments" } }, "GenerateFM36Payments");
+                
+                await Task.Delay(1000);
+
+                await SendIlrSubmissionEvent(ukprn, collectionYear, collectionPeriod, jobId, true);
             }
             catch (Exception e)
             {
@@ -225,7 +228,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
                 return new AzureStorageFileService(config);
             }).As<IFileService>().InstancePerLifetimeScope();
-            builder.Register(c => new TopicConfiguration(DcConfiguration.DcServiceBusConnectionString,
+            builder.Register(c => new TopicConfiguration(
+                    DcConfiguration.DcServiceBusConnectionString,
                     DcConfiguration.TopicName,
                     DcConfiguration.SubscriptionName, 10,
                     maximumCallbackTimeSpan: TimeSpan.FromMinutes(40)))
