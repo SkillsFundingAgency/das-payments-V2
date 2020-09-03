@@ -15,6 +15,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
+using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
@@ -71,7 +72,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task GivenTheStartDateInThePEIsOnOrAfterTheStartDateForCommitmentA(string priceEpisodeIdentifier, string commitmentIdentifier)
         {
             bool StartDateIsOnOrAfter(DateTime actualPriceEpisodeStartDate, DateTime estimatedStartDate) => actualPriceEpisodeStartDate >= estimatedStartDate;
-            
+
             await SetPriceEpisodeStartDate(priceEpisodeIdentifier, commitmentIdentifier, -1, StartDateIsOnOrAfter);
         }
 
@@ -107,14 +108,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         //todo rename this to have commitment in the method name. Convert the pairs of commitment and pe ids to key value pairs and defaults second one to null
         protected async Task SetupTestCommitmentData(string commitmentIdentifier1, string priceEpisodeIdentifier1,
-            string commitmentIdentifier2 = null, string priceEpisodeIdentifier2 = null)
+            string commitmentIdentifier2 = null, string priceEpisodeIdentifier2 = null, long tempUln = 0, Learner newLearner = null)
         {
-            var learner = TestSession.FM36Global.Learners.Single();
-            learner.ULN = TestSession.Learner.Uln;
-            learner.LearnRefNumber = TestSession.Learner.LearnRefNumber;
+            var overrideLearnerUln = tempUln != 0 && newLearner != null;
 
-            var priceEpisode1 = learner.PriceEpisodes.Single(y => y.PriceEpisodeIdentifier == priceEpisodeIdentifier1);
-            var learningDelivery1 = learner.LearningDeliveries.Single(x => x.AimSeqNumber == priceEpisode1.PriceEpisodeValues.PriceEpisodeAimSeqNumber);
+            var fm36Learner = TestSession.FM36Global.Learners.Single(l => tempUln == 0 || l.ULN == tempUln);
+
+            if (overrideLearnerUln)
+            {
+                fm36Learner.ULN = newLearner.Uln;
+                fm36Learner.LearnRefNumber = newLearner.LearnRefNumber;
+            }
+            else
+            {
+                fm36Learner.ULN = TestSession.Learner.Uln;
+                fm36Learner.LearnRefNumber = TestSession.Learner.LearnRefNumber;
+            }
+
+            var priceEpisode1 = fm36Learner.PriceEpisodes.Single(y => y.PriceEpisodeIdentifier == priceEpisodeIdentifier1);
+            var learningDelivery1 = fm36Learner.LearningDeliveries.Single(x => x.AimSeqNumber == priceEpisode1.PriceEpisodeValues.PriceEpisodeAimSeqNumber);
 
             LearningDelivery learningDelivery2;
             PriceEpisode priceEpisode2;
@@ -126,8 +138,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }
             else
             {
-                priceEpisode2 = learner.PriceEpisodes.Single(y => y.PriceEpisodeIdentifier == priceEpisodeIdentifier2);
-                learningDelivery2 = learner.LearningDeliveries.Single(x => x.AimSeqNumber == priceEpisode2.PriceEpisodeValues.PriceEpisodeAimSeqNumber);
+                priceEpisode2 = fm36Learner.PriceEpisodes.Single(y => y.PriceEpisodeIdentifier == priceEpisodeIdentifier2);
+                learningDelivery2 = fm36Learner.LearningDeliveries.Single(x => x.AimSeqNumber == priceEpisode2.PriceEpisodeValues.PriceEpisodeAimSeqNumber);
             }
 
             var ids = new List<long> { TestSession.GenerateId(), TestSession.GenerateId() };
@@ -136,6 +148,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                               .BuildSimpleApprenticeship(TestSession, learningDelivery1.LearningDeliveryValues, ids.Min())
                               .WithALevyPayingEmployer()
                               .WithApprenticeshipPriceEpisode(priceEpisode1.PriceEpisodeValues)
+                              .WithLearnerUln(overrideLearnerUln ? newLearner.Uln : TestSession.Learner.Uln)
                               .ToApprenticeshipModel();
 
             TestSession.Apprenticeships.GetOrAdd(commitmentIdentifier1, commitment1);
@@ -148,6 +161,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     .BuildSimpleApprenticeship(TestSession, learningDelivery2.LearningDeliveryValues, ids.Max())
                     .WithALevyPayingEmployer()
                     .WithApprenticeshipPriceEpisode(priceEpisode2.PriceEpisodeValues)
+                    .WithLearnerUln(overrideLearnerUln ? newLearner.Uln : TestSession.Learner.Uln)
                     .ToApprenticeshipModel();
 
                 TestSession.Apprenticeships.GetOrAdd(commitmentIdentifier2, commitment2);

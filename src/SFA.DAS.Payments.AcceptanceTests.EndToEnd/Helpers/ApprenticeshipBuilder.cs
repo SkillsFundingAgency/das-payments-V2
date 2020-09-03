@@ -58,5 +58,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers
         {
             return apprenticeship;
         }
+
+        public ApprenticeshipBuilder WithLearnerUln(long learnerUln)
+        {
+            apprenticeship.Uln = learnerUln;
+
+            return this;
+        }
     }
 }

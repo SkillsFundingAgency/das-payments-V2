@@ -411,6 +411,7 @@
     <Compile Include="Steps\PV2_1824_Steps.cs" />
     <Compile Include="Steps\PV2_1825_Steps.cs" />
     <Compile Include="Steps\PV2_1826_Steps.cs" />
+    <Compile Include="Steps\PV2_2094_Steps.cs" />
     <Compile Include="Steps\PV2_1953_Steps.cs" />
     <Compile Include="Steps\PV2_1845_Steps.cs" />
     <Compile Include="Steps\PV2_1850_Steps.cs" />
@@ -1732,6 +1733,10 @@
     <EmbeddedResource Include="FM36TestFiles\PV2-1850-Non-Levy-Learner-Made-Redundant-In-Last-6-Months-R12.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1953-small-employer-retrospective-R03.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1953-small-employer-retrospective-R04.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-2094-Prevent-duplicate-payment-claw-backs-when-a-learner-is-deleted-from-the-ILR-R05.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-2094-Prevent-duplicate-payment-claw-backs-when-a-learner-is-deleted-from-the-ILR-R06.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-2094-Prevent-duplicate-payment-claw-backs-when-a-learner-is-deleted-from-the-ILR-R08.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-2094-Prevent-duplicate-payment-claw-backs-when-a-learner-is-deleted-from-the-ILR-R11.json" />
     <None Include="packages.config" />
     <None Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
