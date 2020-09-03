@@ -121,7 +121,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 ep.TransactionType == ap.TransactionType &&
                 ep.LevyPayments == ap.Amount &&
                 ep.ParsedDeliveryPeriod.Period == ap.DeliveryPeriod &&
-                ep.ParsedCollectionPeriod == ap.CollectionPeriod
+                ep.ParsedCollectionPeriod.AcademicYear == ap.CollectionPeriod.AcademicYear &&
+                ep.ParsedCollectionPeriod.Period == ap.CollectionPeriod.Period
             ));
         }
     }
