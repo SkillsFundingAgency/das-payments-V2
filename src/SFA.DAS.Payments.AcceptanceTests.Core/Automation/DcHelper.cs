@@ -22,17 +22,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
     public class DcHelper : IDcHelper
     {
         private readonly IJsonSerializationService serializationService;
-        private readonly ITopicPublishService<JobContextDto> topicPublishingService;
+        private readonly ITopicPublishingServiceFactory topicPublishingServiceFactory;
         private readonly IFileService azureFileService;
         private readonly TestPaymentsDataContext dataContext;
 
         public DcHelper(IJsonSerializationService serializationService,
-            ITopicPublishService<JobContextDto> topicPublishingService,
+            ITopicPublishingServiceFactory topicPublishingServiceFactory,
             IFileService azureFileService,
             TestPaymentsDataContext dataContext)
         {
             this.serializationService = serializationService ?? throw new ArgumentNullException(nameof(serializationService));
-            this.topicPublishingService = topicPublishingService ?? throw new ArgumentNullException(nameof(topicPublishingService));
+            this.topicPublishingServiceFactory = topicPublishingServiceFactory ?? throw new ArgumentNullException(nameof(topicPublishingServiceFactory));
             this.azureFileService = azureFileService ?? throw new ArgumentNullException(nameof(azureFileService));
             this.dataContext = dataContext;
         }
@@ -92,7 +92,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     }
                 };
 
-                await topicPublishingService.PublishAsync(dto, new Dictionary<string, object> { { "To", "GenerateFM36Payments" } }, "GenerateFM36Payments");
+                await topicPublishingServiceFactory.GetSubmissionPublisher().PublishAsync(dto, new Dictionary<string, object> { { "To", "GenerateFM36Payments" } }, "GenerateFM36Payments");
             }
             catch (Exception e)
             {
@@ -137,7 +137,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     }
                 };
 
-                await topicPublishingService.PublishAsync(dto, new Dictionary<string, object> { { "To", "Payments" } }, $"Payments_{taskName}");
+                await topicPublishingServiceFactory.GetPeriodEndTaskPublisher().PublishAsync(dto, new Dictionary<string, object> { { "To", "Payments" } }, $"Payments_{taskName}");
             }
             catch (Exception e)
             {
@@ -162,7 +162,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 var json = serializationService.Serialize(ilrSubmission);
 
                 var storageContainer = DcConfiguration.DcBlobStorageContainer;
-                var subscriptionName = DcConfiguration.SubscriptionName;
 
                 using (var stream = await azureFileService.OpenWriteStreamAsync(messagePointer, storageContainer, new CancellationToken()))
                 using (var writer = new StreamWriter(stream))
@@ -175,12 +174,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     JobId = jobId,
                     KeyValuePairs = new Dictionary<string, object>
                     {
-                        {JobContextMessageKey.FundingFm36Output, messagePointer},
-                        {JobContextMessageKey.Filename, messagePointer},
-                        {JobContextMessageKey.UkPrn, ukprn},
-                        {JobContextMessageKey.Container, storageContainer },
-                        {JobContextMessageKey.ReturnPeriod, collectionPeriod },
-                        {JobContextMessageKey.Username, "PV2-Automated" }
+                        { JobContextMessageKey.FundingFm36Output, messagePointer },
+                        { JobContextMessageKey.Filename, messagePointer },
+                        { JobContextMessageKey.UkPrn, ukprn },
+                        { JobContextMessageKey.Container, storageContainer },
+                        { JobContextMessageKey.ReturnPeriod, collectionPeriod },
+                        { JobContextMessageKey.Username, "PV2-Automated" }
                     },
                     SubmissionDateTimeUtc = DateTime.UtcNow,
                     TopicPointer = 0,
@@ -188,7 +187,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     {
                         new TopicItemDto
                         {
-                            SubscriptionName = subscriptionName,
+                            SubscriptionName = "GenerateFM36Payments",
                             Tasks = new List<TaskItemDto>
                             {
                                 new TaskItemDto
@@ -201,7 +200,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                     }
                 };
 
-                await topicPublishingService.PublishAsync(dto, new Dictionary<string, object> { { "To", "GenerateFM36Payments" } }, "GenerateFM36Payments");
+                await topicPublishingServiceFactory.GetSubmissionPublisher().PublishAsync(dto, new Dictionary<string, object> { { "To", "GenerateFM36Payments" } }, "GenerateFM36Payments");
             }
             catch (Exception e)
             {
@@ -225,18 +224,41 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
                 return new AzureStorageFileService(config);
             }).As<IFileService>().InstancePerLifetimeScope();
-            builder.Register(c => new TopicConfiguration(DcConfiguration.DcServiceBusConnectionString,
-                    DcConfiguration.TopicName,
-                    DcConfiguration.SubscriptionName, 10,
-                    maximumCallbackTimeSpan: TimeSpan.FromMinutes(40)))
-                .As<ITopicConfiguration>();
 
-            builder.Register(c =>
-            {
-                var config = c.Resolve<ITopicConfiguration>();
-                var serialisationService = c.Resolve<IJsonSerializationService>();
-                return new TopicPublishService<JobContextDto>(config, serialisationService);
-            }).As<ITopicPublishService<JobContextDto>>();
+            builder.Register(c => new TopicPublishingServiceFactory(c.Resolve<IJsonSerializationService>()))
+                .As<ITopicPublishingServiceFactory>();
         }
+    }
+
+    public class TopicPublishingServiceFactory : ITopicPublishingServiceFactory
+    {
+        private readonly ISerializationService serializationService;
+
+        public TopicPublishingServiceFactory(ISerializationService serializationService)
+        {
+            this.serializationService = serializationService ?? throw new ArgumentNullException(nameof(serializationService));
+        }
+
+        public ITopicPublishService<JobContextDto> GetPeriodEndTaskPublisher()
+        {
+            return Get("period_end");
+        }
+
+        public ITopicPublishService<JobContextDto> GetSubmissionPublisher()
+        {
+            return Get("dc_jobs");
+        }
+
+        private ITopicPublishService<JobContextDto> Get(string subscriptionName)
+        {
+            var config = new TopicConfiguration(DcConfiguration.DcServiceBusConnectionString, DcConfiguration.TopicName, subscriptionName, 10, maximumCallbackTimeSpan: TimeSpan.FromMinutes(40));
+            return new TopicPublishService<JobContextDto>(config, serializationService);
+        }
+    }
+
+    public interface ITopicPublishingServiceFactory
+    {
+        ITopicPublishService<JobContextDto> GetPeriodEndTaskPublisher();
+        ITopicPublishService<JobContextDto> GetSubmissionPublisher();
     }
 }
