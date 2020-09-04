@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         private const string CommitmentIdentifierB = "B-2094";
 
         [Given("Commitment exists - which should this match, needs to match the commitments in FM36 in say was as alex spec")]
-        public async Task EmptyIlrSetupStep()
+        public async Task CommitmentSetupAndFirstSubmission()
         {
             GetFm36LearnerForCollectionPeriod("R05/current academic year");
 
@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [When("an ILR file is submitted for period (.*)")]
-        public async Task LevyLearnerMadeRedundant(string collectionPeriod)
+        public async Task AnIlrFileIsSubmittedForPeriod(string collectionPeriod)
         {
             if (collectionPeriod == "R05") return;
 
