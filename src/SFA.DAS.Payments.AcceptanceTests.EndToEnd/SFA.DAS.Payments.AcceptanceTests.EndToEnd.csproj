@@ -417,7 +417,6 @@
     <Compile Include="Steps\PV2_1850_Steps.cs" />
     <Compile Include="Steps\PV2_1851_Steps.cs" />
     <Compile Include="Steps\PV2_1849_Steps.cs" />
-    <Compile Include="Steps\PV2_2094_2_Steps.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
     <Compile Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature.cs">
       <DependentUpon>Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature</DependentUpon>
@@ -1036,10 +1035,10 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Tests\Inconsistent Submission Data\PV2-2094 Prevent duplicate payment claw backs when a learner is deleted from the ILR.feature.cs">
+    <Compile Include="Tests\Inconsistent Submission Data\PV2-2094-1 Prevent duplicate payment claw backs when a learner is deleted from the ILR.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-2094 Prevent duplicate payment claw backs when a learner is deleted from the ILR.feature</DependentUpon>
+      <DependentUpon>PV2-2094-1 Prevent duplicate payment claw backs when a learner is deleted from the ILR.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Inconsistent Submission Data\PV2-256 Levy learner, price is changed, originally mix funded.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1744,10 +1743,8 @@
     <EmbeddedResource Include="FM36TestFiles\PV2-1850-Non-Levy-Learner-Made-Redundant-In-Last-6-Months-R12.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1953-small-employer-retrospective-R03.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1953-small-employer-retrospective-R04.json" />
-    <EmbeddedResource Include="FM36TestFiles\PV2-2094-Prevent-duplicate-payment-claw-backs-when-a-learner-is-deleted-from-the-ILR-R05.json" />
-    <EmbeddedResource Include="FM36TestFiles\PV2-2094-Prevent-duplicate-payment-claw-backs-when-a-learner-is-deleted-from-the-ILR-R06.json" />
-    <EmbeddedResource Include="FM36TestFiles\PV2-2094-Prevent-duplicate-payment-claw-backs-when-a-learner-is-deleted-from-the-ILR-R08.json" />
-    <EmbeddedResource Include="FM36TestFiles\PV2-2094-Prevent-duplicate-payment-claw-backs-when-a-learner-is-deleted-from-the-ILR-R11.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-2094-1-Prevent-duplicate-payment-claw-backs-when-a-learner-is-deleted-from-the-ILR-R08.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-2094-1-Prevent-duplicate-payment-claw-backs-when-a-learner-is-deleted-from-the-ILR-R11.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-2094-2-correctly-refund-duplicate-payment-claw-backs-when-a-learner-is-added-back-into-ILR-R12.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-2094-3-correctly-refund-duplicate-payment-claw-backs-when-a-learner-is-added-back-into-ILR-R12.json" />
     <None Include="packages.config" />
@@ -2241,9 +2238,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-2094-2 correctly refund duplicate payment claw backs when a learner is added back into ILR.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Inconsistent Submission Data\PV2-2094 Prevent duplicate payment claw backs when a learner is deleted from the ILR.feature">
+    <None Include="Tests\Inconsistent Submission Data\PV2-2094-1 Prevent duplicate payment claw backs when a learner is deleted from the ILR.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-2094 Prevent duplicate payment claw backs when a learner is deleted from the ILR.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-2094-1 Prevent duplicate payment claw backs when a learner is deleted from the ILR.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Inconsistent Submission Data\PV2-256 Levy learner, price is changed, originally mix funded.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

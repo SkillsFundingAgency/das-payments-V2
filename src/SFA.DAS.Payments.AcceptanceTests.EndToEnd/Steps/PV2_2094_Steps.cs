@@ -1,17 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
+using SFA.DAS.Payments.Model.Core.Entities;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
     [Binding]
-    [Scope(Feature = "PV2-2094-Prevent-duplicate-payment-claw-backs-when-a-learner-is-deleted-from-the-ILR")]
+    [Scope(Feature = "PV2-2094-1-Prevent-duplicate-payment-claw-backs-when-a-learner-is-deleted-from-the-ILR")]
+    [Scope(Feature = "PV2-2094-2-correctly-refund-duplicate-payment-claw-backs-when-a-learner-is-added-back-into-ILR")]
+    [Scope(Feature = "PV2-2094-3-correctly-refund-duplicate-payment-claw-backs-when-a-learner-is-added-back-into-ILR")]
     // ReSharper disable once InconsistentNaming
     public class PV2_2094_Steps : FM36_ILR_Base_Steps
     {
@@ -19,48 +23,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
         }
 
-        private Learner learnerA;
         private Learner learnerB;
-        private const string PriceEpisodeIdentifierA = "PEA-2094";
         private const string PriceEpisodeIdentifierB = "PEB-2094";
-        private const string CommitmentIdentifierA = "A-2094";
         private const string CommitmentIdentifierB = "B-2094";
-
-        [Given("Commitment exists - which should this match, needs to match the commitments in FM36 in say was as alex spec")]
-        public async Task CommitmentSetupAndFirstSubmission()
-        {
-            GetFm36LearnerForCollectionPeriod("R05/current academic year");
-
-            learnerA = GenerateLearner();
-            learnerB = GenerateLearner();
-
-            await SetupTestCommitmentData(CommitmentIdentifierA, PriceEpisodeIdentifierA, null, null, 9999999999, learnerA);
-            await SetupTestCommitmentData(CommitmentIdentifierB, PriceEpisodeIdentifierB, null, null, 8888888888, learnerB);
-
-            var dcHelper = Scope.Resolve<IDcHelper>();
-            await dcHelper.SendIlrSubmission(TestSession.FM36Global.Learners,
-                TestSession.Provider.Ukprn,
-                TestSession.CollectionPeriod.AcademicYear,
-                TestSession.CollectionPeriod.Period,
-                TestSession.Provider.JobId);
-        }
-
-        [When("an ILR file is submitted for period (.*)")]
-        public async Task AnIlrFileIsSubmittedForPeriod(string collectionPeriod)
-        {
-            if (collectionPeriod == "R05") return;
-
-            GetFm36LearnerForCollectionPeriod($"{collectionPeriod}/current academic year");
-
-            ResetFm36LearnerDetails();
-
-            var dcHelper = Scope.Resolve<IDcHelper>();
-            await dcHelper.SendIlrSubmission(TestSession.FM36Global.Learners,
-                TestSession.Provider.Ukprn,
-                TestSession.CollectionPeriod.AcademicYear,
-                TestSession.CollectionPeriod.Period,
-                TestSession.Provider.JobId);
-        }
 
         private Learner GenerateLearner()
         {
@@ -73,19 +38,44 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             TestSession.RegenerateJobId();
 
-            var fm36LearnerA = TestSession.FM36Global.Learners.SingleOrDefault(l => l.ULN == 9999999999);
-            if (fm36LearnerA != null)
-            {
-                fm36LearnerA.ULN = learnerA.Uln;
-                fm36LearnerA.LearnRefNumber = learnerA.LearnRefNumber;
-            }
-
             var fm36LearnerB = TestSession.FM36Global.Learners.SingleOrDefault(l => l.ULN == 8888888888);
             if (fm36LearnerB != null)
             {
                 fm36LearnerB.ULN = learnerB.Uln;
                 fm36LearnerB.LearnRefNumber = learnerB.LearnRefNumber;
             }
+        }
+
+        [Given("Commitment exists for learner in Period (.*)")]
+        public async Task CommitmentSetupAndFirstSubmission(string period)
+        {
+            GetFm36LearnerForCollectionPeriod($"{period}/current academic year");
+
+            learnerB = GenerateLearner();
+
+            await SetupTestCommitmentData(CommitmentIdentifierB, PriceEpisodeIdentifierB, null, null, 8888888888, learnerB);
+        }
+
+        [Given(@"following provider payments exists in database (.*) ApprenticeshipId")]
+        public async Task WhenFollowingProviderPaymentsExistsInDatabase(string isMissing, Table table)
+        {
+            
+            await CreatePaymentModel(table, isMissing != "with");
+        }
+
+        [When("an ILR file is submitted for period (.*)")]
+        public async Task AnIlrFileIsSubmittedForPeriod(string collectionPeriod)
+        {
+            GetFm36LearnerForCollectionPeriod($"{collectionPeriod}/current academic year");
+
+            ResetFm36LearnerDetails();
+
+            var dcHelper = Scope.Resolve<IDcHelper>();
+            await dcHelper.SendIlrSubmission(TestSession.FM36Global.Learners,
+                TestSession.Provider.Ukprn,
+                TestSession.CollectionPeriod.AcademicYear,
+                TestSession.CollectionPeriod.Period,
+                TestSession.Provider.JobId);
         }
 
         [When("After Period-end following provider payments will be generated in database")]
@@ -102,15 +92,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 MessageSession);
 
             var expectedPayments = table.CreateSet<ProviderPayment>().ToList();
-            expectedPayments.ForEach(ep => ep.Uln = ep.LearnerId == "learner a" ? learnerA.Uln : learnerB.Uln);
+            expectedPayments.ForEach(ep => ep.Uln = learnerB.Uln);
 
             await WaitForIt(() => AssertExpectedPayments(expectedPayments), "Failed to wait for expected number of payments");
         }
 
         private bool AssertExpectedPayments(List<ProviderPayment> expectedPayments)
         {
-            var actualPayments= Scope.Resolve<IPaymentsHelper>().GetPayments(TestSession.Provider.Ukprn, TestSession.CollectionPeriod);
-            
+            var actualPayments = Scope.Resolve<IPaymentsHelper>().GetPayments(TestSession.Provider.Ukprn, TestSession.CollectionPeriod);
+
             if (actualPayments.Count != expectedPayments.Count) return false;
 
             return expectedPayments.All(ep => actualPayments.Any(ap =>
@@ -121,6 +111,60 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 ep.ParsedCollectionPeriod.AcademicYear == ap.CollectionPeriod.AcademicYear &&
                 ep.ParsedCollectionPeriod.Period == ap.CollectionPeriod.Period
             ));
+        }
+
+        private async Task CreatePaymentModel(Table table, bool missingApprenticeshipId = false)
+        {
+            var payments = table.CreateSet<ProviderPayment>().ToList();
+            var jobId = TestSession.GenerateId();
+            var paymentHistory = new List<PaymentModel>();
+
+            foreach (var providerPayment in payments)
+            {
+                var apprenticeship = TestSession.Apprenticeships[CommitmentIdentifierB];
+
+                paymentHistory.Add(new PaymentModel
+                {
+                    EventId = Guid.NewGuid(),
+                    JobId = jobId,
+                    CollectionPeriod = providerPayment.ParsedCollectionPeriod,
+                    DeliveryPeriod = providerPayment.ParsedDeliveryPeriod.Period,
+                    Ukprn = TestSession.Provider.Ukprn,
+                    LearnerUln = learnerB.Uln,
+                    LearnerReferenceNumber = learnerB.LearnRefNumber,
+                    SfaContributionPercentage = 0.95m,
+                    TransactionType = providerPayment.TransactionType,
+                    ContractType = ContractType.Act1,
+                    PriceEpisodeIdentifier = PriceEpisodeIdentifierB,
+                    FundingSource = FundingSourceType.Levy,
+                    LearningAimPathwayCode = 1,
+                    LearningAimReference = "ZPROG001",
+                    LearningAimStandardCode = 0,
+                    IlrSubmissionDateTime = DateTime.Now,
+                    Amount = providerPayment.LevyPayments,
+                    LearningAimFundingLineType = "19+ Apprenticeship (Employer on App Service)",
+                    LearningAimFrameworkCode = 418,
+                    LearningAimProgrammeType = 20,
+                    AccountId = apprenticeship?.AccountId,
+                    TransferSenderAccountId = apprenticeship?.TransferSendingEmployerAccountId,
+                    StartDate = DateTime.UtcNow,
+                    PlannedEndDate = DateTime.UtcNow,
+                    ActualEndDate = DateTime.UtcNow,
+                    CompletionStatus = 1,
+                    CompletionAmount = 9000M,
+                    InstalmentAmount = 600M,
+                    NumberOfInstalments = 12,
+                    ReportingAimFundingLineType = "19+ Apprenticeship (Employer on App Service) Levy funding",
+                    ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
+                    LearningStartDate = DateTime.Now,
+
+                    ApprenticeshipId = missingApprenticeshipId ? null : apprenticeship?.Id,
+                    ApprenticeshipPriceEpisodeId = missingApprenticeshipId ? null : apprenticeship?.ApprenticeshipPriceEpisodes.First().Id,
+                });
+            }
+
+            await DataContext.Payment.AddRangeAsync(paymentHistory);
+            await DataContext.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }
