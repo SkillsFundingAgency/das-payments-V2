@@ -106,6 +106,35 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
         }
 
+        [Test]
+        public async Task MapsApprenticeshipIdsCorrectly()
+        {
+            var historicalPayment =
+                CreatePaymentHistoryEntity(FundingSourceType.Levy, 1, TransactionType.Learning);
+            historicalPayment.Amount = 1000;
+            historicalPayment.ApprenticeshipId = 112;
+            historicalPayment.ApprenticeshipPriceEpisodeId = 114;
+
+            history.Add(historicalPayment);
+            mocker.Mock<IDataCache<PaymentHistoryEntity[]>>()
+                .Setup(x => x.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, history.ToArray()));
+
+            mocker.Provide<IPeriodisedRequiredPaymentEventFactory, PeriodisedRequiredPaymentEventFactory>();
+            mocker.Provide<IRefundService, RefundService>();
+            mocker.Provide<IPaymentDueProcessor, PaymentDueProcessor>();
+            mocker.Provide<IRefundRemovedLearningAimService, RefundRemovedLearningAimService>();
+
+
+            var processor = mocker.Create<RefundRemovedLearningAimProcessor>();
+            var refunds = await processor.RefundLearningAim(identifiedLearner,
+                mocker.Mock<IDataCache<PaymentHistoryEntity[]>>().Object, CancellationToken.None).ConfigureAwait(false);
+
+            refunds.Count.Should().Be(1);
+            refunds.Single().ApprenticeshipId.Should().Be(112);
+            refunds.Single().ApprenticeshipPriceEpisodeId.Should().Be(114);
+        }
+
 
         [Test]
         public async Task RefundsCorrectTypesBasedOnHistory()

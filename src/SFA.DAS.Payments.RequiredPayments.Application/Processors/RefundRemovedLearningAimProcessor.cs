@@ -87,6 +87,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                         return null;
                     }
 
+
                     mapper.Map(refund.payment, requiredPaymentEvent);
                     mapper.Map(historicPayment, requiredPaymentEvent);
                     mapper.Map(identifiedRemovedLearningAim, requiredPaymentEvent);
@@ -94,7 +95,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     // funding line type and Learner Uln are not part of removed aim, we need to use value from historic payment
                     requiredPaymentEvent.LearningAim.FundingLineType = historicPayment.LearningAimFundingLineType;
                     requiredPaymentEvent.Learner.Uln = historicPayment.LearnerUln;
-                   
+                    // the following two fields are being manually mapped as there are multiple mappings set up for different objects in the PeriodisedRequiredPaymentEvent inheritance chain to PaymentHistoryEntity
+                    // some of these mappings ignore the following fields which are required in this scenario
+                    requiredPaymentEvent.ApprenticeshipId = historicPayment.ApprenticeshipId;
+                    requiredPaymentEvent.ApprenticeshipPriceEpisodeId = historicPayment.ApprenticeshipPriceEpisodeId;
+
                     logger.LogDebug("Finished mapping");
                     return requiredPaymentEvent;
                 })
