@@ -1025,11 +1025,6 @@
     <Compile Include="Tests\Inconsistent Submission Data\PV2-1663 Non Levy Learner inconsistent clawback on retrospective gap in learning.feature.cs">
       <DependentUpon>PV2-1663 Non Levy Learner inconsistent clawback on retrospective gap in learning.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Inconsistent Submission Data\PV2-2094-3 correctly refund duplicate payment claw backs when a learner is added back into ILR.feature.cs">
-      <DependentUpon>PV2-2094-3 correctly refund duplicate payment claw backs when a learner is added back into ILR.feature</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Tests\Inconsistent Submission Data\PV2-2094-2 correctly refund duplicate payment claw backs when a learner is added back into ILR.feature.cs">
       <DependentUpon>PV2-2094-2 correctly refund duplicate payment claw backs when a learner is added back into ILR.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -2230,10 +2225,6 @@
     </None>
     <None Include="Tests\Inconsistent Submission Data\PV2-1627 Learner Removed at end of AY in R14.feature" />
     <None Include="Tests\Inconsistent Submission Data\PV2-1663 Non Levy Learner inconsistent clawback on retrospective gap in learning.feature" />
-    <None Include="Tests\Inconsistent Submission Data\PV2-2094-3 correctly refund duplicate payment claw backs when a learner is added back into ILR.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-2094-3 correctly refund duplicate payment claw backs when a learner is added back into ILR.feature.cs</LastGenOutput>
-    </None>
     <None Include="Tests\Inconsistent Submission Data\PV2-2094-2 correctly refund duplicate payment claw backs when a learner is added back into ILR.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-2094-2 correctly refund duplicate payment claw backs when a learner is added back into ILR.feature.cs</LastGenOutput>
