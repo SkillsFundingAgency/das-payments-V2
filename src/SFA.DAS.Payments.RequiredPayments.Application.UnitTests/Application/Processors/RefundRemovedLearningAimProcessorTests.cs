@@ -44,7 +44,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             var logger = new Mock<IPaymentLogger>();
 
             duplicateEarningsServiceMock = mocker.Mock<IDuplicateEarningEventService>();
-            mocker.Provide<IRefundRemovedLearningAimService>(new RefundRemovedLearningAimService());
+            mocker.Provide<IRefundRemovedLearningAimService>(new LearningAimPaymentReversalService());
             mocker.Provide<IPeriodisedRequiredPaymentEventFactory>(new PeriodisedRequiredPaymentEventFactory(logger.Object));
 
             identifiedLearner = new IdentifiedRemovedLearningAim
@@ -123,7 +123,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             mocker.Provide<IPeriodisedRequiredPaymentEventFactory, PeriodisedRequiredPaymentEventFactory>();
             mocker.Provide<IRefundService, RefundService>();
             mocker.Provide<IPaymentDueProcessor, PaymentDueProcessor>();
-            mocker.Provide<IRefundRemovedLearningAimService, RefundRemovedLearningAimService>();
+            mocker.Provide<IRefundRemovedLearningAimService, LearningAimPaymentReversalService>();
 
 
             var processor = mocker.Create<RefundRemovedLearningAimProcessor>();
@@ -166,7 +166,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             mocker.Provide<IPeriodisedRequiredPaymentEventFactory, PeriodisedRequiredPaymentEventFactory>();
             mocker.Provide<IRefundService, RefundService>();
             mocker.Provide<IPaymentDueProcessor, PaymentDueProcessor>();
-            mocker.Provide<IRefundRemovedLearningAimService, RefundRemovedLearningAimService>();
+            mocker.Provide<IRefundRemovedLearningAimService, LearningAimPaymentReversalService>();
 
 
             var processor = mocker.Create<RefundRemovedLearningAimProcessor>();
@@ -200,7 +200,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             mocker.Provide<IPeriodisedRequiredPaymentEventFactory, PeriodisedRequiredPaymentEventFactory>();
             mocker.Provide<IRefundService, RefundService>();
             mocker.Provide<IPaymentDueProcessor, PaymentDueProcessor>();
-            mocker.Provide<IRefundRemovedLearningAimService, RefundRemovedLearningAimService>();
+            mocker.Provide<IRefundRemovedLearningAimService, LearningAimPaymentReversalService>();
 
             var processor = mocker.Create<RefundRemovedLearningAimProcessor>();
             var refunds = await processor.RefundLearningAim(identifiedLearner,
