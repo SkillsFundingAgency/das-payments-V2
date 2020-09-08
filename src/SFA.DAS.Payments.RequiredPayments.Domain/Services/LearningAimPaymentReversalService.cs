@@ -48,7 +48,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 LearningStartDate = payment.LearningStartDate,
                 SfaContributionPercentage = payment.SfaContributionPercentage,
                 Amount = payment.Amount * -1,
-                EarningType = GetEarningType(payment.FundingSource)
+                EarningType = GetEarningType(payment.FundingSource),
+                ReversedPaymentId = payment.Id
             })).ToList();
         }
 

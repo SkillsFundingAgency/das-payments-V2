@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
@@ -38,6 +39,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                     Amount = period * 10,
                     PriceEpisodeIdentifier = "pe-1",
                     FundingSource = testFundingSource,
+                    Id = new Guid(),
                 }));
             var requiredPayments = sut.RefundLearningAim(history);
 
@@ -67,7 +69,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 LearnAimReference = "ZPROG001",
                 LearnerReferenceNumber = "Learn-123",
                 LearningAimFundingLineType = "funding-line1",
-
+                PriceEpisodeIdentifier = "1-255-1/08/2020",
+                Id = Guid.NewGuid(),
                 ApprenticeshipId = 123456,
                 ApprenticeshipPriceEpisodeId = 12,
             });
@@ -96,7 +99,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 LearnAimReference = "ZPROG001",
                 LearnerReferenceNumber = "Learn-123",
                 LearningAimFundingLineType = "funding-line1",
-
+                PriceEpisodeIdentifier = "1-255-1/08/2020",
+                Id = Guid.NewGuid(),
                 ApprenticeshipId = 123456,
                 ApprenticeshipPriceEpisodeId = 12,
             });
@@ -113,6 +117,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 LearnAimReference = "ZPROG001",
                 LearnerReferenceNumber = "Learn-123",
                 LearningAimFundingLineType = "funding-line1",
+                PriceEpisodeIdentifier = "1-255-1/08/2020",
+                Id = Guid.NewGuid(),
 
                 ApprenticeshipId = 123456,
                 ApprenticeshipPriceEpisodeId = 12,
@@ -130,6 +136,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 LearnAimReference = "ZPROG001",
                 LearnerReferenceNumber = "Learn-123",
                 LearningAimFundingLineType = "funding-line1",
+                PriceEpisodeIdentifier = "1-255-1/08/2020",
+                Id = Guid.NewGuid(),
 
                 ApprenticeshipId = 123456,
                 ApprenticeshipPriceEpisodeId = 12,
@@ -146,6 +154,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 LearnAimReference = "ZPROG001",
                 LearnerReferenceNumber = "Learn-123",
                 LearningAimFundingLineType = "funding-line1",
+                PriceEpisodeIdentifier = "1-255-1/08/2020",
+                Id = Guid.NewGuid(),
 
                 ApprenticeshipId = 123456,
                 ApprenticeshipPriceEpisodeId = 12,
@@ -162,6 +172,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 LearnAimReference = "ZPROG001",
                 LearnerReferenceNumber = "Learn-123",
                 LearningAimFundingLineType = "funding-line1",
+                PriceEpisodeIdentifier = "1-255-1/08/2020",
+                Id = Guid.NewGuid(),
 
                 ApprenticeshipId = 123456,
                 ApprenticeshipPriceEpisodeId = 12,
@@ -178,6 +190,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 LearnAimReference = "ZPROG001",
                 LearnerReferenceNumber = "Learn-123",
                 LearningAimFundingLineType = "funding-line1",
+                PriceEpisodeIdentifier = "1-255-1/08/2020",
+                Id = Guid.NewGuid(),
 
                 ApprenticeshipId = 123456,
                 ApprenticeshipPriceEpisodeId = 12,

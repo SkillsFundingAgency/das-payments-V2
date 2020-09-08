@@ -8,6 +8,8 @@ using AutoMapper;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
@@ -24,7 +26,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         private readonly IPeriodisedRequiredPaymentEventFactory requiredPaymentEventFactory;
         private readonly IDuplicateEarningEventService duplicateEarningEventService;
 
-        public RefundRemovedLearningAimProcessor(IRefundRemovedLearningAimService refundRemovedLearningAimService, 
+        public RefundRemovedLearningAimProcessor(IRefundRemovedLearningAimService refundRemovedLearningAimService,
             IPaymentLogger logger, IMapper mapper, IPeriodisedRequiredPaymentEventFactory requiredPaymentEventFactory,
             IDuplicateEarningEventService duplicateEarningEventService
         )
@@ -70,14 +72,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 {
                     logger.LogVerbose("Now mapping the required payment to a PeriodisedRequiredPaymentEvent.");
 
-                    var historicPayment = cacheItem.Value.FirstOrDefault(payment =>
-                        payment.PriceEpisodeIdentifier == refund.payment.PriceEpisodeIdentifier &&
-                        payment.DeliveryPeriod == refund.deliveryPeriod &&
-                        payment.TransactionType == transactionType);
-
-                    if (historicPayment == null)
-                        throw new InvalidOperationException($"Cannot find historic payment with price episode identifier: {refund.payment.PriceEpisodeIdentifier} for period {refund.deliveryPeriod}.");
-                    
                     var requiredPaymentEvent = requiredPaymentEventFactory.Create(refund.payment.EarningType, transactionType);
                     if (requiredPaymentEvent == null)
                     {
@@ -87,24 +81,70 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                         return null;
                     }
 
+                    var reversedPayment =
+                        historicPaymentsByTransactionType.FirstOrDefault(p => p.Id == refund.payment.ReversedPaymentId);
+                    if (reversedPayment == null)
+                        throw new InvalidOperationException($"Failed to find the payment to be reversed.  Reversed payment id: {refund.payment.ReversedPaymentId}");
 
-                    mapper.Map(refund.payment, requiredPaymentEvent);
-                    mapper.Map(historicPayment, requiredPaymentEvent);
-                    mapper.Map(identifiedRemovedLearningAim, requiredPaymentEvent);
+                    requiredPaymentEvent.DeliveryPeriod = refund.deliveryPeriod;
+                    requiredPaymentEvent.ApprenticeshipId = refund.payment.ApprenticeshipId;
+                    requiredPaymentEvent.AccountId = refund.payment.AccountId;
+                    requiredPaymentEvent.ApprenticeshipEmployerType = refund.payment.ApprenticeshipEmployerType;
+                    requiredPaymentEvent.ApprenticeshipPriceEpisodeId = refund.payment.ApprenticeshipPriceEpisodeId;
+                    requiredPaymentEvent.PriceEpisodeIdentifier = refund.payment.PriceEpisodeIdentifier;
+                    requiredPaymentEvent.TransferSenderAccountId = refund.payment.TransferSenderAccountId;
+                    requiredPaymentEvent.LearningStartDate = refund.payment.LearningStartDate;
+                    requiredPaymentEvent.AmountDue = refund.payment.Amount;
 
-                    // funding line type and Learner Uln are not part of removed aim, we need to use value from historic payment
-                    requiredPaymentEvent.LearningAim.FundingLineType = historicPayment.LearningAimFundingLineType;
-                    requiredPaymentEvent.Learner.Uln = historicPayment.LearnerUln;
-                    // the following two fields are being manually mapped as there are multiple mappings set up for different objects in the PeriodisedRequiredPaymentEvent inheritance chain to PaymentHistoryEntity
-                    // some of these mappings ignore the following fields which are required in this scenario
-                    requiredPaymentEvent.ApprenticeshipId = historicPayment.ApprenticeshipId;
-                    requiredPaymentEvent.ApprenticeshipPriceEpisodeId = historicPayment.ApprenticeshipPriceEpisodeId;
+                    requiredPaymentEvent.Learner = identifiedRemovedLearningAim.Learner;
+                    requiredPaymentEvent.LearningAim = identifiedRemovedLearningAim.LearningAim;
+                    requiredPaymentEvent.Ukprn = identifiedRemovedLearningAim.Ukprn;
+                    requiredPaymentEvent.StartDate = reversedPayment.StartDate;
+                    requiredPaymentEvent.AccountId = reversedPayment.AccountId;
+                    requiredPaymentEvent.ActualEndDate = reversedPayment.ActualEndDate;
+                    requiredPaymentEvent.CollectionPeriod = identifiedRemovedLearningAim.CollectionPeriod;
+                    requiredPaymentEvent.CompletionAmount = reversedPayment.CompletionAmount;
+                    requiredPaymentEvent.ContractType = reversedPayment.ContractType;
+                    requiredPaymentEvent.IlrSubmissionDateTime = identifiedRemovedLearningAim.IlrSubmissionDateTime;
+                    requiredPaymentEvent.CompletionStatus = reversedPayment.CompletionStatus;
+                    requiredPaymentEvent.InstalmentAmount = reversedPayment.InstalmentAmount;
+                    requiredPaymentEvent.NumberOfInstalments = reversedPayment.NumberOfInstalments;
+                    requiredPaymentEvent.JobId = identifiedRemovedLearningAim.JobId;
+                    requiredPaymentEvent.ReportingAimFundingLineType = reversedPayment.ReportingAimFundingLineType;
+
+                    switch (requiredPaymentEvent)
+                    {
+                        case CalculatedRequiredCoInvestedAmount coInvestedRequiredPaymentEvent:
+                            coInvestedRequiredPaymentEvent.SfaContributionPercentage = reversedPayment.SfaContributionPercentage;
+                            break;
+                        case CalculatedRequiredLevyAmount levyRequiredPaymentEvent:
+                            levyRequiredPaymentEvent.SfaContributionPercentage = reversedPayment.SfaContributionPercentage;
+                            break;
+                    }
 
                     logger.LogDebug("Finished mapping");
                     return requiredPaymentEvent;
                 })
                 .Where(x => x != null)
                 .ToList();
+        }
+
+
+
+        private void Map(CalculatedRequiredCoInvestedAmount requiredPayment, Payment reversedPayment)
+        {
+            requiredPayment.SfaContributionPercentage = reversedPayment.SfaContributionPercentage;
+        }
+
+        private void Map(CalculatedRequiredIncentiveAmount requiredPayment, Payment reversedPayment)
+        {
+            //nothing to map
+        }
+
+        private void Map(CalculatedRequiredLevyAmount requiredPayment, Payment reversedPayment)
+        {
+            //            requiredPayment.AgreedOnDate = reversedPayment.AgreedOnDate;
+            //            requiredPayment.AgreementId = reversedPayment.AgreementId;
         }
     }
 }
