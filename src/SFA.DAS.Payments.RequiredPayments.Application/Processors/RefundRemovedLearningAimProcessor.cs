@@ -96,7 +96,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     requiredPaymentEvent.AmountDue = refund.payment.Amount;
 
                     requiredPaymentEvent.Learner = identifiedRemovedLearningAim.Learner;
-                    requiredPaymentEvent.LearningAim = identifiedRemovedLearningAim.LearningAim;
+                    requiredPaymentEvent.LearningAim = new LearningAim
+                    {
+                        ProgrammeType = identifiedRemovedLearningAim.LearningAim.ProgrammeType,
+                        FrameworkCode = identifiedRemovedLearningAim.LearningAim.FrameworkCode,
+                        PathwayCode = identifiedRemovedLearningAim.LearningAim.PathwayCode,
+                        StandardCode = identifiedRemovedLearningAim.LearningAim.StandardCode,
+                        FundingLineType = reversedPayment.LearningAimFundingLineType,
+                        Reference = identifiedRemovedLearningAim.LearningAim.Reference
+                    };
                     requiredPaymentEvent.Ukprn = identifiedRemovedLearningAim.Ukprn;
                     requiredPaymentEvent.StartDate = reversedPayment.StartDate;
                     requiredPaymentEvent.AccountId = reversedPayment.AccountId;
