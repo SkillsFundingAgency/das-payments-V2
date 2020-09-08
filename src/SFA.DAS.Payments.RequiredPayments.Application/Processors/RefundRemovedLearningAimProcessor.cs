@@ -81,8 +81,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                         return null;
                     }
 
-                    var reversedPayment =
-                        historicPaymentsByTransactionType.FirstOrDefault(p => p.Id == refund.payment.ReversedPaymentId);
+                    var reversedPayment = historicPaymentsByTransactionType.FirstOrDefault(p => p.Id == refund.payment.ReversedPaymentId);
                     if (reversedPayment == null)
                         throw new InvalidOperationException($"Failed to find the payment to be reversed.  Reversed payment id: {refund.payment.ReversedPaymentId}");
 
@@ -104,6 +103,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     requiredPaymentEvent.ActualEndDate = reversedPayment.ActualEndDate;
                     requiredPaymentEvent.CollectionPeriod = identifiedRemovedLearningAim.CollectionPeriod;
                     requiredPaymentEvent.CompletionAmount = reversedPayment.CompletionAmount;
+                    requiredPaymentEvent.CompletionStatus = reversedPayment.CompletionStatus;
                     requiredPaymentEvent.ContractType = reversedPayment.ContractType;
                     requiredPaymentEvent.IlrSubmissionDateTime = identifiedRemovedLearningAim.IlrSubmissionDateTime;
                     requiredPaymentEvent.CompletionStatus = reversedPayment.CompletionStatus;

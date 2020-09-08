@@ -61,6 +61,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 Learner = new Learner
                 {
                     ReferenceNumber = "learner-ref-123",
+                    Uln = 5,
                 },
                 LearningAim = new LearningAim
                 {
