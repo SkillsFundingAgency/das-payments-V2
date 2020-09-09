@@ -95,7 +95,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     requiredPaymentEvent.LearningStartDate = refund.payment.LearningStartDate;
                     requiredPaymentEvent.AmountDue = refund.payment.Amount;
 
-                    requiredPaymentEvent.Learner = identifiedRemovedLearningAim.Learner;
+                    requiredPaymentEvent.Learner = new Learner
+                    {
+                        Uln = reversedPayment.Uln,
+                        ReferenceNumber = reversedPayment.LearnerReferenceNumber
+                    };
                     requiredPaymentEvent.LearningAim = new LearningAim
                     {
                         ProgrammeType = identifiedRemovedLearningAim.LearningAim.ProgrammeType,
@@ -106,19 +110,19 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                         Reference = identifiedRemovedLearningAim.LearningAim.Reference
                     };
                     requiredPaymentEvent.Ukprn = identifiedRemovedLearningAim.Ukprn;
-                    requiredPaymentEvent.StartDate = reversedPayment.StartDate;
-                    requiredPaymentEvent.AccountId = reversedPayment.AccountId;
-                    requiredPaymentEvent.ActualEndDate = reversedPayment.ActualEndDate;
                     requiredPaymentEvent.CollectionPeriod = identifiedRemovedLearningAim.CollectionPeriod;
-                    requiredPaymentEvent.CompletionAmount = reversedPayment.CompletionAmount;
                     requiredPaymentEvent.CompletionStatus = reversedPayment.CompletionStatus;
                     requiredPaymentEvent.ContractType = reversedPayment.ContractType;
                     requiredPaymentEvent.IlrSubmissionDateTime = identifiedRemovedLearningAim.IlrSubmissionDateTime;
                     requiredPaymentEvent.CompletionStatus = reversedPayment.CompletionStatus;
-                    requiredPaymentEvent.InstalmentAmount = reversedPayment.InstalmentAmount;
-                    requiredPaymentEvent.NumberOfInstalments = reversedPayment.NumberOfInstalments;
                     requiredPaymentEvent.JobId = identifiedRemovedLearningAim.JobId;
                     requiredPaymentEvent.ReportingAimFundingLineType = reversedPayment.ReportingAimFundingLineType;
+                    requiredPaymentEvent.StartDate = reversedPayment.StartDate;
+                    requiredPaymentEvent.InstalmentAmount = reversedPayment.InstalmentAmount;
+                    requiredPaymentEvent.CompletionAmount = reversedPayment.CompletionAmount;
+                    requiredPaymentEvent.NumberOfInstalments = reversedPayment.NumberOfInstalments;
+                    requiredPaymentEvent.PlannedEndDate = reversedPayment.PlannedEndDate;
+                    requiredPaymentEvent.ActualEndDate = reversedPayment.ActualEndDate;
 
                     switch (requiredPaymentEvent)
                     {

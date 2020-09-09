@@ -27,6 +27,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Entities
         public Guid ExternalId { get; set; }
         public long Ukprn { get; set; }
         public string LearnerReferenceNumber { get; set; }
+        public long Uln { get; set; }
         public string LearningAimFundingLineType { get; set; }
         public ContractType ContractType { get; set; }
         public DateTime? LearningStartDate { get; set; }
