@@ -9,7 +9,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
@@ -20,18 +19,18 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
     public class RefundRemovedLearningAimProcessor : IRefundRemovedLearningAimProcessor
     {
-        private readonly IRefundRemovedLearningAimService refundRemovedLearningAimService;
+        private readonly IRemovedLearningAimReversalService removedLearningAimReversalService;
         private readonly IPaymentLogger logger;
         private readonly IMapper mapper;
         private readonly IPeriodisedRequiredPaymentEventFactory requiredPaymentEventFactory;
         private readonly IDuplicateEarningEventService duplicateEarningEventService;
 
-        public RefundRemovedLearningAimProcessor(IRefundRemovedLearningAimService refundRemovedLearningAimService,
+        public RefundRemovedLearningAimProcessor(IRemovedLearningAimReversalService removedLearningAimReversalService,
             IPaymentLogger logger, IMapper mapper, IPeriodisedRequiredPaymentEventFactory requiredPaymentEventFactory,
             IDuplicateEarningEventService duplicateEarningEventService
         )
         {
-            this.refundRemovedLearningAimService = refundRemovedLearningAimService ?? throw new ArgumentNullException(nameof(refundRemovedLearningAimService));
+            this.removedLearningAimReversalService = removedLearningAimReversalService ?? throw new ArgumentNullException(nameof(removedLearningAimReversalService));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.requiredPaymentEventFactory = requiredPaymentEventFactory ?? throw new ArgumentNullException(nameof(requiredPaymentEventFactory));
@@ -57,15 +56,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             logger.LogDebug($"Got {historicPayments.Count} historic payments. Now generating refunds per transaction type.");
 
             var requiredPaymentEvents = historicPayments.GroupBy(historicPayment => historicPayment.TransactionType)
-                .SelectMany(group => CreateRefundPayments(identifiedRemovedLearningAim, group.ToList(), group.Key, cacheItem))
+                .SelectMany(group => CreateRefundPayments(identifiedRemovedLearningAim, group.ToList(), group.Key))
                 .ToList();
 
             return requiredPaymentEvents.AsReadOnly();
         }
 
-        private IList<PeriodisedRequiredPaymentEvent> CreateRefundPayments(IdentifiedRemovedLearningAim identifiedRemovedLearningAim, List<Payment> historicPaymentsByTransactionType, int transactionType, ConditionalValue<PaymentHistoryEntity[]> cacheItem)
+        private IList<PeriodisedRequiredPaymentEvent> CreateRefundPayments(IdentifiedRemovedLearningAim identifiedRemovedLearningAim, List<Payment> historicPaymentsByTransactionType, int transactionType)
         {
-            var refundPaymentsAndPeriods = refundRemovedLearningAimService.RefundLearningAim(historicPaymentsByTransactionType);
+            var refundPaymentsAndPeriods = removedLearningAimReversalService.RefundLearningAim(historicPaymentsByTransactionType);
 
             return refundPaymentsAndPeriods
                 .Select(refund =>
@@ -139,24 +138,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 })
                 .Where(x => x != null)
                 .ToList();
-        }
-
-
-
-        private void Map(CalculatedRequiredCoInvestedAmount requiredPayment, Payment reversedPayment)
-        {
-            requiredPayment.SfaContributionPercentage = reversedPayment.SfaContributionPercentage;
-        }
-
-        private void Map(CalculatedRequiredIncentiveAmount requiredPayment, Payment reversedPayment)
-        {
-            //nothing to map
-        }
-
-        private void Map(CalculatedRequiredLevyAmount requiredPayment, Payment reversedPayment)
-        {
-            //            requiredPayment.AgreedOnDate = reversedPayment.AgreedOnDate;
-            //            requiredPayment.AgreementId = reversedPayment.AgreementId;
         }
     }
 }

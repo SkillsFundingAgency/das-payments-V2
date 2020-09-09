@@ -14,12 +14,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
     public class LearningAimPaymentReversalServiceTests
     {
         private List<Payment> history;
-        private LearningAimPaymentReversalService sut;
+        private RemovedLearningAimReversalReversalService sut;
 
         [SetUp]
         public void SetUp()
         {
-            sut = new LearningAimPaymentReversalService();
+            sut = new RemovedLearningAimReversalReversalService();
             history = new List<Payment>();
         }
 
