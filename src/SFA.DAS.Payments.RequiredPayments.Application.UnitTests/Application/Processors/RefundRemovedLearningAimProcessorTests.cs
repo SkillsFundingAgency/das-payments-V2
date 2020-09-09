@@ -89,8 +89,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                     Period = 1
                 },
                 LearnAimReference = "ZPROG001",
-                LearnerReferenceNumber = "learning-ref-456",
+                LearnerReferenceNumber = "learner-ref-123",
                 PriceEpisodeIdentifier = "pe-1",
+                LearningAimFundingLineType = "funding line type",
                 DeliveryPeriod = deliveryPeriod,
                 Ukprn = 7,
                 LearnerUln = 5,
