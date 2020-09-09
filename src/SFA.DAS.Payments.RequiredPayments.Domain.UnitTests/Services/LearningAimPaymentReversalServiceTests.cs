@@ -82,6 +82,50 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             requiredPayment.payment.Amount.Should().Be(-1000);
         }
 
+        [Test]
+        public void Aggregates_Reversed_CoInvested_Payments()
+        {
+            history.Add(new Payment
+            {
+                DeliveryPeriod = 1,
+                Amount = 50,
+                TransactionType = 1,
+                FundingSource = FundingSourceType.CoInvestedEmployer,
+                CollectionPeriod = new CollectionPeriod { Period = 1, AcademicYear = 2021 },
+                SfaContributionPercentage = .95M,
+                Ukprn = 1001234,
+                LearnAimReference = "ZPROG001",
+                LearnerReferenceNumber = "Learn-123",
+                LearningAimFundingLineType = "funding-line1",
+                PriceEpisodeIdentifier = "1-255-1/08/2020",
+                Id = Guid.NewGuid(),
+                ApprenticeshipId = 123456,
+                ApprenticeshipPriceEpisodeId = 12,
+            });
+            history.Add(new Payment
+            {
+                DeliveryPeriod = 1,
+                Amount = 950,
+                TransactionType = 1,
+                FundingSource = FundingSourceType.CoInvestedSfa,
+                CollectionPeriod = new CollectionPeriod { Period = 1, AcademicYear = 2021 },
+                SfaContributionPercentage = .95M,
+                Ukprn = 1001234,
+                LearnAimReference = "ZPROG001",
+                LearnerReferenceNumber = "Learn-123",
+                LearningAimFundingLineType = "funding-line1",
+                PriceEpisodeIdentifier = "1-255-1/08/2020",
+                Id = Guid.NewGuid(),
+                ApprenticeshipId = 123456,
+                ApprenticeshipPriceEpisodeId = 12,
+            });
+            var requiredPayments = sut.RefundLearningAim(history);
+
+            requiredPayments.Should().NotBeNullOrEmpty();
+            requiredPayments.Count.Should().Be(1);
+            var requiredPayment = requiredPayments.FirstOrDefault();
+            requiredPayment.payment.Amount.Should().Be(-1000);
+        }
 
 
         [Test]
