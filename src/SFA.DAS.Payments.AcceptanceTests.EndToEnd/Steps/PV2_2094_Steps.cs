@@ -158,8 +158,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
                     LearningStartDate = DateTime.Now,
 
-                    ApprenticeshipId = missingApprenticeshipId ? null : apprenticeship?.Id,
-                    ApprenticeshipPriceEpisodeId = missingApprenticeshipId ? null : apprenticeship?.ApprenticeshipPriceEpisodes.First().Id,
+                    ApprenticeshipId = missingApprenticeshipId && providerPayment.LevyPayments < 0 ? null : apprenticeship?.Id,
+                    ApprenticeshipPriceEpisodeId = missingApprenticeshipId && providerPayment.LevyPayments < 0 ? null : apprenticeship?.ApprenticeshipPriceEpisodes.First().Id,
                 });
             }
 
