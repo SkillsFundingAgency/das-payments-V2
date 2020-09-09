@@ -19,8 +19,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
             var paymentsToReverse = new List<Payment>();
             foreach (var deliveryPeriodPayments in deliveryPeriods)
             {
-                var refunds = deliveryPeriodPayments.Where(p => p.Amount < 0).ToList();
-                foreach (var deliveryPeriodPayment in deliveryPeriodPayments.Where(p => p.Amount > 0))
+                var payments = deliveryPeriodPayments.Where(p =>
+                    p.FundingSource != FundingSourceType.CoInvestedEmployer &&
+                    p.FundingSource != FundingSourceType.CoInvestedSfa).ToList();
+                var coInvestedPayments = AggregateCoInvestedPayments(deliveryPeriodPayments.Where(p =>
+                    p.FundingSource == FundingSourceType.CoInvestedEmployer ||
+                    p.FundingSource == FundingSourceType.CoInvestedSfa).ToList());
+                payments.AddRange(coInvestedPayments);
+                var refunds = payments.Where(p => p.Amount < 0).ToList();
+                foreach (var deliveryPeriodPayment in payments.Where(p => p.Amount > 0))
                 {
                     var matchingRefund = refunds.FirstOrDefault(refund =>
                         deliveryPeriodPayment.Amount == refund.Amount * -1 &&
@@ -53,6 +60,34 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
             })).ToList();
         }
 
+        private List<Payment> AggregateCoInvestedPayments(List<Payment> payments)
+        {
+            var coInvestedPayments = payments.Where(p =>
+                p.FundingSource == FundingSourceType.CoInvestedEmployer ||
+                p.FundingSource == FundingSourceType.CoInvestedSfa).ToList();
+
+            return coInvestedPayments.GroupBy(payment => new
+            {
+                payment.Uln,
+                payment.TransactionType,
+                payment.PriceEpisodeIdentifier,
+                payment.ApprenticeshipId,
+                payment.SfaContributionPercentage
+            })
+                .Select(group => GetAggregatedCoInvestedPayment(group.ToList()))
+                .ToList();
+        }
+
+
+        private Payment GetAggregatedCoInvestedPayment(List<Payment> payments)
+        {
+            var payment = payments.FirstOrDefault();
+            if (payment == null)
+                throw new InvalidOperationException("The list co-invested payments was empty.");
+            payment.Amount = payments.Sum(p => p.Amount);
+            return payment;
+        }
+
         private EarningType GetEarningType(FundingSourceType fundingSource)
         {
             switch (fundingSource)
@@ -65,7 +100,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                     return EarningType.CoInvested;
                 case FundingSourceType.FullyFundedSfa:
                     return EarningType.Incentive;
-                default: 
+                default:
                     throw new InvalidOperationException($"Cannot convert funding source {fundingSource:G} to earning type.");
             }
         }

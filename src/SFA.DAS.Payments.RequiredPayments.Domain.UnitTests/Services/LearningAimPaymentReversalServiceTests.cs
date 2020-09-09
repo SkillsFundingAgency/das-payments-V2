@@ -127,6 +127,87 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             requiredPayment.payment.Amount.Should().Be(-1000);
         }
 
+        [Test]
+        public void Handles_Multiple_Reversed_CoInvested_Payments()
+        {
+            history.Add(new Payment
+            {
+                DeliveryPeriod = 1,
+                Amount = 50,
+                TransactionType = 4,
+                FundingSource = FundingSourceType.CoInvestedEmployer,
+                CollectionPeriod = new CollectionPeriod { Period = 1, AcademicYear = 2021 },
+                SfaContributionPercentage = .95M,
+                Ukprn = 1001234,
+                LearnAimReference = "ZPROG001",
+                LearnerReferenceNumber = "Learn-123",
+                LearningAimFundingLineType = "funding-line1",
+                PriceEpisodeIdentifier = "1-255-1/08/2020",
+                Id = Guid.NewGuid(),
+                ApprenticeshipId = 123456,
+                ApprenticeshipPriceEpisodeId = 12,
+            });
+            history.Add(new Payment
+            {
+                DeliveryPeriod = 1,
+                Amount = 950,
+                TransactionType = 4,
+                FundingSource = FundingSourceType.CoInvestedSfa,
+                CollectionPeriod = new CollectionPeriod { Period = 1, AcademicYear = 2021 },
+                SfaContributionPercentage = .95M,
+                Ukprn = 1001234,
+                LearnAimReference = "ZPROG001",
+                LearnerReferenceNumber = "Learn-123",
+                LearningAimFundingLineType = "funding-line1",
+                PriceEpisodeIdentifier = "1-255-1/08/2020",
+                Id = Guid.NewGuid(),
+                ApprenticeshipId = 123456,
+                ApprenticeshipPriceEpisodeId = 12,
+            });
+            history.Add(new Payment
+            {
+                DeliveryPeriod = 1,
+                Amount = 50,
+                TransactionType = 5,
+                FundingSource = FundingSourceType.CoInvestedEmployer,
+                CollectionPeriod = new CollectionPeriod { Period = 1, AcademicYear = 2021 },
+                SfaContributionPercentage = .95M,
+                Ukprn = 1001234,
+                LearnAimReference = "ZPROG001",
+                LearnerReferenceNumber = "Learn-123",
+                LearningAimFundingLineType = "funding-line1",
+                PriceEpisodeIdentifier = "1-255-1/08/2020",
+                Id = Guid.NewGuid(),
+                ApprenticeshipId = 123456,
+                ApprenticeshipPriceEpisodeId = 12,
+            });
+            history.Add(new Payment
+            {
+                DeliveryPeriod = 1,
+                Amount = 950,
+                TransactionType = 5,
+                FundingSource = FundingSourceType.CoInvestedSfa,
+                CollectionPeriod = new CollectionPeriod { Period = 1, AcademicYear = 2021 },
+                SfaContributionPercentage = .95M,
+                Ukprn = 1001234,
+                LearnAimReference = "ZPROG001",
+                LearnerReferenceNumber = "Learn-123",
+                LearningAimFundingLineType = "funding-line1",
+                PriceEpisodeIdentifier = "1-255-1/08/2020",
+                Id = Guid.NewGuid(),
+                ApprenticeshipId = 123456,
+                ApprenticeshipPriceEpisodeId = 12,
+            });
+            var requiredPayments = sut.RefundLearningAim(history);
+
+            requiredPayments.Should().NotBeNullOrEmpty();
+            requiredPayments.Count.Should().Be(2);
+            var requiredPayment = requiredPayments.FirstOrDefault();
+            requiredPayment.payment.Amount.Should().Be(-1000);
+            
+            requiredPayment = requiredPayments.Skip(1).FirstOrDefault();
+            requiredPayment.payment.Amount.Should().Be(-1000);
+        }
 
         [Test]
         public void Reverses_Payments_After_Learner_Paid_In_First_Collection_But_Removed_In_Next_Added_In_Next_And_Removed_Again_With_Duplicate_Refund()
