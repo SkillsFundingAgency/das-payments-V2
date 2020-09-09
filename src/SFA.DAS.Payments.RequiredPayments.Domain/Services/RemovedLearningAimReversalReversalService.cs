@@ -6,13 +6,8 @@ using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 {
-    public class LearningAimPaymentReversalService : IRefundRemovedLearningAimService
+    public class RemovedLearningAimReversalReversalService : IRemovedLearningAimReversalService
     {
-
-        public LearningAimPaymentReversalService()
-        {
-        }
-
         public List<(byte deliveryPeriod, RequiredPayment payment)> RefundLearningAim(List<Payment> historicPayments)
         {
             var deliveryPeriods = historicPayments.GroupBy(p => p.DeliveryPeriod).OrderBy(g => g.Key).ToList();
@@ -77,7 +72,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 .Select(group => GetAggregatedCoInvestedPayment(group.ToList()))
                 .ToList();
         }
-
 
         private Payment GetAggregatedCoInvestedPayment(List<Payment> payments)
         {
