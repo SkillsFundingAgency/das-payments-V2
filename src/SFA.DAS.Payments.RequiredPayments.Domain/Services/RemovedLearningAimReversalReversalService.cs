@@ -30,6 +30,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                         deliveryPeriodPayment.FundingSource == refund.FundingSource &&
                         deliveryPeriodPayment.PriceEpisodeIdentifier == refund.PriceEpisodeIdentifier &&
                         deliveryPeriodPayment.ApprenticeshipId == refund.ApprenticeshipId &&
+                        deliveryPeriodPayment.Uln == refund.Uln &&
                         deliveryPeriodPayment.SfaContributionPercentage == refund.SfaContributionPercentage);
                     if (matchingRefund != null)
                         refunds.Remove(matchingRefund);
