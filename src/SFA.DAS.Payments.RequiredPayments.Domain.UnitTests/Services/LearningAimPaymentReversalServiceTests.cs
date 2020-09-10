@@ -324,6 +324,95 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             ExecuteAndAssertAllPeriodsAreNetZero();
         }
 
+        [Test]
+        public void Reverses_Payments_After_Learner_Paid_In_First_Collection_But_Removed_In_Next_Added_In_Next_And_Removed_Again_With_Duplicate_Refund_With_Null_Apprenticeship()
+        {
+            history.Add(new Payment
+            {
+                DeliveryPeriod = 1,
+                Amount = 1000,
+                TransactionType = 1,
+                FundingSource = FundingSourceType.Levy,
+                CollectionPeriod = new CollectionPeriod { Period = 1, AcademicYear = 2021 },
+                SfaContributionPercentage = .95M,
+                Ukprn = 1001234,
+                LearnAimReference = "ZPROG001",
+                LearnerReferenceNumber = "Learn-123",
+                LearningAimFundingLineType = "funding-line1",
+                PriceEpisodeIdentifier = "1-255-1/08/2020",
+                Id = Guid.NewGuid(),
+                ApprenticeshipId = 123456,
+                ApprenticeshipPriceEpisodeId = 12,
+            });
+
+            history.Add(new Payment
+            {
+                DeliveryPeriod = 1,
+                Amount = -1000,
+                TransactionType = 1,
+                FundingSource = FundingSourceType.Levy,
+                CollectionPeriod = new CollectionPeriod { Period = 2, AcademicYear = 2021 },
+                SfaContributionPercentage = .95M,
+                Ukprn = 1001234,
+                LearnAimReference = "ZPROG001",
+                LearnerReferenceNumber = "Learn-123",
+                LearningAimFundingLineType = "funding-line1",
+                PriceEpisodeIdentifier = "1-255-1/08/2020",
+                Id = Guid.NewGuid(),
+            });
+            //Duplicate
+            history.Add(new Payment
+            {
+                DeliveryPeriod = 1,
+                Amount = 1000,
+                TransactionType = 1,
+                FundingSource = FundingSourceType.Levy,
+                CollectionPeriod = new CollectionPeriod { Period = 3, AcademicYear = 2021 },
+                SfaContributionPercentage = .95M,
+                Ukprn = 1001234,
+                LearnAimReference = "ZPROG001",
+                LearnerReferenceNumber = "Learn-123",
+                LearningAimFundingLineType = "funding-line1",
+                PriceEpisodeIdentifier = "1-255-1/08/2020",
+                Id = Guid.NewGuid(),
+
+                ApprenticeshipId = 123456,
+                ApprenticeshipPriceEpisodeId = 12,
+            });
+            history.Add(new Payment
+            {
+                DeliveryPeriod = 1,
+                Amount = -1000,
+                TransactionType = 1,
+                FundingSource = FundingSourceType.Levy,
+                CollectionPeriod = new CollectionPeriod { Period = 4, AcademicYear = 2021 },
+                SfaContributionPercentage = .95M,
+                Ukprn = 1001234,
+                LearnAimReference = "ZPROG001",
+                LearnerReferenceNumber = "Learn-123",
+                LearningAimFundingLineType = "funding-line1",
+                PriceEpisodeIdentifier = "1-255-1/08/2020",
+                Id = Guid.NewGuid(),
+            });
+            history.Add(new Payment
+            {
+                DeliveryPeriod = 1,
+                Amount = -1000,
+                TransactionType = 1,
+                FundingSource = FundingSourceType.Levy,
+                CollectionPeriod = new CollectionPeriod { Period = 4, AcademicYear = 2021 },
+                SfaContributionPercentage = .95M,
+                Ukprn = 1001234,
+                LearnAimReference = "ZPROG001",
+                LearnerReferenceNumber = "Learn-123",
+                LearningAimFundingLineType = "funding-line1",
+                PriceEpisodeIdentifier = "1-255-1/08/2020",
+                Id = Guid.NewGuid(),
+            });
+            ExecuteAndAssertAllPeriodsAreNetZero();
+        }
+
+
         private void ExecuteAndAssertAllPeriodsAreNetZero()
         {
             var reversals = sut.RefundLearningAim(history);

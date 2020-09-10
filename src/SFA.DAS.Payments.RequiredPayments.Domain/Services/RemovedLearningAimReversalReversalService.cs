@@ -39,20 +39,35 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 paymentsToReverse.AddRange(refunds);
             }
 
-            return paymentsToReverse.Select(payment => (payment.DeliveryPeriod, new RequiredPayment
-            {
-                ApprenticeshipId = payment.ApprenticeshipId,
-                AccountId = payment.AccountId,
-                ApprenticeshipEmployerType = payment.ApprenticeshipEmployerType,
-                ApprenticeshipPriceEpisodeId = payment.ApprenticeshipPriceEpisodeId,
-                PriceEpisodeIdentifier = payment.PriceEpisodeIdentifier,
-                TransferSenderAccountId = payment.TransferSenderAccountId,
-                LearningStartDate = payment.LearningStartDate,
-                SfaContributionPercentage = payment.SfaContributionPercentage,
-                Amount = payment.Amount * -1,
-                EarningType = GetEarningType(payment.FundingSource),
-                ReversedPaymentId = payment.Id
-            })).ToList();
+            var aggregatedPayments = paymentsToReverse.GroupBy(payment => new
+                {
+                    payment.DeliveryPeriod,
+                    payment.TransactionType,
+                    payment.FundingSource,
+                    payment.PriceEpisodeIdentifier,
+                    payment.ApprenticeshipId,
+                    payment.ApprenticeshipPriceEpisodeId,
+                    payment.SfaContributionPercentage
+                })
+                .Select(group => GetAggregatedPayment(group.ToList()))
+                .ToList();
+
+            return aggregatedPayments.Select(payment => (payment.DeliveryPeriod, new RequiredPayment
+                {
+                    ApprenticeshipId = payment.ApprenticeshipId,
+                    AccountId = payment.AccountId,
+                    ApprenticeshipEmployerType = payment.ApprenticeshipEmployerType,
+                    ApprenticeshipPriceEpisodeId = payment.ApprenticeshipPriceEpisodeId,
+                    PriceEpisodeIdentifier = payment.PriceEpisodeIdentifier,
+                    TransferSenderAccountId = payment.TransferSenderAccountId,
+                    LearningStartDate = payment.LearningStartDate,
+                    SfaContributionPercentage = payment.SfaContributionPercentage,
+                    Amount = payment.Amount * -1,
+                    EarningType = GetEarningType(payment.FundingSource),
+                    ReversedPaymentId = payment.Id
+
+                }))
+                .ToList();
         }
 
         private List<Payment> AggregateCoInvestedPayments(List<Payment> payments)
@@ -69,17 +84,46 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 payment.ApprenticeshipId,
                 payment.SfaContributionPercentage
             })
-                .Select(group => GetAggregatedCoInvestedPayment(group.ToList()))
+                .Select(group => GetAggregatedPayment(group.ToList()))
                 .ToList();
         }
 
-        private Payment GetAggregatedCoInvestedPayment(List<Payment> payments)
+        private Payment GetAggregatedPayment(List<Payment> payments)
         {
             var payment = payments.FirstOrDefault();
             if (payment == null)
                 throw new InvalidOperationException("The list co-invested payments was empty.");
-            payment.Amount = payments.Sum(p => p.Amount);
-            return payment;
+            return new Payment
+            {
+                ApprenticeshipId = payment.ApprenticeshipId,
+                Uln = payment.Uln,
+                Ukprn = payment.Ukprn,
+                StartDate = payment.StartDate,
+                AccountId = payment.AccountId,
+                TransactionType = payment.TransactionType,
+                ApprenticeshipEmployerType = payment.ApprenticeshipEmployerType,
+                PriceEpisodeIdentifier = payment.PriceEpisodeIdentifier,
+                ApprenticeshipPriceEpisodeId = payment.ApprenticeshipPriceEpisodeId,
+                SfaContributionPercentage = payment.SfaContributionPercentage,
+                FundingSource = payment.FundingSource,
+                TransferSenderAccountId = payment.TransferSenderAccountId,
+                Amount = payments.Sum(p => p.Amount),
+                ActualEndDate = payment.ActualEndDate,
+                CompletionAmount = payment.CompletionAmount,
+                CompletionStatus = payment.CompletionStatus,
+                ContractType = payment.ContractType,
+                DeliveryPeriod = payment.DeliveryPeriod,
+                ExternalId = payment.ExternalId,
+                Id = payment.Id,
+                LearningStartDate = payment.LearningStartDate,
+                LearningAimFundingLineType = payment.LearningAimFundingLineType,
+                PlannedEndDate = payment.PlannedEndDate,
+                InstalmentAmount = payment.InstalmentAmount,
+                LearnerReferenceNumber = payment.LearnerReferenceNumber,
+                LearnAimReference = payment.LearnAimReference,
+                NumberOfInstalments = payment.NumberOfInstalments,
+                ReportingAimFundingLineType = payment.ReportingAimFundingLineType
+            };
         }
 
         private EarningType GetEarningType(FundingSourceType fundingSource)

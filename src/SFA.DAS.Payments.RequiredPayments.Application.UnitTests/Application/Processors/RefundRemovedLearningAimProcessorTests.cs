@@ -241,6 +241,27 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         }
 
         [Test]
+        public async Task Uses_ULn_From_Reversed_Payment()
+        {
+            var historicPayment = CreatePaymentHistoryEntity(FundingSourceType.CoInvestedSfa, 2);
+            historicPayment.LearnerUln = 123;
+            history.Add(historicPayment);
+
+            mocker.Mock<IDataCache<PaymentHistoryEntity[]>>()
+                .Setup(x => x.TryGet(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, history.ToArray()));
+
+
+            var processor = mocker.Create<RefundRemovedLearningAimProcessor>();
+            var refunds = await processor.RefundLearningAim(identifiedLearner, mocker.Mock<IDataCache<PaymentHistoryEntity[]>>().Object, CancellationToken.None).ConfigureAwait(false);
+            refunds.Count.Should().Be(1);
+            var refund = refunds.First();
+            var conInvestRefund = refund as CalculatedRequiredCoInvestedAmount;
+            conInvestRefund.Should().NotBeNull();
+            conInvestRefund.Learner.Uln.Should().Be(historicPayment.LearnerUln);
+        }
+
+        [Test]
         public async Task Refunds_Required_CoInvested_Payments()
         {
             var historicPayment = CreatePaymentHistoryEntity(FundingSourceType.CoInvestedSfa, 2);
