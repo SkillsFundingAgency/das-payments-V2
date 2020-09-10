@@ -30,6 +30,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                         deliveryPeriodPayment.FundingSource == refund.FundingSource &&
                         deliveryPeriodPayment.PriceEpisodeIdentifier == refund.PriceEpisodeIdentifier &&
                         deliveryPeriodPayment.ApprenticeshipId == refund.ApprenticeshipId &&
+                        deliveryPeriodPayment.ApprenticeshipPriceEpisodeId == refund.ApprenticeshipPriceEpisodeId &&
                         deliveryPeriodPayment.Uln == refund.Uln &&
                         deliveryPeriodPayment.SfaContributionPercentage == refund.SfaContributionPercentage);
                     if (matchingRefund != null)
@@ -48,7 +49,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                     payment.PriceEpisodeIdentifier,
                     payment.ApprenticeshipId,
                     payment.ApprenticeshipPriceEpisodeId,
-                    payment.SfaContributionPercentage
+                    payment.SfaContributionPercentage,
+                    payment.Uln
                 })
                 .Select(group => GetAggregatedPayment(group.ToList()))
                 .ToList();
@@ -83,6 +85,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                 payment.TransactionType,
                 payment.PriceEpisodeIdentifier,
                 payment.ApprenticeshipId,
+                payment.ApprenticeshipPriceEpisodeId,
                 payment.SfaContributionPercentage
             })
                 .Select(group => GetAggregatedPayment(group.ToList()))
