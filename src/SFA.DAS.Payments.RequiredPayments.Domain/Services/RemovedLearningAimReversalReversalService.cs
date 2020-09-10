@@ -43,6 +43,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 
             var aggregatedPayments = paymentsToReverse.GroupBy(payment => new
                 {
+                    payment.Amount,
                     payment.DeliveryPeriod,
                     payment.TransactionType,
                     payment.FundingSource,
