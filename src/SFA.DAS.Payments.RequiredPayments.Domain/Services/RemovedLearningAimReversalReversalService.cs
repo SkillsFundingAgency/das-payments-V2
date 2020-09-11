@@ -14,6 +14,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
             var paymentsToReverse = new List<Payment>();
             foreach (var deliveryPeriodPayments in deliveryPeriods)
             {
+                if (deliveryPeriodPayments.Sum(x => x.Amount) == 0) continue;
+                
                 var payments = deliveryPeriodPayments.Where(p =>
                     p.FundingSource != FundingSourceType.CoInvestedEmployer &&
                     p.FundingSource != FundingSourceType.CoInvestedSfa).ToList();
