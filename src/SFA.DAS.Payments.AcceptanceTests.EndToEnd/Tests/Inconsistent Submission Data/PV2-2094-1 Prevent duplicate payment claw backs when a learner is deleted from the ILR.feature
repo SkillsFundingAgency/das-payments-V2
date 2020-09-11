@@ -32,11 +32,11 @@ And After Period-end following provider payments will be generated in database
 When an ILR file is submitted for period R11
 Then After Period-end following provider payments will be generated in database
     | Learner ID | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
-    | learner b  | R11/Current Academic Year | Aug/Current Academic Year | -600          | Learning         |
-    | learner b  | R11/Current Academic Year | Sep/Current Academic Year | -600          | Learning         |
-    | learner b  | R11/Current Academic Year | Oct/Current Academic Year | -600          | Learning         |
-    | learner b  | R11/Current Academic Year | Nov/Current Academic Year | -600          | Learning         |
-    | learner b  | R11/Current Academic Year | Dec/Current Academic Year | -600          | Learning         |
+    | learner b  | R11/Current Academic Year | Aug/Current Academic Year | -1200         | Learning         |
+    | learner b  | R11/Current Academic Year | Sep/Current Academic Year | -1200         | Learning         |
+    | learner b  | R11/Current Academic Year | Oct/Current Academic Year | -1200         | Learning         |
+    | learner b  | R11/Current Academic Year | Nov/Current Academic Year | -1200         | Learning         |
+    | learner b  | R11/Current Academic Year | Dec/Current Academic Year | -1200         | Learning         |
     | learner b  | R11/Current Academic Year | Jan/Current Academic Year | -600          | Learning         |
     | learner b  | R11/Current Academic Year | Feb/Current Academic Year | -600          | Learning         |
     | learner b  | R11/Current Academic Year | Mar/Current Academic Year | -600          | Learning         |
@@ -45,8 +45,3 @@ Then After Period-end following provider payments will be generated in database
     | learner b  | R11/Current Academic Year | Oct/Current Academic Year | 600           | Learning         |
     | learner b  | R11/Current Academic Year | Nov/Current Academic Year | 600           | Learning         |
     | learner b  | R11/Current Academic Year | Dec/Current Academic Year | 600           | Learning         |
-    | learner b  | R11/Current Academic Year | Aug/Current Academic Year | -600          | Learning         |
-    | learner b  | R11/Current Academic Year | Sep/Current Academic Year | -600          | Learning         |
-    | learner b  | R11/Current Academic Year | Oct/Current Academic Year | -600          | Learning         |
-    | learner b  | R11/Current Academic Year | Nov/Current Academic Year | -600          | Learning         |
-    | learner b  | R11/Current Academic Year | Dec/Current Academic Year | -600          | Learning         |
