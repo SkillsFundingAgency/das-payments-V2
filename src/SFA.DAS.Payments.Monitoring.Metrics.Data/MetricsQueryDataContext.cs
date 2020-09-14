@@ -99,32 +99,44 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             return await AlreadyPaidDataLockProviderTotals.FromSql(sql, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod))
                 .ToListAsync(cancellationToken);
         }
+
         public async Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
             var latestSuccessfulJobIds = LatestSuccessfulJobs.AsNoTracking()
-												            .Where(j => j.AcademicYear == academicYear && j.CollectionPeriod == collectionPeriod)
+												            .Where(j => j.AcademicYear == academicYear && 
+                                                                        j.CollectionPeriod == collectionPeriod)
 												            .Select(x => x.DcJobId);
 
-            var amounts = await RequiredPaymentEvents
+            var providerMetrics = await RequiredPaymentEvents
                 .AsNoTracking()
-                .Where(rp =>
-                    latestSuccessfulJobIds.Contains(rp.JobId) && rp.NonPaymentReason != null && rp.NonPaymentReason == NonPaymentReason.InsufficientEmployerContribution)
+                .Where(rp => latestSuccessfulJobIds.Contains(rp.JobId) && 
+                             rp.NonPaymentReason != null && 
+                             rp.NonPaymentReason == NonPaymentReason.InsufficientEmployerContribution)
                 .GroupBy(rp => new { rp.Ukprn, rp.ContractType})
                 .Select(group => new
                 {
                     group.Key.Ukprn,
                     group.Key.ContractType,
-                    Amount = group.Sum(rp => rp.Amount)
+                    Amount = group.Sum(requiredPaymentInGroup => requiredPaymentInGroup.Amount)
                 })
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            return amounts.Select(group => new ProviderContractTypeAmounts()
+            var uniqueUkprns = providerMetrics.Select(x => x.Ukprn).Distinct();
+
+            var results = new List<ProviderContractTypeAmounts>();
+            
+            foreach (var ukprn in uniqueUkprns)
             {
-                Ukprn = group.Ukprn,
-                ContractType1 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act1)?.Amount ?? 0,
-                ContractType2 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act2)?.Amount ?? 0,
-            }).ToList();
+                results.Add(new ProviderContractTypeAmounts
+                {
+                    Ukprn = ukprn,
+                    ContractType1 = providerMetrics.FirstOrDefault(providerMetric => providerMetric.ContractType == ContractType.Act1)?.Amount ?? 0,
+                    ContractType2 = providerMetrics.FirstOrDefault(providerMetric => providerMetric.ContractType == ContractType.Act2)?.Amount ?? 0,
+                });    
+            }
+
+            return results;
         }
 
         public async Task<decimal> GetAlreadyPaidDataLocksAmount(long ukprn, long jobId, CancellationToken cancellationToken)

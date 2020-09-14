@@ -57,8 +57,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                     dcEarningsTask,
                     transactionTypesTask,
                     fundingSourceTask,
+                    currentPaymentTotals,
                     dataLockedEarningsTask,
-                    dataLockedAlreadyPaidTask);
+                    dataLockedAlreadyPaidTask,
+                    heldBackCompletionAmountsTask);
 
                 var waitTask = Task.Delay(TimeSpan.FromSeconds(270), cancellationToken);
 
