@@ -131,8 +131,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                 results.Add(new ProviderContractTypeAmounts
                 {
                     Ukprn = ukprn,
-                    ContractType1 = providerMetrics.FirstOrDefault(providerMetric => providerMetric.ContractType == ContractType.Act1)?.Amount ?? 0,
-                    ContractType2 = providerMetrics.FirstOrDefault(providerMetric => providerMetric.ContractType == ContractType.Act2)?.Amount ?? 0,
+                    ContractType1 = providerMetrics.FirstOrDefault(providerMetric => 
+                        providerMetric.ContractType == ContractType.Act1 &&
+                        providerMetric.Ukprn == ukprn)?.Amount ?? 0,
+                    ContractType2 = providerMetrics.FirstOrDefault(providerMetric => 
+                        providerMetric.ContractType == ContractType.Act2 &&
+                        providerMetric.Ukprn == ukprn)?.Amount ?? 0,
                 });    
             }
 
