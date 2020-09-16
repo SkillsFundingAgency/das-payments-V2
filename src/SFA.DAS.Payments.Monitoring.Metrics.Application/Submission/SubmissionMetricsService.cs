@@ -44,31 +44,44 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 var stopwatch = Stopwatch.StartNew();
                 var submissionSummary = submissionSummaryFactory.Create(ukprn, jobId, academicYear, collectionPeriod);
                 var dcEarningsTask = dcMetricsDataContextFactory.CreateContext(academicYear).GetEarnings(ukprn, academicYear, collectionPeriod, cancellationToken);
+                
                 var dasEarningsTask = submissionRepository.GetDasEarnings(ukprn, jobId, cancellationToken);
                 var dataLocksTask = submissionRepository.GetDataLockedEarnings(ukprn, jobId, cancellationToken);
                 var dataLocksTotalTask = submissionRepository.GetDataLockedEarningsTotal(ukprn, jobId, cancellationToken);
-                var dataLocksAlreadyPaid =
-                    submissionRepository.GetAlreadyPaidDataLockedEarnings(ukprn, jobId, cancellationToken);
+                var dataLocksAlreadyPaid = submissionRepository.GetAlreadyPaidDataLockedEarnings(ukprn, jobId, cancellationToken);
                 var requiredPaymentsTask = submissionRepository.GetRequiredPayments(ukprn, jobId, cancellationToken);
                 var heldBackCompletionAmountsTask = submissionRepository.GetHeldBackCompletionPaymentsTotal(ukprn, jobId, cancellationToken);
                 var yearToDateAmountsTask = submissionRepository.GetYearToDatePaymentsTotal(ukprn, academicYear, collectionPeriod, cancellationToken);
+                
                 var dataTask = Task.WhenAll(dcEarningsTask, dasEarningsTask, dataLocksTask, dataLocksTotalTask, dataLocksAlreadyPaid, requiredPaymentsTask, heldBackCompletionAmountsTask, yearToDateAmountsTask);
+                
                 var waitTask = Task.Delay(TimeSpan.FromSeconds(270), cancellationToken);
+
                 Task.WaitAny(dataTask, waitTask);
+
                 cancellationToken.ThrowIfCancellationRequested();
+
                 if (!dataTask.IsCompleted)
                     throw new InvalidOperationException($"Took too long to get data for the submission metrics. Ukprn: {ukprn}, job: {jobId}, Collection period: {collectionPeriod}");
+                
                 var dataDuration = stopwatch.ElapsedMilliseconds;
+
                 logger.LogDebug($"finished getting data from databases for job: {jobId}, ukprn: {ukprn}. Took: {dataDuration}ms.");
+
                 submissionSummary.AddEarnings(dcEarningsTask.Result, dasEarningsTask.Result);
                 submissionSummary.AddDataLockTypeCounts(dataLocksTotalTask.Result, dataLocksTask.Result, dataLocksAlreadyPaid.Result);
                 submissionSummary.AddRequiredPayments(requiredPaymentsTask.Result);
                 submissionSummary.AddHeldBackCompletionPayments(heldBackCompletionAmountsTask.Result);
                 submissionSummary.AddYearToDatePaymentTotals(yearToDateAmountsTask.Result);
+
                 var metrics = submissionSummary.GetMetrics();
+
                 await submissionRepository.SaveSubmissionMetrics(metrics, cancellationToken);
+
                 stopwatch.Stop();
+
                 SendMetricsTelemetry(metrics, stopwatch.ElapsedMilliseconds);
+
                 logger.LogInfo($"Finished building metrics for submission job: {jobId}, provider: {ukprn}, Academic year: {academicYear}, Collection period: {collectionPeriod}. Took: {stopwatch.ElapsedMilliseconds}ms");
             }
             catch (Exception e)
