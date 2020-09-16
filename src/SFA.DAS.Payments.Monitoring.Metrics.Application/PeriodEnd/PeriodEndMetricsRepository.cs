@@ -27,13 +27,15 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
     public class PeriodEndMetricsRepository : IPeriodEndMetricsRepository
     {
         private readonly IMetricsPersistenceDataContext persistenceDataContext;
-        private readonly IMetricsQueryDataContext queryDataContext;
+        private readonly IMetricsQueryDataContextFactory metricsQueryDataContextFactory;
         private readonly IPaymentLogger logger;
 
-        public PeriodEndMetricsRepository(IMetricsPersistenceDataContext persistenceDataContext, IMetricsQueryDataContext queryDataContext, IPaymentLogger logger)
+        private IMetricsQueryDataContext QueryDataContext => metricsQueryDataContextFactory.Create();
+
+        public PeriodEndMetricsRepository(IMetricsPersistenceDataContext persistenceDataContext, IMetricsQueryDataContextFactory metricsQueryDataContextFactory, IPaymentLogger logger)
         {
             this.persistenceDataContext = persistenceDataContext ?? throw new ArgumentNullException(nameof(persistenceDataContext));
-            this.queryDataContext = queryDataContext ?? throw new ArgumentNullException(nameof(queryDataContext));
+            this.metricsQueryDataContextFactory = metricsQueryDataContextFactory ?? throw new ArgumentNullException(nameof(metricsQueryDataContextFactory));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -41,7 +43,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
         {
             logger.LogDebug($"Building period end metrics TransactionTypes By ContractType Amount for {academicYear}, {collectionPeriod}");
 
-            var transactionAmounts = await queryDataContext.Payments.Where(x => x.CollectionPeriod.AcademicYear == academicYear && x.CollectionPeriod.Period == collectionPeriod)
+            var transactionAmounts = await QueryDataContext.Payments.Where(x => x.CollectionPeriod.AcademicYear == academicYear && x.CollectionPeriod.Period == collectionPeriod)
                 .GroupBy(p => new { p.Ukprn, p.ContractType, p.TransactionType })
                 .Select(group => new
                 {
@@ -84,7 +86,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
         {
             logger.LogDebug($"Building period end metrics FundingSource Amounts By ContractType for {academicYear}, {collectionPeriod}");
 
-            var transactionAmounts = await queryDataContext.Payments.Where(x => x.CollectionPeriod.AcademicYear == academicYear && x.CollectionPeriod.Period == collectionPeriod)
+            var transactionAmounts = await QueryDataContext.Payments.Where(x => x.CollectionPeriod.AcademicYear == academicYear && x.CollectionPeriod.Period == collectionPeriod)
                .GroupBy(p => new { p.Ukprn, p.ContractType, p.FundingSource })
                .Select(group => new
                {
@@ -114,24 +116,24 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 
         public Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            return queryDataContext.GetDataLockedEarningsTotals(academicYear, collectionPeriod, cancellationToken);
+            return QueryDataContext.GetDataLockedEarningsTotals(academicYear, collectionPeriod, cancellationToken);
         }
 
         public async Task<List<ProviderTotal>> GetAlreadyPaidDataLockedEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            return await queryDataContext.GetAlreadyPaidDataLockProviderTotals(academicYear, collectionPeriod, cancellationToken);
+            return await QueryDataContext.GetAlreadyPaidDataLockProviderTotals(academicYear, collectionPeriod, cancellationToken);
         }
 
         public async Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            return await queryDataContext.GetHeldBackCompletionPaymentTotals(academicYear, collectionPeriod, cancellationToken);
+            return await QueryDataContext.GetHeldBackCompletionPaymentTotals(academicYear, collectionPeriod, cancellationToken);
         }
 
         public async Task<List<ProviderContractTypeAmounts>> GetYearToDatePayments(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
             logger.LogDebug($"Building period end metrics Year To Date Payments Amount for {academicYear}, {collectionPeriod}");
 
-            var amounts = await queryDataContext.Payments
+            var amounts = await QueryDataContext.Payments
                 .AsNoTracking()
                 .Where(p => p.CollectionPeriod.AcademicYear == academicYear &&
                             p.CollectionPeriod.Period < collectionPeriod)
