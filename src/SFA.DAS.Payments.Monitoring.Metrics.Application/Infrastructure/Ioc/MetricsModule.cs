@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Metrics.Application.Submission;
@@ -46,6 +47,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Ioc
                 .As<IDcMetricsDataContextFactory>()
                 .InstancePerLifetimeScope();
 
+            builder.RegisterType<MetricsQueryDataContextFactory>()
+                .As<IMetricsQueryDataContextFactory>()
+                .InstancePerLifetimeScope();
+
             builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
@@ -65,6 +70,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Ioc
             builder.RegisterType<SubmissionMetricsRepository>()
                 .As<ISubmissionMetricsRepository>()
                 .InstancePerLifetimeScope();
+
             builder.RegisterType<PeriodEndMetricsRepository>()
                 .As<IPeriodEndMetricsRepository>()
                 .InstancePerLifetimeScope();
