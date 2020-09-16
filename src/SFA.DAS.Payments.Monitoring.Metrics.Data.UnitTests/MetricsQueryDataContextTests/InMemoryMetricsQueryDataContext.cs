@@ -5,13 +5,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.UnitTests.MetricsQueryDataCon
 {
     class InMemoryMetricsQueryDataContext : MetricsQueryDataContext
     {
-        public InMemoryMetricsQueryDataContext() : base("")
+        public InMemoryMetricsQueryDataContext() : base(new DbContextOptionsBuilder().UseInMemoryDatabase("test", new InMemoryDatabaseRoot()).Options)
         {
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseInMemoryDatabase("test", new InMemoryDatabaseRoot());
         }
     }
 }
