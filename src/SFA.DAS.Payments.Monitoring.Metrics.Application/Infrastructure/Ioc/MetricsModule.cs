@@ -54,10 +54,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Ioc
             builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
-                    return new MetricsQueryDataContext(configHelper.GetConnectionString("PaymentsMetricsConnectionString"));
+                    var dbContextOptions = new DbContextOptionsBuilder().UseSqlServer(
+                        configHelper.GetConnectionString("PaymentsMetricsConnectionString"),
+                        optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
+                    return new MetricsQueryDataContext(dbContextOptions);
                 })
                 .As<IMetricsQueryDataContext>()
-                .InstancePerLifetimeScope();
+                .InstancePerDependency();
 
             builder.Register((c, p) =>
                 {
