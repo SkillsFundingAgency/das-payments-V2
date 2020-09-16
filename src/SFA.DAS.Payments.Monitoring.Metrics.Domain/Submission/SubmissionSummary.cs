@@ -144,7 +144,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
             result.DifferenceContractType2 = result.ContractType2 - dcContractTpe2;
             result.PercentageContractType1 = Helpers.GetPercentage(result.ContractType1, dcContractTpe1);
             result.PercentageContractType2 = Helpers.GetPercentage(result.ContractType2, dcContractTpe2);
-            result.Percentage = result.GetDefaultPercentage();
+            result.Percentage = Helpers.GetPercentage(result.Total, dcContractTpe1 + dcContractTpe2);
             return result;
         }
 
@@ -185,7 +185,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
                 submissionSummary.DcEarnings.ContractType1);
             submissionMetrics.PercentageContractType2 = Helpers.GetPercentage(submissionMetrics.ContractType2,
                 submissionSummary.DcEarnings.ContractType2);
-            submissionMetrics.Percentage = submissionMetrics.GetDefaultPercentage();
+            submissionMetrics.Percentage = Helpers.GetPercentage(submissionMetrics.Total, submissionSummary.DcEarnings.Total);
             return submissionMetrics;
         }
     }
