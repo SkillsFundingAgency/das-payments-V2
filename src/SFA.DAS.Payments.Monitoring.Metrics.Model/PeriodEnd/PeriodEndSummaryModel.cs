@@ -7,9 +7,9 @@
         public byte CollectionPeriod { get; set; }
         public long JobId { get; set; }
         public decimal Percentage { get; set; }
-        public ContractTypeAmountsVerbose PaymentMetrics { get; set; }
-        public ContractTypeAmounts DcEarnings { get; set; }
-        public ContractTypeAmounts Payments { get; set; }
+        public ContractTypeAmountsVerbose PaymentMetrics { get; set; } = new ContractTypeAmountsVerbose();
+        public ContractTypeAmounts DcEarnings { get; set; } = new ContractTypeAmounts();
+        public ContractTypeAmounts Payments { get; set; } = new ContractTypeAmounts();
         public decimal AdjustedDataLockedEarnings { get; set; }
         public decimal AlreadyPaidDataLockedEarnings { get; set; }
         public decimal TotalDataLockedEarnings { get; set; }

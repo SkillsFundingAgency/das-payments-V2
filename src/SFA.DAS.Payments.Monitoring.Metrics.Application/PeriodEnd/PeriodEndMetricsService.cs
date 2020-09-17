@@ -6,11 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
-using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
-using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 {
@@ -110,7 +108,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 var dataDuration = stopwatch.ElapsedMilliseconds;
                 
                 await periodEndMetricsRepository.SaveProviderSummaries(providerSummaries, overallPeriodEndSummary, cancellationToken);
-                SendMetricsTelemetry(overallPeriodEndSummary, stopwatch.ElapsedMilliseconds);
+                SendSummaryMetricsTelemetry(overallPeriodEndSummary, stopwatch.ElapsedMilliseconds);
+                SendAllProviderMetricsTelemetry(providerSummaries, overallPeriodEndSummary);
 
                 logger.LogInfo($"Finished building period end metrics for {academicYear}, {collectionPeriod} using job id {jobId}, DataDuration: {dataDuration} milliseconds");
             }
@@ -121,7 +120,58 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             }
         }
 
-        private void SendMetricsTelemetry(PeriodEndSummaryModel metrics, long reportGenerationDuration)
+        private void SendProviderMetricsTelemetry(ProviderPeriodEndSummaryModel providerMetrics, PeriodEndSummaryModel overallMetrics)
+        {
+            var properties = new Dictionary<string, string>
+            {
+                { TelemetryKeys.JobId, providerMetrics.JobId.ToString()},
+                { TelemetryKeys.CollectionPeriod, overallMetrics.CollectionPeriod.ToString()},
+                { TelemetryKeys.AcademicYear, overallMetrics.AcademicYear.ToString()},
+                { TelemetryKeys.Ukprn, providerMetrics.Ukprn.ToString() },
+            };
+
+            var stats = new Dictionary<string, double>
+            {
+                { "Percentage",    (double) providerMetrics.PaymentMetrics.Percentage },
+                
+                { "ContractType1", (double) providerMetrics.PaymentMetrics.ContractType1 },
+                { "ContractType2", (double) providerMetrics.PaymentMetrics.ContractType2 },
+                
+                { "DifferenceContractType1", (double) providerMetrics.PaymentMetrics.DifferenceContractType1 },
+                { "DifferenceContractType2", (double) providerMetrics.PaymentMetrics.DifferenceContractType2 },
+                
+                { "PercentageContractType1", (double) providerMetrics.PaymentMetrics.PercentageContractType1 },
+                { "PercentageContractType2", (double) providerMetrics.PaymentMetrics.PercentageContractType2 },
+                
+                { "EarningsDCContractType1", (double) providerMetrics.DcEarnings.ContractType1 },
+                { "EarningsDCContractType2", (double) providerMetrics.DcEarnings.ContractType2 },
+                
+                { "PaymentsContractType1", (double) providerMetrics.Payments.ContractType1 },
+                { "PaymentsContractType2", (double) providerMetrics.Payments.ContractType2 },
+                
+                { "DataLockedEarnings", (double) providerMetrics.AdjustedDataLockedEarnings },
+                { "AlreadyPaidDataLockedEarnings", (double) providerMetrics.AlreadyPaidDataLockedEarnings },
+                { "TotalDataLockedEarnings", (double) providerMetrics.TotalDataLockedEarnings },
+                
+                { "HeldBackCompletionPaymentsContractType1", (double) providerMetrics.HeldBackCompletionPayments.ContractType1 },
+                { "HeldBackCompletionPaymentsContractType2", (double) providerMetrics.HeldBackCompletionPayments.ContractType2 },
+                
+                { "PaymentsYearToDateContractType1", (double) providerMetrics.YearToDatePayments.ContractType1 },
+                { "PaymentsYearToDateContractType2", (double) providerMetrics.YearToDatePayments.ContractType2 },
+            };
+
+            telemetry.TrackEvent("Finished Generating Period End Metrics", properties, stats);
+        }
+
+        private void SendAllProviderMetricsTelemetry(List<ProviderPeriodEndSummaryModel> providerMetrics, PeriodEndSummaryModel metrics)
+        {
+            foreach (var providerMetric in providerMetrics)
+            {
+                SendProviderMetricsTelemetry(providerMetric, metrics);
+            }
+        }
+
+        private void SendSummaryMetricsTelemetry(PeriodEndSummaryModel metrics, long reportGenerationDuration)
         {
             var properties = new Dictionary<string, string>
             {
@@ -134,26 +184,35 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             {
                 { "ReportGenerationDuration", reportGenerationDuration },
 
-                { "DataLockedEarningsAmount" ,                (double) metrics.AdjustedDataLockedEarnings },
+                { "Percentage",    (double) metrics.PaymentMetrics.Percentage },
                 
-                { "DataLockedEarningsTotal" ,                 (double) metrics.TotalDataLockedEarnings },
+                { "ContractType1", (double) metrics.PaymentMetrics.ContractType1 },
+                { "ContractType2", (double) metrics.PaymentMetrics.ContractType2 },
                 
-                { "DataLockAmountAlreadyPaid" ,               (double) metrics.AlreadyPaidDataLockedEarnings },
+                { "DifferenceContractType1", (double) metrics.PaymentMetrics.DifferenceContractType1 },
+                { "DifferenceContractType2", (double) metrics.PaymentMetrics.DifferenceContractType2 },
                 
+                { "PercentageContractType1", (double) metrics.PaymentMetrics.PercentageContractType1 },
+                { "PercentageContractType2", (double) metrics.PaymentMetrics.PercentageContractType2 },
                 
-                { "HeldBackCompletionPayments" ,              (double) metrics.HeldBackCompletionPayments.Total },
-                { "HeldBackCompletionPaymentsContractType1" , (double) metrics.HeldBackCompletionPayments.ContractType1 },
-                { "HeldBackCompletionPaymentsContractType2" , (double) metrics.HeldBackCompletionPayments.ContractType1 },
-
-                { "YearToDatePaymentsTotal" ,                 (double) metrics.YearToDatePayments.Total },
-                { "YearToDatePaymentsContractType1Total",     (double) metrics.YearToDatePayments.ContractType1 },
-                { "YearToDatePaymentsContractType2Total",     (double) metrics.YearToDatePayments.ContractType2 },
+                { "EarningsDCContractType1", (double) metrics.DcEarnings.ContractType1 },
+                { "EarningsDCContractType2", (double) metrics.DcEarnings.ContractType2 },
                 
+                { "PaymentsContractType1", (double) metrics.Payments.ContractType1 },
+                { "PaymentsContractType2", (double) metrics.Payments.ContractType2 },
                 
+                { "DataLockedEarnings", (double) metrics.AdjustedDataLockedEarnings },
+                { "AlreadyPaidDataLockedEarnings", (double) metrics.AlreadyPaidDataLockedEarnings },
+                { "TotalDataLockedEarnings", (double) metrics.TotalDataLockedEarnings },
                 
+                { "HeldBackCompletionPaymentsContractType1", (double) metrics.HeldBackCompletionPayments.ContractType1 },
+                { "HeldBackCompletionPaymentsContractType2", (double) metrics.HeldBackCompletionPayments.ContractType2 },
+                
+                { "PaymentsYearToDateContractType1", (double) metrics.YearToDatePayments.ContractType1 },
+                { "PaymentsYearToDateContractType2", (double) metrics.YearToDatePayments.ContractType2 },
             };
 
-            telemetry.TrackEvent("Finished Generating Submission Metrics", properties, stats);
+            telemetry.TrackEvent("Finished Generating Period End Metrics", properties, stats);
         }
     }
 }
