@@ -9,6 +9,7 @@ using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.ApplicationInsights.Channel;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
 {
@@ -21,6 +22,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
         private Mock<IPeriodEndSummary> periodEndSummary;
         private Mock<IDcMetricsDataContext> dcMetricsDataContextMock;
         private Mock<IPeriodEndMetricsRepository> periodEndMetricsRepositoryMock;
+        private Mock<ITelemetry> telemetryMock;
+
 
         private readonly List<ProviderTransactionTypeAmounts> dcEarnings = PeriodEndTestHelper.SingleProviderDcEarnings;
 
@@ -38,6 +41,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
 
             periodEndSummary
                 .Setup(x => x.AddProviderSummaries(It.IsAny<List<ProviderPeriodEndSummaryModel>>()));
+
+            periodEndSummary.Setup(x => x.GetMetrics())
+                .Returns(new PeriodEndSummaryModel());
 
             periodEndProviderSummary
                 .Setup(x => x.GetMetrics())
@@ -60,6 +66,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
                 .Setup(x => x.CreateContext(It.IsAny<short>()))
                 .Returns(dcMetricsDataContextMock.Object);
 
+            telemetryMock = moqer.Mock<ITelemetry>();
             periodEndMetricsRepositoryMock = moqer.Mock<IPeriodEndMetricsRepository>();
             periodEndMetricsRepositoryMock
                 .Setup(x => x.GetTransactionTypesByContractType(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))

@@ -13,7 +13,7 @@
         public decimal AdjustedDataLockedEarnings { get; set; }
         public decimal AlreadyPaidDataLockedEarnings { get; set; }
         public decimal TotalDataLockedEarnings { get; set; }
-        public ContractTypeAmounts HeldBackCompletionPayments { get; set; }
-        public ContractTypeAmounts YearToDatePayments { get; set; }
+        public ContractTypeAmounts HeldBackCompletionPayments { get; set; } = new ContractTypeAmounts();
+        public ContractTypeAmounts YearToDatePayments { get; set; } = new ContractTypeAmounts();
     }
 }
