@@ -325,6 +325,72 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             stats.Keys.Should().Contain("HeldBackCompletionPaymentsContractType2");
             stats.Keys.Should().Contain("PaymentsYearToDateContractType1");
             stats.Keys.Should().Contain("PaymentsYearToDateContractType2");
+
+
+            stats.Keys.Should().Contain("PercentageContractType1");
+            stats.Keys.Should().Contain("PercentageContractType2");
+            stats.Keys.Should().Contain("Total");
+            stats.Keys.Should().Contain("DifferenceTotal");
+            stats.Keys.Should().Contain("EarningsDCTotal");
+            stats.Keys.Should().Contain("PaymentsTotal");
+            stats.Keys.Should().Contain("HeldBackCompletionPaymentsTotal");
+            stats.Keys.Should().Contain("PaymentsYearToDateTotal");
+
+            stats.Keys.Should().Contain("PaymentsYearToDateContractType2");
+            stats.Keys.Should().Contain("PaymentsYearToDateContractType2");
+            stats.Keys.Should().Contain("PaymentsYearToDateContractType2");
+
+            stats.Keys.Should().Contain("ContractType1FundingSourceTotal");
+            stats.Keys.Should().Contain("ContractType1FundingSource1");
+            stats.Keys.Should().Contain("ContractType1FundingSource2");
+            stats.Keys.Should().Contain("ContractType1FundingSource3");
+            stats.Keys.Should().Contain("ContractType1FundingSource4");
+            stats.Keys.Should().Contain("ContractType1FundingSource5");
+
+            stats.Keys.Should().Contain("ContractType2FundingSourceTotal");
+            stats.Keys.Should().Contain("ContractType2FundingSource1");
+            stats.Keys.Should().Contain("ContractType2FundingSource2");
+            stats.Keys.Should().Contain("ContractType2FundingSource3");
+            stats.Keys.Should().Contain("ContractType2FundingSource4");
+            stats.Keys.Should().Contain("ContractType2FundingSource5");
+
+
+            stats.Keys.Should().Contain("ContractType1TransactionTypeTotal");
+            stats.Keys.Should().Contain("ContractType1TransactionType01");
+            stats.Keys.Should().Contain("ContractType1TransactionType02");
+            stats.Keys.Should().Contain("ContractType1TransactionType03");
+            stats.Keys.Should().Contain("ContractType1TransactionType04");
+            stats.Keys.Should().Contain("ContractType1TransactionType05");
+            stats.Keys.Should().Contain("ContractType1TransactionType06");
+            stats.Keys.Should().Contain("ContractType1TransactionType07");
+            stats.Keys.Should().Contain("ContractType1TransactionType08");
+            stats.Keys.Should().Contain("ContractType1TransactionType09");
+            stats.Keys.Should().Contain("ContractType1TransactionType10");
+            stats.Keys.Should().Contain("ContractType1TransactionType11");
+            stats.Keys.Should().Contain("ContractType1TransactionType12");
+            stats.Keys.Should().Contain("ContractType1TransactionType13");
+            stats.Keys.Should().Contain("ContractType1TransactionType14");
+            stats.Keys.Should().Contain("ContractType1TransactionType15");
+            stats.Keys.Should().Contain("ContractType1TransactionType16");
+
+            stats.Keys.Should().Contain("ContractType2TransactionTypeTotal");
+            stats.Keys.Should().Contain("ContractType2TransactionType01");
+            stats.Keys.Should().Contain("ContractType2TransactionType02");
+            stats.Keys.Should().Contain("ContractType2TransactionType03");
+            stats.Keys.Should().Contain("ContractType2TransactionType04");
+            stats.Keys.Should().Contain("ContractType2TransactionType05");
+            stats.Keys.Should().Contain("ContractType2TransactionType06");
+            stats.Keys.Should().Contain("ContractType2TransactionType07");
+            stats.Keys.Should().Contain("ContractType2TransactionType08");
+            stats.Keys.Should().Contain("ContractType2TransactionType09");
+            stats.Keys.Should().Contain("ContractType2TransactionType10");
+            stats.Keys.Should().Contain("ContractType2TransactionType11");
+            stats.Keys.Should().Contain("ContractType2TransactionType12");
+            stats.Keys.Should().Contain("ContractType2TransactionType13");
+            stats.Keys.Should().Contain("ContractType2TransactionType14");
+            stats.Keys.Should().Contain("ContractType2TransactionType15");
+            stats.Keys.Should().Contain("ContractType2TransactionType16");
+
         }
     }
 }
