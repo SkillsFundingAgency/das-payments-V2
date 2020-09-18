@@ -283,6 +283,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             stats.Keys.Should().Contain("HeldBackCompletionPaymentsContractType2");
             stats.Keys.Should().Contain("PaymentsYearToDateContractType1");
             stats.Keys.Should().Contain("PaymentsYearToDateContractType2");
+
+            stats.Keys.Should().Contain("DifferenceTotal");
+            stats.Keys.Should().Contain("PercentageTotal");
+            stats.Keys.Should().Contain("EarningsDCTotal");
+            stats.Keys.Should().Contain("PaymentsTotal");
+            stats.Keys.Should().Contain("HeldBackCompletionPaymentsTotal");
+            stats.Keys.Should().Contain("PaymentsYearToDateTotal");
         }
 
         [Test]

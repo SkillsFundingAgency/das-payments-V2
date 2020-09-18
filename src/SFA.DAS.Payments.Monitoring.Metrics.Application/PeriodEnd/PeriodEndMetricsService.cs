@@ -260,20 +260,24 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 
             var stats = new Dictionary<string, double>
             {
-                { "Percentage",    (double) metrics.PaymentMetrics.Percentage },
+                { "Percentage",    (double) metrics.Percentage },
                 
                 { "ContractType1", (double) metrics.PaymentMetrics.ContractType1 },
                 { "ContractType2", (double) metrics.PaymentMetrics.ContractType2 },
                 
+                { "DifferenceTotal", (double) metrics.PaymentMetrics.DifferenceTotal },
                 { "DifferenceContractType1", (double) metrics.PaymentMetrics.DifferenceContractType1 },
                 { "DifferenceContractType2", (double) metrics.PaymentMetrics.DifferenceContractType2 },
                 
+                { "PercentageTotal", (double) metrics.PaymentMetrics.Percentage },
                 { "PercentageContractType1", (double) metrics.PaymentMetrics.PercentageContractType1 },
                 { "PercentageContractType2", (double) metrics.PaymentMetrics.PercentageContractType2 },
                 
+                { "EarningsDCTotal", (double) metrics.DcEarnings.Total },
                 { "EarningsDCContractType1", (double) metrics.DcEarnings.ContractType1 },
                 { "EarningsDCContractType2", (double) metrics.DcEarnings.ContractType2 },
                 
+                { "PaymentsTotal", (double) metrics.Payments.Total },
                 { "PaymentsContractType1", (double) metrics.Payments.ContractType1 },
                 { "PaymentsContractType2", (double) metrics.Payments.ContractType2 },
                 
@@ -281,9 +285,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 { "AlreadyPaidDataLockedEarnings", (double) metrics.AlreadyPaidDataLockedEarnings },
                 { "TotalDataLockedEarnings", (double) metrics.TotalDataLockedEarnings },
                 
+                { "HeldBackCompletionPaymentsTotal", (double) metrics.HeldBackCompletionPayments.Total },
                 { "HeldBackCompletionPaymentsContractType1", (double) metrics.HeldBackCompletionPayments.ContractType1 },
                 { "HeldBackCompletionPaymentsContractType2", (double) metrics.HeldBackCompletionPayments.ContractType2 },
                 
+                { "PaymentsYearToDateTotal", (double) metrics.YearToDatePayments.Total },
                 { "PaymentsYearToDateContractType1", (double) metrics.YearToDatePayments.ContractType1 },
                 { "PaymentsYearToDateContractType2", (double) metrics.YearToDatePayments.ContractType2 },
             };
