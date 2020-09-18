@@ -160,7 +160,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 { "PaymentsYearToDateContractType2", (double) providerMetrics.YearToDatePayments.ContractType2 },
             };
 
-            telemetry.TrackEvent("Finished Generating Period End Metrics", properties, stats);
+            telemetry.TrackEvent($"Finished Generating Period End Metrics for Provider: {providerMetrics.Ukprn}", properties, stats);
         }
 
         private void SendAllProviderMetricsTelemetry(List<ProviderPeriodEndSummaryModel> providerMetrics, PeriodEndSummaryModel metrics)

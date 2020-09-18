@@ -284,6 +284,48 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             stats.Keys.Should().Contain("PaymentsYearToDateContractType1");
             stats.Keys.Should().Contain("PaymentsYearToDateContractType2");
         }
+
+        [Test]
+        public async Task WhenBuildingMetrics_ThenTheDataIsSentToTelemetryServiceForEachProvider()
+        {
+            var service = moqer.Create<PeriodEndMetricsService>();
+
+            Dictionary<string, string> properties = null;
+            Dictionary<string, double> stats = null;
+
+            telemetryMock.Setup(x => x.TrackEvent("Finished Generating Period End Metrics for Provider: 1",
+                    It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, double>>()))
+                .Callback<string, Dictionary<string, string>, Dictionary<string, double>>((_, p, s) =>
+                {
+                    properties = p;
+                    stats = s;
+                });
+
+            await service.BuildMetrics(2, 1920, 1, CancellationToken.None);
+
+            properties.Keys.Should().Contain("JobId");
+            properties.Keys.Should().Contain("CollectionPeriod");
+            properties.Keys.Should().Contain("AcademicYear");
+
+            stats.Keys.Should().Contain("Percentage");
+            stats.Keys.Should().Contain("ContractType1");
+            stats.Keys.Should().Contain("ContractType2");
+            stats.Keys.Should().Contain("DifferenceContractType1");
+            stats.Keys.Should().Contain("DifferenceContractType2");
+            stats.Keys.Should().Contain("PercentageContractType1");
+            stats.Keys.Should().Contain("PercentageContractType2");
+            stats.Keys.Should().Contain("EarningsDCContractType1");
+            stats.Keys.Should().Contain("EarningsDCContractType2");
+            stats.Keys.Should().Contain("PaymentsContractType1");
+            stats.Keys.Should().Contain("PaymentsContractType2");
+            stats.Keys.Should().Contain("DataLockedEarnings");
+            stats.Keys.Should().Contain("AlreadyPaidDataLockedEarnings");
+            stats.Keys.Should().Contain("TotalDataLockedEarnings");
+            stats.Keys.Should().Contain("HeldBackCompletionPaymentsContractType1");
+            stats.Keys.Should().Contain("HeldBackCompletionPaymentsContractType2");
+            stats.Keys.Should().Contain("PaymentsYearToDateContractType1");
+            stats.Keys.Should().Contain("PaymentsYearToDateContractType2");
+        }
     }
 }
 
