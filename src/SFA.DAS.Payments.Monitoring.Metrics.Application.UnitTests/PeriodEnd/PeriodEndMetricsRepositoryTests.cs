@@ -57,7 +57,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
 
             using (var context = new InMemoryMetricsQueryDataContext())
             {
-                mocker.Provide<IMetricsQueryDataContext>(context);
+                var factory = mocker.Mock<IMetricsQueryDataContextFactory>();
+                factory.Setup(x => x.Create())
+                    .Returns(context);
                 var sut = mocker.Create<PeriodEndMetricsRepository>();
 
                 foreach (var payment in payments)
