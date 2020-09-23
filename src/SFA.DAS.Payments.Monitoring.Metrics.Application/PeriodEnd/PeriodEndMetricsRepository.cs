@@ -136,19 +136,33 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 .Where(p => p.CollectionPeriod.AcademicYear == academicYear &&
                             p.CollectionPeriod.Period < collectionPeriod)
                 .GroupBy(p => new { p.Ukprn, p.ContractType })
-                .Select(g => new { Ukprn = g.Key.Ukprn, ContractType = g.Key.ContractType, Amount = g.Sum(p => p.Amount) })
+                .Select(g => new { Ukprn = 
+                        g.Key.Ukprn, ContractType = 
+                        g.Key.ContractType, 
+                    Amount = g.Sum(p => p.Amount) })
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
 
+            var uniqueUkprns = amounts.Select(x => x.Ukprn).Distinct();
+
+            var results = new List<ProviderContractTypeAmounts>();
+
+            foreach (var ukprn in uniqueUkprns)
+            {
+                results.Add(new ProviderContractTypeAmounts
+                {
+                    Ukprn = ukprn,
+                    ContractType1 = amounts.FirstOrDefault(providerMetric => 
+                        providerMetric.ContractType == ContractType.Act1 &&
+                        providerMetric.Ukprn == ukprn)?.Amount ?? 0,
+                    ContractType2 = amounts.FirstOrDefault(providerMetric => 
+                        providerMetric.ContractType == ContractType.Act2 &&
+                        providerMetric.Ukprn == ukprn)?.Amount ?? 0,
+                });
+            }
             logger.LogInfo($"Finished building period end metrics Year To Date Payments Amount for {academicYear}, {collectionPeriod}");
 
-            return amounts.Select(group => new ProviderContractTypeAmounts
-            {
-                Ukprn = group.Ukprn,
-                ContractType1 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act1)?.Amount ?? 0,
-                ContractType2 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act2)?.Amount ?? 0,
-            }).ToList();
-
+            return results;
         }
 
         public async Task SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, PeriodEndSummaryModel overallPeriodEndSummary, CancellationToken cancellationToken)
