@@ -9,6 +9,6 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
 
     public class ReliableStateManagerProvider : IReliableStateManagerProvider
     {
-        public IReliableStateManager Current { get; internal set; }
+        public IReliableStateManager Current { get; set; }
     }
 }
