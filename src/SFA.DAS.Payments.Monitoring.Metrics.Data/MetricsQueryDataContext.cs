@@ -78,6 +78,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 	            and dle.learnerreferencenumber = p.learnerreferencenumber
 	            and npp.deliveryperiod = p.deliveryperiod
 	            AND npp.TransactionType = P.TransactionType
+                AND dle.AcademicYear = p.AcademicYear
             where 		
 	            dle.jobId in (select DcJobid from Payments2.LatestSuccessfulJobs Where AcademicYear = @academicYear AND CollectionPeriod = @collectionPeriod)
 	            and npp.Amount <> 0
@@ -148,7 +149,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 				    AND dle.LearningAimStandardCode = P.LearningAimStandardCode
 				    and dle.learnerreferencenumber = p.learnerreferencenumber
 				    and npp.deliveryperiod = p.deliveryperiod
-				    AND npp.TransactionType = P.TransactionType
+				    AND npp.TransactionType = p.TransactionType
+                    AND dle.AcademicYear = p.AcademicYear
 			    where 		
 				    dle.jobId = @jobid
 				    and dle.Ukprn = @ukprn

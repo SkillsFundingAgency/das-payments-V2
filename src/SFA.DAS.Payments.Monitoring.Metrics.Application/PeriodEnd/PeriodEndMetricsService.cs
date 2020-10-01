@@ -79,7 +79,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 
                 var providerSummaries = new List<ProviderPeriodEndSummaryModel>();
 
-                var distinctProviderUkprns = dcEarningsTask.Result.Select(x => x.Ukprn).Distinct();
+                var providersFromPayments = currentPaymentTotals.Result.Select(x => x.Ukprn).Distinct();
+                var providersFromEarnings = dcEarningsTask.Result.Select(x => x.Ukprn).Distinct();
+                var distinctProviderUkprns = providersFromEarnings.Union(providersFromPayments);
                 
                 var periodEndSummary = periodEndSummaryFactory.CreatePeriodEndSummary(jobId, collectionPeriod, academicYear);
                 
