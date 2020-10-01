@@ -4,10 +4,11 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Messages;
 using SFA.DAS.Payments.ProviderPayments.Model;
 using System;
+using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Factories;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
 {
-
     public class ProviderPaymentsProfile : Profile
     {
         public ProviderPaymentsProfile()
@@ -56,7 +57,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.ReportingAimFundingLineType, opt => opt.ResolveUsing<ReportingAimFundingLineTypeValueResolver>())
                 .ForMember(dest => dest.NonPaymentReason, opt => opt.Ignore())
                 ;
-
 
             CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
             CreateMap<SfaCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
@@ -127,6 +127,75 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
             CreateMap<SfaFullyFundedFundingSourcePaymentEvent, SfaFullyFundedProviderPaymentEvent>();
             CreateMap<LevyFundingSourcePaymentEvent, LevyProviderPaymentEvent>();
             CreateMap<TransferFundingSourcePaymentEvent, TransferProviderPaymentEvent>();
+
+            CreateMap<PaymentModel, RecordedAct1CompletionPayment>()
+                .ForMember(dest => dest.EventId, opt => opt.MapFrom(source => Guid.NewGuid()))
+                .ForMember(dest => dest.EventTime, opt => opt.MapFrom(source => DateTimeOffset.UtcNow))
+                .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
+                .ForMember(dest => dest.DeliveryPeriod, opt => opt.MapFrom(source => source.DeliveryPeriod))
+                .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(src.CollectionPeriod.AcademicYear, src.CollectionPeriod.Period)))
+                .ForMember(dest => dest.Learner, opt => opt.ResolveUsing(LearnerFactory.Create))
+                .ForMember(dest => dest.LearningAim, opt => opt.ResolveUsing(LearningAimFactory.Create))
+                .ForMember(dest => dest.IlrSubmissionDateTime, opt => opt.MapFrom(source => source.IlrSubmissionDateTime))
+                .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => source.TransactionType))
+                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(source => source.SfaContributionPercentage))
+                .ForMember(dest => dest.FundingSource, opt => opt.MapFrom(source => source.FundingSource))
+                .ForMember(dest => dest.AmountDue, opt => opt.MapFrom(source => source.Amount))
+                .ForMember(dest => dest.AccountId, opt => opt.MapFrom(source => source.AccountId))
+                .ForMember(dest => dest.TransferSenderAccountId, opt => opt.MapFrom(source => source.TransferSenderAccountId))
+                .ForMember(dest => dest.EarningDetails, opt => opt.ResolveUsing(EarningDetailsFactory.Create))
+                .ForMember(dest => dest.ApprenticeshipId, opt => opt.MapFrom(source => source.ApprenticeshipId))
+                .ForMember(dest => dest.ApprenticeshipEmployerType, opt => opt.MapFrom(source => source.ApprenticeshipEmployerType))
+                .ForMember(dest => dest.ReportingAimFundingLineType, opt => opt.MapFrom(source => source.ReportingAimFundingLineType))
+                .ForMember(dest => dest.ContractType, opt => opt.MapFrom(source => source.ContractType))
+                .ForAllOtherMembers(dest => dest.Ignore())
+                ;
+        }
+    }
+
+    public static class LearnerFactory
+    {
+        public static Learner Create(PaymentModel source)
+        {
+            return new Learner
+            {
+                Uln = source.LearnerUln,
+                ReferenceNumber = source.LearnerReferenceNumber
+            };
+        }
+    }
+
+    public static class LearningAimFactory
+    {
+        public static LearningAim Create(PaymentModel source)
+        {
+            return new LearningAim
+            {
+                Reference = source.LearningAimReference,
+                FrameworkCode = source.LearningAimFrameworkCode,
+                PathwayCode = source.LearningAimPathwayCode,
+                ProgrammeType = source.LearningAimProgrammeType,
+                StandardCode = source.LearningAimStandardCode,
+                FundingLineType = source.LearningAimFundingLineType,
+                StartDate = source.LearningStartDate.GetValueOrDefault()
+            };
+        }
+    }
+
+    public static class EarningDetailsFactory
+    {
+        public static EarningDetails Create(PaymentModel source)
+        {
+            return new EarningDetails
+            {
+                CompletionAmount = source.CompletionAmount,
+                CompletionStatus = source.CompletionStatus,
+                InstalmentAmount = source.InstalmentAmount,
+                StartDate = source.StartDate,
+                ActualEndDate = source.ActualEndDate,
+                NumberOfInstalments = source.NumberOfInstalments,
+                PlannedEndDate = source.PlannedEndDate
+            };
         }
     }
 }

@@ -3,7 +3,6 @@ using SFA.DAS.Payments.DataLocks.Application.Interfaces;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -21,13 +20,17 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
     {
         private readonly IMapper mapper;
         private readonly ILearnerMatcher learnerMatcher;
-        private readonly IEarningPeriodsValidationProcessor earningPeriodsValidationProcessor;
-
-        public DataLockProcessor(IMapper mapper, ILearnerMatcher learnerMatcher, IEarningPeriodsValidationProcessor earningPeriodsValidationProcessor)
+        private readonly IOnProgrammeAndIncentiveEarningPeriodsValidationProcessor onProgrammeAndIncentiveEarningPeriodsValidationProcessor;
+        private readonly IFunctionalSkillEarningPeriodsValidationProcessor functionalSkillEarningPeriodsValidationProcessor;
+        
+        public DataLockProcessor(IMapper mapper, ILearnerMatcher learnerMatcher,
+            IOnProgrammeAndIncentiveEarningPeriodsValidationProcessor onProgrammeAndIncentiveEarningPeriodsValidationProcessor,
+            IFunctionalSkillEarningPeriodsValidationProcessor functionalSkillEarningPeriodsValidationProcessor)
         {
             this.mapper = mapper;
             this.learnerMatcher = learnerMatcher;
-            this.earningPeriodsValidationProcessor = earningPeriodsValidationProcessor ?? throw new ArgumentNullException(nameof(earningPeriodsValidationProcessor));
+            this.onProgrammeAndIncentiveEarningPeriodsValidationProcessor = onProgrammeAndIncentiveEarningPeriodsValidationProcessor;
+            this.functionalSkillEarningPeriodsValidationProcessor = functionalSkillEarningPeriodsValidationProcessor;
         }
 
         public async Task<List<DataLockEvent>> GetPaymentEvents(ApprenticeshipContractType1EarningEvent earningEvent, CancellationToken cancellationToken)
@@ -132,7 +135,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             foreach (var onProgrammeEarning in earningEvent.OnProgrammeEarnings)
             {
-                var validationResult = earningPeriodsValidationProcessor
+                var validationResult = onProgrammeAndIncentiveEarningPeriodsValidationProcessor
                     .ValidatePeriods(
                         earningEvent.Ukprn,
                         earningEvent.Learner.Uln, 
@@ -166,8 +169,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             foreach (var functionalSkillEarning in earningEvent.Earnings)
             {
-                var validationResult = earningPeriodsValidationProcessor
-                    .ValidateFunctionalSkillPeriods(earningEvent.Ukprn,
+                var validationResult = functionalSkillEarningPeriodsValidationProcessor
+                    .ValidatePeriods(earningEvent.Ukprn,
                         earningEvent.Learner.Uln,
                         functionalSkillEarning.Periods.ToList(),
                         (TransactionType)functionalSkillEarning.Type,
@@ -198,7 +201,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             foreach (var incentiveEarning in earningEvent.IncentiveEarnings)
             {
-                var validationResult = earningPeriodsValidationProcessor
+                var validationResult = onProgrammeAndIncentiveEarningPeriodsValidationProcessor
                     .ValidatePeriods(
                         earningEvent.Ukprn,
                         earningEvent.Learner.Uln,
@@ -230,9 +233,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
 
             foreach (var onProgrammeEarning in nonPayableEarning.OnProgrammeEarnings)
             {
-                var validPeriods = new List<EarningPeriod>();
-                var invalidPeriods = new List<EarningPeriod>();
-
                 foreach (var period in onProgrammeEarning.Periods)
                 {
                     period.DataLockFailures = new List<DataLockFailure>

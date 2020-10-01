@@ -14,10 +14,13 @@ using SFA.DAS.Payments.Monitoring.Jobs.Model;
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
 {
 
-    public class EarningsJobStatusService : JobStatusService, IJobStatusService
+    public interface IEarningsJobStatusService: IJobStatusService{ }
+
+    public class EarningsJobStatusService : JobStatusService, IEarningsJobStatusService
     {
-        public EarningsJobStatusService(IJobStorageService jobStorageService, IPaymentLogger logger, ITelemetry telemetry, IJobStatusEventPublisher eventPublisher, IJobServiceConfiguration config)
-        : base(jobStorageService, logger, telemetry, eventPublisher, config)
+        public EarningsJobStatusService(IJobStorageService jobStorageService, IPaymentLogger logger,
+            ITelemetry telemetry, IJobStatusEventPublisher eventPublisher, IJobServiceConfiguration config)
+            : base(jobStorageService, logger, telemetry, eventPublisher, config)
         {
         }
 
@@ -36,7 +39,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
             if (job.Status != JobStatus.InProgress && job.DcJobSucceeded.HasValue)
             {
                 Logger.LogWarning($"Job {job.DcJobId} has already finished. Status: {job.Status}");
-                await EventPublisher.SubmissionFinished(job.DcJobSucceeded.Value, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
+                await EventPublisher.SubmissionFinished(job.DcJobSucceeded.Value, job.DcJobId.Value, job.Ukprn.Value,
+                    job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
                 return true;
             }
 
@@ -49,20 +53,25 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
             return false;
         }
 
-        protected override async Task ManageMessageStatus(long jobId, List<CompletedMessage> completedMessages, List<InProgressMessage> inProgressMessages,
+        protected override async Task ManageMessageStatus(long jobId, List<CompletedMessage> completedMessages,
+            List<InProgressMessage> inProgressMessages,
             CancellationToken cancellationToken)
         {
-            await CompleteDataLocks(jobId, completedMessages, inProgressMessages, cancellationToken).ConfigureAwait(false);
-            await base.ManageMessageStatus(jobId, completedMessages, inProgressMessages, cancellationToken).ConfigureAwait(false);
+            await CompleteDataLocks(jobId, completedMessages, inProgressMessages, cancellationToken)
+                .ConfigureAwait(false);
+            await base.ManageMessageStatus(jobId, completedMessages, inProgressMessages, cancellationToken)
+                .ConfigureAwait(false);
         }
 
-        protected override async Task<bool> CompleteJob(JobModel job, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken)
+        protected override async Task<bool> CompleteJob(JobModel job, JobStatus status, DateTimeOffset endTime,
+            CancellationToken cancellationToken)
         {
             status = job.DcJobSucceeded.HasValue && !job.DcJobSucceeded.Value
                 ? JobStatus.DcTasksFailed
                 : status;
             if (!await base.CompleteJob(job, status, endTime, cancellationToken))
                 return false;
+
             if (!job.DcJobSucceeded.HasValue)
                 return false;
             if (job.JobType == JobType.EarningsJob || job.JobType == JobType.ComponentAcceptanceTestEarningsJob)
@@ -70,13 +79,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
             return true;
         }
 
-        private async Task CompleteDataLocks(long jobId, List<CompletedMessage> completedMessages, List<InProgressMessage> inProgressMessages, CancellationToken cancellationToken)
+        private async Task CompleteDataLocks(long jobId, List<CompletedMessage> completedMessages,
+            List<InProgressMessage> inProgressMessages, CancellationToken cancellationToken)
         {
             var job = await JobStorageService.GetJob(jobId, cancellationToken).ConfigureAwait(false);
             if (job == null)
                 return;
 
-            var dataLocksMessages = new[] {
+            var dataLocksMessages = new[]
+            {
                 nameof(FunctionalSkillEarningFailedDataLockMatching),
                 nameof(PayableFunctionalSkillEarningEvent),
                 nameof(PayableEarningEvent),
@@ -87,7 +98,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
                 nameof(EarningFailedDataLockMatching),
             };
             var inProgressDataLocks = inProgressMessages
-                .Where(inProgress => dataLocksMessages.Any(dlockType => inProgress.MessageName?.Contains(dlockType) ?? false))
+                .Where(inProgress =>
+                    dataLocksMessages.Any(dlockType => inProgress.MessageName?.Contains(dlockType) ?? false))
                 .ToList();
             if (!inProgressDataLocks.Any())
                 return;
@@ -103,23 +115,24 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
 
             var properties = new Dictionary<string, string>
             {
-                { TelemetryKeys.JobId, job.DcJobId.ToString()},
-                { TelemetryKeys.JobType, job.JobType.ToString("G")},
-                { TelemetryKeys.Ukprn, job.Ukprn?.ToString() ?? string.Empty},
-                { TelemetryKeys.InternalJobId, job.Id.ToString()},
-                { TelemetryKeys.CollectionPeriod, job.CollectionPeriod.ToString()},
-                { TelemetryKeys.AcademicYear, job.AcademicYear.ToString()},
-                { TelemetryKeys.Status, job.Status.ToString("G")}
+                {TelemetryKeys.JobId, job.DcJobId.ToString()},
+                {TelemetryKeys.JobType, job.JobType.ToString("G")},
+                {TelemetryKeys.Ukprn, job.Ukprn?.ToString() ?? string.Empty},
+                {TelemetryKeys.InternalJobId, job.Id.ToString()},
+                {TelemetryKeys.CollectionPeriod, job.CollectionPeriod.ToString()},
+                {TelemetryKeys.AcademicYear, job.AcademicYear.ToString()},
+                {TelemetryKeys.Status, job.Status.ToString("G")}
             };
 
             var metrics = new Dictionary<string, double>
             {
-                { TelemetryKeys.Duration, (completionTime - job.StartTime).TotalMilliseconds},
-                { "Learner Count", job.LearnerCount ?? 0}
+                {TelemetryKeys.Duration, (completionTime - job.StartTime).TotalMilliseconds},
+                {"Learner Count", job.LearnerCount ?? 0}
             };
             Telemetry.TrackEvent("Finished DataLocks", properties, metrics);
 
-            Logger.LogInfo($"Recorded DataLocks completion time for Job: {job.DcJobId}, completion time: {completionTime}");
+            Logger.LogInfo(
+                $"Recorded DataLocks completion time for Job: {job.DcJobId}, completion time: {completionTime}");
         }
     }
 }

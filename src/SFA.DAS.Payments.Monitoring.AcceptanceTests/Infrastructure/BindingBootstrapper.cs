@@ -20,11 +20,10 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Infrastructure
         {
             var endpointConfiguration = Container.Resolve<EndpointConfiguration>();
             endpointConfiguration.Conventions().DefiningCommandsAs(type => type.IsCommand<JobsCommand>());
-            endpointConfiguration.Conventions().DefiningEventsAs(type => type.IsAssignableTo<SubmissionJobFinishedEvent>());
+            endpointConfiguration.Conventions().DefiningEventsAs(type => type.Namespace == "SFA.DAS.Payments.Monitoring.Jobs.Messages.Events");
             var transportConfig = Container.Resolve<TransportExtensions<AzureServiceBusTransport>>();
             var routing = transportConfig.Routing();
-            routing.RouteToEndpoint(typeof(JobsMessage).Assembly, EndpointNames.JobsService);
-            routing.RouteToEndpoint(typeof(SubmissionSucceededEvent).Assembly, EndpointNames.JobsService);
+            routing.RouteToEndpoint(typeof(JobsMessage).Assembly, "SFA.DAS.Payments.Monitoring.Jobs.Messages", EndpointNames.JobsService);
         }
 
         [BeforeTestRun(Order = 40)]

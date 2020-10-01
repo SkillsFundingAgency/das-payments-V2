@@ -10,11 +10,11 @@ namespace SFA.DAS.Payments.ConfigUpdater
     {
         public List<FileConfigEntry> ConfigurationEntries { get; private set; }
 
-        private XNamespace _ns = "http://schemas.microsoft.com/2011/01/fabric";
+        private readonly XNamespace _ns = "http://schemas.microsoft.com/2011/01/fabric";
 
         public void GetCurrentConfiguration(string sourceDirectory, string configToUpdate)
         {
-            var configFiles = GetAllCloudConfigFiles(sourceDirectory);
+            var configFiles = GetAllCloudConfigFiles(sourceDirectory, configToUpdate);
             var allConfigEntries = GetAllConfigEntries(configFiles, configToUpdate);
             ConfigurationEntries = allConfigEntries.ToList();
         }
@@ -65,7 +65,7 @@ namespace SFA.DAS.Payments.ConfigUpdater
             }
         }
 
-        private IEnumerable<FileConfigEntry> GetAllConfigEntries(List<string> configFiles, string configToUpdate)
+        private IEnumerable<FileConfigEntry> GetAllConfigEntries(IEnumerable<string> configFiles, string configToUpdate)
         {
             var allConfigEntries = new List<FileConfigEntry>();
             foreach (var configFile in configFiles)
@@ -144,7 +144,7 @@ namespace SFA.DAS.Payments.ConfigUpdater
             return defaultValues;
         }
 
-        private List<string> GetConfigEntriesFromFile(string configFile)
+        private IEnumerable<string> GetConfigEntriesFromFile(string configFile)
         {
             var file = XElement.Load(configFile);
             var parameters = from parameter in file.Descendants(_ns + "Parameter")
@@ -153,14 +153,14 @@ namespace SFA.DAS.Payments.ConfigUpdater
             return parameters.ToList();
         }
 
-        private List<string> GetAllCloudConfigFiles(string sourcePath)
+        private static List<string> GetAllCloudConfigFiles(string sourcePath, string configToUpdate)
         {
             var appParametersDirectories = Directory.GetDirectories(sourcePath, "ApplicationParameters", SearchOption.AllDirectories);
             var allConfigFiles = new List<string>();
 
             foreach (var directory in appParametersDirectories)
             {
-                var configFiles = Directory.GetFiles(directory, @"Cloud.xml", SearchOption.TopDirectoryOnly);
+                var configFiles = Directory.GetFiles(directory, configToUpdate, SearchOption.TopDirectoryOnly);
                 allConfigFiles.AddRange(configFiles);
             }
 

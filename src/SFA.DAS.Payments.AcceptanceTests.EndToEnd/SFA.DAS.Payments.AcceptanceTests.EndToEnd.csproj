@@ -381,6 +381,8 @@
     <Compile Include="Handlers\EarningEventHandler.cs" />
     <Compile Include="Handlers\ProviderPaymentEventHandler.cs" />
     <Compile Include="Helpers\ApprenticeshipHelper.cs" />
+    <Compile Include="Helpers\ApprenticeshipBuilder.cs" />
+    <Compile Include="Helpers\FM36GlobalDeserialiser.cs" />
     <Compile Include="Infrastructure\EndpointNames.cs" />
     <Compile Include="Infrastructure\FeatureScopedBootstrapper.cs" />
     <Compile Include="Infrastructure\IoC\AutoMapperModule.cs" />
@@ -398,9 +400,22 @@
     <Compile Include="LearnerMutators\Standard57Learner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\ApprovalsInterfaceSteps.cs" />
+    <Compile Include="Steps\EarningEventsHelper.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
     <Compile Include="Extensions\FeatureInfoNumberExtractor.cs" />
+    <Compile Include="Steps\FM36_ILR_Base_Steps.cs" />
+    <Compile Include="Steps\FundingSourcePaymentEventsHelper.cs" />
+    <Compile Include="Steps\PaymentEventsHelper.cs" />
+    <Compile Include="Steps\PV2_1797_Steps.cs" />
+    <Compile Include="Steps\PV2_1824_Steps.cs" />
+    <Compile Include="Steps\PV2_1825_Steps.cs" />
+    <Compile Include="Steps\PV2_1826_Steps.cs" />
+    <Compile Include="Steps\PV2_1953_Steps.cs" />
+    <Compile Include="Steps\PV2_1845_Steps.cs" />
+    <Compile Include="Steps\PV2_1850_Steps.cs" />
+    <Compile Include="Steps\PV2_1851_Steps.cs" />
+    <Compile Include="Steps\PV2_1849_Steps.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
     <Compile Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature.cs">
       <DependentUpon>Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature</DependentUpon>
@@ -511,6 +526,26 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Non-levy Learner over funding band cap - PV2-529.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\DataLocks\PV2-1797-DLock09-One-Price-Episode-Happy-Path.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1797-DLock09-One-Price-Episode-Happy-Path.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\DataLocks\PV2-1824-DLock09-One-Price-Episode-UnHappy-Path.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1824-DLock09-One-Price-Episode-UnHappy-Path.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\DataLocks\PV2-1825-DLock09-Two-Price-Episodes-Happy-Path.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1825-DLock09-Two-Price-Episodes-Happy-Path.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\DataLocks\PV2-1826-DLock09-Two-Price-Episodes-Unhappy-Path.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1826-DLock09-Two-Price-Episodes-Unhappy-Path.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Disadvantaged Uplift\Framework-uplift-on-time-PV2-487.feature.cs">
       <AutoGen>True</AutoGen>
@@ -888,7 +923,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-590 - Levy Learner framework uplift and 16-18 incentives payments finishes on time.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Holding Back Completion Payments\PV2-1653 Employer payments rounded down.feature.cs" >
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-1653 Employer payments rounded down.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-1653 Employer payments rounded down.feature</DependentUpon>
@@ -1524,6 +1559,26 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>One Levy learner changes provider but remains with the same employer-PV2-317.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Redundancy\PV2-1850-Non-Levy-Learner-Made-Redundant-In-Last-6-Months.feature.cs">
+      <DependentUpon>PV2-1850-Non-Levy-Learner-Made-Redundant-In-Last-6-Months.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Redundancy\PV2-1851-Non-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months.feature.cs">
+      <DependentUpon>PV2-1851-Non-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Redundancy\PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months.feature.cs">
+      <DependentUpon>PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Redundancy\PV2-1849-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months.feature.cs">
+      <DependentUpon>PV2-1849-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Refunds\E2E - PV2-256a - Levy standard learner, price is changed, orginally mix funded and a negative amount is left to be paid.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1563,6 +1618,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy-learner price change from start - PV2-259.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Small Employer\PV2-1953-small-employer-retrospective.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1953-small-employer-retrospective.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Small Employer\PV2-332 - Levy 16-18 learner with a small employer at start.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1629,14 +1689,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-736 - Levy learner paid via transfer.feature</DependentUpon>
     </Compile>
-	
-	<Compile Include="Tests\Submission Events\PV2-1395 - Successful submission removes previous submission payments.feature.cs">
+    <Compile Include="Tests\Submission Events\PV2-1395 - Successful submission removes previous submission payments.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-1395 - Successful submission removes previous submission payments.feature</DependentUpon>
     </Compile>
-	
-	<Compile Include="Tests\Submission Events\PV2-1396 - Failed submission job removes payments for failed job.feature.cs">
+    <Compile Include="Tests\Submission Events\PV2-1396 - Failed submission job removes payments for failed job.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-1396 - Failed submission job removes payments for failed job.feature</DependentUpon>
@@ -1656,6 +1714,19 @@
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>true</IsTransformFile>
     </None>
+    <EmbeddedResource Include="FM36TestFiles\PV2-1825-DLock09-Two-Price-Episodes-Happy-Path-R02.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-1797-DLock09-One-Price-Episode-Happy-Path-R02.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-1824-DLock09-One_Price-Episode-UnHappy-Path-R02.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-1851-Non-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months-R03.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-1851-Non-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months-R07.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-1849-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months-R03.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-1849-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months-R07.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months-R07.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months-R12.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-1850-Non-Levy-Learner-Made-Redundant-In-Last-6-Months-R07.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-1850-Non-Levy-Learner-Made-Redundant-In-Last-6-Months-R12.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-1953-small-employer-retrospective-R03.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-1953-small-employer-retrospective-R04.json" />
     <None Include="packages.config" />
     <None Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1744,6 +1815,22 @@
     <None Include="Tests\Capping\Non-levy Learner over funding band cap - PV2-529.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-levy Learner over funding band cap - PV2-529.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\DataLocks\PV2-1797-DLock09-One-Price-Episode-Happy-Path.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1797-DLock09-One-Price-Episode-Happy-Path.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\DataLocks\PV2-1824-DLock09-One-Price-Episode-UnHappy-Path.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1824-DLock09-One-Price-Episode-UnHappy-Path.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\DataLocks\PV2-1825-DLock09-Two-Price-Episodes-Happy-Path.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1825-DLock09-Two-Price-Episodes-Happy-Path.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\DataLocks\PV2-1826-DLock09-Two-Price-Episodes-Unhappy-Path.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1826-DLock09-Two-Price-Episodes-Unhappy-Path.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Disadvantaged Uplift\Framework-uplift-on-time-PV2-487.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2045,9 +2132,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-590 - Levy Learner framework uplift and 16-18 incentives payments finishes on time.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Holding Back Completion Payments\PV2-1653 Employer payments rounded down.feature" >
+    <None Include="Tests\Holding Back Completion Payments\PV2-1653 Employer payments rounded down.feature">
       <Generator>SpecFlowSIngleFileGenerator</Generator>
-      <LastGenOutput>Tests\Holding Back Completion Payments\PV2-1653 Employer payments rounded down.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-1653 Employer payments rounded down1.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Holding Back Completion Payments\PV2-496 - Levy Learner-co-funded,sufficient employer contribution - pay completion.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2551,6 +2638,22 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy learner changes provider but remains with the same employer-PV2-317.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Redundancy\PV2-1850-Non-Levy-Learner-Made-Redundant-In-Last-6-Months.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1850-Non-Levy-Learner-Made-Redundant-In-Last-6-Months.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Redundancy\PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Redundancy\PV2-1851-Non-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1851-Non-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Redundancy\PV2-1849-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1849-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Refunds\E2E - PV2-256a - Levy standard learner, price is changed, orginally mix funded and a negative amount is left to be paid.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>E2E - PV2-256a - Levy standard learner, price is changed, orginally mix funded and a negative amount is left to be paid.feature.cs</LastGenOutput>
@@ -2583,6 +2686,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy-learner price change with negative earning - PV2-257.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Small Employer\PV2-1953-small-employer-retrospective.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-1953-small-employer-retrospective.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Small Employer\PV2-332 - Levy 16-18 learner with a small employer at start.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-332 - Levy 16-18 learner with a small employer at start.feature.cs</LastGenOutput>
@@ -2605,11 +2712,11 @@
     </None>
     <None Include="Tests\Submission Events\PV2-1395 - Successful submission removes previous submission payments.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-1395 - Successful submission removes previous submission payments.cs</LastGenOutput>
+      <LastGenOutput>PV2-1395 - Successful submission removes previous submission payments1.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Submission Events\PV2-1396 - Failed submission job removes payments for failed job.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-1396 - Failed submission job removes payments for failed job.cs</LastGenOutput>
+      <LastGenOutput>PV2-1396 - Failed submission job removes payments for failed job1.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Transfers\PV2-730 - Single Levy learner paid via transfer sender installment changes after price change.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2741,7 +2848,9 @@
     <Folder Include="Tests\Disadvantage - Uplift\" />
     <Folder Include="Tests\Levy Learner\Employer Change of Circumstances\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="FM36TestFiles\PV2-1826-DLock09-Two-Price-Episodes-Unhappy-Path-R02.json" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

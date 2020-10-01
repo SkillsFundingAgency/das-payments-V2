@@ -7,40 +7,50 @@ using SFA.DAS.Payments.Model.Core.Entities;
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
 {
 
-    public interface IStartDateValidator : ICourseValidator { }
-
-    public class StartDateValidator : BaseCourseValidator, IStartDateValidator
+    public interface IStartDateValidator
     {
-        private readonly ICalculatePeriodStartAndEndDate calculatePeriodStartAndEndDate;
+        (List<ApprenticeshipModel> validApprenticeships, List<DataLockFailure> dataLockFailures) Validate(PriceEpisode ilrPriceEpisode, List<ApprenticeshipModel> apprenticeships);
+    }
 
+    public class StartDateValidator : IStartDateValidator
+    {
+        private readonly bool disableDatalocks;
 
-        public StartDateValidator(ICalculatePeriodStartAndEndDate calculatePeriodStartAndEndDate)
+        public StartDateValidator(bool disableDatalocks)
         {
-            this.calculatePeriodStartAndEndDate = calculatePeriodStartAndEndDate;
+            this.disableDatalocks = disableDatalocks;
         }
 
-        protected override DataLockErrorCode DataLockerErrorCode => DataLockErrorCode.DLOCK_09;
-
-        protected override List<ApprenticeshipPriceEpisodeModel> GetValidApprenticeshipPriceEpisodes(DataLockValidationModel dataLockValidationModel)
+        public (List<ApprenticeshipModel> validApprenticeships, List<DataLockFailure> dataLockFailures) 
+            Validate(PriceEpisode ilrPriceEpisode, List<ApprenticeshipModel> apprenticeships)
         {
-
-            if (!ApprenticeshipIsWithinPeriod(dataLockValidationModel))
+            if (disableDatalocks)
             {
-                return new List<ApprenticeshipPriceEpisodeModel>();
+                return (apprenticeships, new List<DataLockFailure>());
             }
-            
-            var apprenticeshipPriceEpisodes = dataLockValidationModel.Apprenticeship.ApprenticeshipPriceEpisodes
-                .Where(priceEpisode => priceEpisode.StartDate <= dataLockValidationModel.PriceEpisode.EffectiveTotalNegotiatedPriceStartDate && !priceEpisode.Removed)
-                .ToList();
-            return apprenticeshipPriceEpisodes;
-        }
 
-        private bool ApprenticeshipIsWithinPeriod(DataLockValidationModel dataLockValidationModel)
-        {
-            var periodDates = calculatePeriodStartAndEndDate
-                .GetPeriodDate(dataLockValidationModel.EarningPeriod.Period, dataLockValidationModel.AcademicYear);
-            return dataLockValidationModel.Apprenticeship.EstimatedStartDate <= periodDates.periodEndDate;
-        }
+            var dataLockFailures = new List<DataLockFailure>();
 
+           var  matchedApprenticeships = apprenticeships.Where(x => x.ApprenticeshipPriceEpisodes
+               .Any(priceEpisode => priceEpisode.StartDate <= ilrPriceEpisode.EffectiveTotalNegotiatedPriceStartDate && !priceEpisode.Removed))
+               .ToList();
+
+            if (matchedApprenticeships.Any())
+            {
+                return (matchedApprenticeships, dataLockFailures);
+            }
+
+            dataLockFailures = apprenticeships.Select(a => new DataLockFailure
+            {
+                ApprenticeshipId = a.Id,
+                ApprenticeshipPriceEpisodeIds = a.ApprenticeshipPriceEpisodes
+                    .Where(o => !o.Removed)
+                    .Select(x => x.Id)
+                    .ToList(),
+                DataLockError = DataLockErrorCode.DLOCK_09
+            }).ToList();
+
+            return  (matchedApprenticeships, dataLockFailures);
+        }
     }
 }

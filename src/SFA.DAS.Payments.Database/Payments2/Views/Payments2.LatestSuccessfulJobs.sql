@@ -8,6 +8,7 @@ with validJobs as (
 	from Payments2.Job
 	where status in (2,3) 
 		and DCJobSucceeded = 1
+		and JobType = 1 
 	group by Ukprn
 )
 

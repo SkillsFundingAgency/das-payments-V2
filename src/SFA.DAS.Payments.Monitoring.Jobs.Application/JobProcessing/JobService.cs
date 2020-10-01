@@ -10,13 +10,18 @@ using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 {
-    public abstract class JobService
+    public interface ICommonJobService
+    {
+        Task RecordNewJobAdditionalMessages(RecordJobAdditionalMessages jobRequest, CancellationToken cancellationToken);
+    }
+
+    public class JobService : ICommonJobService
     {
         protected IPaymentLogger Logger { get;  }
         protected IJobStorageService JobStorageService { get;  }
         protected ITelemetry Telemetry { get;  }
 
-        protected JobService(IPaymentLogger logger, IJobStorageService jobStorageService, ITelemetry telemetry)
+        public JobService(IPaymentLogger logger, IJobStorageService jobStorageService, ITelemetry telemetry)
         {
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.JobStorageService = jobStorageService ?? throw new ArgumentNullException(nameof(jobStorageService));
@@ -35,6 +40,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             if (isNewJob)
                 SendTelemetry(jobDetails);
             Logger.LogInfo($"Finished saving the job info.  DC Job Id: {jobDetails.DcJobId}");
+        }
+
+
+        public async Task RecordNewJobAdditionalMessages(RecordJobAdditionalMessages jobRequest, CancellationToken cancellationToken)
+        {
+            await RecordJobInProgressMessages(jobRequest.JobId, jobRequest.GeneratedMessages, cancellationToken).ConfigureAwait(false);
+            Logger.LogInfo($"Finished storing new job messages for job: {jobRequest.JobId}");
         }
 
         protected async Task RecordJobInProgressMessages(long jobId, List<GeneratedMessage> generatedMessages, CancellationToken cancellationToken)

@@ -33,6 +33,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         private readonly string apprenticeshipKeyString;
         private readonly Func<IPaymentHistoryRepository> paymentHistoryRepositoryFactory;
         private readonly IApprenticeshipContractType2EarningsEventProcessor contractType2EarningsEventProcessor;
+        private readonly IApprenticeshipAct1RedundancyEarningsEventProcessor act1RedundancyEarningsEventProcessor;
         private readonly IFunctionalSkillEarningsEventProcessor functionalSkillEarningsEventProcessor;
         private readonly IPayableEarningEventProcessor payableEarningEventProcessor;
         private readonly IRefundRemovedLearningAimProcessor refundRemovedLearningAimProcessor;
@@ -46,6 +47,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             IApprenticeshipKeyService apprenticeshipKeyService,
             Func<IPaymentHistoryRepository> paymentHistoryRepositoryFactory,
             IApprenticeshipContractType2EarningsEventProcessor contractType2EarningsEventProcessor,
+            IApprenticeshipAct1RedundancyEarningsEventProcessor act1RedundancyEarningsEventProcessor, 
             IFunctionalSkillEarningsEventProcessor functionalSkillEarningsEventProcessor,
             IPayableEarningEventProcessor payableEarningEventProcessor,
             IRefundRemovedLearningAimProcessor refundRemovedLearningAimProcessor,
@@ -55,6 +57,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             this.paymentLogger = paymentLogger;
             this.paymentHistoryRepositoryFactory = paymentHistoryRepositoryFactory;
             this.contractType2EarningsEventProcessor = contractType2EarningsEventProcessor;
+            this.act1RedundancyEarningsEventProcessor = act1RedundancyEarningsEventProcessor;
             this.functionalSkillEarningsEventProcessor = functionalSkillEarningsEventProcessor;
             this.payableEarningEventProcessor = payableEarningEventProcessor;
             this.refundRemovedLearningAimProcessor = refundRemovedLearningAimProcessor;
@@ -82,7 +85,29 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             }
         }
 
-        public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleFunctionalSkillEarningsEvent(Act2FunctionalSkillEarningsEvent earningEvent, CancellationToken cancellationToken)
+        public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleAct2RedundancyEarningEvent(ApprenticeshipContractType2RedundancyEarningEvent earningEvent,
+            CancellationToken cancellationToken)
+        {
+            paymentLogger.LogVerbose($"Handling ApprenticeshipContractType2RedundancyEarningEvent for {apprenticeshipKeyString}");
+
+            using (var operation = telemetry.StartOperation("RequiredPaymentsService.HandleAct2RedundancyEarningEvent", earningEvent.EventId.ToString()))
+            {
+                var stopwatch = Stopwatch.StartNew();
+                await ResetPaymentHistoryCacheIfDifferentCollectionPeriod(earningEvent.CollectionPeriod)
+                    .ConfigureAwait(false);
+
+                await Initialise(earningEvent.CollectionPeriod.Period).ConfigureAwait(false);
+                var requiredPaymentEvents = await contractType2EarningsEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
+                Log(requiredPaymentEvents);
+                telemetry.TrackDuration("RequiredPaymentsService.HandleAct2RedundancyEarningEvent", stopwatch, earningEvent);
+                telemetry.StopOperation(operation);
+                return requiredPaymentEvents;
+            }
+
+        }
+
+
+        public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleFunctionalSkillEarningsEvent(FunctionalSkillEarningsEvent earningEvent, CancellationToken cancellationToken)
         {
             paymentLogger.LogVerbose($"Handling FunctionalSkillEarningsEvent for {apprenticeshipKeyString}");
 
@@ -115,6 +140,26 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
                 var requiredPaymentEvents = await functionalSkillEarningsEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
                 Log(requiredPaymentEvents);
                 telemetry.TrackDuration("RequiredPaymentsService.HandleFunctionalSkillEarningsEvent", stopwatch, earningEvent);
+                telemetry.StopOperation(operation);
+                return requiredPaymentEvents;
+            }
+        }
+
+        public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleAct1RedundancyEarningsEvent(ApprenticeshipContractType1RedundancyEarningEvent earningEvent,
+            CancellationToken cancellationToken)
+        {
+            paymentLogger.LogVerbose($"Handling ApprenticeshipContractType1RedundancyEarningEvent for {apprenticeshipKeyString}");
+
+            using (var operation = telemetry.StartOperation("RequiredPaymentsService.ApprenticeshipContractType1RedundancyEarningEvent", earningEvent.EventId.ToString()))
+            {
+                var stopwatch = Stopwatch.StartNew();
+                await ResetPaymentHistoryCacheIfDifferentCollectionPeriod(earningEvent.CollectionPeriod)
+                    .ConfigureAwait(false);
+
+                await Initialise(earningEvent.CollectionPeriod.Period).ConfigureAwait(false);
+                var requiredPaymentEvents = await act1RedundancyEarningsEventProcessor.HandleEarningEvent(earningEvent, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
+                Log(requiredPaymentEvents);
+                telemetry.TrackDuration("RequiredPaymentsService.ApprenticeshipContractType1RedundancyEarningEvent", stopwatch, earningEvent);
                 telemetry.StopOperation(operation);
                 return requiredPaymentEvents;
             }

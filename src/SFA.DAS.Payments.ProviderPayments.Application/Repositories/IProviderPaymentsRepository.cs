@@ -34,5 +34,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
         /// <param name="page">0 based page to retrieve</param>
         List<PaymentModelWithRequiredPaymentId> GetMonthEndPayments(CollectionPeriod collectionPeriod, int pageSize,
             int page);
+
+        Task<List<PaymentModel>> GetMonthEndAct1CompletionPayments(CollectionPeriod collectionPeriod, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
