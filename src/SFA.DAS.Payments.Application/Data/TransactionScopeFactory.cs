@@ -19,6 +19,7 @@ namespace SFA.DAS.Payments.Application.Data
                 IsolationLevel = IsolationLevel.RepeatableRead,
             }, TransactionScopeAsyncFlowOption.Enabled);
         }
+<<<<<<< HEAD
 
         public static TransactionScope CreateSerialisableTransaction()
         {
@@ -27,5 +28,7 @@ namespace SFA.DAS.Payments.Application.Data
                 IsolationLevel = IsolationLevel.Serializable,
             }, TransactionScopeAsyncFlowOption.Enabled);
         }
+=======
+>>>>>>> origin/Fix_Shadow_SQL_Transaction_Forcibly_Closed_Issue
     }
 }
