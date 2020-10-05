@@ -132,6 +132,7 @@ WHERE EXISTS (
     AND E.LearningAimStandardCode = P.LearningAimStandardCode
     AND E.TransactionType = P.TransactionType
 	AND P.AcademicYear = @academicYear
+	AND p.collectionperiod < E.CollectionPeriod
 )
 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 GROUP BY Ukprn
