@@ -118,7 +118,7 @@ IF OBJECT_ID('tempdb..#DataLockedEarnings') IS NOT NULL DROP TABLE #DataLockedEa
     SELECT EE.LearnerReferenceNumber, EE.LearnerUln, EE.LearningAimFrameworkCode,
         EE.LearningAimPathwayCode, EE.LearningAimProgrammeType, EE.LearningAimReference,
         EE.LearningAimStandardCode, EE.Ukprn, EEP.Amount, EEP.DeliveryPeriod,
-        EEP.TransactionType
+        EEP.TransactionType, EE.CollectionPeriod
     FROM Payments2.EarningEvent EE with (nolock)
     JOIN Payments2.EarningEventPeriod EEP with (nolock)
         ON EEP.EarningEventId = EE.EventId
@@ -160,8 +160,9 @@ SELECT Sum(amount)
         AND E.LearningAimStandardCode = P.LearningAimStandardCode
         AND E.TransactionType = P.TransactionType
 		AND P.AcademicYear = @academicYear
+        AND p.collectionperiod < E.CollectionPeriod
     )   
-		 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
+	AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 )
 
 SELECT 
