@@ -8,6 +8,8 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Domain
         List<ProviderAdjustment> CalculateDelta(
             List<ProviderAdjustment> historicPayments,
             List<ProviderAdjustment> currentPayments);
+
+        void PopulateCollectonPeriodForPayments(List<ProviderAdjustment> payments, int academicYear, int collectionPeriod);
     }
 
     public class ProviderAdjustmentCalculator : IProviderAdjustmentsCalculator
@@ -26,6 +28,24 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Domain
             var refunds = CalculateRefunds(groupedPreviousPayments, processedEarningsGroups);
 
             return payments.Union(refunds).ToList();
+        }
+
+        public void PopulateCollectonPeriodForPayments(List<ProviderAdjustment> payments, int academicYear, int collectionPeriod)
+        {
+            var collectionPeriodMonth = collectionPeriod < 6 ? collectionPeriod + 7 : collectionPeriod - 5;
+            var collectionPeriodYear = collectionPeriod < 6 ? 2000 + academicYear / 100 : 2000 + academicYear / 100 + 1;
+            var collectionPeriodName = $"{academicYear}-R{collectionPeriod:D2}";
+
+            if (collectionPeriod > 12)
+                collectionPeriodMonth++;
+
+            foreach (var payment in payments)
+            {
+                payment.CollectionPeriodMonth = collectionPeriodMonth;
+                payment.CollectionPeriodYear = collectionPeriodYear;
+                payment.CollectionPeriodName = collectionPeriodName;
+                payment.SubmissionAcademicYear = academicYear;
+            }
         }
 
         private static IEnumerable<ProviderAdjustment> CalculatePayments(
