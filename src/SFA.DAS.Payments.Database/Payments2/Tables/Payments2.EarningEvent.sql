@@ -48,3 +48,8 @@ CREATE NONCLUSTERED INDEX IX_EarningEvent__AcademicYear_CollectionPeriod_JobId
 	ON [Payments2].[EarningEvent] (AcademicYear, CollectionPeriod, JobId)
 	INCLUDE ([EventId])
 GO
+
+CREATE NONCLUSTERED INDEX [IX_EarningEvent__Ukprn_JobId]
+	ON [Payments2].[EarningEvent] ([Ukprn],[JobId])
+	INCLUDE ([EventId],[ContractType])
+GO
