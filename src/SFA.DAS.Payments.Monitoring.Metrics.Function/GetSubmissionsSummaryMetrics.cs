@@ -1,12 +1,15 @@
 using System.Threading.Tasks;
+using AzureFunctions.Autofac;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Payments.Monitoring.Metrics.Function.Infrastructure.IoC;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Function
 {
+    [DependencyInjectionConfig(typeof(DependencyInjectionConfig))]
     public static class GetSubmissionsSummaryMetrics
     {
         [FunctionName("GetSubmissionsSummaryMetrics")]
