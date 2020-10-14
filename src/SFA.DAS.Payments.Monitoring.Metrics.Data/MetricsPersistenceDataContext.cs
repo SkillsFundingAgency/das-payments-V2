@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +26,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         public virtual DbSet<ProviderPaymentTransactionModel> ProviderPaymentTransactions { get; set; }
         public virtual DbSet<ProviderPaymentFundingSourceModel> ProviderPaymentFundingSources { get; set; }
 
+        public virtual DbSet<SubmissionsSummaryModel> SubmissionsSummaries { get; set; }
         public MetricsPersistenceDataContext(string connectionString)
         {
             this.connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
@@ -43,6 +44,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             modelBuilder.ApplyConfiguration(new PeriodEndSummaryModelConfiguration());
             modelBuilder.ApplyConfiguration(new ProviderPaymentTransactionModelConfiguration());
             modelBuilder.ApplyConfiguration(new ProviderPaymentFundingSourceModelConfiguration());
+            modelBuilder.ApplyConfiguration(new SubmissionsSummaryModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
