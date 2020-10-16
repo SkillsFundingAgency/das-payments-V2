@@ -13,7 +13,6 @@
         public ContractTypeAmountsVerbose DasEarnings { get; set; }
         public ContractTypeAmounts RequiredPayments { get; set; }
         public ContractTypeAmounts HeldBackCompletionPayments { get; set; }
-        public decimal NonLevyRequiredPayments { get; set; }
         public decimal AdjustedDataLockedEarnings { get; set; }
         public decimal AlreadyPaidDataLockedEarnings { get; set; }
         public decimal TotalDataLockedEarnings { get; set; }
