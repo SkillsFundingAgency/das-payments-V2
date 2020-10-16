@@ -17,6 +17,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         Task SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, PeriodEndSummaryModel overallPeriodEndSummary, CancellationToken cancellationToken);
         DbSet<SubmissionSummaryModel> SubmissionSummaries { get; set; }
         DbSet<SubmissionsSummaryModel> SubmissionsSummaries { get; set; }
+        Task SaveSubmissionsSummaryMetrics(SubmissionsSummaryModel submissionsSummary, CancellationToken cancellationToken);
     }
 
     public class MetricsPersistenceDataContext: DbContext, IMetricsPersistenceDataContext
@@ -29,6 +30,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         public virtual DbSet<ProviderPaymentFundingSourceModel> ProviderPaymentFundingSources { get; set; }
 
         public virtual DbSet<SubmissionsSummaryModel> SubmissionsSummaries { get; set; }
+
         public MetricsPersistenceDataContext(string connectionString)
         {
             this.connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
@@ -107,6 +109,33 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                 await ProviderPeriodEndSummaries.AddRangeAsync(providerSummaries, cancellationToken);
 
                 await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
+        }
+		
+        public async Task SaveSubmissionsSummaryMetrics(SubmissionsSummaryModel submissionsSummary, CancellationToken cancellationToken)
+        {
+            var transaction = await Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
+            try
+            {
+                await Database.ExecuteSqlCommandAsync($@"
+                    Delete 
+                        From [Metrics].[SubmissionsSummary] 
+                    Where 
+                        And AcademicYear = {submissionsSummary.AcademicYear}
+                        And CollectionPeriod = {submissionsSummary.CollectionPeriod}
+                    "
+                    , cancellationToken);
+
+                await SubmissionsSummaries.AddAsync(submissionsSummary, cancellationToken);
+                
+                await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                
                 transaction.Commit();
             }
             catch

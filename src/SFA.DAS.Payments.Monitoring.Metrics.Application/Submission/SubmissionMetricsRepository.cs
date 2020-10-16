@@ -248,5 +248,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             };
         }
 
+        public async Task SaveSubmissionsSummaryMetrics(SubmissionsSummaryModel submissionsSummary, CancellationToken cancellationToken)
+        {
+           await persistenceDataContext.SaveSubmissionsSummaryMetrics(submissionsSummary, cancellationToken);
+        }
     }
 }

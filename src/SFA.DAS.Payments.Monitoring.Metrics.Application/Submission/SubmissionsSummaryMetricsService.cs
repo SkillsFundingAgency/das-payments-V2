@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
                 logger.LogDebug($"finished getting data from databases for job: {jobId}, Took: {dataDuration}ms.");
 
-                //await submissionRepository.SaveSubmissionsSummaryMetrics(metrics, cancellationToken);
+                await submissionRepository.SaveSubmissionsSummaryMetrics(metrics, cancellationToken);
                 
                 stopwatch.Stop();
 
