@@ -15,6 +15,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         Task Save(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken);
    
         Task SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, PeriodEndSummaryModel overallPeriodEndSummary, CancellationToken cancellationToken);
+        DbSet<SubmissionSummaryModel> SubmissionSummaries { get; set; }
+        DbSet<SubmissionsSummaryModel> SubmissionsSummaries { get; set; }
     }
 
     public class MetricsPersistenceDataContext: DbContext, IMetricsPersistenceDataContext
