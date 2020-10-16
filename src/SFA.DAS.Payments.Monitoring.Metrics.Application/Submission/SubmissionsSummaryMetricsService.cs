@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
-using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 {
     public interface ISubmissionsSummaryMetricsService
     {
-        Task GenrateSubmissionsSummaryMetrics(string jobId, short academicYear, short collectionPeriod, CancellationToken cancellationToken);
+        Task GenrateSubmissionsSummaryMetrics(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
     }
 
     public class SubmissionsSummaryMetricsService : ISubmissionsSummaryMetricsService
@@ -29,13 +27,15 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
-        public async Task GenrateSubmissionsSummaryMetrics(string jobId, short academicYear, short collectionPeriod, CancellationToken cancellationToken)
+        public async Task GenrateSubmissionsSummaryMetrics(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
             try
             {
                 logger.LogDebug($"Building metrics for job: {jobId}, Academic year: {academicYear}, Collection period: {collectionPeriod}");
+
                 var stopwatch = Stopwatch.StartNew();
-                //var metrics = await submissionRepository.SubmissionsSummaryMetrics(academicYear, collectionPeriod, cancellationToken);
+
+                var metrics = await submissionRepository.GetSubmissionsSummaryMetrics(jobId, academicYear, collectionPeriod, cancellationToken);
 
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
                 logger.LogInfo($"Finished building Submissions Summary Metrics for job: {jobId}, Academic year: {academicYear}, Collection period: {collectionPeriod}. Took: {stopwatch.ElapsedMilliseconds}ms");
 
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
             }
             catch (Exception e)
             {

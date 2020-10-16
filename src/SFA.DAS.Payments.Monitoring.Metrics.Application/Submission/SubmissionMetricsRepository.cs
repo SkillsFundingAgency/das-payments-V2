@@ -22,6 +22,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         Task<List<TransactionTypeAmounts>> GetRequiredPayments(long ukprn, long jobId, CancellationToken cancellationToken);
         Task<ContractTypeAmounts> GetYearToDatePaymentsTotal(long ukprn, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken);
         Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken);
+        
+        Task<SubmissionsSummaryModel> GetSubmissionsSummaryMetrics(long jobId, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken);
+        Task SaveSubmissionsSummaryMetrics(SubmissionsSummaryModel submissionSummary, CancellationToken cancellationToken);
     }
 
     public class SubmissionMetricsRepository : ISubmissionMetricsRepository
@@ -188,5 +191,62 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         {
             await persistenceDataContext.Save(submissionSummary, cancellationToken).ConfigureAwait(false);
         }
+
+        public async Task<SubmissionsSummaryModel> GetSubmissionsSummaryMetrics(long jobId, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken)
+        {
+            decimal GetPercentage(decimal amountA, decimal amountB) => amountA == amountB ? 100 : amountB > 0 ? (amountA / amountB) * 100 : 0;
+
+            var submissions = await persistenceDataContext.SubmissionSummaries.Where(s => s.CollectionPeriod == currentCollectionPeriod && s.AcademicYear == academicYear).ToListAsync(cancellationToken: cancellationToken);
+
+            return new SubmissionsSummaryModel
+            {
+                JobId = jobId,
+                AcademicYear = academicYear,
+                CollectionPeriod = currentCollectionPeriod,
+                Percentage = (submissions.Sum(s => s.SubmissionMetrics.Total) / submissions.Sum(s => s.DcEarnings.Total)) * 100,
+                SubmissionMetrics = new ContractTypeAmountsVerbose
+                {
+                    ContractType1 = submissions.Sum(s => s.SubmissionMetrics.ContractType1),
+                    ContractType2 = submissions.Sum(s => s.SubmissionMetrics.ContractType2),
+                    DifferenceContractType1 = submissions.Sum(s => s.SubmissionMetrics.DifferenceContractType1),
+                    DifferenceContractType2 = submissions.Sum(s => s.SubmissionMetrics.DifferenceContractType2),
+                    PercentageContractType1 = GetPercentage(submissions.Sum(s => s.SubmissionMetrics.PercentageContractType1), submissions.Sum(s => s.DcEarnings.ContractType1)),
+                    PercentageContractType2 = GetPercentage(submissions.Sum(s => s.SubmissionMetrics.PercentageContractType2), submissions.Sum(s => s.DcEarnings.ContractType2)),
+                },
+                DcEarnings = new ContractTypeAmounts
+                {
+                    ContractType1 = submissions.Sum(s => s.DcEarnings.ContractType1),
+                    ContractType2 = submissions.Sum(s => s.DcEarnings.ContractType2),
+                },
+                DasEarnings = new ContractTypeAmountsVerbose
+                {
+                    ContractType1 = submissions.Sum(s => s.DasEarnings.ContractType1),
+                    ContractType2 = submissions.Sum(s => s.DasEarnings.ContractType2),
+                    DifferenceContractType1 = submissions.Sum(s => s.DasEarnings.DifferenceContractType1),
+                    DifferenceContractType2 = submissions.Sum(s => s.DasEarnings.DifferenceContractType2),
+                    PercentageContractType1 = GetPercentage(submissions.Sum(s => s.DasEarnings.PercentageContractType1), submissions.Sum(s => s.DcEarnings.ContractType1)),
+                    PercentageContractType2 = GetPercentage(submissions.Sum(s => s.DasEarnings.PercentageContractType2), submissions.Sum(s => s.DcEarnings.ContractType2)),
+                },
+                AdjustedDataLockedEarnings = submissions.Sum(s => s.DataLockedEarnings),
+                TotalDataLockedEarnings = submissions.Sum(s => s.TotalDataLockedEarnings),
+                AlreadyPaidDataLockedEarnings = submissions.Sum(s => s.AlreadyPaidDataLockedEarnings),
+                HeldBackCompletionPayments = new ContractTypeAmounts
+                {
+                    ContractType1 = submissions.Sum(s => s.HeldBackCompletionPayments.ContractType1),
+                    ContractType2 = submissions.Sum(s => s.HeldBackCompletionPayments.ContractType2),
+                },
+                RequiredPayments = new ContractTypeAmounts
+                {
+                    ContractType1 = submissions.Sum(s => s.RequiredPayments.ContractType1),
+                    ContractType2 = submissions.Sum(s => s.RequiredPayments.ContractType2),
+                },
+                YearToDatePayments = new ContractTypeAmounts
+                {
+                    ContractType1 = submissions.Sum(s => s.YearToDatePayments.ContractType1),
+                    ContractType2 = submissions.Sum(s => s.YearToDatePayments.ContractType2),
+                }
+            };
+        }
+
     }
 }
