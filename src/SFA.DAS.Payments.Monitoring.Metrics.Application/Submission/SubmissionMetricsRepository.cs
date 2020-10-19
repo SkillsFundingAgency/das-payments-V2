@@ -196,35 +196,44 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         public async Task<SubmissionsSummaryModel> GetSubmissionsSummaryMetrics(long jobId, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken)
         {
             var submissions = await persistenceDataContext.SubmissionSummaries.Where(s => s.CollectionPeriod == currentCollectionPeriod && s.AcademicYear == academicYear).ToListAsync(cancellationToken: cancellationToken);
-
+            
+            var submissionMetricsContractType1 = submissions.Sum(s => s.SubmissionMetrics.ContractType1);
+            var submissionMetricsContractType2 = submissions.Sum(s => s.SubmissionMetrics.ContractType2);
+            
+            var dcEarningsContractType1 = submissions.Sum(s => s.DcEarnings.ContractType1);
+            var dcEarningsContractType2 = submissions.Sum(s => s.DcEarnings.ContractType2);
+            
+            var dasEarningsContractType1 = submissions.Sum(s => s.DasEarnings.ContractType1);
+            var dasEarningsContractType2 = submissions.Sum(s => s.DasEarnings.ContractType2);
+            
             return new SubmissionsSummaryModel
             {
                 JobId = jobId,
                 AcademicYear = academicYear,
                 CollectionPeriod = currentCollectionPeriod,
-                Percentage = Helpers.GetPercentage(submissions.Sum(s => s.SubmissionMetrics.Total), submissions.Sum(s => s.DcEarnings.Total)),
+                Percentage = Helpers.GetPercentage(submissionMetricsContractType1 + submissionMetricsContractType2, dcEarningsContractType1 + dcEarningsContractType2),
                 SubmissionMetrics = new ContractTypeAmountsVerbose
                 {
-                    ContractType1 = submissions.Sum(s => s.SubmissionMetrics.ContractType1),
-                    ContractType2 = submissions.Sum(s => s.SubmissionMetrics.ContractType2),
-                    DifferenceContractType1 = submissions.Sum(s => s.SubmissionMetrics.DifferenceContractType1),
-                    DifferenceContractType2 = submissions.Sum(s => s.SubmissionMetrics.DifferenceContractType2),
-                    PercentageContractType1 = Helpers.GetPercentage(submissions.Sum(s => s.SubmissionMetrics.PercentageContractType1), submissions.Sum(s => s.DcEarnings.ContractType1)),
-                    PercentageContractType2 = Helpers.GetPercentage(submissions.Sum(s => s.SubmissionMetrics.PercentageContractType2), submissions.Sum(s => s.DcEarnings.ContractType2)),
+                    ContractType1 = submissionMetricsContractType1,
+                    ContractType2 = submissionMetricsContractType2,
+                    DifferenceContractType1 = submissionMetricsContractType1 - dcEarningsContractType1,
+                    DifferenceContractType2 = submissionMetricsContractType2 - dcEarningsContractType2,
+                    PercentageContractType1 = Helpers.GetPercentage(submissionMetricsContractType1, dcEarningsContractType1),
+                    PercentageContractType2 = Helpers.GetPercentage(submissionMetricsContractType2, dcEarningsContractType2),
                 },
                 DcEarnings = new ContractTypeAmounts
                 {
-                    ContractType1 = submissions.Sum(s => s.DcEarnings.ContractType1),
-                    ContractType2 = submissions.Sum(s => s.DcEarnings.ContractType2),
+                    ContractType1 = dcEarningsContractType1,
+                    ContractType2 = dcEarningsContractType2,
                 },
                 DasEarnings = new ContractTypeAmountsVerbose
                 {
-                    ContractType1 = submissions.Sum(s => s.DasEarnings.ContractType1),
-                    ContractType2 = submissions.Sum(s => s.DasEarnings.ContractType2),
-                    DifferenceContractType1 = submissions.Sum(s => s.DasEarnings.DifferenceContractType1),
-                    DifferenceContractType2 = submissions.Sum(s => s.DasEarnings.DifferenceContractType2),
-                    PercentageContractType1 = Helpers.GetPercentage(submissions.Sum(s => s.DasEarnings.PercentageContractType1), submissions.Sum(s => s.DcEarnings.ContractType1)),
-                    PercentageContractType2 = Helpers.GetPercentage(submissions.Sum(s => s.DasEarnings.PercentageContractType2), submissions.Sum(s => s.DcEarnings.ContractType2)),
+                    ContractType1 = dasEarningsContractType1,
+                    ContractType2 = dasEarningsContractType2,
+                    DifferenceContractType1 = dasEarningsContractType1 - dcEarningsContractType1,
+                    DifferenceContractType2 = dasEarningsContractType2 - dcEarningsContractType2,
+                    PercentageContractType1 = Helpers.GetPercentage(dasEarningsContractType1, dcEarningsContractType1),
+                    PercentageContractType2 = Helpers.GetPercentage(dasEarningsContractType2, dcEarningsContractType2),
                 },
                 AdjustedDataLockedEarnings = submissions.Sum(s => s.AdjustedDataLockedEarnings),
                 TotalDataLockedEarnings = submissions.Sum(s => s.TotalDataLockedEarnings),
