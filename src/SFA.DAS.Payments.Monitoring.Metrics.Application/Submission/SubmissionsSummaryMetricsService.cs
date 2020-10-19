@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 
                 stopwatch.Stop();
 
-                //SendTelemetry(metrics, stopwatch.ElapsedMilliseconds);
+                SendTelemetry(metrics, stopwatch.ElapsedMilliseconds);
 
                 logger.LogInfo($"Finished building Submissions Summary Metrics for job: {jobId}, Academic year: {academicYear}, Collection period: {collectionPeriod}. Took: {stopwatch.ElapsedMilliseconds}ms");
 

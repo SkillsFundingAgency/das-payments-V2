@@ -227,7 +227,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                     PercentageContractType1 = GetPercentage(submissions.Sum(s => s.DasEarnings.PercentageContractType1), submissions.Sum(s => s.DcEarnings.ContractType1)),
                     PercentageContractType2 = GetPercentage(submissions.Sum(s => s.DasEarnings.PercentageContractType2), submissions.Sum(s => s.DcEarnings.ContractType2)),
                 },
-                AdjustedDataLockedEarnings = submissions.Sum(s => s.DataLockedEarnings),
+                AdjustedDataLockedEarnings = submissions.Sum(s => s.AdjustedDataLockedEarnings),
                 TotalDataLockedEarnings = submissions.Sum(s => s.TotalDataLockedEarnings),
                 AlreadyPaidDataLockedEarnings = submissions.Sum(s => s.AlreadyPaidDataLockedEarnings),
                 HeldBackCompletionPayments = new ContractTypeAmounts
