@@ -99,23 +99,21 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 { "DcEarningsContractType1Total" ,            (double) dcEarnings.ContractType1 },
                 { "DcEarningsContractType2Total" ,            (double) dcEarnings.ContractType2 },
                 
-                { "DataLockedEarningsAmount" ,                (double) metrics.AdjustedDataLockedEarnings },
-                
-                { "DataLockedEarningsTotal" ,                 (double) metrics.TotalDataLockedEarnings },
-                
-                { "DataLockAmountAlreadyPaid" ,               (double) metrics.AlreadyPaidDataLockedEarnings },
-                
-                { "HeldBackCompletionPayments" ,              (double) metrics.HeldBackCompletionPayments.Total },
+                { "DataLockedEarnings" ,                      (double) metrics.TotalDataLockedEarnings },
+                { "DataLockedAlreadyPaidAmount" ,             (double) metrics.AlreadyPaidDataLockedEarnings },
+                { "DataLockedAdjustedAmount" ,                (double) metrics.AdjustedDataLockedEarnings },
+
+                { "HeldBackCompletionPaymentsTotal" ,         (double) metrics.HeldBackCompletionPayments.Total },
                 { "HeldBackCompletionPaymentsContractType1" , (double) metrics.HeldBackCompletionPayments.ContractType1 },
                 { "HeldBackCompletionPaymentsContractType2" , (double) metrics.HeldBackCompletionPayments.ContractType1 },
 
-                { "YearToDatePaymentsTotal" ,                 (double) metrics.YearToDatePayments.Total },
-                { "YearToDatePaymentsContractType1Total",     (double) metrics.YearToDatePayments.ContractType1 },
-                { "YearToDatePaymentsContractType2Total",     (double) metrics.YearToDatePayments.ContractType2 },
-                
                 { "RequiredPaymentsTotal" ,                   (double) metrics.RequiredPayments.Total },
                 { "RequiredPaymentsAct1Total" ,               (double) metrics.RequiredPayments.ContractType1 },
                 { "RequiredPaymentsAc2Total" ,                (double) metrics.RequiredPayments.ContractType2 },
+                
+                { "YearToDatePaymentsTotal" ,                 (double) metrics.YearToDatePayments.Total },
+                { "YearToDatePaymentsContractType1Total",     (double) metrics.YearToDatePayments.ContractType1 },
+                { "YearToDatePaymentsContractType2Total",     (double) metrics.YearToDatePayments.ContractType2 },
                 
                 { "RequiredPaymentsDasEarningsPercentageComparison" ,  Math.Round(((double) (metrics.YearToDatePayments.Total + metrics.RequiredPayments.Total) / (double) metrics.DasEarnings.Total) * 100, 2) }
             };
