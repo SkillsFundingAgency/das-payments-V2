@@ -202,7 +202,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 JobId = jobId,
                 AcademicYear = academicYear,
                 CollectionPeriod = currentCollectionPeriod,
-                Percentage = (submissions.Sum(s => s.SubmissionMetrics.Total) / submissions.Sum(s => s.DcEarnings.Total)) * 100,
+                Percentage = Helpers.GetPercentage(submissions.Sum(s => s.SubmissionMetrics.Total), submissions.Sum(s => s.DcEarnings.Total)),
                 SubmissionMetrics = new ContractTypeAmountsVerbose
                 {
                     ContractType1 = submissions.Sum(s => s.SubmissionMetrics.ContractType1),
