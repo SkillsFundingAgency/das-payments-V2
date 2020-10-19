@@ -17,13 +17,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
     public class SubmissionsSummaryMetricsService : ISubmissionsSummaryMetricsService
     {
         private readonly IPaymentLogger logger;
-        private readonly ISubmissionMetricsRepository submissionRepository;
+        private readonly ISubmissionMetricsRepository submissionMetricsRepository;
         private readonly ITelemetry telemetry;
 
         public SubmissionsSummaryMetricsService(IPaymentLogger logger, ISubmissionMetricsRepository submissionMetricsRepository, ITelemetry telemetry)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.submissionRepository = submissionMetricsRepository ?? throw new ArgumentNullException(nameof(submissionMetricsRepository));
+            this.submissionMetricsRepository = submissionMetricsRepository ?? throw new ArgumentNullException(nameof(submissionMetricsRepository));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
@@ -35,7 +35,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
                 var stopwatch = Stopwatch.StartNew();
 
-                var metrics = await submissionRepository.GetSubmissionsSummaryMetrics(jobId, academicYear, collectionPeriod, cancellationToken);
+                var metrics = await submissionMetricsRepository.GetSubmissionsSummaryMetrics(jobId, academicYear, collectionPeriod, cancellationToken);
 
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -43,15 +43,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
                 logger.LogDebug($"finished getting data from databases for job: {jobId}, Took: {dataDuration}ms.");
 
-                await submissionRepository.SaveSubmissionsSummaryMetrics(metrics, cancellationToken);
+                await submissionMetricsRepository.SaveSubmissionsSummaryMetrics(metrics, cancellationToken);
                 
                 stopwatch.Stop();
 
                 SendTelemetry(metrics, stopwatch.ElapsedMilliseconds);
 
                 logger.LogInfo($"Finished building Submissions Summary Metrics for job: {jobId}, Academic year: {academicYear}, Collection period: {collectionPeriod}. Took: {stopwatch.ElapsedMilliseconds}ms");
-
-                throw new NotImplementedException();
             }
             catch (Exception e)
             {
