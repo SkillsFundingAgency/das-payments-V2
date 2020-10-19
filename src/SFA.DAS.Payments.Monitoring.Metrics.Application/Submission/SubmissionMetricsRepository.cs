@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
+using SFA.DAS.Payments.Monitoring.Metrics.Domain;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
@@ -194,8 +195,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
         public async Task<SubmissionsSummaryModel> GetSubmissionsSummaryMetrics(long jobId, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken)
         {
-            decimal GetPercentage(decimal amountA, decimal amountB) => amountA == amountB ? 100 : amountB > 0 ? (amountA / amountB) * 100 : 0;
-
             var submissions = await persistenceDataContext.SubmissionSummaries.Where(s => s.CollectionPeriod == currentCollectionPeriod && s.AcademicYear == academicYear).ToListAsync(cancellationToken: cancellationToken);
 
             return new SubmissionsSummaryModel
@@ -210,8 +209,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                     ContractType2 = submissions.Sum(s => s.SubmissionMetrics.ContractType2),
                     DifferenceContractType1 = submissions.Sum(s => s.SubmissionMetrics.DifferenceContractType1),
                     DifferenceContractType2 = submissions.Sum(s => s.SubmissionMetrics.DifferenceContractType2),
-                    PercentageContractType1 = GetPercentage(submissions.Sum(s => s.SubmissionMetrics.PercentageContractType1), submissions.Sum(s => s.DcEarnings.ContractType1)),
-                    PercentageContractType2 = GetPercentage(submissions.Sum(s => s.SubmissionMetrics.PercentageContractType2), submissions.Sum(s => s.DcEarnings.ContractType2)),
+                    PercentageContractType1 = Helpers.GetPercentage(submissions.Sum(s => s.SubmissionMetrics.PercentageContractType1), submissions.Sum(s => s.DcEarnings.ContractType1)),
+                    PercentageContractType2 = Helpers.GetPercentage(submissions.Sum(s => s.SubmissionMetrics.PercentageContractType2), submissions.Sum(s => s.DcEarnings.ContractType2)),
                 },
                 DcEarnings = new ContractTypeAmounts
                 {
@@ -224,8 +223,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                     ContractType2 = submissions.Sum(s => s.DasEarnings.ContractType2),
                     DifferenceContractType1 = submissions.Sum(s => s.DasEarnings.DifferenceContractType1),
                     DifferenceContractType2 = submissions.Sum(s => s.DasEarnings.DifferenceContractType2),
-                    PercentageContractType1 = GetPercentage(submissions.Sum(s => s.DasEarnings.PercentageContractType1), submissions.Sum(s => s.DcEarnings.ContractType1)),
-                    PercentageContractType2 = GetPercentage(submissions.Sum(s => s.DasEarnings.PercentageContractType2), submissions.Sum(s => s.DcEarnings.ContractType2)),
+                    PercentageContractType1 = Helpers.GetPercentage(submissions.Sum(s => s.DasEarnings.PercentageContractType1), submissions.Sum(s => s.DcEarnings.ContractType1)),
+                    PercentageContractType2 = Helpers.GetPercentage(submissions.Sum(s => s.DasEarnings.PercentageContractType2), submissions.Sum(s => s.DcEarnings.ContractType2)),
                 },
                 AdjustedDataLockedEarnings = submissions.Sum(s => s.AdjustedDataLockedEarnings),
                 TotalDataLockedEarnings = submissions.Sum(s => s.TotalDataLockedEarnings),
