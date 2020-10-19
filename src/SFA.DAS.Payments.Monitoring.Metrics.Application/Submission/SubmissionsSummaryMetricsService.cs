@@ -67,10 +67,57 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 { TelemetryKeys.AcademicYear, metrics.AcademicYear.ToString()},
             };
 
+            var submissionMetrics = metrics.SubmissionMetrics;
+            var dasEarnings = metrics.DasEarnings;
+            var dcEarnings = metrics.DcEarnings;
+
             var stats = new Dictionary<string, double>
             {
                 { "ReportGenerationDuration", reportGenerationDuration },
+                
+                { "Percentage" ,                              (double) submissionMetrics.Percentage },
+                { "ContractType1Percentage" ,                 (double) submissionMetrics.PercentageContractType1 },
+                { "ContractType2Percentage" ,                 (double) submissionMetrics.PercentageContractType2 },
+                                                              
+                { "DifferenceTotal" ,                         (double) submissionMetrics.DifferenceTotal },
+                { "DifferenceContractType1" ,                 (double) submissionMetrics.DifferenceContractType1 },
+                { "DifferenceContractType2" ,                 (double) submissionMetrics.DifferenceContractType2 },
+                                                              
+                { "DasEarningsPercentage" ,                   (double) dasEarnings.Percentage },
+                { "DasEarningsPercentageContractType1" ,      (double) dasEarnings.PercentageContractType1 },
+                { "DasEarningsPercentageContractType2" ,      (double) dasEarnings.PercentageContractType2 },
+                                                              
+                { "DasEarningsDifferenceTotal" ,              (double) dasEarnings.DifferenceTotal },
+                { "DasEarningsDifferenceContractType1" ,      (double) dasEarnings.DifferenceContractType1 },
+                { "DasEarningsDifferenceContractType2" ,      (double) dasEarnings.DifferenceContractType2 },
 
+                { "DasEarningsTotal" ,                        (double) dasEarnings.Total },
+                { "DasEarningsContractType1Total" ,           (double) dasEarnings.ContractType1 },
+                { "DasEarningsContractType2Total" ,           (double) dasEarnings.ContractType2 },
+                                                              
+                { "DcEarningsTotal" ,                         (double) dcEarnings.Total },
+                { "DcEarningsContractType1Total" ,            (double) dcEarnings.ContractType1 },
+                { "DcEarningsContractType2Total" ,            (double) dcEarnings.ContractType2 },
+                
+                { "DataLockedEarningsAmount" ,                (double) metrics.AdjustedDataLockedEarnings },
+                
+                { "DataLockedEarningsTotal" ,                 (double) metrics.TotalDataLockedEarnings },
+                
+                { "DataLockAmountAlreadyPaid" ,               (double) metrics.AlreadyPaidDataLockedEarnings },
+                
+                { "HeldBackCompletionPayments" ,              (double) metrics.HeldBackCompletionPayments.Total },
+                { "HeldBackCompletionPaymentsContractType1" , (double) metrics.HeldBackCompletionPayments.ContractType1 },
+                { "HeldBackCompletionPaymentsContractType2" , (double) metrics.HeldBackCompletionPayments.ContractType1 },
+
+                { "YearToDatePaymentsTotal" ,                 (double) metrics.YearToDatePayments.Total },
+                { "YearToDatePaymentsContractType1Total",     (double) metrics.YearToDatePayments.ContractType1 },
+                { "YearToDatePaymentsContractType2Total",     (double) metrics.YearToDatePayments.ContractType2 },
+                
+                { "RequiredPaymentsTotal" ,                   (double) metrics.RequiredPayments.Total },
+                { "RequiredPaymentsAct1Total" ,               (double) metrics.RequiredPayments.ContractType1 },
+                { "RequiredPaymentsAc2Total" ,                (double) metrics.RequiredPayments.ContractType2 },
+                
+                { "RequiredPaymentsDasEarningsPercentageComparison" ,  Math.Round(((double) (metrics.YearToDatePayments.Total + metrics.RequiredPayments.Total) / (double) metrics.DasEarnings.Total) * 100, 2) }
             };
 
             telemetry.TrackEvent("Finished Generating Submissions Summary Metrics", properties, stats);
