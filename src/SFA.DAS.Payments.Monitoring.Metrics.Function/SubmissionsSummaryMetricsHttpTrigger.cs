@@ -22,9 +22,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function
             short.TryParse(req.Query["academicYear"], out var academicYear);
             byte.TryParse(req.Query["collectionPeriod"], out var collectionPeriod);
 
-            await submissionsSummaryMetricsService.GenrateSubmissionsSummaryMetrics(jobId, academicYear, collectionPeriod, CancellationToken.None);
+            var result = await submissionsSummaryMetricsService.GenrateSubmissionsSummaryMetrics(jobId, academicYear, collectionPeriod, CancellationToken.None);
 
-            return new OkObjectResult("");
+            if (result == null)
+                return new NotFoundObjectResult("");
+
+            return new OkObjectResult(result);
         }
     }
 }

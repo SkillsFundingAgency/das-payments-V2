@@ -196,7 +196,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         public async Task<SubmissionsSummaryModel> GetSubmissionsSummaryMetrics(long jobId, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken)
         {
             var submissions = await persistenceDataContext.SubmissionSummaries.Where(s => s.CollectionPeriod == currentCollectionPeriod && s.AcademicYear == academicYear).ToListAsync(cancellationToken: cancellationToken);
-            
+
+            if (submissions == null || submissions.Count == 0) return null;
+
             var submissionMetricsContractType1 = submissions.Sum(s => s.SubmissionMetrics.ContractType1);
             var submissionMetricsContractType2 = submissions.Sum(s => s.SubmissionMetrics.ContractType2);
             
@@ -258,6 +260,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
         public async Task SaveSubmissionsSummaryMetrics(SubmissionsSummaryModel submissionsSummary, CancellationToken cancellationToken)
         {
+            if (submissionsSummary == null) return;
+
            await persistenceDataContext.SaveSubmissionsSummaryMetrics(submissionsSummary, cancellationToken);
         }
     }

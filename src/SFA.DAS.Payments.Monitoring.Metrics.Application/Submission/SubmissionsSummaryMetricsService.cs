@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 {
     public interface ISubmissionsSummaryMetricsService
     {
-        Task GenrateSubmissionsSummaryMetrics(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<SubmissionsSummaryModel> GenrateSubmissionsSummaryMetrics(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
     }
 
     public class SubmissionsSummaryMetricsService : ISubmissionsSummaryMetricsService
@@ -27,7 +27,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
-        public async Task GenrateSubmissionsSummaryMetrics(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        public async Task<SubmissionsSummaryModel> GenrateSubmissionsSummaryMetrics(long jobId, short academicYear,
+            byte collectionPeriod, CancellationToken cancellationToken)
         {
             try
             {
@@ -50,6 +51,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 SendTelemetry(metrics, stopwatch.ElapsedMilliseconds);
 
                 logger.LogInfo($"Finished building Submissions Summary Metrics for job: {jobId}, Academic year: {academicYear}, Collection period: {collectionPeriod}. Took: {stopwatch.ElapsedMilliseconds}ms");
+
+                return metrics;
             }
             catch (Exception e)
             {
@@ -60,6 +63,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
         private void SendTelemetry(SubmissionsSummaryModel metrics, long reportGenerationDuration)
         {
+            if (metrics == null) return;
+
             var properties = new Dictionary<string, string>
             {
                 { TelemetryKeys.JobId, metrics.JobId.ToString()},
