@@ -18,11 +18,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req, 
             ISubmissionsSummaryMetricsService submissionsSummaryMetricsService)
         {
-            string jobId = req.Query["jobId"];
-            short.TryParse(req.Query["collectionPeriod"], out var collectionPeriod);
+            long.TryParse(req.Query["jobId"], out var jobId);
             short.TryParse(req.Query["academicYear"], out var academicYear);
+            byte.TryParse(req.Query["collectionPeriod"], out var collectionPeriod);
 
-            await submissionsSummaryMetricsService.GenrateSubmissionsSummaryMetrics(jobId, collectionPeriod,academicYear, CancellationToken.None);
+            await submissionsSummaryMetricsService.GenrateSubmissionsSummaryMetrics(jobId, academicYear, collectionPeriod, CancellationToken.None);
 
             return new OkObjectResult("");
         }
