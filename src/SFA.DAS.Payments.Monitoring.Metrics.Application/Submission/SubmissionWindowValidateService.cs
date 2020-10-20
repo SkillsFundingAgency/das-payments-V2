@@ -42,6 +42,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
                 var metrics = submissionsSummary.GetMetrics(jobId, academicYear, collectionPeriod, submissionSummaries);
 
+                //(decimal lowerPercentage, decimal upperPercentage) = submissionMetricsRepository.GetPercentageTolerance(academicYear, collectionPeriod, cancellationToken);
+
                 submissionsSummary.CalculateIsWithinTolerance();
 
                 cancellationToken.ThrowIfCancellationRequested();

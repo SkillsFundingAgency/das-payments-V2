@@ -8,7 +8,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
     public interface ISubmissionsSummary
     {
         SubmissionsSummaryModel GetMetrics(long jobId, short academicYear, byte collectionPeriod, IList<SubmissionSummaryModel> submissions);
-        void CalculateIsWithinTolerance();
+        void CalculateIsWithinTolerance(decimal lowerTolarance = 99.92m,  decimal upperTolarance = 100.08m);
     }
 
     public class SubmissionsSummary : ISubmissionsSummary
@@ -80,11 +80,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
             return submissionsSummaryModel;
         }
 
-        public void CalculateIsWithinTolerance()
+        public void CalculateIsWithinTolerance(decimal lowerTolerance = 99.92m,  decimal upperTolerance = 100.08m)
         {
             if (submissionsSummaryModel == null) return;
 
-            submissionsSummaryModel.IsWithinTolerance = submissionsSummaryModel.Percentage > 99.92m && submissionsSummaryModel.Percentage < 100.08m;
+            submissionsSummaryModel.IsWithinTolerance = submissionsSummaryModel.Percentage > lowerTolerance && submissionsSummaryModel.Percentage < upperTolerance;
         }
     }
 }
