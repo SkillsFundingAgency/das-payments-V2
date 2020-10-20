@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
-using SFA.DAS.Payments.Monitoring.Metrics.Domain;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
@@ -24,7 +23,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         Task<ContractTypeAmounts> GetYearToDatePaymentsTotal(long ukprn, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken);
         Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken);
         
-        Task<SubmissionsSummaryModel> GetSubmissionsSummaryMetrics(long jobId, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken);
+        Task<IList<SubmissionSummaryModel>> GetSubmissionsSummaryMetrics(long jobId, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken);
         Task SaveSubmissionsSummaryMetrics(SubmissionsSummaryModel submissionSummary, CancellationToken cancellationToken);
     }
 
@@ -193,69 +192,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             await persistenceDataContext.Save(submissionSummary, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SubmissionsSummaryModel> GetSubmissionsSummaryMetrics(long jobId, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken)
+        public async Task<IList<SubmissionSummaryModel>> GetSubmissionsSummaryMetrics(long jobId, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken)
         {
             var submissions = await persistenceDataContext.SubmissionSummaries.Where(s => s.CollectionPeriod == currentCollectionPeriod && s.AcademicYear == academicYear).ToListAsync(cancellationToken: cancellationToken);
 
-            if (submissions == null || submissions.Count == 0) return null;
-
-            var submissionMetricsContractType1 = submissions.Sum(s => s.SubmissionMetrics.ContractType1);
-            var submissionMetricsContractType2 = submissions.Sum(s => s.SubmissionMetrics.ContractType2);
-            
-            var dcEarningsContractType1 = submissions.Sum(s => s.DcEarnings.ContractType1);
-            var dcEarningsContractType2 = submissions.Sum(s => s.DcEarnings.ContractType2);
-            
-            var dasEarningsContractType1 = submissions.Sum(s => s.DasEarnings.ContractType1);
-            var dasEarningsContractType2 = submissions.Sum(s => s.DasEarnings.ContractType2);
-            
-            return new SubmissionsSummaryModel
-            {
-                JobId = jobId,
-                AcademicYear = academicYear,
-                CollectionPeriod = currentCollectionPeriod,
-                Percentage = Helpers.GetPercentage(submissionMetricsContractType1 + submissionMetricsContractType2, dcEarningsContractType1 + dcEarningsContractType2),
-                SubmissionMetrics = new ContractTypeAmountsVerbose
-                {
-                    ContractType1 = submissionMetricsContractType1,
-                    ContractType2 = submissionMetricsContractType2,
-                    DifferenceContractType1 = submissionMetricsContractType1 - dcEarningsContractType1,
-                    DifferenceContractType2 = submissionMetricsContractType2 - dcEarningsContractType2,
-                    PercentageContractType1 = Helpers.GetPercentage(submissionMetricsContractType1, dcEarningsContractType1),
-                    PercentageContractType2 = Helpers.GetPercentage(submissionMetricsContractType2, dcEarningsContractType2),
-                },
-                DcEarnings = new ContractTypeAmounts
-                {
-                    ContractType1 = dcEarningsContractType1,
-                    ContractType2 = dcEarningsContractType2,
-                },
-                DasEarnings = new ContractTypeAmountsVerbose
-                {
-                    ContractType1 = dasEarningsContractType1,
-                    ContractType2 = dasEarningsContractType2,
-                    DifferenceContractType1 = dasEarningsContractType1 - dcEarningsContractType1,
-                    DifferenceContractType2 = dasEarningsContractType2 - dcEarningsContractType2,
-                    PercentageContractType1 = Helpers.GetPercentage(dasEarningsContractType1, dcEarningsContractType1),
-                    PercentageContractType2 = Helpers.GetPercentage(dasEarningsContractType2, dcEarningsContractType2),
-                },
-                AdjustedDataLockedEarnings = submissions.Sum(s => s.AdjustedDataLockedEarnings),
-                TotalDataLockedEarnings = submissions.Sum(s => s.TotalDataLockedEarnings),
-                AlreadyPaidDataLockedEarnings = submissions.Sum(s => s.AlreadyPaidDataLockedEarnings),
-                HeldBackCompletionPayments = new ContractTypeAmounts
-                {
-                    ContractType1 = submissions.Sum(s => s.HeldBackCompletionPayments.ContractType1),
-                    ContractType2 = submissions.Sum(s => s.HeldBackCompletionPayments.ContractType2),
-                },
-                RequiredPayments = new ContractTypeAmounts
-                {
-                    ContractType1 = submissions.Sum(s => s.RequiredPayments.ContractType1),
-                    ContractType2 = submissions.Sum(s => s.RequiredPayments.ContractType2),
-                },
-                YearToDatePayments = new ContractTypeAmounts
-                {
-                    ContractType1 = submissions.Sum(s => s.YearToDatePayments.ContractType1),
-                    ContractType2 = submissions.Sum(s => s.YearToDatePayments.ContractType2),
-                }
-            };
+            return submissions == null || submissions.Count == 0 ? null : submissions;
         }
 
         public async Task SaveSubmissionsSummaryMetrics(SubmissionsSummaryModel submissionsSummary, CancellationToken cancellationToken)
