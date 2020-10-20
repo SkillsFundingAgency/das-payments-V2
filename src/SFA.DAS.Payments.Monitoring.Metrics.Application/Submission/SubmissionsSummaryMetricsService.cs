@@ -27,8 +27,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
-        public async Task<SubmissionsSummaryModel> GenrateSubmissionsSummaryMetrics(long jobId, short academicYear,
-            byte collectionPeriod, CancellationToken cancellationToken)
+        public async Task<SubmissionsSummaryModel> GenrateSubmissionsSummaryMetrics(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
             try
             {
@@ -37,6 +36,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 var stopwatch = Stopwatch.StartNew();
 
                 var metrics = await submissionMetricsRepository.GetSubmissionsSummaryMetrics(jobId, academicYear, collectionPeriod, cancellationToken);
+                
+                CalculateIsWithinTolerance(metrics);
 
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -61,6 +62,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             }
         }
 
+        private void CalculateIsWithinTolerance(SubmissionsSummaryModel metrics)
+        {
+            metrics.IsWithinTolerance = metrics.Percentage > 99.92m && metrics.Percentage < 100.08m;
+        }
+
         private void SendTelemetry(SubmissionsSummaryModel metrics, long reportGenerationDuration)
         {
             if (metrics == null) return;
@@ -70,6 +76,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 { TelemetryKeys.JobId, metrics.JobId.ToString()},
                 { TelemetryKeys.CollectionPeriod, metrics.CollectionPeriod.ToString()},
                 { TelemetryKeys.AcademicYear, metrics.AcademicYear.ToString()},
+                { "IsWithinTolerance" , metrics.IsWithinTolerance.ToString() },
             };
 
             var submissionMetrics = metrics.SubmissionMetrics;

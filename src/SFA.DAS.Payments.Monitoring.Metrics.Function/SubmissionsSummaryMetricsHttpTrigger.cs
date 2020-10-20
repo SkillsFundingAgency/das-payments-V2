@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function
 
             var result = await submissionsSummaryMetricsService.GenrateSubmissionsSummaryMetrics(jobId, academicYear, collectionPeriod, CancellationToken.None);
 
-            if (result == null)
+            if (result == null || result.IsWithinTolerance == false)
                 return new NotFoundObjectResult("");
 
             return new OkObjectResult(result);

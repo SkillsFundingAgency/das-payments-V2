@@ -116,6 +116,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 { TelemetryKeys.JobId, _getSubmissionsSummaryMetricsResponse.JobId.ToString()},
                 { TelemetryKeys.CollectionPeriod, _getSubmissionsSummaryMetricsResponse.CollectionPeriod.ToString()},
                 { TelemetryKeys.AcademicYear, _getSubmissionsSummaryMetricsResponse.AcademicYear.ToString()},
+                { "IsWithinTolerance" , (_getSubmissionsSummaryMetricsResponse.Percentage > 99.92m && _getSubmissionsSummaryMetricsResponse.Percentage < 100.08m).ToString() },
             };
         }
 
