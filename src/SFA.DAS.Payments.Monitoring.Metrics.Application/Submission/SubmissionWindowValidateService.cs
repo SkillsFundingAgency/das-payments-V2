@@ -5,29 +5,32 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
+using SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 {
-    public interface ISubmissionsSummaryMetricsService
+    public interface ISubmissionWindowValidationService
     {
-        Task<SubmissionsSummaryModel> GenrateSubmissionsSummaryMetrics(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<SubmissionsSummaryModel> ValidateSubmissionWindow(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
     }
 
-    public class SubmissionsSummaryMetricsService : ISubmissionsSummaryMetricsService
+    public class SubmissionWindowValidationService : ISubmissionWindowValidationService
     {
         private readonly IPaymentLogger logger;
         private readonly ISubmissionMetricsRepository submissionMetricsRepository;
+        private readonly ISubmissionsSummary submissionsSummary;
         private readonly ITelemetry telemetry;
 
-        public SubmissionsSummaryMetricsService(IPaymentLogger logger, ISubmissionMetricsRepository submissionMetricsRepository, ITelemetry telemetry)
+        public SubmissionWindowValidationService(IPaymentLogger logger, ISubmissionMetricsRepository submissionMetricsRepository, ISubmissionsSummary submissionsSummary, ITelemetry telemetry)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.submissionMetricsRepository = submissionMetricsRepository ?? throw new ArgumentNullException(nameof(submissionMetricsRepository));
+            this.submissionsSummary = submissionsSummary ?? throw new ArgumentNullException(nameof(submissionsSummary));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
-        public async Task<SubmissionsSummaryModel> GenrateSubmissionsSummaryMetrics(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        public async Task<SubmissionsSummaryModel> ValidateSubmissionWindow(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
             try
             {
@@ -35,9 +38,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
                 var stopwatch = Stopwatch.StartNew();
 
-                var metrics = await submissionMetricsRepository.GetSubmissionsSummaryMetrics(jobId, academicYear, collectionPeriod, cancellationToken);
-                
-                CalculateIsWithinTolerance(metrics);
+                var submissionSummaries = await submissionMetricsRepository.GetSubmissionsSummaryMetrics(jobId, academicYear, collectionPeriod, cancellationToken);
+
+                var metrics = submissionsSummary.GetMetrics(jobId, academicYear, collectionPeriod, submissionSummaries);
+
+                submissionsSummary.CalculateIsWithinTolerance();
 
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -46,7 +51,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 logger.LogDebug($"finished getting data from databases for job: {jobId}, Took: {dataDuration}ms.");
 
                 await submissionMetricsRepository.SaveSubmissionsSummaryMetrics(metrics, cancellationToken);
-                
+
                 stopwatch.Stop();
 
                 SendTelemetry(metrics, stopwatch.ElapsedMilliseconds);
@@ -60,11 +65,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 logger.LogWarning($"Error building the Submissions Summary metrics report for job: {jobId}, Error: {e}");
                 throw;
             }
-        }
-
-        private void CalculateIsWithinTolerance(SubmissionsSummaryModel metrics)
-        {
-            metrics.IsWithinTolerance = metrics.Percentage > 99.92m && metrics.Percentage < 100.08m;
         }
 
         private void SendTelemetry(SubmissionsSummaryModel metrics, long reportGenerationDuration)
@@ -86,19 +86,19 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             var stats = new Dictionary<string, double>
             {
                 { "ReportGenerationDuration", reportGenerationDuration },
-                
+
                 { "Percentage" ,                              (double) submissionMetrics.Percentage },
                 { "ContractType1Percentage" ,                 (double) submissionMetrics.PercentageContractType1 },
                 { "ContractType2Percentage" ,                 (double) submissionMetrics.PercentageContractType2 },
-                                                              
+
                 { "DifferenceTotal" ,                         (double) submissionMetrics.DifferenceTotal },
                 { "DifferenceContractType1" ,                 (double) submissionMetrics.DifferenceContractType1 },
                 { "DifferenceContractType2" ,                 (double) submissionMetrics.DifferenceContractType2 },
-                                                              
+
                 { "DasEarningsPercentage" ,                   (double) dasEarnings.Percentage },
                 { "DasEarningsPercentageContractType1" ,      (double) dasEarnings.PercentageContractType1 },
                 { "DasEarningsPercentageContractType2" ,      (double) dasEarnings.PercentageContractType2 },
-                                                              
+
                 { "DasEarningsDifferenceTotal" ,              (double) dasEarnings.DifferenceTotal },
                 { "DasEarningsDifferenceContractType1" ,      (double) dasEarnings.DifferenceContractType1 },
                 { "DasEarningsDifferenceContractType2" ,      (double) dasEarnings.DifferenceContractType2 },
@@ -106,11 +106,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 { "DasEarningsTotal" ,                        (double) dasEarnings.Total },
                 { "DasEarningsContractType1Total" ,           (double) dasEarnings.ContractType1 },
                 { "DasEarningsContractType2Total" ,           (double) dasEarnings.ContractType2 },
-                                                              
+
                 { "DcEarningsTotal" ,                         (double) dcEarnings.Total },
                 { "DcEarningsContractType1Total" ,            (double) dcEarnings.ContractType1 },
                 { "DcEarningsContractType2Total" ,            (double) dcEarnings.ContractType2 },
-                
+
                 { "DataLockedEarnings" ,                      (double) metrics.TotalDataLockedEarnings },
                 { "DataLockedAlreadyPaidAmount" ,             (double) metrics.AlreadyPaidDataLockedEarnings },
                 { "DataLockedAdjustedAmount" ,                (double) metrics.AdjustedDataLockedEarnings },
@@ -122,11 +122,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 { "RequiredPaymentsTotal" ,                   (double) metrics.RequiredPayments.Total },
                 { "RequiredPaymentsAct1Total" ,               (double) metrics.RequiredPayments.ContractType1 },
                 { "RequiredPaymentsAc2Total" ,                (double) metrics.RequiredPayments.ContractType2 },
-                
+
                 { "YearToDatePaymentsTotal" ,                 (double) metrics.YearToDatePayments.Total },
                 { "YearToDatePaymentsContractType1Total",     (double) metrics.YearToDatePayments.ContractType1 },
                 { "YearToDatePaymentsContractType2Total",     (double) metrics.YearToDatePayments.ContractType2 },
-                
+
                 { "RequiredPaymentsDasEarningsPercentageComparison" ,  Math.Round(((double) (metrics.YearToDatePayments.Total + metrics.RequiredPayments.Total) / (double) metrics.DasEarnings.Total) * 100, 2) }
             };
 

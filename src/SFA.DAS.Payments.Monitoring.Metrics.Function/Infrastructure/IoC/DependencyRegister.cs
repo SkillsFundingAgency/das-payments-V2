@@ -4,9 +4,9 @@ using SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Function.Infrastructure.IoC
 {
-    public class DependencyInjectionConfig
+    public class DependencyRegister
     {
-        public DependencyInjectionConfig(string functionName)
+        public DependencyRegister(string functionName)
         {
             DependencyInjection.Initialize(RegisterModules, functionName);
         }

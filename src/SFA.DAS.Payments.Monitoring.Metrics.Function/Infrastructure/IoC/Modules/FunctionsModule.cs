@@ -7,7 +7,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.Infrastructure.IoC.Module
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<SubmissionsSummaryMetricsService>().As<ISubmissionsSummaryMetricsService>().InstancePerLifetimeScope();
+            builder.RegisterType<SubmissionWindowValidationService>().As<ISubmissionWindowValidationService>().InstancePerLifetimeScope();
         }
     }
 }
