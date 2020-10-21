@@ -369,9 +369,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PeriodEnd", "PeriodEnd", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.EarningEvents.EarningEventsService2021", "SFA.DAS.Payments.EarningEvents.EarningEventsService2021\SFA.DAS.Payments.EarningEvents.EarningEventsService2021.csproj", "{61E3BC96-0B10-4BD7-83AA-D5D4EE96F070}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Monitoring.Metrics.Data.UnitTests", "SFA.DAS.Payments.Monitoring.Metrics.Data.UnitTests\SFA.DAS.Payments.Monitoring.Metrics.Data.UnitTests.csproj", "{0F8FB2FA-637C-4CD1-AEB9-23481F273772}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.Metrics.Data.UnitTests", "SFA.DAS.Payments.Monitoring.Metrics.Data.UnitTests\SFA.DAS.Payments.Monitoring.Metrics.Data.UnitTests.csproj", "{0F8FB2FA-637C-4CD1-AEB9-23481F273772}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Monitoring.Metrics.Function", "SFA.DAS.Payments.Monitoring.Metrics.Function\SFA.DAS.Payments.Monitoring.Metrics.Function.csproj", "{B066C289-668C-4A26-86C4-745B33E328B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.Metrics.Function", "SFA.DAS.Payments.Monitoring.Metrics.Function\SFA.DAS.Payments.Monitoring.Metrics.Function.csproj", "{B066C289-668C-4A26-86C4-745B33E328B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function
         [FunctionName("ValidateSubmissionWindow")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
-            ISubmissionWindowValidationService submissionWindowValidationService)
+            [Inject] ISubmissionWindowValidationService submissionWindowValidationService)
         {
             long.TryParse(req.Query["jobId"], out var jobId);
             short.TryParse(req.Query["academicYear"], out var academicYear);

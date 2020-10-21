@@ -15,7 +15,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.Infrastructure.IoC.Module
                     var configHelper = c.Resolve<IConfigurationHelper>();
                     return new SubmissionMetricsConfiguration
                     {
-                        PaymentsMetricsConnectionString = configHelper.GetSetting("PaymentsMetricsConnectionString"),
                         PaymentsConnectionString = configHelper.GetSetting("PaymentsConnectionString")
                     };
                 })
