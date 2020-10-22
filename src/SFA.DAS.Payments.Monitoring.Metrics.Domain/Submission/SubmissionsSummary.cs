@@ -27,13 +27,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
             
             var dasEarningsContractType1 = submissions.Sum(s => s.DasEarnings.ContractType1);
             var dasEarningsContractType2 = submissions.Sum(s => s.DasEarnings.ContractType2);
-            
+            var percentage = Helpers.GetPercentage(submissionMetricsContractType1 + submissionMetricsContractType2, dcEarningsContractType1 + dcEarningsContractType2);
+
             submissionsSummaryModel = new SubmissionsSummaryModel
             {
                 JobId = jobId,
                 AcademicYear = academicYear,
                 CollectionPeriod = collectionPeriod,
-                Percentage = Helpers.GetPercentage(submissionMetricsContractType1 + submissionMetricsContractType2, dcEarningsContractType1 + dcEarningsContractType2),
+                Percentage = percentage,
                 SubmissionMetrics = new ContractTypeAmountsVerbose
                 {
                     ContractType1 = submissionMetricsContractType1,
@@ -42,6 +43,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
                     DifferenceContractType2 = submissionMetricsContractType2 - dcEarningsContractType2,
                     PercentageContractType1 = Helpers.GetPercentage(submissionMetricsContractType1, dcEarningsContractType1),
                     PercentageContractType2 = Helpers.GetPercentage(submissionMetricsContractType2, dcEarningsContractType2),
+                    Percentage = percentage,
                 },
                 DcEarnings = new ContractTypeAmounts
                 {
