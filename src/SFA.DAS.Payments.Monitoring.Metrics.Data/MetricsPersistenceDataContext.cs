@@ -116,7 +116,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                     Delete 
                         From [Metrics].[SubmissionsSummary] 
                     Where 
-                        And AcademicYear = {submissionsSummary.AcademicYear}
+                        AcademicYear = {submissionsSummary.AcademicYear}
                         And CollectionPeriod = {submissionsSummary.CollectionPeriod}
                     "
                     , cancellationToken);
