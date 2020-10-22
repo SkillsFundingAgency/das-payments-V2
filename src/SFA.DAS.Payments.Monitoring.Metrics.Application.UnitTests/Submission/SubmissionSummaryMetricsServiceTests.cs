@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
+using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
 {
@@ -35,6 +36,28 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             await fixture.GenerateSubmissionsSummaryMetrics();
 
             fixture.Verify_GetSubmissionSummaryMetrics_IsCalled();
+        }
+
+        [Test]
+        public async Task WhenGeneratingSubmissionSummaryMetrics_ThenGetsCollectionPeriodTolerance()
+        {
+            fixture.With_Returning_Mock_SubmissionSummary();
+
+            await fixture.GenerateSubmissionsSummaryMetrics();
+
+            fixture.Verify_GetCollectionPeriodTolerance_WasCalled();
+        }
+
+        [Test]
+        public async Task WhenGeneratingSubmissionSummaryMetrics_ThenCalculatesIfSubmissionIsWithinTolerance()
+        {
+            fixture
+                .With_Returning_Mock_SubmissionSummary()
+                .With_SubmissionMetricsRepository_ReturningCollectionPeriodTolerance();
+
+            await fixture.GenerateSubmissionsSummaryMetrics();
+
+            fixture.Verify_CalculateIsWithinTolerance_WasCalled();
         }
 
         [Test]
@@ -101,6 +124,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
 
         private readonly List<SubmissionSummaryModel> getSubmissionsSummaryMetricsResponse;
         private readonly SubmissionsSummaryModel getMetricsResponse;
+        private readonly Mock<CollectionPeriodToleranceModel> getCollectionPeriodToleranceResponse;
         private readonly Dictionary<string, string> submissionsSummaryModelTelemetryProperties;
 
         public SubmissionSummaryMetricsServiceFixture()
@@ -160,6 +184,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 { TelemetryKeys.AcademicYear, academicYear.ToString()},
                 { "IsWithinTolerance" , (getMetricsResponse.Percentage > 99.92m && getMetricsResponse.Percentage < 100.08m).ToString() },
             };
+
+            getCollectionPeriodToleranceResponse = new Mock<CollectionPeriodToleranceModel>();
         }
 
         public Task<SubmissionsSummaryModel> GenerateSubmissionsSummaryMetrics() => sut.ValidateSubmissionWindow(jobId, academicYear, collectionPeriod, It.IsAny<CancellationToken>());
@@ -202,6 +228,16 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             return this;
         }
 
+        public SubmissionSummaryMetricsServiceFixture With_SubmissionMetricsRepository_ReturningCollectionPeriodTolerance()
+        {
+            submissionMetricsRepository
+                .Setup(x => x.GetCollectionPeriodTolerance(collectionPeriod, academicYear,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(getCollectionPeriodToleranceResponse.Object);
+            
+            return this;
+        }
+
         public void Verify_GetSubmissionSummaryMetrics_IsCalled()
         {
             submissionMetricsRepository
@@ -224,6 +260,18 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
         {
             logger
                 .Verify(x => x.LogInfo(It.IsRegex($".*{jobId}.*{academicYear}.*{collectionPeriod}.*\\d*ms"), It.IsAny<object[]>(), It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()), Times.Once);
+        }
+
+        public void Verify_GetCollectionPeriodTolerance_WasCalled()
+        {
+            submissionMetricsRepository
+                .Verify(x => x.GetCollectionPeriodTolerance(collectionPeriod, academicYear, It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        public void Verify_CalculateIsWithinTolerance_WasCalled()
+        {
+            submissionsSummary
+                .Verify(x => x.CalculateIsWithinTolerance(getCollectionPeriodToleranceResponse.Object.SubmissionToleranceLower, getCollectionPeriodToleranceResponse.Object.SubmissionToleranceUpper));
         }
 
         public void Verify_SubmissionsSummaryMetricsTelemetry_TrackEvent_IsCalled()
