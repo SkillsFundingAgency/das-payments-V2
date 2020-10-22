@@ -8,6 +8,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd
     {
 		public int Id { get; set; }
 		public byte CollectionPeriod { get; set; }
+		public short AcademicYear { get; set; }
 		public decimal SubmissionToleranceLower { get; set; }
 		public decimal SubmissionToleranceUpper { get; set; }
 		public decimal PeriodEndToleranceLower { get; set; }
