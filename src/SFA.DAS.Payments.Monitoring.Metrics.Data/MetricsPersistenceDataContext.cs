@@ -12,6 +12,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
     public interface IMetricsPersistenceDataContext
     {
         DbSet<SubmissionSummaryModel> SubmissionSummaries { get; set; }
+        DbSet<CollectionPeriodToleranceModel> CollectionPeriodTolerances { get; set; }
 
         Task Save(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken);
         Task SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, PeriodEndSummaryModel overallPeriodEndSummary, CancellationToken cancellationToken);
