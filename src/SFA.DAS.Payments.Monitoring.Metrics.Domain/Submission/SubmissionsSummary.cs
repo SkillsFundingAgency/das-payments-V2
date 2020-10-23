@@ -58,6 +58,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
                     DifferenceContractType2 = dasEarningsContractType2 - dcEarningsContractType2,
                     PercentageContractType1 = Helpers.GetPercentage(dasEarningsContractType1, dcEarningsContractType1),
                     PercentageContractType2 = Helpers.GetPercentage(dasEarningsContractType2, dcEarningsContractType2),
+                    Percentage = Helpers.GetPercentage(dasEarningsContractType1 + dasEarningsContractType2, dcEarningsContractType1 + dcEarningsContractType2),
                 },
                 AdjustedDataLockedEarnings = submissions.Sum(s => s.AdjustedDataLockedEarnings),
                 TotalDataLockedEarnings = submissions.Sum(s => s.TotalDataLockedEarnings),

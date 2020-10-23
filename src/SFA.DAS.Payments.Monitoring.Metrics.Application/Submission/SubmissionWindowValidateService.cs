@@ -119,7 +119,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
                 { "HeldBackCompletionPaymentsTotal" ,         (double) metrics.HeldBackCompletionPayments.Total },
                 { "HeldBackCompletionPaymentsContractType1" , (double) metrics.HeldBackCompletionPayments.ContractType1 },
-                { "HeldBackCompletionPaymentsContractType2" , (double) metrics.HeldBackCompletionPayments.ContractType1 },
+                { "HeldBackCompletionPaymentsContractType2" , (double) metrics.HeldBackCompletionPayments.ContractType2 },
 
                 { "RequiredPaymentsTotal" ,                   (double) metrics.RequiredPayments.Total },
                 { "RequiredPaymentsAct1Total" ,               (double) metrics.RequiredPayments.ContractType1 },
