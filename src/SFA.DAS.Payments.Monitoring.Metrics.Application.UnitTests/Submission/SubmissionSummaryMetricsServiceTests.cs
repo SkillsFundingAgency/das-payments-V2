@@ -259,7 +259,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
 
                    y["HeldBackCompletionPaymentsTotal"] == (double)getMetricsResponse.HeldBackCompletionPayments.Total &&
                    y["HeldBackCompletionPaymentsContractType1"] == (double)getMetricsResponse.HeldBackCompletionPayments.ContractType1 &&
-                   y["HeldBackCompletionPaymentsContractType2"] == (double)getMetricsResponse.HeldBackCompletionPayments.ContractType1 &&
+                   y["HeldBackCompletionPaymentsContractType2"] == (double)getMetricsResponse.HeldBackCompletionPayments.ContractType2 &&
 
                    y["RequiredPaymentsTotal"] == (double)getMetricsResponse.RequiredPayments.Total &&
                    y["RequiredPaymentsAct1Total"] == (double)getMetricsResponse.RequiredPayments.ContractType1 &&
