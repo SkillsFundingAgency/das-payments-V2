@@ -20,25 +20,24 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         Task<ContractTypeAmounts> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId, CancellationToken cancellationToken);
         Task<decimal> GetAlreadyPaidDataLockedEarnings(long ukprn, long jobId, CancellationToken cancellationToken);
         Task<List<TransactionTypeAmounts>> GetRequiredPayments(long ukprn, long jobId, CancellationToken cancellationToken);
-
-        Task<ContractTypeAmounts> GetYearToDatePaymentsTotal(long ukprn, short academicYear,
-            byte currentCollectionPeriod, CancellationToken cancellationToken);
+        Task<ContractTypeAmounts> GetYearToDatePaymentsTotal(long ukprn, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken);
         Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken);
     }
 
     public class SubmissionMetricsRepository : ISubmissionMetricsRepository
     {
         private readonly IMetricsPersistenceDataContext persistenceDataContext;
-        private readonly IMetricsQueryDataContext queryDataContext;
+        private readonly IMetricsQueryDataContextFactory metricsQueryDataContextFactory;
         private readonly IPaymentLogger logger;
 
-        public SubmissionMetricsRepository(
-            IMetricsPersistenceDataContext persistenceDataContext, IMetricsQueryDataContext queryDataContext, IPaymentLogger logger)
+        private IMetricsQueryDataContext QueryDataContext => metricsQueryDataContextFactory.Create();
+
+        public SubmissionMetricsRepository(IMetricsPersistenceDataContext persistenceDataContext, IMetricsQueryDataContextFactory metricsQueryDataContextFactory, IPaymentLogger logger)
         {
             this.persistenceDataContext = persistenceDataContext ?? throw new ArgumentNullException(nameof(persistenceDataContext));
-            this.queryDataContext = queryDataContext ?? throw new ArgumentNullException(nameof(queryDataContext));
+            this.metricsQueryDataContextFactory = metricsQueryDataContextFactory ?? throw new ArgumentNullException(nameof(metricsQueryDataContextFactory));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.queryDataContext.SetTimeout(TimeSpan.FromSeconds(270));//TODO: use config
+
             //((IMetricsQueryDataContext)queryDataContext).ConfigureLogging(LogSql, LoggingCategories.SQL);  ////TODO: DO NOT DELETE UNTIL THIS CAN BE CONFIGURED IN CONFIG
         }
 
@@ -50,7 +49,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
         public async Task<List<TransactionTypeAmounts>> GetDasEarnings(long ukprn, long jobId, CancellationToken cancellationToken)
         {
-            var transactionAmounts = await queryDataContext.EarningEventPeriods
+            var transactionAmounts = await QueryDataContext.EarningEventPeriods
                 .AsNoTracking()
                 .Where(ee => ee.Amount != 0 && ee.EarningEvent.Ukprn == ukprn && ee.EarningEvent.JobId == jobId)
                 .GroupBy(eep => new { eep.EarningEvent.ContractType, eep.TransactionType })
@@ -89,25 +88,25 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
         public async Task<DataLockTypeCounts> GetDataLockedEarnings(long ukprn, long jobId, CancellationToken cancellationToken)
         {
-            return await queryDataContext.GetDataLockCounts(ukprn, jobId, cancellationToken).ConfigureAwait(false);
+            return await QueryDataContext.GetDataLockCounts(ukprn, jobId, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<decimal> GetDataLockedEarningsTotal(long ukprn, long jobId, CancellationToken cancellationToken)
         {
-            return await queryDataContext.DataLockEventNonPayablePeriods
+            return await QueryDataContext.DataLockEventNonPayablePeriods
                 .Where(period => period.Amount != 0 && period.DataLockEvent.Ukprn == ukprn && period.DataLockEvent.JobId == jobId)
                 .SumAsync(period => period.Amount, cancellationToken);
         }
 
         public async Task<decimal> GetAlreadyPaidDataLockedEarnings(long ukprn, long jobId, CancellationToken cancellationToken)
         {
-            return await queryDataContext.GetAlreadyPaidDataLocksAmount(ukprn, jobId, cancellationToken)
+            return await QueryDataContext.GetAlreadyPaidDataLocksAmount(ukprn, jobId, cancellationToken)
                 .ConfigureAwait(false);
         }
 
         public async Task<ContractTypeAmounts> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId, CancellationToken cancellationToken)
         {
-            var amounts = await queryDataContext.RequiredPaymentEvents
+            var amounts = await QueryDataContext.RequiredPaymentEvents
                 .AsNoTracking()
                 .Where(rp =>
                     rp.Ukprn == ukprn && rp.JobId == jobId && rp.NonPaymentReason != null && rp.NonPaymentReason == NonPaymentReason.InsufficientEmployerContribution)
@@ -129,7 +128,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
         public async Task<List<TransactionTypeAmounts>> GetRequiredPayments(long ukprn, long jobId, CancellationToken cancellationToken)
         {
-            var transactionAmounts = await queryDataContext.RequiredPaymentEvents
+            var transactionAmounts = await QueryDataContext.RequiredPaymentEvents
                 .AsNoTracking()
                 .Where(rp => rp.Ukprn == ukprn && rp.JobId == jobId && rp.NonPaymentReason == null)
                 .GroupBy(rp => new { rp.ContractType, rp.TransactionType })
@@ -168,7 +167,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
         public async Task<ContractTypeAmounts> GetYearToDatePaymentsTotal(long ukprn, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken)
         {
-            var amounts = await queryDataContext.Payments
+            var amounts = await QueryDataContext.Payments
                 .AsNoTracking()
                 .Where(p => p.Ukprn == ukprn &&
                             p.CollectionPeriod.AcademicYear == academicYear &&

@@ -8,13 +8,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
     public class TestsHelper
     {
         public static SubmissionSummary DefaultSubmissionSummary => new SubmissionSummary(1234, 123, 1, 1920);
-        public static (List<TransactionTypeAmounts> DcEarnings, List<TransactionTypeAmounts> DasEarnings)
-            DefaultEarnings()
-        {
-            return (DcEarnings: DefaultDcEarnings, DasEarnings: DefaultDasEarnings);
-        }
-
-
+        
         public static List<TransactionTypeAmounts> DefaultDcEarnings =>
             new List<TransactionTypeAmounts>
             {
@@ -100,6 +94,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
                 TransactionType15 = 200,
                 TransactionType16 = 200,            }
         };
+        
         public static decimal DefaultDataLockedTotal => 4000;
         public static decimal AlreadyPaidDataLockedEarnings => 1000;
 
@@ -109,8 +104,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
             DataLock7 = 2000,
             DataLock4 = 1000
         };
-        public static ContractTypeAmounts DefaultHeldBackCompletionPayments => new ContractTypeAmounts { ContractType1 = 2000, ContractType2 = 1000 };
 
+        public static ContractTypeAmounts DefaultHeldBackCompletionPayments => new ContractTypeAmounts { ContractType1 = 2000, ContractType2 = 1000 };
 
         public static List<TransactionTypeAmounts> DefaultRequiredPayments => new List<TransactionTypeAmounts>
             {
@@ -157,7 +152,5 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
             };
 
         public static ContractTypeAmounts DefaultYearToDateAmounts => new ContractTypeAmounts{ContractType1 = 16300, ContractType2 = 16300};
-
-
     }
 }

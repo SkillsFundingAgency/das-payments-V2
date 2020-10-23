@@ -46,7 +46,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
             yearToDatePayments = new ContractTypeAmounts();
         }
 
-        public virtual void AddEarnings(List<TransactionTypeAmounts> dcEarningTransactionTypeAmounts, List<TransactionTypeAmounts> dasEarningTransactionTypeAmounts)
+        public virtual void AddEarnings(List<TransactionTypeAmounts> dcEarningTransactionTypeAmounts,
+            List<TransactionTypeAmounts> dasEarningTransactionTypeAmounts)
         {
             dcEarnings.Clear();
             dcEarnings.AddRange(dcEarningTransactionTypeAmounts);
@@ -54,7 +55,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
             dasEarnings.AddRange(dasEarningTransactionTypeAmounts);
         }
 
-        public virtual void AddDataLockTypeCounts(decimal total, DataLockTypeCounts dataLockedCounts, decimal alreadyPaidDataLockedEarnings)
+        public virtual void AddDataLockTypeCounts(decimal total, DataLockTypeCounts dataLockedCounts,
+            decimal alreadyPaidDataLockedEarnings)
         {
             actualTotalDataLocked = total;
             dataLocked = dataLockedCounts ?? throw new ArgumentNullException(nameof(dataLockedCounts));
@@ -63,12 +65,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
 
         public virtual void AddHeldBackCompletionPayments(ContractTypeAmounts heldBackCompletionPaymentAmounts)
         {
-            heldBackCompletionPayments = heldBackCompletionPaymentAmounts ?? throw new ArgumentNullException(nameof(heldBackCompletionPaymentAmounts));
+            heldBackCompletionPayments = heldBackCompletionPaymentAmounts ??
+                                         throw new ArgumentNullException(nameof(heldBackCompletionPaymentAmounts));
         }
 
         public virtual void AddRequiredPayments(List<TransactionTypeAmounts> requiredPaymentAmounts)
         {
-            requiredPayments = requiredPaymentAmounts ?? throw new ArgumentNullException(nameof(requiredPaymentAmounts));
+            requiredPayments = requiredPaymentAmounts ??
+                               throw new ArgumentNullException(nameof(requiredPaymentAmounts));
         }
 
         public virtual void AddYearToDatePaymentTotals(ContractTypeAmounts yearToDateAmounts)
@@ -87,8 +91,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
                 DcEarnings = GetDcEarnings(),
                 AlreadyPaidDataLockedEarnings = alreadyPaidDataLocked,
                 TotalDataLockedEarnings = actualTotalDataLocked,
-                DataLockedEarnings = actualTotalDataLocked - alreadyPaidDataLocked,
-                DataLockMetrics = new List<DataLockCountsModel> { new DataLockCountsModel { Amounts = dataLocked } },
+                AdjustedDataLockedEarnings = actualTotalDataLocked - alreadyPaidDataLocked,
+                DataLockMetrics = new List<DataLockCountsModel> {new DataLockCountsModel {Amounts = dataLocked}},
                 HeldBackCompletionPayments = heldBackCompletionPayments,
                 YearToDatePayments = yearToDatePayments,
                 RequiredPayments = GetRequiredPayments(),
@@ -114,8 +118,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
         private ContractTypeAmountsVerbose GetDcEarnings()
         {
             var contractTypes = dcEarnings.GroupBy(earning => earning.ContractType)
-                    .Select(g => new { ContractType = g.Key, Amount = g.Sum(x => x.Total) })
-                    .ToList();
+                .Select(g => new {ContractType = g.Key, Amount = g.Sum(x => x.Total)})
+                .ToList();
             var result = new ContractTypeAmountsVerbose
             {
                 ContractType1 = contractTypes.FirstOrDefault(x => x.ContractType == ContractType.Act1)?.Amount ?? 0,
@@ -128,7 +132,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
         private ContractTypeAmountsVerbose GetDasEarnings(decimal dcContractTpe1, decimal dcContractTpe2)
         {
             var contractTypes = dasEarnings.GroupBy(earning => earning.ContractType)
-                    .Select(g => new { ContractType = g.Key, Amount = g.Sum(x => x.Total) })
+                    .Select(g => new {ContractType = g.Key, Amount = g.Sum(x => x.Total)})
                     .ToList()
                 ;
             var result = new ContractTypeAmountsVerbose
@@ -138,8 +142,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
             };
             result.DifferenceContractType1 = result.ContractType1 - dcContractTpe1;
             result.DifferenceContractType2 = result.ContractType2 - dcContractTpe2;
-            result.PercentageContractType1 = GetPercentage(result.ContractType1, dcContractTpe1); 
-            result.PercentageContractType2 = GetPercentage(result.ContractType2, dcContractTpe2); 
+            result.PercentageContractType1 = Helpers.GetPercentage(result.ContractType1, dcContractTpe1);
+            result.PercentageContractType2 = Helpers.GetPercentage(result.ContractType2, dcContractTpe2);
+            result.Percentage = Helpers.GetPercentage(result.Total, dcContractTpe1 + dcContractTpe2);
             return result;
         }
 
@@ -166,7 +171,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
             {
                 ContractType1 = submissionSummary.YearToDatePayments.ContractType1 +
                                 submissionSummary.RequiredPayments.ContractType1 +
-                                submissionSummary.DataLockedEarnings +
+                                submissionSummary.AdjustedDataLockedEarnings +
                                 submissionSummary.HeldBackCompletionPayments.ContractType1,
                 ContractType2 = submissionSummary.YearToDatePayments.ContractType2 +
                                 submissionSummary.RequiredPayments.ContractType2 +
@@ -176,11 +181,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
                 submissionMetrics.ContractType1 - submissionSummary.DcEarnings.ContractType1;
             submissionMetrics.DifferenceContractType2 =
                 submissionMetrics.ContractType2 - submissionSummary.DcEarnings.ContractType2;
-            submissionMetrics.PercentageContractType1 = GetPercentage(submissionMetrics.ContractType1, submissionSummary.DcEarnings.ContractType1);
-            submissionMetrics.PercentageContractType2 = GetPercentage(submissionMetrics.ContractType2, submissionSummary.DcEarnings.ContractType2);
+            submissionMetrics.PercentageContractType1 = Helpers.GetPercentage(submissionMetrics.ContractType1,
+                submissionSummary.DcEarnings.ContractType1);
+            submissionMetrics.PercentageContractType2 = Helpers.GetPercentage(submissionMetrics.ContractType2,
+                submissionSummary.DcEarnings.ContractType2);
+            submissionMetrics.Percentage = Helpers.GetPercentage(submissionMetrics.Total, submissionSummary.DcEarnings.Total);
             return submissionMetrics;
         }
-
-        private static decimal GetPercentage(decimal amount, decimal total) => amount == total ? 100 : total > 0 ? (amount / total) * 100 : 0;
     }
 }
