@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Data.UnitTests.MetricsPersistenceDataContextTests
 {
@@ -37,7 +38,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.UnitTests.MetricsPersistenceD
         {
             var result = await fixture.GetSubmissionsSummaryMetrics();
 
-            Assert.True(result is null);
+            result.Should().BeNull();
         }
     }
 
@@ -94,9 +95,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.UnitTests.MetricsPersistenceD
 
         public void Assert_MatchingSubmissionSummaries_AreReturned(IList<SubmissionSummaryModel> result)
         {
-            Assert.True(result.Count == matchingSubmissionSummaries.Count);
-            matchingSubmissionSummaries.ForEach(x => Assert.True(result.Contains(x)));
-            nonMatchingSubmissionSummaries.ForEach(x => Assert.False(result.Contains(x)));
+            result.Count.Should().Be(matchingSubmissionSummaries.Count);
+            matchingSubmissionSummaries.ForEach(x => result.Should().Contain(x));
+            nonMatchingSubmissionSummaries.ForEach(x => result.Should().NotContain(x));
         }
     }
 }

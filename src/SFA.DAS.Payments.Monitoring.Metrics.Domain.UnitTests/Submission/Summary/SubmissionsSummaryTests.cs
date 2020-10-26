@@ -5,6 +5,7 @@ using SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summary
 {
@@ -107,7 +108,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
 
         public void Assert_IsWithinToleranceSetTo(bool isWithinTolerance)
         {
-            Assert.True(getMetricsSubmissionsSummaryResult.IsWithinTolerance == isWithinTolerance);
+            getMetricsSubmissionsSummaryResult.IsWithinTolerance.Should().Be(isWithinTolerance);
         }
     }
 }

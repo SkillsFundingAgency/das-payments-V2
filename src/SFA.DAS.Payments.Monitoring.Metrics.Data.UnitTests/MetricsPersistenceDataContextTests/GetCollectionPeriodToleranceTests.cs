@@ -7,6 +7,7 @@ using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Data.UnitTests.MetricsPersistenceDataContextTests
 {
@@ -38,7 +39,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.UnitTests.MetricsPersistenceD
 
             var result = await fixture.Act();
 
-            Assert.True(result is null);
+            result.Should().BeNull();
         }
 
         [Test]
@@ -46,7 +47,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.UnitTests.MetricsPersistenceD
         {
             var result = await fixture.Act();
 
-            Assert.True(result is null);
+            result.Should().BeNull();
         }
     }
 
@@ -98,9 +99,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.UnitTests.MetricsPersistenceD
 
         public void Assert_CorrectMatchingModelIsReturned(CollectionPeriodToleranceModel result)
         {
-            Assert.AreSame(matchingCollectionPeriodToleranceModel, result);
-            Assert.True(matchingCollectionPeriodToleranceModel.AcademicYear == result.AcademicYear);
-            Assert.True(matchingCollectionPeriodToleranceModel.CollectionPeriod == result.CollectionPeriod);
+            matchingCollectionPeriodToleranceModel.Should().BeSameAs(result);
+            matchingCollectionPeriodToleranceModel.AcademicYear.Should().Be(result.AcademicYear);
+            matchingCollectionPeriodToleranceModel.CollectionPeriod.Should().Be(result.CollectionPeriod);
         }
     }
 }
