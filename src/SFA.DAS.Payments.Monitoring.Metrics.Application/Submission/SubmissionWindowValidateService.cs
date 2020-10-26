@@ -97,6 +97,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 { "DifferenceContractType1" ,                 (double) submissionMetrics.DifferenceContractType1 },
                 { "DifferenceContractType2" ,                 (double) submissionMetrics.DifferenceContractType2 },
 
+                { "ContractAmountTotal" ,                     (double) submissionMetrics.Total },
+                { "ContractType1Amount" ,                     (double) submissionMetrics.ContractType1 },
+                { "ContractType2Amount" ,                     (double) submissionMetrics.ContractType2 },
+
                 { "DasEarningsPercentage" ,                   (double) dasEarnings.Percentage },
                 { "DasEarningsPercentageContractType1" ,      (double) dasEarnings.PercentageContractType1 },
                 { "DasEarningsPercentageContractType2" ,      (double) dasEarnings.PercentageContractType2 },

@@ -277,13 +277,18 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
         {
             telemetry
                 .Verify(x => x.TrackEvent("Finished Generating Submissions Summary Metrics",
-                    submissionsSummaryModelTelemetryProperties, It.Is<Dictionary<string, double>>(y => y["Percentage"] == (double)getMetricsResponse.SubmissionMetrics.Percentage &&
+                    submissionsSummaryModelTelemetryProperties, It.Is<Dictionary<string, double>>(y => 
+                   y["Percentage"] == (double)getMetricsResponse.SubmissionMetrics.Percentage &&
                    y["ContractType1Percentage"] == (double)getMetricsResponse.SubmissionMetrics.PercentageContractType1 &&
                    y["ContractType2Percentage"] == (double)getMetricsResponse.SubmissionMetrics.PercentageContractType2 &&
 
                    y["DifferenceTotal"] == (double)getMetricsResponse.SubmissionMetrics.DifferenceTotal &&
                    y["DifferenceContractType1"] == (double)getMetricsResponse.SubmissionMetrics.DifferenceContractType1 &&
                    y["DifferenceContractType2"] == (double)getMetricsResponse.SubmissionMetrics.DifferenceContractType2 &&
+
+                   y["ContractAmountTotal"] == (double)getMetricsResponse.SubmissionMetrics.Total &&
+                   y["ContractType1Amount"] == (double)getMetricsResponse.SubmissionMetrics.ContractType1 &&
+                   y["ContractType2Amount"] == (double)getMetricsResponse.SubmissionMetrics.ContractType2 &&
 
                    y["DasEarningsPercentage"] == (double)getMetricsResponse.DasEarnings.Percentage &&
                    y["DasEarningsPercentageContractType1"] == (double)getMetricsResponse.DasEarnings.PercentageContractType1 &&
