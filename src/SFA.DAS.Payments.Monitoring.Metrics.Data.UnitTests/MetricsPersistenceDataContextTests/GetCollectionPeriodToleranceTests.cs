@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace SFA.DAS.Payments.Monitoring.Metrics.Data.UnitTests.MetricsPersistenceDataContextTests
 {
     [TestFixture]
-    public class GetCollectionPeriodToleranceTest
+    public class GetCollectionPeriodToleranceTests
     {
         private GetCollectionPeriodToleranceFixture fixture;
 
