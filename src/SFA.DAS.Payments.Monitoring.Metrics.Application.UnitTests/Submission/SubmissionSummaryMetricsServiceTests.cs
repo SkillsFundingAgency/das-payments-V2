@@ -7,7 +7,6 @@ using SFA.DAS.Payments.Monitoring.Metrics.Application.Submission;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -151,30 +150,30 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                     SubmissionMetrics = new ContractTypeAmountsVerbose {ContractType1 = 100, ContractType2 = 100},
                     DcEarnings = new ContractTypeAmounts {ContractType1 = 200, ContractType2 = 200},
                     DasEarnings = new ContractTypeAmountsVerbose {ContractType1 = 100, ContractType2 = 100},
-                    TotalDataLockedEarnings = 0,
-                    AlreadyPaidDataLockedEarnings = 0,
+                    TotalDataLockedEarnings = 1,
+                    AlreadyPaidDataLockedEarnings = 2,
                     AdjustedDataLockedEarnings = 0,
                     RequiredPayments = new ContractTypeAmounts {ContractType1 = 100, ContractType2 = 100},
-                    HeldBackCompletionPayments = new ContractTypeAmounts {ContractType1 = 0, ContractType2 = 0},
-                    YearToDatePayments = new ContractTypeAmounts {ContractType1 = 0, ContractType2 = 0}
+                    HeldBackCompletionPayments = new ContractTypeAmounts {ContractType1 = 1, ContractType2 = 2},
+                    YearToDatePayments = new ContractTypeAmounts {ContractType1 = 3, ContractType2 = 4}
                 }
             };
-        
+
             getMetricsResponse = new SubmissionsSummaryModel
             {
                 JobId = jobId,
                 AcademicYear = academicYear,
                 CollectionPeriod = collectionPeriod,
                 Percentage = 50,
-                SubmissionMetrics = new ContractTypeAmountsVerbose { ContractType1 = 100, ContractType2 = 100, DifferenceContractType1 = -100, DifferenceContractType2 = -100, PercentageContractType1 = 50, PercentageContractType2 = 50},
+                SubmissionMetrics = new ContractTypeAmountsVerbose { ContractType1 = 100, ContractType2 = 100, DifferenceContractType1 = -100, DifferenceContractType2 = -100, PercentageContractType1 = 50, PercentageContractType2 = 50, Percentage = 50 },
                 DcEarnings = new ContractTypeAmounts { ContractType1 = 200, ContractType2 = 200 },
-                DasEarnings = new ContractTypeAmountsVerbose { ContractType1 = 100, ContractType2 = 100, DifferenceContractType1 = -100, DifferenceContractType2 = -100, PercentageContractType1 = 50, PercentageContractType2 = 50},
-                TotalDataLockedEarnings = 0,
-                AlreadyPaidDataLockedEarnings = 0,
+                DasEarnings = new ContractTypeAmountsVerbose { ContractType1 = 100, ContractType2 = 100, DifferenceContractType1 = -100, DifferenceContractType2 = -100, PercentageContractType1 = 50, PercentageContractType2 = 50, Percentage = 50 },
+                TotalDataLockedEarnings = 1,
+                AlreadyPaidDataLockedEarnings = 2,
                 AdjustedDataLockedEarnings = 0,
                 RequiredPayments = new ContractTypeAmounts { ContractType1 = 100, ContractType2 = 100 },
-                HeldBackCompletionPayments = new ContractTypeAmounts { ContractType1 = 0, ContractType2 = 0 },
-                YearToDatePayments = new ContractTypeAmounts { ContractType1 = 0, ContractType2 = 0 }
+                HeldBackCompletionPayments = new ContractTypeAmounts { ContractType1 = 1, ContractType2 = 2 },
+                YearToDatePayments = new ContractTypeAmounts { ContractType1 = 3, ContractType2 = 4 }
             };
 
             submissionsSummaryModelTelemetryProperties = new Dictionary<string, string>
@@ -308,7 +307,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
 
                    y["HeldBackCompletionPaymentsTotal"] == (double)getMetricsResponse.HeldBackCompletionPayments.Total &&
                    y["HeldBackCompletionPaymentsContractType1"] == (double)getMetricsResponse.HeldBackCompletionPayments.ContractType1 &&
-                   y["HeldBackCompletionPaymentsContractType2"] == (double)getMetricsResponse.HeldBackCompletionPayments.ContractType1 &&
+                   y["HeldBackCompletionPaymentsContractType2"] == (double)getMetricsResponse.HeldBackCompletionPayments.ContractType2 &&
 
                    y["RequiredPaymentsTotal"] == (double)getMetricsResponse.RequiredPayments.Total &&
                    y["RequiredPaymentsAct1Total"] == (double)getMetricsResponse.RequiredPayments.ContractType1 &&
