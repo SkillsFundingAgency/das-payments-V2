@@ -1718,13 +1718,13 @@
     <EmbeddedResource Include="FM36TestFiles\PV2-1797-DLock09-One-Price-Episode-Happy-Path-R02.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1824-DLock09-One_Price-Episode-UnHappy-Path-R02.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1851-Non-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months-R03.json" />
-    <EmbeddedResource Include="FM36TestFiles\PV2-1851-Non-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months-R07.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1849-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months-R03.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1849-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months-R07.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months-R07.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months-R12.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1850-Non-Levy-Learner-Made-Redundant-In-Last-6-Months-R07.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1850-Non-Levy-Learner-Made-Redundant-In-Last-6-Months-R12.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-1851-Non-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months-R07.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1953-small-employer-retrospective-R03.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1953-small-employer-retrospective-R04.json" />
     <None Include="packages.config" />
