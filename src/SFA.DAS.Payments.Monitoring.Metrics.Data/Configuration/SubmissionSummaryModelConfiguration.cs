@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration
                 amounts.Ignore(x => x.Total);
             });
             builder.Property(x => x.NonLevyRequiredPayments).HasColumnName(@"RequiredPaymentsNonLevy");
-            builder.Property(x => x.DataLockedEarnings).HasColumnName(@"DataLockedEarnings");
+            builder.Property(x => x.AdjustedDataLockedEarnings).HasColumnName(@"AdjustedDataLockedEarnings");
             builder.Property(x => x.AlreadyPaidDataLockedEarnings).HasColumnName(@"AlreadyPaidDataLockedEarnings");
             builder.Property(x => x.TotalDataLockedEarnings).HasColumnName(@"TotalDataLockedEarnings");
             builder.OwnsOne(x => x.YearToDatePayments, amounts =>

@@ -13,7 +13,8 @@
     <Parameter Name="MonitoringServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
-    <Parameter Name="DcEarningsConnectionString" DefaultValue="" />
+    <Parameter Name="DcEarnings1920ConnectionString" DefaultValue="" />
+    <Parameter Name="DcEarnings2021ConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsMonitoringConnectionString" DefaultValue="" />
     <Parameter Name="Monitoring_JobsService_EndpointName" DefaultValue="sfa-das-payments-monitoring-jobs" />
     <Parameter Name="Monitoring_JobsService_FailedMessagesQueue" DefaultValue="sfa-das-payments-monitoring-jobs-errors" />
@@ -45,7 +46,8 @@
       <ConfigOverride Name="Config">
         <Settings>
           <Section Name="ConnectionStringsSection">
-            <Parameter Name="DcEarningsConnectionString" Value="[DcEarningsConnectionString]" />
+            <Parameter Name="DcEarnings1920ConnectionString" Value="[DcEarnings1920ConnectionString]" />
+            <Parameter Name="DcEarnings2021ConnectionString" Value="[DcEarnings2021ConnectionString]" />
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
@@ -80,7 +82,8 @@
       <ConfigOverride Name="Config">
         <Settings>
           <Section Name="ConnectionStringsSection">
-            <Parameter Name="DcEarningsConnectionString" Value="[DcEarningsConnectionString]" />
+            <Parameter Name="DcEarnings1920ConnectionString" Value="[DcEarnings1920ConnectionString]" />
+            <Parameter Name="DcEarnings2021ConnectionString" Value="[DcEarnings2021ConnectionString]" />
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />

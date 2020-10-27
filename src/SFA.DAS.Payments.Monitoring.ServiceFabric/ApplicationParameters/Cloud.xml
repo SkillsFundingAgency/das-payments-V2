@@ -13,7 +13,8 @@
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="PaymentsConnectionString" Value="__PaymentsConnectionString__" />
     <Parameter Name="PaymentsMetricsConnectionString" Value="__PaymentsMetricsConnectionString__" />
-    <Parameter Name="DcEarningsConnectionString" Value="__DcEarningsConnectionString__" />
+    <Parameter Name="DcEarnings1920ConnectionString" Value="__DcEarnings1920ConnectionString__" />
+    <Parameter Name="DcEarnings2021ConnectionString" Value="__DcEarnings2021ConnectionString__" />
     <Parameter Name="PaymentsMonitoringConnectionString" Value="__PaymentsMonitoringConnectionString__" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
     <Parameter Name="Monitoring_JobsService_EndpointName" Value="__Monitoring_JobsService_EndpointName__" />

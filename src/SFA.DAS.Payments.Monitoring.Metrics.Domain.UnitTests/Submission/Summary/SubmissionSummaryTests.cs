@@ -30,7 +30,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
 
         private SubmissionSummary GetPopulatedSubmissionSummary()
         {
-
             var summary = TestsHelper.DefaultSubmissionSummary;
             summary.AddEarnings(dcEarnings, dasEarnings);
             summary.AddDataLockTypeCounts(TestsHelper.DefaultDataLockedTotal, dataLocks, TestsHelper.AlreadyPaidDataLockedEarnings);
@@ -41,11 +40,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
         }
 
         protected SubmissionSummary GetSubmissionSummary => TestsHelper.DefaultSubmissionSummary;
-
-
-        private decimal DcEarningsContractType(ContractType contractType) =>
-            dcEarnings.FirstOrDefault(x => x.ContractType == contractType).Total;
-
+        
         private SubmissionSummaryModel GetSubmissionSummaryMetrics()
         {
             var summary = GetPopulatedSubmissionSummary();
@@ -70,13 +65,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
             var summary = GetSubmissionSummary;
             summary.AddDataLockTypeCounts(TestsHelper.DefaultDataLockedEarnings.Total, TestsHelper.DefaultDataLockedEarnings, TestsHelper.AlreadyPaidDataLockedEarnings);
             var metrics = summary.GetMetrics();
-            metrics.DataLockedEarnings.Should().Be(TestsHelper.DefaultDataLockedTotal - TestsHelper.AlreadyPaidDataLockedEarnings);
+            metrics.AdjustedDataLockedEarnings.Should().Be(TestsHelper.DefaultDataLockedTotal - TestsHelper.AlreadyPaidDataLockedEarnings);
             metrics.DataLockMetrics.Count.Should().Be(1);
             metrics.DataLockMetrics.Sum(x => x.Amounts.Total).Should()
                 .Be(TestsHelper.DefaultDataLockedEarnings.Total);
         }
-
-
+        
         [Test]
         public void Calculates_Correct_Metrics_For_DcEarnings()
         {
@@ -98,6 +92,33 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
             metrics.DasEarnings.ContractType2.Should().Be(32600);
             metrics.DasEarnings.Total.Should().Be(65200);
         }
+
+        [Test]
+        public void Calculates_Correct_Percentage_For_DasEarnings()
+        {
+            var summary = TestsHelper.DefaultSubmissionSummary;
+            var localDasEarnings = new List<TransactionTypeAmounts>
+            {
+                new TransactionTypeAmounts
+                {
+                    ContractType = ContractType.Act1,
+                    TransactionType1 = 3000,
+                },
+            };
+            var localDcEarnings = new List<TransactionTypeAmounts>
+            {
+                new TransactionTypeAmounts
+                {
+                    ContractType = ContractType.Act1,
+                    TransactionType1 = 5000,
+                },
+            };
+            summary.AddEarnings(localDcEarnings, localDasEarnings);
+            
+            var metrics = summary.GetMetrics();
+            metrics.DasEarnings.Percentage.Should().Be(60);
+        }
+        
 
         [Test]
         public void Calculates_Correct_Differences_For_DasEarnings()
@@ -230,8 +251,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
             metrics.RequiredPayments.ContractType1.Should().Be(requiredPayments.FirstOrDefault(x => x.ContractType == ContractType.Act1).Total);
             metrics.RequiredPayments.ContractType2.Should().Be(requiredPayments.FirstOrDefault(x => x.ContractType == ContractType.Act2).Total);
         }
-
-
+        
         [Test]
         public void Calculates_Correct_ContractTypes()
         {
@@ -247,7 +267,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
                 heldBackCompletionPayments.ContractType2);
         }
 
-
         [Test]
         public void Calculates_Correct_ContractType_Percentages()
         {
@@ -255,13 +274,48 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
             metrics.SubmissionMetrics.PercentageContractType1.Should().Be(100);
             metrics.SubmissionMetrics.PercentageContractType2.Should().Be(100);
         }
-
-
+        
         [Test]
         public void Calculates_Correct_Percentage()
         {
             var metrics = GetSubmissionSummaryMetrics();
             metrics.Percentage.Should().Be(100);
+        }
+
+        [Test]
+        public void WhenPercentageIsNot100_Should_CalculateCorrectPercentage()
+        {
+            var summary = TestsHelper.DefaultSubmissionSummary;
+            summary.AddRequiredPayments(new List<TransactionTypeAmounts>
+            {
+                new TransactionTypeAmounts
+                {
+                    ContractType = ContractType.Act1,
+                    TransactionType1 = 1000,
+                },
+                new TransactionTypeAmounts
+                {
+                    ContractType = ContractType.Act2,
+                    TransactionType1 = 2000,
+                }
+            });
+            var earnings = new List<TransactionTypeAmounts>
+            {
+                new TransactionTypeAmounts
+                {
+                    ContractType = ContractType.Act1,
+                    TransactionType1 = 2000,
+                },
+                new TransactionTypeAmounts
+                {
+                    ContractType = ContractType.Act2,
+                    TransactionType1 = 3000,
+                }
+            };
+            summary.AddEarnings(earnings, earnings);
+            
+            var metrics = summary.GetMetrics();
+            metrics.Percentage.Should().Be(60);
         }
     }
 }

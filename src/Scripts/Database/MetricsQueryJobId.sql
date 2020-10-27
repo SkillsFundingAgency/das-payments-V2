@@ -1,7 +1,9 @@
 SET STATISTICS TIME ON;  
 GO 
 
-DECLARE @collectionperiod INT = 6
+DECLARE @collectionperiod INT = 1
+DECLARE @academicYear INT = 2021
+
 DECLARE @ukprnList table
 (
 	ukprn bigint NOT NULL PRIMARY KEY CLUSTERED
@@ -19,7 +21,8 @@ Declare @LatestJobIds Table(
 
 INSERT INTO @LatestJobIds
 SELECT DcJobId, Ukprn
-FROM Payments2.LatestSuccessfulJobs
+FROM Payments2.LatestSuccessfulJobs 
+WHERE collectionperiod = @collectionperiod AND AcademicYear = @academicYear
 
 
 IF(@GivenUkprnCount > 0)
@@ -77,7 +80,7 @@ FROM
 		Sum(Case when contracttype = 1 then Amount else 0 end) as currentPaymentsAct1,--current aCT1 1920
 		Sum(Case when contracttype = 2 then Amount else 0 end) as currentPaymentsAct2--current   ACT2 1920
 	 FROM Payments2.Payment with (nolock)
-	 WHERE AcademicYear = 1920
+	 WHERE AcademicYear = @academicYear
 	 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 	 )Payments
 	
@@ -115,7 +118,7 @@ IF OBJECT_ID('tempdb..#DataLockedEarnings') IS NOT NULL DROP TABLE #DataLockedEa
     SELECT EE.LearnerReferenceNumber, EE.LearnerUln, EE.LearningAimFrameworkCode,
         EE.LearningAimPathwayCode, EE.LearningAimProgrammeType, EE.LearningAimReference,
         EE.LearningAimStandardCode, EE.Ukprn, EEP.Amount, EEP.DeliveryPeriod,
-        EEP.TransactionType
+        EEP.TransactionType, EE.CollectionPeriod
     FROM Payments2.EarningEvent EE with (nolock)
     JOIN Payments2.EarningEventPeriod EEP with (nolock)
         ON EEP.EarningEventId = EE.EventId
@@ -127,7 +130,7 @@ IF OBJECT_ID('tempdb..#DataLockedEarnings') IS NOT NULL DROP TABLE #DataLockedEa
             ON DLE.EventId = DLENP.DataLockEventId
         WHERE DLE.EarningEventId = EE.EventId
         AND DLENP.DeliveryPeriod = EEP.DeliveryPeriod
-        AND DLENP.PriceEpisodeIdentifier = EEP.PriceEpisodeIdentifier
+        --AND DLENP.PriceEpisodeIdentifier = EEP.PriceEpisodeIdentifier --this is removed after the PV2-2080 R13/R02 ME: BUG FIX: Drop in Earnings - (Output from Spike 2073)
 		AND (DLE.JobId in (SELECT JobId FROM @LatestJobIds))
     )
     AND DeliveryPeriod <= @collectionperiod
@@ -156,9 +159,10 @@ SELECT Sum(amount)
         AND E.LearningAimReference = P.LearningAimReference
         AND E.LearningAimStandardCode = P.LearningAimStandardCode
         AND E.TransactionType = P.TransactionType
-		AND P.AcademicYear = 1920
+		AND P.AcademicYear = @academicYear
+        AND p.collectionperiod < E.CollectionPeriod
     )   
-		 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
+	AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 )
 
 SELECT 
