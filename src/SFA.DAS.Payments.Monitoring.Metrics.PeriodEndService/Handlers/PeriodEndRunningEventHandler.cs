@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Core;
+using SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd;
 using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.PeriodEndService.Handlers
@@ -10,20 +12,22 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.PeriodEndService.Handlers
    public class PeriodEndRunningEventHandler : IHandleMessages<PeriodEndRequestReportsEvent>
     {
         private readonly IPaymentLogger logger;
+        private readonly IPeriodEndMetricsService periodEndMetricsService;
 
-        public PeriodEndRunningEventHandler(IPaymentLogger logger)
+        public PeriodEndRunningEventHandler(IPaymentLogger logger, IPeriodEndMetricsService periodEndMetricsService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.periodEndMetricsService = periodEndMetricsService ?? throw new ArgumentNullException(nameof(periodEndMetricsService));
         }
 
-        public Task Handle(PeriodEndRequestReportsEvent message, IMessageHandlerContext context)
+        public async Task Handle(PeriodEndRequestReportsEvent message, IMessageHandlerContext context)
         {
             logger.LogDebug($"Handling PeriodEndRequestReportsEvent for monitoring metrics period end service. Message: {message.ToJson()}");
 
-
+            await periodEndMetricsService.BuildMetrics(message.JobId, message.CollectionPeriod.AcademicYear,
+                message.CollectionPeriod.Period,  CancellationToken.None);
 
             logger.LogInfo($"Handled PeriodEndRequestReportsEvent for monitoring metrics period end service. Message: {message.ToJson()}");
-            return Task.CompletedTask;;
         }
     }
 }

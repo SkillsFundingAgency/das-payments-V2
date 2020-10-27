@@ -332,7 +332,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         [Test]
         public async Task Publishes_JobFinished_When_Job_Finished_And_Recorded_DC_Completion()
         {
-            var jobId = 99;
             var completedMessage = new CompletedMessage
             {
                 MessageId = Guid.NewGuid(),
@@ -362,7 +361,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         [Test]
         public async Task Publishes_JobFinished_When_Job_Finished_And_Recorded_DC_Failure()
         {
-            var jobId = 99;
             job.DcJobSucceeded = false;
             var completedMessage = new CompletedMessage
             {
