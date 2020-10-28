@@ -77,10 +77,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
             logger.LogInfo($"Sent request to record period end stop job. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
         }
 
-        public Task RecordPeriodEndSubmissionWindowValidation(long jobId, short collectionYear, byte collectionPeriod,
+        public async Task RecordPeriodEndSubmissionWindowValidation(long jobId, short collectionYear, byte collectionPeriod,
             List<GeneratedMessage> generatedMessages)
         {
-            throw new NotImplementedException();
+            logger.LogDebug($"Sending request to record period end submission window validation. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
+            await StartJob<RecordPeriodEndSubmissionWindowValidation>(jobId, collectionYear, collectionPeriod, generatedMessages)
+                .ConfigureAwait(false);
+            logger.LogInfo($"Sent request to record period end submission window validation. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
         }
     }
 }
