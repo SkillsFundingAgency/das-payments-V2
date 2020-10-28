@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 if (periodEndEvent is PeriodEndStoppedEvent  
                     || periodEndEvent is PeriodEndRequestReportsEvent)
                 {
-                    logger.LogDebug("Returning as this is either a PeriodEndStop, PeriodEndRequestReports or PeriodEndRequestValidateSubmissionWindow event");
+                    logger.LogDebug("Returning as this is either a PeriodEndStop or PeriodEndRequestReports event");
                     return true;
                 }
 
