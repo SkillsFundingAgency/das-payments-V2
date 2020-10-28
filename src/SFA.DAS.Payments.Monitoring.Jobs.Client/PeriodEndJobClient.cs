@@ -81,7 +81,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
             List<GeneratedMessage> generatedMessages)
         {
             logger.LogDebug($"Sending request to record period end submission window validation. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
-            await StartJob<RecordPeriodEndSubmissionWindowValidation>(jobId, collectionYear, collectionPeriod, generatedMessages)
+            await StartJob<RecordPeriodEndSubmissionWindowValidationJob>(jobId, collectionYear, collectionPeriod, generatedMessages)
                 .ConfigureAwait(false);
             logger.LogInfo($"Sent request to record period end submission window validation. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
         }
