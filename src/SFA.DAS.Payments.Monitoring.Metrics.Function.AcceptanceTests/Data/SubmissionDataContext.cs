@@ -8,6 +8,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Data
     {
         private readonly string connectionString;
         public virtual DbSet<SubmissionSummaryModel> SubmissionSummaries { get; set; }
+        public virtual DbSet<SubmissionsSummaryModel> SubmissionsSummaries { get; set; }
 
         public SubmissionDataContext(string connectionString)
         {
