@@ -53,12 +53,12 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 };
 
                 logger.LogDebug($"Got period end event: {periodEndEvent.ToJson()}");
-                if (taskType != PeriodEndTaskType.PeriodEndReports && taskType != PeriodEndTaskType.PeriodEndSubmissionWindowValidation)
+                if (taskType != PeriodEndTaskType.PeriodEndReports)
                 {
                     await RecordPeriodEndJob(taskType, periodEndEvent).ConfigureAwait(false);
                 }
                 var endpointInstance = await endpointInstanceFactory.GetEndpointInstance();
-                await endpointInstance.Publish(periodEndEvent);
+                await endpointInstance.Publish(periodEndEvent); //this is what gets covered by the acceptance tests
                 logger.LogInfo($"Finished publishing the period end event. Name: {periodEndEvent.GetType().Name}, JobId: {periodEndEvent.JobId}, Collection Period: {periodEndEvent.CollectionPeriod.Period}-{periodEndEvent.CollectionPeriod.AcademicYear}.");
 
                 // TODO: This is a temporary workaround to enable the PeriodEndStart and PeriodEndStop messages to return true as otherwise the service will
@@ -111,6 +111,10 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                     break;
                 case PeriodEndTaskType.PeriodEndStop:
                     await jobClient.RecordPeriodEndStop(periodEndEvent.JobId, periodEndEvent.CollectionPeriod.AcademicYear,
+                        periodEndEvent.CollectionPeriod.Period, new List<GeneratedMessage> { generatedMessage }).ConfigureAwait(false);
+                    break;
+                case PeriodEndTaskType.PeriodEndSubmissionWindowValidation:
+                    await jobClient.RecordPeriodEndSubmissionWindowValidation(periodEndEvent.JobId, periodEndEvent.CollectionPeriod.AcademicYear,
                         periodEndEvent.CollectionPeriod.Period, new List<GeneratedMessage> { generatedMessage }).ConfigureAwait(false);
                     break;
                 default:

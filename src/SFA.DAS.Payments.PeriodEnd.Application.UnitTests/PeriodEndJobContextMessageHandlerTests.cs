@@ -265,6 +265,19 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
             completed.Should().BeTrue();
         }
 
+        [Test]
+        public async Task Records_Period_End_Submissions_Window_Validation_Job_From_Period_End_Submission_Window_Validation_Task()
+        {
+
+            var jobContextMessage = CreatePeriodEndJobContextMessage(PeriodEndTaskType.PeriodEndSubmissionWindowValidation);
+
+            var handler = mocker.Create<PeriodEndJobContextMessageHandler>();
+            await handler.HandleAsync(jobContextMessage, CancellationToken.None);
+            mocker.Mock<IPeriodEndJobClient>()
+                .Verify(x => x.RecordPeriodEndSubmissionWindowValidation(It.Is<long>(jobId => jobId == 1), It.Is<short>(collectionYear => collectionYear == 1819), It.Is<byte>(period => period == 10),
+                    It.Is<List<GeneratedMessage>>(msgs => msgs.Any(msg => msg.MessageName.Equals(typeof(PeriodEndRequestValidateSubmissionWindowEvent).FullName)))), Times.Once);
+        }
+
         private static JobContextMessage CreateJobContextMessage(string task, bool CreateReturnPeriod = true, bool CreateCollectionYear = true)
         {
             var jobContextMessage = new JobContextMessage
