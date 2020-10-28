@@ -211,6 +211,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
         [Test]
         [TestCase("PeriodEndRun", 1)]
         [TestCase("PeriodEndStop", 0)]
+        [TestCase("PeriodEndSubmissionWindowValidation", 1)]
         public async Task Waits_For_Job_To_Complete(string task, int numberOfTimes)
         {
             var jobContextMessage = CreateJobContextMessage(task);
