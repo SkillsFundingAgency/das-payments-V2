@@ -39,6 +39,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public Provider Provider => GetProviderByIdentifier(TestProvider);
         public long Ukprn => Provider.Ukprn;
         public long JobId => Provider.JobId;
+        public long DuplicateJobId { get; set; }
 
         public FM36Global FM36Global { get; set; }
 
@@ -89,6 +90,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
             LearnRefNumberGenerator = new LearnRefNumberGenerator(SessionId);
             Employers = new List<Employer>();
             Apprenticeships = new ConcurrentDictionary<string, ApprenticeshipModel>();
+
+            DuplicateJobId = GenerateId();
         }
 
         public long GenerateId(int maxValue = 1000000)

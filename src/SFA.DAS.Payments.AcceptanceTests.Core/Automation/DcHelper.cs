@@ -105,7 +105,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         {
             try
             {
-                dataContext.ClearJobId(jobId);
+                dataContext.ClearJobFromDcJobId(jobId);
 
                 var dto = new JobContextDto
                 {
@@ -150,7 +150,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         {
             try
             {
-                dataContext.ClearJobId(jobId);
+                dataContext.ClearJobFromDcJobId(jobId);
 
                 var messagePointer = Guid.NewGuid().ToString().Replace("-", string.Empty);
                 var ilrSubmission = new FM36Global
