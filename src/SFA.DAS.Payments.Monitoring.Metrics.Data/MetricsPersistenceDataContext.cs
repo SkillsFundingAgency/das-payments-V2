@@ -12,6 +12,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
     public interface IMetricsPersistenceDataContext
     {
         DbSet<SubmissionSummaryModel> SubmissionSummaries { get; set; }
+        DbSet<CollectionPeriodToleranceModel> CollectionPeriodTolerances { get; set; }
 
         Task Save(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken);
         Task SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, PeriodEndSummaryModel overallPeriodEndSummary, CancellationToken cancellationToken);
@@ -25,6 +26,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         public virtual DbSet<ProviderPeriodEndSummaryModel> ProviderPeriodEndSummaries { get; set; }
         public virtual DbSet<ProviderPaymentTransactionModel> ProviderPaymentTransactions { get; set; }
         public virtual DbSet<ProviderPaymentFundingSourceModel> ProviderPaymentFundingSources { get; set; }
+        public virtual DbSet<CollectionPeriodToleranceModel> CollectionPeriodTolerances { get; set; }
 
         public virtual DbSet<SubmissionsSummaryModel> SubmissionsSummaries { get; set; }
 
@@ -44,6 +46,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             modelBuilder.ApplyConfiguration(new ProviderPaymentTransactionModelConfiguration());
             modelBuilder.ApplyConfiguration(new ProviderPaymentFundingSourceModelConfiguration());
             modelBuilder.ApplyConfiguration(new SubmissionsSummaryModelConfiguration());
+            modelBuilder.ApplyConfiguration(new CollectionPeriodToleranceModelConfiguration());
         }
 
         public async Task Save(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken)

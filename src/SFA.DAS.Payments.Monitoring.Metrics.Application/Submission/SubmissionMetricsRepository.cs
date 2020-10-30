@@ -7,7 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
+using SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
+using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
@@ -20,6 +22,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         Task<ContractTypeAmounts> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId, CancellationToken cancellationToken);
         Task<decimal> GetAlreadyPaidDataLockedEarnings(long ukprn, long jobId, CancellationToken cancellationToken);
         Task<List<TransactionTypeAmounts>> GetRequiredPayments(long ukprn, long jobId, CancellationToken cancellationToken);
+        Task<CollectionPeriodToleranceModel> GetCollectionPeriodTolerance(byte collectionPeriod, short academicYear, CancellationToken cancellationToken);
         Task<ContractTypeAmounts> GetYearToDatePaymentsTotal(long ukprn, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken);
         Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken);
         
@@ -166,6 +169,15 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                     TransactionType16 = group.Where(x => x.TransactionType == TransactionType.CareLeaverApprenticePayment).Sum(x => (decimal?)x.Amount) ?? 0,
                 })
                 .ToList();
+        }
+
+        public async Task<CollectionPeriodToleranceModel> GetCollectionPeriodTolerance(byte collectionPeriod, short academicYear, CancellationToken cancellationToken)
+        {
+            return await persistenceDataContext.CollectionPeriodTolerances
+                .Where(x =>
+                    x.AcademicYear == academicYear &&
+                    x.CollectionPeriod == collectionPeriod)
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
         public async Task<ContractTypeAmounts> GetYearToDatePaymentsTotal(long ukprn, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken)
