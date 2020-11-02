@@ -115,7 +115,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Steps
                 data.Single().IsWithinTolerance.Should().BeTrue();
             }
 
-            await ClearData(data, CollectionPeriod, AcademicYear);
+            await ClearData(data);
         }
 
         [Then(@"SubmissionsSumary is NOT Saved to database")]
@@ -125,10 +125,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Steps
 
             data.Any().Should().BeFalse();
 
-            await ClearData(data, CollectionPeriod, AcademicYear);
+            await ClearData(data);
         }
 
-        private async Task ClearData(List<SubmissionsSummaryModel> data, byte collectionPeriod, short academicYear)
+        private async Task ClearData(List<SubmissionsSummaryModel> data)
         {
             await dataFactory.ClearData(data, CollectionPeriod, AcademicYear);
         }
