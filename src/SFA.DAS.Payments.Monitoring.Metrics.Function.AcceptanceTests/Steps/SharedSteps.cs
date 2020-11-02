@@ -37,10 +37,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Steps
             await dataFactory.RemoveSubmissionSummaryModel(collectionPeriod, academicYear);
         }
 
-        [Given(@"Submission Percentage (.*) with in Tolerances")]
+        [Given(@"Submission Percentage (\w*\s*\w*) within  Tolerances")]
         public void GivenSubmissionPercentageIsNotWithInTolerances(string isWithInTolerance)
         {
-            if (isWithInTolerance == "NOT")
+            if (isWithInTolerance == "is NOT")
             {
                 dataFactory.SetPercentageOutOfDefaultTolerance();
             }
@@ -84,7 +84,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Steps
             }
         }
 
-        [Then(@"IsWithinTolerance is (.*) in database for CollectionPeriod (.*) and AcademicYear (.*)")]
+        [Then(@"The IsWithinTolerance is (.*) in database for CollectionPeriod (.*) and AcademicYear (.*)")]
         public async Task ThenIsWithinToleranceSavedToDatabase(string isSavedToDatabase, byte collectionPeriod, short academicYear)
         {
             var data = await dataFactory.GetSubmissionsSummaries(collectionPeriod, academicYear);
