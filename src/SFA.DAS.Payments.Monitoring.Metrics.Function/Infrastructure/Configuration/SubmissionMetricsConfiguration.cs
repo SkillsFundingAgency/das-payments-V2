@@ -2,7 +2,6 @@
 {
     public class SubmissionMetricsConfiguration : ISubmissionMetricsConfiguration
     {
-        public string PaymentsMetricsConnectionString { get; set; }
         public string PaymentsConnectionString { get; set; }
     }
 }

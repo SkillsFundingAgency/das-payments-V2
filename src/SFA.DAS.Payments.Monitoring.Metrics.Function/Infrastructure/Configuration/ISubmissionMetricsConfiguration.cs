@@ -2,7 +2,6 @@
 {
     public interface ISubmissionMetricsConfiguration
     {
-        string PaymentsMetricsConnectionString { get; set; }
         string PaymentsConnectionString { get; set; }
     }
 }
