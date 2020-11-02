@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core.Configuration;
 
-namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
+namespace SFA.DAS.Payments.Monitoring.Submissions.Functions.Infrastructure.IoC.Modules
 {
     public class PaymentDataContextModule : Module
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using SFA.DAS.Payments.Core.Configuration;
 
-namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.Configuration
+namespace SFA.DAS.Payments.Monitoring.Submissions.Functions.Infrastructure.Configuration
 {
     public class FunctionsConfigurationHelper : IConfigurationHelper
     {

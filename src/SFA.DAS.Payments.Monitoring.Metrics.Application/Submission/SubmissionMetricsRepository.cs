@@ -22,6 +22,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         Task<List<TransactionTypeAmounts>> GetRequiredPayments(long ukprn, long jobId, CancellationToken cancellationToken);
         Task<ContractTypeAmounts> GetYearToDatePaymentsTotal(long ukprn, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken);
         Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken);
+        Task<List<LatestSuccessfulJobModel>> GetLatestSuccessfulJobsForCollectionPeriod(short academicYear, byte collectionPeriod);
     }
 
     public class SubmissionMetricsRepository : ISubmissionMetricsRepository
@@ -187,6 +188,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         public async Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken)
         {
             await persistenceDataContext.Save(submissionSummary, cancellationToken).ConfigureAwait(false);
+        }
+
+        public Task<List<LatestSuccessfulJobModel>> GetLatestSuccessfulJobsForCollectionPeriod(short academicYear, byte collectionPeriod)
+        {
+            return QueryDataContext.LatestSuccessfulJobs
+                .Where(x => x.AcademicYear == academicYear &&
+                            x.CollectionPeriod == collectionPeriod)
+                .ToListAsync();
         }
     }
 }
