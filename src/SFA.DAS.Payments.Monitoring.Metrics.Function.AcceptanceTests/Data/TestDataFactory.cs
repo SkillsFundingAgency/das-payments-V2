@@ -68,7 +68,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Data
             {
                 var minvalue = Math.Min(collectionPeriodToleranceModel.SubmissionToleranceLower, collectionPeriodToleranceModel.SubmissionToleranceUpper);
 
-                submissionSummaryModel.SubmissionMetrics.ContractType1 = minvalue - 1;
+                submissionSummaryModel.SubmissionMetrics.ContractType1 = minvalue - 0.01m;
             }
             else
             {

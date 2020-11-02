@@ -18,6 +18,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Steps
         private readonly TestConfiguration config;
 
         private HttpResponseMessage httpResponseMessage;
+        public byte CollectionPeriod { get; set; }
+        public short AcademicYear { get; set; }
 
         public SharedSteps()
         {
@@ -28,19 +30,26 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Steps
         [Given(@"SubmissionSumary Exists for CollectionPeriod (.*) and AcademicYear (.*)")]
         public void GivenSubmissionSumaryExistsForCollectionPeriodAndAcademicYear(byte collectionPeriod, short academicYear)
         {
+            this.CollectionPeriod = collectionPeriod;
+            this.AcademicYear = academicYear;
+
             dataFactory.CreateSubmissionSummaryModel(collectionPeriod, academicYear);
         }
+
 
         [Given(@"SubmissionSumary Does Not Exists for CollectionPeriod (.*) and AcademicYear (.*)")]
         public async Task GivenSubmissionSumaryDoesNotExistsForCollectionPeriodAndAcademicYear(byte collectionPeriod, short academicYear)
         {
+            this.CollectionPeriod = collectionPeriod;
+            this.AcademicYear = academicYear;
+
             await dataFactory.RemoveSubmissionSummaryModel(collectionPeriod, academicYear);
         }
 
         [Given(@"Submission Percentage (\w*\s*\w*) within  Tolerances")]
         public void GivenSubmissionPercentageIsNotWithInTolerances(string isWithInTolerance)
         {
-            if (isWithInTolerance == "is NOT")
+            if (isWithInTolerance == "Is Not")
             {
                 dataFactory.SetPercentageOutOfDefaultTolerance();
             }
@@ -50,44 +59,50 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Steps
             }
         }
 
-        [Given(@"CollectionPeriodTolerances (.*) configured for CollectionPeriod (.*) and AcademicYear (.*)")]
-        public async Task GivenCollectionPeriodTolerancesAreConfiguredIsForCollectionPeriodAndAcademicYear(string isTolerancesConfigured, byte collectionPeriod, short academicYear)
+        [Given(@"CollectionPeriodTolerances (.*) configured")]
+        public async Task GivenCollectionPeriodTolerancesAreConfiguredIsForCollectionPeriodAndAcademicYear(string isTolerancesConfigured)
         {
             if (isTolerancesConfigured == "NOT")
             {
-                await dataFactory.RemoveCollectionPeriodToleranceModel(collectionPeriod, academicYear);
+                await dataFactory.RemoveCollectionPeriodToleranceModel(CollectionPeriod, AcademicYear);
             }
             else
             {
-                await dataFactory.CreateCollectionPeriodToleranceModel(collectionPeriod, academicYear, 99, 100);
+                await dataFactory.CreateCollectionPeriodToleranceModel(CollectionPeriod, AcademicYear, 99, 100);
             }
         }
 
-        [When(@"ValidateSubmissionWindow function is called for CollectionPeriod (.*) and AcademicYear (.*)")]
-        public async Task WhenValidateSubmissionWindowFunctionIsCalled(byte collectionPeriod, short academicYear)
+        [When(@"ValidateSubmissionWindow function is called")]
+        public async Task WhenValidateSubmissionWindowFunctionIsCalled()
         {
             await dataFactory.SaveModel();
 
-            httpResponseMessage = await new HttpClient().GetAsync($"{config.ValidateSubmissionWindowFunctionUrl}?jobid={123}&collectionPeriod={collectionPeriod}&academicYear={academicYear}");
+            httpResponseMessage = await new HttpClient().GetAsync($"{config.ValidateSubmissionWindowFunctionUrl}?jobid={123}&collectionPeriod={CollectionPeriod}&academicYear={AcademicYear}");
         }
 
         [Then(@"HttpStatus code (.*) with Json result is returned")]
         public async Task ThenHttpStatusCodeWithJsonResultIsReturned(string httpStatusCode)
         {
             httpResponseMessage.StatusCode.ToString("D").Should().Be(httpStatusCode);
-            if (httpResponseMessage.IsSuccessStatusCode)
-            {
-                var response = await httpResponseMessage.Content.ReadAsStringAsync();
-                var submissionSummary = JsonConvert.DeserializeObject<SubmissionsSummaryModel>(response);
-                submissionSummary.Should().NotBeNull();
-                submissionSummary.IsWithinTolerance.Should().BeTrue();
-            }
+
+            var response = await httpResponseMessage.Content.ReadAsStringAsync();
+            var submissionSummary = JsonConvert.DeserializeObject<SubmissionsSummaryModel>(response);
+            submissionSummary.Should().NotBeNull();
+            submissionSummary.IsWithinTolerance.Should().BeTrue();
         }
 
-        [Then(@"The IsWithinTolerance is (.*) in database for CollectionPeriod (.*) and AcademicYear (.*)")]
-        public async Task ThenIsWithinToleranceSavedToDatabase(string isSavedToDatabase, byte collectionPeriod, short academicYear)
+        [Then(@"HttpStatus code (.*) without Json result is returned")]
+        public void ThenHttpStatusCodewithoutJsonResultIsReturned(string httpStatusCode)
         {
-            var data = await dataFactory.GetSubmissionsSummaries(collectionPeriod, academicYear);
+            httpResponseMessage.StatusCode.ToString("D").Should().Be(httpStatusCode);
+            
+            httpResponseMessage.IsSuccessStatusCode.Should().BeFalse();
+        }
+
+        [Then(@"The IsWithinTolerance is (.*) in database")]
+        public async Task ThenIsWithinToleranceSavedToDatabase(string isSavedToDatabase)
+        {
+            var data = await dataFactory.GetSubmissionsSummaries(CollectionPeriod, AcademicYear);
 
             data.Any().Should().BeTrue();
 
@@ -100,22 +115,22 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Steps
                 data.Single().IsWithinTolerance.Should().BeTrue();
             }
 
-            await ClearData(data, collectionPeriod, academicYear);
+            await ClearData(data, CollectionPeriod, AcademicYear);
         }
 
-        [Then(@"SubmissionsSumary is NOT Saved to database for CollectionPeriod (.*) and AcademicYear (.*)")]
-        public async Task ThenSubmissionsSumaryNotSavedToDatabase(byte collectionPeriod, short academicYear)
+        [Then(@"SubmissionsSumary is NOT Saved to database")]
+        public async Task ThenSubmissionsSumaryNotSavedToDatabase()
         {
-            var data = await dataFactory.GetSubmissionsSummaries(collectionPeriod, academicYear);
+            var data = await dataFactory.GetSubmissionsSummaries(CollectionPeriod, AcademicYear);
 
             data.Any().Should().BeFalse();
 
-            await ClearData(data, collectionPeriod, academicYear);
+            await ClearData(data, CollectionPeriod, AcademicYear);
         }
 
         private async Task ClearData(List<SubmissionsSummaryModel> data, byte collectionPeriod, short academicYear)
         {
-            await dataFactory.ClearData(data, collectionPeriod, academicYear);
+            await dataFactory.ClearData(data, CollectionPeriod, AcademicYear);
         }
     }
 }
