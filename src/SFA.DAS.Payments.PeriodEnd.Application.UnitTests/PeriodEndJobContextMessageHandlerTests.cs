@@ -269,7 +269,6 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
         [Test]
         [TestCase("PeriodEndRun", 1)]
         [TestCase("PeriodEndStop", 0)]
-        [TestCase("PeriodEndSubmissionWindowValidation", 1)]
         public async Task Waits_For_Job_To_Complete(string task, int numberOfTimes)
         {
             var jobContextMessage = CreateJobContextMessage(task);
@@ -288,6 +287,17 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
             var completed = await handler.HandleAsync(jobContextMessage, CancellationToken.None);
             mocker.Mock<IJobStatusService>()
                 .Verify(svc => svc.WaitForPeriodEndStartedToFinish(It.Is<long>(jobId => jobId == 1), CancellationToken.None),Times.Once);
+        }
+
+        [Test]
+        public async Task PeriodEndSubmissionWindowValidation_Waits_For_Job_To_Complete()
+        {
+            var jobContextMessage = CreatePeriodEndJobContextMessage(PeriodEndTaskType.PeriodEndSubmissionWindowValidation);
+
+            var handler = mocker.Create<PeriodEndJobContextMessageHandler>();
+            var completed = await handler.HandleAsync(jobContextMessage, CancellationToken.None);
+            mocker.Mock<IJobStatusService>()
+                .Verify(svc => svc.WaitForPeriodEndSubmissionWindowValidationToFinish(It.Is<long>(jobId => jobId == 1), CancellationToken.None), Times.Once);
         }
 
         [Test]
