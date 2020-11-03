@@ -7,7 +7,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Monitoring.Metrics.Application.Submission.Dtos;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
@@ -17,8 +16,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
     {
         Task BuildMetrics(long ukprn, long jobId, short academicYear, byte collectionPeriod,
             CancellationToken cancellationToken);
-
-        Task<SuccessfulSubmissions> SuccessfulSubmissionsForCollectionPeriod(short academicYear, byte collectionPeriod);
     }
 
     public class SubmissionMetricsService : ISubmissionMetricsService
@@ -92,19 +89,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 logger.LogWarning($"Error building the submission metrics report for job: {jobId}, ukprn: {ukprn}. Error: {e}");
                 throw;
             }
-        }
-
-        public async Task<SuccessfulSubmissions> SuccessfulSubmissionsForCollectionPeriod(short academicYear, byte collectionPeriod)
-        {
-            var providers = await submissionRepository.GetLatestSuccessfulJobsForCollectionPeriod(academicYear, collectionPeriod);
-            return new SuccessfulSubmissions
-            {
-                SuccessfulProviders = providers.Select(x => new Dtos.Submission
-                {
-                    DcJobId = x.DcJobId,
-                    Ukprn = x.Ukprn,
-                }).ToList(),
-            };
         }
 
         private void SendMetricsTelemetry(SubmissionSummaryModel metrics, long reportGenerationDuration)

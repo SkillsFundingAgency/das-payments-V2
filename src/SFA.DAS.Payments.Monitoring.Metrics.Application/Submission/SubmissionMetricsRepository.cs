@@ -25,7 +25,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         Task<CollectionPeriodToleranceModel> GetCollectionPeriodTolerance(byte collectionPeriod, short academicYear, CancellationToken cancellationToken);
         Task<ContractTypeAmounts> GetYearToDatePaymentsTotal(long ukprn, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken);
         Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken);
-        Task<List<LatestSuccessfulJobModel>> GetLatestSuccessfulJobsForCollectionPeriod(short academicYear, byte collectionPeriod);
         
         Task<IList<SubmissionSummaryModel>> GetSubmissionsSummaryMetrics(long jobId, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken);
         Task SaveSubmissionsSummaryMetrics(SubmissionsSummaryModel submissionSummary, CancellationToken cancellationToken);
@@ -203,14 +202,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         public async Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken)
         {
             await persistenceDataContext.Save(submissionSummary, cancellationToken).ConfigureAwait(false);
-        }
-
-        public Task<List<LatestSuccessfulJobModel>> GetLatestSuccessfulJobsForCollectionPeriod(short academicYear, byte collectionPeriod)
-        {
-            return QueryDataContext.LatestSuccessfulJobs
-                .Where(x => x.AcademicYear == academicYear &&
-                            x.CollectionPeriod == collectionPeriod)
-                .ToListAsync();
         }
 
         public async Task<IList<SubmissionSummaryModel>> GetSubmissionsSummaryMetrics(long jobId, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken)

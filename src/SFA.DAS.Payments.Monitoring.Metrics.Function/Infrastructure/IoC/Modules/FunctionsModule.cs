@@ -30,6 +30,19 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.Infrastructure.IoC.Module
             builder.RegisterType<MetricsQueryDataContextFactory>()
                 .As<IMetricsQueryDataContextFactory>()
                 .InstancePerLifetimeScope();
+
+            builder.RegisterType<SubmissionJobsService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<SubmissionsJobsRepository>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.Register((c, p) =>
+                {
+                    var config = c.Resolve<ISubmissionMetricsConfiguration>();
+                    var dbContextOptions = new DbContextOptionsBuilder()
+                        .UseSqlServer(config.PaymentsConnectionString, 
+                            optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
+                    return new SubmissionJobsDataContext(dbContextOptions);
+                })
+                .As<ISubmissionJobsDataContext>()
+                .InstancePerLifetimeScope();
         }
     }
 }
