@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -12,24 +11,27 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 
     public interface IMetricsPersistenceDataContext
     {
+        DbSet<SubmissionSummaryModel> SubmissionSummaries { get; set; }
+        DbSet<CollectionPeriodToleranceModel> CollectionPeriodTolerances { get; set; }
+
         Task Save(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken);
-   
         Task SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, PeriodEndSummaryModel overallPeriodEndSummary, CancellationToken cancellationToken);
+        Task SaveSubmissionsSummaryMetrics(SubmissionsSummaryModel submissionsSummary, CancellationToken cancellationToken);
     }
 
-    public class MetricsPersistenceDataContext: DbContext, IMetricsPersistenceDataContext
+    public class MetricsPersistenceDataContext : DbContext, IMetricsPersistenceDataContext
     {
-        private readonly string connectionString;
         public virtual DbSet<SubmissionSummaryModel> SubmissionSummaries { get; set; }
         public virtual DbSet<PeriodEndSummaryModel> PeriodEndSummaries { get; set; }
         public virtual DbSet<ProviderPeriodEndSummaryModel> ProviderPeriodEndSummaries { get; set; }
         public virtual DbSet<ProviderPaymentTransactionModel> ProviderPaymentTransactions { get; set; }
         public virtual DbSet<ProviderPaymentFundingSourceModel> ProviderPaymentFundingSources { get; set; }
+        public virtual DbSet<CollectionPeriodToleranceModel> CollectionPeriodTolerances { get; set; }
 
-        public MetricsPersistenceDataContext(string connectionString)
-        {
-            this.connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
-        }
+        public virtual DbSet<SubmissionsSummaryModel> SubmissionsSummaries { get; set; }
+
+        public MetricsPersistenceDataContext(DbContextOptions contextOptions) : base(contextOptions)
+        { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,11 +45,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             modelBuilder.ApplyConfiguration(new PeriodEndSummaryModelConfiguration());
             modelBuilder.ApplyConfiguration(new ProviderPaymentTransactionModelConfiguration());
             modelBuilder.ApplyConfiguration(new ProviderPaymentFundingSourceModelConfiguration());
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(connectionString);
+            modelBuilder.ApplyConfiguration(new SubmissionsSummaryModelConfiguration());
+            modelBuilder.ApplyConfiguration(new CollectionPeriodToleranceModelConfiguration());
         }
 
         public async Task Save(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken)
@@ -64,7 +63,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                         And CollectionPeriod = {submissionSummary.CollectionPeriod}
                     "
                     , cancellationToken);
-                SubmissionSummaries.Add(submissionSummary);
+                await SubmissionSummaries.AddAsync(submissionSummary, cancellationToken);
                 await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                 transaction.Commit();
             }
@@ -75,8 +74,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             }
         }
 
-        public async Task SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, PeriodEndSummaryModel overallPeriodEndSummary,
-            CancellationToken cancellationToken)
+        public async Task SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, PeriodEndSummaryModel overallPeriodEndSummary, CancellationToken cancellationToken)
         {
             var transaction = await Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -103,6 +101,33 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                 await ProviderPeriodEndSummaries.AddRangeAsync(providerSummaries, cancellationToken);
 
                 await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
+        }
+
+        public async Task SaveSubmissionsSummaryMetrics(SubmissionsSummaryModel submissionsSummary, CancellationToken cancellationToken)
+        {
+            var transaction = await Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
+            try
+            {
+                await Database.ExecuteSqlCommandAsync($@"
+                    Delete 
+                        From [Metrics].[SubmissionsSummary] 
+                    Where 
+                        AcademicYear = {submissionsSummary.AcademicYear}
+                        And CollectionPeriod = {submissionsSummary.CollectionPeriod}
+                    "
+                    , cancellationToken);
+
+                await SubmissionsSummaries.AddAsync(submissionsSummary, cancellationToken);
+
+                await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
                 transaction.Commit();
             }
             catch

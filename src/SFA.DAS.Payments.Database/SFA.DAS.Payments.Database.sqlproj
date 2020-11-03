@@ -125,6 +125,8 @@
     <Build Include="Metrics\Tables\Metrics.ProviderPaymentTransaction.sql" />
     <Build Include="Metrics\Tables\Metrics.ProviderPaymentFundingSource.sql" />
     <Build Include="Metrics\Tables\Metrics.PeriodEndSummary.sql" />
+    <Build Include="Metrics\Tables\Metrics.SubmissionsSummary.sql" />
+    <Build Include="Metrics\Tables\Metrics.CollectionPeriodTolerance.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />

@@ -4,14 +4,14 @@ using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration
 {
-    public class SubmissionSummaryModelConfiguration : IEntityTypeConfiguration<SubmissionSummaryModel>
+    public class SubmissionsSummaryModelConfiguration : IEntityTypeConfiguration<SubmissionsSummaryModel>
     {
-        public void Configure(EntityTypeBuilder<SubmissionSummaryModel> builder)
+        public void Configure(EntityTypeBuilder<SubmissionsSummaryModel> builder)
         {
-            builder.ToTable("SubmissionSummary", "Metrics");
+            builder.ToTable("SubmissionsSummary", "Metrics");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).HasColumnName(@"Id").IsRequired();
-            builder.Property(x => x.Ukprn).HasColumnName(@"Ukprn");
+            builder.Property(x => x.IsWithinTolerance).HasColumnName(@"IsWithinTolerance").IsRequired();
             builder.Property(x => x.AcademicYear).HasColumnName(@"AcademicYear");
             builder.Property(x => x.CollectionPeriod).HasColumnName(@"CollectionPeriod");
             builder.Property(x => x.JobId).HasColumnName(@"JobId");
@@ -67,10 +67,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration
                 amounts.Property(x => x.ContractType2).HasColumnName(@"PaymentsYearToDateContractType2");
                 amounts.Ignore(x => x.Total);
             });
-
-            builder.HasMany(x => x.EarningsMetrics).WithOne(e => e.SubmissionSummary).HasForeignKey(e => e.SubmissionSummaryId);
-            builder.HasMany(x => x.DataLockMetrics).WithOne(d => d.SubmissionSummary).HasForeignKey(d => d.SubmissionSummaryId);
-            builder.HasMany(x => x.RequiredPaymentsMetrics).WithOne(r => r.SubmissionSummary).HasForeignKey(r => r.SubmissionSummaryId);
         }
     }
 }
