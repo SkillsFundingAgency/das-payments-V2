@@ -258,6 +258,12 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             CreatePeriodEndJob<RecordPeriodEndStopJob>();
         }
 
+        [Given(@"the period end service has received a Validate Submission Window Job")]
+        public void GivenThePeriodEndServiceHasReceivedAValidateSubmissionWindowJob()
+        {
+            CreatePeriodEndJob<RecordPeriodEndSubmissionWindowValidationJob>();
+        }
+
         [Given(@"the monitoring service has recorded the completion of a period end start job")]
         public async Task GivenTheMonitoringServiceHasRecordedTheCompletionOfAPeriodEndStartJob()
         {
@@ -313,6 +319,22 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             };
            await DataContext.SaveNewJob(jobModel);
         }
+
+
+        [When(@"the period end service notifies the job monitoring service to record the Validate Submission Window job")]
+        public async Task WhenThePeriodEndServiceNotifiesTheJobMonitoringServiceToRecordTheValidateSubmissionWindowJob()
+        {
+            await NotifyRecordJob<RecordPeriodEndSubmissionWindowValidationJob>();
+        }
+
+        [Then(@"the monitoring service should notify other services that the Validate Submission Window job has completed successfully")]
+        public async Task ThenTheMonitoringServiceShouldNotifyOtherServicesThatTheValidateSubmissionWindowJobHasCompletedSuccessfully()
+        {
+            await WaitForIt(() => PeriodEndRunSuccessHandler.ReceivedEvents.Any(ev => ev.JobId == JobDetails.JobId),
+                    $"Failed to receive the period end run job succeeded event for job id: {JobDetails.JobId}")
+                .ConfigureAwait(false);
+        }
+
 
         [Then(@"the period end job should not complete")]
         public async Task ButThePeriodEndJobDoesNotComplete()
