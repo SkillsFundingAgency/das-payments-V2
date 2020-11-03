@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using System.Web;
 using AzureFunctions.Autofac;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,12 +17,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "v1/Submission/Successful")] HttpRequest req,
             [Inject] ISubmissionJobsService submissionService)
         {
-            var queryString = HttpUtility.ParseQueryString(req.QueryString.Value);
-            var academicYearAsString = queryString.Get("academicYear");
-            var collectionPeriodAsString = queryString.Get("collectionPeriod");
-
-            short.TryParse(academicYearAsString, out var academicYear);
-            byte.TryParse(collectionPeriodAsString, out var collectionPeriod);
+            short.TryParse(req.Query["academicYear"], out var academicYear);
+            byte.TryParse(req.Query["collectionPeriod"], out var collectionPeriod);
                 
             var results = await submissionService.SuccessfulSubmissionsForCollectionPeriod(academicYear, collectionPeriod);
             return new OkObjectResult(results);

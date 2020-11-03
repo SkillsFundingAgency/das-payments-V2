@@ -166,6 +166,11 @@
     <None Include="App.Release.config">
       <DependentUpon>App.config</DependentUpon>
     </None>
+    <Compile Include="Tests\SuccessfulSubmissionsFeature.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SuccessfulSubmissionsFeature.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\ValidateSubmissionWindowFeature.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -176,6 +181,10 @@
       <LastGenOutput>ValidateSubmissionWindowFeature.feature.cs</LastGenOutput>
     </Content>
     <None Include="packages.config" />
+    <None Include="Tests\SuccessfulSubmissionsFeature.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>SuccessfulSubmissionsFeature.feature.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\SubmissionDataContext.cs" />
