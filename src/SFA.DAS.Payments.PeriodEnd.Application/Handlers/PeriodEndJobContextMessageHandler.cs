@@ -67,6 +67,14 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                     logger.LogInfo(
                         $"Finished publishing the period end event. Name: {periodEndEvent.GetType().Name}, JobId: {periodEndEvent.JobId}, Collection Period: {periodEndEvent.CollectionPeriod.Period}-{periodEndEvent.CollectionPeriod.AcademicYear}.");
                 }
+                else if(taskType == PeriodEndTaskType.PeriodEndSubmissionWindowValidation)
+                {
+                    await RecordPeriodEndJob(taskType, periodEndEvent).ConfigureAwait(false);
+                    var endpointInstance = await endpointInstanceFactory.GetEndpointInstance();
+                    await endpointInstance.Publish(periodEndEvent);
+                    logger.LogInfo(
+                        $"Finished publishing the period end event. Name: {periodEndEvent.GetType().Name}, JobId: {periodEndEvent.JobId}, Collection Period: {periodEndEvent.CollectionPeriod.Period}-{periodEndEvent.CollectionPeriod.AcademicYear}.");
+                }
                 else
                 {
                     var existingNonFailedJobId = await jobsDataContext.GetNonFailedDcJobId(GetJobType(taskType),
