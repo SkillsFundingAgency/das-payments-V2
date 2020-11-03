@@ -39,6 +39,8 @@
     <Parameter Name="DelayedMessageRetries" DefaultValue="3" />
     <Parameter Name="DelayedMessageRetryDelay" DefaultValue="00:00:10" />
     <Parameter Name="MetricsGenerationDelay" DefaultValue="00:05:00" />
+    <Parameter Name="FunctionApiKey" DefaultValue="" />
+    <Parameter Name="FunctionBaseUrl" DefaultValue="" />
   </Parameters>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.Monitoring.Metrics.PeriodEndServicePkg" ServiceManifestVersion="1.0.0" />
@@ -139,6 +141,8 @@
             <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
             <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
             <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
+            <Parameter Name="FunctionApiKey" Value="[FunctionApiKey]" />
+            <Parameter Name="FunctionBaseUrl" Value="[FunctionBaseUrl]" />
           </Section>
         </Settings>
       </ConfigOverride>
