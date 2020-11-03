@@ -9,6 +9,7 @@ Background:
 Scenario: Period End Started Job
 	When the period end service is notified the the period end has started
 	Then the period end service should publish a period end started event
+	And the period end started job is persisted to the database
 
 Scenario: Period End Request Validate Submission Window Job
 	When the period end service is notified that a period end request validate submission window job has been requested 
@@ -17,6 +18,7 @@ Scenario: Period End Request Validate Submission Window Job
 Scenario: Period End Running Job
 	When the period end service is notified the the period end is running
 	Then the period end service should publish a period end running event
+	And the period end running job is persisted to the database
 
 Scenario: Period End Request Reports Job
 	When the period end service is notified that period end reports have been requested 
@@ -25,3 +27,23 @@ Scenario: Period End Request Reports Job
 Scenario: Period End Stopped Job
 	When the period end service is notified the the period end has stopped
 	Then the period end service should publish a period end stopped event
+	And the period end stopped job is persisted to the database
+
+Scenario: Period End Running Job Not Published Twice
+	When the period end service is notified the the period end is running twice
+	Then the period end service should publish a period end running event
+	And not publish one for the duplicate notification
+	And the period end running job is persisted to the database
+	And a duplicate period end running job is not persisted to the database
+
+Scenario: Period End Running After Failed Run
+	When the period end service is notified the the period end is running twice after the first run fails
+	Then the period end service should publish a period end running event
+	And the period end service should publish a period end running event for the second notification
+	And the second period end running job is persisted to the database with a status of 2
+
+Scenario: Period End Running Job Not Published Twice With The Same Job Id
+	When the period end service is notified the the period end is running twice with the same job id
+	Then the period end service should publish a single period end running event
+	And the period end running job is persisted to the database
+	And a duplicate period end running job is not persisted to the database
