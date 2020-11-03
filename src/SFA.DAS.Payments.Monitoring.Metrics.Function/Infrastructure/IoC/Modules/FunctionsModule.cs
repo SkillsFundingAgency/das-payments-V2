@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.Infrastructure.IoC.Module
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<SubmissionJobsService>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<SubmissionsJobsRepository>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<SubmissionJobsRepository>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.Register((c, p) =>
                 {
                     var config = c.Resolve<ISubmissionMetricsConfiguration>();

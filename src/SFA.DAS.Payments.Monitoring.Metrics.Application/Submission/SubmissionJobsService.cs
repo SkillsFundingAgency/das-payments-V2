@@ -12,9 +12,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
     public class SubmissionJobsService : ISubmissionJobsService
     {
-        private readonly ISubmissionsJobsRepository repository;
+        private readonly ISubmissionJobsRepository repository;
 
-        public SubmissionJobsService(ISubmissionsJobsRepository repository)
+        public SubmissionJobsService(ISubmissionJobsRepository repository)
         {
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }

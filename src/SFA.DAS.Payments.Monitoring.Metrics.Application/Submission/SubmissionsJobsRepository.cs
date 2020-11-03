@@ -8,16 +8,16 @@ using SFA.DAS.Payments.Monitoring.Metrics.Data;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 {
-    public interface ISubmissionsJobsRepository
+    public interface ISubmissionJobsRepository
     {
         Task<List<LatestSuccessfulJobModel>> GetLatestSuccessfulJobsForCollectionPeriod(short academicYear, byte collectionPeriod);
     }
 
-    public class SubmissionsJobsRepository : ISubmissionsJobsRepository
+    public class SubmissionJobsRepository : ISubmissionJobsRepository
     {
         private readonly ISubmissionJobsDataContext dataContext;
 
-        public SubmissionsJobsRepository(ISubmissionJobsDataContext dataContext)
+        public SubmissionJobsRepository(ISubmissionJobsDataContext dataContext)
         {
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
         }
