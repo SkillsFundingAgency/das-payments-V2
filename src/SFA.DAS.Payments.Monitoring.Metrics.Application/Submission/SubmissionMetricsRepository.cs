@@ -7,7 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
+using SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
+using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
@@ -20,8 +22,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         Task<ContractTypeAmounts> GetHeldBackCompletionPaymentsTotal(long ukprn, long jobId, CancellationToken cancellationToken);
         Task<decimal> GetAlreadyPaidDataLockedEarnings(long ukprn, long jobId, CancellationToken cancellationToken);
         Task<List<TransactionTypeAmounts>> GetRequiredPayments(long ukprn, long jobId, CancellationToken cancellationToken);
+        Task<CollectionPeriodToleranceModel> GetCollectionPeriodTolerance(byte collectionPeriod, short academicYear, CancellationToken cancellationToken);
         Task<ContractTypeAmounts> GetYearToDatePaymentsTotal(long ukprn, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken);
         Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken);
+        
+        Task<IList<SubmissionSummaryModel>> GetSubmissionsSummaryMetrics(long jobId, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken);
+        Task SaveSubmissionsSummaryMetrics(SubmissionsSummaryModel submissionSummary, CancellationToken cancellationToken);
     }
 
     public class SubmissionMetricsRepository : ISubmissionMetricsRepository
@@ -165,6 +171,15 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 .ToList();
         }
 
+        public async Task<CollectionPeriodToleranceModel> GetCollectionPeriodTolerance(byte collectionPeriod, short academicYear, CancellationToken cancellationToken)
+        {
+            return await persistenceDataContext.CollectionPeriodTolerances
+                .Where(x =>
+                    x.AcademicYear == academicYear &&
+                    x.CollectionPeriod == collectionPeriod)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
         public async Task<ContractTypeAmounts> GetYearToDatePaymentsTotal(long ukprn, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken)
         {
             var amounts = await QueryDataContext.Payments
@@ -187,6 +202,20 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         public async Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken)
         {
             await persistenceDataContext.Save(submissionSummary, cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<IList<SubmissionSummaryModel>> GetSubmissionsSummaryMetrics(long jobId, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken)
+        {
+            var submissions = await persistenceDataContext.SubmissionSummaries.Where(s => s.CollectionPeriod == currentCollectionPeriod && s.AcademicYear == academicYear).ToListAsync(cancellationToken: cancellationToken);
+
+            return submissions == null || submissions.Count == 0 ? null : submissions;
+        }
+
+        public async Task SaveSubmissionsSummaryMetrics(SubmissionsSummaryModel submissionsSummary, CancellationToken cancellationToken)
+        {
+            if (submissionsSummary == null) return;
+
+           await persistenceDataContext.SaveSubmissionsSummaryMetrics(submissionsSummary, cancellationToken);
         }
     }
 }

@@ -145,8 +145,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 
                 { "DataLockAmountAlreadyPaid" ,               (double) metrics.AlreadyPaidDataLockedEarnings },
                 
-                { "NonLevyRequiredPayments" ,                 (double) metrics.NonLevyRequiredPayments },
-                
                 { "HeldBackCompletionPayments" ,              (double) metrics.HeldBackCompletionPayments.Total },
                 { "HeldBackCompletionPaymentsContractType1" , (double) metrics.HeldBackCompletionPayments.ContractType1 },
                 { "HeldBackCompletionPaymentsContractType2" , (double) metrics.HeldBackCompletionPayments.ContractType1 },

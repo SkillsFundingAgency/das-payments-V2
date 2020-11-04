@@ -220,8 +220,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 
                 { "DataLockAmountAlreadyPaid", 1000 },
                 
-                { "NonLevyRequiredPayments", 0 },
-                
                 { "HeldBackCompletionPayments", 3000 },
                 { "HeldBackCompletionPaymentsContractType1", 2000 },
                 { "HeldBackCompletionPaymentsContractType2", 2000 },

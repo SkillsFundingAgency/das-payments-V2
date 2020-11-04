@@ -1,11 +1,12 @@
-﻿using SFA.DAS.Payments.Monitoring.Metrics.Model;
+﻿using System;
+using SFA.DAS.Payments.Monitoring.Metrics.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Domain
 {
     public static class Helpers
     {
-        public static decimal GetPercentage(decimal amount, decimal total) => amount == total ? 100 : total > 0 ? (amount / total) * 100 : 0;
+        public static decimal GetPercentage(decimal amount, decimal total) => Math.Round(amount == total ? 100 : total > 0 ? (amount / total) * 100 : 0, 2);
 
         public static ContractTypeAmountsVerbose CreatePaymentMetrics(IPeriodEndSummaryModel summaryModel)
         {
