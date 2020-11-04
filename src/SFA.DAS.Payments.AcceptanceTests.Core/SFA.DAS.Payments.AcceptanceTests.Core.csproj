@@ -401,6 +401,7 @@
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\Price.cs" />
     <Compile Include="Data\Provider.cs" />
+    <Compile Include="Data\SubmissionDataContext.cs" />
     <Compile Include="Data\TestPaymentsDataContext.cs" />
     <Compile Include="Data\Training.cs" />
     <Compile Include="Extensions.cs" />
@@ -469,6 +470,14 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Model\SFA.DAS.Payments.Monitoring.Jobs.Model.csproj">
       <Project>{dc3c2dfe-ce0c-4b40-9a80-392b600fcded}</Project>
       <Name>SFA.DAS.Payments.Monitoring.Jobs.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Metrics.Data\SFA.DAS.Payments.Monitoring.Metrics.Data.csproj">
+      <Project>{768DAD00-EC74-467B-864A-2EF79B964489}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Metrics.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Metrics.Model\SFA.DAS.Payments.Monitoring.Metrics.Model.csproj">
+      <Project>{EE51D526-0244-4B63-99A4-07FAFEF14D31}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Metrics.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Domain\SFA.DAS.Payments.RequiredPayments.Domain.csproj">
       <Project>{F63F1E0D-03B8-447A-910B-D7990D2E480A}</Project>
