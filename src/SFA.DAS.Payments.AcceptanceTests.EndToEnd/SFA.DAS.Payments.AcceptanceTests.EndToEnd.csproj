@@ -387,7 +387,6 @@
     <Compile Include="Helpers\ApprenticeshipHelper.cs" />
     <Compile Include="Helpers\ApprenticeshipBuilder.cs" />
     <Compile Include="Helpers\FM36GlobalDeserialiser.cs" />
-    <Compile Include="Helpers\SubmissionSummaryHelper.cs" />
     <Compile Include="Infrastructure\EndpointNames.cs" />
     <Compile Include="Infrastructure\FeatureScopedBootstrapper.cs" />
     <Compile Include="Infrastructure\IoC\AutoMapperModule.cs" />
