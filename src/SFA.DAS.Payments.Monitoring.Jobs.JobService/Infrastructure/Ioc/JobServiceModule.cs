@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Application;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd;
 
@@ -11,7 +12,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Infrastructure.Ioc
             builder.RegisterType<JobStorageService>()
                 .As<IJobStorageService>()
                 .InstancePerLifetimeScope();
-            builder.RegisterType<MetricsValidationService>()
+
+            builder.Register((c, p) =>
+                {
+                    var configHelper = c.Resolve<IConfigurationHelper>();
+                    return new MetricsValidationService(configHelper.GetSetting("FunctionApiKey"), configHelper.GetSetting("FunctionBaseUrl"));
+                })
                 .As<IMetricsValidationService>()
                 .InstancePerLifetimeScope();
         }
