@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task WhenDCRequestPeriodEndSubmissionWindowValidation()
         {
             var dcHelper = Scope.Resolve<IDcHelper>();
-            await dcHelper.SendPeriodEndTask(2021, 7, 112, "PeriodEndSubmissionWindowValidation");
+            await dcHelper.SendPeriodEndTask(AcademicYear, CollectionPeriod, TestSession.JobId, "PeriodEndSubmissionWindowValidation");
         }
 
         [Then(@"DC job is updated with (.*) status")]
@@ -53,7 +53,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             await WaitForIt(
                 async () =>
-                    (await submissionDataFactory.GetPeriodEndSubmissionWindowValidationJob(CollectionPeriod, AcademicYear)).Status == jobStatus, $"Failed to find validation job with status: {jobStatus}");
+            {
+                var job = await submissionDataFactory.GetPeriodEndSubmissionWindowValidationJob(TestSession.JobId, CollectionPeriod, AcademicYear);
+                return job != null && job.Status == jobStatus;
+            }, $"Failed to find validation job with status: {jobStatus}");
         }
     }
 }

@@ -154,13 +154,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
             await submissionDataContext.SaveChangesAsync();
         }
 
-        public async Task<JobModel> GetPeriodEndSubmissionWindowValidationJob(byte collectionPeriod, short academicYear)
+        public async Task<JobModel> GetPeriodEndSubmissionWindowValidationJob(long dcJobId, byte collectionPeriod, short academicYear)
         {
             return await submissionDataContext.Jobs
-                .Where(x => x.JobType == JobType.PeriodEndSubmissionWindowValidationJob &&
-                            x.CollectionPeriod == collectionPeriod &&
-                            x.AcademicYear == academicYear)
+                .Where(x =>
+                    x.DcJobId == dcJobId &&
+                    x.JobType == JobType.PeriodEndSubmissionWindowValidationJob &&
+                    x.CollectionPeriod == collectionPeriod &&
+                    x.AcademicYear == academicYear)
                 .OrderByDescending(x => x.StartTime)
+                .AsNoTracking()
                 .FirstOrDefaultAsync();
         }
     }
