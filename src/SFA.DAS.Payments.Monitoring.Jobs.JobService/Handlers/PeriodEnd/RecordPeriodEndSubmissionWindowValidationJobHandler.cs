@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
             {
                 logger.LogInfo($"Handling period end submission window validation job: {message.ToJson()}");
                 await periodEndJobService.RecordPeriodEndJob(message, cancellationToken);
-                jobStatusManager.StartMonitoringJob(message.JobId, JobType.PeriodEndSubmissionWindowValidationJob); //todo is the status of the job handled correctly throughout the process?
+                jobStatusManager.StartMonitoringJob(message.JobId, JobType.PeriodEndSubmissionWindowValidationJob);
                 var metricsValid = await metricsValidationService.Validate(message.JobId, message.CollectionYear, message.CollectionPeriod);
                 await jobStorageService.SaveJobStatus(message.JobId, metricsValid ? JobStatus.Completed : JobStatus.CompletedWithErrors, DateTimeOffset.Now, cancellationToken);
                 logger.LogInfo($"Handled period end submission window validation job: {message.JobId}");
