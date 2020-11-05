@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Infrastructure.Ioc
             builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
-                    return new MetricsValidationService(configHelper.GetSetting("FunctionApiKey"), configHelper.GetSetting("FunctionBaseUrl"));
+                    return new MetricsValidationService(configHelper.GetSetting("SubmissionWindowValidationFunctionApiKey"), configHelper.GetSetting("SubmissionWindowValidationFunctionBaseUrl"));
                 })
                 .As<IMetricsValidationService>()
                 .InstancePerLifetimeScope();
