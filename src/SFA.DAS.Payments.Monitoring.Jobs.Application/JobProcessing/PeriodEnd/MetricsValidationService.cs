@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -11,12 +9,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
     public class MetricsValidationService : IMetricsValidationService
     {
         private readonly string authCode;
-        private readonly string functionAddress;
+        private readonly Uri functionAddressUri;
 
         public MetricsValidationService(string authCode, string functionAddress)
         {
             this.authCode = authCode;
-            this.functionAddress = functionAddress;
+            functionAddressUri = new Uri(functionAddress);
         }
 
         public async Task<bool> Validate(long jobId, short academicYear, byte collectionPeriod)
@@ -33,8 +31,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
         private string BuildUriFromParameters(long jobId, short academicYear, byte collectionPeriod)
         {
             return string.IsNullOrWhiteSpace(authCode)
-                ? $"{Path.Combine(functionAddress, "/api/ValidateSubmissionWindow")}?jobId={jobId}&collectionPeriod={collectionPeriod}&AcademicYear={academicYear}"
-                : $"{Path.Combine(functionAddress, "/api/ValidateSubmissionWindow")}?code={authCode}&jobId={jobId}&collectionPeriod={collectionPeriod}&AcademicYear={academicYear}";
+                ? $"{new Uri(functionAddressUri, "/api/ValidateSubmissionWindow")}?jobId={jobId}&collectionPeriod={collectionPeriod}&AcademicYear={academicYear}"
+                : $"{new Uri(functionAddressUri, "/api/ValidateSubmissionWindow")}?code={authCode}&jobId={jobId}&collectionPeriod={collectionPeriod}&AcademicYear={academicYear}";
         }
     }
 }
