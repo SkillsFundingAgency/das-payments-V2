@@ -91,7 +91,7 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
             while (DateTime.Now < endTime)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var job = await dataContext.GetJobByDcJobId(jobId).ConfigureAwait(false);
+                var job = await dataContext.GetJobByDcJobId(jobId);
                 if (job != null && (job.EndTime != null ||
                                     job.Status != Monitoring.Jobs.Model.JobStatus.InProgress))
                 {
