@@ -17,18 +17,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
     {
         private readonly IPaymentLogger logger;
         private readonly IPeriodEndJobService periodEndJobService;
-        private readonly IPeriodEndJobStatusManager jobStatusManager;
-        private readonly IMetricsValidationService metricsValidationService;
-        private readonly IJobStorageService jobStorageService;
+        private readonly IPeriodEndSubmissionWindowValidationJobStatusManager periodEndSubmissionWindowValidationJobStatusManager;
 
-
-        public RecordPeriodEndSubmissionWindowValidationJobHandler(IPaymentLogger logger, IPeriodEndJobService periodEndJobService, IPeriodEndJobStatusManager jobStatusManager, IMetricsValidationService metricsValidationService, IJobStorageService jobStorageService)
+        public RecordPeriodEndSubmissionWindowValidationJobHandler(IPaymentLogger logger, IPeriodEndJobService periodEndJobService, IPeriodEndSubmissionWindowValidationJobStatusManager periodEndSubmissionWindowValidationJobStatusManager)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.periodEndJobService = periodEndJobService ?? throw new ArgumentNullException(nameof(periodEndJobService));
-            this.jobStatusManager = jobStatusManager ?? throw new ArgumentNullException(nameof(jobStatusManager));
-            this.metricsValidationService = metricsValidationService ?? throw new ArgumentNullException(nameof(metricsValidationService));
-            this.jobStorageService = jobStorageService ?? throw new ArgumentNullException(nameof(jobStorageService));
+            this.periodEndSubmissionWindowValidationJobStatusManager = periodEndSubmissionWindowValidationJobStatusManager ?? throw new ArgumentNullException(nameof(periodEndSubmissionWindowValidationJobStatusManager));
         }
 
         public async Task Handle(IList<RecordPeriodEndSubmissionWindowValidationJob> messages, CancellationToken cancellationToken)
@@ -37,9 +32,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
             {
                 logger.LogInfo($"Handling period end submission window validation job: {message.ToJson()}");
                 await periodEndJobService.RecordPeriodEndJob(message, cancellationToken);
-                jobStatusManager.StartMonitoringJob(message.JobId, JobType.PeriodEndSubmissionWindowValidationJob);
-                var metricsValid = await metricsValidationService.Validate(message.JobId, message.CollectionYear, message.CollectionPeriod);
-                await jobStorageService.SaveJobStatus(message.JobId, metricsValid ? JobStatus.Completed : JobStatus.CompletedWithErrors, DateTimeOffset.Now, cancellationToken);
+                periodEndSubmissionWindowValidationJobStatusManager.StartMonitoringJob(message.JobId, JobType.PeriodEndSubmissionWindowValidationJob);
                 logger.LogInfo($"Handled period end submission window validation job: {message.JobId}");
             }
         }
