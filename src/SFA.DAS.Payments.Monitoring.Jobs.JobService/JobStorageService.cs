@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Data.Collections;
@@ -99,6 +98,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             {
                 return model.JobType == JobType.PeriodEndStartJob;
             },cancellationToken);
+        }
+
+        public async Task<List<long>> GetCurrentPeriodEndSubmissionWindowValidationJobs(CancellationToken cancellationToken)
+        {
+            return await GetCurrentJobs(model =>
+            {
+                return model.JobType == JobType.PeriodEndSubmissionWindowValidationJob;
+            }, cancellationToken);
         }
 
         private async Task<List<long>> GetCurrentJobs(Func<JobModel, bool> filter, CancellationToken cancellationToken)

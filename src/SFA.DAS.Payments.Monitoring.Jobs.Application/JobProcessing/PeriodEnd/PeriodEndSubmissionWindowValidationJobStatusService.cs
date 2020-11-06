@@ -15,19 +15,20 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
     public class PeriodEndSubmissionWindowValidationJobStatusService : PeriodEndJobStatusService, IPeriodEndSubmissionWindowValidationJobStatusService
     {
-        private readonly IJobsDataContext          context;
+        private readonly IPaymentLogger logger;
         private readonly IMetricsValidationService metricsValidationService;
 
         public PeriodEndSubmissionWindowValidationJobStatusService(IJobStorageService jobStorageService, IPaymentLogger logger, ITelemetry telemetry, IJobStatusEventPublisher eventPublisher, IJobServiceConfiguration config, IJobsDataContext context, IMetricsValidationService metricsValidationService) : base(jobStorageService, logger, telemetry, eventPublisher, config)
         {
-            this.context = context ?? throw new ArgumentNullException(nameof(context));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.metricsValidationService = metricsValidationService ?? throw new ArgumentNullException(nameof(metricsValidationService));
         }
 
         protected override async Task<(bool IsComplete, JobStatus? OverriddenJobStatus, DateTimeOffset? completionTime)> PerformAdditionalJobChecks(JobModel job, CancellationToken cancellationToken)
         {
+            logger.LogInfo($"Calling Metrics Validation Service for Job Id: {job.DcJobId}, Academic Year: {job.AcademicYear}, Collection Period: {job.CollectionPeriod}");
             var validationResult = await metricsValidationService.Validate(job.DcJobId.Value, job.AcademicYear, job.CollectionPeriod);
-
+            logger.LogInfo($"Finished Calling Metrics Validation Service for Job Id: {job.DcJobId}, Academic Year: {job.AcademicYear}, Collection Period: {job.CollectionPeriod}. Result: {validationResult}");
             return ( true, validationResult ? JobStatus.Completed : JobStatus.CompletedWithErrors, DateTimeOffset.Now );
         }
     }
