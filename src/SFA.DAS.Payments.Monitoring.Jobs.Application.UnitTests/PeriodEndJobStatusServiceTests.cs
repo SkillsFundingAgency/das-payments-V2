@@ -78,6 +78,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         [TestCase(JobType.PeriodEndStartJob)]
         [TestCase(JobType.PeriodEndRunJob)]
         [TestCase(JobType.PeriodEndStopJob)]
+        [TestCase(JobType.PeriodEndSubmissionWindowValidationJob)]
         public async Task Publishes_PeriodEndJobFinished_with_SUCCESS_When_PeriodEndJob_Finishes(JobType jobType)
         {
             job.JobType = jobType;
@@ -112,6 +113,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         [TestCase(JobType.PeriodEndStartJob)]
         [TestCase(JobType.PeriodEndRunJob)]
         [TestCase(JobType.PeriodEndStopJob)]
+        [TestCase(JobType.PeriodEndSubmissionWindowValidationJob)]
         public async Task Publishes_PeriodEndJobFinished_with_FAILURE_When_PeriodEndJob_TimesOut(JobType jobType)
         {
             job.JobType = jobType;
