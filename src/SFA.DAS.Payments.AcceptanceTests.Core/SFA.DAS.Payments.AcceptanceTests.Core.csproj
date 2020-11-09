@@ -390,6 +390,7 @@
     <Compile Include="Automation\LearnRefNumberGenerator.cs" />
     <Compile Include="Automation\PaymentsHelper.cs" />
     <Compile Include="Automation\TestSession.cs" />
+    <Compile Include="Automation\TopicPublishingServiceFactory.cs" />
     <Compile Include="BindingsBase.cs" />
     <Compile Include="Data\Configurations\ProviderModelConfiguration.cs" />
     <Compile Include="Data\Employer.cs" />
