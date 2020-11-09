@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
         }
 
         [Test, AutoMoqData]
-        public async Task Ukprn_IsCorrectlyMapped_ToUkprn(
+        public async Task CorrectCombinationOfJobIdAndUkprn_IsCorrectlyMapped(
             [Frozen] Mock<ISubmissionJobsRepository> repository,
             SubmissionJobsService sut,
             List<LatestSuccessfulJobModel> testJobs,
@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
 
             foreach (var job in testJobs)
             {
-                actual.SuccessfulSubmissionJobs.Should().ContainEquivalentOf(new {Ukprn = job.Ukprn});
+                actual.SuccessfulSubmissionJobs.Should().ContainEquivalentOf(new {job.Ukprn, JobId = job.DcJobId});
             }
         }
 
