@@ -52,9 +52,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                 .Setup(x => x.Validate(jobId,It.IsAny<short>(),It.IsAny<byte>()))
                 .ReturnsAsync(false);
 
-            var sut = mocker.Create<PeriodEndSubmissionWindowValidationJobStatusService>();
+            var service = mocker.Create<PeriodEndSubmissionWindowValidationJobStatusService>();
             
-            var result = await sut.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+            var result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
             
             result.Should().BeTrue();
 
@@ -74,9 +74,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                 .Setup(x => x.Validate(jobId,It.IsAny<short>(),It.IsAny<byte>()))
                 .ReturnsAsync(true);
 
-            var sut = mocker.Create<PeriodEndSubmissionWindowValidationJobStatusService>();
+            var service = mocker.Create<PeriodEndSubmissionWindowValidationJobStatusService>();
             
-            var result = await sut.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+            var result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
             
             result.Should().BeTrue();
 
