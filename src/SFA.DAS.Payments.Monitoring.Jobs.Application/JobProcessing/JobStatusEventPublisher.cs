@@ -63,8 +63,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                     return succeeded ? (PeriodEndJobFinishedEvent) new PeriodEndRunJobSucceeded() : new PeriodEndRunJobFailed();
                 if (jobType  == JobType.PeriodEndStopJob)
                     return succeeded ? (PeriodEndJobFinishedEvent) new PeriodEndStopJobSucceeded() : new PeriodEndStopJobFailed();
-                if (jobType == JobType.PeriodEndSubmissionWindowValidationJob)
-                    return succeeded ? (PeriodEndJobFinishedEvent)new PeriodEndSubmissionWindowValidationJobSucceeded() : new PeriodEndSubmissionWindowValidationJobFailed();
+                //todo end of day Friday here - need to publish this
                 throw new InvalidOperationException($"Unhandled period end job type: {jobType}");
         }
 
