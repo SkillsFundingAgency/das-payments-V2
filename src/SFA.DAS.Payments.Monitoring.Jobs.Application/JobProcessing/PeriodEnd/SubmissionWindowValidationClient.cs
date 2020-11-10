@@ -6,6 +6,11 @@ using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 {
+    public interface ISubmissionWindowValidationClient
+    {
+        Task<bool> Validate(long jobId, short academicYear, byte collectionPeriod);
+    }
+    
     public class SubmissionWindowValidationClient : ISubmissionWindowValidationClient
     {
         private readonly string authCode;
