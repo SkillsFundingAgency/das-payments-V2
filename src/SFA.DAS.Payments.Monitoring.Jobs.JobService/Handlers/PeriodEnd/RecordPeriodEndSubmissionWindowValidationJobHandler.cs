@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core;
+using SFA.DAS.Payments.Monitoring.Jobs.Application;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
