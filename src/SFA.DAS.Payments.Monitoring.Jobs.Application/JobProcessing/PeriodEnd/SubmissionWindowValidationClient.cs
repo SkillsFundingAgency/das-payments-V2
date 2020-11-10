@@ -6,12 +6,12 @@ using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 {
-    public class MetricsValidationService : IMetricsValidationService
+    public class SubmissionWindowValidationClient : ISubmissionWindowValidationClient
     {
         private readonly string authCode;
         private readonly Uri functionAddressUri;
 
-        public MetricsValidationService(string authCode, string functionAddress)
+        public SubmissionWindowValidationClient(string authCode, string functionAddress)
         {
             this.authCode = authCode;
             functionAddressUri = new Uri(functionAddress);

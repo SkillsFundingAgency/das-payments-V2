@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 {
-    public interface IMetricsValidationService
+    public interface ISubmissionWindowValidationClient
     {
         Task<bool> Validate(long jobId, short academicYear, byte collectionPeriod);
     }
