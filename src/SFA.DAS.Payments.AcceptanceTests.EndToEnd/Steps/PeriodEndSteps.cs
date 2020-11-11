@@ -20,9 +20,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [Given(@"there are submission summaries for (.*)")]
-        public void GivenThereAreSubmissionSummariesFor(string collectionPeriod)
+        public async Task GivenThereAreSubmissionSummariesFor(string collectionPeriod)
         {
+            await submissionDataFactory.ClearData();
+
             SetCollectionPeriod(collectionPeriod);
+
             submissionDataFactory.CreateSubmissionSummaryModel(CollectionPeriod, AcademicYear);
         }
 
@@ -41,10 +44,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await submissionDataFactory.SaveModel();
         }
 
-        [When(@"DC request period end submission window validation")]
-        public async Task WhenDCRequestPeriodEndSubmissionWindowValidation()
+        [When(@"DC request period end submission window validation for (.*)")]
+        public async Task WhenDCRequestPeriodEndSubmissionWindowValidation(string collectionPeriod)
         {
+            SetCollectionPeriod(collectionPeriod);
+
             var dcHelper = Scope.Resolve<IDcHelper>();
+            
             await dcHelper.SendPeriodEndTask(AcademicYear, CollectionPeriod, TestSession.JobId, "PeriodEndSubmissionWindowValidation");
         }
 
@@ -57,6 +63,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var job = await submissionDataFactory.GetPeriodEndSubmissionWindowValidationJob(TestSession.JobId, CollectionPeriod, AcademicYear);
                 return job != null && job.Status == jobStatus;
             }, $"Failed to find validation job with status: {jobStatus}");
+
+            await submissionDataFactory.ClearData();
         }
     }
 }
