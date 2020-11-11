@@ -8,7 +8,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Monitoring.Jobs.Application;
-using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
@@ -19,17 +18,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
     {
         private readonly IPaymentLogger logger;
         private readonly IPeriodEndJobService periodEndJobService;
-        private readonly IPeriodEndJobStatusManager jobStatusManager;
         private readonly ISubmissionWindowValidationClient submissionWindowValidationClient;
         private readonly IJobStorageService jobStorageService;
 
         private readonly ITelemetry telemetry;
 
-        public RecordPeriodEndSubmissionWindowValidationJobHandler(IPaymentLogger logger, IPeriodEndJobService periodEndJobService, IPeriodEndJobStatusManager jobStatusManager, ISubmissionWindowValidationClient submissionWindowValidationClient, IJobStorageService jobStorageService, ITelemetry telemetry)
+        public RecordPeriodEndSubmissionWindowValidationJobHandler(IPaymentLogger logger, IPeriodEndJobService periodEndJobService, ISubmissionWindowValidationClient submissionWindowValidationClient, IJobStorageService jobStorageService, ITelemetry telemetry)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.periodEndJobService = periodEndJobService ?? throw new ArgumentNullException(nameof(periodEndJobService));
-            this.jobStatusManager = jobStatusManager ?? throw new ArgumentNullException(nameof(jobStatusManager));
             this.submissionWindowValidationClient = submissionWindowValidationClient ?? throw new ArgumentNullException(nameof(submissionWindowValidationClient));
             this.jobStorageService = jobStorageService ?? throw new ArgumentNullException(nameof(jobStorageService));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
@@ -37,17 +34,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
 
         public async Task Handle(IList<RecordPeriodEndSubmissionWindowValidationJob> messages, CancellationToken cancellationToken)
         {
-            var stopwatch = new Stopwatch();
-
             foreach (var message in messages)
             {
+                var stopwatch = new Stopwatch();
                 stopwatch.Start();
 
                 logger.LogInfo($"Handling period end submission window validation job: {message.ToJson()}");
                 
                 await periodEndJobService.RecordPeriodEndJob(message, cancellationToken);
-                
-                jobStatusManager.StartMonitoringJob(message.JobId, JobType.PeriodEndSubmissionWindowValidationJob);
                 
                 var metricsValid = await submissionWindowValidationClient.Validate(message.JobId, message.CollectionYear, message.CollectionPeriod);
 
