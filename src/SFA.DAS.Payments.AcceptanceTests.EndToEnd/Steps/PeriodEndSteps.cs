@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
@@ -11,7 +12,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     [Binding]
     public class PeriodEndSteps : EndToEndStepsBase
     {
-        private SubmissionDataFactory submissionDataFactory;
+        private readonly SubmissionDataFactory submissionDataFactory;
 
         public PeriodEndSteps(FeatureContext context) : base(context)
         {
@@ -64,7 +65,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 return job != null && job.Status == jobStatus;
             }, $"Failed to find validation job with status: {jobStatus}");
 
-            await submissionDataFactory.ClearData();
+            //this is based on the TimeToPauseBetweenChecks for jobs to finish in WaitForPeriodEndSubmissionWindowValidationToFinish
+            await Task.Delay(TimeSpan.FromSeconds(11));
         }
     }
 }

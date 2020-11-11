@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
-using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
@@ -14,7 +11,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
     public class SubmissionDataFactory
     {
         private SubmissionSummaryModel submissionSummaryModel;
-        private CollectionPeriodToleranceModel collectionPeriodToleranceModel;
 
         private readonly SubmissionDataContext submissionDataContext;
 
@@ -49,16 +45,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         {
             submissionSummaryModel.DcEarnings.ContractType1 = 100;
 
-            if (collectionPeriodToleranceModel != null)
-            {
-                var minvalue = Math.Min(collectionPeriodToleranceModel.SubmissionToleranceLower, collectionPeriodToleranceModel.SubmissionToleranceUpper);
-                
-                submissionSummaryModel.SubmissionMetrics.ContractType1 = minvalue;
-            }
-            else
-            {
-                submissionSummaryModel.SubmissionMetrics.ContractType1 = 100;
-            }
+            submissionSummaryModel.SubmissionMetrics.ContractType1 = 100;
+
             return this;
         }
 
@@ -66,16 +54,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         {
             submissionSummaryModel.DcEarnings.ContractType1 = 100;
 
-            if (collectionPeriodToleranceModel != null)
-            {
-                var minvalue = Math.Min(collectionPeriodToleranceModel.SubmissionToleranceLower, collectionPeriodToleranceModel.SubmissionToleranceUpper);
-
-                submissionSummaryModel.SubmissionMetrics.ContractType1 = minvalue - 0.01m;
-            }
-            else
-            {
-                submissionSummaryModel.SubmissionMetrics.ContractType1 = 90.00m;
-            }
+            submissionSummaryModel.SubmissionMetrics.ContractType1 = 90.00m;
 
             return this;
         }
@@ -84,69 +63,26 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
         {
             if (submissionSummaryModel == null) return;
 
-            await RemoveSubmissionSummaryModel(submissionSummaryModel.CollectionPeriod, submissionSummaryModel.AcademicYear);
-
             submissionDataContext.Add(submissionSummaryModel);
 
             await submissionDataContext.SaveChangesAsync();
         }
 
-        public async Task CreateCollectionPeriodToleranceModel(byte collectionPeriod, short academicYear, decimal lowerTolerance, decimal upperTolerance)
+        public async Task ClearData()
         {
-            collectionPeriodToleranceModel = new CollectionPeriodToleranceModel
-            {
-                CollectionPeriod = collectionPeriod,
-                AcademicYear = academicYear,
-                SubmissionToleranceLower = lowerTolerance,
-                SubmissionToleranceUpper = upperTolerance
-            };
+            await RemovePeriodEndSubmissionWindowValidationJob();
 
-            await RemoveCollectionPeriodToleranceModel(collectionPeriod, academicYear);
-
-            submissionDataContext.Add(collectionPeriodToleranceModel);
+            submissionDataContext.RemoveRange(submissionDataContext.SubmissionSummaries);
+            submissionDataContext.RemoveRange(submissionDataContext.CollectionPeriodTolerances);
+            submissionDataContext.RemoveRange(submissionDataContext.SubmissionsSummaries);
+            
             await submissionDataContext.SaveChangesAsync();
         }
 
-        public async Task RemoveSubmissionSummaryModel(byte collectionPeriod, short academicYear)
-        {
-            var existingConfig = submissionDataContext.SubmissionSummaries.Where(c =>
-                c.CollectionPeriod == collectionPeriod && c.AcademicYear == academicYear);
-
-            submissionDataContext.SubmissionSummaries.RemoveRange(existingConfig);
-
-            await submissionDataContext.SaveChangesAsync();
-        }
-
-        public async Task RemoveCollectionPeriodToleranceModel(byte collectionPeriod, short academicYear)
-        {
-            var existingConfig = submissionDataContext.CollectionPeriodTolerances.Where(c =>
-                c.CollectionPeriod == collectionPeriod && c.AcademicYear == academicYear);
-
-            submissionDataContext.CollectionPeriodTolerances.RemoveRange(existingConfig);
-
-            await submissionDataContext.SaveChangesAsync();
-        }
-
-        public async Task RemoveSubmissionsSummaryModel(List<SubmissionsSummaryModel> data)
-        {
-            submissionDataContext.RemoveRange(data);
-            await submissionDataContext.SaveChangesAsync();
-        }
-
-        public async Task ClearData(List<SubmissionsSummaryModel> data, byte collectionPeriod, short academicYear)
-        {
-            await RemoveSubmissionsSummaryModel(data);
-            await RemovePeriodEndSubmissionWindowValidationJob(collectionPeriod, academicYear);
-            await RemoveSubmissionSummaryModel(collectionPeriod, academicYear);
-            await RemoveCollectionPeriodToleranceModel(collectionPeriod, academicYear);
-        }
-
-        private async Task RemovePeriodEndSubmissionWindowValidationJob(byte collectionPeriod, short academicYear)
+        private async Task RemovePeriodEndSubmissionWindowValidationJob()
         {
             var jobs = await submissionDataContext.Jobs
-                .Where(x => x.JobType == JobType.PeriodEndSubmissionWindowValidationJob &&
-                            x.CollectionPeriod == collectionPeriod &&
-                            x.AcademicYear == academicYear)
+                .Where(x => x.JobType == JobType.PeriodEndSubmissionWindowValidationJob)
                 .ToListAsync();
 
             submissionDataContext.RemoveRange(jobs);
