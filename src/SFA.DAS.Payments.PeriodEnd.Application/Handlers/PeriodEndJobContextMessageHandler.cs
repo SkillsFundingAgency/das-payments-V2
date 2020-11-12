@@ -60,9 +60,16 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
 
                 var jobIdToWaitFor = message.JobId;
 
-                if (taskType == PeriodEndTaskType.PeriodEndReports ||
-                    taskType == PeriodEndTaskType.PeriodEndSubmissionWindowValidation)
+                if (taskType == PeriodEndTaskType.PeriodEndReports)
                 {
+                    var endpointInstance = await endpointInstanceFactory.GetEndpointInstance();
+                    await endpointInstance.Publish(periodEndEvent);
+                    logger.LogInfo(
+                        $"Finished publishing the period end event. Name: {periodEndEvent.GetType().Name}, JobId: {periodEndEvent.JobId}, Collection Period: {periodEndEvent.CollectionPeriod.Period}-{periodEndEvent.CollectionPeriod.AcademicYear}.");
+                }
+                else if(taskType == PeriodEndTaskType.PeriodEndSubmissionWindowValidation)
+                {
+                    await RecordPeriodEndJob(taskType, periodEndEvent).ConfigureAwait(false);
                     var endpointInstance = await endpointInstanceFactory.GetEndpointInstance();
                     await endpointInstance.Publish(periodEndEvent);
                     logger.LogInfo(
@@ -95,10 +102,9 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 // PeriodEndStoppedEvent will be handled by the PeriodEndStoppedEventHandler which in turn is handled by the ProcessProviderMonthEndCommandHandler but we don't want to wait for it
 
                 if (periodEndEvent is PeriodEndStoppedEvent  
-                    || periodEndEvent is PeriodEndRequestReportsEvent  
-                    || periodEndEvent is PeriodEndRequestValidateSubmissionWindowEvent )
+                    || periodEndEvent is PeriodEndRequestReportsEvent)
                 {
-                    logger.LogDebug("Returning as this is either a PeriodEndStop, PeriodEndRequestReports or PeriodEndRequestValidateSubmissionWindow event");
+                    logger.LogDebug("Returning as this is either a PeriodEndStop or PeriodEndRequestReports event");
                     return true;
                 }
 
@@ -107,7 +113,13 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                     return await jobStatusService.WaitForPeriodEndStartedToFinish(jobIdToWaitFor, cancellationToken);
                 }
 
+                if (periodEndEvent is PeriodEndRequestValidateSubmissionWindowEvent)
+                {
+                    return await jobStatusService.WaitForPeriodEndSubmissionWindowValidationToFinish(jobIdToWaitFor, cancellationToken);
+                }
+                
                 await jobStatusService.WaitForJobToFinish(jobIdToWaitFor, cancellationToken);
+
                 return true;
             }
             catch (Exception ex)
@@ -138,6 +150,10 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                     break;
                 case PeriodEndTaskType.PeriodEndStop:
                     await jobClient.RecordPeriodEndStop(periodEndEvent.JobId, periodEndEvent.CollectionPeriod.AcademicYear,
+                        periodEndEvent.CollectionPeriod.Period, new List<GeneratedMessage> { generatedMessage }).ConfigureAwait(false);
+                    break;
+                case PeriodEndTaskType.PeriodEndSubmissionWindowValidation:
+                    await jobClient.RecordPeriodEndSubmissionWindowValidation(periodEndEvent.JobId, periodEndEvent.CollectionPeriod.AcademicYear,
                         periodEndEvent.CollectionPeriod.Period, new List<GeneratedMessage> { generatedMessage }).ConfigureAwait(false);
                     break;
                 default:
