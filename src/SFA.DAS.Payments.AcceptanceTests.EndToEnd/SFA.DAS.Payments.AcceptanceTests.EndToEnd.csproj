@@ -551,7 +551,7 @@
     <Compile Include="Tests\DataLocks\PV2-2083-Test-Harness.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-2083-Test-Harness.feature</DependentUpon>
+      <DependentUpon>PV2-2083-Data-Locks-prevented-from-appearing-on-the-Data-Match-Report.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Disadvantaged Uplift\Framework-uplift-on-time-PV2-487.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1733,7 +1733,7 @@
     <EmbeddedResource Include="FM36TestFiles\PV2-1851-Non-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months-R07.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1953-small-employer-retrospective-R03.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1953-small-employer-retrospective-R04.json" />
-    <EmbeddedResource Include="FM36TestFiles\PV2-2083-Test-Harness-R12.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-2083-Data-Locks-prevented-from-appearing-on-the-Data-Match-Report-R12.json" />
     <None Include="packages.config" />
     <None Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1835,7 +1835,7 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-1825-DLock09-Two-Price-Episodes-Happy-Path.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\DataLocks\PV2-2083-Test-Harness.feature">
+    <None Include="Tests\DataLocks\PV2-2083-Data-Locks-prevented-from-appearing-on-the-Data-Match-Report.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-2083-Test-Harness.cs</LastGenOutput>
     </None>

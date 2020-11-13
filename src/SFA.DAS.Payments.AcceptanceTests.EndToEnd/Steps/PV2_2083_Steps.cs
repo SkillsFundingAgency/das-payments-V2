@@ -5,13 +5,14 @@ using Autofac;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
     [Binding]
-    [Scope(Feature = "PV2-2083-Test-Harness")]
+    [Scope(Feature = "PV2-2083-Data-Locks-prevented-from-appearing-on-the-Data-Match-Report")]
     // ReSharper disable once InconsistentNaming
     public class PV2_2083_Steps : FM36_ILR_Base_Steps
     {
@@ -20,16 +21,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         private const string PriceEpisodeIdentifier = "PE-2083";
-        private const string CommitmentIdentifierDLOCK07 = "A-2083";
-        private const string CommitmentIdentifierDLOCK09 = "B-2083";
+        private const string FirstCommitmentIdentifier = "A-2083";
+        private const string SecondCommitmentIdentifier = "B-2083";
 
-        [Given("fire test harness")]
-        public async Task FireTestHarness()
+        [Given("two potential matching apprenticeships")]
+        [Given("one which fails start date validation but who's start date is later than the second")]
+        [Given("a second one which passes start date validation but is stopped")]
+        public void EmptyIlrSetupStep()
+        {
+            //NOTE: This is handled by the FM36 we import
+        }
+
+        [When("the ILR is submitted")]
+        public async Task TheIlrIsSubmitted()
         {
             ImportR12Fm36();
 
             await SetUpMatchingCommitment();
-            CreateDataLocks();
+            ConfigureApprenticeshipsAccordingToScenario();
 
             var dcHelper = Scope.Resolve<IDcHelper>();
             await dcHelper.SendIlrSubmission(TestSession.FM36Global.Learners,
@@ -39,29 +48,47 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 TestSession.Provider.JobId);
         }
 
+        [Then("A DLock 10 is correctly generated")]
+        public async Task ADlock10IsCorrectlyGenerated()
+        {
+            await WaitForIt(
+                () => HasDataLock10(),
+                "Failed to find a DLock 10");
+        }
+
         private void ImportR12Fm36() { GetFm36LearnerForCollectionPeriod("R12/last academic year"); }
 
-        private void CreateDataLocks()
+        private void ConfigureApprenticeshipsAccordingToScenario()
         {
-            //todo here we need to set up the commitments to create the data lock scenario we are after for each commitment
             var context = Scope.Resolve<TestPaymentsDataContext>();
 
-            var apprenticeshipDLOCK09 =
-                context.Apprenticeship.Include(a => a.ApprenticeshipPriceEpisodes).Single(x => x.Id == TestSession.Apprenticeships[CommitmentIdentifierDLOCK09].Id);
-            apprenticeshipDLOCK09.ApprenticeshipPriceEpisodes.First().StartDate = apprenticeshipDLOCK09.ApprenticeshipPriceEpisodes.First().StartDate.AddDays(3);
-            apprenticeshipDLOCK09.EstimatedStartDate = new DateTime(2018, 09, 01); //dlock 9 start date?
-            apprenticeshipDLOCK09.StopDate = new DateTime(2019, 06, 01);
-            apprenticeshipDLOCK09.Status = ApprenticeshipStatus.Stopped;
-            apprenticeshipDLOCK09.ApprenticeshipPriceEpisodes.First().StartDate = new DateTime(2018, 09, 01);
+            var firstApprenticeship = context.Apprenticeship
+                .Include(a => a.ApprenticeshipPriceEpisodes)
+                .Single(x => x.Id == TestSession.Apprenticeships[SecondCommitmentIdentifier].Id);
 
-            var apprenticeshipDLOCK07 =
-                context.Apprenticeship.Include(a => a.ApprenticeshipPriceEpisodes).Single(x => x.Id == TestSession.Apprenticeships[CommitmentIdentifierDLOCK07].Id);
-            apprenticeshipDLOCK07.ApprenticeshipPriceEpisodes.First().Cost -= 1000; //dlock 7 price mismatch
-            
+            firstApprenticeship.ApprenticeshipPriceEpisodes.First().StartDate = new DateTime(2018, 09, 01);
+            firstApprenticeship.EstimatedStartDate = new DateTime(2018, 09, 01);
+            firstApprenticeship.StopDate = new DateTime(2019, 06, 01);
+            firstApprenticeship.Status = ApprenticeshipStatus.Stopped;
+
+            var secondApprenticeship = context.Apprenticeship
+                .Include(a => a.ApprenticeshipPriceEpisodes)
+                .Single(x => x.Id == TestSession.Apprenticeships[FirstCommitmentIdentifier].Id);
+
+            secondApprenticeship.ApprenticeshipPriceEpisodes.First().StartDate = new DateTime(2019, 07, 01);
+            secondApprenticeship.EstimatedStartDate = new DateTime(2019, 07, 01);
+            secondApprenticeship.Status = ApprenticeshipStatus.Active;
 
             context.SaveChanges();
         }
 
-        private async Task SetUpMatchingCommitment() { await SetupTestCommitmentData(CommitmentIdentifierDLOCK07, PriceEpisodeIdentifier, CommitmentIdentifierDLOCK09, PriceEpisodeIdentifier); }
+        private async Task SetUpMatchingCommitment() { await SetupTestCommitmentData(FirstCommitmentIdentifier, PriceEpisodeIdentifier, SecondCommitmentIdentifier, PriceEpisodeIdentifier); }
+
+        private bool HasDataLock10()
+        {
+            return EarningEventsHelper
+                .GetOnProgrammeDataLockErrorsForLearnerAndPriceEpisodeAndDeliveryPeriod(PriceEpisodeIdentifier, 1920, TestSession, 1)
+                .Any(x => x == DataLockErrorCode.DLOCK_10);
+        }
     }
 }
