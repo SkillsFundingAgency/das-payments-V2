@@ -53,7 +53,11 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.CourseValidation
                 var initialValidationResult = ValidateApprenticeships(ukprn, apprenticeships, academicYear, period, transactionType, priceEpisodes);
                 if (initialValidationResult.dataLockFailures.Any())
                 {
-                    newEarningPeriod.DataLockFailures = GetLatestApprenticeshipDataLocks(initialValidationResult.dataLockFailures, apprenticeships);
+                    var apprenticeshipsWithDataLock = apprenticeships
+                        .Where(a => initialValidationResult.dataLockFailures.Any(d => d.ApprenticeshipId == a.Id))
+                        .ToList();
+
+                    newEarningPeriod.DataLockFailures = GetLatestApprenticeshipDataLocks(initialValidationResult.dataLockFailures, apprenticeshipsWithDataLock);
                     invalidPeriods.Add(newEarningPeriod);
                     continue;
                 }
