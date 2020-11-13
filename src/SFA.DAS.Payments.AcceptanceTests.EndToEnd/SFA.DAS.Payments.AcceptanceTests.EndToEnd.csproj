@@ -548,7 +548,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-1826-DLock09-Two-Price-Episodes-Unhappy-Path.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\DataLocks\PV2-2083-Test-Harness.feature.cs">
+    <Compile Include="Tests\DataLocks\PV2-2083-Data-Locks-prevented-from-appearing-on-the-Data-Match-Report.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-2083-Data-Locks-prevented-from-appearing-on-the-Data-Match-Report.feature</DependentUpon>
@@ -1837,7 +1837,7 @@
     </None>
     <None Include="Tests\DataLocks\PV2-2083-Data-Locks-prevented-from-appearing-on-the-Data-Match-Report.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-2083-Test-Harness.cs</LastGenOutput>
+      <LastGenOutput>PV2-2083-Data-Locks-prevented-from-appearing-on-the-Data-Match-Report.cs</LastGenOutput>
     </None>
     <None Include="Tests\DataLocks\PV2-1826-DLock09-Two-Price-Episodes-Unhappy-Path.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
