@@ -41,6 +41,9 @@
     <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
     </Reference>
+    <Reference Include="AutoFixture, Version=4.11.0.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoFixture.4.11.0\lib\net452\AutoFixture.dll</HintPath>
+    </Reference>
     <Reference Include="AutoMapper, Version=7.0.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.7.0.1\lib\net45\AutoMapper.dll</HintPath>
     </Reference>
@@ -94,6 +97,9 @@
     </Reference>
     <Reference Include="ESFA.DC.Serialization.Interfaces, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Serialization.Interfaces.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.Serialization.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Fare, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ea68d375bf33a7c8, processorArchitecture=MSIL">
+      <HintPath>..\packages\Fare.2.1.1\lib\net35\Fare.dll</HintPath>
     </Reference>
     <Reference Include="FluentAssertions, Version=5.9.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentAssertions.5.9.0\lib\net47\FluentAssertions.dll</HintPath>
@@ -364,6 +370,7 @@
     <Compile Include="Data\Payment.cs" />
     <Compile Include="Data\ProviderPayment.cs" />
     <Compile Include="Data\ProviderPriority.cs" />
+    <Compile Include="Data\SubmissionDataFactory.cs" />
     <Compile Include="EventMatchers\BaseMatcher.cs" />
     <Compile Include="EventMatchers\CompletionPaymentHeldBackEventMatcher.cs" />
     <Compile Include="EventMatchers\EarningFailedDataLockMatcher.cs" />
@@ -407,6 +414,7 @@
     <Compile Include="Steps\FM36_ILR_Base_Steps.cs" />
     <Compile Include="Steps\FundingSourcePaymentEventsHelper.cs" />
     <Compile Include="Steps\PaymentEventsHelper.cs" />
+    <Compile Include="Steps\PeriodEndSteps.cs" />
     <Compile Include="Steps\PV2_1797_Steps.cs" />
     <Compile Include="Steps\PV2_1824_Steps.cs" />
     <Compile Include="Steps\PV2_1825_Steps.cs" />
@@ -1540,6 +1548,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Tests\PeriodEnd\Submission Events\PV2-2160 - Month End Automation correctly inform DC if tolerance met.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-2160 - Month End Automation correctly inform DC if tolerance met.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer and ILR changes after the new commitment_PV2-321.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1695,12 +1708,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-736 - Levy learner paid via transfer.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Submission Events\PV2-1395 - Successful submission removes previous submission payments.feature.cs">
+    <Compile Include="Tests\PeriodEnd\Submission Events\PV2-1395 - Successful submission removes previous submission payments.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-1395 - Successful submission removes previous submission payments.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Submission Events\PV2-1396 - Failed submission job removes payments for failed job.feature.cs">
+    <Compile Include="Tests\PeriodEnd\Submission Events\PV2-1396 - Failed submission job removes payments for failed job.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-1396 - Failed submission job removes payments for failed job.feature</DependentUpon>
@@ -2629,6 +2642,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\PeriodEnd\Submission Events\PV2-2160 - Month End Automation correctly inform DC if tolerance met.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-2160 - Month End Automation correctly inform DC if tolerance met.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer and ILR changes after the new commitment_PV2-321.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy learner changes provider but remains with the same employer and ILR changes after the new commitment_PV2-321.feature.cs</LastGenOutput>
@@ -2721,11 +2738,11 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-1583 - 1 Non-Levy learner, paid for via transfer, on ACT1 contract paid through DAS.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Submission Events\PV2-1395 - Successful submission removes previous submission payments.feature">
+    <None Include="Tests\PeriodEnd\Submission Events\PV2-1395 - Successful submission removes previous submission payments.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-1395 - Successful submission removes previous submission payments1.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Submission Events\PV2-1396 - Failed submission job removes payments for failed job.feature">
+    <None Include="Tests\PeriodEnd\Submission Events\PV2-1396 - Failed submission job removes payments for failed job.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-1396 - Failed submission job removes payments for failed job1.feature.cs</LastGenOutput>
     </None>
@@ -2830,6 +2847,14 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Model\SFA.DAS.Payments.Monitoring.Jobs.Model.csproj">
       <Project>{dc3c2dfe-ce0c-4b40-9a80-392b600fcded}</Project>
       <Name>SFA.DAS.Payments.Monitoring.Jobs.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Metrics.Domain\SFA.DAS.Payments.Monitoring.Metrics.Domain.csproj">
+      <Project>{7790AB71-54FA-402A-A100-E13A14135BEC}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Metrics.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Metrics.Model\SFA.DAS.Payments.Monitoring.Metrics.Model.csproj">
+      <Project>{EE51D526-0244-4B63-99A4-07FAFEF14D31}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Metrics.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Messages.Internal\SFA.DAS.Payments.ProviderPayments.Messages.Internal.csproj">
       <Project>{25B9DFA3-DF0C-4C53-A991-1F3D3BB407A8}</Project>

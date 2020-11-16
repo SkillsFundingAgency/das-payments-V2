@@ -19,6 +19,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 		DbSet<DataLockEventNonPayablePeriodModel> DataLockEventNonPayablePeriods { get; }
 		DbSet<RequiredPaymentEventModel> RequiredPaymentEvents { get; }
 		DbSet<PaymentModel> Payments { get; }
+		DbSet<LatestSuccessfulJobModel> LatestSuccessfulJobs { get; }
 		Task<decimal> GetAlreadyPaidDataLocksAmount(long ukprn, long jobId, CancellationToken cancellationToken);
 		Task<DataLockTypeCounts> GetDataLockCounts(long ukprn, long jobId, CancellationToken cancellationToken);
 		Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);

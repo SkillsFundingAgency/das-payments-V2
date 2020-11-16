@@ -50,6 +50,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
                 return JobType.PeriodEndRunJob;
             if (periodEndJob is RecordPeriodEndStopJob)
                 return JobType.PeriodEndStopJob;
+            if (periodEndJob is RecordPeriodEndSubmissionWindowValidationJob)
+                return JobType.PeriodEndSubmissionWindowValidationJob;
             throw new InvalidOperationException($"Unhandled period end job type: {periodEndJob.GetType().Name}");
         }
     }

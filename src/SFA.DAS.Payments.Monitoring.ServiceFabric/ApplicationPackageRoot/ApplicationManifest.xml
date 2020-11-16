@@ -39,6 +39,8 @@
     <Parameter Name="DelayedMessageRetries" DefaultValue="3" />
     <Parameter Name="DelayedMessageRetryDelay" DefaultValue="00:00:10" />
     <Parameter Name="MetricsGenerationDelay" DefaultValue="00:05:00" />
+    <Parameter Name="SubmissionWindowValidationFunctionApiKey" DefaultValue="" />
+    <Parameter Name="SubmissionWindowValidationFunctionBaseUrl" DefaultValue="" />
   </Parameters>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.Monitoring.Metrics.PeriodEndServicePkg" ServiceManifestVersion="1.0.0" />
@@ -139,6 +141,8 @@
             <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
             <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
             <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
+            <Parameter Name="SubmissionWindowValidationFunctionApiKey" Value="[SubmissionWindowValidationFunctionApiKey]" />
+            <Parameter Name="SubmissionWindowValidationFunctionBaseUrl" Value="[SubmissionWindowValidationFunctionBaseUrl]" />
           </Section>
         </Settings>
       </ConfigOverride>

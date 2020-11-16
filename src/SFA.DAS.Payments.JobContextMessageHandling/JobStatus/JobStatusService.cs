@@ -15,6 +15,7 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
         Task<bool> WaitForJobToFinish(long jobId, CancellationToken cancellationToken);
         Task<bool> JobCurrentlyRunning(long jobId);
         Task<bool> WaitForPeriodEndStartedToFinish(long dcJobId, CancellationToken cancellationToken);
+        Task<bool> WaitForPeriodEndSubmissionWindowValidationToFinish(long dcJobId, CancellationToken cancellationToken);
     }
 
     /// <summary>
@@ -80,6 +81,27 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
                 await Task.Delay(config.TimeToPauseBetweenChecks, cancellationToken);
             }
             logger.LogWarning($"Waiting {config.TimeToWaitForJobToComplete} but Job {dcJobId} still not finished.");
+            return false;
+        }
+
+        public async Task<bool> WaitForPeriodEndSubmissionWindowValidationToFinish(long jobId, CancellationToken cancellationToken)
+        {
+            logger.LogDebug($"Waiting for job with JobId: {jobId} to finish.");
+            var endTime = DateTime.Now.Add(config.TimeToWaitForJobToComplete);
+            while (DateTime.Now < endTime)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var job = await dataContext.GetJobByDcJobId(jobId);
+                if (job != null && (job.EndTime != null ||
+                                    job.Status != Monitoring.Jobs.Model.JobStatus.InProgress))
+                {
+                    logger.LogInfo($"Job {jobId} finished. Status: {job.Status:G}.  Finish time: {job.EndTime:G}");
+                    return job.Status == Monitoring.Jobs.Model.JobStatus.Completed || job.Status == Monitoring.Jobs.Model.JobStatus.CompletedWithErrors;
+                }
+                logger.LogVerbose($"Job {jobId} is still in progress");
+                await Task.Delay(config.TimeToPauseBetweenChecks, cancellationToken);
+            }
+            logger.LogWarning($"Waiting {config.TimeToWaitForJobToComplete} but Job {jobId} still not finished.");
             return false;
         }
     }
