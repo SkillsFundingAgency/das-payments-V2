@@ -289,7 +289,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         }
 
         [Test]
-        public void GivenThereIsonProgrammeAndIncentiveStoppedDLock10NoOtherDLockShouldBeGeneratedForLatestApprenticeship()
+        public void GivenThereIsOnProgrammeAndIncentiveStoppedDLock10NoOtherDLockShouldBeGeneratedForLatestApprenticeship()
         {
             var allApprenticeships = CreateApprenticeships();
             var earningEvent = CreateEarningEventTestData();
@@ -301,7 +301,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 
             allApprenticeships.ForEach(x =>
             {
-                x.EstimatedStartDate = earningEvent.PriceEpisodes[0].EffectiveTotalNegotiatedPriceStartDate.AddDays(-1);
                 x.ApprenticeshipPriceEpisodes.ForEach(o => o.StartDate = x.EstimatedStartDate);
                 x.StandardCode = 0;
                 x.ProgrammeType = 0;
