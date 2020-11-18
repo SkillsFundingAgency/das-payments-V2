@@ -7,7 +7,9 @@ IF OBJECT_ID('tempdb..#Direct') IS NOT NULL DROP TABLE #Direct
 SELECT P.LearnerUln, P.Ukprn, P.TransferSenderAccountId, P.AccountId, P.Amount, R.EventId [RequiredPaymentId], R.Amount [PaymentDue],
 	P.ApprenticeshipId [CommitmentId], P.LearnerReferenceNumber, P.IlrSubmissionDateTime, P.LearningAimStandardCode, P.LearningAimProgrammeType,
 	P.LearningAimFrameworkCode, P.LearningAimPathwayCode, P.ContractType, P.DeliveryPeriod, P.TransactionType, P.SfaContributionPercentage,
-	P.LearningAimFundingLineType, P.LearningAimReference, P.LearningStartDate, P.EventId, P.FundingSource, P.PriceEpisodeIdentifier
+	P.LearningAimFundingLineType, P.LearningAimReference, P.LearningStartDate, P.EventId, P.FundingSource, P.PriceEpisodeIdentifier,
+	P.EarningsStartDate, P.EarningsPlannedEndDate [PlannedEndDate], P.EarningsActualEndDate [ActualEndDate],
+	P.EarningsCompletionStatus, P.EarningsCompletionAmount, P.EarningsInstalmentAmount, P.EarningsNumberOfInstalments
 INTO #Direct
 FROM [Payments2].[Payment] P
 LEFT JOIN Payments2.FundingSourceEvent F
@@ -31,7 +33,9 @@ IF OBJECT_ID('tempdb..#CannotAfford') IS NOT NULL DROP TABLE #CannotAfford
 Select P.LearnerUln, P.Ukprn, P.TransferSenderAccountId, P.AccountId, P.Amount, RP.EventId [RequiredPaymentId], RP.Amount [PaymentDue],
 	P.ApprenticeshipId [CommitmentId], P.LearnerReferenceNumber, P.IlrSubmissionDateTime, P.LearningAimStandardCode, P.LearningAimProgrammeType,
 	P.LearningAimFrameworkCode, P.LearningAimPathwayCode, P.ContractType, P.DeliveryPeriod, P.TransactionType, P.SfaContributionPercentage,
-	P.LearningAimFundingLineType, P.LearningAimReference, P.LearningStartDate, P.EventId, P.FundingSource, P.PriceEpisodeIdentifier
+	P.LearningAimFundingLineType, P.LearningAimReference, P.LearningStartDate, P.EventId, P.FundingSource, P.PriceEpisodeIdentifier,
+	P.EarningsStartDate, P.EarningsPlannedEndDate [PlannedEndDate], P.EarningsActualEndDate [ActualEndDate],
+	P.EarningsCompletionStatus, P.EarningsCompletionAmount, P.EarningsInstalmentAmount, P.EarningsNumberOfInstalments
 INTO #CannotAfford
 from Payments2.Payment p
 left join Payments2.RequiredPaymentEvent rp 
@@ -117,7 +121,21 @@ SELECT 'BEGIN TRY ' +
 		CAST(FundingSource AS NVARCHAR) + ', ' + 
 		CAST(TransactionType AS NVARCHAR) + ', ' + 
 		CAST(Amount AS NVARCHAR) +
-	')' +
+	');  ' +
+
+	-- Insert the earning. This should only happen if the required payment was inserted without error
+	'INSERT INTO PaymentsDue.Earnings (RequiredPaymentId, StartDate, PlannedEndDate, ActualEndDate, CompletionStatus, CompletionAmount,
+	MonthlyInstallment, TotalInstallments) VALUES (' + 
+	'''' + CAST(RequiredPaymentId AS NVARCHAR(36)) + ''', ' + 
+	'''' + CONVERT(varchar, EarningsStartDate, 111) + ''', ' + 
+	CASE WHEN PlannedEndDate IS NULL THEN 'null, ' ELSE '''' + CONVERT(varchar, PlannedEndDate, 111) + ''', ' END + 
+	CASE WHEN ActualEndDate IS NULL THEN 'null, ' ELSE '''' + CONVERT(varchar, ActualEndDate, 111) + ''', ' END + 
+	COALESCE(CAST(EarningsCompletionStatus AS NVARCHAR), 'null') + ', ' + 
+	COALESCE(CAST(EarningsCompletionAmount AS NVARCHAR), 'null') + ', ' + 
+	COALESCE(CAST(EarningsInstalmentAmount AS NVARCHAR), 'null') + ', ' + 
+	COALESCE(CAST(EarningsNumberOfInstalments AS NVARCHAR), 'null') + 
+	
+	');  ' +
 
 	' END TRY BEGIN CATCH END CATCH' 
 
@@ -142,3 +160,7 @@ SELECT 'INSERT INTO TransferPayments.AccountTransfers (SendingAccountId, Receivi
 FROM #Records
 
 
+
+
+
+      
