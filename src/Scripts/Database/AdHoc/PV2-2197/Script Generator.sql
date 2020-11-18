@@ -72,6 +72,7 @@ DECLARE @collectionPeriodYear NVARCHAR(4) = '2020'
 
 
 SELECT 'BEGIN TRY ' +
+	-- Insert the required payment
 	'INSERT INTO PaymentsDue.RequiredPayments (Id, CommitmentId, AccountId, Uln, LearnRefNumber, Ukprn, IlrSubmissionDateTime,
 	PriceEpisodeIdentifier, StandardCode, ProgrammeType, FrameworkCode, PathwayCode, ApprenticeshipContractType, DeliveryMonth,
 	DeliveryYear, CollectionPeriodName, CollectionPeriodMonth, CollectionPeriodYear, TransactionType, AmountDue, SfaContributionPercentage,
@@ -101,12 +102,9 @@ SELECT 'BEGIN TRY ' +
 	'1, ' + 
 	'''' + LearningAimReference + ''', ' + 
 	'''' + CONVERT(varchar, LearningStartDate, 111)  + '''' + 
-	') END TRY BEGIN CATCH END CATCH' 
-
-FROM #Records
-
-
-SELECT
+	');  ' + 
+	
+	-- Insert the payment. This should only happen if the required payment was inserted without error
 	'INSERT INTO Payments.Payments (PaymentId, RequiredPaymentId, DeliveryMonth, DeliveryYear, CollectionPeriodName, CollectionPeriodMonth, 
 	CollectionPeriodYear, FundingSource, TransactionType, Amount) VALUES ('	+ 
 		'''' + CAST(EventId AS NVARCHAR(36)) + ''', ' + 
@@ -119,9 +117,14 @@ SELECT
 		CAST(FundingSource AS NVARCHAR) + ', ' + 
 		CAST(TransactionType AS NVARCHAR) + ', ' + 
 		CAST(Amount AS NVARCHAR) +
-	')' 
+	')' +
+
+	' END TRY BEGIN CATCH END CATCH' 
+
 FROM #Records
 
+
+-- Insert the transfer payment always
 SELECT 'INSERT INTO TransferPayments.AccountTransfers (SendingAccountId, ReceivingAccountId, RequiredPaymentId, CommitmentId, 
 	Amount, TransferType, CollectionPeriodName, CollectionPeriodMonth, CollectionPeriodYear) VALUES (' + 
 		CAST(TransferSenderAccountId AS NVARCHAR) + ', ' + 
