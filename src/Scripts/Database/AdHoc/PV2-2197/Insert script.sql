@@ -3098,13 +3098,23 @@ PRINT 'Finished transfers'
 
 
 
-
 DECLARE @recordsInRequiredPaymentsAfter INT = (SELECT COUNT(*) FROM PaymentsDue.RequiredPayments)
 DECLARE @recordsInPaymentsAfter INT = (SELECT COUNT(*) FROM Payments.Payments)
 DECLARE @recordsInEarningsAfter INT = (SELECT COUNT(*) FROM PaymentsDue.Earnings)
 DECLARE @recordsInTransfersAfter INT = (SELECT COUNT(*) FROM TransferPayments.AccountTransfers)
 DECLARE @transfersBalanceAfter DECIMAL = (SELECT SUM(Amount) FROM TransferPayments.AccountTransfers)
 DECLARE @paymentsBalanceAfter DECIMAL = (SELECT SUM(Amount) FROM Payments.Payments)
+
+
+----
+SELECT 'before', @recordsInRequiredPaymentsBefore [required payments], @recordsInPaymentsBefore [payments], @recordsInEarningsBefore [earnings], @recordsInTransfersBefore [transfers]
+SELECT FORMAT(@transfersBalanceBefore, 'C', 'en-gb') [transfer balance before], FORMAT(@paymentsBalanceBefore, 'C', 'en-gb') [payment balance before]
+----
+
+----
+SELECT 'after', (@recordsInRequiredPaymentsAfter) [required payments], (@recordsInPaymentsAfter) [payments], (@recordsInEarningsAfter) [earnings], (@recordsInTransfersAfter) [transfers]
+SELECT FORMAT(@transfersBalanceAfter, 'C', 'en-gb') [transfer balance after], FORMAT(@paymentsBalanceAfter, 'C', 'en-gb') [payment balance after]
+
 
 
 
