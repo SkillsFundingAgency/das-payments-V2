@@ -176,7 +176,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
             telemetry.TrackEvent(eventName,
                 new Dictionary<string, string>
                 {
-                    { "ActorId",Id.ToString()},
+                    { "ActorId", Id.ToString()},
                     { TelemetryKeys.Ukprn, Id.ToString()},
                 },
                 new Dictionary<string, double>

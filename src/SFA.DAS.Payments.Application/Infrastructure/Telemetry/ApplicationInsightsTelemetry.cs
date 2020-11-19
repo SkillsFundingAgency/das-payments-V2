@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 using Newtonsoft.Json;
-using SFA.DAS.Payments.Core;
 
 namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
 {
