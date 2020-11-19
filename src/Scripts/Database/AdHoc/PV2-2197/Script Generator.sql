@@ -9,13 +9,16 @@ SELECT P.LearnerUln, P.Ukprn, P.TransferSenderAccountId, P.AccountId, P.Amount, 
 	P.LearningAimFrameworkCode, P.LearningAimPathwayCode, P.ContractType, P.DeliveryPeriod, P.TransactionType, P.SfaContributionPercentage,
 	P.LearningAimFundingLineType, P.LearningAimReference, P.LearningStartDate, P.EventId, P.FundingSource, P.PriceEpisodeIdentifier,
 	P.EarningsStartDate, P.EarningsPlannedEndDate [PlannedEndDate], P.EarningsActualEndDate [ActualEndDate],
-	P.EarningsCompletionStatus, P.EarningsCompletionAmount, P.EarningsInstalmentAmount, P.EarningsNumberOfInstalments
+	P.EarningsCompletionStatus, P.EarningsCompletionAmount, P.EarningsInstalmentAmount, P.EarningsNumberOfInstalments,
+	ISNULL(E.LearningAimSequenceNumber, 0) [AimSeqNumber]
 INTO #Direct
 FROM [Payments2].[Payment] P
 LEFT JOIN Payments2.FundingSourceEvent F
 	ON P.FundingSourceEventId = F.EventId
 LEFT JOIN Payments2.RequiredPaymentEvent R
 	ON F.RequiredPaymentEventId = R.EventId
+LEFT JOIN Payments2.EarningEvent E
+	ON E.EventId = R.EarningEventId
 WHERE 1 = 1
 AND P.collectionperiod != 14 --This collectionPeriod had all the refunds correctly transfered
 AND P.AcademicYear = 1920
@@ -27,6 +30,7 @@ AND R.EventId IS NOT NULL
 
 
 
+
 -- Add the last remaining record
 IF OBJECT_ID('tempdb..#CannotAfford') IS NOT NULL DROP TABLE #CannotAfford
 
@@ -35,7 +39,8 @@ Select P.LearnerUln, P.Ukprn, P.TransferSenderAccountId, P.AccountId, P.Amount, 
 	P.LearningAimFrameworkCode, P.LearningAimPathwayCode, P.ContractType, P.DeliveryPeriod, P.TransactionType, P.SfaContributionPercentage,
 	P.LearningAimFundingLineType, P.LearningAimReference, P.LearningStartDate, P.EventId, P.FundingSource, P.PriceEpisodeIdentifier,
 	P.EarningsStartDate, P.EarningsPlannedEndDate [PlannedEndDate], P.EarningsActualEndDate [ActualEndDate],
-	P.EarningsCompletionStatus, P.EarningsCompletionAmount, P.EarningsInstalmentAmount, P.EarningsNumberOfInstalments
+	P.EarningsCompletionStatus, P.EarningsCompletionAmount, P.EarningsInstalmentAmount, P.EarningsNumberOfInstalments,
+	ISNULL(E.LearningAimSequenceNumber, 0) [AimSeqNumber]
 INTO #CannotAfford
 from Payments2.Payment p
 left join Payments2.RequiredPaymentEvent rp 
@@ -52,6 +57,8 @@ left join Payments2.RequiredPaymentEvent rp
     and p.learningaimpathwaycode = rp.learningaimpathwaycode
     and p.transactiontype = rp.transactiontype
     and p.contracttype = rp.contracttype
+LEFT JOIN Payments2.EarningEvent E
+	ON RP.EarningEventId = E.EventId
 where
     p.Id = 86570921
 
@@ -80,7 +87,7 @@ SELECT 'BEGIN TRY ' +
 	'INSERT INTO PaymentsDue.RequiredPayments (Id, CommitmentId, AccountId, Uln, LearnRefNumber, Ukprn, IlrSubmissionDateTime,
 	PriceEpisodeIdentifier, StandardCode, ProgrammeType, FrameworkCode, PathwayCode, ApprenticeshipContractType, DeliveryMonth,
 	DeliveryYear, CollectionPeriodName, CollectionPeriodMonth, CollectionPeriodYear, TransactionType, AmountDue, SfaContributionPercentage,
-	FundingLineType, UseLevyBalance, LearnAimRef, LearningStartDate) VALUES (' + 
+	FundingLineType, UseLevyBalance, LearnAimRef, LearningStartDate, CommitmentVersionId, AccountVersionId, AimSeqNumber) VALUES (' + 
 	'''' + CAST(RequiredPaymentId AS NVARCHAR(36)) + ''', ' + 
 	CAST(CommitmentId AS NVARCHAR) + ', ' + 
 	CAST(AccountId AS NVARCHAR) + ', ' + 
@@ -103,9 +110,12 @@ SELECT 'BEGIN TRY ' +
 	CAST(Amount AS NVARCHAR) + ', ' + 
 	CAST(SfaContributionPercentage AS NVARCHAR) + ', ' + 
 	'''' + LearningAimFundingLineType  + ''', ' + 
-	'1, ' + 
+	'0, ' + 
 	'''' + LearningAimReference + ''', ' + 
-	'''' + CONVERT(varchar, LearningStartDate, 111)  + '''' + 
+	'''' + CONVERT(varchar, LearningStartDate, 111)  + ''',' + 
+	''''',' +
+	''''',' +
+	CAST([AimSeqNumber] AS NVARCHAR) +
 	');  ' + 
 	
 	-- Insert the payment. This should only happen if the required payment was inserted without error
