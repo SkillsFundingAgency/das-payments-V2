@@ -108,8 +108,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             return await dataContext.Payment
                 .Where(p => p.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
                             p.CollectionPeriod.Period == collectionPeriod.Period &&
-                            (byte) p.ContractType == (byte) ContractType.Act1 &&
-                            (byte) p.TransactionType == (byte) TransactionType.Completion)
+                            p.ContractType == ContractType.Act1 &&
+                            p.TransactionType == TransactionType.Completion)
                 .ToListAsync(cancellationToken);
         }
     }
