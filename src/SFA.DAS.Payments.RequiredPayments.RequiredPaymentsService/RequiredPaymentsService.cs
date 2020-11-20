@@ -241,7 +241,7 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             telemetry.TrackEvent(eventName,
                 new Dictionary<string, string>
                 {
-                    { "ActorId", logSafeApprenticeshipKeyString},
+                    { "ApprenticeshipKey", logSafeApprenticeshipKeyString},
                     { TelemetryKeys.LearnerRef, apprenticeshipKey.LearnerReferenceNumber},
                     { TelemetryKeys.AcademicYear, apprenticeshipKey.AcademicYear.ToString()},
                 },
