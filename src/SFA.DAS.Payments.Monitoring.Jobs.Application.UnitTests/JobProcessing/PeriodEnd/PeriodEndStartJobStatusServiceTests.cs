@@ -16,8 +16,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
     [TestFixture]
     public class PeriodEndStartJobStatusServiceTests
     {
-         private AutoMock mocker;
-       
+        private AutoMock mocker;
+
         private JobModel job;
         private List<CompletedMessage> completedMessages;
         private List<InProgressMessage> inProgressMessages;
@@ -67,7 +67,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             mocker.Mock<IJobsDataContext>()
                 .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<long>(), It.IsAny<DateTimeOffset>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(outstandingOrTimedOutJobs);
-            
+
         }
 
         [Test]
@@ -96,7 +96,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                         It.Is<DateTimeOffset>(endTime => endTime == timedOutSubmissionJob.EndTime),
                         It.IsAny<CancellationToken>()), Times.Once());
         }
-
 
         [Test]
         public async Task ManageStatus_GivenMultipleSubmissionJobsWhereOneTimesOut_FailsFastOnFirstFailure()
@@ -132,7 +131,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                         It.IsAny<CancellationToken>()), Times.Once());
         }
 
-
         [Test]
         public async Task ManageStatus_ContinuesUntilAllInProgressJobsHaveCompleted()
         {
@@ -164,9 +162,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                         It.Is<JobStatus>(status => status == JobStatus.Completed),
                         It.Is<DateTimeOffset>(endTime => endTime == outstandingOrTimedOutJobs[0].EndTime),
                         It.IsAny<CancellationToken>()), Times.Once());
-            
-        }
 
+        }
 
         [Test]
         public async Task ManageStatus_ContinuesUntilAllInProgressAndUsesLastEndTimeAsJobEndTime()
@@ -192,7 +189,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
 
             CompleteJob(outstandingOrTimedOutJobs[0]);
             CompleteJob(outstandingOrTimedOutJobs[1]);
-            
+
             result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
             result.Should().BeTrue();
 
@@ -202,9 +199,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                         It.Is<JobStatus>(status => status == JobStatus.Completed),
                         It.Is<DateTimeOffset>(endTime => endTime == outstandingOrTimedOutJobs[1].EndTime),
                         It.IsAny<CancellationToken>()), Times.Once());
-            
-        }
 
+        }
 
         [Test]
         public async Task ManageStatus_EndTimeShouldUseLastActivityCompleted()
@@ -224,7 +220,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                 .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();
-            
+
             var result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
             result.Should().BeTrue();
 
@@ -236,53 +232,36 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                         It.IsAny<CancellationToken>()), Times.Once());
         }
 
-
-
         private void CompleteJob(OutstandingJobResult outstandingJob)
         {
             outstandingJob.JobStatus = JobStatus.Completed;
             outstandingJob.EndTime = DateTimeOffset.UtcNow;
-            
+            outstandingJob.DcJobSucceeded = true;
         }
 
         private OutstandingJobResult CreateOutstandingSubmissionJob()
         {
-            return new OutstandingJobResult()
-                {DcJobId = job.Id, JobStatus = JobStatus.InProgress, DcJobSucceeded = null, EndTime = null};
+            return new OutstandingJobResult { DcJobId = job.Id, JobStatus = JobStatus.InProgress, DcJobSucceeded = null, EndTime = null };
         }
 
         private OutstandingJobResult CreateTimedOutSubmissionJob()
         {
-            return new OutstandingJobResult()
-                {DcJobId = job.Id, JobStatus = JobStatus.TimedOut, DcJobSucceeded = true, EndTime =  DateTimeOffset.UtcNow.AddSeconds(10) };
+            return new OutstandingJobResult { DcJobId = job.Id, JobStatus = JobStatus.TimedOut, DcJobSucceeded = true, EndTime = DateTimeOffset.UtcNow.AddSeconds(10) };
         }
 
-        private OutstandingJobResult
-            CreateCompletedSubmissionJob()
+        private OutstandingJobResult CreateCompletedSubmissionJob()
         {
-            return new OutstandingJobResult()
-            {
-                DcJobId = job.Id, JobStatus = JobStatus.Completed, DcJobSucceeded = true, EndTime = DateTimeOffset.UtcNow.AddSeconds(10)
-            };
+            return new OutstandingJobResult { DcJobId = job.Id, JobStatus = JobStatus.Completed, DcJobSucceeded = true, EndTime = DateTimeOffset.UtcNow.AddSeconds(10) };
         }
 
         private static InProgressMessage CreateInProgressMessage(CompletedMessage completedMessage)
         {
-            var inProgressMessage = new InProgressMessage
-                {MessageId = completedMessage.MessageId, MessageName = "Message"};
-            return inProgressMessage;
+            return new InProgressMessage { MessageId = completedMessage.MessageId, MessageName = "Message" };
         }
 
         private CompletedMessage CreateCompletedMessage()
         {
-            var completedMessage = new CompletedMessage
-            {
-                MessageId = Guid.NewGuid(),
-                JobId = job.Id,
-                Succeeded = true,
-                CompletedTime = DateTimeOffset.UtcNow
-            };
-            return completedMessage;
+            return new CompletedMessage { MessageId = Guid.NewGuid(), JobId = job.Id, Succeeded = true, CompletedTime = DateTimeOffset.UtcNow };
         }
     }
 }

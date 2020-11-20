@@ -18,10 +18,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Model.Submission
         public ContractTypeAmounts DcEarnings { get; set; }
         public ContractTypeAmountsVerbose DasEarnings { get; set; }
         public ContractTypeAmounts RequiredPayments { get; set; }
-        public decimal DataLockedEarnings { get; set; }
+        public decimal AdjustedDataLockedEarnings { get; set; }
         public decimal TotalDataLockedEarnings { get; set; }
         public decimal AlreadyPaidDataLockedEarnings { get; set; }
-        public decimal NonLevyRequiredPayments { get; set; }
         public ContractTypeAmounts HeldBackCompletionPayments { get; set; }
     }
 }

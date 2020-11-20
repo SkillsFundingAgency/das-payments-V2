@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +7,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
-namespace SFA.DAS.Payments.Monitoring.Jobs.Application
+namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobMessageProcessing
 {
     public interface IJobMessageService
     {

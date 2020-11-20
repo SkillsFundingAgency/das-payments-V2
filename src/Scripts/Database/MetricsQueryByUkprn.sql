@@ -93,7 +93,7 @@ GROUP BY Ukprn
 SELECT EE.LearnerReferenceNumber, EE.LearnerUln, EE.LearningAimFrameworkCode,
     EE.LearningAimPathwayCode, EE.LearningAimProgrammeType, EE.LearningAimReference,
     EE.LearningAimStandardCode, EE.Ukprn, EE.Amount, EE.DeliveryPeriod,
-    EE.TransactionType
+    EE.TransactionType, EE.CollectionPeriod
 INTO #DataLockedEarningEvents
 FROM #EarningEvents AS EE
 WHERE EXISTS (
@@ -132,6 +132,7 @@ WHERE EXISTS (
     AND E.LearningAimStandardCode = P.LearningAimStandardCode
     AND E.TransactionType = P.TransactionType
 	AND P.AcademicYear = @academicYear
+    AND p.collectionperiod < E.CollectionPeriod
 )
 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 GROUP BY Ukprn

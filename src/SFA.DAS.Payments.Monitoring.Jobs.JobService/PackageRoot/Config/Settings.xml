@@ -35,6 +35,8 @@
     <Parameter Name="TimeToWaitForJobToComplete" Value="01:00:00" />
     <Parameter Name="NumberOfNServiceBusThreads" Value="4" />
     <Parameter Name="DasNServiceBusLicenseKey" Value=""/>
+    <Parameter Name="SubmissionWindowValidationFunctionApiKey" Value="" />
+    <Parameter Name="SubmissionWindowValidationFunctionBaseUrl" Value="" />
 
   </Section>
 </Settings>

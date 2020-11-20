@@ -121,6 +121,12 @@
     <Build Include="Metrics\Tables\Metrics.ProviderEarning.sql" />
     <Build Include="Payments2\Views\Payments2.LatestSuccessfulJobs.sql" />
     <Build Include="Payments2\Tables\Payments2.FundingSourceLevyTransaction.sql" />
+    <Build Include="Metrics\Tables\Metrics.ProviderPeriodEndSummary.sql" />
+    <Build Include="Metrics\Tables\Metrics.ProviderPaymentTransaction.sql" />
+    <Build Include="Metrics\Tables\Metrics.ProviderPaymentFundingSource.sql" />
+    <Build Include="Metrics\Tables\Metrics.PeriodEndSummary.sql" />
+    <Build Include="Metrics\Tables\Metrics.SubmissionsSummary.sql" />
+    <Build Include="Metrics\Tables\Metrics.CollectionPeriodTolerance.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />

@@ -76,6 +76,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
                 return new TestPaymentsDataContext(configHelper.PaymentsConnectionString);
             }).As<TestPaymentsDataContext>().InstancePerDependency();
 
+            Builder.Register((c, p) =>
+            {
+                var configHelper = c.Resolve<TestsConfiguration>();
+                return new SubmissionDataContext(configHelper.PaymentsConnectionString);
+            }).As<SubmissionDataContext>().InstancePerDependency();
+
             Builder.Register(c => new TestSession(c.Resolve<IUkprnService>(), c.Resolve<IUlnService>())).InstancePerLifetimeScope();
 
             Builder.Register(context =>

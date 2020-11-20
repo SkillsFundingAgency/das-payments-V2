@@ -21,3 +21,8 @@ Amount
 Include (EarningEventId, TransactionType)
 
 GO
+
+CREATE NONCLUSTERED INDEX [IX_EarningEventPeriod__Metrics]
+	ON [Payments2].[EarningEventPeriod]([EarningEventId])
+	INCLUDE ([TransactionType],[Amount])
+GO
