@@ -88,7 +88,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
                 var stopwatch = Stopwatch.StartNew();
                 await Initialise().ConfigureAwait(false);
                 await apprenticeshipUpdatedProcessor.ProcessApprenticeshipUpdate(message);
-                TrackInfrastructureEvent("DataLockService.HandleApprenticeshipUpdated", stopwatch);
+                TrackInfrastructureEvent("DataLockService.HandleApprenticeshipUpdated", stopwatch, message);
                 telemetry.StopOperation(operation);
             }
         }
@@ -100,7 +100,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
                 var stopwatch = Stopwatch.StartNew();
                 await Initialise().ConfigureAwait(false);
                 var payments = await apprenticeshipUpdatedProcessor.GetApprenticeshipUpdatePayments(message).ConfigureAwait(false);
-                TrackInfrastructureEvent("DataLockService.GetApprenticeshipUpdatedPayments", stopwatch);
+                TrackInfrastructureEvent("DataLockService.GetApprenticeshipUpdatedPayments", stopwatch, message);
                 telemetry.StopOperation(operation);
 
                 return payments;
@@ -114,7 +114,7 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
                 var stopwatch = Stopwatch.StartNew();
                 await Initialise().ConfigureAwait(false);
                 var payments = await apprenticeshipUpdatedProcessor.GetApprenticeshipUpdateFunctionalSkillPayments(message).ConfigureAwait(false);
-                TrackInfrastructureEvent("DataLockService.GetApprenticeshipUpdatedPayments", stopwatch);
+                TrackInfrastructureEvent("DataLockService.GetApprenticeshipUpdatedPayments", stopwatch, message);
                 telemetry.StopOperation(operation);
 
                 return payments;
@@ -170,15 +170,18 @@ namespace SFA.DAS.Payments.DataLocks.DataLockService
                 throw;
             }
         }
-        
-        private void TrackInfrastructureEvent(string eventName, Stopwatch stopwatch)
+
+        private void TrackInfrastructureEvent(string eventName, Stopwatch stopwatch, ApprenticeshipUpdated message = null)
         {
-            telemetry.TrackEvent(eventName,
-                new Dictionary<string, string>
-                {
-                    { "ActorId",Id.ToString()},
-                    { TelemetryKeys.Ukprn, Id.ToString()},
-                },
+            var properties = new Dictionary<string, string>();
+            if (message == null)
+                properties.Add("No identifier", "No identifier");
+            else
+            {
+                properties.Add(TelemetryKeys.Ukprn, message.Ukprn.ToString());
+                properties.Add("ApprenticeshipId", message.Id.ToString());
+            }
+            telemetry.TrackEvent(eventName, properties,
                 new Dictionary<string, double>
                 {
                     { TelemetryKeys.Duration, stopwatch.ElapsedMilliseconds }
