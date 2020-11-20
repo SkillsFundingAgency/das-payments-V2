@@ -96,7 +96,7 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
                                     job.Status != Monitoring.Jobs.Model.JobStatus.InProgress))
                 {
                     logger.LogInfo($"Job {jobId} finished. Status: {job.Status:G}.  Finish time: {job.EndTime:G}");
-                    return job.Status == Monitoring.Jobs.Model.JobStatus.Completed || job.Status == Monitoring.Jobs.Model.JobStatus.CompletedWithErrors;
+                    return job.Status == Monitoring.Jobs.Model.JobStatus.Completed;
                 }
                 logger.LogVerbose($"Job {jobId} is still in progress");
                 await Task.Delay(config.TimeToPauseBetweenChecks, cancellationToken);
