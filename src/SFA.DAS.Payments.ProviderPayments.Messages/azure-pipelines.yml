@@ -15,8 +15,6 @@ pool:
   name: DCT
   demands:
   - IsBuildServer
-  - IsBuildServerDAS
-  - msbuild
 
 steps:
 - task: DotNetCoreInstaller@0
