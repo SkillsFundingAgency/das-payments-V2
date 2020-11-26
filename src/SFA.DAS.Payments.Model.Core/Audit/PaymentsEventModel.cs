@@ -5,7 +5,7 @@ namespace SFA.DAS.Payments.Model.Core.Audit
     public interface IPaymentsEventModel
     {
         Guid EventId { get; set; }
-        Guid RequiredPaymentEventId { get; set; }
+        Guid? RequiredPaymentEventId { get; set; }
         byte CollectionPeriod { get; set; }
         string LearnerReferenceNumber { get; set; }
         long LearnerUln { get; set; }
@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.Model.Core.Audit
     public abstract class PaymentsEventModel : IPaymentsEventModel
     {
         public Guid EventId { get; set; }
-        public Guid RequiredPaymentEventId { get; set; }
+        public Guid? RequiredPaymentEventId { get; set; }
         public short AcademicYear { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? PlannedEndDate { get; set; }
