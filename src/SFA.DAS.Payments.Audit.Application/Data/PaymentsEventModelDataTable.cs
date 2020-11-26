@@ -16,7 +16,6 @@ namespace SFA.DAS.Payments.Audit.Application.Data
             DataTable.Columns.AddRange(new[]
             {
                 new DataColumn("EventId", typeof(Guid)),
-                new DataColumn("RequiredPaymentEventId", typeof(Guid)),
                 new DataColumn("CollectionPeriod"),
                 new DataColumn("AcademicYear"),
                 new DataColumn("LearnerReferenceNumber"),
@@ -39,7 +38,6 @@ namespace SFA.DAS.Payments.Audit.Application.Data
         {
             var dataRow = DataTable.NewRow();
             dataRow["EventId"] = eventModel.EventId;
-            dataRow["RequiredPaymentEventId"] = eventModel.RequiredPaymentEventId;
             dataRow["CollectionPeriod"] = eventModel.CollectionPeriod;
             dataRow["AcademicYear"] = eventModel.AcademicYear;
             dataRow["LearnerReferenceNumber"] = eventModel.LearnerReferenceNumber;
