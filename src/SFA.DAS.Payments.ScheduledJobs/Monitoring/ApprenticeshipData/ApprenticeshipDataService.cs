@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -31,16 +32,22 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
 
         public async Task ProcessComparison()
         {
-            var commitmentsApprovedTask = commitmentsDataContext.Apprenticeship.CountAsync(x => x.IsApproved);
+            var lastMonth = DateTime.UtcNow.AddDays(-30);
+
+            var commitmentsApprovedTask = commitmentsDataContext.Apprenticeship
+                .Where(a => a.Commitment.EmployerAndProviderApprovedOn >= lastMonth)
+                .CountAsync(x => x.IsApproved);
 
             var commitmentsStatusTask = commitmentsDataContext.Apprenticeship
                 .Where(a => a.PaymentStatus == PaymentStatus.Withdrawn || a.PaymentStatus == PaymentStatus.Paused)
+                .Where(a => a.Commitment.EmployerAndProviderApprovedOn >= lastMonth)
                 .GroupBy(g => g.PaymentStatus)
                 .Select(x => new { x.Key, Count = x.Count() })
                 .ToListAsync();
 
             var paymentsStatusTask = paymentsDataContext.Apprenticeship
                 .Where(a => a.Status == ApprenticeshipStatus.Active || a.Status == ApprenticeshipStatus.Stopped || a.Status == ApprenticeshipStatus.Paused)
+                .Where(a => a.CreationDate >= lastMonth)
                 .GroupBy(g => g.Status)
                 .Select(x => new { x.Key, Count = x.Count() })
                 .ToListAsync();

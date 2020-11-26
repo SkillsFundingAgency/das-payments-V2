@@ -38,24 +38,25 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.ApprenticeshipData
 
             var dasApprenticeships = new List<ApprenticeshipModel>
             {
-                new ApprenticeshipModel{ IsApproved = true },
-                new ApprenticeshipModel{ PaymentStatus = PaymentStatus.Withdrawn },
-                new ApprenticeshipModel{ PaymentStatus = PaymentStatus.Withdrawn },
-                new ApprenticeshipModel{ PaymentStatus = PaymentStatus.Withdrawn },
-                new ApprenticeshipModel{ PaymentStatus = PaymentStatus.Paused },
-                new ApprenticeshipModel{ PaymentStatus = PaymentStatus.Paused },
+                new ApprenticeshipModel { IsApproved = true, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } },
+                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Withdrawn, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } },
+                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Withdrawn, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } },
+                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Withdrawn, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } },
+                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Paused, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } },
+                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Paused, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } }
             };
 
             var paymentsApprenticeships = new List<Model.Core.Entities.ApprenticeshipModel>
             {
-                new Model.Core.Entities.ApprenticeshipModel{ Status = ApprenticeshipStatus.Active },
-                new Model.Core.Entities.ApprenticeshipModel{ Status = ApprenticeshipStatus.Active },
-                new Model.Core.Entities.ApprenticeshipModel{ Status = ApprenticeshipStatus.Active },
-                new Model.Core.Entities.ApprenticeshipModel{ Status = ApprenticeshipStatus.Stopped },
-                new Model.Core.Entities.ApprenticeshipModel{ Status = ApprenticeshipStatus.Paused },
-                new Model.Core.Entities.ApprenticeshipModel{ Status = ApprenticeshipStatus.Paused },
-                new Model.Core.Entities.ApprenticeshipModel{ Status = ApprenticeshipStatus.Paused },
-                new Model.Core.Entities.ApprenticeshipModel{ Status = ApprenticeshipStatus.Paused }
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Active, CreationDate = DateTime.Now },
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Active, CreationDate = DateTime.Now },
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Active, CreationDate = DateTime.Now },
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Active, CreationDate = DateTime.Now.AddDays(-31) },
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Stopped, CreationDate = DateTime.Now },
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, CreationDate = DateTime.Now },
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, CreationDate = DateTime.Now },
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, CreationDate = DateTime.Now },
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, CreationDate = DateTime.Now }
             };
 
             commitmentsDataContext.Apprenticeship.AddRange(dasApprenticeships);
