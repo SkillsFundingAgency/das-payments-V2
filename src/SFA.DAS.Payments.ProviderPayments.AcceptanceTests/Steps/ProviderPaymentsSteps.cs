@@ -153,7 +153,8 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         {
             MonthEndJobId = TestSession.GenerateId();
             Console.WriteLine($"Month end job id: {MonthEndJobId}");
-            var monthEndCommand = new ProcessProviderMonthEndCommand
+            //todo: debug
+            var monthEndCommand = new ProcessProviderMonthEndAct1CompletionPaymentCommand
             {
                 Ukprn = TestSession.Ukprn,
                 JobId = MonthEndJobId,

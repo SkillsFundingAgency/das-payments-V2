@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
-using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Application.Data;
@@ -40,8 +39,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Repositories
             context.Payment.AddRange(payments);
             await context.SaveChanges();
 
-            var collectionperiod = new CollectionPeriod { Period = 1, AcademicYear = 1920 };
-            var actual = await sut.GetMonthEndAct1CompletionPayments(collectionperiod);
+            var collectionPeriod = new CollectionPeriod { Period = 1, AcademicYear = 1920 };
+            var actual = await sut.GetMonthEndAct1CompletionPayments(payments.First().Ukprn, collectionPeriod);
 
             actual.Should().NotBeNullOrEmpty();
             actual.Single().Amount.Should().Be(100.99m);

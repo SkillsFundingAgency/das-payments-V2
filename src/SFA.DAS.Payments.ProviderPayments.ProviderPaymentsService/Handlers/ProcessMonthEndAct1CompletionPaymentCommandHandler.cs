@@ -9,7 +9,7 @@ using SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Infrastructure;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 {
-    public class ProcessMonthEndAct1CompletionPaymentCommandHandler : IHandleMessages<ProcessMonthEndAct1CompletionPaymentCommand>
+    public class ProcessMonthEndAct1CompletionPaymentCommandHandler : IHandleMessages<ProcessProviderMonthEndAct1CompletionPaymentCommand>
     {
         private readonly IDasEndpointFactory dasEndpointFactory;
         private readonly IPaymentLogger paymentLogger;
@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
             this.completionPaymentService = completionPaymentService ?? throw new ArgumentNullException(nameof(completionPaymentService));
         }
 
-        public async Task Handle(ProcessMonthEndAct1CompletionPaymentCommand message, IMessageHandlerContext context)
+        public async Task Handle(ProcessProviderMonthEndAct1CompletionPaymentCommand message, IMessageHandlerContext context)
         {
             paymentLogger.LogInfo($"Processing Month End Act1 Completion Payment Command for Message Id : {context.MessageId}");
 
@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 
             if (!paymentEvents.Any())
             {
-                paymentLogger.LogDebug($"No Act1 Completion Payment Event Found for Collection: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
+                paymentLogger.LogDebug($"No Act1 Completion Payment Event Found for ukprn: {message.Ukprn}, Collection: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
 
                 return;
             }
@@ -39,12 +39,12 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 
             foreach (var paymentEvent in paymentEvents)
             {
-                paymentLogger.LogDebug($"Processing Act1 Completion Payment Event. Collection: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
+                paymentLogger.LogDebug($"Processing Act1 Completion Payment Event. Ukprn: {message.Ukprn}, Collection: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
 
                 await dasEndPoint.Publish(paymentEvent);
             }
 
-            paymentLogger.LogInfo($"Successfully Processed Month End Act1 Completion Payment Command for {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
+            paymentLogger.LogInfo($"Successfully Processed Month End Act1 Completion Payment Command for  ukprn: {message.Ukprn}, Collection:{message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
         }
     }
 }

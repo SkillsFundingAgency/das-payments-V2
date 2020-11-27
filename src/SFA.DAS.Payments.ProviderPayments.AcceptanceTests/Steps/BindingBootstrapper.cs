@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             routing.RouteToEndpoint(typeof(SfaFullyFundedFundingSourcePaymentEvent), EndpointNames.ProviderPaymentEndPointName);
             routing.RouteToEndpoint(typeof(SfaCoInvestedFundingSourcePaymentEvent), EndpointNames.ProviderPaymentEndPointName);
             routing.RouteToEndpoint(typeof(EmployerCoInvestedFundingSourcePaymentEvent), EndpointNames.ProviderPaymentEndPointName);
-            routing.RouteToEndpoint(typeof(ProcessProviderMonthEndCommand), EndpointNames.ProviderPaymentEndPointName);
+            routing.RouteToEndpoint(typeof(ProcessProviderMonthEndAct1CompletionPaymentCommand), EndpointNames.ProviderPaymentEndPointName);
             routing.RouteToEndpoint(typeof(ReceivedProviderEarningsEvent), EndpointNames.ProviderPaymentEndPointName);
             routing.RouteToEndpoint(typeof(PeriodEndStartedEvent).Assembly, EndpointNames.ProviderPaymentEndPointName);
             

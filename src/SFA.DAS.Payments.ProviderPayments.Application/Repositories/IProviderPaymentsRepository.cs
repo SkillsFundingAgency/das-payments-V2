@@ -35,6 +35,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
         List<PaymentModelWithRequiredPaymentId> GetMonthEndPayments(CollectionPeriod collectionPeriod, int pageSize,
             int page);
 
-        Task<List<PaymentModel>> GetMonthEndAct1CompletionPayments(CollectionPeriod collectionPeriod, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<PaymentModel>> GetMonthEndAct1CompletionPayments(long ukprn, CollectionPeriod collectionPeriod, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<long>> GetProviderWithAct1CompletionPayments(CollectionPeriod collectionPeriod, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

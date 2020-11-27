@@ -20,7 +20,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Infrastructure.ioc
             builder.RegisterType<ProviderPaymentsRepository>().AsImplementedInterfaces();
             builder.RegisterType<MonthEndEventHandlerService>().AsImplementedInterfaces();
             builder.RegisterType<ProviderPaymentFactory>().AsImplementedInterfaces();
-            builder.RegisterType<PeriodEndService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ProviderPaymentDataTable>()
                 .As<IPaymentsEventModelDataTable<ProviderPaymentEventModel>>();
 
