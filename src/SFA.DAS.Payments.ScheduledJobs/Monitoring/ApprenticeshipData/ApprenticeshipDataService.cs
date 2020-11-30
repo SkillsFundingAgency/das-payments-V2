@@ -32,22 +32,22 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
 
         public async Task ProcessComparison()
         {
-            var lastMonth = DateTime.UtcNow.AddDays(-30);
+            var pastThirtyDays = DateTime.UtcNow.AddDays(-30).Date;
 
             var commitmentsApprovedTask = commitmentsDataContext.Apprenticeship
-                .Where(a => a.Commitment.EmployerAndProviderApprovedOn >= lastMonth)
+                .Where(a => a.Commitment.EmployerAndProviderApprovedOn >= pastThirtyDays)
                 .CountAsync(x => x.IsApproved);
 
             var commitmentsStatusTask = commitmentsDataContext.Apprenticeship
                 .Where(a => a.PaymentStatus == PaymentStatus.Withdrawn || a.PaymentStatus == PaymentStatus.Paused)
-                .Where(a => a.Commitment.EmployerAndProviderApprovedOn >= lastMonth)
+                .Where(a => a.Commitment.EmployerAndProviderApprovedOn >= pastThirtyDays)
                 .GroupBy(g => g.PaymentStatus)
                 .Select(x => new { x.Key, Count = x.Count() })
                 .ToListAsync();
 
             var paymentsStatusTask = paymentsDataContext.Apprenticeship
                 .Where(a => a.Status == ApprenticeshipStatus.Active || a.Status == ApprenticeshipStatus.Stopped || a.Status == ApprenticeshipStatus.Paused)
-                .Where(a => a.CreationDate >= lastMonth)
+                .Where(a => a.CreationDate >= pastThirtyDays)
                 .GroupBy(g => g.Status)
                 .Select(x => new { x.Key, Count = x.Count() })
                 .ToListAsync();
