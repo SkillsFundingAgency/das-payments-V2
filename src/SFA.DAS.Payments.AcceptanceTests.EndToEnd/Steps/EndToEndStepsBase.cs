@@ -901,7 +901,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 provider.JobId = monthEndJobId;
             }
 
-            //todo: debug
             var processProviderPaymentsAtMonthEndCommand = new ProcessProviderMonthEndAct1CompletionPaymentCommand
             {
                 CollectionPeriod = CurrentCollectionPeriod,

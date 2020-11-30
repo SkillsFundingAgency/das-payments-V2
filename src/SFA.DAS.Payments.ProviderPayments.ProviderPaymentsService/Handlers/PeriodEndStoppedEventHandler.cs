@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 
         public async Task Handle(PeriodEndStoppedEvent message, IMessageHandlerContext context)
         {
-            logger.LogInfo($"Processing Month End Event for Message Id : {context.MessageId}");
+            logger.LogInfo($"Processing Month End Period End Stopped Event with Message Id : {context.MessageId}");
 
             var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext) executionContext;
             currentExecutionContext.JobId = message.JobId.ToString();
@@ -34,18 +34,17 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
             
             if (!commands.Any())
             {
-                logger.LogWarning($"No Provider Ukprn found for period end payment {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
+                logger.LogWarning($"No Providers found with Act1 Completion payments for Collection Period: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
                 return;
             }
             
             foreach (var command in commands)
             {
-                logger.LogDebug($"Sending month end command for provider: {command.Ukprn}");
+                logger.LogDebug($"Sending Process Provider Month End Act1 Completion Payment Command for provider: {command.Ukprn}");
                 await context.SendLocal(command).ConfigureAwait(false);
             }
             
-            logger.LogInfo($"Successfully processed Period End Event for {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
-            
+            logger.LogInfo($"Successfully processed Period End Stopped Event for {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
         }
     }
 }

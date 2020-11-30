@@ -9,13 +9,13 @@ using SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Infrastructure;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 {
-    public class ProcessMonthEndAct1CompletionPaymentCommandHandler : IHandleMessages<ProcessProviderMonthEndAct1CompletionPaymentCommand>
+    public class ProcessProviderMonthEndAct1CompletionPaymentCommandHandler : IHandleMessages<ProcessProviderMonthEndAct1CompletionPaymentCommand>
     {
         private readonly IDasEndpointFactory dasEndpointFactory;
         private readonly IPaymentLogger paymentLogger;
         private readonly ICompletionPaymentService completionPaymentService;
 
-        public ProcessMonthEndAct1CompletionPaymentCommandHandler(IDasEndpointFactory dasEndpointFactory, IPaymentLogger paymentLogger, ICompletionPaymentService completionPaymentService)
+        public ProcessProviderMonthEndAct1CompletionPaymentCommandHandler(IDasEndpointFactory dasEndpointFactory, IPaymentLogger paymentLogger, ICompletionPaymentService completionPaymentService)
         {
             this.dasEndpointFactory = dasEndpointFactory ?? throw new ArgumentNullException(nameof(dasEndpointFactory));
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 
         public async Task Handle(ProcessProviderMonthEndAct1CompletionPaymentCommand message, IMessageHandlerContext context)
         {
-            paymentLogger.LogInfo($"Processing Month End Act1 Completion Payment Command for Message Id : {context.MessageId}");
+            paymentLogger.LogInfo($"Processing Provider Month End Act1 Completion Payment Command with ukprn: {message.Ukprn}, Message Id : {context.MessageId}");
 
             var paymentEvents = await completionPaymentService.GetAct1CompletionPaymentEvents(message);
 

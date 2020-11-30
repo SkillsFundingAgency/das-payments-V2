@@ -50,7 +50,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
             providerPaymentsRepository = mocker.Mock<IProviderPaymentsRepository>();
 
             providerPaymentsRepository
-                .Setup(o => o.GetMonthEndAct1CompletionPayments(It.IsAny<long>(),It.IsAny<CollectionPeriod>(),
+                .Setup(o => o.GetMonthEndAct1CompletionPaymentsForProvider(It.IsAny<long>(),It.IsAny<CollectionPeriod>(),
                                                                 It.IsAny<CancellationToken>()))
                 .ReturnsAsync(payments)
                 .Verifiable();

@@ -34,9 +34,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
         
         public async Task<IList<RecordedAct1CompletionPayment>> GetAct1CompletionPaymentEvents(ProcessProviderMonthEndAct1CompletionPaymentCommand message)
         {
-            logger.LogInfo($"now building Act1 Completion Payment Events for collection period: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}, job: {message.JobId}");
+            logger.LogInfo($"now building Act1 Completion Payment Events for ukprn: {message.Ukprn} collection period: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}, job: {message.JobId}");
             
-            var payments = await repository.GetMonthEndAct1CompletionPayments(message.Ukprn, message.CollectionPeriod).ConfigureAwait(false);
+            var payments = await repository.GetMonthEndAct1CompletionPaymentsForProvider(message.Ukprn, message.CollectionPeriod).ConfigureAwait(false);
 
             var recordedAct1CompletionPaymentEvents = mapper.Map<IList<RecordedAct1CompletionPayment>>(payments);
 
@@ -47,11 +47,11 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 
         public async Task<List<ProcessProviderMonthEndAct1CompletionPaymentCommand>> GenerateProviderMonthEndAct1CompletionPaymentCommands(PeriodEndStoppedEvent message)
         {
-            logger.LogInfo($"now building Act1 Completion Payment Events for collection period: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}, job: {message.JobId}");
+            logger.LogInfo($"Building Act1 Completion Payment Events for collection period: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}, job: {message.JobId}");
 
-            var providers = await repository.GetProviderWithAct1CompletionPayments(message.CollectionPeriod).ConfigureAwait(false);
+            var providers = await repository.GetProvidersWithAct1CompletionPayments(message.CollectionPeriod).ConfigureAwait(false);
 
-            var processProviderMonthEndAct1CompletionPaymentCommands = providers
+            var commands = providers
                 .Select(ukprn => new ProcessProviderMonthEndAct1CompletionPaymentCommand
                 {
                     Ukprn = ukprn,
@@ -59,9 +59,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
                     JobId = message.JobId
                 }).ToList();
 
-            logger.LogInfo($"Finished creating the provider period end events for collection period: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}, job: {message.JobId}");
+            logger.LogInfo($"Finished creating provider Act1 Completion Payment events for collection period: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}, job: {message.JobId}");
 
-            return processProviderMonthEndAct1CompletionPaymentCommands;
+            return commands;
         }
     }
 }

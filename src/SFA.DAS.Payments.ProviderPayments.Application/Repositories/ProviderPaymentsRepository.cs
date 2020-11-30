@@ -103,7 +103,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             await dataContext.SaveChanges(cancellationToken);
         }
 
-        public async Task<List<PaymentModel>> GetMonthEndAct1CompletionPayments(long ukprn, CollectionPeriod collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<PaymentModel>> GetMonthEndAct1CompletionPaymentsForProvider(long ukprn, CollectionPeriod collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await dataContext.Payment
                 .Where(p => p.Ukprn == ukprn &&
@@ -114,7 +114,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<List<long>> GetProviderWithAct1CompletionPayments(CollectionPeriod collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<long>> GetProvidersWithAct1CompletionPayments(CollectionPeriod collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await dataContext.Payment
                 .Where(p => p.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
