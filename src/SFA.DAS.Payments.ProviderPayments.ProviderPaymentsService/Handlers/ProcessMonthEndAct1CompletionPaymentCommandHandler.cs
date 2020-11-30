@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 
             if (!paymentEvents.Any())
             {
-                paymentLogger.LogDebug($"No Act1 Completion Payment Event Found for ukprn: {message.Ukprn}, Collection: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
+                paymentLogger.LogWarning($"No Act1 Completion Payment Event Found for ukprn: {message.Ukprn}, Collection: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
 
                 return;
             }
