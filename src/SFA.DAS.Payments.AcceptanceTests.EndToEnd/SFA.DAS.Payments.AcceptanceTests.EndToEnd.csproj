@@ -2881,10 +2881,6 @@
     <Analyzer Include="..\packages\NServiceBus.7.1.5\analyzers\dotnet\cs\NServiceBus.Core.Analyzer.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Tests\Disadvantage - Uplift\" />
-    <Folder Include="Tests\Levy Learner\Employer Change of Circumstances\" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="FM36TestFiles\PV2-1826-DLock09-Two-Price-Episodes-Unhappy-Path-R02.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
