@@ -15,8 +15,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
     {
         Task<IList<RecordedAct1CompletionPayment>> GetAct1CompletionPaymentEvents(ProcessProviderMonthEndAct1CompletionPaymentCommand message);
 
-        Task<List<ProcessProviderMonthEndAct1CompletionPaymentCommand>>
-            GenerateProviderMonthEndAct1CompletionPaymentCommands(PeriodEndStoppedEvent collectionPeriod);
+        Task<List<ProcessProviderMonthEndAct1CompletionPaymentCommand>> GenerateProviderMonthEndAct1CompletionPaymentCommands(PeriodEndStoppedEvent collectionPeriod);
     }
 
     public class CompletionPaymentService : ICompletionPaymentService
@@ -25,23 +24,23 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
         private readonly IMapper mapper;
         private readonly IProviderPaymentsRepository repository;
 
-        public CompletionPaymentService(IPaymentLogger  logger, IMapper mapper, IProviderPaymentsRepository repository)
+        public CompletionPaymentService(IPaymentLogger logger, IMapper mapper, IProviderPaymentsRepository repository)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
-        
+
         public async Task<IList<RecordedAct1CompletionPayment>> GetAct1CompletionPaymentEvents(ProcessProviderMonthEndAct1CompletionPaymentCommand message)
         {
             logger.LogInfo($"now building Act1 Completion Payment Events for ukprn: {message.Ukprn} collection period: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}, job: {message.JobId}");
-            
+
             var payments = await repository.GetMonthEndAct1CompletionPaymentsForProvider(message.Ukprn, message.CollectionPeriod).ConfigureAwait(false);
 
             var recordedAct1CompletionPaymentEvents = mapper.Map<IList<RecordedAct1CompletionPayment>>(payments);
 
             logger.LogInfo($"Finished creating the provider period end events for collection period: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}, job: {message.JobId}");
-            
+
             return recordedAct1CompletionPaymentEvents;
         }
 

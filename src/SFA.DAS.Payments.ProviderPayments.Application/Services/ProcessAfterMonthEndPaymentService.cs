@@ -8,6 +8,11 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
+    public interface IProcessAfterMonthEndPaymentService
+    {
+        Task<ProviderPaymentEvent> GetPaymentEvent(FundingSourcePaymentEvent message);
+    }
+
     public class ProcessAfterMonthEndPaymentService : IProcessAfterMonthEndPaymentService
     {
         private readonly IPaymentLogger paymentLogger;

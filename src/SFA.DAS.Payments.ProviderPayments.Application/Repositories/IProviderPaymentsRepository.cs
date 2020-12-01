@@ -13,8 +13,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
         Task SavePayment(PaymentModel paymentData, CancellationToken cancellationToken = default(CancellationToken));
         Task<List<PaymentModel>> GetMonthEndPayments(CollectionPeriod collectionPeriod, long ukprn,
             CancellationToken cancellationToken = default(CancellationToken));
-        Task<List<long>> GetMonthEndProviders(CollectionPeriod collectionPeriod,
-            CancellationToken cancellationToken = default(CancellationToken));
 
         Task DeleteOldMonthEndPayment(CollectionPeriod collectionPeriod,
             long ukprn,

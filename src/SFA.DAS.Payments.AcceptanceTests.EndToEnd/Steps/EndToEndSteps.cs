@@ -393,7 +393,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"only the following provider payments will be generated")]
         public async Task ThenOnlyTheFollowingProviderPaymentsWillBeGenerated(Table table)
         {
-            //await StartMonthEnd(TestSession.Provider).ConfigureAwait(false);
             //await MatchOnlyProviderPayments(table, TestSession.Provider).ConfigureAwait(false);
 
             await Task.CompletedTask;
@@ -437,11 +436,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task WhenMonthEndIsTriggered()
         {
             await SendLevyMonthEnd().ConfigureAwait(false);
-
-            /*foreach (var provider in TestSession.Providers)
-            {
-                await StartMonthEnd(provider).ConfigureAwait(false);
-            }*/
         }
 
         [Then(@"at month end only the following provider payments will be generated")]

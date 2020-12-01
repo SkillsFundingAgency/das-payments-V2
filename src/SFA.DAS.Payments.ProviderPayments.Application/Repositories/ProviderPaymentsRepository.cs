@@ -55,18 +55,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             return payments;
         }
 
-        public async Task<List<long>> GetMonthEndProviders(CollectionPeriod collectionPeriod,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return await dataContext
-                   .Payment.Where(p =>
-                        p.CollectionPeriod.Period == collectionPeriod.Period &&
-                        p.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear)
-                   .Select(o => o.Ukprn)
-                   .Distinct()
-                   .ToListAsync(cancellationToken);
-        }
-
         public async Task DeleteOldMonthEndPayment(CollectionPeriod collectionPeriod,
             long ukprn,
             DateTime currentIlrSubmissionDateTime,

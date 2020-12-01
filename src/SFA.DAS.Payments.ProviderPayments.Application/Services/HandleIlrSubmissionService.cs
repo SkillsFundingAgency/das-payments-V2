@@ -5,7 +5,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
 using SFA.DAS.Payments.ProviderPayments.Domain;
@@ -13,6 +12,15 @@ using SFA.DAS.Payments.ProviderPayments.Domain.Models;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
+    public interface IHandleIlrSubmissionService
+    {
+        Task Handle(ReceivedProviderEarningsEvent message, CancellationToken cancellationToken);
+
+        Task HandleSubmissionSucceeded(short academicYear, byte collectionPeriod, long ukprn, DateTime submissionTime, long jobId, CancellationToken cancellationToken);
+
+        Task HandleSubmissionFailed(short academicYear, byte collectionPeriod, long ukprn, DateTime submissionTime, long jobId, CancellationToken cancellationToken);
+    }
+
     public class HandleIlrSubmissionService : IHandleIlrSubmissionService
     {
         private readonly IProviderPaymentsRepository providerPaymentsRepository;

@@ -3,12 +3,9 @@ using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.Application;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
-using SFA.DAS.Payments.Monitoring.Jobs.Client;
-using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
 using SFA.DAS.Payments.ProviderPayments.Model;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -20,21 +17,16 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
         private readonly IPaymentLogger paymentLogger;
         private readonly IProviderPaymentsService paymentsService;
         private readonly IMapper mapper;
-        private readonly IJobMessageClient jobClient;
         private readonly IProcessAfterMonthEndPaymentService afterMonthEndPaymentService;
 
         public FundingSourcePaymentEventHandler(IPaymentLogger paymentLogger,
          IProviderPaymentsService paymentsService,
             IMapper mapper,
-            IProviderPeriodEndService providerPeriodEndService,
-            IEarningsJobClient earningsJobClient,
-            IJobMessageClient jobClient,
             IProcessAfterMonthEndPaymentService afterMonthEndPaymentService)
         {
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
             this.paymentsService = paymentsService ?? throw new ArgumentNullException(nameof(paymentsService));
             this.mapper = mapper;
-            this.jobClient = jobClient;
             this.afterMonthEndPaymentService = afterMonthEndPaymentService;
         }
 
