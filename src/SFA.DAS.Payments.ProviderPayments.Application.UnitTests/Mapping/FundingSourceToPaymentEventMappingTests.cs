@@ -223,7 +223,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.JobId.Should().Be(employerCoInvested.JobId);
             payment.IlrSubmissionDateTime.Should().Be(employerCoInvested.IlrSubmissionDateTime);
             payment.ApprenticeshipEmployerType.Should().Be(employerCoInvested.ApprenticeshipEmployerType);
-            payment.RequiredPaymentEventId.Should().Be(employerCoInvested.RequiredPaymentEventId);
 
         }
 
@@ -337,7 +336,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             providerPayment.CompletionAmount.Should().Be(providerPaymentEvent.CompletionAmount);
             providerPayment.InstalmentAmount.Should().Be(providerPaymentEvent.InstalmentAmount);
             providerPayment.NumberOfInstalments.Should().Be(providerPaymentEvent.NumberOfInstalments);
-            providerPayment.RequiredPaymentEventId.Should().Be(providerPayment.RequiredPaymentEventId);
         }
     }
 }
