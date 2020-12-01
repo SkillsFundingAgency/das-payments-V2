@@ -438,10 +438,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             await SendLevyMonthEnd().ConfigureAwait(false);
 
-            foreach (var provider in TestSession.Providers)
+            /*foreach (var provider in TestSession.Providers)
             {
                 await StartMonthEnd(provider).ConfigureAwait(false);
-            }
+            }*/
         }
 
         [Then(@"at month end only the following provider payments will be generated")]
