@@ -91,7 +91,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                                p.ContractType == ContractType.Act1 &&
                                p.TransactionType == TransactionType.Completion)
                     == completionPayments.Count;
-            }, $"Failed to find all the provider payment events. Found '{ProviderPaymentEventHandler.ReceivedEvents.Count}' events ");
+            }, $"Failed to find all the recorded act 1 completion payment events. Found '{RecordedAct1CompletionPaymentEventHandler.ReceivedEvents.Count}' events ");
         }
         
         [When(@"month end stop event is received")]
