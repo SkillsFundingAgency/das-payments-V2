@@ -32,19 +32,19 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 
         public async Task Handle(FundingSourcePaymentEvent message, IMessageHandlerContext context)
         {
-            paymentLogger.LogDebug($"Processing Funding Source Payment Event for Message Id : {context.MessageId}");
+            paymentLogger.LogInfo($"Processing Funding Source Payment Event for Message Id : {context.MessageId}");
             var paymentModel = mapper.Map<ProviderPaymentEventModel>(message);
             await paymentsService.ProcessPayment(paymentModel, default(CancellationToken)).ConfigureAwait(false);
 
-            var afterMonthEndPayment = await afterMonthEndPaymentService.GetPaymentEvent(message);
-            if (afterMonthEndPayment != null)
+            var providerPaymentEvents = await afterMonthEndPaymentService.GetPaymentEvent(message);
+            if (providerPaymentEvents != null)
             {
-                paymentLogger.LogInfo($"Sent {afterMonthEndPayment.GetType().Name} for {message.JobId} and Message Type {message.GetType().Name}");
-                paymentLogger.LogDebug($"Sending Provider Payment Event {JsonConvert.SerializeObject(afterMonthEndPayment)} for Message Id : {context.MessageId}.  {message.ToDebug()}");
-                await context.Publish(afterMonthEndPayment).ConfigureAwait(false);
+                paymentLogger.LogInfo($"Sent {providerPaymentEvents.GetType().Name} for {message.JobId} and Message Type {message.GetType().Name}");
+                paymentLogger.LogDebug($"Sending Provider Payment Event {JsonConvert.SerializeObject(providerPaymentEvents)} for Message Id : {context.MessageId}.  {message.ToDebug()}");
+                await context.Publish(providerPaymentEvents).ConfigureAwait(false);
             }
 
-            paymentLogger.LogDebug($"Finished processing Funding Source Payment Event for Message Id : {context.MessageId}.  {message.ToDebug()}");
+            paymentLogger.LogInfo($"Finished processing Funding Source Payment Event for Message Id : {context.MessageId}.  {message.ToDebug()}");
         }
     }
 }

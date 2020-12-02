@@ -1,6 +1,5 @@
 ﻿using NServiceBus;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data;
-using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Handlers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,29 +70,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         {
             await SendMonthEndEvent().ConfigureAwait(false);
         }
-
-        [Then(@"the provider payments service will publish the following payments")]
-        public async Task ThenTheProviderPaymentsServiceWillPublishTheFollowingPayments(Table expectedProviderPayments)
-        {
-            var expectedProviderPaymentEvents = expectedProviderPayments.CreateSet<FundingSourcePayment>();
-
-            await WaitForIt(() =>
-            {
-                return expectedProviderPaymentEvents.All(expectedEvent =>
-                    ProviderPaymentEventHandler.ReceivedEvents.Any(receivedEvent =>
-                            ContractType == receivedEvent.ContractType
-                            && TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
-                            && TestSession.Ukprn == receivedEvent.Ukprn
-                            && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod
-                            && expectedEvent.Type == receivedEvent.TransactionType
-                            && expectedEvent.FundingSourceType == receivedEvent.FundingSourceType
-                            && expectedEvent.Amount == receivedEvent.AmountDue
-
-                    ));
-            }, $"Failed to find all the provider payment events. Found '{ProviderPaymentEventHandler.ReceivedEvents.Count}' events ");
-        }
-
-
+        
         [Then(@"the provider payments service will store the following payments:")]
         public async Task ThenTheProviderPaymentsServiceWillStoreTheFollowingPaymentsAsync(Table expectedPaymentsTable)
         {
@@ -117,29 +94,6 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                     ));
                 return found;
             }, "Failed to find all payment in database.");
-        }
-
-        [Then(@"at month end the provider payments service will publish the following payments")]
-        public async Task ThenAtMonthEndTheProviderPaymentsServiceWillPublishTheFollowingPayments(Table expectedProviderPayments)
-        {
-            await SendMonthEndEvent();
-
-            var expectedProviderPaymentEvents = expectedProviderPayments.CreateSet<FundingSourcePayment>();
-
-            await WaitForIt(() =>
-            {
-                return expectedProviderPaymentEvents.All(expectedEvent =>
-                    ProviderPaymentEventHandler.ReceivedEvents.Any(receivedEvent =>
-                        ContractType == receivedEvent.ContractType
-                        && TestSession.Learner.LearnRefNumber == receivedEvent.Learner?.ReferenceNumber
-                        && TestSession.Ukprn == receivedEvent.Ukprn
-                        && expectedEvent.DeliveryPeriod == receivedEvent.DeliveryPeriod
-                        && expectedEvent.Type == receivedEvent.TransactionType
-                        && expectedEvent.FundingSourceType == receivedEvent.FundingSourceType
-                        && expectedEvent.Amount == receivedEvent.AmountDue
-                    //&& TestSession.JobId == receivedEvent.JobId
-                    ));
-            }, "Failed to find all the provider payment events");
         }
 
         private async Task SendMonthEndEvent()
