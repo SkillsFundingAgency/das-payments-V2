@@ -2,11 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
-using SFA.DAS.Payments.ProviderPayments.Domain;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
@@ -20,18 +17,11 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
     public class HandleIlrSubmissionService : IHandleIlrSubmissionService
     {
         private readonly IProviderPaymentsRepository providerPaymentsRepository;
-        private readonly IDataCache<ReceivedProviderEarningsEvent> ilrSubmittedEventCache;
-        private readonly IValidateIlrSubmission validateIlrSubmission;
         private readonly IPaymentLogger logger;
 
-        public HandleIlrSubmissionService(IProviderPaymentsRepository providerPaymentsRepository,
-            IDataCache<ReceivedProviderEarningsEvent> ilrSubmittedEventCache,
-            IValidateIlrSubmission validateIlrSubmission,
-            IPaymentLogger logger)
+        public HandleIlrSubmissionService(IProviderPaymentsRepository providerPaymentsRepository, IPaymentLogger logger)
         {
             this.providerPaymentsRepository = providerPaymentsRepository;
-            this.ilrSubmittedEventCache = ilrSubmittedEventCache;
-            this.validateIlrSubmission = validateIlrSubmission;
             this.logger = logger;
         }
 
