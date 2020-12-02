@@ -110,6 +110,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
                             p.ContractType == ContractType.Act1 &&
                             p.TransactionType == TransactionType.Completion)
                 .Select(p => p.Ukprn)
+                .Distinct()
                 .ToListAsync(cancellationToken);
         }
     }
