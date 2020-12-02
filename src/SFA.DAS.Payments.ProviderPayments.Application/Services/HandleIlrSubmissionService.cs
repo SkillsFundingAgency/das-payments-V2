@@ -55,11 +55,5 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
                 cancellationToken);
             logger.LogInfo($"Successfully Deleted Current Month End Payment for Ukprn: {ukprn}, Academic Year: {academicYear}, Collection Period: {collectionPeriod}, Submission Time {submissionTime} and Job Id {jobId}");
         }
-
-        private async Task<ReceivedProviderEarningsEvent> GetCurrentIlrSubmissionEvent(long ukprn, CancellationToken cancellationToken)
-        {
-            var currentSubmittedIlrConditionalValue = await ilrSubmittedEventCache.TryGet(ukprn.ToString(), cancellationToken);
-            return currentSubmittedIlrConditionalValue.HasValue ? currentSubmittedIlrConditionalValue.Value : null;
-        }
     }
 }
