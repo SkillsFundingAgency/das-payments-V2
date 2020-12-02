@@ -424,6 +424,7 @@
     <Compile Include="Steps\PV2_1850_Steps.cs" />
     <Compile Include="Steps\PV2_1851_Steps.cs" />
     <Compile Include="Steps\PV2_1849_Steps.cs" />
+    <Compile Include="Steps\PV2_2083_Steps.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
     <Compile Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature.cs">
       <DependentUpon>Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature</DependentUpon>
@@ -554,6 +555,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-1826-DLock09-Two-Price-Episodes-Unhappy-Path.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\DataLocks\PV2-2083-Data-Locks-prevented-from-appearing-on-the-Data-Match-Report.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-2083-Data-Locks-prevented-from-appearing-on-the-Data-Match-Report.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Disadvantaged Uplift\Framework-uplift-on-time-PV2-487.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1740,6 +1746,7 @@
     <EmbeddedResource Include="FM36TestFiles\PV2-1851-Non-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months-R07.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1953-small-employer-retrospective-R03.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1953-small-employer-retrospective-R04.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-2083-Data-Locks-prevented-from-appearing-on-the-Data-Match-Report-R12.json" />
     <None Include="packages.config" />
     <None Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1840,6 +1847,10 @@
     <None Include="Tests\DataLocks\PV2-1825-DLock09-Two-Price-Episodes-Happy-Path.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-1825-DLock09-Two-Price-Episodes-Happy-Path.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\DataLocks\PV2-2083-Data-Locks-prevented-from-appearing-on-the-Data-Match-Report.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-2083-Data-Locks-prevented-from-appearing-on-the-Data-Match-Report.cs</LastGenOutput>
     </None>
     <None Include="Tests\DataLocks\PV2-1826-DLock09-Two-Price-Episodes-Unhappy-Path.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2868,10 +2879,6 @@
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\NServiceBus.7.1.5\analyzers\dotnet\cs\NServiceBus.Core.Analyzer.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Tests\Disadvantage - Uplift\" />
-    <Folder Include="Tests\Levy Learner\Employer Change of Circumstances\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="FM36TestFiles\PV2-1826-DLock09-Two-Price-Episodes-Unhappy-Path-R02.json" />
