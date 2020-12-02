@@ -27,8 +27,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
         private readonly IPaymentLogger paymentLogger;
         private readonly ITelemetry telemetry;
 
-        public ProviderPaymentsService(IDataCache<ReceivedProviderEarningsEvent> ilrSubmittedEventCache,
-            IPaymentsEventModelCache<ProviderPaymentEventModel> paymentCache, IValidateIlrSubmission validateIlrSubmission,
+        public ProviderPaymentsService(
+            IDataCache<ReceivedProviderEarningsEvent> ilrSubmittedEventCache,
+            IPaymentsEventModelCache<ProviderPaymentEventModel> paymentCache, 
+            IValidateIlrSubmission validateIlrSubmission,
             IPaymentLogger paymentLogger,
             ITelemetry telemetry)
         {

@@ -19,9 +19,10 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
         private readonly IMapper mapper;
         private readonly IProcessAfterMonthEndPaymentService afterMonthEndPaymentService;
 
-        public FundingSourcePaymentEventHandler(IPaymentLogger paymentLogger,
-         IProviderPaymentsService paymentsService,
-            IMapper mapper,
+        public FundingSourcePaymentEventHandler(
+            IPaymentLogger paymentLogger,  
+            IProviderPaymentsService paymentsService,
+            IMapper mapper, 
             IProcessAfterMonthEndPaymentService afterMonthEndPaymentService)
         {
             this.paymentLogger = paymentLogger ?? throw new ArgumentNullException(nameof(paymentLogger));
