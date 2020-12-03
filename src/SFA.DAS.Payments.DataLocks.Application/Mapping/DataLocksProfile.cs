@@ -71,6 +71,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.StopDate, dest => dest.Ignore())
                 .ForMember(dest => dest.ApprenticeshipEmployerType, opt => opt.ResolveUsing<ApprenticeshipEmployerTypeResolver>())
                 .ForMember(dest => dest.CreationDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ApprenticeshipPauses, opt => opt.Ignore())
                 ;
 
             CreateMap<PriceEpisode, ApprenticeshipPriceEpisodeModel>()
@@ -127,6 +128,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.Priority, opt => opt.Ignore())
                 .ForMember(dest => dest.ApprenticeshipEmployerType, opt => opt.MapFrom(source => source.ApprenticeshipEmployerType))
                 .ForMember(dest => dest.CreationDate, opt => opt.Ignore())
+                .ForMember(dest => dest.ApprenticeshipPauses, opt => opt.Ignore())
                 ;
             
             CreateMap<ApprenticeshipUpdatedApprovedEvent, UpdatedApprenticeshipApprovedModel>()
