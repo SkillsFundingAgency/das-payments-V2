@@ -54,6 +54,10 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
             builder.HasOne(a => a.Commitment)
                 .WithMany()
                 .HasForeignKey(c => c.CommitmentId);
+
+            builder.Property(e => e.StopDate).HasColumnType("date");
+            builder.Property(e => e.PauseDate).HasColumnType("date");
+
         }
     }
 }

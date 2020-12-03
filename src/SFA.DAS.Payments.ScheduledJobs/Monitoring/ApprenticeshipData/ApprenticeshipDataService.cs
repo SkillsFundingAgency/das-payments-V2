@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -60,8 +62,9 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
             var paymentsPausedTask = paymentsDataContext.Apprenticeship
                 .CountAsync(paymentsApprenticeship =>
                     paymentsApprenticeship.Status == ApprenticeshipStatus.Paused
-                    && paymentsApprenticeship.ApprenticeshipPause.PauseDate > pastThirtyDays
-                    && paymentsApprenticeship.ApprenticeshipPause.ResumeDate == null);
+                    && paymentsApprenticeship.ApprenticeshipPauses.Any(pause => 
+                        pause.PauseDate > pastThirtyDays
+                        && pause.ResumeDate == null));
 
             await Task.WhenAll(commitmentsApprovedTask, commitmentsStoppedTask, commitmentsPausedTask, paymentsApprovedTask, paymentsStoppedTask, paymentsPausedTask).ConfigureAwait(false);
 
