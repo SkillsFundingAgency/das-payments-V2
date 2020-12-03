@@ -35,7 +35,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
         {
             var pastThirtyDays = DateTime.UtcNow.AddDays(-30).Date;
 
-            var commitmentsApprovedTask = commitmentsDataContext.Apprenticeship
+            var commitmentsApprovedTask = commitmentsDataContext.Apprenticeship.Include(x => x.Commitment)
                 .CountAsync(commitmentsApprenticeship =>
                     commitmentsApprenticeship.Commitment.EmployerAndProviderApprovedOn > pastThirtyDays
                     && commitmentsApprenticeship.Commitment.Approvals == 3);
@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
                     paymentsApprenticeship.Status == ApprenticeshipStatus.Stopped
                     && paymentsApprenticeship.StopDate > pastThirtyDays);
 
-            var paymentsPausedTask = paymentsDataContext.Apprenticeship
+            var paymentsPausedTask = paymentsDataContext.Apprenticeship.Include(x => x.ApprenticeshipPauses)
                 .CountAsync(paymentsApprenticeship =>
                     paymentsApprenticeship.Status == ApprenticeshipStatus.Paused
                     && paymentsApprenticeship.ApprenticeshipPauses.Any(pause => 
