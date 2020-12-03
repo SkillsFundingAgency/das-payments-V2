@@ -30,6 +30,8 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
         public Guid? ReservationId { get; set; }
         public long? ContinuationOfId { get; set; }
         public DateTime? OriginalStartDate { get; set; }
+        public DateTime? StopDate { get; set; }
+        public DateTime? PauseDate { get; set; }
 
         public virtual Commitment Commitment { get; set; }
     }

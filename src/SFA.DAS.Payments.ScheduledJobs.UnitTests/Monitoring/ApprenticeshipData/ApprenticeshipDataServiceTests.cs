@@ -38,25 +38,38 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.ApprenticeshipData
 
             var dasApprenticeships = new List<ApprenticeshipModel>
             {
-                new ApprenticeshipModel { IsApproved = true, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } },
-                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Withdrawn, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } },
-                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Withdrawn, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } },
-                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Withdrawn, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } },
-                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Paused, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } },
-                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Paused, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } }
+                new ApprenticeshipModel { IsApproved = true, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now, Approvals = 3} },
+                new ApprenticeshipModel { IsApproved = false, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now, Approvals = 3} }, //assert we are using the correct new logic based on query in PV2-2215
+
+                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Withdrawn, StopDate = DateTime.Now, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } }, //expected in stopped count
+                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Withdrawn, StopDate = DateTime.Now, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } }, //expected in stopped count
+                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Withdrawn, StopDate = DateTime.Now.AddDays(10), Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } }, //expected in stopped count
+                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Withdrawn, StopDate = DateTime.Now.AddDays(-31), Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } }, //not expected in stopped count (stop date too old)
+                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Withdrawn, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } }, //not expected in stopped count (null stop date)
+                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Completed, StopDate = DateTime.Now, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } }, //not expected in stopped count (wrong status even though stop date is now)
+
+                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Paused, IsApproved = true, PauseDate = DateTime.Now },
+                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Withdrawn, IsApproved = true, PauseDate = DateTime.Now },
+                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Paused, IsApproved = false, PauseDate = DateTime.Now },
+                new ApprenticeshipModel { PaymentStatus = PaymentStatus.Paused, IsApproved = true, PauseDate = DateTime.Now.AddDays(-31) },
             };
 
             var paymentsApprenticeships = new List<Model.Core.Entities.ApprenticeshipModel>
             {
                 new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Active, CreationDate = DateTime.Now },
                 new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Active, CreationDate = DateTime.Now },
-                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Active, CreationDate = DateTime.Now },
+                new Model.Core.Entities.ApprenticeshipModel { CreationDate = DateTime.Now }, //status doesn't matter anymore, assert query mirrors this
                 new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Active, CreationDate = DateTime.Now.AddDays(-31) },
-                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Stopped, CreationDate = DateTime.Now },
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Stopped, StopDate = DateTime.Now },
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Stopped, StopDate = DateTime.Now.AddDays(-31) },
+                new Model.Core.Entities.ApprenticeshipModel { StopDate = DateTime.Now.AddDays(-31) },
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, ApprenticeshipPause = new ApprenticeshipPauseModel{ PauseDate = DateTime.Now, ResumeDate = null } },
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, ApprenticeshipPause = new ApprenticeshipPauseModel{ PauseDate = DateTime.Now, ResumeDate = null } },
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, ApprenticeshipPause = new ApprenticeshipPauseModel{ PauseDate = DateTime.Now, ResumeDate = null } },
                 new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, CreationDate = DateTime.Now },
-                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, CreationDate = DateTime.Now },
-                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, CreationDate = DateTime.Now },
-                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, CreationDate = DateTime.Now }
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, ApprenticeshipPause = new ApprenticeshipPauseModel{ PauseDate = DateTime.Now, ResumeDate = DateTime.Now } },
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, ApprenticeshipPause = new ApprenticeshipPauseModel{ PauseDate = DateTime.Now.AddDays(-31), ResumeDate = null } },
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Inactive, ApprenticeshipPause = new ApprenticeshipPauseModel{ PauseDate = DateTime.Now, ResumeDate = null } }
             };
 
             commitmentsDataContext.Apprenticeship.AddRange(dasApprenticeships);
@@ -72,7 +85,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.ApprenticeshipData
         {
             await service.ProcessComparison();
             telemetry.Verify(x => x.TrackEvent(EventName, It.Is<Dictionary<string, double>>(metrics
-                => metrics.Any(metric => metric.Key == "DasApproved" && metric.Value == 1))));
+                => metrics.Any(metric => metric.Key == "DasApproved" && metric.Value == 2))));
         }
 
         [Test]
@@ -88,7 +101,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.ApprenticeshipData
         {
             await service.ProcessComparison();
             telemetry.Verify(x => x.TrackEvent(EventName, It.Is<Dictionary<string, double>>(metrics
-                => metrics.Any(metric => metric.Key == "DasPaused" && metric.Value == 2))));
+                => metrics.Any(metric => metric.Key == "DasPaused" && metric.Value == 1))));
         }
 
         [Test]
@@ -96,7 +109,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.ApprenticeshipData
         {
             await service.ProcessComparison();
             telemetry.Verify(x => x.TrackEvent(EventName, It.Is<Dictionary<string, double>>(metrics
-                => metrics.Any(metric => metric.Key == "PaymentsApproved" && metric.Value == 3))));
+                => metrics.Any(metric => metric.Key == "PaymentsApproved" && metric.Value == 4))));
         }
 
         [Test]
@@ -112,7 +125,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.ApprenticeshipData
         {
             await service.ProcessComparison();
             telemetry.Verify(x => x.TrackEvent(EventName, It.Is<Dictionary<string, double>>(metrics
-                => metrics.Any(metric => metric.Key == "PaymentsPaused" && metric.Value == 4))));
+                => metrics.Any(metric => metric.Key == "PaymentsPaused" && metric.Value == 3))));
         }
     }
 }

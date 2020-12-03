@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
@@ -35,32 +34,44 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
             var pastThirtyDays = DateTime.UtcNow.AddDays(-30).Date;
 
             var commitmentsApprovedTask = commitmentsDataContext.Apprenticeship
-                .Where(a => a.Commitment.EmployerAndProviderApprovedOn >= pastThirtyDays)
-                .CountAsync(x => x.IsApproved);
+                .CountAsync(commitmentsApprenticeship =>
+                    commitmentsApprenticeship.Commitment.EmployerAndProviderApprovedOn > pastThirtyDays
+                    && commitmentsApprenticeship.Commitment.Approvals == 3);
 
-            var commitmentsStatusTask = commitmentsDataContext.Apprenticeship
-                .Where(a => a.PaymentStatus == PaymentStatus.Withdrawn || a.PaymentStatus == PaymentStatus.Paused)
-                .Where(a => a.Commitment.EmployerAndProviderApprovedOn >= pastThirtyDays)
-                .GroupBy(g => g.PaymentStatus)
-                .Select(x => new { x.Key, Count = x.Count() })
-                .ToListAsync();
+            var commitmentsStoppedTask = commitmentsDataContext.Apprenticeship
+                .CountAsync(commitmentsApprenticeship =>
+                    commitmentsApprenticeship.StopDate > pastThirtyDays
+                    && commitmentsApprenticeship.PaymentStatus == PaymentStatus.Withdrawn);
 
-            var paymentsStatusTask = paymentsDataContext.Apprenticeship
-                .Where(a => a.Status == ApprenticeshipStatus.Active || a.Status == ApprenticeshipStatus.Stopped || a.Status == ApprenticeshipStatus.Paused)
-                .Where(a => a.CreationDate >= pastThirtyDays)
-                .GroupBy(g => g.Status)
-                .Select(x => new { x.Key, Count = x.Count() })
-                .ToListAsync();
+            var commitmentsPausedTask = commitmentsDataContext.Apprenticeship
+                .CountAsync(commitmentsApprenticeship =>
+                    commitmentsApprenticeship.IsApproved
+                    && commitmentsApprenticeship.PauseDate > pastThirtyDays
+                    && commitmentsApprenticeship.PaymentStatus == PaymentStatus.Paused);
 
-            await Task.WhenAll(commitmentsApprovedTask, commitmentsStatusTask, paymentsStatusTask).ConfigureAwait(false);
+            var paymentsApprovedTask = paymentsDataContext.Apprenticeship
+                .CountAsync(paymentsApprenticeship => paymentsApprenticeship.CreationDate > pastThirtyDays);
+
+            var paymentsStoppedTask = paymentsDataContext.Apprenticeship
+                .CountAsync(paymentsApprenticeship =>
+                    paymentsApprenticeship.Status == ApprenticeshipStatus.Stopped
+                    && paymentsApprenticeship.StopDate > pastThirtyDays);
+
+            var paymentsPausedTask = paymentsDataContext.Apprenticeship
+                .CountAsync(paymentsApprenticeship =>
+                    paymentsApprenticeship.Status == ApprenticeshipStatus.Paused
+                    && paymentsApprenticeship.ApprenticeshipPause.PauseDate > pastThirtyDays
+                    && paymentsApprenticeship.ApprenticeshipPause.ResumeDate == null);
+
+            await Task.WhenAll(commitmentsApprovedTask, commitmentsStoppedTask, commitmentsPausedTask, paymentsApprovedTask, paymentsStoppedTask, paymentsPausedTask).ConfigureAwait(false);
 
             var commitmentsApprovedCount = commitmentsApprovedTask.Result;
-            var commitmentsStoppedCount = (commitmentsStatusTask.Result.SingleOrDefault(x => x.Key == PaymentStatus.Withdrawn)?.Count).GetValueOrDefault();
-            var commitmentsPausedCount = (commitmentsStatusTask.Result.SingleOrDefault(x => x.Key == PaymentStatus.Paused)?.Count).GetValueOrDefault();
+            var commitmentsStoppedCount = commitmentsStoppedTask.Result;
+            var commitmentsPausedCount = commitmentsPausedTask.Result;
 
-            var paymentsApprovedCount = (paymentsStatusTask.Result.SingleOrDefault(x => x.Key == ApprenticeshipStatus.Active)?.Count).GetValueOrDefault();
-            var paymentsStoppedCount = (paymentsStatusTask.Result.SingleOrDefault(x => x.Key == ApprenticeshipStatus.Stopped)?.Count).GetValueOrDefault();
-            var paymentsPausedCount = (paymentsStatusTask.Result.SingleOrDefault(x => x.Key == ApprenticeshipStatus.Paused)?.Count).GetValueOrDefault();
+            var paymentsApprovedCount = paymentsApprovedTask.Result;
+            var paymentsStoppedCount = paymentsStoppedTask.Result;
+            var paymentsPausedCount = paymentsPausedTask.Result;
 
             telemetry.TrackEvent(ApprovalsReferenceDataComparisonEvent, new Dictionary<string, double>
             {
