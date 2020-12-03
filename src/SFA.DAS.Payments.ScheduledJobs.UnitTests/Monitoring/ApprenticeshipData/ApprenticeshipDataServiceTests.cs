@@ -63,13 +63,13 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.ApprenticeshipData
                 new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Stopped, StopDate = DateTime.Now },
                 new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Stopped, StopDate = DateTime.Now.AddDays(-31) },
                 new Model.Core.Entities.ApprenticeshipModel { StopDate = DateTime.Now.AddDays(-31) },
-                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, ApprenticeshipPause = new ApprenticeshipPauseModel{ PauseDate = DateTime.Now, ResumeDate = null } },
-                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, ApprenticeshipPause = new ApprenticeshipPauseModel{ PauseDate = DateTime.Now, ResumeDate = null } },
-                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, ApprenticeshipPause = new ApprenticeshipPauseModel{ PauseDate = DateTime.Now, ResumeDate = null } },
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, ApprenticeshipPauses = new List<ApprenticeshipPauseModel>{ new ApprenticeshipPauseModel{ PauseDate = DateTime.Now, ResumeDate = null } }},
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, ApprenticeshipPauses = new List<ApprenticeshipPauseModel>{ new ApprenticeshipPauseModel{ PauseDate = DateTime.Now, ResumeDate = null } }},
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, ApprenticeshipPauses = new List<ApprenticeshipPauseModel>{ new ApprenticeshipPauseModel{ PauseDate = DateTime.Now, ResumeDate = null } }},
                 new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, CreationDate = DateTime.Now },
-                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, ApprenticeshipPause = new ApprenticeshipPauseModel{ PauseDate = DateTime.Now, ResumeDate = DateTime.Now } },
-                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, ApprenticeshipPause = new ApprenticeshipPauseModel{ PauseDate = DateTime.Now.AddDays(-31), ResumeDate = null } },
-                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Inactive, ApprenticeshipPause = new ApprenticeshipPauseModel{ PauseDate = DateTime.Now, ResumeDate = null } }
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, ApprenticeshipPauses = new List<ApprenticeshipPauseModel>{ new ApprenticeshipPauseModel{ PauseDate = DateTime.Now, ResumeDate = DateTime.Now } }},
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Paused, ApprenticeshipPauses = new List<ApprenticeshipPauseModel>{ new ApprenticeshipPauseModel{ PauseDate = DateTime.Now.AddDays(-31), ResumeDate = null } }},
+                new Model.Core.Entities.ApprenticeshipModel { Status = ApprenticeshipStatus.Inactive, ApprenticeshipPauses = new List<ApprenticeshipPauseModel>{ new ApprenticeshipPauseModel{ PauseDate = DateTime.Now, ResumeDate = null } }}
             };
 
             commitmentsDataContext.Apprenticeship.AddRange(dasApprenticeships);
