@@ -36,6 +36,15 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.ApprenticeshipData
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options);
 
+            var commitmentsDataContextFactory = new Mock<ICommitmentsDataContextFactory>();
+            commitmentsDataContextFactory.Setup(c => c.Create())
+                .Returns(commitmentsDataContext);
+
+            var paymentsDataContextFactory = new Mock<IPaymentsDataContextFactory>();
+            paymentsDataContextFactory.Setup(c => c.Create())
+                .Returns(paymentsDataContext);
+
+
             var dasApprenticeships = new List<ApprenticeshipModel>
             {
                 new ApprenticeshipModel { IsApproved = true, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now, Approvals = 3} },
@@ -77,7 +86,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.ApprenticeshipData
             paymentsDataContext.Apprenticeship.AddRange(paymentsApprenticeships);
             paymentsDataContext.SaveChanges();
 
-            service = new ApprenticeshipDataService(paymentsDataContext, commitmentsDataContext, telemetry.Object);
+            service = new ApprenticeshipDataService(paymentsDataContextFactory.Object, commitmentsDataContextFactory.Object, telemetry.Object);
         }
 
         [Test]

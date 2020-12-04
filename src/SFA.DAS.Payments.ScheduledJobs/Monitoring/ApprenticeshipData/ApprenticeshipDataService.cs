@@ -20,14 +20,17 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
         private const string PaymentsPaused = "PaymentsPaused";
         private const string ApprovalsReferenceDataComparisonEvent = "ApprovalsReferenceDataComparisonEvent";
 
-        private readonly IPaymentsDataContext paymentsDataContext;
-        private readonly ICommitmentsDataContext commitmentsDataContext;
+        private readonly IPaymentsDataContextFactory paymentsDataContextFactory;
+        private readonly ICommitmentsDataContextFactory commitmentsDataContextFactory;
         private readonly ITelemetry telemetry;
 
-        public ApprenticeshipDataService(IPaymentsDataContext paymentsDataContext, ICommitmentsDataContext commitmentsDataContext, ITelemetry telemetry)
+        private IPaymentsDataContext PaymentsDataContext => paymentsDataContextFactory.Create();
+        private ICommitmentsDataContext CommitmentsDataContext => commitmentsDataContextFactory.Create();
+
+        public ApprenticeshipDataService(IPaymentsDataContextFactory paymentsDataContextFactory, ICommitmentsDataContextFactory commitmentsDataContextFactory, ITelemetry telemetry)
         {
-            this.paymentsDataContext = paymentsDataContext;
-            this.commitmentsDataContext = commitmentsDataContext;
+            this.paymentsDataContextFactory = paymentsDataContextFactory;
+            this.commitmentsDataContextFactory = commitmentsDataContextFactory;
             this.telemetry = telemetry;
         }
 
@@ -35,31 +38,31 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
         {
             var pastThirtyDays = DateTime.UtcNow.AddDays(-30).Date;
 
-            var commitmentsApprovedTask = commitmentsDataContext.Apprenticeship.Include(x => x.Commitment)
+            var commitmentsApprovedTask = CommitmentsDataContext.Apprenticeship.Include(x => x.Commitment)
                 .CountAsync(commitmentsApprenticeship =>
                     commitmentsApprenticeship.Commitment.EmployerAndProviderApprovedOn > pastThirtyDays
                     && commitmentsApprenticeship.Commitment.Approvals == 3);
 
-            var commitmentsStoppedTask = commitmentsDataContext.Apprenticeship
+            var commitmentsStoppedTask = CommitmentsDataContext.Apprenticeship
                 .CountAsync(commitmentsApprenticeship =>
                     commitmentsApprenticeship.StopDate > pastThirtyDays
                     && commitmentsApprenticeship.PaymentStatus == PaymentStatus.Withdrawn);
 
-            var commitmentsPausedTask = commitmentsDataContext.Apprenticeship
+            var commitmentsPausedTask = CommitmentsDataContext.Apprenticeship
                 .CountAsync(commitmentsApprenticeship =>
                     commitmentsApprenticeship.IsApproved
                     && commitmentsApprenticeship.PauseDate > pastThirtyDays
                     && commitmentsApprenticeship.PaymentStatus == PaymentStatus.Paused);
 
-            var paymentsApprovedTask = paymentsDataContext.Apprenticeship
+            var paymentsApprovedTask = PaymentsDataContext.Apprenticeship
                 .CountAsync(paymentsApprenticeship => paymentsApprenticeship.CreationDate > pastThirtyDays);
 
-            var paymentsStoppedTask = paymentsDataContext.Apprenticeship
+            var paymentsStoppedTask = PaymentsDataContext.Apprenticeship
                 .CountAsync(paymentsApprenticeship =>
                     paymentsApprenticeship.Status == ApprenticeshipStatus.Stopped
                     && paymentsApprenticeship.StopDate > pastThirtyDays);
 
-            var paymentsPausedTask = paymentsDataContext.Apprenticeship.Include(x => x.ApprenticeshipPauses)
+            var paymentsPausedTask = PaymentsDataContext.Apprenticeship.Include(x => x.ApprenticeshipPauses)
                 .CountAsync(paymentsApprenticeship =>
                     paymentsApprenticeship.Status == ApprenticeshipStatus.Paused
                     && paymentsApprenticeship.ApprenticeshipPauses.Any(pause => 
