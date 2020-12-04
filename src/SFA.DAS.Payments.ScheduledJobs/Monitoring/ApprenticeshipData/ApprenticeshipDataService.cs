@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
             var commitmentsApprovedTask = CommitmentsDataContext.Apprenticeship.Include(x => x.Commitment)
                 .CountAsync(commitmentsApprenticeship =>
                     commitmentsApprenticeship.Commitment.EmployerAndProviderApprovedOn > pastThirtyDays
-                    && commitmentsApprenticeship.Commitment.Approvals == 3);
+                    && (commitmentsApprenticeship.Commitment.Approvals == 3 || commitmentsApprenticeship.Commitment.Approvals == 7));
 
             var commitmentsStoppedTask = CommitmentsDataContext.Apprenticeship
                 .CountAsync(commitmentsApprenticeship =>

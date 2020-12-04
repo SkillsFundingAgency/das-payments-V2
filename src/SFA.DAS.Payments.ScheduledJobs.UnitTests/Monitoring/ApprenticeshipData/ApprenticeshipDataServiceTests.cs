@@ -49,6 +49,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.ApprenticeshipData
             {
                 new ApprenticeshipModel { IsApproved = true, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now, Approvals = 3} },
                 new ApprenticeshipModel { IsApproved = false, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now, Approvals = 3} }, //assert we are using the correct new logic based on query in PV2-2215
+                new ApprenticeshipModel { IsApproved = true, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now, Approvals = 7} }, //assert we include transfers
 
                 new ApprenticeshipModel { PaymentStatus = PaymentStatus.Withdrawn, StopDate = DateTime.Now, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } }, //expected in stopped count
                 new ApprenticeshipModel { PaymentStatus = PaymentStatus.Withdrawn, StopDate = DateTime.Now, Commitment = new Commitment { EmployerAndProviderApprovedOn = DateTime.Now } }, //expected in stopped count
@@ -94,7 +95,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.ApprenticeshipData
         {
             await service.ProcessComparison();
             telemetry.Verify(x => x.TrackEvent(EventName, It.Is<Dictionary<string, double>>(metrics
-                => metrics.Any(metric => metric.Key == "DasApproved" && metric.Value == 2))));
+                => metrics.Any(metric => metric.Key == "DasApproved" && metric.Value == 3))));
         }
 
         [Test]
