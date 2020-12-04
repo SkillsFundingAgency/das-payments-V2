@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
 {
+    public interface IApprenticeshipsDataService
+    {
+        Task ProcessComparison();
+    }
+    
     public class ApprenticeshipDataService : IApprenticeshipsDataService
     {
         private const string DasApproved = "DasApproved";
