@@ -127,8 +127,7 @@ GO
 
 CREATE NONCLUSTERED INDEX [IX_Payment__CollectionPeriodCompletionPayments] on [Payments2].[Payment] 
 (
-	[AcademicYear],
-	[CollectionPeriod],
+	[Ukprn],
 	[ContractType],
 	[TransactionType]
 )
