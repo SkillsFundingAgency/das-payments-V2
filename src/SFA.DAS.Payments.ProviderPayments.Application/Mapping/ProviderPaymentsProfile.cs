@@ -21,6 +21,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .Include<TransferFundingSourcePaymentEvent, ProviderPaymentEventModel>()
                 .ForMember(dest => dest.EventId, opt => opt.ResolveUsing(src => Guid.NewGuid()))
                 .ForMember(dest => dest.FundingSourceId, opt => opt.MapFrom(source => source.EventId))
+                .ForMember(dest => dest.RequiredPaymentEventId, opt => opt.MapFrom(source => source.RequiredPaymentEventId))
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => source.CollectionPeriod.Period))
                 .ForMember(dest => dest.AcademicYear, opt => opt.MapFrom(source => source.CollectionPeriod.AcademicYear))
