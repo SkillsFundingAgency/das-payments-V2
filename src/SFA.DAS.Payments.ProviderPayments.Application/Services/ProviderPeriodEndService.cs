@@ -5,7 +5,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
     public interface IProviderPeriodEndService
     {
-        Task<bool> MonthEndStarted(long ukprn, short academicYear, byte collectionPeriod);
+        Task<bool> IsMonthEndStarted(long ukprn, short academicYear, byte collectionPeriod);
         Task<long> GetMonthEndJobId(long ukprn, short academicYear, byte collectionPeriod);
     }
 
@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             this.monthEndCache = monthEndCache ?? throw new ArgumentNullException(nameof(monthEndCache));
         }
 
-        public async Task<bool> MonthEndStarted(long ukprn, short academicYear, byte collectionPeriod)
+        public async Task<bool> IsMonthEndStarted(long ukprn, short academicYear, byte collectionPeriod)
         {
             return await monthEndCache.Exists( ukprn,  academicYear,  collectionPeriod).ConfigureAwait(false);
         }
