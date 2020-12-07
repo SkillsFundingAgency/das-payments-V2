@@ -12,6 +12,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
             DataTable.Columns.AddRange(new[]
             {
                 new DataColumn("FundingSourceEventId", typeof(Guid)),
+                new DataColumn("RequiredPaymentEventId", typeof(Guid)),
                 new DataColumn("FundingSource"),
                 new DataColumn("ApprenticeshipEmployerType", typeof(byte)),
                 new DataColumn("ReportingAimFundingLineType", typeof(string)),
@@ -22,6 +23,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
         {
             var dataRow = base.CreateDataRow(eventModel);
             dataRow["FundingSourceEventId"] = eventModel.FundingSourceId;
+            dataRow["RequiredPaymentEventId"] = eventModel.RequiredPaymentEventId;
             dataRow["FundingSource"] = (byte)eventModel.FundingSource;
 
             if (!eventModel.ApprenticeshipId.HasValue)
