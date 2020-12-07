@@ -15,6 +15,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data.Configurations
             builder.Property(x => x.EventId).HasColumnName(@"EventId").IsRequired();
             builder.Property(x => x.EarningEventId).HasColumnName(@"EarningEventId").IsRequired();
             builder.Property(x => x.FundingSourceEventId).HasColumnName(@"FundingSourceEventId").IsRequired();
+            builder.Property(x => x.RequiredPaymentEventId).HasColumnName(@"RequiredPaymentEventId");
             builder.Property(x => x.EventTime).HasColumnName(@"EventTime").IsRequired();
             builder.Property(x => x.PriceEpisodeIdentifier).HasColumnName(@"PriceEpisodeIdentifier").IsRequired();
             builder.Property(x => x.Amount).HasColumnName(@"Amount").IsRequired();

@@ -384,6 +384,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 ApprenticeshipId = apprenticeshipId,
                 ApprenticeshipPriceEpisodeId = priceEpisodeId,
                 LearningStartDate = learnerTraining.StartDate.ToNullableDate(),
+                RequiredPaymentEventId = Guid.Empty
             };
         }
 
