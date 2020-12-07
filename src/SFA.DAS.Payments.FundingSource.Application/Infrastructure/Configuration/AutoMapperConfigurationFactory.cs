@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using AutoMapper;
+﻿using AutoMapper;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
 using SFA.DAS.Payments.FundingSource.Messages.Commands;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
@@ -101,9 +100,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                 cfg.CreateMap<ProcessUnableToFundTransferFundingSourcePayment, CalculatedRequiredLevyAmount>()
                     .ForMember(dest => dest.OnProgrammeEarningType, opt => opt.MapFrom(source => (OnProgrammeEarningType)source.TransactionType))
                     .ForMember(dest => dest.Priority, opt => opt.Ignore())
-                    .ForMember(dest => dest.ApprenticeshipId, opt => opt.Ignore())
-                    .ForMember(dest => dest.ApprenticeshipPriceEpisodeId, opt => opt.Ignore())
                     .ForMember(dest => dest.AgreementId, opt => opt.Ignore())
+                    .ForMember(dest => dest.EventId, opt => opt.MapFrom(src => src.RequiredPaymentEventId))
                     ;
 
                 cfg.CreateMap<LevyAccountModel, LevyAccountModel>();
