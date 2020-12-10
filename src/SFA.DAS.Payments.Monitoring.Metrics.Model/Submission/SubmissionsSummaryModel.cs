@@ -17,5 +17,6 @@
         public decimal AlreadyPaidDataLockedEarnings { get; set; }
         public decimal TotalDataLockedEarnings { get; set; }
         public ContractTypeAmounts YearToDatePayments { get; set; }
+        public DataLockTypeCounts DataLockMetricsTotals { get; set; }
     }
 }
