@@ -7,14 +7,11 @@ using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.DasHandlers;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data;
-using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Handlers;
-using SFA.DAS.Payments.ProviderPayments.Messages;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -37,7 +34,6 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         {
         }
 
-
         [Given(@"the collection period is (.*)")]
         public void GivenTheCollectionPeriodIsRCurrentAcademicYear(string p0)
         {
@@ -46,7 +42,6 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             CollectionPeriod = collectionPeriod.Period;
             AcademicYear = collectionPeriod.AcademicYear;
         }
-
 
         [Given(@"the funding source service generates the following contract type payments")]
         public async Task GivenTheFundingSourceServiceGeneratesTheFollowingContractTypePayments(Table payments)
@@ -61,7 +56,6 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             context.Payment.AddRange(PaymentModels);
             await context.SaveChangesAsync();
         }
-
 
         private static async Task CleanUpPreviousData(IPaymentsDataContext context)
         {
@@ -91,7 +85,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                                p.ContractType == ContractType.Act1 &&
                                p.TransactionType == TransactionType.Completion)
                     == completionPayments.Count;
-            }, $"Failed to find all the provider payment events. Found '{ProviderPaymentEventHandler.ReceivedEvents.Count}' events ");
+            }, $"Failed to find all the recorded act 1 completion payment events. Found '{RecordedAct1CompletionPaymentEventHandler.ReceivedEvents.Count}' events ");
         }
         
         [When(@"month end stop event is received")]

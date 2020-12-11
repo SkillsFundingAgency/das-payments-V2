@@ -2,8 +2,6 @@ using System;
 using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
 

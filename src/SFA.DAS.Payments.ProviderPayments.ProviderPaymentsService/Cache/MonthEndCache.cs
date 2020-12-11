@@ -1,10 +1,10 @@
 using Microsoft.ServiceFabric.Data.Collections;
-using SFA.DAS.Payments.ProviderPayments.Application.Services;
 using SFA.DAS.Payments.ProviderPayments.Model;
 using SFA.DAS.Payments.ServiceFabric.Core;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.ProviderPayments.Application.Services;
 using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
@@ -20,15 +20,6 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache
         {
             this.transactionProvider = transactionProvider ?? throw new ArgumentNullException(nameof(transactionProvider));
             this.stateManagerProvider = stateManagerProvider ?? throw new ArgumentNullException(nameof(stateManagerProvider));
-        }
-
-        public async Task AddOrReplace(long ukprn, short academicYear, byte collectionPeriod, long monthEndJobId, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var key = CreateKey(ukprn, academicYear, collectionPeriod);
-            var entity = new MonthEndDetails { Ukprn = ukprn, AcademicYear = academicYear, CollectionPeriod = collectionPeriod, JobId = monthEndJobId };
-            var state = await GetState();
-
-            await state.AddOrUpdateAsync(transactionProvider.Current, key, entity, (newKey, monthEnd) => monthEnd, TimeSpan.FromSeconds(4), cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<bool> Exists(long ukprn, short academicYear, byte collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))

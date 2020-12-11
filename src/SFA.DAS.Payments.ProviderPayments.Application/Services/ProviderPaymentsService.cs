@@ -9,11 +9,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventModelCache;
-using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.ProviderPayments.Model;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
+    public interface IProviderPaymentsService
+    {
+        Task ProcessPayment(ProviderPaymentEventModel payment, CancellationToken cancellationToken);
+    }
+
     public class ProviderPaymentsService : IProviderPaymentsService
     {
 
@@ -23,8 +27,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
         private readonly IPaymentLogger paymentLogger;
         private readonly ITelemetry telemetry;
 
-        public ProviderPaymentsService(IDataCache<ReceivedProviderEarningsEvent> ilrSubmittedEventCache, 
-            IPaymentsEventModelCache<ProviderPaymentEventModel> paymentCache, IValidateIlrSubmission validateIlrSubmission,
+        public ProviderPaymentsService(
+            IDataCache<ReceivedProviderEarningsEvent> ilrSubmittedEventCache,
+            IPaymentsEventModelCache<ProviderPaymentEventModel> paymentCache, 
+            IValidateIlrSubmission validateIlrSubmission,
             IPaymentLogger paymentLogger,
             ITelemetry telemetry)
         {

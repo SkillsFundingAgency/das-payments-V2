@@ -23,7 +23,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.UnitTests
             };
         }
 
-
         [Test]
         public void ShouldBeValidIfCurrentIlrIsNull()
         {
@@ -53,7 +52,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.UnitTests
             Assert.IsTrue(result);
         }
 
-
         [Test]
         public void IsLatestIlrPaymentShouldBeInValidIfCurrentIlrDoNotMatchIncomingMessage()
         {
@@ -68,49 +66,5 @@ namespace SFA.DAS.Payments.ProviderPayments.Domain.UnitTests
 
             Assert.IsFalse(result);
         }
-
-        [Test]
-        public void IsNewIlrSubmissionShouldBeValidIfCurrentIlrIsNull()
-        {
-            validateIlrSubmission = new ValidateIlrSubmission();
-
-            var result = validateIlrSubmission.IsNewIlrSubmission(new IlrSubmissionValidationRequest
-            {
-                CurrentIlr = null
-            });
-
-            Assert.IsTrue(result);
-        }
-
-        [Test]
-        public void IsNewIlrSubmissionShouldBeValidIfCurrentIlrDoNotMatchIncomingMessageIlrDate()
-        {
-            validateIlrSubmission = new ValidateIlrSubmission();
-
-            var result = validateIlrSubmission.IsNewIlrSubmission(new IlrSubmissionValidationRequest
-            {
-                CurrentIlr = currentIlr,
-                IncomingPaymentUkprn = currentIlr.Ukprn,
-                IncomingPaymentSubmissionDate = DateTime.MinValue
-            });
-
-            Assert.IsTrue(result);
-        }
-
-
-        [Test]
-        public void IsNewIlrSubmissionShouldBeInValidIfCurrentIlrMatchIncomingMessageIlr()
-        {
-            validateIlrSubmission = new ValidateIlrSubmission();
-            var result = validateIlrSubmission.IsNewIlrSubmission(new IlrSubmissionValidationRequest
-            {
-                CurrentIlr = currentIlr,
-                IncomingPaymentUkprn = currentIlr.Ukprn,
-                IncomingPaymentSubmissionDate = currentIlr.IlrSubmissionDateTime
-            });
-            Assert.IsFalse(result);
-        }
-
-
     }
 }
