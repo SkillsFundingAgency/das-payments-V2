@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.PerformanceTests
                 .Transactions(TransportTransactionMode.ReceiveOnly);
             var routing = transportConfig.Routing();
             routing.RouteToEndpoint(typeof(ProcessLearnerCommand), EndpointNames.EarningEvents);
-            routing.RouteToEndpoint(typeof(ProcessProviderMonthEndCommand), EndpointNames.ProviderPayments);
+            routing.RouteToEndpoint(typeof(ProcessProviderMonthEndAct1CompletionPaymentCommand), EndpointNames.ProviderPayments);
             routing.RouteToEndpoint(typeof(RecordEarningsJob), EndpointNames.JobMonitoring);
             routing.RouteToEndpoint(typeof(ProcessLevyPaymentsOnMonthEndCommand).Assembly, EndpointNames.FundingSource);
             routing.RouteToEndpoint(typeof(ResetActorsCommand).Assembly, EndpointNames.DataLocks);

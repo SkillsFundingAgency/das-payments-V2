@@ -4,6 +4,7 @@ CREATE TABLE [Payments2].[Payment]
 	EventId UNIQUEIDENTIFIER NOT NULL CONSTRAINT DF_Payment__EventId DEFAULT(NEWID()), CONSTRAINT UQ_Payment__EventId UNIQUE([EventId]), 
 	EarningEventId UNIQUEIDENTIFIER NOT NULL,
 	FundingSourceEventId UNIQUEIDENTIFIER NOT NULL,
+	RequiredPaymentEventId UNIQUEIDENTIFIER NULL,
 	EventTime DATETIMEOFFSET NOT NULL,
 	JobId BIGINT NOT NULL,
 	DeliveryPeriod TINYINT NOT NULL,
@@ -122,5 +123,14 @@ CREATE NONCLUSTERED INDEX [IX_Payment__Metrics_Paid_DataLocks] ON [Payments2].[P
 	[CollectionPeriod]
 )
 include(Amount, [TransactionType], [DeliveryPeriod])
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_Payment__CollectionPeriodCompletionPayments] on [Payments2].[Payment] 
+(
+	[Ukprn],
+	[ContractType],
+	[TransactionType]
+)
 
 GO

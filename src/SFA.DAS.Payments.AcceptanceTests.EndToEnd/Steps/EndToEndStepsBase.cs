@@ -384,6 +384,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 ApprenticeshipId = apprenticeshipId,
                 ApprenticeshipPriceEpisodeId = priceEpisodeId,
                 LearningStartDate = learnerTraining.StartDate.ToNullableDate(),
+                RequiredPaymentEventId = Guid.Empty
             };
         }
 
@@ -890,27 +891,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var expectedPayments = CreatePayments(table, provider.Ukprn);
             var matcher = new CompletionPaymentHeldBackEventMatcher(provider, CurrentCollectionPeriod, expectedPayments);
             await WaitForIt(() => matcher.MatchPayments(), "Held Back Required Payment event check failure");
-        }
-
-        protected async Task StartMonthEnd(Provider provider)
-        {
-            if (!provider.MonthEndJobIdGenerated) // for ACT1 it could have been generated on Required Payments check step
-            {
-                var monthEndJobId = TestSession.GenerateId();
-                Console.WriteLine($"Month end job id: {monthEndJobId}");
-                provider.JobId = monthEndJobId;
-            }
-
-            var processProviderPaymentsAtMonthEndCommand = new ProcessProviderMonthEndCommand
-            {
-                CollectionPeriod = CurrentCollectionPeriod,
-                Ukprn = provider.Ukprn,
-                JobId = provider.JobId
-            };
-
-            await MessageSession.Send(processProviderPaymentsAtMonthEndCommand).ConfigureAwait(false);
-
-            provider.MonthEndJobIdGenerated = true;
         }
 
         protected async Task SendProcessLearnerCommand(FM36Learner learner)
