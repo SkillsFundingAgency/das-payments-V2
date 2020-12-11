@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -51,7 +50,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
             providerPaymentsRepository = mocker.Mock<IProviderPaymentsRepository>();
 
             providerPaymentsRepository
-                .Setup(o => o.GetMonthEndAct1CompletionPayments(It.IsAny<CollectionPeriod>(),
+                .Setup(o => o.GetMonthEndAct1CompletionPaymentsForProvider(It.IsAny<long>(),It.IsAny<CollectionPeriod>(),
                                                                 It.IsAny<CancellationToken>()))
                 .ReturnsAsync(payments)
                 .Verifiable();
@@ -68,7 +67,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         [Test]
         public async Task ShouldCallRepoAndMapper()
         {
-            var command = new ProcessMonthEndAct1CompletionPaymentCommand
+            var command = new ProcessProviderMonthEndAct1CompletionPaymentCommand
             {
                 CollectionPeriod = new CollectionPeriod
                 {

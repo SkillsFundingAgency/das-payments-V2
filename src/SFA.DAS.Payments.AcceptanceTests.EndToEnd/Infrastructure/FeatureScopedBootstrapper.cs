@@ -79,11 +79,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
             var endpointConfiguration = Container.Resolve<EndpointConfiguration>();
             var conventions = endpointConfiguration.Conventions();
             conventions.DefiningEventsAs(type => type.IsEvent<IPaymentsEvent>())
-                .DefiningCommandsAs(t => t.IsAssignableTo<ProcessLearnerCommand>() || t.IsAssignableTo<ProcessProviderMonthEndCommand>());
+                .DefiningCommandsAs(t => t.IsAssignableTo<ProcessLearnerCommand>() || t.IsAssignableTo<ProcessProviderMonthEndAct1CompletionPaymentCommand>());
             var transportConfig = Container.Resolve<TransportExtensions<AzureServiceBusTransport>>();
             var routing = transportConfig.Routing();
             routing.RouteToEndpoint(typeof(ProcessLearnerCommand), EndpointNames.EarningEvents);
-            routing.RouteToEndpoint(typeof(ProcessProviderMonthEndCommand), EndpointNames.ProviderPayments);
+            routing.RouteToEndpoint(typeof(ProcessProviderMonthEndAct1CompletionPaymentCommand), EndpointNames.ProviderPayments);
             routing.RouteToEndpoint(typeof(ProcessLevyPaymentsOnMonthEndCommand).Assembly, EndpointNames.FundingSource);
             routing.RouteToEndpoint(typeof(EmployerChangedProviderPriority).Assembly, EndpointNames.FundingSource);
             routing.RouteToEndpoint(typeof(RecordPeriodEndStartJob).Assembly, EndpointNames.JobMonitoring);

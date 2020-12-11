@@ -9,12 +9,12 @@ using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.PeriodEndService.Handlers
 {
-   public class PeriodEndRunningEventHandler : IHandleMessages<PeriodEndRequestReportsEvent>
+   public class PeriodEndRequestReportsEventHandler : IHandleMessages<PeriodEndRequestReportsEvent>
     {
         private readonly IPaymentLogger logger;
         private readonly IPeriodEndMetricsService periodEndMetricsService;
 
-        public PeriodEndRunningEventHandler(IPaymentLogger logger, IPeriodEndMetricsService periodEndMetricsService)
+        public PeriodEndRequestReportsEventHandler(IPaymentLogger logger, IPeriodEndMetricsService periodEndMetricsService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.periodEndMetricsService = periodEndMetricsService ?? throw new ArgumentNullException(nameof(periodEndMetricsService));
