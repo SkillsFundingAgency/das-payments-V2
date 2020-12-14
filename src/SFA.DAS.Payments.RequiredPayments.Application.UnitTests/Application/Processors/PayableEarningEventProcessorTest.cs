@@ -191,11 +191,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             var requiredPayments = new List<RequiredPayment>
             {
-                new RequiredPayment
-                {
-                    Amount = 100,
-                    EarningType = EarningType.Levy,
-                },
             };
             earningEvent.LearningAim.Reference = "ZPROG001";
             var paymentHistoryEntities = new[] {new PaymentHistoryEntity
@@ -203,7 +198,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
                 DeliveryPeriod = period.Period,
                 LearnAimReference = earningEvent.LearningAim.Reference.ToLower(),
-                TransactionType = (int) OnProgrammeEarningType.Learning
+                TransactionType = (int) OnProgrammeEarningType.Learning,
+                Amount = 100,
+                SfaContributionPercentage = 0.9m,
+                PriceEpisodeIdentifier = "2"
             }};
             paymentHistoryCacheMock.Setup(c => c.TryGet(It.Is<string>(key => key == CacheKeys.PaymentHistoryKey), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities))
@@ -217,6 +215,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             // assert
             actualRequiredPayment.Should().HaveCount(0);
+            //Ideally this logic should be moved into a specific testable class
+            requiredPaymentsService.Verify(x => x.GetRequiredPayments(It.IsAny<Earning>(),It.Is<List<Payment>>(lst => lst.Count==1 && lst.Any(p => p.LearnAimReference=="zprog001"))));
         }
 
         [Test]
