@@ -8,6 +8,11 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
+    public interface IProcessAfterMonthEndPaymentService
+    {
+        Task<ProviderPaymentEvent> GetPaymentEvent(FundingSourcePaymentEvent message);
+    }
+
     public class ProcessAfterMonthEndPaymentService : IProcessAfterMonthEndPaymentService
     {
         private readonly IPaymentLogger paymentLogger;
@@ -24,7 +29,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
         public async Task<ProviderPaymentEvent> GetPaymentEvent(FundingSourcePaymentEvent message)
         {
             var isMonthEnd = await providerPeriodEndService
-                .MonthEndStarted(message.Ukprn, message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period)
+                .IsMonthEndStarted(message.Ukprn, message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period)
                 .ConfigureAwait(false);
 
             if (!isMonthEnd) return null;

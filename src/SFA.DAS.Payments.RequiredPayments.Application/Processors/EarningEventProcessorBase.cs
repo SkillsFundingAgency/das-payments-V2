@@ -69,7 +69,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 var cachedPayments = await paymentHistoryCache.TryGet(CacheKeys.PaymentHistoryKey, cancellationToken);
                 var academicYearPayments = cachedPayments.HasValue
                     ? cachedPayments.Value
-                        .Where(p => p.LearnAimReference == earningEvent.LearningAim.Reference)
+                        .Where(p => p.LearnAimReference.Equals(earningEvent.LearningAim.Reference,StringComparison.OrdinalIgnoreCase))
                         .Select(p => mapper.Map<PaymentHistoryEntity, Payment>(p))
                         .ToList()
                     : new List<Payment>();

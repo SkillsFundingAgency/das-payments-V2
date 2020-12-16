@@ -125,3 +125,12 @@ CREATE NONCLUSTERED INDEX [IX_Payment__Metrics_Paid_DataLocks] ON [Payments2].[P
 include(Amount, [TransactionType], [DeliveryPeriod])
 
 GO
+
+CREATE NONCLUSTERED INDEX [IX_Payment__CollectionPeriodCompletionPayments] on [Payments2].[Payment] 
+(
+	[Ukprn],
+	[ContractType],
+	[TransactionType]
+)
+
+GO

@@ -29,12 +29,3 @@ Scenario: Provider payments after month end
 	| 1               | Completion (TT2)                   | CoInvestedEmployer | 300    |
 	| 1               | Balancing (TT3)                    | CoInvestedEmployer | 1350   |
 	| 1               | First16To18EmployerIncentive (TT4) | FullyFundedSfa     | 500    |
-	And the provider payments service will publish the following payments
-	| Delivery Period | TransactionType                    | FundingSource      | Amount |
-	| 1               | Learning (TT1)                     | CoInvestedSfa      | 900    |
-	| 1               | Completion (TT2)                   | CoInvestedSfa      | 2700   |
-	| 1               | Balancing (TT3)                    | CoInvestedSfa      | 1800   |
-	| 1               | Learning (TT1)                     | CoInvestedEmployer | 100    |
-	| 1               | Completion (TT2)                   | CoInvestedEmployer | 300    |
-	| 1               | Balancing (TT3)                    | CoInvestedEmployer | 1350   |
-	| 1               | First16To18EmployerIncentive (TT4) | FullyFundedSfa     | 500    |
