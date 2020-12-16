@@ -67,7 +67,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration
                 amounts.Property(x => x.ContractType2).HasColumnName(@"PaymentsYearToDateContractType2");
                 amounts.Ignore(x => x.Total);
             });
-            //builder.Ignore(x => x.DataLockMetricsTotals);
             builder.OwnsOne(x => x.DataLockMetricsTotals).HasForeignKey(d => d.SubmissionsSummaryId);
         }
     }
