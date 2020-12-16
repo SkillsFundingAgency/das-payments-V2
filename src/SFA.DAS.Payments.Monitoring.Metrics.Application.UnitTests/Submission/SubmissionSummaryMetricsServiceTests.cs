@@ -7,6 +7,7 @@ using SFA.DAS.Payments.Monitoring.Metrics.Application.Submission;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -192,7 +193,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 RequiredPayments = new ContractTypeAmounts { ContractType1 = 100, ContractType2 = 100 },
                 HeldBackCompletionPayments = new ContractTypeAmounts { ContractType1 = 1, ContractType2 = 2 },
                 YearToDatePayments = new ContractTypeAmounts { ContractType1 = 3, ContractType2 = 4 },
-                DataLockMetricsTotals = new DataLockTypeCounts
+                DataLockMetricsTotals = new DataLockCountsTotalsModel
                 {
                     DataLock1 = 11,
                     DataLock2 = 5,

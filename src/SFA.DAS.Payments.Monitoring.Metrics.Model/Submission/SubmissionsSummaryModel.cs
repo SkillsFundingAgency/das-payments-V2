@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SFA.DAS.Payments.Monitoring.Metrics.Model.Submission
+﻿namespace SFA.DAS.Payments.Monitoring.Metrics.Model.Submission
 {
     public class SubmissionsSummaryModel
     {
@@ -19,6 +17,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Model.Submission
         public decimal AlreadyPaidDataLockedEarnings { get; set; }
         public decimal TotalDataLockedEarnings { get; set; }
         public ContractTypeAmounts YearToDatePayments { get; set; }
-        public virtual List<DataLockCountsTotalsModel> DataLockMetricsTotals { get; set; }
+        public virtual DataLockCountsTotalsModel DataLockMetricsTotals { get; set; }
     }
 }
