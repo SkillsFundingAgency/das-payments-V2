@@ -47,8 +47,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
                 .Setup(x => x.AddProviderSummaries(It.IsAny<List<ProviderPeriodEndSummaryModel>>()));
 
             periodEndSummaryFactory
-                .Setup(x => x.CreatePeriodEndProviderSummary(It.IsAny<long>(), It.IsAny<long>(),
-                    It.IsAny<byte>(), It.IsAny<short>()))
+                .Setup(x => x.CreatePeriodEndProviderSummary(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<byte>(), It.IsAny<short>()))
                 .Returns(new PeriodEndProviderSummary(1, 1, 1, 1));
             
 
@@ -92,6 +91,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             periodEndMetricsRepositoryMock
                 .Setup(x => x.GetHeldBackCompletionPaymentsTotals(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ProviderContractTypeAmounts>());
+            periodEndMetricsRepositoryMock
+                .Setup(x => x.GetPeriodEndProviderDataLockTypeCounts(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<PeriodEndProviderDataLockTypeCounts>());
         }
 
         [Test]
@@ -147,6 +149,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             public bool AddTransactionTypesCalled { get; private set; }
             public bool AddFundingSourceAmountsCalled { get; private set; }
             public bool AddDataLockedEarningsCalled { get; private set; }
+            public bool AddPeriodEndProviderDataLockTypeCountsCalled { get; private set; }
             public bool AddDataLockedAlreadyPaidCalled { get; private set; }
             public bool AddPaymentsYearToDateCalled { get; private set; }
             public bool AddHeldBackCompletionPaymentsCalled { get; private set; }
@@ -161,6 +164,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             public void AddFundingSourceAmounts(IEnumerable<ProviderFundingSourceAmounts> fundingSourceAmounts) { AddFundingSourceAmountsCalled = true; }
 
             public void AddDataLockedEarnings(decimal dataLockedEarningsTotal) { AddDataLockedEarningsCalled = true; }
+            public void AddPeriodEndProviderDataLockTypeCounts(PeriodEndProviderDataLockTypeCounts periodEndProviderDataLockTypeCounts)
+            {
+                AddPeriodEndProviderDataLockTypeCountsCalled = true;
+            }
 
             public void AddDataLockedAlreadyPaid(decimal dataLockedAlreadyPaidTotal) { AddDataLockedAlreadyPaidCalled = true; }
 
