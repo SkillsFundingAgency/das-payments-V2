@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
         }
 
-        private const string PriceEpisodeIdentifier = "20-593-1-06/08/2019";
+        private const string PriceEpisodeIdentifier = "20-593-1-06/08/2020";
         private const string CommitmentIdentifier = "A-1953";
 
         [Given("a learner submits an ILR when not employed by a small employer in R03")]
