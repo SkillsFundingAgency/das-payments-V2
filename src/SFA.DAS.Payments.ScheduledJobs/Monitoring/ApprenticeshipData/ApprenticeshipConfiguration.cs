@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
@@ -50,6 +51,13 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
             builder.Property(e => e.ProgrammeType).HasColumnName("TrainingType");
 
             builder.Ignore(e => e.IsProviderSearch);
+            builder.HasOne(a => a.Commitment)
+                .WithMany()
+                .HasForeignKey(c => c.CommitmentId);
+
+            builder.Property(e => e.StopDate).HasColumnType("date");
+            builder.Property(e => e.PauseDate).HasColumnType("date");
+
         }
     }
 }
