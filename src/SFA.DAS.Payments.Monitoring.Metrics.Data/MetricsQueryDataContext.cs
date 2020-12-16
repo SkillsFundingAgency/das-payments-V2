@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 		DbSet<LatestSuccessfulJobModel> LatestSuccessfulJobs { get; }
 		Task<decimal> GetAlreadyPaidDataLocksAmount(long ukprn, long jobId, CancellationToken cancellationToken);
 		Task<DataLockTypeCounts> GetDataLockCounts(long ukprn, long jobId, CancellationToken cancellationToken);
-        Task<List<PeriodEndProviderDataLockTypeCounts>> GetPeriodEndDataLockCounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<PeriodEndProviderDataLockTypeCounts>> GetPeriodEndProviderDataLockCounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
 		Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
 		Task<List<ProviderTotal>> GetAlreadyPaidDataLockProviderTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
 		Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
@@ -212,10 +212,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 			};
 		}
 
-        public async Task<List<PeriodEndProviderDataLockTypeCounts>> GetPeriodEndDataLockCounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        public async Task<List<PeriodEndProviderDataLockTypeCounts>> GetPeriodEndProviderDataLockCounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
 			var dataLockCountByUkprnSql = @"
-                select 
+                select
                     count(*) [Count],
 	                a.DataLockFailureId [DataLockType],
                     a.ukprn
@@ -224,14 +224,17 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 			            LearnerReferenceNumber,
 			            DataLockFailureId,
                         dle.ukprn
-		            from Payments2.DataLockEvent dle
-		            join Payments2.DataLockEventNonPayablePeriod npp on dle.EventId = npp.DataLockEventId
-		            join Payments2.DataLockEventNonPayablePeriodFailures nppf on npp.DataLockEventNonPayablePeriodId = nppf.DataLockEventNonPayablePeriodId
-		            where AcademicYear = @academicYear
-			            and CollectionPeriod = @collectionPeriod
-			            and npp.TransactionType in (1,2,3)
+		           from Payments2.DataLockEvent dle
+		           join Payments2.DataLockEventNonPayablePeriod npp on dle.EventId = npp.DataLockEventId
+		           join Payments2.DataLockEventNonPayablePeriodFailures nppf on npp.DataLockEventNonPayablePeriodId = nppf.DataLockEventNonPayablePeriodId
+		           where npp.TransactionType in (1,2,3)
 			            and (dle.IsPayable = 0)
-		            group by dle.LearnerReferenceNumber, nppf.DataLockFailureId, dle.ukprn
+                        and dle.jobId in (
+                            select DcJobId
+                            from Payments2.LatestSuccessfulJobs
+                            Where AcademicYear = @academicYear
+                            and CollectionPeriod = @collectionPeriod)
+		           group by dle.LearnerReferenceNumber, nppf.DataLockFailureId, dle.ukprn
                         ) a
                 group by
                     a.DataLockFailureId, a.ukprn

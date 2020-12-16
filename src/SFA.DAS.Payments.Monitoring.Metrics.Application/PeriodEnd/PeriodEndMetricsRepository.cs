@@ -122,7 +122,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 
         public async Task<List<PeriodEndProviderDataLockTypeCounts>> GetPeriodEndProviderDataLockTypeCounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            return await QueryDataContext.GetPeriodEndDataLockCounts(academicYear, collectionPeriod, cancellationToken);
+            return await QueryDataContext.GetPeriodEndProviderDataLockCounts(academicYear, collectionPeriod, cancellationToken);
 
         }
 

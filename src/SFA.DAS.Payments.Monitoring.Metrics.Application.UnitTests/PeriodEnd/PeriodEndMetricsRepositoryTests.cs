@@ -101,7 +101,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
 
             await sut.GetPeriodEndProviderDataLockTypeCounts(academicYear, collectionPeriod, It.IsAny<CancellationToken>());
 
-            metricsQueryDataContextMock.Verify(x => x.GetPeriodEndDataLockCounts(academicYear, collectionPeriod, It.IsAny<CancellationToken>()), Times.Once);
+            metricsQueryDataContextMock.Verify(x => x.GetPeriodEndProviderDataLockCounts(academicYear, collectionPeriod, It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }
