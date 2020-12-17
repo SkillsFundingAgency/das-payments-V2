@@ -136,18 +136,18 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
                 { "RequiredPaymentsDasEarningsPercentageComparison" ,  Math.Round(((double) (metrics.YearToDatePayments.Total + metrics.RequiredPayments.Total) / (double) metrics.DasEarnings.Total) * 100, 2) },
 
-                { "DataLockedCountDLock1",     metrics.DataLockMetricsTotals.DataLock1 },
-                { "DataLockedCountDLock2",     metrics.DataLockMetricsTotals.DataLock2 },
-                { "DataLockedCountDLock3",     metrics.DataLockMetricsTotals.DataLock3 },
-                { "DataLockedCountDLock4",     metrics.DataLockMetricsTotals.DataLock4 },
-                { "DataLockedCountDLock5",     metrics.DataLockMetricsTotals.DataLock5 },
-                { "DataLockedCountDLock6",     metrics.DataLockMetricsTotals.DataLock6 },
-                { "DataLockedCountDLock7",     metrics.DataLockMetricsTotals.DataLock7 },
-                { "DataLockedCountDLock8",     metrics.DataLockMetricsTotals.DataLock8 },
-                { "DataLockedCountDLock9",     metrics.DataLockMetricsTotals.DataLock9 },
-                { "DataLockedCountDLock10",     metrics.DataLockMetricsTotals.DataLock10 },
-                { "DataLockedCountDLock11",     metrics.DataLockMetricsTotals.DataLock11 },
-                { "DataLockedCountDLock12",     metrics.DataLockMetricsTotals.DataLock12 }
+                { "DataLockedCountDLock1",     metrics.DataLockMetricsTotals.Amounts.DataLock1 },
+                { "DataLockedCountDLock2",     metrics.DataLockMetricsTotals.Amounts.DataLock2 },
+                { "DataLockedCountDLock3",     metrics.DataLockMetricsTotals.Amounts.DataLock3 },
+                { "DataLockedCountDLock4",     metrics.DataLockMetricsTotals.Amounts.DataLock4 },
+                { "DataLockedCountDLock5",     metrics.DataLockMetricsTotals.Amounts.DataLock5 },
+                { "DataLockedCountDLock6",     metrics.DataLockMetricsTotals.Amounts.DataLock6 },
+                { "DataLockedCountDLock7",     metrics.DataLockMetricsTotals.Amounts.DataLock7 },
+                { "DataLockedCountDLock8",     metrics.DataLockMetricsTotals.Amounts.DataLock8 },
+                { "DataLockedCountDLock9",     metrics.DataLockMetricsTotals.Amounts.DataLock9 },
+                { "DataLockedCountDLock10",     metrics.DataLockMetricsTotals.Amounts.DataLock10 },
+                { "DataLockedCountDLock11",     metrics.DataLockMetricsTotals.Amounts.DataLock11 },
+                { "DataLockedCountDLock12",     metrics.DataLockMetricsTotals.Amounts.DataLock12 }
             };
 
             telemetry.TrackEvent("Finished Generating Submissions Summary Metrics", properties, stats);

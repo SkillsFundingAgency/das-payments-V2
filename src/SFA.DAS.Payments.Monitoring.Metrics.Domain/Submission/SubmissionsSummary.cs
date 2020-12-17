@@ -8,7 +8,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
     public interface ISubmissionsSummary
     {
         SubmissionsSummaryModel GetMetrics(long jobId, short academicYear, byte collectionPeriod, IList<SubmissionSummaryModel> submissions);
-        void CalculateIsWithinTolerance(decimal? lowerTolerance,  decimal? upperTolerance);
+        void CalculateIsWithinTolerance(decimal? lowerTolerance, decimal? upperTolerance);
     }
 
     public class SubmissionsSummary : ISubmissionsSummary
@@ -17,14 +17,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
 
         public SubmissionsSummaryModel GetMetrics(long jobId, short academicYear, byte collectionPeriod, IList<SubmissionSummaryModel> submissions)
         {
-            if(submissions == null || submissions.Count == 0) return null;
+            if (submissions == null || submissions.Count == 0) return null;
 
             var submissionMetricsContractType1 = submissions.Sum(s => s.SubmissionMetrics.ContractType1);
             var submissionMetricsContractType2 = submissions.Sum(s => s.SubmissionMetrics.ContractType2);
-            
+
             var dcEarningsContractType1 = submissions.Sum(s => s.DcEarnings.ContractType1);
             var dcEarningsContractType2 = submissions.Sum(s => s.DcEarnings.ContractType2);
-            
+
             var dasEarningsContractType1 = submissions.Sum(s => s.DasEarnings.ContractType1);
             var dasEarningsContractType2 = submissions.Sum(s => s.DasEarnings.ContractType2);
             var percentage = Helpers.GetPercentage(submissionMetricsContractType1 + submissionMetricsContractType2, dcEarningsContractType1 + dcEarningsContractType2);
@@ -80,25 +80,28 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
                 },
                 DataLockMetricsTotals = new DataLockCountsTotalsModel
                 {
-                    DataLock1 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock1)),
-                    DataLock2 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock2)),
-                    DataLock3 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock3)),
-                    DataLock4 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock4)),
-                    DataLock5 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock5)),
-                    DataLock6 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock6)),
-                    DataLock7 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock7)),
-                    DataLock8 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock8)),
-                    DataLock9 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock9)),
-                    DataLock10 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock10)),
-                    DataLock11 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock11)),
-                    DataLock12 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock12))
+                    Amounts = new DataLockTypeCounts
+                    {
+                        DataLock1 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock1)),
+                        DataLock2 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock2)),
+                        DataLock3 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock3)),
+                        DataLock4 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock4)),
+                        DataLock5 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock5)),
+                        DataLock6 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock6)),
+                        DataLock7 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock7)),
+                        DataLock8 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock8)),
+                        DataLock9 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock9)),
+                        DataLock10 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock10)),
+                        DataLock11 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock11)),
+                        DataLock12 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock12))
+                    }
                 }
             };
 
             return submissionsSummaryModel;
         }
 
-        public void CalculateIsWithinTolerance(decimal? lowerTolerance,  decimal? upperTolerance)
+        public void CalculateIsWithinTolerance(decimal? lowerTolerance, decimal? upperTolerance)
         {
             lowerTolerance = lowerTolerance ?? 99.92m;
             upperTolerance = upperTolerance ?? 100.08m;
