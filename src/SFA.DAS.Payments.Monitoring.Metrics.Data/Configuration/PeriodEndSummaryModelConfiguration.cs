@@ -15,6 +15,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration
             builder.Property(x => x.CollectionPeriod).HasColumnName(@"CollectionPeriod");
             builder.Property(x => x.JobId).HasColumnName(@"JobId");
             builder.Property(x => x.Percentage).HasColumnName(@"Percentage");
+            builder.Ignore(x => x.DataLockTypeCounts);
             builder.OwnsOne(x => x.PaymentMetrics, amounts =>
             {
                 amounts.Property(x => x.ContractType1).HasColumnName(@"ContractType1");

@@ -18,6 +18,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
         Task<List<ProviderTransactionTypeAmounts>> GetTransactionTypesByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderFundingSourceAmounts>> GetFundingSourceAmountsByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<PeriodEndProviderDataLockTypeCounts>> GetPeriodEndProviderDataLockTypeCounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderTotal>> GetAlreadyPaidDataLockedEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderContractTypeAmounts>> GetYearToDatePayments(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
@@ -117,6 +118,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
         public Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
             return QueryDataContext.GetDataLockedEarningsTotals(academicYear, collectionPeriod, cancellationToken);
+        }
+
+        public async Task<List<PeriodEndProviderDataLockTypeCounts>> GetPeriodEndProviderDataLockTypeCounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        {
+            return await QueryDataContext.GetPeriodEndProviderDataLockCounts(academicYear, collectionPeriod, cancellationToken);
+
         }
 
         public async Task<List<ProviderTotal>> GetAlreadyPaidDataLockedEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
