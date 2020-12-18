@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 {
                     SubmissionMetrics = new ContractTypeAmountsVerbose(),
                     DasEarnings = new ContractTypeAmountsVerbose(),
-                    DataLockMetrics = new List<DataLockCountsModel>(),
+                    DataLockMetrics = new DataLockCountsModel(),
                     DcEarnings = new ContractTypeAmounts(),
                     EarningsMetrics = new List<EarningsModel>(),
                     HeldBackCompletionPayments = new ContractTypeAmounts(),

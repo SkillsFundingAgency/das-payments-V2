@@ -23,11 +23,11 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Logging
                 .Enrich.WithMachineName()
                 .Enrich.WithProcessName()
                 .Enrich.WithThreadId()
-                .WithMinimumLogLevel(applicationLoggerSettings.ApplicationLoggerOutputSettingsCollection);
+                .WithMinimumLogLevel(applicationLoggerSettings.ApplicationLoggerOutputSettingsCollection)
+                .Filter.ByExcluding(evnt => evnt.Exception.Message.Contains("license"));
             
             config.WriteTo.ApplicationInsightsTraces(telemetryConfig.InstrumentationKey);
             return config;
         }
-
     }
 }

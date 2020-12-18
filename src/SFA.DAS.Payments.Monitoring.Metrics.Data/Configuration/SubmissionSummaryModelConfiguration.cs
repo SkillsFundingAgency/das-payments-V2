@@ -69,7 +69,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration
             });
 
             builder.HasMany(x => x.EarningsMetrics).WithOne(e => e.SubmissionSummary).HasForeignKey(e => e.SubmissionSummaryId);
-            builder.HasMany(x => x.DataLockMetrics).WithOne(d => d.SubmissionSummary).HasForeignKey(d => d.SubmissionSummaryId);
+            builder.HasOne(x => x.DataLockMetrics).WithOne(d => d.SubmissionSummary).HasForeignKey<DataLockCountsModel>(d => d.SubmissionSummaryId);
             builder.HasMany(x => x.RequiredPaymentsMetrics).WithOne(r => r.SubmissionSummary).HasForeignKey(r => r.SubmissionSummaryId);
         }
     }
