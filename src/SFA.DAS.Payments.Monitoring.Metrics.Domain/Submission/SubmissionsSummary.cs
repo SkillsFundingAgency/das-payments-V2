@@ -82,18 +82,18 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
                 {
                     Amounts = new DataLockTypeCounts
                     {
-                        DataLock1 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock1)),
-                        DataLock2 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock2)),
-                        DataLock3 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock3)),
-                        DataLock4 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock4)),
-                        DataLock5 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock5)),
-                        DataLock6 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock6)),
-                        DataLock7 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock7)),
-                        DataLock8 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock8)),
-                        DataLock9 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock9)),
-                        DataLock10 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock10)),
-                        DataLock11 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock11)),
-                        DataLock12 = submissions.Sum(s => s.DataLockMetrics.Sum(m => m.Amounts.DataLock12))
+                        DataLock1 = submissions.Sum(s => s.DataLockMetrics.Amounts.DataLock1),
+                        DataLock2 = submissions.Sum(s => s.DataLockMetrics.Amounts.DataLock2),
+                        DataLock3 = submissions.Sum(s => s.DataLockMetrics.Amounts.DataLock3),
+                        DataLock4 = submissions.Sum(s => s.DataLockMetrics.Amounts.DataLock4),
+                        DataLock5 = submissions.Sum(s => s.DataLockMetrics.Amounts.DataLock5),
+                        DataLock6 = submissions.Sum(s => s.DataLockMetrics.Amounts.DataLock6),
+                        DataLock7 = submissions.Sum(s => s.DataLockMetrics.Amounts.DataLock7),
+                        DataLock8 = submissions.Sum(s => s.DataLockMetrics.Amounts.DataLock8),
+                        DataLock9 = submissions.Sum(s => s.DataLockMetrics.Amounts.DataLock9),
+                        DataLock10 = submissions.Sum(s => s.DataLockMetrics.Amounts.DataLock10),
+                        DataLock11 = submissions.Sum(s => s.DataLockMetrics.Amounts.DataLock11),
+                        DataLock12 = submissions.Sum(s => s.DataLockMetrics.Amounts.DataLock12)
                     }
                 }
             };

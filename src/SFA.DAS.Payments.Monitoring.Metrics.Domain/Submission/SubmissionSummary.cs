@@ -92,7 +92,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
                 AlreadyPaidDataLockedEarnings = alreadyPaidDataLocked,
                 TotalDataLockedEarnings = actualTotalDataLocked,
                 AdjustedDataLockedEarnings = actualTotalDataLocked - alreadyPaidDataLocked,
-                DataLockMetrics = new List<DataLockCountsModel> {new DataLockCountsModel {Amounts = dataLocked}},
+                DataLockMetrics = new DataLockCountsModel { Amounts = dataLocked },
                 HeldBackCompletionPayments = heldBackCompletionPayments,
                 YearToDatePayments = yearToDatePayments,
                 RequiredPayments = GetRequiredPayments(),
@@ -118,7 +118,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
         private ContractTypeAmountsVerbose GetDcEarnings()
         {
             var contractTypes = dcEarnings.GroupBy(earning => earning.ContractType)
-                .Select(g => new {ContractType = g.Key, Amount = g.Sum(x => x.Total)})
+                .Select(g => new { ContractType = g.Key, Amount = g.Sum(x => x.Total) })
                 .ToList();
             var result = new ContractTypeAmountsVerbose
             {
@@ -132,7 +132,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.Submission
         private ContractTypeAmountsVerbose GetDasEarnings(decimal dcContractTpe1, decimal dcContractTpe2)
         {
             var contractTypes = dasEarnings.GroupBy(earning => earning.ContractType)
-                    .Select(g => new {ContractType = g.Key, Amount = g.Sum(x => x.Total)})
+                    .Select(g => new { ContractType = g.Key, Amount = g.Sum(x => x.Total) })
                     .ToList()
                 ;
             var result = new ContractTypeAmountsVerbose
