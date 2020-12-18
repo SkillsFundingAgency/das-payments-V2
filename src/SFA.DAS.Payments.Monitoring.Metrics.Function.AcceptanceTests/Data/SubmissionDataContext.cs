@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new SubmissionSummaryModelConfiguration());
-            modelBuilder.ApplyConfiguration(new DataLockedEarningsModelConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockCountsModelConfiguration());
             modelBuilder.ApplyConfiguration(new EarningsModelConfiguration());
             modelBuilder.ApplyConfiguration(new RequiredPaymentsModelConfiguration());
             modelBuilder.ApplyConfiguration(new ProviderPeriodEndSummaryModelConfiguration());

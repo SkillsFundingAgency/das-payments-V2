@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.HasDefaultSchema("Metrics");
             modelBuilder.ApplyConfiguration(new SubmissionSummaryModelConfiguration());
-            modelBuilder.ApplyConfiguration(new DataLockedEarningsModelConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockCountsModelConfiguration());
             modelBuilder.ApplyConfiguration(new EarningsModelConfiguration());
             modelBuilder.ApplyConfiguration(new RequiredPaymentsModelConfiguration());
             modelBuilder.ApplyConfiguration(new ProviderPeriodEndSummaryModelConfiguration());
