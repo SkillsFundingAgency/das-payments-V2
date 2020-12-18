@@ -36,9 +36,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 			public byte DataLockType { get; set; }
 		}
 
-        public class PeriodEndDataLockCount : DataLockCount
+        public class PeriodEndDataLockCount
         {
 			public long Ukprn { get; set; }
+			public int Count { get; set; }
+			public byte DataLockType { get; set; }
         }
 
         public virtual DbQuery<DataLockCount> DataLockCounts { get; set; }
