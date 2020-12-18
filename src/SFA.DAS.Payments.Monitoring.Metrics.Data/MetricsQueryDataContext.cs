@@ -240,7 +240,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                         ) a
                 group by
                     a.DataLockFailureId, a.ukprn
-                order by a.ukprn
                 ";
 
             var providerDataLockCounts = await PeriodEndDataLockCounts
