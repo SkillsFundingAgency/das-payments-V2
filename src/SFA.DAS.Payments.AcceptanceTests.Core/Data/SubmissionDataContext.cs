@@ -32,6 +32,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             modelBuilder.ApplyConfiguration(new PeriodEndSummaryModelConfiguration());
             modelBuilder.ApplyConfiguration(new ProviderPaymentTransactionModelConfiguration());
             modelBuilder.ApplyConfiguration(new ProviderPaymentFundingSourceModelConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockCountsTotalsModelConfiguration());
             modelBuilder.ApplyConfiguration(new SubmissionsSummaryModelConfiguration());
             modelBuilder.ApplyConfiguration(new CollectionPeriodToleranceModelConfiguration());
             modelBuilder.ApplyConfiguration(new JobModelConfiguration());
