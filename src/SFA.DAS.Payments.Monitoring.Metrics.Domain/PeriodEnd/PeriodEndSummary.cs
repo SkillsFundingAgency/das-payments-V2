@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         {
             CalculateTotals();
 
-            var result =  new PeriodEndSummaryModel()
+            var result =  new PeriodEndSummaryModel
             {
                 CollectionPeriod = collectionPeriod,
                 AcademicYear = academicYear,
@@ -48,7 +48,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 YearToDatePayments = yearToDatePayments,
                 AlreadyPaidDataLockedEarnings = dataLockedAlreadyPaidTotal,
                 AdjustedDataLockedEarnings = dataLockedEarnings - dataLockedAlreadyPaidTotal,
-                TotalDataLockedEarnings = dataLockedEarnings
+                TotalDataLockedEarnings = dataLockedEarnings,
+                DataLockTypeCounts = dataLockTypeCounts,
             };
             result.PaymentMetrics = Helpers.CreatePaymentMetrics(result);
             result.Percentage = result.PaymentMetrics.Percentage;
