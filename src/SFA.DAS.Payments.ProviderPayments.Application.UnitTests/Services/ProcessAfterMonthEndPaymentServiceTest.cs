@@ -86,7 +86,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
 
             monthEndService = new Mock<IProviderPeriodEndService>();
             monthEndService
-                .Setup(o => o.MonthEndStarted(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>()))
+                .Setup(o => o.IsMonthEndStarted(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>()))
                 .ReturnsAsync(true);
 
             monthEndService
@@ -110,7 +110,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         public async Task GetPaymentEventShouldNotReturnPaymentIfIsNotMonthEnd()
         {
             monthEndService
-                .Setup(o => o.MonthEndStarted(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>()))
+                .Setup(o => o.IsMonthEndStarted(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>()))
                 .ReturnsAsync(false);
 
             var handleAfterMonthEndServiceTest = new ProcessAfterMonthEndPaymentService(paymentLogger, mapper.Object, monthEndService.Object);

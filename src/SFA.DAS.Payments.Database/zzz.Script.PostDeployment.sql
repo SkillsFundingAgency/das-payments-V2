@@ -69,6 +69,10 @@ IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 6)
 	INSERT INTO [Payments2].[JobType] values (6,'Period end stop job')
 GO 
 
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 7)
+	INSERT INTO [Payments2].[JobType] values (7,'Period end submission window validation job')
+GO 
+
 MERGE INTO [Payments2].[ApprenticeshipStatus]	 AS Target
 USING (VALUES
 (1	, N'Active'),
@@ -155,7 +159,7 @@ RAISERROR('Completed',10,1) WITH NOWAIT;
 GO
 
 /* ---- Well-known UKPRNs for DC integration testing ---- */
-with KnownUkprns as (
+;with KnownUkprns as (
 	select '10000833' as Ukprn union
 	select '10001144' union
 	select '10001326' union

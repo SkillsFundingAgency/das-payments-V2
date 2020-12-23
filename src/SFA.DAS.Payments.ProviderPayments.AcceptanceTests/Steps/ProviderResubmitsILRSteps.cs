@@ -1,13 +1,13 @@
-﻿using NServiceBus;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using NServiceBus;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Factories;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -34,11 +34,11 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             var paymentDataContext = Container.Resolve<IPaymentsDataContext>();
             foreach (var payment in payments)
             {
-                paymentDataContext.Payment.Add(payment);
+                await paymentDataContext.Payment.AddAsync(payment);
             }
             try
             {
-                paymentDataContext.SaveChanges();
+                await paymentDataContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -46,16 +46,17 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 Console.WriteLine(ex);
             }
             Console.WriteLine("Stored previous submission payments to the db.");
-            var receivedProviderEarningsEvent = new ReceivedProviderEarningsEvent
+            var submissionJobSucceeded = new SubmissionJobSucceeded
             {
                 Ukprn = TestSession.Ukprn,
                 JobId = PreviousJobId,
                 EventTime = DateTimeOffset.UtcNow,
                 IlrSubmissionDateTime = submissionTime,
-                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(AcademicYear, CollectionPeriod),
+                CollectionPeriod = CollectionPeriod,
+                AcademicYear = AcademicYear,
             };
-            Console.WriteLine($"Sending the ilr submission event: {receivedProviderEarningsEvent.ToJson()}");
-            await MessageSession.Request<int>(receivedProviderEarningsEvent).ConfigureAwait(false);
+            Console.WriteLine($"Sending the ilr submission event: {submissionJobSucceeded.ToJson()}");
+            await MessageSession.Send(submissionJobSucceeded).ConfigureAwait(false);
         }
 
         private PaymentModel CreatePayment(FundingSourcePayment fundingSourcePayment, long jobId, DateTime? ilrSubmissionDate = null)
@@ -64,10 +65,10 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             {
                 FundingSource = fundingSourcePayment.FundingSourceType,
                 IlrSubmissionDateTime = ilrSubmissionDate ?? DateTime.UtcNow,
-                ContractType = (ContractType)ContractType,
+                ContractType = ContractType,
                 LearnerReferenceNumber = TestSession.Learner.LearnRefNumber,
                 Ukprn = TestSession.Ukprn,
-                TransactionType = (TransactionType)fundingSourcePayment.Type,
+                TransactionType = fundingSourcePayment.Type,
                 Amount = fundingSourcePayment.Amount,
                 JobId = jobId,
                 SfaContributionPercentage = SfaContributionPercentage,
@@ -81,7 +82,22 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 LearningAimStandardCode = TestSession.Learner.Course.StandardCode,
                 EventId = Guid.NewGuid(),
                 LearnerUln = TestSession.Learner.Uln,
-                PriceEpisodeIdentifier = "P1"
+                PriceEpisodeIdentifier = "P1",
+
+                AccountId = 100001,
+                TransferSenderAccountId = 100000,
+                StartDate = DateTime.UtcNow,
+                PlannedEndDate = DateTime.UtcNow,
+                ActualEndDate = DateTime.UtcNow,
+                CompletionStatus = 1,
+                CompletionAmount = 100M,
+                InstalmentAmount = 200M,
+                NumberOfInstalments = 12,
+                ReportingAimFundingLineType = "Funding line type",
+                ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
+                ApprenticeshipId = 100,
+                ApprenticeshipPriceEpisodeId = 1,
+                LearningStartDate = DateTime.UtcNow.AddMonths(-1)
             };
         }
 
@@ -90,13 +106,14 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
         {
             var submissionTime = DateTime.UtcNow;
             var jobId = TestSession.JobId;
-            var ilrSubmissionEvent = new ReceivedProviderEarningsEvent
+            var ilrSubmissionEvent = new SubmissionJobSucceeded
             {
                 Ukprn = TestSession.Ukprn,
                 JobId = jobId,
                 EventTime = DateTimeOffset.UtcNow,
                 IlrSubmissionDateTime = submissionTime,
-                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(AcademicYear, CollectionPeriod),
+                CollectionPeriod = CollectionPeriod,
+                AcademicYear = AcademicYear,
             };
             Console.WriteLine($"Sending the ilr submission event: {ilrSubmissionEvent.ToJson()}");
             await MessageSession.Send(ilrSubmissionEvent).ConfigureAwait(false);
@@ -125,13 +142,14 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                 await MessageSession.Send(fundingSourcePaymentEvent).ConfigureAwait(false);
             }
             Console.WriteLine("sent submission payments.");
-            var ilrSubmissionEvent = new ReceivedProviderEarningsEvent
+            var ilrSubmissionEvent = new SubmissionJobSucceeded
             {
                 Ukprn = TestSession.Ukprn,
                 JobId = jobId,
                 EventTime = DateTimeOffset.UtcNow,
                 IlrSubmissionDateTime = submissionTime,
-                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(AcademicYear, CollectionPeriod),
+                CollectionPeriod = CollectionPeriod,
+                AcademicYear = AcademicYear,
             };
             Console.WriteLine($"Sending the ilr submission event: {ilrSubmissionEvent.ToJson()}");
             await MessageSession.Send(ilrSubmissionEvent).ConfigureAwait(false);

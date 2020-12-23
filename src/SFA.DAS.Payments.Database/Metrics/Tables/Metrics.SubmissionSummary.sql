@@ -21,8 +21,7 @@
 	,EarningsPercentageContractType2 decimal(15,5) not null
 	,RequiredPaymentsContractType1 decimal(15,5) not  null
 	,RequiredPaymentsContractType2 decimal(15,5) not  null
-	,RequiredPaymentsNonLevy decimal(15,5) not null
-	,DataLockedEarnings decimal(15,5) not null
+	,AdjustedDataLockedEarnings decimal(15,5) not null
 	,AlreadyPaidDataLockedEarnings decimal(15,5) not null Constraint DF_SubmissionSummary__AlreadyPaidDataLockedEarnings default(0)
 	,TotalDataLockedEarnings decimal(15,5) not null Constraint DF_SubmissionSummary__TotalDataLockedEarnings default(0)
 	,HeldBackCompletionPaymentsContractType1 decimal(15,5) not null

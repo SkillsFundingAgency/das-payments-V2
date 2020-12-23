@@ -238,6 +238,109 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         }
 
         [Test]
+        public void GivenThereIsCompletionStoppedDLock10NoOtherDLockShouldBeGeneratedForLatestApprenticeship()
+        {
+            var earningEvent = CreateEarningEventTestData();
+
+            earningEvent.OnProgrammeEarnings[0].Type = OnProgrammeEarningType.Completion;
+
+            var allApprenticeships = CreateApprenticeships();
+            
+            allApprenticeships.ForEach(x =>
+            {
+                x.StandardCode = earningEvent.LearningAim.StandardCode;
+                x.ProgrammeType = earningEvent.LearningAim.ProgrammeType;
+                x.FrameworkCode = earningEvent.LearningAim.FrameworkCode;
+                x.PathwayCode = earningEvent.LearningAim.PathwayCode;
+            });
+
+            allApprenticeships[0].Status = ApprenticeshipStatus.Stopped;
+            allApprenticeships[0].StopDate = earningEvent.PriceEpisodes[0].ActualEndDate.GetValueOrDefault().AddDays(-5);
+
+            allApprenticeships[0].EstimatedStartDate = earningEvent.PriceEpisodes[0].EffectiveTotalNegotiatedPriceStartDate;
+            allApprenticeships[0].ApprenticeshipPriceEpisodes.ForEach(o => o.StartDate = allApprenticeships[0].EstimatedStartDate);
+            
+            allApprenticeships[1].EstimatedStartDate = earningEvent.PriceEpisodes[0].EffectiveTotalNegotiatedPriceStartDate.AddYears(1);
+            allApprenticeships[1].ApprenticeshipPriceEpisodes.ForEach(o => o.StartDate = allApprenticeships[1].EstimatedStartDate);
+            allApprenticeships[1].Status = ApprenticeshipStatus.Active;
+
+            var earningPeriods = new List<EarningPeriod>
+            {
+                earningEvent.OnProgrammeEarnings[0].Periods[0]
+            };
+
+            var earningProcessor = mocker.Create<OnProgrammeAndIncentiveEarningPeriodsValidationProcessor>();
+            var periods = earningProcessor.ValidatePeriods(
+                earningEvent.Ukprn,
+                earningEvent.Learner.Uln,
+                earningEvent.PriceEpisodes,
+                earningPeriods,
+                (TransactionType)earningEvent.OnProgrammeEarnings[0].Type,
+                allApprenticeships,
+                earningEvent.LearningAim,
+                earningEvent.CollectionPeriod.AcademicYear);
+
+            periods.ValidPeriods.Should().BeEmpty();
+            periods.InValidPeriods.All(p => p.DataLockFailures.Any(x =>
+                x.ApprenticeshipId == allApprenticeships[0].Id &&
+                x.DataLockError == DataLockErrorCode.DLOCK_10 &&
+                x.ApprenticeshipPriceEpisodeIds.All(o => allApprenticeships[0].ApprenticeshipPriceEpisodes.Select(a => a.Id).Contains(o)))
+            ).Should().BeTrue();
+        }
+
+        [Test]
+        public void GivenThereIsOnProgrammeAndIncentiveStoppedDLock10NoOtherDLockShouldBeGeneratedForLatestApprenticeship()
+        {
+            var allApprenticeships = CreateApprenticeships();
+            var earningEvent = CreateEarningEventTestData();
+
+            earningEvent.CollectionYear = 1920;
+            earningEvent.OnProgrammeEarnings[0].Periods[0].Period = 1;
+            earningEvent.OnProgrammeEarnings[0].Type = OnProgrammeEarningType.Learning;
+            earningEvent.LearningAim.StandardCode = 100;
+
+            allApprenticeships.ForEach(x =>
+            {
+                x.ApprenticeshipPriceEpisodes.ForEach(o => o.StartDate = x.EstimatedStartDate);
+                x.StandardCode = 0;
+                x.ProgrammeType = 0;
+            });
+
+            allApprenticeships[0].EstimatedStartDate = earningEvent.PriceEpisodes[0].EffectiveTotalNegotiatedPriceStartDate;
+            allApprenticeships[0].ApprenticeshipPriceEpisodes.ForEach(o => o.StartDate = allApprenticeships[0].EstimatedStartDate);
+            allApprenticeships[0].StopDate = new DateTime(2019, 07, 20);
+            allApprenticeships[0].Status = ApprenticeshipStatus.Stopped;
+            
+            allApprenticeships[1].EstimatedStartDate = earningEvent.PriceEpisodes[0].EffectiveTotalNegotiatedPriceStartDate.AddYears(1);
+            allApprenticeships[1].ApprenticeshipPriceEpisodes.ForEach(o => o.StartDate = allApprenticeships[1].EstimatedStartDate);
+            allApprenticeships[1].Status = ApprenticeshipStatus.Active;
+
+            var earningPeriods = new List<EarningPeriod>
+            {
+                earningEvent.OnProgrammeEarnings[0].Periods[0]
+            };
+
+            var earningProcessor = mocker.Create<OnProgrammeAndIncentiveEarningPeriodsValidationProcessor>();
+            var periods = earningProcessor.ValidatePeriods(
+                earningEvent.Ukprn,
+                earningEvent.Learner.Uln,
+                earningEvent.PriceEpisodes,
+                earningPeriods,
+                (TransactionType)earningEvent.OnProgrammeEarnings[0].Type,
+                allApprenticeships,
+                earningEvent.LearningAim,
+                earningEvent.CollectionPeriod.AcademicYear);
+
+            periods.ValidPeriods.Should().BeEmpty();
+            periods.InValidPeriods.All(p => p.DataLockFailures.Any(x =>
+                x.ApprenticeshipId == allApprenticeships[0].Id &&
+                x.DataLockError == DataLockErrorCode.DLOCK_10 &&
+                x.ApprenticeshipPriceEpisodeIds.All(o => allApprenticeships[0].ApprenticeshipPriceEpisodes.Select(a => a.Id).Contains(o)))
+            ).Should().BeTrue();
+
+        }
+
+        [Test]
         public void ZeroAmountPeriodsAreAddedToValidPeriod()
         {
             var allApprenticeships = CreateApprenticeships();

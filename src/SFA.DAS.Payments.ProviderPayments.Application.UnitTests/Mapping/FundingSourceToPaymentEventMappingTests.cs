@@ -69,6 +69,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.IlrSubmissionDateTime.Should().Be(employerCoInvested.IlrSubmissionDateTime);
             payment.AccountId.Should().Be(employerCoInvested.AccountId);
             payment.ApprenticeshipEmployerType.Should().Be(employerCoInvested.ApprenticeshipEmployerType);
+            payment.RequiredPaymentEventId.Should().Be(employerCoInvested.RequiredPaymentEventId);
         }
 
         [Test]
@@ -121,6 +122,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.IlrSubmissionDateTime.Should().Be(levy.IlrSubmissionDateTime);
             payment.AccountId.Should().Be(levy.AccountId);
             payment.ApprenticeshipEmployerType.Should().Be(levy.ApprenticeshipEmployerType);
+            payment.RequiredPaymentEventId.Should().Be(levy.RequiredPaymentEventId);
         }
 
         [Test]
@@ -173,6 +175,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.IlrSubmissionDateTime.Should().Be(transfer.IlrSubmissionDateTime);
             payment.AccountId.Should().Be(transfer.AccountId);
             payment.ApprenticeshipEmployerType.Should().Be(transfer.ApprenticeshipEmployerType);
+            payment.RequiredPaymentEventId.Should().Be(transfer.RequiredPaymentEventId);
 
         }
 
@@ -220,6 +223,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.JobId.Should().Be(employerCoInvested.JobId);
             payment.IlrSubmissionDateTime.Should().Be(employerCoInvested.IlrSubmissionDateTime);
             payment.ApprenticeshipEmployerType.Should().Be(employerCoInvested.ApprenticeshipEmployerType);
+
         }
 
         [TestCase(typeof(EmployerCoInvestedFundingSourcePaymentEvent),typeof(EmployerCoInvestedProviderPaymentEvent))]
@@ -301,6 +305,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             providerPayment.ApprenticeshipId.Should().Be(fundingSourceEvent.ApprenticeshipId);
             providerPayment.ApprenticeshipPriceEpisodeId.Should().Be(fundingSourceEvent.ApprenticeshipPriceEpisodeId);
             providerPayment.ApprenticeshipEmployerType.Should().Be(fundingSourceEvent.ApprenticeshipEmployerType);
+            providerPayment.RequiredPaymentEventId.Should().Be(fundingSourceEvent.RequiredPaymentEventId);
         }
 
         [TestCase(typeof(EmployerCoInvestedProviderPaymentEvent))]

@@ -1,13 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.EarningEvents.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
+    <Parameter Name="EarningEventsService2021_InstanceCount" DefaultValue="-1" />
     <Parameter Name="ProcessLearnerProxyService_InstanceCount" DefaultValue="-1" />
-    <Parameter Name="ProcessLearnerActorService_PartitionCount" DefaultValue="10" />
-    <Parameter Name="ProcessLearnerActorService_MinReplicaSetSize" DefaultValue="3" />
-    <Parameter Name="ProcessLearnerActorService_TargetReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="ProcessLearnerServiceActorService_PartitionCount" DefaultValue="10" />
+    <Parameter Name="ProcessLearnerServiceActorService_MinReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="ProcessLearnerServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
     <Parameter Name="EarningEventsService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="EarningEventsService_EndpointName" DefaultValue="sfa-das-payments-earningevents" />
+    <Parameter Name="EarningEventsService2021_EndpointName" DefaultValue="sfa-das-payments-earningevents2021" />
     <Parameter Name="EarningEventsService_FailedMessagesQueue" DefaultValue="sfa-das-payments-earningevents-errors" />
+    <Parameter Name="EarningEventsService2021_FailedMessagesQueue" DefaultValue="sfa-das-payments-earningevents2021-errors" />
     <Parameter Name="ProcessLearnerService_EndpointName" DefaultValue="sfa-das-payments-earningevents-processlearner" />
     <Parameter Name="ProcessLearnerService_FailedMessagesQueue" DefaultValue="sfa-das-payments-earningevents-processlearner-errors" />
     <Parameter Name="SubscriptionName" DefaultValue="dc_jobs" />
@@ -22,6 +25,7 @@
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsMonitoringConnectionString" DefaultValue="" />
     <Parameter Name="TopicName" DefaultValue="dc" />
+    <Parameter Name="TopicName2021" DefaultValue="dc2021" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
@@ -35,13 +39,50 @@
     <Parameter Name="ImmediateMessageRetries" DefaultValue="1" />
     <Parameter Name="DelayedMessageRetries" DefaultValue="3" />
     <Parameter Name="DelayedMessageRetryDelay" DefaultValue="00:00:10" />
-    <Parameter Name="ProcessLearnerServiceActorService_PartitionCount" DefaultValue="10" />
-    <Parameter Name="ProcessLearnerServiceActorService_MinReplicaSetSize" DefaultValue="3" />
-    <Parameter Name="ProcessLearnerServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
        ServiceManifest.xml file. -->
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.EarningEvents.EarningEventsService2021Pkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides>
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="ConnectionStringsSection">
+            <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
+            <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
+            <Parameter Name="DCServiceBusConnectionString" Value="[DCServiceBusConnectionString]" />
+            <Parameter Name="DcStorageConnectionString" Value="[DcStorageConnectionString]" />
+            <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="PaymentsMonitoringConnectionString" Value="[PaymentsMonitoringConnectionString]" />
+          </Section>
+          <Section Name="Settings">
+            <Parameter Name="EndpointName" Value="[EarningEventsService2021_EndpointName]" />
+            <Parameter Name="ProcessLearnerEndpoint" Value="[ProcessLearnerService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[EarningEventsService2021_FailedMessagesQueue]" />
+            <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
+            <Parameter Name="SubscriptionName" Value="[SubscriptionName]" />
+            <Parameter Name="JobStatusQueueName" Value="[JobStatusQueueName]" />
+            <Parameter Name="TopicName" Value="[TopicName2021]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
+            <Parameter Name="TimeToPauseBetweenChecks" Value="[TimeToPauseBetweenChecks]" />
+            <Parameter Name="TimeToWaitForJobToComplete" Value="[TimeToWaitForJobToComplete]" />
+            <Parameter Name="MaximumCallbackTimeSpan" Value="[MaximumCallbackTimeSpan]" />
+            <Parameter Name="DoNotGenerateACT1TransactionType4To16Payments" Value="[DoNotGenerateACT1TransactionType4To16Payments]" />
+            <Parameter Name="DoNotGenerateACT2Payments" Value="[DoNotGenerateACT2Payments]" />
+            <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
+            <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
+            <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
+            <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+    </ConfigOverrides>
+  </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.EarningEvents.ProcessLearnerProxyServicePkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides>
@@ -167,9 +208,16 @@
          ServiceFabric PowerShell module.
          
          The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
+    <Service Name="SFA.DAS.Payments.EarningEvents.EarningEventsService2021" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.EarningEvents.EarningEventsService2021Type" InstanceCount="[EarningEventsService2021_InstanceCount]">
+        <SingletonPartition />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
+      </StatelessService>
+    </Service>
     <Service Name="SFA.DAS.Payments.EarningEvents.ProcessLearnerProxyService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.EarningEvents.ProcessLearnerProxyServiceType" InstanceCount="[ProcessLearnerProxyService_InstanceCount]">
         <SingletonPartition />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
     </Service>
     <Service Name="SFA.DAS.Payments.EarningEvents.EarningEventsService" ServicePackageActivationMode="ExclusiveProcess">
@@ -179,8 +227,9 @@
       </StatelessService>
     </Service>
     <Service Name="ProcessLearnerServiceActorService" GeneratedIdRef="061345c6-786a-43c4-8acf-0f1a07d0ffb0|Persisted">
-      <StatefulService ServiceTypeName="ProcessLearnerServiceActorServiceType" TargetReplicaSetSize="[ProcessLearnerActorService_TargetReplicaSetSize]" MinReplicaSetSize="[ProcessLearnerActorService_MinReplicaSetSize]">
-        <UniformInt64Partition PartitionCount="[ProcessLearnerActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+      <StatefulService ServiceTypeName="ProcessLearnerServiceActorServiceType" TargetReplicaSetSize="[ProcessLearnerServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[ProcessLearnerServiceActorService_MinReplicaSetSize]">
+        <UniformInt64Partition PartitionCount="[ProcessLearnerServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+        <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
     </Service>
   </DefaultServices>

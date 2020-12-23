@@ -55,18 +55,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             return payments;
         }
 
-        public async Task<List<long>> GetMonthEndProviders(CollectionPeriod collectionPeriod,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return await dataContext
-                   .Payment.Where(p =>
-                        p.CollectionPeriod.Period == collectionPeriod.Period &&
-                        p.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear)
-                   .Select(o => o.Ukprn)
-                   .Distinct()
-                   .ToListAsync(cancellationToken);
-        }
-
         public async Task DeleteOldMonthEndPayment(CollectionPeriod collectionPeriod,
             long ukprn,
             DateTime currentIlrSubmissionDateTime,
@@ -103,15 +91,27 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
             await dataContext.SaveChanges(cancellationToken);
         }
 
-        public async Task<List<PaymentModel>> GetMonthEndAct1CompletionPayments(CollectionPeriod collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<PaymentModel>> GetMonthEndAct1CompletionPaymentsForProvider(long ukprn, CollectionPeriod collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await dataContext
-                         .Payment.Where(p =>
-                                            p.CollectionPeriod.Period == collectionPeriod.Period 
-                                         && p.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear 
-                                         && p.TransactionType == TransactionType.Completion 
-                                         && p.ContractType == ContractType.Act1)
-                         .ToListAsync(cancellationToken);
+            return await dataContext.Payment
+                .Where(p => p.Ukprn == ukprn &&
+                            p.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
+                            p.CollectionPeriod.Period == collectionPeriod.Period &&
+                            p.ContractType == ContractType.Act1 &&
+                            p.TransactionType == TransactionType.Completion)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<long>> GetProvidersWithAct1CompletionPayments(CollectionPeriod collectionPeriod, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await dataContext.Payment
+                .Where(p => p.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear &&
+                            p.CollectionPeriod.Period == collectionPeriod.Period &&
+                            p.ContractType == ContractType.Act1 &&
+                            p.TransactionType == TransactionType.Completion)
+                .Select(p => p.Ukprn)
+                .Distinct()
+                .ToListAsync(cancellationToken);
         }
     }
 }

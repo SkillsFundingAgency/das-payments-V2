@@ -7,6 +7,7 @@
         ComponentAcceptanceTestEarningsJob,
         ComponentAcceptanceTestMonthEndJob,
         PeriodEndRunJob,
-        PeriodEndStopJob
+        PeriodEndStopJob,
+        PeriodEndSubmissionWindowValidationJob
     }
 }

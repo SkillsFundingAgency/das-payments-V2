@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core.Configuration;
+using SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData;
 
 namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
 {
@@ -18,6 +19,10 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
                     return new PaymentsDataContext(dbContextOptions);
                 })
                 .As<IPaymentsDataContext>()
+                .InstancePerDependency();
+
+            builder.RegisterType<PaymentsDataContextFactory>()
+                .As<IPaymentsDataContextFactory>()
                 .InstancePerLifetimeScope();
         }
     }

@@ -19,6 +19,10 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
                 })
                 .As<ICommitmentsDataContext>()
                 .InstancePerLifetimeScope();
+
+            builder.RegisterType<CommitmentsDataContextFactory>()
+                .As<ICommitmentsDataContextFactory>()
+                .InstancePerLifetimeScope();
         }
     }
 }

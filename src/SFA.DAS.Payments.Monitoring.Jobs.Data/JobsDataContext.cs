@@ -12,6 +12,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
     public interface IJobsDataContext
     {
         Task SaveNewJob(JobModel jobDetails, CancellationToken cancellationToken = default(CancellationToken));
+        Task<long?> GetNonFailedDcJobId(JobType jobType, short academicYear, byte collectionPeriod);
         Task<long> GetJobIdFromDcJobId(long dcJobId);
         Task<JobModel> GetJobByDcJobId(long dcJobId);
         Task SaveJobSteps(List<JobStepModel> jobSteps);
@@ -23,6 +24,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task<List<JobModel>> GetInProgressJobs();
         Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken);
         Task SaveDcSubmissionStatus(long jobId, bool succeeded, CancellationToken cancellationToken);
+        Task<List<OutstandingJobResult>>GetOutstandingOrTimedOutJobs(long? dcJobId,DateTimeOffset startTime, CancellationToken cancellationToken);
+        
     }
 
     public class JobsDataContext : DbContext, IJobsDataContext
@@ -53,6 +56,18 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         {
             Jobs.Add(jobDetails);
             await SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task<long?> GetNonFailedDcJobId(JobType jobType, short academicYear, byte collectionPeriod)
+        {
+            return await Jobs
+                .Where(x => x.JobType == jobType &&
+                            x.AcademicYear == academicYear &&
+                            x.CollectionPeriod == collectionPeriod &&
+                            (x.Status == JobStatus.Completed ||
+                            x.Status == JobStatus.InProgress))
+                .Select(job => job.DcJobId)
+                .FirstOrDefaultAsync();
         }
 
         public async Task UpdateJob(JobModel job, CancellationToken cancellationToken = default(CancellationToken))
@@ -147,6 +162,19 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             job.EndTime = endTime;
             job.Status = status;
             await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<List<OutstandingJobResult>>GetOutstandingOrTimedOutJobs(long? dcJobId,
+                DateTimeOffset startTime, CancellationToken cancellationToken)
+        {
+            var latestValidStartTime = startTime.AddHours(-2).AddMinutes(-30);
+
+            return await Jobs.Where(x =>
+                x.DcJobId != dcJobId &&
+                 x.JobType == JobType.EarningsJob &&
+                 x.StartTime > latestValidStartTime).
+                Select(x => new OutstandingJobResult(){ DcJobId = x.DcJobId, DcJobSucceeded = x.DcJobSucceeded, JobStatus = x.Status, EndTime = x.EndTime}).
+                ToListAsync(cancellationToken);
         }
     }
 }

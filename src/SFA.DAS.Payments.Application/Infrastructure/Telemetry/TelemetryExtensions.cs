@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using SFA.DAS.Payments.Messages.Core.Commands;
 using SFA.DAS.Payments.Messages.Core.Events;
 
@@ -31,7 +29,6 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Telemetry
                 {TelemetryKeys.CollectionPeriod, paymentEvent.CollectionPeriod.Period.ToString()},
                 {TelemetryKeys.AcademicYear, paymentEvent.CollectionPeriod.AcademicYear.ToString()},
                 {"JobId", paymentEvent.JobId.ToString()},
-                {TelemetryKeys.Ukprn, paymentEvent.Ukprn.ToString()},
             };
 
             TrackDuration(telemetry, eventName, duration, props, employerAccountId, null);

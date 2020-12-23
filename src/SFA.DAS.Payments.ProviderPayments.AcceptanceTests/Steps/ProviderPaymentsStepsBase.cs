@@ -11,7 +11,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Model.Core.Factories;
-using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps

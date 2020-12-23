@@ -1,5 +1,4 @@
-﻿@ignore
-# similar to PV2-526 - need to specify provider previously submitted learner details and price details
+﻿# similar to PV2-526 - need to specify provider previously submitted learner details and price details
 #@supports_dc_e2e
 Feature: Change standard and price but not from start - PV2-205
 	As a provider,

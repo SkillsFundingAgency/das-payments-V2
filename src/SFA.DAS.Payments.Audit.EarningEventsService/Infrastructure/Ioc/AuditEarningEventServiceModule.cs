@@ -3,6 +3,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing.EarningEvent;
 using SFA.DAS.Payments.Audit.EarningEventsService.Handlers;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
@@ -32,23 +33,10 @@ namespace SFA.DAS.Payments.Audit.EarningEventsService.Infrastructure.Ioc
                 .As<IStatelessServiceBusBatchCommunicationListener>()
                 .SingleInstance();
 
-            builder.RegisterType<ApprenticeshipContractType1EarningEventHandler>()
-                .As<IHandleMessageBatches<ApprenticeshipContractType1EarningEvent>>()
-                .InstancePerLifetimeScope();
+            builder.RegisterType<EarningEventMessageModifier>()
+                .As<IApplicationMessageModifier>();
 
-            builder.RegisterType<ApprenticeshipContractType2EarningEventHandler>()
-                .As<IHandleMessageBatches<ApprenticeshipContractType2EarningEvent>>()
-                .InstancePerLifetimeScope();
-
-            builder.RegisterType<Act1FunctionalSkillEarningsEventHandler>()
-                .As<IHandleMessageBatches<Act1FunctionalSkillEarningsEvent>>()
-                .InstancePerLifetimeScope();
-
-            builder.RegisterType<Act2FunctionalSkillEarningsEventHandler>()
-                .As<IHandleMessageBatches<Act2FunctionalSkillEarningsEvent>>()
-                .InstancePerLifetimeScope();
-
-            builder.RegisterType<EarningEventModelHandler>()
+           builder.RegisterType<EarningEventModelHandler>()
                 .As<IHandleMessageBatches<EarningEventModel>>()
                 .InstancePerLifetimeScope();
         }

@@ -49,8 +49,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 var completedJobs = currentJobs.Where(item => item.Value).ToList();
                 foreach (var completedJob in completedJobs)
                 {
+                    logger.LogInfo($"Found completed job.  Will now stop monitoring job: {completedJob.Key}");
                     if (!currentJobs.TryRemove(completedJob.Key, out _))
-                        logger.LogWarning($"Couldn't remove completed job from jobs list.  JOb: {completedJob.Key}, status: {completedJob.Value}");
+                        logger.LogWarning($"Couldn't remove completed job from jobs list.  Job: {completedJob.Key}, status: {completedJob.Value}");
                 }
                 await Task.Delay(interval, cancellationToken).ConfigureAwait(false);
             }
@@ -88,6 +89,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                     {
                         var jobStatusService = GetJobStatusService(scope);
                         var finished = await jobStatusService.ManageStatus(jobId, cancellationToken).ConfigureAwait(false);
+                        logger.LogVerbose($"Job: {jobId},  finished: {finished}");
                         await scope.Commit();
                         currentJobs[jobId] = finished;
                     }

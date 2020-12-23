@@ -6,10 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure;
@@ -31,6 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         private readonly IApprenticeshipKeyProvider apprenticeshipKeyProvider;
         private readonly INegativeEarningService negativeEarningService;
         private readonly IPaymentLogger paymentLogger;
+        private readonly IDuplicateEarningEventService duplicateEarningEventService;
 
         protected EarningEventProcessorBase(
             IMapper mapper,
@@ -39,7 +40,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             IPaymentHistoryRepository paymentHistoryRepository,
             IApprenticeshipKeyProvider apprenticeshipKeyProvider,
             INegativeEarningService negativeEarningService,
-            IPaymentLogger paymentLogger)
+            IPaymentLogger paymentLogger, 
+            IDuplicateEarningEventService duplicateEarningEventService)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.requiredPaymentProcessor = requiredPaymentProcessor ?? throw new ArgumentNullException(nameof(requiredPaymentProcessor));
@@ -48,6 +50,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             this.apprenticeshipKeyProvider = apprenticeshipKeyProvider;
             this.negativeEarningService = negativeEarningService;
             this.paymentLogger = paymentLogger;
+            this.duplicateEarningEventService = duplicateEarningEventService ?? throw new ArgumentNullException(nameof(duplicateEarningEventService));
         }
 
         public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleEarningEvent(TEarningEvent earningEvent, IDataCache<PaymentHistoryEntity[]> paymentHistoryCache, CancellationToken cancellationToken)
@@ -58,11 +61,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             try
             {
                 var result = new List<PeriodisedRequiredPaymentEvent>();
-
+                if (await duplicateEarningEventService.IsDuplicate(earningEvent, cancellationToken)
+                    .ConfigureAwait(false))
+                {
+                    return result.AsReadOnly();
+                }
                 var cachedPayments = await paymentHistoryCache.TryGet(CacheKeys.PaymentHistoryKey, cancellationToken);
                 var academicYearPayments = cachedPayments.HasValue
                     ? cachedPayments.Value
-                        .Where(p => p.LearnAimReference == earningEvent.LearningAim.Reference)
+                        .Where(p => p.LearnAimReference.Equals(earningEvent.LearningAim.Reference,StringComparison.OrdinalIgnoreCase))
                         .Select(p => mapper.Map<PaymentHistoryEntity, Payment>(p))
                         .ToList()
                     : new List<Payment>();
@@ -184,10 +191,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         {
             if (holdBackCompletionPayment)
             {
-                return new CompletionPaymentHeldBackEvent
-                {
-                    TransactionType = (TransactionType)transactionType,
-                };
+                return new CompletionPaymentHeldBackEvent();
             }
 
             switch (earningType)
