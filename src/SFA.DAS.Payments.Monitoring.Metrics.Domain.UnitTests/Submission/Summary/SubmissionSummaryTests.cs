@@ -66,8 +66,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summar
             summary.AddDataLockTypeCounts(TestsHelper.DefaultDataLockedEarnings.Total, TestsHelper.DefaultDataLockedEarnings, TestsHelper.AlreadyPaidDataLockedEarnings);
             var metrics = summary.GetMetrics();
             metrics.AdjustedDataLockedEarnings.Should().Be(TestsHelper.DefaultDataLockedTotal - TestsHelper.AlreadyPaidDataLockedEarnings);
-            metrics.DataLockMetrics.Count.Should().Be(1);
-            metrics.DataLockMetrics.Sum(x => x.Amounts.Total).Should()
+            metrics.DataLockMetrics.Amounts.Total.Should()
                 .Be(TestsHelper.DefaultDataLockedEarnings.Total);
         }
         

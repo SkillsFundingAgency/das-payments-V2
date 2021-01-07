@@ -20,5 +20,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd
         public ContractTypeAmounts YearToDatePayments { get; set; } = new ContractTypeAmounts();
         public virtual List<ProviderPaymentFundingSourceModel> FundingSourceAmounts { get; set; } = new List<ProviderPaymentFundingSourceModel>();
         public virtual List<ProviderPaymentTransactionModel> TransactionTypeAmounts { get; set; } = new List<ProviderPaymentTransactionModel>();
+        public PeriodEndProviderDataLockTypeCounts DataLockTypeCounts { get; set; } = new PeriodEndProviderDataLockTypeCounts();
     }
 }
