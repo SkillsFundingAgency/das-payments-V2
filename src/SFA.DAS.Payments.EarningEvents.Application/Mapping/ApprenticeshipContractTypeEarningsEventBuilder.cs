@@ -32,7 +32,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             foreach (var intermediateLearningAim in intermediateResults)
             {
-                var episodesByContractType = intermediateLearningAim.PriceEpisodes.GroupBy(x =>x.PriceEpisodeValues.PriceEpisodeContractType );
+                //var episodesByContractType = intermediateLearningAim.PriceEpisodes.GroupBy(x => new {x.PriceEpisodeValues.PriceEpisodeContractType, x.PriceEpisodeValues.PriceEpisodeRedStatusCode});
+                var episodesByContractType = intermediateLearningAim.PriceEpisodes.GroupBy(x => x.PriceEpisodeValues.PriceEpisodeContractType);
                 var redundancyDates = intermediateLearningAim.PriceEpisodes
                     .Where(pe => pe.PriceEpisodeValues.PriceEpisodeRedStatusCode == 1 && pe.PriceEpisodeValues.PriceEpisodeRedStartDate.HasValue)
                     .OrderBy(pe => pe.PriceEpisodeValues.PriceEpisodeRedStartDate)
@@ -44,6 +45,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                     var learnerWithSortedPriceEpisodes =
                         intermediateLearningAim.CopyReplacingPriceEpisodes(priceEpisodes);
 
+                     //var earningEvent = factory.Create(priceEpisodes.Key.PriceEpisodeContractType);
                      var earningEvent = factory.Create(priceEpisodes.Key);
                     if (!earningEvent.IsPayable) continue;
 

@@ -32,11 +32,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Services
             redundancyEarningEvent.OnProgrammeEarnings.ForEach(ope =>
             {
               ope.Periods=  RemovePreRedundancyPeriods(ope.Periods, redundancyPeriod); 
+              //todo remove post redundancy period (i.e. any periods on or after the start date of the next price episode in the grouping (if applicable))
               SetPeriodsToFullContribution(ope.Periods);
             });
             redundancyEarningEvent.IncentiveEarnings.ForEach(ie =>
             {
                ie.Periods= RemovePreRedundancyPeriods(ie.Periods, redundancyPeriod);
+               //todo remove post redundancy period (i.e. any periods on or after the start date of the next price episode in the grouping (if applicable))
                 SetPeriodsToFullContribution(ie.Periods);
             });
 
