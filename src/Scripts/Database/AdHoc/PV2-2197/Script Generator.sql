@@ -77,9 +77,26 @@ FROM Records
 
 
 
-DECLARE @collectionPeriodName VARCHAR(8) = '2021-R04'
-DECLARE @collectionPeriodMonth NVARCHAR(2) = '11'
+DECLARE @collectionPeriodName VARCHAR(8) = '2021-R05'
+DECLARE @collectionPeriodMonth NVARCHAR(2) = '12'
 DECLARE @collectionPeriodYear NVARCHAR(4) = '2020'
+
+
+
+SELECT '
+
+BEGIN TRAN
+
+DECLARE @recordsInRequiredPaymentsBefore INT = (SELECT COUNT(*) FROM PaymentsDue.RequiredPayments)
+DECLARE @recordsInPaymentsBefore INT = (SELECT COUNT(*) FROM Payments.Payments)
+DECLARE @recordsInEarningsBefore INT = (SELECT COUNT(*) FROM PaymentsDue.Earnings)
+DECLARE @recordsInTransfersBefore INT = (SELECT COUNT(*) FROM TransferPayments.AccountTransfers)
+DECLARE @transfersBalanceBefore DECIMAL = (SELECT SUM(Amount) FROM TransferPayments.AccountTransfers)
+DECLARE @paymentsBalanceBefore DECIMAL = (SELECT SUM(Amount) FROM Payments.Payments)
+
+'
+
+
 
 
 SELECT 'BEGIN TRY ' +
@@ -169,6 +186,41 @@ SELECT 'INSERT INTO TransferPayments.AccountTransfers (SendingAccountId, Receivi
 
 FROM #Records
 
+
+SELECT '
+
+DECLARE @recordsInRequiredPaymentsAfter INT = (SELECT COUNT(*) FROM PaymentsDue.RequiredPayments)
+DECLARE @recordsInPaymentsAfter INT = (SELECT COUNT(*) FROM Payments.Payments)
+DECLARE @recordsInEarningsAfter INT = (SELECT COUNT(*) FROM PaymentsDue.Earnings)
+DECLARE @recordsInTransfersAfter INT = (SELECT COUNT(*) FROM TransferPayments.AccountTransfers)
+DECLARE @transfersBalanceAfter DECIMAL = (SELECT SUM(Amount) FROM TransferPayments.AccountTransfers)
+DECLARE @paymentsBalanceAfter DECIMAL = (SELECT SUM(Amount) FROM Payments.Payments)
+
+
+----
+SELECT ''before'', @recordsInRequiredPaymentsBefore [required payments], @recordsInPaymentsBefore [payments], @recordsInEarningsBefore [earnings], @recordsInTransfersBefore [transfers]
+SELECT FORMAT(@transfersBalanceBefore, ''C'', ''en-gb'') [transfer balance before], FORMAT(@paymentsBalanceBefore, ''C'', ''en-gb'') [payment balance before]
+----
+
+----
+SELECT ''after'', (@recordsInRequiredPaymentsAfter) [required payments], (@recordsInPaymentsAfter) [payments], (@recordsInEarningsAfter) [earnings], (@recordsInTransfersAfter) [transfers]
+SELECT FORMAT(@transfersBalanceAfter, ''C'', ''en-gb'') [transfer balance after], FORMAT(@paymentsBalanceAfter, ''C'', ''en-gb'') [payment balance after]
+
+
+
+
+SELECT (@recordsInRequiredPaymentsAfter - @recordsInRequiredPaymentsBefore) [required payments added]
+SELECT (@recordsInPaymentsAfter - @recordsInPaymentsBefore) [payments added]
+SELECT (@recordsInEarningsAfter - @recordsInEarningsBefore) [earnings added]
+SELECT (@recordsInTransfersAfter - @recordsInTransfersBefore) [transfers added]
+
+SELECT FORMAT(@transfersBalanceAfter - @transfersBalanceBefore, ''C'', ''en-gb'') [transfer balance change]
+SELECT FORMAT(@paymentsBalanceAfter - @paymentsBalanceBefore, ''C'', ''en-gb'') [payment balance change]
+
+ROLLBACK
+-- COMMIT
+
+'
 
 
 
