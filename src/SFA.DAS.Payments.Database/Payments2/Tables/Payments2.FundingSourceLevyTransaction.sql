@@ -15,7 +15,20 @@
 	[MessagePayload] nvarchar(max) not null,
 	[MessageType] nvarchar(max) not null, 
     [IlrSubmissionDateTime] DATETIME NOT NULL, 
-    [FundingAccountId] BIGINT NOT NULL
+    [FundingAccountId] BIGINT NOT NULL,
+	[TransactionType] TINYINT NOT NULL, 
+	[SfaContributionPercentage] DECIMAL(15,5) NOT NULL,
+	[LearnerReferenceNumber] NVARCHAR(50) NOT NULL,
+	[LearningAimReference]   NVARCHAR(8) NOT NULL,
+	[LearningAimProgrammeType] INT NOT NULL ,
+	[LearningAimStandardCode] INT NOT NULL,
+	[LearningAimFrameworkCode] INT NOT NULL,
+	[LearningAimPathwayCode] INT NOT NULL,
+	[LearningAimFundingLineType]  NVARCHAR(100) NOT NULL,
+	[LearningStartDate] DATETIME2 NULL,
+    [ApprenticeshipId] BIGINT NULL,
+	[ApprenticeshipEmployerType] TINYINT NULL,
+	[DuplicateNumber] INT NULL
 )
 GO
 
@@ -26,4 +39,30 @@ GO
 
 CREATE NONCLUSTERED INDEX [IX_FundingSourceLevyTransaction__SubmissionCleanup]
 ON [Payments2].[FundingSourceLevyTransaction] ([Ukprn],[CollectionPeriod],[AcademicYear],[JobId],[IlrSubmissionDateTime])
+GO
+
+CREATE UNIQUE INDEX [UX_FundingSourceLevyTransaction_LogicalDuplicates] ON [Payments2].[FundingSourceLevyTransaction]
+(
+[JobId],
+[Ukprn],
+[AcademicYear],
+[CollectionPeriod],
+[DeliveryPeriod],
+[TransactionType],
+[Amount],
+[SfaContributionPercentage],
+[LearnerReferenceNumber],
+[LearningAimReference],
+[LearningAimProgrammeType],
+[LearningAimStandardCode],
+[LearningAimFrameworkCode],
+[LearningAimPathwayCode],
+[LearningAimFundingLineType],
+[LearningStartDate],
+[ApprenticeshipId],
+[AccountId],
+[TransferSenderAccountId],
+[ApprenticeshipEmployerType],
+[DuplicateNumber]
+)
 GO
