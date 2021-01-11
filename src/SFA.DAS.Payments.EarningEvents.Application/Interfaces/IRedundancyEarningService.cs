@@ -7,8 +7,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Interfaces
     public interface IRedundancyEarningService
     {
         List<ApprenticeshipContractTypeEarningsEvent> SplitContractEarningByRedundancyDate(
-            ApprenticeshipContractTypeEarningsEvent earningEvent, DateTime redundancyDate, DateTime? nextEpisodeStartDate);
+            ApprenticeshipContractTypeEarningsEvent earningEvent, List<byte> redundancyPeriods);
 
-        List<FunctionalSkillEarningsEvent> SplitFunctionSkillEarningByRedundancyDate(FunctionalSkillEarningsEvent functionalSkillEarning, DateTime priceEpisodeRedStartDate);
+        List<FunctionalSkillEarningsEvent> SplitFunctionSkillEarningByRedundancyDate(
+            FunctionalSkillEarningsEvent functionalSkillEarning, List<byte> redundancyPeriods);
     }
 }
