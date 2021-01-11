@@ -779,7 +779,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                                 StdCode = 100,
                                 FworkCode = 200,
                                 ProgType = 300,
-                                PwayCode = 500,
+                                PwayCode = 400,
                                 LearnDelInitialFundLineType = "19+ Apprenticeship (Employer on App Service)",
                             }
                         }
