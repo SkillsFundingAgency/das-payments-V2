@@ -6,6 +6,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 {
@@ -30,6 +31,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             var intermediateResults = InitialLearnerTransform(learnerSubmission, true);
             var results = new List<ApprenticeshipContractTypeEarningsEvent>();
 
+            // Sort all p/e by start date
+            var sortedPriceEpisodes = learnerSubmission.Learner.PriceEpisodes
+                .OrderBy(x => x.PriceEpisodeValues.EpisodeStartDate)
+                .ToList();
+            
             foreach (var intermediateLearningAim in intermediateResults)
             {
                 //var episodesByContractType = intermediateLearningAim.PriceEpisodes.GroupBy(x => new {x.PriceEpisodeValues.PriceEpisodeContractType, x.PriceEpisodeValues.PriceEpisodeRedStatusCode});
@@ -53,7 +59,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
                     if (redundancyDates != null && earningEvent.PriceEpisodes.Any(pe=>pe.Identifier == redundancyDates.PriceEpisodeIdentifier))
                     {
-                        results.AddRange(redundancyEarningService.SplitContractEarningByRedundancyDate(earningEvent, redundancyDates.PriceEpisodeRedStartDate.Value));
+                        var redundancyPriceEpisode = learnerSubmission.Learner.PriceEpisodes.First(x => x.PriceEpisodeValues.PriceEpisodeRedStatusCode == 1 &&
+                                                                                                        x.PriceEpisodeIdentifier == redundancyDates.PriceEpisodeIdentifier);
+                        var index = sortedPriceEpisodes.IndexOf(redundancyPriceEpisode);
+                        var nextStartDate = (DateTime?) null;
+                        if (index < sortedPriceEpisodes.Count - 1)
+                            nextStartDate = sortedPriceEpisodes[index + 1].PriceEpisodeValues.EpisodeStartDate;
+                        results.AddRange(redundancyEarningService.SplitContractEarningByRedundancyDate(earningEvent, redundancyDates.PriceEpisodeRedStartDate.Value, nextStartDate));
                     }
                     else
                     {

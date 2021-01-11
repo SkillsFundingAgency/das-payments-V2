@@ -93,7 +93,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
 
             var redundancyDate = new DateTime(1921, 5, 1);
 
-            var events = service.SplitContractEarningByRedundancyDate(act1Earning, redundancyDate);
+            var events = service.SplitContractEarningByRedundancyDate(act1Earning, redundancyDate, null);
             events.Should().HaveCount(2);
         }
 
@@ -108,7 +108,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             earning.IncentiveEarnings.ForEach(ie => { ie.Periods.Should().HaveCount(12); });
 
 
-            var events = service.SplitContractEarningByRedundancyDate(earning, redundancyDate);
+            var events = service.SplitContractEarningByRedundancyDate(earning, redundancyDate, null);
             events.Should().HaveCount(2);
             var originalEarningEvent = events[0];
             originalEarningEvent.Should().BeOfType(earning.GetType());

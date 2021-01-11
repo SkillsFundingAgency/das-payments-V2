@@ -18,12 +18,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Services
             this.redundancyEarningEventFactory = redundancyEarningEventFactory ?? throw new ArgumentNullException(nameof(redundancyEarningEventFactory));
         }
 
-        public List<ApprenticeshipContractTypeEarningsEvent> SplitContractEarningByRedundancyDate(ApprenticeshipContractTypeEarningsEvent earningEvent, DateTime redundancyDate)
+        public List<ApprenticeshipContractTypeEarningsEvent> SplitContractEarningByRedundancyDate(ApprenticeshipContractTypeEarningsEvent earningEvent, 
+            DateTime redundancyDate, DateTime? nextEpisodeStartDate)
         {
             var splitResults = new List<ApprenticeshipContractTypeEarningsEvent>();
           
-            var redundancyPeriod = redundancyDate.GetPeriodFromDate(); 
-
+            var redundancyPeriod = redundancyDate.GetPeriodFromDate();
+            
             var redundancyEarningEvent = redundancyEarningEventFactory.CreateRedundancyContractTypeEarningsEvent(earningEvent);
 
             earningEvent.OnProgrammeEarnings.ForEach(ope => { ope.Periods= RemoveRedundancyPeriods(ope.Periods, redundancyPeriod); });
@@ -31,15 +32,17 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Services
 
             redundancyEarningEvent.OnProgrammeEarnings.ForEach(ope =>
             {
-              ope.Periods=  RemovePreRedundancyPeriods(ope.Periods, redundancyPeriod); 
-              //todo remove post redundancy period (i.e. any periods on or after the start date of the next price episode in the grouping (if applicable))
+              ope.Periods=  RemovePreRedundancyPeriods(ope.Periods, redundancyPeriod);
+              if (nextEpisodeStartDate != null)
+                  ope.Periods = RemovePostRedundancyPeriods(ope.Periods, nextEpisodeStartDate.Value.GetPeriodFromDate());
               SetPeriodsToFullContribution(ope.Periods);
             });
             redundancyEarningEvent.IncentiveEarnings.ForEach(ie =>
             {
                ie.Periods= RemovePreRedundancyPeriods(ie.Periods, redundancyPeriod);
-               //todo remove post redundancy period (i.e. any periods on or after the start date of the next price episode in the grouping (if applicable))
-                SetPeriodsToFullContribution(ie.Periods);
+               if (nextEpisodeStartDate != null)
+                   ie.Periods = RemovePostRedundancyPeriods(ie.Periods, nextEpisodeStartDate.Value.GetPeriodFromDate());
+               SetPeriodsToFullContribution(ie.Periods);
             });
 
             splitResults.Add(earningEvent);
@@ -92,6 +95,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Services
         {
             var allPeriods = periods.ToList();
             allPeriods.RemoveAll(p => p.Period < redundancyPeriod);
+            return allPeriods.AsReadOnly();
+        }
+
+        private ReadOnlyCollection<EarningPeriod> RemovePostRedundancyPeriods(IEnumerable<EarningPeriod> periods, byte postRedundancyPeriod)
+        {
+            var allPeriods = periods.ToList();
+            allPeriods.RemoveAll(p => p.Period >= postRedundancyPeriod);
             return allPeriods.AsReadOnly();
         }
     }
