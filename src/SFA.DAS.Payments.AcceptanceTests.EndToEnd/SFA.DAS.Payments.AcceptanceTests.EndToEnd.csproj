@@ -1579,8 +1579,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>One Levy learner changes provider but remains with the same employer-PV2-317.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Redundancy\PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months - Copy.feature.cs">
-      <DependentUpon>PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months - Copy.feature</DependentUpon>
+    <Compile Include="Tests\Redundancy\PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months.feature.cs">
+      <DependentUpon>PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -2674,9 +2674,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy learner changes provider but remains with the same employer-PV2-317.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Redundancy\PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months - Copy.feature">
+    <None Include="Tests\Redundancy\PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months - Copy.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Redundancy\PV2-1850-Non-Levy-Learner-Made-Redundant-In-Last-6-Months.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
