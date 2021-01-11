@@ -778,7 +778,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                                 ProgType = 300,
                                 PwayCode = 500,
                                 LearnDelInitialFundLineType = "19+ Apprenticeship (Employer on App Service)",
-                            },
+                            }
                         }
                     },
                     PriceEpisodes = new List<PriceEpisode>
@@ -920,6 +920,22 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                                     Period11 = 0.9m,
                                     Period12 = 0.9m,
                                 },
+                                new PriceEpisodePeriodisedValues
+                                {
+                                    AttributeName = "PriceEpisodeLSFCash",
+                                    Period1 = 0,
+                                    Period2 = 0,
+                                    Period3 = 0,
+                                    Period4 = 150,
+                                    Period5 = 150,
+                                    Period6 = 150,
+                                    Period7 = 150,
+                                    Period8 = 150,
+                                    Period9 = 150,
+                                    Period10 = 150,
+                                    Period11 = 150,
+                                    Period12 = 150,
+                                }
                             }
                         },
                         new PriceEpisode
@@ -1060,6 +1076,22 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                                     Period11 = 0,
                                     Period12 = 0,
                                 },
+                                new PriceEpisodePeriodisedValues
+                                {
+                                    AttributeName = "PriceEpisodeLSFCash",
+                                    Period1 = 150,
+                                    Period2 = 150,
+                                    Period3 = 150,
+                                    Period4 = 0,
+                                    Period5 = 0,
+                                    Period6 = 0,
+                                    Period7 = 0,
+                                    Period8 = 0,
+                                    Period9 = 0,
+                                    Period10 = 0,
+                                    Period11 = 0,
+                                    Period12 = 0,
+                                }
                             }
                         },
                     }
@@ -1072,11 +1104,15 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var events = builder.Build(processLearnerCommand);
             events.Should().NotBeNull();
             events.Where(x => x.PriceEpisodes.Exists(y => y.Identifier == "25-17-01/08/2020"))
-                .Where(x => x.GetType().IsAssignableFrom(typeof(ApprenticeshipContractType1RedundancyEarningEvent)))
-                .Single()
+                .Single(x => x.GetType().IsAssignableFrom(typeof(ApprenticeshipContractType1RedundancyEarningEvent)))
                 .OnProgrammeEarnings
-                .Where(x => x.Type == OnProgrammeEarningType.Learning)
-                .Single()
+                .Single(x => x.Type == OnProgrammeEarningType.Learning)
+                .Periods
+                .Should().HaveCount(1);
+            events.Where(x => x.PriceEpisodes.Exists(y => y.Identifier == "25-17-01/08/2020"))
+                .Single(x => x.GetType().IsAssignableFrom(typeof(ApprenticeshipContractType1RedundancyEarningEvent)))
+                .IncentiveEarnings
+                .Single(x => x.Type == IncentiveEarningType.LearningSupport)
                 .Periods
                 .Should().HaveCount(1);
         }

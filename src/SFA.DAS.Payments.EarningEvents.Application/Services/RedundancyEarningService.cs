@@ -41,8 +41,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Services
             {
                ie.Periods= RemovePreRedundancyPeriods(ie.Periods, redundancyPeriod);
                if (nextEpisodeStartDate != null)
-                   ie.Periods = RemovePostRedundancyPeriods(ie.Periods, nextEpisodeStartDate.Value.GetPeriodFromDate());
-               SetPeriodsToFullContribution(ie.Periods);
+                    ie.Periods = RemovePostRedundancyPeriods(ie.Periods, nextEpisodeStartDate.Value.GetPeriodFromDate());
+                SetPeriodsToFullContribution(ie.Periods);
             });
 
             splitResults.Add(earningEvent);
