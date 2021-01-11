@@ -49,6 +49,18 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 MessageType = levyAmount.GetType().FullName,
                 IlrSubmissionDateTime = levyAmount.IlrSubmissionDateTime,
                 FundingAccountId = levyAmount.CalculateFundingAccountId(isReceiverTransferPayment),
+                ApprenticeshipEmployerType = levyAmount.ApprenticeshipEmployerType,
+                ApprenticeshipId = levyAmount.ApprenticeshipId,
+                LearnerReferenceNumber = levyAmount.Learner.ReferenceNumber,
+                LearningAimFrameworkCode = levyAmount.LearningAim.FrameworkCode,
+                LearningAimPathwayCode = levyAmount.LearningAim.PathwayCode,
+                LearningAimFundingLineType = levyAmount.LearningAim.FundingLineType,
+                LearningAimProgrammeType = levyAmount.LearningAim.ProgrammeType,
+                LearningAimReference = levyAmount.LearningAim.Reference,
+                LearningAimStandardCode = levyAmount.LearningAim.StandardCode,
+                LearningStartDate = levyAmount.LearningStartDate,
+                SfaContributionPercentage = levyAmount.SfaContributionPercentage,
+                TransactionType = levyAmount.TransactionType
             }).ToList();
             cancellationToken.ThrowIfCancellationRequested();
 
