@@ -217,10 +217,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             actualRequiredPayment.Should().HaveCount(0);
             //Ideally this logic should be moved into a specific testable class
             requiredPaymentsService.Verify(x => x.GetRequiredPayments(It.IsAny<Earning>(),It.Is<List<Payment>>(lst => lst.Count==1 && lst.Any(p => p.LearnAimReference=="zprog001"))));
-            
-            actualRequiredPayment.Should().HaveCount(1);
-            actualRequiredPayment[0].LearningAim.Should().NotBeNull();
-            actualRequiredPayment[0].LearningAim.FundingLineType.Should().Be(earningEvent.PriceEpisodes[0].FundingLineType);
         }
 
         [Test]
