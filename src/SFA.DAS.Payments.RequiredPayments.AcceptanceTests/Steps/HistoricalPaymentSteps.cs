@@ -100,8 +100,7 @@ namespace SFA.DAS.Payments.RequiredPayments.AcceptanceTests.Steps
                 SfaContributionPercentage = SfaContributionPercentage,
                 JobId = TestSession.JobId,
                 TransactionType = (TransactionType)payment.Type,
-                IlrSubmissionDateTime = TestSession.IlrSubmissionTime,
-                StartDate = TestSession.IlrSubmissionTime,
+                IlrSubmissionDateTime = TestSession.IlrSubmissionTime
             };
         }
 
