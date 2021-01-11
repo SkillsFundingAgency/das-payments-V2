@@ -1133,6 +1133,128 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             redundancyEarningService.Verify(x => x.SplitContractEarningByRedundancyDate(It.IsAny<ApprenticeshipContractType2EarningEvent>(), It.IsAny<DateTime>(), It.IsAny<DateTime?>()));
         }
 
+        [Test]
+        public void CalculateRedundancyPeriods_ReturnsEmptyListWhenNoRedundancy()
+        {
+            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
+                new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningService.Object,
+                mapper);
+
+            var actual = builder.CalculateRedundancyPeriods(new List<PriceEpisode>
+            {
+                new PriceEpisode
+                {
+                    PriceEpisodeValues = new PriceEpisodeValues
+                    {
+                        PriceEpisodeRedStatusCode = 0
+                    }
+                }
+            });
+
+            actual.Should().BeEmpty();
+        }
+
+        [Test]
+        public void CalculateRedundancyPeriods_ReturnsPeriodsFromRedundancyDateToEndOfYear()
+        {
+            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
+                new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningService.Object,
+                mapper);
+
+            var actual = builder.CalculateRedundancyPeriods(new List<PriceEpisode>
+            {
+                new PriceEpisode
+                {
+                    PriceEpisodeValues = new PriceEpisodeValues
+                    {
+                        PriceEpisodeRedStatusCode = 1,
+                        EpisodeStartDate = new DateTime(2020, 8, 1),
+                        PriceEpisodeRedStartDate = new DateTime(2020, 10, 2)
+                    }
+                }
+            });
+
+            actual.Should().HaveCount(10);
+            actual.Should().BeInAscendingOrder();
+            actual[0].Should().Be(3);
+        }
+
+        [Test]
+        public void CalculateRedundancyPeriods_ReturnsPeriodsFromRedundancyDateToNextNonRedundantPriceEpisode()
+        {
+            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
+                new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningService.Object,
+                mapper);
+
+            var actual = builder.CalculateRedundancyPeriods(new List<PriceEpisode>
+            {
+                new PriceEpisode
+                {
+                    PriceEpisodeValues = new PriceEpisodeValues
+                    {
+                        PriceEpisodeRedStatusCode = 1,
+                        EpisodeStartDate = new DateTime(2020, 8, 1),
+                        PriceEpisodeRedStartDate = new DateTime(2020, 10, 2)
+                    }
+                },
+                new PriceEpisode
+                {
+                    PriceEpisodeValues = new PriceEpisodeValues
+                    {
+                        PriceEpisodeRedStatusCode = 0,
+                        EpisodeStartDate = new DateTime(2020, 11, 14),
+                    }
+                }
+            });
+
+            actual.Should().HaveCount(1);
+            actual[0].Should().Be(3);
+        }
+
+        [Test]
+        public void CalculateRedundancyPeriods_ReturnsPeriodsCorrectlyInComplexRedundancyScenario()
+        {
+            var builder = new ApprenticeshipContractTypeEarningsEventBuilder(
+                new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningService.Object,
+                mapper);
+
+            var actual = builder.CalculateRedundancyPeriods(new List<PriceEpisode>
+            {
+                new PriceEpisode
+                {
+                    PriceEpisodeValues = new PriceEpisodeValues
+                    {
+                        PriceEpisodeRedStatusCode = 1,
+                        EpisodeStartDate = new DateTime(2020, 8, 1),
+                        PriceEpisodeRedStartDate = new DateTime(2020, 10, 2)
+                    }
+                },
+                new PriceEpisode
+                {
+                    PriceEpisodeValues = new PriceEpisodeValues
+                    {
+                        PriceEpisodeRedStatusCode = 1,
+                        EpisodeStartDate = new DateTime(2020, 11, 14),
+                        PriceEpisodeRedStartDate = new DateTime(2021, 1, 17),
+                    }
+                },
+                new PriceEpisode
+                {
+                    PriceEpisodeValues = new PriceEpisodeValues
+                    {
+                        PriceEpisodeRedStatusCode = 0,
+                        EpisodeStartDate = new DateTime(2021, 4, 9),
+                    }
+                }
+            });
+
+            actual.Should().HaveCount(4);
+            actual.Should().Contain(3);
+            actual.Should().Contain(6);
+            actual.Should().Contain(7);
+            actual.Should().Contain(8);
+        }
+
         private static ProcessLearnerCommand CreateLearnerSubmissionWithLearningSupport()
         {
             return new ProcessLearnerCommand
