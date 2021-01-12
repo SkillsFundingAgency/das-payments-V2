@@ -48,6 +48,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
             builder.RegisterType<CalculatedRequiredLevyAmountPrioritisationService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<FundingSourcePaymentEventBuilder>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<EmployerProviderPriorityStorageService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<LevyTransactionRepository>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.Register(c => new CoInvestedFundingSourceService
             (
@@ -104,6 +105,12 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
                 var config = c.Resolve<IConfigurationHelper>();
                 return new FundingSourceDataContext(config.GetConnectionString("PaymentsConnectionString"));
             }).As<IFundingSourceDataContext>();
+
+            builder.Register((c, p) =>
+            {
+                var config = c.Resolve<IConfigurationHelper>();
+                return new FundingSourceDataContextFactory(config.GetConnectionString("PaymentsConnectionString"));
+            }).As<IFundingSourceDataContextFactory>();
 
             builder.RegisterServiceFabricSupport();
         }
