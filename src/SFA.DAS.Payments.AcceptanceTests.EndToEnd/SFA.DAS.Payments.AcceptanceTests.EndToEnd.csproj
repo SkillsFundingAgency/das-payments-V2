@@ -1584,8 +1584,8 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Tests\Redundancy\PV2-2268-spike.feature.cs">
-      <DependentUpon>PV2-2268-spike.feature</DependentUpon>
+    <Compile Include="Tests\Redundancy\PV2-2268-Break-in-Learning-after-redundancy-with-delivered-days-under-75-percent-then-re-employed-before-12-weeks-is-up.feature.cs">
+      <DependentUpon>PV2-2268-Break-in-Learning-after-redundancy-with-delivered-days-under-75-percent-then-re-employed-before-12-weeks-is-up.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -1753,8 +1753,8 @@
     <EmbeddedResource Include="FM36TestFiles\PV2-1953-small-employer-retrospective-R03.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-1953-small-employer-retrospective-R04.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-2083-Data-Locks-prevented-from-appearing-on-the-Data-Match-Report-R12.json" />
-    <EmbeddedResource Include="FM36TestFiles\PV2-2268-spike-R03.json" />
-    <EmbeddedResource Include="FM36TestFiles\PV2-2268-spike-R04.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-2268-Break-in-Learning-after-redundancy-with-delivered-days-under-75-percent-then-re-employed-before-12-weeks-is-up-R03.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-2268-Break-in-Learning-after-redundancy-with-delivered-days-under-75-percent-then-re-employed-before-12-weeks-is-up-R04.json" />
     <None Include="packages.config" />
     <None Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2682,9 +2682,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-1850-Non-Levy-Learner-Made-Redundant-In-Last-6-Months.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Redundancy\PV2-2268-spike.feature">
+    <None Include="Tests\Redundancy\PV2-2268-Break-in-Learning-after-redundancy-with-delivered-days-under-75-percent-then-re-employed-before-12-weeks-is-up.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-2268-spike.cs</LastGenOutput>
+      <LastGenOutput>PV2-2268-Break-in-Learning-after-redundancy-with-delivered-days-under-75-percent-then-re-employed-before-12-weeks-is-up.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Redundancy\PV2-1851-Non-Levy-Learner-Made-Redundant-Outside-Of-Last-6-Months.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

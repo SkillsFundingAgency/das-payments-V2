@@ -5,7 +5,7 @@
     "Year": "2021",
     "Learners": [
        {
-            "LearnRefNumber": "18DE20141224",
+            "LearnRefNumber": "999999999999",
             "ULN": 9999999999,
             "PriceEpisodes": [
                 {
@@ -407,7 +407,7 @@
                     ]
                 },
                 {
-                    "PriceEpisodeIdentifier": "25-17-07/11/2020",
+                    "PriceEpisodeIdentifier": "PE-2268-R04",
                     "PriceEpisodeValues": {
                         "EpisodeStartDate": "2020-11-07T00:00:00+00:00",
                         "TNP1": 15000,
