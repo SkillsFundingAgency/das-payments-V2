@@ -118,7 +118,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private void ScriptInApprenticeshipData()
         {
-            var sql = $@"USE [SFA.DAS.Payments.Database]
+            var sql = $@"
 
             DELETE FROM [Payments2].[ApprenticeshipPriceEpisode] WHERE [ApprenticeshipId] IN (5001, 5002)
             DELETE FROM [Payments2].[Apprenticeship] WHERE [Id] IN (5001, 5002)
