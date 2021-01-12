@@ -22,6 +22,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         private ContractTypeAmounts heldBackCompletionPayments;
         private decimal dataLockedEarnings;
         private decimal dataLockedAlreadyPaidTotal;
+        private DataLockTypeCounts dataLockTypeCounts;
 
         public PeriodEndSummary(long jobId, byte collectionPeriod, short academicYear)
         {
@@ -35,7 +36,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         {
             CalculateTotals();
 
-            var result =  new PeriodEndSummaryModel()
+            var result =  new PeriodEndSummaryModel
             {
                 CollectionPeriod = collectionPeriod,
                 AcademicYear = academicYear,
@@ -47,7 +48,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 YearToDatePayments = yearToDatePayments,
                 AlreadyPaidDataLockedEarnings = dataLockedAlreadyPaidTotal,
                 AdjustedDataLockedEarnings = dataLockedEarnings - dataLockedAlreadyPaidTotal,
-                TotalDataLockedEarnings = dataLockedEarnings
+                TotalDataLockedEarnings = dataLockedEarnings,
+                DataLockTypeCounts = dataLockTypeCounts,
             };
             result.PaymentMetrics = Helpers.CreatePaymentMetrics(result);
             result.Percentage = result.PaymentMetrics.Percentage;
@@ -86,6 +88,29 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
 
              dataLockedEarnings = allSummaries.Select(x => x.TotalDataLockedEarnings).Sum();
              dataLockedAlreadyPaidTotal = allSummaries.Select(x => x.AlreadyPaidDataLockedEarnings).Sum();
+
+             CalculateDataLockTypeCounts();
+        }
+
+        private void CalculateDataLockTypeCounts()
+        {
+            var allDataLockTypeCounts = allSummaries.Select(x => x.DataLockTypeCounts).ToList();
+
+            dataLockTypeCounts = new DataLockTypeCounts
+            {
+                DataLock1 = allDataLockTypeCounts.Sum(x => x.DataLock1),
+                DataLock2 = allDataLockTypeCounts.Sum(x => x.DataLock2),
+                DataLock3 = allDataLockTypeCounts.Sum(x => x.DataLock3),
+                DataLock4 = allDataLockTypeCounts.Sum(x => x.DataLock4),
+                DataLock5 = allDataLockTypeCounts.Sum(x => x.DataLock5),
+                DataLock6 = allDataLockTypeCounts.Sum(x => x.DataLock6),
+                DataLock7 = allDataLockTypeCounts.Sum(x => x.DataLock7),
+                DataLock8 = allDataLockTypeCounts.Sum(x => x.DataLock8),
+                DataLock9 = allDataLockTypeCounts.Sum(x => x.DataLock9),
+                DataLock10 = allDataLockTypeCounts.Sum(x => x.DataLock10),
+                DataLock11 = allDataLockTypeCounts.Sum(x => x.DataLock11),
+                DataLock12 = allDataLockTypeCounts.Sum(x => x.DataLock12)
+            };
         }
 
         public void AddProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries)

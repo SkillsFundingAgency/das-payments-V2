@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Model.Submission
         public ContractTypeAmounts YearToDatePayments { get; set; }
         public ContractTypeAmountsVerbose SubmissionMetrics { get; set; }
         public virtual List<EarningsModel> EarningsMetrics { get; set; }
-        public virtual List<DataLockCountsModel> DataLockMetrics { get; set; }
+        public virtual DataLockCountsModel DataLockMetrics { get; set; } = new DataLockCountsModel();
         public virtual List<RequiredPaymentsModel> RequiredPaymentsMetrics { get; set; }
         public ContractTypeAmounts DcEarnings { get; set; }
         public ContractTypeAmountsVerbose DasEarnings { get; set; }

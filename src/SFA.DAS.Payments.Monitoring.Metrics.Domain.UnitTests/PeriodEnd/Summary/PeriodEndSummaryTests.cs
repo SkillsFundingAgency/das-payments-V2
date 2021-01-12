@@ -23,6 +23,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             summary.AddTransactionTypes(TestHelper.GetPaymentTransactionTypes);
             summary.AddFundingSourceAmounts(TestHelper.GetPaymentFundingSourceAmounts);
             summary.AddHeldBackCompletionPayments(TestHelper.DefaultHeldBackCompletionPayments);
+            summary.AddPeriodEndProviderDataLockTypeCounts(TestHelper.DefaultPeriodEndProviderDataLockTypeCounts);
             return summary;
         }
 

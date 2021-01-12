@@ -198,26 +198,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                 GROUP BY [ApprenticeshipContractType], UKPRN
                 order by UKPRN,ApprenticeshipContractType";
 
-        private readonly string connectionString;
+        public DcMetricsDataContext(DbContextOptions contextOptions) : base(contextOptions)
+        { }
 
         public DbQuery<TransactionTypeAmounts> Earnings { get; set; }
 
         public DbQuery<ProviderTransactionTypeAmounts> AllProviderEarnings { get; set; }
-
-        public DcMetricsDataContext(string connectionString)
-        {
-            this.connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(connectionString);
-        }
 
         public async Task<List<TransactionTypeAmounts>> GetEarnings(long ukprn, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {

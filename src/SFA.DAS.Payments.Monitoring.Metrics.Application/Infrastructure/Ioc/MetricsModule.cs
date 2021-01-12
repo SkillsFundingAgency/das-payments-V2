@@ -30,15 +30,25 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Ioc
             builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
-                    return new DcMetricsDataContext(configHelper.GetConnectionString("DcEarnings2021ConnectionString"));
+
+                    var dbContextOptions = new DbContextOptionsBuilder().UseSqlServer(
+                        configHelper.GetConnectionString("DcEarnings2021ConnectionString"),
+                        optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
+
+                    return new DcMetricsDataContext(dbContextOptions);
                 })
                 .Named<IDcMetricsDataContext>("DcEarnings2021DataContext")
                 .InstancePerLifetimeScope();
-                
+
             builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
-                    return new DcMetricsDataContext(configHelper.GetConnectionString("DcEarnings1920ConnectionString"));
+
+                    var dbContextOptions = new DbContextOptionsBuilder().UseSqlServer(
+                        configHelper.GetConnectionString("DcEarnings1920ConnectionString"),
+                        optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
+
+                    return new DcMetricsDataContext(dbContextOptions);
                 })
                 .Named<IDcMetricsDataContext>("DcEarnings1920DataContext")
                 .InstancePerLifetimeScope();

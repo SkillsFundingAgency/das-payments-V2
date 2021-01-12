@@ -4,7 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
 using FluentAssertions;
+using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd;
@@ -79,5 +81,28 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
                 actual.Single(x => x.Ukprn == 2).Total.Should().Be(30000);
             }
         }
+
+        [Test]
+        public async Task WhenCallingGetPeriodEndProviderDataLockTypeCounts_ThenMetricsQueryDataContextCalled()
+        {
+            short academicYear = 2021;
+            byte collectionPeriod = 3;
+
+            var persistenceContextMock = new Mock<IMetricsPersistenceDataContext>();
+            var metricsQueryDataContextFactoryMock = new Mock<IMetricsQueryDataContextFactory>();
+            var metricsQueryDataContextMock = new Mock<IMetricsQueryDataContext>();
+            var loggerMock = new Mock<IPaymentLogger>();
+
+            metricsQueryDataContextFactoryMock
+                .Setup(x => x.Create())
+                .Returns(metricsQueryDataContextMock.Object);
+
+            var sut = new PeriodEndMetricsRepository(persistenceContextMock.Object, metricsQueryDataContextFactoryMock.Object, loggerMock.Object);
+
+            await sut.GetPeriodEndProviderDataLockTypeCounts(academicYear, collectionPeriod, It.IsAny<CancellationToken>());
+
+            metricsQueryDataContextMock.Verify(x => x.GetPeriodEndProviderDataLockCounts(academicYear, collectionPeriod, It.IsAny<CancellationToken>()), Times.Once);
+        }
     }
 }
+

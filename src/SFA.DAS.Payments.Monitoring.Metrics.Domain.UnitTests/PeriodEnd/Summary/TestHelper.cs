@@ -70,6 +70,24 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
         public static ProviderContractTypeAmounts DefaultHeldBackCompletionPayments => new ProviderContractTypeAmounts
             {Ukprn = DefaultPeriodEndProviderSummary.Ukprn, ContractType1 = 2000, ContractType2 = 1000};
 
+        public static PeriodEndProviderDataLockTypeCounts DefaultPeriodEndProviderDataLockTypeCounts =>
+            new PeriodEndProviderDataLockTypeCounts
+            {
+                Ukprn = DefaultPeriodEndProviderSummary.Ukprn,
+                DataLock1 = 1,
+                DataLock2 = 2,
+                DataLock3 = 3,
+                DataLock4 = 4,
+                DataLock5 = 5,
+                DataLock6 = 6,
+                DataLock7 = 7,
+                DataLock8 = 8,
+                DataLock9 = 9,
+                DataLock10 = 10,
+                DataLock11 = 11,
+                DataLock12 = 12
+            };
+
         public static List<TransactionTypeAmountsByContractType> GetPaymentTransactionTypes =>
             new List<TransactionTypeAmountsByContractType>
             {

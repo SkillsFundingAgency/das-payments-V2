@@ -155,7 +155,25 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                     AdjustedDataLockedEarnings = 0,
                     RequiredPayments = new ContractTypeAmounts {ContractType1 = 100, ContractType2 = 100},
                     HeldBackCompletionPayments = new ContractTypeAmounts {ContractType1 = 1, ContractType2 = 2},
-                    YearToDatePayments = new ContractTypeAmounts {ContractType1 = 3, ContractType2 = 4}
+                    YearToDatePayments = new ContractTypeAmounts {ContractType1 = 3, ContractType2 = 4},
+                    DataLockMetrics = new DataLockCountsModel
+                    {
+                        Amounts = new DataLockTypeCounts
+                        {
+                            DataLock1 = 11,
+                            DataLock2 = 5,
+                            DataLock3 = 78,
+                            DataLock4 = 45,
+                            DataLock5 = 2,
+                            DataLock6 = 51,
+                            DataLock7 = 76,
+                            DataLock8 = 9,
+                            DataLock9 = 556,
+                            DataLock10 = 3,
+                            DataLock11 = 27,
+                            DataLock12 = 60
+                        }
+                    }
                 }
             };
 
@@ -173,7 +191,25 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 AdjustedDataLockedEarnings = 0,
                 RequiredPayments = new ContractTypeAmounts { ContractType1 = 100, ContractType2 = 100 },
                 HeldBackCompletionPayments = new ContractTypeAmounts { ContractType1 = 1, ContractType2 = 2 },
-                YearToDatePayments = new ContractTypeAmounts { ContractType1 = 3, ContractType2 = 4 }
+                YearToDatePayments = new ContractTypeAmounts { ContractType1 = 3, ContractType2 = 4 },
+                DataLockMetricsTotals = new DataLockCountsTotalsModel
+                {
+                    Amounts = new DataLockTypeCounts
+                    {
+                        DataLock1 = 11,
+                        DataLock2 = 5,
+                        DataLock3 = 78,
+                        DataLock4 = 45,
+                        DataLock5 = 2,
+                        DataLock6 = 51,
+                        DataLock7 = 76,
+                        DataLock8 = 9,
+                        DataLock9 = 556,
+                        DataLock10 = 3,
+                        DataLock11 = 27,
+                        DataLock12 = 60
+                    }
+                }
             };
 
             submissionsSummaryModelTelemetryProperties = new Dictionary<string, string>
@@ -233,7 +269,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 .Setup(x => x.GetCollectionPeriodTolerance(collectionPeriod, academicYear,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(getCollectionPeriodToleranceResponse.Object);
-            
+
             return this;
         }
 
@@ -277,7 +313,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
         {
             telemetry
                 .Verify(x => x.TrackEvent("Finished Generating Submissions Summary Metrics",
-                    submissionsSummaryModelTelemetryProperties, It.Is<Dictionary<string, double>>(y => 
+                    submissionsSummaryModelTelemetryProperties, It.Is<Dictionary<string, double>>(y =>
                    y["Percentage"] == (double)getMetricsResponse.SubmissionMetrics.Percentage &&
                    y["ContractType1Percentage"] == (double)getMetricsResponse.SubmissionMetrics.PercentageContractType1 &&
                    y["ContractType2Percentage"] == (double)getMetricsResponse.SubmissionMetrics.PercentageContractType2 &&
@@ -322,7 +358,23 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                    y["YearToDatePaymentsContractType1Total"] == (double)getMetricsResponse.YearToDatePayments.ContractType1 &&
                    y["YearToDatePaymentsContractType2Total"] == (double)getMetricsResponse.YearToDatePayments.ContractType2 &&
 
-                   y["RequiredPaymentsDasEarningsPercentageComparison"] == Math.Round(((double)(getMetricsResponse.YearToDatePayments.Total + getMetricsResponse.RequiredPayments.Total) / (double)getMetricsResponse.DasEarnings.Total) * 100, 2))));
+                   y["RequiredPaymentsDasEarningsPercentageComparison"] == Math.Round(((double)(getMetricsResponse.YearToDatePayments.Total + getMetricsResponse.RequiredPayments.Total) / (double)getMetricsResponse.DasEarnings.Total) * 100, 2) &&
+
+                   y["DataLockedCountDLock1"] == getMetricsResponse.DataLockMetricsTotals.Amounts.DataLock1 &&
+                   y["DataLockedCountDLock2"] == getMetricsResponse.DataLockMetricsTotals.Amounts.DataLock2 &&
+                   y["DataLockedCountDLock3"] == getMetricsResponse.DataLockMetricsTotals.Amounts.DataLock3 &&
+                   y["DataLockedCountDLock4"] == getMetricsResponse.DataLockMetricsTotals.Amounts.DataLock4 &&
+                   y["DataLockedCountDLock5"] == getMetricsResponse.DataLockMetricsTotals.Amounts.DataLock5 &&
+                   y["DataLockedCountDLock6"] == getMetricsResponse.DataLockMetricsTotals.Amounts.DataLock6 &&
+                   y["DataLockedCountDLock7"] == getMetricsResponse.DataLockMetricsTotals.Amounts.DataLock7 &&
+                   y["DataLockedCountDLock8"] == getMetricsResponse.DataLockMetricsTotals.Amounts.DataLock8 &&
+                   y["DataLockedCountDLock9"] == getMetricsResponse.DataLockMetricsTotals.Amounts.DataLock9 &&
+                   y["DataLockedCountDLock10"] == getMetricsResponse.DataLockMetricsTotals.Amounts.DataLock10 &&
+                   y["DataLockedCountDLock11"] == getMetricsResponse.DataLockMetricsTotals.Amounts.DataLock11 &&
+                   y["DataLockedCountDLock12"] == getMetricsResponse.DataLockMetricsTotals.Amounts.DataLock12
+
+
+                   )));
         }
 
         public void Assert_SubmissionsSummaryMetrics_AreReturned(SubmissionsSummaryModel result)
