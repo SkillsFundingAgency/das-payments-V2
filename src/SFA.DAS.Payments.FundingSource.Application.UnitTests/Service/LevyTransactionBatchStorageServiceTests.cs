@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         }
 
         [Test]
-        public async Task WhenStoringLevyTransactions_AndSaveLevyTransactionsIsCalled()
+        public async Task WhenStoringLevyTransactions_ThenSaveLevyTransactionsIsCalled()
         {
             await fixture.StoreLevyTransactions();
 
@@ -36,7 +36,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
     internal class LevyTransactionBatchStorageServiceFixture
     {
         private readonly Mock<IPaymentLogger> mockLogger;
-        private readonly Mock<IFundingSourceDataContextFactory> mockFundingSourceDataContextFactory;
         private readonly Mock<ILevyTransactionRepository> mockLevyTransactionRepository;
 
         private readonly IList<CalculatedRequiredLevyAmount> calculatedRequiredLevyAmounts;
@@ -48,12 +47,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
             var fixture = new Fixture();
 
             mockLogger = new Mock<IPaymentLogger>();
-            mockFundingSourceDataContextFactory = new Mock<IFundingSourceDataContextFactory>();
             mockLevyTransactionRepository = new Mock<ILevyTransactionRepository>();
 
             calculatedRequiredLevyAmounts = fixture.Create<IList<CalculatedRequiredLevyAmount>>();
 
-            sut = new LevyTransactionBatchStorageService(mockLogger.Object, mockFundingSourceDataContextFactory.Object, mockLevyTransactionRepository.Object);
+            sut = new LevyTransactionBatchStorageService(mockLogger.Object, mockLevyTransactionRepository.Object);
         }
 
         public Task StoreLevyTransactions() => sut.StoreLevyTransactions(calculatedRequiredLevyAmounts, It.IsAny<CancellationToken>());

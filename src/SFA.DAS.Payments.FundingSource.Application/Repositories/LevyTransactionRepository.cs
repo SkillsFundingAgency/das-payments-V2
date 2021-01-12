@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
 
         public async Task SaveLevyTransactions(IList<LevyTransactionModel> levyTransactions, CancellationToken cancellationToken)
         {
-            using (var context = (FundingSourceDataContext) dataContextFactory.Create())
+            using (var context = (FundingSourceDataContext)dataContextFactory.Create())
             {
                 context.ChangeTracker.AutoDetectChangesEnabled = false;
                 await context.LevyTransactions.AddRangeAsync(levyTransactions, cancellationToken).ConfigureAwait(false);
@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
 
         public async Task SaveLevyTransactionsIndividually(IList<LevyTransactionModel> levyTransactions, CancellationToken cancellationToken)
         {
-            using (var mainContext = (FundingSourceDataContext) dataContextFactory.Create())
+            using (var mainContext = (FundingSourceDataContext)dataContextFactory.Create())
             {
                 using (var mainTransaction = await mainContext.Database
                     .BeginTransactionAsync(IsolationLevel.ReadUncommitted, cancellationToken)
@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
                     {
                         try
                         {
-                            var context = (FundingSourceDataContext) dataContextFactory.Create(mainTransaction.GetDbTransaction());
+                            var context = (FundingSourceDataContext)dataContextFactory.Create(mainTransaction.GetDbTransaction());
                             await context.LevyTransactions.AddAsync(model, cancellationToken).ConfigureAwait(false);
                             await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                         }
@@ -66,10 +66,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
                             throw;
                         }
                     }
-                    await mainTransaction.CommitAsync(cancellationToken);
+
+                    mainTransaction.Commit();
                 }
             }
         }
-
     }
 }

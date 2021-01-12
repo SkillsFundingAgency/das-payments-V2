@@ -1,6 +1,5 @@
 ﻿using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Core;
-using SFA.DAS.Payments.FundingSource.Application.Data;
 using SFA.DAS.Payments.FundingSource.Application.Extensions;
 using SFA.DAS.Payments.FundingSource.Application.Repositories;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -23,7 +22,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private readonly IPaymentLogger logger;
         private readonly ILevyTransactionRepository levyTransactionRepository;
 
-        public LevyTransactionBatchStorageService(IPaymentLogger logger, IFundingSourceDataContextFactory dataContextFactory, ILevyTransactionRepository levyTransactionRepository)
+        public LevyTransactionBatchStorageService(IPaymentLogger logger, ILevyTransactionRepository levyTransactionRepository)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.levyTransactionRepository = levyTransactionRepository ?? throw new ArgumentNullException(nameof(levyTransactionRepository));
