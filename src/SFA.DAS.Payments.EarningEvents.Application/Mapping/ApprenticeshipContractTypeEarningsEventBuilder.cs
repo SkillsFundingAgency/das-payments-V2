@@ -30,11 +30,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             var intermediateResults = InitialLearnerTransform(learnerSubmission, true);
             var results = new List<ApprenticeshipContractTypeEarningsEvent>();
 
-            // Sort all p/e by start date
-            var sortedPriceEpisodes = learnerSubmission.Learner.PriceEpisodes
-                .OrderBy(x => x.PriceEpisodeValues.EpisodeStartDate)
-                .ToList();
-            
             foreach (var intermediateLearningAim in intermediateResults)
             {
                 var episodesByContractType = intermediateLearningAim.PriceEpisodes.GroupBy(x => x.PriceEpisodeValues.PriceEpisodeContractType);
