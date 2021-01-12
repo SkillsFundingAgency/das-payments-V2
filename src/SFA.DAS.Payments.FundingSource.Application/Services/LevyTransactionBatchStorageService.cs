@@ -1,14 +1,15 @@
-﻿using System;
+﻿using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Core;
+using SFA.DAS.Payments.FundingSource.Application.Data;
+using SFA.DAS.Payments.FundingSource.Application.Extensions;
+using SFA.DAS.Payments.FundingSource.Application.Repositories;
+using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.RequiredPayments.Messages.Events;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Core;
-using SFA.DAS.Payments.FundingSource.Application.Data;
-using SFA.DAS.Payments.FundingSource.Application.Extensions;
-using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
@@ -20,13 +21,12 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
     public class LevyTransactionBatchStorageService : ILevyTransactionBatchStorageService
     {
         private readonly IPaymentLogger logger;
+        private readonly ILevyTransactionRepository levyTransactionRepository;
 
-        private readonly IFundingSourceDataContext dataContext;
-
-        public LevyTransactionBatchStorageService(IPaymentLogger logger, IFundingSourceDataContext dataContext)
+        public LevyTransactionBatchStorageService(IPaymentLogger logger, IFundingSourceDataContextFactory dataContextFactory, ILevyTransactionRepository levyTransactionRepository)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
+            this.levyTransactionRepository = levyTransactionRepository ?? throw new ArgumentNullException(nameof(levyTransactionRepository));
         }
 
         public async Task StoreLevyTransactions(IList<CalculatedRequiredLevyAmount> calculatedRequiredLevyAmounts, CancellationToken cancellationToken, bool isReceiverTransferPayment = false)
@@ -64,9 +64,20 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             }).ToList();
             cancellationToken.ThrowIfCancellationRequested();
 
-            await dataContext.SaveBatch(models, cancellationToken).ConfigureAwait(false);
+            try
+            {
+                await levyTransactionRepository.SaveLevyTransactions(models, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                if (!e.IsUniqueKeyConstraintException() && !e.IsDeadLockException()) throw;
 
-            logger.LogInfo($"Saved {calculatedRequiredLevyAmounts.Count} levy transactions to db.");
+                logger.LogInfo($"Batch contained a duplicate LevyTransaction. Will store each individually and discard duplicate.");
+
+                await levyTransactionRepository.SaveLevyTransactionsIndividually(models, cancellationToken);
+            }
+
+            logger.LogInfo($"Saved levy transactions to db. Duplicates skipped.");
         }
     }
 }
