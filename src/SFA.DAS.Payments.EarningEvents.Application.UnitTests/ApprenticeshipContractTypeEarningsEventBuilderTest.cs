@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<EarningsEventProfile>()));
             redundancyEarningService = new Mock<IRedundancyEarningService>();
             redundancyEarningService
-                .Setup(x => x.SplitContractEarningByRedundancyDate(It.IsAny<ApprenticeshipContractTypeEarningsEvent>(), It.IsAny<List<byte>>()))
+                .Setup(x => x.OriginalAndRedundancyEarningEventIfRequired(It.IsAny<ApprenticeshipContractTypeEarningsEvent>(), It.IsAny<List<byte>>()))
                 .Returns((ApprenticeshipContractTypeEarningsEvent x, List<byte> y) => new List<ApprenticeshipContractTypeEarningsEvent>{ x });
         }
 
@@ -1128,12 +1128,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                 mapper);
             var processLearnerCommand = FileHelpers.CreateFromFile(filename, learnerRefNo);
 
-            redundancyEarningService.Setup(x => x.SplitContractEarningByRedundancyDate(It.IsAny<ApprenticeshipContractType2EarningEvent>(), It.IsAny<List<byte>>()))
+            redundancyEarningService.Setup(x => x.OriginalAndRedundancyEarningEventIfRequired(It.IsAny<ApprenticeshipContractType2EarningEvent>(), It.IsAny<List<byte>>()))
                 .Returns(new List<ApprenticeshipContractTypeEarningsEvent>());
 
             builder.Build(processLearnerCommand);
 
-            redundancyEarningService.Verify(x => x.SplitContractEarningByRedundancyDate(It.IsAny<ApprenticeshipContractType2EarningEvent>(), It.IsAny<List<byte>>()));
+            redundancyEarningService.Verify(x => x.OriginalAndRedundancyEarningEventIfRequired(It.IsAny<ApprenticeshipContractType2EarningEvent>(), It.IsAny<List<byte>>()));
         }
 
         [Test]

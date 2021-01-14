@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
                     mapper.Map(learnerWithSortedPriceEpisodes, earningEvent);
 
-                    results.AddRange(redundancyEarningService.SplitContractEarningByRedundancyDate(earningEvent, redundancyPeriods));
+                    results.AddRange(redundancyEarningService.OriginalAndRedundancyEarningEventIfRequired(earningEvent, redundancyPeriods));
                 }
             }
 

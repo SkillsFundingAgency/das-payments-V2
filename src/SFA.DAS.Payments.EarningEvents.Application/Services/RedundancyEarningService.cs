@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Services
             this.redundancyEarningEventFactory = redundancyEarningEventFactory ?? throw new ArgumentNullException(nameof(redundancyEarningEventFactory));
         }
 
-        public List<ApprenticeshipContractTypeEarningsEvent> SplitContractEarningByRedundancyDate(ApprenticeshipContractTypeEarningsEvent earningEvent, 
+        public List<ApprenticeshipContractTypeEarningsEvent> OriginalAndRedundancyEarningEventIfRequired(ApprenticeshipContractTypeEarningsEvent earningEvent, 
             List<byte> redundancyPeriods)
         {
             var splitResults = new List<ApprenticeshipContractTypeEarningsEvent> {earningEvent};
@@ -44,7 +44,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Services
             return splitResults;
         }
 
-        public List<FunctionalSkillEarningsEvent> SplitFunctionSkillEarningByRedundancyDate(FunctionalSkillEarningsEvent functionalSkillEarning, List<byte> redundancyPeriods)
+        public List<FunctionalSkillEarningsEvent> OriginalAndRedundancyFunctionalSkillEarningEventIfRequired(FunctionalSkillEarningsEvent functionalSkillEarning, List<byte> redundancyPeriods)
         {
             var splitResults = new List<FunctionalSkillEarningsEvent>{ functionalSkillEarning };
             if (!redundancyPeriods.Any())

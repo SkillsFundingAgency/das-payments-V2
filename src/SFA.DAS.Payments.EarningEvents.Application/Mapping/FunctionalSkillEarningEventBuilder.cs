@@ -78,7 +78,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                         earning.Periods = earningPeriods.AsReadOnly();
                     }
 
-                    results.AddRange(redundancyEarningService.SplitFunctionSkillEarningByRedundancyDate(functionalSkillEarning, redundancyPeriods));
+                    results.AddRange(redundancyEarningService.OriginalAndRedundancyFunctionalSkillEarningEventIfRequired(functionalSkillEarning, redundancyPeriods));
                 }
             }
 

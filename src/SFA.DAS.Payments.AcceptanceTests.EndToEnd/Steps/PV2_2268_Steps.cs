@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 await SaveLevyAccount(employer).ConfigureAwait(false);
             }
 
-            ScriptInApprenticeshipData();
+            ScriptInApprenticeshipsAndPriceEpisodes(); //This creates apprenticeships and apprenticeship prices episodes to match the apprenticeships in the FM36s and the scenario in the ticket
 
             var dcHelper = Scope.Resolve<IDcHelper>();
             await dcHelper.SendIlrSubmission(TestSession.FM36Global.Learners,
@@ -93,7 +93,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given("the delivered learning days before the break are under 75 percent")]
         public void EmptyStep()
         {
-            //covered by FM36s imported in first step
+            //covered by FM36s imported
+            //R03 introduces a redundancy and BIL with the following fields:
+            //PriceEpisodeRedStartDate
+            //PriceEpisodeRedStatusCode
         }
 
         [Then("the learner must be funded from the employer levy funds")]
@@ -116,7 +119,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         private void ImportR03Fm36() { GetFm36LearnerForCollectionPeriod("R03/current academic year"); }
         private void ImportR04Fm36() { GetFm36LearnerForCollectionPeriod("R04/current academic year"); }
 
-        private void ScriptInApprenticeshipData()
+        private void ScriptInApprenticeshipsAndPriceEpisodes()
         {
             var sql = $@"
 

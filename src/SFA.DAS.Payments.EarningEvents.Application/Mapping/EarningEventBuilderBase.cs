@@ -113,14 +113,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 var currentPriceEpisode = orderedPriceEpisodes[i];
                 if (currentPriceEpisode.PriceEpisodeValues.PriceEpisodeRedStatusCode == 1)
                 {
-                    var startPeriod = currentPriceEpisode.PriceEpisodeValues.PriceEpisodeRedStartDate.Value.GetPeriodFromDate();
-                    var nextPeriod = 13;
+                    var redundancyStartPeriod = currentPriceEpisode.PriceEpisodeValues.PriceEpisodeRedStartDate.Value.GetPeriodFromDate();
+                    var redundancyEndPeriod = 13;
                     if (i + 1 < priceEpisodeCount)
                     {
-                        nextPeriod = orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeStartDate.Value.GetPeriodFromDate();
+                        redundancyEndPeriod = orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeStartDate.Value.GetPeriodFromDate();
                     }
 
-                    for (byte j = startPeriod; j < nextPeriod; j++)
+                    for (byte j = redundancyStartPeriod; j < redundancyEndPeriod; j++)
                     {
                         redundancyPeriods.Add(j);
                     }

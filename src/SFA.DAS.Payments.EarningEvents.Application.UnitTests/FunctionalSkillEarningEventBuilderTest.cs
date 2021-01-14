@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<EarningsEventProfile>()));
             redundancyEarningService = new Mock<IRedundancyEarningService>();
             redundancyEarningService
-                .Setup(x => x.SplitFunctionSkillEarningByRedundancyDate(It.IsAny<FunctionalSkillEarningsEvent>(), It.IsAny<List<byte>>()))
+                .Setup(x => x.OriginalAndRedundancyFunctionalSkillEarningEventIfRequired(It.IsAny<FunctionalSkillEarningsEvent>(), It.IsAny<List<byte>>()))
                 .Returns((FunctionalSkillEarningsEvent x, List<byte> y) => new List<FunctionalSkillEarningsEvent> { x });
         }
 
