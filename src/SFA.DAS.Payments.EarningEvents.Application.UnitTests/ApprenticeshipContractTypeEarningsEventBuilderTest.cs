@@ -1113,11 +1113,23 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                 .Periods
                 .Should().HaveCount(1);
             events.Where(x => x.PriceEpisodes.Exists(y => y.Identifier == "25-17-01/08/2020"))
+                .Single(x => x.GetType().IsAssignableFrom(typeof(ApprenticeshipContractType1EarningEvent)))
+                .OnProgrammeEarnings
+                .Single(x => x.Type == OnProgrammeEarningType.Learning)
+                .Periods
+                .Should().HaveCount(11);
+            events.Where(x => x.PriceEpisodes.Exists(y => y.Identifier == "25-17-01/08/2020"))
                 .Single(x => x.GetType().IsAssignableFrom(typeof(ApprenticeshipContractType1RedundancyEarningEvent)))
                 .IncentiveEarnings
                 .Single(x => x.Type == IncentiveEarningType.LearningSupport)
                 .Periods
                 .Should().HaveCount(1);
+            events.Where(x => x.PriceEpisodes.Exists(y => y.Identifier == "25-17-01/08/2020"))
+                .Single(x => x.GetType().IsAssignableFrom(typeof(ApprenticeshipContractType1EarningEvent)))
+                .IncentiveEarnings
+                .Single(x => x.Type == IncentiveEarningType.LearningSupport)
+                .Periods
+                .Should().HaveCount(11);
         }
 
         [Test]
