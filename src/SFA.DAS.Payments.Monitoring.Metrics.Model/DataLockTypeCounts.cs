@@ -1,5 +1,8 @@
-﻿namespace SFA.DAS.Payments.Monitoring.Metrics.Model
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SFA.DAS.Payments.Monitoring.Metrics.Model
 {
+    [NotMapped]
     public class DataLockTypeCounts
     {
         public int DataLock1 { get; set; }

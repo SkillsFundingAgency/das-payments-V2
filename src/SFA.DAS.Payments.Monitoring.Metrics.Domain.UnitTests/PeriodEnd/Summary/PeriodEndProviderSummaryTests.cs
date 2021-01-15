@@ -17,6 +17,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
         private List<TransactionTypeAmountsByContractType> paymentTransactionTypes;
         private List<ProviderFundingSourceAmounts> paymentFundingSources;
         private ProviderContractTypeAmounts heldBackAmounts;
+        private PeriodEndProviderDataLockTypeCounts periodEndProviderDataLockTypeCounts;
         protected PeriodEndProviderSummary GetPeriodEndProviderSummary => TestHelper.DefaultPeriodEndProviderSummary;
 
         [SetUp]
@@ -26,6 +27,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             paymentTransactionTypes = TestHelper.GetPaymentTransactionTypes;
             paymentFundingSources = TestHelper.GetPaymentFundingSourceAmounts;
             heldBackAmounts = TestHelper.DefaultHeldBackCompletionPayments;
+            periodEndProviderDataLockTypeCounts = TestHelper.DefaultPeriodEndProviderDataLockTypeCounts;
 
         }
 
@@ -42,6 +44,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             summary.AddTransactionTypes(paymentTransactionTypes);
             summary.AddFundingSourceAmounts(paymentFundingSources);
             summary.AddHeldBackCompletionPayments(heldBackAmounts);
+            summary.AddPeriodEndProviderDataLockTypeCounts(periodEndProviderDataLockTypeCounts);
             return summary;
         }
 

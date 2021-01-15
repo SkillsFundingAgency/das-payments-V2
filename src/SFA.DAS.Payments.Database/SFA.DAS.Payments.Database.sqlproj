@@ -127,6 +127,7 @@
     <Build Include="Metrics\Tables\Metrics.PeriodEndSummary.sql" />
     <Build Include="Metrics\Tables\Metrics.SubmissionsSummary.sql" />
     <Build Include="Metrics\Tables\Metrics.CollectionPeriodTolerance.sql" />
+    <Build Include="Metrics\Tables\Metrics.SubmissionsSummaryDataLockCounts.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />

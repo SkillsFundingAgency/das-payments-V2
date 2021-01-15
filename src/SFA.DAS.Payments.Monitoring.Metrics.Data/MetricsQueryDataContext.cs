@@ -22,6 +22,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 		DbSet<LatestSuccessfulJobModel> LatestSuccessfulJobs { get; }
 		Task<decimal> GetAlreadyPaidDataLocksAmount(long ukprn, long jobId, CancellationToken cancellationToken);
 		Task<DataLockTypeCounts> GetDataLockCounts(long ukprn, long jobId, CancellationToken cancellationToken);
+        Task<List<PeriodEndProviderDataLockTypeCounts>> GetPeriodEndProviderDataLockCounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
 		Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
 		Task<List<ProviderTotal>> GetAlreadyPaidDataLockProviderTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
 		Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
@@ -35,7 +36,15 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 			public byte DataLockType { get; set; }
 		}
 
-		public virtual DbQuery<DataLockCount> DataLockCounts { get; set; }
+        public class PeriodEndDataLockCount
+        {
+			public long Ukprn { get; set; }
+			public int Count { get; set; }
+			public byte DataLockType { get; set; }
+        }
+
+        public virtual DbQuery<DataLockCount> DataLockCounts { get; set; }
+        public virtual DbQuery<PeriodEndDataLockCount> PeriodEndDataLockCounts { get; set; }
 		public virtual DbQuery<ProviderTotal> AlreadyPaidDataLockProviderTotals { get; set; }
 		public virtual DbSet<LatestSuccessfulJobModel> LatestSuccessfulJobs { get; set; }
 		public virtual DbSet<EarningEventModel> EarningEvent { get; protected set; }
@@ -204,6 +213,62 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 				DataLock12 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_12)?.Count ?? 0,
 			};
 		}
+
+        public async Task<List<PeriodEndProviderDataLockTypeCounts>> GetPeriodEndProviderDataLockCounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        {
+			var dataLockCountByUkprnSql = @"
+                select
+                    count(*) [Count],
+	                a.DataLockFailureId [DataLockType],
+                    a.ukprn
+                from (
+		            select
+			            LearnerReferenceNumber,
+			            DataLockFailureId,
+                        dle.ukprn
+		           from Payments2.DataLockEvent dle
+		           join Payments2.DataLockEventNonPayablePeriod npp on dle.EventId = npp.DataLockEventId
+		           join Payments2.DataLockEventNonPayablePeriodFailures nppf on npp.DataLockEventNonPayablePeriodId = nppf.DataLockEventNonPayablePeriodId
+		           where npp.TransactionType in (1,2,3)
+			            and (dle.IsPayable = 0)
+                        and dle.jobId in (
+                            select DcJobId
+                            from Payments2.LatestSuccessfulJobs
+                            Where AcademicYear = @academicYear
+                            and CollectionPeriod = @collectionPeriod)
+		           group by dle.LearnerReferenceNumber, nppf.DataLockFailureId, dle.ukprn
+                        ) a
+                group by
+                    a.DataLockFailureId, a.ukprn
+                ";
+
+            var providerDataLockCounts = await PeriodEndDataLockCounts
+                .FromSql(dataLockCountByUkprnSql, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod))
+                .ToListAsync(cancellationToken);
+
+            return providerDataLockCounts
+                .GroupBy(x => x.Ukprn)
+                .Select(dataLockCounts => new PeriodEndProviderDataLockTypeCounts
+                {
+					Ukprn = dataLockCounts.Key,
+                    DataLock1 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_01)?.Count ?? 0,
+                    DataLock2 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_02)?.Count ?? 0,
+                    DataLock3 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_03)?.Count ?? 0,
+                    DataLock4 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_04)?.Count ?? 0,
+                    DataLock5 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_05)?.Count ?? 0,
+                    DataLock6 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_06)?.Count ?? 0,
+                    DataLock7 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_07)?.Count ?? 0,
+                    DataLock8 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_08)?.Count ?? 0,
+                    DataLock9 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_09)?.Count ?? 0,
+                    DataLock10 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_10)?.Count ?? 0,
+                    DataLock11 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_11)?.Count ?? 0,
+                    DataLock12 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_12)?.Count ?? 0,
+				})
+                .ToList();
+
+
+
+        }
 
 		public async Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
 		{

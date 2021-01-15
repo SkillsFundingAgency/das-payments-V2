@@ -206,7 +206,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
         public async Task<IList<SubmissionSummaryModel>> GetSubmissionsSummaryMetrics(long jobId, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken)
         {
-            var submissions = await persistenceDataContext.SubmissionSummaries.Where(s => s.CollectionPeriod == currentCollectionPeriod && s.AcademicYear == academicYear).ToListAsync(cancellationToken: cancellationToken);
+            var submissions = await persistenceDataContext.SubmissionSummaries
+                .Include(s => s.DataLockMetrics)
+                .Where(s => s.CollectionPeriod == currentCollectionPeriod && s.AcademicYear == academicYear)
+                .ToListAsync(cancellationToken: cancellationToken);
 
             return submissions == null || submissions.Count == 0 ? null : submissions;
         }

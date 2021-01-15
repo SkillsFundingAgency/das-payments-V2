@@ -56,6 +56,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 var fundingSourceTask = periodEndMetricsRepository.GetFundingSourceAmountsByContractType(academicYear, collectionPeriod, cancellationToken);
                 var currentPaymentTotals = periodEndMetricsRepository.GetYearToDatePayments(academicYear, collectionPeriod, cancellationToken);
                 var dataLockedEarningsTask = periodEndMetricsRepository.GetDataLockedEarningsTotals(academicYear, collectionPeriod, cancellationToken);
+                var periodEndProviderDataLockTypeCountsTask = periodEndMetricsRepository.GetPeriodEndProviderDataLockTypeCounts(academicYear, collectionPeriod, cancellationToken);
                 var dataLockedAlreadyPaidTask = periodEndMetricsRepository.GetAlreadyPaidDataLockedEarnings(academicYear, collectionPeriod, cancellationToken);
                 var heldBackCompletionAmountsTask = periodEndMetricsRepository.GetHeldBackCompletionPaymentsTotals(academicYear, collectionPeriod, cancellationToken);
 
@@ -65,6 +66,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                     fundingSourceTask,
                     currentPaymentTotals,
                     dataLockedEarningsTask,
+                    periodEndProviderDataLockTypeCountsTask,
                     dataLockedAlreadyPaidTask,
                     heldBackCompletionAmountsTask);
 
@@ -94,6 +96,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                     providerSummary.AddFundingSourceAmounts(fundingSourceTask.Result.Where(x => x.Ukprn == ukprn));
                     providerSummary.AddPaymentsYearToDate(currentPaymentTotals.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderContractTypeAmounts());
                     providerSummary.AddDataLockedEarnings(dataLockedEarningsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn)?.TotalAmount ?? 0m);
+                    providerSummary.AddPeriodEndProviderDataLockTypeCounts(periodEndProviderDataLockTypeCountsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new PeriodEndProviderDataLockTypeCounts());
                     providerSummary.AddDataLockedAlreadyPaid(dataLockedAlreadyPaidTask.Result.FirstOrDefault(x => x.Ukprn == ukprn)?.TotalAmount ?? 0m);
                     providerSummary.AddHeldBackCompletionPayments(heldBackCompletionAmountsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderContractTypeAmounts());
 
@@ -177,7 +180,20 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 { "DataLockedEarnings", (double) providerMetrics.AdjustedDataLockedEarnings },
                 { "AlreadyPaidDataLockedEarnings", (double) providerMetrics.AlreadyPaidDataLockedEarnings },
                 { "TotalDataLockedEarnings", (double) providerMetrics.TotalDataLockedEarnings },
-                
+
+                { "DataLockedCountDLock1" ,  (double) providerMetrics.DataLockTypeCounts.DataLock1 },
+                { "DataLockedCountDLock2" ,  (double) providerMetrics.DataLockTypeCounts.DataLock2 },
+                { "DataLockedCountDLock3" ,  (double) providerMetrics.DataLockTypeCounts.DataLock3 },
+                { "DataLockedCountDLock4" ,  (double) providerMetrics.DataLockTypeCounts.DataLock4 },
+                { "DataLockedCountDLock5" ,  (double) providerMetrics.DataLockTypeCounts.DataLock5 },
+                { "DataLockedCountDLock6" ,  (double) providerMetrics.DataLockTypeCounts.DataLock6 },
+                { "DataLockedCountDLock7" ,  (double) providerMetrics.DataLockTypeCounts.DataLock7 },
+                { "DataLockedCountDLock8" ,  (double) providerMetrics.DataLockTypeCounts.DataLock8 },
+                { "DataLockedCountDLock9" ,  (double) providerMetrics.DataLockTypeCounts.DataLock9 },
+                { "DataLockedCountDLock10" , (double) providerMetrics.DataLockTypeCounts.DataLock10 },
+                { "DataLockedCountDLock11" , (double) providerMetrics.DataLockTypeCounts.DataLock11 },
+                { "DataLockedCountDLock12" , (double) providerMetrics.DataLockTypeCounts.DataLock12 },
+
                 { "HeldBackCompletionPaymentsTotal", (double) providerMetrics.HeldBackCompletionPayments.Total },
                 { "HeldBackCompletionPaymentsContractType1", (double) providerMetrics.HeldBackCompletionPayments.ContractType1 },
                 { "HeldBackCompletionPaymentsContractType2", (double) providerMetrics.HeldBackCompletionPayments.ContractType2 },
@@ -286,7 +302,20 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 { "DataLockedEarnings", (double) metrics.AdjustedDataLockedEarnings },
                 { "AlreadyPaidDataLockedEarnings", (double) metrics.AlreadyPaidDataLockedEarnings },
                 { "TotalDataLockedEarnings", (double) metrics.TotalDataLockedEarnings },
-                
+
+                { "DataLockedCountDLock1" ,  (double) metrics.DataLockTypeCounts.DataLock1 },
+                { "DataLockedCountDLock2" ,  (double) metrics.DataLockTypeCounts.DataLock2 },
+                { "DataLockedCountDLock3" ,  (double) metrics.DataLockTypeCounts.DataLock3 },
+                { "DataLockedCountDLock4" ,  (double) metrics.DataLockTypeCounts.DataLock4 },
+                { "DataLockedCountDLock5" ,  (double) metrics.DataLockTypeCounts.DataLock5 },
+                { "DataLockedCountDLock6" ,  (double) metrics.DataLockTypeCounts.DataLock6 },
+                { "DataLockedCountDLock7" ,  (double) metrics.DataLockTypeCounts.DataLock7 },
+                { "DataLockedCountDLock8" ,  (double) metrics.DataLockTypeCounts.DataLock8 },
+                { "DataLockedCountDLock9" ,  (double) metrics.DataLockTypeCounts.DataLock9 },
+                { "DataLockedCountDLock10" , (double) metrics.DataLockTypeCounts.DataLock10 },
+                { "DataLockedCountDLock11" , (double) metrics.DataLockTypeCounts.DataLock11 },
+                { "DataLockedCountDLock12" , (double) metrics.DataLockTypeCounts.DataLock12 },
+
                 { "HeldBackCompletionPaymentsTotal", (double) metrics.HeldBackCompletionPayments.Total },
                 { "HeldBackCompletionPaymentsContractType1", (double) metrics.HeldBackCompletionPayments.ContractType1 },
                 { "HeldBackCompletionPaymentsContractType2", (double) metrics.HeldBackCompletionPayments.ContractType2 },
@@ -294,6 +323,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 { "PaymentsYearToDateTotal", (double) metrics.YearToDatePayments.Total },
                 { "PaymentsYearToDateContractType1", (double) metrics.YearToDatePayments.ContractType1 },
                 { "PaymentsYearToDateContractType2", (double) metrics.YearToDatePayments.ContractType2 },
+
             };
 
             telemetry.TrackEvent("Finished Generating Period End Metrics", properties, stats);

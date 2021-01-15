@@ -5,6 +5,6 @@
         public long Id { get; set; }
         public long SubmissionSummaryId { get; set; }
         public virtual SubmissionSummaryModel SubmissionSummary { get; set; }
-        public DataLockTypeCounts Amounts { get; set; }
+        public DataLockTypeCounts Amounts { get; set; } = new DataLockTypeCounts();
     }
 }
