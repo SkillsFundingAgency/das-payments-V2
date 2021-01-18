@@ -37,6 +37,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.Data
             this.connectionString = connectionString;
         }
 
+        public FundingSourceDataContext(DbContextOptions<FundingSourceDataContext> options) : base(options)
+        {
+
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

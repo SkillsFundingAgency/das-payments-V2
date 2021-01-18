@@ -90,7 +90,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
                     var endpointInstanceFactory = new EndpointInstanceFactory(CreateEndpointConfiguration(c));
                     var levyFundingSourceRepository = c.Resolve<ILevyFundingSourceRepository>();
 
-                    return new ManageLevyAccountBalanceService(accountApiClient, logger, bulkWriter,levyFundingSourceRepository, batchSize, endpointInstanceFactory);
+                    return new ManageLevyAccountBalanceService(accountApiClient, logger, bulkWriter, levyFundingSourceRepository, batchSize, endpointInstanceFactory);
                 })
                 .As<IManageLevyAccountBalanceService>()
                 .InstancePerLifetimeScope();
@@ -107,10 +107,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
             }).As<IFundingSourceDataContext>();
 
             builder.Register((c, p) =>
-            {
-                var config = c.Resolve<IConfigurationHelper>();
-                return new FundingSourceDataContextFactory(config.GetConnectionString("PaymentsConnectionString"));
-            }).As<IFundingSourceDataContextFactory>();
+                {
+                    var config = c.Resolve<IConfigurationHelper>();
+                    return new FundingSourceDataContextFactory(config.GetConnectionString("PaymentsConnectionString"));
+                }).As<IFundingSourceDataContextFactory>()
+                .InstancePerLifetimeScope();
 
             builder.RegisterServiceFabricSupport();
         }
@@ -119,7 +120,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Ioc
         private EndpointConfiguration CreateEndpointConfiguration(IComponentContext container)
         {
             var config = container.Resolve<IApplicationConfiguration>();
-           
+
             var endpointConfiguration = new EndpointConfiguration(config.EndpointName);
 
             var conventions = endpointConfiguration.Conventions();
