@@ -15,11 +15,9 @@
     <Parameter Name="DasNServiceBusLicenseKey" DefaultValue="" />
     <Parameter Name="EasApiEndpoint" DefaultValue="" />
     <Parameter Name="EasApiPassword" DefaultValue="" />
-    
     <Parameter Name="EasApiClientId" DefaultValue="" />
     <Parameter Name="EasApiTenantId" DefaultValue="" />
     <Parameter Name="EasApiScope" DefaultValue="" />
-
     <Parameter Name="EasCertificateThumbprint" DefaultValue="" />
     <Parameter Name="EasPageSize" DefaultValue="1000" />
   </Parameters>
