@@ -16,6 +16,7 @@
     <Parameter Name="AuditQueueName" Value="__AuditQueue__" />
     <Parameter Name="TimeToPauseBetweenChecks" Value="__PeriodEnd_TimeToPauseBetweenChecks__" />
     <Parameter Name="TimeToWaitForJobToComplete" Value="__PeriodEnd_TimeToWaitForJobToComplete__" />
+    <Parameter Name="TimeToWaitForPeriodEndRunJobToComplete" Value="__PeriodEnd_TimeToWaitForPeriodEndRunJobToComplete__" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
     <Parameter Name="ProcessMessageSequentially" Value="false" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />

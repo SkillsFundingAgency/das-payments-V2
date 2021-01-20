@@ -19,6 +19,7 @@
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
     <Parameter Name="TimeToPauseBetweenChecks" DefaultValue="00:00:10" />
     <Parameter Name="TimeToWaitForJobToComplete" DefaultValue="00:02:00" />
+    <Parameter Name="TimeToWaitForPeriodEndRunJobToComplete" DefaultValue="00:02:00" />
     <Parameter Name="MonitoringServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="MaximumCallbackTimeSpan" DefaultValue="00:10:00" />
     <Parameter Name="Placement_Constraints" DefaultValue="" />
@@ -47,6 +48,7 @@
           <Section Name="Settings">
             <Parameter Name="TimeToPauseBetweenChecks" Value="[TimeToPauseBetweenChecks]" />
             <Parameter Name="TimeToWaitForJobToComplete" Value="[TimeToWaitForJobToComplete]" />
+            <Parameter Name="TimeToWaitForPeriodEndRunJobToComplete" Value="[TimeToWaitForPeriodEndRunJobToComplete]" />
             <Parameter Name="EndpointName" Value="[PeriodEndService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[PeriodEndService_FailedMessagesQueue]" />
             <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
