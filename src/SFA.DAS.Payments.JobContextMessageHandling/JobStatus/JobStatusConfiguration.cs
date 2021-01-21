@@ -10,6 +10,7 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
     {
         TimeSpan TimeToPauseBetweenChecks { get; }
         TimeSpan TimeToWaitForJobToComplete { get; }
+        TimeSpan TimeToWaitForPeriodEndRunJobToComplete { get; }
     }
 
     /// <summary>
@@ -20,5 +21,6 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
     {
         public TimeSpan TimeToPauseBetweenChecks { get; set; }
         public TimeSpan TimeToWaitForJobToComplete { get; set; }
+        public TimeSpan TimeToWaitForPeriodEndRunJobToComplete { get; set; }
     }
 }

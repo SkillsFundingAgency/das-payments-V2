@@ -117,8 +117,15 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 {
                     return await jobStatusService.WaitForPeriodEndSubmissionWindowValidationToFinish(jobIdToWaitFor, cancellationToken);
                 }
-                
-                await jobStatusService.WaitForJobToFinish(jobIdToWaitFor, cancellationToken);
+
+                if (periodEndEvent is PeriodEndRunningEvent)
+                {
+                    await jobStatusService.WaitForPeriodEndRunJobToFinish(jobIdToWaitFor, cancellationToken);
+                }
+                else
+                {
+                    await jobStatusService.WaitForJobToFinish(jobIdToWaitFor, cancellationToken);
+                }
 
                 return true;
             }
