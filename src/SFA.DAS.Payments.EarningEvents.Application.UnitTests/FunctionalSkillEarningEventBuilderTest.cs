@@ -26,10 +26,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         private  Mock<IRedundancyEarningService> redundancyEarningService;
 
         [OneTimeSetUp]
-        public void InitialiseMapper()
+        public void InitialiseDependencies()
         {
             mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<EarningsEventProfile>()));
             redundancyEarningService = new Mock<IRedundancyEarningService>();
+            redundancyEarningService
+                .Setup(x => x.OriginalAndRedundancyFunctionalSkillEarningEventIfRequired(It.IsAny<FunctionalSkillEarningsEvent>(), It.IsAny<List<byte>>()))
+                .Returns((FunctionalSkillEarningsEvent x, List<byte> y) => new List<FunctionalSkillEarningsEvent> { x });
         }
 
         [SetUp]
@@ -333,7 +336,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             {
                 Earnings = new List<FunctionalSkillEarning>().AsReadOnly()
             };
-            var builder = new FunctionalSkillEarningEventBuilder(mapper, new Mock<IRedundancyEarningService>().Object);
+            var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningService.Object);
             var learnerSubmissionModel = new ProcessLearnerCommand
             {
                 CollectionPeriod = 1,

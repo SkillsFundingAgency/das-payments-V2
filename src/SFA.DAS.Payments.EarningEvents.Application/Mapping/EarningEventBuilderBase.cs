@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
@@ -95,6 +96,38 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             });
 
             return results;
+        }
+
+        public List<byte> CalculateRedundancyPeriods(List<PriceEpisode> priceEpisodes)
+        {
+            if (priceEpisodes.All(x => x.PriceEpisodeValues.PriceEpisodeRedStatusCode != 1))
+                return new List<byte>();
+
+            var redundancyPeriods = new List<byte>();
+
+            var orderedPriceEpisodes = priceEpisodes.OrderBy(x => x.PriceEpisodeValues.EpisodeStartDate).ToList();
+            var priceEpisodeCount = orderedPriceEpisodes.Count;
+
+            for (var i = 0; i < priceEpisodeCount; i++)
+            {
+                var currentPriceEpisode = orderedPriceEpisodes[i];
+                if (currentPriceEpisode.PriceEpisodeValues.PriceEpisodeRedStatusCode == 1)
+                {
+                    var redundancyStartPeriod = currentPriceEpisode.PriceEpisodeValues.PriceEpisodeRedStartDate.Value.GetPeriodFromDate();
+                    var redundancyEndPeriod = 13;
+                    if (i + 1 < priceEpisodeCount)
+                    {
+                        redundancyEndPeriod = orderedPriceEpisodes[i + 1].PriceEpisodeValues.EpisodeStartDate.Value.GetPeriodFromDate();
+                    }
+
+                    for (byte j = redundancyStartPeriod; j < redundancyEndPeriod; j++)
+                    {
+                        redundancyPeriods.Add(j);
+                    }
+                }
+            }
+
+            return redundancyPeriods;
         }
     }
 }
