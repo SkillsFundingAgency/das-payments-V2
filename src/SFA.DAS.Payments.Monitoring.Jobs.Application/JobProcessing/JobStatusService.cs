@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         protected virtual async Task<bool> IsJobTimedOut(JobModel job, CancellationToken cancellationToken)
         {
             var timedOutTime = DateTimeOffset.UtcNow;
-            if (job.Status != JobStatus.InProgress || job.StartTime.Add(Config.EarningsJobTimeout) >= timedOutTime)
+            if (job.Status != JobStatus.InProgress || job.StartTime.Add(job.JobType == JobType.PeriodEndRunJob ? Config.PeriodEndRunJobTimeout : Config.EarningsJobTimeout) >= timedOutTime)
                 return false;
             Logger.LogWarning(
                     $"Job {job.DcJobId} has timed out.  Start time: {job.StartTime}, timed out at: {timedOutTime}.");
