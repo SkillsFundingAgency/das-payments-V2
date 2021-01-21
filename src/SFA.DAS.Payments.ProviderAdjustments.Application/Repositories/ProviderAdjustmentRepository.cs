@@ -102,7 +102,12 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
                 logger.LogInfo($"Getting page {pageNumber} of data from API");
                 var httpResponse = await client.SendAsync(request).ConfigureAwait(false);
 
+                logger.LogInfo($"Successfully connected to the API");
+                
                 var responseContent = await httpResponse.Content.ReadAsStringAsync();
+                logger.LogDebug($"Response code: {httpResponse.StatusCode}, Reason: {httpResponse.ReasonPhrase}, " +
+                                $"Request: {httpResponse.RequestMessage.RequestUri}");
+
                 if (httpResponse.IsSuccessStatusCode)
                 {
                     var batch = JsonConvert.DeserializeObject<List<ProviderAdjustment>>(responseContent);
