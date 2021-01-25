@@ -29,6 +29,7 @@
     <Parameter Name="ConsoleLogLevel" Value="" />
     <Parameter Name="JobStatusCheck_Interval" Value="00:00:10" />
     <Parameter Name="TimeToWaitForJobToComplete" Value="01:00:00" />
+    <Parameter Name="TimeToWaitForPeriodEndRunJobToComplete" Value="01:00:00" />
     <Parameter Name="NumberOfNServiceBusThreads" Value="4" />
     <Parameter Name="DasNServiceBusLicenseKey" Value=""/>
     <Parameter Name="MetricsGenerationDelay" Value="00:05:00"/>
