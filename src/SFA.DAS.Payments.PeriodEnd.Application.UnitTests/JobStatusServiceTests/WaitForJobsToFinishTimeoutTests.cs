@@ -57,7 +57,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.JobStatusServiceTests
         {
             job.Status = JobStatus.Completed;
             var service = mocker.Create<JobStatusService>();
-            var finished = await service.WaitForJobToFinish(1, CancellationToken.None, true).ConfigureAwait(false);
+            var finished = await service.WaitForJobToFinish(1, CancellationToken.None, TimeSpan.FromSeconds(1)).ConfigureAwait(false);
             finished.Should().BeTrue();
         }
 
@@ -75,7 +75,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.JobStatusServiceTests
                 job.JobType = JobType.PeriodEndRunJob;
             job.Status = JobStatus.Completed;
             var service = mocker.Create<JobStatusService>();
-            var finished = await service.WaitForJobToFinish(1, CancellationToken.None, isPeriodEndJob).ConfigureAwait(false);
+            var finished = await service.WaitForJobToFinish(1, CancellationToken.None, isPeriodEndJob ? TimeSpan.FromSeconds(periodEndRunTimeout) : (TimeSpan?)null).ConfigureAwait(false);
             finished.Should().Be(expectedResult);
         }
     }
