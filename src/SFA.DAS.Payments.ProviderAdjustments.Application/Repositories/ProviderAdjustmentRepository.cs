@@ -4,11 +4,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Security;
-using System.Text;
+using System.Security.Authentication;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Newtonsoft.Json;
 using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -32,8 +33,11 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
         private readonly IPaymentLogger logger;
         private readonly IMapper mapper;
         private readonly IBulkWriter<ProviderAdjustment> bulkWriter;
-        private readonly string apiUsername;
+        private readonly string apiClientId;
+        private readonly string apiScope;
+        private readonly string apiTenantId;
         private readonly string apiPassword;
+
         private readonly int pageSize;
 
         public ProviderAdjustmentRepository(
@@ -68,8 +72,13 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
 
             client = new HttpClient(handler){BaseAddress = new Uri(configHelper.GetSetting("EasApiEndpoint"))};
             
-            apiUsername = configHelper.GetSetting("EasApiUsername");
+            
+            apiClientId = configHelper.GetSetting("EasApiClientId");
+            apiTenantId = configHelper.GetSetting("EasApiTenantId");
+            apiScope = configHelper.GetSetting("EasApiScope");
             apiPassword = configHelper.GetSetting("EasApiPassword");
+            
+
             pageSize = configHelper.GetSettingOrDefault("EasPageSize", 10000);
             this.mapper = mapper;
             this.logger = logger;
@@ -93,7 +102,12 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
                 logger.LogInfo($"Getting page {pageNumber} of data from API");
                 var httpResponse = await client.SendAsync(request).ConfigureAwait(false);
 
+                logger.LogInfo($"Successfully connected to the API");
+                
                 var responseContent = await httpResponse.Content.ReadAsStringAsync();
+                logger.LogDebug($"Response code: {httpResponse.StatusCode}, Reason: {httpResponse.ReasonPhrase}, " +
+                                $"Request: {httpResponse.RequestMessage.RequestUri}");
+
                 if (httpResponse.IsSuccessStatusCode)
                 {
                     var batch = JsonConvert.DeserializeObject<List<ProviderAdjustment>>(responseContent);
@@ -118,20 +132,19 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application.Repositories
             return providerAdjustments;
         }
 
-        public async Task<string> GetToken()
+        private async Task<string> GetToken()
         {
-            var body = $"{{\"userName\":\"{apiUsername}\", \"password\": \"{apiPassword}\"}}";
-            var content = new ByteArrayContent(Encoding.UTF8.GetBytes(body));
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var authContext = new AuthenticationContext($"https://login.microsoftonline.com/{apiTenantId}");
+            var clientCredential = new ClientCredential(apiClientId, apiPassword);
 
-            var httpResponse = await client.PostAsync("api/v1/token", content);
-            var responseContent = await httpResponse.Content.ReadAsStringAsync();
-            if (httpResponse.IsSuccessStatusCode)
+            var authResult = await authContext.AcquireTokenAsync(apiScope, clientCredential);
+
+            if (authResult == null)
             {
-                return responseContent;
+                throw new AuthenticationException("Could not authenticate with the OAUTH2 claims provider after several attempts");
             }
-            
-            throw new InvalidOperationException($"Error getting API token: {responseContent}");
+
+            return authResult.AccessToken;
         }
 
         public async Task<List<ProviderAdjustment>> GetPreviousProviderAdjustments(int academicYear)

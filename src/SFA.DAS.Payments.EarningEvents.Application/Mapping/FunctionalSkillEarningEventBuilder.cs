@@ -30,12 +30,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             foreach (var intermediateLearningAim in intermediateResults)
             {
-                var redundancyDates = learnerSubmission.Learner.PriceEpisodes
-                    .Where(pe => pe.PriceEpisodeValues.PriceEpisodeRedStatusCode == 1 && pe.PriceEpisodeValues.PriceEpisodeRedStartDate.HasValue)
-                    .OrderBy(pe => pe.PriceEpisodeValues.PriceEpisodeRedStartDate)
-                    .Select(pe => new { pe.PriceEpisodeValues.PriceEpisodeRedStartDate, pe.PriceEpisodeIdentifier }).FirstOrDefault();
-
-
+                var redundancyPeriods = CalculateRedundancyPeriods(intermediateLearningAim.PriceEpisodes);
 
                 if (intermediateLearningAim.Aims.All(x => x.IsMainAim()))
                 {
@@ -82,15 +77,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
                         earning.Periods = earningPeriods.AsReadOnly();
                     }
-                    if (redundancyDates != null)
-                    {
-                        results.AddRange(redundancyEarningService.SplitFunctionSkillEarningByRedundancyDate(functionalSkillEarning, redundancyDates.PriceEpisodeRedStartDate.Value));
-                    }
-                    else
-                    {
-                        results.Add(functionalSkillEarning);
-                    }
-                 
+
+                    results.AddRange(redundancyEarningService.OriginalAndRedundancyFunctionalSkillEarningEventIfRequired(functionalSkillEarning, redundancyPeriods));
                 }
             }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using FluentAssertions;
@@ -7,6 +8,7 @@ using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
 using SFA.DAS.Payments.EarningEvents.Application.UnitTests.Helpers;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
@@ -21,11 +23,17 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         private  Mock<IRedundancyEarningService> redundancyEarningService;
 
 
-            [OneTimeSetUp]
-        public void InitialiseMapper()
+        [OneTimeSetUp]
+        public void InitialiseDependencies()
         {
             mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<EarningsEventProfile>()));
             redundancyEarningService = new Mock<IRedundancyEarningService>();
+            redundancyEarningService
+                .Setup(x => x.OriginalAndRedundancyEarningEventIfRequired(It.IsAny<ApprenticeshipContractTypeEarningsEvent>(), It.IsAny<List<byte>>()))
+                .Returns((ApprenticeshipContractTypeEarningsEvent x, List<byte> y) => new List<ApprenticeshipContractTypeEarningsEvent> { x });
+            redundancyEarningService
+                .Setup(x => x.OriginalAndRedundancyFunctionalSkillEarningEventIfRequired(It.IsAny<FunctionalSkillEarningsEvent>(), It.IsAny<List<byte>>()))
+                .Returns((FunctionalSkillEarningsEvent x, List<byte> y) => new List<FunctionalSkillEarningsEvent> { x });
         }
 
         [Test]
