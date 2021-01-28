@@ -52,6 +52,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
                 {
                     try
                     {
+                        model.Id = 0;
                         var context = (FundingSourceDataContext)dataContextFactory.Create(mainTransaction.GetDbTransaction());
                         await context.LevyTransactions.AddAsync(model, cancellationToken).ConfigureAwait(false);
                         await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
