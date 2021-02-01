@@ -26,6 +26,7 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.FundingAccountId).HasColumnName(@"FundingAccountId");
             builder.Property(x => x.TransactionType).HasColumnName(@"TransactionType");
             builder.Property(x => x.SfaContributionPercentage).HasColumnName(@"SfaContributionPercentage");
+            builder.Property(x => x.LearnerUln).HasColumnName(@"LearnerUln");
             builder.Property(x => x.LearnerReferenceNumber).HasColumnName(@"LearnerReferenceNumber");
             builder.Property(x => x.LearningAimReference).HasColumnName(@"LearningAimReference");
             builder.Property(x => x.LearningAimProgrammeType).HasColumnName(@"LearningAimProgrammeType");

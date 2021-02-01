@@ -121,6 +121,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 calculatedRequiredLevyAmount.ApprenticeshipEmployerType ==
                 levyTransactionModel.ApprenticeshipEmployerType &&
                 calculatedRequiredLevyAmount.ApprenticeshipId == levyTransactionModel.ApprenticeshipId &&
+                calculatedRequiredLevyAmount.Learner.Uln == levyTransactionModel.LearnerUln &&
                 calculatedRequiredLevyAmount.Learner.ReferenceNumber == levyTransactionModel.LearnerReferenceNumber &&
                 calculatedRequiredLevyAmount.LearningAim.FrameworkCode ==
                 levyTransactionModel.LearningAimFrameworkCode &&

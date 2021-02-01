@@ -50,6 +50,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 FundingAccountId = levyAmount.CalculateFundingAccountId(isReceiverTransferPayment),
                 ApprenticeshipEmployerType = levyAmount.ApprenticeshipEmployerType,
                 ApprenticeshipId = levyAmount.ApprenticeshipId,
+                LearnerUln = levyAmount.Learner.Uln,
                 LearnerReferenceNumber = levyAmount.Learner.ReferenceNumber,
                 LearningAimFrameworkCode = levyAmount.LearningAim.FrameworkCode,
                 LearningAimPathwayCode = levyAmount.LearningAim.PathwayCode,
@@ -71,7 +72,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             {
                 if (!e.IsUniqueKeyConstraintException() && !e.IsDeadLockException()) throw;
 
-                logger.LogInfo($"Batch contained a duplicate LevyTransaction. Will store each individually and discard duplicate.");
+                logger.LogWarning($"Batch contained a duplicate LevyTransaction. Will store each individually and discard duplicate.");
 
                 await levyTransactionRepository.SaveLevyTransactionsIndividually(models, cancellationToken);
             }

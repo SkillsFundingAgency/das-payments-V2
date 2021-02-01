@@ -61,7 +61,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
                     {
                         if (e.IsUniqueKeyConstraintException())
                         {
-                            logger.LogInfo($"Discarding duplicate LevyTransaction. JobId: {model.JobId}, Learn ref: {model.LearnerReferenceNumber}");
+                            logger.LogWarning($"Discarding duplicate LevyTransaction. JobId: {model.JobId}, Learn ref: {model.LearnerReferenceNumber}");
                             continue;
                         }
                         throw;
