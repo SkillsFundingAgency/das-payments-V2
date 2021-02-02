@@ -18,7 +18,7 @@
     [FundingAccountId] BIGINT NOT NULL,
 	[TransactionType] TINYINT NULL, 
 	[SfaContributionPercentage] DECIMAL(15,5) NULL,
-    [LearnerUln]  BIGINT NOT NULL,
+    [LearnerUln]  BIGINT NULL,
     [LearnerReferenceNumber] NVARCHAR(50) NULL,
 	[LearningAimReference] NVARCHAR(8) NULL,
 	[LearningAimProgrammeType] INT NULL ,
