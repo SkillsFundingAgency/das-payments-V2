@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using FluentAssertions;
@@ -46,7 +47,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var redundancyPeriod =redundancyDate.GetPeriodFromDate();
             act1FsEarning.Earnings.ToList().ForEach(fse => fse.Periods.Should().HaveCount(12));
 
-            var events = service.SplitFunctionSkillEarningByRedundancyDate(act1FsEarning, redundancyDate);
+            var events = service.OriginalAndRedundancyFunctionalSkillEarningEventIfRequired(act1FsEarning, new List<byte>{ 12 });
             events.Should().HaveCount(2);
             var originalEvent = events[0];
 
@@ -93,7 +94,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
 
             var redundancyDate = new DateTime(1921, 5, 1);
 
-            var events = service.SplitContractEarningByRedundancyDate(act1Earning, redundancyDate);
+            var events = service.OriginalAndRedundancyEarningEventIfRequired(act1Earning, new List<byte>{10, 11, 12});
             events.Should().HaveCount(2);
         }
 
@@ -108,7 +109,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             earning.IncentiveEarnings.ForEach(ie => { ie.Periods.Should().HaveCount(12); });
 
 
-            var events = service.SplitContractEarningByRedundancyDate(earning, redundancyDate);
+            var events = service.OriginalAndRedundancyEarningEventIfRequired(earning, new List<byte> { 10, 11, 12 });
             events.Should().HaveCount(2);
             var originalEarningEvent = events[0];
             originalEarningEvent.Should().BeOfType(earning.GetType());

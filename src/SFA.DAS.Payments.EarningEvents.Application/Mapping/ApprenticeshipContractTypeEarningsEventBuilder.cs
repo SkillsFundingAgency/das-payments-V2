@@ -32,11 +32,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
             foreach (var intermediateLearningAim in intermediateResults)
             {
-                var episodesByContractType = intermediateLearningAim.PriceEpisodes.GroupBy(x =>x.PriceEpisodeValues.PriceEpisodeContractType );
-                var redundancyDates = intermediateLearningAim.PriceEpisodes
-                    .Where(pe => pe.PriceEpisodeValues.PriceEpisodeRedStatusCode == 1 && pe.PriceEpisodeValues.PriceEpisodeRedStartDate.HasValue)
-                    .OrderBy(pe => pe.PriceEpisodeValues.PriceEpisodeRedStartDate)
-                    .Select( pe =>new { pe.PriceEpisodeValues.PriceEpisodeRedStartDate, pe.PriceEpisodeIdentifier}).FirstOrDefault();
+                var episodesByContractType = intermediateLearningAim.PriceEpisodes.GroupBy(x => x.PriceEpisodeValues.PriceEpisodeContractType);
+                var redundancyPeriods = CalculateRedundancyPeriods(intermediateLearningAim.PriceEpisodes);
 
 
                 foreach (var priceEpisodes in episodesByContractType)
@@ -49,18 +46,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
                     mapper.Map(learnerWithSortedPriceEpisodes, earningEvent);
 
-                    if (redundancyDates != null && earningEvent.PriceEpisodes.Any(pe=>pe.Identifier == redundancyDates.PriceEpisodeIdentifier))
-                    {
-                        results.AddRange(redundancyEarningService.SplitContractEarningByRedundancyDate(earningEvent, redundancyDates.PriceEpisodeRedStartDate.Value));
-                    }
-                    else
-                    {
-                        results.Add(earningEvent);
-                    }
+                    results.AddRange(redundancyEarningService.OriginalAndRedundancyEarningEventIfRequired(earningEvent, redundancyPeriods));
                 }
             }
 
             return results;
         }
-     }
+    }
 }

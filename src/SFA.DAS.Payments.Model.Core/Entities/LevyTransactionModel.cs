@@ -19,5 +19,18 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public string MessageType { get; set; }
         public DateTime IlrSubmissionDateTime { get; set; }
         public long FundingAccountId { get; set; }
+        public TransactionType TransactionType { get; set; }
+        public decimal SfaContributionPercentage { get; set; }
+        public long? LearnerUln { get; set; }
+        public string LearnerReferenceNumber { get; set; }
+        public string LearningAimReference { get; set; }
+        public int? LearningAimProgrammeType { get; set; }
+        public int? LearningAimStandardCode { get; set; }
+        public int? LearningAimFrameworkCode { get; set; }
+        public int? LearningAimPathwayCode { get; set; }
+        public string LearningAimFundingLineType { get; set; }
+        public DateTime? LearningStartDate { get; set; }
+        public long? ApprenticeshipId { get; set; }
+        public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
     }
 }

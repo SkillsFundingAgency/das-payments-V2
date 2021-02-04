@@ -14,8 +14,10 @@
     <Parameter Name="LogLevel" DefaultValue="Information" />
     <Parameter Name="DasNServiceBusLicenseKey" DefaultValue="" />
     <Parameter Name="EasApiEndpoint" DefaultValue="" />
-    <Parameter Name="EasApiUsername" DefaultValue="" />
     <Parameter Name="EasApiPassword" DefaultValue="" />
+    <Parameter Name="EasApiClientId" DefaultValue="" />
+    <Parameter Name="EasApiTenantId" DefaultValue="" />
+    <Parameter Name="EasApiScope" DefaultValue="" />
     <Parameter Name="EasCertificateThumbprint" DefaultValue="" />
     <Parameter Name="EasPageSize" DefaultValue="1000" />
   </Parameters>
@@ -41,8 +43,10 @@
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
             <Parameter Name="EasApiEndpoint" Value="[EasApiEndpoint]" />
-            <Parameter Name="EasApiUsername" Value="[EasApiUsername]" />
             <Parameter Name="EasApiPassword" Value="[EasApiPassword]" />
+            <Parameter Name="EasApiClientId" Value="[EasApiClientId]" />
+            <Parameter Name="EasApiTenantId" Value="[EasApiTenantId]" />
+            <Parameter Name="EasApiScope" Value="[EasApiScope]" />
             <Parameter Name="EasCertificateThumbprint" Value="[EasCertificateThumbprint]" />
             <Parameter Name="EasPageSize" Value="[EasPageSize]" />
           </Section>

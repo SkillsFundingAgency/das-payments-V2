@@ -11,8 +11,10 @@
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
     <Parameter Name="EasApiEndpoint" Value="__EasApiEndpoint__" />
-    <Parameter Name="EasApiUsername" Value="__EasApiUsername__" />
     <Parameter Name="EasApiPassword" Value="__EasApiPassword__" />
+    <Parameter Name="EasApiClientId" Value="__EasApiClientId__" />
+    <Parameter Name="EasApiTenantId" Value="__EasApiTenantId__" />
+    <Parameter Name="EasApiScope" Value="__EasApiScope__" />
     <Parameter Name="ProviderAdjustmentService_EndpointName" Value="__ProviderAdjustmentService_EndpointName__" />
     <Parameter Name="ProviderAdjustmentService_FailedMessagesQueue" Value="__ProviderAdjustmentService_FailedMessagesQueue__" />
     <Parameter Name="EasCertificateThumbprint" Value="__EasCertificateThumbprint__" />
