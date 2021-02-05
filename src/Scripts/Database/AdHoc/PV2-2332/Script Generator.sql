@@ -90,7 +90,7 @@ FROM Records
 
 
 DECLARE @collectionPeriodName VARCHAR(8) = '2021-R06'
-DECLARE @collectionPeriodMonth NVARCHAR(2) = '02'
+DECLARE @collectionPeriodMonth NVARCHAR(2) = '01'
 DECLARE @collectionPeriodYear NVARCHAR(4) = '2021'
 
 
