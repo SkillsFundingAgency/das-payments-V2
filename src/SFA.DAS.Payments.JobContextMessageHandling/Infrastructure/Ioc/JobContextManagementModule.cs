@@ -92,7 +92,8 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.Infrastructure.Ioc
                     var periodEndConfig = new JobStatusConfiguration
                     {
                         TimeToPauseBetweenChecks = TimeSpan.Parse(config.GetSettingOrDefault("TimeToPauseBetweenChecks", "00:01:30")),
-                        TimeToWaitForJobToComplete = TimeSpan.Parse(config.GetSettingOrDefault("TimeToWaitForJobToComplete", "00:30:30"))
+                        TimeToWaitForJobToComplete = TimeSpan.Parse(config.GetSettingOrDefault("TimeToWaitForJobToComplete", "00:30:30")),
+                        TimeToWaitForPeriodEndRunJobToComplete = TimeSpan.Parse(config.GetSettingOrDefault("TimeToWaitForPeriodEndRunJobToComplete", "00:30:30"))
                     };
                     return periodEndConfig;
                 })
