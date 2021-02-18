@@ -5,6 +5,6 @@
 	[Period] TINYINT NOT NULL,
 	[CalendarMonth] TINYINT NOT NULL,
 	[CalendarYear] SMALLINT NOT NULL,
-	[ReferenceDataValidationDate] DATETIME2 NOT NULL,
+	[ReferenceDataValidationDate] DATETIME2 NULL,
 	[CompletionDate] DATETIME2 NOT NULL,
 )
