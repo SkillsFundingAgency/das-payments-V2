@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Monitoring.Jobs.Data.Configuration;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 using SFA.DAS.Payments.ProviderPayments.Application.Data.Configurations;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Data
@@ -11,6 +13,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
     {
         DbSet<PaymentModel> Payment { get; }
         DbSet<PaymentModelWithRequiredPaymentId> PaymentsWithRequiredPayments { get; }
+        DbSet<CollectionPeriodModel> CollectionPeriod { get; }
+        DbSet<JobModel> Job { get; }
 
 
         DatabaseFacade Database { get; }
@@ -23,6 +27,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
 
         public virtual DbSet<PaymentModel> Payment { get; set; }
         public virtual DbSet<PaymentModelWithRequiredPaymentId> PaymentsWithRequiredPayments { get; set; }
+        public virtual DbSet<CollectionPeriodModel> CollectionPeriod { get; set; }
+        public virtual DbSet<JobModel> Job { get; set; }
 
 
         public ProviderPaymentsDataContext(string connectionString)
@@ -39,6 +45,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.HasDefaultSchema("Payments2");
             modelBuilder.ApplyConfiguration(new PaymentModelConfiguration());
+            modelBuilder.ApplyConfiguration(new CollectionPeriodModelConfiguration());
+            modelBuilder.ApplyConfiguration(new JobModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
