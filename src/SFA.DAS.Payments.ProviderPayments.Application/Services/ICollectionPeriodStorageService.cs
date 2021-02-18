@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
-    public interface ICollectionPeriodService
+    public interface ICollectionPeriodStorageService
     {
         void StoreCollectionPeriod(short academicYear, byte period, DateTime completionDateTime);
     }

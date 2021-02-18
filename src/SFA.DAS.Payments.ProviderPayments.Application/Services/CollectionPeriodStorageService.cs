@@ -6,7 +6,7 @@ using SFA.DAS.Payments.ProviderPayments.Application.Data;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
-    public class CollectionPeriodStorageService : ICollectionPeriodService
+    public class CollectionPeriodStorageService : ICollectionPeriodStorageService
     {
         private IProviderPaymentsDataContext _context;
 
