@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 using SFA.DAS.Payments.ProviderPayments.Application.Data;
@@ -8,28 +9,34 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
     public class CollectionPeriodStorageService : ICollectionPeriodStorageService
     {
-        private IProviderPaymentsDataContext _context;
+        private IProviderPaymentsDataContext context;
+        private readonly IPaymentLogger logger;
 
-        public CollectionPeriodStorageService(IProviderPaymentsDataContext context)
+        public CollectionPeriodStorageService(IProviderPaymentsDataContext context, IPaymentLogger logger)
         {
-            _context = context;
+            this.context = context ?? throw new ArgumentNullException(nameof(context));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public void StoreCollectionPeriod(short academicYear, byte period, DateTime completionDateTime)
         {
-            if(_context.CollectionPeriod.Any(x => x.AcademicYear == academicYear && x.Period == period))
+            if(context.CollectionPeriod.Any(x => x.AcademicYear == academicYear && x.Period == period))
                 return;
 
-            _context.CollectionPeriod.Add(new CollectionPeriodModel
+            var referenceDataValidationDate = GetReferenceDataValidationDate(academicYear, period);
+            if(referenceDataValidationDate == null)
+                logger.LogWarning($"Failed to find successful PeriodEndSubmissionWindowValidationJob for academic year: {academicYear} and period: {period} with an EndTime set");
+
+            context.CollectionPeriod.Add(new CollectionPeriodModel
             {
                 AcademicYear = academicYear,
                 Period = period,
                 CalendarMonth = GetCalendarMonth(period),
                 CalendarYear = GetCalendarYear(academicYear, period),
                 CompletionDate = completionDateTime,
-                ReferenceDataValidationDate = GetReferenceDataValidationDate(academicYear, period).GetValueOrDefault()
+                ReferenceDataValidationDate = referenceDataValidationDate
             });
-            _context.SaveChanges();
+            context.SaveChanges();
         }
 
         private byte GetCalendarMonth(byte period)
@@ -52,7 +59,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 
         private DateTime? GetReferenceDataValidationDate(short academicYear, byte period)
         {
-            return _context.Job.Where(x => x.JobType == JobType.PeriodEndSubmissionWindowValidationJob
+            return context.Job.Where(x => x.JobType == JobType.PeriodEndSubmissionWindowValidationJob
                                     && x.AcademicYear == academicYear
                                     && x.CollectionPeriod == period
                                     && x.EndTime != null

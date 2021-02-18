@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public byte Period { get; set; }
         public byte CalendarMonth { get; set; }
         public short CalendarYear { get; set; }
-        public DateTime ReferenceDataValidationDate { get; set; }
+        public DateTime? ReferenceDataValidationDate { get; set; }
         public DateTime CompletionDate { get; set; }
     }
 }
