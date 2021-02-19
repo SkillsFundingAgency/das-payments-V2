@@ -14,14 +14,14 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
         private readonly IPaymentLogger logger;
         private readonly IExecutionContext executionContext;
         private readonly ICompletionPaymentService completionPaymentService;
-        private readonly ICollectionPeriodStorageService collectionPeriodService;
+        private readonly ICollectionPeriodStorageService collectionPeriodStorageService;
 
-        public PeriodEndStoppedEventHandler(IPaymentLogger logger, IExecutionContext executionContext, ICompletionPaymentService completionPaymentService, ICollectionPeriodStorageService collectionPeriodService)
+        public PeriodEndStoppedEventHandler(IPaymentLogger logger, IExecutionContext executionContext, ICompletionPaymentService completionPaymentService, ICollectionPeriodStorageService collectionPeriodStorageService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
             this.completionPaymentService = completionPaymentService ?? throw new ArgumentNullException(nameof(completionPaymentService));
-            this.collectionPeriodService = collectionPeriodService ?? throw new ArgumentNullException(nameof(collectionPeriodService));
+            this.collectionPeriodStorageService = collectionPeriodStorageService ?? throw new ArgumentNullException(nameof(collectionPeriodStorageService));
         }
 
         public async Task Handle(PeriodEndStoppedEvent message, IMessageHandlerContext context)
@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
                 await context.SendLocal(command).ConfigureAwait(false);
             }
 
-            collectionPeriodService.StoreCollectionPeriod(message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period, message.EventTime.DateTime);
+            collectionPeriodStorageService.StoreCollectionPeriod(message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period, message.EventTime.DateTime);
 
             logger.LogInfo($"Successfully processed Period End Stopped Event for {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
         }

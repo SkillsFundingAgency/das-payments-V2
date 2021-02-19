@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
     public class CollectionPeriodStorageService : ICollectionPeriodStorageService
     {
-        private IProviderPaymentsDataContext context;
+        private readonly IProviderPaymentsDataContext context;
         private readonly IPaymentLogger logger;
 
         public CollectionPeriodStorageService(IProviderPaymentsDataContext context, IPaymentLogger logger)
