@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
@@ -18,7 +19,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public void StoreCollectionPeriod(short academicYear, byte period, DateTime completionDateTime)
+        public async Task StoreCollectionPeriod(short academicYear, byte period, DateTime completionDateTime)
         {
             if(context.CollectionPeriod.Any(x => x.AcademicYear == academicYear && x.Period == period))
                 return;
@@ -36,7 +37,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
                 CompletionDate = completionDateTime,
                 ReferenceDataValidationDate = referenceDataValidationDate
             });
-            context.SaveChanges();
+            await context.SaveChanges();
         }
 
         private byte GetCalendarMonth(byte period)

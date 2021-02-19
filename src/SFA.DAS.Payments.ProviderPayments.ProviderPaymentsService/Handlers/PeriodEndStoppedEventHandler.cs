@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
                 await context.SendLocal(command).ConfigureAwait(false);
             }
 
-            collectionPeriodStorageService.StoreCollectionPeriod(message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period, message.EventTime.DateTime);
+            await collectionPeriodStorageService.StoreCollectionPeriod(message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period, message.EventTime.DateTime);
 
             logger.LogInfo($"Successfully processed Period End Stopped Event for {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
         }
