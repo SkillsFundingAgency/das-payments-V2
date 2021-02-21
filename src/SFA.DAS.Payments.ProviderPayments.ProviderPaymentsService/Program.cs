@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
         {
             try
             {
-                using (ServiceFabricContainerFactory.CreateContainerForStatefulService<ProviderPaymentsStatefulService>())
+                using (ServiceFabricContainerFactory.CreateContainerForStatelessService<ProviderPaymentsService>())
                 {
                     Thread.Sleep(Timeout.Infinite);
                 }

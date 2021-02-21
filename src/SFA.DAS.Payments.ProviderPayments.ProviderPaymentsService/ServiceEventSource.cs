@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
         }
 
         [NonEvent]
-        public void ServiceMessage(StatefulServiceContext serviceContext, string message, params object[] args)
+        public void ServiceMessage(StatelessServiceContext serviceContext, string message, params object[] args)
         {
             if (this.IsEnabled())
             {
@@ -61,7 +61,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
                 ServiceMessage(
                     serviceContext.ServiceName.ToString(),
                     serviceContext.ServiceTypeName,
-                    serviceContext.ReplicaId,
+                    serviceContext.InstanceId,
                     serviceContext.PartitionId,
                     serviceContext.CodePackageActivationContext.ApplicationName,
                     serviceContext.CodePackageActivationContext.ApplicationTypeName,
@@ -158,4 +158,5 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
 #endif
         #endregion
     }
+
 }

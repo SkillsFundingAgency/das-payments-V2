@@ -3,7 +3,7 @@
   <ServiceTypes>
     <!-- This is the name of your ServiceType. 
          This name must match the string used in RegisterServiceType call in Program.cs. -->
-    <StatefulServiceType ServiceTypeName="SFA.DAS.Payments.ProviderPayments.ProviderPaymentsServiceType" HasPersistedState="true" />
+    <StatelessServiceType ServiceTypeName="SFA.DAS.Payments.ProviderPayments.ProviderPaymentsServiceType" />
   </ServiceTypes>
   <!-- Code package is your service executable. -->
   <CodePackage Name="Code" Version="1.0.0">
