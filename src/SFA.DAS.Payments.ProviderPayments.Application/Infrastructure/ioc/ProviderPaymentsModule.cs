@@ -3,6 +3,7 @@ using SFA.DAS.Payments.Audit.Application.Data;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.ProviderPayments.Application.Data;
+using SFA.DAS.Payments.ProviderPayments.Application.Mapping;
 using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
 using SFA.DAS.Payments.ProviderPayments.Domain;
@@ -41,6 +42,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Infrastructure.ioc
             
             builder.RegisterType<CompletionPaymentService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
+            builder.RegisterType<FundingSourceEventMapper>().AsImplementedInterfaces();
+            
             builder.Register(ctx =>
                 {
                     var configHelper = ctx.Resolve<IConfigurationHelper>();
