@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.ProviderPayments.Model;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
 {
-    public class ReportingAimFundingLineTypeValueResolver : IValueResolver<FundingSourcePaymentEvent, ProviderPaymentEventModel, string>
+    public class ReportingAimFundingLineTypeValueResolver : IValueResolver<FundingSourcePaymentEvent, PaymentModel, string>
     {
-        public string Resolve(FundingSourcePaymentEvent source, ProviderPaymentEventModel destination, string destMember, ResolutionContext context)
+        public string Resolve(FundingSourcePaymentEvent source, PaymentModel destination, string destMember, ResolutionContext context)
         {
             var contractType = source.ContractType;
             var employerType = source.ApprenticeshipEmployerType;

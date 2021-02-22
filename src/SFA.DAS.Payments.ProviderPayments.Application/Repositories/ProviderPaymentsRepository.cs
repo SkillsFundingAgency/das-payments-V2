@@ -3,20 +3,31 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using EFCore.BulkExtensions;
+using Microsoft.EntityFrameworkCore.Storage;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.ProviderPayments.Application.Data;
+using SFA.DAS.Payments.ProviderPayments.Application.Exceptions;
+using SFA.DAS.Payments.ProviderPayments.Model;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
 {
     public class ProviderPaymentsRepository : IProviderPaymentsRepository
     {
         private readonly IProviderPaymentsDataContext dataContext;
+        private readonly IProviderPaymentsDataContextFactory dataContextFactory;
+        private readonly IPaymentLogger logger;
 
-        public ProviderPaymentsRepository(IProviderPaymentsDataContext dataContext)
+        public ProviderPaymentsRepository(IProviderPaymentsDataContext dataContext, IProviderPaymentsDataContextFactory dataContextFactory, IPaymentLogger logger)
         {
             this.dataContext = dataContext;
+            this.dataContextFactory = dataContextFactory ?? throw new ArgumentNullException(nameof(dataContextFactory));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<List<PaymentModel>> GetMonthEndPayments(CollectionPeriod collectionPeriod, long ukprn,
@@ -112,6 +123,53 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
                 .Select(p => p.Ukprn)
                 .Distinct()
                 .ToListAsync(cancellationToken);
+        }
+
+        public async Task SavePayments(List<PaymentModel> payments, CancellationToken cancellationToken)
+        {
+            try
+            {
+                using (var tx = await dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted, cancellationToken).ConfigureAwait(false))
+                {
+                    var bulkConfig = new BulkConfig { SetOutputIdentity = false, BulkCopyTimeout = 60, PreserveInsertOrder = false };
+                    await ((DbContext)dataContext).BulkInsertAsync(payments, bulkConfig, null, cancellationToken)
+                        .ConfigureAwait(false);
+                    await tx.CommitAsync(cancellationToken);
+                }
+            }
+            catch (Exception e)
+            {
+                if (e.IsUniqueKeyConstraintException())
+                    throw new DuplicatePaymentException(e);
+                throw;
+            }
+        }
+
+        public async Task SavePaymentsIndividually(List<PaymentModel> payments, CancellationToken cancellationToken)
+        {
+            var mainContext = dataContextFactory.Create();
+            using (var tx = await ((DbContext)mainContext).Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted, cancellationToken).ConfigureAwait(false))
+            {
+                foreach (var payment in payments)
+                {
+                    try
+                    {
+                        var retryDataContext = dataContextFactory.Create(tx.GetDbTransaction());
+                        await retryDataContext.Payment.AddAsync(payment, cancellationToken).ConfigureAwait(false);
+                        await retryDataContext.SaveChanges(cancellationToken).ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        if (e.IsUniqueKeyConstraintException())
+                        {
+                            logger.LogInfo($"Discarding duplicate Payment. Event Id: {payment.EventId}, JobId: {payment.JobId}, Learn ref: {payment.LearnerReferenceNumber}");
+                            continue;
+                        }
+                        throw;
+                    }
+                }
+                await tx.CommitAsync(cancellationToken);
+            }
         }
     }
 }

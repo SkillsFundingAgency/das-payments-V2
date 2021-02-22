@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             //mocker.Provide<IPaymentsLogger>()
         }
 
-        private ProviderPaymentEventModel Map(FundingSourcePaymentEvent message)
+        private PaymentModel Map(FundingSourcePaymentEvent message)
         {
             var mapper = mocker.Create<FundingSourceEventMapper>();
             return mapper.Map(message);
@@ -73,10 +73,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             };
             var payment = Map(employerCoInvested);
             payment.Ukprn.Should().Be(employerCoInvested.Ukprn);
-            payment.CollectionPeriod.Should().Be(employerCoInvested.CollectionPeriod.Period);
-            payment.AcademicYear.Should().Be(employerCoInvested.CollectionPeriod.AcademicYear);
+            payment.CollectionPeriod.Period.Should().Be(employerCoInvested.CollectionPeriod.Period);
+            payment.CollectionPeriod.AcademicYear.Should().Be(employerCoInvested.CollectionPeriod.AcademicYear);
             payment.DeliveryPeriod.Should().Be(employerCoInvested.DeliveryPeriod);
-            payment.FundingSourceId.Should().Be(employerCoInvested.EventId);
+            payment.FundingSourceEventId.Should().Be(employerCoInvested.EventId);
             payment.ContractType.Should().Be(employerCoInvested.ContractType);
             payment.SfaContributionPercentage.Should().Be(employerCoInvested.SfaContributionPercentage);
             payment.Amount.Should().Be(employerCoInvested.AmountDue);
@@ -126,10 +126,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
 
             var payment = Map(levy);
             payment.Ukprn.Should().Be(levy.Ukprn);
-            payment.CollectionPeriod.Should().Be(levy.CollectionPeriod.Period);
-            payment.AcademicYear.Should().Be(levy.CollectionPeriod.AcademicYear);
+            payment.CollectionPeriod.Period.Should().Be(levy.CollectionPeriod.Period);
+            payment.CollectionPeriod.AcademicYear.Should().Be(levy.CollectionPeriod.AcademicYear);
             payment.DeliveryPeriod.Should().Be(levy.DeliveryPeriod);
-            payment.FundingSourceId.Should().Be(levy.EventId);
+            payment.FundingSourceEventId.Should().Be(levy.EventId);
             payment.ContractType.Should().Be(levy.ContractType);
             payment.SfaContributionPercentage.Should().Be(levy.SfaContributionPercentage);
             payment.Amount.Should().Be(levy.AmountDue);
@@ -179,10 +179,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
 
             var payment = Map(transfer);
             payment.Ukprn.Should().Be(transfer.Ukprn);
-            payment.CollectionPeriod.Should().Be(transfer.CollectionPeriod.Period);
-            payment.AcademicYear.Should().Be(transfer.CollectionPeriod.AcademicYear);
+            payment.CollectionPeriod.Period.Should().Be(transfer.CollectionPeriod.Period);
+            payment.CollectionPeriod.AcademicYear.Should().Be(transfer.CollectionPeriod.AcademicYear);
             payment.DeliveryPeriod.Should().Be(transfer.DeliveryPeriod);
-            payment.FundingSourceId.Should().Be(transfer.EventId);
+            payment.FundingSourceEventId.Should().Be(transfer.EventId);
             payment.ContractType.Should().Be(transfer.ContractType);
             payment.SfaContributionPercentage.Should().Be(transfer.SfaContributionPercentage);
             payment.Amount.Should().Be(transfer.AmountDue);

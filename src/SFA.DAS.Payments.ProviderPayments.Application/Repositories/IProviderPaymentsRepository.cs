@@ -35,5 +35,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Repositories
 
         Task<List<PaymentModel>> GetMonthEndAct1CompletionPaymentsForProvider(long ukprn, CollectionPeriod collectionPeriod, CancellationToken cancellationToken = default(CancellationToken));
         Task<List<long>> GetProvidersWithAct1CompletionPayments(CollectionPeriod collectionPeriod, CancellationToken cancellationToken = default(CancellationToken));
+        Task SavePayments(List<PaymentModel> payments, CancellationToken cancellationToken);
+        Task SavePaymentsIndividually(List<PaymentModel> payments, CancellationToken cancellationToken);
     }
 }

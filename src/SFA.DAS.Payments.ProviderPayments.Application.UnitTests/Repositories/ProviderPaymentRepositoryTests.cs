@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac.Extras.Moq;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
@@ -17,17 +18,20 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Repositories
     {
         private IProviderPaymentsDataContext context;
         private ProviderPaymentsRepository sut;
-
+        private Autofac.Extras.Moq.AutoMock mocker;
+        
         [SetUp]
         public void Setup()
         {
+            mocker = AutoMock.GetLoose();
             var dbName = Guid.NewGuid().ToString();
 
             var contextBuilder = new DbContextOptionsBuilder<ProviderPaymentsDataContext>()
                                  .UseInMemoryDatabase(databaseName: dbName)
                                  .Options;
             context = new ProviderPaymentsDataContext(contextBuilder);
-            sut = new ProviderPaymentsRepository(context);
+            mocker.Provide<IProviderPaymentsDataContext>(context);
+            sut = mocker.Create<ProviderPaymentsRepository>();
         }
 
         [Test]

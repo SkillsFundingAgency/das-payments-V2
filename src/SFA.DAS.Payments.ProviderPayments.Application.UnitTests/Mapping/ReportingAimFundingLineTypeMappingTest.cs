@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 ApprenticeshipEmployerType = employerType
             };
 
-            var providerPayment = mapper.Map<ProviderPaymentEventModel>(fundingSourceEvent);
+            var providerPayment = mapper.Map<PaymentModel>(fundingSourceEvent);
 
             providerPayment.ReportingAimFundingLineType.Should().StartWith(expected);
         }

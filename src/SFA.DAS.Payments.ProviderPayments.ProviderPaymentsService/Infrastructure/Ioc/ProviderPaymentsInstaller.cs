@@ -8,7 +8,8 @@ using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messaging.Serialization;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
-using SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Cache;
+
+using SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.MessageModifiers;
 using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Infrastructure.Ioc
@@ -50,6 +51,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Infrastructu
                 .As<IStatelessServiceBusBatchCommunicationListener>()
                 .SingleInstance();
 
+            builder.RegisterType<MessageModifier>().As<IApplicationMessageModifier>();
             //builder.RegisterType<FundingSourceEventMessageModifier>()
             //    .As<IApplicationMessageModifier>();
 

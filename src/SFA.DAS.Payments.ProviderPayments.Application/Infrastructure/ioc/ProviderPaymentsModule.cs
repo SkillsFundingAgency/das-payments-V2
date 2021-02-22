@@ -1,6 +1,4 @@
 ﻿using Autofac;
-using SFA.DAS.Payments.Audit.Application.Data;
-using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.ProviderPayments.Application.Data;
 using SFA.DAS.Payments.ProviderPayments.Application.Mapping;
@@ -19,17 +17,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Infrastructure.ioc
             builder.RegisterType<HandleIlrSubmissionService>().AsImplementedInterfaces();
             builder.RegisterType<ValidateIlrSubmission>().AsImplementedInterfaces();
             builder.RegisterType<ProviderPaymentsRepository>().AsImplementedInterfaces();
-
-            builder.RegisterType<ProviderPaymentDataTable>()
-                .As<IPaymentsEventModelDataTable<ProviderPaymentEventModel>>();
-
-            builder.RegisterType<ProviderPaymentsEventModelBatchProcessor>()
-                .As<IPaymentsEventModelBatchProcessor<ProviderPaymentEventModel>>()
-                .InstancePerLifetimeScope();
-
-            builder.RegisterType<ProviderPaymentsService>()
-                .As<IProviderPaymentsService>();
-
+            
             builder.RegisterType<ProviderPeriodEndService>()
                 .As<IProviderPeriodEndService>();
 
@@ -43,7 +31,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Infrastructure.ioc
             builder.RegisterType<CompletionPaymentService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.RegisterType<FundingSourceEventMapper>().AsImplementedInterfaces();
-            
+            builder.RegisterType<ProviderPaymentMapper>().AsImplementedInterfaces();
+            builder.RegisterType<ProviderPaymentStorageService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<ProviderPaymentsDataContextFactory>().AsImplementedInterfaces();
             builder.Register(ctx =>
                 {
                     var configHelper = ctx.Resolve<IConfigurationHelper>();
