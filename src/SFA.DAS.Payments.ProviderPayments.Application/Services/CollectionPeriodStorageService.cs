@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             if(referenceDataValidationDate == null)
                 logger.LogWarning($"Failed to find successful PeriodEndSubmissionWindowValidationJob for academic year: {academicYear} and period: {period} with an EndTime set");
 
-            context.CollectionPeriod.Add(new CollectionPeriodModel
+            await context.CollectionPeriod.AddAsync(new CollectionPeriodModel
             {
                 AcademicYear = academicYear,
                 Period = period,
