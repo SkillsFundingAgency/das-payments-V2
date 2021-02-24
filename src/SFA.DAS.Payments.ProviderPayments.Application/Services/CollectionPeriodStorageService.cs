@@ -32,30 +32,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             {
                 AcademicYear = academicYear,
                 Period = period,
-                CalendarMonth = GetCalendarMonth(period),
-                CalendarYear = GetCalendarYear(academicYear, period),
                 CompletionDate = completionDateTime,
                 ReferenceDataValidationDate = referenceDataValidationDate
             });
             await context.SaveChanges();
-        }
-
-        private byte GetCalendarMonth(byte period)
-        {
-            if (period < 6)
-                return (byte)(period + 7);
-            if (period == 13)
-                return 9;
-            if (period == 14)
-                return 10;
-            return (byte)(period - 5);
-        }
-
-        private short GetCalendarYear(short academicYear, byte period)
-        {
-            if (period < 6)
-                return short.Parse($"20{academicYear.ToString().Substring(0, 2)}");
-            return short.Parse($"20{academicYear.ToString().Substring(2, 2)}");
         }
 
         private DateTime? GetReferenceDataValidationDate(short academicYear, byte period)
