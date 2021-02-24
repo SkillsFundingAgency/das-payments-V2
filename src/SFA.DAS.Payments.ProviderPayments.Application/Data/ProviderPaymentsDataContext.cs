@@ -2,10 +2,11 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Jobs.Data.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
-using SFA.DAS.Payments.ProviderPayments.Application.Data.Configurations;
+using PaymentModelConfiguration = SFA.DAS.Payments.ProviderPayments.Application.Data.Configurations.PaymentModelConfiguration;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Data
 {
