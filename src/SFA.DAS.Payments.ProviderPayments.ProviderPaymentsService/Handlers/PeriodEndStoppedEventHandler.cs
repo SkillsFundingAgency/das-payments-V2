@@ -31,6 +31,8 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
             var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext) executionContext;
             currentExecutionContext.JobId = message.JobId.ToString();
 
+            await collectionPeriodStorageService.StoreCollectionPeriod(message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period, message.EventTime.DateTime);
+
             var commands = await completionPaymentService.GenerateProviderMonthEndAct1CompletionPaymentCommands(message).ConfigureAwait(false);
             
             if (!commands.Any())
@@ -44,8 +46,6 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
                 logger.LogDebug($"Sending Process Provider Month End Act1 Completion Payment Command for provider: {command.Ukprn}");
                 await context.SendLocal(command).ConfigureAwait(false);
             }
-
-            await collectionPeriodStorageService.StoreCollectionPeriod(message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period, message.EventTime.DateTime);
 
             logger.LogInfo($"Successfully processed Period End Stopped Event for {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
         }
