@@ -1,8 +1,8 @@
 ﻿using System;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Audit.Application.Mapping.FundingSource;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Messaging.Serialization;
+using IFundingSourceEventMapper = SFA.DAS.Payments.ProviderPayments.Application.Mapping.IFundingSourceEventMapper;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.MessageModifiers
 {
