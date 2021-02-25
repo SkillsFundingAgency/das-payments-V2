@@ -30,6 +30,7 @@
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Monitoring_Placement_Constraints__" />
     <Parameter Name="JobStatusCheck_Interval" Value="__Monitoring_JobStatusCheck_Interval__" />
     <Parameter Name="TimeToWaitForJobToComplete" Value="__TimeToWaitForJobToComplete__" />
+    <Parameter Name="TimeToWaitForPeriodEndRunJobToComplete" Value="__TimeToWaitForPeriodEndRunJobToComplete__" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
     <Parameter Name="MetricsGenerationDelay" Value="__MetricsGenerationDelay__" />
     <Parameter Name="SubmissionWindowValidationFunctionApiKey" Value="__SubmissionWindowValidationFunctionApiKey__" />

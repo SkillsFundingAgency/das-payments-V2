@@ -60,6 +60,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             mocker.Mock<IJobServiceConfiguration>()
                 .SetupGet(cfg => cfg.EarningsJobTimeout)
                 .Returns(TimeSpan.FromSeconds(60));
+            mocker.Mock<IJobServiceConfiguration>()
+                .SetupGet(cfg => cfg.PeriodEndRunJobTimeout)
+                .Returns(TimeSpan.FromSeconds(60));
         }
 
         [TestCase(JobType.PeriodEndRunJob)]
@@ -95,7 +98,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         }
 
         [TestCase(JobType.PeriodEndStartJob)]
-        [TestCase(JobType.PeriodEndRunJob)]
         [TestCase(JobType.PeriodEndStopJob)]
         public async Task Publishes_PeriodEndJobFinished_with_FAILURE_When_PeriodEndJob_TimesOut(JobType jobType)
         {
@@ -105,6 +107,34 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             job.DcJobSucceeded = null;
             mocker.Mock<IJobServiceConfiguration>()
                 .SetupGet(cfg => cfg.EarningsJobTimeout)
+                .Returns(TimeSpan.FromSeconds(1));
+
+            mocker.Mock<IJobStorageService>()
+                .Setup(x => x.GetJobStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
+
+            var service = mocker.Create<PeriodEndJobStatusService>();
+            await service.ManageStatus(job.Id, CancellationToken.None).ConfigureAwait(false);
+            mocker.Mock<IJobStatusEventPublisher>()
+
+                .Verify(publisher => publisher.PeriodEndJobFinished(It.Is<JobModel>(jobModel => jobModel == job)
+                    , It.Is<bool>(b => b == false)), Times.Once);
+
+            mocker.Mock<IJobStatusEventPublisher>()
+
+                .Verify(publisher => publisher.PeriodEndJobFinished(It.Is<JobModel>(jobModel => jobModel == job)
+                    , It.Is<bool>(b => b == true)), Times.Never);
+        }
+
+        [Test]
+        public async Task Publishes_PeriodEndJobFinished_with_FAILURE_When_PeriodEndRunJob_TimesOut()
+        {
+            job.JobType = JobType.PeriodEndRunJob;
+            job.LearnerCount = 0;
+            job.StartTime = DateTimeOffset.UtcNow.AddSeconds(-2);
+            job.DcJobSucceeded = null;
+            mocker.Mock<IJobServiceConfiguration>()
+                .SetupGet(cfg => cfg.PeriodEndRunJobTimeout)
                 .Returns(TimeSpan.FromSeconds(1));
 
             mocker.Mock<IJobStorageService>()
