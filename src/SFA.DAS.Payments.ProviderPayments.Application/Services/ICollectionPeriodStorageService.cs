@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
     public interface ICollectionPeriodStorageService
     {
-        Task StoreCollectionPeriod(short academicYear, byte period, DateTime completionDateTime);
+        Task StoreCollectionPeriod(PeriodEndStoppedEvent message);
     }
 }

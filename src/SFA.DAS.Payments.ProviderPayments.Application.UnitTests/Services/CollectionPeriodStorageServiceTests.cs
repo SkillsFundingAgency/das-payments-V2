@@ -8,7 +8,9 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.Application.Data;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
 
@@ -82,7 +84,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
             sut = new CollectionPeriodStorageService(context, logger.Object);
         }
 
-        internal Task Act() => sut.StoreCollectionPeriod(academicYear, period, completionDate);
+        internal Task Act() => sut.StoreCollectionPeriod(new PeriodEndStoppedEvent { CollectionPeriod = new CollectionPeriod{ AcademicYear = academicYear, Period = period}, EventTime = completionDate});
 
         internal CollectionPeriodStorageServiceFixture WithExisting_CollectionPeriod_InDB()
         {

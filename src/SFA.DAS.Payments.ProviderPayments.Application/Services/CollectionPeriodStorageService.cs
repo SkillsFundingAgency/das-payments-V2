@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
+using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.Application.Data;
 
 namespace SFA.DAS.Payments.ProviderPayments.Application.Services
@@ -19,20 +20,20 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task StoreCollectionPeriod(short academicYear, byte period, DateTime completionDateTime)
+        public async Task StoreCollectionPeriod(PeriodEndStoppedEvent message)
         {
-            if(context.CollectionPeriod.Any(x => x.AcademicYear == academicYear && x.Period == period))
+            if (context.CollectionPeriod.Any(x => x.AcademicYear == message.CollectionPeriod.AcademicYear && x.Period == message.CollectionPeriod.Period))
                 return;
 
-            var referenceDataValidationDate = GetReferenceDataValidationDate(academicYear, period);
+            var referenceDataValidationDate = GetReferenceDataValidationDate(message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period);
             if(referenceDataValidationDate == null)
-                logger.LogWarning($"Failed to find successful PeriodEndSubmissionWindowValidationJob for academic year: {academicYear} and period: {period} with an EndTime set");
+                logger.LogWarning($"Failed to find successful PeriodEndSubmissionWindowValidationJob for academic year: {message.CollectionPeriod.AcademicYear} and period: {message.CollectionPeriod.Period} with an EndTime set");
 
             await context.CollectionPeriod.AddAsync(new CollectionPeriodModel
             {
-                AcademicYear = academicYear,
-                Period = period,
-                CompletionDate = completionDateTime,
+                AcademicYear = message.CollectionPeriod.AcademicYear,
+                Period = message.CollectionPeriod.Period,
+                CompletionDate = message.EventTime.DateTime,
                 ReferenceDataValidationDate = referenceDataValidationDate
             });
             await context.SaveChanges();
