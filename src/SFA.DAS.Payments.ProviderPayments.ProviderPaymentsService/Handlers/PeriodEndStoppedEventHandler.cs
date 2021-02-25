@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
             var currentExecutionContext = (ESFA.DC.Logging.ExecutionContext) executionContext;
             currentExecutionContext.JobId = message.JobId.ToString();
 
-            await collectionPeriodStorageService.StoreCollectionPeriod(message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period, message.EventTime.DateTime);
+            await collectionPeriodStorageService.StoreCollectionPeriod(message);
 
             var commands = await completionPaymentService.GenerateProviderMonthEndAct1CompletionPaymentCommands(message).ConfigureAwait(false);
             
