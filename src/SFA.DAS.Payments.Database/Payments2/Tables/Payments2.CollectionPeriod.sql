@@ -5,4 +5,5 @@
 	[Period] TINYINT NOT NULL,
 	[ReferenceDataValidationDate] DATETIME2 NULL,
 	[CompletionDate] DATETIME2 NOT NULL,
+	[CreationDate] DATETIME2 NOT NULL DEFAULT sysutcdatetime()
 )
