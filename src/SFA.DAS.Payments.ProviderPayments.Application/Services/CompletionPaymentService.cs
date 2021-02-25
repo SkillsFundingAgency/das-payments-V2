@@ -13,9 +13,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
 {
     public interface ICompletionPaymentService
     {
-        Task<IList<RecordedAct1CompletionPayment>> GetAct1CompletionPaymentEvents(ProcessProviderMonthEndAct1CompletionPaymentCommand message);
+        Task<IList<RecordedAct1CompletionPayment>> GetAct1CompletionPaymentEvents(PublishProviderAct1CompletionPaymentsCommand message);
 
-        Task<List<ProcessProviderMonthEndAct1CompletionPaymentCommand>> GenerateProviderMonthEndAct1CompletionPaymentCommands(PeriodEndStoppedEvent collectionPeriod);
+        Task<List<PublishProviderAct1CompletionPaymentsCommand>> GenerateProviderMonthEndAct1CompletionPaymentCommands(PeriodEndStoppedEvent collectionPeriod);
     }
 
     public class CompletionPaymentService : ICompletionPaymentService
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        public async Task<IList<RecordedAct1CompletionPayment>> GetAct1CompletionPaymentEvents(ProcessProviderMonthEndAct1CompletionPaymentCommand message)
+        public async Task<IList<RecordedAct1CompletionPayment>> GetAct1CompletionPaymentEvents(PublishProviderAct1CompletionPaymentsCommand message)
         {
             logger.LogInfo($"now building Act1 Completion Payment Events for ukprn: {message.Ukprn} collection period: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}, job: {message.JobId}");
 
@@ -44,14 +44,14 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             return recordedAct1CompletionPaymentEvents;
         }
 
-        public async Task<List<ProcessProviderMonthEndAct1CompletionPaymentCommand>> GenerateProviderMonthEndAct1CompletionPaymentCommands(PeriodEndStoppedEvent message)
+        public async Task<List<PublishProviderAct1CompletionPaymentsCommand>> GenerateProviderMonthEndAct1CompletionPaymentCommands(PeriodEndStoppedEvent message)
         {
             logger.LogInfo($"Building Act1 Completion Payment Events for collection period: {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear:0000}, job: {message.JobId}");
 
             var providers = await repository.GetProvidersWithAct1CompletionPayments(message.CollectionPeriod).ConfigureAwait(false);
 
             var commands = providers
-                .Select(ukprn => new ProcessProviderMonthEndAct1CompletionPaymentCommand
+                .Select(ukprn => new PublishProviderAct1CompletionPaymentsCommand
                 {
                     Ukprn = ukprn,
                     CollectionPeriod = message.CollectionPeriod,

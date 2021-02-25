@@ -67,7 +67,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         [Test]
         public async Task ShouldCallRepoAndMapper()
         {
-            var command = new ProcessProviderMonthEndAct1CompletionPaymentCommand
+            var command = new PublishProviderAct1CompletionPaymentsCommand
             {
                 CollectionPeriod = new CollectionPeriod
                 {

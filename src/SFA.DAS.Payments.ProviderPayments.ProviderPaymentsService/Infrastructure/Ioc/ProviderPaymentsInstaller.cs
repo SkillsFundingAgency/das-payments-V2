@@ -9,7 +9,10 @@ using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messaging.Serialization;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
+using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
+using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers;
 using SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.MessageModifiers;
 using SFA.DAS.Payments.ServiceFabric.Core;
@@ -23,19 +26,6 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Infrastructu
             builder.RegisterType<DasEndpointFactory>()
                    .As<IDasEndpointFactory>()
                    .SingleInstance();
-
-            //builder.RegisterType<IlrSubmissionCache>()
-            //       .As<IDataCache<ReceivedProviderEarningsEvent>>()
-            //       .InstancePerLifetimeScope();
-            //builder.RegisterType<MonthEndCache>()
-            //    .As<IMonthEndCache>()
-            //    .InstancePerLifetimeScope();
-            //builder.RegisterBuildCallback(c =>
-            //{
-            //    var recoverability = c.Resolve<EndpointConfiguration>()
-            //        .Recoverability();
-            //    recoverability.Immediate(immediate => immediate.NumberOfRetries(3));
-            //});
 
             builder.Register(c =>
                 {
@@ -58,12 +48,24 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Infrastructu
             builder.RegisterType<PaymentModelBatchHandler>()
                 .As<IHandleMessageBatches<PaymentModel>>()
                 .InstancePerLifetimeScope();
-            //builder.RegisterType<FundingSourceEventMessageModifier>()
-            //    .As<IApplicationMessageModifier>();
 
-            //builder.RegisterType<FundingSourceEventModelHandler>()
-            //    .As<IHandleMessageBatches<FundingSourceEventModel>>()
-            //    .InstancePerLifetimeScope();
+            builder.RegisterType<PeriodEndStoppedEventHandler>()
+                .As<IHandleMessageBatches<PeriodEndStoppedEvent>>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<PublishProviderAct1CompletionPaymentsCommandHandler>()
+                .As<IHandleMessageBatches<PublishProviderAct1CompletionPaymentsCommand>>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<SubmissionFailedEventHandler>()
+                .As<IHandleMessageBatches<SubmissionJobFailed>>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<SubmissionSucceededEventHandler>()
+                .As<IHandleMessageBatches<SubmissionJobSucceeded>>()
+                .InstancePerLifetimeScope();
+
+            
         }
     }
 }

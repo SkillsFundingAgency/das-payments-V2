@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Core.Data;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Repositories
 {
