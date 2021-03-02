@@ -26,8 +26,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
                 return;
 
             var referenceDataValidationDate = GetReferenceDataValidationDate(message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period);
-            if(referenceDataValidationDate == null)
-                logger.LogWarning($"Failed to find successful PeriodEndSubmissionWindowValidationJob for academic year: {message.CollectionPeriod.AcademicYear} and period: {message.CollectionPeriod.Period} with an EndTime set");
+            if (referenceDataValidationDate == null)
+                throw new InvalidOperationException($"Failed to find successful PeriodEndSubmissionWindowValidationJob for academic year: {message.CollectionPeriod.AcademicYear} and period: {message.CollectionPeriod.Period} with an EndTime set");
 
             await context.CollectionPeriod.AddAsync(new CollectionPeriodModel
             {
@@ -44,8 +44,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             return context.Job.Where(x => x.JobType == JobType.PeriodEndSubmissionWindowValidationJob
                                     && x.AcademicYear == academicYear
                                     && x.CollectionPeriod == period
-                                    && x.EndTime != null
-                                    && x.Status == JobStatus.Completed)
+                                    && x.EndTime != null)
                 .OrderByDescending(x => x.EndTime)
                 .FirstOrDefault()?.EndTime?.DateTime;
         }

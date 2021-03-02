@@ -10,6 +10,7 @@ using NUnit.Framework;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.Application.Data;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
@@ -38,16 +39,16 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         }
 
         [Test]
-        public async Task WhenStoringCollectionPeriod_AndNoRefemrenceDataValidationDateFound_ThenLogsWarning()
+        public async Task WhenStoringCollectionPeriod_AndNoReferenceDataValidationDateFound_ThenThrowsException()
         {
-            await fixture.Act();
-
-            fixture.Assert_ReferenceDataValidationDate_WarningLogged();
+            Assert.ThrowsAsync<InvalidOperationException>(() => fixture.Act());
         }
 
         [Test]
         public async Task WhenStoringCollectionPeriod_ThenSavesCollectionPeriod()
         {
+            fixture.WithExisting_PeriodEndSubmissionWindowValidationJob_WithEndTime();
+
             await fixture.Act();
 
             fixture.Assert_CollectionPeriod_IsSaved();
@@ -89,6 +90,13 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Services
         internal CollectionPeriodStorageServiceFixture WithExisting_CollectionPeriod_InDB()
         {
             context.CollectionPeriod.Add(existingCollectionPeriod);
+            context.SaveChanges();
+            return this;
+        }
+
+        internal CollectionPeriodStorageServiceFixture WithExisting_PeriodEndSubmissionWindowValidationJob_WithEndTime()
+        {
+            context.Job.Add(new JobModel{ JobType = JobType.PeriodEndSubmissionWindowValidationJob, AcademicYear = academicYear, CollectionPeriod = period, EndTime = DateTimeOffset.Now, Status = JobStatus.DcTasksFailed });
             context.SaveChanges();
             return this;
         }
