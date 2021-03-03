@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Logging
                 .Enrich.WithProcessName()
                 .Enrich.WithThreadId()
                 .WithMinimumLogLevel(applicationLoggerSettings.ApplicationLoggerOutputSettingsCollection)
-                .Filter.ByExcluding(evnt => evnt.Exception != null && evnt.Exception.ToString().Contains("license"));
+                .Filter.ByExcluding(evnt => evnt.Exception != null && string.Equals(evnt.Exception.ToString(), "license", StringComparison.OrdinalIgnoreCase));
             
             config.WriteTo.ApplicationInsightsTraces(telemetryConfig.InstrumentationKey);
             return config;
