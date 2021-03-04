@@ -43,6 +43,21 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             AcademicYear = collectionPeriod.AcademicYear;
         }
 
+        [Given(@"submission window validation job has been run")]
+        public async Task GivenSubmissionWindowValidationJobHasBeenRun()
+        {
+            var context = Container.Resolve<TestPaymentsDataContext>();
+            await context.CreateSubmissionWindowValidationJob(AcademicYear, CollectionPeriod).ConfigureAwait(false);
+        }
+
+        [Given(@"submission window validation job has not been run")]
+        public async Task GivenSubmissionWindowValidationJobHasNotBeenRun()
+        {
+            var context = Container.Resolve<TestPaymentsDataContext>();
+            await context.DeleteSubmissionWindowValidationJob(AcademicYear, CollectionPeriod).ConfigureAwait(false);
+            await context.DeleteCollectionPeriod(AcademicYear, CollectionPeriod).ConfigureAwait(false);
+        }
+
         [Given(@"the funding source service generates the following contract type payments")]
         public async Task GivenTheFundingSourceServiceGeneratesTheFollowingContractTypePayments(Table payments)
         {

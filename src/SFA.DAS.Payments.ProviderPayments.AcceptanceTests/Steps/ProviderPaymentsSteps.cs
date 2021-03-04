@@ -114,6 +114,20 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             }, "Failed to find matching collection period in database");
         }
 
+        [Then(@"the collection period data for (.*) should NOT be stored in the db")]
+        public async Task ThenTheCollectionPeriodDataForRCurrentAcademicYearShouldNOTBeStoredInTheDb(string specDate)
+        {
+            var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(specDate).Build();
+            var paymentDataContext = Container.Resolve<IPaymentsDataContext>();
+            await WaitForUnexpected(() =>
+            {
+                var matchingPeriods = paymentDataContext.CollectionPeriod.Where(x =>
+                    x.Period == collectionPeriod.Period
+                    && x.AcademicYear == collectionPeriod.AcademicYear);
+                return (!matchingPeriods.Any(), "No PeriodEnd was recorded");
+            }, "Failed to find matching collection period in database");
+        }
+
         private async Task SendMonthEndEvent()
         {
             MonthEndJobId = TestSession.GenerateId();

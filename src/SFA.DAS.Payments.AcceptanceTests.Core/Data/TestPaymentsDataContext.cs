@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Azure.Amqp.Serialization;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data.Configurations;
 using SFA.DAS.Payments.Application.Repositories;
@@ -34,9 +32,33 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             Providers.OrderBy(x => x.LastUsed).FirstOrDefault()
             ?? throw new InvalidOperationException("There are no UKPRNs available in the well-known Providers pool.");
 
+
+        public async Task CreateSubmissionWindowValidationJob(short academicYear, byte collectionPeriod)
+        {
+            await DeleteSubmissionWindowValidationJob(academicYear, collectionPeriod).ConfigureAwait(false);
+            const string sql = 
+                @"INSERT INTO [Payments2].[Job] ([JobType] ,[StartTime] ,[EndTime] ,[Status] ,[CreationDate] ,[DCJobId] ,[Ukprn] ,[IlrSubmissionTime] ,[LearnerCount] ,[AcademicYear] ,[CollectionPeriod] ,[DataLocksCompletionTime] ,[DCJobSucceeded] ,[DCJobEndTime])
+                  VALUES (    7, GETDATE(), GETDATE(), 1, GETDATE(), 1, null, GETDATE(), null, {0}, {1}, GETDATE(), 1, GETDATE())";
+
+            await Database.ExecuteSqlCommandAsync(sql, academicYear, collectionPeriod).ConfigureAwait(false);
+        }
+
+        public async Task DeleteSubmissionWindowValidationJob(short academicYear, byte collectionPeriod)
+        {
+            const string sql = @"DELETE FROM [Payments2].[Job] WHERE AcademicYear = {0} AND CollectionPeriod = {1};";
+
+            await Database.ExecuteSqlCommandAsync(sql, academicYear, collectionPeriod).ConfigureAwait(false);
+        }
+
+        public async Task DeleteCollectionPeriod(short academicYear, byte collectionPeriod)
+        {
+            const string sql = @"DELETE FROM [Payments2].[CollectionPeriod] WHERE AcademicYear = {0} AND Period = {1}";
+
+            await Database.ExecuteSqlCommandAsync(sql, academicYear, collectionPeriod).ConfigureAwait(false);
+        }
+
         public void ClearPaymentsData(long ukprn)
         {
-
             Database.ExecuteSqlCommand(DeleteUkprnData, ukprn);
         }
 
