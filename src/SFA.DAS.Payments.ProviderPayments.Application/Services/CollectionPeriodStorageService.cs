@@ -44,7 +44,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             return context.Job.Where(x => x.JobType == JobType.PeriodEndSubmissionWindowValidationJob
                                     && x.AcademicYear == academicYear
                                     && x.CollectionPeriod == period
-                                    && x.EndTime != null)
+                                    && x.EndTime != null
+                                    && x.EndTime.Value != null)
                 .OrderByDescending(x => x.EndTime)
                 .FirstOrDefault()?.EndTime?.DateTime;
         }
