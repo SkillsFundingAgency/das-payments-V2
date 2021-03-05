@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data.Configurations;
 using SFA.DAS.Payments.Application.Repositories;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 {
@@ -35,12 +36,27 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
 
         public async Task CreateSubmissionWindowValidationJob(short academicYear, byte collectionPeriod)
         {
+            await CreateSubmissionWindowValidationJob(academicYear, collectionPeriod, JobStatus.Completed, new DateTimeOffset(DateTime.Now));
+        }
+
+        public async Task CreateSubmissionWindowValidationJob(short academicYear, byte collectionPeriod, JobStatus status)
+        {
+            await CreateSubmissionWindowValidationJob(academicYear, collectionPeriod, status, new DateTimeOffset(DateTime.Now));
+        }
+
+        public async Task CreateSubmissionWindowValidationJob(short academicYear, byte collectionPeriod, DateTimeOffset? endTime)
+        {
+            await CreateSubmissionWindowValidationJob(academicYear, collectionPeriod, JobStatus.Completed, endTime);
+        }
+
+        public async Task CreateSubmissionWindowValidationJob(short academicYear, byte collectionPeriod, JobStatus status, DateTimeOffset? endTime)
+        {
             await DeleteSubmissionWindowValidationJob(academicYear, collectionPeriod).ConfigureAwait(false);
             const string sql = 
                 @"INSERT INTO [Payments2].[Job] ([JobType] ,[StartTime] ,[EndTime] ,[Status] ,[CreationDate] ,[DCJobId] ,[Ukprn] ,[IlrSubmissionTime] ,[LearnerCount] ,[AcademicYear] ,[CollectionPeriod] ,[DataLocksCompletionTime] ,[DCJobSucceeded] ,[DCJobEndTime])
-                  VALUES (    7, GETDATE(), GETDATE(), 1, GETDATE(), 1, null, GETDATE(), null, {0}, {1}, GETDATE(), 1, GETDATE())";
+                  VALUES (    7, GETDATE(), {3}, {2}, GETDATE(), 1, null, GETDATE(), null, {0}, {1}, GETDATE(), 1, GETDATE())";
 
-            await Database.ExecuteSqlCommandAsync(sql, academicYear, collectionPeriod).ConfigureAwait(false);
+            await Database.ExecuteSqlCommandAsync(sql, academicYear, collectionPeriod, status, endTime).ConfigureAwait(false);
         }
 
         public async Task DeleteSubmissionWindowValidationJob(short academicYear, byte collectionPeriod)

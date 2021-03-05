@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using Microsoft.EntityFrameworkCore;
 using NServiceBus;
 using NServiceBus.Features;
 using SFA.DAS.Payments.AcceptanceTests.Core;
@@ -30,7 +31,7 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
             }).As<IPaymentsDataContext>().As<TestPaymentsDataContext>()
                 .InstancePerDependency();
         }
-        
+
         [BeforeTestRun(Order = 51)]
         public static void AddRoutingConfig()
         {
@@ -78,6 +79,13 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 
             await DasEndpointInstance.Subscribe<RecordedAct1CompletionPayment>()
                                      .ConfigureAwait(false);
+        }
+
+        [BeforeTestRun(Order = 53)]
+        public static void ClearCollectionPeriods()
+        {
+            var context = Container.Resolve<IPaymentsDataContext>();
+            context.Database.ExecuteSqlCommand("TRUNCATE TABLE [Payments2].[CollectionPeriod]");
         }
 
         public static IEndpointInstance DasEndpointInstance { get; set; }
