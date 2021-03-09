@@ -22,10 +22,17 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Repositories
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public Task RemoveUkrpnFromReprocessingList(long ukprn)
+        public async Task RemoveUkrpnFromReprocessingList(long ukprn)
         {
-            dataContext.ProvidersRequiringReprocessing.FromSql($"DELETE [Payments2].[ProviderRequiringReprocessing] WHERE Ukprn = {ukprn}");
-            return Task.CompletedTask;
+            logger.LogDebug($"Removing UKPRN from ProviderRequiringReprocessing for ukprn: {ukprn}");
+            var record = await dataContext.ProvidersRequiringReprocessing
+                .FirstOrDefaultAsync(x => x.Ukprn == ukprn);
+            if (record != null)
+                dataContext.ProvidersRequiringReprocessing.Remove(record);
+            await dataContext.SaveChanges();
+
+            //dataContext.ProvidersRequiringReprocessing.FromSql($"DELETE [Payments2].[ProviderRequiringReprocessing] WHERE Ukprn = {ukprn}");
+            logger.LogInfo($"Removed UKPRN from ProviderRequiringReprocessing for ukprn: {ukprn}");
         }
     }
 }
