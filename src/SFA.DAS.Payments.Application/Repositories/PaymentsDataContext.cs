@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.Application.Repositories
         public virtual DbSet<DataLockEventNonPayablePeriodModel> DataLockEventNonPayablePeriod { get; set; }
         public virtual DbSet<DataLockEventNonPayablePeriodFailureModel> DataLockEventNonPayablePeriodFailure { get; set; }
         public virtual DbSet<RequiredPaymentEventModel> RequiredPaymentEvent { get; set; }
-        public virtual DbSet<CollectionPeriodModel> CollectionPeriod { get; set; }
+        public virtual DbSet<CollectionPeriodModel> CollectionPeriod { get; protected set; }
 
 
 

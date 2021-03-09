@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
@@ -25,7 +26,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             if (context.CollectionPeriod.Any(x => x.AcademicYear == message.CollectionPeriod.AcademicYear && x.Period == message.CollectionPeriod.Period))
                 return;
 
-            var referenceDataValidationDate = GetReferenceDataValidationDate(message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period);
+            var referenceDataValidationDate = await GetReferenceDataValidationDate(message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period);
             if (referenceDataValidationDate == null)
                 throw new InvalidOperationException($"Failed to find successful PeriodEndSubmissionWindowValidationJob for academic year: {message.CollectionPeriod.AcademicYear} and period: {message.CollectionPeriod.Period} with an EndTime set");
 
@@ -39,15 +40,16 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Services
             await context.SaveChanges();
         }
 
-        private DateTime? GetReferenceDataValidationDate(short academicYear, byte period)
+        private async Task<DateTime?> GetReferenceDataValidationDate(short academicYear, byte period)
         {
-            return context.Job.Where(x => x.JobType == JobType.PeriodEndSubmissionWindowValidationJob
-                                    && x.AcademicYear == academicYear
-                                    && x.CollectionPeriod == period
-                                    && x.EndTime != null
-                                    && x.EndTime.Value != null)
+            var job = await context.Job.Where(x => x.JobType == JobType.PeriodEndSubmissionWindowValidationJob
+                                                && x.AcademicYear == academicYear
+                                                && x.CollectionPeriod == period
+                                                && x.EndTime != null
+                                                && x.EndTime.Value != null)
                 .OrderByDescending(x => x.EndTime)
-                .FirstOrDefault()?.EndTime?.DateTime;
+                .FirstOrDefaultAsync();
+            return job?.EndTime?.DateTime;
         }
     }
 }
