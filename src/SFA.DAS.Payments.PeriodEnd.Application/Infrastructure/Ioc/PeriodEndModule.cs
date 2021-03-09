@@ -5,6 +5,7 @@ using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.PeriodEnd.Application.Data;
 using SFA.DAS.Payments.PeriodEnd.Application.Handlers;
 using SFA.DAS.Payments.PeriodEnd.Application.Repositories;
+using SFA.DAS.Payments.PeriodEnd.Application.Services;
 
 namespace SFA.DAS.Payments.PeriodEnd.Application.Infrastructure.Ioc
 {
@@ -14,6 +15,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Infrastructure.Ioc
         {
             builder.RegisterType<PeriodEndJobContextMessageHandler>().As<IMessageHandler<JobContextMessage>>();
             builder.RegisterType<PeriodEndRepository>().As<IPeriodEndRepository>();
+            builder.RegisterType<ProviderRequiringReprocessingService>().As<IProviderRequiringReprocessingService>();
 
             builder.Register((c, p) =>
             {
