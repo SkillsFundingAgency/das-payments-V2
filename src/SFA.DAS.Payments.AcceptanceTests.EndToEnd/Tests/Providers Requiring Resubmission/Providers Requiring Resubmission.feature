@@ -4,7 +4,7 @@
 	and publish any new Data Locks through to the Data Match Report for the provider to investigate.
 
 Scenario: Apprenticeship updated before ILR submitted by provider during current collection period
-	Given there is no previous submission from provider in current collection period 
+	Given there is no previous submission from provider in current collection period
 	When there is a change at approvals side
 	Then new record will be added to the  ProviderRequiringReprocessing table
 

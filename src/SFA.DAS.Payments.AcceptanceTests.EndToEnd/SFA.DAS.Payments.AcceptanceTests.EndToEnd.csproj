@@ -415,7 +415,7 @@
     <Compile Include="Steps\FundingSourcePaymentEventsHelper.cs" />
     <Compile Include="Steps\PaymentEventsHelper.cs" />
     <Compile Include="Steps\PeriodEndSteps.cs" />
-    <Compile Include="Steps\ProcidersRequiringResubmissionSteps.cs" />
+    <Compile Include="Steps\ProvidersRequiringResubmissionSteps.cs" />
     <Compile Include="Steps\PV2_1797_Steps.cs" />
     <Compile Include="Steps\PV2_1824_Steps.cs" />
     <Compile Include="Steps\PV2_1825_Steps.cs" />

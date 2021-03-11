@@ -1,61 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Azure.ServiceBus;
+﻿using System.Threading.Tasks;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
+using TechTalk.SpecFlow;
+using PublishOptions = NServiceBus.PublishOptions;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
     [Binding]
-    public class ProcidersRequiringResubmissionSteps : EndToEndStepsBase
+    [Scope(Feature = "Providers Requiring Resubmission")]
+    public class ProvidersRequiringResubmissionSteps : EndToEndStepsBase
     {
-        private IMessageSession messageSession;
-
-        [BeforeTestRun(Order = 0)]
-        public static void SetUpDasEndpoint()
+        public ProvidersRequiringResubmissionSteps(FeatureContext context) : base(context)
         {
-            var config = new TestsConfiguration();
-            var endpointConfig = new EndpointConfiguration(config.AcceptanceTestsEndpointName);
-            dasEndpointConfiguration = endpointConfig;
-            Builder.RegisterInstance(endpointConfig)
-                .Named<EndpointConfiguration>("DasEndpointConfiguration")
-                .SingleInstance();
-            var conventions = endpointConfig.Conventions();
-            conventions.DefiningMessagesAs(type => type.IsMessage());
-            conventions
-                .DefiningCommandsAs(t => t.IsInNamespace("SFA.DAS.CommitmentsV2.Messages.Events"));
-
-            endpointConfig.UsePersistence<AzureStoragePersistence>()
-                .ConnectionString(config.StorageConnectionString);
-            endpointConfig.DisableFeature<TimeoutManager>();
-
-            var transportConfig = endpointConfig.UseTransport<AzureServiceBusTransport>();
-            Builder.RegisterInstance(transportConfig)
-                .Named<TransportExtensions<AzureServiceBusTransport>>("DasTransportConfig")
-                .SingleInstance();
-
-            transportConfig
-                .UseForwardingTopology()
-                .ConnectionString(config.DasServiceBusConnectionString)
-                .Transactions(TransportTransactionMode.ReceiveOnly)
-                .Queues()
-                .DefaultMessageTimeToLive(config.DefaultMessageTimeToLive);
-            var routing = transportConfig.Routing();
-            //routing.RouteToEndpoint(typeof(CommitmentsV2.Messages.Events.ApprenticeshipCreatedEvent).Assembly, EndpointNames.PeriodEnd);
-
-            var sanitization = transportConfig.Sanitization();
-            var strategy = sanitization.UseStrategy<ValidateAndHashIfNeeded>();
-            strategy.RuleNameSanitization(
-                ruleNameSanitizer: ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
-            endpointConfig.UseSerialization<NewtonsoftSerializer>();
-            endpointConfig.EnableInstallers();
-        }
-
-        [BeforeTestRun(Order = 100)]
-        public static void StartBus()
-        {
-            messageSession = Endpoint.Start(dasEndpointConfiguration).Result;
         }
 
         [Given(@"there is no previous submission from provider in current collection period")]
@@ -65,9 +20,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         }
 
         [When(@"there is a change at approvals side")]
-        public void WhenThereIsAChangeAtApprovalsSide()
+        public async Task WhenThereIsAChangeAtApprovalsSide()
         {
             ScenarioContext.Current.Pending();
+            var options = new PublishOptions();
+            await MessageSession.Publish<ApprenticeshipUpdated>(m =>
+            {
+                m.Ukprn = 123;
+            }, options);
         }
 
         [Then(@"new record will be added to the  ProviderRequiringReprocessing table")]
@@ -78,12 +38,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         [Given(@"there is previous successful/unsuccessful submission from provider in current collection period")]
         public void GivenThereIsPreviousSuccessfulUnsuccessfulSubmissionFromProviderInCurrentCollectionPeriod()
-        {
-            ScenarioContext.Current.Pending();
-        }
-
-        [Then(@"new record will be added to the ProviderRequiringReprocessing table")]
-        public void ThenNewRecordWillBeAddedToTheProviderRequiringReprocessingTable()
         {
             ScenarioContext.Current.Pending();
         }
@@ -135,6 +89,5 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             ScenarioContext.Current.Pending();
         }
-
     }
 }
