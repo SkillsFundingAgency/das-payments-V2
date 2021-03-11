@@ -1,5 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using Autofac;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
+using SFA.DAS.Payments.PeriodEnd.Application.Data;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using TechTalk.SpecFlow;
 using PublishOptions = NServiceBus.PublishOptions;
 
@@ -9,6 +14,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     [Scope(Feature = "Providers Requiring Resubmission")]
     public class ProvidersRequiringResubmissionSteps : EndToEndStepsBase
     {
+        private long ukprn = 93753;
+
         public ProvidersRequiringResubmissionSteps(FeatureContext context) : base(context)
         {
         }
@@ -16,78 +23,87 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Given(@"there is no previous submission from provider in current collection period")]
         public void GivenThereIsNoPreviousSubmissionFromProviderInCurrentCollectionPeriod()
         {
-            ScenarioContext.Current.Pending();
         }
 
         [When(@"there is a change at approvals side")]
         public async Task WhenThereIsAChangeAtApprovalsSide()
         {
-            ScenarioContext.Current.Pending();
             var options = new PublishOptions();
             await MessageSession.Publish<ApprenticeshipUpdated>(m =>
             {
-                m.Ukprn = 123;
+                m.Ukprn = ukprn;
             }, options);
         }
 
-        [Then(@"new record will be added to the  ProviderRequiringReprocessing table")]
+        [Then(@"new record will be added to the ProviderRequiringReprocessing table")]
         public void ThenNewRecordWillBeAddedToTheProviderRequiringReprocessingTable()
         {
-            ScenarioContext.Current.Pending();
         }
 
         [Given(@"there is previous successful/unsuccessful submission from provider in current collection period")]
         public void GivenThereIsPreviousSuccessfulUnsuccessfulSubmissionFromProviderInCurrentCollectionPeriod()
         {
-            ScenarioContext.Current.Pending();
         }
 
         [Given(@"a provider already exists in ProviderRequiringReprocessing table")]
         public void GivenAProviderAlreadyExistsInProviderRequiringReprocessingTable()
         {
-            ScenarioContext.Current.Pending();
         }
 
         [When(@"there is a change at approvals side but no new submission has been made by provider")]
         public void WhenThereIsAChangeAtApprovalsSideButNoNewSubmissionHasBeenMadeByProvider()
         {
-            ScenarioContext.Current.Pending();
         }
 
         [Then(@"there should not be any change to ProviderRequiringReprocessing table")]
         public void ThenThereShouldNotBeAnyChangeToProviderRequiringReprocessingTable()
         {
-            ScenarioContext.Current.Pending();
         }
 
         [Given(@"a provider exists in ProviderRequiringReprocessing for current collection period")]
         public void GivenAProviderExistsInProviderRequiringReprocessingForCurrentCollectionPeriod()
         {
-            ScenarioContext.Current.Pending();
         }
 
         [When(@"new successful \(appears in latest successful jobs view\) submission is processed from that provider")]
-        public void WhenNewSuccessfulAppearsInLatestSuccessfulJobsViewSubmissionIsProcessedFromThatProvider()
+        public async Task WhenNewSuccessfulAppearsInLatestSuccessfulJobsViewSubmissionIsProcessedFromThatProvider()
         {
-            ScenarioContext.Current.Pending();
+            var options = new PublishOptions();
+            await MessageSession.Publish<SubmissionJobSucceeded>(m =>
+            {
+                m.Ukprn = ukprn;
+            }, options);
         }
 
         [Then(@"record for provider should be deleted from the ProviderRequiringReprocessing table")]
-        public void ThenRecordForProviderShouldBeDeletedFromTheProviderRequiringReprocessingTable()
+        public async Task ThenRecordForProviderShouldBeDeletedFromTheProviderRequiringReprocessingTable()
         {
-            ScenarioContext.Current.Pending();
+            var dataContext = Scope.Resolve<PeriodEndDataContext>();
+            await WaitForIt(async () =>
+            {
+                return !(await dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == ukprn));
+            }, $"Failed to find provider with matching ukprn: {ukprn} in ProviderRequiringReprocessing table ");
+
         }
 
         [When(@"new unsuccessful submission is processed from that provider")]
-        public void WhenNewUnsuccessfulSubmissionIsProcessedFromThatProvider()
+        public async Task WhenNewUnsuccessfulSubmissionIsProcessedFromThatProvider()
         {
-            ScenarioContext.Current.Pending();
+            var options = new PublishOptions();
+            await MessageSession.Publish<SubmissionJobFailed>(m =>
+            {
+                m.Ukprn = ukprn;
+            }, options);
         }
 
         [Then(@"record for provider should not be deleted from the ProviderRequiringReprocessing table")]
-        public void ThenRecordForProviderShouldNotBeDeletedFromTheProviderRequiringReprocessingTable()
+        public async Task ThenRecordForProviderShouldNotBeDeletedFromTheProviderRequiringReprocessingTable()
         {
-            ScenarioContext.Current.Pending();
+            var dataContext = Scope.Resolve<PeriodEndDataContext>();
+            await WaitForIt(() =>
+            {
+                return dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == ukprn);
+            }, $"Failed to find provider with matching ukprn: {ukprn} in ProviderRequiringReprocessing table ");
         }
     }
 }

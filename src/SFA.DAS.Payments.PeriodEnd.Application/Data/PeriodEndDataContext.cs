@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Data
         Task<int> SaveChanges(CancellationToken cancellationToken = default(CancellationToken));
     }
 
-    class PeriodEndDataContext : DbContext, IPeriodEndDataContext
+    public class PeriodEndDataContext : DbContext, IPeriodEndDataContext
     {
         protected readonly string connectionString;
 

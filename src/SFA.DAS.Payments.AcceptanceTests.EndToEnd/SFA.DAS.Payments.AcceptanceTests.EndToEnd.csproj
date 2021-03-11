@@ -2878,6 +2878,14 @@
       <Project>{EE51D526-0244-4B63-99A4-07FAFEF14D31}</Project>
       <Name>SFA.DAS.Payments.Monitoring.Metrics.Model</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.PeriodEnd.Application\SFA.DAS.Payments.PeriodEnd.Application.csproj">
+      <Project>{EE13D70F-9F26-4785-8491-3CEFEF643D4D}</Project>
+      <Name>SFA.DAS.Payments.PeriodEnd.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.PeriodEnd.Model\SFA.DAS.Payments.PeriodEnd.Model.csproj">
+      <Project>{c7b276f8-1451-4818-9675-16fad054bf30}</Project>
+      <Name>SFA.DAS.Payments.PeriodEnd.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Messages.Internal\SFA.DAS.Payments.ProviderPayments.Messages.Internal.csproj">
       <Project>{25B9DFA3-DF0C-4C53-A991-1F3D3BB407A8}</Project>
       <Name>SFA.DAS.Payments.ProviderPayments.Messages.Internal</Name>

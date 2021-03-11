@@ -6,7 +6,7 @@
 Scenario: Apprenticeship updated before ILR submitted by provider during current collection period
 	Given there is no previous submission from provider in current collection period
 	When there is a change at approvals side
-	Then new record will be added to the  ProviderRequiringReprocessing table
+	Then new record will be added to the ProviderRequiringReprocessing table
 
 Scenario: Apprenticeship updated after IRL submitted by provider during current collection period
 	Given there is previous successful/unsuccessful submission from provider in current collection period
