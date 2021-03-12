@@ -2,10 +2,10 @@
 using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
 using SFA.DAS.Payments.Core.Configuration;
-using SFA.DAS.Payments.PeriodEnd.Application.Data;
 using SFA.DAS.Payments.PeriodEnd.Application.Handlers;
 using SFA.DAS.Payments.PeriodEnd.Application.Repositories;
 using SFA.DAS.Payments.PeriodEnd.Application.Services;
+using SFA.DAS.Payments.PeriodEnd.Data;
 
 namespace SFA.DAS.Payments.PeriodEnd.Application.Infrastructure.Ioc
 {

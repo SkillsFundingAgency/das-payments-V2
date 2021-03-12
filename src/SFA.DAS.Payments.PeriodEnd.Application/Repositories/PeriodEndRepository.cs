@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.PeriodEnd.Application.Data;
+using SFA.DAS.Payments.PeriodEnd.Data;
 using SFA.DAS.Payments.PeriodEnd.Model;
 
 namespace SFA.DAS.Payments.PeriodEnd.Application.Repositories

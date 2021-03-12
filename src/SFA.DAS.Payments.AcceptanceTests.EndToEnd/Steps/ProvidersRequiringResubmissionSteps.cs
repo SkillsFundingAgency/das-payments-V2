@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using Autofac;
+﻿using Autofac;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
-using SFA.DAS.Payments.PeriodEnd.Application.Data;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using SFA.DAS.Payments.PeriodEnd.Data;
+using SFA.DAS.Payments.PeriodEnd.Model;
 using TechTalk.SpecFlow;
 using PublishOptions = NServiceBus.PublishOptions;
 
@@ -14,8 +14,22 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     [Scope(Feature = "Providers Requiring Resubmission")]
     public class ProvidersRequiringResubmissionSteps : EndToEndStepsBase
     {
-        private long ukprn = 93753;
+        private PeriodEndDataContext dataContext;
 
+        [BeforeScenario]
+        public async Task Setup()
+        {
+            TestSession.RegenerateUkprn();
+            dataContext = Scope.Resolve<PeriodEndDataContext>();
+            var record = await dataContext.ProvidersRequiringReprocessing
+                .FirstOrDefaultAsync(x => x.Ukprn == TestSession.Ukprn);
+            if (record != null)
+            {
+                dataContext.ProvidersRequiringReprocessing.Remove(record);
+                await dataContext.SaveChanges();
+            }
+        }
+        
         public ProvidersRequiringResubmissionSteps(FeatureContext context) : base(context)
         {
         }
@@ -31,13 +45,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var options = new PublishOptions();
             await MessageSession.Publish<ApprenticeshipUpdated>(m =>
             {
-                m.Ukprn = ukprn;
+                m.Ukprn = TestSession.Ukprn;
             }, options);
         }
 
         [Then(@"new record will be added to the ProviderRequiringReprocessing table")]
-        public void ThenNewRecordWillBeAddedToTheProviderRequiringReprocessingTable()
+        public async Task ThenNewRecordWillBeAddedToTheProviderRequiringReprocessingTable()
         {
+            await WaitForIt(() =>
+            {
+                return dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn);
+            }, $"Failed to find provider with matching ukprn: {TestSession.Ukprn} in ProviderRequiringReprocessing table ");
         }
 
         [Given(@"there is previous successful/unsuccessful submission from provider in current collection period")]
@@ -45,24 +63,29 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
         }
 
-        [Given(@"a provider already exists in ProviderRequiringReprocessing table")]
-        public void GivenAProviderAlreadyExistsInProviderRequiringReprocessingTable()
-        {
-        }
-
-        [When(@"there is a change at approvals side but no new submission has been made by provider")]
+        [Given(@"there have been no new submission has been made by provider")]
         public void WhenThereIsAChangeAtApprovalsSideButNoNewSubmissionHasBeenMadeByProvider()
         {
         }
 
         [Then(@"there should not be any change to ProviderRequiringReprocessing table")]
-        public void ThenThereShouldNotBeAnyChangeToProviderRequiringReprocessingTable()
+        public async Task ThenThereShouldNotBeAnyChangeToProviderRequiringReprocessingTable()
         {
+            await WaitForIt(() =>
+            {
+                return dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn);
+            }, $"Failed to find provider with matching ukprn: {TestSession.Ukprn} in ProviderRequiringReprocessing table ");
         }
 
-        [Given(@"a provider exists in ProviderRequiringReprocessing for current collection period")]
-        public void GivenAProviderExistsInProviderRequiringReprocessingForCurrentCollectionPeriod()
+        [Given(@"a provider already exists in ProviderRequiringReprocessing table")]
+        public async Task GivenAProviderExistsInProviderRequiringReprocessingForCurrentCollectionPeriod()
         {
+            
+            dataContext.ProvidersRequiringReprocessing.Add(new ProviderRequiringReprocessingEntity
+            {
+                Ukprn = TestSession.Ukprn,
+            });
+            await dataContext.SaveChanges();
         }
 
         [When(@"new successful \(appears in latest successful jobs view\) submission is processed from that provider")]
@@ -71,18 +94,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var options = new PublishOptions();
             await MessageSession.Publish<SubmissionJobSucceeded>(m =>
             {
-                m.Ukprn = ukprn;
+                m.Ukprn = TestSession.Ukprn;
             }, options);
         }
 
         [Then(@"record for provider should be deleted from the ProviderRequiringReprocessing table")]
         public async Task ThenRecordForProviderShouldBeDeletedFromTheProviderRequiringReprocessingTable()
         {
-            var dataContext = Scope.Resolve<PeriodEndDataContext>();
             await WaitForIt(async () =>
             {
-                return !(await dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == ukprn));
-            }, $"Failed to find provider with matching ukprn: {ukprn} in ProviderRequiringReprocessing table ");
+                return !(await dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn));
+            }, $"Failed to find provider with matching ukprn: {TestSession.Ukprn} in ProviderRequiringReprocessing table ");
 
         }
 
@@ -92,18 +114,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var options = new PublishOptions();
             await MessageSession.Publish<SubmissionJobFailed>(m =>
             {
-                m.Ukprn = ukprn;
+                m.Ukprn = TestSession.Ukprn;
             }, options);
         }
 
         [Then(@"record for provider should not be deleted from the ProviderRequiringReprocessing table")]
         public async Task ThenRecordForProviderShouldNotBeDeletedFromTheProviderRequiringReprocessingTable()
         {
-            var dataContext = Scope.Resolve<PeriodEndDataContext>();
             await WaitForIt(() =>
             {
-                return dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == ukprn);
-            }, $"Failed to find provider with matching ukprn: {ukprn} in ProviderRequiringReprocessing table ");
+                return dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn);
+            }, $"Failed to find provider with matching ukprn: {TestSession.Ukprn} in ProviderRequiringReprocessing table ");
         }
     }
 }

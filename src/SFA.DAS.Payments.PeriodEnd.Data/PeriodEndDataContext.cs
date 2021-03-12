@@ -1,10 +1,10 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SFA.DAS.Payments.PeriodEnd.Application.Data.Configurations;
+using SFA.DAS.Payments.PeriodEnd.Data.Configurations;
 using SFA.DAS.Payments.PeriodEnd.Model;
 
-namespace SFA.DAS.Payments.PeriodEnd.Application.Data
+namespace SFA.DAS.Payments.PeriodEnd.Data
 {
     public interface IPeriodEndDataContext
     {

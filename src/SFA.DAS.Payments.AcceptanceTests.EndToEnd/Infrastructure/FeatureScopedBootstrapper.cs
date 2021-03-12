@@ -14,10 +14,9 @@ using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
+using SFA.DAS.Payments.PeriodEnd.Data;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
-using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Services;
-using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
@@ -45,6 +44,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
                 return new JobsDataContext(configHelper.PaymentsConnectionString);
             })
                 .As<JobsDataContext>()
+                .InstancePerLifetimeScope();
+
+            Builder.Register((c, p) =>
+                {
+                    var configHelper = c.Resolve<TestsConfiguration>();
+                    return new PeriodEndDataContext(configHelper.PaymentsConnectionString);
+                })
+                .As<PeriodEndDataContext>()
                 .InstancePerLifetimeScope();
 
             DcHelper.AddDcConfig(Builder);

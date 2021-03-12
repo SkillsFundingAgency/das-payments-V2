@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SFA.DAS.Payments.PeriodEnd.Model;
 
-namespace SFA.DAS.Payments.PeriodEnd.Application.Data.Configurations
+namespace SFA.DAS.Payments.PeriodEnd.Data.Configurations
 {
     class ProvidersRequiringReprocessingConfiguration : IEntityTypeConfiguration<ProviderRequiringReprocessingEntity>
     {

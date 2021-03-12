@@ -6,7 +6,7 @@
 )
 GO
 
-CREATE INDEX [UX_ProviderRequiringReprocessing__Ukprn] ON [Payments2].[ProviderRequiringReprocessing]
+CREATE UNIQUE INDEX [UX_ProviderRequiringReprocessing__Ukprn] ON [Payments2].[ProviderRequiringReprocessing]
 (
 	Ukprn
 )
