@@ -13,9 +13,9 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Services
 
     public class SubmissionJobsService : ISubmissionJobsService
     {
-        private readonly ISubmissionJobsRepository repository;
+        private readonly IPeriodEndRepository repository;
 
-        public SubmissionJobsService(ISubmissionJobsRepository repository)
+        public SubmissionJobsService(IPeriodEndRepository repository)
         {
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
