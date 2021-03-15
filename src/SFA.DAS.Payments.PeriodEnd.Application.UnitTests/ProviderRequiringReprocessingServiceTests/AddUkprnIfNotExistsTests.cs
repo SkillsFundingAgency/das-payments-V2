@@ -22,24 +22,5 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.ProviderRequiringRepr
             repository = mocker.Mock<IProvidersRequiringReprocessingRepository>();
             sut = mocker.Create<ProviderRequiringReprocessingService>();
         }
-
-        [Test]
-        public async Task WhenUkprnExistsInTable_Then_AddToTableIsNotCalled()
-        {
-            repository.Setup(x => x.GetExisting(-100))
-                .ReturnsAsync(new ProviderRequiringReprocessingEntity());
-
-            await sut.AddUkprnIfNotExists(-100);
-      
-            repository.Verify(x => x.Add(-100), Times.Never);
-        }
-
-        [Test]
-        public async Task WhenUkrpnDoesNotExist_Then_AddToTableIsCalled()
-        {
-            await sut.AddUkprnIfNotExists(-100);
-
-            repository.Verify(x => x.Add(-100), Times.Once);
-        }
     }
 }
