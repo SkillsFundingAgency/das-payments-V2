@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Data
         DbSet<ProviderRequiringReprocessingEntity> ProvidersRequiringReprocessing { get; set; }
         DbSet<LatestSuccessfulJobModel> LatestSuccessfulJobs { get;}
 
-        Task<int> SaveChanges(CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
     }
 
     public class PeriodEndDataContext : DbContext, IPeriodEndDataContext
@@ -44,11 +44,6 @@ namespace SFA.DAS.Payments.PeriodEnd.Data
         {
             if (connectionString != null)
                 optionsBuilder.UseSqlServer(connectionString);
-        }
-
-        public async Task<int> SaveChanges(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return await SaveChangesAsync(cancellationToken);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Infrastructure.Ioc
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<PeriodEndJobContextMessageHandler>().As<IMessageHandler<JobContextMessage>>();
-            builder.RegisterType<PeriodEndRepository>().As<IPeriodEndRepository>();
+            builder.RegisterType<ProvidersRequiringReprocessingRepository>().As<IProvidersRequiringReprocessingRepository>();
             builder.RegisterType<ProviderRequiringReprocessingService>().As<IProviderRequiringReprocessingService>();
 
             builder.Register((c, p) =>

@@ -34,12 +34,18 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
         }
 
-        [Given(@"there is no previous submission from provider in current collection period")]
+        [Given(@"the provider has made a submission in the current collection period")]
+        public void GivenThereIsPreviousSuccessfulUnsuccessfulSubmissionFromProviderInCurrentCollectionPeriod()
+        {
+        }
+
+        [Given(@"the provider has made no submissions in the current collection period")]
+        [Given(@"there have been no new submissions made by the provider")]
         public void GivenThereIsNoPreviousSubmissionFromProviderInCurrentCollectionPeriod()
         {
         }
 
-        [When(@"there is a change at approvals side")]
+        [When(@"there is a change to the apprenticeship details for one of the provider's learners")]
         public async Task WhenThereIsAChangeAtApprovalsSide()
         {
             var options = new PublishOptions();
@@ -56,16 +62,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 return dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn);
             }, $"Failed to find provider with matching ukprn: {TestSession.Ukprn} in ProviderRequiringReprocessing table ");
-        }
-
-        [Given(@"there is previous successful/unsuccessful submission from provider in current collection period")]
-        public void GivenThereIsPreviousSuccessfulUnsuccessfulSubmissionFromProviderInCurrentCollectionPeriod()
-        {
-        }
-
-        [Given(@"there have been no new submission has been made by provider")]
-        public void WhenThereIsAChangeAtApprovalsSideButNoNewSubmissionHasBeenMadeByProvider()
-        {
         }
 
         [Then(@"there should not be any change to ProviderRequiringReprocessing table")]

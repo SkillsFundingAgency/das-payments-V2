@@ -13,25 +13,25 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.ProviderRequiringRepr
     {
         private AutoMock mocker;
         private ProviderRequiringReprocessingService sut;
-        private Mock<IPeriodEndRepository> repository;
+        private Mock<IProvidersRequiringReprocessingRepository> repository;
 
         [SetUp]
         public void SetUp()
         {
             mocker = AutoMock.GetLoose();
-            repository = mocker.Mock<IPeriodEndRepository>();
+            repository = mocker.Mock<IProvidersRequiringReprocessingRepository>();
             sut = mocker.Create<ProviderRequiringReprocessingService>();
         }
 
         [Test]
         public async Task WhenUkprnExistsInTable_Then_AddToTableIsNotCalled()
         {
-            repository.Setup(x => x.RecordForProviderThatRequiresReprocessing(-100))
+            repository.Setup(x => x.GetExisting(-100))
                 .ReturnsAsync(new ProviderRequiringReprocessingEntity());
 
             await sut.AddUkprnIfNotExists(-100);
       
-            repository.Verify(x => x.AddProviderThatRequiredReprocessing(-100), Times.Never);
+            repository.Verify(x => x.Add(-100), Times.Never);
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.ProviderRequiringRepr
         {
             await sut.AddUkprnIfNotExists(-100);
 
-            repository.Verify(x => x.AddProviderThatRequiredReprocessing(-100), Times.Once);
+            repository.Verify(x => x.Add(-100), Times.Once);
         }
     }
 }

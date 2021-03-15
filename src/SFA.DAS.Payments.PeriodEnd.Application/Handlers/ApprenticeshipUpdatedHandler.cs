@@ -20,9 +20,9 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
 
         public async Task Handle(ApprenticeshipUpdated message, IMessageHandlerContext context)
         {
-            logger.LogDebug($"Apprenticeship Updated. Adding Ukprn: {message.Ukprn} to list for reprocessing");
+            logger.LogDebug($"Apprenticeship Updated. Ensuring Ukprn: {message.Ukprn} exists on the list for reprocessing");
             await service.AddUkprnIfNotExists(message.Ukprn);
-            logger.LogInfo($"Apprenticeship Updated. Finished adding Ukprn: {message.Ukprn} to list for reprocessing");
+            logger.LogInfo($"Apprenticeship Updated. Finished ensuring that Ukprn: {message.Ukprn} exists on the list for reprocessing");
         }
     }
 }
