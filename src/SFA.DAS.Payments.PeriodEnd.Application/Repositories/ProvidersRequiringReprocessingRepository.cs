@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -18,6 +20,8 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Repositories
         ///     set
         /// </summary>
         Task Add(long ukprn);
+
+        Task<List<long>> GetAll();
     }
 
     public class ProvidersRequiringReprocessingRepository : IProvidersRequiringReprocessingRepository
@@ -61,6 +65,16 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Repositories
             await dataContext.ProvidersRequiringReprocessing.AddAsync(record);
             await dataContext.SaveChangesAsync();
             logger.LogInfo($"Finished adding ProviderRequiringReprocessing entity for Ukprn: {ukprn}");
+        }
+
+        public async Task<List<long>> GetAll()
+        {
+            logger.LogDebug("Getting all providers that need reprocessing");
+            var providers = await dataContext.ProvidersRequiringReprocessing
+                .Select(x => x.Ukprn)
+                .ToListAsync();
+            logger.LogInfo("Finished getting all providers that need reprocessing");
+            return providers;
         }
     }
 }
