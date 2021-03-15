@@ -12,10 +12,10 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Services
 
     public class ProviderRequiringReprocessingService : IProviderRequiringReprocessingService
     {
-        private readonly IPeriodEndRepository repository;
+        private readonly IProvidersRequiringReprocessingRepository repository;
         private readonly IPaymentLogger logger;
 
-        public ProviderRequiringReprocessingService(IPeriodEndRepository repository, IPaymentLogger logger)
+        public ProviderRequiringReprocessingService(IProvidersRequiringReprocessingRepository repository, IPaymentLogger logger)
         {
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -24,11 +24,11 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Services
         public async Task AddUkprnIfNotExists(long ukprn)
         {
             logger.LogDebug($"Adding Ukprn to ProviderRequiringReprocessing table for Ukprn: {ukprn}");
-            var record = await repository.RecordForProviderThatRequiresReprocessing(ukprn);
+            var record = await repository.GetExisting(ukprn);
             if (record == null)
             {
                 logger.LogDebug($"No record found for provider: {ukprn} - adding record to ProviderRequiringReprocessing");
-                await repository.AddProviderThatRequiredReprocessing(ukprn);
+                await repository.Add(ukprn);
             }
             logger.LogInfo($"Finished adding Ukprn to ProviderRequiringReprocessing table for Ukprn: {ukprn}");
         }

@@ -9,10 +9,10 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
 {
     class SubmissionSucceededHandler : IHandleMessages<SubmissionJobSucceeded>
     {
-        private readonly IPeriodEndRepository repository;
+        private readonly IProvidersRequiringReprocessingRepository repository;
         private readonly IPaymentLogger logger;
 
-        public SubmissionSucceededHandler(IPeriodEndRepository repository, IPaymentLogger logger)
+        public SubmissionSucceededHandler(IProvidersRequiringReprocessingRepository repository, IPaymentLogger logger)
         {
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
         public async Task Handle(SubmissionJobSucceeded message, IMessageHandlerContext context)
         {
             logger.LogDebug($"Handling SubmissionJobSucceeded event for Ukprn: {message.Ukprn}");
-            await repository.RemoveUkrpnFromReprocessingList(message.Ukprn);
+            await repository.Remove(message.Ukprn);
             logger.LogInfo($"Finished handling SubmissionJobSucceeded event for Ukprn: {message.Ukprn}");
         }
     }
