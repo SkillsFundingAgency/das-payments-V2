@@ -12,6 +12,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Function.Infrastructure.IoC.Modules
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<PeriodEndRepository>().As<IPeriodEndRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<ProvidersRequiringReprocessingRepository>().As<IProvidersRequiringReprocessingRepository>().InstancePerLifetimeScope();
 
             builder.Register((c, p) =>
                 {
