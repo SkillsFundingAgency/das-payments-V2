@@ -10,8 +10,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Repositories
     public interface IProvidersRequiringReprocessingRepository
     {
         Task Remove(long ukprn);
-        Task<ProviderRequiringReprocessingEntity> GetExisting(long ukprn);
-
+        
         /// <summary>
         /// This method will add the UKPRN to the table if it does not exist and ignore the new record if
         ///     an existing record already exists with the same UKPRN. The unique index has IGNORE_DUP_KEY
@@ -41,14 +40,6 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Repositories
             await dataContext.SaveChangesAsync();
 
             logger.LogInfo($"Removed UKPRN from ProviderRequiringReprocessing for ukprn: {ukprn}");
-        }
-
-        public async Task<ProviderRequiringReprocessingEntity> GetExisting(long ukprn)
-        {
-            logger.LogDebug($"Getting ProviderRequiringReprocessing entity for Ukprn: {ukprn}");
-            var record = await dataContext.ProvidersRequiringReprocessing.FirstOrDefaultAsync(x => x.Ukprn == ukprn);
-            logger.LogInfo($"Finished getting ProviderRequiringReprocessing entity for Ukprn: {ukprn}");
-            return record;
         }
 
         public async Task Add(long ukprn)
