@@ -11,6 +11,12 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Repositories
     {
         Task Remove(long ukprn);
         Task<ProviderRequiringReprocessingEntity> GetExisting(long ukprn);
+
+        /// <summary>
+        /// This method will add the UKPRN to the table if it does not exist and ignore the new record if
+        ///     an existing record already exists with the same UKPRN. The unique index has IGNORE_DUP_KEY
+        ///     set
+        /// </summary>
         Task Add(long ukprn);
     }
 

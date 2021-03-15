@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             if (record != null)
             {
                 dataContext.ProvidersRequiringReprocessing.Remove(record);
-                await dataContext.SaveChanges();
+                await dataContext.SaveChangesAsync();
             }
         }
         
@@ -81,7 +81,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 Ukprn = TestSession.Ukprn,
             });
-            await dataContext.SaveChanges();
+            await dataContext.SaveChangesAsync();
         }
 
         [When(@"new successful \(appears in latest successful jobs view\) submission is processed from that provider")]

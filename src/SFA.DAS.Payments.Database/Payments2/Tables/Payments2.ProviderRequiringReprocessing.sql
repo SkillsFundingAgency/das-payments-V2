@@ -9,6 +9,6 @@ GO
 CREATE UNIQUE INDEX [UX_ProviderRequiringReprocessing__Ukprn] ON [Payments2].[ProviderRequiringReprocessing]
 (
 	Ukprn
-) 
+) WITH (IGNORE_DUP_KEY = ON)
 GO
 
