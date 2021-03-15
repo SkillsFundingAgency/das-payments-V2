@@ -32,9 +32,8 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Repositories
                 .FirstOrDefaultAsync(x => x.Ukprn == ukprn);
             if (record != null)
                 dataContext.ProvidersRequiringReprocessing.Remove(record);
-            await dataContext.SaveChanges();
+            await dataContext.SaveChangesAsync();
 
-            //dataContext.ProvidersRequiringReprocessing.FromSql($"DELETE [Payments2].[ProviderRequiringReprocessing] WHERE Ukprn = {ukprn}");
             logger.LogInfo($"Removed UKPRN from ProviderRequiringReprocessing for ukprn: {ukprn}");
         }
 
@@ -54,7 +53,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Repositories
                 Ukprn = ukprn,
             };
             await dataContext.ProvidersRequiringReprocessing.AddAsync(record);
-            await dataContext.SaveChanges();
+            await dataContext.SaveChangesAsync();
             logger.LogInfo($"Finished adding ProviderRequiringReprocessing entity for Ukprn: {ukprn}");
         }
     }

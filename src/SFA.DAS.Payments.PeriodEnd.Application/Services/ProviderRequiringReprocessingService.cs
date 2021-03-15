@@ -30,6 +30,10 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Services
                 logger.LogDebug($"No record found for provider: {ukprn} - adding record to ProviderRequiringReprocessing");
                 await repository.Add(ukprn);
             }
+            else
+            {
+                logger.LogDebug($"Record found for provider: {ukprn} - not doing anything");
+            }
             logger.LogInfo($"Finished adding Ukprn to ProviderRequiringReprocessing table for Ukprn: {ukprn}");
         }
     }
