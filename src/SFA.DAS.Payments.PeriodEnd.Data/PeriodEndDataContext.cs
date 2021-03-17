@@ -27,11 +27,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Data
         {
             this.connectionString = connectionString;
         }
-
-
-        public PeriodEndDataContext(DbContextOptions<PeriodEndDataContext> options) : base(options)
-        { }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

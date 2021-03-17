@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.PeriodEnd.Application.Repositories;
 using SFA.DAS.Payments.PeriodEnd.Application.Services;
 using SFA.DAS.Payments.PeriodEnd.Data;
@@ -16,10 +15,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Function.Infrastructure.IoC.Modules
             builder.Register((c, p) =>
                 {
                     var config = c.Resolve<IProvidersRequiringReprocessingConfiguration>();
-                    var dbContextOptions = new DbContextOptionsBuilder<PeriodEndDataContext>()
-                        .UseSqlServer(config.PaymentsConnectionString, 
-                  optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
-                    return new PeriodEndDataContext(dbContextOptions);
+                    return new PeriodEndDataContext(config.PaymentsConnectionString);
                 })
                 .As<IPeriodEndDataContext>()
                 .InstancePerLifetimeScope();
