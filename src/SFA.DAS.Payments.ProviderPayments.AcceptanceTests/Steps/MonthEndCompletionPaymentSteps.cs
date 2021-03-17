@@ -9,6 +9,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.DasHandlers;
 using SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Data;
@@ -41,6 +42,35 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
 
             CollectionPeriod = collectionPeriod.Period;
             AcademicYear = collectionPeriod.AcademicYear;
+        }
+
+        [Given(@"submission window validation job has been run")]
+        public async Task GivenSubmissionWindowValidationJobHasBeenRun()
+        {
+            var context = Container.Resolve<TestPaymentsDataContext>();
+            await context.CreateSubmissionWindowValidationJob(AcademicYear, CollectionPeriod).ConfigureAwait(false);
+        }
+
+        [Given(@"submission window validation job has been run and completed with errors")]
+        public async Task GivenSubmissionWindowValidationJobHasBeenRunAndCompletedWithErrors()
+        {
+            var context = Container.Resolve<TestPaymentsDataContext>();
+            await context.CreateSubmissionWindowValidationJob(AcademicYear, CollectionPeriod, JobStatus.CompletedWithErrors).ConfigureAwait(false);
+        }
+
+        [Given(@"submission window validation job has been run and has a null EndTime")]
+        public async Task GivenSubmissionWindowValidationJobHasBeenRunAndHasANullEndTime()
+        {
+            var context = Container.Resolve<TestPaymentsDataContext>();
+            await context.CreateSubmissionWindowValidationJob(AcademicYear, CollectionPeriod, null).ConfigureAwait(false);
+        }
+
+        [Given(@"submission window validation job has not been run")]
+        public async Task GivenSubmissionWindowValidationJobHasNotBeenRun()
+        {
+            var context = Container.Resolve<TestPaymentsDataContext>();
+            await context.DeleteSubmissionWindowValidationJob(AcademicYear, CollectionPeriod).ConfigureAwait(false);
+            await context.DeleteCollectionPeriod(AcademicYear, CollectionPeriod).ConfigureAwait(false);
         }
 
         [Given(@"the funding source service generates the following contract type payments")]
