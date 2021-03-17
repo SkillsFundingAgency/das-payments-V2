@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests.Infrastructure
 
         public FunctionWrapper(HttpClient httpClient)
         {
-            baseUri = ConfigurationManager.AppSettings["FunctionUri"];
+            baseUri = ConfigurationManager.AppSettings["ProvidersRequiringReprocessingFunctionUri"];
             this.httpClient = httpClient;
         }
 
