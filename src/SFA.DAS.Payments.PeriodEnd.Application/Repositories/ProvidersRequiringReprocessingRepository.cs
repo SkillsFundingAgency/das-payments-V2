@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.PeriodEnd.Data;
 using SFA.DAS.Payments.PeriodEnd.Model;
 
@@ -21,6 +22,8 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Repositories
         Task Add(long ukprn);
 
         Task<List<long>> GetAll();
+
+        Task<List<LatestSuccessfulJobModel>> GetLatestSuccessfulJobs(short academicYear, byte collectionPeriod);
     }
 
     public class ProvidersRequiringReprocessingRepository : IProvidersRequiringReprocessingRepository
@@ -66,6 +69,18 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Repositories
                 .ToListAsync();
             logger.LogInfo("Finished getting all providers that need reprocessing");
             return providers;
+        }
+
+        public async Task<List<LatestSuccessfulJobModel>> GetLatestSuccessfulJobs(short academicYear, byte collectionPeriod)
+        {
+            logger.LogDebug($"Getting latest successful jobs for Academic Year: {academicYear} and Collection Period: {collectionPeriod}");
+            
+            logger.LogInfo("Finished getting latest successful jobs");
+            return await dataContext.LatestSuccessfulJobs
+                .Where(x =>
+                    x.AcademicYear == academicYear &&
+                    x.CollectionPeriod == collectionPeriod)
+                .ToListAsync();
         }
     }
 }

@@ -15,8 +15,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.SubmissionJobsService
     public class SuccessfulSubmissionsTests
     {
         private AutoMock mocker;
-        private Mock<IPeriodEndRepository> mockPeriodEndRepository;
-        private Mock<IProvidersRequiringReprocessingRepository> mockProvidersRequiringReprocessingRepository;
+        private Mock<IProvidersRequiringReprocessingRepository> mockRepository;
         private List<LatestSuccessfulJobModel> testJobs;
         private SubmissionJobsService sut;
 
@@ -27,8 +26,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.SubmissionJobsService
         public void SetUp()
         {
             mocker = AutoMock.GetLoose();
-            mockPeriodEndRepository = mocker.Mock<IPeriodEndRepository>();
-            mockProvidersRequiringReprocessingRepository = mocker.Mock<IProvidersRequiringReprocessingRepository>();
+            mockRepository = mocker.Mock<IProvidersRequiringReprocessingRepository>();
             testJobs = mocker.Create<List<LatestSuccessfulJobModel>>();
             sut = mocker.Create<SubmissionJobsService>();
             academicYear = short.MinValue;
@@ -39,11 +37,11 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.SubmissionJobsService
         public async Task WhenProviderHasASuccessfulJob_AndProviderNeedsReprocessing_ThenNotIncludedInResult()
         {
             //Arrange
-            mockPeriodEndRepository
+            mockRepository
                 .Setup(x => x.GetLatestSuccessfulJobs(academicYear, collectionPeriod))
                 .ReturnsAsync(testJobs);
 
-            mockProvidersRequiringReprocessingRepository
+            mockRepository
                 .Setup(x => x.GetAll())
                 .ReturnsAsync(testJobs.Select(x => x.Ukprn).ToList());
 
@@ -58,11 +56,11 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.SubmissionJobsService
         public async Task WhenProviderHasASuccessfulJob_AndProviderDoesNotNeedsReprocessing_ThenIncludedInResult()
         {
             //Arrange
-            mockPeriodEndRepository
+            mockRepository
                 .Setup(x => x.GetLatestSuccessfulJobs(academicYear, collectionPeriod))
                 .ReturnsAsync(testJobs);
 
-            mockProvidersRequiringReprocessingRepository
+            mockRepository
                 .Setup(x => x.GetAll())
                 .ReturnsAsync(new List<long>());
 
@@ -79,11 +77,11 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.SubmissionJobsService
             var testProvider = -123456789;
 
             //Arrange
-            mockPeriodEndRepository
+            mockRepository
                 .Setup(x => x.GetLatestSuccessfulJobs(academicYear, collectionPeriod))
                 .ReturnsAsync(testJobs);
 
-            mockProvidersRequiringReprocessingRepository
+            mockRepository
                 .Setup(x => x.GetAll())
                 .ReturnsAsync(new List<long> { testProvider, });
 

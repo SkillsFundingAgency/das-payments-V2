@@ -13,13 +13,11 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Services
 
     public class SubmissionJobsService : ISubmissionJobsService
     {
-        private readonly IPeriodEndRepository repository;
-        private readonly IProvidersRequiringReprocessingRepository providersRequiringResubmissionRepository;
+        private readonly IProvidersRequiringReprocessingRepository repository;
         
-        public SubmissionJobsService(IPeriodEndRepository repository, IProvidersRequiringReprocessingRepository providersRequiringResubmissionRepository)
+        public SubmissionJobsService(IProvidersRequiringReprocessingRepository providersRequiringResubmissionRepository)
         {
-            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
-            this.providersRequiringResubmissionRepository = providersRequiringResubmissionRepository ??
+            this.repository = providersRequiringResubmissionRepository ??
                                                             throw new ArgumentNullException(nameof(providersRequiringResubmissionRepository));
         }
 
@@ -27,7 +25,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Services
         {
             var providers = await repository.GetLatestSuccessfulJobs(academicYear, collectionPeriod);
 
-            var providersToExclude = await providersRequiringResubmissionRepository.GetAll();
+            var providersToExclude = await repository.GetAll();
 
             providers.RemoveAll(x => providersToExclude.Contains(x.Ukprn));
 
