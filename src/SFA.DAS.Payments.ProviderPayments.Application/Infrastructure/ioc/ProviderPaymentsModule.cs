@@ -40,6 +40,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Infrastructure.ioc
             builder.RegisterType<PaymentMapper>().AsImplementedInterfaces();
             
             builder.RegisterType<CompletionPaymentService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<CollectionPeriodStorageService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.Register(ctx =>
                 {

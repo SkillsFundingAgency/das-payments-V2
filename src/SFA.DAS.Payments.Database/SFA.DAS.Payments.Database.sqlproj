@@ -128,6 +128,7 @@
     <Build Include="Metrics\Tables\Metrics.SubmissionsSummary.sql" />
     <Build Include="Metrics\Tables\Metrics.CollectionPeriodTolerance.sql" />
     <Build Include="Metrics\Tables\Metrics.SubmissionsSummaryDataLockCounts.sql" />
+    <Build Include="Payments2\Tables\Payments2.CollectionPeriod.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />
