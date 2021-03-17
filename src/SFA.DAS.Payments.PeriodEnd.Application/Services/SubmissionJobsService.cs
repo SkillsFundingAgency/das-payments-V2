@@ -8,7 +8,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Services
 {
     public interface ISubmissionJobsService
     {
-        Task<SubmissionJobs> SuccessfulSubmissions();
+        Task<SubmissionJobs> SuccessfulSubmissions(short academicYear, byte collectionPeriod);
     }
 
     public class SubmissionJobsService : ISubmissionJobsService
@@ -23,9 +23,9 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Services
                                                             throw new ArgumentNullException(nameof(providersRequiringResubmissionRepository));
         }
 
-        public async Task<SubmissionJobs> SuccessfulSubmissions()
+        public async Task<SubmissionJobs> SuccessfulSubmissions(short academicYear, byte collectionPeriod)
         {
-            var providers = await repository.GetLatestSuccessfulJobs();
+            var providers = await repository.GetLatestSuccessfulJobs(academicYear, collectionPeriod);
 
             var providersToExclude = await providersRequiringResubmissionRepository.GetAll();
 

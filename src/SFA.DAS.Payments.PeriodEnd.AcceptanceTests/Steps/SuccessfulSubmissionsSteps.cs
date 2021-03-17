@@ -18,6 +18,8 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests.Steps
     {
         protected FunctionWrapper Functions { get; private set; }
         private static readonly HttpClient Client = new HttpClient();
+        private static readonly short AcademicYear = 2021;
+        private static readonly byte CollectionPeriod = 15;
 
         public SuccessfulSubmissionsSteps(ScenarioContext context) : base(context)
         { }
@@ -27,6 +29,7 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests.Steps
         {
             TestSession.RegenerateUkprn();
             Functions = new FunctionWrapper(Client);
+            Console.WriteLine($"Generated new UKPRN: {TestSession.Ukprn}");
         }
         
         [Given(@"the provider makes a (failed|successful) submission")]
@@ -41,7 +44,7 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests.Steps
                 });
             else
             {
-                Container.Resolve<TestPaymentsDataContext>().CreateSuccessfulSubmissionJob(TestSession.Ukprn);
+                Container.Resolve<TestPaymentsDataContext>().CreateSuccessfulSubmissionJob(TestSession.Ukprn, AcademicYear, CollectionPeriod);
                 await MessageSession.Publish<SubmissionJobSucceeded>(m =>
                 {
                     m.Ukprn = TestSession.Ukprn;
@@ -67,13 +70,13 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests.Steps
             {
                 await WaitForIt(async () =>
                 {
-                    var result = await Functions.SuccessfulSubmissions();
+                    var result = await Functions.SuccessfulSubmissions(AcademicYear, CollectionPeriod);
                     return result.SuccessfulSubmissionJobs.All(x => x.Ukprn != TestSession.Ukprn);
                 }, "Provider found in successful submissions");
 
                 await WaitForUnexpected(() =>
                 {
-                    var result = Functions.SuccessfulSubmissions().Result;
+                    var result = Functions.SuccessfulSubmissions(AcademicYear, CollectionPeriod).Result;
                     return (result.SuccessfulSubmissionJobs.All(x => x.Ukprn != TestSession.Ukprn), "Provider found in successful submissions");
                 }, "Provider found in successful submissions");
             }
@@ -81,7 +84,7 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests.Steps
             {
                 await WaitForIt(async () =>
                 {
-                    var result = await Functions.SuccessfulSubmissions();
+                    var result = await Functions.SuccessfulSubmissions(AcademicYear, CollectionPeriod);
                     return result.SuccessfulSubmissionJobs.Any(x => x.Ukprn == TestSession.Ukprn);
                 }, "Provider did not appear in the successful submissions output");
             }

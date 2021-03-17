@@ -152,13 +152,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             ");
         }
 
-        public void CreateSuccessfulSubmissionJob(long ukprn)
+        public void CreateSuccessfulSubmissionJob(long ukprn, short academicYear, byte collectionPeriod)
         {
             Database.ExecuteSqlCommand($@"
 INSERT INTO Payments2.Job
 (Status, DCJobSucceeded, JobType, IlrSubmissionTime, AcademicYear, CollectionPeriod, Ukprn, DcJobId)
 VALUES
-(2, 1, 1, GETDATE(), 9999, 99, {ukprn}, 0)
+(2, 1, 1, GETDATE(), {academicYear}, {collectionPeriod}, {ukprn}, 0)
 ");
         }
     }

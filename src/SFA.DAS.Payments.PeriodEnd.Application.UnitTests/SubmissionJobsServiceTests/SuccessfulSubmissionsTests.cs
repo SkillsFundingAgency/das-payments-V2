@@ -20,6 +20,9 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.SubmissionJobsService
         private List<LatestSuccessfulJobModel> testJobs;
         private SubmissionJobsService sut;
 
+        private short academicYear;
+        private byte collectionPeriod;
+
         [SetUp]
         public void SetUp()
         {
@@ -28,6 +31,8 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.SubmissionJobsService
             mockProvidersRequiringReprocessingRepository = mocker.Mock<IProvidersRequiringReprocessingRepository>();
             testJobs = mocker.Create<List<LatestSuccessfulJobModel>>();
             sut = mocker.Create<SubmissionJobsService>();
+            academicYear = short.MinValue;
+            collectionPeriod = byte.MinValue;
         }
 
         [Test]
@@ -35,7 +40,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.SubmissionJobsService
         {
             //Arrange
             mockPeriodEndRepository
-                .Setup(x => x.GetLatestSuccessfulJobs())
+                .Setup(x => x.GetLatestSuccessfulJobs(academicYear, collectionPeriod))
                 .ReturnsAsync(testJobs);
 
             mockProvidersRequiringReprocessingRepository
@@ -43,7 +48,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.SubmissionJobsService
                 .ReturnsAsync(testJobs.Select(x => x.Ukprn).ToList());
 
             //Act
-            var result = await sut.SuccessfulSubmissions();
+            var result = await sut.SuccessfulSubmissions(academicYear, collectionPeriod);
 
             //Assert
             result.SuccessfulSubmissionJobs.Should().BeEmpty();
@@ -54,7 +59,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.SubmissionJobsService
         {
             //Arrange
             mockPeriodEndRepository
-                .Setup(x => x.GetLatestSuccessfulJobs())
+                .Setup(x => x.GetLatestSuccessfulJobs(academicYear, collectionPeriod))
                 .ReturnsAsync(testJobs);
 
             mockProvidersRequiringReprocessingRepository
@@ -62,7 +67,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.SubmissionJobsService
                 .ReturnsAsync(new List<long>());
 
             //Act
-            var result = await sut.SuccessfulSubmissions();
+            var result = await sut.SuccessfulSubmissions(academicYear, collectionPeriod);
 
             //Assert
             result.SuccessfulSubmissionJobs.Should().ContainEquivalentOf(new {Ukprn = testJobs[0].Ukprn});
@@ -75,7 +80,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.SubmissionJobsService
 
             //Arrange
             mockPeriodEndRepository
-                .Setup(x => x.GetLatestSuccessfulJobs())
+                .Setup(x => x.GetLatestSuccessfulJobs(academicYear, collectionPeriod))
                 .ReturnsAsync(testJobs);
 
             mockProvidersRequiringReprocessingRepository
@@ -83,7 +88,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.SubmissionJobsService
                 .ReturnsAsync(new List<long> { testProvider, });
 
             //Act
-            var result = await sut.SuccessfulSubmissions();
+            var result = await sut.SuccessfulSubmissions(academicYear, collectionPeriod);
 
             //Assert
             result.SuccessfulSubmissionJobs.Should().NotContain(x => x.Ukprn == testProvider);

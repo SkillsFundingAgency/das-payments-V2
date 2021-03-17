@@ -19,9 +19,13 @@ namespace SFA.DAS.Payments.PeriodEnd.Function
             [Inject] ISubmissionJobsService submissionJobsService,
             [Inject] IPaymentLogger logger)
         {
-            logger.LogDebug($"Entering {nameof(SuccessfulSubmissions)} Function");
+            if (!short.TryParse(req.Query["academicYear"], out var academicYear) || 
+                !byte.TryParse(req.Query["collectionPeriod"], out var collectionPeriod))
+                return new StatusCodeResult(400);
+            
+            logger.LogDebug($"Entering {nameof(SuccessfulSubmissions)} Function for AcademicYear: {academicYear} and Collection Period: {collectionPeriod}");
 
-            var submissionJobs = await submissionJobsService.SuccessfulSubmissions();
+            var submissionJobs = await submissionJobsService.SuccessfulSubmissions(academicYear, collectionPeriod);
 
             logger.LogInfo("Successfully retrieved latest successful submission jobs");
 

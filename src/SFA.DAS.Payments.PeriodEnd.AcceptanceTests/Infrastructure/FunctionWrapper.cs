@@ -17,9 +17,9 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests.Infrastructure
             this.httpClient = httpClient;
         }
 
-        public async Task<SubmissionJobs> SuccessfulSubmissions()
+        public async Task<SubmissionJobs> SuccessfulSubmissions(short academicYear, byte collectionPeriod)
         {
-            var response = await httpClient.GetStringAsync(baseUri);
+            var response = await httpClient.GetStringAsync($"{baseUri}?academicYear={academicYear}&collectionperiod={collectionPeriod}");
             var results = JsonConvert.DeserializeObject<SubmissionJobs>(response);
 
             return results;

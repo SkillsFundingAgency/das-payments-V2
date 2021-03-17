@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Repositories
 {
     public interface IPeriodEndRepository
     {
-        Task<List<LatestSuccessfulJobModel>> GetLatestSuccessfulJobs();
+        Task<List<LatestSuccessfulJobModel>> GetLatestSuccessfulJobs(short academicYear, byte collectionPeriod);
     }
 
     public class PeriodEndRepository : IPeriodEndRepository
@@ -25,26 +25,15 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Repositories
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<List<LatestSuccessfulJobModel>> GetLatestSuccessfulJobs()
+        public async Task<List<LatestSuccessfulJobModel>> GetLatestSuccessfulJobs(short academicYear, byte collectionPeriod)
         {
-            logger.LogDebug("Getting latest successful jobs");
-            var latestCollectionPeriod = await dataContext.LatestSuccessfulJobs
-                .OrderByDescending(x => x.AcademicYear)
-                .ThenByDescending(x => x.CollectionPeriod)
-                .Select(x => new { x.AcademicYear, x.CollectionPeriod })
-                .FirstOrDefaultAsync();
-
-            if (latestCollectionPeriod == null)
-            {
-                logger.LogInfo("No jobs found");
-                return new List<LatestSuccessfulJobModel>();
-            }
-
+            logger.LogDebug($"Getting latest successful jobs for Academic Year: {academicYear} and Collection Period: {collectionPeriod}");
+            
             logger.LogInfo("Finished getting latest successful jobs");
             return await dataContext.LatestSuccessfulJobs
                 .Where(x =>
-                    x.AcademicYear == latestCollectionPeriod.AcademicYear &&
-                    x.CollectionPeriod == latestCollectionPeriod.CollectionPeriod)
+                    x.AcademicYear == academicYear &&
+                    x.CollectionPeriod == collectionPeriod)
                 .ToListAsync();
         }
     }
