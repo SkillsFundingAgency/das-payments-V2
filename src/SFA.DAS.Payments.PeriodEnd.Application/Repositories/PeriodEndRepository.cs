@@ -27,6 +27,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Repositories
 
         public async Task<List<LatestSuccessfulJobModel>> GetLatestSuccessfulJobs()
         {
+            logger.LogDebug("Getting latest successful jobs");
             var latestCollectionPeriod = await dataContext.LatestSuccessfulJobs
                 .OrderByDescending(x => x.AcademicYear)
                 .ThenByDescending(x => x.CollectionPeriod)
@@ -35,9 +36,11 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Repositories
 
             if (latestCollectionPeriod == null)
             {
+                logger.LogInfo("No jobs found");
                 return new List<LatestSuccessfulJobModel>();
             }
 
+            logger.LogInfo("Finished getting latest successful jobs");
             return await dataContext.LatestSuccessfulJobs
                 .Where(x =>
                     x.AcademicYear == latestCollectionPeriod.AcademicYear &&
