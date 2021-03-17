@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Function.Infrastructure.IoC.Modules
 
             builder.Register((c, p) =>
                 {
-                    var config = c.Resolve<ISubmissionMetricsConfiguration>();
+                    var config = c.Resolve<IProvidersRequiringReprocessingConfiguration>();
                     var dbContextOptions = new DbContextOptionsBuilder<PeriodEndDataContext>()
                         .UseSqlServer(config.PaymentsConnectionString, 
                   optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;

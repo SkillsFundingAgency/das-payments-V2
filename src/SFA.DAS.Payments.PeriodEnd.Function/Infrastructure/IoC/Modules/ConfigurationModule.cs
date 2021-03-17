@@ -13,12 +13,12 @@ namespace SFA.DAS.Payments.PeriodEnd.Function.Infrastructure.IoC.Modules
             builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
-                    return new SubmissionMetricsConfiguration
+                    return new ProvidersRequiringReprocessingConfiguration
                     {
                         PaymentsConnectionString = configHelper.GetSetting("PaymentsConnectionString")
                     };
                 })
-                .As<ISubmissionMetricsConfiguration>()
+                .As<IProvidersRequiringReprocessingConfiguration>()
                 .SingleInstance();
         }
     }

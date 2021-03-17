@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Payments.PeriodEnd.Function.Infrastructure.Configuration
 {
-    public interface ISubmissionMetricsConfiguration
+    public interface IProvidersRequiringReprocessingConfiguration
     {
         string PaymentsConnectionString { get; set; }
     }
