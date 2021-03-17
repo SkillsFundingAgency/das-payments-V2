@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.SubmissionJobsService
         private AutoMock mocker;
         private Mock<IProvidersRequiringReprocessingRepository> mockRepository;
         private List<LatestSuccessfulJobModel> testJobs;
-        private SubmissionJobsService sut;
+        private ProvidersRequiringReprocessingService sut;
 
         private short academicYear;
         private byte collectionPeriod;
@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.SubmissionJobsService
             mocker = AutoMock.GetLoose();
             mockRepository = mocker.Mock<IProvidersRequiringReprocessingRepository>();
             testJobs = mocker.Create<List<LatestSuccessfulJobModel>>();
-            sut = mocker.Create<SubmissionJobsService>();
+            sut = mocker.Create<ProvidersRequiringReprocessingService>();
             academicYear = short.MinValue;
             collectionPeriod = byte.MinValue;
         }

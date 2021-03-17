@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.PeriodEnd.Application.Services
 {
-    public interface ISubmissionJobsService
+    public interface IProvidersRequiringReprocessingService
     {
         Task<SubmissionJobs> SuccessfulSubmissions(short academicYear, byte collectionPeriod);
     }
 
-    public class SubmissionJobsService : ISubmissionJobsService
+    public class ProvidersRequiringReprocessingService : IProvidersRequiringReprocessingService
     {
         private readonly IProvidersRequiringReprocessingRepository repository;
         
-        public SubmissionJobsService(IProvidersRequiringReprocessingRepository providersRequiringResubmissionRepository)
+        public ProvidersRequiringReprocessingService(IProvidersRequiringReprocessingRepository providersRequiringResubmissionRepository)
         {
             this.repository = providersRequiringResubmissionRepository ??
                                                             throw new ArgumentNullException(nameof(providersRequiringResubmissionRepository));

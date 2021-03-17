@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Function
         [FunctionName("SuccessfulSubmissions")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "v1/PeriodEnd/SuccessfulSubmissions")] HttpRequest req,
-            [Inject] ISubmissionJobsService submissionJobsService,
+            [Inject] IProvidersRequiringReprocessingService providersRequiringReprocessingService,
             [Inject] IPaymentLogger logger)
         {
             if (!short.TryParse(req.Query["academicYear"], out var academicYear) || 
@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Function
             
             logger.LogDebug($"Entering {nameof(SuccessfulSubmissions)} Function for AcademicYear: {academicYear} and Collection Period: {collectionPeriod}");
 
-            var submissionJobs = await submissionJobsService.SuccessfulSubmissions(academicYear, collectionPeriod);
+            var submissionJobs = await providersRequiringReprocessingService.SuccessfulSubmissions(academicYear, collectionPeriod);
 
             logger.LogInfo("Successfully retrieved latest successful submission jobs");
 

@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Function.Infrastructure.IoC.Modules
                 .As<IPeriodEndDataContext>()
                 .InstancePerLifetimeScope();
 
-            builder.RegisterType<SubmissionJobsService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<ProvidersRequiringReprocessingService>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }
