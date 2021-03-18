@@ -6,11 +6,9 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.PeriodEnd.Application.Services;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.PeriodEnd.Function.Infrastructure.IoC;
 
 namespace SFA.DAS.Payments.PeriodEnd.Function
 {
-    [DependencyInjectionConfig(typeof(DependencyRegister))]
     public static class SuccessfulSubmissions
     {
         [FunctionName("SuccessfulSubmissions")]
