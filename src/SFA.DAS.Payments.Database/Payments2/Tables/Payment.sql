@@ -136,6 +136,6 @@ CREATE NONCLUSTERED INDEX [IX_Payment__CollectionPeriodCompletionPayments] on [P
 GO
 
 CREATE NONCLUSTERED INDEX [UX_Payment_ProviderEvents]
-ON [Payments2].[Payment] ([CollectionPeriod],[AcademicYear],[FundingSource],[AccountId],[TransferSenderAccountId],[ApprenticeshipId])
+ON [Payments2].[Payment] ([CollectionPeriod],[AcademicYear],[AccountId],[FundingSource],[TransferSenderAccountId],[ApprenticeshipId])
 INCLUDE ([EventId],[RequiredPaymentEventId],[DeliveryPeriod],[Ukprn],[LearnerUln],[Amount],[LearningAimProgrammeType],[LearningAimStandardCode],[LearningAimFrameworkCode],[LearningAimPathwayCode],[TransactionType],[IlrSubmissionDateTime],[EarningsStartDate],[EarningsPlannedEndDate],[EarningsActualEndDate],[EarningsCompletionStatus],[EarningsCompletionAmount],[EarningsInstalmentAmount],[EarningsNumberOfInstalments],[ContractType])
 GO
