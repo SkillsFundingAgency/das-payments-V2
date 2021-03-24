@@ -71,7 +71,7 @@ GROUP BY Ukprn
 SELECT EE.LearnerReferenceNumber, EE.LearnerUln, EE.LearningAimFrameworkCode,
     EE.LearningAimPathwayCode, EE.LearningAimProgrammeType, EE.LearningAimReference,
     EE.LearningAimStandardCode, EE.Ukprn, EEP.Amount, EEP.DeliveryPeriod, EE.CollectionPeriod, 
-    EEP.TransactionType, EE.EventId, EE.JobId
+    EEP.TransactionType, EE.EventId, EE.JobId, EE.ContractType
 INTO #EarningEvents
 FROM Payments2.EarningEvent EE with (nolock)
 JOIN Payments2.EarningEventPeriod EEP with (nolock)
