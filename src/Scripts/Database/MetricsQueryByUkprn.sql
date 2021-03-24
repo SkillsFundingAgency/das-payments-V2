@@ -105,7 +105,7 @@ WHERE EXISTS (
     AND DLENP.DeliveryPeriod = EE.DeliveryPeriod
     --AND DLENP.PriceEpisodeIdentifier = EEP.PriceEpisodeIdentifier --this is removed after the PV2-2080 R13/R02 ME: BUG FIX: Drop in Earnings - (Output from Spike 2073)
 	AND (DLE.JobId in (SELECT JobId FROM @LatestJobIds))
-)
+) AND EE.ContractType = 1
 
 SELECT
 	Ukprn,
@@ -132,7 +132,8 @@ WHERE EXISTS (
     AND E.LearningAimStandardCode = P.LearningAimStandardCode
     AND E.TransactionType = P.TransactionType
 	AND P.AcademicYear = @academicYear
-    AND p.collectionperiod < E.CollectionPeriod
+    AND P.collectionperiod < E.CollectionPeriod
+	AND P.ContractType = 1
 )
 AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 GROUP BY Ukprn

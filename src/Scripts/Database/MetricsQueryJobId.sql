@@ -138,6 +138,7 @@ IF OBJECT_ID('tempdb..#DataLockedEarnings') IS NOT NULL DROP TABLE #DataLockedEa
 	 AND ((@GivenUkprnCount = 0) OR  (EE.ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
     AND EE.CollectionPeriod = @collectionperiod
 	AND (ee.JobId in (SELECT JobId FROM @LatestJobIds))
+	AND EE.ContractType = 1
 )
 
 SELECT * into #DataLockedEarnings FROM DatalockedEarnings
@@ -161,6 +162,7 @@ SELECT Sum(amount)
         AND E.TransactionType = P.TransactionType
 		AND P.AcademicYear = @academicYear
         AND p.collectionperiod < E.CollectionPeriod
+		AND p.ContractType = 1
     )   
 	AND ((@GivenUkprnCount = 0) OR  (ukprn in (SELECT ids.ukprn FROM @ukprnList ids)))
 )
