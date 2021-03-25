@@ -30,7 +30,8 @@ namespace SFA.DAS.Payments.Application.Repositories
         DbSet<ReceivedDataLockEvent> ReceivedDataLockEvents { get; set; }
         DbSet<CurrentPriceEpisode> CurrentPriceEpisodes { get; set; }
         DbSet<ProviderAdjustmentModel> ProviderAdjustments { get; }
-        
+        DbSet<CollectionPeriodModel> CollectionPeriod { get; }
+
         DbQuery<SubmissionJobsToBeDeletedModel> SubmissionJobsToBeDeleted { get; set; }
 
         DatabaseFacade Database { get; }

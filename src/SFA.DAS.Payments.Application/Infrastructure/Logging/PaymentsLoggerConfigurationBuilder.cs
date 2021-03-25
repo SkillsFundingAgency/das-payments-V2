@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using ESFA.DC.Logging.Config;
 using ESFA.DC.Logging.Config.Extensions;
 using ESFA.DC.Logging.Config.Interfaces;
@@ -24,7 +25,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Logging
                 .Enrich.WithProcessName()
                 .Enrich.WithThreadId()
                 .WithMinimumLogLevel(applicationLoggerSettings.ApplicationLoggerOutputSettingsCollection)
-                .Filter.ByExcluding(evnt => evnt.Exception != null && evnt.Exception.ToString().Contains("license"));
+                .Filter.ByExcluding(evnt => evnt.Exception != null && CultureInfo.CurrentCulture.CompareInfo.IndexOf(evnt.Exception.ToString(), "license", CompareOptions.IgnoreCase) >= 0);
             
             config.WriteTo.ApplicationInsightsTraces(telemetryConfig.InstrumentationKey);
             return config;

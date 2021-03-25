@@ -4,10 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using NUnit.Framework;
+using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
+using SFA.DAS.Payments.Tests.Core.Builders;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -94,6 +98,34 @@ namespace SFA.DAS.Payments.ProviderPayments.AcceptanceTests.Steps
                     ));
                 return found;
             }, "Failed to find all payment in database.");
+        }
+
+        [Then(@"the collection period data for (.*) should be stored in the db")]
+        public async Task ThenTheCollectionPeriodDataForRCurrentAcademicYearShouldBeStoredInTheDb(string specDate)
+        {
+            var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(specDate).Build();
+            var paymentDataContext = Container.Resolve<IPaymentsDataContext>();
+            await WaitForIt(() =>
+            {
+                var matchingPeriods = paymentDataContext.CollectionPeriod.Where(x =>
+                    x.Period == collectionPeriod.Period
+                    && x.AcademicYear == collectionPeriod.AcademicYear);
+                return matchingPeriods.Any();
+            }, "Failed to find matching collection period in database");
+        }
+
+        [Then(@"the collection period data for (.*) should NOT be stored in the db")]
+        public async Task ThenTheCollectionPeriodDataForRCurrentAcademicYearShouldNOTBeStoredInTheDb(string specDate)
+        {
+            var collectionPeriod = new CollectionPeriodBuilder().WithSpecDate(specDate).Build();
+            var paymentDataContext = Container.Resolve<IPaymentsDataContext>();
+            await WaitForUnexpected(() =>
+            {
+                var matchingPeriods = paymentDataContext.CollectionPeriod.Where(x =>
+                    x.Period == collectionPeriod.Period
+                    && x.AcademicYear == collectionPeriod.AcademicYear);
+                return (!matchingPeriods.Any(), "No PeriodEnd was recorded");
+            }, "Failed to find matching collection period in database");
         }
 
         private async Task SendMonthEndEvent()

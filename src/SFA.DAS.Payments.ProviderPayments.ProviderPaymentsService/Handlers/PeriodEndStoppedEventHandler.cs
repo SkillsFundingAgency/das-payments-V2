@@ -50,7 +50,7 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
                 logger.LogDebug($"Sending Process Provider Month End Act1 Completion Payment Command for provider: {command.Ukprn} for {message.CollectionPeriod.AcademicYear}-R{message.CollectionPeriod.Period:00}");
                 await endpointInstance.SendLocal(command).ConfigureAwait(false);
             }
-            
+
             logger.LogInfo($"Successfully processed Period End Stopped Event for {message.CollectionPeriod.Period:00}-{message.CollectionPeriod.AcademicYear}, job: {message.JobId}");
         }
 
