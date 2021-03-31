@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.Messaging.PostProcessing
 {
-    public interface ISuccessfullyProcessedMessages
+    public interface IInterceptSuccessfulMessages
     {
         Task Process(Type groupType, List<object> messages, CancellationToken cancellationToken);
     }

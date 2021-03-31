@@ -345,7 +345,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                     await Task.WhenAll(messages.GroupBy(msg => msg.MessageReceiver).Select(group =>
                         group.Key.Complete(group.Select(msg => msg.ReceivedMessage.SystemProperties.LockToken)))).ConfigureAwait(false);
                     
-                    if (containerScope.TryResolve<ISuccessfullyProcessedMessages>(out ISuccessfullyProcessedMessages successfullyProcessedMessages))
+                    if (containerScope.TryResolve<IInterceptSuccessfulMessages>(out IInterceptSuccessfulMessages successfullyProcessedMessages))
                         try
                         {
                             await successfullyProcessedMessages.Process(groupType, messages.Select(m => m.Message).ToList(), cancellationToken);
@@ -416,7 +416,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                     {
                         using (var scope = scopeFactory.CreateScope())
                         {
-                            if (scope.TryResolve<IFailedProcessingMessage>(out IFailedProcessingMessage failedMessageProcessor))
+                            if (scope.TryResolve<IInterceptFailedMessages>(out IInterceptFailedMessages failedMessageProcessor))
                                 await failedMessageProcessor.Process(retryMessage.Message, e, cancellationToken);
                         }
                     }
