@@ -2,6 +2,7 @@
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.ProviderPayments.Application.Data;
 using SFA.DAS.Payments.ProviderPayments.Application.Mapping;
+using SFA.DAS.Payments.ProviderPayments.Application.Messaging;
 using SFA.DAS.Payments.ProviderPayments.Application.Repositories;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
 using SFA.DAS.Payments.ProviderPayments.Domain;
@@ -43,6 +44,10 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Infrastructure.ioc
                 })
                 .As<IProviderPaymentsDataContext>()
                 .InstancePerDependency();
+            builder.RegisterType<InterceptSuccessfulJobMessages>()
+                .AsImplementedInterfaces()
+                .SingleInstance();
+
         }
     }
 }
