@@ -24,6 +24,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
         protected override async Task<(bool IsComplete, JobStatus? OverriddenJobStatus, DateTimeOffset? completionTime)> PerformAdditionalJobChecks(JobModel job, CancellationToken cancellationToken)
         {
+            //todo decide where to put this check within this method
+            //check if metrics generation has finished
+            //check if there is a record in [Metrics].[PeriodEndSummary] for the current jobId
+            if (!await context.DoesPeriodEndSummaryExistForJob(job.Id))
+            {
+                //if not, job is not complete:
+                return (false, (JobStatus?)null, (DateTimeOffset?)null);
+            }
+
             var outstandingJobs =
                 await context.GetOutstandingOrTimedOutJobs(job.DcJobId, job.StartTime, cancellationToken);
 
