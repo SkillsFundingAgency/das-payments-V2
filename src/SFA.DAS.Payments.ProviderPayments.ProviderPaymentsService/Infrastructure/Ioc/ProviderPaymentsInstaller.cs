@@ -1,19 +1,17 @@
 ﻿using Autofac;
-using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
-using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Core.Configuration;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
+using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Messaging.Serialization;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 using SFA.DAS.Payments.PeriodEnd.Messages.Events;
-using SFA.DAS.Payments.ProviderPayments.Application.Services;
 using SFA.DAS.Payments.ProviderPayments.Messages.Internal.Commands;
 using SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers;
+using SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.MessageInterceptors;
 using SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.MessageModifiers;
 using SFA.DAS.Payments.ServiceFabric.Core;
 
@@ -45,6 +43,10 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Infrastructu
 
             builder.RegisterType<MessageModifier>().As<IApplicationMessageModifier>();
 
+            //builder.RegisterType<FundingSourcePaymentEventBatchHandler>()
+            //    .As<IHandleMessageBatches<FundingSourcePaymentEvent>>()
+            //    .InstancePerLifetimeScope();
+            
             builder.RegisterType<PaymentModelBatchHandler>()
                 .As<IHandleMessageBatches<PaymentModel>>()
                 .InstancePerLifetimeScope();
@@ -65,7 +67,12 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Infrastructu
                 .As<IHandleMessageBatches<SubmissionJobSucceeded>>()
                 .InstancePerLifetimeScope();
 
-            
+            builder.RegisterType<InterceptSuccessfulJobMessages>()
+                .AsImplementedInterfaces()
+                .SingleInstance();
+
+
+
         }
     }
 }

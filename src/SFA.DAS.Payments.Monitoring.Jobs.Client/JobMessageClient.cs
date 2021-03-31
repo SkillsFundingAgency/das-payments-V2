@@ -15,6 +15,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
     {
         Task ProcessedJobMessage(long jobId, Guid messageId, string messageName, List<GeneratedMessage> generatedMessages);
         Task ProcessingFailedForJobMessage(byte[] failedMessageBody);
+        Task ProcessingFailedForJobMessage(long jobId, Guid messageId, string messageName);
     }
 
     public class JobMessageClient : IJobMessageClient
@@ -102,6 +103,30 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                     JobId = jobId,
                     Id = Guid.Parse(messageId),
                     MessageName = string.Empty,
+                    EndTime = DateTimeOffset.UtcNow,
+                    GeneratedMessages = new List<GeneratedMessage>(),
+                    Succeeded = false
+                };
+
+                var partitionedEndpointName = config.GetMonitoringEndpointName(jobId);
+                await messageSession.Send(partitionedEndpointName, itemProcessedEvent).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning($"Couldn't generate the job message failed message for monitoring.  {ex.Message}");
+            }
+        }
+
+        public async Task ProcessingFailedForJobMessage(long jobId, Guid messageId, string messageName)
+        {
+            try
+            {
+                logger.LogVerbose($"Sending request to record failed processing of event. Job Id: {jobId}, Event: id: {messageId} ");
+                var itemProcessedEvent = new RecordJobMessageProcessingStatus
+                {
+                    JobId = jobId,
+                    Id = messageId,
+                    MessageName = messageName,
                     EndTime = DateTimeOffset.UtcNow,
                     GeneratedMessages = new List<GeneratedMessage>(),
                     Succeeded = false
