@@ -111,7 +111,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         }
 
 
-        protected virtual Task<(bool IsComplete, JobStatus? OverriddenJobStatus, DateTimeOffset? completionTime)> PerformAdditionalJobChecks(JobModel job, 
+        public virtual Task<(bool IsComplete, JobStatus? OverriddenJobStatus, DateTimeOffset? completionTime)> PerformAdditionalJobChecks(JobModel job, 
             CancellationToken cancellationToken)
         {
             return Task.FromResult((true,(JobStatus?) null, (DateTimeOffset?) null));
