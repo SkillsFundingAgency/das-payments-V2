@@ -23,8 +23,17 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
 
         public PaymentModel Map(FundingSourcePaymentEvent message)
         {
-            logger.LogVerbose($"Mapping funding source event of type: {message.GetType().Name} to PaymentModel.");
-            return mapper.Map<PaymentModel>(message);
+            try
+            {
+                logger.LogVerbose($"Mapping funding source event of type: {message.GetType().Name} to PaymentModel.");
+                return mapper.Map<PaymentModel>(message);
+
+            }
+            catch (Exception e)
+            {
+                logger.LogWarning($"Failed mapping message: {message.GetType()}. Error: {e.Message}.  Exception: {e}");
+                throw;
+            }
         }
     }
 }

@@ -7,7 +7,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.ProviderPayments.Application.Services;
-using SFA.DAS.Payments.ProviderPayments.Model;
 
 namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Handlers
 {

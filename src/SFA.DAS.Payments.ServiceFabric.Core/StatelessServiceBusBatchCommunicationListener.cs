@@ -17,6 +17,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.Messaging.PostProcessing;
 using SFA.DAS.Payments.Messaging.Serialization;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core
@@ -343,6 +344,16 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                     RecordMetric(handler.GetType().FullName, handlerStopwatch.ElapsedMilliseconds, list.Count);
                     await Task.WhenAll(messages.GroupBy(msg => msg.MessageReceiver).Select(group =>
                         group.Key.Complete(group.Select(msg => msg.ReceivedMessage.SystemProperties.LockToken)))).ConfigureAwait(false);
+                    
+                    if (containerScope.TryResolve<ISuccessfullyProcessedMessages>(out ISuccessfullyProcessedMessages successfullyProcessedMessages))
+                        try
+                        {
+                            await successfullyProcessedMessages.Process(groupType, messages.Select(m => m.Message).ToList(), cancellationToken);
+                        }
+                        catch (Exception e)
+                        {
+                            logger.LogError($"Error invoking successful post processing service. Error: {e.Message}, type: {successfullyProcessedMessages.GetType().FullName}",e);
+                        }
                 }
                 RecordProcessedBatchTelemetry(stopwatch.ElapsedMilliseconds, messages.Count, groupType.FullName);
             }
@@ -363,6 +374,11 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         {
             var listType = typeof(List<>).MakeGenericType(groupType);
             var list = (IList)Activator.CreateInstance(listType);
+            var lazyQueueDescription = new Lazy<Task<QueueDescription>>(() =>
+            {
+                var manageClient = new ManagementClient(connectionString);
+                return manageClient.GetQueueAsync(EndpointName, cancellationToken);
+            });
             foreach (var retryMessage in messages)
             {
                 try
@@ -394,6 +410,17 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                 catch (Exception e)
                 {
                     logger.LogError($"Error processing message.  Error: {e.Message}.  ASB Message id: {retryMessage.ReceivedMessage.MessageId}, Message label: {retryMessage.ReceivedMessage.Label}.", e);
+                    var queueDescription = await lazyQueueDescription.Value;
+                    if (retryMessage.ReceivedMessage.SystemProperties.DeliveryCount >=
+                        queueDescription.MaxDeliveryCount)
+                    {
+                        using (var scope = scopeFactory.CreateScope())
+                        {
+                            if (scope.TryResolve<IFailedProcessingMessage>(out IFailedProcessingMessage failedMessageProcessor))
+                                await failedMessageProcessor.Process(retryMessage.Message, e, cancellationToken);
+                        }
+                    }
+                        
                     await retryMessage.MessageReceiver.Abandon(retryMessage.ReceivedMessage.SystemProperties.LockToken);
                 }
             }
@@ -443,13 +470,13 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                 }
 
                 logger.LogInfo(
-                    $"Creating queue '{queuePath}' with properties: TimeToLive: 7 days, Lock Duration: 5 Minutes, Max Delivery Count: 50, Max Size: 5Gb.");
+                    $"Creating queue '{queuePath}' with properties: TimeToLive: 7 days, Lock Duration: 5 Minutes, Max Delivery Count: 10, Max Size: 5Gb.");
                 var queueDescription = new QueueDescription(queuePath)
                 {
                     DefaultMessageTimeToLive = TimeSpan.FromDays(7),
                     EnableDeadLetteringOnMessageExpiration = true,
                     LockDuration = TimeSpan.FromMinutes(5),
-                    MaxDeliveryCount = 50,
+                    MaxDeliveryCount = 10,
                     MaxSizeInMB = 5120,
                     Path = queuePath
                 };
