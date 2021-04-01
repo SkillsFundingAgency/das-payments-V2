@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         {
         }
 
-        protected string PartitionEndpointName => $"sfa-das-payments-monitoring-jobs{JobDetails.JobId % 20}";
+        protected string PartitionEndpointName => $"sfa-das-payments-monitoring-jobs{JobDetails.JobId % 2}";
 
         [Given(@"the payments are for the current collection year")]
         public void GivenThePaymentsAreForTheCurrentCollectionYear()
@@ -294,7 +294,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             DataContext.PeriodEndSummaries.RemoveRange(existingMetrics);
             await DataContext.PeriodEndSummaries.AddAsync(new PeriodEndSummaryModel
             {
-                JobId = TestSession.JobId,
+                JobId = JobDetails.JobId,
                 AcademicYear = academicYear,
                 CollectionPeriod = collectionPeriod
             });

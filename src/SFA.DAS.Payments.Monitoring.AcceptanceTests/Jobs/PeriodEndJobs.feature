@@ -42,6 +42,7 @@ Scenario: Provider Period End Start Job waits for submissions to complete before
 	Given the earnings event service has received and is processing a provider earnings job
 	And the period end service has received a period end start job
 	When the period end service notifies the job monitoring service to record the start job
+	And the period end summary metrics are recorded
 	And the final messages for the job are successfully processed for the Period End Start job
 	Then the period end job should not complete
 	And when the final messages for the job are successfully processed for the submission job
