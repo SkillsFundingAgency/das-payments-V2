@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken);
         Task SaveDcSubmissionStatus(long jobId, bool succeeded, CancellationToken cancellationToken);
         Task<List<OutstandingJobResult>>GetOutstandingOrTimedOutJobs(long? dcJobId,DateTimeOffset startTime, CancellationToken cancellationToken);
-        Task<bool> DoesPeriodEndSummaryExistForJob(long jobId);
+        Task<bool> DoesPeriodEndSummaryExistForJob(long? dcJobId);
     }
 
     public class JobsDataContext : DbContext, IJobsDataContext
@@ -181,9 +181,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                 ToListAsync(cancellationToken);
         }
 
-        public async Task<bool> DoesPeriodEndSummaryExistForJob(long jobId)
+        public async Task<bool> DoesPeriodEndSummaryExistForJob(long? dcJobId)
         {
-            return await PeriodEndSummaries.AnyAsync(x => x.JobId == jobId);
+            return await PeriodEndSummaries.AnyAsync(x => x.JobId == dcJobId);
         }
     }
 }
