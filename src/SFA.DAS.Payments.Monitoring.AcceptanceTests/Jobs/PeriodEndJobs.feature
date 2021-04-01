@@ -11,6 +11,7 @@ Background:
 Scenario: Provider Period End Start Job Completed
 	Given the period end service has received a period end start job
 	When the period end service notifies the job monitoring service to record the start job
+	And the period end summary metrics are recorded
 	And the final messages for the job are successfully processed
 	Then the job monitoring service should update the status of the job to show that it has completed	
 	And the monitoring service should notify other services that the period end start job has completed successfully

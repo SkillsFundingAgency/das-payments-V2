@@ -13,6 +13,7 @@ using NUnit.Framework;
 using SFA.DAS.Payments.Monitoring.AcceptanceTests.Handlers;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
+using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 
 namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
 {
@@ -280,6 +281,24 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             await WhenTheEarningsEventServiceNotifiesTheJobMonitoringServiceToRecordTheJob().ConfigureAwait(false);
             await WhenTheFinalMessagesForTheJobAreSuccessfullyProcessed().ConfigureAwait(false);
             await ThenTheJobMonitoringServiceShouldRecordTheJob().ConfigureAwait(false);
+        }
+
+        [When("the period end summary metrics are recorded")]
+        public async Task WhenThePeriodEndSummaryMetricsAreRecorded()
+        {
+            short academicYear = 1819;
+            var collectionPeriod = CollectionPeriod;
+            var existingMetrics = DataContext.PeriodEndSummaries.Where(x =>
+                x.AcademicYear == academicYear
+                && x.CollectionPeriod == collectionPeriod);
+            DataContext.PeriodEndSummaries.RemoveRange(existingMetrics);
+            await DataContext.PeriodEndSummaries.AddAsync(new PeriodEndSummaryModel
+            {
+                JobId = TestSession.JobId,
+                AcademicYear = academicYear,
+                CollectionPeriod = collectionPeriod
+            });
+            await DataContext.SaveChangesAsync();
         }
 
         [When(@"the final messages for the job are successfully processed")]
