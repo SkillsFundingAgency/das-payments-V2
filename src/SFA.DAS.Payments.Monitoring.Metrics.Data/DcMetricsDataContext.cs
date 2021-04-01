@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
 
 
@@ -144,10 +145,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                 UNION
                 SELECT * 
                 FROM RawEarningsMathsAndEnglish
-            )
-
-            ";
-
+            )";
 
         private static string UkprnFilterSelect =
             @"SELECT Cast([ApprenticeshipContractType] as TinyInt) as ContractType,
@@ -167,7 +165,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                 SUM(TransactionType14) [TransactionType14],
                 SUM(TransactionType15) [TransactionType15],
                 SUM(TransactionType16) [TransactionType16]
-
             FROM AllEarnings
             where ukprn =  @ukprn
             and ApprenticeshipContractType in (1,2)
@@ -192,7 +189,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                 SUM(TransactionType14) [TransactionType14],
                 SUM(TransactionType15) [TransactionType15],
                 SUM(TransactionType16) [TransactionType16]
-
             FROM AllEarnings
             where ApprenticeshipContractType in (1,2)
                 GROUP BY [ApprenticeshipContractType], UKPRN
@@ -207,12 +203,23 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 
         public async Task<List<TransactionTypeAmounts>> GetEarnings(long ukprn, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            return await Earnings.FromSql(BaseDcEarningsQuery + UkprnFilterSelect , new SqlParameter("@ukprn", ukprn), new SqlParameter("@collectionperiod", collectionPeriod)).ToListAsync(cancellationToken);
+            using (await BeginTransaction(cancellationToken))
+            {
+                return await Earnings.FromSql(BaseDcEarningsQuery + UkprnFilterSelect, new SqlParameter("@ukprn", ukprn), new SqlParameter("@collectionperiod", collectionPeriod)).ToListAsync(cancellationToken);
+            }
         }
 
         public async Task<List<ProviderTransactionTypeAmounts>> GetEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            return await AllProviderEarnings.FromSql(BaseDcEarningsQuery + UkprnGroupSelect ,  new SqlParameter("@collectionperiod", collectionPeriod)).ToListAsync(cancellationToken);
+            using (await BeginTransaction(cancellationToken))
+            {
+                return await AllProviderEarnings.FromSql(BaseDcEarningsQuery + UkprnGroupSelect, new SqlParameter("@collectionperiod", collectionPeriod)).ToListAsync(cancellationToken);
+            }
+        }
+
+        public async Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken, IsolationLevel isolationLevel = IsolationLevel.Snapshot)
+        {
+            return await Database.BeginTransactionAsync(isolationLevel, cancellationToken).ConfigureAwait(false);
         }
     }
 }
