@@ -8,7 +8,7 @@ using SFA.DAS.Payments.PeriodEnd.AcceptanceTests.Handlers;
 using SFA.DAS.Payments.PeriodEnd.Model;
 using TechTalk.SpecFlow;
 
-namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests
+namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests.Steps
 {
     [Binding]
     public class PeriodEndSteps : StepsBase
