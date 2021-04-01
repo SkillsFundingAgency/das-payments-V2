@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System.Net.Http;
+using Autofac;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
@@ -11,7 +12,6 @@ namespace SFA.DAS.Payments.PeriodEnd.AcceptanceTests.Infrastructure
     [Binding]
     public class BindingBootstrapper : BindingsBase
     {
-
         [BeforeTestRun(Order = 51)]
         public static void AddRoutingConfig()
         {

@@ -415,6 +415,7 @@
     <Compile Include="Steps\FundingSourcePaymentEventsHelper.cs" />
     <Compile Include="Steps\PaymentEventsHelper.cs" />
     <Compile Include="Steps\PeriodEndSteps.cs" />
+    <Compile Include="Steps\ProvidersRequiringResubmissionSteps.cs" />
     <Compile Include="Steps\PV2_1797_Steps.cs" />
     <Compile Include="Steps\PV2_1824_Steps.cs" />
     <Compile Include="Steps\PV2_1825_Steps.cs" />
@@ -1579,6 +1580,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>One Levy learner changes provider but remains with the same employer-PV2-317.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Providers Requiring Resubmission\Providers Requiring Resubmission.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Providers Requiring Resubmission.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Redundancy\PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months.feature.cs">
       <DependentUpon>PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -2674,6 +2680,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy learner changes provider but remains with the same employer-PV2-317.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Providers Requiring Resubmission\Providers Requiring Resubmission.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Providers Requiring Resubmission.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Redundancy\PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-1845-Levy-Learner-Made-Redundant-In-Last-6-Months.feature.cs</LastGenOutput>
@@ -2868,6 +2878,14 @@
       <Project>{EE51D526-0244-4B63-99A4-07FAFEF14D31}</Project>
       <Name>SFA.DAS.Payments.Monitoring.Metrics.Model</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.PeriodEnd.Data\SFA.DAS.Payments.PeriodEnd.Data.csproj">
+      <Project>{9803CF82-6B7D-4527-A545-F31D1B4EF7DE}</Project>
+      <Name>SFA.DAS.Payments.PeriodEnd.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.PeriodEnd.Model\SFA.DAS.Payments.PeriodEnd.Model.csproj">
+      <Project>{c7b276f8-1451-4818-9675-16fad054bf30}</Project>
+      <Name>SFA.DAS.Payments.PeriodEnd.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Messages.Internal\SFA.DAS.Payments.ProviderPayments.Messages.Internal.csproj">
       <Project>{25B9DFA3-DF0C-4C53-A991-1F3D3BB407A8}</Project>
       <Name>SFA.DAS.Payments.ProviderPayments.Messages.Internal</Name>
@@ -2895,6 +2913,7 @@
   <ItemGroup>
     <EmbeddedResource Include="FM36TestFiles\PV2-1826-DLock09-Two-Price-Episodes-Unhappy-Path-R02.json" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

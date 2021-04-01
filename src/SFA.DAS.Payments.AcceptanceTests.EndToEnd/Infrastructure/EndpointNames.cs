@@ -8,5 +8,6 @@
         public static string JobMonitoring = "sfa-das-payments-monitoring-jobs";
         public static string FundingSource = "sfa-das-payments-fundingsource-levy";
         public static string DataLocksApprovals = "sfa-das-payments-datalock-approvals";
+        public static string PeriodEnd = "sfa-das-payments-periodend";
     }
 }
