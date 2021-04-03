@@ -14,6 +14,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
     public interface IJobMessageClient
     {
         Task ProcessedJobMessage(long jobId, Guid messageId, string messageName, List<GeneratedMessage> generatedMessages);
+        Task ProcessedJobMessages(List<(long jobId, Guid messageId, string messageName)> messages);
         Task ProcessingFailedForJobMessage(byte[] failedMessageBody);
         Task ProcessingFailedForJobMessage(long jobId, Guid messageId, string messageName);
     }
@@ -36,10 +37,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
             try
             {
                 logger.LogVerbose($"Sending request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
-               
+
                 var batchSize = 1000; //TODO: this should come from config
                 List<GeneratedMessage> batch;
-                
+
                 var itemProcessedEvent = new RecordJobMessageProcessingStatus
                 {
                     JobId = jobId,
@@ -52,7 +53,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 
                 var partitionedEndpointName = config.GetMonitoringEndpointName(jobId);
                 await messageSession.Send(partitionedEndpointName, itemProcessedEvent).ConfigureAwait(false);
-            
+
                 var skip = batchSize;
                 while ((batch = generatedMessages.Skip(skip).Take(batchSize).ToList()).Count > 0)
                 {
@@ -70,6 +71,60 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
             catch (Exception ex)
             {
                 logger.LogWarning($"Failed to send the job status message. Job: {jobId}, Message: {messageId}, {messageName}, Error: {ex.Message}, {ex}");
+            }
+        }
+
+        public async Task ProcessedJobMessages(List<(long jobId, Guid messageId, string messageName)> messages)
+        {
+            try
+            {
+                logger.LogVerbose($"Sending request to record successful processing of batch of messages. Count: {messages.Count}");
+                var groupsByJobId = messages.GroupBy(message => message.jobId)
+                    .ToList();
+
+                foreach (var groupByJobId in groupsByJobId)
+                {
+                    await Send(groupByJobId.Key, groupByJobId.ToList());
+                    logger.LogDebug(
+                        $"Sent request to record successful processing of batch of events for Job Id: {groupByJobId.Key}");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning($"Failed to send the batch job status message. Error: {ex.Message}, {ex}");
+            }
+        }
+
+        private async Task Send(long jobId, List<(long jobId, Guid messageId, string messageName)> messages)
+        {
+            try
+            {
+                var batches = messages.Select((message, index) => new
+                    {
+                        StatusMessage = new RecordJobMessageProcessingStatus
+                        {
+                            JobId = message.jobId,
+                            Id = message.messageId,
+                            MessageName = message.messageName,
+                            EndTime = DateTimeOffset.UtcNow,
+                            GeneratedMessages = new List<GeneratedMessage>(),
+                            Succeeded = true
+                        },
+                        index
+                    })
+                    .GroupBy(item => item.index / 500)
+                    .Select(grp => new RecordBatchOfJobMessageProcessingStatus { JobMessageProcessingStatuses = grp.Select(x => x.StatusMessage).ToList() });
+
+
+                var partitionedEndpointName = config.GetMonitoringEndpointName(jobId);
+                foreach (var batch in batches)
+                {
+                    await messageSession.Send(partitionedEndpointName, batch).ConfigureAwait(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning($"Failed to send the batch job status message. Job Id: {jobId}, Error: {ex.Message}, {ex}");
             }
         }
 

@@ -71,6 +71,9 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService.Infrastructu
                 .AsImplementedInterfaces()
                 .SingleInstance();
 
+            builder.RegisterType<InterceptFailedJobMessages>()
+                .AsImplementedInterfaces()
+                .SingleInstance();
 
 
         }
