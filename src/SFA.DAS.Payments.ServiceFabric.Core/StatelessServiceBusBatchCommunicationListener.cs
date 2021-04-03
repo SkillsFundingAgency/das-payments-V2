@@ -168,10 +168,11 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             {
                 foreach (Type intType in type.GetInterfaces())
                 {
-                    if (intType.IsGenericType && intType.GetGenericTypeDefinition()
-                        == typeof(IHandleMessageBatches<>))
+                    if (intType.IsGenericType && intType.GetGenericTypeDefinition() == typeof(IHandleMessageBatches<>))
                     {
-                        genericTypes.Add(intType.GetGenericArguments()[0]);
+                        var typeParam = intType.GetGenericArguments()[0];
+                        if (!typeParam.IsGenericParameter)
+                            genericTypes.Add(intType.GetGenericArguments()[0]);
                     }
                 }
             }
