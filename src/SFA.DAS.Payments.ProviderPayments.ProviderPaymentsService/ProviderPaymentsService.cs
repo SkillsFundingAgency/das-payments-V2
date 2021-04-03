@@ -30,12 +30,12 @@ namespace SFA.DAS.Payments.ProviderPayments.ProviderPaymentsService
 
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            logger.LogInfo("Creating Service Instance Listener For Audit.FundingSourceService");
+            logger.LogInfo("Creating Service Instance Listener For ProviderPaymentsService");
             var listeners = new List<ServiceInstanceListener>
             {
                 new ServiceInstanceListener(context => listener = lifetimeScope.Resolve<IStatelessServiceBusBatchCommunicationListener>())
             };
-            logger.LogInfo("Created Service Instance Listener For Audit.FundingSourceService");
+            logger.LogInfo("Created Service Instance Listener For ProviderPaymentsService");
             return listeners;
         }
 
