@@ -10,6 +10,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using TechTalk.SpecFlow;
 using NServiceBus;
 using NUnit.Framework;
+using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.Monitoring.AcceptanceTests.Handlers;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
@@ -21,8 +22,10 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
     public class JobsSteps : StepsBase
     {
         private const string ProcessLearnerCommandNs = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand";
+        private const string PeriodEndLargeSubmissionJobIdKey = "period_end_large_submission_job_id";
+        private const string JobDetailsKey = "job_command";
 
-        protected JobsDataContext DataContext => Scope.Resolve<JobsDataContext>();
+        protected JobsDataContext DataContext;
 
         protected JobModel Job
         {
@@ -37,21 +40,38 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
 
         public long PeriodEndLargeSubmissionJobId
         {
-            get => Get<long>();
-            set => Set(value);
+            get => Get<long>(PeriodEndLargeSubmissionJobIdKey);
+            set => Set(value, PeriodEndLargeSubmissionJobIdKey);
         }
 
         public JobsCommand JobDetails
         {
-            get => Get<JobsCommand>("job_command");
-            set => Set(value, "job_command");
+            get => Get<JobsCommand>(JobDetailsKey);
+            set => Set(value, JobDetailsKey);
         }
         
         public JobsSteps(ScenarioContext context) : base(context)
         {
+            var testConfiguration = Scope.Resolve<TestsConfiguration>();
+            DataContext = new JobsDataContext(testConfiguration.PaymentsConnectionString);
         }
 
         protected string PartitionEndpointName => $"sfa-das-payments-monitoring-jobs{JobDetails.JobId % 2}";
+
+        [AfterScenario]
+        public void ClearTestJobs()
+        {
+            DataContext.Jobs.Remove(Job);
+
+            if (ScenarioContext.Current.ContainsKey(PeriodEndLargeSubmissionJobIdKey))
+            {
+                var submissionJob = DataContext.Jobs.FirstOrDefault(x => x.DcJobId == PeriodEndLargeSubmissionJobId);
+                if (submissionJob != null)
+                    DataContext.Jobs.Remove(submissionJob);
+            }
+
+            DataContext.SaveChanges();
+        }
 
         [Given(@"the payments are for the current collection year")]
         public void GivenThePaymentsAreForTheCurrentCollectionYear()
