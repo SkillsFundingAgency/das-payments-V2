@@ -11,9 +11,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Messages\SFA.DAS.Payments.DataLocks.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.JobContextMessageHandling\SFA.DAS.Payments.JobContextMessageHandling.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Client\SFA.DAS.Payments.Monitoring.Jobs.Client.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Data\SFA.DAS.Payments.Monitoring.Jobs.Data.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.PeriodEnd.Data\SFA.DAS.Payments.PeriodEnd.Data.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.PeriodEnd.Messages\SFA.DAS.Payments.PeriodEnd.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.PeriodEnd.Model\SFA.DAS.Payments.PeriodEnd.Model.csproj" />
   </ItemGroup>

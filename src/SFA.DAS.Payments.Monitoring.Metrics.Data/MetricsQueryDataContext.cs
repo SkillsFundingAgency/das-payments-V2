@@ -94,6 +94,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 	            and npp.Amount <> 0
 	            and dle.IsPayable = 0	
 	            and p.collectionperiod < dle.CollectionPeriod
+                and p.ContractType = 1
 	        group by 
 		        dle.ukprn";
 
@@ -167,6 +168,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 				    and npp.Amount <> 0
 				    and dle.IsPayable = 0	
 				    and p.collectionperiod < dle.CollectionPeriod
+                    and p.ContractType = 1
 			";
 			var result = new SqlParameter("@result", SqlDbType.Decimal) { Direction = ParameterDirection.Output };
 			await Database.ExecuteSqlCommandAsync(sql, new[] { new SqlParameter("@jobid", jobId), new SqlParameter("@ukprn", ukprn), result }, cancellationToken);

@@ -189,5 +189,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
                 UPDATE Payments2.Job SET [Status] = 3 WHERE DCJobId = {dcJobId}
             ");
         }
+
+        public void CreateSuccessfulSubmissionJob(long ukprn, short academicYear, byte collectionPeriod)
+        {
+            Database.ExecuteSqlCommand($@"
+INSERT INTO Payments2.Job
+(Status, DCJobSucceeded, JobType, IlrSubmissionTime, AcademicYear, CollectionPeriod, Ukprn, DcJobId)
+VALUES
+(2, 1, 1, GETDATE(), {academicYear}, {collectionPeriod}, {ukprn}, 0)
+");
+        }
     }
 }
