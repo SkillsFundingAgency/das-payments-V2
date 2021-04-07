@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Converters;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data.Configurations;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
@@ -188,6 +189,36 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             Database.ExecuteSqlCommand($@"
                 UPDATE Payments2.Job SET [Status] = 3 WHERE DCJobId = {dcJobId}
             ");
+        }
+
+        public void InsertValidSubmissionSummary(short academicYear, byte collectionPeriod, long ukprn, long jobId)
+        {
+            Database.ExecuteSqlCommand($@"INSERT INTO [Metrics].[SubmissionSummary]
+           ([Ukprn]
+           ,[AcademicYear]
+           ,[CollectionPeriod]
+           ,[JobId]
+           ,[ContractType1]
+           ,[ContractType2]
+           ,[EarningsDCContractType1]
+           ,[EarningsDCContractType2]
+           ,[CreationDate])
+     VALUES
+           ({ukprn}
+           ,{academicYear}
+           ,{collectionPeriod}
+           ,{jobId}
+           ,100
+           ,100
+           ,100
+           ,100
+           ,CURRENT_TIMESTAMP)");
+        }
+
+        public void DeleteSubmissionSummary(short academicYear, byte collectionPeriod)
+        {
+            Database.ExecuteSqlCommand(
+                $"DELETE FROM [Metrics].[SubmissionSummary] WHERE [AcademicYear] = {academicYear} AND [CollectionPeriod] = {collectionPeriod}");
         }
     }
 }

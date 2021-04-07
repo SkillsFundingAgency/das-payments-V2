@@ -10,6 +10,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using TechTalk.SpecFlow;
 using NServiceBus;
 using NUnit.Framework;
+using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.Monitoring.AcceptanceTests.Handlers;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
@@ -59,7 +60,13 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         protected string PartitionEndpointName => $"sfa-das-payments-monitoring-jobs{JobDetails.JobId % 2}";
 
         [AfterScenario]
-        public void ClearTestJobs()
+        public void ClearTestData()
+        {
+            ClearTestJobs();
+            ClearTestSubmissionMetrics();
+        }
+
+        private void ClearTestJobs()
         {
             DataContext.Jobs.Remove(Job);
 
@@ -71,6 +78,12 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             }
 
             DataContext.SaveChanges();
+        }
+
+        private void ClearTestSubmissionMetrics()
+        {
+            DataContext.Database.ExecuteSqlCommand(
+                $"DELETE FROM [Metrics].[SubmissionSummary] WHERE [AcademicYear] = 1819 AND [CollectionPeriod] = {CollectionPeriod}");
         }
 
         [Given(@"the payments are for the current collection year")]
@@ -319,6 +332,71 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 CollectionPeriod = collectionPeriod
             });
             await DataContext.SaveChangesAsync();
+        }
+
+        [When("the submission summary metrics are recorded")]
+        public async Task WhenTheSubmissionSummaryMetricsAreRecorded()
+        {
+            await DataContext.Database.ExecuteSqlCommandAsync($@"INSERT INTO [Metrics].[SubmissionSummary]
+                   ([Ukprn]
+                   ,[AcademicYear]
+                   ,[CollectionPeriod]
+                   ,[JobId]
+                   ,[Percentage]
+                   ,[ContractType1]
+                   ,[ContractType2]
+                   ,[DifferenceContractType1]
+                   ,[DifferenceContractType2]
+                   ,[PercentageContractType1]
+                   ,[PercentageContractType2]
+                   ,[EarningsDCContractType1]
+                   ,[EarningsDCContractType2]
+                   ,[EarningsDASContractType1]
+                   ,[EarningsDASContractType2]
+                   ,[EarningsDifferenceContractType1]
+                   ,[EarningsDifferenceContractType2]
+                   ,[EarningsPercentageContractType1]
+                   ,[EarningsPercentageContractType2]
+                   ,[RequiredPaymentsContractType1]
+                   ,[RequiredPaymentsContractType2]
+                   ,[AdjustedDataLockedEarnings]
+                   ,[AlreadyPaidDataLockedEarnings]
+                   ,[TotalDataLockedEarnings]
+                   ,[HeldBackCompletionPaymentsContractType1]
+                   ,[HeldBackCompletionPaymentsContractType2]
+                   ,[PaymentsYearToDateContractType1]
+                   ,[PaymentsYearToDateContractType2]
+                   ,[CreationDate])
+             VALUES
+                   ({TestSession.Ukprn}
+                   ,1819
+                   ,{CollectionPeriod}
+                   ,{TestSession.JobId}
+                   ,100
+                   ,100
+                   ,100
+                   ,0
+                   ,0
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,CURRENT_TIMESTAMP)");
         }
 
         [When(@"the final messages for the job are successfully processed")]
