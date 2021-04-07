@@ -10,7 +10,6 @@ using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using TechTalk.SpecFlow;
 using NServiceBus;
 using NUnit.Framework;
-using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.Monitoring.AcceptanceTests.Handlers;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
@@ -443,15 +442,6 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         {
             await NotifyRecordJob<RecordPeriodEndSubmissionWindowValidationJob>();
         }
-
-        [Then(@"the monitoring service should notify other services that the Validate Submission Window job has completed successfully")]
-        public async Task ThenTheMonitoringServiceShouldNotifyOtherServicesThatTheValidateSubmissionWindowJobHasCompletedSuccessfully()
-        {
-            await WaitForIt(() => PeriodEndRunSuccessHandler.ReceivedEvents.Any(ev => ev.JobId == JobDetails.JobId),
-                    $"Failed to receive the period end run job succeeded event for job id: {JobDetails.JobId}")
-                .ConfigureAwait(false);
-        }
-
 
         [Then(@"the period end job should not complete")]
         public async Task ButThePeriodEndJobDoesNotComplete()
