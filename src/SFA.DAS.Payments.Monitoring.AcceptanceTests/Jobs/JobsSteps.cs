@@ -597,9 +597,26 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 Job = job;
                 Console.WriteLine($"Found job: {Job.Id}, status: {Job.Status}, start time: {job.StartTime}");
                 return true;
-            }, $"Failed to find job with dc job id: {JobDetails.JobId}");
+            }, $"Failed to find completed with errors job with dc job id: {JobDetails.JobId}");
         }
-        
+
+        [Then(@"the job monitoring service should update the status of the job to show that it has timed out")]
+        public async Task ThenTheJobMonitoringServiceShouldUpdateTheStatusOfTheJobToShowThatItHasTimedOut()
+        {
+            await WaitForIt(() =>
+            {
+                var job = DataContext.Jobs.AsNoTracking()
+                    .FirstOrDefault(x =>
+                        x.DcJobId == JobDetails.JobId && x.Status == JobStatus.TimedOut && x.EndTime != null);
+
+                if (job == null)
+                    return false;
+                Job = job;
+                Console.WriteLine($"Found job: {Job.Id}, status: {Job.Status}, start time: {job.StartTime}");
+                return true;
+            }, $"Failed to find timed out job with dc job id: {JobDetails.JobId}");
+        }
+
         [Then(@"the monitoring service should notify other services that the period end start job has failed")]
         public async Task ThenTheMonitoringServiceShouldNotifyOtherServicesThatThePeriodEndStartJobHasFailed()
         {

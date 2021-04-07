@@ -53,7 +53,16 @@ Scenario: Provider Period End Start Job fails if outstanding submissions time ou
 	Given the earnings event service has received and is processing a provider earnings job
 	And the period end service has received a period end start job
 	When the period end service notifies the job monitoring service to record the start job
+	And the period end summary metrics are recorded
 	And the final messages for the job are successfully processed for the Period End Start job
 	And outstanding submission job times out 
 	Then the job monitoring service should update the status of the job to show that it has failed	
 	And the monitoring service should notify other services that the period end start job has failed
+
+Scenario: Provider Period End Start Job times out if metrics are not complete
+	Given the period end service has received a period end start job
+	When the period end service notifies the job monitoring service to record the start job
+	And the final messages for the job are successfully processed
+	Then the job monitoring service should update the status of the job to show that it has timed out
+	And the monitoring service should notify other services that the period end start job has failed
+	
