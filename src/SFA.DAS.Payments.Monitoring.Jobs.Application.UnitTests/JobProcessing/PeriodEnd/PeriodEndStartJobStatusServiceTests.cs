@@ -146,6 +146,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                 .Setup(x => x.GetJobStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
 
+            mocker.Mock<IJobsDataContext>()
+                .Setup(x => x.DoesPeriodEndSummaryExistForJob(It.IsAny<long?>()))
+                .ReturnsAsync(true);
+
             var service = mocker.Create<PeriodEndStartJobStatusService>();
             var result =
                 await service.ManageStatus(jobId, CancellationToken.None)
@@ -180,6 +184,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             mocker.Mock<IJobStorageService>()
                 .Setup(x => x.GetJobStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
+
+            mocker.Mock<IJobsDataContext>()
+                .Setup(x => x.DoesPeriodEndSummaryExistForJob(It.IsAny<long?>()))
+                .ReturnsAsync(true);
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();
             var result =
@@ -218,6 +226,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             mocker.Mock<IJobStorageService>()
                 .Setup(x => x.GetJobStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
+
+            mocker.Mock<IJobsDataContext>()
+                .Setup(x => x.DoesPeriodEndSummaryExistForJob(It.IsAny<long?>()))
+                .ReturnsAsync(true);
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();
 
