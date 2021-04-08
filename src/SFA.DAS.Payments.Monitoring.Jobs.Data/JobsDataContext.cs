@@ -50,6 +50,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             modelBuilder.ApplyConfiguration(new JobModelConfiguration());
             modelBuilder.ApplyConfiguration(new JobStepModelConfiguration());
             modelBuilder.ApplyConfiguration(new SubmissionSummaryModelConfiguration());
+            modelBuilder.ApplyConfiguration(new RequiredPaymentsModelConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockCountsModelConfiguration());
+            modelBuilder.ApplyConfiguration(new EarningsModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
