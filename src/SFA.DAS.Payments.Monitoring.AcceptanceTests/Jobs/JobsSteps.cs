@@ -10,9 +10,12 @@ using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using TechTalk.SpecFlow;
 using NServiceBus;
 using NUnit.Framework;
+using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.Monitoring.AcceptanceTests.Handlers;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
+using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
+using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
 {
@@ -20,8 +23,10 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
     public class JobsSteps : StepsBase
     {
         private const string ProcessLearnerCommandNs = "SFA.DAS.Payments.EarningEvents.Commands.Internal.ProcessLearnerCommand";
+        private const string PeriodEndLargeSubmissionJobIdKey = "period_end_large_submission_job_id";
+        private const string JobDetailsKey = "job_command";
 
-        protected JobsDataContext DataContext => Scope.Resolve<JobsDataContext>();
+        protected JobsDataContext DataContext;
 
         protected JobModel Job
         {
@@ -36,21 +41,50 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
 
         public long PeriodEndLargeSubmissionJobId
         {
-            get => Get<long>();
-            set => Set(value);
+            get => Get<long>(PeriodEndLargeSubmissionJobIdKey);
+            set => Set(value, PeriodEndLargeSubmissionJobIdKey);
         }
 
         public JobsCommand JobDetails
         {
-            get => Get<JobsCommand>("job_command");
-            set => Set(value, "job_command");
+            get => Get<JobsCommand>(JobDetailsKey);
+            set => Set(value, JobDetailsKey);
         }
         
         public JobsSteps(ScenarioContext context) : base(context)
         {
+            var testConfiguration = Scope.Resolve<TestsConfiguration>();
+            DataContext = new JobsDataContext(testConfiguration.PaymentsConnectionString);
         }
 
-        protected string PartitionEndpointName => $"sfa-das-payments-monitoring-jobs{JobDetails.JobId % 20}";
+        protected string PartitionEndpointName => $"sfa-das-payments-monitoring-jobs{JobDetails.JobId % 2}";
+
+        [AfterScenario]
+        public void ClearTestData()
+        {
+            ClearTestJobs();
+            ClearTestSubmissionMetrics();
+        }
+
+        private void ClearTestJobs()
+        {
+            DataContext.Jobs.Remove(Job);
+
+            if (ScenarioContext.Current.ContainsKey(PeriodEndLargeSubmissionJobIdKey))
+            {
+                var submissionJob = DataContext.Jobs.FirstOrDefault(x => x.DcJobId == PeriodEndLargeSubmissionJobId);
+                if (submissionJob != null)
+                    DataContext.Jobs.Remove(submissionJob);
+            }
+
+            DataContext.SaveChanges();
+        }
+
+        private void ClearTestSubmissionMetrics()
+        {
+            DataContext.Database.ExecuteSqlCommand(
+                $"DELETE FROM [Metrics].[SubmissionSummary] WHERE [AcademicYear] = 1819 AND [CollectionPeriod] = {CollectionPeriod}");
+        }
 
         [Given(@"the payments are for the current collection year")]
         public void GivenThePaymentsAreForTheCurrentCollectionYear()
@@ -282,6 +316,71 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             await ThenTheJobMonitoringServiceShouldRecordTheJob().ConfigureAwait(false);
         }
 
+        [When("the submission summary metrics are recorded")]
+        public async Task WhenTheSubmissionSummaryMetricsAreRecorded()
+        {
+            await DataContext.Database.ExecuteSqlCommandAsync($@"INSERT INTO [Metrics].[SubmissionSummary]
+                   ([Ukprn]
+                   ,[AcademicYear]
+                   ,[CollectionPeriod]
+                   ,[JobId]
+                   ,[Percentage]
+                   ,[ContractType1]
+                   ,[ContractType2]
+                   ,[DifferenceContractType1]
+                   ,[DifferenceContractType2]
+                   ,[PercentageContractType1]
+                   ,[PercentageContractType2]
+                   ,[EarningsDCContractType1]
+                   ,[EarningsDCContractType2]
+                   ,[EarningsDASContractType1]
+                   ,[EarningsDASContractType2]
+                   ,[EarningsDifferenceContractType1]
+                   ,[EarningsDifferenceContractType2]
+                   ,[EarningsPercentageContractType1]
+                   ,[EarningsPercentageContractType2]
+                   ,[RequiredPaymentsContractType1]
+                   ,[RequiredPaymentsContractType2]
+                   ,[AdjustedDataLockedEarnings]
+                   ,[AlreadyPaidDataLockedEarnings]
+                   ,[TotalDataLockedEarnings]
+                   ,[HeldBackCompletionPaymentsContractType1]
+                   ,[HeldBackCompletionPaymentsContractType2]
+                   ,[PaymentsYearToDateContractType1]
+                   ,[PaymentsYearToDateContractType2]
+                   ,[CreationDate])
+             VALUES
+                   ({TestSession.Ukprn}
+                   ,1819
+                   ,{CollectionPeriod}
+                   ,{TestSession.JobId}
+                   ,100
+                   ,100
+                   ,100
+                   ,0
+                   ,0
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,100
+                   ,CURRENT_TIMESTAMP)");
+        }
+
         [When(@"the final messages for the job are successfully processed")]
         [When(@"the final messages for the job are successfully processed for the Period End Start job")]
         public async Task WhenTheFinalMessagesForTheJobAreSuccessfullyProcessed()
@@ -326,15 +425,6 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         {
             await NotifyRecordJob<RecordPeriodEndSubmissionWindowValidationJob>();
         }
-
-        [Then(@"the monitoring service should notify other services that the Validate Submission Window job has completed successfully")]
-        public async Task ThenTheMonitoringServiceShouldNotifyOtherServicesThatTheValidateSubmissionWindowJobHasCompletedSuccessfully()
-        {
-            await WaitForIt(() => PeriodEndRunSuccessHandler.ReceivedEvents.Any(ev => ev.JobId == JobDetails.JobId),
-                    $"Failed to receive the period end run job succeeded event for job id: {JobDetails.JobId}")
-                .ConfigureAwait(false);
-        }
-
 
         [Then(@"the period end job should not complete")]
         public async Task ButThePeriodEndJobDoesNotComplete()
@@ -558,9 +648,26 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 Job = job;
                 Console.WriteLine($"Found job: {Job.Id}, status: {Job.Status}, start time: {job.StartTime}");
                 return true;
-            }, $"Failed to find job with dc job id: {JobDetails.JobId}");
+            }, $"Failed to find completed with errors job with dc job id: {JobDetails.JobId}");
         }
-        
+
+        [Then(@"the job monitoring service should update the status of the job to show that it has timed out")]
+        public async Task ThenTheJobMonitoringServiceShouldUpdateTheStatusOfTheJobToShowThatItHasTimedOut()
+        {
+            await WaitForIt(() =>
+            {
+                var job = DataContext.Jobs.AsNoTracking()
+                    .FirstOrDefault(x =>
+                        x.DcJobId == JobDetails.JobId && x.Status == JobStatus.TimedOut && x.EndTime != null);
+
+                if (job == null)
+                    return false;
+                Job = job;
+                Console.WriteLine($"Found job: {Job.Id}, status: {Job.Status}, start time: {job.StartTime}");
+                return true;
+            }, $"Failed to find timed out job with dc job id: {JobDetails.JobId}");
+        }
+
         [Then(@"the monitoring service should notify other services that the period end start job has failed")]
         public async Task ThenTheMonitoringServiceShouldNotifyOtherServicesThatThePeriodEndStartJobHasFailed()
         {

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Monitoring.Jobs.Data.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
+using SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration;
+using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
+using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 {
@@ -25,7 +28,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken);
         Task SaveDcSubmissionStatus(long jobId, bool succeeded, CancellationToken cancellationToken);
         Task<List<OutstandingJobResult>>GetOutstandingOrTimedOutJobs(long? dcJobId,DateTimeOffset startTime, CancellationToken cancellationToken);
-        
+        Task<bool> DoesSubmissionSummaryExistForJob(long? dcJobId);
     }
 
     public class JobsDataContext : DbContext, IJobsDataContext
@@ -33,6 +36,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         private readonly string connectionString;
         public virtual DbSet<JobModel> Jobs { get; set; }
         public virtual DbSet<JobStepModel> JobSteps { get; set; }
+        public virtual DbSet<SubmissionSummaryModel> SubmissionSummaries { get; set; }
 
         public JobsDataContext(string connectionString)
         {
@@ -45,6 +49,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             modelBuilder.HasDefaultSchema("Payments2");
             modelBuilder.ApplyConfiguration(new JobModelConfiguration());
             modelBuilder.ApplyConfiguration(new JobStepModelConfiguration());
+            modelBuilder.ApplyConfiguration(new SubmissionSummaryModelConfiguration());
+            modelBuilder.ApplyConfiguration(new RequiredPaymentsModelConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockCountsModelConfiguration());
+            modelBuilder.ApplyConfiguration(new EarningsModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -175,6 +183,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                  x.StartTime > latestValidStartTime).
                 Select(x => new OutstandingJobResult(){ DcJobId = x.DcJobId, DcJobSucceeded = x.DcJobSucceeded, JobStatus = x.Status, EndTime = x.EndTime}).
                 ToListAsync(cancellationToken);
+        }
+
+        public async Task<bool> DoesSubmissionSummaryExistForJob(long? dcJobId)
+        {
+            return await SubmissionSummaries.AnyAsync(x => x.JobId == dcJobId);
         }
     }
 }
