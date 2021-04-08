@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             };
 
             mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.DoesPeriodEndSummaryExistForJob(job.DcJobId))
+                .Setup(x => x.DoesSubmissionSummaryExistForJob(job.DcJobId))
                 .ReturnsAsync(doesPeriodEndSummaryExistForJob);
         }
 
@@ -109,7 +109,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .ReturnsAsync(new List<OutstandingJobResult>());
 
             mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.DoesPeriodEndSummaryExistForJob(job.DcJobId))
+                .Setup(x => x.DoesSubmissionSummaryExistForJob(job.DcJobId))
                 .ReturnsAsync(false);
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();
@@ -142,7 +142,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .ReturnsAsync(outstandingJobs);
 
             mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.DoesPeriodEndSummaryExistForJob(job.DcJobId))
+                .Setup(x => x.DoesSubmissionSummaryExistForJob(job.DcJobId))
                 .ReturnsAsync(true);
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();

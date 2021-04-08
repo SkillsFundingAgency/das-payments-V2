@@ -8,6 +8,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Data.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
+using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 {
@@ -27,7 +28,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken);
         Task SaveDcSubmissionStatus(long jobId, bool succeeded, CancellationToken cancellationToken);
         Task<List<OutstandingJobResult>>GetOutstandingOrTimedOutJobs(long? dcJobId,DateTimeOffset startTime, CancellationToken cancellationToken);
-        Task<bool> DoesPeriodEndSummaryExistForJob(long? dcJobId);
+        Task<bool> DoesSubmissionSummaryExistForJob(long? dcJobId);
     }
 
     public class JobsDataContext : DbContext, IJobsDataContext
@@ -35,7 +36,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         private readonly string connectionString;
         public virtual DbSet<JobModel> Jobs { get; set; }
         public virtual DbSet<JobStepModel> JobSteps { get; set; }
-        public virtual DbSet<PeriodEndSummaryModel> PeriodEndSummaries { get; set; }
+        public virtual DbSet<SubmissionSummaryModel> SubmissionSummaries { get; set; }
 
         public JobsDataContext(string connectionString)
         {
@@ -48,7 +49,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             modelBuilder.HasDefaultSchema("Payments2");
             modelBuilder.ApplyConfiguration(new JobModelConfiguration());
             modelBuilder.ApplyConfiguration(new JobStepModelConfiguration());
-            modelBuilder.ApplyConfiguration(new PeriodEndSummaryModelConfiguration());
+            modelBuilder.ApplyConfiguration(new SubmissionSummaryModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -181,9 +182,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                 ToListAsync(cancellationToken);
         }
 
-        public async Task<bool> DoesPeriodEndSummaryExistForJob(long? dcJobId)
+        public async Task<bool> DoesSubmissionSummaryExistForJob(long? dcJobId)
         {
-            return await PeriodEndSummaries.AnyAsync(x => x.JobId == dcJobId);
+            return await SubmissionSummaries.AnyAsync(x => x.JobId == dcJobId);
         }
     }
 }

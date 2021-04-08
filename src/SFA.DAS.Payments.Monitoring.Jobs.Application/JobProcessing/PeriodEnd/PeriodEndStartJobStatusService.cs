@@ -42,9 +42,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
             if (processingJobsPresent)
                 return (false, (JobStatus?)null, (DateTimeOffset?)null);
 
-            var periodEndSummaryExistsForJob = await context.DoesPeriodEndSummaryExistForJob(job.DcJobId);
+            var submissionSummaryExistsForJob = await context.DoesSubmissionSummaryExistForJob(job.DcJobId);
 
-            if (!periodEndSummaryExistsForJob)
+            if (!submissionSummaryExistsForJob)
                 return (false, (JobStatus?)null, (DateTimeOffset?)null);
 
             return (true, (JobStatus?)null, outstandingJobs.Max(x => x.EndTime));
