@@ -18,13 +18,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
     {
         private AutoMock mocker;
         private JobModel job;
-        private bool doesPeriodEndSummaryExistForJob;
+        private bool doSubmissionSummariesExistForJob;
 
         [SetUp]
         public void SetUp()
         {
             mocker = AutoMock.GetLoose();
-            doesPeriodEndSummaryExistForJob = true;
+            doSubmissionSummariesExistForJob = true;
 
             job = new JobModel
             {
@@ -34,8 +34,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             };
 
             mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.DoesSubmissionSummaryExistForJob(job.DcJobId))
-                .ReturnsAsync(doesPeriodEndSummaryExistForJob);
+                .Setup(x => x.DoSubmissionSummariesExistForJobs(It.IsAny<List<long?>>()))
+                .Returns(doSubmissionSummariesExistForJob);
         }
 
         [TestCase(JobStatus.TimedOut)]
@@ -102,15 +102,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         }
 
         [Test]
-        public async Task ReturnsCorrectly_WhenPeriodEndSummaryMetricsDoNotExist()
+        public async Task ReturnsCorrectly_WhenSubmissionSummariesDoNotExist()
         {
             mocker.Mock<IJobsDataContext>()
                 .Setup(x => x.GetOutstandingOrTimedOutJobs(job.DcJobId, job.StartTime, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<OutstandingJobResult>());
 
             mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.DoesSubmissionSummaryExistForJob(job.DcJobId))
-                .ReturnsAsync(false);
+                .Setup(x => x.DoSubmissionSummariesExistForJobs(It.IsAny<List<long?>>()))
+                .Returns(false);
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();
             var result = await service.PerformAdditionalJobChecks(job, CancellationToken.None);
@@ -142,8 +142,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .ReturnsAsync(outstandingJobs);
 
             mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.DoesSubmissionSummaryExistForJob(job.DcJobId))
-                .ReturnsAsync(true);
+                .Setup(x => x.DoSubmissionSummariesExistForJobs(It.IsAny<List<long?>>()))
+                .Returns(true);
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();
             var result = await service.PerformAdditionalJobChecks(job, CancellationToken.None);
