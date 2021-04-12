@@ -217,7 +217,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             }
         }
 
-        public async Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken, IsolationLevel isolationLevel = IsolationLevel.ReadUncommitted)
+        private async Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken, IsolationLevel isolationLevel = IsolationLevel.ReadUncommitted)
         {
             return await Database.BeginTransactionAsync(isolationLevel, cancellationToken).ConfigureAwait(false);
         }
