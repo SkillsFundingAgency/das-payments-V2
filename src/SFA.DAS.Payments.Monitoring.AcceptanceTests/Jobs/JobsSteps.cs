@@ -353,7 +353,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                    ({TestSession.Ukprn}
                    ,1819
                    ,{CollectionPeriod}
-                   ,{TestSession.JobId}
+                   ,{JobDetails.JobId}
                    ,100
                    ,100
                    ,100

@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken);
         Task SaveDcSubmissionStatus(long jobId, bool succeeded, CancellationToken cancellationToken);
         Task<List<OutstandingJobResult>>GetOutstandingOrTimedOutJobs(long? dcJobId,DateTimeOffset startTime, CancellationToken cancellationToken);
-        Task<bool> DoesSubmissionSummaryExistForJob(long? dcJobId);
+        bool DoSubmissionSummariesExistForJobs(List<long?> dcJobIds);
     }
 
     public class JobsDataContext : DbContext, IJobsDataContext
@@ -37,6 +37,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         public virtual DbSet<JobModel> Jobs { get; set; }
         public virtual DbSet<JobStepModel> JobSteps { get; set; }
         public virtual DbSet<SubmissionSummaryModel> SubmissionSummaries { get; set; }
+
+        private const int ValidStartTimeOffsetMinutes = -150;
 
         public JobsDataContext(string connectionString)
         {
@@ -175,7 +177,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         public async Task<List<OutstandingJobResult>>GetOutstandingOrTimedOutJobs(long? dcJobId,
                 DateTimeOffset startTime, CancellationToken cancellationToken)
         {
-            var latestValidStartTime = startTime.AddHours(-2).AddMinutes(-30);
+            var latestValidStartTime = startTime.AddMinutes(ValidStartTimeOffsetMinutes);
 
             return await Jobs.Where(x =>
                 x.DcJobId != dcJobId &&
@@ -185,9 +187,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                 ToListAsync(cancellationToken);
         }
 
-        public async Task<bool> DoesSubmissionSummaryExistForJob(long? dcJobId)
+        public bool DoSubmissionSummariesExistForJobs(List<long?> dcJobIds)
         {
-            return await SubmissionSummaries.AnyAsync(x => x.JobId == dcJobId);
+            return dcJobIds.All(x => SubmissionSummaries.Any(y => y.JobId == x));
         }
     }
 }
