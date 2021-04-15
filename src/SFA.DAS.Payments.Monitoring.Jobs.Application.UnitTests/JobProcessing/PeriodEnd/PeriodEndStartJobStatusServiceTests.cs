@@ -158,19 +158,20 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             CompleteJob(outstandingOrTimedOutJobs[0]);
 
             result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+
             result.Should().BeTrue();
 
             mocker.Mock<IJobStorageService>()
                 .Verify(
                     x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
                         It.Is<JobStatus>(status => status == JobStatus.Completed),
-                        It.Is<DateTimeOffset>(endTime => endTime == outstandingOrTimedOutJobs[0].EndTime),
+                        It.Is<DateTimeOffset>(endTime => EndTimeIsNearUtcNow(endTime)),
                         It.IsAny<CancellationToken>()), Times.Once());
 
         }
 
         [Test]
-        public async Task ManageStatus_ContinuesUntilAllInProgressAndUsesLastEndTimeAsJobEndTime()
+        public async Task ManageStatus_ContinuesUntilAllInProgressAndUsesUtcNowAsJobEndTime()
         {
             var jobId = 99;
             var completedMessage = CreateCompletedMessage();
@@ -199,23 +200,24 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             CompleteJob(outstandingOrTimedOutJobs[1]);
 
             result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+            
             result.Should().BeTrue();
 
             mocker.Mock<IJobStorageService>()
                 .Verify(
                     x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
                         It.Is<JobStatus>(status => status == JobStatus.Completed),
-                        It.Is<DateTimeOffset>(endTime => endTime == outstandingOrTimedOutJobs[1].EndTime),
+                        It.Is<DateTimeOffset>(endTime => EndTimeIsNearUtcNow(endTime)),
                         It.IsAny<CancellationToken>()), Times.Once());
 
         }
 
         [Test]
-        public async Task ManageStatus_EndTimeShouldUseLastActivityCompleted()
+        public async Task ManageStatus_EndTimeShouldUseUtcNow()
         {
             var jobId = 99;
             var completedMessage = CreateCompletedMessage();
-            completedMessage.CompletedTime = DateTimeOffset.Now.AddMinutes(1); //will be the last completed job
+            completedMessage.CompletedTime = DateTimeOffset.UtcNow; //will be the last completed job
 
             var inProgressMessage = CreateInProgressMessage(completedMessage);
             inProgressMessages.Add(inProgressMessage);
@@ -234,14 +236,22 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             var service = mocker.Create<PeriodEndStartJobStatusService>();
 
             var result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
+            
             result.Should().BeTrue();
-
+            
             mocker.Mock<IJobStorageService>()
                 .Verify(
                     x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
                         It.Is<JobStatus>(status => status == JobStatus.Completed),
-                        It.Is<DateTimeOffset>(endTime => endTime == completedMessage.CompletedTime),
+                        It.Is<DateTimeOffset>(endTime => EndTimeIsNearUtcNow(endTime)),
                         It.IsAny<CancellationToken>()), Times.Once());
+        }
+
+        private static bool EndTimeIsNearUtcNow(DateTimeOffset endTime)
+        {
+            var utcNow = DateTimeOffset.UtcNow;
+
+            return endTime >= utcNow.AddSeconds(-1) && endTime <= utcNow.AddSeconds(1);
         }
 
         private void CompleteJob(OutstandingJobResult outstandingJob)

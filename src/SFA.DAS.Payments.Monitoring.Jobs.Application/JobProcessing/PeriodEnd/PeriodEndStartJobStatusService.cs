@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
             if (!jobsWithoutSubmissionSummariesPresent)
                 return (false, (JobStatus?)null, (DateTimeOffset?)null);
 
-            return (true, (JobStatus?)null, outstandingJobs.Max(x => x.EndTime));
+            return (true, (JobStatus?)null, DateTimeOffset.UtcNow);
         }
     }
 }
