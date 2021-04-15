@@ -120,7 +120,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         [Test]
         public async Task ReturnsCorrectly_WhenAllChecksPass()
         {
-            var expectedEndTime = DateTimeOffset.Now;
+            var expectedEndTime = DateTimeOffset.UtcNow;
             var outstandingJobs = new List<OutstandingJobResult>
             {
                 new OutstandingJobResult
@@ -146,8 +146,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .Returns(true);
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();
-            var result = await service.PerformAdditionalJobChecks(job, CancellationToken.None);
-            result.Should().Be((true, null, expectedEndTime));
+            
+            (bool IsComplete, JobStatus? OverriddenJobStatus, DateTimeOffset? completionTime) result = await service.PerformAdditionalJobChecks(job, CancellationToken.None);
+            
+            result.IsComplete.Should().BeTrue();
+            result.OverriddenJobStatus.Should().Be(null);
+            result.completionTime.Should().BeCloseTo(expectedEndTime, 500);
         }
     }
 }
