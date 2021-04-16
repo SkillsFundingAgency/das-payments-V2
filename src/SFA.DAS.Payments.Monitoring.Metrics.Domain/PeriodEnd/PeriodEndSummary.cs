@@ -23,6 +23,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         private decimal dataLockedEarnings;
         private decimal dataLockedAlreadyPaidTotal;
         private DataLockTypeCounts dataLockTypeCounts;
+        private int inLearning;
 
         public PeriodEndSummary(long jobId, byte collectionPeriod, short academicYear)
         {
@@ -50,6 +51,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 AdjustedDataLockedEarnings = dataLockedEarnings - dataLockedAlreadyPaidTotal,
                 TotalDataLockedEarnings = dataLockedEarnings,
                 DataLockTypeCounts = dataLockTypeCounts,
+                InLearning = inLearning
             };
             result.PaymentMetrics = Helpers.CreatePaymentMetrics(result);
             result.Percentage = result.PaymentMetrics.Percentage;
@@ -90,6 +92,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
              dataLockedAlreadyPaidTotal = allSummaries.Select(x => x.AlreadyPaidDataLockedEarnings).Sum();
 
              CalculateDataLockTypeCounts();
+
+             inLearning = allSummaries.Sum(x => x.InLearning);
         }
 
         private void CalculateDataLockTypeCounts()

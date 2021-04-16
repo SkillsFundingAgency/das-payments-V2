@@ -17,6 +17,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         void AddDataLockedAlreadyPaid(decimal dataLockedAlreadyPaidTotal);
         void AddPaymentsYearToDate(ProviderContractTypeAmounts paymentsYearToDate);
         void AddHeldBackCompletionPayments(ProviderContractTypeAmounts heldBackCompletionPayments);
+        void AddInLearningCount(ProviderInLearningTotal inLearningTotal);
     }
 
     public class PeriodEndProviderSummary : IPeriodEndProviderSummary
@@ -33,6 +34,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         private ProviderContractTypeAmounts providerPaymentsYearToDate;
         private ProviderContractTypeAmounts providerHeldBackCompletionPayments;
         private PeriodEndProviderDataLockTypeCounts periodEndProviderDataLockTypeCounts;
+        private int inLearning;
 
         public PeriodEndProviderSummary(long ukprn, long jobId, byte collectionPeriod, short academicYear)
         {
@@ -67,7 +69,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 TotalDataLockedEarnings = providerDataLockedEarnings,
                 FundingSourceAmounts = GetFundingSourceAmounts(),
                 TransactionTypeAmounts = GetTransactionTypeAmounts(),
-                DataLockTypeCounts = periodEndProviderDataLockTypeCounts
+                DataLockTypeCounts = periodEndProviderDataLockTypeCounts,
+                InLearning = inLearning
             };
 
             result.PaymentMetrics = Helpers.CreatePaymentMetrics(result);
@@ -156,6 +159,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         public void AddHeldBackCompletionPayments(ProviderContractTypeAmounts heldBackCompletionPayments)
         {
             providerHeldBackCompletionPayments = heldBackCompletionPayments;
+        }
+
+        public void AddInLearningCount(ProviderInLearningTotal inLearningTotal)
+        {
+            inLearning = inLearningTotal.InLearningCount;
         }
     }
 }
