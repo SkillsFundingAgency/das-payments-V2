@@ -217,7 +217,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
         {
             var jobId = 99;
             var completedMessage = CreateCompletedMessage();
-            completedMessage.CompletedTime = DateTimeOffset.UtcNow; //will be the last completed job
+            completedMessage.CompletedTime = DateTimeOffset.UtcNow;
 
             var inProgressMessage = CreateInProgressMessage(completedMessage);
             inProgressMessages.Add(inProgressMessage);
