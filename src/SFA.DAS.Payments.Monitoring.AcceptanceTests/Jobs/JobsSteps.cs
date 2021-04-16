@@ -317,6 +317,8 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         [When("the submission summary metrics are recorded")]
         public async Task WhenTheSubmissionSummaryMetricsAreRecorded()
         {
+            var jobId = ScenarioContext.Current.ContainsKey(PeriodEndLargeSubmissionJobIdKey) ? PeriodEndLargeSubmissionJobId : JobDetails.JobId;
+
             await DataContext.Database.ExecuteSqlCommandAsync($@"INSERT INTO [Metrics].[SubmissionSummary]
                    ([Ukprn]
                    ,[AcademicYear]
@@ -351,7 +353,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                    ({TestSession.Ukprn}
                    ,1819
                    ,{CollectionPeriod}
-                   ,{PeriodEndLargeSubmissionJobId}
+                   ,{jobId}
                    ,100
                    ,100
                    ,100
