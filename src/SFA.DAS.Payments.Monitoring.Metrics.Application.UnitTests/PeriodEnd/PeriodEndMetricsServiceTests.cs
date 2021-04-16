@@ -94,6 +94,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             periodEndMetricsRepositoryMock
                 .Setup(x => x.GetPeriodEndProviderDataLockTypeCounts(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<PeriodEndProviderDataLockTypeCounts>());
+            periodEndMetricsRepositoryMock
+                .Setup(x => x.GetInLearningCount(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<ProviderInLearningTotal>());
         }
 
         [Test]
@@ -145,6 +148,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             periodEndMetricsRepositoryMock
                 .Verify(x => x.GetPeriodEndProviderDataLockTypeCounts(It.IsAny<short>(), It.IsAny<byte>(),
                     It.IsAny<CancellationToken>()), Times.Once);
+
+            periodEndMetricsRepositoryMock
+                .Verify(x => x.GetInLearningCount(It.IsAny<short>(), It.IsAny<byte>(),
+                    It.IsAny<CancellationToken>()), Times.Once);
         }
 
         public class PeriodEndProviderSummaryFake : IPeriodEndProviderSummary
@@ -157,6 +164,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             public bool AddDataLockedAlreadyPaidCalled { get; private set; }
             public bool AddPaymentsYearToDateCalled { get; private set; }
             public bool AddHeldBackCompletionPaymentsCalled { get; private set; }
+            public bool AddInLearningCountCalled { get; private set; }
 
             public ProviderPeriodEndSummaryModel GetMetrics()
             {
@@ -178,6 +186,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             public void AddPaymentsYearToDate(ProviderContractTypeAmounts paymentsYearToDate) { AddPaymentsYearToDateCalled = true; }
 
             public void AddHeldBackCompletionPayments(ProviderContractTypeAmounts heldBackCompletionPayments) { AddHeldBackCompletionPaymentsCalled = true; }
+            public void AddInLearningCount(ProviderInLearningTotal inLearningTotal) { AddInLearningCountCalled = true; }
         }
         [Test]
         public async Task WhenBuildingMetrics_ThenReturnedDataIsAddedToProvider_ForEachProvider()
@@ -200,6 +209,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             periodEndSummary.AddDataLockedAlreadyPaidCalled.Should().BeTrue();
             periodEndSummary.AddHeldBackCompletionPaymentsCalled.Should().BeTrue();
             periodEndSummary.AddPeriodEndProviderDataLockTypeCountsCalled.Should().BeTrue();
+            periodEndSummary.AddInLearningCountCalled.Should().BeTrue();
         }
 
         [Test]
@@ -315,6 +325,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             stats.Keys.Should().Contain("DataLockedCountDLock10");
             stats.Keys.Should().Contain("DataLockedCountDLock11");
             stats.Keys.Should().Contain("DataLockedCountDLock12");
+
+            stats.Keys.Should().Contain("InLearning");
         }
 
         [Test]
@@ -435,6 +447,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             stats.Keys.Should().Contain("DataLockedCountDLock10");
             stats.Keys.Should().Contain("DataLockedCountDLock11");
             stats.Keys.Should().Contain("DataLockedCountDLock12");
+
+            stats.Keys.Should().Contain("InLearning");
         }
     }
 }
