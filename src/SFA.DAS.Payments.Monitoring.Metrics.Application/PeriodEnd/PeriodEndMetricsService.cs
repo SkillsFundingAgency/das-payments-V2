@@ -59,6 +59,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 var periodEndProviderDataLockTypeCountsTask = periodEndMetricsRepository.GetPeriodEndProviderDataLockTypeCounts(academicYear, collectionPeriod, cancellationToken);
                 var dataLockedAlreadyPaidTask = periodEndMetricsRepository.GetAlreadyPaidDataLockedEarnings(academicYear, collectionPeriod, cancellationToken);
                 var heldBackCompletionAmountsTask = periodEndMetricsRepository.GetHeldBackCompletionPaymentsTotals(academicYear, collectionPeriod, cancellationToken);
+                var inLearningCountTask = periodEndMetricsRepository.GetInLearningCount(academicYear, collectionPeriod, cancellationToken);
 
                 var dataTask = Task.WhenAll(
                     dcEarningsTask,
@@ -68,7 +69,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                     dataLockedEarningsTask,
                     periodEndProviderDataLockTypeCountsTask,
                     dataLockedAlreadyPaidTask,
-                    heldBackCompletionAmountsTask);
+                    heldBackCompletionAmountsTask,
+                    inLearningCountTask);
 
                 var waitTask = Task.Delay(TimeSpan.FromSeconds(270), cancellationToken);
 
@@ -99,6 +101,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                     providerSummary.AddPeriodEndProviderDataLockTypeCounts(periodEndProviderDataLockTypeCountsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new PeriodEndProviderDataLockTypeCounts());
                     providerSummary.AddDataLockedAlreadyPaid(dataLockedAlreadyPaidTask.Result.FirstOrDefault(x => x.Ukprn == ukprn)?.TotalAmount ?? 0m);
                     providerSummary.AddHeldBackCompletionPayments(heldBackCompletionAmountsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderContractTypeAmounts());
+                    providerSummary.AddInLearningCount(inLearningCountTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderInLearningTotal());
 
                     var providerSummaryModel = providerSummary.GetMetrics();
 
@@ -254,6 +257,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 {"ContractType2TransactionType15", (double) act2TransactionTypes.Sum(x => x.TransactionTypeAmounts.TransactionType15)},
                 {"ContractType2TransactionType16", (double) act2TransactionTypes.Sum(x => x.TransactionTypeAmounts.TransactionType16)},
 
+                { "InLearning", (double)providerMetrics.InLearning }
+
             };
 
             telemetry.TrackEvent($"Finished Generating Period End Metrics for Provider: {providerMetrics.Ukprn}", properties, stats);
@@ -323,6 +328,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 { "PaymentsYearToDateTotal", (double) metrics.YearToDatePayments.Total },
                 { "PaymentsYearToDateContractType1", (double) metrics.YearToDatePayments.ContractType1 },
                 { "PaymentsYearToDateContractType2", (double) metrics.YearToDatePayments.ContractType2 },
+                { "InLearning", (double)metrics.InLearning }
 
             };
 
