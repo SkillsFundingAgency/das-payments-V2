@@ -14,8 +14,6 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.Monitoring.AcceptanceTests.Handlers;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
-using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
-using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
 {
@@ -319,6 +317,8 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         [When("the submission summary metrics are recorded")]
         public async Task WhenTheSubmissionSummaryMetricsAreRecorded()
         {
+            var jobId = ScenarioContext.Current.ContainsKey(PeriodEndLargeSubmissionJobIdKey) ? PeriodEndLargeSubmissionJobId : JobDetails.JobId;
+
             await DataContext.Database.ExecuteSqlCommandAsync($@"INSERT INTO [Metrics].[SubmissionSummary]
                    ([Ukprn]
                    ,[AcademicYear]
@@ -353,7 +353,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                    ({TestSession.Ukprn}
                    ,1819
                    ,{CollectionPeriod}
-                   ,{JobDetails.JobId}
+                   ,{jobId}
                    ,100
                    ,100
                    ,100
@@ -415,6 +415,26 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 StartTime = DateTimeOffset.UtcNow,
                 IlrSubmissionTime = DateTime.UtcNow.AddSeconds(-10),
                 Status = JobStatus.InProgress
+            };
+           await DataContext.SaveNewJob(jobModel);
+        }
+
+        [Given(@"the earnings event service has received and successfully processed a provider earnings job")]
+        public async Task GivenTheEarningsEventServiceHasReceivedAndSuccessfullyProcessedAProviderEarningsJob()
+        {
+            PeriodEndLargeSubmissionJobId = TestSession.GenerateId();
+            
+            var jobModel = new JobModel
+            {
+                Ukprn = TestSession.Ukprn,
+                CollectionPeriod = CollectionPeriod,
+                AcademicYear = 1920,
+                DcJobId = PeriodEndLargeSubmissionJobId,
+                JobType = JobType.EarningsJob,
+                StartTime = DateTimeOffset.UtcNow.AddSeconds(-20),
+                EndTime = DateTimeOffset.UtcNow.AddSeconds(-10),
+                IlrSubmissionTime = DateTime.UtcNow.AddSeconds(-20),
+                Status = JobStatus.Completed
             };
            await DataContext.SaveNewJob(jobModel);
         }
