@@ -1,10 +1,9 @@
-﻿using System;
+﻿using SFA.DAS.Payments.DataLocks.Domain.Models;
+using SFA.DAS.Payments.Model.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Transactions;
-using SFA.DAS.Payments.DataLocks.Domain.Models;
-using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
 {
@@ -21,33 +20,26 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
         {
             var currentApprenticeship = await GetApprenticeship(updatedApprenticeship.ApprenticeshipId).ConfigureAwait(false);
 
-            using (var scope = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled))
+            HandleUpdated(currentApprenticeship, updatedApprenticeship);
+
+            if (updatedApprenticeship.ApprenticeshipPriceEpisodes != null && updatedApprenticeship.ApprenticeshipPriceEpisodes.Any())
             {
-
-                HandleUpdated(currentApprenticeship, updatedApprenticeship);
-                
-                if (updatedApprenticeship.ApprenticeshipPriceEpisodes != null &&  updatedApprenticeship.ApprenticeshipPriceEpisodes.Any())
-                {
-                    UpdatePriceEpisodes(updatedApprenticeship.ApprenticeshipPriceEpisodes, currentApprenticeship.ApprenticeshipPriceEpisodes);
-                }
-                
-                await repository.UpdateApprenticeship(currentApprenticeship);
-
-                await UpdateHistoryTables(updatedApprenticeship);
-                
-                var latestApprenticeship = await GetApprenticeship(updatedApprenticeship.ApprenticeshipId).ConfigureAwait(false);
-
-                scope.Complete();
-
-                return latestApprenticeship;
+                UpdatePriceEpisodes(updatedApprenticeship.ApprenticeshipPriceEpisodes, currentApprenticeship.ApprenticeshipPriceEpisodes);
             }
+
+            UpdateHistory(currentApprenticeship, updatedApprenticeship);
+
+            await repository.UpdateApprenticeship(currentApprenticeship);
+
+            var latestApprenticeship = await GetApprenticeship(updatedApprenticeship.ApprenticeshipId).ConfigureAwait(false);
+
+            return latestApprenticeship;
         }
 
         protected abstract void HandleUpdated(ApprenticeshipModel current, T updated);
 
-        protected virtual Task UpdateHistoryTables(T updated)
+        protected virtual void UpdateHistory(ApprenticeshipModel current, T updated)
         {
-            return Task.CompletedTask;
         }
 
         private async Task<ApprenticeshipModel> GetApprenticeship(long apprenticeshipId)
