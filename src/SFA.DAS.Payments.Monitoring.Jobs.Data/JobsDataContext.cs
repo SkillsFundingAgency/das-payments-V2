@@ -189,7 +189,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 
         public bool DoSubmissionSummariesExistForJobs(List<long?> dcJobIds)
         {
-            return dcJobIds.All(x => SubmissionSummaries.Any(y => y.JobId == x));
+            var jobIdsToCheck = Jobs
+                .Where(x => dcJobIds.Any(y => y == x.DcJobId)) //pull back all the jobs that are referenced (if we modify the "GetOutstandingOrTimedOutJobs" method to return Ukprn and IlrSubmissionTime too we can do away with this db call and simplify this method)
+                .GroupBy(x => x.Ukprn)
+                .Select(grp => grp.OrderByDescending(x => x.IlrSubmissionTime).First().DcJobId); //get the DCJobId that pertains to the latest submission for each ukprn grouping
+
+            return jobIdsToCheck.All(x => SubmissionSummaries.Any(y => y.JobId == x)); //check the summary exists for that job
         }
     }
 }
