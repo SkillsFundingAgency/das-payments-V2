@@ -26,6 +26,8 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
 
         protected JobsDataContext DataContext;
 
+        protected List<long?> jobIdToBeDeleted = new List<long?>();
+
         protected JobModel Job
         {
             get => Get<JobModel>();
@@ -58,15 +60,23 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         protected string PartitionEndpointName => $"sfa-das-payments-monitoring-jobs{JobDetails.JobId % 2}";
 
         [AfterScenario]
-        public void ClearTestData()
+        public async Task ClearTestData()
         {
-            ClearTestJobs();
+            await ClearTestJobs();
             ClearTestSubmissionMetrics();
         }
 
-        private void ClearTestJobs()
+        private async Task ClearTestJobs()
         {
             DataContext.Jobs.Remove(Job);
+
+            if (jobIdToBeDeleted.Any())
+            {
+                var submissionJob = await DataContext.Jobs.Where(x => jobIdToBeDeleted.Contains(x.DcJobId)).ToListAsync();
+                if (submissionJob.Any())
+                    DataContext.Jobs.RemoveRange(submissionJob);
+
+            }
 
             if (ScenarioContext.Current.ContainsKey(PeriodEndLargeSubmissionJobIdKey))
             {
@@ -75,7 +85,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                     DataContext.Jobs.Remove(submissionJob);
             }
 
-            DataContext.SaveChanges();
+            await DataContext.SaveChangesAsync();
         }
 
         private void ClearTestSubmissionMetrics()
@@ -422,19 +432,23 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         [Given(@"the earnings event service has received and successfully processed a provider earnings job")]
         public async Task GivenTheEarningsEventServiceHasReceivedAndSuccessfullyProcessedAProviderEarningsJob()
         {
-            PeriodEndLargeSubmissionJobId = TestSession.GenerateId();
+            var jobId = TestSession.GenerateId();
+            
+            jobIdToBeDeleted.Add(jobId);
             
             var jobModel = new JobModel
             {
                 Ukprn = TestSession.Ukprn,
                 CollectionPeriod = CollectionPeriod,
                 AcademicYear = 1920,
-                DcJobId = PeriodEndLargeSubmissionJobId,
+                DcJobId = jobId,
                 JobType = JobType.EarningsJob,
                 StartTime = DateTimeOffset.UtcNow.AddSeconds(-20),
                 EndTime = DateTimeOffset.UtcNow.AddSeconds(-10),
                 IlrSubmissionTime = DateTime.UtcNow.AddSeconds(-20),
-                Status = JobStatus.Completed
+                Status = JobStatus.Completed,
+                DcJobSucceeded = true,
+                DcJobEndTime = DateTimeOffset.UtcNow.AddSeconds(-10)
             };
            await DataContext.SaveNewJob(jobModel);
         }
