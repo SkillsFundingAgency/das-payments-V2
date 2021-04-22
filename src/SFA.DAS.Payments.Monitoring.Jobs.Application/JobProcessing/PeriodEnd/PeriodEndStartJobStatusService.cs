@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
             if (processingJobsPresent)
                 return (false, (JobStatus?)null, (DateTimeOffset?)null);
 
-            var jobsWithoutSubmissionSummariesPresent = context.DoSubmissionSummariesExistForJobs(outstandingJobs.Select(x => x.DcJobId).ToList());
+            var jobsWithoutSubmissionSummariesPresent = context.DoSubmissionSummariesExistForJobs(outstandingJobs);
 
             if (!jobsWithoutSubmissionSummariesPresent)
                 return (false, (JobStatus?)null, (DateTimeOffset?)null);
