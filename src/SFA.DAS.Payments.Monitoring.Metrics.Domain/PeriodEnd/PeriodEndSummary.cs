@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         private decimal dataLockedEarnings;
         private decimal dataLockedAlreadyPaidTotal;
         private DataLockTypeCounts dataLockTypeCounts;
-        private int inLearning;
+        private int? inLearning;
 
         public PeriodEndSummary(long jobId, byte collectionPeriod, short academicYear)
         {

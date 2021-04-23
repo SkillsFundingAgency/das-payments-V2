@@ -16,6 +16,6 @@
         public ContractTypeAmounts HeldBackCompletionPayments { get; set; } = new ContractTypeAmounts();
         public ContractTypeAmounts YearToDatePayments { get; set; } = new ContractTypeAmounts();
         public DataLockTypeCounts DataLockTypeCounts { get; set; } = new DataLockTypeCounts();
-        public int InLearning { get; set; }
+        public int? InLearning { get; set; }
     }
 }

@@ -179,8 +179,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
         {
             return await QueryDataContext.Payments
                 .Where(x => x.CollectionPeriod.AcademicYear == academicYear && x.CollectionPeriod.Period == collectionPeriod && x.Amount > 0)
+                .Select(x => new {x.Ukprn, x.LearnerUln})
+                .Distinct()
                 .GroupBy(x => x.Ukprn)
-                .Select(x => new ProviderInLearningTotal { Ukprn = x.Key, InLearningCount = x.Count() })
+                .Select(x => new ProviderInLearningTotal {Ukprn = x.Key, InLearningCount = x.Count()})
                 .ToListAsync(cancellationToken);
         }
 

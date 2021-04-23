@@ -57,6 +57,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration
                 amounts.Property(x => x.ContractType2).HasColumnName(@"PaymentsYearToDateContractType2");
                 amounts.Ignore(x => x.Total);
             });
+            builder.Property(x => x.InLearning).HasColumnName(@"InLearning");
 
             builder.HasMany(x => x.FundingSourceAmounts).WithOne(e => e.ProviderPeriodEndSummary).HasForeignKey(e => e.ProviderPeriodEndSummaryId);
             builder.HasMany(x => x.TransactionTypeAmounts).WithOne(d => d.ProviderPeriodEndSummary).HasForeignKey(d => d.ProviderPeriodEndSummaryId);
