@@ -3,6 +3,6 @@
     public class ProviderInLearningTotal
     {
         public long Ukprn { get; set; }
-        public int InLearningCount { get; set; }
+        public int? InLearningCount { get; set; }
     }
 }
