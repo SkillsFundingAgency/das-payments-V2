@@ -257,7 +257,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 {"ContractType2TransactionType15", (double) act2TransactionTypes.Sum(x => x.TransactionTypeAmounts.TransactionType15)},
                 {"ContractType2TransactionType16", (double) act2TransactionTypes.Sum(x => x.TransactionTypeAmounts.TransactionType16)},
 
-                { "InLearning", (double)providerMetrics.InLearning }
+                { "InLearning", (double)providerMetrics.InLearning.GetValueOrDefault() }
 
             };
 
@@ -328,7 +328,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 { "PaymentsYearToDateTotal", (double) metrics.YearToDatePayments.Total },
                 { "PaymentsYearToDateContractType1", (double) metrics.YearToDatePayments.ContractType1 },
                 { "PaymentsYearToDateContractType2", (double) metrics.YearToDatePayments.ContractType2 },
-                { "InLearning", (double)metrics.InLearning }
+                { "InLearning", (double)metrics.InLearning.GetValueOrDefault() }
 
             };
 

@@ -7,6 +7,7 @@ using SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -96,7 +97,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
                 .ReturnsAsync(new List<PeriodEndProviderDataLockTypeCounts>());
             periodEndMetricsRepositoryMock
                 .Setup(x => x.GetInLearningCount(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ProviderInLearningTotal>());
+                .ReturnsAsync(new List<ProviderInLearningTotal>{ new ProviderInLearningTotal{ InLearningCount = 0, Ukprn = dcEarnings.Select(x => x.Ukprn).First() } });
         }
 
         [Test]
@@ -222,10 +223,18 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
                     It.IsAny<byte>(), It.IsAny<short>()))
                 .Returns(new PeriodEndProviderSummary(1, 1, 1, 1));
 
+            var earnings = PeriodEndTestHelper.MultipleProviderDcEarnings(numberOfProviders);
+
+            periodEndMetricsRepositoryMock
+                .Setup(x => x.GetInLearningCount(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(earnings.Select(x => new ProviderInLearningTotal{ InLearningCount = 0, Ukprn = x.Ukprn }).ToList());
+
             dcMetricsDataContextMock
                 .Setup(x => x.GetEarnings(It.IsAny<short>(), It.IsAny<byte>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(PeriodEndTestHelper.MultipleProviderDcEarnings(numberOfProviders));
+                .ReturnsAsync(earnings);
+
+
 
             var service = moqer.Create<PeriodEndMetricsService>();
 
@@ -241,10 +250,16 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
         [TestCase(10)]
         public async Task WhenBuildingMetrics_ThenProviderSummariesAreAddedToPeriodEndSummary_AndCallsGetMetrics(int numberOfProviders)
         {
+            var earnings = PeriodEndTestHelper.MultipleProviderDcEarnings(numberOfProviders);
+
+            periodEndMetricsRepositoryMock
+                .Setup(x => x.GetInLearningCount(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(earnings.Select(x => new ProviderInLearningTotal { InLearningCount = 0, Ukprn = x.Ukprn }).ToList());
+
             dcMetricsDataContextMock
                 .Setup(x => x.GetEarnings(It.IsAny<short>(), It.IsAny<byte>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(PeriodEndTestHelper.MultipleProviderDcEarnings(numberOfProviders));
+                .ReturnsAsync(earnings);
 
             var service = moqer.Create<PeriodEndMetricsService>();
 
