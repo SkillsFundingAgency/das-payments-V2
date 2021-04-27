@@ -286,6 +286,10 @@
       <Project>{B706A441-ACE0-4D57-A60D-1B7DA8AB36CE}</Project>
       <Name>SFA.DAS.Payments.Monitoring.Metrics.Messages</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Metrics.Model\SFA.DAS.Payments.Monitoring.Metrics.Model.csproj">
+      <Project>{EE51D526-0244-4B63-99A4-07FAFEF14D31}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Metrics.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
