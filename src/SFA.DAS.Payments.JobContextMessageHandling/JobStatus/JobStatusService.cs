@@ -1,8 +1,8 @@
-﻿using System;
+﻿using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Monitoring.Jobs.Data;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Monitoring.Jobs.Data;
 
 namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
 {
@@ -13,9 +13,8 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
     public interface IJobStatusService
     {
         Task<bool> WaitForJobToFinish(long jobId, CancellationToken cancellationToken, TimeSpan? timeToWait = null);
+        Task<bool> WaitForDcJobToFinish(long dcJobId, CancellationToken cancellationToken);
         Task<bool> JobCurrentlyRunning(long jobId);
-        Task<bool> WaitForPeriodEndStartedToFinish(long dcJobId, CancellationToken cancellationToken);
-        Task<bool> WaitForPeriodEndSubmissionWindowValidationToFinish(long dcJobId, CancellationToken cancellationToken);
         Task<bool> WaitForPeriodEndRunJobToFinish(long jobId, CancellationToken cancellationToken);
     }
 
@@ -40,7 +39,7 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
         {
             //TODO: Temp brittle solution to wait for jobs to finish
             logger.LogDebug($"Waiting for job {jobId} to finish.");
-            
+
             var endTime = DateTime.Now.Add(JobRunTime(timeToWait));
             while (DateTime.Now < endTime)
             {
@@ -59,21 +58,12 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
             return false;
         }
 
-        public async Task<bool> WaitForPeriodEndRunJobToFinish(long jobId, CancellationToken cancellationToken)
-        {
-            return await WaitForJobToFinish(jobId, cancellationToken, config.TimeToWaitForPeriodEndRunJobToComplete);
-        }
-
-        public async Task<bool> JobCurrentlyRunning(long jobId)
-        {
-            var job = await dataContext.GetJobByDcJobId(jobId).ConfigureAwait(false);
-            return job != null && job.Status == Monitoring.Jobs.Model.JobStatus.InProgress;
-        }
-
-        public async Task<bool> WaitForPeriodEndStartedToFinish(long dcJobId, CancellationToken cancellationToken)
+        public async Task<bool> WaitForDcJobToFinish(long dcJobId, CancellationToken cancellationToken)
         {
             logger.LogDebug($"Waiting for job with Dc JobId: {dcJobId} to finish.");
+
             var endTime = DateTime.Now.Add(config.TimeToWaitForJobToComplete);
+
             while (DateTime.Now < endTime)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -88,28 +78,19 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
                 await Task.Delay(config.TimeToPauseBetweenChecks, cancellationToken);
             }
             logger.LogWarning($"Waiting {config.TimeToWaitForJobToComplete} but Job {dcJobId} still not finished.");
+
             return false;
         }
 
-        public async Task<bool> WaitForPeriodEndSubmissionWindowValidationToFinish(long jobId, CancellationToken cancellationToken)
+        public async Task<bool> WaitForPeriodEndRunJobToFinish(long jobId, CancellationToken cancellationToken)
         {
-            logger.LogDebug($"Waiting for job with JobId: {jobId} to finish.");
-            var endTime = DateTime.Now.Add(config.TimeToWaitForJobToComplete);
-            while (DateTime.Now < endTime)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                var job = await dataContext.GetJobByDcJobId(jobId);
-                if (job != null && (job.EndTime != null ||
-                                    job.Status != Monitoring.Jobs.Model.JobStatus.InProgress))
-                {
-                    logger.LogInfo($"Job {jobId} finished. Status: {job.Status:G}.  Finish time: {job.EndTime:G}");
-                    return job.Status == Monitoring.Jobs.Model.JobStatus.Completed;
-                }
-                logger.LogVerbose($"Job {jobId} is still in progress");
-                await Task.Delay(config.TimeToPauseBetweenChecks, cancellationToken);
-            }
-            logger.LogWarning($"Waiting {config.TimeToWaitForJobToComplete} but Job {jobId} still not finished.");
-            return false;
+            return await WaitForJobToFinish(jobId, cancellationToken, config.TimeToWaitForPeriodEndRunJobToComplete);
+        }
+
+        public async Task<bool> JobCurrentlyRunning(long jobId)
+        {
+            var job = await dataContext.GetJobByDcJobId(jobId).ConfigureAwait(false);
+            return job != null && job.Status == Monitoring.Jobs.Model.JobStatus.InProgress;
         }
 
         private TimeSpan JobRunTime(TimeSpan? timeToWait)

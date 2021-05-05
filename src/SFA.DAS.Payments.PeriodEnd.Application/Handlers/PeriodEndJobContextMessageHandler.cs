@@ -62,6 +62,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
 
                 if (taskType == PeriodEndTaskType.PeriodEndReports)
                 {
+                    await RecordPeriodEndJob(taskType, periodEndEvent).ConfigureAwait(false);
                     var endpointInstance = await endpointInstanceFactory.GetEndpointInstance();
                     await endpointInstance.Publish(periodEndEvent);
                     logger.LogInfo(
@@ -101,21 +102,17 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 // PV2-1345 will handle PeriodEndStart
                 // PeriodEndStoppedEvent will be handled by the PeriodEndStoppedEventHandler which in turn is handled by the ProcessProviderMonthEndCommandHandler but we don't want to wait for it
 
-                if (periodEndEvent is PeriodEndStoppedEvent  
-                    || periodEndEvent is PeriodEndRequestReportsEvent)
+                if (periodEndEvent is PeriodEndStoppedEvent)
                 {
                     logger.LogDebug("Returning as this is either a PeriodEndStop or PeriodEndRequestReports event");
                     return true;
                 }
 
-                if (periodEndEvent is PeriodEndStartedEvent periodEndStartedEvent)
+                if (periodEndEvent is PeriodEndStartedEvent ||
+                    periodEndEvent is PeriodEndRequestValidateSubmissionWindowEvent ||
+                    periodEndEvent is PeriodEndRequestReportsEvent)
                 {
-                    return await jobStatusService.WaitForPeriodEndStartedToFinish(jobIdToWaitFor, cancellationToken);
-                }
-
-                if (periodEndEvent is PeriodEndRequestValidateSubmissionWindowEvent)
-                {
-                    return await jobStatusService.WaitForPeriodEndSubmissionWindowValidationToFinish(jobIdToWaitFor, cancellationToken);
+                    return await jobStatusService.WaitForDcJobToFinish(jobIdToWaitFor, cancellationToken);
                 }
 
                 if (periodEndEvent is PeriodEndRunningEvent)
