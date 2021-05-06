@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.JobStatusServiceTests
         public async Task Returns_True_If_Job_Completed_Successfully()
         {
             job.Status = JobStatus.Completed;
-            var actual = await sut.WaitForPeriodEndStartedToFinish(456, CancellationToken.None);
+            var actual = await sut.WaitForDcJobToFinish(456, CancellationToken.None);
             actual.Should().BeTrue();
         }
 
@@ -58,7 +58,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.JobStatusServiceTests
         public async Task Returns_False_If_Job_Completed_With_Errors()
         {
             job.Status = JobStatus.CompletedWithErrors;
-            var actual = await sut.WaitForPeriodEndStartedToFinish(456, CancellationToken.None);
+            var actual = await sut.WaitForDcJobToFinish(456, CancellationToken.None);
             actual.Should().BeFalse();
         }
 
@@ -66,7 +66,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests.JobStatusServiceTests
         public async Task Returns_False_If_Job_TimesOut()
         {
             job.Status = JobStatus.InProgress;
-            var actual = await sut.WaitForPeriodEndStartedToFinish(1, CancellationToken.None);
+            var actual = await sut.WaitForDcJobToFinish(1, CancellationToken.None);
             actual.Should().BeFalse();
         }
     }
