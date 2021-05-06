@@ -1,5 +1,6 @@
 ﻿CREATE TABLE [Metrics].[PeriodEndSummary] (
     [Id]                                      BIGINT             IDENTITY (1, 1) NOT NULL,
+    [IsWithinTolerance]                       BIT                NULL,
     [AcademicYear]                            SMALLINT           NOT NULL,
     [CollectionPeriod]                        TINYINT            NOT NULL,
     [JobId]                                   BIGINT             NOT NULL,
