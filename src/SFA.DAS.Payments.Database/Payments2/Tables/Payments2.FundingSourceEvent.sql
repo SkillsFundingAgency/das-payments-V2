@@ -73,29 +73,3 @@ CREATE UNIQUE INDEX UX_FundingSourceEvent_LogicalDuplicates ON Payments2.Funding
 	,DuplicateNumber
 )
 GO
-
-CREATE INDEX [IX_FundingSourceEvent__Audit] ON [Payments2].[FundingSourceEvent]
-(
- [EarningEventId],
- RequiredPaymentEventId
-) 
-
-GO
-
-CREATE NONCLUSTERED INDEX [IX_FundingSourceEvent__Submission] ON [Payments2].[FundingSourceEvent] 
-(
-	[AcademicYear], 
-	[CollectionPeriod], 
-	[Ukprn], 
-	[IlrSubmissionDateTime]
-) 
-WITH (ONLINE = ON)
-GO
-
-CREATE NONCLUSTERED INDEX [IX_FundingSourceEvent__JobId] ON [Payments2].[FundingSourceEvent] 
-(
-	[JobId]
-) 
-WITH (ONLINE = ON)
-
-GO

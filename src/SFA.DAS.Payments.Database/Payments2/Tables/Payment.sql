@@ -92,25 +92,6 @@ CREATE NONCLUSTERED INDEX [IX_Payment__ApprenticeshipKey] ON [Payments2].[Paymen
 
 GO
 
-CREATE INDEX [IX_Payment__UkprnPeriodSearch] ON [Payments2].[Payment]
-(
- [Ukprn],
- CollectionPeriod,
- AcademicYear,
- DeliveryPeriod,
- JobId
-) 
-
-GO
-
-CREATE INDEX [IX_Payment__Audit] ON [Payments2].[Payment]
-(
- [EarningEventId],
- FundingSourceEventId
-) 
-
-GO
-
 CREATE NONCLUSTERED INDEX [IX_Payment__Metrics_Paid_DataLocks] ON [Payments2].[Payment]
 (
 	[Ukprn],

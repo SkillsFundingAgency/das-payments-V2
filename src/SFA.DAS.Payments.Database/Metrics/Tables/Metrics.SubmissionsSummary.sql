@@ -29,6 +29,5 @@
 	,PaymentsYearToDateContractType1 decimal(15,5) not null
 	,PaymentsYearToDateContractType2 decimal(15,5) not null
 	,CreationDate datetimeoffset not null Constraint DF_SubmissionsSummary__CreationDate Default (sysdatetimeoffset())
-	,Index IX_SubmissionsSummary (JobId, AcademicYear, CollectionPeriod, CreationDate)
 	,CONSTRAINT UQ_SubmissionsSummary Unique (AcademicYear, CollectionPeriod)
 )

@@ -20,7 +20,5 @@
     CompletionHoldBackExemptionCode INT NULL,
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_EarningEventPriceEpisode__CreationDate DEFAULT (SYSDATETIMEOFFSET())	,
 	AgreedPrice DECIMAL(15, 5) NULL,
-	CourseStartDate DATETIME2  NULL,
-	INDEX IX_EarningEventPriceEpisode__EarningEventId (EarningEventId),
-	INDEX IX_EarningEventPriceEpisode__Search (EarningEventId, PriceEpisodeIdentifier, StartDate, CourseStartDate, AgreedPrice) 
+	CourseStartDate DATETIME2  NULL
 )

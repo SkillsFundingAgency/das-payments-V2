@@ -27,9 +27,4 @@
     CONSTRAINT [PK_ProviderPeriodEndSummary] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [UQ_ProviderPeriodEndSummary] UNIQUE NONCLUSTERED ([Ukprn] ASC, [AcademicYear] ASC, [CollectionPeriod] ASC)
 );
-
-
 GO
-CREATE NONCLUSTERED INDEX [IX_ProviderPeriodEndSummary]
-    ON [Metrics].[ProviderPeriodEndSummary]([Ukprn] ASC, [JobId] ASC, [AcademicYear] ASC, [CollectionPeriod] ASC, [CreationDate] ASC);
-

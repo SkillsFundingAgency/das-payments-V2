@@ -33,11 +33,6 @@
 )
 GO
 
-CREATE NONCLUSTERED INDEX [IX_FundingSourceLevyTransaction__PeriodEnd] ON [Payments2].[FundingSourceLevyTransaction] 
-([FundingAccountId] ASC,[AcademicYear] ASC,[CollectionPeriod] ASC)
-WITH (ONLINE = ON)
-GO
-
 CREATE NONCLUSTERED INDEX [IX_FundingSourceLevyTransaction__SubmissionCleanup]
 ON [Payments2].[FundingSourceLevyTransaction] ([Ukprn],[CollectionPeriod],[AcademicYear],[JobId],[IlrSubmissionDateTime])
 GO

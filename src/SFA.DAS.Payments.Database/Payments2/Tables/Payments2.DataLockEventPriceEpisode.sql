@@ -22,7 +22,3 @@
 )
 
 GO
-
-CREATE NONCLUSTERED INDEX [IX_DataLockEventPriceEpisode__DataLockEventId] ON [Payments2].[DataLockEventPriceEpisode] 
-([DataLockEventId]) 
-WITH (ONLINE = ON)
