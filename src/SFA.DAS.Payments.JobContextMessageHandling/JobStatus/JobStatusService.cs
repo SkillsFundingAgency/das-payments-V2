@@ -17,6 +17,7 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
         Task<bool> WaitForPeriodEndStartedToFinish(long dcJobId, CancellationToken cancellationToken);
         Task<bool> WaitForPeriodEndSubmissionWindowValidationToFinish(long dcJobId, CancellationToken cancellationToken);
         Task<bool> WaitForPeriodEndRunJobToFinish(long jobId, CancellationToken cancellationToken);
+        Task<bool> WaitForPeriodEndRequestReportsJobToFinish(long jobId, CancellationToken cancellationToken);
     }
 
     /// <summary>
@@ -64,6 +65,11 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
             return await WaitForJobToFinish(jobId, cancellationToken, config.TimeToWaitForPeriodEndRunJobToComplete);
         }
 
+        public async Task<bool> WaitForPeriodEndRequestReportsJobToFinish(long jobId, CancellationToken cancellationToken)
+        {
+            //return await WaitForJobToFinish(jobId, cancellationToken, config.TimeToWaitForJobToComplete);
+        }
+
         public async Task<bool> JobCurrentlyRunning(long jobId)
         {
             var job = await dataContext.GetJobByDcJobId(jobId).ConfigureAwait(false);
@@ -72,7 +78,7 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
 
         public async Task<bool> WaitForPeriodEndStartedToFinish(long dcJobId, CancellationToken cancellationToken)
         {
-            logger.LogDebug($"Waiting for job with Dc JobId: {dcJobId} to finish.");
+            logger.LogDebug($"Waiting for job with DC JobId: {dcJobId} to finish.");
             var endTime = DateTime.Now.Add(config.TimeToWaitForJobToComplete);
             while (DateTime.Now < endTime)
             {
@@ -87,7 +93,7 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
                 logger.LogVerbose($"DC Job {dcJobId} is still in progress");
                 await Task.Delay(config.TimeToPauseBetweenChecks, cancellationToken);
             }
-            logger.LogWarning($"Waiting {config.TimeToWaitForJobToComplete} but Job {dcJobId} still not finished.");
+            logger.LogWarning($"Waiting {config.TimeToWaitForJobToComplete} but Job with DC JobId {dcJobId} still not finished.");
             return false;
         }
 
