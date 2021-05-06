@@ -60,6 +60,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
 
                 var jobIdToWaitFor = message.JobId;
 
+                //todo combine these two if statements, same logic
                 if (taskType == PeriodEndTaskType.PeriodEndReports)
                 {
                     await RecordPeriodEndJob(taskType, periodEndEvent).ConfigureAwait(false);
@@ -108,11 +109,20 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                     return true;
                 }
 
-                if (periodEndEvent is PeriodEndStartedEvent ||
-                    periodEndEvent is PeriodEndRequestValidateSubmissionWindowEvent ||
-                    periodEndEvent is PeriodEndRequestReportsEvent)
+                //todo combine these three events to call new method on jobStatusService
+                if (periodEndEvent is PeriodEndStartedEvent)
                 {
-                    return await jobStatusService.WaitForDcJobToFinish(jobIdToWaitFor, cancellationToken);
+                    return await jobStatusService.WaitForPeriodEndStartedToFinish(jobIdToWaitFor, cancellationToken);
+                }
+
+                if (periodEndEvent is PeriodEndRequestValidateSubmissionWindowEvent)
+                {
+                    return await jobStatusService.WaitForPeriodEndSubmissionWindowValidationToFinish(jobIdToWaitFor, cancellationToken);
+                }
+
+                if (periodEndEvent is PeriodEndRequestReportsEvent)
+                {
+                    return await jobStatusService.WaitForPeriodEndRequestReportsJobToFinish(jobIdToWaitFor, cancellationToken);
                 }
 
                 if (periodEndEvent is PeriodEndRunningEvent)
@@ -158,6 +168,10 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                     break;
                 case PeriodEndTaskType.PeriodEndSubmissionWindowValidation:
                     await jobClient.RecordPeriodEndSubmissionWindowValidation(periodEndEvent.JobId, periodEndEvent.CollectionPeriod.AcademicYear,
+                        periodEndEvent.CollectionPeriod.Period, new List<GeneratedMessage> { generatedMessage }).ConfigureAwait(false);
+                    break;
+                case PeriodEndTaskType.PeriodEndReports:
+                    await jobClient.RecordPeriodEndRequestReportsJob(periodEndEvent.JobId, periodEndEvent.CollectionPeriod.AcademicYear,
                         periodEndEvent.CollectionPeriod.Period, new List<GeneratedMessage> { generatedMessage }).ConfigureAwait(false);
                     break;
                 default:
