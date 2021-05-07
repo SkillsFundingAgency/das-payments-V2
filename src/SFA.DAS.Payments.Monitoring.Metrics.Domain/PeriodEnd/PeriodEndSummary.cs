@@ -9,6 +9,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
     {
        PeriodEndSummaryModel GetMetrics();
        void AddProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries);
+       void CalculateIsWithinTolerance(decimal? lowerTolerance, decimal? upperTolerance);
     }
     public class PeriodEndSummary :IPeriodEndSummary
     {
@@ -24,6 +25,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         private decimal dataLockedAlreadyPaidTotal;
         private DataLockTypeCounts dataLockTypeCounts;
         private int? inLearning;
+        private PeriodEndSummaryModel periodEndSummary;
 
         public PeriodEndSummary(long jobId, byte collectionPeriod, short academicYear)
         {
@@ -37,7 +39,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         {
             CalculateTotals();
 
-            var result =  new PeriodEndSummaryModel
+            periodEndSummary =  new PeriodEndSummaryModel
             {
                 CollectionPeriod = collectionPeriod,
                 AcademicYear = academicYear,
@@ -53,9 +55,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 DataLockTypeCounts = dataLockTypeCounts,
                 InLearning = inLearning
             };
-            result.PaymentMetrics = Helpers.CreatePaymentMetrics(result);
-            result.Percentage = result.PaymentMetrics.Percentage;
-            return result;
+            periodEndSummary.PaymentMetrics = Helpers.CreatePaymentMetrics(periodEndSummary);
+            periodEndSummary.Percentage = periodEndSummary.PaymentMetrics.Percentage;
+            return periodEndSummary;
         }
 
         private void CalculateTotals()
@@ -120,6 +122,16 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         public void AddProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries)
         {
             allSummaries = providerSummaries;
+        }
+
+        public void CalculateIsWithinTolerance(decimal? lowerTolerance, decimal? upperTolerance)
+        {
+            lowerTolerance = lowerTolerance ?? 99.92m;
+            upperTolerance = upperTolerance ?? 100.08m;
+
+            if (periodEndSummary == null) return;
+
+            periodEndSummary.IsWithinTolerance = periodEndSummary.Percentage >= lowerTolerance && periodEndSummary.Percentage <= upperTolerance;
         }
     }
 }
