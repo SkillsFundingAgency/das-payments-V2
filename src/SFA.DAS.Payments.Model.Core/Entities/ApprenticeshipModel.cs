@@ -31,6 +31,7 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public ApprenticeshipModel()
         {
             ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>();
+            ApprenticeshipPauses = new List<ApprenticeshipPauseModel>();
         }
     }
 }
