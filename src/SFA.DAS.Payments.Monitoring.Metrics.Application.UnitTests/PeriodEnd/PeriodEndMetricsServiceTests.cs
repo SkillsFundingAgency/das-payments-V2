@@ -1,6 +1,8 @@
 ﻿using Autofac.Extras.Moq;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
 using SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd;
@@ -10,8 +12,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentAssertions;
-using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
 {
@@ -27,6 +27,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
         private Mock<ITelemetry> telemetryMock;
         private Mock<IPeriodEndSummaryFactory> periodEndSummaryFactory;
 
+        private CollectionPeriodToleranceModel collectionPeriodTolerance;
 
         private readonly List<ProviderTransactionTypeAmounts> dcEarnings = PeriodEndTestHelper.SingleProviderDcEarnings;
 
@@ -38,6 +39,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             periodEndSummary = moqer.Mock<IPeriodEndSummary>();
             periodEndProviderSummary = moqer.Mock<IPeriodEndProviderSummary>();
             periodEndSummaryFactory = moqer.Mock<IPeriodEndSummaryFactory>();
+            collectionPeriodTolerance = new CollectionPeriodToleranceModel();
             telemetryMock = moqer.Mock<ITelemetry>();
 
             periodEndSummary
@@ -50,7 +52,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             periodEndSummaryFactory
                 .Setup(x => x.CreatePeriodEndProviderSummary(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<byte>(), It.IsAny<short>()))
                 .Returns(new PeriodEndProviderSummary(1, 1, 1, 1));
-            
 
             periodEndSummary.Setup(x => x.GetMetrics())
                 .Returns(new PeriodEndSummaryModel());
@@ -62,7 +63,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             periodEndSummaryFactory
                 .Setup(x => x.CreatePeriodEndSummary(It.IsAny<long>(), It.IsAny<byte>(), It.IsAny<short>()))
                 .Returns(periodEndSummary.Object);
-            
+
             dcMetricsDataContextMock = moqer.Mock<IDcMetricsDataContext>();
             dcMetricsDataContextMock
                 .Setup(x => x.GetEarnings(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
@@ -97,7 +98,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
                 .ReturnsAsync(new List<PeriodEndProviderDataLockTypeCounts>());
             periodEndMetricsRepositoryMock
                 .Setup(x => x.GetInLearningCount(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ProviderInLearningTotal>{ new ProviderInLearningTotal{ InLearningCount = 0, Ukprn = dcEarnings.Select(x => x.Ukprn).First() } });
+                .ReturnsAsync(new List<ProviderInLearningTotal> { new ProviderInLearningTotal { InLearningCount = 0, Ukprn = dcEarnings.Select(x => x.Ukprn).First() } });
+            periodEndMetricsRepositoryMock
+                .Setup(x => x.GetCollectionPeriodTolerance(It.IsAny<byte>(), It.IsAny<short>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(collectionPeriodTolerance);
         }
 
         [Test]
@@ -270,6 +274,26 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
         }
 
         [Test]
+        public async Task WhenBuildingMetrics_ThenGetsCollectionPeriodTolerance()
+        {
+            var service = moqer.Create<PeriodEndMetricsService>();
+
+            await service.BuildMetrics(2, 1920, 1, CancellationToken.None).ConfigureAwait(false);
+
+            periodEndMetricsRepositoryMock.Verify(x => x.GetCollectionPeriodTolerance(1, 1920, It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task WhenBuildingMetrics_ThenCallsCalculateIsWithinTolerance()
+        {
+            var service = moqer.Create<PeriodEndMetricsService>();
+
+            await service.BuildMetrics(2, 1920, 1, CancellationToken.None).ConfigureAwait(false);
+
+            periodEndSummary.Verify(x => x.CalculateIsWithinTolerance(collectionPeriodTolerance.PeriodEndToleranceLower, collectionPeriodTolerance.PeriodEndToleranceUpper));
+        }
+
+        [Test]
         public async Task WhenBuildingMetrics_ThenProviderSummariesSaved()
         {
             var service = moqer.Create<PeriodEndMetricsService>();
@@ -327,7 +351,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             stats.Keys.Should().Contain("PaymentsTotal");
             stats.Keys.Should().Contain("HeldBackCompletionPaymentsTotal");
             stats.Keys.Should().Contain("PaymentsYearToDateTotal");
-            
+
             stats.Keys.Should().Contain("DataLockedCountDLock1");
             stats.Keys.Should().Contain("DataLockedCountDLock2");
             stats.Keys.Should().Contain("DataLockedCountDLock3");
@@ -385,7 +409,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             stats.Keys.Should().Contain("PaymentsYearToDateContractType1");
             stats.Keys.Should().Contain("PaymentsYearToDateContractType2");
 
-
             stats.Keys.Should().Contain("PercentageContractType1");
             stats.Keys.Should().Contain("PercentageContractType2");
             stats.Keys.Should().Contain("Total");
@@ -412,7 +435,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             stats.Keys.Should().Contain("ContractType2FundingSource3");
             stats.Keys.Should().Contain("ContractType2FundingSource4");
             stats.Keys.Should().Contain("ContractType2FundingSource5");
-
 
             stats.Keys.Should().Contain("ContractType1TransactionTypeTotal");
             stats.Keys.Should().Contain("ContractType1TransactionType01");
@@ -467,9 +489,3 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
         }
     }
 }
-
-
-
-
-
-
