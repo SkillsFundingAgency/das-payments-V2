@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extras.Moq;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
@@ -22,7 +24,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         {
             mocker = AutoMock.GetLoose();
         }
-        
+
         [Test]
         public async Task Updates_Resumed_Apprenticeship()
         {
@@ -76,6 +78,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 PauseDate = DateTime.Today.AddMonths(-2)
             };
 
+            apprenticeshipModel.ApprenticeshipPauses.Add(pauseModel);
+
             mocker.Mock<IApprenticeshipRepository>()
                 .Setup(x => x.Get(It.Is<long>(id => id == apprenticeshipModel.Id)))
                 .ReturnsAsync(apprenticeshipModel);
@@ -84,12 +88,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 .Setup(x => x.GetCurrentApprenticeshipPausedModel(updatedApprenticeship.ApprenticeshipId))
                 .ReturnsAsync(pauseModel);
 
-            mocker.Mock<IApprenticeshipRepository>()
-                .Setup(x => x.UpdateCurrentlyPausedApprenticeship(It.IsAny<ApprenticeshipPauseModel>()))
-                .Returns(Task.CompletedTask);
-
             var service = mocker.Create<ApprenticeshipResumedService>();
-            await service.UpdateApprenticeship(updatedApprenticeship);
+            var result = await service.UpdateApprenticeship(updatedApprenticeship);
 
             mocker.Mock<IApprenticeshipRepository>()
                 .Verify(x => x.UpdateApprenticeship(It.Is<ApprenticeshipModel>(model =>
@@ -120,18 +120,13 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             mocker.Mock<IApprenticeshipRepository>()
                 .Verify(x => x.Get(It.Is<long>(id => id == apprenticeshipModel.Id)), Times.Exactly(2));
 
-            mocker.Mock<IApprenticeshipRepository>()
-                .Verify(x => x.GetCurrentApprenticeshipPausedModel(updatedApprenticeship.ApprenticeshipId), Times.Once);
+            result.Status.Should().Be(ApprenticeshipStatus.Active);
+            pauseModel = result.ApprenticeshipPauses
+                .OrderByDescending(x => x.PauseDate)
+                .FirstOrDefault();
 
-            mocker.Mock<IApprenticeshipRepository>()
-                .Verify(x => x.UpdateCurrentlyPausedApprenticeship(
-                        It.Is<ApprenticeshipPauseModel>(o => 
-                            o.ApprenticeshipId == updatedApprenticeship.ApprenticeshipId &&
-                            o.PauseDate == pauseModel.PauseDate && 
-                            o.ResumeDate == updatedApprenticeship.ResumedDate)
-                        ), Times.Once);
-
+            pauseModel.Should().NotBeNull();
+            pauseModel.ResumeDate.Should().HaveValue();
         }
-
     }
 }
