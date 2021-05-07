@@ -6,17 +6,17 @@ using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 {
-    public interface IValidatePeriodEndReportClient
+    public interface IPeriodEndReportValidationClient
     {
         Task<bool> RequestReports(long jobId, short academicYear, byte collectionPeriod);
     }
 
-    public class ValidatePeriodEndReportClient : IValidatePeriodEndReportClient
+    public class PeriodEndReportValidationClient : IPeriodEndReportValidationClient
     {
         private readonly string authCode;
         private readonly Uri functionAddressUri;
 
-        public ValidatePeriodEndReportClient(string authCode, string functionAddress)
+        public PeriodEndReportValidationClient(string authCode, string functionAddress)
         {
             this.authCode = authCode;
             functionAddressUri = new Uri(functionAddress);
