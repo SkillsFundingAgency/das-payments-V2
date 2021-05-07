@@ -2,21 +2,21 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
+using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 {
-    public interface IRequestReportsClient
+    public interface IValidatePeriodEndReportClient
     {
         Task<bool> RequestReports(long jobId, short academicYear, byte collectionPeriod);
     }
 
-    public class RequestReportsClient : IRequestReportsClient
+    public class ValidatePeriodEndReportClient : IValidatePeriodEndReportClient
     {
         private readonly string authCode;
         private readonly Uri functionAddressUri;
 
-        public RequestReportsClient(string authCode, string functionAddress)
+        public ValidatePeriodEndReportClient(string authCode, string functionAddress)
         {
             this.authCode = authCode;
             functionAddressUri = new Uri(functionAddress);
@@ -28,10 +28,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
             if (!result.IsSuccessStatusCode) return false;
 
-            //var content = await result.Content.ReadAsStringAsync();
-            //var submissionSummaryModel = JsonConvert.DeserializeObject<SubmissionsSummaryModel>(content);
-            //return submissionSummaryModel.IsWithinTolerance;
-            return true; //todo think this needs to be based on within tolerance
+            var content = await result.Content.ReadAsStringAsync();
+            var periodEndSummaryModel = JsonConvert.DeserializeObject<PeriodEndSummaryModel>(content);
+            return periodEndSummaryModel.IsWithinTolerance.GetValueOrDefault();
         }
 
         private string BuildUriFromParameters(long jobId, short academicYear, byte collectionPeriod)
