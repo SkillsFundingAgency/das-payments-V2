@@ -112,6 +112,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 
                 var overallPeriodEndSummary = periodEndSummary.GetMetrics();
 
+                var collectionPeriodTolerance = await periodEndMetricsRepository.GetCollectionPeriodTolerance(collectionPeriod, academicYear, cancellationToken);
+
+                periodEndSummary.CalculateIsWithinTolerance(collectionPeriodTolerance?.SubmissionToleranceLower, collectionPeriodTolerance?.SubmissionToleranceUpper);
+
                 stopwatch.Stop();
 
                 var dataDuration = stopwatch.ElapsedMilliseconds;
