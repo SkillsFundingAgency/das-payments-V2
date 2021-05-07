@@ -114,7 +114,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 
                 var collectionPeriodTolerance = await periodEndMetricsRepository.GetCollectionPeriodTolerance(collectionPeriod, academicYear, cancellationToken);
 
-                periodEndSummary.CalculateIsWithinTolerance(collectionPeriodTolerance?.SubmissionToleranceLower, collectionPeriodTolerance?.SubmissionToleranceUpper);
+                periodEndSummary.CalculateIsWithinTolerance(collectionPeriodTolerance?.PeriodEndToleranceLower, collectionPeriodTolerance?.PeriodEndToleranceUpper);
 
                 stopwatch.Stop();
 
