@@ -36,8 +36,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
         private string BuildUriFromParameters(long jobId, short academicYear, byte collectionPeriod)
         {
             return string.IsNullOrWhiteSpace(authCode)
-                ? $"{new Uri(functionAddressUri, "/api/RequestReports")}?jobId={jobId}&collectionPeriod={collectionPeriod}&AcademicYear={academicYear}"
-                : $"{new Uri(functionAddressUri, "/api/RequestReports")}?code={authCode}&jobId={jobId}&collectionPeriod={collectionPeriod}&AcademicYear={academicYear}";
+                ? $"{new Uri(functionAddressUri, "/api/ValidatePeriodEndReport")}?jobId={jobId}&collectionPeriod={collectionPeriod}&AcademicYear={academicYear}"
+                : $"{new Uri(functionAddressUri, "/api/ValidatePeriodEndReport")}?code={authCode}&jobId={jobId}&collectionPeriod={collectionPeriod}&AcademicYear={academicYear}";
         }
     }
 }
