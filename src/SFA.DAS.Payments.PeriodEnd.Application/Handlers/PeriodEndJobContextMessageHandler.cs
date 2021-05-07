@@ -1,23 +1,23 @@
+using ESFA.DC.JobContextManager.Interface;
+using ESFA.DC.JobContextManager.Model;
+using NServiceBus;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.Core;
+using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
+using SFA.DAS.Payments.JobContextMessageHandling.JobStatus;
+using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Monitoring.Jobs.Client;
+using SFA.DAS.Payments.Monitoring.Jobs.Data;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
+using SFA.DAS.Payments.PeriodEnd.Messages.Events;
+using SFA.DAS.Payments.PeriodEnd.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.JobContextManager.Interface;
-using ESFA.DC.JobContextManager.Model;
-using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Application.Messaging;
-using SFA.DAS.Payments.Core;
-using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.PeriodEnd.Messages.Events;
-using SFA.DAS.Payments.PeriodEnd.Model;
-using NServiceBus;
-using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
-using SFA.DAS.Payments.JobContextMessageHandling.JobStatus;
-using SFA.DAS.Payments.Monitoring.Jobs.Client;
-using SFA.DAS.Payments.Monitoring.Jobs.Data;
-using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
-using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
 {
@@ -136,30 +136,25 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 MessageName = periodEndEvent.GetType().FullName,
                 StartTime = periodEndEvent.EventTime
             };
-            switch (taskType)
+
+            if (taskType == PeriodEndTaskType.PeriodEndStart ||
+                taskType == PeriodEndTaskType.PeriodEndRun ||
+                taskType == PeriodEndTaskType.PeriodEndStop ||
+                taskType == PeriodEndTaskType.PeriodEndSubmissionWindowValidation ||
+                taskType == PeriodEndTaskType.PeriodEndReports)
             {
-                case PeriodEndTaskType.PeriodEndStart:
-                    await jobClient.RecordPeriodEndStart(periodEndEvent.JobId, periodEndEvent.CollectionPeriod.AcademicYear,
-                        periodEndEvent.CollectionPeriod.Period, new List<GeneratedMessage> { generatedMessage }).ConfigureAwait(false);
-                    break;
-                case PeriodEndTaskType.PeriodEndRun:
-                    await jobClient.RecordPeriodEndRun(periodEndEvent.JobId, periodEndEvent.CollectionPeriod.AcademicYear,
-                        periodEndEvent.CollectionPeriod.Period, new List<GeneratedMessage> { generatedMessage }).ConfigureAwait(false);
-                    break;
-                case PeriodEndTaskType.PeriodEndStop:
-                    await jobClient.RecordPeriodEndStop(periodEndEvent.JobId, periodEndEvent.CollectionPeriod.AcademicYear,
-                        periodEndEvent.CollectionPeriod.Period, new List<GeneratedMessage> { generatedMessage }).ConfigureAwait(false);
-                    break;
-                case PeriodEndTaskType.PeriodEndSubmissionWindowValidation:
-                    await jobClient.RecordPeriodEndSubmissionWindowValidation(periodEndEvent.JobId, periodEndEvent.CollectionPeriod.AcademicYear,
-                        periodEndEvent.CollectionPeriod.Period, new List<GeneratedMessage> { generatedMessage }).ConfigureAwait(false);
-                    break;
-                case PeriodEndTaskType.PeriodEndReports:
-                    await jobClient.RecordPeriodEndRequestReportsJob(periodEndEvent.JobId, periodEndEvent.CollectionPeriod.AcademicYear,
-                        periodEndEvent.CollectionPeriod.Period, new List<GeneratedMessage> { generatedMessage }).ConfigureAwait(false);
-                    break;
-                default:
-                    throw new InvalidOperationException($"Unhandled period end task type: {taskType:G}");
+                var job = CreatePeriodEndJob(taskType);
+
+                job.JobId = periodEndEvent.JobId;
+                job.CollectionYear = periodEndEvent.CollectionPeriod.AcademicYear;
+                job.CollectionPeriod = periodEndEvent.CollectionPeriod.Period;
+                job.GeneratedMessages = new List<GeneratedMessage> { generatedMessage };
+
+                await jobClient.StartPeriodEndJob(job).ConfigureAwait(false);
+            }
+            else
+            {
+                throw new InvalidOperationException($"Unhandled period end task type: {taskType:G}");
             }
         }
 
@@ -183,16 +178,45 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
             {
                 case PeriodEndTaskType.PeriodEndStart:
                     return new PeriodEndStartedEvent();
+
                 case PeriodEndTaskType.PeriodEndRun:
                     return new PeriodEndRunningEvent();
+
                 case PeriodEndTaskType.PeriodEndStop:
                     return new PeriodEndStoppedEvent();
+
                 case PeriodEndTaskType.PeriodEndSubmissionWindowValidation:
-                   return new PeriodEndRequestValidateSubmissionWindowEvent(); 
+                    return new PeriodEndRequestValidateSubmissionWindowEvent();
+
                 case PeriodEndTaskType.PeriodEndReports:
-                    return  new PeriodEndRequestReportsEvent();
+                    return new PeriodEndRequestReportsEvent();
+
                 default:
                     throw new InvalidOperationException($"Cannot handle period end task type: '{taskType:G}'");
+            }
+        }
+
+        private RecordPeriodEndJob CreatePeriodEndJob(PeriodEndTaskType periodEndTaskType)
+        {
+            switch (periodEndTaskType)
+            {
+                case PeriodEndTaskType.PeriodEndStart:
+                    return new RecordPeriodEndStartJob();
+
+                case PeriodEndTaskType.PeriodEndRun:
+                    return new RecordPeriodEndRunJob();
+
+                case PeriodEndTaskType.PeriodEndStop:
+                    return new RecordPeriodEndStopJob();
+
+                case PeriodEndTaskType.PeriodEndSubmissionWindowValidation:
+                    return new RecordPeriodEndSubmissionWindowValidationJob();
+
+                case PeriodEndTaskType.PeriodEndReports:
+                    return new RecordPeriodEndRequestReportsJob();
+
+                default:
+                    throw new InvalidOperationException($"Unhandled period end task type: {periodEndTaskType:G}");
             }
         }
 
@@ -202,10 +226,13 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
             {
                 case PeriodEndTaskType.PeriodEndStart:
                     return JobType.PeriodEndStartJob;
+
                 case PeriodEndTaskType.PeriodEndRun:
                     return JobType.PeriodEndRunJob;
+
                 case PeriodEndTaskType.PeriodEndStop:
                     return JobType.PeriodEndStopJob;
+
                 default:
                     throw new InvalidOperationException($"Cannot handle period end task type: '{periodEndTaskType:G}'");
             }
