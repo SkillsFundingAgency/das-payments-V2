@@ -93,7 +93,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
         {
             logger.LogDebug($"Sending request to request period end reports. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
             await StartJob<RecordPeriodEndRequestReportsJob>(jobId, collectionYear, collectionPeriod, generatedMessages)
-                .ConfigureAwait(false); //todo the handler for this job should call the new function using the client using the same pattern as RecordPeriodEndSubmissionWindowValidationJob
+                .ConfigureAwait(false);
             logger.LogInfo($"Sent request to request period end reports. Job Id: {jobId}, collection period: {collectionYear}-{collectionPeriod}");
         }
     }
