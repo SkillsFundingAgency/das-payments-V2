@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extras.Moq;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
@@ -79,7 +81,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 .Returns(Task.CompletedTask);
 
             var service = mocker.Create<ApprenticeshipPauseService>();
-            await service.UpdateApprenticeship(updatedApprenticeship);
+            var result = await service.UpdateApprenticeship(updatedApprenticeship);
 
             mocker.Mock<IApprenticeshipRepository>()
                 .Verify(x => x.UpdateApprenticeship(It.Is<ApprenticeshipModel>(model =>
@@ -110,11 +112,14 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             mocker.Mock<IApprenticeshipRepository>()
                 .Verify(x => x.Get(It.Is<long>(id => id == apprenticeshipModel.Id)), Times.Exactly(2));
 
-            mocker.Mock<IApprenticeshipRepository>()
-                .Verify(x => 
-                    x.AddApprenticeshipPause(It.Is<ApprenticeshipPauseModel>(a => a.ApprenticeshipId == apprenticeshipModel.Id)),
-                    Times.Once);
-            
+            var pauseModel = result.ApprenticeshipPauses
+                .OrderByDescending(x => x.PauseDate)
+                .FirstOrDefault();
+
+            pauseModel.Should().NotBeNull();
+            pauseModel.ResumeDate.Should().NotHaveValue();
+            pauseModel.PauseDate.Should().NotBe(DateTime.MinValue);
+            result.Status.Should().Be(ApprenticeshipStatus.Paused);
         }
 
     }
