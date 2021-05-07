@@ -9,6 +9,7 @@ using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Monitoring.Jobs.Application;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
 {
@@ -16,17 +17,17 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
     {
         private readonly IPaymentLogger logger;
         private readonly IPeriodEndJobService periodEndJobService;
-        private readonly IRequestReportsClient requestReportsClient;
+        private readonly IPeriodEndReportValidationClient periodEndReportValidationClient;
         private readonly IJobStorageService jobStorageService;
 
         //private readonly ITelemetry telemetry;
 
-        public RecordPeriodEndRequestReportsJobHandler(IPaymentLogger logger, IPeriodEndJobService periodEndJobService, IJobStorageService jobStorageService, IRequestReportsClient requestReportsClient)
+        public RecordPeriodEndRequestReportsJobHandler(IPaymentLogger logger, IPeriodEndJobService periodEndJobService, IJobStorageService jobStorageService, IPeriodEndReportValidationClient periodEndReportValidationClient)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.periodEndJobService = periodEndJobService ?? throw new ArgumentNullException(nameof(periodEndJobService));
             this.jobStorageService = jobStorageService ?? throw new ArgumentNullException(nameof(jobStorageService));
-            this.requestReportsClient = requestReportsClient ?? throw new ArgumentNullException(nameof(requestReportsClient));
+            this.periodEndReportValidationClient = periodEndReportValidationClient ?? throw new ArgumentNullException(nameof(periodEndReportValidationClient));
         }
 
         public async Task Handle(IList<RecordPeriodEndRequestReportsJob> messages, CancellationToken cancellationToken)
@@ -36,19 +37,17 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
 
-                logger.LogInfo($"Handling period end submission window validation job: {message.ToJson()}");
+                logger.LogInfo($"Handling period end request reports job: {message.ToJson()}");
 
                 await periodEndJobService.RecordPeriodEndJob(message, cancellationToken);
 
-                var metricsValid = await requestReportsClient.RequestReports(message.JobId, message.CollectionYear, message.CollectionPeriod);
-                //todo call client
+                var metricsValid = await periodEndReportValidationClient.RequestReports(message.JobId, message.CollectionYear, message.CollectionPeriod);
 
-                //todo set job status based on result
-                //var jobStatus = metricsValid ? JobStatus.Completed : JobStatus.CompletedWithErrors;
+                var jobStatus = metricsValid ? JobStatus.Completed : JobStatus.CompletedWithErrors;
 
-                //await jobStorageService.SaveJobStatus(message.JobId, jobStatus, DateTimeOffset.Now, cancellationToken);
+                await jobStorageService.SaveJobStatus(message.JobId, jobStatus, DateTimeOffset.Now, cancellationToken);
 
-                logger.LogInfo($"Handled period end submission window validation job: {message.JobId}");
+                logger.LogInfo($"Handled period end request reports job: {message.JobId}");
 
                 stopwatch.Stop();
 
