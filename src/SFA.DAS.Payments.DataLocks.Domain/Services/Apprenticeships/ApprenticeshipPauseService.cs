@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
             current.Status = ApprenticeshipStatus.Paused;
         }
 
-        protected override async Task UpdateHistoryTables( UpdatedApprenticeshipPausedModel updated)
+        protected override void UpdateHistory(ApprenticeshipModel current, UpdatedApprenticeshipPausedModel updated)
         {
             var newPauseModel = new ApprenticeshipPauseModel
             {
@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
                 PauseDate = updated.PauseDate
             };
 
-           await  repository.AddApprenticeshipPause(newPauseModel);
+            current.ApprenticeshipPauses.Add(newPauseModel);
         }
     }
 }
