@@ -61,15 +61,8 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 var jobIdToWaitFor = message.JobId;
 
                 //todo combine these two if statements, same logic
-                if (taskType == PeriodEndTaskType.PeriodEndReports)
-                {
-                    await RecordPeriodEndJob(taskType, periodEndEvent).ConfigureAwait(false);
-                    var endpointInstance = await endpointInstanceFactory.GetEndpointInstance();
-                    await endpointInstance.Publish(periodEndEvent);
-                    logger.LogInfo(
-                        $"Finished publishing the period end event. Name: {periodEndEvent.GetType().Name}, JobId: {periodEndEvent.JobId}, Collection Period: {periodEndEvent.CollectionPeriod.Period}-{periodEndEvent.CollectionPeriod.AcademicYear}.");
-                }
-                else if(taskType == PeriodEndTaskType.PeriodEndSubmissionWindowValidation)
+                if (taskType == PeriodEndTaskType.PeriodEndReports ||
+                    taskType == PeriodEndTaskType.PeriodEndSubmissionWindowValidation)
                 {
                     await RecordPeriodEndJob(taskType, periodEndEvent).ConfigureAwait(false);
                     var endpointInstance = await endpointInstanceFactory.GetEndpointInstance();
@@ -109,20 +102,11 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                     return true;
                 }
 
-                //todo combine these three events to call new method on jobStatusService
-                if (periodEndEvent is PeriodEndStartedEvent)
+                if (periodEndEvent is PeriodEndStartedEvent ||
+                    periodEndEvent is PeriodEndRequestValidateSubmissionWindowEvent ||
+                    periodEndEvent is PeriodEndRequestReportsEvent)
                 {
-                    return await jobStatusService.WaitForPeriodEndStartedToFinish(jobIdToWaitFor, cancellationToken);
-                }
-
-                if (periodEndEvent is PeriodEndRequestValidateSubmissionWindowEvent)
-                {
-                    return await jobStatusService.WaitForPeriodEndSubmissionWindowValidationToFinish(jobIdToWaitFor, cancellationToken);
-                }
-
-                if (periodEndEvent is PeriodEndRequestReportsEvent)
-                {
-                    return await jobStatusService.WaitForPeriodEndRequestReportsJobToFinish(jobIdToWaitFor, cancellationToken);
+                    return await jobStatusService.WaitForDcJobToFinish(jobIdToWaitFor, cancellationToken);
                 }
 
                 if (periodEndEvent is PeriodEndRunningEvent)
