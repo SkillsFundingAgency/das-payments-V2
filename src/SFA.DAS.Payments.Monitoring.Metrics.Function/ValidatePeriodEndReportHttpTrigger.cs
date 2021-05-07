@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AzureFunctions.Autofac;
@@ -11,9 +12,9 @@ using SFA.DAS.Payments.Monitoring.Metrics.Function.Infrastructure.IoC;
 namespace SFA.DAS.Payments.Monitoring.Metrics.Function
 {
     [DependencyInjectionConfig(typeof(DependencyRegister))]
-    public static class RequestReportsHttpTrigger
+    public static class ValidatePeriodEndReportHttpTrigger
     {
-        [FunctionName("RequestReports")]
+        [FunctionName("ValidatePeriodEndReport")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             [Inject] IPeriodEndMetricsService periodEndMetricsService)
@@ -22,9 +23,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function
             short.TryParse(req.Query["academicYear"], out var academicYear);
             byte.TryParse(req.Query["collectionPeriod"], out var collectionPeriod);
 
-            await periodEndMetricsService.BuildMetrics(jobId, academicYear, collectionPeriod, CancellationToken.None);
+            var result = await periodEndMetricsService.BuildMetrics(jobId, academicYear, collectionPeriod, CancellationToken.None);
 
-            return new OkResult(); //200
+            if (result == null)
+                throw new ApplicationException("Error in Validate Period End Report");
+
+            return new OkObjectResult(result); //200
         }
     }
 }
