@@ -23,6 +23,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
         Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderContractTypeAmounts>> GetYearToDatePayments(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderInLearningTotal>> GetInLearningCount(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<CollectionPeriodToleranceModel> GetCollectionPeriodTolerance(byte collectionPeriod, short academicYear, CancellationToken cancellationToken);
         Task SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, PeriodEndSummaryModel overallPeriodEndSummary, CancellationToken cancellationToken);
     }
 
@@ -207,6 +208,15 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 .GroupBy(x => x.Ukprn)
                 .Select(x => new ProviderInLearningTotal {Ukprn = x.Key, InLearningCount = x.Count()})
                 .ToListAsync(cancellationToken);
+        }
+        public async Task<CollectionPeriodToleranceModel> GetCollectionPeriodTolerance(byte collectionPeriod, short academicYear, CancellationToken cancellationToken)
+        {
+            //Todo: Should we use persistence or query data context?
+            return await persistenceDataContext.CollectionPeriodTolerances
+                .Where(x =>
+                    x.AcademicYear == academicYear &&
+                    x.CollectionPeriod == collectionPeriod)
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
         public async Task SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, PeriodEndSummaryModel overallPeriodEndSummary, CancellationToken cancellationToken)
