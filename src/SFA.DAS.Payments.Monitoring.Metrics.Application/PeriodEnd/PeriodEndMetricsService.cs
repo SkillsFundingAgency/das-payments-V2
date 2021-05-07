@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 {
     public interface IPeriodEndMetricsService
     {
-        Task BuildMetrics(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<PeriodEndSummaryModel> BuildMetrics(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
     }
 
     public class PeriodEndMetricsService : IPeriodEndMetricsService
@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
-        public async Task BuildMetrics(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        public async Task<PeriodEndSummaryModel> BuildMetrics(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
             try
             {
@@ -121,6 +121,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 SendAllProviderMetricsTelemetry(providerSummaries, overallPeriodEndSummary);
 
                 logger.LogInfo($"Finished building period end metrics for {academicYear}, {collectionPeriod} using job id {jobId}, DataDuration: {dataDuration} milliseconds");
+
+                return overallPeriodEndSummary;
             }
             catch (Exception e)
             {
