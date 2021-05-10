@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Monitoring.Jobs.Application;
@@ -20,14 +21,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
         private readonly IPeriodEndReportValidationClient periodEndReportValidationClient;
         private readonly IJobStorageService jobStorageService;
 
-        //private readonly ITelemetry telemetry;
+        private readonly ITelemetry telemetry;
 
-        public RecordPeriodEndRequestReportsJobHandler(IPaymentLogger logger, IPeriodEndJobService periodEndJobService, IJobStorageService jobStorageService, IPeriodEndReportValidationClient periodEndReportValidationClient)
+        public RecordPeriodEndRequestReportsJobHandler(IPaymentLogger logger, IPeriodEndJobService periodEndJobService, IJobStorageService jobStorageService, IPeriodEndReportValidationClient periodEndReportValidationClient, ITelemetry telemetry)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.periodEndJobService = periodEndJobService ?? throw new ArgumentNullException(nameof(periodEndJobService));
             this.jobStorageService = jobStorageService ?? throw new ArgumentNullException(nameof(jobStorageService));
             this.periodEndReportValidationClient = periodEndReportValidationClient ?? throw new ArgumentNullException(nameof(periodEndReportValidationClient));
+            this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
         public async Task Handle(IList<RecordPeriodEndRequestReportsJob> messages, CancellationToken cancellationToken)
@@ -51,9 +53,27 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
 
                 stopwatch.Stop();
 
-                //todo is Telemetry required?
-                //SendTelemetry(message, jobStatus, stopwatch.Elapsed);
+                SendTelemetry(message, jobStatus, stopwatch.Elapsed);
             }
+        }
+
+        private void SendTelemetry(RecordPeriodEndRequestReportsJob job, JobStatus jobStatus, TimeSpan elapsedTime)
+        {
+            var properties = new Dictionary<string, string>
+            {
+                { TelemetryKeys.JobId, job.JobId.ToString()},
+                { TelemetryKeys.JobType, nameof(RecordPeriodEndRequestReportsJob)},
+                { TelemetryKeys.CollectionPeriod, job.CollectionPeriod.ToString()},
+                { TelemetryKeys.AcademicYear, job.CollectionYear.ToString()},
+                { TelemetryKeys.Status, jobStatus.ToString("G")}
+            };
+
+            var metrics = new Dictionary<string, double>
+            {
+                { TelemetryKeys.Duration, elapsedTime.TotalMilliseconds},
+            };
+
+            telemetry.TrackEvent("Finished Job", properties, metrics);
         }
     }
 }

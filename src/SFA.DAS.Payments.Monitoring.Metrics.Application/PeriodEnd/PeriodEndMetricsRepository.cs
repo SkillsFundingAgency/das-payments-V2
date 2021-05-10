@@ -211,7 +211,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
         }
         public async Task<CollectionPeriodToleranceModel> GetCollectionPeriodTolerance(byte collectionPeriod, short academicYear, CancellationToken cancellationToken)
         {
-            //Todo: Should we use persistence or query data context?
             return await persistenceDataContext.CollectionPeriodTolerances
                 .Where(x =>
                     x.AcademicYear == academicYear &&
