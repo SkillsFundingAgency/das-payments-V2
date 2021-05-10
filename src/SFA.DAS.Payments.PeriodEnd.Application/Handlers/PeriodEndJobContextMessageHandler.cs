@@ -60,7 +60,6 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
 
                 var jobIdToWaitFor = message.JobId;
 
-                //todo combine these two if statements, same logic
                 if (taskType == PeriodEndTaskType.PeriodEndReports ||
                     taskType == PeriodEndTaskType.PeriodEndSubmissionWindowValidation)
                 {
