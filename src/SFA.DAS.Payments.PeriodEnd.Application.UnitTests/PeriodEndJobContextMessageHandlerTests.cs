@@ -41,16 +41,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
                 .Setup(factory => factory.GetEndpointInstance())
                 .ReturnsAsync(mocker.Mock<IEndpointInstance>().Object);
             mocker.Mock<IPeriodEndJobClient>()
-                .Setup(client => client.RecordPeriodEndStart(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>(),
-                    It.IsAny<List<GeneratedMessage>>()))
-                .Returns(Task.CompletedTask);
-            mocker.Mock<IPeriodEndJobClient>()
-                .Setup(client => client.RecordPeriodEndRun(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>(),
-                    It.IsAny<List<GeneratedMessage>>()))
-                .Returns(Task.CompletedTask);
-            mocker.Mock<IPeriodEndJobClient>()
-                .Setup(client => client.RecordPeriodEndStop(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>(),
-                    It.IsAny<List<GeneratedMessage>>()))
+                .Setup(client => client.StartPeriodEndJob(It.IsAny<RecordPeriodEndJob>()))
                 .Returns(Task.CompletedTask);
             mocker.Mock<IJobStatusService>()
                 .Setup(svc => svc.WaitForJobToFinish(It.IsAny<long>(), It.IsAny<CancellationToken>(), It.IsAny<TimeSpan?>()))
@@ -136,8 +127,13 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
             var handler = mocker.Create<PeriodEndJobContextMessageHandler>();
             await handler.HandleAsync(jobContextMessage, CancellationToken.None);
             mocker.Mock<IPeriodEndJobClient>()
-                .Verify(x => x.RecordPeriodEndStart( It.Is<long>(jobId => jobId == 1), It.Is<short>(collectionYear => collectionYear == 1819),It.Is<byte>(period => period == 10),
-                    It.Is<List<GeneratedMessage>>(msgs => msgs.Any(msg => msg.MessageName.Equals(typeof(PeriodEndStartedEvent).FullName)))), Times.Once);
+                .Verify(x => 
+                    x.StartPeriodEndJob(It.Is<RecordPeriodEndJob>(y => 
+                        y.GetType().Name == nameof(RecordPeriodEndStartJob) &&
+                        y.JobId == 1 &&
+                        y.CollectionYear == 1819 &&
+                        y.CollectionPeriod == 10 &&
+                        y.GeneratedMessages.Any(msg => msg.MessageName.Equals(typeof(PeriodEndStartedEvent).FullName)))), Times.Once);
         }
 
 
@@ -167,8 +163,13 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
             var handler = mocker.Create<PeriodEndJobContextMessageHandler>();
             await handler.HandleAsync(jobContextMessage, CancellationToken.None);
             mocker.Mock<IPeriodEndJobClient>()
-                .Verify(x => x.RecordPeriodEndRun(It.Is<long>(jobId => jobId == 1), It.Is<short>(collectionYear => collectionYear == 1819), It.Is<byte>(period => period == 10),
-                    It.Is<List<GeneratedMessage>>(msgs => msgs.Any(msg => msg.MessageName.Equals(typeof(PeriodEndRunningEvent).FullName)))), Times.Once);
+                .Verify(x =>
+                    x.StartPeriodEndJob(It.Is<RecordPeriodEndJob>(y =>
+                        y.GetType().Name == nameof(RecordPeriodEndRunJob) &&
+                        y.JobId == 1 &&
+                        y.CollectionYear == 1819 &&
+                        y.CollectionPeriod == 10 &&
+                        y.GeneratedMessages.Any(msg => msg.MessageName.Equals(typeof(PeriodEndRunningEvent).FullName)))), Times.Once);
         }
 
         [Test]
@@ -226,8 +227,13 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
             var handler = mocker.Create<PeriodEndJobContextMessageHandler>();
             await handler.HandleAsync(jobContextMessage, CancellationToken.None);
             mocker.Mock<IPeriodEndJobClient>()
-                .Verify(x => x.RecordPeriodEndStop(It.Is<long>(jobId => jobId == 1), It.Is<short>(collectionYear => collectionYear == 1819), It.Is<byte>(period => period == 10),
-                    It.Is<List<GeneratedMessage>>(msgs => msgs.Any(msg => msg.MessageName.Equals(typeof(PeriodEndStoppedEvent).FullName)))), Times.Once);
+                .Verify(x =>
+                    x.StartPeriodEndJob(It.Is<RecordPeriodEndJob>(y =>
+                        y.GetType().Name == nameof(RecordPeriodEndStopJob) &&
+                        y.JobId == 1 &&
+                        y.CollectionYear == 1819 &&
+                        y.CollectionPeriod == 10 &&
+                        y.GeneratedMessages.Any(msg => msg.MessageName.Equals(typeof(PeriodEndStoppedEvent).FullName)))), Times.Once);
         }
 
         [Test]
@@ -353,8 +359,13 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
             var handler = mocker.Create<PeriodEndJobContextMessageHandler>();
             await handler.HandleAsync(jobContextMessage, CancellationToken.None);
             mocker.Mock<IPeriodEndJobClient>()
-                .Verify(x => x.RecordPeriodEndSubmissionWindowValidation(It.Is<long>(jobId => jobId == 1), It.Is<short>(collectionYear => collectionYear == 1819), It.Is<byte>(period => period == 10),
-                    It.Is<List<GeneratedMessage>>(msgs => msgs.Any(msg => msg.MessageName.Equals(typeof(PeriodEndRequestValidateSubmissionWindowEvent).FullName)))), Times.Once);
+                .Verify(x =>
+                    x.StartPeriodEndJob(It.Is<RecordPeriodEndJob>(y =>
+                        y.GetType().Name == nameof(RecordPeriodEndSubmissionWindowValidationJob) &&
+                        y.JobId == 1 &&
+                        y.CollectionYear == 1819 &&
+                        y.CollectionPeriod == 10 &&
+                        y.GeneratedMessages.Any(msg => msg.MessageName.Equals(typeof(PeriodEndRequestValidateSubmissionWindowEvent).FullName)))), Times.Once);
         }
 
         private static JobContextMessage CreateJobContextMessage(string task, bool CreateReturnPeriod = true, bool CreateCollectionYear = true)

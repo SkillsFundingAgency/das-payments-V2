@@ -79,6 +79,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
         {
             return await dataContext.Apprenticeship
                 .Include(x => x.ApprenticeshipPriceEpisodes)
+                .Include(x => x.ApprenticeshipPauses)
                 .FirstOrDefaultAsync(apprenticeship => apprenticeship.Id == apprenticeshipId)
                 .ConfigureAwait(false);
         }
