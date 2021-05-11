@@ -5,7 +5,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd
     public class PeriodEndSummaryModel : IPeriodEndSummaryModel
     {
         public long Id { get; set; }
-        public bool? IsWithinTolerance { get; set; }
+        public bool IsWithinTolerance { get; set; }
         public short AcademicYear { get; set; }
         public byte CollectionPeriod { get; set; }
         public long JobId { get; set; }
