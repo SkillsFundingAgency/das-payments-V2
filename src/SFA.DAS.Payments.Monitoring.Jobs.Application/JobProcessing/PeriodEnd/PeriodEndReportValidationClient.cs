@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
             var content = await result.Content.ReadAsStringAsync();
             var periodEndSummaryModel = JsonConvert.DeserializeObject<PeriodEndSummaryModel>(content);
-            return periodEndSummaryModel.IsWithinTolerance.GetValueOrDefault();
+            return periodEndSummaryModel.IsWithinTolerance;
         }
 
         private string BuildUriFromParameters(long jobId, short academicYear, byte collectionPeriod)
