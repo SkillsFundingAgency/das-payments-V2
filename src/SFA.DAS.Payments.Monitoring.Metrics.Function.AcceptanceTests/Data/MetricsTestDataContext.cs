@@ -5,14 +5,16 @@ using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Data
 {
-    public class SubmissionDataContext : DbContext
+    public class MetricsTestDataContext : DbContext
     {
         private readonly string connectionString;
         public virtual DbSet<CollectionPeriodToleranceModel> CollectionPeriodTolerances { get; set; }
         public virtual DbSet<SubmissionSummaryModel> SubmissionSummaries { get; set; }
         public virtual DbSet<SubmissionsSummaryModel> SubmissionsSummaries { get; set; }
+        public virtual DbSet<PeriodEndSummaryModel> PeriodEndSummaries { get; set; }
+        public virtual DbSet<ProviderPeriodEndSummaryModel> ProviderPeriodEndSummaries { get; set; }
 
-        public SubmissionDataContext(string connectionString)
+        public MetricsTestDataContext(string connectionString)
         {
             this.connectionString = connectionString;
         }
