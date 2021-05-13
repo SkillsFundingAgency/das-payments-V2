@@ -18,17 +18,17 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
     {
         private readonly IPaymentLogger logger;
         private readonly IPeriodEndJobService periodEndJobService;
-        private readonly IPeriodEndRequestReportClient periodEndRequestReportClient;
+        private readonly IPeriodEndRequestReportsClient periodEndRequestReportsClient;
         private readonly IJobStorageService jobStorageService;
 
         private readonly ITelemetry telemetry;
 
-        public RecordPeriodEndRequestReportsJobHandler(IPaymentLogger logger, IPeriodEndJobService periodEndJobService, IJobStorageService jobStorageService, IPeriodEndRequestReportClient periodEndRequestReportClient, ITelemetry telemetry)
+        public RecordPeriodEndRequestReportsJobHandler(IPaymentLogger logger, IPeriodEndJobService periodEndJobService, IJobStorageService jobStorageService, IPeriodEndRequestReportsClient periodEndRequestReportsClient, ITelemetry telemetry)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.periodEndJobService = periodEndJobService ?? throw new ArgumentNullException(nameof(periodEndJobService));
             this.jobStorageService = jobStorageService ?? throw new ArgumentNullException(nameof(jobStorageService));
-            this.periodEndRequestReportClient = periodEndRequestReportClient ?? throw new ArgumentNullException(nameof(periodEndRequestReportClient));
+            this.periodEndRequestReportsClient = periodEndRequestReportsClient ?? throw new ArgumentNullException(nameof(periodEndRequestReportsClient));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
 
                 await periodEndJobService.RecordPeriodEndJob(message, cancellationToken);
 
-                var metricsValid = await periodEndRequestReportClient.RequestReports(message.JobId, message.CollectionYear, message.CollectionPeriod);
+                var metricsValid = await periodEndRequestReportsClient.RequestReports(message.JobId, message.CollectionYear, message.CollectionPeriod);
 
                 var jobStatus = metricsValid ? JobStatus.Completed : JobStatus.CompletedWithErrors;
 

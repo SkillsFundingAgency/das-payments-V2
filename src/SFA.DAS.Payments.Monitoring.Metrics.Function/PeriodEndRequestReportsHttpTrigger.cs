@@ -12,9 +12,9 @@ using SFA.DAS.Payments.Monitoring.Metrics.Function.Infrastructure.IoC;
 namespace SFA.DAS.Payments.Monitoring.Metrics.Function
 {
     [DependencyInjectionConfig(typeof(DependencyRegister))]
-    public static class PeriodEndRequestReportHttpTrigger
+    public static class PeriodEndRequestReportsHttpTrigger
     {
-        [FunctionName("PeriodEndRequestReport")]
+        [FunctionName("PeriodEndRequestReports")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             [Inject] IPeriodEndMetricsService periodEndMetricsService)
@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function
             var result = await periodEndMetricsService.BuildMetrics(jobId, academicYear, collectionPeriod, CancellationToken.None);
 
             if (result == null)
-                throw new ApplicationException("Error in Period End Request Report");
+                throw new ApplicationException("Error in Period End Request Reports");
 
             return new OkObjectResult(result); //200
         }

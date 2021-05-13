@@ -6,17 +6,17 @@ using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 {
-    public interface IPeriodEndRequestReportClient
+    public interface IPeriodEndRequestReportsClient
     {
         Task<bool> RequestReports(long jobId, short academicYear, byte collectionPeriod);
     }
 
-    public class PeriodEndRequestReportClient : IPeriodEndRequestReportClient
+    public class PeriodEndRequestReportsClient : IPeriodEndRequestReportsClient
     {
         private readonly string authCode;
         private readonly Uri functionAddressUri;
 
-        public PeriodEndRequestReportClient(string authCode, string functionAddress)
+        public PeriodEndRequestReportsClient(string authCode, string functionAddress)
         {
             this.authCode = authCode;
             functionAddressUri = new Uri(functionAddress);
@@ -36,8 +36,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
         private string BuildUriFromParameters(long jobId, short academicYear, byte collectionPeriod)
         {
             return string.IsNullOrWhiteSpace(authCode)
-                ? $"{new Uri(functionAddressUri, "/api/PeriodEndRequestReport")}?jobId={jobId}&collectionPeriod={collectionPeriod}&AcademicYear={academicYear}"
-                : $"{new Uri(functionAddressUri, "/api/PeriodEndRequestReport")}?code={authCode}&jobId={jobId}&collectionPeriod={collectionPeriod}&AcademicYear={academicYear}";
+                ? $"{new Uri(functionAddressUri, "/api/PeriodEndRequestReports")}?jobId={jobId}&collectionPeriod={collectionPeriod}&AcademicYear={academicYear}"
+                : $"{new Uri(functionAddressUri, "/api/PeriodEndRequestReports")}?code={authCode}&jobId={jobId}&collectionPeriod={collectionPeriod}&AcademicYear={academicYear}";
         }
     }
 }
