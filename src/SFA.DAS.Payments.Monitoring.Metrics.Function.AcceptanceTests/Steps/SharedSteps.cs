@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Steps
         public SharedSteps()
         {
             config = new TestConfiguration();
-            dataFactory = new TestDataFactory(new SubmissionDataContext(config.PaymentsConnectionString));
+            dataFactory = new TestDataFactory(new MetricsTestDataContext(config.PaymentsConnectionString));
         }
 
         [Given(@"SubmissionSumary Exists for CollectionPeriod (.*) and AcademicYear (.*)")]
