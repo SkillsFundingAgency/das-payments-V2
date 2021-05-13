@@ -126,8 +126,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
 
         public void CalculateIsWithinTolerance(decimal? lowerTolerance, decimal? upperTolerance)
         {
-            lowerTolerance = lowerTolerance ?? 99.97m;
-            upperTolerance = upperTolerance ?? 100.03m;
+            lowerTolerance = lowerTolerance ?? 99.92m;
+            upperTolerance = upperTolerance ?? 100.08m;
 
             if (periodEndSummary == null) return;
 
