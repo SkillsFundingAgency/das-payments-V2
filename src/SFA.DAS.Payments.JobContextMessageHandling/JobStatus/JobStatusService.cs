@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
     public interface IJobStatusService
     {
         Task<bool> WaitForJobToFinish(long jobId, CancellationToken cancellationToken, TimeSpan? timeToWait = null);
-        Task<bool> WaitForDcJobToFinish(long dcJobId, CancellationToken cancellationToken);
+        Task<bool> WaitForPeriodEndJobToFinish(long dcJobId, CancellationToken cancellationToken);
         Task<bool> JobCurrentlyRunning(long jobId);
         Task<bool> WaitForPeriodEndRunJobToFinish(long jobId, CancellationToken cancellationToken);
     }
@@ -58,7 +58,7 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.JobStatus
             return false;
         }
 
-        public async Task<bool> WaitForDcJobToFinish(long dcJobId, CancellationToken cancellationToken)
+        public async Task<bool> WaitForPeriodEndJobToFinish(long dcJobId, CancellationToken cancellationToken)
         {
             logger.LogDebug($"Waiting for job with DC JobId: {dcJobId} to finish.");
             var endTime = DateTime.Now.Add(config.TimeToWaitForJobToComplete);

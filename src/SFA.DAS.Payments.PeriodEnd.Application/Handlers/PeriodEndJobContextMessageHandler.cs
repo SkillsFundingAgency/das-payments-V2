@@ -97,7 +97,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
 
                 if (periodEndEvent is PeriodEndStoppedEvent)
                 {
-                    logger.LogDebug("Returning as this is either a PeriodEndStop or PeriodEndRequestReports event");
+                    logger.LogDebug("Returning as this is a PeriodEndStop event");
                     return true;
                 }
 
@@ -105,7 +105,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                     periodEndEvent is PeriodEndRequestValidateSubmissionWindowEvent ||
                     periodEndEvent is PeriodEndRequestReportsEvent)
                 {
-                    return await jobStatusService.WaitForDcJobToFinish(jobIdToWaitFor, cancellationToken);
+                    return await jobStatusService.WaitForPeriodEndJobToFinish(jobIdToWaitFor, cancellationToken);
                 }
 
                 if (periodEndEvent is PeriodEndRunningEvent)
