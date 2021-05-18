@@ -8,18 +8,8 @@
 	Amount DECIMAL(15,5) NOT NULL,
 	SfaContributionPercentage DECIMAL(15,5) NULL,
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_EarningEventPeriod__CreationDate DEFAULT (SYSDATETIMEOFFSET()),	
-	CensusDate DATETIME2  NULL,
-	INDEX IX_EarningEventPeriod__EarningEventId (EarningEventId),
-	INDEX IX_EarningEventPeriod__Search (EarningEventId,PriceEpisodeIdentifier)
+	CensusDate DATETIME2  NULL
 )
-GO
-
-CREATE NONCLUSTERED INDEX IX_EarningEventPeriod__Amount on Payments2.EarningEventPeriod 
-(
-Amount
-) 
-Include (EarningEventId, TransactionType)
-
 GO
 
 CREATE NONCLUSTERED INDEX [IX_EarningEventPeriod__Metrics]
