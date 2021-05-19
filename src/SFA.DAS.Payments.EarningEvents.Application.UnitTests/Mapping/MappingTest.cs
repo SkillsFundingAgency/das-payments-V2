@@ -314,7 +314,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.PriceEpisodes.Should().NotBeEmpty();
             earningEvent.PriceEpisodes.First().Identifier.Should().Be("pe-1");
-            earningEvent.PriceEpisodes.First().CourseStartDate.Should().Be(currentYearStart);
+            earningEvent.PriceEpisodes.First().CourseStartDate.Should().Be(DateTime.Today.AddDays(-5));
             earningEvent.PriceEpisodes.First().EffectiveTotalNegotiatedPriceStartDate.Should().Be(currentYearStart.AddMonths(1));
             earningEvent.PriceEpisodes.First().TotalNegotiatedPrice1.Should().Be(15000);
             earningEvent.PriceEpisodes.First().TotalNegotiatedPrice2.Should().Be(15000);
@@ -588,6 +588,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
 
             earningEvent.PriceEpisodes.Should().HaveCount(2);
+            earningEvent.PriceEpisodes.Select(x => x.CourseStartDate).Should().AllBeEquivalentTo(DateTime.Today.AddDays(-10));
             earningEvent.OnProgrammeEarnings.Should().HaveCount(3); // we generate 3 earnings even if not present in ILR
 
             var learning = earningEvent.OnProgrammeEarnings.Single(e => e.Type == OnProgrammeEarningType.Learning);
