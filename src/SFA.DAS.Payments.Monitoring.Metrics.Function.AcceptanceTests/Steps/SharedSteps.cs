@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Steps
         public SharedSteps()
         {
             config = new TestConfiguration();
-            dataFactory = new TestDataFactory(new SubmissionDataContext(config.PaymentsConnectionString));
+            dataFactory = new TestDataFactory(new MetricsTestDataContext(config.PaymentsConnectionString));
         }
 
         [Given(@"SubmissionSumary Exists for CollectionPeriod (.*) and AcademicYear (.*)")]
@@ -131,6 +131,39 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Steps
         private async Task ClearData(List<SubmissionsSummaryModel> data)
         {
             await dataFactory.ClearData(data, CollectionPeriod, AcademicYear);
+        }
+
+        [Given("Payments within tolerance exist against DC Earnings for for CollectionPeriod (.*) and AcademicYear (.*)")]
+        public async Task GivenPaymentsAndDCEarningsWithinToleranceExist(byte collectionPeriod, short academicYear)
+        {
+            //todo all the work
+        }
+
+        [When(@"PeriodEndRequestReport function is called")]
+        public async Task WhenPeriodEndRequestReportFunctionIsCalled()
+        {
+            await dataFactory.SaveModel(); //todo data setup needed on this factory in order to work
+
+            httpResponseMessage = await new HttpClient().GetAsync($"{config.PeriodEndRequestReportFunctionUri}?jobid={123}&collectionPeriod={CollectionPeriod}&academicYear={AcademicYear}");
+        }
+
+        [Then(@"The Period End Metrics IsWithinTolerance is (.*) in database")]
+        public async Task ThenThePeriodEndMetricsIsWithinToleranceSavedToDatabase(string expectedWithinTolerance)
+        {
+            var data = await dataFactory.GetSubmissionsSummaries(CollectionPeriod, AcademicYear); //todo update to period end
+
+            data.Any().Should().BeTrue();
+
+            if (expectedWithinTolerance == "False")
+            {
+                data.Single().IsWithinTolerance.Should().BeFalse();
+            }
+            else
+            {
+                data.Single().IsWithinTolerance.Should().BeTrue();
+            }
+
+            await ClearData(data);
         }
     }
 }

@@ -16,9 +16,17 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Infrastructure.Ioc
             builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
-                    return new SubmissionWindowValidationClient(configHelper.GetSetting("SubmissionWindowValidationFunctionApiKey"), configHelper.GetSetting("SubmissionWindowValidationFunctionBaseUrl"));
+                    return new SubmissionWindowValidationClient(configHelper.GetSetting("MetricsFunctionApiKey"), configHelper.GetSetting("MetricsFunctionBaseUrl"));
                 })
                 .As<ISubmissionWindowValidationClient>()
+                .InstancePerLifetimeScope();
+
+            builder.Register((c, p) =>
+                {
+                    var configHelper = c.Resolve<IConfigurationHelper>();
+                    return new PeriodEndRequestReportsClient(configHelper.GetSetting("MetricsFunctionApiKey"), configHelper.GetSetting("MetricsFunctionBaseUrl"));
+                })
+                .As<IPeriodEndRequestReportsClient>()
                 .InstancePerLifetimeScope();
         }
     }

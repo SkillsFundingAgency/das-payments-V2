@@ -14,11 +14,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Data
         private SubmissionSummaryModel submissionSummaryModel;
         private CollectionPeriodToleranceModel collectionPeriodToleranceModel;
 
-        private readonly SubmissionDataContext submissionDataContext;
+        private readonly MetricsTestDataContext metricsTestDataContext;
 
-        public TestDataFactory(SubmissionDataContext submissionDataContext)
+        public TestDataFactory(MetricsTestDataContext metricsTestDataContext)
         {
-            this.submissionDataContext = submissionDataContext;
+            this.metricsTestDataContext = metricsTestDataContext;
         }
 
         public void CreateSubmissionSummaryModel(byte collectionPeriod, short academicYear)
@@ -84,9 +84,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Data
 
             await RemoveSubmissionSummaryModel(submissionSummaryModel.CollectionPeriod, submissionSummaryModel.AcademicYear);
 
-            submissionDataContext.Add(submissionSummaryModel);
+            metricsTestDataContext.Add(submissionSummaryModel);
 
-            await submissionDataContext.SaveChangesAsync();
+            await metricsTestDataContext.SaveChangesAsync();
         }
 
         public async Task CreateCollectionPeriodToleranceModel(byte collectionPeriod, short academicYear, decimal lowerTolerance, decimal upperTolerance)
@@ -101,34 +101,34 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Data
 
             await RemoveCollectionPeriodToleranceModel(collectionPeriod, academicYear);
 
-            submissionDataContext.Add(collectionPeriodToleranceModel);
-            await submissionDataContext.SaveChangesAsync();
+            metricsTestDataContext.Add(collectionPeriodToleranceModel);
+            await metricsTestDataContext.SaveChangesAsync();
         }
 
         public async Task RemoveSubmissionSummaryModel(byte collectionPeriod, short academicYear)
         {
-            var existingConfig = submissionDataContext.SubmissionSummaries.Where(c =>
+            var existingConfig = metricsTestDataContext.SubmissionSummaries.Where(c =>
                 c.CollectionPeriod == collectionPeriod && c.AcademicYear == academicYear);
 
-            submissionDataContext.SubmissionSummaries.RemoveRange(existingConfig);
+            metricsTestDataContext.SubmissionSummaries.RemoveRange(existingConfig);
 
-            await submissionDataContext.SaveChangesAsync();
+            await metricsTestDataContext.SaveChangesAsync();
         }
 
         public async Task RemoveCollectionPeriodToleranceModel(byte collectionPeriod, short academicYear)
         {
-            var existingConfig = submissionDataContext.CollectionPeriodTolerances.Where(c =>
+            var existingConfig = metricsTestDataContext.CollectionPeriodTolerances.Where(c =>
                 c.CollectionPeriod == collectionPeriod && c.AcademicYear == academicYear);
 
-            submissionDataContext.CollectionPeriodTolerances.RemoveRange(existingConfig);
+            metricsTestDataContext.CollectionPeriodTolerances.RemoveRange(existingConfig);
 
-            await submissionDataContext.SaveChangesAsync();
+            await metricsTestDataContext.SaveChangesAsync();
         }
 
         public async Task RemoveSubmissionsSummaryModel(List<SubmissionsSummaryModel> data)
         {
-            submissionDataContext.RemoveRange(data);
-            await submissionDataContext.SaveChangesAsync();
+            metricsTestDataContext.RemoveRange(data);
+            await metricsTestDataContext.SaveChangesAsync();
         }
 
         public async Task ClearData(List<SubmissionsSummaryModel> data, byte collectionPeriod, short academicYear)
@@ -140,7 +140,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Data
 
         public async Task<List<SubmissionsSummaryModel>> GetSubmissionsSummaries(byte collectionPeriod, short academicYear)
         {
-           return await submissionDataContext.SubmissionsSummaries.Where(s =>
+           return await metricsTestDataContext.SubmissionsSummaries.Where(s =>
                 s.CollectionPeriod == collectionPeriod && s.AcademicYear == academicYear).ToListAsync();
         }
     }
