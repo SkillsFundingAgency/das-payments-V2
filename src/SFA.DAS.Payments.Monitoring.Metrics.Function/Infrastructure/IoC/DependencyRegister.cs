@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using AzureFunctions.Autofac.Configuration;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules;
-using SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Ioc;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Function.Infrastructure.IoC
 {

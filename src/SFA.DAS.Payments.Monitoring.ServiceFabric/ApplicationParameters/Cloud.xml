@@ -33,7 +33,7 @@
     <Parameter Name="TimeToWaitForPeriodEndRunJobToComplete" Value="__TimeToWaitForPeriodEndRunJobToComplete__" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
     <Parameter Name="MetricsGenerationDelay" Value="__MetricsGenerationDelay__" />
-    <Parameter Name="SubmissionWindowValidationFunctionApiKey" Value="__SubmissionWindowValidationFunctionApiKey__" />
-    <Parameter Name="SubmissionWindowValidationFunctionBaseUrl" Value="__SubmissionWindowValidationFunctionBaseUrl__" />
+    <Parameter Name="MetricsFunctionApiKey" Value="__MetricsFunctionApiKey__" />
+    <Parameter Name="MetricsFunctionBaseUrl" Value="__MetricsFunctionBaseUrl__" />
   </Parameters>
 </Application>

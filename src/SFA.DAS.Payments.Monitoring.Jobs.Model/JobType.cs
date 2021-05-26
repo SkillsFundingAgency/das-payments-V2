@@ -8,6 +8,7 @@
         ComponentAcceptanceTestMonthEndJob,
         PeriodEndRunJob,
         PeriodEndStopJob,
-        PeriodEndSubmissionWindowValidationJob
+        PeriodEndSubmissionWindowValidationJob,
+        PeriodEndRequestReportsJob
     }
 }

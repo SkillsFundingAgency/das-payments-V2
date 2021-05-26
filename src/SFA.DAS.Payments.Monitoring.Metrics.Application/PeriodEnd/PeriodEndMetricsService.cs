@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 {
     public interface IPeriodEndMetricsService
     {
-        Task BuildMetrics(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<PeriodEndSummaryModel> BuildMetrics(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
     }
 
     public class PeriodEndMetricsService : IPeriodEndMetricsService
@@ -27,9 +27,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
         private readonly ITelemetry telemetry;
 
         public PeriodEndMetricsService(
-            IPaymentLogger logger, 
+            IPaymentLogger logger,
             IPeriodEndSummaryFactory periodEndSummaryFactory,
-            IDcMetricsDataContextFactory dcMetricsDataContextFactory, 
+            IDcMetricsDataContextFactory dcMetricsDataContextFactory,
             IPeriodEndMetricsRepository periodEndMetricsRepository,
             ITelemetry telemetry
         )
@@ -41,17 +41,17 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
-        public async Task BuildMetrics(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        public async Task<PeriodEndSummaryModel> BuildMetrics(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
             try
             {
                 logger.LogDebug($"Building period end metrics for {academicYear}, {collectionPeriod} using job id {jobId}");
 
                 var stopwatch = Stopwatch.StartNew();
-                
+
                 var dcDataContext = dcMetricsDataContextFactory.CreateContext(academicYear);
                 var dcEarningsTask = dcDataContext.GetEarnings(academicYear, collectionPeriod, cancellationToken);
-                
+
                 var transactionTypesTask = periodEndMetricsRepository.GetTransactionTypesByContractType(academicYear, collectionPeriod, cancellationToken);
                 var fundingSourceTask = periodEndMetricsRepository.GetFundingSourceAmountsByContractType(academicYear, collectionPeriod, cancellationToken);
                 var currentPaymentTotals = periodEndMetricsRepository.GetYearToDatePayments(academicYear, collectionPeriod, cancellationToken);
@@ -86,9 +86,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 var providersFromPayments = currentPaymentTotals.Result.Select(x => x.Ukprn).Distinct();
                 var providersFromEarnings = dcEarningsTask.Result.Select(x => x.Ukprn).Distinct();
                 var distinctProviderUkprns = providersFromEarnings.Union(providersFromPayments);
-                
+
                 var periodEndSummary = periodEndSummaryFactory.CreatePeriodEndSummary(jobId, collectionPeriod, academicYear);
-                
+
                 foreach (var ukprn in distinctProviderUkprns)
                 {
                     var providerSummary = periodEndSummaryFactory.CreatePeriodEndProviderSummary(ukprn, jobId, collectionPeriod, academicYear);
@@ -112,15 +112,21 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 
                 var overallPeriodEndSummary = periodEndSummary.GetMetrics();
 
+                var collectionPeriodTolerance = await periodEndMetricsRepository.GetCollectionPeriodTolerance(collectionPeriod, academicYear, cancellationToken);
+
+                periodEndSummary.CalculateIsWithinTolerance(collectionPeriodTolerance?.PeriodEndToleranceLower, collectionPeriodTolerance?.PeriodEndToleranceUpper);
+
                 stopwatch.Stop();
 
                 var dataDuration = stopwatch.ElapsedMilliseconds;
-                
+
                 await periodEndMetricsRepository.SaveProviderSummaries(providerSummaries, overallPeriodEndSummary, cancellationToken);
                 SendSummaryMetricsTelemetry(overallPeriodEndSummary, stopwatch.ElapsedMilliseconds);
                 SendAllProviderMetricsTelemetry(providerSummaries, overallPeriodEndSummary);
 
                 logger.LogInfo($"Finished building period end metrics for {academicYear}, {collectionPeriod} using job id {jobId}, DataDuration: {dataDuration} milliseconds");
+
+                return overallPeriodEndSummary;
             }
             catch (Exception e)
             {
@@ -166,20 +172,20 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 { "Total", (double) providerMetrics.PaymentMetrics.Total },
                 { "ContractType1", (double) providerMetrics.PaymentMetrics.ContractType1 },
                 { "ContractType2", (double) providerMetrics.PaymentMetrics.ContractType2 },
-                
+
                 { "DifferenceTotal", (double) providerMetrics.PaymentMetrics.DifferenceTotal },
                 { "DifferenceContractType1", (double) providerMetrics.PaymentMetrics.DifferenceContractType1 },
                 { "DifferenceContractType2", (double) providerMetrics.PaymentMetrics.DifferenceContractType2 },
-                
-                
+
+
                 { "EarningsDCTotal", (double) providerMetrics.DcEarnings.Total },
                 { "EarningsDCContractType1", (double) providerMetrics.DcEarnings.ContractType1 },
                 { "EarningsDCContractType2", (double) providerMetrics.DcEarnings.ContractType2 },
-                
+
                 { "PaymentsTotal", (double) providerMetrics.Payments.Total },
                 { "PaymentsContractType1", (double) providerMetrics.Payments.ContractType1 },
                 { "PaymentsContractType2", (double) providerMetrics.Payments.ContractType2 },
-                
+
                 { "DataLockedEarnings", (double) providerMetrics.AdjustedDataLockedEarnings },
                 { "AlreadyPaidDataLockedEarnings", (double) providerMetrics.AlreadyPaidDataLockedEarnings },
                 { "TotalDataLockedEarnings", (double) providerMetrics.TotalDataLockedEarnings },
@@ -284,26 +290,26 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             var stats = new Dictionary<string, double>
             {
                 { "Percentage",    (double) metrics.Percentage },
-                
+
                 { "ContractType1", (double) metrics.PaymentMetrics.ContractType1 },
                 { "ContractType2", (double) metrics.PaymentMetrics.ContractType2 },
-                
+
                 { "DifferenceTotal", (double) metrics.PaymentMetrics.DifferenceTotal },
                 { "DifferenceContractType1", (double) metrics.PaymentMetrics.DifferenceContractType1 },
                 { "DifferenceContractType2", (double) metrics.PaymentMetrics.DifferenceContractType2 },
-                
+
                 { "PercentageTotal", (double) metrics.PaymentMetrics.Percentage },
                 { "PercentageContractType1", (double) metrics.PaymentMetrics.PercentageContractType1 },
                 { "PercentageContractType2", (double) metrics.PaymentMetrics.PercentageContractType2 },
-                
+
                 { "EarningsDCTotal", (double) metrics.DcEarnings.Total },
                 { "EarningsDCContractType1", (double) metrics.DcEarnings.ContractType1 },
                 { "EarningsDCContractType2", (double) metrics.DcEarnings.ContractType2 },
-                
+
                 { "PaymentsTotal", (double) metrics.Payments.Total },
                 { "PaymentsContractType1", (double) metrics.Payments.ContractType1 },
                 { "PaymentsContractType2", (double) metrics.Payments.ContractType2 },
-                
+
                 { "DataLockedEarnings", (double) metrics.AdjustedDataLockedEarnings },
                 { "AlreadyPaidDataLockedEarnings", (double) metrics.AlreadyPaidDataLockedEarnings },
                 { "TotalDataLockedEarnings", (double) metrics.TotalDataLockedEarnings },
@@ -324,7 +330,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 { "HeldBackCompletionPaymentsTotal", (double) metrics.HeldBackCompletionPayments.Total },
                 { "HeldBackCompletionPaymentsContractType1", (double) metrics.HeldBackCompletionPayments.ContractType1 },
                 { "HeldBackCompletionPaymentsContractType2", (double) metrics.HeldBackCompletionPayments.ContractType2 },
-                
+
                 { "PaymentsYearToDateTotal", (double) metrics.YearToDatePayments.Total },
                 { "PaymentsYearToDateContractType1", (double) metrics.YearToDatePayments.ContractType1 },
                 { "PaymentsYearToDateContractType2", (double) metrics.YearToDatePayments.ContractType2 },
