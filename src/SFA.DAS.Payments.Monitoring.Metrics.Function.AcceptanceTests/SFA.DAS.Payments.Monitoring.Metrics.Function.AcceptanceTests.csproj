@@ -224,6 +224,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Tests\PeriodEndRequestReport.feature.cs" />
+    <Compile Include="Tests\SuccessfulSubmissionsFeature.feature.cs" />
+    <Compile Include="Tests\ValidateSubmissionWindowFeature.feature.cs" />
     <None Include="App.config" />
     <None Include="App.Release.config">
       <DependentUpon>App.config</DependentUpon>
@@ -234,9 +237,10 @@
     <Content Include="Tests\ValidateSubmissionWindowFeature.feature" />
     <None Include="packages.config" />
     <None Include="Tests\SuccessfulSubmissionsFeature.feature" />
+    <Content Include="Tests\PeriodEndRequestReport.feature" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\SubmissionDataContext.cs" />
+    <Compile Include="Data\MetricsTestDataContext.cs" />
     <Compile Include="Data\TestDataFactory.cs" />
     <Compile Include="Infrastructure\TestConfiguration.cs" />
     <Compile Include="Steps\SharedSteps.cs" />

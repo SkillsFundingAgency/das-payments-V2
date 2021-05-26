@@ -88,5 +88,23 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
                 .Be(noSummaries * providerMetricsSummary.PaymentMetrics.DifferenceTotal);
         }
 
+        [TestCase(99.90d, false)]
+        [TestCase(100.09d, false)]
+        [TestCase(99.99d, true)]
+        [TestCase(99.92d, true)]
+        [TestCase(100.08d, true)]
+        public void WhenCalculatingIsWithinTolerance_ThenIsWithinToleranceSetCorrectly(decimal percentage, bool expectedIsWithinTolerance)
+        {
+            //Arrange
+            var summary = TestHelper.DefaultPeriodEndSummary;
+            var model = summary.GetMetrics();
+            model.Percentage = percentage;
+
+            //Act
+            summary.CalculateIsWithinTolerance(null, null);
+
+            //Assert
+            model.IsWithinTolerance.Should().Be(expectedIsWithinTolerance);
+        }
     }
 }
