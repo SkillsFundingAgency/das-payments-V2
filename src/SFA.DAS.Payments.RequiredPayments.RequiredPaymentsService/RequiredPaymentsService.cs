@@ -36,7 +36,6 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
         private readonly IApprenticeshipAct1RedundancyEarningsEventProcessor act1RedundancyEarningsEventProcessor;
         private readonly IFunctionalSkillEarningsEventProcessor functionalSkillEarningsEventProcessor;
         private readonly IPayableEarningEventProcessor payableEarningEventProcessor;
-        private readonly IRefundRemovedLearningAimProcessor refundRemovedLearningAimProcessor;
         readonly ITelemetry telemetry;
         private readonly string logSafeApprenticeshipKeyString;
         
@@ -51,7 +50,6 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             IApprenticeshipAct1RedundancyEarningsEventProcessor act1RedundancyEarningsEventProcessor, 
             IFunctionalSkillEarningsEventProcessor functionalSkillEarningsEventProcessor,
             IPayableEarningEventProcessor payableEarningEventProcessor,
-            IRefundRemovedLearningAimProcessor refundRemovedLearningAimProcessor,
             ITelemetry telemetry)
             : base(actorService, actorId)
         {
@@ -61,7 +59,6 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             this.act1RedundancyEarningsEventProcessor = act1RedundancyEarningsEventProcessor;
             this.functionalSkillEarningsEventProcessor = functionalSkillEarningsEventProcessor;
             this.payableEarningEventProcessor = payableEarningEventProcessor;
-            this.refundRemovedLearningAimProcessor = refundRemovedLearningAimProcessor;
             this.telemetry = telemetry;
             apprenticeshipKeyString = actorId.GetStringId();
             apprenticeshipKey = apprenticeshipKeyService.ParseApprenticeshipKey(apprenticeshipKeyString);
@@ -190,26 +187,6 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService
             {
                 paymentLogger.LogError($"Error handling payable earning. Error: {e.Message}");
                 throw;
-            }
-        }
-
-        public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> RefundRemovedLearningAim(IdentifiedRemovedLearningAim removedLearningAim, CancellationToken cancellationToken)
-        {
-            paymentLogger.LogDebug($"Handling identified removed learning aim for jobId:{removedLearningAim.JobId} with apprenticeship key based on {logSafeApprenticeshipKeyString}");
-            using (var operation = telemetry.StartOperation("RequiredPaymentsService.RefundRemovedLearningAim", removedLearningAim.EventId.ToString()))
-            {
-                var stopwatch = Stopwatch.StartNew();
-                await ResetPaymentHistoryCacheIfDifferentCollectionPeriod(removedLearningAim.CollectionPeriod)
-                    .ConfigureAwait(false);
-
-                await Initialise(removedLearningAim.CollectionPeriod.Period).ConfigureAwait(false);
-                var requiredPaymentEvents = await refundRemovedLearningAimProcessor.RefundLearningAim(removedLearningAim, paymentHistoryCache, cancellationToken).ConfigureAwait(false);
-                Log(requiredPaymentEvents);
-                // removed aim would will not receive a command to clear cache
-                await Reset().ConfigureAwait(false);
-                telemetry.TrackDuration("RequiredPaymentsService.RefundRemovedLearningAim", stopwatch, removedLearningAim);
-                telemetry.StopOperation(operation);
-                return requiredPaymentEvents;
             }
         }
 
