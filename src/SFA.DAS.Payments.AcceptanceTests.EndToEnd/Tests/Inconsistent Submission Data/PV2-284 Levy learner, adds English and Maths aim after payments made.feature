@@ -79,22 +79,22 @@ Scenario Outline: Levy learner changes course details in ILR after payments made
         | May/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
         | Jun/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
         | Jul/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
-    And at month end only the following payments will be calculated
-        | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Framework Code |
-        | R03/Current Academic Year | Aug/Current Academic Year | -600         | 0          | 0         | 0                          | 593            |
-        | R03/Current Academic Year | Sep/Current Academic Year | -600         | 0          | 0         | 0                          | 593            |
-        | R03/Current Academic Year | Aug/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R03/Current Academic Year | Sep/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R03/Current Academic Year | Oct/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R04/Current Academic Year | Nov/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R05/Current Academic Year | Dec/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R06/Current Academic Year | Jan/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R07/Current Academic Year | Feb/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R08/Current Academic Year | Mar/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R09/Current Academic Year | Apr/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R10/Current Academic Year | May/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R11/Current Academic Year | Jun/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R12/Current Academic Year | Jul/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
+    #And at month end only the following payments will be calculated
+    #    | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Framework Code |
+    #    | R03/Current Academic Year | Aug/Current Academic Year | -600         | 0          | 0         | 0                          | 593            |
+    #    | R03/Current Academic Year | Sep/Current Academic Year | -600         | 0          | 0         | 0                          | 593            |
+    #    | R03/Current Academic Year | Aug/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
+    #    | R03/Current Academic Year | Sep/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
+    #    | R03/Current Academic Year | Oct/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
+    #    | R04/Current Academic Year | Nov/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
+    #    | R05/Current Academic Year | Dec/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
+    #    | R06/Current Academic Year | Jan/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
+    #    | R07/Current Academic Year | Feb/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
+    #    | R08/Current Academic Year | Mar/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
+    #    | R09/Current Academic Year | Apr/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
+    #    | R10/Current Academic Year | May/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
+    #    | R11/Current Academic Year | Jun/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
+    #    | R12/Current Academic Year | Jul/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
 
     And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type           | Framework Code |
