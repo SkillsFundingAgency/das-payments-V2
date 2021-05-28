@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.RequiredPayments.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
+    <Parameter Name="ClawbackRemovedLearnerAimPaymentsService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="RequiredPaymentsProxyService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="RequiredPaymentsServiceActorService_PartitionCount" DefaultValue="10" />
     <Parameter Name="RequiredPaymentsServiceActorService_MinReplicaSetSize" DefaultValue="3" />
@@ -28,6 +29,34 @@
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
        ServiceManifest.xml file. -->
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimPaymentsServicePkg" ServiceManifestVersion="1.0.0" />
+    <ConfigOverrides>
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="ConnectionStringsSection">
+            <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
+            <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
+            <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
+          </Section>
+          <Section Name="Settings">
+            <Parameter Name="EndpointName" Value="[RequiredPaymentsService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[RequiredPaymentsService_FailedMessagesQueue]" />
+            <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
+            <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
+            <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
+            <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
+            <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
+            <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
+            <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+    </ConfigOverrides>
+  </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyServicePkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides>
@@ -106,6 +135,11 @@
          ServiceFabric PowerShell module.
          
          The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
+    <Service Name="SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimPaymentsService" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimPaymentsServiceType" InstanceCount="[ClawbackRemovedLearnerAimPaymentsService_InstanceCount]">
+        <SingletonPartition />
+      </StatelessService>
+    </Service>
     <Service Name="SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyServiceType" InstanceCount="[RequiredPaymentsProxyService_InstanceCount]">
         <SingletonPartition />
