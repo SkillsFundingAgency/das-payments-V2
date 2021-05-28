@@ -9,6 +9,7 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public Guid EarningEventId { get; set; }
         public Guid FundingSourceEventId { get; set; }
         public Guid? RequiredPaymentEventId { get; set; }
+        public Guid? ClawbackSourcePaymentId { get; set; }
         public DateTimeOffset EventTime { get; set; }
         public long Ukprn { get; set; }
         public string LearnerReferenceNumber { get; set; }
