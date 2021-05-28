@@ -6,6 +6,7 @@ using ESFA.DC.Logging.Interfaces;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.RequiredPayments.Application.Processors;
+using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using ExecutionContext = ESFA.DC.Logging.ExecutionContext;
 
@@ -13,12 +14,14 @@ namespace SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimPaymentsSer
 {
     public class IdentifiedRemovedLearningAimEventHandler : IHandleMessages<IdentifiedRemovedLearningAim>
     {
+        private readonly IApprenticeshipKeyService apprenticeshipKeyService;
         private readonly IClawbackRemovedLearnerAimPaymentsProcessor clawbackRemovedLearnerAimPaymentsProcessor;
         private readonly IPaymentLogger logger;
         private readonly IExecutionContext executionContext;
 
-        public IdentifiedRemovedLearningAimEventHandler(IClawbackRemovedLearnerAimPaymentsProcessor clawbackRemovedLearnerAimPaymentsProcessor, IPaymentLogger logger, IExecutionContext executionContext)
+        public IdentifiedRemovedLearningAimEventHandler(IApprenticeshipKeyService apprenticeshipKeyService, IClawbackRemovedLearnerAimPaymentsProcessor clawbackRemovedLearnerAimPaymentsProcessor, IPaymentLogger logger, IExecutionContext executionContext)
         {
+            this.apprenticeshipKeyService = apprenticeshipKeyService ?? throw new ArgumentNullException(nameof(apprenticeshipKeyService));
             this.clawbackRemovedLearnerAimPaymentsProcessor = clawbackRemovedLearnerAimPaymentsProcessor ?? throw new ArgumentNullException(nameof(clawbackRemovedLearnerAimPaymentsProcessor));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
@@ -29,9 +32,9 @@ namespace SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimPaymentsSer
             logger.LogDebug("Processing 'IdentifiedRemovedLearningAim' message.");
             ((ExecutionContext)executionContext).JobId = message.JobId.ToString();
 
-            var calculatedRequiredLevyAmount = await clawbackRemovedLearnerAimPaymentsProcessor.GenerateClawbacksForRemovedLearnerAim(message, CancellationToken.None).ConfigureAwait(false);
+            var calculatedRequiredLevyAmount = await clawbackRemovedLearnerAimPaymentsProcessor.GenerateClawbackForRemovedLearnerAim(message, CancellationToken.None).ConfigureAwait(false);
 
-            logger.LogDebug($"Got {calculatedRequiredLevyAmount?.Count ?? 0} required payments.");
+            logger.LogDebug($"Got {calculatedRequiredLevyAmount?.Count ?? 0} Calculated Required Levy Amount events.");
 
             if (calculatedRequiredLevyAmount != null)
                 await Task.WhenAll(calculatedRequiredLevyAmount.Select(context.Publish)).ConfigureAwait(false);
