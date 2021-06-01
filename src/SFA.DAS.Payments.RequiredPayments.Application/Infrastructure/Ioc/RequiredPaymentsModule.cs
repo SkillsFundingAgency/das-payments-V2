@@ -22,8 +22,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Ioc
             builder.RegisterType<FunctionalSkillEarningsEventProcessor>().AsImplementedInterfaces();
             builder.RegisterType<PayableEarningEventProcessor>().AsImplementedInterfaces();
             builder.RegisterType<HoldingBackCompletionPaymentService>().AsImplementedInterfaces();
-            builder.RegisterType<RefundRemovedLearningAimService>().AsImplementedInterfaces();
-            builder.RegisterType<PeriodisedRequiredPaymentEventFactory>().AsImplementedInterfaces();
         }
     }
 }
