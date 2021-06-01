@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.RequiredPayments.Domain;
-using SFA.DAS.Payments.RequiredPayments.Domain.Services;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
@@ -15,13 +14,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
     public class ClawbackRemovedLearnerAimPaymentsProcessor : IClawbackRemovedLearnerAimPaymentsProcessor
     {
-        private readonly IApprenticeshipKeyService apprenticeshipKeyService;
         private readonly IPaymentHistoryRepository paymentHistoryRepository;
+        private readonly IPaymentLogger logger;
 
-        public ClawbackRemovedLearnerAimPaymentsProcessor(IApprenticeshipKeyService apprenticeshipKeyService, IPaymentHistoryRepository paymentHistoryRepository)
+        public ClawbackRemovedLearnerAimPaymentsProcessor(IPaymentHistoryRepository paymentHistoryRepository, IPaymentLogger logger)
         {
-            this.apprenticeshipKeyService = apprenticeshipKeyService ?? throw new ArgumentNullException(nameof(apprenticeshipKeyService));
             this.paymentHistoryRepository = paymentHistoryRepository ?? throw new ArgumentNullException(nameof(paymentHistoryRepository));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
         public async Task<IReadOnlyCollection<CalculatedRequiredLevyAmount>> GenerateClawbackForRemovedLearnerAim(IdentifiedRemovedLearningAim message, CancellationToken cancellationToken)
         {
@@ -39,7 +38,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 message.CollectionPeriod.Period, 
                 cancellationToken).ConfigureAwait(false);
 
-            throw new System.NotImplementedException();
+            return new List<CalculatedRequiredLevyAmount>();
         }
     }
 }
