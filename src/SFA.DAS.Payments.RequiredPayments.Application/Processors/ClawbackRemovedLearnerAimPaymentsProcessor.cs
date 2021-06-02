@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
                 await paymentClawbackRepository.SaveClawbackPayments(learnerPaymentHistory, cancellationToken);
 
-                return mapper.Map<List<CalculatedRequiredLevyAmount>>(learnerPaymentHistory);
+                return GetCalculatedRequiredLevyAmountEvents(learnerPaymentHistory);
             }
 
             logger.LogDebug("only some of the previous payments needs clawback");
@@ -81,11 +81,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 {
                     ConvertToClawbackPayment(message, payment);
                     return payment;
-                });
+                }).ToList();
 
             await paymentClawbackRepository.SaveClawbackPayments(paymentToClawback, cancellationToken);
 
-            return mapper.Map<List<CalculatedRequiredLevyAmount>>(paymentToClawback);
+            return GetCalculatedRequiredLevyAmountEvents(paymentToClawback);
         }
 
         private static void ConvertToClawbackPayment(IdentifiedRemovedLearningAim message, PaymentModel clawbackPayment)
@@ -101,6 +101,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             //clawbackPayment.RequiredPaymentEventId = ???
             //clawbackPayment.EarningEventId = ???
             //clawbackPayment.FundingSourceEventId = ???
+        }
+
+        private List<CalculatedRequiredLevyAmount> GetCalculatedRequiredLevyAmountEvents(IEnumerable<PaymentModel> paymentToClawback)
+        {
+            return mapper.Map<List<CalculatedRequiredLevyAmount>>(paymentToClawback.Where(p => p.FundingSource == FundingSourceType.Levy || p.FundingSource == FundingSourceType.Transfer));
         }
     }
 }
