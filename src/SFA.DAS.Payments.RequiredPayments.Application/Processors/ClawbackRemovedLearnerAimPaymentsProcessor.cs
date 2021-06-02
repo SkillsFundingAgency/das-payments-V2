@@ -16,20 +16,20 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
     public class ClawbackRemovedLearnerAimPaymentsProcessor : IClawbackRemovedLearnerAimPaymentsProcessor
     {
-        private readonly IPaymentHistoryRepository paymentHistoryRepository;
+        private readonly IPaymentClawbackRepository paymentClawbackRepository;
         private readonly IMapper mapper;
         private readonly IPaymentLogger logger;
 
-        public ClawbackRemovedLearnerAimPaymentsProcessor(IPaymentHistoryRepository paymentHistoryRepository, IMapper mapper, IPaymentLogger logger)
+        public ClawbackRemovedLearnerAimPaymentsProcessor(IPaymentClawbackRepository paymentClawbackRepository, IMapper mapper, IPaymentLogger logger)
         {
-            this.paymentHistoryRepository = paymentHistoryRepository ?? throw new ArgumentNullException(nameof(paymentHistoryRepository));
+            this.paymentClawbackRepository = paymentClawbackRepository ?? throw new ArgumentNullException(nameof(paymentClawbackRepository));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<IReadOnlyCollection<CalculatedRequiredLevyAmount>> GenerateClawbackForRemovedLearnerAim(IdentifiedRemovedLearningAim message, CancellationToken cancellationToken)
         {
-            var learnerPaymentHistory = await paymentHistoryRepository.GetPaymentHistoryForClawback(
+            var learnerPaymentHistory = await paymentClawbackRepository.GetLearnerPaymentHistory(
                 message.Ukprn,
                 message.ContractType,
                 message.Learner.ReferenceNumber,

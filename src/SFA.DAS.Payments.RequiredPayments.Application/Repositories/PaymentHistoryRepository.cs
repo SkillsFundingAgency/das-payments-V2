@@ -68,34 +68,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
             .ToListAsync(cancellationToken);
         }
 
-        public async Task<List<PaymentModel>> GetPaymentHistoryForClawback(
-            long ukprn, 
-            ContractType contractType, 
-            string learnerReferenceNumber, 
-            string learningAimReference, 
-            int frameworkCode, 
-            int pathwayCode, 
-            int programmeType, 
-            int standardCode, 
-            short academicYear, 
-            byte collectionPeriod, 
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return await dataContext.Payment
-                .Where(payment =>
-                            payment.Ukprn == ukprn &&
-                            payment.ContractType == contractType &&
-                            payment.LearnerReferenceNumber == learnerReferenceNumber &&
-                            payment.LearningAimReference == learningAimReference &&
-                            payment.LearningAimFrameworkCode == frameworkCode &&
-                            payment.LearningAimPathwayCode == pathwayCode &&
-                            payment.LearningAimProgrammeType == (int)programmeType &&
-                            payment.LearningAimStandardCode == standardCode &&
-                            payment.CollectionPeriod.AcademicYear == academicYear &&
-                            payment.CollectionPeriod.Period < collectionPeriod)
-            .ToListAsync(cancellationToken);
-        }
-
         public async Task<decimal> GetEmployerCoInvestedPaymentHistoryTotal(ApprenticeshipKey apprenticeshipKey, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await dataContext.Payment

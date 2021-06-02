@@ -25,7 +25,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         private AutoMock mocker;
 
         private ClawbackRemovedLearnerAimPaymentsProcessor sut;
-        private Mock<IPaymentHistoryRepository> paymentHistoryRepository;
+        private Mock<IPaymentClawbackRepository> paymentClawbackRepository;
         private IdentifiedRemovedLearningAim message;
 
         private Mapper mapper;
@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             mocker.Mock<IPaymentLogger>();
 
-            paymentHistoryRepository = mocker.Mock<IPaymentHistoryRepository>();
+            paymentClawbackRepository = mocker.Mock<IPaymentClawbackRepository>();
 
             sut = mocker.Create<ClawbackRemovedLearnerAimPaymentsProcessor>(
                 new NamedParameter("mapper", mapper),
@@ -134,7 +134,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         [Test]
         public async Task GivenNoHistoricalPaymentThenNoRefundGenerated()
         {
-            paymentHistoryRepository.Setup(x => x.GetPaymentHistoryForClawback(
+            paymentClawbackRepository.Setup(x => x.GetLearnerPaymentHistory(
                     It.IsAny<long>(),
                     It.IsAny<ContractType>(),
                     It.IsAny<string>(),
@@ -156,7 +156,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         [Test]
         public async Task GivenSumOfHistoricalPaymentIsZeroThenNoRefundGenerated()
         {
-            paymentHistoryRepository.Setup(x => x.GetPaymentHistoryForClawback(
+            paymentClawbackRepository.Setup(x => x.GetLearnerPaymentHistory(
                 It.IsAny<long>(),
                 It.IsAny<ContractType>(),
                 It.IsAny<string>(),
@@ -220,7 +220,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 });
             }
 
-            paymentHistoryRepository.Setup(x => x.GetPaymentHistoryForClawback(
+            paymentClawbackRepository.Setup(x => x.GetLearnerPaymentHistory(
                 It.IsAny<long>(),
                 It.IsAny<ContractType>(),
                 It.IsAny<string>(),
