@@ -15,6 +15,7 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Application.Mapping;
 using SFA.DAS.Payments.RequiredPayments.Application.Processors;
+using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Processors
@@ -29,7 +30,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         private IdentifiedRemovedLearningAim message;
 
         private Mapper mapper;
-        private PaymentModel historicalPayment;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -78,51 +78,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 IlrSubmissionDateTime = DateTime.Now,
                 JobId = 456
             };
-
-            historicalPayment = new PaymentModel
-            {
-                AccountId = 1,
-                ActualEndDate = DateTime.Today,
-                AgreementId = "AgreementId",
-                ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
-                Amount = 0,
-                ApprenticeshipId = 2,
-                ApprenticeshipPriceEpisodeId = 3,
-                CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 4 },
-                ClawbackSourcePaymentId = null,
-                CompletionAmount = 5,
-                CompletionStatus = 6,
-                ContractType = ContractType.Act1,
-                DeliveryPeriod = 7,
-                EarningEventId = Guid.NewGuid(),
-                EventId = Guid.NewGuid(),
-                EventTime = DateTimeOffset.Now,
-                FundingSource = FundingSourceType.Levy,
-                FundingSourceEventId = Guid.NewGuid(),
-                Id = 8,
-                IlrSubmissionDateTime = DateTime.Today,
-                InstalmentAmount = 9,
-                JobId = 10,
-                LearnerReferenceNumber = "LearnerReferenceNumber",
-                LearnerUln = 11,
-                LearningAimFrameworkCode = 12,
-                LearningAimFundingLineType = "LearningAimFundingLineType",
-                LearningAimPathwayCode = 13,
-                LearningAimProgrammeType = 14,
-                LearningAimReference = "LearningAimReference",
-                LearningAimStandardCode = 15,
-                LearningStartDate = DateTime.Today,
-                NumberOfInstalments = 16,
-                PlannedEndDate = DateTime.Today,
-                PriceEpisodeIdentifier = "PriceEpisodeIdentifier",
-                ReportingAimFundingLineType = "ReportingAimFundingLineType",
-                RequiredPaymentEventId = Guid.NewGuid(),
-                StartDate = DateTime.Today,
-                SfaContributionPercentage = 17,
-                TransactionType = TransactionType.Learning,
-                TransferSenderAccountId = 18,
-                Ukprn = 19
-            };
         }
 
         [TearDown]
@@ -132,7 +87,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         }
 
         [Test]
-        public async Task GivenNoHistoricalPaymentThenNoRefundGenerated()
+        public async Task GivenNoHistoricalPaymentThenNoClawbackGenerated()
         {
             paymentClawbackRepository.Setup(x => x.GetLearnerPaymentHistory(
                     It.IsAny<long>(),
@@ -151,10 +106,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             var listOfCalculatedRequiredLevyAmounts = await sut.GenerateClawbackForRemovedLearnerAim(message, CancellationToken.None);
 
             listOfCalculatedRequiredLevyAmounts.Count.Should().Be(0);
+
+            paymentClawbackRepository.Verify(r => r.SaveClawbackPayments(It.IsAny<IEnumerable<PaymentModel>>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Test]
-        public async Task GivenSumOfHistoricalPaymentIsZeroThenNoRefundGenerated()
+        public async Task GivenSumOfHistoricalPaymentIsZeroThenNoClawbackGenerated()
         {
             paymentClawbackRepository.Setup(x => x.GetLearnerPaymentHistory(
                 It.IsAny<long>(),
@@ -183,6 +140,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             var listOfCalculatedRequiredLevyAmounts = await sut.GenerateClawbackForRemovedLearnerAim(message, CancellationToken.None);
 
             listOfCalculatedRequiredLevyAmounts.Count.Should().Be(0);
+
+            paymentClawbackRepository.Verify(r => r.SaveClawbackPayments(It.IsAny<IEnumerable<PaymentModel>>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [TestCase(100, 200)]
@@ -191,15 +150,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         [TestCase(200, -100)]
         [TestCase(200, null)]
         [TestCase(-200, null)]
-        public async Task GivenAllHistoricalPaymentsDoesNotHaveSourcePaymentIdAndSumOfAllPaymentIsNotZeroThenReversalGeneratedForThosePaymentRecords(int firstPaymentAmount, int? secondPaymentAmount)
+        public async Task GivenAllHistoricalPaymentsDoesNotHaveSourcePaymentIdAndSumOfAllPaymentIsNotZeroThenClawbackGeneratedForAllPaymentRecords(int firstPaymentAmount, int? secondPaymentAmount)
         {
 
             var historicalPayments = new List<PaymentModel>
             {
                 new PaymentModel
                 {
-                    EventId = Guid.NewGuid(),
                     Amount = firstPaymentAmount,
+                    EventId = Guid.NewGuid(),
                     JobId = 10,
                     ClawbackSourcePaymentId = null,
                     CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 1 },
@@ -211,11 +170,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             {
                 historicalPayments.Add(new PaymentModel
                 {
-                    EventId = Guid.NewGuid(),
                     Amount = secondPaymentAmount.Value,
+                    EventId = Guid.NewGuid(),
                     JobId = 11,
                     ClawbackSourcePaymentId = null,
-                    CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 1 },
+                    CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 2 },
                     IlrSubmissionDateTime = DateTime.Today,
                 });
             }
@@ -244,6 +203,69 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             {
                 AssertCalculatedRequiredLevyAmount(1, secondPaymentAmount.Value, listOfCalculatedRequiredLevyAmounts);
             }
+
+            paymentClawbackRepository.Verify(r => r.SaveClawbackPayments(It.IsAny<IEnumerable<PaymentModel>>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [TestCase(100)]
+        [TestCase(-100)]
+        public async Task GivenSomeHistoricalPaymentsHaveSourcePaymentIdAndSumOfAllPaymentIsNotZeroThenClawbackGeneratedForPaymentRecordsWithoutMatchingReversalPayment(int paymentAmount)
+        {
+            var paymentId = Guid.NewGuid();
+
+            var historicalPayments = new List<PaymentModel>
+            {
+                new PaymentModel
+                {
+                    EventId = paymentId,
+                    Amount = 100,
+                    JobId = 10,
+                    ClawbackSourcePaymentId = null,
+                    CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 1 },
+                    IlrSubmissionDateTime = DateTime.Today,
+                },
+                new PaymentModel
+                {
+                    EventId = Guid.NewGuid(),
+                    Amount = -100,
+                    JobId = 11,
+                    ClawbackSourcePaymentId = paymentId,
+                    CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 2 },
+                    IlrSubmissionDateTime = DateTime.Today,
+                },
+                new PaymentModel
+                {
+                    EventId = Guid.NewGuid(),
+                    Amount = paymentAmount,
+                    JobId = 11,
+                    ClawbackSourcePaymentId = null,
+                    CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 3 },
+                    IlrSubmissionDateTime = DateTime.Today,
+                }
+            };
+
+
+            paymentClawbackRepository.Setup(x => x.GetLearnerPaymentHistory(
+                It.IsAny<long>(),
+                It.IsAny<ContractType>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<int>(),
+                It.IsAny<int>(),
+                It.IsAny<int>(),
+                It.IsAny<int>(),
+                It.IsAny<short>(),
+                It.IsAny<byte>(),
+                It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => historicalPayments);
+
+            var listOfCalculatedRequiredLevyAmounts = await sut.GenerateClawbackForRemovedLearnerAim(message, CancellationToken.None);
+
+            listOfCalculatedRequiredLevyAmounts.Count.Should().Be(1);
+
+            AssertCalculatedRequiredLevyAmount(0, paymentAmount, listOfCalculatedRequiredLevyAmounts);
+
+            paymentClawbackRepository.Verify(r => r.SaveClawbackPayments(It.IsAny<IEnumerable<PaymentModel>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         private void AssertCalculatedRequiredLevyAmount(int index, int newAmount, IReadOnlyCollection<CalculatedRequiredLevyAmount> listOfCalculatedRequiredLevyAmounts)
