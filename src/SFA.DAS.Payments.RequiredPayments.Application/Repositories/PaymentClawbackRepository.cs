@@ -49,6 +49,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
             byte collectionPeriod, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
+            //Please DO NOT Remove AsNoTracking as this list is converted to new payments again to be stored into DB so we don't want to update existing Payments
             return await dataContext.Payment
                 .Where(payment =>
                             payment.Ukprn == ukprn &&
@@ -61,7 +62,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                             payment.LearningAimStandardCode == standardCode &&
                             payment.CollectionPeriod.AcademicYear == academicYear &&
                             payment.CollectionPeriod.Period < collectionPeriod)
-            .ToListAsync(cancellationToken);
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
         }
 
         public async Task SaveClawbackPayments(IEnumerable<PaymentModel> clawbackPayments, CancellationToken cancellationToken = default(CancellationToken))

@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
     public interface IClawbackRemovedLearnerAimPaymentsProcessor
     {
-        Task<IReadOnlyCollection<CalculatedRequiredLevyAmount>> GenerateClawbackForRemovedLearnerAim(IdentifiedRemovedLearningAim message, CancellationToken cancellationToken);
+        Task<IList<CalculatedRequiredLevyAmount>> GenerateClawbackForRemovedLearnerAim(IdentifiedRemovedLearningAim message, CancellationToken cancellationToken);
     }
 
     public class ClawbackRemovedLearnerAimPaymentsProcessor : IClawbackRemovedLearnerAimPaymentsProcessor
@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<IReadOnlyCollection<CalculatedRequiredLevyAmount>> GenerateClawbackForRemovedLearnerAim(IdentifiedRemovedLearningAim message, CancellationToken cancellationToken)
+        public async Task<IList<CalculatedRequiredLevyAmount>> GenerateClawbackForRemovedLearnerAim(IdentifiedRemovedLearningAim message, CancellationToken cancellationToken)
         {
             var learnerPaymentHistory = await paymentClawbackRepository.GetLearnerPaymentHistory(
                 message.Ukprn,
@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 message.CollectionPeriod.AcademicYear,
                 message.CollectionPeriod.Period,
                 cancellationToken).ConfigureAwait(false);
-            
+
             if (!learnerPaymentHistory.Any() || learnerPaymentHistory.Sum(p => p.Amount) == 0)
             {
                 logger.LogDebug("no previous payments or sum of all previous payments is already zero so no action required");
@@ -51,26 +51,24 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 return new List<CalculatedRequiredLevyAmount>();
             }
 
-            if (learnerPaymentHistory.All(p => p.ClawbackSourcePaymentId == null))
+            if (learnerPaymentHistory.All(p => p.ClawbackSourcePaymentEventId == null))
             {
                 logger.LogDebug("all previous payments needs clawback");
-            
+
                 learnerPaymentHistory.ForEach(p => ConvertToClawbackPayment(message, p));
 
-                await paymentClawbackRepository.SaveClawbackPayments(learnerPaymentHistory, cancellationToken);
-
-                return GetCalculatedRequiredLevyAmountEvents(learnerPaymentHistory);
+                return await ProcessPaymentToClawback(learnerPaymentHistory, cancellationToken);
             }
 
             logger.LogDebug("only some of the previous payments needs clawback");
 
             var paymentToIgnore = (from payment in learnerPaymentHistory
                                    join clawbackPayment in learnerPaymentHistory
-                                       on payment.EventId equals clawbackPayment.ClawbackSourcePaymentId
+                                       on payment.EventId equals clawbackPayment.ClawbackSourcePaymentEventId
                                    select new[] { payment.EventId, clawbackPayment.EventId })
                 .SelectMany(paymentId => paymentId);
 
-            if ( learnerPaymentHistory.Where(payment => paymentToIgnore.Contains(payment.EventId)).Sum(p => p.Amount) != 0)
+            if (learnerPaymentHistory.Where(payment => paymentToIgnore.Contains(payment.EventId)).Sum(p => p.Amount) != 0)
             {
                 logger.LogError("Previous Payment and Clawback do not Match, this clawback will result in over or under payment");
             }
@@ -83,9 +81,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     return payment;
                 }).ToList();
 
-            await paymentClawbackRepository.SaveClawbackPayments(paymentToClawback, cancellationToken);
-
-            return GetCalculatedRequiredLevyAmountEvents(paymentToClawback);
+            return await ProcessPaymentToClawback(paymentToClawback, cancellationToken);
         }
 
         private static void ConvertToClawbackPayment(IdentifiedRemovedLearningAim message, PaymentModel clawbackPayment)
@@ -106,7 +102,16 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
         private List<CalculatedRequiredLevyAmount> GetCalculatedRequiredLevyAmountEvents(IEnumerable<PaymentModel> paymentToClawback)
         {
-            return mapper.Map<List<CalculatedRequiredLevyAmount>>(paymentToClawback.Where(p => p.FundingSource == FundingSourceType.Levy || p.FundingSource == FundingSourceType.Transfer));
+            return mapper.Map<List<CalculatedRequiredLevyAmount>>(paymentToClawback);
+        }
+
+        private async Task<List<CalculatedRequiredLevyAmount>> ProcessPaymentToClawback(IList<PaymentModel> paymentToClawback, CancellationToken cancellationToken)
+        {
+            var sfaPayments = paymentToClawback.Where(p => p.FundingSource != FundingSourceType.Levy && p.FundingSource != FundingSourceType.Transfer);
+            await paymentClawbackRepository.SaveClawbackPayments(sfaPayments, cancellationToken);
+
+            var levyPayments = paymentToClawback.Where(p => p.FundingSource == FundingSourceType.Levy || p.FundingSource == FundingSourceType.Transfer);
+            return GetCalculatedRequiredLevyAmountEvents(levyPayments);
         }
     }
 }

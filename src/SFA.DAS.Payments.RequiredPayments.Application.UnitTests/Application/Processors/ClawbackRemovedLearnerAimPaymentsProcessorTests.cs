@@ -130,12 +130,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                     new PaymentModel
                     {
                         Amount = 100,
-                        FundingSource = FundingSourceType.Levy
+                        FundingSource = FundingSourceType.Levy,
+                        ContractType = ContractType.Act1,
                     },
                     new PaymentModel
                     {
                         Amount = -100,
-                        FundingSource = FundingSourceType.Levy
+                        FundingSource = FundingSourceType.Levy,
+                        ContractType = ContractType.Act1,
                     }
                 });
 
@@ -168,59 +170,126 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                         Amount = 100,
                         EventId = Guid.NewGuid(),
                         JobId = 10,
-                        ClawbackSourcePaymentId = null,
+                        ClawbackSourcePaymentEventId = null,
                         CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 1 },
                         IlrSubmissionDateTime = DateTime.Today,
-                        FundingSource = FundingSourceType.Levy
+                        FundingSource = FundingSourceType.Levy,
+                        ContractType = ContractType.Act1,
                     },
                     new PaymentModel
                     {
                         Amount = 100,
                         EventId = Guid.NewGuid(),
                         JobId = 10,
-                        ClawbackSourcePaymentId = null,
+                        ClawbackSourcePaymentEventId = null,
                         CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 2 },
                         IlrSubmissionDateTime = DateTime.Today,
-                        FundingSource = FundingSourceType.Transfer
+                        FundingSource = FundingSourceType.Transfer,
+                        ContractType = ContractType.Act1,
                     },
                     new PaymentModel
                     {
                         Amount = 100,
                         EventId = Guid.NewGuid(),
                         JobId = 10,
-                        ClawbackSourcePaymentId = null,
+                        ClawbackSourcePaymentEventId = null,
                         CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 2 },
                         IlrSubmissionDateTime = DateTime.Today,
-                        FundingSource = FundingSourceType.CoInvestedEmployer
+                        FundingSource = FundingSourceType.CoInvestedEmployer,
+                        ContractType = ContractType.Act1,
                     },
                     new PaymentModel
                     {
                         Amount = 100,
                         EventId = Guid.NewGuid(),
                         JobId = 10,
-                        ClawbackSourcePaymentId = null,
+                        ClawbackSourcePaymentEventId = null,
                         CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 2 },
                         IlrSubmissionDateTime = DateTime.Today,
-                        FundingSource = FundingSourceType.CoInvestedSfa
+                        FundingSource = FundingSourceType.CoInvestedSfa,
+                        ContractType = ContractType.Act1,
                     },
                     new PaymentModel
                     {
                         Amount = 100,
                         EventId = Guid.NewGuid(),
                         JobId = 10,
-                        ClawbackSourcePaymentId = null,
+                        ClawbackSourcePaymentEventId = null,
                         CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 2 },
                         IlrSubmissionDateTime = DateTime.Today,
-                        FundingSource = FundingSourceType.FullyFundedSfa
+                        FundingSource = FundingSourceType.FullyFundedSfa,
+                        ContractType = ContractType.Act2,
                     },
                 });
 
             var listOfCalculatedRequiredLevyAmounts = await sut.GenerateClawbackForRemovedLearnerAim(message, CancellationToken.None);
 
             listOfCalculatedRequiredLevyAmounts.Count.Should().Be(2);
+            
+            //Saving Act1 Payments
+            paymentClawbackRepository.Verify(r => 
+                r.SaveClawbackPayments(It.Is<IEnumerable<PaymentModel>>(models => models.Count() == 3), 
+                    It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task GivenSumOfHistoricalPaymentIsNotZeroThenClawbackGeneratedAndCalculatedRequiredLevyAmountEventIsNotGeneratedForAct2Payment()
+        {
+            paymentClawbackRepository.Setup(x => x.GetLearnerPaymentHistory(
+                It.IsAny<long>(),
+                It.IsAny<ContractType>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<int>(),
+                It.IsAny<int>(),
+                It.IsAny<int>(),
+                It.IsAny<int>(),
+                It.IsAny<short>(),
+                It.IsAny<byte>(),
+                It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<PaymentModel>
+                {
+                    new PaymentModel
+                    {
+                        Amount = 100,
+                        EventId = Guid.NewGuid(),
+                        JobId = 10,
+                        ClawbackSourcePaymentEventId = null,
+                        CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 2 },
+                        IlrSubmissionDateTime = DateTime.Today,
+                        FundingSource = FundingSourceType.CoInvestedEmployer,
+                        ContractType = ContractType.Act2,
+                    },
+                    new PaymentModel
+                    {
+                        Amount = 100,
+                        EventId = Guid.NewGuid(),
+                        JobId = 10,
+                        ClawbackSourcePaymentEventId = null,
+                        CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 2 },
+                        IlrSubmissionDateTime = DateTime.Today,
+                        FundingSource = FundingSourceType.CoInvestedSfa,
+                        ContractType = ContractType.Act2,
+                    },
+                    new PaymentModel
+                    {
+                        Amount = 100,
+                        EventId = Guid.NewGuid(),
+                        JobId = 10,
+                        ClawbackSourcePaymentEventId = null,
+                        CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 2 },
+                        IlrSubmissionDateTime = DateTime.Today,
+                        FundingSource = FundingSourceType.FullyFundedSfa,
+                        ContractType = ContractType.Act2,
+                    },
+                });
+
+            var listOfCalculatedRequiredLevyAmounts = await sut.GenerateClawbackForRemovedLearnerAim(message, CancellationToken.None);
+
+            listOfCalculatedRequiredLevyAmounts.Count.Should().Be(0);
 
             paymentClawbackRepository.Verify(r => 
-                r.SaveClawbackPayments(It.Is<IEnumerable<PaymentModel>>(models => models.Count() == 5), 
+                r.SaveClawbackPayments(It.Is<IEnumerable<PaymentModel>>(models => models.Count() == 3), 
                     It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -240,10 +309,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                     Amount = firstPaymentAmount,
                     EventId = Guid.NewGuid(),
                     JobId = 10,
-                    ClawbackSourcePaymentId = null,
+                    ClawbackSourcePaymentEventId = null,
                     CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 1 },
                     IlrSubmissionDateTime = DateTime.Today,
-                    FundingSource = FundingSourceType.Levy
+                    FundingSource = FundingSourceType.Levy,
+                    ContractType = ContractType.Act1,
                 }
             };
 
@@ -254,10 +324,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                     Amount = secondPaymentAmount.Value,
                     EventId = Guid.NewGuid(),
                     JobId = 11,
-                    ClawbackSourcePaymentId = null,
+                    ClawbackSourcePaymentEventId = null,
                     CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 2 },
                     IlrSubmissionDateTime = DateTime.Today,
-                    FundingSource = FundingSourceType.Levy
+                    FundingSource = FundingSourceType.Levy,
+                    ContractType = ContractType.Act1,
                 });
             }
 
@@ -302,30 +373,33 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                     EventId = paymentId,
                     Amount = 100,
                     JobId = 10,
-                    ClawbackSourcePaymentId = null,
+                    ClawbackSourcePaymentEventId = null,
                     CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 1 },
                     IlrSubmissionDateTime = DateTime.Today,
-                    FundingSource = FundingSourceType.Levy
+                    FundingSource = FundingSourceType.Levy,
+                    ContractType = ContractType.Act1,
                 },
                 new PaymentModel
                 {
                     EventId = Guid.NewGuid(),
                     Amount = -100,
                     JobId = 11,
-                    ClawbackSourcePaymentId = paymentId,
+                    ClawbackSourcePaymentEventId = paymentId,
                     CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 2 },
                     IlrSubmissionDateTime = DateTime.Today,
-                    FundingSource = FundingSourceType.Levy
+                    FundingSource = FundingSourceType.Levy,
+                    ContractType = ContractType.Act1,
                 },
                 new PaymentModel
                 {
                     EventId = Guid.NewGuid(),
                     Amount = paymentAmount,
                     JobId = 11,
-                    ClawbackSourcePaymentId = null,
+                    ClawbackSourcePaymentEventId = null,
                     CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 3 },
                     IlrSubmissionDateTime = DateTime.Today,
-                    FundingSource = FundingSourceType.Levy
+                    FundingSource = FundingSourceType.Levy,
+                    ContractType = ContractType.Act1,
                 }
             };
 
@@ -353,7 +427,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             paymentClawbackRepository.Verify(r => r.SaveClawbackPayments(It.IsAny<IEnumerable<PaymentModel>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
-        private void AssertCalculatedRequiredLevyAmount(int index, int newAmount, IReadOnlyCollection<CalculatedRequiredLevyAmount> listOfCalculatedRequiredLevyAmounts)
+        private void AssertCalculatedRequiredLevyAmount(int index, int newAmount, IList<CalculatedRequiredLevyAmount> listOfCalculatedRequiredLevyAmounts)
         {
             listOfCalculatedRequiredLevyAmounts.ElementAt(index).AmountDue.Should().Be(newAmount * -1);
             listOfCalculatedRequiredLevyAmounts.ElementAt(index).JobId.Should().Be(message.JobId);
