@@ -2,9 +2,9 @@
 using System.Diagnostics.Tracing;
 using System.Fabric;
 
-namespace SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimPaymentsService
+namespace SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService
 {
-    [EventSource(Name = "SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimPaymentsService")]
+    [EventSource(Name = "SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService")]
     internal sealed class ServiceEventSource : EventSource
     {
         public static readonly ServiceEventSource Current = new ServiceEventSource();

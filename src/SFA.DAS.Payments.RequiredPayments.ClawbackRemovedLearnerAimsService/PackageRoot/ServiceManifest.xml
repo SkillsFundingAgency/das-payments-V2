@@ -14,7 +14,7 @@
   <CodePackage Name="Code" Version="1.0.0">
     <EntryPoint>
       <ExeHost>
-        <Program>SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimPaymentsService.exe</Program>
+        <Program>SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService.exe</Program>
       </ExeHost>
     </EntryPoint>
   </CodePackage>
