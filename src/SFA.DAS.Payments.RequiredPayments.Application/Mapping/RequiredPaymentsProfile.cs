@@ -43,10 +43,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                     ProgrammeType = s.LearningAimProgrammeType,
                     Reference = s.LearningAimReference,
                     StandardCode = s.LearningAimStandardCode,
-
-                    //TODO Check start date and SequenceNumber
+                    StartDate = s.StartDate,
                     //SequenceNumber = s.SequenceNumber
-                    //StartDate = s.StartDate,
                 }))
                 .ForMember(dest => dest.Learner, opt => opt.MapFrom(s => new Learner
                 {

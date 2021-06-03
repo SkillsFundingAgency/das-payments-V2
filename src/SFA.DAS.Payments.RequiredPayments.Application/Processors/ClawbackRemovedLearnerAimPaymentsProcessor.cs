@@ -90,17 +90,18 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
         private static void ConvertToClawbackPayment(IdentifiedRemovedLearningAim message, PaymentModel clawbackPayment)
         {
+            //NOTE: DO NOTE CHANGE THE ORDER OF ASSIGNMENT BELLOW
             clawbackPayment.Amount *= -1;
             clawbackPayment.JobId = message.JobId;
-            clawbackPayment.ClawbackSourcePaymentId = clawbackPayment.EventId;
+            clawbackPayment.ClawbackSourcePaymentEventId = clawbackPayment.EventId;
             clawbackPayment.CollectionPeriod = message.CollectionPeriod.Clone();
             clawbackPayment.IlrSubmissionDateTime = message.IlrSubmissionDateTime;
             clawbackPayment.EventId = Guid.NewGuid();
             clawbackPayment.EventTime = DateTimeOffset.UtcNow;
 
-            //clawbackPayment.RequiredPaymentEventId = ???
-            //clawbackPayment.EarningEventId = ???
-            //clawbackPayment.FundingSourceEventId = ???
+            clawbackPayment.RequiredPaymentEventId = null;
+            clawbackPayment.EarningEventId = Guid.Empty;
+            clawbackPayment.FundingSourceEventId = Guid.Empty;
         }
 
         private List<CalculatedRequiredLevyAmount> GetCalculatedRequiredLevyAmountEvents(IEnumerable<PaymentModel> paymentToClawback)
