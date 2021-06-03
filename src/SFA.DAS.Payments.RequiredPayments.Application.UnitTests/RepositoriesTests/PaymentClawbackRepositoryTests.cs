@@ -81,6 +81,37 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.RepositoriesTe
             results.Count.Should().Be(1);
         }
 
+        [Test]
+        public async Task SaveClawbackPaymentsSavesNewRecordsAndDoesNotUpdateExistingRecords()
+        {
+            var contractType = ContractType.Act2;
+
+            var payment1 = CreateTestPayment(50.99m, contractType);
+            var payment2 = CreateTestPayment(-50.99m, contractType);
+
+            context.Payment.Add(payment1);
+            context.Payment.Add(payment2);
+            await context.SaveChangesAsync();
+
+            var paymentHistory = await sut.GetLearnerPaymentHistory(101, contractType, "123456", "ref", 102, 103, 104, 105, 2021, 2, CancellationToken.None);
+
+            paymentHistory.Count.Should().Be(2);
+
+            paymentHistory.ForEach(p =>
+            {
+                p.Id = 0; 
+                p.Amount *= -1; 
+                p.CollectionPeriod = new CollectionPeriod { Period = 2, AcademicYear = 2021 };
+            });
+
+            await sut.SaveClawbackPayments(paymentHistory);
+
+            var result = await context.Payment.ToListAsync();
+
+            result.Count.Should().Be(4);
+        }
+
+
         private PaymentModel CreateTestPayment(decimal amount, ContractType contractType)
         {
             return new PaymentModel

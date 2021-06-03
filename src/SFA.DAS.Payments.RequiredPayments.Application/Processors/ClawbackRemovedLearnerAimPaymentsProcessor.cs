@@ -87,6 +87,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         private static void ConvertToClawbackPayment(IdentifiedRemovedLearningAim message, PaymentModel clawbackPayment)
         {
             //NOTE: DO NOTE CHANGE THE ORDER OF ASSIGNMENT BELLOW
+            clawbackPayment.Id = 0;
             clawbackPayment.Amount *= -1;
             clawbackPayment.JobId = message.JobId;
             clawbackPayment.ClawbackSourcePaymentEventId = clawbackPayment.EventId;
