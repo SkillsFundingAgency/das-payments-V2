@@ -79,7 +79,7 @@ Scenario Outline: Levy learner changes course details in ILR after payments made
         | May/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
         | Jun/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
         | Jul/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
-
+    And levy month end is ran
     And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type           | Framework Code |
         | R03/Current Academic Year | Aug/Current Academic Year | -600          | 0                         | Learning                   | 593            |
