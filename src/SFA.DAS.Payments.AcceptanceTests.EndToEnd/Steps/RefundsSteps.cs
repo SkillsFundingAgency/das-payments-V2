@@ -137,6 +137,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"only the following provider payments will be recorded")]
         public async Task ThenTheFollowingProviderPaymentsWillBeRecorded(Table table)
         {
+            await Task.Delay(TimeSpan.FromSeconds(1));
+            await SendLevyMonthEnd();
             await ValidateRecordedProviderPayments(table, TestSession.Provider);
         }
 
