@@ -375,7 +375,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.PeriodEnd.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.PeriodEnd.Function", "SFA.DAS.Payments.PeriodEnd.Function\SFA.DAS.Payments.PeriodEnd.Function.csproj", "{28C9290E-1D39-4C60-9518-38456307B3A0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService", "SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService\SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService.csproj", "{4528DA7F-E481-4E31-961A-E5AFE723E77E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService", "SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService\SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService.csproj", "{56BE8D57-BF1B-47EC-8958-76588BF4A4B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1519,14 +1519,14 @@ Global
 		{28C9290E-1D39-4C60-9518-38456307B3A0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{28C9290E-1D39-4C60-9518-38456307B3A0}.Release|x64.ActiveCfg = Release|Any CPU
 		{28C9290E-1D39-4C60-9518-38456307B3A0}.Release|x64.Build.0 = Release|Any CPU
-		{4528DA7F-E481-4E31-961A-E5AFE723E77E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4528DA7F-E481-4E31-961A-E5AFE723E77E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4528DA7F-E481-4E31-961A-E5AFE723E77E}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{4528DA7F-E481-4E31-961A-E5AFE723E77E}.Debug|x64.Build.0 = Debug|Any CPU
-		{4528DA7F-E481-4E31-961A-E5AFE723E77E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4528DA7F-E481-4E31-961A-E5AFE723E77E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4528DA7F-E481-4E31-961A-E5AFE723E77E}.Release|x64.ActiveCfg = Release|Any CPU
-		{4528DA7F-E481-4E31-961A-E5AFE723E77E}.Release|x64.Build.0 = Release|Any CPU
+		{56BE8D57-BF1B-47EC-8958-76588BF4A4B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56BE8D57-BF1B-47EC-8958-76588BF4A4B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56BE8D57-BF1B-47EC-8958-76588BF4A4B9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{56BE8D57-BF1B-47EC-8958-76588BF4A4B9}.Debug|x64.Build.0 = Debug|Any CPU
+		{56BE8D57-BF1B-47EC-8958-76588BF4A4B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56BE8D57-BF1B-47EC-8958-76588BF4A4B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56BE8D57-BF1B-47EC-8958-76588BF4A4B9}.Release|x64.ActiveCfg = Release|Any CPU
+		{56BE8D57-BF1B-47EC-8958-76588BF4A4B9}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1680,7 +1680,7 @@ Global
 		{820B9CE6-ED12-4AD6-9B13-0E5CE0D656DA} = {DECD8689-7388-475F-B44D-51016E4F2AB3}
 		{9803CF82-6B7D-4527-A545-F31D1B4EF7DE} = {34C2FD7B-B210-412A-B777-17DEABC01327}
 		{28C9290E-1D39-4C60-9518-38456307B3A0} = {34C2FD7B-B210-412A-B777-17DEABC01327}
-		{4528DA7F-E481-4E31-961A-E5AFE723E77E} = {0CA32AC5-24E0-4D96-9D31-AA51556A64D5}
+		{56BE8D57-BF1B-47EC-8958-76588BF4A4B9} = {0CA32AC5-24E0-4D96-9D31-AA51556A64D5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E9E6D1E-3C3C-41C9-AED4-9B6DC9118F1F}
