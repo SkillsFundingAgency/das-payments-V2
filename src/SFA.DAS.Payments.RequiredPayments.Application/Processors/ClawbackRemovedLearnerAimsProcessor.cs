@@ -11,18 +11,18 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
-    public interface IClawbackRemovedLearnerAimPaymentsProcessor
+    public interface IClawbackRemovedLearnerAimsProcessor
     {
         Task<IList<CalculatedRequiredLevyAmount>> GenerateClawbackForRemovedLearnerAim(IdentifiedRemovedLearningAim message, CancellationToken cancellationToken);
     }
 
-    public class ClawbackRemovedLearnerAimPaymentsProcessor : IClawbackRemovedLearnerAimPaymentsProcessor
+    public class ClawbackRemovedLearnerAimsProcessor : IClawbackRemovedLearnerAimsProcessor
     {
         private readonly IPaymentClawbackRepository paymentClawbackRepository;
         private readonly IMapper mapper;
         private readonly IPaymentLogger logger;
 
-        public ClawbackRemovedLearnerAimPaymentsProcessor(IPaymentClawbackRepository paymentClawbackRepository, IMapper mapper, IPaymentLogger logger)
+        public ClawbackRemovedLearnerAimsProcessor(IPaymentClawbackRepository paymentClawbackRepository, IMapper mapper, IPaymentLogger logger)
         {
             this.paymentClawbackRepository = paymentClawbackRepository ?? throw new ArgumentNullException(nameof(paymentClawbackRepository));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
@@ -9,7 +8,6 @@ using Autofac.Core.Activators.Reflection;
 using Autofac.Extras.Moq;
 using AutoMapper;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -24,11 +22,11 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Processors
 {
     [TestFixture]
-    public class ClawbackRemovedLearnerAimPaymentsProcessorTests
+    public class ClawbackRemovedLearnerAimsProcessorTests
     {
         private AutoMock mocker;
 
-        private ClawbackRemovedLearnerAimPaymentsProcessor sut;
+        private ClawbackRemovedLearnerAimsProcessor sut;
         private Mock<IPaymentClawbackRepository> paymentClawbackRepository;
         private IdentifiedRemovedLearningAim message;
 
@@ -78,7 +76,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             paymentClawbackRepository = mocker.Mock<IPaymentClawbackRepository>();
 
-            sut = mocker.Create<ClawbackRemovedLearnerAimPaymentsProcessor>(
+            sut = mocker.Create<ClawbackRemovedLearnerAimsProcessor>(
                 new NamedParameter("mapper", mapper),
                 new AutowiringParameter());
         }

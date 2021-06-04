@@ -6,8 +6,6 @@
     <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
     <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
     <TargetLatestRuntimePatch>false</TargetLatestRuntimePatch>
-    <AssemblyName>SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService</AssemblyName>
-    <RootNamespace>SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +22,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Application\SFA.DAS.Payments.RequiredPayments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Messages\SFA.DAS.Payments.RequiredPayments.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.ServiceFabric.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj" />
