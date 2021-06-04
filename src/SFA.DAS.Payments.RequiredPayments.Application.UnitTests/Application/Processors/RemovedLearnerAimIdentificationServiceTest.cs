@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.RequiredPayments.Application.Processors;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;

@@ -4,7 +4,7 @@ using System.Fabric;
 
 namespace SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService
 {
-    [EventSource(Name = "SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService")]
+    [EventSource(Name = "MyCompany-SFA.DAS.Payments.RequiredPayments.ServiceFabric-SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService")]
     internal sealed class ServiceEventSource : EventSource
     {
         public static readonly ServiceEventSource Current = new ServiceEventSource();
