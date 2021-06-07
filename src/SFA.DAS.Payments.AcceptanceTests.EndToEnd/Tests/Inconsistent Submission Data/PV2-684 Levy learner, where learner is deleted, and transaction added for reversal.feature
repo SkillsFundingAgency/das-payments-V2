@@ -51,14 +51,8 @@ Scenario: Levy learner a is deleted from ILR in 07/18, but Levy learner b is add
 		| learner b  | May/Current Academic Year | 600          | 0          | 0         | pe-1                     |
 		| learner b  | Jun/Current Academic Year | 600          | 0          | 0         | pe-1                     |
 		| learner b  | Jul/Current Academic Year | 600          | 0          | 0         | pe-1                     |
-    And at month end only the following payments will be calculated
-        | Learner ID | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
-        | learner a  | R12/Current Academic Year | May/Current Academic Year | -600         | 0          | 0         |
-        | learner a  | R12/Current Academic Year | Jun/Current Academic Year | -600         | 0          | 0         |
-        | learner b  | R12/Current Academic Year | May/Current Academic Year | 600          | 0          | 0         |
-        | learner b  | R12/Current Academic Year | Jun/Current Academic Year | 600          | 0          | 0         |
-        | learner b  | R12/Current Academic Year | Jul/Current Academic Year | 600          | 0          | 0         |
-
+    
+    And levy month end is ran
 	And only the following provider payments will be recorded
         | Learner ID | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
         | learner a  | R12/Current Academic Year | May/Current Academic Year | -600          | Learning         |

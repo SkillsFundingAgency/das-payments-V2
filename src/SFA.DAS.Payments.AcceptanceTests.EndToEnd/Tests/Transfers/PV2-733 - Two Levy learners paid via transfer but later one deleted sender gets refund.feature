@@ -76,11 +76,7 @@ Scenario Outline: Transfers - Two Levy learners paid via transfer but later one 
 		| learner a  | May/Current Academic Year | 600          | 0          | 0         | pe-1                     |
 		| learner a  | Jun/Current Academic Year | 600          | 0          | 0         | pe-1                     |
 		| learner a  | Jul/Current Academic Year | 600          | 0          | 0         | pe-1                     |
-    And at month end only the following payments will be calculated
-        | Learner ID | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
-        | learner a  | R12/Current Academic Year | Jul/Current Academic Year | 600          | 0          | 0         |
-        | learner b  | R12/Current Academic Year | May/Current Academic Year | -600         | 0          | 0         |
-        | learner b  | R12/Current Academic Year | Jun/Current Academic Year | -600         | 0          | 0         |
+	And levy month end is ran
 	And only the following provider payments will be recorded
         | Learner ID | Collection Period         | Delivery Period           | Levy Payments | Transfer Payments | Transaction Type | Employer   | Sending Employer | Standard Code |
         | learner a  | R12/Current Academic Year | Jul/Current Academic Year | 0             | 600               | Learning         | employer 1 | employer 2       | 50            |
