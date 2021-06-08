@@ -428,6 +428,7 @@
     <Compile Include="Steps\PV2_2083_Steps.cs" />
     <Compile Include="Steps\PV2_2094_Steps.cs" />
     <Compile Include="Steps\PV2_2268_Steps.cs" />
+    <Compile Include="Steps\PV2_2465_Steps.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
     <Compile Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature.cs">
       <DependentUpon>Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature</DependentUpon>
@@ -658,6 +659,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-450 - Levy learner,does not live in a disadvantaged postcode area, undertaking standard.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Duplicate Price Episode Bug\PV2-2465-Duplicate-Price_Episode-Bug.Feature.cs">
+      <DependentUpon>PV2-2465-Duplicate-Price_Episode-Bug.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Tests\Employer Change of Circumstances\16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1776,6 +1782,7 @@
     <EmbeddedResource Include="FM36TestFiles\PV2-2094-3-correctly-refund-duplicate-payment-claw-backs-when-a-learner-is-added-back-into-ILR-R12.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-2268-Break-in-Learning-after-redundancy-with-delivered-days-under-75-percent-then-re-employed-before-12-weeks-is-up-R03.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-2268-Break-in-Learning-after-redundancy-with-delivered-days-under-75-percent-then-re-employed-before-12-weeks-is-up-R04.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-2465-Duplicate-Price-Episode-Bug-R07.json" />
     <None Include="packages.config" />
     <None Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -1952,6 +1959,10 @@
     <None Include="Tests\Disadvantaged Uplift\PV2-450 - Levy learner,does not live in a disadvantaged postcode area, undertaking standard.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-450 - Levy learner,does not live in a disadvantaged postcode area, undertaking standard.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Duplicate Price Episode Bug\PV2-2465-Duplicate-Price_Episode-Bug.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-2465-Duplicate-Price_Episode-Bug.Feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Employer Change of Circumstances\16-18 Learner, changes employer, earns incentive payment in the transfer month at a date before the transfer date- PV2-372.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

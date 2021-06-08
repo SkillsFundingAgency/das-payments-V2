@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
@@ -29,6 +28,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(destinationMember => destinationMember.EventId, opt => opt.Ignore())
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(src.AcademicYear, (byte)src.CollectionPeriod)))
                 .ForMember(dest => dest.LearningAim, opt => opt.MapFrom(source => source))
+                .AfterMap((intermediateLearningAim, earningEvent) => earningEvent.PriceEpisodes.ForEach(pe => pe.CourseStartDate = intermediateLearningAim.Aims.Min(ld => ld.LearningDeliveryValues.LearnStartDate)))
                 ;
 
             CreateMap<IntermediateLearningAim, ApprenticeshipContractTypeEarningsEvent>()
@@ -109,7 +109,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(dest => dest.TotalNegotiatedPrice3, opt => opt.MapFrom(source => source.PriceEpisodeValues.TNP3))
                 .ForMember(dest => dest.TotalNegotiatedPrice4, opt => opt.MapFrom(source => source.PriceEpisodeValues.TNP4))
                 .ForMember(dest => dest.AgreedPrice, opt => opt.MapFrom(source => source.PriceEpisodeValues.PriceEpisodeTotalTNPPrice))
-                .ForMember(dest => dest.CourseStartDate, opt => opt.MapFrom(source => source.PriceEpisodeValues.EpisodeStartDate))
+                .ForMember(dest => dest.CourseStartDate, opt => opt.Ignore())
                 .ForMember(dest => dest.EffectiveTotalNegotiatedPriceStartDate, opt => opt.MapFrom(source => source.PriceEpisodeValues.EpisodeEffectiveTNPStartDate))
                 .ForMember(dest => dest.PlannedEndDate, opt => opt.MapFrom(source => source.PriceEpisodeValues.PriceEpisodePlannedEndDate))
                 .ForMember(dest => dest.ActualEndDate, opt => opt.MapFrom(source => source.PriceEpisodeValues.PriceEpisodeActualEndDate))

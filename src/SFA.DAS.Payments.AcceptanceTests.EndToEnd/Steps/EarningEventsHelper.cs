@@ -3,6 +3,7 @@ using System.Linq;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
@@ -12,6 +13,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public static IEnumerable<PayableEarningEvent> PayableEarningsReceivedForLearner(TestSession session)
         {
             return PayableEarningEventHandler.ReceivedEvents.Where(earningEvent =>
+                earningEvent.Ukprn == session.Provider.Ukprn
+                && earningEvent.Learner.Uln == session.Learner.Uln
+                && earningEvent.Learner.ReferenceNumber == session.Learner.LearnRefNumber
+            );
+        }
+
+        public static IEnumerable<EarningEvent> EarningEventsReceivedForLearner(TestSession session)
+        {
+            return EarningEventHandler.ReceivedEvents.Where(earningEvent =>
                 earningEvent.Ukprn == session.Provider.Ukprn
                 && earningEvent.Learner.Uln == session.Learner.Uln
                 && earningEvent.Learner.ReferenceNumber == session.Learner.LearnRefNumber
