@@ -83,6 +83,7 @@ Scenario Outline: Levy learner deletes aim reference for eng and maths aim and p
         | Jun/Current Academic Year | 600          | 0          | 0         | 0                          | 1                   | pe-1                     |
         | Jul/Current Academic Year | 600          | 0          | 0         | 0                          | 1                   | pe-1                     |
 
+    #And <Expected Required Payments> required payments are generated
     And levy month end is ran
     And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type           |
@@ -103,11 +104,11 @@ Scenario Outline: Levy learner deletes aim reference for eng and maths aim and p
 		| R06/Current Academic Year | Jan/Current Academic Year | 600           | 0                         | Learning                   |
 
 Examples: 
-        | Collection_Period         | Levy Balance |
-        | R03/Current Academic Year | 7800         |
-		| R04/Current Academic Year | 7200         |
-		| R05/Current Academic Year | 6600         |
-		| R06/Current Academic Year | 6000         |
+        | Collection_Period         | Levy Balance | Expected Required Payments |
+        | R03/Current Academic Year | 7800         | 1                          |
+        | R04/Current Academic Year | 7200         | 2                          |
+        | R05/Current Academic Year | 6600         | 3                          |
+        | R06/Current Academic Year | 6000         | 4                          |
 
 
 
