@@ -16,6 +16,8 @@
     <Parameter Name="ProcessMessageSequentially" Value="false" />
     <Parameter Name="RequiredPaymentsService_EndpointName" Value="__RequiredPaymentsService_EndpointName__" />
     <Parameter Name="RequiredPaymentsService_FailedMessagesQueue" Value="__RequiredPaymentsService_FailedMessagesQueue__" />
+    <Parameter Name="ClawbackRemovedLearnerAimsService_EndpointName" Value="__ClawbackRemovedLearnerAimsService_EndpointName__" />
+    <Parameter Name="ClawbackRemovedLearnerAimsService_FailedMessagesQueue" Value="__ClawbackRemovedLearnerAimsService_FailedMessagesQueue__" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />

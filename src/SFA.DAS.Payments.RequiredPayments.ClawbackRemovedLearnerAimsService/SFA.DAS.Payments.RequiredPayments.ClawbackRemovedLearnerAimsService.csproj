@@ -2,11 +2,12 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
     <ServerGarbageCollection>True</ServerGarbageCollection>
     <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
     <TargetLatestRuntimePatch>False</TargetLatestRuntimePatch>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
