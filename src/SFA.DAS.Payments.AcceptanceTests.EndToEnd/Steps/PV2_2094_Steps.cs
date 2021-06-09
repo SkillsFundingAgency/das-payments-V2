@@ -84,7 +84,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then("After Period-end following provider payments will be generated in database")]
         public async Task AfterPeriodEndRunPaymentsAreGenerated(Table table)
         {
-            await WaitForRequiredPayments(table.RowCount);
 
             await EmployerMonthEndHelper.SendLevyMonthEndForEmployers(
                 TestSession.GenerateId(),
@@ -99,11 +98,33 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForIt(() => AssertExpectedPayments(expectedPayments), "Failed to wait for expected number of payments");
         }
 
+        [When(@"(.*) required payments are generated")]
+        public async Task RequiredPaymentsAreGenerated(int count)
+        {
+            await WaitForRequiredPayments(count);
+        }
+
+        [When(@"No required payments are generated")]
+        public async Task NoRequiredPaymentsAreGenerated()
+        {
+            await WaitForUnexpectedRequiredPayments();
+        }
+
         private bool AssertExpectedPayments(List<ProviderPayment> expectedPayments)
         {
             var actualPayments = Scope.Resolve<IPaymentsHelper>().GetPayments(TestSession.Provider.Ukprn, TestSession.CollectionPeriod);
 
             if (actualPayments.Count != expectedPayments.Count) return false;
+
+            //NOTE: uncomment bellow if you want to know which payments are not matching
+            //var notmatching = expectedPayments.Where(ep => !actualPayments.Any(ap =>
+            //    ep.Uln == ap.LearnerUln &&
+            //    ep.TransactionType == ap.TransactionType &&
+            //    ep.LevyPayments == ap.Amount &&
+            //    ep.ParsedDeliveryPeriod.Period == ap.DeliveryPeriod &&
+            //    ep.ParsedCollectionPeriod.AcademicYear == ap.CollectionPeriod.AcademicYear &&
+            //    ep.ParsedCollectionPeriod.Period == ap.CollectionPeriod.Period
+            //));
 
             return expectedPayments.All(ep => actualPayments.Any(ap =>
                 ep.Uln == ap.LearnerUln &&

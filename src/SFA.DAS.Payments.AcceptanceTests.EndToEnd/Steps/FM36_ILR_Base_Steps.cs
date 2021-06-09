@@ -105,14 +105,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await SetupTestCommitmentData(commitmentIdentifier1, priceEpisodeIdentifier, commitmentIdentifier2, null);
         }
 
-        //todo rename this to have commitment in the method name. Convert the pairs of commitment and pe ids to key value pairs and defaults second one to null
-        protected async Task SetupTestCommitmentData(string commitmentIdentifier1, string priceEpisodeIdentifier1,
-            string commitmentIdentifier2 = null, string priceEpisodeIdentifier2 = null, long tempUln = 0, Learner newLearner = null)
+        protected async Task SetupTestCommitmentData(string commitmentIdentifier1, string priceEpisodeIdentifier1, string commitmentIdentifier2 = null, string priceEpisodeIdentifier2 = null, long tempUln = 0, Learner newLearner = null)
         {
-            var learner = TestSession.FM36Global.Learners.Single();
-            learner.ULN = TestSession.Learner.Uln;
-            learner.LearnRefNumber = TestSession.Learner.LearnRefNumber;
-
             var overrideLearnerUln = tempUln != 0 && newLearner != null;
 
             var fm36Learner = TestSession.FM36Global.Learners.Single(l => tempUln == 0 || l.ULN == tempUln);
@@ -264,6 +258,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             await WaitForIt(() => Scope.Resolve<IPaymentsHelper>().GetRequiredPaymentsCount(TestSession.Provider.Ukprn, TestSession.CollectionPeriod) == count,
                 "Failed to wait for expected number of required payments");
+        }
+
+        protected async Task WaitForUnexpectedRequiredPayments()
+        {
+            await WaitForUnexpected(() => (Scope.Resolve<IPaymentsHelper>().GetRequiredPaymentsCount(TestSession.Provider.Ukprn, TestSession.CollectionPeriod) == 0, 
+                "No required payments were expected"),
+                "found unexpected number of required payments");
         }
 
         public void Dispose()

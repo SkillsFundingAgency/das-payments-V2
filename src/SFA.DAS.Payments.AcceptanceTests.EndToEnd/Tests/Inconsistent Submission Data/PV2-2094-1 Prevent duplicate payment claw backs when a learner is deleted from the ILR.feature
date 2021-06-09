@@ -19,6 +19,7 @@ And following provider payments exists in database without ApprenticeshipId
     | learner b  | R06/Current Academic Year | Nov/Current Academic Year | -600          | Learning         |
     | learner b  | R06/Current Academic Year | Dec/Current Academic Year | -600          | Learning         |
 When an ILR file is submitted for period R08
+And 8 required payments are generated
 And After Period-end following provider payments will be generated in database
     | Learner ID | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
     | learner b  | R08/Current Academic Year | Aug/Current Academic Year | 600           | Learning         |
@@ -30,8 +31,21 @@ And After Period-end following provider payments will be generated in database
     | learner b  | R08/Current Academic Year | Feb/Current Academic Year | 600           | Learning         |
     | learner b  | R08/Current Academic Year | Mar/Current Academic Year | 600           | Learning         |
 When an ILR file is submitted for period R11
+And 18 required payments are generated
 Then After Period-end following provider payments will be generated in database
-    | Learner ID | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
+    | Learner ID | Collection Period          | Delivery Period           | Levy Payments | Transaction Type |
+# because old payments do not have clawbackpaymenteventId every single previous payments will be reversed
+    | learner b  | R11/Current Academic Year | Aug/Current Academic Year | -600          | Learning         |
+    | learner b  | R11/Current Academic Year | Sep/Current Academic Year | -600          | Learning         |
+    | learner b  | R11/Current Academic Year | Oct/Current Academic Year | -600          | Learning         |
+    | learner b  | R11/Current Academic Year | Nov/Current Academic Year | -600          | Learning         |
+    | learner b  | R11/Current Academic Year | Dec/Current Academic Year | -600          | Learning         |
+    | learner b  | R11/Current Academic Year | Aug/Current Academic Year | 600           | Learning         |
+    | learner b  | R11/Current Academic Year | Sep/Current Academic Year | 600           | Learning         |
+    | learner b  | R11/Current Academic Year | Oct/Current Academic Year | 600           | Learning         |
+    | learner b  | R11/Current Academic Year | Nov/Current Academic Year | 600           | Learning         |
+    | learner b  | R11/Current Academic Year | Dec/Current Academic Year | 600           | Learning         |
+# this is the actual reversal from R08
     | learner b  | R11/Current Academic Year | Aug/Current Academic Year | -600          | Learning         |
     | learner b  | R11/Current Academic Year | Sep/Current Academic Year | -600          | Learning         |
     | learner b  | R11/Current Academic Year | Oct/Current Academic Year | -600          | Learning         |
@@ -40,3 +54,4 @@ Then After Period-end following provider payments will be generated in database
     | learner b  | R11/Current Academic Year | Jan/Current Academic Year | -600          | Learning         |
     | learner b  | R11/Current Academic Year | Feb/Current Academic Year | -600          | Learning         |
     | learner b  | R11/Current Academic Year | Mar/Current Academic Year | -600          | Learning         |
+# all the payments still adds up to zero

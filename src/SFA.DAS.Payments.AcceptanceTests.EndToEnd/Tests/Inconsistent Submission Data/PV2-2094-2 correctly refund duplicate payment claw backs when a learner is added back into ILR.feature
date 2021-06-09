@@ -41,6 +41,7 @@ And following provider payments exists in database with ApprenticeshipId
     | learner b  | R11/Current Academic Year | Feb/Current Academic Year | -600          | Learning         |
     | learner b  | R11/Current Academic Year | Mar/Current Academic Year | -600          | Learning         |
 When an ILR file is submitted for period R12
+And 12 required payments are generated
 And After Period-end following provider payments will be generated in database
     | Learner ID | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
 #Payments for period R12 where learner B was Added back again Thrid time
