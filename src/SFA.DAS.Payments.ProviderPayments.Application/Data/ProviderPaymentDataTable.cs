@@ -13,6 +13,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
             {
                 new DataColumn("FundingSourceEventId", typeof(Guid)),
                 new DataColumn("RequiredPaymentEventId", typeof(Guid)),
+                new DataColumn("ClawbackSourcePaymentEventId", typeof(Guid)),
                 new DataColumn("FundingSource"),
                 new DataColumn("ApprenticeshipEmployerType", typeof(byte)),
                 new DataColumn("ReportingAimFundingLineType", typeof(string)),
@@ -25,6 +26,15 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
             dataRow["FundingSourceEventId"] = eventModel.FundingSourceId;
             dataRow["RequiredPaymentEventId"] = eventModel.RequiredPaymentEventId;
             dataRow["FundingSource"] = (byte)eventModel.FundingSource;
+
+            if (!eventModel.ClawbackSourcePaymentEventId.HasValue)
+            {
+                dataRow["ClawbackSourcePaymentEventId"] = DBNull.Value;
+            }
+            else
+            {
+                dataRow["ClawbackSourcePaymentEventId"] = eventModel.ClawbackSourcePaymentEventId.Value;
+            }
 
             if (!eventModel.ApprenticeshipId.HasValue)
             {

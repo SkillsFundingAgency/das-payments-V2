@@ -18,6 +18,7 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Events
 
         public FundingSourceType FundingSourceType { get; set; }
 
+        public Guid? ClawbackSourcePaymentEventId { get; set; }
 
         private static Type[] inheritors;
         private static Type[] GetInheritors()

@@ -8,5 +8,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
         public int Priority { get; set; }
         public string AgreementId { get; set; }
         public DateTime? AgreedOnDate { get; set; }
+        public Guid? ClawbackSourcePaymentEventId { get; set; }
     }
 }
