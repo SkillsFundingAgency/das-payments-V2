@@ -62,10 +62,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
             logger.LogDebug("only some of the previous payments needs clawback");
 
-            var paymentToIgnore = (from payment in learnerPaymentHistory
-                                   join clawbackPayment in learnerPaymentHistory
-                                       on payment.EventId equals clawbackPayment.ClawbackSourcePaymentEventId
-                                   select new[] { payment.EventId, clawbackPayment.EventId })
+            var paymentToIgnore = learnerPaymentHistory.Join(learnerPaymentHistory, 
+                    payment => payment.EventId, 
+                    clawbackPayment => clawbackPayment.ClawbackSourcePaymentEventId,
+                    (payment, clawbackPayment) => new[] {payment.EventId, clawbackPayment.EventId})
                 .SelectMany(paymentId => paymentId);
 
             if (learnerPaymentHistory.Where(payment => paymentToIgnore.Contains(payment.EventId)).Sum(p => p.Amount) != 0)
@@ -86,19 +86,20 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
         private static void ConvertToClawbackPayment(IdentifiedRemovedLearningAim message, PaymentModel clawbackPayment)
         {
-            //NOTE: DO NOTE CHANGE THE ORDER OF ASSIGNMENT BELLOW
             clawbackPayment.Id = 0;
             clawbackPayment.Amount *= -1;
             clawbackPayment.JobId = message.JobId;
-            clawbackPayment.ClawbackSourcePaymentEventId = clawbackPayment.EventId;
             clawbackPayment.CollectionPeriod = message.CollectionPeriod.Clone();
             clawbackPayment.IlrSubmissionDateTime = message.IlrSubmissionDateTime;
-            clawbackPayment.EventId = Guid.NewGuid();
             clawbackPayment.EventTime = DateTimeOffset.UtcNow;
 
             clawbackPayment.RequiredPaymentEventId = null;
             clawbackPayment.EarningEventId = Guid.Empty;
             clawbackPayment.FundingSourceEventId = Guid.Empty;
+
+            //NOTE: DO NOTE CHANGE THE ORDER OF ASSIGNMENT BELLOW
+            clawbackPayment.ClawbackSourcePaymentEventId = clawbackPayment.EventId;
+            clawbackPayment.EventId = Guid.NewGuid();
         }
 
         private List<CalculatedRequiredLevyAmount> GetCalculatedRequiredLevyAmountEvents(IEnumerable<PaymentModel> paymentToClawback)

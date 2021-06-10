@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
         {
 
             CreateMap<PaymentModel, CalculatedRequiredLevyAmount>()
-                //These 4 Fields are not available in PaymentModel and therefore will not be written to DB so no need to map them, also SequenceNumber
+                //These 3 Fields are not available in PaymentModel and therefore will not be written to DB so no need to map them, also SequenceNumber
                 .ForMember(dest => dest.IlrFileName, opt => opt.Ignore())
                 .ForMember(dest => dest.AgreedOnDate, opt => opt.Ignore())
                 .ForMember(dest => dest.Priority, opt => opt.Ignore())
@@ -48,7 +48,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                     Reference = s.LearningAimReference,
                     StandardCode = s.LearningAimStandardCode,
                     StartDate = s.StartDate,
-                    //SequenceNumber = s.SequenceNumber
                 }))
                 .ForMember(dest => dest.Learner, opt => opt.MapFrom(s => new Learner
                 {
@@ -63,6 +62,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(s => s.SfaContributionPercentage))
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(s => s.StartDate))
                 .ForMember(dest => dest.OnProgrammeEarningType, opt => opt.MapFrom(s => (OnProgrammeEarningType)s.TransactionType))
+                //NOTE:TransactionType must be derived from OnProgrammeEarningType because of private setter on CalculatedRequiredLevyAmount
                 .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(s => s.TransactionType))
                 .ForMember(dest => dest.TransferSenderAccountId, opt => opt.MapFrom(s => s.TransferSenderAccountId))
                 .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(s => s.Ukprn))
