@@ -46,21 +46,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
             if (!learnerPaymentHistory.Any() || learnerPaymentHistory.Sum(p => p.Amount) == 0)
             {
-                logger.LogDebug("no previous payments or sum of all previous payments is already zero so no action required");
+                logger.LogInfo("no previous payments or sum of all previous payments is already zero so no action required" +
+                               $"jobId:{message.JobId}, learnerRef:{message.Learner.ReferenceNumber}, frameworkCode:{message.LearningAim.FrameworkCode}, " +
+                               $"pathwayCode:{message.LearningAim.PathwayCode}, programmeType:{message.LearningAim.ProgrammeType}, " +
+                               $"standardCode:{message.LearningAim.StandardCode}, learningAimReference:{message.LearningAim.Reference}, " +
+                               $"academicYear:{message.CollectionPeriod.AcademicYear}, contractType:{message.ContractType}");
 
                 return new List<CalculatedRequiredLevyAmount>();
             }
-
-            if (learnerPaymentHistory.All(p => p.ClawbackSourcePaymentEventId == null))
-            {
-                logger.LogDebug("all previous payments needs clawback");
-
-                learnerPaymentHistory.ForEach(p => ConvertToClawbackPayment(message, p));
-
-                return await ProcessPaymentToClawback(learnerPaymentHistory, cancellationToken);
-            }
-
-            logger.LogDebug("only some of the previous payments needs clawback");
 
             var paymentToIgnore = learnerPaymentHistory.Join(learnerPaymentHistory, 
                     payment => payment.EventId, 
@@ -70,7 +63,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
             if (learnerPaymentHistory.Where(payment => paymentToIgnore.Contains(payment.EventId)).Sum(p => p.Amount) != 0)
             {
-                logger.LogError("Previous Payment and Clawback do not Match, this clawback will result in over or under payment");
+                logger.LogWarning("Previous Payment and Clawback do not Match, this clawback will result in over or under payment" +
+                               $"jobId:{message.JobId}, learnerRef:{message.Learner.ReferenceNumber}, frameworkCode:{message.LearningAim.FrameworkCode}, " +
+                               $"pathwayCode:{message.LearningAim.PathwayCode}, programmeType:{message.LearningAim.ProgrammeType}, " +
+                               $"standardCode:{message.LearningAim.StandardCode}, learningAimReference:{message.LearningAim.Reference}, " +
+                               $"academicYear:{message.CollectionPeriod.AcademicYear}, contractType:{message.ContractType}");
+
             }
 
             var paymentToClawback = learnerPaymentHistory
@@ -97,7 +95,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             clawbackPayment.EarningEventId = Guid.Empty;
             clawbackPayment.FundingSourceEventId = Guid.Empty;
 
-            //NOTE: DO NOTE CHANGE THE ORDER OF ASSIGNMENT BELLOW
+            //NOTE: DO NOT CHANGE THE ORDER OF ASSIGNMENT BELLOW
             clawbackPayment.ClawbackSourcePaymentEventId = clawbackPayment.EventId;
             clawbackPayment.EventId = Guid.NewGuid();
         }

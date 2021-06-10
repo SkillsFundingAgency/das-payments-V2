@@ -46,5 +46,10 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public long? ApprenticeshipPriceEpisodeId { get; set; }
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
         public string ReportingAimFundingLineType { get; set; }
+
+        public PaymentModel Clone()
+        {
+            return (PaymentModel) MemberwiseClone();
+        }
     }
 }
