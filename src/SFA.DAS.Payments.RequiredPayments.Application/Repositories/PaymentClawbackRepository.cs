@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
 {
     public interface IPaymentClawbackRepository : IDisposable
     {
-        Task<List<PaymentModel>> GetLearnerPaymentHistory(
+        Task<List<PaymentModel>> GetReadOnlyLearnerPaymentHistory(
             long ukprn,
             ContractType contractType,
             string learnerReferenceNumber,
@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
         }
 
-        public async Task<List<PaymentModel>> GetLearnerPaymentHistory(
+        public async Task<List<PaymentModel>> GetReadOnlyLearnerPaymentHistory(
             long ukprn, 
             ContractType contractType, 
             string learnerReferenceNumber, 

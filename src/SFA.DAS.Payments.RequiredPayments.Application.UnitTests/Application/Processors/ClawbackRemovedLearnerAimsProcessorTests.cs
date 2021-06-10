@@ -155,7 +155,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 TransactionType = TransactionType.Learning,
             };
 
-            paymentClawbackRepository.Setup(x => x.GetLearnerPaymentHistory(
+            paymentClawbackRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
                     It.IsAny<long>(),
                     It.IsAny<ContractType>(),
                     It.IsAny<string>(),
@@ -183,7 +183,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         [Test]
         public async Task GivenNoHistoricalPaymentThenNoClawbackGenerated()
         {
-            paymentClawbackRepository.Setup(x => x.GetLearnerPaymentHistory(
+            paymentClawbackRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
                     It.IsAny<long>(),
                     It.IsAny<ContractType>(),
                     It.IsAny<string>(),
@@ -207,7 +207,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         [Test]
         public async Task GivenSumOfHistoricalPaymentIsZeroThenNoClawbackGenerated()
         {
-            paymentClawbackRepository.Setup(x => x.GetLearnerPaymentHistory(
+            paymentClawbackRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
                 It.IsAny<long>(),
                 It.IsAny<ContractType>(),
                 It.IsAny<string>(),
@@ -245,7 +245,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         [Test]
         public async Task GivenSumOfHistoricalPaymentIsNotZeroThenClawbackGeneratedAndCalculatedRequiredLevyAmountEventIsOnlyGeneratedForLevyAndTransferPayment()
         {
-            paymentClawbackRepository.Setup(x => x.GetLearnerPaymentHistory(
+            paymentClawbackRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
                 It.IsAny<long>(),
                 It.IsAny<ContractType>(),
                 It.IsAny<string>(),
@@ -329,7 +329,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         [Test]
         public async Task GivenSumOfHistoricalPaymentIsNotZeroThenClawbackGeneratedAndCalculatedRequiredLevyAmountEventIsNotGeneratedForAct2Payment()
         {
-            paymentClawbackRepository.Setup(x => x.GetLearnerPaymentHistory(
+            paymentClawbackRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
                 It.IsAny<long>(),
                 It.IsAny<ContractType>(),
                 It.IsAny<string>(),
@@ -426,7 +426,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 });
             }
 
-            paymentClawbackRepository.Setup(x => x.GetLearnerPaymentHistory(
+            paymentClawbackRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
                 It.IsAny<long>(),
                 It.IsAny<ContractType>(),
                 It.IsAny<string>(),
@@ -498,7 +498,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             };
 
 
-            paymentClawbackRepository.Setup(x => x.GetLearnerPaymentHistory(
+            paymentClawbackRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
                 It.IsAny<long>(),
                 It.IsAny<ContractType>(),
                 It.IsAny<string>(),

@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.RepositoriesTe
             context.Payment.Add(payment2);
             await context.SaveChangesAsync();
 
-            var results = await sut.GetLearnerPaymentHistory(101, contractType, "123456", "ref", 102, 103, 104, 105, 2021, 2, CancellationToken.None);
+            var results = await sut.GetReadOnlyLearnerPaymentHistory(101, contractType, "123456", "ref", 102, 103, 104, 105, 2021, 2, CancellationToken.None);
 
             results.Count.Should().Be(2);
         }
@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.RepositoriesTe
             context.Payment.Add(payment2);
             await context.SaveChangesAsync();
 
-            var results = await sut.GetLearnerPaymentHistory(101, contractType, "123456", "ref", 102, 103, 104, 105, 2021, 2, CancellationToken.None);
+            var results = await sut.GetReadOnlyLearnerPaymentHistory(101, contractType, "123456", "ref", 102, 103, 104, 105, 2021, 2, CancellationToken.None);
 
             results.Count.Should().Be(1);
         }
@@ -76,7 +76,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.RepositoriesTe
             context.Payment.Add(payment2);
             await context.SaveChangesAsync();
 
-            var results = await sut.GetLearnerPaymentHistory(101, contractType, "123456", "ref", 102, 103, 104, 105, 2021, 2, CancellationToken.None);
+            var results = await sut.GetReadOnlyLearnerPaymentHistory(101, contractType, "123456", "ref", 102, 103, 104, 105, 2021, 2, CancellationToken.None);
 
             results.Count.Should().Be(1);
         }
@@ -93,7 +93,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.RepositoriesTe
             context.Payment.Add(payment2);
             await context.SaveChangesAsync();
 
-            var paymentHistory = await sut.GetLearnerPaymentHistory(101, contractType, "123456", "ref", 102, 103, 104, 105, 2021, 2, CancellationToken.None);
+            var paymentHistory = await sut.GetReadOnlyLearnerPaymentHistory(101, contractType, "123456", "ref", 102, 103, 104, 105, 2021, 2, CancellationToken.None);
 
             paymentHistory.Count.Should().Be(2);
 

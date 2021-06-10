@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
         public async Task<IList<CalculatedRequiredLevyAmount>> GenerateClawbackForRemovedLearnerAim(IdentifiedRemovedLearningAim message, CancellationToken cancellationToken)
         {
-            var learnerPaymentHistory = await paymentClawbackRepository.GetLearnerPaymentHistory(
+            var learnerPaymentHistory = await paymentClawbackRepository.GetReadOnlyLearnerPaymentHistory(
                 message.Ukprn,
                 message.ContractType,
                 message.Learner.ReferenceNumber,
