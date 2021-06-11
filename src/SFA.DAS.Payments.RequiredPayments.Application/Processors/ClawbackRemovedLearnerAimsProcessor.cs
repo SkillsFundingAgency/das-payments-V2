@@ -91,7 +91,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             clawbackPayment.IlrSubmissionDateTime = message.IlrSubmissionDateTime;
             clawbackPayment.EventTime = DateTimeOffset.UtcNow;
 
-            clawbackPayment.RequiredPaymentEventId = null;
+            clawbackPayment.RequiredPaymentEventId = Guid.Empty;
             clawbackPayment.EarningEventId = Guid.Empty;
             clawbackPayment.FundingSourceEventId = Guid.Empty;
 
