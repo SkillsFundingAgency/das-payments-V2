@@ -326,6 +326,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             earningEvent.PriceEpisodes.First().CompletionHoldBackExemptionCode.Should().Be(14);
             earningEvent.PriceEpisodes.First().AgreedPrice.Should().Be(30000);
             earningEvent.PriceEpisodes.First().FundingLineType.Should().Be(fm36Learner.PriceEpisodes[0].PriceEpisodeValues.PriceEpisodeFundLineType);
+            earningEvent.PriceEpisodes.First().AimSeqNumber.Should().Be(fm36Learner.PriceEpisodes[0].PriceEpisodeValues.PriceEpisodeAimSeqNumber);
         }
 
         [Test]

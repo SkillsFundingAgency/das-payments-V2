@@ -121,6 +121,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(dest => dest.CompletionHoldBackExemptionCode, opt => opt.MapFrom(source => source.PriceEpisodeValues.PriceEpisodeCompExemCode))
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(source => source.PriceEpisodeValues.EpisodeStartDate))
                 .ForMember(dest => dest.FundingLineType, opt => opt.MapFrom(source => source.PriceEpisodeValues.PriceEpisodeFundLineType))
+                .ForMember(dest => dest.AimSeqNumber, opt => opt.MapFrom(source => source.PriceEpisodeValues.PriceEpisodeAimSeqNumber))
                 ;
         }
     }
