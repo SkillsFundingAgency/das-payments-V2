@@ -587,7 +587,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                    && actualPayment.IlrSubmissionDateTime == message.IlrSubmissionDateTime
                    && actualPayment.EventId != originalEventId
                    && actualPayment.EventTime != originalEventTime
-                   && actualPayment.RequiredPaymentEventId == null
+                   && actualPayment.RequiredPaymentEventId == Guid.Empty
                    && actualPayment.EarningEventId == Guid.Empty
                    && actualPayment.FundingSourceEventId == Guid.Empty;
         }
