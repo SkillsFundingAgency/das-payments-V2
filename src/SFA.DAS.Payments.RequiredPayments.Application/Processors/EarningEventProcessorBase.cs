@@ -128,6 +128,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                         mapper.Map(earningEvent, requiredPaymentEvent);
                         mapper.Map(requiredPayment, requiredPaymentEvent);
                         AddRefundCommitmentDetails(requiredPayment, requiredPaymentEvent);
+                        AddAimSeqNumber(period, earningEvent, requiredPaymentEvent);
 
                         var priceEpisodeIdentifier = requiredPaymentEvent.PriceEpisodeIdentifier;
 
@@ -163,6 +164,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 requiredPaymentEvent.ApprenticeshipPriceEpisodeId = requiredPayment.ApprenticeshipPriceEpisodeId;
                 requiredPaymentEvent.ApprenticeshipEmployerType = requiredPayment.ApprenticeshipEmployerType;
             }
+        }
+
+        private static void AddAimSeqNumber(EarningPeriod period, TEarningEvent earningEvent, PeriodisedRequiredPaymentEvent requiredPaymentEvent)
+        {
+            requiredPaymentEvent.AimSeqNumber = earningEvent.PriceEpisodes.FirstOrDefault(x => x.Identifier == period.PriceEpisodeIdentifier)?.AimSeqNumber;
         }
 
         private static bool NegativeEarningWillResultInARefund(EarningPeriod period, List<Payment> payments)

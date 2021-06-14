@@ -42,15 +42,20 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Include<ApprenticeshipContractType2RedundancyEarningEvent, CompletionPaymentHeldBackEvent>()
                 .Include<IEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<IEarningEvent, CalculatedRequiredIncentiveAmount>()
-                .ForMember(requiredPayment => requiredPayment.EarningEventId, opt => opt.MapFrom(earning => earning.EventId))
+                .ForMember(requiredPayment => requiredPayment.EarningEventId,
+                    opt => opt.MapFrom(earning => earning.EventId))
                 .ForMember(requiredPayment => requiredPayment.AmountDue, opt => opt.Ignore())
                 .ForMember(requiredPayment => requiredPayment.DeliveryPeriod, opt => opt.Ignore())
                 .ForMember(requiredPayment => requiredPayment.PriceEpisodeIdentifier, opt => opt.Ignore())
-                .ForMember(requiredPayment => requiredPayment.CollectionPeriod, opt => opt.MapFrom(earning => earning.CollectionPeriod.Clone()))
-                .ForMember(requiredPayment => requiredPayment.Learner, opt => opt.MapFrom(earning => earning.Learner.Clone()))
-                .ForMember(requiredPayment => requiredPayment.LearningAim, opt => opt.MapFrom(earning => earning.LearningAim.Clone()))
+                .ForMember(requiredPayment => requiredPayment.CollectionPeriod,
+                    opt => opt.MapFrom(earning => earning.CollectionPeriod.Clone()))
+                .ForMember(requiredPayment => requiredPayment.Learner,
+                    opt => opt.MapFrom(earning => earning.Learner.Clone()))
+                .ForMember(requiredPayment => requiredPayment.LearningAim,
+                    opt => opt.MapFrom(earning => earning.LearningAim.Clone()))
                 .ForMember(requiredPayment => requiredPayment.EventId, opt => opt.Ignore())
-                .ForMember(requiredPayment => requiredPayment.LearningStartDate, opt => opt.MapFrom(earning => earning.LearningAim.StartDate))
+                .ForMember(requiredPayment => requiredPayment.LearningStartDate,
+                    opt => opt.MapFrom(earning => earning.LearningAim.StartDate))
                 .Ignore(x => x.ApprenticeshipId)
                 .Ignore(x => x.ApprenticeshipPriceEpisodeId)
                 .Ignore(x => x.ContractType)
@@ -66,8 +71,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.InstalmentAmount)
                 .Ignore(x => x.NumberOfInstalments)
                 .Ignore(x => x.ApprenticeshipEmployerType)
-                .Ignore(x => x.ReportingAimFundingLineType);
-         
+                .Ignore(x => x.ReportingAimFundingLineType)
+                .Ignore(x => x.AimSeqNumber);
+
             CreateMap<IEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<PayableEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<FunctionalSkillEarningsEvent, CalculatedRequiredOnProgrammeAmount>()
@@ -252,7 +258,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.ApprenticeshipPriceEpisodeId)
                 .Ignore(x => x.NumberOfInstalments)
                 .Ignore(x => x.ApprenticeshipEmployerType)
-                .Ignore(x => x.ReportingAimFundingLineType);
+                .Ignore(x => x.ReportingAimFundingLineType)
+                .Ignore(x => x.AimSeqNumber);
 
             CreateMap<RequiredPayment, CalculatedRequiredCoInvestedAmount>()
                 .ForMember(x => x.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage))
@@ -299,8 +306,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.IlrFileName)
                 .Ignore(x => x.ApprenticeshipId)
                 .Ignore(x => x.ApprenticeshipPriceEpisodeId)
+                .Ignore(x => x.AimSeqNumber) //todo is this right? should the aim seq number be mapped in this scenario
                 ;
-                            
+
             CreateMap<IdentifiedRemovedLearningAim, CalculatedRequiredCoInvestedAmount>()
                 .Ignore(x => x.SfaContributionPercentage)
                 .Ignore(x => x.OnProgrammeEarningType)
@@ -341,8 +349,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.LearningAim)
                 .Ignore(x => x.IlrSubmissionDateTime)
                 .Ignore(x => x.IlrFileName)
+                .Ignore(x => x.AimSeqNumber) //todo is this correct in this scenario?
                 ;
-            
+
             CreateMap<PaymentHistoryEntity, CalculatedRequiredCoInvestedAmount>()
                 .Ignore(x => x.TransactionType)
                 .Ignore(x => x.OnProgrammeEarningType)
@@ -382,6 +391,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(payment => payment.CompletionAmount, opt => opt.MapFrom(episode => episode.CompletionAmount))
                 .ForMember(payment => payment.InstalmentAmount, opt => opt.MapFrom(episode => episode.InstalmentAmount))
                 .ForMember(payment => payment.NumberOfInstalments, opt => opt.MapFrom(episode => episode.NumberOfInstalments))
+                //.ForMember(payment => payment.AimSeqNumber, opt => opt.MapFrom(episode => episode.AimSeqNumber))
                 .Ignore(x => x.PriceEpisodeIdentifier)
                 .Ignore(x => x.AmountDue)
                 .Ignore(x => x.DeliveryPeriod)

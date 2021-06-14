@@ -124,6 +124,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                             }
                         })
                     }
+                },
+                PriceEpisodes = new List<PriceEpisode>
+                {
+                    new PriceEpisode
+                    {
+                        AimSeqNumber = 2,
+                        Identifier = "2"
+                    }
                 }
             };
 
@@ -159,6 +167,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             Assert.AreEqual(1, actualRequiredPayment.Count);
             Assert.AreEqual(1, actualRequiredPayment.First().AmountDue);
             Assert.AreEqual(earningEvent.LearningAim.Reference, actualRequiredPayment.First().LearningAim.Reference);
+            Assert.AreEqual(2, actualRequiredPayment.First().AimSeqNumber);
         }
 
         [Test]
