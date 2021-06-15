@@ -179,7 +179,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     NumberOfInstalments = 12,
                     ReportingAimFundingLineType = "19+ Apprenticeship (Employer on App Service) Levy funding",
                     ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
-                    LearningStartDate = DateTime.Now,
+                    LearningStartDate = TestSession.FM36Global.Learners[1].LearningDeliveries.First().LearningDeliveryValues.LearnStartDate,
 
                     ApprenticeshipId = missingApprenticeshipId && providerPayment.LevyPayments < 0 ? null : apprenticeship?.Id,
                     ApprenticeshipPriceEpisodeId = missingApprenticeshipId && providerPayment.LevyPayments < 0 ? null : apprenticeship?.ApprenticeshipPriceEpisodes.First().Id,
