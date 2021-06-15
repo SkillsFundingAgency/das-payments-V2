@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
 
             if (!eventModel.ClawbackSourcePaymentEventId.HasValue)
             {
-                dataRow["ClawbackSourcePaymentEventId"] = DBNull.Value;
+                dataRow["ClawbackSourcePaymentEventId"] = Guid.Empty;
             }
             else
             {
