@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     [Binding]
     [Scope(Feature = "PV2-2094-1-Prevent-duplicate-payment-claw-backs-when-a-learner-is-deleted-from-the-ILR")]
     [Scope(Feature = "PV2-2094-2-correctly-refund-duplicate-payment-claw-backs-when-a-learner-is-added-back-into-ILR")]
-    [Scope(Feature = "PV2-2094-3-correctly-refund-duplicate-payment-claw-backs-when-a-learner-is-added-back-into-ILR")]
+    [Scope(Feature = "PV2-2094-1-Co-Funding-Prevent-duplicate-payment-claw-backs-when-a-learner-is-deleted-from-the-ILR")]
     // ReSharper disable once InconsistentNaming
     public class PV2_2094_Steps : FM36_ILR_Base_Steps
     {
@@ -114,7 +114,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var actualPayments = Scope.Resolve<IPaymentsHelper>().GetPayments(TestSession.Provider.Ukprn, TestSession.CollectionPeriod);
 
-            if (actualPayments.Count != expectedPayments.Count) return false;
+            var expectedLevyPayments = expectedPayments.Where(x => x.LevyPayments != 0);
+            var expectedSfaCoFundedPayments = expectedPayments.Where(x => x.SfaCoFundedPayments != 0);
+            var expectedEmployerCoFundedPayments = expectedPayments.Where(x => x.EmployerCoFundedPayments != 0);
+
+            var expectedCount = expectedLevyPayments.Count() + expectedSfaCoFundedPayments.Count() +
+                                expectedEmployerCoFundedPayments.Count();
+
+            if (actualPayments.Count != expectedCount) return false;
 
             //NOTE: uncomment bellow if you want to know which payments are not matching
             //var notmatching = expectedPayments.Where(ep => !actualPayments.Any(ap =>
@@ -126,14 +133,34 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             //    ep.ParsedCollectionPeriod.Period == ap.CollectionPeriod.Period
             //));
 
-            return expectedPayments.All(ep => actualPayments.Any(ap =>
+            var levyPaymentsFound = expectedLevyPayments.All(ep => actualPayments.Any(ap =>
                 ep.Uln == ap.LearnerUln &&
                 ep.TransactionType == ap.TransactionType &&
                 ep.LevyPayments == ap.Amount &&
                 ep.ParsedDeliveryPeriod.Period == ap.DeliveryPeriod &&
                 ep.ParsedCollectionPeriod.AcademicYear == ap.CollectionPeriod.AcademicYear &&
-                ep.ParsedCollectionPeriod.Period == ap.CollectionPeriod.Period
+                ep.ParsedCollectionPeriod.Period == ap.CollectionPeriod.Period &&
+                ap.FundingSource == FundingSourceType.Levy
             ));
+            var sfaCoFundedPaymentsFound = expectedSfaCoFundedPayments.All(ep => actualPayments.Any(ap =>
+                ep.Uln == ap.LearnerUln &&
+                ep.TransactionType == ap.TransactionType &&
+                ep.SfaCoFundedPayments == ap.Amount &&
+                ep.ParsedDeliveryPeriod.Period == ap.DeliveryPeriod &&
+                ep.ParsedCollectionPeriod.AcademicYear == ap.CollectionPeriod.AcademicYear &&
+                ep.ParsedCollectionPeriod.Period == ap.CollectionPeriod.Period &&
+                ap.FundingSource == FundingSourceType.CoInvestedSfa
+            ));
+            var employerCoFundedPaymentsFound = expectedEmployerCoFundedPayments.All(ep => actualPayments.Any(ap =>
+                ep.Uln == ap.LearnerUln &&
+                ep.TransactionType == ap.TransactionType &&
+                ep.EmployerCoFundedPayments == ap.Amount &&
+                ep.ParsedDeliveryPeriod.Period == ap.DeliveryPeriod &&
+                ep.ParsedCollectionPeriod.AcademicYear == ap.CollectionPeriod.AcademicYear &&
+                ep.ParsedCollectionPeriod.Period == ap.CollectionPeriod.Period &&
+                ap.FundingSource == FundingSourceType.CoInvestedEmployer
+            ));
+            return levyPaymentsFound && sfaCoFundedPaymentsFound && employerCoFundedPaymentsFound;
         }
 
         private async Task CreatePaymentModel(Table table, bool missingApprenticeshipId = false)
@@ -146,44 +173,131 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 var apprenticeship = TestSession.Apprenticeships[CommitmentIdentifierB];
 
-                paymentHistory.Add(new PaymentModel
+                if (providerPayment.LevyPayments != 0)
                 {
-                    EventId = Guid.NewGuid(),
-                    JobId = jobId,
-                    CollectionPeriod = providerPayment.ParsedCollectionPeriod,
-                    DeliveryPeriod = providerPayment.ParsedDeliveryPeriod.Period,
-                    Ukprn = TestSession.Provider.Ukprn,
-                    LearnerUln = learnerB.Uln,
-                    LearnerReferenceNumber = learnerB.LearnRefNumber,
-                    SfaContributionPercentage = 0.95m,
-                    TransactionType = providerPayment.TransactionType,
-                    ContractType = ContractType.Act1,
-                    PriceEpisodeIdentifier = PriceEpisodeIdentifierB,
-                    FundingSource = FundingSourceType.Levy,
-                    LearningAimPathwayCode = 1,
-                    LearningAimReference = "ZPROG001",
-                    LearningAimStandardCode = 0,
-                    IlrSubmissionDateTime = DateTime.Now,
-                    Amount = providerPayment.LevyPayments,
-                    LearningAimFundingLineType = "19+ Apprenticeship (Employer on App Service)",
-                    LearningAimFrameworkCode = 418,
-                    LearningAimProgrammeType = 20,
-                    AccountId = apprenticeship?.AccountId,
-                    TransferSenderAccountId = apprenticeship?.TransferSendingEmployerAccountId,
-                    StartDate = DateTime.UtcNow,
-                    PlannedEndDate = DateTime.UtcNow,
-                    ActualEndDate = DateTime.UtcNow,
-                    CompletionStatus = 1,
-                    CompletionAmount = 9000M,
-                    InstalmentAmount = 600M,
-                    NumberOfInstalments = 12,
-                    ReportingAimFundingLineType = "19+ Apprenticeship (Employer on App Service) Levy funding",
-                    ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
-                    LearningStartDate = TestSession.FM36Global.Learners[1].LearningDeliveries.First().LearningDeliveryValues.LearnStartDate,
+                    paymentHistory.Add(new PaymentModel
+                    {
+                        EventId = Guid.NewGuid(),
+                        JobId = jobId,
+                        CollectionPeriod = providerPayment.ParsedCollectionPeriod,
+                        DeliveryPeriod = providerPayment.ParsedDeliveryPeriod.Period,
+                        Ukprn = TestSession.Provider.Ukprn,
+                        LearnerUln = learnerB.Uln,
+                        LearnerReferenceNumber = learnerB.LearnRefNumber,
+                        SfaContributionPercentage = 0.95m,
+                        TransactionType = providerPayment.TransactionType,
+                        ContractType = ContractType.Act1,
+                        PriceEpisodeIdentifier = PriceEpisodeIdentifierB,
+                        FundingSource = FundingSourceType.Levy,
+                        LearningAimPathwayCode = 1,
+                        LearningAimReference = "ZPROG001",
+                        LearningAimStandardCode = 0,
+                        IlrSubmissionDateTime = DateTime.Now,
+                        Amount = providerPayment.LevyPayments,
+                        LearningAimFundingLineType = "19+ Apprenticeship (Employer on App Service)",
+                        LearningAimFrameworkCode = 418,
+                        LearningAimProgrammeType = 20,
+                        AccountId = apprenticeship?.AccountId,
+                        TransferSenderAccountId = apprenticeship?.TransferSendingEmployerAccountId,
+                        StartDate = DateTime.UtcNow,
+                        PlannedEndDate = DateTime.UtcNow,
+                        ActualEndDate = DateTime.UtcNow,
+                        CompletionStatus = 1,
+                        CompletionAmount = 9000M,
+                        InstalmentAmount = 600M,
+                        NumberOfInstalments = 12,
+                        ReportingAimFundingLineType = "19+ Apprenticeship (Employer on App Service) Levy funding",
+                        ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
+                        LearningStartDate = TestSession.FM36Global.Learners[1].LearningDeliveries.First().LearningDeliveryValues.LearnStartDate,
 
-                    ApprenticeshipId = missingApprenticeshipId && providerPayment.LevyPayments < 0 ? null : apprenticeship?.Id,
-                    ApprenticeshipPriceEpisodeId = missingApprenticeshipId && providerPayment.LevyPayments < 0 ? null : apprenticeship?.ApprenticeshipPriceEpisodes.First().Id,
-                });
+                        ApprenticeshipId = missingApprenticeshipId && providerPayment.LevyPayments < 0 ? null : apprenticeship?.Id,
+                        ApprenticeshipPriceEpisodeId = missingApprenticeshipId && providerPayment.LevyPayments < 0 ? null : apprenticeship?.ApprenticeshipPriceEpisodes.First().Id,
+                    });
+                }
+
+                if (providerPayment.SfaCoFundedPayments != 0)
+                {
+                    paymentHistory.Add(new PaymentModel
+                    {
+                        EventId = Guid.NewGuid(),
+                        JobId = jobId,
+                        CollectionPeriod = providerPayment.ParsedCollectionPeriod,
+                        DeliveryPeriod = providerPayment.ParsedDeliveryPeriod.Period,
+                        Ukprn = TestSession.Provider.Ukprn,
+                        LearnerUln = learnerB.Uln,
+                        LearnerReferenceNumber = learnerB.LearnRefNumber,
+                        SfaContributionPercentage = 0.95m,
+                        TransactionType = providerPayment.TransactionType,
+                        ContractType = ContractType.Act1,
+                        PriceEpisodeIdentifier = PriceEpisodeIdentifierB,
+                        FundingSource = FundingSourceType.CoInvestedSfa,
+                        LearningAimPathwayCode = 1,
+                        LearningAimReference = "ZPROG001",
+                        LearningAimStandardCode = 0,
+                        IlrSubmissionDateTime = DateTime.Now,
+                        Amount = providerPayment.SfaCoFundedPayments,
+                        LearningAimFundingLineType = "19+ Apprenticeship (Employer on App Service)",
+                        LearningAimFrameworkCode = 418,
+                        LearningAimProgrammeType = 20,
+                        AccountId = apprenticeship?.AccountId,
+                        TransferSenderAccountId = apprenticeship?.TransferSendingEmployerAccountId,
+                        StartDate = DateTime.UtcNow,
+                        PlannedEndDate = DateTime.UtcNow,
+                        ActualEndDate = DateTime.UtcNow,
+                        CompletionStatus = 1,
+                        CompletionAmount = 9000M,
+                        InstalmentAmount = 600M,
+                        NumberOfInstalments = 12,
+                        ReportingAimFundingLineType = "19+ Apprenticeship (Employer on App Service) Levy funding",
+                        ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
+                        LearningStartDate = TestSession.FM36Global.Learners[1].LearningDeliveries.First().LearningDeliveryValues.LearnStartDate,
+
+                        ApprenticeshipId = missingApprenticeshipId && providerPayment.SfaCoFundedPayments < 0 ? null : apprenticeship?.Id,
+                        ApprenticeshipPriceEpisodeId = missingApprenticeshipId && providerPayment.SfaCoFundedPayments < 0 ? null : apprenticeship?.ApprenticeshipPriceEpisodes.First().Id,
+                    });
+                }
+
+                if (providerPayment.EmployerCoFundedPayments != 0)
+                {
+                    paymentHistory.Add(new PaymentModel
+                    {
+                        EventId = Guid.NewGuid(),
+                        JobId = jobId,
+                        CollectionPeriod = providerPayment.ParsedCollectionPeriod,
+                        DeliveryPeriod = providerPayment.ParsedDeliveryPeriod.Period,
+                        Ukprn = TestSession.Provider.Ukprn,
+                        LearnerUln = learnerB.Uln,
+                        LearnerReferenceNumber = learnerB.LearnRefNumber,
+                        SfaContributionPercentage = 0.95m,
+                        TransactionType = providerPayment.TransactionType,
+                        ContractType = ContractType.Act1,
+                        PriceEpisodeIdentifier = PriceEpisodeIdentifierB,
+                        FundingSource = FundingSourceType.CoInvestedEmployer,
+                        LearningAimPathwayCode = 1,
+                        LearningAimReference = "ZPROG001",
+                        LearningAimStandardCode = 0,
+                        IlrSubmissionDateTime = DateTime.Now,
+                        Amount = providerPayment.EmployerCoFundedPayments,
+                        LearningAimFundingLineType = "19+ Apprenticeship (Employer on App Service)",
+                        LearningAimFrameworkCode = 418,
+                        LearningAimProgrammeType = 20,
+                        AccountId = apprenticeship?.AccountId,
+                        TransferSenderAccountId = apprenticeship?.TransferSendingEmployerAccountId,
+                        StartDate = DateTime.UtcNow,
+                        PlannedEndDate = DateTime.UtcNow,
+                        ActualEndDate = DateTime.UtcNow,
+                        CompletionStatus = 1,
+                        CompletionAmount = 9000M,
+                        InstalmentAmount = 600M,
+                        NumberOfInstalments = 12,
+                        ReportingAimFundingLineType = "19+ Apprenticeship (Employer on App Service) Levy funding",
+                        ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
+                        LearningStartDate = TestSession.FM36Global.Learners[1].LearningDeliveries.First().LearningDeliveryValues.LearnStartDate,
+
+                        ApprenticeshipId = missingApprenticeshipId && providerPayment.EmployerCoFundedPayments < 0 ? null : apprenticeship?.Id,
+                        ApprenticeshipPriceEpisodeId = missingApprenticeshipId && providerPayment.EmployerCoFundedPayments < 0 ? null : apprenticeship?.ApprenticeshipPriceEpisodes.First().Id,
+                    });
+                }
             }
 
             await DataContext.Payment.AddRangeAsync(paymentHistory);

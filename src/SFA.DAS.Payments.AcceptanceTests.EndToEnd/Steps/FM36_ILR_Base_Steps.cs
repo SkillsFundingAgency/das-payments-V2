@@ -186,6 +186,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             TestSession.FM36Global.UKPRN = TestSession.Provider.Ukprn;
         }
 
+        [Given(@"the employer has no levy balance")]
+        public async Task GivenTheEmployerHasNoLevyBalance()
+        {
+            var levyModel = TestSession.Employer.ToModel();
+            levyModel.Balance = 0;
+
+            var existingLevyAccount = testDataContext.LevyAccount.FirstOrDefault(x => x.AccountId == levyModel.AccountId);
+
+            if (existingLevyAccount == null)
+            {
+                await testDataContext.LevyAccount.AddAsync(levyModel);
+            }
+            else
+            {
+                existingLevyAccount.Balance = 0;
+            }
+            await testDataContext.SaveChangesAsync();
+        }
+
         [When(@"the Provider submits the single price episode PE-1 in the ILR")]
         [When("the Provider submits the 2 price episodes in the ILR")]
         public async Task WhenTheProviderSubmitsThePriceEpisodesInTheIlr()
