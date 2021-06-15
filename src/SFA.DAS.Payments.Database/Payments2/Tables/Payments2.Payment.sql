@@ -73,6 +73,7 @@ CREATE UNIQUE INDEX UX_Payment_LogicalDuplicates ON Payments2.Payment
 	,[AccountId]
 	,[TransferSenderAccountId]
 	,[ApprenticeshipEmployerType]
+	,[ClawbackSourcePaymentEventId]
 	,DuplicateNumber
 )
 GO
