@@ -15,6 +15,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.FundingSource
             builder.Property(x => x.EventId).HasColumnName(@"EventId");
             builder.Property(x => x.EarningEventId).HasColumnName(@"EarningEventId");
             builder.Property(x => x.RequiredPaymentEventId).HasColumnName(@"RequiredPaymentEventId");
+            builder.Property(x => x.ClawbackSourcePaymentEventId).HasColumnName(@"ClawbackSourcePaymentEventId");
             builder.Property(x => x.EventTime).HasColumnName(@"EventTime");
             builder.Property(x => x.PriceEpisodeIdentifier).HasColumnName(@"PriceEpisodeIdentifier");
             builder.Property(x => x.Amount).HasColumnName(@"Amount");
