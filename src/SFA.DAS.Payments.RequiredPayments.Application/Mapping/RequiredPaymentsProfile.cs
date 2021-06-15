@@ -360,6 +360,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.IlrFileName)
                 .Ignore(x => x.ApprenticeshipId)
                 .Ignore(x => x.ApprenticeshipPriceEpisodeId)
+                .Ignore(x => x.ClawbackSourcePaymentEventId)
                 ;
 
             CreateMap<IdentifiedRemovedLearningAim, CalculatedRequiredCoInvestedAmount>()
@@ -379,7 +380,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.SfaContributionPercentage)
                 .Ignore(x => x.OnProgrammeEarningType)
                 .Ignore(x => x.AgreedOnDate)
-                .Ignore(x => x.ClawbackSourcePaymentEventId)
                 ;
 
             CreateMap<PaymentHistoryEntity, PeriodisedRequiredPaymentEvent>()
@@ -403,6 +403,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.LearningAim)
                 .Ignore(x => x.IlrSubmissionDateTime)
                 .Ignore(x => x.IlrFileName)
+                .Ignore(x => x.ClawbackSourcePaymentEventId)
                 ;
 
             CreateMap<PaymentHistoryEntity, CalculatedRequiredCoInvestedAmount>()
@@ -423,7 +424,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.AgreementId)
                 .Ignore(x => x.OnProgrammeEarningType)
                 .Ignore(x => x.AgreedOnDate)
-                .Ignore(x => x.ClawbackSourcePaymentEventId)
                 ;
 
             CreateMap<PriceEpisode, LearningAim>()
@@ -467,6 +467,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.ApprenticeshipPriceEpisodeId)
                 .Ignore(x => x.ApprenticeshipEmployerType)
                 .Ignore(x => x.ReportingAimFundingLineType)
+                .Ignore(x => x.ClawbackSourcePaymentEventId)
                 ;
             // End Required Payment --> RequiredPaymentEvent
 

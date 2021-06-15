@@ -43,6 +43,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 DeliveryPeriod = levyAmount.DeliveryPeriod,
                 AccountId = levyAmount.AccountId ?? 0,
                 RequiredPaymentEventId = levyAmount.EventId,
+                ClawbackSourcePaymentEventId = levyAmount.ClawbackSourcePaymentEventId,
                 TransferSenderAccountId = levyAmount.TransferSenderAccountId,
                 MessagePayload = levyAmount.ToJson(),
                 MessageType = levyAmount.GetType().FullName,
