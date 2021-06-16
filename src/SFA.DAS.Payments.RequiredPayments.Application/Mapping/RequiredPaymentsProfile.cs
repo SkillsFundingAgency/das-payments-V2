@@ -121,7 +121,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.InstalmentAmount)
                 .Ignore(x => x.NumberOfInstalments)
                 .Ignore(x => x.ApprenticeshipEmployerType)
-                .Ignore(x => x.ReportingAimFundingLineType);
+                .Ignore(x => x.ReportingAimFundingLineType)
+                .Ignore(x => x.ClawbackSourcePaymentEventId)
+                ;
 
             CreateMap<IEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<PayableEarningEvent, CalculatedRequiredOnProgrammeAmount>()
@@ -312,6 +314,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.NumberOfInstalments)
                 .Ignore(x => x.ApprenticeshipEmployerType)
                 .Ignore(x => x.ReportingAimFundingLineType)
+                .Ignore(x => x.ClawbackSourcePaymentEventId)
                 ;
 
             CreateMap<RequiredPayment, CalculatedRequiredCoInvestedAmount>()
