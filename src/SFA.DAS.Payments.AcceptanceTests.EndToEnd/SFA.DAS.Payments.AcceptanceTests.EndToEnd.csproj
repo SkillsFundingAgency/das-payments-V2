@@ -428,6 +428,7 @@
     <Compile Include="Steps\PV2_2083_Steps.cs" />
     <Compile Include="Steps\PV2_2268_Steps.cs" />
     <Compile Include="Steps\PV2_2465_Steps.cs" />
+    <Compile Include="Steps\PV2_2466_Steps.cs" />
     <Compile Include="Steps\RefundsSteps.cs" />
     <Compile Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature.cs">
       <DependentUpon>Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature</DependentUpon>
@@ -548,6 +549,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-1824-DLock09-One-Price-Episode-UnHappy-Path.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Mapping\PV2-2466-Levy-Learner-PriceEpisodeAimSeqNumber-IsMapped-FromILR-ToPaymentsTable.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-2466-Levy-Learner-PriceEpisodeAimSeqNumber-IsMapped-FromILR-ToPaymentsTable.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\DataLocks\PV2-1825-DLock09-Two-Price-Episodes-Happy-Path.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1768,6 +1774,7 @@
     <EmbeddedResource Include="FM36TestFiles\PV2-2268-Break-in-Learning-after-redundancy-with-delivered-days-under-75-percent-then-re-employed-before-12-weeks-is-up-R03.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-2268-Break-in-Learning-after-redundancy-with-delivered-days-under-75-percent-then-re-employed-before-12-weeks-is-up-R04.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-2465-Duplicate-Price-Episode-Bug-R07.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-2466-Levy-Learner-PriceEpisodeAimSeqNumber-IsMapped-FromILR-ToPaymentsTable-R03.json" />
     <None Include="packages.config" />
     <None Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2490,6 +2497,10 @@
     <None Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finishes two months early PV2-276.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy Learner, levy available, finishes two months early PV2-276.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Mapping\PV2-2466-Levy-Learner-PriceEpisodeAimSeqNumber-IsMapped-FromILR-ToPaymentsTable.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-2466-Levy-Learner-PriceEpisodeAimSeqNumber-IsMapped-FromILR-ToPaymentsTable.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Non-Levy Learner - Basic Day\Non-levy learner - learning support OPP and completion payments - PV2-429.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
