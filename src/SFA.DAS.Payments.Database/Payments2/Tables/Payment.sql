@@ -44,7 +44,7 @@ CREATE TABLE [Payments2].[Payment]
 	ReportingAimFundingLineType NVARCHAR(120) NULL, 
 	[NonPaymentReason] TINYINT NULL,
 	[DuplicateNumber] INT NULL,
-	PriceEpisodeAimSeqNumber INT NULL
+	PriceEpisodeAimSeqNumber BIGINT NULL
 );
 GO
 
