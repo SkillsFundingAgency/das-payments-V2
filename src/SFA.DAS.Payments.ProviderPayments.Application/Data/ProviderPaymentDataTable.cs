@@ -16,6 +16,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
                 new DataColumn("FundingSource"),
                 new DataColumn("ApprenticeshipEmployerType", typeof(byte)),
                 new DataColumn("ReportingAimFundingLineType", typeof(string)),
+                new DataColumn("PriceEpisodeAimSeqNumber", typeof(long)),
             });
         }
 
@@ -46,6 +47,16 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
 
             dataRow["ApprenticeshipEmployerType"] = eventModel.ApprenticeshipEmployerType;
             dataRow["ReportingAimFundingLineType"] = eventModel.ReportingAimFundingLineType;
+
+            if (!eventModel.AimSeqNumber.HasValue)
+            {
+                dataRow["PriceEpisodeAimSeqNumber"] = DBNull.Value;
+            }
+            else
+            {
+                dataRow["PriceEpisodeAimSeqNumber"] = eventModel.AimSeqNumber.Value;
+            }
+
             return dataRow;
         }
 
