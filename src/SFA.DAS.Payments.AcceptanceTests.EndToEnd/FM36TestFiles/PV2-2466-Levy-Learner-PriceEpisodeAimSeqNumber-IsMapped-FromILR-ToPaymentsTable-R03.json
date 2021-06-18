@@ -44,7 +44,7 @@
             "PriceEpisodeRemainingAmountWithinUpperLimit": 15000,
             "PriceEpisodeCappedRemainingTNPAmount": 15000,
             "PriceEpisodeExpectedTotalMonthlyValue": 12000,
-            "PriceEpisodeAimSeqNumber": 1,
+            "PriceEpisodeAimSeqNumber": 1234,
             "PriceEpisodeFirstDisadvantagePayment": 0,
             "PriceEpisodeSecondDisadvantagePayment": 0,
             "PriceEpisodeApplic1618FrameworkUpliftBalancing": 0,
@@ -442,7 +442,7 @@
             "PriceEpisodeRemainingAmountWithinUpperLimit": 3000,
             "PriceEpisodeCappedRemainingTNPAmount": 3000,
             "PriceEpisodeExpectedTotalMonthlyValue": 0,
-            "PriceEpisodeAimSeqNumber": 1,
+            "PriceEpisodeAimSeqNumber": 1234,
             "PriceEpisodeFirstDisadvantagePayment": 0,
             "PriceEpisodeSecondDisadvantagePayment": 0,
             "PriceEpisodeApplic1618FrameworkUpliftBalancing": 0,
@@ -807,7 +807,7 @@
       ],
       "LearningDeliveries": [
         {
-          "AimSeqNumber": 1,
+          "AimSeqNumber": 1234,
           "LearningDeliveryValues": {
             "ActualDaysIL": 0,
             "ActualNumInstalm": null,
