@@ -57,6 +57,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(source => source.NumberOfInstalments))
                 .ForMember(dest => dest.ReportingAimFundingLineType, opt => opt.ResolveUsing<ReportingAimFundingLineTypeValueResolver>())
                 .ForMember(dest => dest.NonPaymentReason, opt => opt.Ignore())
+                .ForMember(dest => dest.AimSeqNumber, opt => opt.MapFrom(source => source.AimSeqNumber))
                 ;
 
             CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
@@ -107,6 +108,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(source => source.NumberOfInstalments))
                 .ForMember(dest => dest.ApprenticeshipEmployerType, opt => opt.MapFrom(source => source.ApprenticeshipEmployerType))
                 .ForMember(dest => dest.ReportingAimFundingLineType, opt => opt.MapFrom(source => source.ReportingAimFundingLineType))
+                .ForMember(dest => dest.AimSeqNumber, opt => opt.MapFrom(source => source.AimSeqNumber))
                 ;
 
             CreateMap<PaymentModel, EmployerCoInvestedProviderPaymentEvent>();
