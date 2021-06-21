@@ -435,6 +435,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 OnProgrammeEarnings = new List<OnProgrammeEarning>()
                 {
                     earning,
+                },
+                PriceEpisodes = new List<PriceEpisode>
+                {
+                    new PriceEpisode
+                    {
+                        LearningAimSequenceNumber = 1234
+                    }
                 }
             };
 
