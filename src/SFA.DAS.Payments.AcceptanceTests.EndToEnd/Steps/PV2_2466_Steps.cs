@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using MoreLinq.Extensions;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.Model.Core.Entities;
+using System.Linq;
+using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 {
     [Binding]
     [Scope(Feature = "PV2-2466-Levy-Learner-PriceEpisodeAimSeqNumber-IsMapped-FromILR-ToPaymentsTable")]
-    public class PV2_2466_Steps: FM36_ILR_Base_Steps
+    [Scope(Feature = "PV2-2466-Non-Levy-Learner-PriceEpisodeAimSeqNumber-IsMapped-FromILR-ToPaymentsTable")]
+    public class PV2_2466_Steps : FM36_ILR_Base_Steps
     {
         private const long LearningAimSequenceNumber = 1234;
         private const string PriceEpisodeIdentifier = "PE-2466";
@@ -31,15 +29,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             GetFm36LearnerForCollectionPeriod("R03/current academic year");
 
             await SetupTestCommitmentData(CommitmentIdentifier, PriceEpisodeIdentifier);
-
-            //TestSession.FM36Global.Learners.Single().PriceEpisodes.ForEach(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber = priceEpisodeAimSeqNumber);
-            //TestSession.FM36Global.Learners.Single().LearningDeliveries.ForEach(x => x.AimSeqNumber = priceEpisodeAimSeqNumber);
         }
 
-        [When(@"A submission is processed for this learner")]
-        public async Task WhenASubmissionIsProcessedForThisLearner()
+        [Given(@"a learner funded by a non levy paying employer exists")]
+        public async Task GivenALearnerFundedByANonLevyPayingEmployerExists()
         {
+            GetFm36LearnerForCollectionPeriod("R03/current academic year");
 
+            await SetupTestCommitmentData(CommitmentIdentifier, PriceEpisodeIdentifier);
+        }
+
+        [When(@"A submission is processed for the levy learner")]
+        public async Task WhenASubmissionIsProcessedForthelevyLearner()
+        {
             var dcHelper = Scope.Resolve<IDcHelper>();
             await dcHelper.SendIlrSubmission(TestSession.FM36Global.Learners,
                 TestSession.Provider.Ukprn,
@@ -57,20 +59,31 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 MessageSession);
         }
 
-        [Then(@"PriceEpisodeAimSeqNumber is correctly mapped on each payment")]
-        public async Task ThenPriceEpisodeAimSeqNumberIsCorrectlyMappedOnEachPayment()
+        [When(@"A submission is processed for the non levy learner")]
+        public async Task WhenASubmissionIsProcessedForTheNonLevyLearner()
         {
-            await WaitForPayments(6);
+            var dcHelper = Scope.Resolve<IDcHelper>();
+            await dcHelper.SendIlrSubmission(TestSession.FM36Global.Learners,
+                TestSession.Provider.Ukprn,
+                TestSession.CollectionPeriod.AcademicYear,
+                TestSession.CollectionPeriod.Period,
+                TestSession.Provider.JobId);
+        }
+
+        [Then(@"PriceEpisodeAimSeqNumber is correctly mapped on each of (.*) payments")]
+        public async Task ThenPriceEpisodeAimSeqNumberIsCorrectlyMappedOnEachOfPayments(int paymentCount)
+        {
+            await WaitForPayments(paymentCount);
 
             var payments = await DataContext.Payment
-                .Where(x => 
+                .Where(x =>
                             x.CollectionPeriod.AcademicYear == TestSession.CollectionPeriod.AcademicYear &&
                             x.CollectionPeriod.Period == TestSession.CollectionPeriod.Period &&
                             x.LearnerUln == TestSession.Learner.Uln &&
                             x.Ukprn == TestSession.Ukprn)
                 .ToListAsync();
 
-            payments.Count().Should().Be(6);
+            payments.Count().Should().Be(paymentCount);
             payments
                 .Where(x => x.TransactionType != TransactionType.OnProgrammeMathsAndEnglish)
                 .ForEach(x => x.LearningAimSequenceNumber.Should().Be(LearningAimSequenceNumber));
