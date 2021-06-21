@@ -215,6 +215,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.EmployerContribution, opt => opt.MapFrom(source => source.EmployerContribution))
                 .ForMember(dest => dest.CompletionHoldBackExemptionCode, opt => opt.MapFrom(source => source.CompletionHoldBackExemptionCode))
                 .ForMember(dest => dest.FundingLineType, opt => opt.Ignore())
+                .ForMember(dest => dest.LearningAimSequenceNumber, opt => opt.Ignore())
                 ;
 
 
