@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     [Scope(Feature = "PV2-2466-Levy-Learner-PriceEpisodeAimSeqNumber-IsMapped-FromILR-ToPaymentsTable")]
     public class PV2_2466_Steps: FM36_ILR_Base_Steps
     {
-        private const long PriceEpisodeAimSeqNumber = 1234;
+        private const long LearningAimSequenceNumber = 1234;
         private const string PriceEpisodeIdentifier = "PE-2466";
         private const string CommitmentIdentifier = "A-2466";
 
@@ -73,7 +73,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             payments.Count().Should().Be(6);
             payments
                 .Where(x => x.TransactionType != TransactionType.OnProgrammeMathsAndEnglish)
-                .ForEach(x => x.AimSeqNumber.Should().Be(PriceEpisodeAimSeqNumber));
+                .ForEach(x => x.LearningAimSequenceNumber.Should().Be(LearningAimSequenceNumber));
         }
     }
 }

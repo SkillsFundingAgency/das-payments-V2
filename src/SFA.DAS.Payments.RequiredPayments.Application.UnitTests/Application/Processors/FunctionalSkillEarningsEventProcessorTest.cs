@@ -119,7 +119,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 {
                     new PriceEpisode
                     {
-                        AimSeqNumber = 2,
+                        LearningAimSequenceNumber = 2,
                         Identifier = "2"
                     }
                 }
@@ -161,7 +161,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             Assert.AreEqual(100, actualRequiredPayment.First().AmountDue);
             Assert.AreEqual(earningEvent.LearningAim.Reference, actualRequiredPayment.First().LearningAim.Reference);
             Assert.AreEqual("2", actualRequiredPayment.First().PriceEpisodeIdentifier);
-            Assert.AreEqual(2, actualRequiredPayment.First().AimSeqNumber);
+            Assert.AreEqual(2, actualRequiredPayment.First().LearningAimSequenceNumber);
         }
 
         [Test]

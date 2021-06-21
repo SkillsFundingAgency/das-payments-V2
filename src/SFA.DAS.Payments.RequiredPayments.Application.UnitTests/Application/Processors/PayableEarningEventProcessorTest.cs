@@ -129,7 +129,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 {
                     new PriceEpisode
                     {
-                        AimSeqNumber = 2,
+                        LearningAimSequenceNumber = 2,
                         Identifier = "2"
                     }
                 }
@@ -163,7 +163,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             // assert
             actualRequiredPayment.Should().HaveCount(1);
-            actualRequiredPayment.First().AimSeqNumber.Should().Be(2);
+            actualRequiredPayment.First().LearningAimSequenceNumber.Should().Be(2);
         }
 
         [Test]

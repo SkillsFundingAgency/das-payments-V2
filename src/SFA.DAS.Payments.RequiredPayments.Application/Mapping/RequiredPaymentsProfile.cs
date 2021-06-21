@@ -72,7 +72,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.NumberOfInstalments)
                 .Ignore(x => x.ApprenticeshipEmployerType)
                 .Ignore(x => x.ReportingAimFundingLineType)
-                .Ignore(x => x.AimSeqNumber);
+                .Ignore(x => x.LearningAimSequenceNumber);
 
             CreateMap<IEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<PayableEarningEvent, CalculatedRequiredOnProgrammeAmount>()
@@ -259,7 +259,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.NumberOfInstalments)
                 .Ignore(x => x.ApprenticeshipEmployerType)
                 .Ignore(x => x.ReportingAimFundingLineType)
-                .Ignore(x => x.AimSeqNumber);
+                .Ignore(x => x.LearningAimSequenceNumber);
 
             CreateMap<RequiredPayment, CalculatedRequiredCoInvestedAmount>()
                 .ForMember(x => x.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage))
@@ -306,7 +306,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.IlrFileName)
                 .Ignore(x => x.ApprenticeshipId)
                 .Ignore(x => x.ApprenticeshipPriceEpisodeId)
-                .Ignore(x => x.AimSeqNumber) //todo is this right? should the aim seq number be mapped in this scenario
+                .Ignore(x => x.LearningAimSequenceNumber) //todo is this right? should the aim seq number be mapped in this scenario
                 ;
 
             CreateMap<IdentifiedRemovedLearningAim, CalculatedRequiredCoInvestedAmount>()
@@ -349,7 +349,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.LearningAim)
                 .Ignore(x => x.IlrSubmissionDateTime)
                 .Ignore(x => x.IlrFileName)
-                .Ignore(x => x.AimSeqNumber) //todo is this correct in this scenario?
+                .Ignore(x => x.LearningAimSequenceNumber) //todo is this correct in this scenario?
                 ;
 
             CreateMap<PaymentHistoryEntity, CalculatedRequiredCoInvestedAmount>()

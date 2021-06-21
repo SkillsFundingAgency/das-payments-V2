@@ -168,7 +168,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
         private static void AddAimSeqNumber(EarningPeriod period, TEarningEvent earningEvent, PeriodisedRequiredPaymentEvent requiredPaymentEvent)
         {
-            requiredPaymentEvent.AimSeqNumber = earningEvent.PriceEpisodes.FirstOrDefault(x => x.Identifier == period.PriceEpisodeIdentifier)?.AimSeqNumber;
+            requiredPaymentEvent.LearningAimSequenceNumber = earningEvent.PriceEpisodes.FirstOrDefault(x => x.Identifier == period.PriceEpisodeIdentifier)?.LearningAimSequenceNumber;
         }
 
         private static bool NegativeEarningWillResultInARefund(EarningPeriod period, List<Payment> payments)
