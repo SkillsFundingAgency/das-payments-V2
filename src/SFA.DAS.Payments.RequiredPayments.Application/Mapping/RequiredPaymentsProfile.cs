@@ -306,7 +306,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.IlrFileName)
                 .Ignore(x => x.ApprenticeshipId)
                 .Ignore(x => x.ApprenticeshipPriceEpisodeId)
-                .Ignore(x => x.LearningAimSequenceNumber) //todo is this right? should the aim seq number be mapped in this scenario
+                .Ignore(x => x.LearningAimSequenceNumber)
                 ;
 
             CreateMap<IdentifiedRemovedLearningAim, CalculatedRequiredCoInvestedAmount>()
@@ -349,7 +349,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.LearningAim)
                 .Ignore(x => x.IlrSubmissionDateTime)
                 .Ignore(x => x.IlrFileName)
-                .Ignore(x => x.LearningAimSequenceNumber) //todo is this correct in this scenario?
+                .Ignore(x => x.LearningAimSequenceNumber)
                 ;
 
             CreateMap<PaymentHistoryEntity, CalculatedRequiredCoInvestedAmount>()
@@ -391,7 +391,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(payment => payment.CompletionAmount, opt => opt.MapFrom(episode => episode.CompletionAmount))
                 .ForMember(payment => payment.InstalmentAmount, opt => opt.MapFrom(episode => episode.InstalmentAmount))
                 .ForMember(payment => payment.NumberOfInstalments, opt => opt.MapFrom(episode => episode.NumberOfInstalments))
-                //.ForMember(payment => payment.AimSeqNumber, opt => opt.MapFrom(episode => episode.AimSeqNumber))
                 .Ignore(x => x.PriceEpisodeIdentifier)
                 .Ignore(x => x.AmountDue)
                 .Ignore(x => x.DeliveryPeriod)
