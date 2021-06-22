@@ -168,7 +168,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
         private static void AddAimSeqNumber(EarningPeriod period, TEarningEvent earningEvent, PeriodisedRequiredPaymentEvent requiredPaymentEvent)
         {
-            var priceEpisode = earningEvent.PriceEpisodes.FirstOrDefault(x => x.Identifier == period.PriceEpisodeIdentifier);
+            var priceEpisode = earningEvent?.PriceEpisodes.FirstOrDefault(x => x.Identifier == period.PriceEpisodeIdentifier);
             requiredPaymentEvent.LearningAimSequenceNumber = priceEpisode != null ? priceEpisode.LearningAimSequenceNumber : earningEvent.LearningAim.SequenceNumber;
         }
 

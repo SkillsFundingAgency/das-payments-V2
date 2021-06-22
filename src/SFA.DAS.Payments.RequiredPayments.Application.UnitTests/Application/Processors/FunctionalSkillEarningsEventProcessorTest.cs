@@ -91,13 +91,16 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2);
             byte deliveryPeriod = 2;
 
+            var learningAim = EarningEventDataHelper.CreateLearningAim();
+            learningAim.SequenceNumber = 2;
+
             var earningEvent = new Act2FunctionalSkillEarningsEvent
             {
                 Ukprn = 1,
                 CollectionPeriod = period,
                 CollectionYear = period.AcademicYear,
                 Learner = EarningEventDataHelper.CreateLearner(),
-                LearningAim = EarningEventDataHelper.CreateLearningAim(),
+                LearningAim = learningAim,
                 Earnings = new ReadOnlyCollection<FunctionalSkillEarning>(new List<FunctionalSkillEarning>
                 {
                     new FunctionalSkillEarning
@@ -115,14 +118,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                         })
                     }
                 }),
-                PriceEpisodes = new List<PriceEpisode>
-                {
-                    new PriceEpisode
-                    {
-                        LearningAimSequenceNumber = 2,
-                        Identifier = "2"
-                    }
-                }
+                PriceEpisodes = new List<PriceEpisode>()
             };
 
             var requiredPayments = new List<RequiredPayment>
