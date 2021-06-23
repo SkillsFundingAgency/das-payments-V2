@@ -8,6 +8,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
+using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -17,10 +18,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     public class RefundsSteps : EndToEndStepsBase
     {
         private readonly FeatureNumber featureNumber;
+        private readonly ScenarioInfo scenarioInfo;
 
-        public RefundsSteps(FeatureContext context, FeatureNumber featureNumber) : base(context)
+        public RefundsSteps(FeatureContext context, FeatureNumber featureNumber, ScenarioInfo scenarioInfo) : base(context)
         {
             this.featureNumber = featureNumber;
+            this.scenarioInfo = scenarioInfo;
         }
 
         [Given("\"(.*)\" previously submitted the following learner details")]
@@ -133,6 +136,25 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var provider = TestSession.GetProviderByIdentifier(providerIdentifier);
             await HandleIlrReSubmissionForTheLearners(collectionPeriodText, provider).ConfigureAwait(false);
         }
+
+        [Then(@"(.*) required payments are generated")]
+        public async Task RequiredPaymentsAreGenerated(int count)
+        {
+            await WaitForIt(() =>
+                {
+                    return RequiredPaymentEventHandler.ReceivedEvents
+                        .Count(e => e.Ukprn == TestSession.Provider.Ukprn) == count;
+                },
+                $"Failed to find {count} required payments");
+        }
+
+        [Then(@"levy month end is ran")]
+        public async Task ThenLevyMonthEndIsRan()
+        {
+            await Task.Delay(TimeSpan.FromSeconds(1));
+            await SendLevyMonthEnd();
+        }
+
 
         [Then(@"only the following provider payments will be recorded")]
         public async Task ThenTheFollowingProviderPaymentsWillBeRecorded(Table table)

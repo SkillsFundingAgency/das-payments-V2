@@ -66,20 +66,6 @@ Scenario Outline: Non-levy learner provider deletes english/maths aim, earlier p
         | May/Current Academic Year | 600          | 0          | 0         | 0                          | 1                   | 2nd price details        |
         | Jun/Current Academic Year | 600          | 0          | 0         | 0                          | 1                   | 2nd price details        |
         | Jul/Current Academic Year | 600          | 0          | 0         | 0                          | 1                   | 2nd price details        |
-    And only the following payments will be calculated
-        | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish |
-        | R03/Current Academic Year | Aug/Current Academic Year | 0            | 0          | 0         | -39.25                     |
-        | R03/Current Academic Year | Sep/Current Academic Year | 0            | 0          | 0         | -39.25                     |
-        | R03/Current Academic Year | Oct/Current Academic Year | 600          | 0          | 0         | 0                          |
-        | R04/Current Academic Year | Nov/Current Academic Year | 600          | 0          | 0         | 0                          |
-        | R05/Current Academic Year | Dec/Current Academic Year | 600          | 0          | 0         | 0                          |
-        | R06/Current Academic Year | Jan/Current Academic Year | 600          | 0          | 0         | 0                          |
-        | R07/Current Academic Year | Feb/Current Academic Year | 600          | 0          | 0         | 0                          |
-        | R08/Current Academic Year | Mar/Current Academic Year | 600          | 0          | 0         | 0                          |
-        | R09/Current Academic Year | Apr/Current Academic Year | 600          | 0          | 0         | 0                          |
-        | R10/Current Academic Year | May/Current Academic Year | 600          | 0          | 0         | 0                          |
-        | R11/Current Academic Year | Jun/Current Academic Year | 600          | 0          | 0         | 0                          |
-        | R12/Current Academic Year | Jul/Current Academic Year | 600          | 0          | 0         | 0                          |
     And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully-Funded Payments | Transaction Type           |
         | R03/Current Academic Year | Oct/Current Academic Year | 540                    | 60                          | 0                         | Learning                   |

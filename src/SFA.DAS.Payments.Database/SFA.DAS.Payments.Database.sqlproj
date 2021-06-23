@@ -80,7 +80,7 @@
     <Build Include="Security\Role_DataViewer.sql" />
     <Build Include="Security\RoleMemberships.sql" />
     <Build Include="Security\User_DsciUser.sql" />
-    <Build Include="Payments2\Tables\Payment.sql" />
+    <Build Include="Payments2\Tables\Payments2.Payment.sql" />
     <Build Include="Security\Schema_Payments2.sql" />
     <Build Include="Payments2\Tables\Payments2.EarningEvent.sql" />
     <Build Include="Payments2\Tables\Payments2.EarningEventPeriod.sql" />
@@ -93,12 +93,12 @@
     <Build Include="Payments2\Tables\Payments2.JobStatus.sql" />
     <Build Include="Payments2\Tables\Payments2.JobType.sql" />
     <Build Include="Payments2\Tables\Payments2.RequiredPaymentEvent.sql" />
-    <Build Include="Payments2\Tables\LevyAccount.sql" />
+    <Build Include="Payments2\Tables\Payments2.LevyAccount.sql" />
     <Build Include="Payments2\Tables\Payments2.Apprenticeship.sql" />
     <Build Include="Payments2\Tables\Payments2.ApprenticeshipPriceEpisode.sql" />
     <Build Include="Payments2\Tables\Payments2.ApprenticeshipStatus.sql" />
     <Build Include="Payments2\Tables\Payments2.TestingProvider.sql" />
-    <Build Include="Payments2\Tables\SubmittedLearnerAim.sql" />
+    <Build Include="Payments2\Tables\Payments2.SubmittedLearnerAim.sql" />
     <Build Include="Payments2\Tables\Payments2.ApprenticeshipDuplicate.sql" />
     <Build Include="Payments2\Tables\Payments2.DataLockFailure.sql" />
     <Build Include="Payments2\Tables\Payments2.EmployerProviderPriority.sql" />

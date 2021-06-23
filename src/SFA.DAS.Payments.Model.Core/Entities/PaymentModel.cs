@@ -9,6 +9,7 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public Guid EarningEventId { get; set; }
         public Guid FundingSourceEventId { get; set; }
         public Guid? RequiredPaymentEventId { get; set; }
+        public Guid? ClawbackSourcePaymentEventId { get; set; }
         public DateTimeOffset EventTime { get; set; }
         public long Ukprn { get; set; }
         public string LearnerReferenceNumber { get; set; }
@@ -45,5 +46,10 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public long? ApprenticeshipPriceEpisodeId { get; set; }
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
         public string ReportingAimFundingLineType { get; set; }
+
+        public PaymentModel Clone()
+        {
+            return (PaymentModel) MemberwiseClone();
+        }
     }
 }

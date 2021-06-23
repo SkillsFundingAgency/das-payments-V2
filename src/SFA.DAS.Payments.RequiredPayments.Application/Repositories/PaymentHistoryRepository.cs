@@ -144,26 +144,26 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
             ).AsNoTracking().ToListAsync(cancellationToken).ConfigureAwait(false);
 
             return aims.Select(p => new IdentifiedRemovedLearningAim
+            {
+                CollectionPeriod = new CollectionPeriod { AcademicYear = academicYear, Period = collectionPeriod },
+                Ukprn = ukprn,
+                EventId = Guid.NewGuid(),
+                EventTime = DateTimeOffset.UtcNow,
+                IlrSubmissionDateTime = ilrSubmissionDateTime,
+                Learner = new Learner
                 {
-                    CollectionPeriod = new CollectionPeriod {AcademicYear = academicYear, Period = collectionPeriod},
-                    Ukprn = ukprn,
-                    EventId = Guid.NewGuid(),
-                    EventTime = DateTimeOffset.UtcNow,
-                    IlrSubmissionDateTime = ilrSubmissionDateTime,
-                    Learner = new Learner
-                    {
-                        ReferenceNumber = p.LearnerReferenceNumber,
-                    },
-                    LearningAim = new LearningAim
-                    {
-                        FrameworkCode = p.LearningAimFrameworkCode,
-                        Reference = p.LearningAimReference,
-                        PathwayCode = p.LearningAimPathwayCode,
-                        StandardCode = p.LearningAimStandardCode,
-                        ProgrammeType = p.LearningAimProgrammeType
-                    },
-                    ContractType = p.ContractType
-                })
+                    ReferenceNumber = p.LearnerReferenceNumber,
+                },
+                LearningAim = new LearningAim
+                {
+                    FrameworkCode = p.LearningAimFrameworkCode,
+                    Reference = p.LearningAimReference,
+                    PathwayCode = p.LearningAimPathwayCode,
+                    StandardCode = p.LearningAimStandardCode,
+                    ProgrammeType = p.LearningAimProgrammeType
+                },
+                ContractType = p.ContractType
+            })
                 .ToList();
         }
 

@@ -201,6 +201,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
                 };
                 var topicPublishingService = topicPublishingServiceFactory.GetSubmissionPublisher();
                 await topicPublishingService.PublishAsync(dto, new Dictionary<string, object> { { "To", "GenerateFM36Payments" } }, "GenerateFM36Payments");
+
+                await Task.Delay(1000);
+
+                await SendIlrSubmissionEvent(ukprn, collectionYear, collectionPeriod, jobId, true);
             }
             catch (Exception e)
             {

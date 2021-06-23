@@ -8,16 +8,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
     public class ProviderPayment
     {
         public string CollectionPeriod { get; set; }
-        private CollectionPeriod parsedCollectionPeriod;
 
-        public CollectionPeriod ParsedCollectionPeriod => parsedCollectionPeriod ??
-                                                          (parsedCollectionPeriod = new CollectionPeriodBuilder()
-                                                              .WithSpecDate(this.CollectionPeriod).Build());
+        public CollectionPeriod ParsedCollectionPeriod => new CollectionPeriodBuilder()
+                                                              .WithSpecDate(this.CollectionPeriod).Build();
         public string DeliveryPeriod { get; set; }
-        private CollectionPeriod parsedDeliveryPeriod;
-        public CollectionPeriod ParsedDeliveryPeriod => parsedDeliveryPeriod ??
-                                                          (parsedDeliveryPeriod = new CollectionPeriodBuilder()
-                                                              .WithSpecDate(this.DeliveryPeriod).Build());
+        public CollectionPeriod ParsedDeliveryPeriod => new CollectionPeriod
+        {
+            Period = new DeliveryPeriodBuilder().WithSpecDate(DeliveryPeriod).Build(),
+            AcademicYear = ParsedCollectionPeriod.AcademicYear
+        };
         public decimal SfaCoFundedPayments { get; set; }
         public decimal EmployerCoFundedPayments { get; set; }
         public decimal SfaFullyFundedPayments { get; set; }

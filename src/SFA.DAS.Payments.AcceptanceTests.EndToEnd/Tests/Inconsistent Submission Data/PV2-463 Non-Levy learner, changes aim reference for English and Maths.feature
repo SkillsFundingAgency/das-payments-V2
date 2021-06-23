@@ -78,13 +78,6 @@ Scenario Outline: Non-levy learner provider changes aim reference for English/ma
         | Jun/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act2          |
         | Jul/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act2          |
 	# Check with Devs whether to split R12/Jul Maths/Eng?
-    And only the following payments will be calculated
-        | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish |
-        | R12/Current Academic Year | May/Current Academic Year | 0            | 0          | 0         | -39.25                     |
-        | R12/Current Academic Year | Jun/Current Academic Year | 0            | 0          | 0         | -39.25                     |
-        | R12/Current Academic Year | May/Current Academic Year | 0            | 0          | 0         | 39.25                      |
-        | R12/Current Academic Year | Jun/Current Academic Year | 0            | 0          | 0         | 39.25                      |
-        | R12/Current Academic Year | Jul/Current Academic Year | 600          | 0          | 0         | 39.25                      |
 	# New transaction type and SFA Fully-Funded Payments column
     And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | SFA Fully-Funded Payments | Transaction Type           |

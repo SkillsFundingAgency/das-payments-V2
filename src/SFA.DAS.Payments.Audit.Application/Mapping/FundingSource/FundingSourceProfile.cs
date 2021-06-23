@@ -46,6 +46,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.FundingSource
                 .ForMember(dest => dest.ContractType, opt => opt.MapFrom(source => source.ContractType))
                 .ForMember(dest => dest.PriceEpisodeIdentifier, opt => opt.MapFrom(source => source.PriceEpisodeIdentifier ?? string.Empty))
                 .ForMember(dest => dest.ApprenticeshipEmployerType, opt => opt.MapFrom(source => source.ApprenticeshipEmployerType))
+                .ForMember(dest => dest.ClawbackSourcePaymentEventId, opt => opt.ResolveUsing(source => source.ClawbackSourcePaymentEventId ?? Guid.Empty))
                 ;
             CreateMap<SfaCoInvestedFundingSourcePaymentEvent, FundingSourceEventModel>();
             CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, FundingSourceEventModel>();
