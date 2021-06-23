@@ -10,6 +10,7 @@
 	[TransferSenderAccountId] BIGINT NULL, 
 	[RequiredPaymentEventId] UNIQUEIDENTIFIER NOT NULL,
 	[EarningEventId] UNIQUEIDENTIFIER NOT NULL,
+	[ClawbackSourcePaymentEventId] UNIQUEIDENTIFIER NULL,
 	[CreationDate] DATETIMEOFFSET NOT NULL CONSTRAINT DF_FundingSourceLevyTransaction__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
 	[Amount] DECIMAL(15,5) NOT NULL,
 	[MessagePayload] nvarchar(max) not null,
@@ -65,6 +66,7 @@ CREATE UNIQUE INDEX [UX_FundingSourceLevyTransaction_LogicalDuplicates] ON [Paym
 [AccountId],
 [TransferSenderAccountId],
 [ApprenticeshipEmployerType],
+[ClawbackSourcePaymentEventId],
 [DuplicateNumber]
 )
 GO

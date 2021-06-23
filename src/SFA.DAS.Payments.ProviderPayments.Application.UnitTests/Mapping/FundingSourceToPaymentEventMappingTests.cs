@@ -52,6 +52,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 IlrSubmissionDateTime = DateTime.UtcNow,
                 EventTime = DateTimeOffset.UtcNow,
                 RequiredPaymentEventId = Guid.NewGuid(),
+                ClawbackSourcePaymentEventId = Guid.NewGuid(),
                 AccountId = 123456789,
                 ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
             };
@@ -70,6 +71,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.AccountId.Should().Be(employerCoInvested.AccountId);
             payment.ApprenticeshipEmployerType.Should().Be(employerCoInvested.ApprenticeshipEmployerType);
             payment.RequiredPaymentEventId.Should().Be(employerCoInvested.RequiredPaymentEventId);
+            payment.ClawbackSourcePaymentEventId.Should().Be(employerCoInvested.ClawbackSourcePaymentEventId);
         }
 
         [Test]
@@ -104,6 +106,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 EventTime = DateTimeOffset.UtcNow,
                 AgreementId = agreementId,
                 RequiredPaymentEventId = Guid.NewGuid(),
+                ClawbackSourcePaymentEventId = Guid.NewGuid(),
                 AccountId = 123456789,
                 ApprenticeshipEmployerType = ApprenticeshipEmployerType.NonLevy,
             };
@@ -123,6 +126,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.AccountId.Should().Be(levy.AccountId);
             payment.ApprenticeshipEmployerType.Should().Be(levy.ApprenticeshipEmployerType);
             payment.RequiredPaymentEventId.Should().Be(levy.RequiredPaymentEventId);
+            payment.ClawbackSourcePaymentEventId.Should().Be(levy.ClawbackSourcePaymentEventId);
         }
 
         [Test]
@@ -157,6 +161,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 EventTime = DateTimeOffset.UtcNow,
                 AgreementId = agreementId,
                 RequiredPaymentEventId = Guid.NewGuid(),
+                ClawbackSourcePaymentEventId = Guid.NewGuid(),
                 AccountId = 123456789,
                 ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
             };
@@ -176,6 +181,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.AccountId.Should().Be(transfer.AccountId);
             payment.ApprenticeshipEmployerType.Should().Be(transfer.ApprenticeshipEmployerType);
             payment.RequiredPaymentEventId.Should().Be(transfer.RequiredPaymentEventId);
+            payment.ClawbackSourcePaymentEventId.Should().Be(transfer.ClawbackSourcePaymentEventId);
 
         }
 
@@ -210,7 +216,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 RequiredPaymentEventId = Guid.NewGuid(),
                 AccountId = 123456789,
                 ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
-        };
+            };
             var payment = Mapper.Map<EmployerCoInvestedFundingSourcePaymentEvent, EmployerCoInvestedProviderPaymentEvent>(employerCoInvested);
             payment.Ukprn.Should().Be(employerCoInvested.Ukprn);
             payment.CollectionPeriod.Period.Should().Be(employerCoInvested.CollectionPeriod.Period);
@@ -223,13 +229,12 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.JobId.Should().Be(employerCoInvested.JobId);
             payment.IlrSubmissionDateTime.Should().Be(employerCoInvested.IlrSubmissionDateTime);
             payment.ApprenticeshipEmployerType.Should().Be(employerCoInvested.ApprenticeshipEmployerType);
-
         }
 
-        [TestCase(typeof(EmployerCoInvestedFundingSourcePaymentEvent),typeof(EmployerCoInvestedProviderPaymentEvent))]
-        [TestCase(typeof(SfaCoInvestedFundingSourcePaymentEvent),typeof(SfaCoInvestedProviderPaymentEvent))]
-        [TestCase(typeof(SfaFullyFundedFundingSourcePaymentEvent),typeof(SfaFullyFundedProviderPaymentEvent))]
-        [TestCase(typeof(LevyFundingSourcePaymentEvent),typeof(LevyProviderPaymentEvent))]
+        [TestCase(typeof(EmployerCoInvestedFundingSourcePaymentEvent), typeof(EmployerCoInvestedProviderPaymentEvent))]
+        [TestCase(typeof(SfaCoInvestedFundingSourcePaymentEvent), typeof(SfaCoInvestedProviderPaymentEvent))]
+        [TestCase(typeof(SfaFullyFundedFundingSourcePaymentEvent), typeof(SfaFullyFundedProviderPaymentEvent))]
+        [TestCase(typeof(LevyFundingSourcePaymentEvent), typeof(LevyProviderPaymentEvent))]
         public void MapsFromFundingSourceEventToCorrectProviderPaymentEvent(Type sourceType, Type destType)
         {
             var fundingSourceEvent = Activator.CreateInstance(sourceType) as FundingSourcePaymentEvent;
@@ -257,6 +262,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             fundingSourceEvent.IlrSubmissionDateTime = DateTime.UtcNow;
             fundingSourceEvent.EventTime = DateTimeOffset.UtcNow;
             fundingSourceEvent.RequiredPaymentEventId = Guid.NewGuid();
+            fundingSourceEvent.ClawbackSourcePaymentEventId = Guid.NewGuid();
             fundingSourceEvent.AccountId = 123456789;
 
             var payment = Mapper.Map<ProviderPaymentEvent>(fundingSourceEvent);
@@ -306,6 +312,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             providerPayment.ApprenticeshipPriceEpisodeId.Should().Be(fundingSourceEvent.ApprenticeshipPriceEpisodeId);
             providerPayment.ApprenticeshipEmployerType.Should().Be(fundingSourceEvent.ApprenticeshipEmployerType);
             providerPayment.RequiredPaymentEventId.Should().Be(fundingSourceEvent.RequiredPaymentEventId);
+            providerPayment.ClawbackSourcePaymentEventId.Should().Be(fundingSourceEvent.ClawbackSourcePaymentEventId);
         }
 
         [TestCase(typeof(EmployerCoInvestedProviderPaymentEvent))]

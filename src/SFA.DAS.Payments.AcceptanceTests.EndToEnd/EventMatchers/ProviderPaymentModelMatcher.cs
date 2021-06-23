@@ -9,7 +9,9 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 {
@@ -39,12 +41,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
 
         protected override IList<PaymentModel> GetActualEvents()
         {
-            return dataContext.Payment
-                .Where(p =>
-                            p.CollectionPeriod.Period == currentCollectionPeriod.Period &&
-                            p.CollectionPeriod.AcademicYear == currentCollectionPeriod.AcademicYear &&
-                            p.Ukprn == provider.Ukprn)
-                .ToList();
+            using (dataContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
+                return dataContext.Payment
+                    .Where(p =>
+                                p.CollectionPeriod.Period == currentCollectionPeriod.Period &&
+                                p.CollectionPeriod.AcademicYear == currentCollectionPeriod.AcademicYear &&
+                                p.Ukprn == provider.Ukprn)
+                    .ToList();
         }
 
         protected override IList<PaymentModel> GetExpectedEvents()

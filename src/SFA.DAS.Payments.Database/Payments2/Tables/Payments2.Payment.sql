@@ -5,6 +5,7 @@ CREATE TABLE [Payments2].[Payment]
 	EarningEventId UNIQUEIDENTIFIER NOT NULL,
 	FundingSourceEventId UNIQUEIDENTIFIER NOT NULL,
 	RequiredPaymentEventId UNIQUEIDENTIFIER NULL,
+	[ClawbackSourcePaymentEventId] UNIQUEIDENTIFIER NULL,
 	EventTime DATETIMEOFFSET NOT NULL,
 	JobId BIGINT NOT NULL,
 	DeliveryPeriod TINYINT NOT NULL,
@@ -73,6 +74,7 @@ CREATE UNIQUE INDEX UX_Payment_LogicalDuplicates ON Payments2.Payment
 	,[AccountId]
 	,[TransferSenderAccountId]
 	,[ApprenticeshipEmployerType]
+	,[ClawbackSourcePaymentEventId]
 	,DuplicateNumber
 )
 GO
