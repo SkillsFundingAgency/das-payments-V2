@@ -127,7 +127,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.NumberOfInstalments)
                 .Ignore(x => x.ApprenticeshipEmployerType)
                 .Ignore(x => x.ReportingAimFundingLineType)
-                .Ignore(x => x.LearningAimSequenceNumber);
+                .Ignore(x => x.LearningAimSequenceNumber)
                 .Ignore(x => x.ClawbackSourcePaymentEventId)
                 ;
 
@@ -320,7 +320,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.NumberOfInstalments)
                 .Ignore(x => x.ApprenticeshipEmployerType)
                 .Ignore(x => x.ReportingAimFundingLineType)
-                .Ignore(x => x.LearningAimSequenceNumber);
+                .Ignore(x => x.LearningAimSequenceNumber)
                 .Ignore(x => x.ClawbackSourcePaymentEventId)
                 ;
 
