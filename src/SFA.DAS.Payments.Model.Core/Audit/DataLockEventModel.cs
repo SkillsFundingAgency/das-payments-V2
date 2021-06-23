@@ -10,7 +10,6 @@ namespace SFA.DAS.Payments.Model.Core.Audit
         public Guid EarningEventId { get; set; }
         public ContractType ContractType { get; set; }
         public string AgreementId { get; set; }
-        public long? LearningAimSequenceNumber { get; set; }
         public List<DataLockEventPriceEpisodeModel> PriceEpisodes { get; set; }
         public virtual List<DataLockEventNonPayablePeriodModel> NonPayablePeriods { get; set; } = new List<DataLockEventNonPayablePeriodModel>();
         public virtual List<DataLockEventPayablePeriodModel> PayablePeriods { get; set; } = new List<DataLockEventPayablePeriodModel>();
