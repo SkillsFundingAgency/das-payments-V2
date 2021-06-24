@@ -79,23 +79,8 @@ Scenario Outline: Levy learner changes course details in ILR after payments made
         | May/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
         | Jun/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
         | Jul/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
-    And at month end only the following payments will be calculated
-        | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Framework Code |
-        | R03/Current Academic Year | Aug/Current Academic Year | -600         | 0          | 0         | 0                          | 593            |
-        | R03/Current Academic Year | Sep/Current Academic Year | -600         | 0          | 0         | 0                          | 593            |
-        | R03/Current Academic Year | Aug/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R03/Current Academic Year | Sep/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R03/Current Academic Year | Oct/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R04/Current Academic Year | Nov/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R05/Current Academic Year | Dec/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R06/Current Academic Year | Jan/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R07/Current Academic Year | Feb/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R08/Current Academic Year | Mar/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R09/Current Academic Year | Apr/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R10/Current Academic Year | May/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R11/Current Academic Year | Jun/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-        | R12/Current Academic Year | Jul/Current Academic Year | 600          | 0          | 0         | 39.25                      | 584            |
-
+    And <Expected Required Payments> required payments are generated
+    And levy month end is ran
     And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type           | Framework Code |
         | R03/Current Academic Year | Aug/Current Academic Year | -600          | 0                         | Learning                   | 593            |
@@ -155,17 +140,17 @@ Scenario Outline: Levy learner changes course details in ILR after payments made
         | R12/Current Academic Year | Jul/Current Academic Year | 0             | 39.25                     | OnProgrammeMathsAndEnglish | 584            |
 																																		  
 Examples: 																																  
-        | Collection_Period         | Levy Balance |																					  
-        | R03/Current Academic Year | 8400         |																					  
-        | R04/Current Academic Year | 7800         |
-        | R05/Current Academic Year | 7200         |
-        | R06/Current Academic Year | 6600         |
-        | R07/Current Academic Year | 6000         |
-        | R08/Current Academic Year | 5400         |
-        | R09/Current Academic Year | 4800         |
-        | R10/Current Academic Year | 4200         |
-        | R11/Current Academic Year | 3600         |
-        | R12/Current Academic Year | 3000         |
+        | Collection_Period         | Levy Balance | Expected Required Payments |
+        | R03/Current Academic Year | 8400         | 8                          |
+        | R04/Current Academic Year | 7800         | 10                         |
+        | R05/Current Academic Year | 7200         | 12                         |
+        | R06/Current Academic Year | 6600         | 14                         |
+        | R07/Current Academic Year | 6000         | 16                         |
+        | R08/Current Academic Year | 5400         | 18                         |
+        | R09/Current Academic Year | 4800         | 20                         |
+        | R10/Current Academic Year | 4200         | 22                         |
+        | R11/Current Academic Year | 3600         | 24                         |
+        | R12/Current Academic Year | 3000         | 26                         |
 
 
 

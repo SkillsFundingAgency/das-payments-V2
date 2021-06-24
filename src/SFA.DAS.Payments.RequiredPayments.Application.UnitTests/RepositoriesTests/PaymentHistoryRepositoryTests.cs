@@ -10,15 +10,6 @@ using SFA.DAS.Payments.RequiredPayments.Domain.Services;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.RepositoriesTests
 {
-    public class TestPaymentsContext : PaymentsDataContext
-    {
-        public TestPaymentsContext(DbContextOptions<PaymentsDataContext> options) : base(options)
-        {}
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        { }
-    }
-
     [TestFixture]
     public class PaymentHistoryRepositoryTests
     {
@@ -64,7 +55,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.RepositoriesTe
 
             context.Payment.Add(payment1);
             context.Payment.Add(payment2);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             var actual = await sut.GetEmployerCoInvestedPaymentHistoryTotal(key);
 

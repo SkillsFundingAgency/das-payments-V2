@@ -9,6 +9,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Model
         public long Id { get; set; }
         public Guid FundingSourceId { get; set; }
         public Guid? RequiredPaymentEventId { get; set; }
+        public Guid? ClawbackSourcePaymentEventId { get; set; }
         public FundingSourceType FundingSource { get; set; }
         public string ReportingAimFundingLineType { get; set; }
     }

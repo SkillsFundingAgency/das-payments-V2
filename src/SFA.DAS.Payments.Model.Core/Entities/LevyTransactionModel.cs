@@ -32,5 +32,6 @@ namespace SFA.DAS.Payments.Model.Core.Entities
         public DateTime? LearningStartDate { get; set; }
         public long? ApprenticeshipId { get; set; }
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
+        public Guid? ClawbackSourcePaymentEventId { get; set; }
     }
 }

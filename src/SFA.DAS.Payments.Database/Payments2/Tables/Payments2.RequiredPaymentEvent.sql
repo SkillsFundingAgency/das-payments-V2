@@ -4,6 +4,7 @@ CREATE TABLE [Payments2].[RequiredPaymentEvent]
 	Id BIGINT NOT NULL IDENTITY(1,1) CONSTRAINT PK_RequiredPaymentEvent PRIMARY KEY CLUSTERED,	
 	EventId UNIQUEIDENTIFIER NOT NULL,
 	EarningEventId UNIQUEIDENTIFIER NOT NULL,
+	[ClawbackSourcePaymentEventId] UNIQUEIDENTIFIER NULL,
 	PriceEpisodeIdentifier NVARCHAR(50) NOT NULL,
 	Ukprn BIGINT NOT NULL,
 	ContractType  TINYINT NOT NULL,
@@ -70,6 +71,7 @@ CREATE UNIQUE INDEX UX_RequiredPaymentEvent_LogicalDuplicates ON Payments2.Requi
 	,[AccountId]
 	,[TransferSenderAccountId]
 	,[ApprenticeshipEmployerType]
+	,[ClawbackSourcePaymentEventId]
 	,DuplicateNumber
 )
 GO

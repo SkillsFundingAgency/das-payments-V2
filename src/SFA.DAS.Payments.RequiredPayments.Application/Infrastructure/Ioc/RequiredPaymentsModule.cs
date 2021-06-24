@@ -17,14 +17,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Ioc
             builder.RegisterType<RemovedLearnerAimIdentificationService>().AsImplementedInterfaces().SingleInstance();
 
             // app layer event handlers
+            builder.RegisterType<ClawbackRemovedLearnerAimsProcessor>().AsImplementedInterfaces();
             builder.RegisterType<ApprenticeshipAct1RedundancyEarningsEventProcessor>().AsImplementedInterfaces();
             builder.RegisterType<ApprenticeshipContractType2EarningEventProcessor>().AsImplementedInterfaces();
             builder.RegisterType<FunctionalSkillEarningsEventProcessor>().AsImplementedInterfaces();
             builder.RegisterType<PayableEarningEventProcessor>().AsImplementedInterfaces();
             builder.RegisterType<HoldingBackCompletionPaymentService>().AsImplementedInterfaces();
-            builder.RegisterType<RefundRemovedLearningAimProcessor>().AsImplementedInterfaces();
-            builder.RegisterType<RefundRemovedLearningAimService>().AsImplementedInterfaces();
-            builder.RegisterType<PeriodisedRequiredPaymentEventFactory>().AsImplementedInterfaces();
         }
     }
 }

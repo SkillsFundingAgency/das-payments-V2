@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -22,7 +24,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public List<PaymentModel> GetPayments(long ukprn, CollectionPeriod collectionPeriod)
         {
-            return dataContext.Payment
+            using(dataContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
+                return dataContext.Payment
                 .Where(x => x.Ukprn == ukprn && 
                             x.CollectionPeriod.Period == collectionPeriod.Period && 
                             x.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear)
@@ -31,7 +34,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 
         public int GetRequiredPaymentsCount(long ukprn, CollectionPeriod collectionPeriod)
         {
-            return dataContext.RequiredPaymentEvent.Count(x => x.Ukprn == ukprn && x.CollectionPeriod.Period == collectionPeriod.Period && x.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear);
+            using(dataContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
+                return dataContext.RequiredPaymentEvent.Count(x => x.Ukprn == ukprn && x.CollectionPeriod.Period == collectionPeriod.Period && x.CollectionPeriod.AcademicYear == collectionPeriod.AcademicYear);
         }
     }
 }

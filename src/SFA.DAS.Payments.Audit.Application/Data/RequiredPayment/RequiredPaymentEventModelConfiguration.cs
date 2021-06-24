@@ -14,6 +14,7 @@ namespace SFA.DAS.Payments.Audit.Application.Data.RequiredPayment
             builder.Property(x => x.Id).HasColumnName(@"Id").IsRequired();
             builder.Property(x => x.EventId).HasColumnName(@"EventId").IsRequired();
             builder.Property(x => x.EarningEventId).HasColumnName(@"EarningEventId").IsRequired();
+            builder.Property(x => x.ClawbackSourcePaymentEventId).HasColumnName(@"ClawbackSourcePaymentEventId");
             builder.Property(x => x.EventTime).HasColumnName(@"EventTime").IsRequired();
             builder.Property(x => x.PriceEpisodeIdentifier).HasColumnName(@"PriceEpisodeIdentifier").IsRequired();
             builder.Property(x => x.Amount).HasColumnName(@"Amount").IsRequired();
