@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Function
     {
         [FunctionName("SuccessfulSubmissions")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "v1/PeriodEnd/SuccessfulSubmissions")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "v1/PeriodEnd/Submission/Successful")] HttpRequest req,
             [Inject] IProvidersRequiringReprocessingService providersRequiringReprocessingService,
             [Inject] IPaymentLogger logger)
         {
