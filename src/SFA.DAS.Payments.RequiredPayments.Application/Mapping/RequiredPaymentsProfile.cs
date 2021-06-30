@@ -15,9 +15,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
     {
         public RequiredPaymentsProfile()
         {
-
             CreateMap<PaymentModel, PeriodisedRequiredPaymentEvent>()
-                .Include<PaymentModel, CalculatedRequiredOnProgrammeAmount>()
                 .Include<PaymentModel, CalculatedRequiredIncentiveAmount>()
                 .Include<PaymentModel, CalculatedRequiredLevyAmount>()
                 .Include<PaymentModel, CalculatedRequiredCoInvestedAmount>()
@@ -69,10 +67,19 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(dest => dest.Priority, opt => opt.Ignore())
                 .ForMember(dest => dest.AgreementId, opt => opt.MapFrom(s => s.AgreementId))
                 .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(s => s.SfaContributionPercentage))
+                .ForMember(dest => dest.TransactionType, opt => opt.Ignore())
+                .ForMember(dest => dest.OnProgrammeEarningType, opt => opt.Ignore())
                 ;
 
             CreateMap<PaymentModel, CalculatedRequiredCoInvestedAmount>()
                 .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(s => s.SfaContributionPercentage))
+                .ForMember(dest => dest.TransactionType, opt => opt.Ignore())
+                .ForMember(dest => dest.OnProgrammeEarningType, opt => opt.Ignore())
+                ;
+
+            CreateMap<PaymentModel, CalculatedRequiredIncentiveAmount>()
+                .ForMember(dest => dest.Type, opt => opt.Ignore())
+                .ForMember(dest => dest.TransactionType, opt => opt.Ignore())
                 ;
 
             CreateMap<PaymentHistoryEntity, Payment>()
