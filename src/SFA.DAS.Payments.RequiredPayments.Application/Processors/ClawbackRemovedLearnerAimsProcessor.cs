@@ -5,31 +5,36 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
+using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 {
     public interface IClawbackRemovedLearnerAimsProcessor
     {
-        Task<IList<CalculatedRequiredLevyAmount>> GenerateClawbackForRemovedLearnerAim(IdentifiedRemovedLearningAim message, CancellationToken cancellationToken);
+        Task<IList<PeriodisedRequiredPaymentEvent>> GenerateClawbackForRemovedLearnerAim(IdentifiedRemovedLearningAim message, CancellationToken cancellationToken);
     }
 
     public class ClawbackRemovedLearnerAimsProcessor : IClawbackRemovedLearnerAimsProcessor
     {
+        // ReSharper disable IdentifierTypo
+        public readonly IRequiredPaymentEventFactory requiredPaymentEventFactory;
         private readonly IPaymentClawbackRepository paymentClawbackRepository;
         private readonly IMapper mapper;
         private readonly IPaymentLogger logger;
 
-        public ClawbackRemovedLearnerAimsProcessor(IPaymentClawbackRepository paymentClawbackRepository, IMapper mapper, IPaymentLogger logger)
+        public ClawbackRemovedLearnerAimsProcessor(IRequiredPaymentEventFactory requiredPaymentEventFactory, IPaymentClawbackRepository paymentClawbackRepository, IMapper mapper, IPaymentLogger logger)
         {
+            this.requiredPaymentEventFactory = requiredPaymentEventFactory ?? throw new ArgumentNullException(nameof(requiredPaymentEventFactory));
             this.paymentClawbackRepository = paymentClawbackRepository ?? throw new ArgumentNullException(nameof(paymentClawbackRepository));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<IList<CalculatedRequiredLevyAmount>> GenerateClawbackForRemovedLearnerAim(IdentifiedRemovedLearningAim message, CancellationToken cancellationToken)
+        public async Task<IList<PeriodisedRequiredPaymentEvent>> GenerateClawbackForRemovedLearnerAim(IdentifiedRemovedLearningAim message, CancellationToken cancellationToken)
         {
             var learnerPaymentHistory = await paymentClawbackRepository.GetReadOnlyLearnerPaymentHistory(
                 message.Ukprn,
@@ -52,7 +57,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                                $"standardCode:{message.LearningAim.StandardCode}, learningAimReference:{message.LearningAim.Reference}, " +
                                $"academicYear:{message.CollectionPeriod.AcademicYear}, contractType:{message.ContractType}");
 
-                return new List<CalculatedRequiredLevyAmount>();
+                return new List<PeriodisedRequiredPaymentEvent>();
             }
 
             var paymentToIgnore = learnerPaymentHistory.Join(learnerPaymentHistory, 
@@ -79,7 +84,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     return payment;
                 }).ToList();
 
-            return await ProcessPaymentToClawback(paymentToClawback, cancellationToken);
+            return ConvertToRequiredPaymentEvent(paymentToClawback);
         }
 
         private static void ConvertToClawbackPayment(IdentifiedRemovedLearningAim message, PaymentModel clawbackPayment)
@@ -100,18 +105,57 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             clawbackPayment.EventId = Guid.NewGuid();
         }
 
-        private List<CalculatedRequiredLevyAmount> GetCalculatedRequiredLevyAmountEvents(IEnumerable<PaymentModel> paymentToClawback)
+        private List<PeriodisedRequiredPaymentEvent> ConvertToRequiredPaymentEvent(List<PaymentModel> paymentToClawback)
         {
-            return mapper.Map<List<CalculatedRequiredLevyAmount>>(paymentToClawback);
+            return paymentToClawback
+                .GroupBy(x => new
+                {
+                    x.SfaContributionPercentage,
+                    EarningType = ToEarningType(x.FundingSource),
+                    x.PriceEpisodeIdentifier,
+                    x.AccountId,
+                    x.TransferSenderAccountId,
+                    x.ApprenticeshipEmployerType,
+                    x.ApprenticeshipId,
+                    x.ApprenticeshipPriceEpisodeId,
+                    x.LearningStartDate,
+                    x.DeliveryPeriod,
+                    x.Ukprn,
+                    x.ContractType,
+                })
+                .Select(group =>
+                {
+                    var payment = group.First();
+                    
+                    var amountForGroup = group.Sum(x => x.Amount);
+                    
+                    var requiredPayment = requiredPaymentEventFactory.Create(amountForGroup.AsRounded(), group.Key.EarningType, payment.TransactionType, group.Key.SfaContributionPercentage);
+
+                    mapper.Map(payment, requiredPayment);
+
+                    return requiredPayment;
+                })
+                .ToList();
         }
 
-        private async Task<List<CalculatedRequiredLevyAmount>> ProcessPaymentToClawback(IList<PaymentModel> paymentToClawback, CancellationToken cancellationToken)
+        private static EarningType ToEarningType(FundingSourceType fundingSource)
         {
-            var sfaPayments = paymentToClawback.Where(p => p.FundingSource != FundingSourceType.Levy && p.FundingSource != FundingSourceType.Transfer);
-            await paymentClawbackRepository.SaveClawbackPayments(sfaPayments, cancellationToken);
+            switch (fundingSource)
+            {
+                case FundingSourceType.Transfer:
+                case FundingSourceType.Levy:
+                    return EarningType.Levy;
 
-            var levyPayments = paymentToClawback.Where(p => p.FundingSource == FundingSourceType.Levy || p.FundingSource == FundingSourceType.Transfer);
-            return GetCalculatedRequiredLevyAmountEvents(levyPayments);
+
+                case FundingSourceType.CoInvestedEmployer:
+                case FundingSourceType.CoInvestedSfa:
+                    return EarningType.CoInvested;
+
+                case FundingSourceType.FullyFundedSfa:
+                    return EarningType.Incentive;
+                default:
+                    throw new NotImplementedException($"Unknown funding source: {fundingSource}");
+            }
         }
     }
 }
