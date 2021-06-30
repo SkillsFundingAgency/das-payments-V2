@@ -4,7 +4,6 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Application.Extensions;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
@@ -17,13 +16,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
         public RequiredPaymentsProfile()
         {
 
-            CreateMap<PaymentModel, CalculatedRequiredLevyAmount>()
-                //These 3 Fields are not available in PaymentModel and therefore will not be written to DB so no need to map them, also SequenceNumber
+            CreateMap<PaymentModel, PeriodisedRequiredPaymentEvent>()
+                .Include<PaymentModel, CalculatedRequiredOnProgrammeAmount>()
+                .Include<PaymentModel, CalculatedRequiredIncentiveAmount>()
+                .Include<PaymentModel, CalculatedRequiredLevyAmount>()
+                .Include<PaymentModel, CalculatedRequiredCoInvestedAmount>()
                 .ForMember(dest => dest.IlrFileName, opt => opt.Ignore())
-                .ForMember(dest => dest.AgreedOnDate, opt => opt.Ignore())
-                .ForMember(dest => dest.Priority, opt => opt.Ignore())
-
-                .ForMember(dest => dest.AgreementId, opt => opt.MapFrom(s => s.AgreementId))
                 .ForMember(dest => dest.AmountDue, opt => opt.MapFrom(s => s.Amount))
                 .ForMember(dest => dest.AccountId, opt => opt.MapFrom(s => s.AccountId))
                 .ForMember(dest => dest.ActualEndDate, opt => opt.MapFrom(s => s.ActualEndDate))
@@ -60,14 +58,21 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(dest => dest.PlannedEndDate, opt => opt.MapFrom(s => s.PlannedEndDate))
                 .ForMember(dest => dest.PriceEpisodeIdentifier, opt => opt.MapFrom(s => s.PriceEpisodeIdentifier))
                 .ForMember(dest => dest.ReportingAimFundingLineType, opt => opt.MapFrom(s => s.ReportingAimFundingLineType))
-                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(s => s.SfaContributionPercentage))
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(s => s.StartDate))
-                .ForMember(dest => dest.OnProgrammeEarningType, opt => opt.MapFrom(s => (OnProgrammeEarningType)s.TransactionType))
-                //NOTE:TransactionType must be derived from OnProgrammeEarningType because of private setter on CalculatedRequiredLevyAmount
-                .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(s => s.TransactionType))
                 .ForMember(dest => dest.TransferSenderAccountId, opt => opt.MapFrom(s => s.TransferSenderAccountId))
                 .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(s => s.Ukprn))
+                ;
 
+            CreateMap<PaymentModel, CalculatedRequiredLevyAmount>()
+                //These 3 Fields are not available in PaymentModel and therefore will not be written to DB so no need to map them, also SequenceNumber
+                .ForMember(dest => dest.AgreedOnDate, opt => opt.Ignore())
+                .ForMember(dest => dest.Priority, opt => opt.Ignore())
+                .ForMember(dest => dest.AgreementId, opt => opt.MapFrom(s => s.AgreementId))
+                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(s => s.SfaContributionPercentage))
+                ;
+
+            CreateMap<PaymentModel, CalculatedRequiredCoInvestedAmount>()
+                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(s => s.SfaContributionPercentage))
                 ;
 
             CreateMap<PaymentHistoryEntity, Payment>()
