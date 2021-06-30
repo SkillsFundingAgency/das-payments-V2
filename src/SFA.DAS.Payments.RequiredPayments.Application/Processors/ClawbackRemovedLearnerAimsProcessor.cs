@@ -105,9 +105,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             clawbackPayment.EventId = Guid.NewGuid();
         }
 
-        private List<PeriodisedRequiredPaymentEvent> ConvertToRequiredPaymentEvent(List<PaymentModel> paymentToClawback)
+        private List<PeriodisedRequiredPaymentEvent> ConvertToRequiredPaymentEvent(List<PaymentModel> paymentsToClawback)
         {
-            return paymentToClawback
+            return paymentsToClawback
                 .GroupBy(x => new
                 {
                     x.SfaContributionPercentage,
@@ -121,15 +121,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     x.LearningStartDate,
                     x.DeliveryPeriod,
                 })
-                .Select(group =>
+                .Select(paymentsToClawbackGroup =>
                 {
-                    var payment = group.First();
+                    var paymentToClawback = paymentsToClawbackGroup.First();
                     
-                    var amountForGroup = group.Sum(x => x.Amount);
+                    var amountForGroup = paymentsToClawbackGroup.Sum(x => x.Amount);
                     
-                    var requiredPayment = requiredPaymentEventFactory.Create(group.Key.EarningType, payment.TransactionType, group.Key.SfaContributionPercentage, amountForGroup.AsRounded());
+                    var requiredPayment = requiredPaymentEventFactory.Create(paymentsToClawbackGroup.Key.EarningType, paymentToClawback.TransactionType, paymentToClawback.SfaContributionPercentage, amountForGroup.AsRounded());
 
-                    mapper.Map(payment, requiredPayment);
+                    mapper.Map(paymentToClawback, requiredPayment);
 
                     return requiredPayment;
                 })
