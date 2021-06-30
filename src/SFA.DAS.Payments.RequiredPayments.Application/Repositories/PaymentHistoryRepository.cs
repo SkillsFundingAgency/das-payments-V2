@@ -1,18 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Domain.Services;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Model.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
 {
+    public interface IPaymentHistoryRepository : IDisposable
+    {
+        Task<List<PaymentHistoryEntity>> GetPaymentHistory(ApprenticeshipKey apprenticeshipKey, byte currentCollectionPeriod, CancellationToken cancellationToken = default(CancellationToken));
+        Task<decimal> GetEmployerCoInvestedPaymentHistoryTotal(ApprenticeshipKey apprenticeshipKey, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<PaymentModel>> GetReadOnlyLearnerPaymentHistory(long ukprn, ContractType contractType, string learnerReferenceNumber, string learningAimReference, int frameworkCode, int pathwayCode,
+            int programmeType,
+            int standardCode,
+            short academicYear,
+            byte collectionPeriod,
+            CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<IdentifiedRemovedLearningAim>> IdentifyRemovedLearnerAims(short academicYear, byte collectionPeriod, long ukprn, DateTime ilrSubmissionDateTime, CancellationToken cancellationToken);
+    }
+
     public class PaymentHistoryRepository : IPaymentHistoryRepository
     {
         private readonly IPaymentsDataContext dataContext;
@@ -66,6 +79,38 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     LearningStartDate = payment.LearningStartDate,
                 })
             .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<PaymentModel>> GetReadOnlyLearnerPaymentHistory(
+            long ukprn,
+            ContractType contractType,
+            string learnerReferenceNumber,
+            string learningAimReference,
+            int frameworkCode,
+            int pathwayCode,
+            int programmeType,
+            int standardCode,
+            short academicYear,
+            byte collectionPeriod,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            //Please DO NOT Remove AsNoTracking and Clone as this list is converted to new payments, again to be stored into DB so we don't want to update existing Payments
+            return (await dataContext.Payment
+                    .Where(payment =>
+                        payment.Ukprn == ukprn &&
+                        payment.ContractType == contractType &&
+                        payment.LearnerReferenceNumber == learnerReferenceNumber &&
+                        payment.LearningAimReference == learningAimReference &&
+                        payment.LearningAimFrameworkCode == frameworkCode &&
+                        payment.LearningAimPathwayCode == pathwayCode &&
+                        payment.LearningAimProgrammeType == (int)programmeType &&
+                        payment.LearningAimStandardCode == standardCode &&
+                        payment.CollectionPeriod.AcademicYear == academicYear &&
+                        payment.CollectionPeriod.Period < collectionPeriod)
+                    .AsNoTracking()
+                    .ToListAsync(cancellationToken))
+                .Select(p => p.Clone())
+                .ToList();
         }
 
         public async Task<decimal> GetEmployerCoInvestedPaymentHistoryTotal(ApprenticeshipKey apprenticeshipKey, CancellationToken cancellationToken = default(CancellationToken))

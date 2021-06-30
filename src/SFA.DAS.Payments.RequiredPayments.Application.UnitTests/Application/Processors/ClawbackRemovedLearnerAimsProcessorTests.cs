@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         private AutoMock mocker;
 
         private ClawbackRemovedLearnerAimsProcessor sut;
-        private Mock<IPaymentClawbackRepository> paymentClawbackRepository;
+        private Mock<IPaymentHistoryRepository> paymentHistoryRepository;
         private IdentifiedRemovedLearningAim message;
 
         private Mapper mapper;
@@ -74,7 +74,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             mocker.Mock<IPaymentLogger>();
 
-            paymentClawbackRepository = mocker.Mock<IPaymentClawbackRepository>();
+            paymentHistoryRepository = mocker.Mock<IPaymentHistoryRepository>();
 
             sut = mocker.Create<ClawbackRemovedLearnerAimsProcessor>(
                 new NamedParameter("mapper", mapper),
@@ -155,7 +155,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 TransactionType = TransactionType.Learning,
             };
 
-            paymentClawbackRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
+            paymentHistoryRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
                     It.IsAny<long>(),
                     It.IsAny<ContractType>(),
                     It.IsAny<string>(),
@@ -175,7 +175,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             AssertCalculatedRequiredLevyAmountEvent(listOfCalculatedRequiredLevyAmounts.First(), historicalPayment, message);
 
-            paymentClawbackRepository.Verify(r =>
+            paymentHistoryRepository.Verify(r =>
                 r.SaveClawbackPayments(It.Is<IEnumerable<PaymentModel>>(p =>
                 AssertPaymentModel(p.Single(), message, originalEventId, originalEventTime)), It.IsAny<CancellationToken>()), Times.Once);
         }
@@ -183,7 +183,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         [Test]
         public async Task GivenNoHistoricalPaymentThenNoClawbackGenerated()
         {
-            paymentClawbackRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
+            paymentHistoryRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
                     It.IsAny<long>(),
                     It.IsAny<ContractType>(),
                     It.IsAny<string>(),
@@ -201,13 +201,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             listOfCalculatedRequiredLevyAmounts.Count.Should().Be(0);
 
-            paymentClawbackRepository.Verify(r => r.SaveClawbackPayments(It.IsAny<IEnumerable<PaymentModel>>(), It.IsAny<CancellationToken>()), Times.Never);
+            paymentHistoryRepository.Verify(r => r.SaveClawbackPayments(It.IsAny<IEnumerable<PaymentModel>>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Test]
         public async Task GivenSumOfHistoricalPaymentIsZeroThenNoClawbackGenerated()
         {
-            paymentClawbackRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
+            paymentHistoryRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
                 It.IsAny<long>(),
                 It.IsAny<ContractType>(),
                 It.IsAny<string>(),
@@ -239,13 +239,13 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             listOfCalculatedRequiredLevyAmounts.Count.Should().Be(0);
 
-            paymentClawbackRepository.Verify(r => r.SaveClawbackPayments(It.IsAny<IEnumerable<PaymentModel>>(), It.IsAny<CancellationToken>()), Times.Never);
+            paymentHistoryRepository.Verify(r => r.SaveClawbackPayments(It.IsAny<IEnumerable<PaymentModel>>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Test]
         public async Task GivenSumOfHistoricalPaymentIsNotZeroThenClawbackGeneratedAndCalculatedRequiredLevyAmountEventIsOnlyGeneratedForLevyAndTransferPayment()
         {
-            paymentClawbackRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
+            paymentHistoryRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
                 It.IsAny<long>(),
                 It.IsAny<ContractType>(),
                 It.IsAny<string>(),
@@ -321,7 +321,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             listOfCalculatedRequiredLevyAmounts.Count.Should().Be(2);
 
             //Saving Act1 Payments
-            paymentClawbackRepository.Verify(r =>
+            paymentHistoryRepository.Verify(r =>
                 r.SaveClawbackPayments(It.Is<IEnumerable<PaymentModel>>(models => models.Count() == 3),
                     It.IsAny<CancellationToken>()), Times.Once);
         }
@@ -329,7 +329,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         [Test]
         public async Task GivenSumOfHistoricalPaymentIsNotZeroThenClawbackGeneratedAndCalculatedRequiredLevyAmountEventIsNotGeneratedForAct2Payment()
         {
-            paymentClawbackRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
+            paymentHistoryRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
                 It.IsAny<long>(),
                 It.IsAny<ContractType>(),
                 It.IsAny<string>(),
@@ -382,7 +382,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             listOfCalculatedRequiredLevyAmounts.Count.Should().Be(0);
 
-            paymentClawbackRepository.Verify(r =>
+            paymentHistoryRepository.Verify(r =>
                 r.SaveClawbackPayments(It.Is<IEnumerable<PaymentModel>>(models => models.Count() == 3),
                     It.IsAny<CancellationToken>()), Times.Once);
         }
@@ -426,7 +426,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 });
             }
 
-            paymentClawbackRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
+            paymentHistoryRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
                 It.IsAny<long>(),
                 It.IsAny<ContractType>(),
                 It.IsAny<string>(),
@@ -451,7 +451,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 AssertCalculatedRequiredLevyAmount(1, secondPaymentAmount.Value, listOfCalculatedRequiredLevyAmounts);
             }
 
-            paymentClawbackRepository.Verify(r => r.SaveClawbackPayments(It.IsAny<IEnumerable<PaymentModel>>(), It.IsAny<CancellationToken>()), Times.Once);
+            paymentHistoryRepository.Verify(r => r.SaveClawbackPayments(It.IsAny<IEnumerable<PaymentModel>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [TestCase(100)]
@@ -498,7 +498,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             };
 
 
-            paymentClawbackRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
+            paymentHistoryRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
                 It.IsAny<long>(),
                 It.IsAny<ContractType>(),
                 It.IsAny<string>(),
@@ -518,7 +518,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             AssertCalculatedRequiredLevyAmount(0, paymentAmount, listOfCalculatedRequiredLevyAmounts);
 
-            paymentClawbackRepository.Verify(r => r.SaveClawbackPayments(It.IsAny<IEnumerable<PaymentModel>>(), It.IsAny<CancellationToken>()), Times.Once);
+            paymentHistoryRepository.Verify(r => r.SaveClawbackPayments(It.IsAny<IEnumerable<PaymentModel>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         private void AssertCalculatedRequiredLevyAmount(int index, int newAmount, IList<CalculatedRequiredLevyAmount> listOfCalculatedRequiredLevyAmounts)

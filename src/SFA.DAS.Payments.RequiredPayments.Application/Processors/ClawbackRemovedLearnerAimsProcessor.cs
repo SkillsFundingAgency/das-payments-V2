@@ -22,21 +22,21 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
     {
         // ReSharper disable IdentifierTypo
         public readonly IRequiredPaymentEventFactory requiredPaymentEventFactory;
-        private readonly IPaymentClawbackRepository paymentClawbackRepository;
+        private readonly IPaymentHistoryRepository paymentHistoryRepository;
         private readonly IMapper mapper;
         private readonly IPaymentLogger logger;
 
-        public ClawbackRemovedLearnerAimsProcessor(IRequiredPaymentEventFactory requiredPaymentEventFactory, IPaymentClawbackRepository paymentClawbackRepository, IMapper mapper, IPaymentLogger logger)
+        public ClawbackRemovedLearnerAimsProcessor(IRequiredPaymentEventFactory requiredPaymentEventFactory, IPaymentHistoryRepository paymentHistoryRepository, IMapper mapper, IPaymentLogger logger)
         {
             this.requiredPaymentEventFactory = requiredPaymentEventFactory ?? throw new ArgumentNullException(nameof(requiredPaymentEventFactory));
-            this.paymentClawbackRepository = paymentClawbackRepository ?? throw new ArgumentNullException(nameof(paymentClawbackRepository));
+            this.paymentHistoryRepository = paymentHistoryRepository ?? throw new ArgumentNullException(nameof(paymentHistoryRepository));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<IList<PeriodisedRequiredPaymentEvent>> GenerateClawbackForRemovedLearnerAim(IdentifiedRemovedLearningAim message, CancellationToken cancellationToken)
         {
-            var learnerPaymentHistory = await paymentClawbackRepository.GetReadOnlyLearnerPaymentHistory(
+            var learnerPaymentHistory = await paymentHistoryRepository.GetReadOnlyLearnerPaymentHistory(
                 message.Ukprn,
                 message.ContractType,
                 message.Learner.ReferenceNumber,
