@@ -120,6 +120,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     x.ApprenticeshipPriceEpisodeId,
                     x.LearningStartDate,
                     x.DeliveryPeriod,
+                    x.TransactionType,
                 })
                 .Select(paymentsToClawbackGroup =>
                 {
