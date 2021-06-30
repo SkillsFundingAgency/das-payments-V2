@@ -120,8 +120,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     x.ApprenticeshipPriceEpisodeId,
                     x.LearningStartDate,
                     x.DeliveryPeriod,
-                    x.Ukprn,
-                    x.ContractType,
                 })
                 .Select(group =>
                 {
