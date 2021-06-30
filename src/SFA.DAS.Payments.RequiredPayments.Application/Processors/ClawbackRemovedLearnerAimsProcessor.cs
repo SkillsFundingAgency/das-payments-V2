@@ -129,7 +129,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     
                     var amountForGroup = group.Sum(x => x.Amount);
                     
-                    var requiredPayment = requiredPaymentEventFactory.Create(amountForGroup.AsRounded(), group.Key.EarningType, payment.TransactionType, group.Key.SfaContributionPercentage);
+                    var requiredPayment = requiredPaymentEventFactory.Create(group.Key.EarningType, payment.TransactionType, group.Key.SfaContributionPercentage, amountForGroup.AsRounded(),);
 
                     mapper.Map(payment, requiredPayment);
 

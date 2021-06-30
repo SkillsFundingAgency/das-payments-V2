@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
     // ReSharper disable IdentifierTypo
     public interface IRequiredPaymentEventFactory
     {
-        PeriodisedRequiredPaymentEvent Create(EarningType earningType, TransactionType transactionType, decimal amount, decimal sfaContributionPercentage);
+        PeriodisedRequiredPaymentEvent Create(EarningType earningType, TransactionType transactionType, decimal sfaContributionPercentage, decimal amount);
     }
 
     public class RequiredPaymentEventFactory : IRequiredPaymentEventFactory
@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public PeriodisedRequiredPaymentEvent Create(EarningType earningType, TransactionType transactionType, decimal amount, decimal sfaContributionPercentage)
+        public PeriodisedRequiredPaymentEvent Create(EarningType earningType, TransactionType transactionType, decimal sfaContributionPercentage, decimal amount)
         {
             PeriodisedRequiredPaymentEvent paymentEvent = null;
 
