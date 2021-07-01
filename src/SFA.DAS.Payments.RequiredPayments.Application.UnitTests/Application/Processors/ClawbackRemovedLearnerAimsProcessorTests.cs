@@ -13,7 +13,6 @@ using NUnit.Framework;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Application.Mapping;
 using SFA.DAS.Payments.RequiredPayments.Application.Processors;
 using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
@@ -72,12 +71,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         {
             mocker = AutoMock.GetLoose();
 
-            mocker.Mock<IPaymentLogger>();
+           var logger = mocker.Mock<IPaymentLogger>();
 
             paymentHistoryRepository = mocker.Mock<IPaymentHistoryRepository>();
+            
+            var requiredPaymentEventFactory = new RequiredPaymentEventFactory(logger.Object);
 
             sut = mocker.Create<ClawbackRemovedLearnerAimsProcessor>(
                 new NamedParameter("mapper", mapper),
+                new NamedParameter("requiredPaymentEventFactory", requiredPaymentEventFactory),
                 new AutowiringParameter());
         }
 
@@ -88,7 +90,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
         }
 
         [Test]
-        public async Task GivenClawbackGeneratedThenRequiredLevyAmountEventIsMappedCorrectlyFromPaymentModel()
+        public async Task GivenClawbackGeneratedThenRequiredPaymentEventIsMappedCorrectlyFromPaymentModel()
         {
             var historicalPayment = new PaymentModel
             {
@@ -171,13 +173,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             var listOfCalculatedRequiredLevyAmounts = await sut.GenerateClawbackForRemovedLearnerAim(message, CancellationToken.None);
 
-            listOfCalculatedRequiredLevyAmounts.Count.Should().Be(1);
+            listOfCalculatedRequiredLevyAmounts.Count.Should().Be(2);
 
             AssertCalculatedRequiredLevyAmountEvent(listOfCalculatedRequiredLevyAmounts.First(), historicalPayment, message);
-
-            paymentHistoryRepository.Verify(r =>
-                r.SaveClawbackPayments(It.Is<IEnumerable<PaymentModel>>(p =>
-                AssertPaymentModel(p.Single(), message, originalEventId, originalEventTime)), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]
@@ -200,8 +198,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             var listOfCalculatedRequiredLevyAmounts = await sut.GenerateClawbackForRemovedLearnerAim(message, CancellationToken.None);
 
             listOfCalculatedRequiredLevyAmounts.Count.Should().Be(0);
-
-            paymentHistoryRepository.Verify(r => r.SaveClawbackPayments(It.IsAny<IEnumerable<PaymentModel>>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Test]
@@ -226,20 +222,20 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                         Amount = 100,
                         FundingSource = FundingSourceType.Levy,
                         ContractType = ContractType.Act1,
+                        TransactionType = TransactionType.Learning,
                     },
                     new PaymentModel
                     {
                         Amount = -100,
                         FundingSource = FundingSourceType.Levy,
                         ContractType = ContractType.Act1,
+                        TransactionType = TransactionType.Learning,
                     }
                 });
 
             var listOfCalculatedRequiredLevyAmounts = await sut.GenerateClawbackForRemovedLearnerAim(message, CancellationToken.None);
 
             listOfCalculatedRequiredLevyAmounts.Count.Should().Be(0);
-
-            paymentHistoryRepository.Verify(r => r.SaveClawbackPayments(It.IsAny<IEnumerable<PaymentModel>>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Test]
@@ -266,9 +262,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                         JobId = 10,
                         ClawbackSourcePaymentEventId = null,
                         CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 1 },
+                        DeliveryPeriod = 1,
                         IlrSubmissionDateTime = DateTime.Today,
                         FundingSource = FundingSourceType.Levy,
                         ContractType = ContractType.Act1,
+                        TransactionType = TransactionType.Learning,
                     },
                     new PaymentModel
                     {
@@ -277,9 +275,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                         JobId = 10,
                         ClawbackSourcePaymentEventId = null,
                         CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 2 },
+                        DeliveryPeriod = 2,
                         IlrSubmissionDateTime = DateTime.Today,
                         FundingSource = FundingSourceType.Transfer,
                         ContractType = ContractType.Act1,
+                        TransactionType = TransactionType.Learning,
                     },
                     new PaymentModel
                     {
@@ -288,9 +288,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                         JobId = 10,
                         ClawbackSourcePaymentEventId = null,
                         CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 2 },
+                        DeliveryPeriod = 2,
                         IlrSubmissionDateTime = DateTime.Today,
                         FundingSource = FundingSourceType.CoInvestedEmployer,
                         ContractType = ContractType.Act1,
+                        TransactionType = TransactionType.Learning,
                     },
                     new PaymentModel
                     {
@@ -299,9 +301,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                         JobId = 10,
                         ClawbackSourcePaymentEventId = null,
                         CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 2 },
+                        DeliveryPeriod = 2,
                         IlrSubmissionDateTime = DateTime.Today,
                         FundingSource = FundingSourceType.CoInvestedSfa,
                         ContractType = ContractType.Act1,
+                        TransactionType = TransactionType.Learning,
                     },
                     new PaymentModel
                     {
@@ -310,20 +314,20 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                         JobId = 10,
                         ClawbackSourcePaymentEventId = null,
                         CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 2 },
+                        DeliveryPeriod = 2,
                         IlrSubmissionDateTime = DateTime.Today,
                         FundingSource = FundingSourceType.FullyFundedSfa,
                         ContractType = ContractType.Act2,
+                        TransactionType = TransactionType.First16To18EmployerIncentive,
                     },
                 });
 
             var listOfCalculatedRequiredLevyAmounts = await sut.GenerateClawbackForRemovedLearnerAim(message, CancellationToken.None);
 
-            listOfCalculatedRequiredLevyAmounts.Count.Should().Be(2);
-
-            //Saving Act1 Payments
-            paymentHistoryRepository.Verify(r =>
-                r.SaveClawbackPayments(It.Is<IEnumerable<PaymentModel>>(models => models.Count() == 3),
-                    It.IsAny<CancellationToken>()), Times.Once);
+            listOfCalculatedRequiredLevyAmounts.Count.Should().Be(4);
+            listOfCalculatedRequiredLevyAmounts.Count(rp => rp.GetType() == typeof(CalculatedRequiredLevyAmount)).Should().Be(2);
+            listOfCalculatedRequiredLevyAmounts.Count(rp => rp.GetType() == typeof(CalculatedRequiredCoInvestedAmount)).Should().Be(1);
+            listOfCalculatedRequiredLevyAmounts.Count(rp => rp.GetType() == typeof(CalculatedRequiredIncentiveAmount)).Should().Be(1);
         }
 
         [Test]
@@ -353,6 +357,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                         IlrSubmissionDateTime = DateTime.Today,
                         FundingSource = FundingSourceType.CoInvestedEmployer,
                         ContractType = ContractType.Act2,
+                        TransactionType = TransactionType.Learning,
                     },
                     new PaymentModel
                     {
@@ -364,6 +369,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                         IlrSubmissionDateTime = DateTime.Today,
                         FundingSource = FundingSourceType.CoInvestedSfa,
                         ContractType = ContractType.Act2,
+                        TransactionType = TransactionType.Learning,
                     },
                     new PaymentModel
                     {
@@ -375,16 +381,15 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                         IlrSubmissionDateTime = DateTime.Today,
                         FundingSource = FundingSourceType.FullyFundedSfa,
                         ContractType = ContractType.Act2,
+                        TransactionType = TransactionType.First16To18EmployerIncentive,
                     },
                 });
 
             var listOfCalculatedRequiredLevyAmounts = await sut.GenerateClawbackForRemovedLearnerAim(message, CancellationToken.None);
 
-            listOfCalculatedRequiredLevyAmounts.Count.Should().Be(0);
-
-            paymentHistoryRepository.Verify(r =>
-                r.SaveClawbackPayments(It.Is<IEnumerable<PaymentModel>>(models => models.Count() == 3),
-                    It.IsAny<CancellationToken>()), Times.Once);
+            listOfCalculatedRequiredLevyAmounts.Count.Should().Be(2);
+            listOfCalculatedRequiredLevyAmounts.Count(rp => rp.GetType() == typeof(CalculatedRequiredCoInvestedAmount)).Should().Be(1);
+            listOfCalculatedRequiredLevyAmounts.Count(rp => rp.GetType() == typeof(CalculatedRequiredIncentiveAmount)).Should().Be(1);
         }
 
         [TestCase(100, 200)]
@@ -405,9 +410,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                     JobId = 10,
                     ClawbackSourcePaymentEventId = null,
                     CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 1 },
+                    DeliveryPeriod = 1,
                     IlrSubmissionDateTime = DateTime.Today,
                     FundingSource = FundingSourceType.Levy,
                     ContractType = ContractType.Act1,
+                    TransactionType = TransactionType.Learning,
                 }
             };
 
@@ -420,9 +427,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                     JobId = 11,
                     ClawbackSourcePaymentEventId = null,
                     CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 2 },
+                    DeliveryPeriod = 2,
                     IlrSubmissionDateTime = DateTime.Today,
                     FundingSource = FundingSourceType.Levy,
                     ContractType = ContractType.Act1,
+                    TransactionType = TransactionType.Learning,
                 });
             }
 
@@ -450,8 +459,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             {
                 AssertCalculatedRequiredLevyAmount(1, secondPaymentAmount.Value, listOfCalculatedRequiredLevyAmounts);
             }
-
-            paymentHistoryRepository.Verify(r => r.SaveClawbackPayments(It.IsAny<IEnumerable<PaymentModel>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [TestCase(100)]
@@ -472,6 +479,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                     IlrSubmissionDateTime = DateTime.Today,
                     FundingSource = FundingSourceType.Levy,
                     ContractType = ContractType.Act1,
+                    TransactionType = TransactionType.Learning,
                 },
                 new PaymentModel
                 {
@@ -483,6 +491,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                     IlrSubmissionDateTime = DateTime.Today,
                     FundingSource = FundingSourceType.Levy,
                     ContractType = ContractType.Act1,
+                    TransactionType = TransactionType.Learning,
                 },
                 new PaymentModel
                 {
@@ -494,6 +503,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                     IlrSubmissionDateTime = DateTime.Today,
                     FundingSource = FundingSourceType.Levy,
                     ContractType = ContractType.Act1,
+                    TransactionType = TransactionType.Learning,
                 }
             };
 
@@ -517,11 +527,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             listOfCalculatedRequiredLevyAmounts.Count.Should().Be(1);
 
             AssertCalculatedRequiredLevyAmount(0, paymentAmount, listOfCalculatedRequiredLevyAmounts);
-
-            paymentHistoryRepository.Verify(r => r.SaveClawbackPayments(It.IsAny<IEnumerable<PaymentModel>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
-        private void AssertCalculatedRequiredLevyAmount(int index, int newAmount, IList<CalculatedRequiredLevyAmount> listOfCalculatedRequiredLevyAmounts)
+        private void AssertCalculatedRequiredLevyAmount(int index, int newAmount, IList<PeriodisedRequiredPaymentEvent> listOfCalculatedRequiredLevyAmounts)
         {
             listOfCalculatedRequiredLevyAmounts.ElementAt(index).AmountDue.Should().Be(newAmount * -1);
             listOfCalculatedRequiredLevyAmounts.ElementAt(index).JobId.Should().Be(message.JobId);
@@ -530,66 +538,45 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             listOfCalculatedRequiredLevyAmounts.ElementAt(index).IlrSubmissionDateTime.Should().Be(message.IlrSubmissionDateTime);
         }
         
-        private static void AssertCalculatedRequiredLevyAmountEvent(CalculatedRequiredLevyAmount listOfCalculatedRequiredLevyAmounts, PaymentModel historicalPayment, IdentifiedRemovedLearningAim message)
+        private static void AssertCalculatedRequiredLevyAmountEvent(PeriodisedRequiredPaymentEvent periodisedRequiredPaymentEvent, PaymentModel historicalPayment, IdentifiedRemovedLearningAim message)
         {
-            listOfCalculatedRequiredLevyAmounts.AgreementId.Should().Be(historicalPayment.AgreementId);
-            listOfCalculatedRequiredLevyAmounts.AgreedOnDate.Should().Be(null);
-            listOfCalculatedRequiredLevyAmounts.AccountId.Should().Be(historicalPayment.AccountId);
-            listOfCalculatedRequiredLevyAmounts.ActualEndDate.Should().Be(historicalPayment.ActualEndDate);
-            listOfCalculatedRequiredLevyAmounts.AmountDue.Should().Be(-100);
-            listOfCalculatedRequiredLevyAmounts.ApprenticeshipEmployerType.Should().Be(historicalPayment.ApprenticeshipEmployerType);
-            listOfCalculatedRequiredLevyAmounts.ApprenticeshipId.Should().Be(historicalPayment.ApprenticeshipId);
-            listOfCalculatedRequiredLevyAmounts.ApprenticeshipPriceEpisodeId.Should().Be(historicalPayment.ApprenticeshipPriceEpisodeId);
-            listOfCalculatedRequiredLevyAmounts.CollectionPeriod.Period.Should().Be(message.CollectionPeriod.Period);
-            listOfCalculatedRequiredLevyAmounts.CollectionPeriod.AcademicYear.Should().Be(message.CollectionPeriod.AcademicYear);
-            listOfCalculatedRequiredLevyAmounts.CompletionAmount.Should().Be(historicalPayment.CompletionAmount);
-            listOfCalculatedRequiredLevyAmounts.CompletionStatus.Should().Be(historicalPayment.CompletionStatus);
-            listOfCalculatedRequiredLevyAmounts.ContractType.Should().Be(historicalPayment.ContractType);
-            listOfCalculatedRequiredLevyAmounts.DeliveryPeriod.Should().Be(historicalPayment.DeliveryPeriod);
-            listOfCalculatedRequiredLevyAmounts.EarningEventId.Should().Be(Guid.Empty);
-            listOfCalculatedRequiredLevyAmounts.EventTime.Should().BeCloseTo(DateTimeOffset.UtcNow, 100);
-            listOfCalculatedRequiredLevyAmounts.IlrFileName.Should().Be(null);
-            listOfCalculatedRequiredLevyAmounts.IlrSubmissionDateTime.Should().Be(message.IlrSubmissionDateTime);
-            listOfCalculatedRequiredLevyAmounts.InstalmentAmount.Should().Be(historicalPayment.InstalmentAmount);
-            listOfCalculatedRequiredLevyAmounts.JobId.Should().Be(message.JobId);
-            listOfCalculatedRequiredLevyAmounts.Learner.ReferenceNumber.Should().Be(historicalPayment.LearnerReferenceNumber);
-            listOfCalculatedRequiredLevyAmounts.Learner.Uln.Should().Be(historicalPayment.LearnerUln);
-            listOfCalculatedRequiredLevyAmounts.LearningAim.FrameworkCode.Should().Be(historicalPayment.LearningAimFrameworkCode);
-            listOfCalculatedRequiredLevyAmounts.LearningAim.FundingLineType.Should().Be(historicalPayment.LearningAimFundingLineType);
-            listOfCalculatedRequiredLevyAmounts.LearningAim.PathwayCode.Should().Be(historicalPayment.LearningAimPathwayCode);
-            listOfCalculatedRequiredLevyAmounts.LearningAim.ProgrammeType.Should().Be(historicalPayment.LearningAimProgrammeType);
-            listOfCalculatedRequiredLevyAmounts.LearningAim.Reference.Should().Be(historicalPayment.LearningAimReference);
-            listOfCalculatedRequiredLevyAmounts.LearningAim.SequenceNumber.Should().Be(0);
-            listOfCalculatedRequiredLevyAmounts.LearningAim.StandardCode.Should().Be(historicalPayment.LearningAimStandardCode);
-            listOfCalculatedRequiredLevyAmounts.LearningAim.StartDate.Should().Be(historicalPayment.StartDate);
-            listOfCalculatedRequiredLevyAmounts.LearningStartDate.Should().Be(historicalPayment.LearningStartDate);
-            listOfCalculatedRequiredLevyAmounts.NumberOfInstalments.Should().Be(historicalPayment.NumberOfInstalments);
-            listOfCalculatedRequiredLevyAmounts.OnProgrammeEarningType.Should().Be((OnProgrammeEarningType)historicalPayment.TransactionType);
-            listOfCalculatedRequiredLevyAmounts.PlannedEndDate.Should().Be(historicalPayment.PlannedEndDate);
-            listOfCalculatedRequiredLevyAmounts.PriceEpisodeIdentifier.Should().Be(historicalPayment.PriceEpisodeIdentifier);
-            listOfCalculatedRequiredLevyAmounts.Priority.Should().Be(0);
-            listOfCalculatedRequiredLevyAmounts.ReportingAimFundingLineType.Should().Be(historicalPayment.ReportingAimFundingLineType);
-            listOfCalculatedRequiredLevyAmounts.SfaContributionPercentage.Should().Be(historicalPayment.SfaContributionPercentage);
-            listOfCalculatedRequiredLevyAmounts.StartDate.Should().Be(historicalPayment.StartDate);
-            listOfCalculatedRequiredLevyAmounts.TransactionType.Should().Be(historicalPayment.TransactionType);
-            listOfCalculatedRequiredLevyAmounts.TransferSenderAccountId.Should().Be(historicalPayment.TransferSenderAccountId);
-            listOfCalculatedRequiredLevyAmounts.Ukprn.Should().Be(historicalPayment.Ukprn);
-        }
-
-        private static bool AssertPaymentModel(PaymentModel actualPayment, IdentifiedRemovedLearningAim message, Guid originalEventId, DateTimeOffset originalEventTime)
-        {
-            return actualPayment.Id == 0
-                   && actualPayment.Amount == -100
-                   && actualPayment.JobId == message.JobId
-                   && actualPayment.ClawbackSourcePaymentEventId == originalEventId
-                   && actualPayment.CollectionPeriod.Period == message.CollectionPeriod.Period
-                   && actualPayment.CollectionPeriod.AcademicYear == message.CollectionPeriod.AcademicYear
-                   && actualPayment.IlrSubmissionDateTime == message.IlrSubmissionDateTime
-                   && actualPayment.EventId != originalEventId
-                   && actualPayment.EventTime != originalEventTime
-                   && actualPayment.RequiredPaymentEventId == Guid.Empty
-                   && actualPayment.EarningEventId == Guid.Empty
-                   && actualPayment.FundingSourceEventId == Guid.Empty;
+            periodisedRequiredPaymentEvent.AccountId.Should().Be(historicalPayment.AccountId);
+            periodisedRequiredPaymentEvent.ActualEndDate.Should().Be(historicalPayment.ActualEndDate);
+            periodisedRequiredPaymentEvent.AmountDue.Should().Be(-100);
+            periodisedRequiredPaymentEvent.ApprenticeshipEmployerType.Should().Be(historicalPayment.ApprenticeshipEmployerType);
+            periodisedRequiredPaymentEvent.ApprenticeshipId.Should().Be(historicalPayment.ApprenticeshipId);
+            periodisedRequiredPaymentEvent.ApprenticeshipPriceEpisodeId.Should().Be(historicalPayment.ApprenticeshipPriceEpisodeId);
+            periodisedRequiredPaymentEvent.CollectionPeriod.Period.Should().Be(message.CollectionPeriod.Period);
+            periodisedRequiredPaymentEvent.CollectionPeriod.AcademicYear.Should().Be(message.CollectionPeriod.AcademicYear);
+            periodisedRequiredPaymentEvent.CompletionAmount.Should().Be(historicalPayment.CompletionAmount);
+            periodisedRequiredPaymentEvent.CompletionStatus.Should().Be(historicalPayment.CompletionStatus);
+            periodisedRequiredPaymentEvent.ContractType.Should().Be(historicalPayment.ContractType);
+            periodisedRequiredPaymentEvent.DeliveryPeriod.Should().Be(historicalPayment.DeliveryPeriod);
+            periodisedRequiredPaymentEvent.EarningEventId.Should().Be(Guid.Empty);
+            periodisedRequiredPaymentEvent.EventTime.Should().BeCloseTo(DateTimeOffset.UtcNow, 100);
+            periodisedRequiredPaymentEvent.IlrFileName.Should().Be(null);
+            periodisedRequiredPaymentEvent.IlrSubmissionDateTime.Should().Be(message.IlrSubmissionDateTime);
+            periodisedRequiredPaymentEvent.InstalmentAmount.Should().Be(historicalPayment.InstalmentAmount);
+            periodisedRequiredPaymentEvent.JobId.Should().Be(message.JobId);
+            periodisedRequiredPaymentEvent.Learner.ReferenceNumber.Should().Be(historicalPayment.LearnerReferenceNumber);
+            periodisedRequiredPaymentEvent.Learner.Uln.Should().Be(historicalPayment.LearnerUln);
+            periodisedRequiredPaymentEvent.LearningAim.FrameworkCode.Should().Be(historicalPayment.LearningAimFrameworkCode);
+            periodisedRequiredPaymentEvent.LearningAim.FundingLineType.Should().Be(historicalPayment.LearningAimFundingLineType);
+            periodisedRequiredPaymentEvent.LearningAim.PathwayCode.Should().Be(historicalPayment.LearningAimPathwayCode);
+            periodisedRequiredPaymentEvent.LearningAim.ProgrammeType.Should().Be(historicalPayment.LearningAimProgrammeType);
+            periodisedRequiredPaymentEvent.LearningAim.Reference.Should().Be(historicalPayment.LearningAimReference);
+            periodisedRequiredPaymentEvent.LearningAim.SequenceNumber.Should().Be(0);
+            periodisedRequiredPaymentEvent.LearningAim.StandardCode.Should().Be(historicalPayment.LearningAimStandardCode);
+            periodisedRequiredPaymentEvent.LearningAim.StartDate.Should().Be(historicalPayment.StartDate);
+            periodisedRequiredPaymentEvent.LearningStartDate.Should().Be(historicalPayment.LearningStartDate);
+            periodisedRequiredPaymentEvent.NumberOfInstalments.Should().Be(historicalPayment.NumberOfInstalments);
+            periodisedRequiredPaymentEvent.PlannedEndDate.Should().Be(historicalPayment.PlannedEndDate);
+            periodisedRequiredPaymentEvent.PriceEpisodeIdentifier.Should().Be(historicalPayment.PriceEpisodeIdentifier);
+            periodisedRequiredPaymentEvent.ReportingAimFundingLineType.Should().Be(historicalPayment.ReportingAimFundingLineType);
+            periodisedRequiredPaymentEvent.StartDate.Should().Be(historicalPayment.StartDate);
+            periodisedRequiredPaymentEvent.TransactionType.Should().Be(historicalPayment.TransactionType);
+            periodisedRequiredPaymentEvent.TransferSenderAccountId.Should().Be(historicalPayment.TransferSenderAccountId);
+            periodisedRequiredPaymentEvent.Ukprn.Should().Be(historicalPayment.Ukprn);
         }
     }
 }
