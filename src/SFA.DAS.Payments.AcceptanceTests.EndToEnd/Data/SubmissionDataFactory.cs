@@ -1,3 +1,4 @@
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -75,7 +76,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
             submissionDataContext.RemoveRange(submissionDataContext.SubmissionSummaries);
             submissionDataContext.RemoveRange(submissionDataContext.CollectionPeriodTolerances);
             submissionDataContext.RemoveRange(submissionDataContext.SubmissionsSummaries);
-            
+
             await submissionDataContext.SaveChangesAsync();
         }
 
@@ -92,15 +93,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
 
         public async Task<JobModel> GetPeriodEndSubmissionWindowValidationJob(long dcJobId, byte collectionPeriod, short academicYear)
         {
-            return await submissionDataContext.Jobs
-                .Where(x =>
-                    x.DcJobId == dcJobId &&
-                    x.JobType == JobType.PeriodEndSubmissionWindowValidationJob &&
-                    x.CollectionPeriod == collectionPeriod &&
-                    x.AcademicYear == academicYear)
-                .OrderByDescending(x => x.StartTime)
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
+            using (submissionDataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                return await submissionDataContext.Jobs
+                    .Where(x =>
+                        x.DcJobId == dcJobId &&
+                        x.JobType == JobType.PeriodEndSubmissionWindowValidationJob &&
+                        x.CollectionPeriod == collectionPeriod &&
+                        x.AcademicYear == academicYear)
+                    .OrderByDescending(x => x.StartTime)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
         }
     }
 }

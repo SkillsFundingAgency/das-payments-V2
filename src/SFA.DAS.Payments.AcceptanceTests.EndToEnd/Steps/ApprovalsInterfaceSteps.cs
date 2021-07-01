@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
@@ -239,10 +240,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 var apprenticeshipIds = ApprovalsApprenticeships.Select(apprenticeship => apprenticeship.Id).ToArray();
 
-                var savedApprenticeships = await TestDataContext.Apprenticeship.AsNoTracking()
-                    .Include(apprenticeship => apprenticeship.ApprenticeshipPriceEpisodes)
-                    .Where(apprenticeship => apprenticeshipIds.Contains(apprenticeship.Id))
-                    .ToListAsync();
+                List<ApprenticeshipModel> savedApprenticeships;
+
+                using (TestDataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                    savedApprenticeships = await TestDataContext.Apprenticeship.AsNoTracking()
+                        .Include(apprenticeship => apprenticeship.ApprenticeshipPriceEpisodes)
+                        .Where(apprenticeship => apprenticeshipIds.Contains(apprenticeship.Id))
+                        .ToListAsync();
 
                 var notFound = new List<ApprovalsApprenticeship>();
                 foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
@@ -373,7 +377,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 };
                 Console.WriteLine($"Sending ApprenticeshipUpdatedApprovedEvent message: {createdMessage.ToJson()}");
-               await DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+                await DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
 
@@ -403,7 +407,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         }).ToArray(),
                 };
                 Console.WriteLine($"Sending DataLockTriageApprovedEvent message: {createdMessage.ToJson()}");
-              await  DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+                await DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
 
@@ -453,7 +457,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     StopDate = approvalsApprenticeship.StoppedOnDate.ToDate(),
                 };
                 Console.WriteLine($"Sending ApprenticeshipStoppedEvent message: {createdMessage.ToJson()}");
-               await DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+                await DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
 
@@ -468,7 +472,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     StopDate = approvalsApprenticeship.StoppedOnDate.ToDate(),
                 };
                 Console.WriteLine($"Sending ApprenticeshipStopDateChangedEvent message: {createdMessage.ToJson()}");
-               await  DasMessageSession.Send(createdMessage).ConfigureAwait(false);
+                await DasMessageSession.Send(createdMessage).ConfigureAwait(false);
             }
         }
 
@@ -495,9 +499,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 var apprenticeshipIds = ApprovalsApprenticeships.Select(apprenticeship => apprenticeship.Id).ToArray();
 
-                var savedApprenticeshipPauses = await TestDataContext.ApprenticeshipPause.AsNoTracking()
-                    .Where(o => apprenticeshipIds.Contains(o.ApprenticeshipId))
-                    .ToListAsync();
+                List<ApprenticeshipPauseModel> savedApprenticeshipPauses;
+                using (TestDataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                    savedApprenticeshipPauses = await TestDataContext.ApprenticeshipPause.AsNoTracking()
+                        .Where(o => apprenticeshipIds.Contains(o.ApprenticeshipId))
+                        .ToListAsync();
 
                 var notFound = new List<ApprovalsApprenticeship>();
                 foreach (var approvalsApprenticeship in ApprovalsApprenticeships)
@@ -603,10 +609,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForIt(async () =>
             {
                 var employer = Employers.Single();
-                var savedProviderPriorities = await TestDataContext.EmployerProviderPriority.AsNoTracking()
-                    .Where(o => o.EmployerAccountId == employer.AccountId)
-                    .ToListAsync()
-                    .ConfigureAwait(false);
+
+                List<EmployerProviderPriorityModel> savedProviderPriorities;
+                using (TestDataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                    savedProviderPriorities = await TestDataContext.EmployerProviderPriority.AsNoTracking()
+                        .Where(o => o.EmployerAccountId == employer.AccountId)
+                        .ToListAsync()
+                        .ConfigureAwait(false);
 
                 var notFound = new List<ProviderPriority>();
                 foreach (var expectedProviderPriority in ProviderPaymentPriorities)

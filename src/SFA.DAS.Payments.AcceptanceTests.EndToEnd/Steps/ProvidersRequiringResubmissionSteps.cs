@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System.Data;
+using Autofac;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 await dataContext.SaveChangesAsync();
             }
         }
-        
+
         public ProvidersRequiringResubmissionSteps(FeatureContext context) : base(context)
         {
         }
@@ -60,7 +61,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             await WaitForIt(() =>
             {
-                return dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn);
+                using (dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                    return dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn);
             }, $"Failed to find provider with matching ukprn: {TestSession.Ukprn} in ProviderRequiringReprocessing table ");
         }
 
@@ -69,14 +71,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             await WaitForIt(() =>
             {
-                return dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn);
+                using (dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                    return dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn);
             }, $"Failed to find provider with matching ukprn: {TestSession.Ukprn} in ProviderRequiringReprocessing table ");
         }
 
         [Given(@"a provider already exists in ProviderRequiringReprocessing table")]
         public async Task GivenAProviderExistsInProviderRequiringReprocessingForCurrentCollectionPeriod()
         {
-            
             dataContext.ProvidersRequiringReprocessing.Add(new ProviderRequiringReprocessingEntity
             {
                 Ukprn = TestSession.Ukprn,
@@ -99,7 +101,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             await WaitForIt(async () =>
             {
-                return !(await dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn));
+                using (dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                    return !(await dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn));
             }, $"Failed to find provider with matching ukprn: {TestSession.Ukprn} in ProviderRequiringReprocessing table ");
 
         }
@@ -119,7 +122,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             await WaitForIt(() =>
             {
-                return dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn);
+                using (dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                    return dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn);
             }, $"Failed to find provider with matching ukprn: {TestSession.Ukprn} in ProviderRequiringReprocessing table ");
         }
     }

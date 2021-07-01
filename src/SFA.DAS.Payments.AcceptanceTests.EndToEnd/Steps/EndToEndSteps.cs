@@ -3,6 +3,7 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
@@ -129,7 +130,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForIt(async () =>
             {
                 var dataContext = Scope.Resolve<JobsDataContext>();
-                var job = await dataContext.Jobs.AsNoTracking().FirstOrDefaultAsync(savedJob => savedJob.DcJobId == jobId);
+                JobModel job;
+
+                using (dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                    job = await dataContext.Jobs.AsNoTracking().FirstOrDefaultAsync(savedJob => savedJob.DcJobId == jobId);
+
                 return job != null && job.Status != JobStatus.InProgress;
             }, $"Job failed to finish. Job id: {jobId}");
         }
@@ -302,11 +307,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             await WaitForIt(async () =>
             {
-                var payments = await Scope.Resolve<TestPaymentsDataContext>()
-                    .Payment
-                    .AsNoTracking()
-                    .Where(p => p.Ukprn == TestSession.Provider.Ukprn)
-                    .ToListAsync();
+                var paymentsDataContext = Scope.Resolve<TestPaymentsDataContext>();
+                List<PaymentModel> payments;
+
+                using (paymentsDataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                    payments = await paymentsDataContext.Payment
+                        .AsNoTracking()
+                        .Where(p => p.Ukprn == TestSession.Provider.Ukprn)
+                        .ToListAsync();
+
                 return payments.Any() && payments.All(p => p.JobId == TestSession.Provider.JobId);
             },$"Provider Payments failed to cleanup old payments for provider {TestSession.Provider.Ukprn}");
         }
@@ -316,8 +325,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             await WaitForIt(async () =>
             {
-                var payments = await Scope.Resolve<TestPaymentsDataContext>()
-                    .Payment
+                var paymentsDataContext = Scope.Resolve<TestPaymentsDataContext>();
+                List<PaymentModel> payments;
+
+                using (paymentsDataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                    payments = await paymentsDataContext.Payment
                     .AsNoTracking()
                     .Where(p => p.Ukprn == TestSession.Provider.Ukprn)
                     .ToListAsync();
