@@ -132,7 +132,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var dataContext = Scope.Resolve<JobsDataContext>();
                 JobModel job;
 
-                using (dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                using (await dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
                     job = await dataContext.Jobs.AsNoTracking().FirstOrDefaultAsync(savedJob => savedJob.DcJobId == jobId);
 
                 return job != null && job.Status != JobStatus.InProgress;
@@ -310,7 +310,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var paymentsDataContext = Scope.Resolve<TestPaymentsDataContext>();
                 List<PaymentModel> payments;
 
-                using (paymentsDataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                using (await paymentsDataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
                     payments = await paymentsDataContext.Payment
                         .AsNoTracking()
                         .Where(p => p.Ukprn == TestSession.Provider.Ukprn)
@@ -328,7 +328,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var paymentsDataContext = Scope.Resolve<TestPaymentsDataContext>();
                 List<PaymentModel> payments;
 
-                using (paymentsDataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                using (await paymentsDataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
                     payments = await paymentsDataContext.Payment
                     .AsNoTracking()
                     .Where(p => p.Ukprn == TestSession.Provider.Ukprn)

@@ -242,7 +242,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 List<ApprenticeshipModel> savedApprenticeships;
 
-                using (TestDataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                using (await TestDataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
                     savedApprenticeships = await TestDataContext.Apprenticeship.AsNoTracking()
                         .Include(apprenticeship => apprenticeship.ApprenticeshipPriceEpisodes)
                         .Where(apprenticeship => apprenticeshipIds.Contains(apprenticeship.Id))
@@ -500,7 +500,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var apprenticeshipIds = ApprovalsApprenticeships.Select(apprenticeship => apprenticeship.Id).ToArray();
 
                 List<ApprenticeshipPauseModel> savedApprenticeshipPauses;
-                using (TestDataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                using (await TestDataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
                     savedApprenticeshipPauses = await TestDataContext.ApprenticeshipPause.AsNoTracking()
                         .Where(o => apprenticeshipIds.Contains(o.ApprenticeshipId))
                         .ToListAsync();
@@ -611,7 +611,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 var employer = Employers.Single();
 
                 List<EmployerProviderPriorityModel> savedProviderPriorities;
-                using (TestDataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                using (await TestDataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
                     savedProviderPriorities = await TestDataContext.EmployerProviderPriority.AsNoTracking()
                         .Where(o => o.EmployerAccountId == employer.AccountId)
                         .ToListAsync()

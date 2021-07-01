@@ -93,7 +93,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data
 
         public async Task<JobModel> GetPeriodEndSubmissionWindowValidationJob(long dcJobId, byte collectionPeriod, short academicYear)
         {
-            using (submissionDataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+            using (await submissionDataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
                 return await submissionDataContext.Jobs
                     .Where(x =>
                         x.DcJobId == dcJobId &&

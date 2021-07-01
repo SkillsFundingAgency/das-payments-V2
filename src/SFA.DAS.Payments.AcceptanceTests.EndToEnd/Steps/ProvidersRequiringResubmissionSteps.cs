@@ -59,20 +59,20 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"new record will be added to the ProviderRequiringReprocessing table")]
         public async Task ThenNewRecordWillBeAddedToTheProviderRequiringReprocessingTable()
         {
-            await WaitForIt(() =>
+            await WaitForIt(async () =>
             {
-                using (dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
-                    return dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn);
+                using (await dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                    return await dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn);
             }, $"Failed to find provider with matching ukprn: {TestSession.Ukprn} in ProviderRequiringReprocessing table ");
         }
 
         [Then(@"there should not be any change to ProviderRequiringReprocessing table")]
         public async Task ThenThereShouldNotBeAnyChangeToProviderRequiringReprocessingTable()
         {
-            await WaitForIt(() =>
+            await WaitForIt(async () =>
             {
-                using (dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
-                    return dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn);
+                using (await dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                    return await dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn);
             }, $"Failed to find provider with matching ukprn: {TestSession.Ukprn} in ProviderRequiringReprocessing table ");
         }
 
@@ -101,7 +101,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             await WaitForIt(async () =>
             {
-                using (dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                using (await dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
                     return !(await dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn));
             }, $"Failed to find provider with matching ukprn: {TestSession.Ukprn} in ProviderRequiringReprocessing table ");
 
@@ -120,10 +120,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         [Then(@"record for provider should not be deleted from the ProviderRequiringReprocessing table")]
         public async Task ThenRecordForProviderShouldNotBeDeletedFromTheProviderRequiringReprocessingTable()
         {
-            await WaitForIt(() =>
+            await WaitForIt(async () =>
             {
-                using (dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
-                    return dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn);
+                using (await  dataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                    return await dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn);
             }, $"Failed to find provider with matching ukprn: {TestSession.Ukprn} in ProviderRequiringReprocessing table ");
         }
     }
