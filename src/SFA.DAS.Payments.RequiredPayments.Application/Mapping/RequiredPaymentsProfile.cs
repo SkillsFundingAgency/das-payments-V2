@@ -63,23 +63,23 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
 
             CreateMap<PaymentModel, CalculatedRequiredLevyAmount>()
                 //These 3 Fields are not available in PaymentModel and therefore will not be written to DB so no need to map them, also SequenceNumber
-                .ForMember(dest => dest.AgreedOnDate, opt => opt.Ignore())
-                .ForMember(dest => dest.Priority, opt => opt.Ignore())
                 .ForMember(dest => dest.AgreementId, opt => opt.MapFrom(s => s.AgreementId))
                 .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(s => s.SfaContributionPercentage))
-                .ForMember(dest => dest.TransactionType, opt => opt.Ignore())
-                .ForMember(dest => dest.OnProgrammeEarningType, opt => opt.Ignore())
+                .Ignore(dest => dest.Priority)
+                .Ignore(dest => dest.AgreedOnDate)
+                .Ignore(dest => dest.TransactionType)
+                .Ignore(dest => dest.OnProgrammeEarningType)
                 ;
 
             CreateMap<PaymentModel, CalculatedRequiredCoInvestedAmount>()
                 .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(s => s.SfaContributionPercentage))
-                .ForMember(dest => dest.TransactionType, opt => opt.Ignore())
-                .ForMember(dest => dest.OnProgrammeEarningType, opt => opt.Ignore())
+                .Ignore(dest => dest.TransactionType)
+                .Ignore(dest => dest.OnProgrammeEarningType)
                 ;
 
             CreateMap<PaymentModel, CalculatedRequiredIncentiveAmount>()
-                .ForMember(dest => dest.Type, opt => opt.Ignore())
-                .ForMember(dest => dest.TransactionType, opt => opt.Ignore())
+                .Ignore(dest => dest.Type)
+                .Ignore(dest => dest.TransactionType)
                 ;
 
             CreateMap<PaymentHistoryEntity, Payment>()

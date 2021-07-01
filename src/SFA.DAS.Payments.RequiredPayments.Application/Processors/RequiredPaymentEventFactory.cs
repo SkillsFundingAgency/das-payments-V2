@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
     // ReSharper disable IdentifierTypo
     public interface IRequiredPaymentEventFactory
     {
-        PeriodisedRequiredPaymentEvent Create(EarningType earningType, TransactionType transactionType, decimal sfaContributionPercentage, decimal amount);
+        PeriodisedRequiredPaymentEvent Create(EarningType earningType, int transactionType, decimal sfaContributionPercentage, decimal amount);
     }
 
     public class RequiredPaymentEventFactory : IRequiredPaymentEventFactory
@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public PeriodisedRequiredPaymentEvent Create(EarningType earningType, TransactionType transactionType, decimal sfaContributionPercentage, decimal amount)
+        public PeriodisedRequiredPaymentEvent Create(EarningType earningType, int transactionType, decimal sfaContributionPercentage, decimal amount)
         {
             PeriodisedRequiredPaymentEvent paymentEvent = null;
 
@@ -76,7 +76,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             return paymentEvent;
         }
 
-        private static bool IsValidPaymentType<T>(TransactionType transactionType) where T : struct, IConvertible
+        private static bool IsValidPaymentType<T>(int transactionType) where T : struct, IConvertible
         {
             return Enum.IsDefined(typeof(T), transactionType);
         }

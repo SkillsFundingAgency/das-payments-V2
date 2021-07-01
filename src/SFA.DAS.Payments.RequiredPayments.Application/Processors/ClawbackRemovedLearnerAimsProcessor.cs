@@ -128,7 +128,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     
                     var amountForGroup = paymentsToClawbackGroup.Sum(x => x.Amount);
                     
-                    var requiredPayment = requiredPaymentEventFactory.Create(paymentsToClawbackGroup.Key.EarningType, paymentToClawback.TransactionType, paymentToClawback.SfaContributionPercentage, amountForGroup.AsRounded());
+                    var requiredPayment = requiredPaymentEventFactory.Create(paymentsToClawbackGroup.Key.EarningType, (int)paymentToClawback.TransactionType, paymentToClawback.SfaContributionPercentage, amountForGroup.AsRounded());
 
                     mapper.Map(paymentToClawback, requiredPayment);
 
