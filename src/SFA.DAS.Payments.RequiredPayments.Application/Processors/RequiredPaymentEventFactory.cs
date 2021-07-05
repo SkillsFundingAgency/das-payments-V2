@@ -1,5 +1,6 @@
 ﻿using System;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
@@ -11,7 +12,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
     // ReSharper disable IdentifierTypo
     public interface IRequiredPaymentEventFactory
     {
-        PeriodisedRequiredPaymentEvent Create(EarningType earningType, int transactionType, decimal sfaContributionPercentage, decimal amount);
+        PeriodisedRequiredPaymentEvent Create(EarningType earningType, int transactionType, decimal sfaContributionPercentage, decimal amount, CollectionPeriod collectionPeriod);
     }
 
     public class RequiredPaymentEventFactory : IRequiredPaymentEventFactory
@@ -23,7 +24,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public PeriodisedRequiredPaymentEvent Create(EarningType earningType, int transactionType, decimal sfaContributionPercentage, decimal amount)
+        public PeriodisedRequiredPaymentEvent Create(EarningType earningType, int transactionType, decimal sfaContributionPercentage, decimal amount, CollectionPeriod collectionPeriod)
         {
             PeriodisedRequiredPaymentEvent paymentEvent = null;
 
@@ -35,7 +36,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                         paymentEvent = new CalculatedRequiredCoInvestedAmount
                         {
                             OnProgrammeEarningType = (OnProgrammeEarningType)transactionType,
+                            SfaContributionPercentage = sfaContributionPercentage,
                             AmountDue = amount,
+                            CollectionPeriod = collectionPeriod,
                         };
                     }
 
@@ -47,6 +50,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                         {
                             Type = (IncentivePaymentType)transactionType,
                             AmountDue = amount,
+                            CollectionPeriod = collectionPeriod,
                         };
                     }
 
@@ -60,6 +64,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                             OnProgrammeEarningType = (OnProgrammeEarningType)transactionType,
                             SfaContributionPercentage = sfaContributionPercentage,
                             AmountDue = amount,
+                            CollectionPeriod = collectionPeriod,
                         };
                     }
 

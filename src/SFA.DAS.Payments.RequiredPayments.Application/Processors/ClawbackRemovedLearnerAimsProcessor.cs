@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Core;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
@@ -60,10 +61,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 return new List<PeriodisedRequiredPaymentEvent>();
             }
 
-            var paymentToIgnore = learnerPaymentHistory.Join(learnerPaymentHistory, 
-                    payment => payment.EventId, 
+            var paymentToIgnore = learnerPaymentHistory.Join(learnerPaymentHistory,
+                    payment => payment.EventId,
                     clawbackPayment => clawbackPayment.ClawbackSourcePaymentEventId,
-                    (payment, clawbackPayment) => new[] {payment.EventId, clawbackPayment.EventId})
+                    (payment, clawbackPayment) => new[] { payment.EventId, clawbackPayment.EventId })
                 .SelectMany(paymentId => paymentId);
 
             if (learnerPaymentHistory.Where(payment => paymentToIgnore.Contains(payment.EventId)).Sum(p => p.Amount) != 0)
@@ -73,7 +74,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                                $"pathwayCode:{message.LearningAim.PathwayCode}, programmeType:{message.LearningAim.ProgrammeType}, " +
                                $"standardCode:{message.LearningAim.StandardCode}, learningAimReference:{message.LearningAim.Reference}, " +
                                $"academicYear:{message.CollectionPeriod.AcademicYear}, contractType:{message.ContractType}");
-
             }
 
             var paymentToClawback = learnerPaymentHistory
@@ -84,7 +84,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     return payment;
                 }).ToList();
 
-            return ConvertToRequiredPaymentEvent(paymentToClawback);
+            return ConvertToRequiredPaymentEvent(paymentToClawback, message.CollectionPeriod.Clone());
         }
 
         private static void ConvertToClawbackPayment(IdentifiedRemovedLearningAim message, PaymentModel clawbackPayment)
@@ -92,7 +92,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             clawbackPayment.Id = 0;
             clawbackPayment.Amount *= -1;
             clawbackPayment.JobId = message.JobId;
-            clawbackPayment.CollectionPeriod = message.CollectionPeriod.Clone();
             clawbackPayment.IlrSubmissionDateTime = message.IlrSubmissionDateTime;
             clawbackPayment.EventTime = DateTimeOffset.UtcNow;
 
@@ -105,30 +104,26 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             clawbackPayment.EventId = Guid.NewGuid();
         }
 
-        private List<PeriodisedRequiredPaymentEvent> ConvertToRequiredPaymentEvent(List<PaymentModel> paymentsToClawback)
+        private List<PeriodisedRequiredPaymentEvent> ConvertToRequiredPaymentEvent(List<PaymentModel> paymentsToClawback, CollectionPeriod collectionPeriod)
         {
             return paymentsToClawback
                 .GroupBy(x => new
                 {
-                    x.SfaContributionPercentage,
-                    EarningType = ToEarningType(x.FundingSource),
-                    x.PriceEpisodeIdentifier,
-                    x.AccountId,
-                    x.TransferSenderAccountId,
-                    x.ApprenticeshipEmployerType,
-                    x.ApprenticeshipId,
-                    x.ApprenticeshipPriceEpisodeId,
-                    x.LearningStartDate,
+                    EarningType = (x.FundingSource == FundingSourceType.CoInvestedEmployer || x.FundingSource == FundingSourceType.CoInvestedSfa),
                     x.DeliveryPeriod,
+                    x.CollectionPeriod.AcademicYear,
+                    x.CollectionPeriod.Period,
                     x.TransactionType,
                 })
                 .Select(paymentsToClawbackGroup =>
                 {
                     var paymentToClawback = paymentsToClawbackGroup.First();
-                    
+
                     var amountForGroup = paymentsToClawbackGroup.Sum(x => x.Amount);
-                    
-                    var requiredPayment = requiredPaymentEventFactory.Create(paymentsToClawbackGroup.Key.EarningType, (int)paymentToClawback.TransactionType, paymentToClawback.SfaContributionPercentage, amountForGroup.AsRounded());
+
+                    var earningType = ToEarningType(paymentToClawback.FundingSource);
+
+                    var requiredPayment = requiredPaymentEventFactory.Create(earningType, (int)paymentToClawback.TransactionType, paymentToClawback.SfaContributionPercentage, amountForGroup.AsRounded(), collectionPeriod);
 
                     mapper.Map(paymentToClawback, requiredPayment);
 
@@ -144,12 +139,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 case FundingSourceType.Transfer:
                 case FundingSourceType.Levy:
                     return EarningType.Levy;
-
-
                 case FundingSourceType.CoInvestedEmployer:
                 case FundingSourceType.CoInvestedSfa:
                     return EarningType.CoInvested;
-
                 case FundingSourceType.FullyFundedSfa:
                     return EarningType.Incentive;
                 default:

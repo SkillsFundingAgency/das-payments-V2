@@ -20,13 +20,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Include<PaymentModel, CalculatedRequiredLevyAmount>()
                 .Include<PaymentModel, CalculatedRequiredCoInvestedAmount>()
                 .ForMember(dest => dest.IlrFileName, opt => opt.Ignore())
-                .ForMember(dest => dest.AmountDue, opt => opt.MapFrom(s => s.Amount))
                 .ForMember(dest => dest.AccountId, opt => opt.MapFrom(s => s.AccountId))
                 .ForMember(dest => dest.ActualEndDate, opt => opt.MapFrom(s => s.ActualEndDate))
                 .ForMember(dest => dest.ApprenticeshipEmployerType, opt => opt.MapFrom(s => s.ApprenticeshipEmployerType))
                 .ForMember(dest => dest.ApprenticeshipId, opt => opt.MapFrom(s => s.ApprenticeshipId))
                 .ForMember(dest => dest.ApprenticeshipPriceEpisodeId, opt => opt.MapFrom(s => s.ApprenticeshipPriceEpisodeId))
-                .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => src.CollectionPeriod.Clone()))
                 .ForMember(dest => dest.CompletionAmount, opt => opt.MapFrom(s => s.CompletionAmount))
                 .ForMember(dest => dest.CompletionStatus, opt => opt.MapFrom(s => s.CompletionStatus))
                 .ForMember(dest => dest.ContractType, opt => opt.MapFrom(s => s.ContractType))
@@ -59,12 +57,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(s => s.StartDate))
                 .ForMember(dest => dest.TransferSenderAccountId, opt => opt.MapFrom(s => s.TransferSenderAccountId))
                 .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(s => s.Ukprn))
+                .Ignore(dest => dest.AmountDue)
+                .Ignore(dest => dest.CollectionPeriod)
                 ;
 
             CreateMap<PaymentModel, CalculatedRequiredLevyAmount>()
                 //These 3 Fields are not available in PaymentModel and therefore will not be written to DB so no need to map them, also SequenceNumber
                 .ForMember(dest => dest.AgreementId, opt => opt.MapFrom(s => s.AgreementId))
-                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(s => s.SfaContributionPercentage))
+                .Ignore(dest => dest.SfaContributionPercentage)
                 .Ignore(dest => dest.Priority)
                 .Ignore(dest => dest.AgreedOnDate)
                 .Ignore(dest => dest.TransactionType)
@@ -72,7 +72,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 ;
 
             CreateMap<PaymentModel, CalculatedRequiredCoInvestedAmount>()
-                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(s => s.SfaContributionPercentage))
+                .Ignore(dest => dest.SfaContributionPercentage)
                 .Ignore(dest => dest.TransactionType)
                 .Ignore(dest => dest.OnProgrammeEarningType)
                 ;
