@@ -138,6 +138,20 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 ClawbackSourcePaymentEventId = Guid.NewGuid(),
             });
 
+            await inMemoryMetricsQueryDataContext.Payments.AddAsync(new PaymentModel
+            {
+                Id = 5,
+                EventId = Guid.NewGuid(),
+                Ukprn = 1234,
+                JobId = 123,
+                CollectionPeriod = new CollectionPeriod { AcademicYear = 1920, Period = 1 },
+                Amount = 300,
+                FundingSource = FundingSourceType.Levy,
+                TransactionType = TransactionType.Learning,
+                ContractType = ContractType.Act1,
+                ClawbackSourcePaymentEventId = Guid.NewGuid(),
+            });
+
             await inMemoryMetricsQueryDataContext.SaveChangesAsync();
 
             var service = moqer.Create<SubmissionMetricsService>();
