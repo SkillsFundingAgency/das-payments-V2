@@ -42,7 +42,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
 
 
             CreateMap<IntermediateLearningAim, ApprenticeshipContractType1EarningEvent>()
-                .ForMember(dest => dest.AgreementId, opt => opt.MapFrom(aim => aim.PriceEpisodes[0].PriceEpisodeValues.PriceEpisodeAgreeId))
                 ;
 
             CreateMap<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>();
