@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                         PriceEpisodeContractType = "Non-Levy Contract",  //TODO: Needs to work for ACT1 too
                         PriceEpisodeOnProgPayment = learnerEarnings.InstallmentAmount,
                         PriceEpisodePlannedEndDate = learnerEarnings.LearnerStartDate.ToDate().AddMonths(learnerEarnings.NumberOfInstallments),
-                        PriceEpisodeSFAContribPct = SfaContributionPercentage,
+                        //PriceEpisodeESFAContribPct = SfaContributionPercentage, TODO 2616 Acceptance Tests
                     },
                     PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>()
                 });

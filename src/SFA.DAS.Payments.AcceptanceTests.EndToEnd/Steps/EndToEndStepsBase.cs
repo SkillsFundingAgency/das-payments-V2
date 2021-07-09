@@ -514,7 +514,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 newPriceEpisode.PriceEpisodeValues.TNP3 = priceEpisode.ResidualTrainingPrice;
                 newPriceEpisode.PriceEpisodeValues.TNP4 = priceEpisode.ResidualAssessmentPrice;
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice = priceEpisode.TotalTNPPrice;
-                newPriceEpisode.PriceEpisodeValues.PriceEpisodeSFAContribPct = sfaContributionPercent;
+                //newPriceEpisode.PriceEpisodeValues.PriceEpisodeSFAContribPct = sfaContributionPercent; TODO 2616 Acceptance Tests
                 // Default to max value so that not setting employer contribution won't fail tests 
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeCumulativePMRs = priceEpisode.Pmr ?? int.MaxValue;
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeCompExemCode = priceEpisode.CompletionHoldBackExemptionCode;

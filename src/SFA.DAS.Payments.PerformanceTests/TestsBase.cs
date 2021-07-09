@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.PerformanceTests
                     PriceEpisodeContractType = testLearner.IsLevyLearner ? "Levy Contract" : "Non-Levy Contract",
                     PriceEpisodeOnProgPayment = 1000,
                     PriceEpisodePlannedEndDate = startDate.AddMonths(12),
-                    PriceEpisodeSFAContribPct = .9M,
+                    //PriceEpisodeSFAContribPct = .9M, TODO 2616 Acceptance Tests
                     PriceEpisodeAimSeqNumber = 1,
                     PriceEpisodeCumulativePMRs = int.MaxValue
                 },
