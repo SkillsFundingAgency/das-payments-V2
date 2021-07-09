@@ -183,7 +183,7 @@ SELECT
 INTO #submissionLearners
 FROM submissionLearners
 
---SELECT * FROM #submissionLearners where LearnerUln = 3221244060
+--SELECT * FROM #submissionLearners where LearnerUln = 0
 
 SELECT distinct
     j.LearnerUln,
