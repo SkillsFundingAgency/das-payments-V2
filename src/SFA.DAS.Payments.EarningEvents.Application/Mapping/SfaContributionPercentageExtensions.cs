@@ -17,17 +17,15 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 return null;
             }
             var priceEpisode = source.Single(x => x.PriceEpisodeIdentifier == priceEpisodeIdentifier);
-            var value = priceEpisode.PriceEpisodePeriodisedValues
-                .Where(x => x.AttributeName == "PriceEpisodeSFAContribPct")
-                .Select(p => (decimal?)PeriodAccessor[p, "Period" + period])
-                .SingleOrDefault();
 
-            if (value == null)
-            {
-                value = priceEpisode.PriceEpisodeValues.PriceEpisodeSFAContribPct;
-            }
+            var values = 
+                priceEpisode.PriceEpisodePeriodisedValues
+                .SingleOrDefault(x => x.AttributeName == "PriceEpisodeESFAContribPct") 
+                ?? 
+                priceEpisode.PriceEpisodePeriodisedValues
+                .SingleOrDefault(x => x.AttributeName == "PriceEpisodeSFAContribPct");
 
-            return value;
+            return values == null ? null : (decimal?) PeriodAccessor[values, "Period" + period];
         }
     }
 }
