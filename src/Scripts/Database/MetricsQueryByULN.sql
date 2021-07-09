@@ -214,10 +214,11 @@ LEFT JOIN #DatalockedPayments as dp ON j.LearnerUln = dp.LearnerUln
 LEFT JOIN #RequiredPayments as r    ON j.LearnerUln =  r.LearnerUln
 LEFT JOIN #Payments as p            ON j.LearnerUln =  p.LearnerUln
 
---SELECT * FROM #DASEarnings where LearnerUln = 3221244060
---SELECT * FROM #DlockedEarnings where LearnerUln = 3221244060
---SELECT * FROM #DatalockedPayments where LearnerUln = 3221244060
---SELECT * FROM #RequiredPayments where LearnerUln = 3221244060
---SELECT * FROM #Payments where LearnerUln = 3221244060
+--use bellow queries if you want to investigate individual learner audit data
+--SELECT * FROM #DASEarnings where LearnerUln = 0
+--SELECT * FROM #DlockedEarnings where LearnerUln = 0
+--SELECT * FROM #DatalockedPayments where LearnerUln = 0
+--SELECT * FROM #RequiredPayments where LearnerUln = 0
+--SELECT * FROM #Payments where LearnerUln = 0
 
 SELECT * FROM #manualMetrics --where MissingEstimatedPayments != 0.000

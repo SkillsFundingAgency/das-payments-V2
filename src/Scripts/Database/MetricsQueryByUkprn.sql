@@ -201,6 +201,10 @@ LEFT JOIN #RequiredPayments as r    ON j.ukprn = r.ukprn
 LEFT JOIN #Payments as p            ON j.ukprn = p.ukprn
 
 
+--uncoment bellow and set value for @ukprn if you want to compare the manual and automated metrics for specific provider 
+--DECLARE @collectionperiod INT = 11
+--DECLARE @academicYear INT = 2021
+
 DECLARE @ukprn INT = 0
 
 SELECT * FROM #manualMetrics where (@ukprn = 0 OR Ukprn = @ukprn)
@@ -228,9 +232,6 @@ SELECT distinct
 FROM #manualMetrics where (@ukprn = 0 OR Ukprn = @ukprn)
 order by MissingDasPayments desc
 
---uncoment bellow if you want to see the automated metrics for specific provider 
---DECLARE @collectionperiod INT = 11
---DECLARE @academicYear INT = 2021
 
 SELECT [Id]
       ,[Ukprn]
