@@ -109,7 +109,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
                 //.AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
 
-
+            builder.RegisterType<MatchedLearnerEndpointFactory>()
+                .As<IMatchedLearnerEndpointFactory>()
+                .SingleInstance();
+            
+            builder.RegisterBuildCallback(c =>
+            {
+                var recoverability = c.Resolve<EndpointConfiguration>()
+                    .Recoverability();
+                recoverability.Immediate(immediate => immediate.NumberOfRetries(3));
+            });
         }
     }
 }
