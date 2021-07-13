@@ -95,6 +95,18 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                 priceEpisode.PriceEpisodePeriodisedValues.Add(balancingEarnings);
             }
 
+            var priceEpisodeESFAContribPct = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeESFAContribPct",
+            };
+
+            if (!string.IsNullOrEmpty(lastPeriod))
+            {
+                var periodProperty = priceEpisodeESFAContribPct.GetType().GetProperty($"Period{lastPeriod}");
+                periodProperty?.SetValue(priceEpisodeESFAContribPct, SfaContributionPercentage);
+                priceEpisode.PriceEpisodePeriodisedValues.Add(priceEpisodeESFAContribPct);
+            }
+
             learner.LearningDeliveries.Add(new LearningDelivery
             {
                 AimSeqNumber = learnerEarnings.AimSequenceNumber,
