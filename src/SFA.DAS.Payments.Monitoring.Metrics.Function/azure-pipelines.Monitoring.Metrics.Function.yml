@@ -1,3 +1,6 @@
+name: $(VersionNumberMajor).$(VersionNumberMinor)$(Rev:.rrrr)
+
+parameters:
 - name: BuildConfiguration
   displayName: Release or Debug
   type: string
