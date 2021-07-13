@@ -97,7 +97,7 @@ stages:
         command: pack
         packagesToPack: '**/*.MatchedLearner.Messages.csproj'
         versioningScheme: byBuildNumber
-        arguments: '--configuration ${{ parameters.BuildConfiguration }} --no-restore'
+        arguments: '--configuration ${{ parameters.BuildConfiguration }} --output "$(Build.ArtifactStagingDirectory)/NugetPackages" --no-restore'
   
 #********************************************************************************
 # Copy Nuget Packages into Aftifact Folder
