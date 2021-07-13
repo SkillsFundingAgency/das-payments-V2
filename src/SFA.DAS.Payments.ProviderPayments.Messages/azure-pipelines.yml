@@ -82,17 +82,17 @@ stages:
         vstsFeed: '$(NugetFeed)'
 
     - task: DotNetCoreCLI@2
+      enabled: false
       displayName: 'Build Provider Payments Messages'
       inputs:
         projects: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
         configuration: ${{ parameters.BuildConfiguration }}
         feedsToUse: 'select'
         vstsFeed: '$(NugetFeed)'
-      enabled: false
-********************************************************************************
+ 
+#********************************************************************************
 # Package 
 #********************************************************************************  
-
     - task: DotNetCoreCLI@2
       displayName: 'Pack Provider Payments Messages'
       inputs:
