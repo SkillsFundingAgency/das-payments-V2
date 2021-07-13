@@ -109,8 +109,7 @@ stages:
         TargetFolder: '$(Build.ArtifactStagingDirectory)/NugetPackages'    
 
     - task: PublishBuildArtifacts@1
-      enabled: false
       displayName: 'Publish Packages'
-        ArtifactName: NugetPackages
+      ArtifactName: NugetPackages
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/NugetPackages'    
