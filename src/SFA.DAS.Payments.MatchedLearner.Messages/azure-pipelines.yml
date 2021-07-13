@@ -89,28 +89,51 @@ stages:
         arguments: '--configuration ${{ parameters.BuildConfiguration }} --no-restore'
 
 #********************************************************************************
+# Build and Restore
+#******************************************************************************** 
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore Provider Payments Messages'
+      inputs:
+        command: restore
+        projects: src\SFA.DAS.Payments.MatchedLearner.Messages\SFA.DAS.Payments.MatchedLearner.Messages.csproj
+        configuration: ${{ parameters.BuildConfiguration }}
+        feedsToUse: 'select'
+        vstsFeed: '$(NugetFeed)'
+
+    - task: DotNetCoreCLI@2
+      enabled: false
+      displayName: 'Build Provider Payments Messages'
+      inputs:
+        projects: src\SFA.DAS.Payments.MatchedLearner.Messages\SFA.DAS.Payments.MatchedLearner.Messages.csproj
+        configuration: ${{ parameters.BuildConfiguration }}
+        feedsToUse: 'select'
+        vstsFeed: '$(NugetFeed)'
+ 
+#********************************************************************************
 # Package 
 #********************************************************************************  
     - task: DotNetCoreCLI@2
-      displayName: 'Pack MatchedLearner Messages'
+      displayName: 'Pack Provider Payments Messages'
       inputs:
         command: pack
-        packagesToPack: '**/*.MatchedLearner.Messages.csproj'
+        packagesToPack: src\SFA.DAS.Payments.MatchedLearner.Messages\SFA.DAS.Payments.MatchedLearner.Messages.csproj
+        configuration: ${{ parameters.BuildConfiguration }}
         versioningScheme: byBuildNumber
-        arguments: '--configuration ${{ parameters.BuildConfiguration }} --output "$(Build.ArtifactStagingDirectory)/NugetPackages" --no-restore'
-  
+
 #********************************************************************************
 # Copy Nuget Packages into Aftifact Folder
 #********************************************************************************   
     - task: CopyFiles@2
-      enabled: false
       displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
       inputs:
         Contents: '**/*.nupkg'
-        TargetFolder: '$(Build.ArtifactStagingDirectory)/NugetPackages'    
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/ProviderPayments'    
 
+#********************************************************************************
+# Publish Artifacts
+#********************************************************************************    
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Packages'
       inputs:
-        ArtifactName: NugetPackages
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)/NugetPackages'    
+        PathtoPublish: '$(build.artifactstagingdirectory)'
+            
