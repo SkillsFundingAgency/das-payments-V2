@@ -110,6 +110,6 @@ stages:
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Packages'
-      ArtifactName: NugetPackages
       inputs:
+        ArtifactName: NugetPackages
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/NugetPackages'    
