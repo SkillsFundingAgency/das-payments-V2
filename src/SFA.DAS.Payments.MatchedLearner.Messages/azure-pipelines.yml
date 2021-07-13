@@ -99,13 +99,13 @@ stages:
         versioningScheme: byBuildNumber
         arguments: '--configuration ${{ parameters.BuildConfiguration }} --no-restore'
   
+#********************************************************************************
+# Copy Nuget Packages into Aftifact Folder
+#********************************************************************************   
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
       inputs:
-        Contents:  |
-          **\${{ parameters.BuildConfiguration }}\*.nupkg
-          !**\packages\**
-          !**\bin\x64\**
+        Contents: '**/*.nupkg'
         TargetFolder: '$(Build.ArtifactStagingDirectory)/NugetPackages'    
 
     - task: PublishBuildArtifacts@1

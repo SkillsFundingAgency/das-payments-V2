@@ -76,22 +76,31 @@ stages:
       displayName: 'Restore Provider Payments Messages'
       inputs:
         command: restore
-        projects: '**/*.ProviderPayments.Messages.csproj'
+        projects: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
         configuration: ${{ parameters.BuildConfiguration }}
         feedsToUse: 'select'
         vstsFeed: '$(NugetFeed)'
 
+    - task: DotNetCoreCLI@2
+      displayName: 'Build Provider Payments Messages'
+      inputs:
+        projects: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
+        configuration: ${{ parameters.BuildConfiguration }}
+        feedsToUse: 'select'
+        vstsFeed: '$(NugetFeed)'
+      enabled: false
 ********************************************************************************
 # Package 
 #********************************************************************************  
+
     - task: DotNetCoreCLI@2
-      displayName: 'Pack ProviderPayments Messages'
+      displayName: 'Pack Provider Payments Messages'
       inputs:
         command: pack
-        packagesToPack: 'src\SFA.DAS.Payments.MatchedLearner.Messages\SFA.DAS.Payments.MatchedLearner.Messages.csproj'
+        packagesToPack: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
+        configuration: ${{ parameters.BuildConfiguration }}
         versioningScheme: byBuildNumber
-        arguments: '--configuration ${{ parameters.BuildConfiguration }} --no-restore'
-  
+
 #********************************************************************************
 # Copy Nuget Packages into Aftifact Folder
 #********************************************************************************   
@@ -99,7 +108,7 @@ stages:
       displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
       inputs:
         Contents: '**/*.nupkg'
-        TargetFolder: '$(Build.ArtifactStagingDirectory)/ProviderPayments'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/ProviderPayments'    
 
 #********************************************************************************
 # Publish Artifacts
@@ -108,3 +117,4 @@ stages:
       displayName: 'Publish Packages'
       inputs:
         PathtoPublish: '$(build.artifactstagingdirectory)'
+            
