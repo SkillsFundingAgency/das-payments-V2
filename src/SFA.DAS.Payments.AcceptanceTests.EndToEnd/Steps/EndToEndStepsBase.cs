@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Abstract;
+using MoreLinq;
 using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -606,7 +607,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         newValues = currentValues;
                     }
 
-                    if (newValues.AttributeName == "PriceEpisodeSFAContribPct" && aim.IsMainAim)
+                    if (newValues.AttributeName == "PriceEpisodeESFAContribPct" && aim.IsMainAim)
                     {
                         currentPriceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
                     }
@@ -670,7 +671,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (earnings.Any(x => !string.IsNullOrEmpty(x.SfaContributionPercentage)))
             {
-                sfaContributionPeriodisedValue = new T { AttributeName = "PriceEpisodeSFAContribPct", };
+                sfaContributionPeriodisedValue = new T { AttributeName = "PriceEpisodeESFAContribPct", };
+                aimPeriodisedValues.Add(sfaContributionPeriodisedValue);
+            }
+            else
+            {
+                earnings.ForEach(x => x.SfaContributionPercentage = "0");
+                sfaContributionPeriodisedValue = new T { AttributeName = "PriceEpisodeESFAContribPct", };
                 aimPeriodisedValues.Add(sfaContributionPeriodisedValue);
             }
 
