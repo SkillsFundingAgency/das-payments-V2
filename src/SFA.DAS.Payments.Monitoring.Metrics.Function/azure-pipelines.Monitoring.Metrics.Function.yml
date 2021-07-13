@@ -73,34 +73,25 @@ stages:
 # Build and Restore
 #******************************************************************************** 
     - task: DotNetCoreCLI@2
-      displayName: 'Restore Provider Payments Messages'
+      displayName: 'Restore Monitoring Metrics Function'
       inputs:
         command: restore
-        projects: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
+        projects: **/*.Monitoring.Metrics.Function.csproj
         configuration: ${{ parameters.BuildConfiguration }}
         feedsToUse: 'select'
         vstsFeed: '$(NugetFeed)'
 
-    - task: DotNetCoreCLI@2
-      enabled: false
-      displayName: 'Build Provider Payments Messages'
+    - task: MSBuild@1
+      displayName: 'Build Monitoring.Metrics.Function'
       inputs:
-        projects: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
-        configuration: ${{ parameters.BuildConfiguration }}
-        feedsToUse: 'select'
-        vstsFeed: '$(NugetFeed)'
- 
-#********************************************************************************
-# Package 
-#********************************************************************************  
-    - task: DotNetCoreCLI@2
-      displayName: 'Pack Provider Payments Messages'
-      inputs:
-        command: pack
-        packagesToPack: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
-        configuration: ${{ parameters.BuildConfiguration }}
-        versioningScheme: byBuildNumber
-
+        solution: **/.Payments.Monitoring.Metrics.Function.csproj
+        configuration: '$(BuildConfiguration)'
+        msbuildArguments: '/p:version=$(Build.BuildNumber) /p:FileVersion=$(Build.BuildNumber) /p:OutputPath=$(Build.ArtifactStagingDirectory)/MetricsFunction /p:configuration=Release'
+        clean: true
+        maximumCpuCount: true
+        logProjectEvents: true
+        createLogFile: true
+  
 #********************************************************************************
 # Copy Nuget Packages into Aftifact Folder
 #********************************************************************************   
@@ -108,7 +99,7 @@ stages:
       displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
       inputs:
         Contents: '**/*.nupkg'
-        TargetFolder: '$(Build.ArtifactStagingDirectory)/ProviderPayments'    
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/ProviderPayments'
 
 #********************************************************************************
 # Publish Artifacts
@@ -116,5 +107,5 @@ stages:
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Packages'
       inputs:
-        PathtoPublish: '$(build.artifactstagingdirectory)'
-            
+        artifact: MetricFunction
+        PathtoPublish: $(Build.ArtifactStagingDirectory)/MetricsFunction
