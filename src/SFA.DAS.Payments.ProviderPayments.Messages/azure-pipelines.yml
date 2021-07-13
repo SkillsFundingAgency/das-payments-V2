@@ -76,7 +76,7 @@ stages:
       displayName: 'Restore Provider Payments Messages'
       inputs:
         command: restore
-        projects: **/*.ProviderPayments.Messages.csproj
+        projects: '**/*.ProviderPayments.Messages.csproj'
         configuration: ${{ parameters.BuildConfiguration }}
         feedsToUse: 'select'
         vstsFeed: '$(NugetFeed)'
@@ -85,7 +85,7 @@ stages:
       enabled: false
       displayName: 'Build Provider Payments Messages'
       inputs:
-        projects: **/*.ProviderPayments.Messages.csproj
+        projects: '**/*.ProviderPayments.Messages.csproj'
         arguments: '--configuration ${{ parameters.BuildConfiguration }} --no-restore'
 
     # - task: DotNetCoreCLI@2
@@ -107,7 +107,7 @@ stages:
       displayName: 'Pack ProviderPayments Messages'
       inputs:
         command: pack
-        packagesToPack: **/*.ProviderPayments.Messages.csproj
+        packagesToPack: '**/*.ProviderPayments.Messages.csproj'
         versioningScheme: byBuildNumber
         arguments: '--configuration ${{ parameters.BuildConfiguration }} --no-restore'
   

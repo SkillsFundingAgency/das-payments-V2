@@ -35,9 +35,10 @@ stages:
 - stage: Build
   displayName: Build stage
   variables:
-      NugetFeed: 'dct-pkg'  
+    NugetFeed: 'dct-pkg'  
     NugetVersion: '5.8.0'
     DotnetCoreVersion: '2.2.x'
+    
   jobs:  
   - job: Build
     displayName: Build
