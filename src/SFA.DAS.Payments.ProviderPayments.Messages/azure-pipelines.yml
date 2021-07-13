@@ -1,55 +1,133 @@
-name: $(VersionNumberMajor).$(VersionNumberMinor)$(Rev:.rrrr)
+- name: BuildConfiguration
+  displayName: Release or Debug
+  type: string
+  default: Release
+  values:
+  - Release
+  - Debug
 
-resources:
-- repo: self
-  fetchDepth: 15
+- name: BuildPool
+  displayName: 'Build Pool'
+  type: string
+  default: 'DCT Build Pool'
+  values:
+  - 'DCT Build Pool'
+  - 'DCT'
+  
+- name: BuildPoolDemand
+  displayName: 'Build Pool Demand'
+  type: string
+  default: 'IsBuildServer'
+  values:
+  - 'IsBuildServer'
+  - 'IsBuildServer_Old'
+  - 'IsBuildServer_TEST'
+  - 'IsBuildServer_PCTEST'
 
 variables:  
   VersionNumberMajor: '0'
   VersionNumberMinor: '0'
-  BuildConfiguration: 'Release'
-  BuildPlatform: 'Any CPU'
-  BuildPlatformX64: 'x64'  
+  
+stages:
+- stage: Build
+  displayName: Build stage
+  variables:
+    NugetFeed: 'dct-pkg'  
+    NugetVersion: '5.8.0'
+    DotnetCoreVersion: '2.2.x'
+    
+  jobs:  
+  - job: Build
+    displayName: Build
+    pool:
+      name: ${{ parameters.BuildPool }} 
+      demands:
+      - ${{ parameters.BuildPoolDemand }} 
 
-pool:
-  name: DCT
-  demands:
-  - IsBuildServer
-  - IsBuildServerDAS
-  - msbuild
+    steps:
+    - task: UseDotNet@2
+      enabled: false
+      displayName: 'Use .NET Core sdk : $(DotnetCoreVersion)'
+      inputs:
+        packageType: sdk
+        version: $(DotnetCoreVersion)
+        performMultiLevelLookup: true
 
-steps:
-- task: DotNetCoreInstaller@0
-  displayName: 'Use .NET Core sdk 2.2.106'
-  inputs:
-    version: 2.2.106
+    - task: NuGetToolInstaller@0
+      enabled: false
+      displayName: 'Use NuGet : $(NugetVersion)'
+      inputs:
+        versionSpec: '>= $(NugetVersion)'
+        checkLatest: true
+        
+    - task: DotNetCoreInstaller@0
+      enabled: false
+      displayName: 'Use .NET Core sdk 2.2.106'
+      inputs:
+        version: 2.2.106
 
-- task: DotNetCoreCLI@2
-  displayName: 'Restore Provider Payments Messages'
-  inputs:
-    command: restore
-    projects: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
+#********************************************************************************
+# Build and Restore
+#******************************************************************************** 
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore Provider Payments Messages'
+      inputs:
+        command: restore
+        projects: **/*.ProviderPayments.Messages.csproj
+        configuration: ${{ parameters.BuildConfiguration }}
+        feedsToUse: 'select'
+        vstsFeed: '$(NugetFeed)'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Build Provider Payments Messages'
-  inputs:
-    projects: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
-  enabled: false
+    - task: DotNetCoreCLI@2
+      enabled: false
+      displayName: 'Build Provider Payments Messages'
+      inputs:
+        projects: **/*.ProviderPayments.Messages.csproj
+        arguments: '--configuration ${{ parameters.BuildConfiguration }} --no-restore'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Pack Provider Payments Messages'
-  inputs:
-    command: pack
-    packagesToPack: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
-    versioningScheme: byBuildNumber
+    # - task: DotNetCoreCLI@2
+      # displayName: 'Restore Provider Payments Messages'
+      # inputs:
+        # command: restore
+        # projects: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
 
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
-  inputs:
-    Contents: '**/*.nupkg'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/ProviderPayments'    
+    # - task: DotNetCoreCLI@2
+      # displayName: 'Build Provider Payments Messages'
+      # inputs:
+        # projects: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
+      # enabled: false
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Packages'
-  inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'
+#********************************************************************************
+# Package 
+#********************************************************************************  
+    - task: DotNetCoreCLI@2
+      displayName: 'Pack ProviderPayments Messages'
+      inputs:
+        command: pack
+        packagesToPack: **/*.ProviderPayments.Messages.csproj
+        versioningScheme: byBuildNumber
+        arguments: '--configuration ${{ parameters.BuildConfiguration }} --no-restore'
+  
+    # - task: DotNetCoreCLI@2
+      # displayName: 'Pack Provider Payments Messages'
+      # inputs:
+        # command: pack
+        # packagesToPack: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
+        # versioningScheme: byBuildNumber
+  
+#********************************************************************************
+# Copy Nuget Packages into Aftifact Folder
+#********************************************************************************   
+    - task: CopyFiles@2
+      displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+      inputs:
+        Contents: '**/*.nupkg'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/ProviderPayments'
+
+#********************************************************************************
+# Publish Artifacts
+#********************************************************************************    
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Packages'
+      inputs:
+        PathtoPublish: '$(build.artifactstagingdirectory)'

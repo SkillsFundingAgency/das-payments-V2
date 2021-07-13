@@ -1,5 +1,3 @@
-name: $(VersionNumberMajor).$(VersionNumberMinor)$(Rev:.rrrr)
-
 - name: BuildConfiguration
   displayName: Release or Debug
   type: string
@@ -29,14 +27,15 @@ name: $(VersionNumberMajor).$(VersionNumberMinor)$(Rev:.rrrr)
 variables:  
   VersionNumberMajor: '0'
   VersionNumberMinor: '0'
-
+  
 stages:
 - stage: Build
   displayName: Build stage
   variables:
-      NugetFeed: 'dct-pkg'  
+    NugetFeed: 'dct-pkg'  
     NugetVersion: '5.8.0'
     DotnetCoreVersion: '2.2.x'
+    
   jobs:  
   - job: Build
     displayName: Build
@@ -71,44 +70,39 @@ stages:
 # Build and Restore
 #******************************************************************************** 
     - task: DotNetCoreCLI@2
-      displayName: 'Restore MatchedLearner Messages'
+      displayName: 'Restore Monitoring Metrics Function'
       inputs:
         command: restore
-        projects: **/*.MatchedLearner.Messages.csproj
+        projects: **/*.Monitoring.Metrics.Function.csproj
         configuration: ${{ parameters.BuildConfiguration }}
         feedsToUse: 'select'
         vstsFeed: '$(NugetFeed)'
 
-    - task: DotNetCoreCLI@2
-      enabled: false
-      displayName: 'Build MatchedLearner Messages'
+    - task: MSBuild@1
+      displayName: 'Build Monitoring.Metrics.Function'
       inputs:
-        projects: **/*.MatchedLearner.Messages.csproj
-        arguments: '--configuration ${{ parameters.BuildConfiguration }} --no-restore'
-
-#********************************************************************************
-# Package 
-#********************************************************************************  
-    - task: DotNetCoreCLI@2
-      displayName: 'Pack MatchedLearner Messages'
-      inputs:
-        command: pack
-        packagesToPack: **/*.MatchedLearner.Messages.csproj
-        versioningScheme: byBuildNumber
-        arguments: '--configuration ${{ parameters.BuildConfiguration }} --no-restore'
+        solution: **/.Payments.Monitoring.Metrics.Function.csproj
+        configuration: '$(BuildConfiguration)'
+        msbuildArguments: '/p:version=$(Build.BuildNumber) /p:FileVersion=$(Build.BuildNumber) /p:OutputPath=$(Build.ArtifactStagingDirectory)/MetricsFunction /p:configuration=Release'
+        clean: true
+        maximumCpuCount: true
+        logProjectEvents: true
+        createLogFile: true
   
+#********************************************************************************
+# Copy Nuget Packages into Aftifact Folder
+#********************************************************************************   
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
       inputs:
-        Contents:  |
-          **\${{ parameters.BuildConfiguration }}\*.nupkg
-          !**\packages\**
-          !**\bin\x64\**
-        TargetFolder: '$(Build.ArtifactStagingDirectory)/NugetPackages'    
+        Contents: '**/*.nupkg'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/ProviderPayments'
 
+#********************************************************************************
+# Publish Artifacts
+#********************************************************************************    
     - task: PublishBuildArtifacts@1
-      enabled: false
       displayName: 'Publish Packages'
-        ArtifactName: NugetPackages
       inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)/NugetPackages'    
+        artifact: MetricFunction
+        PathtoPublish: $(Build.ArtifactStagingDirectory)/MetricsFunction
