@@ -88,7 +88,7 @@ stages:
       displayName: 'Pack ProviderPayments Messages'
       inputs:
         command: pack
-        packagesToPack: '**/*.ProviderPayments.Messages.csproj'
+        packagesToPack: 'src\SFA.DAS.Payments.MatchedLearner.Messages\SFA.DAS.Payments.MatchedLearner.Messages.csproj'
         versioningScheme: byBuildNumber
         arguments: '--configuration ${{ parameters.BuildConfiguration }} --no-restore'
   
