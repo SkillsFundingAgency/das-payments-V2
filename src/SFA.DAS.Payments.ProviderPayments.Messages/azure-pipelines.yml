@@ -81,26 +81,7 @@ stages:
         feedsToUse: 'select'
         vstsFeed: '$(NugetFeed)'
 
-    - task: DotNetCoreCLI@2
-      enabled: false
-      displayName: 'Build Provider Payments Messages'
-      inputs:
-        projects: '**/*.ProviderPayments.Messages.csproj'
-        arguments: '--configuration ${{ parameters.BuildConfiguration }} --no-restore'
-
-    # - task: DotNetCoreCLI@2
-      # displayName: 'Restore Provider Payments Messages'
-      # inputs:
-        # command: restore
-        # projects: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
-
-    # - task: DotNetCoreCLI@2
-      # displayName: 'Build Provider Payments Messages'
-      # inputs:
-        # projects: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
-      # enabled: false
-
-#********************************************************************************
+********************************************************************************
 # Package 
 #********************************************************************************  
     - task: DotNetCoreCLI@2
@@ -110,13 +91,6 @@ stages:
         packagesToPack: '**/*.ProviderPayments.Messages.csproj'
         versioningScheme: byBuildNumber
         arguments: '--configuration ${{ parameters.BuildConfiguration }} --no-restore'
-  
-    # - task: DotNetCoreCLI@2
-      # displayName: 'Pack Provider Payments Messages'
-      # inputs:
-        # command: pack
-        # packagesToPack: src/SFA.DAS.Payments.ProviderPayments.Messages/SFA.DAS.Payments.ProviderPayments.Messages.csproj
-        # versioningScheme: byBuildNumber
   
 #********************************************************************************
 # Copy Nuget Packages into Aftifact Folder
