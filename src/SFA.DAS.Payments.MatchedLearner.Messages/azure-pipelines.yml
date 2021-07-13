@@ -76,7 +76,7 @@ stages:
       displayName: 'Restore MatchedLearner Messages'
       inputs:
         command: restore
-        projects: **/*.MatchedLearner.Messages.csproj
+        projects: '**/*.MatchedLearner.Messages.csproj'
         configuration: ${{ parameters.BuildConfiguration }}
         feedsToUse: 'select'
         vstsFeed: '$(NugetFeed)'
@@ -85,7 +85,7 @@ stages:
       enabled: false
       displayName: 'Build MatchedLearner Messages'
       inputs:
-        projects: **/*.MatchedLearner.Messages.csproj
+        projects: '**/*.MatchedLearner.Messages.csproj'
         arguments: '--configuration ${{ parameters.BuildConfiguration }} --no-restore'
 
 #********************************************************************************
@@ -95,7 +95,7 @@ stages:
       displayName: 'Pack MatchedLearner Messages'
       inputs:
         command: pack
-        packagesToPack: **/*.MatchedLearner.Messages.csproj
+        packagesToPack: '**/*.MatchedLearner.Messages.csproj'
         versioningScheme: byBuildNumber
         arguments: '--configuration ${{ parameters.BuildConfiguration }} --no-restore'
   
