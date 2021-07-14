@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using Autofac;
-using SFA.DAS.Payments.Core.Configuration;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 {
