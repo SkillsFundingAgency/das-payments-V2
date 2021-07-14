@@ -520,6 +520,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeCumulativePMRs = priceEpisode.Pmr ?? int.MaxValue;
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeCompExemCode = priceEpisode.CompletionHoldBackExemptionCode;
 
+                newPriceEpisode.PriceEpisodePeriodisedValues.Add(new PriceEpisodePeriodisedValues
+                {
+                    AttributeName = "PriceEpisodeESFAContribPct",
+                    Period1 = sfaContributionPercent,
+                    Period2 = sfaContributionPercent,
+                    Period3 = sfaContributionPercent,
+                    Period4 = sfaContributionPercent,
+                    Period5 = sfaContributionPercent,
+                    Period6 = sfaContributionPercent,
+                    Period7 = sfaContributionPercent,
+                    Period8 = sfaContributionPercent,
+                    Period9 = sfaContributionPercent,
+                    Period10 = sfaContributionPercent,
+                    Period11 = sfaContributionPercent,
+                    Period12 = sfaContributionPercent
+                });
+
                 priceEpisodesForAim.Add(newPriceEpisode);
             }
 
@@ -674,12 +691,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 sfaContributionPeriodisedValue = new T { AttributeName = "PriceEpisodeESFAContribPct", };
                 aimPeriodisedValues.Add(sfaContributionPeriodisedValue);
             }
-            else
-            {
-                earnings.ForEach(x => x.SfaContributionPercentage = "0");
-                sfaContributionPeriodisedValue = new T { AttributeName = "PriceEpisodeESFAContribPct", };
-                aimPeriodisedValues.Add(sfaContributionPeriodisedValue);
-            }
+            //else
+            //{
+            //    earnings.ForEach(x => x.SfaContributionPercentage = "0");
+            //    sfaContributionPeriodisedValue = new T { AttributeName = "PriceEpisodeESFAContribPct", };
+            //    aimPeriodisedValues.Add(sfaContributionPeriodisedValue);
+            //}
 
             var currentEarnings = earnings.Where(e => !e.AimSequenceNumber.HasValue ||
                                                   e.AimSequenceNumber == aim.AimSequenceNumber).ToList();
