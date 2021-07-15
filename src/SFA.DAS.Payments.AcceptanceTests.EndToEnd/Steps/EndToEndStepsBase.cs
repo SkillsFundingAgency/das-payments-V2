@@ -537,6 +537,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     Period12 = sfaContributionPercent
                 });
 
+
                 priceEpisodesForAim.Add(newPriceEpisode);
             }
 
@@ -626,6 +627,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                     if (newValues.AttributeName == "PriceEpisodeESFAContribPct" && aim.IsMainAim)
                     {
+                        currentPriceEpisode.PriceEpisodePeriodisedValues.RemoveAll(x => x.AttributeName == "PriceEpisodeESFAContribPct");
                         currentPriceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
                     }
                     else if ((EnumHelper.IsOnProgType(EnumHelper.ToTransactionTypeFromAttributeName(newValues.AttributeName)) ||
