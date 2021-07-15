@@ -52,17 +52,24 @@ Declare @DatalockedEarnings decimal(15,5)
 
 
 --Required payment table  totals
-select  
-	@CurrentRequiredPayments = notHB,
-	@CurrentRequiredPaymentsHeldBack = HbCompletion
-from
-(SELECT  Sum(case when RPE.NonPaymentReason is null then Amount else 0 end) as notHB,  Sum(case when RPE.NonPaymentReason is not null then Amount else 0 end) as HbCompletion -- current required payments
-	 FROM Payments2.RequiredPaymentEvent RPE with (nolock)
-	 JOIN @LatestJobIds lji
-		ON lji.JobId = RPE.JobId
-	 WHERE RPE.CollectionPeriod = @collectionperiod
-	) RPs
-
+;WITH requiredPaymentCte as (
+SELECT  
+    Sum(case when RPE.NonPaymentReason is null then Amount else 0 end) as notHB,  
+    Sum(case when RPE.NonPaymentReason is not null then Amount else 0 end) as HbCompletion -- current required payments
+ FROM Payments2.RequiredPaymentEvent RPE with (nolock)
+ JOIN @LatestJobIds lji
+    ON lji.JobId = RPE.JobId
+ WHERE RPE.CollectionPeriod = @collectionperiod
+UNION ALL
+SELECT
+	Sum(Amount) as notHB,
+	0 as HbCompletion
+FROM Payments2.Payment RPE with (nolock) 
+JOIN @LatestJobIds lji ON lji.JobId = RPE.JobId
+WHERE RPE.CollectionPeriod = @collectionperiod AND RPE.ClawbackSourcePaymentEventId != CAST(0x0 AS UNIQUEIDENTIFIER) AND RPE.ClawbackSourcePaymentEventId IS NOT NULL AND RPE.FundingSource IN (2, 3, 4)
+)
+SELECT @CurrentRequiredPayments = SUM(r.notHB), @CurrentRequiredPaymentsHeldBack = r.HbCompletion
+FROM requiredPaymentCte as r 
 
 
 --payment table totals

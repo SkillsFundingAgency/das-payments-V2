@@ -163,7 +163,25 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                     })
                     .ToListAsync(cancellationToken);
 
-                return transactionAmounts
+                var clawBackFundingSource = new List<FundingSourceType> { FundingSourceType.CoInvestedEmployer, FundingSourceType.CoInvestedSfa, FundingSourceType.FullyFundedSfa };
+                
+                var clawBackTransactionAmounts = await QueryDataContext.Payments
+                    .AsNoTracking()
+                    .Where(rp => rp.Ukprn == ukprn && 
+                                 rp.JobId == jobId && 
+                                 rp.ClawbackSourcePaymentEventId != Guid.Empty && 
+                                 rp.ClawbackSourcePaymentEventId != null && 
+                                 clawBackFundingSource.Contains(rp.FundingSource))
+                    .GroupBy(rp => new { rp.ContractType, rp.TransactionType })
+                    .Select(group => new
+                    {
+                        ContractType = group.Key.ContractType,
+                        TransactionType = group.Key.TransactionType,
+                        Amount = group.Sum(x => x.Amount)
+                    })
+                    .ToListAsync(cancellationToken);
+
+                return transactionAmounts.Concat(clawBackTransactionAmounts)
                     .GroupBy(x => x.ContractType)
                     .Select(group => new TransactionTypeAmounts
                     {
