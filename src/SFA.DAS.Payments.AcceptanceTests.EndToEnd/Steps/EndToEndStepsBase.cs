@@ -693,15 +693,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 sfaContributionPeriodisedValue = new T { AttributeName = "PriceEpisodeESFAContribPct", };
                 aimPeriodisedValues.Add(sfaContributionPeriodisedValue);
             }
-            //else
-            //{
-            //    earnings.ForEach(x => x.SfaContributionPercentage = "0");
-            //    sfaContributionPeriodisedValue = new T { AttributeName = "PriceEpisodeESFAContribPct", };
-            //    aimPeriodisedValues.Add(sfaContributionPeriodisedValue);
-            //}
 
             var currentEarnings = earnings.Where(e => !e.AimSequenceNumber.HasValue ||
-                                                  e.AimSequenceNumber == aim.AimSequenceNumber).ToList();
+                                                      e.AimSequenceNumber == aim.AimSequenceNumber).ToList();
 
             if (currentEarnings.Any())
             {
