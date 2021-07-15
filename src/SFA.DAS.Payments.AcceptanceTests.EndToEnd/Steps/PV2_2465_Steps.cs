@@ -43,20 +43,24 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private bool HasEarningEventWithCorrectPriceEpisodeCourseStartDate()
         {
+            var fm36Year = TestSession.FM36Global.Learners.First().PriceEpisodes.First().PriceEpisodeValues.EpisodeStartDate.Value.Year;
+
             var events = EarningEventsHelper.EarningEventsReceivedForLearner(TestSession).ToList();
             return EarningEventsHelper.EarningEventsReceivedForLearner(TestSession)
                 .Where(x => x.JobId == TestSession.Provider.JobId)
-                .Any(x => x.PriceEpisodes.All(y => y.CourseStartDate.Date == new DateTime(2020, 8, 6)));
+                .Any(x => x.PriceEpisodes.All(y => y.CourseStartDate.Date == new DateTime(fm36Year, 8, 6)));
         }
 
         private (bool pass, string reason) HasNoEarningEventWithoutCorrectPriceEpisodeCourseStartDate()
         {
+            var fm36Year = TestSession.FM36Global.Learners.First().PriceEpisodes.First().PriceEpisodeValues.EpisodeStartDate.Value.Year;
+
             var events = EarningEventsHelper.EarningEventsReceivedForLearner(TestSession).ToList();
             return !EarningEventsHelper.EarningEventsReceivedForLearner(TestSession)
                 .Where(x => x.JobId == TestSession.Provider.JobId)
-                .Any(x => x.PriceEpisodes.Any(y => y.CourseStartDate.Date != new DateTime(2020, 8, 6)))
+                .Any(x => x.PriceEpisodes.Any(y => y.CourseStartDate.Date != new DateTime(fm36Year, 8, 6)))
                 ? (true, string.Empty)
-                : (false, "Found earning event with price episode course start date not matching expected 2020-08-06");
+                : (false, $"Found earning event with price episode course start date not matching expected {fm36Year}-08-06");
         }
     }
 }
