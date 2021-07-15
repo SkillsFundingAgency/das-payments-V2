@@ -91,13 +91,16 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2);
             byte deliveryPeriod = 2;
 
+            var learningAim = EarningEventDataHelper.CreateLearningAim();
+            learningAim.SequenceNumber = 2;
+
             var earningEvent = new Act2FunctionalSkillEarningsEvent
             {
                 Ukprn = 1,
                 CollectionPeriod = period,
                 CollectionYear = period.AcademicYear,
                 Learner = EarningEventDataHelper.CreateLearner(),
-                LearningAim = EarningEventDataHelper.CreateLearningAim(),
+                LearningAim = learningAim,
                 Earnings = new ReadOnlyCollection<FunctionalSkillEarning>(new List<FunctionalSkillEarning>
                 {
                     new FunctionalSkillEarning
@@ -114,7 +117,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                             }
                         })
                     }
-                })
+                }),
+                PriceEpisodes = new List<PriceEpisode>()
             };
 
             var requiredPayments = new List<RequiredPayment>
@@ -153,6 +157,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             Assert.AreEqual(100, actualRequiredPayment.First().AmountDue);
             Assert.AreEqual(earningEvent.LearningAim.Reference, actualRequiredPayment.First().LearningAim.Reference);
             Assert.AreEqual("2", actualRequiredPayment.First().PriceEpisodeIdentifier);
+            Assert.AreEqual(2, actualRequiredPayment.First().LearningAimSequenceNumber);
         }
 
         [Test]

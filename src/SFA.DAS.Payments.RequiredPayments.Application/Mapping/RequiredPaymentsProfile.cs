@@ -97,15 +97,20 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Include<ApprenticeshipContractType2RedundancyEarningEvent, CompletionPaymentHeldBackEvent>()
                 .Include<IEarningEvent, CalculatedRequiredOnProgrammeAmount>()
                 .Include<IEarningEvent, CalculatedRequiredIncentiveAmount>()
-                .ForMember(requiredPayment => requiredPayment.EarningEventId, opt => opt.MapFrom(earning => earning.EventId))
+                .ForMember(requiredPayment => requiredPayment.EarningEventId,
+                    opt => opt.MapFrom(earning => earning.EventId))
                 .ForMember(requiredPayment => requiredPayment.AmountDue, opt => opt.Ignore())
                 .ForMember(requiredPayment => requiredPayment.DeliveryPeriod, opt => opt.Ignore())
                 .ForMember(requiredPayment => requiredPayment.PriceEpisodeIdentifier, opt => opt.Ignore())
-                .ForMember(requiredPayment => requiredPayment.CollectionPeriod, opt => opt.MapFrom(earning => earning.CollectionPeriod.Clone()))
-                .ForMember(requiredPayment => requiredPayment.Learner, opt => opt.MapFrom(earning => earning.Learner.Clone()))
-                .ForMember(requiredPayment => requiredPayment.LearningAim, opt => opt.MapFrom(earning => earning.LearningAim.Clone()))
+                .ForMember(requiredPayment => requiredPayment.CollectionPeriod,
+                    opt => opt.MapFrom(earning => earning.CollectionPeriod.Clone()))
+                .ForMember(requiredPayment => requiredPayment.Learner,
+                    opt => opt.MapFrom(earning => earning.Learner.Clone()))
+                .ForMember(requiredPayment => requiredPayment.LearningAim,
+                    opt => opt.MapFrom(earning => earning.LearningAim.Clone()))
                 .ForMember(requiredPayment => requiredPayment.EventId, opt => opt.Ignore())
-                .ForMember(requiredPayment => requiredPayment.LearningStartDate, opt => opt.MapFrom(earning => earning.LearningAim.StartDate))
+                .ForMember(requiredPayment => requiredPayment.LearningStartDate,
+                    opt => opt.MapFrom(earning => earning.LearningAim.StartDate))
                 .Ignore(x => x.ApprenticeshipId)
                 .Ignore(x => x.ApprenticeshipPriceEpisodeId)
                 .Ignore(x => x.ContractType)
@@ -122,6 +127,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.NumberOfInstalments)
                 .Ignore(x => x.ApprenticeshipEmployerType)
                 .Ignore(x => x.ReportingAimFundingLineType)
+                .Ignore(x => x.LearningAimSequenceNumber)
                 .Ignore(x => x.ClawbackSourcePaymentEventId)
                 ;
 
@@ -314,6 +320,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.NumberOfInstalments)
                 .Ignore(x => x.ApprenticeshipEmployerType)
                 .Ignore(x => x.ReportingAimFundingLineType)
+                .Ignore(x => x.LearningAimSequenceNumber)
                 .Ignore(x => x.ClawbackSourcePaymentEventId)
                 ;
 
@@ -363,6 +370,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.IlrFileName)
                 .Ignore(x => x.ApprenticeshipId)
                 .Ignore(x => x.ApprenticeshipPriceEpisodeId)
+                .Ignore(x => x.LearningAimSequenceNumber)
                 .Ignore(x => x.ClawbackSourcePaymentEventId)
                 ;
 
@@ -406,6 +414,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.LearningAim)
                 .Ignore(x => x.IlrSubmissionDateTime)
                 .Ignore(x => x.IlrFileName)
+                .Ignore(x => x.LearningAimSequenceNumber)
                 .Ignore(x => x.ClawbackSourcePaymentEventId)
                 ;
 
