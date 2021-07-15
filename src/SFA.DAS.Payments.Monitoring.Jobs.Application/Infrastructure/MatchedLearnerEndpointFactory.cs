@@ -8,7 +8,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core.Configuration;
-using SFA.DAS.Payments.MatchedLearner.Messages;
+using SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure
 {

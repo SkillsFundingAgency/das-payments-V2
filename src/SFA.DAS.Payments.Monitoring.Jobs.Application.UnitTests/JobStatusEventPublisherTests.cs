@@ -5,10 +5,10 @@ using Moq;
 using NServiceBus;
 using NUnit.Framework;
 using SFA.DAS.Payments.Application.Messaging;
-using SFA.DAS.Payments.MatchedLearner.Messages;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
+using SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
 {

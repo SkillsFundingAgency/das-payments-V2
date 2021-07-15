@@ -7,6 +7,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 using NServiceBus;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
+using SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 {
@@ -50,7 +51,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
         private async Task PublishSubmissionJobEventToMatchedLearnerEndpoint(bool succeeded, long jobId, long ukprn, short academicYear, byte collectionPeriod, DateTime ilrSubmissionTime)
         {
-            var submissionJobFinished = succeeded ? (MatchedLearner.Messages.SubmissionFinishedEvent) new MatchedLearner.Messages.SubmissionSucceededEvent() : new MatchedLearner.Messages.SubmissionFailedEvent();
+            var submissionJobFinished = succeeded ? (SubmissionFinishedEvent) new SubmissionSucceededEvent() : new SubmissionFailedEvent();
             submissionJobFinished.JobId = jobId;
             submissionJobFinished.CollectionPeriod = collectionPeriod;
             submissionJobFinished.Ukprn = ukprn;

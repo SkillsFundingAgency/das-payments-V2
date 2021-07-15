@@ -73,19 +73,19 @@ stages:
 # Build and Restore
 #******************************************************************************** 
     - task: DotNetCoreCLI@2
-      displayName: 'Restore MatchedLearner Messages'
+      displayName: 'Restore SubmissionJobs Messages'
       inputs:
         command: restore
-        projects: '**/*.MatchedLearner.Messages.csproj'
+        projects: '**/*.SubmissionJobs.Messages.csproj'
         configuration: ${{ parameters.BuildConfiguration }}
         feedsToUse: 'select'
         vstsFeed: '$(NugetFeed)'
 
     - task: DotNetCoreCLI@2
       enabled: false
-      displayName: 'Build MatchedLearner Messages'
+      displayName: 'Build SubmissionJobs Messages'
       inputs:
-        projects: '**/*.MatchedLearner.Messages.csproj'
+        projects: '**/*.SubmissionJobs.Messages.csproj'
         arguments: '--configuration ${{ parameters.BuildConfiguration }} --no-restore'
 
 #********************************************************************************
@@ -95,7 +95,7 @@ stages:
       displayName: 'Restore Provider Payments Messages'
       inputs:
         command: restore
-        projects: src\SFA.DAS.Payments.MatchedLearner.Messages\SFA.DAS.Payments.MatchedLearner.Messages.csproj
+        projects: src\SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages\SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages.csproj
         configuration: ${{ parameters.BuildConfiguration }}
         feedsToUse: 'select'
         vstsFeed: '$(NugetFeed)'
@@ -104,7 +104,7 @@ stages:
       enabled: false
       displayName: 'Build Provider Payments Messages'
       inputs:
-        projects: src\SFA.DAS.Payments.MatchedLearner.Messages\SFA.DAS.Payments.MatchedLearner.Messages.csproj
+        projects: src\SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages\SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages.csproj
         configuration: ${{ parameters.BuildConfiguration }}
         feedsToUse: 'select'
         vstsFeed: '$(NugetFeed)'
@@ -116,7 +116,7 @@ stages:
       displayName: 'Pack Provider Payments Messages'
       inputs:
         command: pack
-        packagesToPack: src\SFA.DAS.Payments.MatchedLearner.Messages\SFA.DAS.Payments.MatchedLearner.Messages.csproj
+        packagesToPack: src\SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages\SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages.csproj
         configuration: ${{ parameters.BuildConfiguration }}
         versioningScheme: byBuildNumber
 
