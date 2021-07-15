@@ -124,6 +124,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                             }
                         })
                     }
+                },
+                PriceEpisodes = new List<PriceEpisode>
+                {
+                    new PriceEpisode
+                    {
+                        LearningAimSequenceNumber = 2,
+                        Identifier = "2"
+                    }
                 }
             };
 
@@ -155,6 +163,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             // assert
             actualRequiredPayment.Should().HaveCount(1);
+            actualRequiredPayment.First().LearningAimSequenceNumber.Should().Be(2);
         }
 
         [Test]
