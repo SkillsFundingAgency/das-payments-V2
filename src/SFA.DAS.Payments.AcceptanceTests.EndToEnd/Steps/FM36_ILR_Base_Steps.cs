@@ -341,7 +341,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             });
         }
 
-        private static int GetCurrentAcademicYear()
+        private int GetCurrentAcademicYear()
         {
             var year = DateTime.Now.Month < 8 ? DateTime.Now.Year - 1 : DateTime.Now.Year;
             var academicYear = string.Concat(year - 2000, year - 1999);
