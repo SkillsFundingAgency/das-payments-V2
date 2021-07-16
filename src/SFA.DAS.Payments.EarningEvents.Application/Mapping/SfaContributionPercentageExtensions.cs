@@ -18,12 +18,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             }
             var priceEpisode = source.Single(x => x.PriceEpisodeIdentifier == priceEpisodeIdentifier);
 
-            var values = 
+            var values =
                 priceEpisode.PriceEpisodePeriodisedValues
-                .SingleOrDefault(x => x.AttributeName == "PriceEpisodeESFAContribPct") 
-                ?? 
-                priceEpisode.PriceEpisodePeriodisedValues
-                .SingleOrDefault(x => x.AttributeName == "PriceEpisodeSFAContribPct");
+                    .SingleOrDefault(x => x.AttributeName == "PriceEpisodeESFAContribPct");
 
             return values == null ? null : (decimal?) PeriodAccessor[values, "Period" + period];
         }
