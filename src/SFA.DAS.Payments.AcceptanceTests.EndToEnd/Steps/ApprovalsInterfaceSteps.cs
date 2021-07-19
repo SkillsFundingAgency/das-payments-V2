@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
@@ -603,10 +604,15 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForIt(async () =>
             {
                 var employer = Employers.Single();
-                var savedProviderPriorities = await TestDataContext.EmployerProviderPriority.AsNoTracking()
-                    .Where(o => o.EmployerAccountId == employer.AccountId)
-                    .ToListAsync()
-                    .ConfigureAwait(false);
+                List<EmployerProviderPriorityModel> savedProviderPriorities;
+
+                using(await TestDataContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted))
+                {
+                    savedProviderPriorities = await TestDataContext.EmployerProviderPriority.AsNoTracking()
+                        .Where(o => o.EmployerAccountId == employer.AccountId)
+                        .ToListAsync()
+                        .ConfigureAwait(false);
+                }
 
                 var notFound = new List<ProviderPriority>();
                 foreach (var expectedProviderPriority in ProviderPaymentPriorities)
