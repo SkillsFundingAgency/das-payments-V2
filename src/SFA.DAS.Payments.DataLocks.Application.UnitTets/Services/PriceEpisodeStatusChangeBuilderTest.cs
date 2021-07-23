@@ -146,7 +146,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 
         [Test, AutoDomainData]
         public async Task Builds_an_add_event_with_tnp3(
-   [Frozen] Mock<IApprenticeshipRepository> repository,
+         [Frozen] Mock<IApprenticeshipRepository> repository,
          PriceEpisodeStatusChangeBuilder sut,
          PayableEarningEvent dataLock,
          List<EarningPeriod> periods,
@@ -410,6 +410,110 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         }
 
         [Test, AutoDomainData]
+        public async Task Build_Should_Not_Generate_Update_Event_For_Previous_AcademicYear_PriceEpisode(
+            [Frozen] Mock<IApprenticeshipRepository> repository,
+            PriceEpisodeStatusChangeBuilder sut,
+            EarningFailedDataLockMatching dataLockEvent1920,
+            EarningFailedDataLockMatching dataLockEvent2021,
+            List<EarningPeriod> periods,
+            List<DataLockFailure> dataLockFailures,
+            List<ApprenticeshipModel> apprenticeships,
+            PriceEpisode priceEpisode)
+        {
+
+            CommonTestSetup(repository, dataLockEvent1920, periods, apprenticeships, dataLockFailures);
+            CommonTestSetup(repository, dataLockEvent2021, periods, apprenticeships, dataLockFailures);
+            
+            apprenticeships.RemoveRange(1, 2);
+
+            var episodeStatusChange = new List<PriceEpisodeStatusChange>
+            {
+                new PriceEpisodeStatusChange
+                {
+                    DataLock = new LegacyDataLockEvent
+                    {
+                        PriceEpisodeIdentifier = dataLockEvent1920.PriceEpisodes[0].Identifier,
+                        Status = PriceEpisodeStatus.Removed,
+                        UKPRN = dataLockEvent1920.Ukprn,
+                        ULN = dataLockEvent1920.Learner.Uln,
+                        AcademicYear = "1920"
+                    }
+                },
+                new PriceEpisodeStatusChange
+                {
+                    DataLock = new LegacyDataLockEvent
+                    {
+                        PriceEpisodeIdentifier = dataLockEvent1920.PriceEpisodes[1].Identifier,
+                        Status = PriceEpisodeStatus.New,
+                        UKPRN = dataLockEvent1920.Ukprn,
+                        ULN = dataLockEvent1920.Learner.Uln,
+                        AcademicYear = "1920"
+                    }
+                },
+                new PriceEpisodeStatusChange
+                {
+                    DataLock = new LegacyDataLockEvent
+                    {
+                        PriceEpisodeIdentifier = dataLockEvent2021.PriceEpisodes[0].Identifier,
+                        Status = PriceEpisodeStatus.Updated,
+                        UKPRN = dataLockEvent2021.Ukprn,
+                        ULN = dataLockEvent2021.Learner.Uln,
+                        AcademicYear = "2021"
+                    }
+                }
+            };
+
+            dataLockEvent1920.CollectionPeriod.AcademicYear = 1920;
+            dataLockEvent2021.CollectionPeriod.AcademicYear = 2021;
+
+            var result = await sut.Build(
+                new List<DataLockEvent> { dataLockEvent1920, dataLockEvent2021 },
+                new List<(string identifier, PriceEpisodeStatus status)>
+                {
+                    (dataLockEvent1920.PriceEpisodes[0].Identifier, PriceEpisodeStatus.Removed),
+                    (dataLockEvent1920.PriceEpisodes[1].Identifier, PriceEpisodeStatus.Updated),
+                    (dataLockEvent2021.PriceEpisodes[0].Identifier, PriceEpisodeStatus.Removed),
+                    (dataLockEvent2021.PriceEpisodes[1].Identifier, PriceEpisodeStatus.New),
+                },
+                episodeStatusChange, dataLockEvent2021.CollectionPeriod.AcademicYear);
+
+            result.Count.Should().Be(4);
+            result.Select(s => s.DataLock).Any(x =>
+            
+                x.PriceEpisodeIdentifier == dataLockEvent1920.PriceEpisodes[0].Identifier
+                && x.Status == PriceEpisodeStatus.Removed //this is the bug
+                && x.UKPRN == dataLockEvent1920.Ukprn
+                && x.ULN == dataLockEvent1920.Learner.Uln
+                && x.AcademicYear == "1920"
+            ).Should().BeTrue();
+
+            result.Select(s => s.DataLock).Any(x =>
+            
+                x.PriceEpisodeIdentifier == dataLockEvent1920.PriceEpisodes[1].Identifier
+                && x.Status == PriceEpisodeStatus.Updated //correctly updated
+                && x.UKPRN == dataLockEvent1920.Ukprn
+                && x.ULN == dataLockEvent1920.Learner.Uln
+                && x.AcademicYear == "1920"
+            ).Should().BeTrue();
+
+            result.Select(s => s.DataLock).Any(x =>
+            
+                x.PriceEpisodeIdentifier == dataLockEvent2021.PriceEpisodes[0].Identifier
+                && x.Status == PriceEpisodeStatus.Removed //correctly set to removed
+                && x.UKPRN == dataLockEvent2021.Ukprn
+                && x.ULN == dataLockEvent2021.Learner.Uln
+                && x.AcademicYear == "2021"
+            ).Should().BeTrue();
+
+            result.Select(s => s.DataLock).Any(x =>
+                x.PriceEpisodeIdentifier == dataLockEvent2021.PriceEpisodes[1].Identifier
+                && x.Status == PriceEpisodeStatus.New
+                && x.UKPRN == dataLockEvent2021.Ukprn
+                && x.ULN == dataLockEvent2021.Learner.Uln
+                && x.AcademicYear == "2021").Should().BeTrue();
+        }
+
+        [Test, AutoDomainData]
         public void PriceEpisodesAreDistinctByIdentifier()
         {
             var episode1 = new PriceEpisode { Identifier = "hi" };
@@ -427,8 +531,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
            ApprenticeshipModel apprenticeships)
         {
 
-           var periods = new List<EarningPeriod>{ period };
-            
+            var periods = new List<EarningPeriod> { period };
+
             var dLockFailures = new List<DataLockFailure>
             {
                 new DataLockFailure
@@ -450,7 +554,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                     ApprenticeshipPriceEpisodeIds = apprenticeships.ApprenticeshipPriceEpisodes.Select(x => x.Id).ToList(),
                 },
             };
-            
+
             dataLock.OnProgrammeEarnings = new List<OnProgrammeEarning>
             {
                 new OnProgrammeEarning
@@ -514,6 +618,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             {
                 var dbName = Guid.NewGuid().ToString();
                 var fixture = new Fixture();
+
                 fixture.Customize(new AutoMoqCustomization { ConfigureMembers = true });
                 return fixture;
             }
@@ -565,8 +670,5 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 return fixture;
             }
         }
-
     }
-
-
 }
