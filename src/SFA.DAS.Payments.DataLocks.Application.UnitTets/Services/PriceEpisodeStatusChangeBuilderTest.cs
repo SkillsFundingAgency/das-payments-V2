@@ -417,8 +417,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             EarningFailedDataLockMatching dataLockEvent2021,
             List<EarningPeriod> periods,
             List<DataLockFailure> dataLockFailures,
-            List<ApprenticeshipModel> apprenticeships,
-            PriceEpisode priceEpisode)
+            List<ApprenticeshipModel> apprenticeships)
         {
 
             CommonTestSetup(repository, dataLockEvent1920, periods, apprenticeships, dataLockFailures);
@@ -481,7 +480,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             result.Select(s => s.DataLock).Any(x =>
             
                 x.PriceEpisodeIdentifier == dataLockEvent1920.PriceEpisodes[0].Identifier
-                && x.Status == PriceEpisodeStatus.Removed //this is the bug
+                && x.Status == PriceEpisodeStatus.Removed
                 && x.UKPRN == dataLockEvent1920.Ukprn
                 && x.ULN == dataLockEvent1920.Learner.Uln
                 && x.AcademicYear == "1920"
@@ -490,19 +489,18 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             result.Select(s => s.DataLock).Any(x =>
             
                 x.PriceEpisodeIdentifier == dataLockEvent1920.PriceEpisodes[1].Identifier
-                && x.Status == PriceEpisodeStatus.Updated //correctly updated
+                && x.Status == PriceEpisodeStatus.Updated
                 && x.UKPRN == dataLockEvent1920.Ukprn
                 && x.ULN == dataLockEvent1920.Learner.Uln
                 && x.AcademicYear == "1920"
             ).Should().BeTrue();
 
             result.Select(s => s.DataLock).Any(x =>
-            
                 x.PriceEpisodeIdentifier == dataLockEvent2021.PriceEpisodes[0].Identifier
-                && x.Status == PriceEpisodeStatus.Removed //correctly set to removed
+                && x.Status == PriceEpisodeStatus.Removed
                 && x.UKPRN == dataLockEvent2021.Ukprn
                 && x.ULN == dataLockEvent2021.Learner.Uln
-                && x.AcademicYear == "2021"
+                && x.AcademicYear == "2021"//
             ).Should().BeTrue();
 
             result.Select(s => s.DataLock).Any(x =>
@@ -511,6 +509,98 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 && x.UKPRN == dataLockEvent2021.Ukprn
                 && x.ULN == dataLockEvent2021.Learner.Uln
                 && x.AcademicYear == "2021").Should().BeTrue();
+        }
+
+        [Test, AutoDomainData]
+        public async Task Build_Should_Generate_Update_Event_For_Previous_AcademicYear_PriceEpisode(
+            [Frozen] Mock<IApprenticeshipRepository> repository,
+            PriceEpisodeStatusChangeBuilder sut,
+            EarningFailedDataLockMatching dataLockEvent1920,
+            EarningFailedDataLockMatching dataLockEvent2021,
+            List<EarningPeriod> periods,
+            List<DataLockFailure> dataLockFailures,
+            List<ApprenticeshipModel> apprenticeships)
+        {
+
+            CommonTestSetup(repository, dataLockEvent1920, periods, apprenticeships, dataLockFailures);
+            CommonTestSetup(repository, dataLockEvent2021, periods, apprenticeships, dataLockFailures);
+            
+            apprenticeships.RemoveRange(1, 2);
+
+            var episodeStatusChange = new List<PriceEpisodeStatusChange>
+            {
+                new PriceEpisodeStatusChange
+                {
+                    DataLock = new LegacyDataLockEvent
+                    {
+                        PriceEpisodeIdentifier = dataLockEvent1920.PriceEpisodes[0].Identifier,
+                        Status = PriceEpisodeStatus.New,
+                        UKPRN = dataLockEvent1920.Ukprn,
+                        ULN = dataLockEvent1920.Learner.Uln,
+                        AcademicYear = "1920"
+                    }
+                },
+                new PriceEpisodeStatusChange
+                {
+                    DataLock = new LegacyDataLockEvent
+                    {
+                        PriceEpisodeIdentifier = dataLockEvent1920.PriceEpisodes[1].Identifier,
+                        Status = PriceEpisodeStatus.Updated,
+                        UKPRN = dataLockEvent1920.Ukprn,
+                        ULN = dataLockEvent1920.Learner.Uln,
+                        AcademicYear = "1920"
+                    }
+                },
+                new PriceEpisodeStatusChange
+                {
+                    DataLock = new LegacyDataLockEvent
+                    {
+                        PriceEpisodeIdentifier = dataLockEvent2021.PriceEpisodes[0].Identifier,
+                        Status = PriceEpisodeStatus.Updated,
+                        UKPRN = dataLockEvent2021.Ukprn,
+                        ULN = dataLockEvent2021.Learner.Uln,
+                        AcademicYear = "2021"
+                    }
+                }
+            };
+
+            dataLockEvent1920.CollectionPeriod.AcademicYear = 1920;
+            dataLockEvent2021.CollectionPeriod.AcademicYear = 2021;
+
+            var result = await sut.Build(
+                new List<DataLockEvent> { dataLockEvent1920, dataLockEvent2021 },
+                new List<(string identifier, PriceEpisodeStatus status)>
+                {
+                    (dataLockEvent1920.PriceEpisodes[0].Identifier, PriceEpisodeStatus.Removed),
+                    (dataLockEvent1920.PriceEpisodes[1].Identifier, PriceEpisodeStatus.Removed),
+                    (dataLockEvent2021.PriceEpisodes[0].Identifier, PriceEpisodeStatus.Removed)
+                },
+                episodeStatusChange, dataLockEvent2021.CollectionPeriod.AcademicYear);
+
+            result.Count.Should().Be(3);
+            result.Select(s => s.DataLock).Any(x =>
+                x.PriceEpisodeIdentifier == dataLockEvent1920.PriceEpisodes[0].Identifier
+                && x.Status == PriceEpisodeStatus.Updated 
+                && x.UKPRN == dataLockEvent1920.Ukprn
+                && x.ULN == dataLockEvent1920.Learner.Uln
+                && x.AcademicYear == "1920" 
+            ).Should().BeTrue();
+
+            result.Select(s => s.DataLock).Any(x =>
+                x.PriceEpisodeIdentifier == dataLockEvent1920.PriceEpisodes[1].Identifier
+                && x.Status == PriceEpisodeStatus.Updated
+                && x.UKPRN == dataLockEvent1920.Ukprn
+                && x.ULN == dataLockEvent1920.Learner.Uln
+                && x.AcademicYear == "1920"
+            ).Should().BeTrue();
+
+            result.Select(s => s.DataLock).Any(x =>
+                x.PriceEpisodeIdentifier == dataLockEvent2021.PriceEpisodes[0].Identifier
+                && x.Status == PriceEpisodeStatus.Removed
+                && x.UKPRN == dataLockEvent2021.Ukprn
+                && x.ULN == dataLockEvent2021.Learner.Uln
+                && x.AcademicYear == "2021"
+            ).Should().BeTrue();
         }
 
         [Test, AutoDomainData]
