@@ -1,7 +1,7 @@
 {
   "UKPRN": "00000000",
   "LARSVersion": "Version_007",
-  "RulebaseVersion": "1920.02.04",
+  "RulebaseVersion": "2021.02.04",
   "Year": "2021",
   "Learners": [
     {
@@ -56,7 +56,6 @@
             "PriceEpisodeFirstProv1618Pay": 0.0,
             "PriceEpisodeLSFCash": 0.0,
             "PriceEpisodeFundLineType": "19+ Apprenticeship (Employer on App Service)",
-            "PriceEpisodeSFAContribPct": 0.0,
             "PriceEpisodeLevyNonPayInd": 0,
             "EpisodeEffectiveTNPStartDate": "2020-07-30T00:00:00+00:00",
             "PriceEpisodeFirstAdditionalPaymentThresholdDate": null,
@@ -361,7 +360,7 @@
               "Period12": 0.0
             },
             {
-              "AttributeName": "PriceEpisodeSFAContribPct",
+              "AttributeName": "PriceEpisodeESFAContribPct",
               "Period1": 0.9,
               "Period2": 0.9,
               "Period3": 0.0,
@@ -440,7 +439,6 @@
             "PriceEpisodeFirstProv1618Pay": 0.0,
             "PriceEpisodeLSFCash": 0.0,
             "PriceEpisodeFundLineType": "19+ Apprenticeship (Employer on App Service)",
-            "PriceEpisodeSFAContribPct": 0.0,
             "PriceEpisodeLevyNonPayInd": 0,
             "EpisodeEffectiveTNPStartDate": "2020-09-25T00:00:00+00:00",
             "PriceEpisodeFirstAdditionalPaymentThresholdDate": "2020-12-23T00:00:00+00:00",
@@ -745,7 +743,7 @@
               "Period12": 0.0
             },
             {
-              "AttributeName": "PriceEpisodeSFAContribPct",
+              "AttributeName": "PriceEpisodeESFAContribPct",
               "Period1": 0.0,
               "Period2": 0.95,
               "Period3": 0.95,

@@ -13,6 +13,7 @@ using SFA.DAS.Payments.Messages.Core.Commands;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
+using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
 using SFA.DAS.Payments.PeriodEnd.Messages.Events;
@@ -92,8 +93,8 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Metrics
         public async Task GenerateMetricsFromLatestJob(int count)
         {
             //set these to the period you have data for
-            var academicYear = 2021;
-            var collectionPeriod = 1;
+            var academicYear = 2122;
+            var collectionPeriod = 11;
 
             var dataContext = Container.Resolve<JobsDataContext>();
             var jobs = await dataContext.Jobs
@@ -106,12 +107,11 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Metrics
                 .Take(count)
                 .ToListAsync();
 
-            var messages = jobs.Select(job => new PeriodEndRequestReportsEvent
+            var messages = jobs.Select(job => new RecordPeriodEndRequestReportsJob
             {
                 JobId = job.DcJobId.Value,
-                CollectionPeriod = new CollectionPeriod { AcademicYear  = job.AcademicYear, Period = job.CollectionPeriod },
-                EventId = Guid.NewGuid(),
-                EventTime = DateTimeOffset.Now
+                CollectionPeriod = job.CollectionPeriod,
+                CollectionYear = job.AcademicYear,
             })
             .ToList();
 

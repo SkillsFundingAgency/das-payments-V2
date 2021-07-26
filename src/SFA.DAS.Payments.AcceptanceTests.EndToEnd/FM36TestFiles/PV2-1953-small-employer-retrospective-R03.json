@@ -56,7 +56,6 @@
             "PriceEpisodeFirstProv1618Pay": 0.0,
             "PriceEpisodeLSFCash": 0.0,
             "PriceEpisodeFundLineType": "16-18 Apprenticeship Non-Levy Contract (procured)",
-            "PriceEpisodeSFAContribPct": 0.0,
             "PriceEpisodeLevyNonPayInd": 0,
             "EpisodeEffectiveTNPStartDate": "2020-08-06T00:00:00+00:00",
             "PriceEpisodeFirstAdditionalPaymentThresholdDate": "2020-11-03T00:00:00+00:00",
@@ -361,7 +360,7 @@
               "Period12": 0.0
             },
             {
-              "AttributeName": "PriceEpisodeSFAContribPct",
+              "AttributeName": "PriceEpisodeESFAContribPct",
               "Period1": 0.95,
               "Period2": 0.95,
               "Period3": 0.95,

@@ -365,7 +365,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var learningAimWithSfaContribution = learningAim;
             learningAimWithSfaContribution.PriceEpisodes.First().PriceEpisodePeriodisedValues.Add(new PriceEpisodePeriodisedValues
             {
-                AttributeName = "PriceEpisodeSFAContribPct",
+                AttributeName = "PriceEpisodeESFAContribPct",
                 Period1 = 0.91m,
                 Period2 = 0.91m,
                 Period3 = 0.91m,

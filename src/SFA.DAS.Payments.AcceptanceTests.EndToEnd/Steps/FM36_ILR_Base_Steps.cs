@@ -46,6 +46,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             TestSession.CollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build();
             TestSession.FM36Global = FM36GlobalDeserialiser.DeserialiseByFeatureForPeriod(featureContext.FeatureInfo.Title, TestSession.CollectionPeriod.Period.ToPeriodText());
+            UpdateFm36ToUseLatestDates(TestSession.FM36Global);
         }
 
         [Given(@"there are 2 Commitments in DAS, Commitment A and Commitment B in collection period (.*)")]
@@ -281,7 +282,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         protected async Task WaitForUnexpectedRequiredPayments()
         {
-            await WaitForUnexpected(() => (Scope.Resolve<IPaymentsHelper>().GetRequiredPaymentsCount(TestSession.Provider.Ukprn, TestSession.CollectionPeriod) == 0, 
+            await WaitForUnexpected(() => (Scope.Resolve<IPaymentsHelper>().GetRequiredPaymentsCount(TestSession.Provider.Ukprn, TestSession.CollectionPeriod) == 0,
                 "No required payments were expected"),
                 "found unexpected number of required payments");
         }
@@ -290,6 +291,69 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             ((IDisposable)featureContext)?.Dispose();
             testDataContext?.Dispose();
+        }
+
+        private void UpdateFm36ToUseLatestDates(FM36Global fm36)
+        {
+            var currentAcademicYear = GetCurrentAcademicYear();
+            var fm36AcademicYear = Convert.ToInt32(fm36.Year);
+            int offset = GetYearFromAcademicYear(currentAcademicYear) - GetYearFromAcademicYear(fm36AcademicYear);
+
+            if (offset == 0) return;
+
+            fm36.Year = currentAcademicYear.ToString();
+            fm36.RulebaseVersion = currentAcademicYear + fm36.RulebaseVersion.Substring(4);
+            fm36.Learners.ForEach(learner =>
+            {
+                learner.PriceEpisodes.ForEach(priceEpisode =>
+                {
+                    priceEpisode.PriceEpisodeValues.EpisodeStartDate = priceEpisode.PriceEpisodeValues.EpisodeStartDate?.AddYears(offset);
+                    priceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDateIncEPA = priceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDateIncEPA?.AddYears(offset);
+                    priceEpisode.PriceEpisodeValues.PriceEpisodePlannedEndDate = priceEpisode.PriceEpisodeValues.PriceEpisodePlannedEndDate?.AddYears(offset);
+                    priceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate = priceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate?.AddYears(offset);
+                    priceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate = priceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate?.AddYears(offset);
+                    priceEpisode.PriceEpisodeValues.PriceEpisodeSecondAdditionalPaymentThresholdDate = priceEpisode.PriceEpisodeValues.PriceEpisodeSecondAdditionalPaymentThresholdDate?.AddYears(offset);
+                });
+
+                learner.LearningDeliveries.ForEach(learningDelivery =>
+                {
+                    learningDelivery.LearningDeliveryValues.AdjStartDate = learningDelivery.LearningDeliveryValues.AdjStartDate?.AddYears(offset);
+                    learningDelivery.LearningDeliveryValues.AppAdjLearnStartDate = learningDelivery.LearningDeliveryValues.AppAdjLearnStartDate?.AddYears(offset);
+                    learningDelivery.LearningDeliveryValues.AppAdjLearnStartDateMatchPathway = learningDelivery.LearningDeliveryValues.AppAdjLearnStartDateMatchPathway?.AddYears(offset);
+
+                    learningDelivery.LearningDeliveryValues.ApplicCompDate = learningDelivery.LearningDeliveryValues.ApplicCompDate != DateTime.MinValue || learningDelivery.LearningDeliveryValues.ApplicCompDate != DateTime.MaxValue ?
+                            learningDelivery.LearningDeliveryValues.ApplicCompDate:
+                            learningDelivery.LearningDeliveryValues.ApplicCompDate?.AddYears(offset);
+
+
+                    learningDelivery.LearningDeliveryValues.LearnStartDate = learningDelivery.LearningDeliveryValues.LearnStartDate.AddYears(offset);
+                    learningDelivery.LearningDeliveryValues.LearnDelApplicEmpDate = learningDelivery.LearningDeliveryValues.LearnDelApplicEmpDate?.AddYears(offset);
+                    learningDelivery.LearningDeliveryValues.SecondIncentiveThresholdDate = learningDelivery.LearningDeliveryValues.SecondIncentiveThresholdDate?.AddYears(offset);
+
+                    learner.HistoricEarningOutputValues.ForEach(historicEarningOutputValues =>
+                    {
+                        historicEarningOutputValues.HistoricEffectiveTNPStartDateOutput = historicEarningOutputValues.HistoricEffectiveTNPStartDateOutput?.AddYears(offset);
+                        historicEarningOutputValues.HistoricProgrammeStartDateIgnorePathwayOutput = historicEarningOutputValues.HistoricProgrammeStartDateIgnorePathwayOutput?.AddYears(offset);
+                        historicEarningOutputValues.HistoricProgrammeStartDateMatchPathwayOutput = historicEarningOutputValues.HistoricProgrammeStartDateMatchPathwayOutput?.AddYears(offset);
+                        historicEarningOutputValues.HistoricUptoEndDateOutput = historicEarningOutputValues.HistoricUptoEndDateOutput?.AddYears(offset);
+                    });
+                });
+            });
+        }
+
+        private int GetCurrentAcademicYear()
+        {
+            var year = DateTime.Now.Month < 8 ? DateTime.Now.Year - 1 : DateTime.Now.Year;
+            var academicYear = string.Concat(year - 2000, year - 1999);
+            return Convert.ToInt32(academicYear);
+        }
+
+        private int GetYearFromAcademicYear(int academicYear)
+        {
+            var academicYearString = academicYear.ToString().Substring(0, 2);
+            var academicYearInt = Convert.ToInt32(academicYearString) + 2000;
+
+            return academicYearInt;
         }
     }
 }
