@@ -22,8 +22,10 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
                         DataLockAuditDataCleanUpQueue = configHelper.GetSetting("DataLockAuditDataCleanUpQueue"),
                         FundingSourceAuditDataCleanUpQueue = configHelper.GetSetting("FundingSourceAuditDataCleanUpQueue"),
                         RequiredPaymentAuditDataCleanUpQueue = configHelper.GetSetting("RequiredPaymentAuditDataCleanUpQueue"),
-                        CollectionPeriod = configHelper.GetSetting("CollectionPeriod"),
-                        AcademicYear = configHelper.GetSetting("AcademicYear"),
+                        CurrentCollectionPeriod = configHelper.GetSetting("CurrentCollectionPeriod"),
+                        CurrentAcademicYear = configHelper.GetSetting("CurrentAcademicYear"),
+                        PreviousCollectionPeriod = configHelper.GetSetting("PreviousCollectionPeriod"),
+                        PreviousAcademicYear = configHelper.GetSetting("PreviousAcademicYear"),
                         AccountApiBatchSize = configHelper.GetSettingOrDefault("AccountApiBatchSize", 1000),
                     };
                 })

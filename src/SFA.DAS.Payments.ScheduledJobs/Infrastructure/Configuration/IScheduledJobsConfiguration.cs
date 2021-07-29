@@ -6,8 +6,10 @@
         string ServiceBusConnectionString { get; }
         string DasNServiceBusLicenseKey { get; }
         string LevyAccountBalanceEndpoint { get; }
-        string CollectionPeriod { get; }
-        string AcademicYear { get; }
+        string CurrentCollectionPeriod { get; }
+        string CurrentAcademicYear { get; }
+        string PreviousCollectionPeriod { get; }
+        string PreviousAcademicYear { get; }
         string EarningAuditDataCleanUpQueue { get; set; }
         string DataLockAuditDataCleanUpQueue { get; set; }
         string FundingSourceAuditDataCleanUpQueue { get; set; }

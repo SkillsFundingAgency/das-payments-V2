@@ -30,7 +30,15 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
 
         public async Task TriggerAuditDataCleanup()
         {
-            var submissionJobsToBeDeletedBatches = await GetSubmissionJobsToBeDeletedBatches(config.CollectionPeriod, config.AcademicYear);
+            IEnumerable<SubmissionJobsToBeDeletedBatch> previousSubmissionJobsToBeDeletedBatches = new List<SubmissionJobsToBeDeletedBatch>();
+            if (!string.IsNullOrWhiteSpace(config.PreviousCollectionPeriod) && !string.IsNullOrWhiteSpace(config.PreviousAcademicYear))
+            {
+                previousSubmissionJobsToBeDeletedBatches = await GetSubmissionJobsToBeDeletedBatches(config.PreviousCollectionPeriod, config.PreviousAcademicYear);
+            }
+
+            var currentSubmissionJobsToBeDeletedBatches = await GetSubmissionJobsToBeDeletedBatches(config.CurrentCollectionPeriod, config.CurrentAcademicYear);
+
+            var submissionJobsToBeDeletedBatches = previousSubmissionJobsToBeDeletedBatches.Union(currentSubmissionJobsToBeDeletedBatches);
 
             var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
 
@@ -83,7 +91,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
                 if (e.IsTimeOutException() || e.IsDeadLockException())
                 {
                     paymentLogger.LogWarning($"Starting Audit Data Deletion in Single Item mode");
-                    
+
                     await SplitBatchAndEnqueueMessages(batch, queueName);
                 }
             }
