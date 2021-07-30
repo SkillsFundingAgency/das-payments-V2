@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -173,7 +175,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.AcceptanceTests.Steps
             await submissionDataContext.SaveChangesAsync();
         }
 
-        private void AssertSubmissions(IEnumerable<SubmissionData> submissionData, bool asExpected)
+        private void AssertSubmissions(IEnumerable<SubmissionData> submissionData, bool shouldBePresent)
         {
             // ReSharper disable PossibleMultipleEnumeration
             if (!submissionData.Any())
@@ -184,12 +186,12 @@ namespace SFA.DAS.Payments.ScheduledJobs.AcceptanceTests.Steps
 
             foreach (var submission in submissionData)
             {
-                AssertSubmission(submission, asExpected);
+                AssertSubmission(submission, shouldBePresent);
             }
             // ReSharper restore PossibleMultipleEnumeration
         }
 
-        private void AssertSubmission(SubmissionData submission, bool asExpected)
+        private void AssertSubmission(SubmissionData submission, bool shouldBePresent)
         {
             if (submission == null)
             {
@@ -197,33 +199,55 @@ namespace SFA.DAS.Payments.ScheduledJobs.AcceptanceTests.Steps
                 return;
             }
 
-            var earningEvents = submissionDataContext.EarningEvents.Any(x => x.Id == submission.EarningEvent);
-            var earningEventPeriods = submissionDataContext.EarningEventPeriods.Any(x => x.Id == submission.EarningEventPeriod);
-            var earningEventPriceEpisodes = submissionDataContext.EarningEventPriceEpisodes.Any(x => x.Id == submission.EarningEventPriceEpisode);
+            var checks = new Dictionary<string, bool>
+            {
+                {"earningEvents",!shouldBePresent},
+                {"earningEventPeriods",!shouldBePresent},
+                {"earningEventPriceEpisodes",!shouldBePresent},
+                {"fundingSourceEvents",!shouldBePresent},
+                {"requiredPaymentEvents",!shouldBePresent},
+                {"dataLockEvents",!shouldBePresent},
+                {"dataLockPayablePeriods",!shouldBePresent},
+                {"dataLockEventPriceEpisodes",!shouldBePresent},
+                {"dataLockEventNonPayablePeriods",!shouldBePresent},
+                {"dataLockEventNonPayablePeriodFailures",!shouldBePresent}
+            };
 
-            var fundingSourceEvents = submissionDataContext.FundingSourceEvents.Any(x => x.Id == submission.FundingSourceEvent);
+            var timer = new Stopwatch();
+            timer.Start();
 
-            var requiredPaymentEvents = submissionDataContext.RequiredPaymentEvents.Any(x => x.Id == submission.RequiredPaymentEvent);
+            while (checks.Any(x => x.Value != shouldBePresent) && timer.Elapsed < config.TimeToWait)
+            {
+                checks["earningEvents"] = submissionDataContext.EarningEvents.Any(x => x.Id == submission.EarningEvent);
+                checks["earningEventPeriods"] = submissionDataContext.EarningEventPeriods.Any(x => x.Id == submission.EarningEventPeriod);
+                checks["earningEventPriceEpisodes"] = submissionDataContext.EarningEventPriceEpisodes.Any(x => x.Id == submission.EarningEventPriceEpisode);
+                checks["fundingSourceEvents"] = submissionDataContext.FundingSourceEvents.Any(x => x.Id == submission.FundingSourceEvent);
+                checks["requiredPaymentEvents"] = submissionDataContext.RequiredPaymentEvents.Any(x => x.Id == submission.RequiredPaymentEvent);
+                checks["dataLockEvents"] = submissionDataContext.DataLockEvents.Any(x => x.Id == submission.DataLockEvent);
+                checks["dataLockPayablePeriods"] = submissionDataContext.DataLockPayablePeriods.Any(x => x.Id == submission.DataLockPayablePeriod);
+                checks["dataLockEventPriceEpisodes"] = submissionDataContext.DataLockEventPriceEpisodes.Any(x => x.Id == submission.DataLockEventPriceEpisode);
+                checks["dataLockEventNonPayablePeriods"] = submissionDataContext.DataLockEventNonPayablePeriods.Any(x => x.Id == submission.DataLockEventNonPayablePeriod);
+                checks["dataLockEventNonPayablePeriodFailures"] = submissionDataContext.DataLockEventNonPayablePeriodFailures.Any(x => x.Id == submission.DataLockEventNonPayablePeriodFailures);
 
-            var dataLockEvents = submissionDataContext.DataLockEvents.Any(x => x.Id == submission.DataLockEvent);
-            var dataLockPayablePeriods = submissionDataContext.DataLockPayablePeriods.Any(x => x.Id == submission.DataLockPayablePeriod);
-            var dataLockEventPriceEpisodes = submissionDataContext.DataLockEventPriceEpisodes.Any(x => x.Id == submission.DataLockEventPriceEpisode);
-            var dataLockEventNonPayablePeriods = submissionDataContext.DataLockEventNonPayablePeriods.Any(x => x.Id == submission.DataLockEventNonPayablePeriod);
-            var dataLockEventNonPayablePeriodFailures = submissionDataContext.DataLockEventNonPayablePeriodFailures.Any(x => x.Id == submission.DataLockEventNonPayablePeriodFailures);
+                if(checks.Any(x => x.Value != shouldBePresent))
+                    Thread.Sleep(config.TimeToPause);
+            }
 
-            earningEvents.Should().Be(asExpected, $"Expected earningEvents to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
-            earningEventPeriods.Should().Be(asExpected, $"Expected earningEventPeriods to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
-            earningEventPriceEpisodes.Should().Be(asExpected, $"Expected earningEventPriceEpisodes to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
+            timer.Stop();
 
-            fundingSourceEvents.Should().Be(asExpected, $"Expected fundingSourceEvents to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
+            checks["earningEvents"].Should().Be(shouldBePresent, $"Expected earningEvents to be {(!shouldBePresent ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
+            checks["earningEventPeriods"].Should().Be(shouldBePresent, $"Expected earningEventPeriods to be {(!shouldBePresent ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
+            checks["earningEventPriceEpisodes"].Should().Be(shouldBePresent, $"Expected earningEventPriceEpisodes to be {(!shouldBePresent ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
 
-            requiredPaymentEvents.Should().Be(asExpected, $"Expected requiredPaymentEvents to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
+            checks["fundingSourceEvents"].Should().Be(shouldBePresent, $"Expected fundingSourceEvents to be {(!shouldBePresent ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
 
-            dataLockEvents.Should().Be(asExpected, $"Expected dataLockEvents to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
-            dataLockPayablePeriods.Should().Be(asExpected, $"Expected dataLockPayablePeriods to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
-            dataLockEventPriceEpisodes.Should().Be(asExpected, $"Expected dataLockEventPriceEpisodes to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
-            dataLockEventNonPayablePeriods.Should().Be(asExpected, $"Expected dataLockEventNonPayablePeriods to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
-            dataLockEventNonPayablePeriodFailures.Should().Be(asExpected, $"Expected dataLockEventNonPayablePeriodFailures to be {(!asExpected ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
+            checks["requiredPaymentEvents"].Should().Be(shouldBePresent, $"Expected requiredPaymentEvents to be {(!shouldBePresent ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
+
+            checks["dataLockEvents"].Should().Be(shouldBePresent, $"Expected dataLockEvents to be {(!shouldBePresent ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
+            checks["dataLockPayablePeriods"].Should().Be(shouldBePresent, $"Expected dataLockPayablePeriods to be {(!shouldBePresent ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
+            checks["dataLockEventPriceEpisodes"].Should().Be(shouldBePresent, $"Expected dataLockEventPriceEpisodes to be {(!shouldBePresent ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
+            checks["dataLockEventNonPayablePeriods"].Should().Be(shouldBePresent, $"Expected dataLockEventNonPayablePeriods to be {(!shouldBePresent ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
+            checks["dataLockEventNonPayablePeriodFailures"].Should().Be(shouldBePresent, $"Expected dataLockEventNonPayablePeriodFailures to be {(!shouldBePresent ? "" : "NOT")} Deleted for Submission {submission.SubmissionId} for CollectionPeriod {submission.CollectionPeriod}");
         }
 
         private async Task<SubmissionData> CreateSubmission(string submissionId, byte collectionPeriod, short academicYear)
