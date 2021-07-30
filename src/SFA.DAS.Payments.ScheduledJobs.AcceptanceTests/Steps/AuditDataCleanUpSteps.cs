@@ -23,10 +23,11 @@ namespace SFA.DAS.Payments.ScheduledJobs.AcceptanceTests.Steps
         private readonly SubmissionDataContext submissionDataContext;
         private readonly long ukprn;
         private readonly Random randomNumberGenerator;
+        private readonly TestConfiguration config;
 
         public AuditDataCleanUpSteps()
         {
-            var config = new TestConfiguration();
+            config = new TestConfiguration();
             submissionDataContext = new SubmissionDataContext(config.PaymentsConnectionString);
             randomNumberGenerator = new Random(Guid.NewGuid().GetHashCode());
             ukprn = randomNumberGenerator.Next(1_000_000);
@@ -36,21 +37,28 @@ namespace SFA.DAS.Payments.ScheduledJobs.AcceptanceTests.Steps
         [Given(@"a Provider has done two submissions, First Submission (.*) and Second Submission (.*) in collectionPeriod (.*)")]
         public async Task GivenAProviderHasDoneTwoSubmissions(string submissionId1, string submissionId2, byte collectionPeriod)
         {
-            submissions.Add(await CreateSubmission(submissionId1, collectionPeriod, 1920));
-            submissions.Add(await CreateSubmission(submissionId2, collectionPeriod, 1920));
+            submissions.Add(await CreateSubmission(submissionId1, collectionPeriod, config.CurrentAcademicYear));
+            submissions.Add(await CreateSubmission(submissionId2, collectionPeriod, config.CurrentAcademicYear));
+        }
+
+        [Given(@"a Provider has done two submissions for the previous academic year, First Submission (.*) and Second Submission (.*) in collectionPeriod (.*)")]
+        public async Task GivenAProviderHasDoneTwoSubmissionsForPreviousAcademicYear(string submissionId1, string submissionId2, byte collectionPeriod)
+        {
+            submissions.Add(await CreateSubmission(submissionId1, collectionPeriod, config.PreviousAcademicYear));
+            submissions.Add(await CreateSubmission(submissionId2, collectionPeriod, config.PreviousAcademicYear));
         }
 
         [Given(@"Now does two new submissions, First Submission (.*) and Second Submission (.*) in collection period (.*)")]
         public async Task GivenAProviderHasDoneTwoSubmissionsInCollectionPeriod(string submissionId1, string submissionId2, byte collectionPeriod)
         {
-            submissions.Add(await CreateSubmission(submissionId1, collectionPeriod, 1920));
-            submissions.Add(await CreateSubmission(submissionId2, collectionPeriod, 1920));
+            submissions.Add(await CreateSubmission(submissionId1, collectionPeriod, config.CurrentAcademicYear));
+            submissions.Add(await CreateSubmission(submissionId2, collectionPeriod, config.CurrentAcademicYear));
         }
 
         [Given(@"a Provider has done one submissions, Submission (.*) in collection period (.*)")]
         public async Task GivenAProviderHasDoneTwoSubmissionsFirstSubmissionAAndSecondSubmissionB(string submissionId, byte collectionPeriod)
         {
-            submissions.Add(await CreateSubmission(submissionId, collectionPeriod, 1920));
+            submissions.Add(await CreateSubmission(submissionId, collectionPeriod, config.CurrentAcademicYear));
         }
 
         [Given(@"Submission (.*) has status (.*) from collection period (.*)")]
