@@ -8,7 +8,7 @@
         string LevyAccountBalanceEndpoint { get; }
         string CurrentCollectionPeriod { get; }
         string CurrentAcademicYear { get; }
-        string PreviousCollectionPeriod { get; }
+        string PreviousAcademicYearCollectionPeriod { get; }
         string PreviousAcademicYear { get; }
         string EarningAuditDataCleanUpQueue { get; set; }
         string DataLockAuditDataCleanUpQueue { get; set; }

@@ -31,9 +31,9 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
         public async Task TriggerAuditDataCleanup()
         {
             IEnumerable<SubmissionJobsToBeDeletedBatch> previousSubmissionJobsToBeDeletedBatches = new List<SubmissionJobsToBeDeletedBatch>();
-            if (!string.IsNullOrWhiteSpace(config.PreviousCollectionPeriod) && !string.IsNullOrWhiteSpace(config.PreviousAcademicYear))
+            if (!string.IsNullOrWhiteSpace(config.PreviousAcademicYearCollectionPeriod) && !string.IsNullOrWhiteSpace(config.PreviousAcademicYear))
             {
-                previousSubmissionJobsToBeDeletedBatches = await GetSubmissionJobsToBeDeletedBatches(config.PreviousCollectionPeriod, config.PreviousAcademicYear);
+                previousSubmissionJobsToBeDeletedBatches = await GetSubmissionJobsToBeDeletedBatches(config.PreviousAcademicYearCollectionPeriod, config.PreviousAcademicYear);
             }
 
             var currentSubmissionJobsToBeDeletedBatches = await GetSubmissionJobsToBeDeletedBatches(config.CurrentCollectionPeriod, config.CurrentAcademicYear);
