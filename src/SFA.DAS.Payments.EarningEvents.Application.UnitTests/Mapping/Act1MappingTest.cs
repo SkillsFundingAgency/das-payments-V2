@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
@@ -35,7 +36,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                         PriceEpisodeValues = new PriceEpisodeValues
                         {
                             PriceEpisodeContractType = "Non-Levy Contract",
-                            PriceEpisodeAgreeId = "id",
                             EpisodeStartDate = new DateTime(2018,8,6),
                         },
                         PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>()
@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var earningEvent = mapper.Map<IntermediateLearningAim, ApprenticeshipContractType1EarningEvent>(learningAim);
 
             // assert
-            earningEvent.AgreementId.Should().Be("id");
+            earningEvent.PriceEpisodes.Single().Identifier.Should().Be("1");
         }
     }
 }
