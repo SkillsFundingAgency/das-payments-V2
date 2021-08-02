@@ -66,17 +66,19 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 .Include(a => a.ApprenticeshipPriceEpisodes)
                 .Single(x => x.Id == TestSession.Apprenticeships[SecondCommitmentIdentifier].Id);
 
-            firstApprenticeship.ApprenticeshipPriceEpisodes.First().StartDate = new DateTime(2018, 09, 01);
-            firstApprenticeship.EstimatedStartDate = new DateTime(2018, 09, 01);
-            firstApprenticeship.StopDate = new DateTime(2019, 06, 01);
+            var fm36Year = TestSession.FM36Global.Learners.First().PriceEpisodes.First().PriceEpisodeValues.EpisodeStartDate.Value.Year;
+
+            firstApprenticeship.ApprenticeshipPriceEpisodes.First().StartDate = new DateTime(fm36Year, 09, 01);
+            firstApprenticeship.EstimatedStartDate = new DateTime(fm36Year, 09, 01);
+            firstApprenticeship.StopDate = new DateTime(fm36Year + 1, 06, 01);
             firstApprenticeship.Status = ApprenticeshipStatus.Stopped;
 
             var secondApprenticeship = context.Apprenticeship
                 .Include(a => a.ApprenticeshipPriceEpisodes)
                 .Single(x => x.Id == TestSession.Apprenticeships[FirstCommitmentIdentifier].Id);
 
-            secondApprenticeship.ApprenticeshipPriceEpisodes.First().StartDate = new DateTime(2019, 07, 01);
-            secondApprenticeship.EstimatedStartDate = new DateTime(2019, 07, 01);
+            secondApprenticeship.ApprenticeshipPriceEpisodes.First().StartDate = new DateTime(fm36Year + 1, 07, 01);
+            secondApprenticeship.EstimatedStartDate = new DateTime(fm36Year + 1, 07, 01);
             secondApprenticeship.Status = ApprenticeshipStatus.Active;
 
             context.SaveChanges();
@@ -87,7 +89,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         private bool HasDataLock10()
         {
             return EarningEventsHelper
-                .GetOnProgrammeDataLockErrorsForLearnerAndPriceEpisodeAndDeliveryPeriod(PriceEpisodeIdentifier, 1920, TestSession, 1)
+                .GetOnProgrammeDataLockErrorsForLearnerAndPriceEpisodeAndDeliveryPeriod(PriceEpisodeIdentifier, TestSession.CollectionPeriod.AcademicYear, TestSession, 1)
                 .Any(x => x == DataLockErrorCode.DLOCK_10);
         }
     }

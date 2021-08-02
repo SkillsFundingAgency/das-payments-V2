@@ -121,6 +121,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private void ScriptInApprenticeshipsAndPriceEpisodes()
         {
+            var fm36Year = TestSession.FM36Global.Learners.First().PriceEpisodes.First().PriceEpisodeValues.EpisodeStartDate.Value.Year;
+
             var sql = $@"
 
             DELETE FROM [Payments2].[ApprenticeshipPriceEpisode] WHERE [ApprenticeshipId] IN (5001, 5002)
@@ -148,7 +150,7 @@ INSERT INTO [Payments2].[Apprenticeship]
            ,[CreationDate]
            ,[ApprenticeshipEmployerType])
      VALUES
-           (5001,	{TestSession.Employers[0].AccountId},	'515SIE',	'01/08/2020',	{TestSession.Learner.Uln},	{TestSession.Provider.Ukprn},	'01/08/2018',	'01/08/2023',	0,	17,	25,	0,	0,	'ZURICH TEST',	NULL,	'2020-11-05',	3,	1,	CURRENT_TIMESTAMP,	1)
+           (5001,	{TestSession.Employers[0].AccountId},	'515SIE',	'01/08/{fm36Year + 2}',	{TestSession.Learner.Uln},	{TestSession.Provider.Ukprn},	'01/08/{fm36Year}',	'01/08/{fm36Year + 5}',	0,	17,	25,	0,	0,	'ZURICH TEST',	NULL,	'{fm36Year + 2}-11-05',	3,	1,	CURRENT_TIMESTAMP,	1)
 
 
 INSERT INTO [Payments2].[Apprenticeship]
@@ -173,7 +175,7 @@ INSERT INTO [Payments2].[Apprenticeship]
            ,[CreationDate]
            ,[ApprenticeshipEmployerType])
      VALUES
-           (5002,	{TestSession.Employers[1].AccountId},	'515SIE',	'01/08/2020',	{TestSession.Learner.Uln},	{TestSession.Provider.Ukprn},	'11/07/2020',	'01/08/2023',	0,	17,	25,	0,	0,	'ZURICH TEST',	NULL,	NULL,	1,	1,	CURRENT_TIMESTAMP,	1)
+           (5002,	{TestSession.Employers[1].AccountId},	'515SIE',	'01/08/{fm36Year + 2}',	{TestSession.Learner.Uln},	{TestSession.Provider.Ukprn},	'11/07/{fm36Year + 2}',	'01/08/{fm36Year + 5}',	0,	17,	25,	0,	0,	'ZURICH TEST',	NULL,	NULL,	1,	1,	CURRENT_TIMESTAMP,	1)
 
 
 INSERT INTO [Payments2].[ApprenticeshipPriceEpisode]
@@ -184,7 +186,7 @@ INSERT INTO [Payments2].[ApprenticeshipPriceEpisode]
            ,[Removed]
            ,[CreationDate])
      VALUES
-           (5001,	'01/08/2018',	NULL,	15000,	0           ,CURRENT_TIMESTAMP)
+           (5001,	'01/08/{fm36Year}',	NULL,	15000,	0           ,CURRENT_TIMESTAMP)
 
 
 INSERT INTO [Payments2].[ApprenticeshipPriceEpisode]
@@ -195,7 +197,7 @@ INSERT INTO [Payments2].[ApprenticeshipPriceEpisode]
            ,[Removed]
            ,[CreationDate])
      VALUES
-           (5002,	'11/07/2020',	NULL,	5000,	0           ,CURRENT_TIMESTAMP)
+           (5002,	'11/07/{fm36Year + 2}',	NULL,	5000,	0           ,CURRENT_TIMESTAMP)
 
 ";
 

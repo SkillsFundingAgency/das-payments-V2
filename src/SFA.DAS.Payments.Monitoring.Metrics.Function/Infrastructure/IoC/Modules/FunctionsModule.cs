@@ -69,12 +69,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.Infrastructure.IoC.Module
                     var configHelper = c.Resolve<IConfigurationHelper>();
 
                     var dbContextOptions = new DbContextOptionsBuilder().UseSqlServer(
-                        configHelper.GetConnectionString("DcEarnings1920ConnectionString"),
+                        configHelper.GetConnectionString("DcEarnings2122ConnectionString"),
                         optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
 
                     return new DcMetricsDataContext(dbContextOptions);
                 })
-                .Named<IDcMetricsDataContext>("DcEarnings1920DataContext")
+                .Named<IDcMetricsDataContext>("DcEarnings2122DataContext")
                 .InstancePerLifetimeScope();
 
             builder.Register((c, p) =>

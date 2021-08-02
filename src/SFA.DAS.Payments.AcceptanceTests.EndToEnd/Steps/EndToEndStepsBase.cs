@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Abstract;
+using MoreLinq;
 using SFA.DAS.Payments.AcceptanceTests.Core.Services;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -514,10 +515,27 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 newPriceEpisode.PriceEpisodeValues.TNP3 = priceEpisode.ResidualTrainingPrice;
                 newPriceEpisode.PriceEpisodeValues.TNP4 = priceEpisode.ResidualAssessmentPrice;
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice = priceEpisode.TotalTNPPrice;
-                newPriceEpisode.PriceEpisodeValues.PriceEpisodeSFAContribPct = sfaContributionPercent;
                 // Default to max value so that not setting employer contribution won't fail tests 
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeCumulativePMRs = priceEpisode.Pmr ?? int.MaxValue;
                 newPriceEpisode.PriceEpisodeValues.PriceEpisodeCompExemCode = priceEpisode.CompletionHoldBackExemptionCode;
+
+                newPriceEpisode.PriceEpisodePeriodisedValues.Add(new PriceEpisodePeriodisedValues
+                {
+                    AttributeName = "PriceEpisodeESFAContribPct",
+                    Period1 = sfaContributionPercent,
+                    Period2 = sfaContributionPercent,
+                    Period3 = sfaContributionPercent,
+                    Period4 = sfaContributionPercent,
+                    Period5 = sfaContributionPercent,
+                    Period6 = sfaContributionPercent,
+                    Period7 = sfaContributionPercent,
+                    Period8 = sfaContributionPercent,
+                    Period9 = sfaContributionPercent,
+                    Period10 = sfaContributionPercent,
+                    Period11 = sfaContributionPercent,
+                    Period12 = sfaContributionPercent
+                });
+
 
                 priceEpisodesForAim.Add(newPriceEpisode);
             }
@@ -606,8 +624,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                         newValues = currentValues;
                     }
 
-                    if (newValues.AttributeName == "PriceEpisodeSFAContribPct" && aim.IsMainAim)
+                    if (newValues.AttributeName == "PriceEpisodeESFAContribPct" && aim.IsMainAim)
                     {
+                        currentPriceEpisode.PriceEpisodePeriodisedValues.RemoveAll(x => x.AttributeName == "PriceEpisodeESFAContribPct");
                         currentPriceEpisode.PriceEpisodePeriodisedValues.Add(newValues);
                     }
                     else if ((EnumHelper.IsOnProgType(EnumHelper.ToTransactionTypeFromAttributeName(newValues.AttributeName)) ||
@@ -670,12 +689,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (earnings.Any(x => !string.IsNullOrEmpty(x.SfaContributionPercentage)))
             {
-                sfaContributionPeriodisedValue = new T { AttributeName = "PriceEpisodeSFAContribPct", };
+                sfaContributionPeriodisedValue = new T { AttributeName = "PriceEpisodeESFAContribPct", };
                 aimPeriodisedValues.Add(sfaContributionPeriodisedValue);
             }
 
             var currentEarnings = earnings.Where(e => !e.AimSequenceNumber.HasValue ||
-                                                  e.AimSequenceNumber == aim.AimSequenceNumber).ToList();
+                                                      e.AimSequenceNumber == aim.AimSequenceNumber).ToList();
 
             if (currentEarnings.Any())
             {
