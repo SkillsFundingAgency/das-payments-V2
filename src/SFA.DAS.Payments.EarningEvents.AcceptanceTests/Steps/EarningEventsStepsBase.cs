@@ -48,8 +48,7 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                         PriceEpisodeCompletionPayment = learnerEarnings.CompletionAmount,
                         PriceEpisodeContractType = "Non-Levy Contract",  //TODO: Needs to work for ACT1 too
                         PriceEpisodeOnProgPayment = learnerEarnings.InstallmentAmount,
-                        PriceEpisodePlannedEndDate = learnerEarnings.LearnerStartDate.ToDate().AddMonths(learnerEarnings.NumberOfInstallments),
-                        PriceEpisodeSFAContribPct = SfaContributionPercentage,
+                        PriceEpisodePlannedEndDate = learnerEarnings.LearnerStartDate.ToDate().AddMonths(learnerEarnings.NumberOfInstallments)
                     },
                     PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>()
                 });
@@ -93,6 +92,18 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                 var periodProperty = balancingEarnings.GetType().GetProperty($"Period{lastPeriod}");
                 periodProperty?.SetValue(balancingEarnings, learnerEarnings.BalancingPayment);
                 priceEpisode.PriceEpisodePeriodisedValues.Add(balancingEarnings);
+            }
+
+            var priceEpisodeESFAContribPct = new PriceEpisodePeriodisedValues
+            {
+                AttributeName = "PriceEpisodeESFAContribPct",
+            };
+
+            if (!string.IsNullOrEmpty(lastPeriod))
+            {
+                var periodProperty = priceEpisodeESFAContribPct.GetType().GetProperty($"Period{lastPeriod}");
+                periodProperty?.SetValue(priceEpisodeESFAContribPct, SfaContributionPercentage);
+                priceEpisode.PriceEpisodePeriodisedValues.Add(priceEpisodeESFAContribPct);
             }
 
             learner.LearningDeliveries.Add(new LearningDelivery

@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model" Version="0.1.320" />
+    <PackageReference Include="ESFA.DC.ILR.2122.FundingService.FM36.FundingOutput.Model" Version="0.2.6" />
   </ItemGroup>
 
   <ItemGroup>
