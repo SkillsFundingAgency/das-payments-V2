@@ -315,22 +315,22 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             }
         }
 
-        private static List<PriceEpisodeStatusChange> BuildRemovedEvents(List<(string identifier,
-            PriceEpisodeStatus status)> priceEpisodeChanges,
-            IEnumerable<PriceEpisodeStatusChange> priceEpisodeStatusChange, short currentAcademicYear)
+        private static List<PriceEpisodeStatusChange> BuildRemovedEvents(
+            List<(string identifier, PriceEpisodeStatus status)> priceEpisodeChanges,
+            IEnumerable<PriceEpisodeStatusChange> priceEpisodeStatusChange, 
+            short currentAcademicYear)
         {
-
             var removedPriceEpisodes = priceEpisodeStatusChange
                 .Where(c => priceEpisodeChanges
                     .Any(p => p.status == PriceEpisodeStatus.Removed && p.identifier == c.DataLock.PriceEpisodeIdentifier))
                 .ToList();
 
             //Ensure that only events for the current academic year can be flagged as removed.
-            removedPriceEpisodes.ForEach(x => x.DataLock.Status = x.DataLock.AcademicYear.Equals(currentAcademicYear.ToString(),StringComparison.OrdinalIgnoreCase) ? PriceEpisodeStatus.Removed : PriceEpisodeStatus.Updated);
+            removedPriceEpisodes.ForEach(x => x.DataLock.Status = 
+                (x.DataLock.AcademicYear.Equals(currentAcademicYear.ToString(),StringComparison.OrdinalIgnoreCase) || x.DataLock.Status == PriceEpisodeStatus.Removed ) 
+                ? PriceEpisodeStatus.Removed : PriceEpisodeStatus.Updated);
 
             return removedPriceEpisodes;
         }
-
-
     }
 }
