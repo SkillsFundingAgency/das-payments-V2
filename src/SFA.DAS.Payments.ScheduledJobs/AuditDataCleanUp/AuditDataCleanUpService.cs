@@ -31,6 +31,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
         public async Task TriggerAuditDataCleanup()
         {
             IEnumerable<SubmissionJobsToBeDeletedBatch> previousSubmissionJobsToBeDeletedBatches = new List<SubmissionJobsToBeDeletedBatch>();
+
             if (!string.IsNullOrWhiteSpace(config.PreviousAcademicYearCollectionPeriod) && !string.IsNullOrWhiteSpace(config.PreviousAcademicYear))
             {
                 previousSubmissionJobsToBeDeletedBatches = await GetSubmissionJobsToBeDeletedBatches(config.PreviousAcademicYearCollectionPeriod, config.PreviousAcademicYear);
@@ -39,10 +40,14 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
             var currentSubmissionJobsToBeDeletedBatches = await GetSubmissionJobsToBeDeletedBatches(config.CurrentCollectionPeriod, config.CurrentAcademicYear);
 
             var submissionJobsToBeDeletedBatches = previousSubmissionJobsToBeDeletedBatches.Union(currentSubmissionJobsToBeDeletedBatches);
+            var submissionJobsToBeDeletedBatchesList = submissionJobsToBeDeletedBatches.ToList();
 
             var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
 
-            foreach (var batch in submissionJobsToBeDeletedBatches)
+            paymentLogger.LogInfo($"Triggering Audit Data Cleanup for {submissionJobsToBeDeletedBatchesList.Count} submission job batches. " +
+                                  $"DCJobIds: {string.Join(",", submissionJobsToBeDeletedBatchesList.SelectMany(x => x.JobsToBeDeleted.Select(y => y.DcJobId)))}");
+
+            foreach (var batch in submissionJobsToBeDeletedBatchesList)
             {
                 await endpointInstance.Send(config.EarningAuditDataCleanUpQueue, batch).ConfigureAwait(false);
                 await endpointInstance.Send(config.DataLockAuditDataCleanUpQueue, batch).ConfigureAwait(false);
