@@ -1,7 +1,11 @@
-﻿using Autofac;
+﻿using System.Configuration;
+using Autofac;
 using SFA.DAS.Payments.Application.Batch;
 using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
+using ESFA.DC.Queueing;
+using ESFA.DC.Queueing.Interface;
+using ESFA.DC.Serialization.Interfaces;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Application.Messaging;
@@ -66,6 +70,17 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
             builder.RegisterType<SubmittedLearnerAimRepository>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
+
+            builder.Register(c =>
+            {
+                //todo: get values for below
+                var jobStatusPublishConfig = new ESFA.DC.Queueing.QueueConfiguration("DCConnectionString", "DcJobStatusQueueName", 5);
+
+                return new QueuePublishService<ESFA.DC.JobStatus.Interface.JobStatusDto>(
+                    jobStatusPublishConfig,
+                    c.Resolve<IJsonSerializationService>());
+            }).As<IQueuePublishService<ESFA.DC.JobStatus.Interface.JobStatusDto>>();
+
             EndpointConfigurationEvents.ConfiguringTransport += EndpointConfigurationEvents_ConfiguringTransport;
         }
 

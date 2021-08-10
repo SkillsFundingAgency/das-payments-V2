@@ -133,13 +133,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                         return true;
                     }
 
-                    if (await jobStatusService.WaitForJobToFinish(message.JobId, cancellationToken))
+                    if (message.KeyValuePairs.ContainsKey(JobContextMessageKey.PauseWhenFinished))
                     {
-                        logger.LogInfo($"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");
-                        return true;
+                        //This is how DC checks if they need to wait for job to finish
+                        message.KeyValuePairs.Add(JobContextMessageKey.PauseWhenFinished, string.Empty);
                     }
-                    logger.LogError($"Job failed to finished within the allocated time. Job Id: {message.JobId}");
-                    return false;
+
+                    logger.LogInfo($"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");
+                    return true;
                 }
             }
             catch (OperationCanceledException)
