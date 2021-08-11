@@ -73,38 +73,38 @@ stages:
 # Build and Restore
 #******************************************************************************** 
     - task: DotNetCoreCLI@2
-      displayName: 'Restore SubmissionJobs Messages'
+      displayName: 'Restore Monitoring Jobs Messages'
       inputs:
         command: restore
-        projects: '**/*.SubmissionJobs.Messages.csproj'
+        projects: '**/*.Monitoring.Jobs.Messages.csproj'
         configuration: ${{ parameters.BuildConfiguration }}
         feedsToUse: 'select'
         vstsFeed: '$(NugetFeed)'
 
     - task: DotNetCoreCLI@2
       enabled: false
-      displayName: 'Build SubmissionJobs Messages'
+      displayName: 'Build Monitoring Jobs Messages'
       inputs:
-        projects: '**/*.SubmissionJobs.Messages.csproj'
+        projects: '**/*.Monitoring.Jobs.Messages.csproj'
         arguments: '--configuration ${{ parameters.BuildConfiguration }} --no-restore'
 
 #********************************************************************************
 # Build and Restore
 #******************************************************************************** 
     - task: DotNetCoreCLI@2
-      displayName: 'Restore Provider Payments Messages'
+      displayName: 'Restore Monitoring Jobs Messages'
       inputs:
         command: restore
-        projects: src\SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages\SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages.csproj
+        projects: src\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj
         configuration: ${{ parameters.BuildConfiguration }}
         feedsToUse: 'select'
         vstsFeed: '$(NugetFeed)'
 
     - task: DotNetCoreCLI@2
       enabled: false
-      displayName: 'Build Provider Payments Messages'
+      displayName: 'Build Monitoring Jobs Messages'
       inputs:
-        projects: src\SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages\SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages.csproj
+        projects: src\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj
         configuration: ${{ parameters.BuildConfiguration }}
         feedsToUse: 'select'
         vstsFeed: '$(NugetFeed)'
@@ -113,10 +113,10 @@ stages:
 # Package 
 #********************************************************************************  
     - task: DotNetCoreCLI@2
-      displayName: 'Pack Provider Payments Messages'
+      displayName: 'Pack Monitoring Jobs Messages'
       inputs:
         command: pack
-        packagesToPack: src\SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages\SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages.csproj
+        packagesToPack: src\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj
         configuration: ${{ parameters.BuildConfiguration }}
         versioningScheme: byBuildNumber
 

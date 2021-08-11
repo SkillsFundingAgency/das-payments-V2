@@ -377,8 +377,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.PeriodEnd.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService", "SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService\SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService.csproj", "{56BE8D57-BF1B-47EC-8958-76588BF4A4B9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages", "SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages\SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages.csproj", "{4A97E8EF-80EB-4532-8B1F-E988733DBDEF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1529,14 +1527,6 @@ Global
 		{56BE8D57-BF1B-47EC-8958-76588BF4A4B9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{56BE8D57-BF1B-47EC-8958-76588BF4A4B9}.Release|x64.ActiveCfg = Release|Any CPU
 		{56BE8D57-BF1B-47EC-8958-76588BF4A4B9}.Release|x64.Build.0 = Release|Any CPU
-		{4A97E8EF-80EB-4532-8B1F-E988733DBDEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4A97E8EF-80EB-4532-8B1F-E988733DBDEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4A97E8EF-80EB-4532-8B1F-E988733DBDEF}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{4A97E8EF-80EB-4532-8B1F-E988733DBDEF}.Debug|x64.Build.0 = Debug|Any CPU
-		{4A97E8EF-80EB-4532-8B1F-E988733DBDEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4A97E8EF-80EB-4532-8B1F-E988733DBDEF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4A97E8EF-80EB-4532-8B1F-E988733DBDEF}.Release|x64.ActiveCfg = Release|Any CPU
-		{4A97E8EF-80EB-4532-8B1F-E988733DBDEF}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1691,7 +1681,6 @@ Global
 		{9803CF82-6B7D-4527-A545-F31D1B4EF7DE} = {34C2FD7B-B210-412A-B777-17DEABC01327}
 		{28C9290E-1D39-4C60-9518-38456307B3A0} = {34C2FD7B-B210-412A-B777-17DEABC01327}
 		{56BE8D57-BF1B-47EC-8958-76588BF4A4B9} = {0CA32AC5-24E0-4D96-9D31-AA51556A64D5}
-		{4A97E8EF-80EB-4532-8B1F-E988733DBDEF} = {48AD8C3B-C2ED-4B11-AD1E-1FD0352BD534}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E9E6D1E-3C3C-41C9-AED4-9B6DC9118F1F}

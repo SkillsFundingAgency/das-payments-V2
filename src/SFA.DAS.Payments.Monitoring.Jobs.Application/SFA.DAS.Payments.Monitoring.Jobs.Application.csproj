@@ -20,7 +20,6 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Model\SFA.DAS.Payments.Monitoring.Jobs.Model.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Metrics.Model\SFA.DAS.Payments.Monitoring.Metrics.Model.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages\SFA.DAS.Payments.Monitoring.SubmissionJobs.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.ServiceFabric.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj" />
   </ItemGroup>
 

@@ -10,7 +10,6 @@
     <Parameter Name="Monitoring_JobsStatusService_InstanceCount" DefaultValue="1" />
     <Parameter Name="StorageConnectionString" DefaultValue="" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
-    <Parameter Name="MatchedLearnerServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="MonitoringServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
@@ -54,7 +53,6 @@
             <Parameter Name="DcEarnings2021ConnectionString" Value="[DcEarnings2021ConnectionString]" />
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
-            <Parameter Name="MatchedLearnerServiceBusConnectionString" Value="[MatchedLearnerServiceBusConnectionString]" />
             <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
@@ -90,7 +88,6 @@
           <Section Name="ConnectionStringsSection">
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
-            <Parameter Name="MatchedLearnerServiceBusConnectionString" Value="[MatchedLearnerServiceBusConnectionString]" />
             <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
             <Parameter Name="LoggingConnectionString" Value="[LoggingConnectionString]" />
             <Parameter Name="PaymentsConnectionString" Value="[PaymentsConnectionString]" />
