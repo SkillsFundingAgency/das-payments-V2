@@ -73,8 +73,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
 
             builder.Register(c =>
             {
-                //todo: get values for below
-                var jobStatusPublishConfig = new ESFA.DC.Queueing.QueueConfiguration("DCConnectionString", "DcJobStatusQueueName", 5);
+                var configHelper = c.Resolve<IConfigurationHelper>();
+
+                var dcConnectionString = configHelper.GetSetting("DCServiceBusConnectionString");
+                var dcJobStatusQueueName = configHelper.GetSetting("JobStatusQueueName");
+
+                var jobStatusPublishConfig = new ESFA.DC.Queueing.QueueConfiguration(dcConnectionString, dcJobStatusQueueName , 5);
 
                 return new QueuePublishService<ESFA.DC.JobStatus.Interface.JobStatusDto>(
                     jobStatusPublishConfig,

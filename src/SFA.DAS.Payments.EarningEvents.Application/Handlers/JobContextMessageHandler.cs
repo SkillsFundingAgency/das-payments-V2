@@ -133,7 +133,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                         return true;
                     }
 
-                    if (message.KeyValuePairs.ContainsKey(JobContextMessageKey.PauseWhenFinished))
+                    if (!message.KeyValuePairs.ContainsKey(JobContextMessageKey.PauseWhenFinished))
                     {
                         //This is how DC checks if they need to wait for job to finish
                         message.KeyValuePairs.Add(JobContextMessageKey.PauseWhenFinished, string.Empty);
