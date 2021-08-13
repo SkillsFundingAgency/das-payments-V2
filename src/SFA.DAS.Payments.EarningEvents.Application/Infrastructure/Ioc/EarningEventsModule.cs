@@ -65,25 +65,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
             builder.RegisterType<BulkWriter<SubmittedLearnerAimModel>>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
-            builder.RegisterType<JobContextMessageHandler>()
-                .As<IMessageHandler<JobContextMessage>>();
             builder.RegisterType<SubmittedLearnerAimRepository>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
-
-            builder.Register(c =>
-            {
-                var configHelper = c.Resolve<IConfigurationHelper>();
-
-                var dcConnectionString = configHelper.GetSetting("DCServiceBusConnectionString");
-                var dcJobStatusQueueName = configHelper.GetSetting("JobStatusQueueName");
-
-                var jobStatusPublishConfig = new ESFA.DC.Queueing.QueueConfiguration(dcConnectionString, dcJobStatusQueueName , 5);
-
-                return new QueuePublishService<ESFA.DC.JobStatus.Interface.JobStatusDto>(
-                    jobStatusPublishConfig,
-                    c.Resolve<IJsonSerializationService>());
-            }).As<IQueuePublishService<ESFA.DC.JobStatus.Interface.JobStatusDto>>();
 
             EndpointConfigurationEvents.ConfiguringTransport += EndpointConfigurationEvents_ConfiguringTransport;
         }

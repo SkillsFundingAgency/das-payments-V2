@@ -44,5 +44,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.AcceptanceTests.Data
         public byte CollectionPeriod { get; set; }
         public bool? DcJobSucceeded { get; set; }
         public DateTime? IlrSubmissionTime { get; set; }
+        public string JobContextMessagePayload { get; set; }
     }
 }

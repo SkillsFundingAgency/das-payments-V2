@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 {
     public interface IEarningsJobClient
     {
-        Task StartJob(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages, DateTimeOffset startTime);
+        Task StartJob(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages, DateTimeOffset startTime, string jobContextMessagePayload);
         Task RecordJobFailure(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod);
         Task RecordJobSuccess(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod);
     }
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
             this.config = config;
         }
 
-        public async Task StartJob(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages, DateTimeOffset startTime)
+        public async Task StartJob(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod, List<GeneratedMessage> generatedMessages, DateTimeOffset startTime, string jobContextMessagePayload)
         {
             logger.LogVerbose($"Sending request to record start of earnings job. Job Id: {jobId}, Ukprn: {ukprn}");
             try
@@ -47,7 +47,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                     CollectionYear = collectionYear,
                     CollectionPeriod = collectionPeriod,
                     GeneratedMessages = generatedMessages.Take(batchSize).ToList(),
-                    LearnerCount = generatedMessages.Count
+                    LearnerCount = generatedMessages.Count,
+                    JobContextMessagePayload = jobContextMessagePayload
                 };
                 var partitionedEndpointName = GetMonitoringEndpointForJob(jobId, ukprn);
                 logger.LogVerbose($"Endpoint for RecordEarningsJob for Job Id {jobId} is `{partitionedEndpointName}`");

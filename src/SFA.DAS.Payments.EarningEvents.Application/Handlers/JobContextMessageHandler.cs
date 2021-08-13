@@ -16,6 +16,7 @@ using SFA.DAS.Payments.Application.Batch;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
+using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
@@ -131,12 +132,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     {
                         logger.LogWarning($"Received ILR with 0 FM36 learners. Ukprn: {fm36Output.UKPRN}, job id: {message.JobId}.");
                         return true;
-                    }
-
-                    if (!message.KeyValuePairs.ContainsKey(JobContextMessageKey.PauseWhenFinished))
-                    {
-                        //This is how DC checks if they need to wait for job to finish
-                        message.KeyValuePairs.Add(JobContextMessageKey.PauseWhenFinished, string.Empty);
                     }
 
                     logger.LogInfo($"Successfully processed ILR Submission. Job Id: {message.JobId}, Ukprn: {fm36Output.UKPRN}, Submission Time: {message.SubmissionDateTimeUtc}");
@@ -360,10 +355,16 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 .ToList();
 
             var jobStatusClient = jobClientFactory.Create();
+            
             var messageName = typeof(ProcessLearnerCommand).FullName;
+
             logger.LogVerbose($"Now sending the start job command for job: {message.JobId}");
+
+            var messageJson = message.ToJson();
+
             await jobStatusClient.StartJob(message.JobId, fm36Output.UKPRN, message.SubmissionDateTimeUtc, short.Parse(fm36Output.Year), (byte)collectionPeriod,
-                commands.Select(cmd => new GeneratedMessage { StartTime = startTime, MessageId = cmd.CommandId, MessageName = messageName }).ToList(), startTime);
+                commands.Select(cmd => new GeneratedMessage { StartTime = startTime, MessageId = cmd.CommandId, MessageName = messageName }).ToList(), startTime, messageJson);
+
             logger.LogDebug($"Now sending the process learner commands for job: {message.JobId}");
             var stopwatch = new Stopwatch();
             stopwatch.Start();

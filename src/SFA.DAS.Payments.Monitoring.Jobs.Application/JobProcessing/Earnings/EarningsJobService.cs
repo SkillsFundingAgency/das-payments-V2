@@ -34,7 +34,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
                 DcJobId = earningsJobRequest.JobId,
                 IlrSubmissionTime = earningsJobRequest.IlrSubmissionTime,
                 Status = JobStatus.InProgress,
-                LearnerCount = earningsJobRequest.LearnerCount
+                LearnerCount = earningsJobRequest.LearnerCount,
+                JobContextMessagePayload = earningsJobRequest.JobContextMessagePayload
             };
             await RecordNewJob(jobDetails, earningsJobRequest.GeneratedMessages, cancellationToken)
                 .ConfigureAwait(false);

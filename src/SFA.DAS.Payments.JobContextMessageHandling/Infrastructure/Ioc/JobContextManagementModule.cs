@@ -30,7 +30,10 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.Infrastructure.Ioc
                            .SingleInstance();
 
             builder.RegisterType<DefaultJobContextMessageMapper<JobContextMessage>>().As<IMapper<JobContextMessage, JobContextMessage>>();
+            builder.RegisterType<JobContextDtoToMessageMapper>().As<IMapper<JobContextDto, JobContextMessage>>();
             builder.RegisterType<DateTimeProvider>().As<IDateTimeProvider>();
+
+            //builder.RegisterType<JobContextMessageHandler>().As<IMessageHandler<JobContextMessage>>(); todo: fix dependency
 
             builder.Register(c =>
             {
@@ -99,6 +102,12 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.Infrastructure.Ioc
                 })
                 .As<IJobStatusConfiguration>()
                 .SingleInstance();
+
+            builder
+                .RegisterType<JobContextMessageMetadataService>()
+                .As<IJobContextMessageMetadataService>()
+                .SingleInstance();
+
             builder.RegisterType<JobStatusService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.Register((c, p) =>
                 {
