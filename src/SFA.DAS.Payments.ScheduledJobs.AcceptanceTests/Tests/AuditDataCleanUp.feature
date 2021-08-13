@@ -186,3 +186,14 @@ Scenario: upon Audit Data Cleanup Schedule Function is executed, No Submission A
 	And Submission C is NOT deleted from collection period 2
 	And Submission D is NOT deleted from collection period 2
 	And Submission E is NOT deleted from collection period 2
+
+Scenario: upon Audit Data Cleanup Schedule Function is executed, Old Completed Submission Audit Data is deleted for both academic years during rollover
+	Given a Provider has done two submissions, First Submission A and Second Submission B in collectionPeriod 2
+	And a Provider has done two submissions for the previous academic year, First Submission C and Second Submission D in collectionPeriod 14
+	And Both Submission has status Completed in collection period 2
+	And Both Submission has status Completed in collection period 14
+	When Audit Data Cleanup Function is executed in collectionPeriod 2
+	Then Submission A is deleted from collection period 2
+	And Submission B is NOT deleted from collection period 2
+	And Submission C is deleted from collection period 14
+	And Submission D is NOT deleted from collection period 14
