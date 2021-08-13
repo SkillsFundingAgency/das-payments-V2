@@ -34,7 +34,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         public void SetUp()
         {
             mocker = AutoMock.GetLoose();
-            var endpointInstance = new Mock<IEndpointInstance>();
 
             mocker.Mock<IEndpointInstance>()
                 .Setup(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()))
@@ -75,7 +74,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                     It.IsAny<short>(),
                     It.IsAny<byte>(),
                     It.IsAny<List<GeneratedMessage>>(),
-                    It.IsAny<DateTimeOffset>()))
+                    It.IsAny<DateTimeOffset>(),
+                    It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
             mocker.Mock<ISubmittedLearnerAimBuilder>()
                 .Setup(builder => builder.Build(It.IsAny<ProcessLearnerCommand>()))

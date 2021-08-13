@@ -1,16 +1,9 @@
-﻿using System.Configuration;
-using Autofac;
+﻿using Autofac;
 using SFA.DAS.Payments.Application.Batch;
-using ESFA.DC.JobContextManager.Interface;
-using ESFA.DC.JobContextManager.Model;
-using ESFA.DC.Queueing;
-using ESFA.DC.Queueing.Interface;
-using ESFA.DC.Serialization.Interfaces;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core.Configuration;
-using SFA.DAS.Payments.EarningEvents.Application.Handlers;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
 using SFA.DAS.Payments.EarningEvents.Application.Repositories;
@@ -68,7 +61,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
             builder.RegisterType<SubmittedLearnerAimRepository>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
-
             EndpointConfigurationEvents.ConfiguringTransport += EndpointConfigurationEvents_ConfiguringTransport;
         }
 
@@ -78,6 +70,5 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
             var routing = e.Routing();
             routing.RouteToEndpoint(typeof(ProcessLearnerCommand), configHelper.GetSetting("ProcessLearnerEndpoint")); 
         }
-
     }
 }

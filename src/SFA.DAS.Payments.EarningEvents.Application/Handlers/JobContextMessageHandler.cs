@@ -21,15 +21,26 @@ using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
-using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
-using SFA.DAS.Payments.JobContextMessageHandling.JobStatus;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
+using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 {
+    public class KeyValuePairs
+    {
+        public static readonly string ReturnPeriod = "ReturnPeriod";
+        public static readonly string CollectionYear = "CollectionYear";
+        public static readonly string Ukprn = "UkPrn";
+        public static readonly string Container = "Container";
+        public static readonly string FundingFm36Output = "FundingFm36Output";
+        public static readonly string FundingFm36OutputPeriodEnd = "FundingFm36OutputPeriodEnd";
+        public static readonly string Username = "Username";
+        public static readonly string Filename = "Filename";
+    }
+
     public class JobContextMessageHandler : IMessageHandler<JobContextMessage>
     {
         private readonly IPaymentLogger logger;
@@ -41,7 +52,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         private readonly IBulkWriter<SubmittedLearnerAimModel> submittedAimWriter;
         private readonly ISubmittedLearnerAimBuilder submittedLearnerAimBuilder;
         private readonly ISubmittedLearnerAimRepository submittedLearnerAimRepository;
-        private readonly IJobStatusService jobStatusService;
+        private readonly IJobsDataContext jobsDataContext;
 
         public JobContextMessageHandler(IPaymentLogger logger,
             IFileService azureFileService,
@@ -52,7 +63,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             IBulkWriter<SubmittedLearnerAimModel> submittedAimWriter,
             ISubmittedLearnerAimBuilder submittedLearnerAimBuilder,
             ISubmittedLearnerAimRepository submittedLearnerAimRepository,
-            IJobStatusService jobStatusService)
+            IJobsDataContext jobsDataContext)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.azureFileService = azureFileService ?? throw new ArgumentNullException(nameof(azureFileService));
@@ -63,7 +74,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             this.submittedAimWriter = submittedAimWriter;
             this.submittedLearnerAimBuilder = submittedLearnerAimBuilder;
             this.submittedLearnerAimRepository = submittedLearnerAimRepository;
-            this.jobStatusService = jobStatusService;
+            this.jobsDataContext = jobsDataContext;
         }
 
         public async Task<bool> HandleAsync(JobContextMessage message, CancellationToken cancellationToken)
@@ -76,7 +87,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 using (var operation = telemetry.StartOperation($"FM36Processing:{message.JobId}"))
                 {
                     var stopwatch = Stopwatch.StartNew();
-                    if (await jobStatusService.JobCurrentlyRunning(message.JobId))
+                    if (await JobCurrentlyRunning(message.JobId))
                     {
                         logger.LogWarning($"Job {message.JobId} is already running.");
                         return false;
@@ -162,15 +173,18 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 
                 var subscriptionMessage = message.Topics[message.TopicPointer];
 
+                const string jobSuccess = "JobSuccess";
+                const string jobFailure = "JobFailure";
+
                 if (subscriptionMessage != null && subscriptionMessage.Tasks.Any())
                 {
-                    if (subscriptionMessage.Tasks.Any(t => t.Tasks.Contains(SubmissionJob.JobSuccess)))
+                    if (subscriptionMessage.Tasks.Any(t => t.Tasks.Contains(jobSuccess)))
                     {
                         await HandleSubmissionEvent<SubmissionSucceededEvent>(message);
                         return true;
                     }
 
-                    if (subscriptionMessage.Tasks.Any(t => t.Tasks.Contains(SubmissionJob.JobFailure)))
+                    if (subscriptionMessage.Tasks.Any(t => t.Tasks.Contains(jobFailure)))
                     {
                         await HandleSubmissionEvent<SubmissionFailedEvent>(message);
                         return true;
@@ -259,11 +273,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 
         private async Task<FM36Global> GetFm36Global(JobContextMessage message, int collectionPeriod, CancellationToken cancellationToken)
         {
+            var ProcessPeriodEndSubmission = "ProcessPeriodEnd";
+
             FM36Global fm36Output;
-            var fileReference = message.Topics.Any(topic => topic.Tasks.Any(task => task.Tasks.Any(taskName => taskName.Equals(JobContextMessageConstants.Tasks.ProcessPeriodEndSubmission))))
-                ? message.KeyValuePairs[JobContextMessageConstants.KeyValuePairs.FundingFm36OutputPeriodEnd].ToString()
-                : message.KeyValuePairs[JobContextMessageConstants.KeyValuePairs.FundingFm36Output].ToString();
-            var container = message.KeyValuePairs[JobContextMessageConstants.KeyValuePairs.Container].ToString();
+            var fileReference = message.Topics.Any(topic => topic.Tasks.Any(task => task.Tasks.Any(taskName => taskName.Equals(ProcessPeriodEndSubmission))))
+                ? message.KeyValuePairs[KeyValuePairs.FundingFm36OutputPeriodEnd].ToString()
+                : message.KeyValuePairs[KeyValuePairs.FundingFm36Output].ToString();
+            var container = message.KeyValuePairs[KeyValuePairs.Container].ToString();
             logger.LogDebug($"Deserialising FM36Output for job: {message.JobId}, using file reference: {fileReference}, container: {container}");
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -413,6 +429,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                 });
             logger.LogDebug($"Took {stopwatch.ElapsedMilliseconds}ms to send {commands.Count} Process Learner Commands for Job: {message.JobId}");
             return stopwatch.ElapsedMilliseconds;
+        }
+
+        public async Task<bool> JobCurrentlyRunning(long jobId)
+        {
+            var job = await jobsDataContext.GetJobByDcJobId(jobId).ConfigureAwait(false);
+            return job != null && job.Status == Monitoring.Jobs.Model.JobStatus.InProgress;
         }
     }
 }

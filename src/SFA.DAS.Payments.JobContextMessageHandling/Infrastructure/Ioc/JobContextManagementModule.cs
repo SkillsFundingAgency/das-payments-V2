@@ -33,8 +33,6 @@ namespace SFA.DAS.Payments.JobContextMessageHandling.Infrastructure.Ioc
             builder.RegisterType<JobContextDtoToMessageMapper>().As<IMapper<JobContextDto, JobContextMessage>>();
             builder.RegisterType<DateTimeProvider>().As<IDateTimeProvider>();
 
-            //builder.RegisterType<JobContextMessageHandler>().As<IMessageHandler<JobContextMessage>>(); todo: fix dependency
-
             builder.Register(c =>
             {
                 var configHelper = c.Resolve<IConfigurationHelper>();

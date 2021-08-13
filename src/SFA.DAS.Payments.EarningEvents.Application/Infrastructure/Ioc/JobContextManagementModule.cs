@@ -14,8 +14,11 @@ using ESFA.DC.Queueing;
 using ESFA.DC.Queueing.Interface;
 using ESFA.DC.Queueing.Interface.Configuration;
 using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Serialization.Json;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.EarningEvents.Application.Handlers;
+using SFA.DAS.Payments.EarningEvents.Application.JobContext;
+using SFA.DAS.Payments.Monitoring.Jobs.Data;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
 {
@@ -24,20 +27,29 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<JobContextMessageHandler>().As<IMessageHandler<JobContextMessage>>();
-            builder.RegisterType<JobContextManager<JobContextMessage>>()
+
+            builder.RegisterType<DasJobContextManager>()
                 .As<IJobContextManager<JobContextMessage>>()
                 .SingleInstance();
-                
+
+            builder.RegisterType<DasJobContextManagerService>()
+                .As<IDasJobContextManagerService>()
+                .InstancePerLifetimeScope();
+
             builder.RegisterType<DefaultJobContextMessageMapper<JobContextMessage>>().As<IMapper<JobContextMessage, JobContextMessage>>();
+            builder.RegisterType<JobContextDtoToMessageMapper>().As<IMapper<JobContextDto, JobContextMessage>>();
             builder.RegisterType<DateTimeProvider>().As<IDateTimeProvider>();
 
             builder.Register(c =>
-                    {
-                        var configHelper = c.Resolve<IConfigurationHelper>();
-                        return new TopicConfiguration(configHelper.GetConnectionString("DCServiceBusConnectionString"), configHelper.GetSetting("TopicName"), configHelper.GetSetting("SubscriptionName"), 1, maximumCallbackTimeSpan: TimeSpan.FromMinutes(40));
-                    }
-                )
-                .As<ITopicConfiguration>();
+            {
+                var configHelper = c.Resolve<IConfigurationHelper>();
+                return new TopicConfiguration(
+                    configHelper.GetConnectionString("DCServiceBusConnectionString"),
+                    configHelper.GetSetting("TopicName"),
+                    configHelper.GetSetting("SubscriptionName"),
+                    1,
+                    maximumCallbackTimeSpan: TimeSpan.Parse(configHelper.GetSettingOrDefault("MaximumCallbackTimeSpan", "02:00:00")));
+            }).As<ITopicConfiguration>();
 
             builder.Register(c =>
             {
@@ -75,6 +87,17 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Infrastructure.Ioc
                     jobStatusPublishConfig,
                     c.Resolve<IJsonSerializationService>());
             }).As<IQueuePublishService<JobStatusDto>>();
+
+            builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService, ISerializationService>();
+            
+
+            builder.Register((c, p) =>
+                {
+                    var configHelper = c.Resolve<IConfigurationHelper>();
+                    return new JobsDataContext(configHelper.GetConnectionString("PaymentsConnectionString"));
+                })
+                .As<IJobsDataContext>()
+                .InstancePerLifetimeScope();
         }
     }
 }
