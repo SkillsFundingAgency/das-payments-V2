@@ -18,5 +18,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Model
         public DateTimeOffset? DataLocksCompletionTime { get; set; }
         public bool? DcJobSucceeded { get; set; }
         public DateTimeOffset? DcJobEndTime { get; set; }
+        public string JobContextMessagePayload { get; set; }
     }
 }

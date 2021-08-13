@@ -12,6 +12,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands
         public DateTimeOffset StartTime { get; set; }
         public List<GeneratedMessage> GeneratedMessages { get; set; }
         public int LearnerCount { get; set; }
+        public string JobContextMessagePayload { get; set; }
+
         public RecordEarningsJob()
         {
             StartTime = DateTimeOffset.UtcNow;

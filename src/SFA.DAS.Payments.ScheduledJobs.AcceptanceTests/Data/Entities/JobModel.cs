@@ -61,6 +61,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.AcceptanceTests.Data.Entities
             builder.Property(x => x.DataLocksCompletionTime).HasColumnName(@"DataLocksCompletionTime");
             builder.Property(x => x.DcJobSucceeded).HasColumnName(@"DCJobSucceeded");
             builder.Property(x => x.DcJobEndTime).HasColumnName(@"DCJobEndTime");
+            builder.Property(x => x.DcJobEndTime).HasColumnName(@"JobContextMessagePayload");
         }
     }
 }

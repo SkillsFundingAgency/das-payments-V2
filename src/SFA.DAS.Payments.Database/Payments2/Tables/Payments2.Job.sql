@@ -15,6 +15,7 @@
 	DataLocksCompletionTime DATETIMEOFFSET NULL,
 	DCJobSucceeded BIT NULL,
 	DCJobEndTime DATETIMEOFFSET NULL,
+	JobContextMessagePayload NVARCHAR(MAX) NULL,
 )
 GO
 
