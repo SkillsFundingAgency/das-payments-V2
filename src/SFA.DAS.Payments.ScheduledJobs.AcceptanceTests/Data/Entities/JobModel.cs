@@ -20,6 +20,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.AcceptanceTests.Data.Entities
         public DateTimeOffset? DataLocksCompletionTime { get; set; }
         public bool? DcJobSucceeded { get; set; }
         public DateTimeOffset? DcJobEndTime { get; set; }
+        public string JobContextMessagePayload { get; set; }
     }
 
     public enum JobStatus : byte
@@ -61,7 +62,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.AcceptanceTests.Data.Entities
             builder.Property(x => x.DataLocksCompletionTime).HasColumnName(@"DataLocksCompletionTime");
             builder.Property(x => x.DcJobSucceeded).HasColumnName(@"DCJobSucceeded");
             builder.Property(x => x.DcJobEndTime).HasColumnName(@"DCJobEndTime");
-            builder.Property(x => x.DcJobEndTime).HasColumnName(@"JobContextMessagePayload");
+            builder.Property(x => x.JobContextMessagePayload).HasColumnName(@"JobContextMessagePayload");
         }
     }
 }
