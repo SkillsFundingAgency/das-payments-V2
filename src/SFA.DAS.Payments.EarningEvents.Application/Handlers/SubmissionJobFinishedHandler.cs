@@ -7,7 +7,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 {
-    public class SubmissionJobFinishedHandler : IHandleMessages<SubmissionJobFinishedEvent>
+    public class SubmissionJobFinishedHandler : IHandleMessages<ISubmissionJobFinishedEvent>
     {
         private readonly IPaymentLogger logger;
         private readonly IDasJobContextManagerService dasJobContextManagerService;
@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             this.dasJobContextManagerService = dasJobContextManagerService;
         }
 
-        public async Task Handle(SubmissionJobFinishedEvent message, IMessageHandlerContext context)
+        public async Task Handle(ISubmissionJobFinishedEvent message, IMessageHandlerContext context)
         {
             logger.LogDebug($"Handling SubmissionJobFinished event for Ukprn: {message.Ukprn}");
             bool dasJobStatus;
