@@ -7,7 +7,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 {
-    public class SubmissionJobFinishedHandler : IHandleMessages<ISubmissionJobFinishedEvent>
+    public class SubmissionJobFinishedHandler : IHandleMessages<SubmissionJobFinishedEvent>
     {
         private readonly IPaymentLogger logger;
         private readonly IDasJobContextManagerService dasJobContextManagerService;
@@ -19,24 +19,32 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             this.dasJobContextManagerService = dasJobContextManagerService;
         }
 
-        public async Task Handle(ISubmissionJobFinishedEvent message, IMessageHandlerContext context)
+        public async Task Handle(SubmissionJobFinishedEvent message, IMessageHandlerContext context)
         {
             logger.LogDebug($"Handling SubmissionJobFinished event for Ukprn: {message.Ukprn}");
-            bool dasJobStatus;
-
-            switch (message)
+            try
             {
-                case SubmissionJobSucceeded _:
-                    dasJobStatus = true;
-                    break;
-                case SubmissionJobFailed _:
-                    dasJobStatus = false;
-                    break;
-                default:
-                    throw new InvalidOperationException("Unable to resolve job status");
-            }
+                bool dasJobStatus;
 
-            await dasJobContextManagerService.FinishProcessingJobContextMessage(dasJobStatus, message.JobId);
+                switch (message)
+                {
+                    case SubmissionJobSucceeded _:
+                        dasJobStatus = true;
+                        break;
+                    case SubmissionJobFailed _:
+                        dasJobStatus = false;
+                        break;
+                    default:
+                        throw new InvalidOperationException("Unable to resolve job status");
+                }
+
+                await dasJobContextManagerService.FinishProcessingJobContextMessage(dasJobStatus, message.JobId);
+            }
+            catch (Exception exception)
+            {
+                logger.LogError($"Error handling SubmissionJobFinished event for Ukprn: {message.Ukprn}", exception);
+                throw;
+            }
 
             logger.LogInfo($"Finished handling SubmissionJobFinished event for Ukprn: {message.Ukprn}");
         }

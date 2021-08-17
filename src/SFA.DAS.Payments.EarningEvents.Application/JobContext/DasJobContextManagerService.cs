@@ -120,38 +120,75 @@ namespace SFA.DAS.Payments.EarningEvents.Application.JobContext
 
         public async Task FinishProcessingJobContextMessage(bool isCurrentJobTaskSucceeded, long dcJobId)
         {
-            var job = await jobsDataContext.GetJobByDcJobId(dcJobId);
-
-            var jobContextMessage = JsonConvert.DeserializeObject<JobContextMessage>(job.JobContextMessagePayload);
-
-            await auditingDtoQueuePublishService.PublishAsync(jobContextMessageMetadataService.BuildAuditingDto(jobContextMessage, AuditEventType.ServiceFinished));
-
-            if (jobContextMessageMetadataService.PointerIsLastTopic(jobContextMessage))
+            JobContextMessage jobContextMessage;
+            try
             {
-                await auditingDtoQueuePublishService.PublishAsync(jobContextMessageMetadataService.BuildAuditingDto(jobContextMessage, AuditEventType.JobFinished));
+                var job = await jobsDataContext.GetJobByDcJobId(dcJobId);
 
-                if (isCurrentJobTaskSucceeded)
+                if(job == null) logger.LogError("Received ISubmissionJobFinishedEvent but Job is not stored in DB");
+                
+                if(job.JobContextMessagePayload == null) logger.LogError("Received ISubmissionJobFinishedEvent but Job have null JobContextMessagePayload");
+
+                jobContextMessage = JsonConvert.DeserializeObject<JobContextMessage>(job.JobContextMessagePayload);
+            }
+            catch
+            {
+                logger.LogError("Error in Deserialize JobContextMessagePayload");
+
+                throw;
+            }
+            
+            logger.LogInfo("started FinishProcessingJobContextMessage block");
+
+            try
+            {
+                await auditingDtoQueuePublishService.PublishAsync(jobContextMessageMetadataService.BuildAuditingDto(jobContextMessage, AuditEventType.ServiceFinished));
+                
+                logger.LogInfo("Entering PointerIsLastTopic block");
+
+                if (jobContextMessageMetadataService.PointerIsLastTopic(jobContextMessage))
                 {
-                    await jobStatusDtoQueuePublishService.PublishAsync(jobContextMessageMetadataService.BuildJobStatusDto(jobContextMessage, JobStatusType.Completed));
+                    await auditingDtoQueuePublishService.PublishAsync(jobContextMessageMetadataService.BuildAuditingDto(jobContextMessage, AuditEventType.JobFinished));
+
+                    if (isCurrentJobTaskSucceeded)
+                    {
+                        logger.LogInfo("Publish JobStatusType.Completed");
+
+                        await jobStatusDtoQueuePublishService.PublishAsync(jobContextMessageMetadataService.BuildJobStatusDto(jobContextMessage, JobStatusType.Completed));
+                    }
+                    else
+                    {
+                        logger.LogInfo("Publish JobStatusType.Failed");
+
+                        await jobStatusDtoQueuePublishService.PublishAsync(jobContextMessageMetadataService.BuildJobStatusDto(jobContextMessage, JobStatusType.Failed));
+                    }
                 }
                 else
                 {
-                    await jobStatusDtoQueuePublishService.PublishAsync(jobContextMessageMetadataService.BuildJobStatusDto(jobContextMessage, JobStatusType.Failed));
+                    logger.LogInfo("entering jobContextMessage.TopicPointer++");
+
+                    jobContextMessage.TopicPointer++;
+
+                    var nextTopicSubscriptionName = jobContextMessage.Topics[jobContextMessage.TopicPointer].SubscriptionName;
+
+                    logger.LogInfo($"nextTopicSubscriptionName = {nextTopicSubscriptionName}");
+
+                    var nextTopicProperties = new Dictionary<string, object>
+                    {
+                        { "To", nextTopicSubscriptionName }
+                    };
+
+                    var nextTopicJobContextDto = jobContextDtoToMessageMapper.MapFrom(jobContextMessage);
+                    await topicPublishService.PublishAsync(nextTopicJobContextDto, nextTopicProperties, nextTopicSubscriptionName);
+                
+                    logger.LogInfo("finished Publishing to topicPublishService");
                 }
             }
-            else
+            catch (Exception ex)
             {
-                jobContextMessage.TopicPointer++;
+                logger.LogError("Exception thrown in FinishProcessingJobContextMessage", ex);
 
-                var nextTopicSubscriptionName = jobContextMessage.Topics[jobContextMessage.TopicPointer].SubscriptionName;
-
-                var nextTopicProperties = new Dictionary<string, object>
-                {
-                    { "To", nextTopicSubscriptionName }
-                };
-
-                var nextTopicJobContextDto = jobContextDtoToMessageMapper.MapFrom(jobContextMessage);
-                await topicPublishService.PublishAsync(nextTopicJobContextDto, nextTopicProperties, nextTopicSubscriptionName);
+                throw;
             }
         }
 
