@@ -120,14 +120,16 @@ namespace SFA.DAS.Payments.EarningEvents.Application.JobContext
 
         public async Task FinishProcessingJobContextMessage(bool isCurrentJobTaskSucceeded, long dcJobId)
         {
+            logger.LogInfo("started FinishProcessingJobContextMessage block");
+
             JobContextMessage jobContextMessage;
             try
             {
                 var job = await jobsDataContext.GetJobByDcJobId(dcJobId);
 
-                if(job == null) logger.LogError("Received ISubmissionJobFinishedEvent but Job is not stored in DB");
+                if(job == null) logger.LogError($"Received SubmissionJobFinishedEvent but Job with DcJobId {dcJobId} is not stored in DB");
                 
-                if(job.JobContextMessagePayload == null) logger.LogError("Received ISubmissionJobFinishedEvent but Job have null JobContextMessagePayload");
+                if(job?.JobContextMessagePayload == null) logger.LogError($"Received SubmissionJobFinishedEvent but Job with DcJobId {dcJobId} have null JobContextMessagePayload");
 
                 jobContextMessage = JsonConvert.DeserializeObject<JobContextMessage>(job.JobContextMessagePayload);
             }
@@ -137,8 +139,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.JobContext
 
                 throw;
             }
-            
-            logger.LogInfo("started FinishProcessingJobContextMessage block");
 
             try
             {
