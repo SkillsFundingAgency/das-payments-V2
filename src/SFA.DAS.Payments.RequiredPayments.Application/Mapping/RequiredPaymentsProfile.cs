@@ -55,7 +55,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                     Uln = s.LearnerUln,
                     ReferenceNumber = s.LearnerReferenceNumber,
                 }))
-                .ForMember(dest => dest.LearningStartDate, opt => opt.MapFrom(s => s.LearningStartDate))
+                .ForMember(dest => dest.LearningStartDate, opt => opt.ResolveUsing(s =>
+                {
+                    return s.LearningStartDate;
+                }))
                 .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(s => s.NumberOfInstalments))
                 .ForMember(dest => dest.PlannedEndDate, opt => opt.MapFrom(s => s.PlannedEndDate))
                 .ForMember(dest => dest.PriceEpisodeIdentifier, opt => opt.MapFrom(s => s.PriceEpisodeIdentifier))
@@ -85,7 +88,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(payment => payment.NumberOfInstalments, opt => opt.MapFrom(episode => episode.NumberOfInstalments))
                 .ForMember(payment => payment.AccountId, opt => opt.MapFrom(episode => episode.AccountId))
                 .ForMember(payment => payment.TransferSenderAccountId, opt => opt.MapFrom(episode => episode.TransferSenderAccountId))
-                .ForMember(payment => payment.LearningStartDate, opt => opt.MapFrom(episode => episode.LearningStartDate))
+                .ForMember(dest => dest.LearningStartDate, opt => opt.ResolveUsing(s =>
+                {
+                    return s.LearningStartDate;
+                }))
                 .ForMember(payment => payment.ApprenticeshipId, opt => opt.MapFrom(episode => episode.ApprenticeshipId))
                 ;
 
@@ -110,7 +116,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                     opt => opt.MapFrom(earning => earning.LearningAim.Clone()))
                 .ForMember(requiredPayment => requiredPayment.EventId, opt => opt.Ignore())
                 .ForMember(requiredPayment => requiredPayment.LearningStartDate,
-                    opt => opt.MapFrom(earning => earning.LearningAim.StartDate))
+                    opt => opt.ResolveUsing(earning =>
+                    {
+                        return earning.LearningAim.StartDate;
+                    }))
                 .Ignore(x => x.ApprenticeshipId)
                 .Ignore(x => x.ApprenticeshipPriceEpisodeId)
                 .Ignore(x => x.ContractType)
