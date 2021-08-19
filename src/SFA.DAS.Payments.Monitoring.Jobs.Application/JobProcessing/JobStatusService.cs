@@ -106,6 +106,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                     ? additionalJobChecksResult.completionTime.Value
                     : currentJobStatus.endTime.Value;
 
+            Logger.LogDebug($"job id: {jobId} Completed");
+
             return await CompleteJob(jobId, jobStatus,
                 endTime, cancellationToken).ConfigureAwait(false);
         }

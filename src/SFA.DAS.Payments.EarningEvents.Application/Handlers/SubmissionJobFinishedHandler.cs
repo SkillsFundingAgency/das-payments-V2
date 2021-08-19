@@ -7,7 +7,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 
 namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
 {
-    public class SubmissionJobFinishedHandler : IHandleMessages<SubmissionJobFinishedEvent>
+    public class SubmissionJobFinishedHandler : IHandleMessages<DasSubmissionJobFinishedEvent>
     {
         private readonly IPaymentLogger logger;
         private readonly IDasJobContextManagerService dasJobContextManagerService;
@@ -19,19 +19,19 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             this.dasJobContextManagerService = dasJobContextManagerService;
         }
 
-        public async Task Handle(SubmissionJobFinishedEvent message, IMessageHandlerContext context)
+        public async Task Handle(DasSubmissionJobFinishedEvent message, IMessageHandlerContext context)
         {
-            logger.LogDebug($"Handling SubmissionJobFinished event for Ukprn: {message.Ukprn}");
+            logger.LogDebug($"Handling DasSubmissionJobFinishedEvent event for Ukprn: {message.Ukprn}");
             try
             {
                 bool dasJobStatus;
 
                 switch (message)
                 {
-                    case SubmissionJobSucceeded _:
+                    case DasSubmissionJobSucceeded _:
                         dasJobStatus = true;
                         break;
-                    case SubmissionJobFailed _:
+                    case DasSubmissionJobFailed _:
                         dasJobStatus = false;
                         break;
                     default:
@@ -42,11 +42,11 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             }
             catch (Exception exception)
             {
-                logger.LogError($"Error handling SubmissionJobFinished event for Ukprn: {message.Ukprn}", exception);
+                logger.LogError($"Error handling DasSubmissionJobFinished event for Ukprn: {message.Ukprn}", exception);
                 throw;
             }
 
-            logger.LogInfo($"Finished handling SubmissionJobFinished event for Ukprn: {message.Ukprn}");
+            logger.LogInfo($"Finished handling DasSubmissionJobFinished event for Ukprn: {message.Ukprn}");
         }
     }
 }
