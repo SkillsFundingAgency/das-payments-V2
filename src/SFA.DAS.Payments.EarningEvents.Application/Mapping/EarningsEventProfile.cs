@@ -28,19 +28,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(destinationMember => destinationMember.EventId, opt => opt.Ignore())
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(src.AcademicYear, (byte)src.CollectionPeriod)))
                 .ForMember(dest => dest.LearningAim, opt => opt.MapFrom(source => source))
-                //.AfterMap((intermediateLearningAim, earningEvent) =>
-                //{
-                //    earningEvent.PriceEpisodes.ForEach(pe =>
-                //            pe.CourseStartDate =
-                //                intermediateLearningAim.Aims.Min(ld => ld.LearningDeliveryValues.LearnStartDate));
-                //}) //todo possibly here
-                //.AfterMap((intermediateLearningAim, earningEvent) =>
-                //{
-                //    earningEvent.PriceEpisodes.ForEach(pe =>
-                //            pe.CourseStartDate = intermediateLearningAim.PriceEpisodes
-                //                .First(x => x.PriceEpisodeIdentifier == pe.Identifier).PriceEpisodeValues
-                //                .EpisodeStartDate.GetValueOrDefault());
-                //})
                 .AfterMap((intermediateLearningAim, earningEvent) =>
                 {
                     earningEvent.PriceEpisodes.ForEach(pe =>
@@ -55,14 +42,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .Include<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>()
                 .ForMember(destinationMember => destinationMember.OnProgrammeEarnings, opt => opt.ResolveUsing<OnProgrammeEarningValueResolver>())
                 .ForMember(destinationMember => destinationMember.IncentiveEarnings, opt => opt.ResolveUsing<IncentiveEarningValueResolver>())
-                //.ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.Aims.Min(aim => aim.LearningDeliveryValues.LearnStartDate))) //todo possibly here
-                //.AfterMap((intermediateLearningAim, earningEvent) =>
-                //{
-                //    earningEvent.PriceEpisodes.ForEach(pe =>
-                //        pe.CourseStartDate = intermediateLearningAim.PriceEpisodes
-                //            .First(x => x.PriceEpisodeIdentifier == pe.Identifier).PriceEpisodeValues
-                //            .EpisodeStartDate.GetValueOrDefault());
-                //})
                 .AfterMap((intermediateLearningAim, earningEvent) =>
                 {
                     earningEvent.PriceEpisodes.ForEach(pe =>
@@ -87,14 +66,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .Include<IntermediateLearningAim, Act1FunctionalSkillEarningsEvent>()
                 .Include<IntermediateLearningAim, Act2FunctionalSkillEarningsEvent>()
                 .ForMember(destinationMember => destinationMember.Earnings, opt => opt.ResolveUsing<FunctionalSkillsEarningValueResolver>())
-                //.ForMember(destinationMember => destinationMember.StartDate, opt => opt.MapFrom(source => source.Aims.Min(aim => aim.LearningDeliveryValues.LearnStartDate))) //todo possibly here
-                //.AfterMap((intermediateLearningAim, earningEvent) =>
-                //{
-                //    earningEvent.PriceEpisodes.ForEach(pe =>
-                //        pe.CourseStartDate = intermediateLearningAim.PriceEpisodes
-                //            .First(x => x.PriceEpisodeIdentifier == pe.Identifier).PriceEpisodeValues
-                //            .EpisodeStartDate.GetValueOrDefault());
-                //})
                 .AfterMap((intermediateLearningAim, earningEvent) =>
                 {
                     earningEvent.PriceEpisodes.ForEach(pe =>
@@ -135,15 +106,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(dest => dest.Reference, opt => opt.MapFrom(source => source.Aims.First().LearningDeliveryValues.LearnAimRef))
                 .ForMember(dest => dest.StandardCode, opt => opt.MapFrom(source => source.Aims.First().LearningDeliveryValues.StdCode))
                 .ForMember(dest => dest.SequenceNumber, opt => opt.MapFrom(source => source.Aims.First().AimSeqNumber))
-                //.ForMember(dest => dest.StartDate, opt => opt.MapFrom(source => source.Aims.Min(aim => aim.LearningDeliveryValues.LearnStartDate))) //todo possibly here
-                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(source => source.Aims.First().LearningDeliveryValues.LearnStartDate)) //why was this different to standard .First() logic - suspect doing the same thing
-                //.AfterMap((intermediateLearningAim, earningEvent) =>
-                //{
-                //    earningEvent.PriceEpisodes.ForEach(pe =>
-                //        pe.CourseStartDate = intermediateLearningAim.PriceEpisodes
-                //            .First(x => x.PriceEpisodeIdentifier == pe.Identifier).PriceEpisodeValues
-                //            .EpisodeStartDate.GetValueOrDefault());
-                //})
+                .ForMember(dest => dest.StartDate, opt => opt.ResolveUsing(source =>
+                {
+                    return source.Aims.First().LearningDeliveryValues.LearnStartDate;
+                }))
                 ;
 
             CreateMap<IntermediateLearningAim, SubmittedLearnerAimModel>()
