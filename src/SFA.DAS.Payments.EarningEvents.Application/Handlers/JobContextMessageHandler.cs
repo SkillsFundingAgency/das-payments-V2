@@ -46,8 +46,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         private readonly IPaymentLogger logger;
         private readonly IFileService azureFileService;
         private readonly IJsonSerializationService serializationService;
-        private readonly IEndpointInstanceFactory factory;
-        private readonly IEarningsJobClientFactory jobClientFactory;
         private readonly ITelemetry telemetry;
         private readonly IBulkWriter<SubmittedLearnerAimModel> submittedAimWriter;
         private readonly ISubmittedLearnerAimBuilder submittedLearnerAimBuilder;
@@ -57,8 +55,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         public JobContextMessageHandler(IPaymentLogger logger,
             IFileService azureFileService,
             IJsonSerializationService serializationService,
-            IEndpointInstanceFactory factory,
-            IEarningsJobClientFactory jobClientFactory,
             ITelemetry telemetry,
             IBulkWriter<SubmittedLearnerAimModel> submittedAimWriter,
             ISubmittedLearnerAimBuilder submittedLearnerAimBuilder,
@@ -68,8 +64,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.azureFileService = azureFileService ?? throw new ArgumentNullException(nameof(azureFileService));
             this.serializationService = serializationService ?? throw new ArgumentNullException(nameof(serializationService));
-            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
-            this.jobClientFactory = jobClientFactory ?? throw new ArgumentNullException(nameof(jobClientFactory));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
             this.submittedAimWriter = submittedAimWriter;
             this.submittedLearnerAimBuilder = submittedLearnerAimBuilder;
@@ -82,8 +76,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             logger.LogDebug($"Processing Earning Event Service event for Job Id : {message.JobId}");
             try
             {
-                if (await HandleSubmissionEvents(message)) return true;
-
                 using (var operation = telemetry.StartOperation($"FM36Processing:{message.JobId}"))
                 {
                     var stopwatch = Stopwatch.StartNew();
@@ -161,80 +153,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             }
         }
 
-        private async Task<bool> HandleSubmissionEvents(JobContextMessage message)
-        {
-            if (message.Topics != null && message.Topics.Any())
-            {
-                if (message.TopicPointer > message.Topics.Count - 1)
-                {
-                    logger.LogError($"Topic Pointer points outside the number of items in the collection of Topics. JobId: {message.JobId}");
-                    return true;
-                }
-
-                var subscriptionMessage = message.Topics[message.TopicPointer];
-
-                const string jobSuccess = "JobSuccess";
-                const string jobFailure = "JobFailure";
-
-                if (subscriptionMessage != null && subscriptionMessage.Tasks.Any())
-                {
-                    if (subscriptionMessage.Tasks.Any(t => t.Tasks.Contains(jobSuccess)))
-                    {
-                        await HandleSubmissionEvent<SubmissionSucceededEvent>(message);
-                        return true;
-                    }
-
-                    if (subscriptionMessage.Tasks.Any(t => t.Tasks.Contains(jobFailure)))
-                    {
-                        await HandleSubmissionEvent<SubmissionFailedEvent>(message);
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        private async Task HandleSubmissionEvent<T>(JobContextMessage message) where T : SubmissionEvent, new()
-        {
-            var eventType = typeof(T).FullName;
-
-            using (var operation = telemetry.StartOperation(eventType))
-            {
-
-                var submissionEvent = GetSubmissionEvent<T>(message);
-                await SendSubmissionEvent(submissionEvent).ConfigureAwait(false);
-
-                telemetry.TrackEvent($"Sent {eventType}",
-                    new Dictionary<string, string>
-                    {
-                        { TelemetryKeys.CollectionPeriod, submissionEvent.CollectionPeriod.ToString()},
-                        { TelemetryKeys.AcademicYear, submissionEvent.AcademicYear.ToString()},
-                        { TelemetryKeys.JobId, submissionEvent.JobId.ToString()},
-                        { TelemetryKeys.Ukprn, submissionEvent.Ukprn.ToString()},
-                    },
-                    new Dictionary<string, double>
-                    {
-                        { TelemetryKeys.Duration, 0}
-                    });
-                telemetry.StopOperation(operation);
-                logger.LogInfo($"Successfully sent {eventType}. Job Id: {message.JobId}, Ukprn: {submissionEvent.Ukprn}, Submission Time: {submissionEvent.IlrSubmissionDateTime}");
-            }
-        }
-
-        private static SubmissionEvent GetSubmissionEvent<T>(IJobContextMessage message) where T : SubmissionEvent, new()
-        {
-            return new T
-            {
-                AcademicYear = short.Parse(message.KeyValuePairs[JobContextMessageKey.CollectionYear].ToString()),
-                CollectionPeriod = byte.Parse(message.KeyValuePairs[JobContextMessageKey.ReturnPeriod].ToString()),
-                IlrSubmissionDateTime = message.SubmissionDateTimeUtc,
-                JobId = message.JobId,
-                Ukprn = long.Parse(message.KeyValuePairs[JobContextMessageKey.UkPrn].ToString()),
-                EventTime = DateTimeOffset.UtcNow
-            };
-
-        }
 
         private async Task ClearSubmittedLearnerAims(int period, string academicYear, DateTime newIlrSubmissionDateTime, long ukprn, CancellationToken cancellationToken)
         {
@@ -260,16 +178,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             await endpointInstance.Publish(message).ConfigureAwait(false);
         }
 
-        private async Task SendSubmissionEvent(SubmissionEvent submissionEvent)
-        {
-            var endpointInstance = await factory.GetEndpointInstance().ConfigureAwait(false);
-            await endpointInstance.Publish(submissionEvent).ConfigureAwait(false);
-            var jobClient = jobClientFactory.Create();
-            if (submissionEvent is SubmissionFailedEvent)
-                await jobClient.RecordJobFailure(submissionEvent.JobId, submissionEvent.Ukprn, submissionEvent.IlrSubmissionDateTime, submissionEvent.AcademicYear, submissionEvent.CollectionPeriod).ConfigureAwait(false);
-            else
-                await jobClient.RecordJobSuccess(submissionEvent.JobId, submissionEvent.Ukprn, submissionEvent.IlrSubmissionDateTime, submissionEvent.AcademicYear, submissionEvent.CollectionPeriod).ConfigureAwait(false);
-        }
+        
 
         private async Task<FM36Global> GetFm36Global(JobContextMessage message, int collectionPeriod, CancellationToken cancellationToken)
         {
