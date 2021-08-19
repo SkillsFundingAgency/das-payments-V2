@@ -131,7 +131,9 @@ namespace SFA.DAS.Payments.EarningEvents.Application.JobContext
                 
                 if(job?.JobContextMessagePayload == null) logger.LogError($"Received SubmissionJobFinishedEvent but Job with DcJobId {dcJobId} have null JobContextMessagePayload");
 
-                jobContextMessage = JsonConvert.DeserializeObject<JobContextMessage>(job.JobContextMessagePayload);
+                var jobContextMessageDto = JsonConvert.DeserializeObject<JobContextDto>(job.JobContextMessagePayload);
+
+                jobContextMessage = jobContextDtoToMessageMapper.MapTo(jobContextMessageDto);
             }
             catch
             {
