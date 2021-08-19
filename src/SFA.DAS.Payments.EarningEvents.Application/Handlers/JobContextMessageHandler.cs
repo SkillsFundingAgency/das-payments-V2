@@ -9,7 +9,6 @@ using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Batch;
@@ -46,6 +45,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         private readonly IPaymentLogger logger;
         private readonly IFileService azureFileService;
         private readonly IJsonSerializationService serializationService;
+        private readonly IEndpointInstanceFactory factory;
+        private readonly IEarningsJobClientFactory jobClientFactory;
         private readonly ITelemetry telemetry;
         private readonly IBulkWriter<SubmittedLearnerAimModel> submittedAimWriter;
         private readonly ISubmittedLearnerAimBuilder submittedLearnerAimBuilder;
@@ -55,6 +56,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
         public JobContextMessageHandler(IPaymentLogger logger,
             IFileService azureFileService,
             IJsonSerializationService serializationService,
+            IEndpointInstanceFactory factory,
+            IEarningsJobClientFactory jobClientFactory,
             ITelemetry telemetry,
             IBulkWriter<SubmittedLearnerAimModel> submittedAimWriter,
             ISubmittedLearnerAimBuilder submittedLearnerAimBuilder,
@@ -64,6 +67,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.azureFileService = azureFileService ?? throw new ArgumentNullException(nameof(azureFileService));
             this.serializationService = serializationService ?? throw new ArgumentNullException(nameof(serializationService));
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            this.jobClientFactory = jobClientFactory ?? throw new ArgumentNullException(nameof(jobClientFactory));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
             this.submittedAimWriter = submittedAimWriter;
             this.submittedLearnerAimBuilder = submittedLearnerAimBuilder;
