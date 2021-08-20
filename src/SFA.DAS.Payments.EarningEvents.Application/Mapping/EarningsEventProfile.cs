@@ -34,6 +34,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                         pe.CourseStartDate = intermediateLearningAim.Aims
                             .First(x => x.AimSeqNumber == pe.LearningAimSequenceNumber).LearningDeliveryValues
                             .LearnStartDate);
+
                 })
                 ;
 
@@ -44,10 +45,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(destinationMember => destinationMember.IncentiveEarnings, opt => opt.ResolveUsing<IncentiveEarningValueResolver>())
                 .AfterMap((intermediateLearningAim, earningEvent) =>
                 {
-                    earningEvent.PriceEpisodes.ForEach(pe =>
-                        pe.CourseStartDate = intermediateLearningAim.Aims
-                            .First(x => x.AimSeqNumber == pe.LearningAimSequenceNumber).LearningDeliveryValues
-                            .LearnStartDate);
+                    //earningEvent.PriceEpisodes.ForEach(pe =>
+                    //    pe.CourseStartDate = intermediateLearningAim.Aims
+                    //        .First(x => x.AimSeqNumber == pe.LearningAimSequenceNumber).LearningDeliveryValues
+                    //        .LearnStartDate);
+                    earningEvent.StartDate = intermediateLearningAim.Aims
+                        .First(x => x.AimSeqNumber == earningEvent.LearningAim.SequenceNumber).LearningDeliveryValues
+                        .LearnStartDate;
                 })
                 .Ignore(dest => dest.SfaContributionPercentage)
                 ;
@@ -68,10 +72,13 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(destinationMember => destinationMember.Earnings, opt => opt.ResolveUsing<FunctionalSkillsEarningValueResolver>())
                 .AfterMap((intermediateLearningAim, earningEvent) =>
                 {
-                    earningEvent.PriceEpisodes.ForEach(pe =>
-                        pe.CourseStartDate = intermediateLearningAim.Aims
-                            .First(x => x.AimSeqNumber == pe.LearningAimSequenceNumber).LearningDeliveryValues
-                            .LearnStartDate);
+                    //earningEvent.PriceEpisodes.ForEach(pe =>
+                    //    pe.CourseStartDate = intermediateLearningAim.Aims
+                    //        .First(x => x.AimSeqNumber == pe.LearningAimSequenceNumber).LearningDeliveryValues
+                    //        .LearnStartDate);
+                    earningEvent.StartDate = intermediateLearningAim.Aims
+                        .First(x => x.AimSeqNumber == earningEvent.LearningAim.SequenceNumber).LearningDeliveryValues
+                        .LearnStartDate;
                 })
                 .Ignore(x => x.ContractType)
                 ;
