@@ -110,10 +110,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                     opt => opt.MapFrom(earning => earning.LearningAim.Clone()))
                 .ForMember(requiredPayment => requiredPayment.EventId, opt => opt.Ignore())
                 .ForMember(requiredPayment => requiredPayment.LearningStartDate,
-                    opt => opt.ResolveUsing(earning =>
-                    {
-                        return earning.LearningAim.StartDate; //these mappings may need to be updated to pull the start date from the price episode
-                    }))
+                    opt => opt.MapFrom(earning => earning.LearningAim.StartDate)) //these mappings may need to be updated to pull the start date from the price episode
                 .Ignore(x => x.ApprenticeshipId)
                 .Ignore(x => x.ApprenticeshipPriceEpisodeId)
                 .Ignore(x => x.ContractType)
