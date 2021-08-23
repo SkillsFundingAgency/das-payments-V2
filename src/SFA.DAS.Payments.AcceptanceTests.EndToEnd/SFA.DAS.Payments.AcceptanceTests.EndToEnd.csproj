@@ -1803,6 +1803,8 @@
     <EmbeddedResource Include="FM36TestFiles\PV2-2466-Non-Levy-Learner-PriceEpisodeAimSeqNumber-IsMapped-FromILR-ToPaymentsTable-R03.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-2094-1-Co-Funding-Prevent-duplicate-payment-claw-backs-when-a-learner-is-deleted-from-the-ILR-R08.json" />
     <EmbeddedResource Include="FM36TestFiles\PV2-2094-1-Co-Funding-Prevent-duplicate-payment-claw-backs-when-a-learner-is-deleted-from-the-ILR-R11.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-2635-Learn-start-date-is-correct-after-break-in-learning-R03.json" />
+    <EmbeddedResource Include="FM36TestFiles\PV2-2635-Learn-start-date-is-correct-after-break-in-learning-R04.json" />
     <None Include="packages.config" />
     <None Include="Tests\Additional Payments English and Maths\Learner taking single level 2 aim, 0 prior funding adjustment, completes to time, no funding generated PV2-391.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
