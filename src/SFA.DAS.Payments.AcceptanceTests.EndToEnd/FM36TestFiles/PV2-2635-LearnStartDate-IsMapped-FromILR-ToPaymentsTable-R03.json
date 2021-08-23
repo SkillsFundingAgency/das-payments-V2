@@ -11,7 +11,7 @@
         {
           "PriceEpisodeIdentifier": "25-17-01/08/2018",
           "PriceEpisodeValues": {
-            "EpisodeStartDate": "2018-08-01T00:00:00+00:00",
+            "EpisodeStartDate": "2018-08-01T00:01:00+00:00",
             "TNP1": 15000,
             "TNP2": 0,
             "TNP3": 0,
@@ -58,7 +58,7 @@
             "PriceEpisodeFundLineType": "19+ Apprenticeship (Employer on App Service)",
             "PriceEpisodeSFAContribPct": 0,
             "PriceEpisodeLevyNonPayInd": 0,
-            "EpisodeEffectiveTNPStartDate": "2018-08-02T00:00:00+00:00",
+            "EpisodeEffectiveTNPStartDate": "2018-08-01T00:02:00+00:00",
             "PriceEpisodeFirstAdditionalPaymentThresholdDate": null,
             "PriceEpisodeSecondAdditionalPaymentThresholdDate": null,
             "PriceEpisodeContractType": "Contract for services with the employer",
@@ -409,7 +409,7 @@
         {
           "PriceEpisodeIdentifier": "25-17-01/08/2020",
           "PriceEpisodeValues": {
-            "EpisodeStartDate": "2020-08-03T00:00:00+00:00",
+            "EpisodeStartDate": "2020-08-01T00:03:00+00:00",
             "TNP1": 15000,
             "TNP2": 0,
             "TNP3": 0,
@@ -456,7 +456,7 @@
             "PriceEpisodeFundLineType": "19+ Apprenticeship (Employer on App Service)",
             "PriceEpisodeSFAContribPct": 0,
             "PriceEpisodeLevyNonPayInd": null,
-            "EpisodeEffectiveTNPStartDate": "2018-08-04T00:00:00+00:00",
+            "EpisodeEffectiveTNPStartDate": "2018-08-01T00:04:00+00:00",
             "PriceEpisodeFirstAdditionalPaymentThresholdDate": null,
             "PriceEpisodeSecondAdditionalPaymentThresholdDate": null,
             "PriceEpisodeContractType": "Contract for services with the employer",
@@ -468,7 +468,7 @@
             "PriceEpisodeCumulativePMRs": 0,
             "PriceEpisodeCompExemCode": 1,
             "PriceEpisodeLearnerAdditionalPaymentThresholdDate": null,
-            "PriceEpisodeRedStartDate": "2020-10-05T00:00:00+00:00",
+            "PriceEpisodeRedStartDate": "2020-10-16T00:05:00+00:00",
             "PriceEpisodeRedStatusCode": 1
           },
           "PriceEpisodePeriodisedValues": [
@@ -807,7 +807,7 @@
         {
           "PriceEpisodeIdentifier": "25-17-01/08/2019",
           "PriceEpisodeValues": {
-            "EpisodeStartDate": "2019-08-06T00:00:00+00:00",
+            "EpisodeStartDate": "2019-08-01T00:06:00+00:00",
             "TNP1": 15000,
             "TNP2": 0,
             "TNP3": 0,
@@ -854,7 +854,7 @@
             "PriceEpisodeFundLineType": "19+ Apprenticeship (Employer on App Service)",
             "PriceEpisodeSFAContribPct": 0,
             "PriceEpisodeLevyNonPayInd": 0,
-            "EpisodeEffectiveTNPStartDate": "2018-08-07T00:00:00+00:00",
+            "EpisodeEffectiveTNPStartDate": "2018-08-01T00:07:00+00:00",
             "PriceEpisodeFirstAdditionalPaymentThresholdDate": null,
             "PriceEpisodeSecondAdditionalPaymentThresholdDate": null,
             "PriceEpisodeContractType": "Contract for services with the employer",
@@ -1209,10 +1209,10 @@
           "LearningDeliveryValues": {
             "ActualDaysIL": 0,
             "ActualNumInstalm": null,
-            "AdjStartDate": "2018-08-08T00:00:00+00:00",
+            "AdjStartDate": "2018-08-01T00:08:00+00:00",
             "AgeAtProgStart": 20,
-            "AppAdjLearnStartDate": "2018-08-09T00:00:00+00:00",
-            "AppAdjLearnStartDateMatchPathway": "2018-08-01T00:00:00+00:00",
+            "AppAdjLearnStartDate": "2018-08-01T00:09:00+00:00",
+            "AppAdjLearnStartDateMatchPathway": "2018-08-01T00:10:00+00:00",
             "ApplicCompDate": "9999-09-09T00:00:00+00:00",
             "CombinedAdjProp": 1,
             "Completed": false,
@@ -1221,7 +1221,7 @@
             "FworkCode": null,
             "LDApplic1618FrameworkUpliftTotalActEarnings": 0,
             "LearnAimRef": "ZPROG001",
-            "LearnStartDate": "2018-08-10T00:00:00+00:00",
+            "LearnStartDate": "2018-08-01T00:11:00+00:00",
             "LearnDel1618AtStart": false,
             "LearnDelAppAccDaysIL": 1096,
             "LearnDelApplicDisadvAmount": 0,
@@ -1256,7 +1256,7 @@
             "LearnDelPrevAccDaysILCareLeavers": 731,
             "LearnDelLearnerAddPayThresholdDate": null,
             "LearnDelRedCode": 1,
-            "LearnDelRedStartDate": "2020-10-11T00:00:00+00:00"
+            "LearnDelRedStartDate": "2020-10-16T00:12:00+00:00"
           },
           "LearningDeliveryPeriodisedValues": [
             {
@@ -1673,10 +1673,10 @@
           "LearningDeliveryValues": {
             "ActualDaysIL": 0,
             "ActualNumInstalm": null,
-            "AdjStartDate": "2018-08-12T00:00:00+00:00",
+            "AdjStartDate": "2018-08-01T00:13:00+00:00",
             "AgeAtProgStart": 20,
-            "AppAdjLearnStartDate": "2018-08-13T00:00:00+00:00",
-            "AppAdjLearnStartDateMatchPathway": "2018-08-14T00:00:00+00:00",
+            "AppAdjLearnStartDate": "2018-08-01T00:14:00+00:00",
+            "AppAdjLearnStartDateMatchPathway": "2018-08-01T00:15:00+00:00",
             "ApplicCompDate": "9999-09-09T00:00:00+00:00",
             "CombinedAdjProp": 1,
             "Completed": false,
@@ -1685,7 +1685,7 @@
             "FworkCode": null,
             "LDApplic1618FrameworkUpliftTotalActEarnings": 0,
             "LearnAimRef": "50086832",
-            "LearnStartDate": "2018-08-15T00:00:00+00:00",
+            "LearnStartDate": "2018-08-01T00:16:00+00:00",
             "LearnDel1618AtStart": false,
             "LearnDelAppAccDaysIL": 365,
             "LearnDelApplicDisadvAmount": 0,
@@ -1720,7 +1720,7 @@
             "LearnDelPrevAccDaysILCareLeavers": 0,
             "LearnDelLearnerAddPayThresholdDate": null,
             "LearnDelRedCode": 0,
-            "LearnDelRedStartDate": "9999-09-16T00:00:00+00:00"
+            "LearnDelRedStartDate": "9999-09-09T00:17:00+00:00"
           },
           "LearningDeliveryPeriodisedValues": [
             {

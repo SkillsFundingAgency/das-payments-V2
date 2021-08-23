@@ -42,6 +42,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
         public long DuplicateJobId { get; set; }
 
         public FM36Global FM36Global { get; set; }
+        public FM36Global PreviousFm36Global { get; set; }
 
         public ConcurrentDictionary<string, ApprenticeshipModel> Apprenticeships { get; set; }
 

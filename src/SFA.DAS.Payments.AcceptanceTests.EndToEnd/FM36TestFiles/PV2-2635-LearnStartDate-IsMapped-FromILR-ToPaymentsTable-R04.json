@@ -11,7 +11,7 @@
         {
           "PriceEpisodeIdentifier": "25-17-01/08/2018",
           "PriceEpisodeValues": {
-            "EpisodeStartDate": "2018-08-17T00:00:00+00:00",
+            "EpisodeStartDate": "2018-08-01T00:18:00+00:00",
             "TNP1": 15000,
             "TNP2": 0,
             "TNP3": 0,
@@ -58,7 +58,7 @@
             "PriceEpisodeFundLineType": "19+ Apprenticeship (Employer on App Service)",
             "PriceEpisodeSFAContribPct": 0,
             "PriceEpisodeLevyNonPayInd": 0,
-            "EpisodeEffectiveTNPStartDate": "2018-08-01T00:00:00+00:00",
+            "EpisodeEffectiveTNPStartDate": "2018-08-01T00:19:00+00:00",
             "PriceEpisodeFirstAdditionalPaymentThresholdDate": null,
             "PriceEpisodeSecondAdditionalPaymentThresholdDate": null,
             "PriceEpisodeContractType": "Contract for services with the employer",
@@ -409,7 +409,7 @@
         {
           "PriceEpisodeIdentifier": "PE-2268-R04",
           "PriceEpisodeValues": {
-            "EpisodeStartDate": "2020-11-18T00:00:00+00:00",
+            "EpisodeStartDate": "2020-11-07T00:20:00+00:00",
             "TNP1": 15000,
             "TNP2": 0,
             "TNP3": 5000,
@@ -456,7 +456,7 @@
             "PriceEpisodeFundLineType": "19+ Apprenticeship (Employer on App Service)",
             "PriceEpisodeSFAContribPct": 0,
             "PriceEpisodeLevyNonPayInd": 0,
-            "EpisodeEffectiveTNPStartDate": "2020-11-19T00:00:00+00:00",
+            "EpisodeEffectiveTNPStartDate": "2020-11-07T00:21:00+00:00",
             "PriceEpisodeFirstAdditionalPaymentThresholdDate": null,
             "PriceEpisodeSecondAdditionalPaymentThresholdDate": null,
             "PriceEpisodeContractType": "Contract for services with the employer",
@@ -807,7 +807,7 @@
         {
           "PriceEpisodeIdentifier": "25-17-01/08/2020",
           "PriceEpisodeValues": {
-            "EpisodeStartDate": "2020-08-20T00:00:00+00:00",
+            "EpisodeStartDate": "2020-08-01T00:22:00+00:00",
             "TNP1": 15000,
             "TNP2": 0,
             "TNP3": 0,
@@ -854,7 +854,7 @@
             "PriceEpisodeFundLineType": "19+ Apprenticeship (Employer on App Service)",
             "PriceEpisodeSFAContribPct": 0,
             "PriceEpisodeLevyNonPayInd": null,
-            "EpisodeEffectiveTNPStartDate": "2018-08-21T00:00:00+00:00",
+            "EpisodeEffectiveTNPStartDate": "2018-08-01T00:23:00+00:00",
             "PriceEpisodeFirstAdditionalPaymentThresholdDate": null,
             "PriceEpisodeSecondAdditionalPaymentThresholdDate": null,
             "PriceEpisodeContractType": "Contract for services with the employer",
@@ -866,7 +866,7 @@
             "PriceEpisodeCumulativePMRs": 0,
             "PriceEpisodeCompExemCode": 1,
             "PriceEpisodeLearnerAdditionalPaymentThresholdDate": null,
-            "PriceEpisodeRedStartDate": "2020-10-23T00:00:00+00:00",
+            "PriceEpisodeRedStartDate": "2020-10-16T00:24:00+00:00",
             "PriceEpisodeRedStatusCode": 1
           },
           "PriceEpisodePeriodisedValues": [
@@ -1205,7 +1205,7 @@
         {
           "PriceEpisodeIdentifier": "25-17-01/08/2021",
           "PriceEpisodeValues": {
-            "EpisodeStartDate": "2021-08-24T00:00:00+00:00",
+            "EpisodeStartDate": "2021-08-01T00:25:00+00:00",
             "TNP1": 15000,
             "TNP2": 0,
             "TNP3": 5000,
@@ -1252,7 +1252,7 @@
             "PriceEpisodeFundLineType": "19+ Apprenticeship (Employer on App Service)",
             "PriceEpisodeSFAContribPct": 0,
             "PriceEpisodeLevyNonPayInd": null,
-            "EpisodeEffectiveTNPStartDate": "2020-11-25T00:00:00+00:00",
+            "EpisodeEffectiveTNPStartDate": "2020-11-07T00:26:00+00:00",
             "PriceEpisodeFirstAdditionalPaymentThresholdDate": null,
             "PriceEpisodeSecondAdditionalPaymentThresholdDate": null,
             "PriceEpisodeContractType": "Contract for services with the employer",
@@ -1264,7 +1264,7 @@
             "PriceEpisodeCumulativePMRs": 0,
             "PriceEpisodeCompExemCode": 0,
             "PriceEpisodeLearnerAdditionalPaymentThresholdDate": null,
-            "PriceEpisodeRedStartDate": "9999-09-26T00:00:00+00:00",
+            "PriceEpisodeRedStartDate": "9999-09-09T00:27:00+00:00",
             "PriceEpisodeRedStatusCode": 0
           },
           "PriceEpisodePeriodisedValues": [
@@ -1603,7 +1603,7 @@
         {
           "PriceEpisodeIdentifier": "25-17-01/08/2019",
           "PriceEpisodeValues": {
-            "EpisodeStartDate": "2019-08-27T00:00:00+00:00",
+            "EpisodeStartDate": "2019-08-01T00:28:00+00:00",
             "TNP1": 15000,
             "TNP2": 0,
             "TNP3": 0,
@@ -1650,7 +1650,7 @@
             "PriceEpisodeFundLineType": "19+ Apprenticeship (Employer on App Service)",
             "PriceEpisodeSFAContribPct": 0,
             "PriceEpisodeLevyNonPayInd": 0,
-            "EpisodeEffectiveTNPStartDate": "2018-08-28T00:00:00+00:00",
+            "EpisodeEffectiveTNPStartDate": "2018-08-01T00:29:00+00:00",
             "PriceEpisodeFirstAdditionalPaymentThresholdDate": null,
             "PriceEpisodeSecondAdditionalPaymentThresholdDate": null,
             "PriceEpisodeContractType": "Contract for services with the employer",
@@ -2005,10 +2005,10 @@
           "LearningDeliveryValues": {
             "ActualDaysIL": 828,
             "ActualNumInstalm": 27,
-            "AdjStartDate": "2018-08-29T00:00:00+00:00",
+            "AdjStartDate": "2018-08-01T00:30:00+00:00",
             "AgeAtProgStart": 20,
-            "AppAdjLearnStartDate": "2018-08-30T00:00:00+00:00",
-            "AppAdjLearnStartDateMatchPathway": "2018-08-31T00:00:00+00:00",
+            "AppAdjLearnStartDate": "2018-08-01T00:31:00+00:00",
+            "AppAdjLearnStartDateMatchPathway": "2018-08-01T00:32:00+00:00",
             "ApplicCompDate": "9999-09-09T00:00:00+00:00",
             "CombinedAdjProp": 1,
             "Completed": false,
@@ -2017,7 +2017,7 @@
             "FworkCode": null,
             "LDApplic1618FrameworkUpliftTotalActEarnings": 0,
             "LearnAimRef": "ZPROG001",
-            "LearnStartDate": "2018-08-01T00:01:00+00:00",
+            "LearnStartDate": "2018-08-01T00:33:00+00:00",
             "LearnDel1618AtStart": false,
             "LearnDelAppAccDaysIL": 828,
             "LearnDelApplicDisadvAmount": 0,
@@ -2052,7 +2052,7 @@
             "LearnDelPrevAccDaysILCareLeavers": 731,
             "LearnDelLearnerAddPayThresholdDate": null,
             "LearnDelRedCode": 1,
-            "LearnDelRedStartDate": "2020-10-16T00:02:00+00:00"
+            "LearnDelRedStartDate": "2020-10-16T00:34:00+00:00"
           },
           "LearningDeliveryPeriodisedValues": [
             {
@@ -2469,10 +2469,10 @@
           "LearningDeliveryValues": {
             "ActualDaysIL": 828,
             "ActualNumInstalm": 27,
-            "AdjStartDate": "2018-08-01T00:03:00+00:00",
+            "AdjStartDate": "2018-08-01T00:35:00+00:00",
             "AgeAtProgStart": 20,
-            "AppAdjLearnStartDate": "2018-08-01T00:04:00+00:00",
-            "AppAdjLearnStartDateMatchPathway": "2018-08-01T00:05:00+00:00",
+            "AppAdjLearnStartDate": "2018-08-01T00:36:00+00:00",
+            "AppAdjLearnStartDateMatchPathway": "2018-08-01T00:00:00+00:00",
             "ApplicCompDate": "9999-09-09T00:00:00+00:00",
             "CombinedAdjProp": 1,
             "Completed": false,
@@ -2481,7 +2481,7 @@
             "FworkCode": null,
             "LDApplic1618FrameworkUpliftTotalActEarnings": 0,
             "LearnAimRef": "50086832",
-            "LearnStartDate": "2018-08-01T00:06:00+00:00",
+            "LearnStartDate": "2018-08-01T00:37:00+00:00",
             "LearnDel1618AtStart": false,
             "LearnDelAppAccDaysIL": 97,
             "LearnDelApplicDisadvAmount": 0,
@@ -2516,7 +2516,7 @@
             "LearnDelPrevAccDaysILCareLeavers": 0,
             "LearnDelLearnerAddPayThresholdDate": null,
             "LearnDelRedCode": 0,
-            "LearnDelRedStartDate": "9999-09-09T00:07:00+00:00"
+            "LearnDelRedStartDate": "9999-09-09T00:00:00+00:00"
           },
           "LearningDeliveryPeriodisedValues": [
             {
@@ -2933,10 +2933,10 @@
           "LearningDeliveryValues": {
             "ActualDaysIL": 0,
             "ActualNumInstalm": null,
-            "AdjStartDate": "2018-08-01T00:08:00+00:00",
+            "AdjStartDate": "2018-08-01T00:38:00+00:00",
             "AgeAtProgStart": 20,
-            "AppAdjLearnStartDate": "2018-08-01T00:09:00+00:00",
-            "AppAdjLearnStartDateMatchPathway": "2018-08-01T00:10:00+00:00",
+            "AppAdjLearnStartDate": "2018-08-01T00:39:00+00:00",
+            "AppAdjLearnStartDateMatchPathway": "2018-08-01T00:40:00+00:00",
             "ApplicCompDate": "9999-09-09T00:00:00+00:00",
             "CombinedAdjProp": 1,
             "Completed": false,
@@ -2945,7 +2945,7 @@
             "FworkCode": null,
             "LDApplic1618FrameworkUpliftTotalActEarnings": 0,
             "LearnAimRef": "ZPROG001",
-            "LearnStartDate": "2020-11-07T00:11:00+00:00",
+            "LearnStartDate": "2020-11-07T00:41:00+00:00",
             "LearnDel1618AtStart": false,
             "LearnDelAppAccDaysIL": 1095,
             "LearnDelApplicDisadvAmount": 0,
@@ -2980,7 +2980,7 @@
             "LearnDelPrevAccDaysILCareLeavers": 828,
             "LearnDelLearnerAddPayThresholdDate": null,
             "LearnDelRedCode": 0,
-            "LearnDelRedStartDate": "9999-09-09T00:00:00+00:00"
+            "LearnDelRedStartDate": "9999-09-09T00:42:00+00:00"
           },
           "LearningDeliveryPeriodisedValues": [
             {
@@ -3397,10 +3397,10 @@
           "LearningDeliveryValues": {
             "ActualDaysIL": 0,
             "ActualNumInstalm": null,
-            "AdjStartDate": "2018-08-01T00:12:00+00:00",
+            "AdjStartDate": "2018-08-01T00:43:00+00:00",
             "AgeAtProgStart": 20,
-            "AppAdjLearnStartDate": "2018-08-01T00:13:00+00:00",
-            "AppAdjLearnStartDateMatchPathway": "2018-08-01T00:14:00+00:00",
+            "AppAdjLearnStartDate": "2018-08-01T00:44:00+00:00",
+            "AppAdjLearnStartDateMatchPathway": "2018-08-01T00:45:00+00:00",
             "ApplicCompDate": "9999-09-09T00:00:00+00:00",
             "CombinedAdjProp": 1,
             "Completed": false,
@@ -3409,7 +3409,7 @@
             "FworkCode": null,
             "LDApplic1618FrameworkUpliftTotalActEarnings": 0,
             "LearnAimRef": "50086832",
-            "LearnStartDate": "2020-11-07T00:15:00+00:00",
+            "LearnStartDate": "2020-11-07T00:46:00+00:00",
             "LearnDel1618AtStart": false,
             "LearnDelAppAccDaysIL": 364,
             "LearnDelApplicDisadvAmount": 0,
@@ -3444,7 +3444,7 @@
             "LearnDelPrevAccDaysILCareLeavers": 97,
             "LearnDelLearnerAddPayThresholdDate": null,
             "LearnDelRedCode": 0,
-            "LearnDelRedStartDate": "9999-09-09T00:16:00+00:00"
+            "LearnDelRedStartDate": "9999-09-09T00:47:00+00:00"
           },
           "LearningDeliveryPeriodisedValues": [
             {
@@ -3862,14 +3862,14 @@
           "AppIdentifierOutput": "25-17",
           "AppProgCompletedInTheYearOutput": false,
           "HistoricDaysInYearOutput": 364,
-          "HistoricEffectiveTNPStartDateOutput": "2020-11-07T00:17:00+00:00",
+          "HistoricEffectiveTNPStartDateOutput": "2020-11-07T00:00:00+00:00",
           "HistoricEmpIdEndWithinYearOutput": 999999999,
           "HistoricEmpIdStartWithinYearOutput": 154549452,
           "HistoricFworkCodeOutput": null,
           "HistoricLearner1618AtStartOutput": false,
           "HistoricPMRAmountOutput": 0,
-          "HistoricProgrammeStartDateIgnorePathwayOutput": "2018-08-01T00:18:00+00:00",
-          "HistoricProgrammeStartDateMatchPathwayOutput": "2018-08-01T00:19:00+00:00",
+          "HistoricProgrammeStartDateIgnorePathwayOutput": "2018-08-01T00:00:00+00:00",
+          "HistoricProgrammeStartDateMatchPathwayOutput": "2018-08-01T00:00:00+00:00",
           "HistoricProgTypeOutput": 25,
           "HistoricPwayCodeOutput": null,
           "HistoricSTDCodeOutput": 17,
