@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Model.Core.Entities;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
@@ -28,23 +29,28 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             payments.ForEach(p =>
             {
                 DateTime expectedLearnStartDate;
-                LearningDelivery learningDelivery;
 
                 if (p.CollectionPeriod.Period == 4)
                 {
-                    var learner = TestSession.FM36Global.Learners.Single(l => l.LearnRefNumber == p.LearnerReferenceNumber);
-                    learningDelivery = learner.LearningDeliveries.Single(ld => ld.AimSeqNumber == p.LearningAimSequenceNumber);
-                    expectedLearnStartDate = learningDelivery.LearningDeliveryValues.LearnStartDate;
+                    expectedLearnStartDate = GetExpectedLearningStartDate(TestSession.FM36Global, p);
                 }
                 else
                 {
-                    var learner = TestSession.PreviousFm36Global.Learners.Single(l => l.LearnRefNumber == p.LearnerReferenceNumber);
-                    learningDelivery = learner.LearningDeliveries.Single(ld => ld.AimSeqNumber == p.LearningAimSequenceNumber);
-                    expectedLearnStartDate = learningDelivery.LearningDeliveryValues.LearnStartDate;
+                    expectedLearnStartDate = GetExpectedLearningStartDate(TestSession.PreviousFm36Global,p);
                 }
 
-                p.LearningStartDate.Should().Be(expectedLearnStartDate, $"Payment AimSeqNumber: {p.LearningAimSequenceNumber}, FM36 AimSeqNumber: {learningDelivery.AimSeqNumber}");
+                p.LearningStartDate.Should().Be(expectedLearnStartDate, $"Payment AimSeqNumber: {p.LearningAimSequenceNumber}");
             });
+        }
+
+        private DateTime GetExpectedLearningStartDate(FM36Global fm36, PaymentModel payment)
+        {
+            var learner = fm36.Learners.Single(l => l.LearnRefNumber == payment.LearnerReferenceNumber);
+            var learningDelivery = learner.LearningDeliveries.Single(ld => ld.AimSeqNumber == payment.LearningAimSequenceNumber);
+
+            return payment.TransactionType != TransactionType.OnProgrammeMathsAndEnglish
+                ? learningDelivery.LearningDeliveryValues.LearnStartDate
+                : learner.LearningDeliveries.Min(ld => ld.LearningDeliveryValues.LearnStartDate);
         }
     }
 }
