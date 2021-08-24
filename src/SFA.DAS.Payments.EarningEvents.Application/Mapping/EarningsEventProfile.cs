@@ -39,10 +39,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .Include<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>()
                 .ForMember(destinationMember => destinationMember.OnProgrammeEarnings, opt => opt.ResolveUsing<OnProgrammeEarningValueResolver>())
                 .ForMember(destinationMember => destinationMember.IncentiveEarnings, opt => opt.ResolveUsing<IncentiveEarningValueResolver>())
-                .ForMember(destinationMember => destinationMember.StartDate, opt => opt.ResolveUsing((intermediateLearningAim, earningEvent) =>
-                    intermediateLearningAim.Aims
-                        .First(x => x.AimSeqNumber == earningEvent.LearningAim.SequenceNumber).LearningDeliveryValues
-                        .LearnStartDate))
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.Aims.Min(aim => aim.LearningDeliveryValues.LearnStartDate)))
                 .Ignore(dest => dest.SfaContributionPercentage)
                 ;
 
@@ -60,10 +57,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .Include<IntermediateLearningAim, Act1FunctionalSkillEarningsEvent>()
                 .Include<IntermediateLearningAim, Act2FunctionalSkillEarningsEvent>()
                 .ForMember(destinationMember => destinationMember.Earnings, opt => opt.ResolveUsing<FunctionalSkillsEarningValueResolver>())
-                .ForMember(destinationMember => destinationMember.StartDate, opt => opt.ResolveUsing((intermediateLearningAim, earningEvent) =>
-                    intermediateLearningAim.Aims
-                        .First(x => x.AimSeqNumber == earningEvent.LearningAim.SequenceNumber).LearningDeliveryValues
-                        .LearnStartDate))
+                .ForMember(destinationMember => destinationMember.StartDate, opt => opt.MapFrom(source => source.Aims.Min(aim => aim.LearningDeliveryValues.LearnStartDate)))
                 .Ignore(x => x.ContractType)
                 ;
 

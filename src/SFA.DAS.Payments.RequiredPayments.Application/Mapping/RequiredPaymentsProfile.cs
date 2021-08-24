@@ -1,4 +1,7 @@
+using System;
+using System.Linq;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore.Internal;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Messages.Core.Events;
@@ -110,7 +113,17 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                     opt => opt.MapFrom(earning => earning.LearningAim.Clone()))
                 .ForMember(requiredPayment => requiredPayment.EventId, opt => opt.Ignore())
                 .ForMember(requiredPayment => requiredPayment.LearningStartDate,
-                    opt => opt.MapFrom(earning => earning.LearningAim.StartDate)) //these mappings may need to be updated to pull the start date from the price episode
+                    opt => opt.ResolveUsing(earning =>
+                    {
+                        DateTime? returnDate = null;
+                        var priceEpisode = earning.PriceEpisodes.FirstOrDefault(x => x.LearningAimSequenceNumber == earning.LearningAim.SequenceNumber);
+                        if (priceEpisode != null)
+                            returnDate = priceEpisode.CourseStartDate;
+                        else
+                            returnDate = earning.LearningAim.StartDate;
+                        return returnDate;
+                    }))
+                //these mappings may need to be updated to pull the start date from the price episode - Yes they do, but not for functional skills
                 .Ignore(x => x.ApprenticeshipId)
                 .Ignore(x => x.ApprenticeshipPriceEpisodeId)
                 .Ignore(x => x.ContractType)
