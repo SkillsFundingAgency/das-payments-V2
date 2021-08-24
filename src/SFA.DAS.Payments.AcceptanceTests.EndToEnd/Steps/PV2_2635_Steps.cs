@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
     [Binding]
     [Scope(Feature = "PV2-2635-LearnStartDate-IsMapped-FromILR-ToPaymentsTable")]
     // ReSharper disable once InconsistentNaming
-    public class PV2_2635_Steps : PV2_2268_Steps
+    public class PV2_2635_Steps : FM36BreakInLearningBaseSteps
     {
         public PV2_2635_Steps(FeatureContext context) : base(context)
         {
@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task ThenTheCorrectLearningStartDateIsSetForEachGeneratedPayment()
         {
             var payments = await DataContext.Payment
-                .Where(x => x.JobId == TestSession.JobId)
+                .Where(x => x.LearnerReferenceNumber == TestSession.Learners.First().LearnRefNumber)
                 .ToListAsync();
 
             payments.ForEach(p =>
