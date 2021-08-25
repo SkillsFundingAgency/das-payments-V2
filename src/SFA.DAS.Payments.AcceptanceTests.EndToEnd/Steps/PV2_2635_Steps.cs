@@ -50,7 +50,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             return payment.TransactionType != TransactionType.OnProgrammeMathsAndEnglish
                 ? learningDelivery.LearningDeliveryValues.LearnStartDate
-                : learner.LearningDeliveries.Min(ld => ld.LearningDeliveryValues.LearnStartDate);
+                : learner.LearningDeliveries.Where(x => x.LearningDeliveryValues.LearnDelMathEng.GetValueOrDefault()).Min(ld => ld.LearningDeliveryValues.LearnStartDate);
         }
     }
 }
