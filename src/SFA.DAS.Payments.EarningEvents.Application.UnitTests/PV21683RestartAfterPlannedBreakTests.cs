@@ -70,8 +70,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var builder = new ApprenticeshipContractTypeEarningsEventBuilder(new ApprenticeshipContractTypeEarningsEventFactory(), redundancyEarningService.Object, mapper);
             var events = builder.Build(FileHelpers.CreateFromFile(filename, learnerRefNo));
 
-            events.First().LearningAim.StartDate.Should().Be(DateTime.Parse("2019-12-06T00:00:00+00:00"));
-            events.First().StartDate.Should().Be(DateTime.Parse("2019-12-06T00:00:00+00:00"));
+            events.First().LearningAim.StartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
+            events.First().StartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
+            events.First().PriceEpisodes.First(x => x.LearningAimSequenceNumber == 5).CourseStartDate.Should().Be(DateTime.Parse("2019-12-06T00:00:00+00:00"));
+            events.First().PriceEpisodes.First(x => x.LearningAimSequenceNumber == 10).CourseStartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
         }
 
         [Test]
@@ -114,12 +116,12 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var events = builder.Build(FileHelpers.CreateFromFile(filename, learnerRefNo));
 
             var functionalSkillEvent_5010987X = events.First(e => e.LearningAim.Reference.Equals("5010987X"));
-            functionalSkillEvent_5010987X.LearningAim.StartDate.Should().Be(DateTime.Parse("2019-12-06T00:00:00+00:00"));
-            functionalSkillEvent_5010987X.StartDate.Should().Be(DateTime.Parse("2019-12-06T00:00:00+00:00"));
+            functionalSkillEvent_5010987X.LearningAim.StartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
+            functionalSkillEvent_5010987X.StartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
 
             var functionalSkillEvent_50093186 = events.First(e => e.LearningAim.Reference.Equals("50093186"));
-            functionalSkillEvent_50093186.LearningAim.StartDate.Should().Be(DateTime.Parse("2019-12-06T00:00:00+00:00"));
-            functionalSkillEvent_50093186.StartDate.Should().Be(DateTime.Parse("2019-12-06T00:00:00+00:00"));
+            functionalSkillEvent_50093186.LearningAim.StartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
+            functionalSkillEvent_50093186.StartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
         }
                
         [Test]
