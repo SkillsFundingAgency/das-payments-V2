@@ -91,7 +91,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(dest => dest.Reference, opt => opt.MapFrom(source => source.Aims.First().LearningDeliveryValues.LearnAimRef))
                 .ForMember(dest => dest.StandardCode, opt => opt.MapFrom(source => source.Aims.First().LearningDeliveryValues.StdCode))
                 .ForMember(dest => dest.SequenceNumber, opt => opt.MapFrom(source => source.Aims.First().AimSeqNumber))
-                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(source => source.Aims.First().LearningDeliveryValues.LearnStartDate))
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(source => source.Aims.Min(x => x.LearningDeliveryValues.LearnStartDate)))
                 ;
 
             CreateMap<IntermediateLearningAim, SubmittedLearnerAimModel>()
