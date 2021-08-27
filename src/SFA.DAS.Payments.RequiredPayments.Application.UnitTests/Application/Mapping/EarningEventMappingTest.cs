@@ -94,28 +94,28 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
         }
 
         [Test]
-        [TestCase(typeof(PayableEarningEvent), typeof(CalculatedRequiredIncentiveAmount))]
-        [TestCase(typeof(PayableEarningEvent), typeof(CalculatedRequiredCoInvestedAmount))]
-        [TestCase(typeof(PayableEarningEvent), typeof(CalculatedRequiredLevyAmount))]
-        [TestCase(typeof(PayableEarningEvent), typeof(CompletionPaymentHeldBackEvent))]
-        public void ContractTypeIsCorrectForPayableEarningEvent(Type earningEventType, Type requiredPaymentEventType)
+        [TestCase(typeof(CalculatedRequiredIncentiveAmount))]
+        [TestCase(typeof(CalculatedRequiredCoInvestedAmount))]
+        [TestCase(typeof(CalculatedRequiredLevyAmount))]
+        [TestCase(typeof(CompletionPaymentHeldBackEvent))]
+        public void ContractTypeIsCorrectForPayableEarningEvent(Type requiredPaymentEventType)
         {
             var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
-            var earningEvent = Activator.CreateInstance(earningEventType);
+            var earningEvent = new PayableEarningEvent{ PriceEpisodes = new List<PriceEpisode>(), LearningAim = new LearningAim() };
 
             var actual = mapper.Map(earningEvent, requiredPaymentEvent);
             actual.ContractType.Should().Be(ContractType.Act1);
         }
 
         [Test]
-        [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredIncentiveAmount))]
-        [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredCoInvestedAmount))]
-        [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CalculatedRequiredLevyAmount))]
-        [TestCase(typeof(ApprenticeshipContractType2EarningEvent), typeof(CompletionPaymentHeldBackEvent))]
-        public void ContractTypeIsCorrectForNotLevyEvent(Type earningEventType, Type requiredPaymentEventType)
+        [TestCase(typeof(CalculatedRequiredIncentiveAmount))]
+        [TestCase(typeof(CalculatedRequiredCoInvestedAmount))]
+        [TestCase(typeof(CalculatedRequiredLevyAmount))]
+        [TestCase(typeof(CompletionPaymentHeldBackEvent))]
+        public void ContractTypeIsCorrectForNotLevyEvent(Type requiredPaymentEventType)
         {
             var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
-            var earningEvent = Activator.CreateInstance(earningEventType);
+            var earningEvent = new ApprenticeshipContractType2EarningEvent{ PriceEpisodes = new List<PriceEpisode>(), LearningAim = new LearningAim() };
 
             var actual = mapper.Map(earningEvent, requiredPaymentEvent);
             actual.ContractType.Should().Be(ContractType.Act2);
@@ -123,12 +123,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
 
 
         [Test]
-        [TestCase( typeof(CalculatedRequiredIncentiveAmount))]
-        public void MathsAndEnglishRequiredMappingShouldMapEarningEventIdCorrectly(Type requiredPaymentEventType)
+        public void MathsAndEnglishRequiredMappingShouldMapEarningEventIdCorrectly()
         {
             var earningEventId = Guid.NewGuid();
-            var requiredPaymentEvent = Activator.CreateInstance(requiredPaymentEventType) as PeriodisedRequiredPaymentEvent;
-            var earningEvent = new PayableFunctionalSkillEarningEvent {EarningEventId = earningEventId};
+            var requiredPaymentEvent = new CalculatedRequiredIncentiveAmount() as PeriodisedRequiredPaymentEvent;
+            var earningEvent = new PayableFunctionalSkillEarningEvent { EarningEventId = earningEventId, PriceEpisodes = new List<PriceEpisode>(), LearningAim = new LearningAim() };
             var actual = mapper.Map(earningEvent, requiredPaymentEvent);
             actual.EarningEventId.Should().Be(earningEventId);
         }
@@ -147,10 +146,10 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             switch (expectedContractType)
             {
                 case ContractType.Act1:
-                    earningEvent = new PayableFunctionalSkillEarningEvent();
+                    earningEvent = new PayableFunctionalSkillEarningEvent{ PriceEpisodes = new List<PriceEpisode>(), LearningAim = new LearningAim() };
                     break;
                 case ContractType.Act2:
-                    earningEvent = new Act2FunctionalSkillEarningsEvent();
+                    earningEvent = new Act2FunctionalSkillEarningsEvent { PriceEpisodes = new List<PriceEpisode>(), LearningAim = new LearningAim() };
                     break;
             }
 
@@ -415,7 +414,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
                             new EarningPeriod {Period = 12, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = 1},
                         })
                     }
-                })
+                }),
+                PriceEpisodes = new List<PriceEpisode>()
             };
         }
 
@@ -459,7 +459,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
                             new EarningPeriod {Period = 12, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = 1},
                         })
                     }
-                })
+                }),
+                PriceEpisodes = new List<PriceEpisode>()
             };
         }
 
@@ -505,7 +506,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
                             new EarningPeriod {Period = 12, Amount = 100, PriceEpisodeIdentifier = "1", SfaContributionPercentage = .9m, ApprenticeshipId = 102, AccountId = 101, ApprenticeshipPriceEpisodeId = 105, Priority = 104, AgreedOnDate = DateTime.Today},
                         })
                     }
-                }
+                },
+                PriceEpisodes = new List<PriceEpisode>()
             };
         }
     }

@@ -72,6 +72,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
 
             events.First().LearningAim.StartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
             events.First().StartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
+            events.First().PriceEpisodes.First(x => x.LearningAimSequenceNumber == 5).CourseStartDate.Should().Be(DateTime.Parse("2019-12-06T00:00:00+00:00"));
+            events.First().PriceEpisodes.First(x => x.LearningAimSequenceNumber == 10).CourseStartDate.Should().Be(DateTime.Parse("2019-08-06T00:00:00+00:00"));
         }
 
         [Test]
