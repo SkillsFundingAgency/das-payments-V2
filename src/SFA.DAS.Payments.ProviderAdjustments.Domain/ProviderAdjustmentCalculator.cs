@@ -14,9 +14,9 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Domain
 
     public class ProviderAdjustmentCalculator : IProviderAdjustmentsCalculator
     {
-        private static int collectionPeriodMonth;
-        private static int collectionPeriodYear;
-        private static string collectionPeriodName;
+        private int collectionPeriodMonth;
+        private int collectionPeriodYear;
+        private string collectionPeriodName;
         
         public List<ProviderAdjustment> CalculateDelta(
             List<ProviderAdjustment> historicPayments,
@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Domain
             return payments.Union(refunds).ToList();
         }
 
-        private static IEnumerable<ProviderAdjustment> CalculatePayments(
+        private IEnumerable<ProviderAdjustment> CalculatePayments(
             ILookup<ProviderAdjustmentPaymentGrouping, ProviderAdjustment> groupedEarnings,
             ILookup<ProviderAdjustmentPaymentGrouping, ProviderAdjustment> groupedPreviousPayments)
         {
@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Domain
             }
         }
 
-        private static IEnumerable<ProviderAdjustment> CalculateRefunds(
+        private IEnumerable<ProviderAdjustment> CalculateRefunds(
             ILookup<ProviderAdjustmentPaymentGrouping, ProviderAdjustment> groupedPreviousPayments,
             HashSet<ProviderAdjustmentPaymentGrouping> alreadyProcessedGroups)
         {
@@ -78,7 +78,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Domain
             }
         }
 
-        private static ProviderAdjustment CreatePayment(ProviderAdjustmentPaymentGrouping source, decimal amount)
+        private ProviderAdjustment CreatePayment(ProviderAdjustmentPaymentGrouping source, decimal amount)
         {
             var payment = new ProviderAdjustment
             {
