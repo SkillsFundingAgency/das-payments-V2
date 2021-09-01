@@ -23,14 +23,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
         {
             logger.LogDebug($"Apprenticeship Updated. Ensuring Ukprn: {message.Ukprn} exists on the list for reprocessing");
 
-            try
-            {
-                await repository.Add(message.Ukprn);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                logger.LogInfo($"Ukprn: {message.Ukprn} already exists on the list of providers requiring reprocessing");
-            }
+            await repository.Add(message.Ukprn);
 
             logger.LogInfo($"Apprenticeship Updated. Finished ensuring that Ukprn: {message.Ukprn} exists on the list for reprocessing");
         }
