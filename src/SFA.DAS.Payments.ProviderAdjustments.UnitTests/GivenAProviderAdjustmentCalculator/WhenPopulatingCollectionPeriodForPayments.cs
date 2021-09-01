@@ -10,26 +10,40 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests.GivenAProviderAdjustmen
     public class WhenPopulatingCollectionPeriodForPayments
     {
         [Test]
-        [InlineAutoData(1, 8)]
-        [InlineAutoData(2, 9)]
-        [InlineAutoData(3, 10)]
-        [InlineAutoData(4, 11)]
-        [InlineAutoData(5, 12)]
-        [InlineAutoData(6, 1)]
-        [InlineAutoData(7, 2)]
-        [InlineAutoData(8, 3)]
-        [InlineAutoData(9, 4)]
-        [InlineAutoData(10, 5)]
-        [InlineAutoData(11, 6)]
-        [InlineAutoData(12, 7)]
-        [InlineAutoData(13, 9)]
-        [InlineAutoData(14, 10)]
-        public void ThenTheCollectionPeriodMonth_Should_BeTheExpectedValue(int collectionPeriod, int expectedMonth,
+        [InlineAutoData(1, 8, 2021)]
+        [InlineAutoData(2, 9, 2021)]
+        [InlineAutoData(3, 10, 2021)]
+        [InlineAutoData(4, 11, 2021)]
+        [InlineAutoData(5, 12, 2021)]
+        [InlineAutoData(6, 1, 2021)]
+        [InlineAutoData(7, 2, 2021)]
+        [InlineAutoData(8, 3, 2021)]
+        [InlineAutoData(9, 4, 2021)]
+        [InlineAutoData(10, 5, 2021)]
+        [InlineAutoData(11, 6, 2021)]
+        [InlineAutoData(12, 7, 2021)]
+        [InlineAutoData(13, 9, 2021)]
+        [InlineAutoData(14, 10, 2021)]
+        [InlineAutoData(1, 8, 2122)]
+        [InlineAutoData(2, 9, 2122)]
+        [InlineAutoData(3, 10, 2122)]
+        [InlineAutoData(4, 11, 2122)]
+        [InlineAutoData(5, 12, 2122)]
+        [InlineAutoData(6, 1, 2122)]
+        [InlineAutoData(7, 2, 2122)]
+        [InlineAutoData(8, 3, 2122)]
+        [InlineAutoData(9, 4, 2122)]
+        [InlineAutoData(10, 5, 2122)]
+        [InlineAutoData(11, 6, 2122)]
+        [InlineAutoData(12, 7, 2122)]
+        [InlineAutoData(13, 9, 2122)]
+        [InlineAutoData(14, 10, 2122)]
+        public void ThenTheCollectionPeriodMonth_Should_BeTheExpectedValue(int collectionPeriod, int expectedMonth, int academicYear,
             ProviderAdjustmentCalculator sut,
             List<ProviderAdjustment> testPayments
         )
         {
-            sut.PopulateCollectonPeriodForPayments(testPayments, 2021, collectionPeriod);
+            sut.PopulateCollectonPeriodForPayments(testPayments, academicYear, collectionPeriod);
 
             testPayments.Should().AllBeEquivalentTo(new {CollectionPeriodMonth = expectedMonth});
         }
