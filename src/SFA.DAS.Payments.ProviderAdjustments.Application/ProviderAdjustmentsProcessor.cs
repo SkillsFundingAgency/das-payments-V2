@@ -37,10 +37,10 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application
             var currentPayments = await repository.GetCurrentProviderAdjustments(academicYear).ConfigureAwait(false);
             logger.LogInfo($"Found {currentPayments.Count} payments from API");
 
-            var payments = calculator.CalculateDelta(historicPayments, currentPayments);
+            var payments = calculator.CalculateDelta(historicPayments, currentPayments, academicYear, collectionPeriod);
             logger.LogInfo($"Calculated {payments.Count} new payments");
 
-            calculator.PopulateCollectonPeriodForPayments(payments, academicYear, collectionPeriod);
+            //calculator.PopulateCollectonPeriodForPayments(payments, academicYear, collectionPeriod);
             await repository.AddProviderAdjustments(payments).ConfigureAwait(false);
 
             logger.LogInfo("Finished the Provider Adjustments Processor.");

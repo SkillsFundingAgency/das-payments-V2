@@ -7,50 +7,56 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Domain
     {
         List<ProviderAdjustment> CalculateDelta(
             List<ProviderAdjustment> historicPayments,
-            List<ProviderAdjustment> currentPayments);
+            List<ProviderAdjustment> currentPayments,
+            int academicYear,
+            int collectionPeriod);
 
-        void PopulateCollectonPeriodForPayments(List<ProviderAdjustment> payments, int academicYear, int collectionPeriod);
+        //void PopulateCollectonPeriodForPayments(List<ProviderAdjustment> payments, int academicYear, int collectionPeriod);
     }
 
     public class ProviderAdjustmentCalculator : IProviderAdjustmentsCalculator
     {
         public List<ProviderAdjustment> CalculateDelta(
             List<ProviderAdjustment> historicPayments,
-            List<ProviderAdjustment> currentPayments)
+            List<ProviderAdjustment> currentPayments,
+            int academicYear,
+            int collectionPeriod)
         {
             var groupedPreviousPayments = historicPayments.ToLookup(x => new ProviderAdjustmentPaymentGrouping(x));
 
             var groupedEarnings = EarningsGroupsThatHaveNotBeenProcessed(currentPayments);
 
-            var payments = CalculatePayments(groupedEarnings, groupedPreviousPayments);
+            var payments = CalculatePayments(groupedEarnings, groupedPreviousPayments, academicYear, collectionPeriod);
             var processedEarningsGroups = new HashSet<ProviderAdjustmentPaymentGrouping>(groupedEarnings.Select(x => x.Key));
 
-            var refunds = CalculateRefunds(groupedPreviousPayments, processedEarningsGroups);
+            var refunds = CalculateRefunds(groupedPreviousPayments, processedEarningsGroups, academicYear, collectionPeriod);
 
             return payments.Union(refunds).ToList();
         }
 
-        public void PopulateCollectonPeriodForPayments(List<ProviderAdjustment> payments, int academicYear, int collectionPeriod)
-        {
-            var collectionPeriodMonth = collectionPeriod < 6 ? collectionPeriod + 7 : collectionPeriod - 5;
-            var collectionPeriodYear = collectionPeriod < 6 ? 2000 + academicYear / 100 : 2000 + academicYear / 100 + 1;
-            var collectionPeriodName = $"{academicYear}-R{collectionPeriod:D2}";
+        //public void PopulateCollectonPeriodForPayments(List<ProviderAdjustment> payments, int academicYear, int collectionPeriod)
+        //{
+        //    var collectionPeriodMonth = collectionPeriod < 6 ? collectionPeriod + 7 : collectionPeriod - 5;
+        //    var collectionPeriodYear = collectionPeriod < 6 ? 2000 + academicYear / 100 : 2000 + academicYear / 100 + 1;
+        //    var collectionPeriodName = $"{academicYear}-R{collectionPeriod:D2}";
 
-            if (collectionPeriod > 12)
-                collectionPeriodMonth++;
+        //    if (collectionPeriod > 12)
+        //        collectionPeriodMonth++;
 
-            foreach (var payment in payments)
-            {
-                payment.CollectionPeriodMonth = collectionPeriodMonth;
-                payment.CollectionPeriodYear = collectionPeriodYear;
-                payment.CollectionPeriodName = collectionPeriodName;
-                payment.SubmissionAcademicYear = academicYear;
-            }
-        }
+        //    foreach (var payment in payments)
+        //    {
+        //        payment.CollectionPeriodMonth = collectionPeriodMonth;
+        //        payment.CollectionPeriodYear = collectionPeriodYear;
+        //        payment.CollectionPeriodName = collectionPeriodName;
+        //        payment.SubmissionAcademicYear = academicYear;
+        //    }
+        //}
 
         private static IEnumerable<ProviderAdjustment> CalculatePayments(
             ILookup<ProviderAdjustmentPaymentGrouping, ProviderAdjustment> groupedEarnings,
-            ILookup<ProviderAdjustmentPaymentGrouping, ProviderAdjustment> groupedPreviousPayments)
+            ILookup<ProviderAdjustmentPaymentGrouping, ProviderAdjustment> groupedPreviousPayments,
+            int academicYear,
+            int collectionPeriod)
         {
             foreach (var earningGroup in groupedEarnings)
             {
@@ -59,14 +65,16 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Domain
 
                 if (paymentAmount != 0)
                 {
-                    yield return CreatePayment(earningGroup.Key, paymentAmount);
+                    yield return CreatePayment(earningGroup.Key, paymentAmount, academicYear, collectionPeriod);
                 }
             }
         }
 
         private static IEnumerable<ProviderAdjustment> CalculateRefunds(
             ILookup<ProviderAdjustmentPaymentGrouping, ProviderAdjustment> groupedPreviousPayments,
-            HashSet<ProviderAdjustmentPaymentGrouping> alreadyProcessedGroups)
+            HashSet<ProviderAdjustmentPaymentGrouping> alreadyProcessedGroups,
+            int academicYear,
+            int collectionPeriod)
         {
             foreach (var previousPaymentGroup in groupedPreviousPayments)
             {
@@ -78,13 +86,20 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Domain
                 var paymentAmount = -1 * previousPaymentGroup.Sum(x => x.Amount);
                 if (paymentAmount != 0)
                 {
-                    yield return CreatePayment(previousPaymentGroup.Key, paymentAmount);
+                    yield return CreatePayment(previousPaymentGroup.Key, paymentAmount, academicYear, collectionPeriod);
                 }
             }
         }
 
-        private static ProviderAdjustment CreatePayment(ProviderAdjustmentPaymentGrouping source, decimal amount)
+        private static ProviderAdjustment CreatePayment(ProviderAdjustmentPaymentGrouping source, decimal amount, int academicYear, int collectionPeriod)
         {
+            var collectionPeriodMonth = collectionPeriod < 6 ? collectionPeriod + 7 : collectionPeriod - 5;
+            var collectionPeriodYear = collectionPeriod < 6 ? 2000 + academicYear / 100 : 2000 + academicYear / 100 + 1;
+            var collectionPeriodName = $"{academicYear}-R{collectionPeriod:D2}";
+
+            if (collectionPeriod > 12)
+                collectionPeriodMonth++;
+
             var payment = new ProviderAdjustment
             {
                 Amount = amount,
@@ -93,6 +108,9 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Domain
                 PaymentTypeName = source.PaymentTypeName,
                 SubmissionCollectionPeriod = source.Period,
                 SubmissionId = source.SubmissionId,
+                CollectionPeriodMonth = collectionPeriodMonth,
+                CollectionPeriodYear =  collectionPeriodYear,
+                CollectionPeriodName = collectionPeriodName
             };
             return payment;
         }
