@@ -1,10 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using NServiceBus;
+﻿using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.PeriodEnd.Application.Repositories;
+using System;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
 {
