@@ -17,6 +17,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Domain
         private int collectionPeriodMonth;
         private int collectionPeriodYear;
         private string collectionPeriodName;
+        private int submissionAcademicYear;
         
         public List<ProviderAdjustment> CalculateDelta(
             List<ProviderAdjustment> historicPayments,
@@ -27,6 +28,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Domain
             collectionPeriodMonth = collectionPeriod < 6 ? collectionPeriod + 7 : collectionPeriod - 5;
             collectionPeriodYear = collectionPeriod < 6 ? 2000 + academicYear / 100 : 2000 + academicYear / 100 + 1;
             collectionPeriodName = $"{academicYear}-R{collectionPeriod:D2}";
+            submissionAcademicYear = academicYear;
 
             if (collectionPeriod > 12)
                 collectionPeriodMonth++;
@@ -90,7 +92,8 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Domain
                 SubmissionId = source.SubmissionId,
                 CollectionPeriodMonth = collectionPeriodMonth,
                 CollectionPeriodYear =  collectionPeriodYear,
-                CollectionPeriodName = collectionPeriodName
+                CollectionPeriodName = collectionPeriodName,
+                SubmissionAcademicYear = submissionAcademicYear
             };
             return payment;
         }

@@ -98,6 +98,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests.GivenAProviderAdjustmen
                 actual.Select(x => x.CollectionPeriodMonth).Should().AllBeEquivalentTo(expectedMonth);
                 actual.Select(x => x.CollectionPeriodYear).Should().AllBeEquivalentTo(expectedYear);
                 Assert.That(actual.Select(x => x.CollectionPeriodName).All(x => x == expectedName));
+                actual.Select(x => x.SubmissionAcademicYear).Should().AllBeEquivalentTo(academicYear);
             }
         }
 
