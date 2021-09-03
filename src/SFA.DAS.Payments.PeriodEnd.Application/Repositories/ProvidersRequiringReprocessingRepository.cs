@@ -52,6 +52,11 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Repositories
         public async Task Add(long ukprn)
         {
             logger.LogDebug($"Adding ProviderRequiringReprocessing entity for provider: {ukprn}");
+
+            var isUkprnAlreadyAdded = await dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == ukprn);
+
+            if (isUkprnAlreadyAdded) return;
+            
             var record = new ProviderRequiringReprocessingEntity
             {
                 Ukprn = ukprn,
