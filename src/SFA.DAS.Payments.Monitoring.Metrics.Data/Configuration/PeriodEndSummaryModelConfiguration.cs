@@ -45,6 +45,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration
             builder.Property(x => x.AdjustedDataLockedEarnings).HasColumnName(@"AdjustedDataLockedEarnings");
             builder.Property(x => x.AlreadyPaidDataLockedEarnings).HasColumnName(@"AlreadyPaidDataLockedEarnings");
             builder.Property(x => x.TotalDataLockedEarnings).HasColumnName(@"TotalDataLockedEarnings");
+            builder.Property(x => x.TotalDataLockedEarnings16To18).HasColumnName(@"TotalDataLockedEarnings16To18");
+            builder.Property(x => x.TotalDataLockedEarnings19Plus).HasColumnName(@"TotalDataLockedEarnings19Plus");
             builder.OwnsOne(x => x.HeldBackCompletionPayments, amounts =>
             {
                 amounts.Property(x => x.ContractType1).HasColumnName(@"HeldBackCompletionPaymentsContractType1");

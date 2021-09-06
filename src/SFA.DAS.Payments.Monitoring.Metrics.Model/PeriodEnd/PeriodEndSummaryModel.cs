@@ -16,6 +16,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd
         public decimal AdjustedDataLockedEarnings { get; set; }
         public decimal AlreadyPaidDataLockedEarnings { get; set; }
         public decimal TotalDataLockedEarnings { get; set; }
+        public decimal TotalDataLockedEarnings16To18 { get; set; }
+        public decimal TotalDataLockedEarnings19Plus { get; set; }
         public ContractTypeAmounts HeldBackCompletionPayments { get; set; } = new ContractTypeAmounts();
         public ContractTypeAmounts YearToDatePayments { get; set; } = new ContractTypeAmounts();
         public DataLockTypeCounts DataLockTypeCounts { get; set; } = new DataLockTypeCounts();

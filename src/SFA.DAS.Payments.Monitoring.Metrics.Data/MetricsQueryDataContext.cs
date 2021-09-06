@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 		Task<decimal> GetAlreadyPaidDataLocksAmount(long ukprn, long jobId, CancellationToken cancellationToken);
 		Task<DataLockTypeCounts> GetDataLockCounts(long ukprn, long jobId, CancellationToken cancellationToken);
 		Task<List<PeriodEndProviderDataLockTypeCounts>> GetPeriodEndProviderDataLockCounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
-		Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+		Task<List<ProviderFundingLineTypeAmounts>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
 		Task<List<ProviderTotal>> GetAlreadyPaidDataLockProviderTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
 		Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
 		Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken, IsolationLevel isolationLevel = IsolationLevel.Snapshot);
@@ -271,7 +271,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 				.ToList();
 		}
 
-		public async Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+		public async Task<List<ProviderFundingLineTypeAmounts>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
 		{
 			var latestSuccessfulJobIds = LatestSuccessfulJobs.AsNoTracking()
 															.Where(j => j.AcademicYear == academicYear && j.CollectionPeriod == collectionPeriod)
@@ -279,7 +279,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 			return await DataLockEventNonPayablePeriods
 				.Where(period => period.Amount != 0 && latestSuccessfulJobIds.Contains(period.DataLockEvent.JobId))
 				.GroupBy(x => x.DataLockEvent.Ukprn)
-				.Select(x => new ProviderTotal() { Ukprn = x.Key, TotalAmount = x.Sum(period => period.Amount) })
+				.Select(x => new ProviderFundingLineTypeAmounts
+                {
+                    Ukprn = x.Key,
+                    FundingLineType16To18Amount = x.Where(y => y.DataLockEvent.LearningAimFundingLineType.ToLearnerAgeBanding() == 16).Sum(period => period.Amount),
+                    FundingLineType19PlusAmount = x.Where(y => y.DataLockEvent.LearningAimFundingLineType.ToLearnerAgeBanding() == 19).Sum(period => period.Amount)
+				})
 				.ToListAsync(cancellationToken);
 		}
 
