@@ -86,7 +86,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
                 .ReturnsAsync(new List<ProviderContractTypeAmounts>());
             periodEndMetricsRepositoryMock
                 .Setup(x => x.GetDataLockedEarningsTotals(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ProviderTotal>());
+                .ReturnsAsync(new List<ProviderFundingLineTypeAmounts>());
             periodEndMetricsRepositoryMock
                 .Setup(x => x.GetAlreadyPaidDataLockedEarnings(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ProviderTotal>());
@@ -180,7 +180,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             public void AddTransactionTypes(IEnumerable<TransactionTypeAmountsByContractType> transactionTypes) { AddTransactionTypesCalled = true; }
             public void AddFundingSourceAmounts(IEnumerable<ProviderFundingSourceAmounts> fundingSourceAmounts) { AddFundingSourceAmountsCalled = true; }
 
-            public void AddDataLockedEarnings(decimal dataLockedEarningsTotal) { AddDataLockedEarningsCalled = true; }
+            public void AddDataLockedEarnings(ProviderFundingLineTypeAmounts dataLockedEarningsTotal) { AddDataLockedEarningsCalled = true; }
             public void AddPeriodEndProviderDataLockTypeCounts(PeriodEndProviderDataLockTypeCounts periodEndProviderDataLockTypeCounts)
             {
                 AddPeriodEndProviderDataLockTypeCountsCalled = true;
