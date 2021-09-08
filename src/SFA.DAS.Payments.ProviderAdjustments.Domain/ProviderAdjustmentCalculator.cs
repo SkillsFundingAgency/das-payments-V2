@@ -7,15 +7,32 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Domain
     {
         List<ProviderAdjustment> CalculateDelta(
             List<ProviderAdjustment> historicPayments,
-            List<ProviderAdjustment> currentPayments);
+            List<ProviderAdjustment> currentPayments,
+            int academicYear,
+            int collectionPeriod);
     }
 
     public class ProviderAdjustmentCalculator : IProviderAdjustmentsCalculator
     {
+        private int collectionPeriodMonth;
+        private int collectionPeriodYear;
+        private string collectionPeriodName;
+        private int submissionAcademicYear;
+        
         public List<ProviderAdjustment> CalculateDelta(
             List<ProviderAdjustment> historicPayments,
-            List<ProviderAdjustment> currentPayments)
+            List<ProviderAdjustment> currentPayments,
+            int academicYear,
+            int collectionPeriod)
         {
+            collectionPeriodMonth = collectionPeriod < 6 ? collectionPeriod + 7 : collectionPeriod - 5;
+            collectionPeriodYear = collectionPeriod < 6 ? 2000 + academicYear / 100 : 2000 + academicYear / 100 + 1;
+            collectionPeriodName = $"{academicYear}-R{collectionPeriod:D2}";
+            submissionAcademicYear = academicYear;
+
+            if (collectionPeriod > 12)
+                collectionPeriodMonth++;
+
             var groupedPreviousPayments = historicPayments.ToLookup(x => new ProviderAdjustmentPaymentGrouping(x));
 
             var groupedEarnings = EarningsGroupsThatHaveNotBeenProcessed(currentPayments);
@@ -28,7 +45,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Domain
             return payments.Union(refunds).ToList();
         }
 
-        private static IEnumerable<ProviderAdjustment> CalculatePayments(
+        private IEnumerable<ProviderAdjustment> CalculatePayments(
             ILookup<ProviderAdjustmentPaymentGrouping, ProviderAdjustment> groupedEarnings,
             ILookup<ProviderAdjustmentPaymentGrouping, ProviderAdjustment> groupedPreviousPayments)
         {
@@ -44,7 +61,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Domain
             }
         }
 
-        private static IEnumerable<ProviderAdjustment> CalculateRefunds(
+        private IEnumerable<ProviderAdjustment> CalculateRefunds(
             ILookup<ProviderAdjustmentPaymentGrouping, ProviderAdjustment> groupedPreviousPayments,
             HashSet<ProviderAdjustmentPaymentGrouping> alreadyProcessedGroups)
         {
@@ -63,7 +80,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Domain
             }
         }
 
-        private static ProviderAdjustment CreatePayment(ProviderAdjustmentPaymentGrouping source, decimal amount)
+        private ProviderAdjustment CreatePayment(ProviderAdjustmentPaymentGrouping source, decimal amount)
         {
             var payment = new ProviderAdjustment
             {
@@ -73,6 +90,10 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Domain
                 PaymentTypeName = source.PaymentTypeName,
                 SubmissionCollectionPeriod = source.Period,
                 SubmissionId = source.SubmissionId,
+                CollectionPeriodMonth = collectionPeriodMonth,
+                CollectionPeriodYear =  collectionPeriodYear,
+                CollectionPeriodName = collectionPeriodName,
+                SubmissionAcademicYear = submissionAcademicYear
             };
             return payment;
         }
