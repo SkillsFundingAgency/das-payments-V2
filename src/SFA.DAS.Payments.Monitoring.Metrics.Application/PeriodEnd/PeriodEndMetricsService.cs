@@ -189,6 +189,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 { "DataLockedEarnings", (double) providerMetrics.AdjustedDataLockedEarnings },
                 { "AlreadyPaidDataLockedEarnings", (double) providerMetrics.AlreadyPaidDataLockedEarnings },
                 { "TotalDataLockedEarnings", (double) providerMetrics.TotalDataLockedEarnings },
+                { "TotalDataLockedEarnings16To18", (double) providerMetrics.TotalDataLockedEarnings16To18 },
+                { "TotalDataLockedEarnings19Plus", (double) providerMetrics.TotalDataLockedEarnings19Plus },
 
                 { "DataLockedCountDLock1" ,  (double) providerMetrics.DataLockTypeCounts.DataLock1 },
                 { "DataLockedCountDLock2" ,  (double) providerMetrics.DataLockTypeCounts.DataLock2 },
@@ -313,6 +315,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 { "DataLockedEarnings", (double) metrics.AdjustedDataLockedEarnings },
                 { "AlreadyPaidDataLockedEarnings", (double) metrics.AlreadyPaidDataLockedEarnings },
                 { "TotalDataLockedEarnings", (double) metrics.TotalDataLockedEarnings },
+                { "TotalDataLockedEarnings16To18", (double) metrics.TotalDataLockedEarnings16To18 },
+                { "TotalDataLockedEarnings19Plus", (double) metrics.TotalDataLockedEarnings19Plus },
 
                 { "DataLockedCountDLock1" ,  (double) metrics.DataLockTypeCounts.DataLock1 },
                 { "DataLockedCountDLock2" ,  (double) metrics.DataLockTypeCounts.DataLock2 },

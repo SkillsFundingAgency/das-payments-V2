@@ -86,7 +86,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             CreateMap<IntermediateLearningAim, LearningAim>()
                 .ForMember(dest => dest.PathwayCode, opt => opt.MapFrom(source => source.Aims.First().LearningDeliveryValues.PwayCode))
                 .ForMember(dest => dest.FrameworkCode, opt => opt.MapFrom(source => source.Aims.First().LearningDeliveryValues.FworkCode))
-                .Ignore(x => x.FundingLineType)
+                .ForMember(x => x.FundingLineType, opt => opt.MapFrom(source => source.Aims.First().LearningDeliveryValues.LearnDelInitialFundLineType))
                 .ForMember(dest => dest.ProgrammeType, opt => opt.MapFrom(source => source.Aims.First().LearningDeliveryValues.ProgType))
                 .ForMember(dest => dest.Reference, opt => opt.MapFrom(source => source.Aims.First().LearningDeliveryValues.LearnAimRef))
                 .ForMember(dest => dest.StandardCode, opt => opt.MapFrom(source => source.Aims.First().LearningDeliveryValues.StdCode))
