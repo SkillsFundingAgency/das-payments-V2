@@ -61,6 +61,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             var summary = TestHelper.DefaultPeriodEndProviderSummary;
             var yearToDateAmounts = TestHelper.DefaultYearToDateAmounts;
             summary.AddPaymentsYearToDate(yearToDateAmounts);
+            summary.AddDataLockedEarnings(TestHelper.DefaultDataLockedTotal);
             var metrics = summary.GetMetrics();
             metrics.YearToDatePayments.ContractType1.Should().Be(yearToDateAmounts.ContractType1);
             metrics.YearToDatePayments.ContractType2.Should().Be(yearToDateAmounts.ContractType2);
@@ -78,8 +79,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
 
             var metrics = summary.GetMetrics();
             metrics.AlreadyPaidDataLockedEarnings.Should().Be(alreadyPaidDataLockedEarnings);
-            metrics.TotalDataLockedEarnings.Should().Be(dataLockedEarningsTotal);
-            metrics.AdjustedDataLockedEarnings.Should().Be(dataLockedEarningsTotal - alreadyPaidDataLockedEarnings);
+            metrics.TotalDataLockedEarnings.Should().Be(dataLockedEarningsTotal.Total);
+            metrics.TotalDataLockedEarnings16To18.Should().Be(dataLockedEarningsTotal.FundingLineType16To18Amount);
+            metrics.TotalDataLockedEarnings19Plus.Should().Be(dataLockedEarningsTotal.FundingLineType19PlusAmount);
+            metrics.AdjustedDataLockedEarnings.Should().Be(dataLockedEarningsTotal.Total - alreadyPaidDataLockedEarnings);
         }
 
         [Test]
@@ -88,6 +91,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             var submissionSummary = GetPeriodEndProviderSummary;
 
             submissionSummary.AddDcEarnings(defaultDcEarnings);
+            submissionSummary.AddDataLockedEarnings(TestHelper.DefaultDataLockedTotal);
             var metrics = submissionSummary.GetMetrics();
             metrics.DcEarnings.ContractType1.Should().Be(58300);
             metrics.DcEarnings.ContractType2.Should().Be(57300);
@@ -100,6 +104,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
         {
             var summary = GetPeriodEndProviderSummary;
             summary.AddHeldBackCompletionPayments(heldBackAmounts);
+            summary.AddDataLockedEarnings(TestHelper.DefaultDataLockedTotal);
             var metrics = summary.GetMetrics();
             metrics.HeldBackCompletionPayments.ContractType1.Should().Be(heldBackAmounts.ContractType1);
             metrics.HeldBackCompletionPayments.ContractType2.Should().Be(heldBackAmounts.ContractType2);
@@ -112,6 +117,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             var summary = GetPeriodEndProviderSummary;
             paymentTransactionTypes = TestHelper.GetPaymentTransactionTypes;
             summary.AddTransactionTypes(paymentTransactionTypes);
+            summary.AddDataLockedEarnings(TestHelper.DefaultDataLockedTotal);
             var metrics = summary.GetMetrics();
             metrics.TransactionTypeAmounts.Should().NotBeNull();
             metrics.TransactionTypeAmounts.Count.Should().Be(2);
@@ -131,6 +137,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             var summary = GetPeriodEndProviderSummary;
             paymentFundingSources = TestHelper.GetPaymentFundingSourceAmounts;
             summary.AddFundingSourceAmounts(paymentFundingSources);
+            summary.AddDataLockedEarnings(TestHelper.DefaultDataLockedTotal);
             var metrics = summary.GetMetrics();
             metrics.FundingSourceAmounts.Count.Should().Be(2);
             metrics.FundingSourceAmounts.FirstOrDefault(x => x.ContractType == ContractType.Act1)
@@ -147,6 +154,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             var summary = GetPeriodEndProviderSummary;
             var paymentsByTransactionType = TestHelper.GetPaymentTransactionTypes;
             summary.AddTransactionTypes(paymentsByTransactionType);
+            summary.AddDataLockedEarnings(TestHelper.DefaultDataLockedTotal);
             var metrics = summary.GetMetrics();
             metrics.Payments.ContractType1.Should().Be(32600m);
             metrics.Payments.ContractType2.Should().Be(32600m);
