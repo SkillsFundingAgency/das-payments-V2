@@ -37,28 +37,12 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application
             var currentPayments = await repository.GetCurrentProviderAdjustments(academicYear).ConfigureAwait(false);
             logger.LogInfo($"Found {currentPayments.Count} payments from API");
 
-            var payments = calculator.CalculateDelta(historicPayments, currentPayments);
+            var payments = calculator.CalculateDelta(historicPayments, currentPayments, academicYear, collectionPeriod);
             logger.LogInfo($"Calculated {payments.Count} new payments");
 
-            PopulateCollectionPeriod(payments, academicYear, collectionPeriod);
             await repository.AddProviderAdjustments(payments).ConfigureAwait(false);
 
             logger.LogInfo("Finished the Provider Adjustments Processor.");
-        }
-
-        private void PopulateCollectionPeriod(List<ProviderAdjustment> payments, int academicYear, int collectionPeriod)
-        {
-            var collectionPeriodMonth = collectionPeriod < 6 ? collectionPeriod + 7 : collectionPeriod - 5;
-            var collectionPeriodYear = collectionPeriod < 6 ? 2000 + academicYear / 100 : 2000 + academicYear / 100 + 1;
-            var collectionPeriodName = $"{academicYear}-R{collectionPeriod:D2}";
-
-            foreach (var payment in payments)
-            {
-                payment.CollectionPeriodMonth = collectionPeriodMonth;
-                payment.CollectionPeriodYear = collectionPeriodYear;
-                payment.CollectionPeriodName = collectionPeriodName;
-                payment.SubmissionAcademicYear = academicYear;
-            }
         }
     }
 }
