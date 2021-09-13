@@ -101,7 +101,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         FrameworkCode = aimSpec.FrameworkCode,
                         PathwayCode = aimSpec.PathwayCode,
                         StandardCode = aimSpec.StandardCode,
-                        Reference = aimSpec.AimReference
+                        Reference = aimSpec.AimReference,
+                        FundingLineType = aimSpec.FundingLineType,
                     };
 
                     var aimEarningSpecs = earningSpecs.Where(e => e.LearnerId == learnerId && e.AimSequenceNumber.GetValueOrDefault(aimSpec.AimSequenceNumber) == aimSpec.AimSequenceNumber).ToList();
