@@ -44,6 +44,18 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
                 IncentiveEarnings = new List<IncentiveEarning>
                 {
                     new IncentiveEarning { Type = IncentiveEarningType.Balancing16To18FrameworkUplift, Periods = new List<EarningPeriod> { earningPeriod }.ToList().AsReadOnly() }
+                },
+                LearningAim = new LearningAim
+                {
+                    SequenceNumber = 112,
+                    FundingLineType = "16-18 Apprenticeship (From May 2017) Levy Contract"
+                },
+                PriceEpisodes = new List<PriceEpisode>
+                {
+                    new PriceEpisode
+                    {
+                        LearningAimSequenceNumber = 112
+                    }
                 }
             };
         }

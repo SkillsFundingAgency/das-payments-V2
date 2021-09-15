@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.DataLock
                 .ForMember(dest => dest.LearningStartDate, opt => opt.MapFrom(src => src.LearningAim.StartDate))
                 .ForMember(dest => dest.IlrFileName, opt => opt.MapFrom(x => x.IlrFileName))
                 .ForMember(dest => dest.EventType, opt => opt.MapFrom(x => x.GetType().FullName))
-                .ForMember(dest => dest.LearningAimFundingLineType, opt => opt.MapFrom(x => x.PriceEpisodes.First(y => y.LearningAimSequenceNumber == x.LearningAim.SequenceNumber).FundingLineType))
+                .ForMember(dest => dest.LearningAimFundingLineType, opt => opt.ResolveUsing(x => x.PriceEpisodes.FirstOrDefault(y => y.LearningAimSequenceNumber == x.LearningAim.SequenceNumber)?.FundingLineType))
                 ;
 
             CreateMap<PayableEarningEvent, DataLockEventModel>()

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Audit;
@@ -28,6 +29,12 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                 .ForMember(dest => dest.LearningStartDate, opt => opt.MapFrom(src => src.LearningAim.StartDate))
                 .ForMember(dest => dest.IlrFileName, opt => opt.MapFrom(x => x.IlrFileName))
                 .ForMember(dest => dest.EventType, opt => opt.MapFrom(x => x.GetType().FullName))
+                .ForMember(dest => dest.LearningAimFundingLineType, opt => opt.ResolveUsing(x =>
+                {
+                    return x.PriceEpisodes
+                            .FirstOrDefault(y => y.LearningAimSequenceNumber == x.LearningAim.SequenceNumber)
+                            ?.FundingLineType;
+                }))
                 ;
 
             CreateMap<ApprenticeshipContractType1RedundancyEarningEvent, EarningEventModel>()
