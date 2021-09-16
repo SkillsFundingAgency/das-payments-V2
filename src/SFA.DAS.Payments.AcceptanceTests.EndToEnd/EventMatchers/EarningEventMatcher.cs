@@ -77,7 +77,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         PathwayCode = learnerSpec.Course.PathwayCode,
                         StandardCode = learnerSpec.Course.StandardCode,
                         FundingLineType = learnerSpec.Course.FundingLineType,
-                        AimReference = learnerSpec.Course.LearnAimRef
+                        AimReference = learnerSpec.Course.LearnAimRef,
+                        AimSequenceNumber = learnerSpec.Course.AimSeqNumber
                     });
 
                 IEnumerable<Aim> currentAims;
@@ -103,6 +104,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         StandardCode = aimSpec.StandardCode,
                         Reference = aimSpec.AimReference,
                         FundingLineType = aimSpec.FundingLineType,
+                        SequenceNumber = aimSpec.AimSequenceNumber
                     };
 
                     var aimEarningSpecs = earningSpecs.Where(e => e.LearnerId == learnerId && e.AimSequenceNumber.GetValueOrDefault(aimSpec.AimSequenceNumber) == aimSpec.AimSequenceNumber).ToList();
@@ -300,7 +302,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 expectedEvent.Learner.ReferenceNumber != actualEvent.Learner.ReferenceNumber ||
                 expectedEvent.Learner.Uln != actualEvent.Learner.Uln ||
                 expectedEvent.LearningAim.Reference != actualEvent.LearningAim.Reference ||
-                expectedEvent.LearningAim.FundingLineType != actualEvent.LearningAim.FundingLineType ||
                 expectedEvent.LearningAim.FrameworkCode != actualEvent.LearningAim.FrameworkCode ||
                 expectedEvent.LearningAim.PathwayCode != actualEvent.LearningAim.PathwayCode ||
                 expectedEvent.LearningAim.ProgrammeType != actualEvent.LearningAim.ProgrammeType ||
