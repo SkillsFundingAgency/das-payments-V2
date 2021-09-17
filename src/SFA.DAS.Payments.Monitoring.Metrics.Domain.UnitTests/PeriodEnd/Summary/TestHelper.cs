@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
         public static PeriodEndSummary DefaultPeriodEndSummary =>
             new PeriodEndSummary(123, 1, 1920);
 
-        public static ProviderFundingLineTypeAmounts DefaultDataLockedTotal => new ProviderFundingLineTypeAmounts{ FundingLineType19PlusAmount = 1000, FundingLineType16To18Amount = 3000, Ukprn = DefaultPeriodEndProviderSummary.Ukprn };
+        public static ProviderFundingLineTypeAmounts DefaultDataLockedTotal => new ProviderFundingLineTypeAmounts{ FundingLineType19PlusAmount = 1000, FundingLineType16To18Amount = 3000, Ukprn = DefaultPeriodEndProviderSummary.Ukprn, Total = 4000 };
         public static decimal AlreadyPaidDataLockedEarnings => 1000;
 
         public static List<TransactionTypeAmountsByContractType> GetDefaultDcEarnings =>
