@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -273,20 +274,28 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 
 		public async Task<List<ProviderFundingLineTypeAmounts>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
 		{
-			var latestSuccessfulJobIds = LatestSuccessfulJobs.AsNoTracking()
-															.Where(j => j.AcademicYear == academicYear && j.CollectionPeriod == collectionPeriod)
-															.Select(x => x.DcJobId);
-			return await DataLockEventNonPayablePeriods
+            var latestSuccessfulJobIds = LatestSuccessfulJobs.AsNoTracking()
+                .Where(j => j.AcademicYear == academicYear && j.CollectionPeriod == collectionPeriod)
+                .Select(x => x.DcJobId);
+            var queryResult = await DataLockEventNonPayablePeriods
 				.Where(period => period.Amount != 0 && latestSuccessfulJobIds.Contains(period.DataLockEvent.JobId))
-				.GroupBy(x => x.DataLockEvent.Ukprn)
-				.Select(x => new ProviderFundingLineTypeAmounts
-                {
-                    Ukprn = x.Key,
-                    FundingLineType16To18Amount = x.Where(y => y.DataLockEvent.LearningAimFundingLineType.ToLearnerAgeBanding() == 16).Sum(period => period.Amount),
-                    FundingLineType19PlusAmount = x.Where(y => y.DataLockEvent.LearningAimFundingLineType.ToLearnerAgeBanding() == 19).Sum(period => period.Amount)
+				.GroupBy(x => new { x.DataLockEvent.Ukprn, x.DataLockEvent.LearningAimFundingLineType })
+				.Select(x => new 
+				{
+				    x.Key.Ukprn,
+				    x.Key.LearningAimFundingLineType,
+					TotalAmount = x.Sum(period => period.Amount)
 				})
 				.ToListAsync(cancellationToken);
-		}
+
+            return queryResult.GroupBy(x => x.Ukprn)
+				.Select(x => new ProviderFundingLineTypeAmounts
+				{
+				    Ukprn = x.Key,
+				    FundingLineType16To18Amount = x.Where(y => y.LearningAimFundingLineType.ToLearnerAgeBanding() == 16).Sum(y => y.TotalAmount),
+				    FundingLineType19PlusAmount = x.Where(y => y.LearningAimFundingLineType.ToLearnerAgeBanding() == 19).Sum(y => y.TotalAmount)
+				}).ToList();
+        }
 
 		public async Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken, IsolationLevel isolationLevel = IsolationLevel.Snapshot)
 		{
