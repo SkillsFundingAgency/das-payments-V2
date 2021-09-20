@@ -293,7 +293,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 				{
 				    Ukprn = x.Key,
 				    FundingLineType16To18Amount = x.Where(y => y.LearningAimFundingLineType.ToLearnerAgeBanding() == 16).Sum(y => y.TotalAmount),
-				    FundingLineType19PlusAmount = x.Where(y => y.LearningAimFundingLineType.ToLearnerAgeBanding() == 19).Sum(y => y.TotalAmount)
+				    FundingLineType19PlusAmount = x.Where(y => y.LearningAimFundingLineType.ToLearnerAgeBanding() == 19).Sum(y => y.TotalAmount),
+					Total = x.Sum(y => y.TotalAmount)
 				}).ToList();
         }
 
