@@ -1,6 +1,4 @@
-﻿@ignore
-#issue with maths and english
-Feature: Levy learner moves start date forward and add Eng & Maths - PV2-287
+﻿Feature: Levy learner moves start date forward and add Eng & Maths - PV2-287
 		As a levy employer,
 		I want a provider that moves the course start date forward (adds in English & maths) after payments have occurred, to be paid correct amount,
 		So that I am accurately paid my apprenticeship provision - PV2-287
@@ -8,8 +6,8 @@ Feature: Levy learner moves start date forward and add Eng & Maths - PV2-287
 Scenario Outline: Levy learner moves start date forward payments refunded including english & maths - PV2-287
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
-        | commitment Id | version Id | start date                   | end date                  | agreed price | status |
-        | 1             | 1          | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 9000         | active |
+        | commitment Id | version Id | start date                   | end date                  | agreed price | status | Framework Code | Pathway Code | Programme Type |
+        | 1             | 1          | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 9000         | active | 593            | 1            | 20             |
 	And the following aims
 		| Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status |
 		| Programme        | ZPROG001      | 06/Aug/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        |
@@ -47,60 +45,41 @@ Scenario Outline: Levy learner moves start date forward payments refunded includ
         |                  | 471                  | 06/Oct/Current Academic Year        | Act1          | 1                   |                             |    
         | pe-3             | 9000                 | 06/Oct/Current Academic Year        | Act1          | 2                   | 90%                         |
 
-	# This may need changing 
-	And the Commitment details are changed as follows
-	| commitment Id | version Id | start date                   | end date                  | agreed price | status    |
-	| 1             | 1          | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 9000         | cancelled |
-	| 1             | 2          | 01/Oct/Current Academic Year | 01/Oct/Next Academic Year | 9000         | active    |
-
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
     Then the following learner earnings should be generated
-        | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Aim Sequence Number | Price Episode Identifier | Contract Type |
-		#p1
-        | Aug/Current Academic Year | -600         | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
-        | Sep/Current Academic Year | -600         | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
-        | Oct/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
-        | Nov/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
-        | Dec/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
-        | Jan/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
-        | Feb/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
-        | Mar/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
-        | Apr/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
-        | May/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
-        | Jun/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
-        | Jul/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-1                     | Act1          |
+        | Delivery Period           | On-Programme              | Completion | Balancing | OnProgrammeMathsAndEnglish | Aim Sequence Number | Price Episode Identifier | Contract Type |
 		#p2 - Maths and English
-        | Aug/Current Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | Act1          |
-        | Sep/Current Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | Act1          |
-        | Oct/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
-        | Nov/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
-        | Dec/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
-        | Jan/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
-        | Feb/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
-        | Mar/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
-        | Apr/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
-        | May/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
-        | Jun/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
-        | Jul/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | Aug/Current Academic Year | 0                         | 0          | 0         | 0                          | 1                   |                          | Act1          |
+        | Sep/Current Academic Year | 0                         | 0          | 0         | 0                          | 1                   |                          | Act1          |
+        | Oct/Current Academic Year | 0                         | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | Nov/Current Academic Year | 0                         | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | Dec/Current Academic Year | 0                         | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | Jan/Current Academic Year | 0                         | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | Feb/Current Academic Year | 0                         | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | Mar/Current Academic Year | 0                         | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | Apr/Current Academic Year | 0                         | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | May/Current Academic Year | 0                         | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | Jun/Current Academic Year | 0                         | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
+        | Jul/Current Academic Year | 0                         | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
 		#p3
-        | Aug/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
-        | Sep/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
-        | Oct/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
-        | Nov/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
-        | Dec/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
-        | Jan/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
-        | Feb/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
-        | Mar/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
-        | Apr/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
-        | May/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
-        | Jun/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
-        | Jul/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
+        | Aug/Current Academic Year | 0                         | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
+        | Sep/Current Academic Year | 0                         | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
+        | Oct/Current Academic Year | 0                         | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
+        | Nov/Current Academic Year | 600                       | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
+        | Dec/Current Academic Year | 600                       | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
+        | Jan/Current Academic Year | 600                       | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
+        | Feb/Current Academic Year | 600                       | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
+        | Mar/Current Academic Year | 600                       | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
+        | Apr/Current Academic Year | 600                       | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
+        | May/Current Academic Year | 600                       | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
+        | Jun/Current Academic Year | 600                       | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
+        | Jul/Current Academic Year | 600                       | 0          | 0         | 0                          | 2                   | pe-3                     | Act1          |
 
     And at month end only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish |
         | R03/Current Academic Year | Aug/Current Academic Year | -600         | 0          | 0         | 0                          |
         | R03/Current Academic Year | Sep/Current Academic Year | -600         | 0          | 0         | 0                          |
-        | R03/Current Academic Year | Oct/Current Academic Year | 600          | 0          | 0         | 39.25                      |
+        | R03/Current Academic Year | Oct/Current Academic Year | 0            | 0          | 0         | 39.25                      |
         | R04/Current Academic Year | Nov/Current Academic Year | 600          | 0          | 0         | 39.25                      |
         | R05/Current Academic Year | Dec/Current Academic Year | 600          | 0          | 0         | 39.25                      |
         | R06/Current Academic Year | Jan/Current Academic Year | 600          | 0          | 0         | 39.25                      |
@@ -115,7 +94,7 @@ Scenario Outline: Levy learner moves start date forward payments refunded includ
         | Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type           |
         | R03/Current Academic Year | Aug/Current Academic Year | -600          | 0                         | Learning                   |
         | R03/Current Academic Year | Sep/Current Academic Year | -600          | 0                         | Learning                   |
-        | R03/Current Academic Year | Oct/Current Academic Year | 600           | 0                         | Learning                   |
+        | R03/Current Academic Year | Oct/Current Academic Year | 0             | 0                         | Learning                   |
         | R04/Current Academic Year | Nov/Current Academic Year | 600           | 0                         | Learning                   |
         | R05/Current Academic Year | Dec/Current Academic Year | 600           | 0                         | Learning                   |
         | R06/Current Academic Year | Jan/Current Academic Year | 600           | 0                         | Learning                   |
@@ -140,7 +119,7 @@ Scenario Outline: Levy learner moves start date forward payments refunded includ
         | Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type           |
         | R03/Current Academic Year | Aug/Current Academic Year | -600          | 0                         | Learning                   |
         | R03/Current Academic Year | Sep/Current Academic Year | -600          | 0                         | Learning                   |
-        | R03/Current Academic Year | Oct/Current Academic Year | 600           | 0                         | Learning                   |
+        | R03/Current Academic Year | Oct/Current Academic Year | 0             | 0                         | Learning                   |
         | R04/Current Academic Year | Nov/Current Academic Year | 600           | 0                         | Learning                   |
         | R05/Current Academic Year | Dec/Current Academic Year | 600           | 0                         | Learning                   |
         | R06/Current Academic Year | Jan/Current Academic Year | 600           | 0                         | Learning                   |
