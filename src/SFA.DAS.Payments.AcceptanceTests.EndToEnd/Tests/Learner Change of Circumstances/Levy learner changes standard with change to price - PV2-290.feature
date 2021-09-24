@@ -1,6 +1,4 @@
-﻿@ignore
-# issue with a missing earning. Required payments has value but it doesn't get passed to funding source
-Feature: Levy learner changes course and there is a change in price - PV2-290
+﻿Feature: Levy learner changes course and there is a change in price - PV2-290
 	As a provider,
 	I want a levy learner, that changes standard with change to negotiated price, to be paid correct amount
 	So that I am accurately paid my apprenticeship provision. PV2-290
@@ -10,14 +8,14 @@ Scenario Outline: Levy learner change to standard at the end of a month along wi
 	Given the employer levy account balance in collection period R01/Current Academic Year is 15500
 
 	And the following commitments exist
-		| Identifier       | standard code | start date                   | end date                  | agreed price | effective from               | effective to                 | Programme Type | Standard Code |
-		| Apprenticeship 1 | 51            | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 15000        | 01/Aug/Current Academic Year | 31/Oct/Current Academic Year | 25             | 51            |
-		| Apprenticeship 2 | 52            | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 5625         | 03/Nov/Current Academic Year |                              | 25             | 52            |
+		| Identifier       | start date                   | end date                  | agreed price | status | effective from               | effective to                 | Programme Type | Standard Code |
+		| Apprenticeship 1 | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 15000        | active | 01/Aug/Current Academic Year | 31/Oct/Current Academic Year | 25             | 51            |
+		| Apprenticeship 2 | 01/Aug/Current Academic Year | 01/Aug/Next Academic Year | 5625         | active | 03/Nov/Current Academic Year |                              | 25             | 52            |
 
 	And the following aims
-		| Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Programme Type | Standard Code | Funding Line Type             | Completion Status |
-		| ZPROG001      | 03/Aug/Current Academic Year | 12 months        | 3 months        | 1                   | 25             | 51            | 16-18 Apprenticeship Non-Levy | withdrawn         |
-		| ZPROG001      | 03/Nov/Current Academic Year | 9 months         |                 | 2                   | 25             | 52            | 16-18 Apprenticeship Non-Levy | continuing        |
+		| Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Programme Type | Standard Code | Funding Line Type             | Completion Status |
+		| Programme        | ZPROG001      | 03/Aug/Current Academic Year | 12 months        | 3 months        | 1                   | 25             | 51            | 16-18 Apprenticeship Non-Levy | withdrawn         |
+		| Programme        | ZPROG001      | 03/Nov/Current Academic Year | 9 months         |                 | 2                   | 25             | 52            | 16-18 Apprenticeship Non-Levy | continuing        |
 
 	And price details as follows		
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
@@ -26,21 +24,32 @@ Scenario Outline: Levy learner change to standard at the end of a month along wi
 
     When the ILR file is submitted for the learners for collection period <Collection_Period>
     Then the following learner earnings should be generated
-        | Delivery Period           | On-Programme | Completion | Balancing | Aim Sequence Number | Price Episode Identifier |
-        #p1
-        | Aug/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     |
-        | Sep/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     |
-        | Oct/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     |
-        | Nov/Current Academic Year | 500          | 0          | 0         | 2                   | pe-2                     |
-        | Dec/Current Academic Year | 500          | 0          | 0         | 2                   | pe-2                     |
-        | Jan/Current Academic Year | 500          | 0          | 0         | 2                   | pe-2                     |
-        | Feb/Current Academic Year | 500          | 0          | 0         | 2                   | pe-2                     |
-        | Mar/Current Academic Year | 500          | 0          | 0         | 2                   | pe-2                     |
-        | Apr/Current Academic Year | 500          | 0          | 0         | 2                   | pe-2                     |
-        | May/Current Academic Year | 500          | 0          | 0         | 2                   | pe-2                     |
-        | Jun/Current Academic Year | 500          | 0          | 0         | 2                   | pe-2                     |
-        | Jul/Current Academic Year | 500          | 0          | 0         | 2                   | pe-2                     |
-
+        | Delivery Period           | On-Programme | Completion | Balancing | Aim Sequence Number | Price Episode Identifier | Contract Type |
+        | Aug/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     | Act1          |
+        | Sep/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     | Act1          |
+        | Oct/Current Academic Year | 1000         | 0          | 0         | 1                   | pe-1                     | Act1          |
+        | Nov/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     | Act1          |
+        | Dec/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     | Act1          |
+        | Jan/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     | Act1          |
+        | Feb/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     | Act1          |
+        | Mar/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     | Act1          |
+        | Apr/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     | Act1          |
+        | May/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     | Act1          |
+        | Jun/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     | Act1          |
+        | Jul/Current Academic Year | 0            | 0          | 0         | 1                   | pe-1                     | Act1          |
+        | Aug/Current Academic Year | 0            | 0          | 0         | 2                   | pe-2                     | Act1          |
+        | Sep/Current Academic Year | 0            | 0          | 0         | 2                   | pe-2                     | Act1          |
+        | Oct/Current Academic Year | 0            | 0          | 0         | 2                   | pe-2                     | Act1          |
+        | Nov/Current Academic Year | 500          | 0          | 0         | 2                   | pe-2                     | Act1          |
+        | Dec/Current Academic Year | 500          | 0          | 0         | 2                   | pe-2                     | Act1          |
+        | Jan/Current Academic Year | 500          | 0          | 0         | 2                   | pe-2                     | Act1          |
+        | Feb/Current Academic Year | 500          | 0          | 0         | 2                   | pe-2                     | Act1          |
+        | Mar/Current Academic Year | 500          | 0          | 0         | 2                   | pe-2                     | Act1          |
+        | Apr/Current Academic Year | 500          | 0          | 0         | 2                   | pe-2                     | Act1          |
+        | May/Current Academic Year | 500          | 0          | 0         | 2                   | pe-2                     | Act1          |
+        | Jun/Current Academic Year | 500          | 0          | 0         | 2                   | pe-2                     | Act1          |
+        | Jul/Current Academic Year | 500          | 0          | 0         | 2                   | pe-2                     | Act1          |
+                                                                                                                               
 	And at month end only the following payments will be calculated
 		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
 		| R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
