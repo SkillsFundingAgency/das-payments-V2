@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                 case "19+ Apprenticeship (Employer on App Service)":
                     return 19;
                 default:
-                    throw new ArgumentException("A valid funding line type is required.", nameof(fundingLineType));
+                    return 0;
             }
         }
     }
