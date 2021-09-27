@@ -1,4 +1,4 @@
-﻿Feature: Levy learner moves start date forward payments refunded including english & maths - PV2-288
+﻿Feature: PV2-288 - Levy learner moves start date forward payments refunded including english & maths
 		As a levy employer,
 		I want a learner that moves start date forward on prog payments and English & Maths refunded, to be paid correct amount,
 		So that I am accurately paid my apprenticeship provision - PV2-288
@@ -54,8 +54,8 @@ Scenario Outline: Levy learner moves start date forward payments refunded includ
 
     But aims details are changed as follows
 		| Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status |
-		| Maths or English | 12345         | 06/Oct/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        |
-		| Programme        | ZPROG001      | 06/Oct/Current Academic Year | 12 months        |                 | 2                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        |
+		| Maths or English | 12345         | 01/Oct/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        |
+		| Programme        | ZPROG001      | 01/Oct/Current Academic Year | 12 months        |                 | 2                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        |
 																																																																			                 
 	And price details are changed as follows																																																								                  
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
@@ -65,10 +65,8 @@ Scenario Outline: Levy learner moves start date forward payments refunded includ
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
     Then the following learner earnings should be generated
         | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Aim Sequence Number | Price Episode Identifier | Contract Type |
-		#p1
-        | Aug/Current Academic Year | 0            | 0          | 0         | -39.25                     | 1                   |                          | Act1          |
-        | Sep/Current Academic Year | 0            | 0          | 0         | -39.25                     | 1                   |                          | Act1          |
-		#p3																																				    
+        | Aug/Current Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | Act1          |
+        | Sep/Current Academic Year | 0            | 0          | 0         | 0                          | 1                   |                          | Act1          |
         | Oct/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
         | Nov/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
         | Dec/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
@@ -79,10 +77,9 @@ Scenario Outline: Levy learner moves start date forward payments refunded includ
         | May/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
         | Jun/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
         | Jul/Current Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | Act1          |
-		#p4
         | Aug/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-4                     | Act1          |
         | Sep/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-4                     | Act1          |
-        | Oct/Current Academic Year | 0            | 0          | 0         | 0                          | 2                   | pe-4                     | Act1          |
+        | Oct/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-4                     | Act1          |
         | Nov/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-4                     | Act1          |
         | Dec/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-4                     | Act1          |
         | Jan/Current Academic Year | 600          | 0          | 0         | 0                          | 2                   | pe-4                     | Act1          |
@@ -97,7 +94,7 @@ Scenario Outline: Levy learner moves start date forward payments refunded includ
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish |
         | R03/Current Academic Year | Aug/Current Academic Year | -600         | 0          | 0         | -39.25                     |
         | R03/Current Academic Year | Sep/Current Academic Year | -600         | 0          | 0         | -39.25                     |
-        | R03/Current Academic Year | Oct/Current Academic Year | 0            | 0          | 0         | 39.25                      |
+        | R03/Current Academic Year | Oct/Current Academic Year | 600          | 0          | 0         | 39.25                      |
         | R04/Current Academic Year | Nov/Current Academic Year | 600          | 0          | 0         | 39.25                      |
         | R05/Current Academic Year | Dec/Current Academic Year | 600          | 0          | 0         | 39.25                      |
         | R06/Current Academic Year | Jan/Current Academic Year | 600          | 0          | 0         | 39.25                      |
@@ -112,7 +109,7 @@ Scenario Outline: Levy learner moves start date forward payments refunded includ
         | Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type           |
         | R03/Current Academic Year | Aug/Current Academic Year | -600          | 0                         | Learning                   |
         | R03/Current Academic Year | Sep/Current Academic Year | -600          | 0                         | Learning                   |
-        | R03/Current Academic Year | Oct/Current Academic Year | 0             | 0                         | Learning                   |
+        | R03/Current Academic Year | Oct/Current Academic Year | 600           | 0                         | Learning                   |
         | R04/Current Academic Year | Nov/Current Academic Year | 600           | 0                         | Learning                   |
         | R05/Current Academic Year | Dec/Current Academic Year | 600           | 0                         | Learning                   |
         | R06/Current Academic Year | Jan/Current Academic Year | 600           | 0                         | Learning                   |
@@ -139,7 +136,7 @@ Scenario Outline: Levy learner moves start date forward payments refunded includ
         | Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type           |
         | R03/Current Academic Year | Aug/Current Academic Year | -600          | 0                         | Learning                   |
         | R03/Current Academic Year | Sep/Current Academic Year | -600          | 0                         | Learning                   |
-        | R03/Current Academic Year | Oct/Current Academic Year | 0             | 0                         | Learning                   |
+        | R03/Current Academic Year | Oct/Current Academic Year | 600           | 0                         | Learning                   |
         | R04/Current Academic Year | Nov/Current Academic Year | 600           | 0                         | Learning                   |
         | R05/Current Academic Year | Dec/Current Academic Year | 600           | 0                         | Learning                   |
         | R06/Current Academic Year | Jan/Current Academic Year | 600           | 0                         | Learning                   |
