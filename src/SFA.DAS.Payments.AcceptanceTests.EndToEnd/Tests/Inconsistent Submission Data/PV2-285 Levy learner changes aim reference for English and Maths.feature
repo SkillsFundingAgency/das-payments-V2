@@ -1,9 +1,9 @@
-﻿Feature: Levy learner changes aim reference for eng and maths aim and payments are reconciled - PV2-285
+﻿Feature: PV2-285 - Levy learner changes aim reference for eng and maths aim and payments are reconciled
 		As a provider,
 		I want a levy learner, where aim reference for English and Maths is changed and payments are reconciled,
-		So that I am accurately paid my apprenticeship provision - PV2-285
+		So that I am accurately paid my apprenticeship provision
 
-Scenario Outline: Levy learner changes aim reference for eng and maths aim and payments are reconciled - PV2-285
+Scenario Outline: PV2-285 - Levy learner changes aim reference for eng and maths aim and payments are reconciled
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
         | start date                | end date                     | agreed price | status | Framework Code | Pathway Code | Programme Type |

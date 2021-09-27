@@ -1,9 +1,9 @@
-﻿Feature: Levy learner changes course and there is a change in price - PV2-290
+﻿Feature: PV2-290 - Levy learner changes course and there is a change in price
 	As a provider,
 	I want a levy learner, that changes standard with change to negotiated price, to be paid correct amount
 	So that I am accurately paid my apprenticeship provision. PV2-290
 
-Scenario Outline: Levy learner change to standard at the end of a month along with change in price PV2-290
+Scenario Outline: PV2-290 - Levy learner change to standard at the end of a month along with change in price
 
 	Given the employer levy account balance in collection period R01/Current Academic Year is 15500
 

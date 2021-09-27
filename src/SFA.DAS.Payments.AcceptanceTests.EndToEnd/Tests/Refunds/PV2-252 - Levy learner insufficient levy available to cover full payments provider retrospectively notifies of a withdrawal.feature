@@ -1,11 +1,10 @@
 @basic_refund
-# Fails to generate levy refund as the earning for periods 4 and 5 are 0 and so the DataLock component adds the earning event period onto the PayableEarningEvent without assigning the correct AccountId
-Feature: Levy learner, insufficient levy available to cover full payments, provider retrospectively notifies a withdrawal and previously paid monthly instalments need to be refunded PV2-252
+Feature: PV2-252 - Levy learner, insufficient levy available to cover full payments, provider retrospectively notifies a withdrawal and previously paid monthly instalments need to be refunded
 	As a provider,
 	I want a Levy learner, where there is insufficient levy available to cover full payments the provider retrospectively notifies a withdrawal and previously paid monthly instalments are refunded
-	So that I am accurately paid my apprenticeship provision. PV2-252
+	So that I am accurately paid my apprenticeship provision.
  
-Scenario:  A levy learner in co-funding and provider retrospectively notifies of a withdrawal after payments have already been made
+Scenario:  PV2-252 - A levy learner in co-funding and provider retrospectively notifies of a withdrawal after payments have already been made
 
 Given the employer levy account balance in collection period R06/Current Academic Year is 2500
 

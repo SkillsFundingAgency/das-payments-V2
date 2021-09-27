@@ -1,10 +1,10 @@
 ﻿    #issue to be fixed after go live
-    Feature: Levy Learner changes course but price is the same PV2-426
+    Feature: PV2-426 - Levy Learner changes course but price is the same
 			As a provider,
 			I want to ensure when my levy learner, the changes apprenticeship standard and negotiated price remains the same, to be paid the correct amount
-			So that I am accurately paid my apprenticeship provision. PV2-426
+			So that I am accurately paid my apprenticeship provision.
 
-	Scenario Outline: Levy learner change to standard at the end of a month no change in price PV2-426
+	Scenario Outline: PV2-426 - Levy learner change to standard at the end of a month no change in price
 
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 

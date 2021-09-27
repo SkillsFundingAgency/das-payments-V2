@@ -3,7 +3,7 @@
 		I want a provider that moves the course start date forward (adds in English & maths) after payments have occurred, to be paid correct amount,
 		So that I am accurately paid my apprenticeship provision - PV2-287
 
-Scenario Outline: Levy learner moves start date forward payments refunded including english & maths - PV2-287
+Scenario Outline: PV2-287 - Levy learner moves start date forward payments refunded including english & maths
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
         | commitment Id | version Id | start date                   | end date                  | agreed price | status | Framework Code | Pathway Code | Programme Type |

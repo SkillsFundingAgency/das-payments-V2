@@ -1,9 +1,9 @@
 ﻿Feature: PV2-288 - Levy learner moves start date forward payments refunded including english & maths
 		As a levy employer,
-		I want a learner that moves start date forward on prog payments and English & Maths refunded, to be paid correct amount,
+		I want a learner that moves start date forward, with on prog payments and English & Maths refunded, to be paid correct amount,
 		So that I am accurately paid my apprenticeship provision - PV2-288
 
-Scenario Outline: Levy learner moves start date forward payments refunded including english & maths - PV2-288
+Scenario Outline: PV2-288 - Levy learner moves start date forward payments refunded including english & maths
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
         | start date                   | end date                  | agreed price | status | Framework Code | Pathway Code | Programme Type |
