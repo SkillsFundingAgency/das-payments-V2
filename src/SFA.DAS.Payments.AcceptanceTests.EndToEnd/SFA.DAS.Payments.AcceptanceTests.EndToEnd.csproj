@@ -1160,15 +1160,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy learner changes price during month - PV2-295.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Learner Change of Circumstances\Levy learner changes standard with change to price - PV2-290.feature.cs">
+    <Compile Include="Tests\Learner Change of Circumstances\PV2-290 - Levy learner changes standard with change to price.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Levy learner changes standard with change to price - PV2-290.feature</DependentUpon>
+      <DependentUpon>PV2-290 - Levy learner changes standard with change to price.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Learner Change of Circumstances\Levy learner goes on a planned break - PV2-296.feature.cs">
+    <Compile Include="Tests\Learner Change of Circumstances\PV2-296 - Levy learner goes on a planned break.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Levy learner goes on a planned break - PV2-296.feature</DependentUpon>
+      <DependentUpon>PV2-296 - Levy learner goes on a planned break.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Learner Change of Circumstances\Levy learner Ilr is submitted late - PV2-428.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1660,10 +1660,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy learner changes start date forwards in month - PV2-280.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Refunds\Levy learner insufficient levy available to cover full payments provider retrospectively notifies of a withdrawal PV2-252.feature.cs">
+    <Compile Include="Tests\Refunds\PV2-252 - Levy learner insufficient levy available to cover full payments provider retrospectively notifies of a withdrawal.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Levy learner insufficient levy available to cover full payments provider retrospectively notifies of a withdrawal PV2-252.feature</DependentUpon>
+      <DependentUpon>PV2-252 - Levy learner insufficient levy available to cover full payments provider retrospectively notifies of a withdrawal.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Refunds\Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded PV2-253.feature.cs">
       <AutoGen>True</AutoGen>
@@ -2379,9 +2379,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner changes price during month - PV2-295.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Learner Change of Circumstances\Levy learner goes on a planned break - PV2-296.feature">
+    <None Include="Tests\Learner Change of Circumstances\PV2-296 - Levy learner goes on a planned break.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Levy learner goes on a planned break - PV2-296.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-296 - Levy learner goes on a planned break.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Learner Change of Circumstances\Levy learner Ilr is submitted late - PV2-428.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2523,9 +2523,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>2 learners 2 employers 1 provider enough levy - PV2-267.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Learner Change of Circumstances\Levy learner changes standard with change to price - PV2-290.feature">
+    <None Include="Tests\Learner Change of Circumstances\PV2-290 - Levy learner changes standard with change to price.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Levy learner changes standard with change to price - PV2-290.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-290 - Levy learner changes standard with change to price.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Levy Learner\Basic Day\One levy learner finishes on time not enough levy to cover full payment-PV2-266.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -2791,9 +2791,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner changes start date forwards in month - PV2-280.feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Refunds\Levy learner insufficient levy available to cover full payments provider retrospectively notifies of a withdrawal PV2-252.feature">
+    <None Include="Tests\Refunds\PV2-252 - Levy learner insufficient levy available to cover full payments provider retrospectively notifies of a withdrawal.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Levy learner insufficient levy available to cover full payments provider retrospectively notifies of a withdrawal PV2-252.feature.cs</LastGenOutput>
+      <LastGenOutput>PV2-252 - Levy learner insufficient levy available to cover full payments provider retrospectively notifies of a withdrawal.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Refunds\Levy learner, levy available, 2 providers - one provider retrospectively notifies a withdrawal need to be refunded PV2-253.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
