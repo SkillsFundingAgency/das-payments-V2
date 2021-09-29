@@ -23,7 +23,7 @@
     [PaymentsYearToDateContractType1]         DECIMAL (15, 5)    NOT NULL,
     [PaymentsYearToDateContractType2]         DECIMAL (15, 5)    NOT NULL,
     [InLearning]                              INT                NULL,
-    [NegativeEarningsPeriodTotal]             DECIMAL (15, 5)    NULL,
+    [NegativeEarningsTotal]             DECIMAL (15, 5)    NULL,
     [CreationDate]                            DATETIMEOFFSET (7) CONSTRAINT [DF_ProviderPeriodEndSummary__CreationDate] DEFAULT (sysdatetimeoffset()) NOT NULL,
     CONSTRAINT [PK_ProviderPeriodEndSummary] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [UQ_ProviderPeriodEndSummary] UNIQUE NONCLUSTERED ([Ukprn] ASC, [AcademicYear] ASC, [CollectionPeriod] ASC)
