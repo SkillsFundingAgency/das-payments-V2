@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 {
-
     public interface IPeriodEndMetricsRepository
     {
         Task<List<ProviderTransactionTypeAmounts>> GetTransactionTypesByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
@@ -23,6 +22,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
         Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderContractTypeAmounts>> GetYearToDatePayments(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderInLearningTotal>> GetInLearningCount(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<ProviderNegativeEarningsTotal>> GetNegativeEarningsPerProvider(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<CollectionPeriodToleranceModel> GetCollectionPeriodTolerance(byte collectionPeriod, short academicYear, CancellationToken cancellationToken);
         Task SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, PeriodEndSummaryModel overallPeriodEndSummary, CancellationToken cancellationToken);
     }
@@ -207,8 +207,61 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 .Distinct()
                 .GroupBy(x => x.Ukprn)
                 .Select(x => new ProviderInLearningTotal {Ukprn = x.Key, InLearningCount = x.Count()})
+
+        public async Task<List<ProviderNegativeEarningsTotal>> GetNegativeEarningsPerProvider(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        {
+            var providerNegativeEarningsByLearner = await QueryDataContext
+                .EarningEventPeriods
+                .Include(eep => eep.EarningEvent)
+                .Join(QueryDataContext.LatestSuccessfulJobs
+                    .Where(lsj =>
+                        lsj.AcademicYear == academicYear &&
+                        lsj.CollectionPeriod == collectionPeriod),
+                    eep => eep.EarningEvent.JobId,
+                    lsj => lsj.DcJobId,
+                    (eep, lsj) => new
+                    {
+                        eep.EarningEvent.Ukprn,
+                        eep.EarningEvent.LearnerUln,
+                        eep.Amount,
+                        eep.EarningEvent.ContractType,
+                        eep.EarningEvent.AcademicYear,
+                        eep.EarningEvent.CollectionPeriod
+                    })
+                .Where(selected =>
+                    selected.AcademicYear == academicYear &&
+                    selected.CollectionPeriod == collectionPeriod)
+                .GroupBy(groupBy => new
+                {
+                    groupBy.Ukprn,
+                    groupBy.LearnerUln,
+                    groupBy.ContractType
+                })
+                .Select(select => new
+                {
+                    select.Key.Ukprn,
+                    select.Key.LearnerUln,
+                    select.Key.ContractType,
+                    Amount = select.Sum(key => key.Amount)
+                })
+                .Where(having => having.Amount < 0)
                 .ToListAsync(cancellationToken);
+
+            return providerNegativeEarningsByLearner
+                    .GroupBy(groupBy => new
+                    {
+                        groupBy.Ukprn,
+                        groupBy.ContractType
+                    })
+                    .Select(select => new ProviderNegativeEarningsTotal
+                    {
+                        Ukprn = select.Key.Ukprn,
+                        ContractType = select.Key.ContractType,
+                        NegativeEarningsTotal = Math.Abs(select.Sum(key => key.Amount)) 
+                    })
+                    .ToList();
         }
+
         public async Task<CollectionPeriodToleranceModel> GetCollectionPeriodTolerance(byte collectionPeriod, short academicYear, CancellationToken cancellationToken)
         {
             return await persistenceDataContext.CollectionPeriodTolerances
