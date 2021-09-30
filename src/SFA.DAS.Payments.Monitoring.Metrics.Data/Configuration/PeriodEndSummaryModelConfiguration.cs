@@ -58,7 +58,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration
                 amounts.Ignore(x => x.Total);
             });
             builder.Property(x => x.InLearning).HasColumnName(@"InLearning");
-            builder.Property(x => x.NegativeEarningsTotal).HasColumnName(@"NegativeEarningsTotal");
+            builder.OwnsOne(x => x.NegativeEarnings, amounts =>
+            {
+                amounts.Property(x => x.ContractType1).HasColumnName(@"NegativeEarningsContractType1");
+                amounts.Property(x => x.ContractType1).HasColumnName(@"NegativeEarningsContractType1");
+                amounts.Ignore(x => x.Total);
+            });
         }
     }
 }
