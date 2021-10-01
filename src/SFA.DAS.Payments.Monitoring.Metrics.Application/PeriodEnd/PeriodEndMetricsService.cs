@@ -104,7 +104,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                     providerSummary.AddDataLockedAlreadyPaid(dataLockedAlreadyPaidTask.Result.FirstOrDefault(x => x.Ukprn == ukprn)?.TotalAmount ?? 0m);
                     providerSummary.AddHeldBackCompletionPayments(heldBackCompletionAmountsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderContractTypeAmounts());
                     providerSummary.AddInLearningCount(inLearningCountTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderInLearningTotal());
-                    providerSummary.AddNegativeEarnings(dcNegativeEarningsTask.Result?.Where(x => x.Ukprn == ukprn)?.ToList() ?? new List<ProviderNegativeEarningsTotal>());
+                    providerSummary.AddNegativeEarnings(dcNegativeEarningsTask.Result.Where(x => x.Ukprn == ukprn).ToList());
 
                     var providerSummaryModel = providerSummary.GetMetrics();
 
