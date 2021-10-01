@@ -18,6 +18,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         void AddPaymentsYearToDate(ProviderContractTypeAmounts paymentsYearToDate);
         void AddHeldBackCompletionPayments(ProviderContractTypeAmounts heldBackCompletionPayments);
         void AddInLearningCount(ProviderInLearningTotal inLearningTotal);
+        void AddNegativeEarnings(List<ProviderNegativeEarningsTotal> providerNegativeEarningsTotal);
     }
 
     public class PeriodEndProviderSummary : IPeriodEndProviderSummary
@@ -35,6 +36,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         private ProviderContractTypeAmounts providerHeldBackCompletionPayments;
         private PeriodEndProviderDataLockTypeCounts periodEndProviderDataLockTypeCounts;
         private int? inLearning;
+        private NegativeEarningsContractTypeAmounts negativeEarnings;
 
         public PeriodEndProviderSummary(long ukprn, long jobId, byte collectionPeriod, short academicYear)
         {
@@ -48,6 +50,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             providerPaymentsYearToDate = new ProviderContractTypeAmounts();
             providerHeldBackCompletionPayments = new ProviderContractTypeAmounts();
             periodEndProviderDataLockTypeCounts = new PeriodEndProviderDataLockTypeCounts();
+            negativeEarnings = new NegativeEarningsContractTypeAmounts();
         }
 
 
@@ -164,6 +167,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         public void AddInLearningCount(ProviderInLearningTotal inLearningTotal)
         {
             inLearning = inLearningTotal.InLearningCount;
+        }
+
+        public void AddNegativeEarnings(List<ProviderNegativeEarningsTotal> providerNegativeEarningsTotal)
+        {
+            negativeEarnings.ContractType1 = providerNegativeEarningsTotal.FirstOrDefault(x => x.ContractType == ContractType.Act1)?.NegativeEarningsTotal ?? 0m;
+            negativeEarnings.ContractType2 = providerNegativeEarningsTotal.FirstOrDefault(x => x.ContractType == ContractType.Act2)?.NegativeEarningsTotal ?? 0m;
         }
     }
 }
