@@ -14,6 +14,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
     {
         Task<List<TransactionTypeAmounts>> GetEarnings(long ukprn, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderTransactionTypeAmounts>> GetEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<ProviderNegativeEarningsTotal>> GetNegativeEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
     }
 
     public class DcMetricsDataContext : DbContext, IDcMetricsDataContext
@@ -194,12 +195,60 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                 GROUP BY [ApprenticeshipContractType], UKPRN
                 order by UKPRN,ApprenticeshipContractType";
 
+        private static string LearnerNegativeEarnings =
+            @", LearnerNegativeEarnings AS (
+           	    SELECT 
+           	    	CAST(Ukprn as bigint) as Ukprn,
+           	    	CAST(ULN as bigint) as ULN, 
+           	    	Cast([ApprenticeshipContractType] as TinyInt) as ContractType,
+           	    	SUM(TransactionType01) + 
+           	    	SUM(TransactionType02) +
+           	    	SUM(TransactionType03) +
+           	    	SUM(TransactionType04) +
+           	    	SUM(TransactionType05) +
+           	    	SUM(TransactionType06) +
+           	    	SUM(TransactionType07) +
+           	    	SUM(TransactionType08) +
+           	    	SUM(TransactionType09) +
+           	    	SUM(TransactionType10) +
+           	    	SUM(TransactionType11) +
+           	    	SUM(TransactionType12) +
+           	    	SUM(TransactionType13) +
+           	    	SUM(TransactionType14) +
+           	    	SUM(TransactionType15) +
+           	    	SUM(TransactionType16) [Earnings]
+           	    FROM AllEarnings
+           	    where ApprenticeshipContractType in (1,2)
+           	    GROUP BY [ApprenticeshipContractType], ULN, Ukprn
+           	    Having SUM(TransactionType01) + 
+           	    	SUM(TransactionType02) +
+           	    	SUM(TransactionType03) +
+           	    	SUM(TransactionType04) +
+           	    	SUM(TransactionType05) +
+           	    	SUM(TransactionType06) +
+           	    	SUM(TransactionType07) +
+           	    	SUM(TransactionType08) +
+           	    	SUM(TransactionType09) +
+           	    	SUM(TransactionType10) +
+           	    	SUM(TransactionType11) +
+           	    	SUM(TransactionType12) +
+           	    	SUM(TransactionType13) +
+           	    	SUM(TransactionType14) +
+           	    	SUM(TransactionType15) +
+           	    	SUM(TransactionType16) < 0
+            )
+                SELECT SUM([Earnings]) as [Earnings], ContractType, Ukprn
+                FROM LearnerNegativeEarnings
+                GROUP BY ContractType, Ukprn
+                order by Ukprn, ContractType";
+
         public DcMetricsDataContext(DbContextOptions contextOptions) : base(contextOptions)
         { }
 
         public DbQuery<TransactionTypeAmounts> Earnings { get; set; }
 
         public DbQuery<ProviderTransactionTypeAmounts> AllProviderEarnings { get; set; }
+        public DbQuery<ProviderNegativeEarningsTotal> AllNegativeEarnings { get; set; }
 
         public async Task<List<TransactionTypeAmounts>> GetEarnings(long ukprn, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
@@ -214,6 +263,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             using (await BeginTransaction(cancellationToken))
             {
                 return await AllProviderEarnings.FromSql(BaseDcEarningsQuery + UkprnGroupSelect, new SqlParameter("@collectionperiod", collectionPeriod)).ToListAsync(cancellationToken);
+            }
+        }
+
+        public async Task<List<ProviderNegativeEarningsTotal>> GetNegativeEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        {
+            using (await BeginTransaction(cancellationToken))
+            {
+                return await AllNegativeEarnings.FromSql(BaseDcEarningsQuery + LearnerNegativeEarnings, new SqlParameter("@collectionperiod", collectionPeriod)).ToListAsync(cancellationToken);
             }
         }
 
