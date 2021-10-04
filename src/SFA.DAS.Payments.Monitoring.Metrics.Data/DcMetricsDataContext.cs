@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Threading;
@@ -270,7 +271,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         {
             using (await BeginTransaction(cancellationToken))
             {
-                return await AllNegativeEarnings.FromSql(BaseDcEarningsQuery + LearnerNegativeEarnings, new SqlParameter("@collectionperiod", collectionPeriod)).ToListAsync(cancellationToken);
+                var result =  await AllNegativeEarnings.FromSql(BaseDcEarningsQuery + LearnerNegativeEarnings, new SqlParameter("@collectionperiod", collectionPeriod)).ToListAsync(cancellationToken);
+                
+                result.ForEach(x => x.NegativeEarningsTotal = Math.Abs(x.NegativeEarningsTotal));
+
+                return result;
             }
         }
 
