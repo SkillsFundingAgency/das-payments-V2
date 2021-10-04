@@ -13,8 +13,24 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
         public static ProviderContractTypeAmounts DefaultYearToDateAmounts => new ProviderContractTypeAmounts
             {Ukprn = DefaultPeriodEndProviderSummary.Ukprn, ContractType1 = 16300, ContractType2 = 16300};
 
-        public static PeriodEndProviderSummary DefaultPeriodEndProviderSummary =>
-            new PeriodEndProviderSummary(1234, 123, 1, 1920);
+        public static PeriodEndProviderSummary DefaultPeriodEndProviderSummary
+        {
+            get
+            {
+                var summary = new PeriodEndProviderSummary(1234, 123, 1, 1920);
+                summary.AddNegativeEarnings(new List<ProviderNegativeEarningsTotal>
+                {
+                    new ProviderNegativeEarningsTotal
+                    {
+                        ContractType = ContractType.Act1,
+                        NegativeEarningsTotal = 0m,
+                    }
+                });
+                return summary;
+            }
+        }
+
+        
 
         public static PeriodEndSummary DefaultPeriodEndSummary =>
             new PeriodEndSummary(123, 1, 1920);
@@ -64,6 +80,34 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
                     TransactionType14 = 200,
                     TransactionType15 = 200,
                     TransactionType16 = 200,
+                }
+            };
+        public static List<ProviderNegativeEarningsTotal> GetDefaultDcNegativeEarnings =>
+            new List<ProviderNegativeEarningsTotal>
+            {
+                new ProviderNegativeEarningsTotal
+                {
+                    ContractType = ContractType.Act1,
+                    NegativeEarningsTotal = 1100,
+                    Ukprn = DefaultPeriodEndProviderSummary.Ukprn
+                },
+                new ProviderNegativeEarningsTotal
+                {
+                    ContractType = ContractType.Act1,
+                    NegativeEarningsTotal = 900,
+                    Ukprn = DefaultPeriodEndProviderSummary.Ukprn
+                },
+                new ProviderNegativeEarningsTotal
+                {
+                    ContractType = ContractType.Act2,
+                    NegativeEarningsTotal = 400,
+                    Ukprn = DefaultPeriodEndProviderSummary.Ukprn
+                },
+                new ProviderNegativeEarningsTotal
+                {
+                    ContractType = ContractType.Act2,
+                    NegativeEarningsTotal = 600,
+                    Ukprn = DefaultPeriodEndProviderSummary.Ukprn
                 }
             };
 
