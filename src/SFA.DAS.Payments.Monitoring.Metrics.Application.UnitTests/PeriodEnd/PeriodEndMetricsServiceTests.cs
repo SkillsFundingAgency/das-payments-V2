@@ -135,6 +135,16 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             dcMetricsDataContextMock
                 .Verify(x => x.GetEarnings(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()), Times.Once);
         }
+        [Test]
+        public async Task WhenBuildingMetrics_ThenDcNegativeEarningsDataIsRetrieved()
+        {
+            var service = moqer.Create<PeriodEndMetricsService>();
+
+            await service.BuildMetrics(2, 1920, 1, CancellationToken.None).ConfigureAwait(false);
+
+            dcMetricsDataContextMock
+                .Verify(x => x.GetNegativeEarnings(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
 
         [Test]
         public async Task WhenBuildingMetrics_ThenDasDataIsRetrieved()
