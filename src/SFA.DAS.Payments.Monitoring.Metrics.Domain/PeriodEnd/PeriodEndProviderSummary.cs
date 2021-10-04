@@ -129,8 +129,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
 
         private void DeductNegativeEarningsFromDcEarnings(ProviderPeriodEndSummaryModel providerPeriodEndSummaryModel)
         {
-            providerPeriodEndSummaryModel.DcEarnings.ContractType1 -= negativeEarnings.ContractType1.Value;
-            providerPeriodEndSummaryModel.DcEarnings.ContractType2 -= negativeEarnings.ContractType2.Value;
+            providerPeriodEndSummaryModel.DcEarnings.ContractType1 -= (negativeEarnings?.ContractType1  ?? 0m);
+            providerPeriodEndSummaryModel.DcEarnings.ContractType2 -= (negativeEarnings?.ContractType2 ?? 0m);
         }
 
         public void AddDcEarnings(IEnumerable<TransactionTypeAmountsByContractType> providerDcEarningsByContractType)
