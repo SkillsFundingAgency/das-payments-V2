@@ -238,7 +238,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
            	    	SUM(TransactionType15) +
            	    	SUM(TransactionType16) < 0
             )
-                SELECT SUM([Earnings]) as [Earnings], ContractType, Ukprn
+                SELECT SUM([Earnings]) as [NegativeEarningsTotal], ContractType, Ukprn
                 FROM LearnerNegativeEarnings
                 GROUP BY ContractType, Ukprn
                 order by Ukprn, ContractType";
