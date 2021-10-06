@@ -53,7 +53,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             negativeEarnings = new NegativeEarningsContractTypeAmounts();
         }
 
-
         public ProviderPeriodEndSummaryModel GetMetrics()
         {
             var result =  new ProviderPeriodEndSummaryModel
@@ -76,8 +75,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 InLearning = inLearning,
                 NegativeEarnings = negativeEarnings 
             };
-
-            DeductNegativeEarningsFromDcEarnings(result);
 
             result.PaymentMetrics = Helpers.CreatePaymentMetrics(result);
             result.Percentage = result.PaymentMetrics.Percentage;
@@ -124,13 +121,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 ContractType1 = contractTypes.FirstOrDefault(x => x.ContractType == ContractType.Act1)?.Amount ?? 0,
                 ContractType2 = contractTypes.FirstOrDefault(x => x.ContractType == ContractType.Act2)?.Amount ?? 0
             };
-            return result;
-        }
 
-        private void DeductNegativeEarningsFromDcEarnings(ProviderPeriodEndSummaryModel providerPeriodEndSummaryModel)
-        {
-            providerPeriodEndSummaryModel.DcEarnings.ContractType1 -= (negativeEarnings?.ContractType1  ?? 0m);
-            providerPeriodEndSummaryModel.DcEarnings.ContractType2 -= (negativeEarnings?.ContractType2 ?? 0m);
+            result.ContractType1 -= (negativeEarnings?.ContractType1 ?? 0m);
+            result.ContractType2 -= (negativeEarnings?.ContractType2 ?? 0m);
+
+            return result;
         }
 
         public void AddDcEarnings(IEnumerable<TransactionTypeAmountsByContractType> providerDcEarningsByContractType)
