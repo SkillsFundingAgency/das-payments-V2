@@ -26,11 +26,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             summary.AddFundingSourceAmounts(TestHelper.GetPaymentFundingSourceAmounts);
             summary.AddHeldBackCompletionPayments(TestHelper.DefaultHeldBackCompletionPayments);
             summary.AddPeriodEndProviderDataLockTypeCounts(TestHelper.DefaultPeriodEndProviderDataLockTypeCounts);
-
-            if (shouldIncludeNegativeEarnings)
-            {
-                summary.AddNegativeEarnings(TestHelper.GetDefaultDcNegativeEarnings(1000m, 500m));
-            }
+            summary.AddNegativeEarnings(TestHelper.GetDefaultDcNegativeEarnings);
 
             return summary;
         }

@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.NUnit3;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
@@ -135,15 +136,18 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             dcMetricsDataContextMock
                 .Verify(x => x.GetEarnings(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()), Times.Once);
         }
-        [Test]
-        public async Task WhenBuildingMetrics_ThenDcNegativeEarningsDataIsRetrieved()
+        [Test,AutoData]
+        public async Task WhenBuildingMetrics_ThenDcNegativeEarningsDataIsRetrieved(long jobId, short academicYear, byte collectionPeriod)
         {
+            //Arrange
             var service = moqer.Create<PeriodEndMetricsService>();
 
-            await service.BuildMetrics(2, 1920, 1, CancellationToken.None).ConfigureAwait(false);
+            //Act
+            await service.BuildMetrics(jobId, academicYear, collectionPeriod, CancellationToken.None).ConfigureAwait(false);
 
+            //Assert
             dcMetricsDataContextMock
-                .Verify(x => x.GetNegativeEarnings(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()), Times.Once);
+                .Verify(x => x.GetNegativeEarnings(academicYear, collectionPeriod, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]

@@ -2,7 +2,6 @@
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summary;
@@ -15,6 +14,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
     public class PeriodEndProviderSummaryTests
     {
         private List<TransactionTypeAmountsByContractType> defaultDcEarnings;
+        private List<ProviderNegativeEarningsTotal> defaultDcNegativeEarnings;
         private List<TransactionTypeAmountsByContractType> paymentTransactionTypes;
         private List<ProviderFundingSourceAmounts> paymentFundingSources;
         private ProviderContractTypeAmounts heldBackAmounts;
@@ -25,6 +25,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
         public void SetUp()
         {
             defaultDcEarnings = TestHelper.GetDefaultDcEarnings;
+            defaultDcNegativeEarnings = TestHelper.GetDefaultDcNegativeEarnings;
             paymentTransactionTypes = TestHelper.GetPaymentTransactionTypes;
             paymentFundingSources = TestHelper.GetPaymentFundingSourceAmounts;
             heldBackAmounts = TestHelper.DefaultHeldBackCompletionPayments;
@@ -32,7 +33,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
 
         }
 
-        private PeriodEndProviderSummary GetPopulatedPeriodEndProviderSummary(decimal act1NegativeEarningsAmount = 0m, decimal act2NegativeEarningsAmount = 0m)
+        private PeriodEndProviderSummary GetPopulatedPeriodEndProviderSummary()
         {
             var summary = TestHelper.DefaultPeriodEndProviderSummary;
             summary.AddDcEarnings(defaultDcEarnings);
@@ -46,7 +47,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             summary.AddFundingSourceAmounts(paymentFundingSources);
             summary.AddHeldBackCompletionPayments(heldBackAmounts);
             summary.AddPeriodEndProviderDataLockTypeCounts(periodEndProviderDataLockTypeCounts);
-            summary.AddNegativeEarnings(TestHelper.GetDefaultDcNegativeEarnings(act1NegativeEarningsAmount, act2NegativeEarningsAmount));
+            summary.AddNegativeEarnings(defaultDcNegativeEarnings);
 
             return summary;
         }
@@ -196,8 +197,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             //Arrange
             var expectedAct1NegativeEarnings = 1000m;
             var expectedAct2NegativeEarnings = 800m;
-
-            var summary = GetPopulatedPeriodEndProviderSummary(expectedAct1NegativeEarnings, expectedAct2NegativeEarnings);
+            var summary = GetPopulatedPeriodEndProviderSummary();
+            var negativeEarnings = TestHelper.GetDefaultDcNegativeEarnings;
+            negativeEarnings.FirstOrDefault(x => x.ContractType == ContractType.Act1).NegativeEarningsTotal = expectedAct1NegativeEarnings;
+            negativeEarnings.FirstOrDefault(x => x.ContractType == ContractType.Act2).NegativeEarningsTotal = expectedAct2NegativeEarnings;
+            summary.AddNegativeEarnings(negativeEarnings);
 
             //Act
             var metrics = summary.GetMetrics();
@@ -232,7 +236,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             var expectedAct1DcEarningsTotal = dcEarningsAct1 - act1NegativeEarningsAmount;
             var expectedAct2DcEarningsTotal = dcEarningsAct2 - act2NegativeEarningsAmount;
 
-            var summary = GetPopulatedPeriodEndProviderSummary(act1NegativeEarningsAmount, act2NegativeEarningsAmount);
+            var summary = GetPopulatedPeriodEndProviderSummary();
+            var negativeEarnings = TestHelper.GetDefaultDcNegativeEarnings;
+            negativeEarnings.FirstOrDefault(x => x.ContractType == ContractType.Act1).NegativeEarningsTotal = act1NegativeEarningsAmount;
+            negativeEarnings.FirstOrDefault(x => x.ContractType == ContractType.Act2).NegativeEarningsTotal = act2NegativeEarningsAmount;
+            summary.AddNegativeEarnings(negativeEarnings);
 
             //Act
             var result = summary.GetMetrics();
