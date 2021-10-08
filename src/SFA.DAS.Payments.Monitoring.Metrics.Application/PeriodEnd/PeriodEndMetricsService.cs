@@ -26,6 +26,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
         private readonly IPeriodEndMetricsRepository periodEndMetricsRepository;
         private readonly ITelemetry telemetry;
 
+        private async Task<T> ExecuteDcMetricsQuery<T>(short academicYear, Func<IDcMetricsDataContext, Task<T>> query)
+        {
+            var context = dcMetricsDataContextFactory.CreateContext(academicYear);
+
+            return await query(context);
+        } 
+
+
         public PeriodEndMetricsService(
             IPaymentLogger logger,
             IPeriodEndSummaryFactory periodEndSummaryFactory,
@@ -49,9 +57,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 
                 var stopwatch = Stopwatch.StartNew();
 
-                var dcDataContext = dcMetricsDataContextFactory.CreateContext(academicYear);
-                var dcEarningsTask = dcDataContext.GetEarnings(academicYear, collectionPeriod, cancellationToken);
-                var dcNegativeEarningsTask = dcDataContext.GetNegativeEarnings(academicYear, collectionPeriod, cancellationToken);
+                var dcEarningsTask = ExecuteDcMetricsQuery(academicYear, x => x.GetEarnings(academicYear, collectionPeriod, cancellationToken));
+                var dcNegativeEarningsTask = ExecuteDcMetricsQuery(academicYear, x => x.GetNegativeEarnings(academicYear, collectionPeriod, cancellationToken));
 
                 var transactionTypesTask = periodEndMetricsRepository.GetTransactionTypesByContractType(academicYear, collectionPeriod, cancellationToken);
                 var fundingSourceTask = periodEndMetricsRepository.GetFundingSourceAmountsByContractType(academicYear, collectionPeriod, cancellationToken);
