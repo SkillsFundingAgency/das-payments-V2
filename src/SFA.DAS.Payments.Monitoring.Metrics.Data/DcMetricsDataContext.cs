@@ -269,14 +269,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 
         public async Task<List<ProviderNegativeEarningsTotal>> GetNegativeEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            using (await BeginTransaction(cancellationToken))
-            {
-                var result =  await AllNegativeEarnings.FromSql(BaseDcEarningsQuery + LearnerNegativeEarnings, new SqlParameter("@collectionperiod", collectionPeriod)).ToListAsync(cancellationToken);
-                
-                result.ForEach(x => x.NegativeEarningsTotal = Math.Abs(x.NegativeEarningsTotal));
+            var result = await AllNegativeEarnings.FromSql(BaseDcEarningsQuery + LearnerNegativeEarnings, new SqlParameter("@collectionperiod", collectionPeriod)).ToListAsync(cancellationToken);
 
-                return result;
-            }
+            result.ForEach(x => x.NegativeEarningsTotal = Math.Abs(x.NegativeEarningsTotal));
+
+            return result;
         }
 
         private async Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken, IsolationLevel isolationLevel = IsolationLevel.ReadUncommitted)
