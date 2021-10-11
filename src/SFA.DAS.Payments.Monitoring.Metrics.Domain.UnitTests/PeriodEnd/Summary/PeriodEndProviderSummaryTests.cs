@@ -227,14 +227,17 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
 
         [TestCase(1000.00, 700.00)]
         [TestCase(0.0, 0.0)]
-        public void WhenGettingMetrics_ThenNegativeEarningsAreDeductedCorrectly(decimal act1NegativeEarningsAmount, decimal act2NegativeEarningsAmount)
+        public void WhenGettingMetrics_ThenNegativeEarningsAreAdjustedCorrectly(decimal act1NegativeEarningsAmount, decimal act2NegativeEarningsAmount)
         {
             //Arrange
             var dcEarningsAct1 = TestHelper.GetDefaultDcEarnings.Where(dc => dc.ContractType == ContractType.Act1).Sum(x => x.Total);
             var dcEarningsAct2 = TestHelper.GetDefaultDcEarnings.Where(dc => dc.ContractType == ContractType.Act2).Sum(x => x.Total);
 
-            var expectedAct1DcEarningsTotal = dcEarningsAct1 - act1NegativeEarningsAmount;
-            var expectedAct2DcEarningsTotal = dcEarningsAct2 - act2NegativeEarningsAmount;
+
+            //Negative earnings previously lowered DC earnings.
+            //To correct for this we add the previously removed earnings back.
+            var expectedAct1DcEarningsTotal = dcEarningsAct1 + act1NegativeEarningsAmount;
+            var expectedAct2DcEarningsTotal = dcEarningsAct2 + act2NegativeEarningsAmount;
 
             var summary = GetPopulatedPeriodEndProviderSummary();
             var negativeEarnings = TestHelper.GetDefaultDcNegativeEarnings;

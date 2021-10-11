@@ -122,8 +122,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 ContractType2 = contractTypes.FirstOrDefault(x => x.ContractType == ContractType.Act2)?.Amount ?? 0
             };
 
-            result.ContractType1 -= (negativeEarnings?.ContractType1 ?? 0m);
-            result.ContractType2 -= (negativeEarnings?.ContractType2 ?? 0m);
+            result.ContractType1 += (negativeEarnings?.ContractType1 ?? 0m);
+            result.ContractType2 += (negativeEarnings?.ContractType2 ?? 0m);
 
             return result;
         }
