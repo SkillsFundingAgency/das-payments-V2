@@ -279,7 +279,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                 .Select(x => x.DcJobId);
             var queryResult = await DataLockEventNonPayablePeriods
 				.Where(period => period.Amount != 0 && period.DataLockEvent != null && latestSuccessfulJobIds.Contains(period.DataLockEvent.JobId))
-				.GroupBy(x => new { x.DataLockEvent.Ukprn, x.DataLockEvent.LearningAimFundingLineType })
+				.GroupBy(x => new { x.DataLockEvent.Ukprn, LearningAimFundingLineType = string.IsNullOrWhiteSpace(x.DataLockEvent.LearningAimFundingLineType) ? string.Empty : x.DataLockEvent.LearningAimFundingLineType })
 				.Select(x => new 
 				{
 				    x.Key.Ukprn,
