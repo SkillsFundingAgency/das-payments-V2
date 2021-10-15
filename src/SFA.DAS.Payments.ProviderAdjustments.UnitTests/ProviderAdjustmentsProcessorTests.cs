@@ -24,6 +24,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests
         private Mock<ITelemetry> telemetryMock;
         private ProviderAdjustmentsProcessor sut;
 
+        private long jobId;
         private int academicYear;
         private int collectionPeriod;
 
@@ -36,6 +37,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests
         {
             var fixture = new Fixture();
 
+            jobId = fixture.Create<long>();
             academicYear = fixture.Create<int>();
             collectionPeriod = fixture.Create<int>();
             previousProviderAdjustments = fixture.Create<List<ProviderAdjustment>>();
@@ -66,10 +68,20 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests
         public async Task WhenProcessingEasAtMonthEnd_AndProcessSucceeded_ThenTelemetrySent()
         {
             //Act
-            await sut.ProcessEasAtMonthEnd(academicYear, collectionPeriod);
+            await sut.ProcessEasAtMonthEnd(jobId, academicYear, collectionPeriod);
 
             //Assert
-            telemetryMock.Verify(x => x.TrackEvent(It.IsRegex($"Finished processing EAS.*{academicYear}.*{collectionPeriod}")));
+            telemetryMock.Verify(x => x.TrackEvent("Finished processing EAS",
+
+                It.Is<Dictionary<string, string>>(z =>
+                            z[TelemetryKeys.JobId] == jobId.ToString() &&
+                            z[TelemetryKeys.CollectionPeriod] == collectionPeriod.ToString() &&
+                            z[TelemetryKeys.AcademicYear] == academicYear.ToString()),
+
+                It.Is<Dictionary<string, double>>(y =>
+                             y["Status"] == 1d &&
+                             y["HistoricPayments"] == previousProviderAdjustments.Count &&
+                             y["CurrentPayments"] == currentProviderAdjustments.Count)));
         }
 
         [Test]
@@ -81,10 +93,18 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests
                 .Throws<KeyNotFoundException>();
 
             //Act
-            Assert.ThrowsAsync<KeyNotFoundException>(() => sut.ProcessEasAtMonthEnd(academicYear, collectionPeriod));
+            Assert.ThrowsAsync<KeyNotFoundException>(() => sut.ProcessEasAtMonthEnd(jobId, academicYear, collectionPeriod));
 
             //Assert
-            telemetryMock.Verify(x => x.TrackEvent(It.IsRegex($"Failed.*{academicYear}.*{collectionPeriod}")));
+            telemetryMock.Verify(x => x.TrackEvent("Finished processing EAS",
+
+                It.Is<Dictionary<string, string>>(z =>
+                    z[TelemetryKeys.JobId] == jobId.ToString() &&
+                    z[TelemetryKeys.CollectionPeriod] == collectionPeriod.ToString() &&
+                    z[TelemetryKeys.AcademicYear] == academicYear.ToString()),
+
+                It.Is<Dictionary<string, double>>(y =>
+                    y["Status"] == 0d)));
         }
 
     }

@@ -10,7 +10,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application
 {
     public interface IProviderAdjustmentsProcessor
     {
-        Task ProcessEasAtMonthEnd(int academicYear, int collectionPeriod);
+        Task ProcessEasAtMonthEnd(long jobId, int academicYear, int collectionPeriod);
     }
 
     public class ProviderAdjustmentsProcessor : IProviderAdjustmentsProcessor
@@ -32,8 +32,15 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application
             this.telemetry = telemetry;
         }
 
-        public async Task ProcessEasAtMonthEnd(int academicYear, int collectionPeriod)
+        public async Task ProcessEasAtMonthEnd(long jobId, int academicYear, int collectionPeriod)
         {
+            var properties = new Dictionary<string, string>
+            {
+                {TelemetryKeys.JobId, jobId.ToString()},
+                {TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
+                {TelemetryKeys.AcademicYear, academicYear.ToString()},
+            };
+
             try
             {
                 logger.LogInfo("Started the Provider Adjustments Processor.");
@@ -51,11 +58,19 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application
 
                 logger.LogInfo("Finished the Provider Adjustments Processor.");
 
-                telemetry.TrackEvent($"Finished processing EAS at month end for academic year: {academicYear}, collection period: {collectionPeriod}");
+                var stats = new Dictionary<string, double>
+                {
+                    {"Status", 1d },
+                    {"HistoricPayments", historicPayments.Count },
+                    {"CurrentPayments", currentPayments.Count }
+                };
+
+                telemetry.TrackEvent("Finished processing EAS", properties, stats);
             }
             catch (Exception)
             {
-                telemetry.TrackEvent($"Failed to process EAS at month end for academic year: {academicYear}, collection period: {collectionPeriod}");
+                var failStats = new Dictionary<string, double> { { "Status", 0d } };
+                telemetry.TrackEvent("Finished processing EAS", properties, failStats);
                 throw;
             }
         }
