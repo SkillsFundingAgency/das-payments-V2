@@ -36,9 +36,9 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application
         {
             var properties = new Dictionary<string, string>
             {
-                {TelemetryKeys.JobId, jobId.ToString()},
-                {TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
-                {TelemetryKeys.AcademicYear, academicYear.ToString()},
+                { TelemetryKeys.JobId, jobId.ToString()},
+                { TelemetryKeys.CollectionPeriod, collectionPeriod.ToString()},
+                { TelemetryKeys.AcademicYear, academicYear.ToString()},
             };
 
             try
@@ -60,17 +60,17 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application
 
                 var stats = new Dictionary<string, double>
                 {
-                    {"Status", 1d },
                     {"HistoricPayments", historicPayments.Count },
                     {"CurrentPayments", currentPayments.Count }
                 };
 
+                properties.Add("isSuccessful", "true");
                 telemetry.TrackEvent("Finished processing EAS", properties, stats);
             }
             catch (Exception)
             {
-                var failStats = new Dictionary<string, double> { { "Status", 0d } };
-                telemetry.TrackEvent("Finished processing EAS", properties, failStats);
+                properties.Add("isSuccessful", "false");
+                telemetry.TrackEvent("Finished processing EAS", properties, new Dictionary<string, double>());
                 throw;
             }
         }

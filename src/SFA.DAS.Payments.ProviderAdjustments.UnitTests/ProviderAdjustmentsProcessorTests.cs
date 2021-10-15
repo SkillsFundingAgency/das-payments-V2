@@ -60,7 +60,6 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests
             loggerMock = new Mock<IPaymentLogger>();
             telemetryMock = new Mock<ITelemetry>();
 
-
             sut = new ProviderAdjustmentsProcessor(providerAdjustmentRepositoryMock.Object, loggerMock.Object, calculatorMock.Object, telemetryMock.Object);
         }
 
@@ -76,10 +75,10 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests
                 It.Is<Dictionary<string, string>>(z =>
                             z[TelemetryKeys.JobId] == jobId.ToString() &&
                             z[TelemetryKeys.CollectionPeriod] == collectionPeriod.ToString() &&
-                            z[TelemetryKeys.AcademicYear] == academicYear.ToString()),
+                            z[TelemetryKeys.AcademicYear] == academicYear.ToString() &&
+                            z["isSuccessful"] == "true"),
 
                 It.Is<Dictionary<string, double>>(y =>
-                             y["Status"] == 1d &&
                              y["HistoricPayments"] == previousProviderAdjustments.Count &&
                              y["CurrentPayments"] == currentProviderAdjustments.Count)));
         }
@@ -101,11 +100,11 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests
                 It.Is<Dictionary<string, string>>(z =>
                     z[TelemetryKeys.JobId] == jobId.ToString() &&
                     z[TelemetryKeys.CollectionPeriod] == collectionPeriod.ToString() &&
-                    z[TelemetryKeys.AcademicYear] == academicYear.ToString()),
+                    z[TelemetryKeys.AcademicYear] == academicYear.ToString() &&
+                    z["isSuccessful"] == "false"),
 
                 It.Is<Dictionary<string, double>>(y =>
-                    y["Status"] == 0d)));
+                    y.Count == 0)));
         }
-
     }
 }
