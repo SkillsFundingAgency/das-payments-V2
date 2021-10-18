@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         void AddFundingSourceAmounts(IEnumerable<ProviderFundingSourceAmounts> fundingSourceAmounts);
         void AddDataLockedEarnings(ProviderFundingLineTypeAmounts dataLockedEarningsTotal);
         void AddPeriodEndProviderDataLockTypeCounts(PeriodEndProviderDataLockTypeCounts periodEndProviderDataLockTypeCounts);
-        void AddDataLockedAlreadyPaid(decimal dataLockedAlreadyPaidTotal);
+        void AddDataLockedAlreadyPaid(ProviderFundingLineTypeAmounts dataLockedAlreadyPaidTotal);
         void AddPaymentsYearToDate(ProviderContractTypeAmounts paymentsYearToDate);
         void AddHeldBackCompletionPayments(ProviderContractTypeAmounts heldBackCompletionPayments);
         void AddInLearningCount(ProviderInLearningTotal inLearningTotal);
@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         private List<TransactionTypeAmountsByContractType> providerTransactionsTypes;
         private List<ProviderFundingSourceAmounts> providerFundingSourceAmounts;
         private ProviderFundingLineTypeAmounts providerDataLockedEarnings;
-        private decimal providerDataLockedAlreadyPaidTotal;
+        private ProviderFundingLineTypeAmounts providerDataLockedAlreadyPaidTotals;
         private ProviderContractTypeAmounts providerPaymentsYearToDate;
         private ProviderContractTypeAmounts providerHeldBackCompletionPayments;
         private PeriodEndProviderDataLockTypeCounts periodEndProviderDataLockTypeCounts;
@@ -64,11 +64,19 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 PaymentMetrics = new ContractTypeAmountsVerbose(),
                 Payments = GetPaymentTotals(),
                 YearToDatePayments = providerPaymentsYearToDate,
-                AlreadyPaidDataLockedEarnings = providerDataLockedAlreadyPaidTotal,
-                AdjustedDataLockedEarnings = providerDataLockedEarnings.Total - providerDataLockedAlreadyPaidTotal,
+
+                AlreadyPaidDataLockedEarnings = providerDataLockedAlreadyPaidTotals.Total,
+                AlreadyPaidDataLockedEarnings16To18 = providerDataLockedAlreadyPaidTotals.FundingLineType16To18Amount,
+                AlreadyPaidDataLockedEarnings19Plus = providerDataLockedAlreadyPaidTotals.FundingLineType19PlusAmount,
+
+                AdjustedDataLockedEarnings = providerDataLockedEarnings.Total - providerDataLockedAlreadyPaidTotals.Total,
+                AdjustedDataLockedEarnings16To18 = providerDataLockedEarnings.FundingLineType16To18Amount - providerDataLockedAlreadyPaidTotals.FundingLineType16To18Amount,
+                AdjustedDataLockedEarnings19Plus = providerDataLockedEarnings.FundingLineType19PlusAmount - providerDataLockedAlreadyPaidTotals.FundingLineType19PlusAmount,
+
                 TotalDataLockedEarnings = providerDataLockedEarnings.Total,
                 TotalDataLockedEarnings16To18 = providerDataLockedEarnings.FundingLineType16To18Amount,
                 TotalDataLockedEarnings19Plus = providerDataLockedEarnings.FundingLineType19PlusAmount,
+
                 FundingSourceAmounts = GetFundingSourceAmounts(),
                 TransactionTypeAmounts = GetTransactionTypeAmounts(),
                 DataLockTypeCounts = periodEndProviderDataLockTypeCounts,
@@ -148,9 +156,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             this.periodEndProviderDataLockTypeCounts = periodEndProviderDataLockTypeCounts;
         }
 
-        public void AddDataLockedAlreadyPaid(decimal dataLockedAlreadyPaidTotal)
+        public void AddDataLockedAlreadyPaid(ProviderFundingLineTypeAmounts dataLockedAlreadyPaidTotal)
         {
-            providerDataLockedAlreadyPaidTotal = dataLockedAlreadyPaidTotal;
+            providerDataLockedAlreadyPaidTotals = dataLockedAlreadyPaidTotal;
         }
 
         public void AddPaymentsYearToDate(ProviderContractTypeAmounts paymentsYearToDate)

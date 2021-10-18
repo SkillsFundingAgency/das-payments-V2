@@ -25,6 +25,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         private decimal dataLockedEarnings16To18;
         private decimal dataLockedEarnings19Plus;
         private decimal dataLockedAlreadyPaidTotal;
+        private decimal dataLockedAlreadyPaidTotal16To18;
+        private decimal dataLockedAlreadyPaidTotal19Plus;
         private DataLockTypeCounts dataLockTypeCounts;
         private int? inLearning;
         private PeriodEndSummaryModel periodEndSummary;
@@ -52,7 +54,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 Payments = payments,
                 YearToDatePayments = yearToDatePayments,
                 AlreadyPaidDataLockedEarnings = dataLockedAlreadyPaidTotal,
+                AlreadyPaidDataLockedEarnings16To18 = dataLockedAlreadyPaidTotal16To18,
+                AlreadyPaidDataLockedEarnings19Plus = dataLockedAlreadyPaidTotal19Plus,
                 AdjustedDataLockedEarnings = dataLockedEarnings - dataLockedAlreadyPaidTotal,
+                AdjustedDataLockedEarnings16To18 = dataLockedEarnings16To18 - dataLockedAlreadyPaidTotal16To18,
+                AdjustedDataLockedEarnings19Plus = dataLockedEarnings19Plus - dataLockedAlreadyPaidTotal19Plus,
                 TotalDataLockedEarnings = dataLockedEarnings,
                 TotalDataLockedEarnings16To18 = dataLockedEarnings16To18,
                 TotalDataLockedEarnings19Plus = dataLockedEarnings19Plus,
@@ -97,7 +103,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             dataLockedEarnings = allSummaries.Select(x => x.TotalDataLockedEarnings).Sum();
             dataLockedEarnings16To18 = allSummaries.Select(x => x.TotalDataLockedEarnings16To18).Sum();
             dataLockedEarnings19Plus = allSummaries.Select(x => x.TotalDataLockedEarnings19Plus).Sum();
+
             dataLockedAlreadyPaidTotal = allSummaries.Select(x => x.AlreadyPaidDataLockedEarnings).Sum();
+            dataLockedAlreadyPaidTotal16To18 = allSummaries.Select(x => x.AlreadyPaidDataLockedEarnings16To18).Sum();
+            dataLockedAlreadyPaidTotal19Plus = allSummaries.Select(x => x.AlreadyPaidDataLockedEarnings19Plus).Sum();
 
             CalculateDataLockTypeCounts();
 
