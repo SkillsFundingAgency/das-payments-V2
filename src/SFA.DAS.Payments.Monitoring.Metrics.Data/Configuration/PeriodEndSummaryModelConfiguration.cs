@@ -43,7 +43,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration
                 amounts.Ignore(x => x.Total);
             });
             builder.Property(x => x.AdjustedDataLockedEarnings).HasColumnName(@"AdjustedDataLockedEarnings");
+            builder.Property(x => x.AdjustedDataLockedEarnings16To18).HasColumnName(@"AdjustedDataLockedEarnings16To18");
+            builder.Property(x => x.AdjustedDataLockedEarnings19Plus).HasColumnName(@"AdjustedDataLockedEarnings19Plus");
             builder.Property(x => x.AlreadyPaidDataLockedEarnings).HasColumnName(@"AlreadyPaidDataLockedEarnings");
+            builder.Property(x => x.AlreadyPaidDataLockedEarnings16To18).HasColumnName(@"AlreadyPaidDataLockedEarnings16To18");
+            builder.Property(x => x.AlreadyPaidDataLockedEarnings19Plus).HasColumnName(@"AlreadyPaidDataLockedEarnings19Plus");
             builder.Property(x => x.TotalDataLockedEarnings).HasColumnName(@"TotalDataLockedEarnings");
             builder.Property(x => x.TotalDataLockedEarnings16To18).HasColumnName(@"TotalDataLockedEarnings16To18");
             builder.Property(x => x.TotalDataLockedEarnings19Plus).HasColumnName(@"TotalDataLockedEarnings19Plus");
