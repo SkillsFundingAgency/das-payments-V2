@@ -48,10 +48,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 
 		public virtual DbQuery<DataLockCount> DataLockCounts { get; set; }
 		public virtual DbQuery<PeriodEndDataLockCount> PeriodEndDataLockCounts { get; set; }
-		//public virtual DbQuery<ProviderFundingLineTypeAmounts> AlreadyPaidDataLockProviderTotals { get; set; }
-        public virtual DbQuery<ProviderTotal> AlreadyPaidDataLockProviderTotals16To18 { get; set; }
-        public virtual DbQuery<ProviderTotal> AlreadyPaidDataLockProviderTotals19Plus { get; set; }
-		public virtual DbSet<LatestSuccessfulJobModel> LatestSuccessfulJobs { get; set; }
+		public virtual DbQuery<ProviderFundingLineTypeAmounts> AlreadyPaidDataLockProviderTotals { get; set; }
+        public virtual DbSet<LatestSuccessfulJobModel> LatestSuccessfulJobs { get; set; }
 		public virtual DbSet<EarningEventModel> EarningEvent { get; protected set; }
 		public virtual DbSet<EarningEventPeriodModel> EarningEventPeriods { get; protected set; }
 		public virtual DbSet<DataLockEventModel> DataLockEvent { get; set; }
@@ -76,46 +74,23 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 			modelBuilder.ApplyConfiguration(new LatestSuccessfulJobModelConfiguration());
 		}
 
-		public async Task<List<ProviderFundingLineTypeAmounts>> GetAlreadyPaidDataLockProviderTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        public async Task<List<ProviderFundingLineTypeAmounts>> GetAlreadyPaidDataLockProviderTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            var fundingLineTypes16to18 = @"""16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)"",
-            ""16-18 Apprenticeship Non-Levy Contract (procured)"",
-            ""16-18 Apprenticeship (Employer on App Service)""";
-
-            var fundingLineTypes19Plus = @"""19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)"",
-            ""19+ Apprenticeship Non-Levy Contract (procured)"",
-            ""19+ Apprenticeship (Employer on App Service)""";
-
-            var totals16To18 = await AlreadyPaidDataLockProviderTotals16To18.FromSql(GetAlreadyPaidDataLockProviderTotalsFundingLineTypeScopedSql(fundingLineTypes16to18), new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod))
-				.ToListAsync(cancellationToken);
-            var totals19Plus = await AlreadyPaidDataLockProviderTotals19Plus.FromSql(GetAlreadyPaidDataLockProviderTotalsFundingLineTypeScopedSql(fundingLineTypes19Plus), new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod))
-                .ToListAsync(cancellationToken);
-
-            var combinedTotals = totals16To18.Select(x => new ProviderFundingLineTypeAmounts {Ukprn = x.Ukprn, Total = x.TotalAmount, FundingLineType16To18Amount = x.TotalAmount}).ToList();
-            foreach (var providerTotal in totals19Plus)
-            {
-                var element = combinedTotals.FirstOrDefault(x => x.Ukprn == providerTotal.Ukprn);
-                if (element == null)
-                {
-                    combinedTotals.Add(new ProviderFundingLineTypeAmounts { Ukprn = providerTotal.Ukprn, FundingLineType19PlusAmount = providerTotal.TotalAmount, Total = providerTotal.TotalAmount });
-				}
-                else
-                {
-                    element.FundingLineType19PlusAmount = providerTotal.TotalAmount;
-                    element.Total = element.FundingLineType16To18Amount + element.FundingLineType19PlusAmount;
-                }
-            }
-
-            return combinedTotals;
-        }
-
-        private string GetAlreadyPaidDataLockProviderTotalsFundingLineTypeScopedSql(string fundingLineTypes)
-        {
-			return $@"
-				Select
+            var sql = @";WITH unGroupedAmounts AS (Select
 			        dle.ukprn as Ukprn,
-			        sum(p.Amount) as TotalAmount
-	            from Payments2.dataLockEventNonPayablePeriod npp
+                    CASE WHEN p.LearningAimFundingLineType IN (
+							'16 - 18 Apprenticeship(From May 2017) Non - Levy Contract(non - procured)',
+							'16-18 Apprenticeship Non-Levy Contract (procured)',
+							'16-18 Apprenticeship (Employer on App Service)'
+						) THEN p.Amount ELSE 0 END AS FundingLineType16To18Amount,
+					CASE WHEN p.LearningAimFundingLineType IN (
+							'19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)',
+							'19+ Apprenticeship Non-Levy Contract (procured)',
+							'19+ Apprenticeship (Employer on App Service)'
+						) THEN p.Amount ELSE 0 END AS FundingLineType19PlusAmount,
+				    p.Amount AS Total
+
+				from Payments2.dataLockEventNonPayablePeriod npp
 	            join Payments2.dataLockEvent dle on npp.DataLockEventId = dle.EventId 
 	            join Payments2.payment p on dle.ukprn = p.ukprn
 		            AND dle.LearningAimFrameworkCode = P.LearningAimFrameworkCode
@@ -132,13 +107,16 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 		            and npp.Amount <> 0
 		            and dle.IsPayable = 0	
 		            and p.collectionperiod < dle.CollectionPeriod
-                    and dle.LearningAimFundingLineType IN(
-                    {fundingLineTypes}
-                    )
-                and p.ContractType = 1
-		        group by 
-			        dle.ukprn";
-		}
+                and p.ContractType = 1)
+					SELECT Ukprn,
+					SUM(unGroupedAmounts.FundingLineType16To18Amount) AS FundingLineType16To18Amount, 
+					SUM(unGroupedAmounts.FundingLineType19PlusAmount) AS FundingLineType19PlusAmount,
+					SUM(unGroupedAmounts.Total) AS Total
+					FROM unGroupedAmounts
+					GROUP BY unGroupedAmounts.Ukprn";
+
+            return await AlreadyPaidDataLockProviderTotals.FromSql(sql, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod)).ToListAsync(cancellationToken);
+        }
 
 		public async Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
 		{
