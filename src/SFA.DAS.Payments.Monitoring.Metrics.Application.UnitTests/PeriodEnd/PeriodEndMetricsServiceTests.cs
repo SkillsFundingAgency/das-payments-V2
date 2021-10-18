@@ -89,7 +89,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
                 .ReturnsAsync(new List<ProviderFundingLineTypeAmounts>());
             periodEndMetricsRepositoryMock
                 .Setup(x => x.GetAlreadyPaidDataLockedEarnings(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ProviderTotal>());
+                .ReturnsAsync(new List<ProviderFundingLineTypeAmounts>());
             periodEndMetricsRepositoryMock
                 .Setup(x => x.GetHeldBackCompletionPaymentsTotals(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ProviderContractTypeAmounts>());
@@ -186,7 +186,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
                 AddPeriodEndProviderDataLockTypeCountsCalled = true;
             }
 
-            public void AddDataLockedAlreadyPaid(decimal dataLockedAlreadyPaidTotal) { AddDataLockedAlreadyPaidCalled = true; }
+            public void AddDataLockedAlreadyPaid(ProviderFundingLineTypeAmounts dataLockedAlreadyPaidTotal) { AddDataLockedAlreadyPaidCalled = true; }
 
             public void AddPaymentsYearToDate(ProviderContractTypeAmounts paymentsYearToDate) { AddPaymentsYearToDateCalled = true; }
 
