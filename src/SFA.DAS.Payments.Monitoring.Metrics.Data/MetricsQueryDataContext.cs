@@ -49,7 +49,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 		public virtual DbQuery<DataLockCount> DataLockCounts { get; set; }
 		public virtual DbQuery<PeriodEndDataLockCount> PeriodEndDataLockCounts { get; set; }
 		public virtual DbQuery<ProviderFundingLineTypeAmounts> AlreadyPaidDataLockProviderTotals { get; set; }
-        public virtual DbSet<LatestSuccessfulJobModel> LatestSuccessfulJobs { get; set; }
+        public virtual DbQuery<ProviderFundingLineTypeAmounts> DataLockedEarningsTotals { get; set; }
+		public virtual DbSet<LatestSuccessfulJobModel> LatestSuccessfulJobs { get; set; }
 		public virtual DbSet<EarningEventModel> EarningEvent { get; protected set; }
 		public virtual DbSet<EarningEventPeriodModel> EarningEventPeriods { get; protected set; }
 		public virtual DbSet<DataLockEventModel> DataLockEvent { get; set; }
@@ -286,29 +287,36 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 		}
 
 		public async Task<List<ProviderFundingLineTypeAmounts>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
-		{
-            var latestSuccessfulJobIds = LatestSuccessfulJobs.AsNoTracking()
-                .Where(j => j.AcademicYear == academicYear && j.CollectionPeriod == collectionPeriod)
-                .Select(x => x.DcJobId);
-            var queryResult = await DataLockEventNonPayablePeriods
-				.Where(period => period.Amount != 0 && period.DataLockEvent != null && latestSuccessfulJobIds.Contains(period.DataLockEvent.JobId))
-				.GroupBy(x => new { x.DataLockEvent.Ukprn, LearningAimFundingLineType = string.IsNullOrWhiteSpace(x.DataLockEvent.LearningAimFundingLineType) ? string.Empty : x.DataLockEvent.LearningAimFundingLineType })
-				.Select(x => new 
-				{
-				    x.Key.Ukprn,
-				    x.Key.LearningAimFundingLineType,
-					TotalAmount = x.Sum(period => period.Amount)
-				})
-				.ToListAsync(cancellationToken);
+        {
+            var sql = @";WITH unGroupedAmounts AS 
+                        (Select
+	                        dle.ukprn as Ukprn,
+                            CASE WHEN dle.LearningAimFundingLineType IN (
+			                        '16 - 18 Apprenticeship(From May 2017) Non - Levy Contract(non - procured)',
+			                        '16-18 Apprenticeship Non-Levy Contract (procured)',
+			                        '16-18 Apprenticeship (Employer on App Service)'
+		                        ) THEN npp.Amount ELSE 0 END AS FundingLineType16To18Amount,
+	                        CASE WHEN dle.LearningAimFundingLineType IN (
+			                        '19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)',
+			                        '19+ Apprenticeship Non-Levy Contract (procured)',
+			                        '19+ Apprenticeship (Employer on App Service)'
+		                        ) THEN npp.Amount ELSE 0 END AS FundingLineType19PlusAmount,
+	                        npp.Amount AS Total
+                        from Payments2.dataLockEventNonPayablePeriod npp
+                        join Payments2.dataLockEvent dle on npp.DataLockEventId = dle.EventId
+                        where 		
+	                        dle.jobId in (select DcJobid from Payments2.LatestSuccessfulJobs Where AcademicYear = @academicYear AND CollectionPeriod = @collectionPeriod)
+	                        and npp.Amount <> 0
+	                        and dle.IsPayable = 0
+                        )
+                        SELECT Ukprn,
+	                        SUM(unGroupedAmounts.FundingLineType16To18Amount) AS FundingLineType16To18Amount, 
+	                        SUM(unGroupedAmounts.FundingLineType19PlusAmount) AS FundingLineType19PlusAmount,
+	                        SUM(unGroupedAmounts.Total) AS Total
+	                        FROM unGroupedAmounts
+	                        GROUP BY unGroupedAmounts.Ukprn";
 
-            return queryResult.GroupBy(x => x.Ukprn)
-				.Select(x => new ProviderFundingLineTypeAmounts
-				{
-				    Ukprn = x.Key,
-				    FundingLineType16To18Amount = x.Where(y => y.LearningAimFundingLineType.ToLearnerAgeBanding() == 16).Sum(y => y.TotalAmount),
-				    FundingLineType19PlusAmount = x.Where(y => y.LearningAimFundingLineType.ToLearnerAgeBanding() == 19).Sum(y => y.TotalAmount),
-					Total = x.Sum(y => y.TotalAmount)
-				}).ToList();
+            return await DataLockedEarningsTotals.FromSql(sql, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod)).ToListAsync(cancellationToken);
         }
 
 		public async Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken, IsolationLevel isolationLevel = IsolationLevel.Snapshot)
