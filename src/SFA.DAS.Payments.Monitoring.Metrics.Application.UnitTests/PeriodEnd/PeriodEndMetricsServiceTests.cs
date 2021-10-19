@@ -194,42 +194,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
                     It.IsAny<CancellationToken>()), Times.Once);
         }
 
-        public class PeriodEndProviderSummaryFake : IPeriodEndProviderSummary
-        {
-            public bool AddDcEarningsCalled { get; private set; }
-            public bool AddTransactionTypesCalled { get; private set; }
-            public bool AddFundingSourceAmountsCalled { get; private set; }
-            public bool AddDataLockedEarningsCalled { get; private set; }
-            public bool AddPeriodEndProviderDataLockTypeCountsCalled { get; private set; }
-            public bool AddDataLockedAlreadyPaidCalled { get; private set; }
-            public bool AddPaymentsYearToDateCalled { get; private set; }
-            public bool AddHeldBackCompletionPaymentsCalled { get; private set; }
-            public bool AddInLearningCountCalled { get; private set; }
-            public bool AddNegativeEarningsCalled { get; private set; }
-
-            public ProviderPeriodEndSummaryModel GetMetrics()
-            {
-                return new ProviderPeriodEndSummaryModel();
-            }
-
-            public void AddDcEarnings(IEnumerable<TransactionTypeAmountsByContractType> source) { AddDcEarningsCalled = true; }
-            public void AddTransactionTypes(IEnumerable<TransactionTypeAmountsByContractType> transactionTypes) { AddTransactionTypesCalled = true; }
-            public void AddFundingSourceAmounts(IEnumerable<ProviderFundingSourceAmounts> fundingSourceAmounts) { AddFundingSourceAmountsCalled = true; }
-
-            public void AddDataLockedEarnings(ProviderFundingLineTypeAmounts dataLockedEarningsTotal) { AddDataLockedEarningsCalled = true; }
-            public void AddPeriodEndProviderDataLockTypeCounts(PeriodEndProviderDataLockTypeCounts periodEndProviderDataLockTypeCounts)
-            {
-                AddPeriodEndProviderDataLockTypeCountsCalled = true;
-            }
-
-            public void AddDataLockedAlreadyPaid(ProviderFundingLineTypeAmounts dataLockedAlreadyPaidTotal) { AddDataLockedAlreadyPaidCalled = true; }
-
-            public void AddPaymentsYearToDate(ProviderContractTypeAmounts paymentsYearToDate) { AddPaymentsYearToDateCalled = true; }
-
-            public void AddHeldBackCompletionPayments(ProviderContractTypeAmounts heldBackCompletionPayments) { AddHeldBackCompletionPaymentsCalled = true; }
-            public void AddInLearningCount(ProviderInLearningTotal inLearningTotal) { AddInLearningCountCalled = true; }
-            public void AddNegativeEarnings(List<ProviderNegativeEarningsTotal> providerNegativeEarningsTotal) { AddNegativeEarningsCalled = true; }
-        }
         [Test]
         public async Task WhenBuildingMetrics_ThenReturnedDataIsAddedToProvider_ForEachProvider()
         {
@@ -376,8 +340,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             stats.Keys.Should().Contain("PaymentsContractType1");
             stats.Keys.Should().Contain("PaymentsContractType2");
             stats.Keys.Should().Contain("DataLockedEarnings");
+            stats.Keys.Should().Contain("DataLockedEarnings16To18");
+            stats.Keys.Should().Contain("DataLockedEarnings19Plus");
             stats.Keys.Should().Contain("AlreadyPaidDataLockedEarnings");
+            stats.Keys.Should().Contain("AlreadyPaidDataLockedEarnings16To18");
+            stats.Keys.Should().Contain("AlreadyPaidDataLockedEarnings19Plus");
             stats.Keys.Should().Contain("TotalDataLockedEarnings");
+            stats.Keys.Should().Contain("TotalDataLockedEarnings16To18");
+            stats.Keys.Should().Contain("TotalDataLockedEarnings19Plus");
             stats.Keys.Should().Contain("HeldBackCompletionPaymentsContractType1");
             stats.Keys.Should().Contain("HeldBackCompletionPaymentsContractType2");
             stats.Keys.Should().Contain("PaymentsYearToDateContractType1");
@@ -440,8 +410,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             stats.Keys.Should().Contain("PaymentsContractType1");
             stats.Keys.Should().Contain("PaymentsContractType2");
             stats.Keys.Should().Contain("DataLockedEarnings");
+            stats.Keys.Should().Contain("DataLockedEarnings16To18");
+            stats.Keys.Should().Contain("DataLockedEarnings19Plus");
             stats.Keys.Should().Contain("AlreadyPaidDataLockedEarnings");
+            stats.Keys.Should().Contain("AlreadyPaidDataLockedEarnings16To18");
+            stats.Keys.Should().Contain("AlreadyPaidDataLockedEarnings19Plus");
             stats.Keys.Should().Contain("TotalDataLockedEarnings");
+            stats.Keys.Should().Contain("TotalDataLockedEarnings16To18");
+            stats.Keys.Should().Contain("TotalDataLockedEarnings19Plus");
             stats.Keys.Should().Contain("HeldBackCompletionPaymentsContractType1");
             stats.Keys.Should().Contain("HeldBackCompletionPaymentsContractType2");
             stats.Keys.Should().Contain("PaymentsYearToDateContractType1");
@@ -524,6 +500,43 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             stats.Keys.Should().Contain("DataLockedCountDLock12");
 
             stats.Keys.Should().Contain("InLearning");
+        }
+
+        public class PeriodEndProviderSummaryFake : IPeriodEndProviderSummary
+        {
+            public bool AddDcEarningsCalled { get; private set; }
+            public bool AddTransactionTypesCalled { get; private set; }
+            public bool AddFundingSourceAmountsCalled { get; private set; }
+            public bool AddDataLockedEarningsCalled { get; private set; }
+            public bool AddPeriodEndProviderDataLockTypeCountsCalled { get; private set; }
+            public bool AddDataLockedAlreadyPaidCalled { get; private set; }
+            public bool AddPaymentsYearToDateCalled { get; private set; }
+            public bool AddHeldBackCompletionPaymentsCalled { get; private set; }
+            public bool AddInLearningCountCalled { get; private set; }
+            public bool AddNegativeEarningsCalled { get; private set; }
+
+            public ProviderPeriodEndSummaryModel GetMetrics()
+            {
+                return new ProviderPeriodEndSummaryModel();
+            }
+
+            public void AddDcEarnings(IEnumerable<TransactionTypeAmountsByContractType> source) { AddDcEarningsCalled = true; }
+            public void AddTransactionTypes(IEnumerable<TransactionTypeAmountsByContractType> transactionTypes) { AddTransactionTypesCalled = true; }
+            public void AddFundingSourceAmounts(IEnumerable<ProviderFundingSourceAmounts> fundingSourceAmounts) { AddFundingSourceAmountsCalled = true; }
+
+            public void AddDataLockedEarnings(ProviderFundingLineTypeAmounts dataLockedEarningsTotal) { AddDataLockedEarningsCalled = true; }
+            public void AddPeriodEndProviderDataLockTypeCounts(PeriodEndProviderDataLockTypeCounts periodEndProviderDataLockTypeCounts)
+            {
+                AddPeriodEndProviderDataLockTypeCountsCalled = true;
+            }
+
+            public void AddDataLockedAlreadyPaid(ProviderFundingLineTypeAmounts dataLockedAlreadyPaidTotal) { AddDataLockedAlreadyPaidCalled = true; }
+
+            public void AddPaymentsYearToDate(ProviderContractTypeAmounts paymentsYearToDate) { AddPaymentsYearToDateCalled = true; }
+
+            public void AddHeldBackCompletionPayments(ProviderContractTypeAmounts heldBackCompletionPayments) { AddHeldBackCompletionPaymentsCalled = true; }
+            public void AddInLearningCount(ProviderInLearningTotal inLearningTotal) { AddInLearningCountCalled = true; }
+            public void AddNegativeEarnings(List<ProviderNegativeEarningsTotal> providerNegativeEarningsTotal) { AddNegativeEarningsCalled = true; }
         }
     }
 }

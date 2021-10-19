@@ -81,8 +81,18 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             metrics.Payments.Total.Should().Be(noSummaries * providerMetricsSummary.Payments.Total);
 
             metrics.Percentage.Should().Be(providerMetricsSummary.Percentage);
+
             metrics.AdjustedDataLockedEarnings.Should().Be(noSummaries * providerMetricsSummary.AdjustedDataLockedEarnings);
+            metrics.AdjustedDataLockedEarnings16To18.Should().Be(noSummaries * providerMetricsSummary.AdjustedDataLockedEarnings16To18);
+            metrics.AdjustedDataLockedEarnings19Plus.Should().Be(noSummaries * providerMetricsSummary.AdjustedDataLockedEarnings19Plus);
+
             metrics.AlreadyPaidDataLockedEarnings.Should().Be(noSummaries * providerMetricsSummary.AlreadyPaidDataLockedEarnings);
+            metrics.AlreadyPaidDataLockedEarnings16To18.Should().Be(noSummaries * providerMetricsSummary.AlreadyPaidDataLockedEarnings16To18);
+            metrics.AlreadyPaidDataLockedEarnings19Plus.Should().Be(noSummaries * providerMetricsSummary.AlreadyPaidDataLockedEarnings19Plus);
+
+            metrics.TotalDataLockedEarnings.Should().Be(noSummaries * providerMetricsSummary.TotalDataLockedEarnings);
+            metrics.TotalDataLockedEarnings16To18.Should().Be(noSummaries * providerMetricsSummary.TotalDataLockedEarnings16To18);
+            metrics.TotalDataLockedEarnings19Plus.Should().Be(noSummaries * providerMetricsSummary.TotalDataLockedEarnings19Plus);
 
             metrics.PaymentMetrics.DifferenceContractType1.Should()
                 .Be(noSummaries * providerMetricsSummary.PaymentMetrics.DifferenceContractType1);
