@@ -288,7 +288,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 
 		public async Task<List<ProviderFundingLineTypeAmounts>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            var sql = @";WITH unGroupedAmounts AS 
+            var sql = @";WITH unGroupedEarnings AS 
                         (Select
 	                        dle.ukprn as Ukprn,
                             CASE WHEN dle.LearningAimFundingLineType IN (
@@ -307,14 +307,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                         where 		
 	                        dle.jobId in (select DcJobid from Payments2.LatestSuccessfulJobs Where AcademicYear = @academicYear AND CollectionPeriod = @collectionPeriod)
 	                        and npp.Amount <> 0
-	                        and dle.IsPayable = 0
                         )
                         SELECT Ukprn,
-	                        SUM(unGroupedAmounts.FundingLineType16To18Amount) AS FundingLineType16To18Amount, 
-	                        SUM(unGroupedAmounts.FundingLineType19PlusAmount) AS FundingLineType19PlusAmount,
-	                        SUM(unGroupedAmounts.Total) AS Total
-	                        FROM unGroupedAmounts
-	                        GROUP BY unGroupedAmounts.Ukprn";
+	                        SUM(unGroupedEarnings.FundingLineType16To18Amount) AS FundingLineType16To18Amount, 
+	                        SUM(unGroupedEarnings.FundingLineType19PlusAmount) AS FundingLineType19PlusAmount,
+	                        SUM(unGroupedEarnings.Total) AS Total
+	                        FROM unGroupedEarnings
+	                        GROUP BY unGroupedEarnings.Ukprn";
 
             return await DataLockedEarningsTotals.FromSql(sql, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod)).ToListAsync(cancellationToken);
         }
