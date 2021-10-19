@@ -26,6 +26,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
         private readonly IPeriodEndMetricsRepository periodEndMetricsRepository;
         private readonly ITelemetry telemetry;
 
+        private async Task<T> ExecuteDcMetricsQuery<T>(short academicYear, Func<IDcMetricsDataContext, Task<T>> query)
+        {
+            var context = dcMetricsDataContextFactory.CreateContext(academicYear);
+
+            return await query(context);
+        } 
+
+
         public PeriodEndMetricsService(
             IPaymentLogger logger,
             IPeriodEndSummaryFactory periodEndSummaryFactory,
@@ -49,8 +57,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 
                 var stopwatch = Stopwatch.StartNew();
 
-                var dcDataContext = dcMetricsDataContextFactory.CreateContext(academicYear);
-                var dcEarningsTask = dcDataContext.GetEarnings(academicYear, collectionPeriod, cancellationToken);
+                var dcEarningsTask = ExecuteDcMetricsQuery(academicYear, x => x.GetEarnings(academicYear, collectionPeriod, cancellationToken));
+                var dcNegativeEarningsTask = ExecuteDcMetricsQuery(academicYear, x => x.GetNegativeEarnings(academicYear, collectionPeriod, cancellationToken));
 
                 var transactionTypesTask = periodEndMetricsRepository.GetTransactionTypesByContractType(academicYear, collectionPeriod, cancellationToken);
                 var fundingSourceTask = periodEndMetricsRepository.GetFundingSourceAmountsByContractType(academicYear, collectionPeriod, cancellationToken);
@@ -63,6 +71,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 
                 var dataTask = Task.WhenAll(
                     dcEarningsTask,
+                    dcNegativeEarningsTask,
                     transactionTypesTask,
                     fundingSourceTask,
                     currentPaymentTotals,
@@ -102,6 +111,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                     providerSummary.AddDataLockedAlreadyPaid(dataLockedAlreadyPaidTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderFundingLineTypeAmounts());
                     providerSummary.AddHeldBackCompletionPayments(heldBackCompletionAmountsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderContractTypeAmounts());
                     providerSummary.AddInLearningCount(inLearningCountTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderInLearningTotal());
+                    providerSummary.AddNegativeEarnings(dcNegativeEarningsTask.Result.Where(x => x.Ukprn == ukprn).ToList());
 
                     var providerSummaryModel = providerSummary.GetMetrics();
 

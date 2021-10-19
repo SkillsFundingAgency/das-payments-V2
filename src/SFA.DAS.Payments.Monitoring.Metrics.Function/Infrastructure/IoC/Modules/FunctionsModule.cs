@@ -62,7 +62,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.Infrastructure.IoC.Module
                     return new DcMetricsDataContext(dbContextOptions);
                 })
                 .Named<IDcMetricsDataContext>("DcEarnings2021DataContext")
-                .InstancePerLifetimeScope();
+                .InstancePerDependency();
 
             builder.Register((c, p) =>
                 {
@@ -75,7 +75,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.Infrastructure.IoC.Module
                     return new DcMetricsDataContext(dbContextOptions);
                 })
                 .Named<IDcMetricsDataContext>("DcEarnings2122DataContext")
-                .InstancePerLifetimeScope();
+                .InstancePerDependency();
 
             builder.Register((c, p) =>
                 {

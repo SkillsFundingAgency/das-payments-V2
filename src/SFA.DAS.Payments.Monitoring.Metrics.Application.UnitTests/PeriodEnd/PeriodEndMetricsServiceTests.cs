@@ -1,4 +1,5 @@
-﻿using Autofac.Extras.Moq;
+﻿using System;
+using Autofac.Extras.Moq;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -12,6 +13,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.NUnit3;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
 {
@@ -26,6 +30,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
         private Mock<IPeriodEndMetricsRepository> periodEndMetricsRepositoryMock;
         private Mock<ITelemetry> telemetryMock;
         private Mock<IPeriodEndSummaryFactory> periodEndSummaryFactory;
+        private List<ProviderNegativeEarningsTotal> dcNegativeEarningsResult;
 
         private CollectionPeriodToleranceModel collectionPeriodTolerance;
 
@@ -35,12 +40,25 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
         public void SetUp()
         {
             moqer = AutoMock.GetLoose();
+            var fixture = new Fixture();
+            var random = new Random();
+
+
+            dcNegativeEarningsResult = fixture.CreateMany<ProviderNegativeEarningsTotal>(10).ToList();
+            dcNegativeEarningsResult.ForEach(x =>
+            {
+                var randomInt = random.Next(0, 2);
+
+                x.ContractType = randomInt == 1 ? ContractType.Act1 : ContractType.Act2;
+                x.NegativeEarningsTotal = Math.Abs(x.NegativeEarningsTotal);
+            });
 
             periodEndSummary = moqer.Mock<IPeriodEndSummary>();
             periodEndProviderSummary = moqer.Mock<IPeriodEndProviderSummary>();
             periodEndSummaryFactory = moqer.Mock<IPeriodEndSummaryFactory>();
             collectionPeriodTolerance = new CollectionPeriodToleranceModel();
             telemetryMock = moqer.Mock<ITelemetry>();
+            
 
             periodEndSummary
                 .Setup(x => x.GetMetrics())
@@ -67,7 +85,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             dcMetricsDataContextMock = moqer.Mock<IDcMetricsDataContext>();
             dcMetricsDataContextMock
                 .Setup(x => x.GetEarnings(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(dcEarnings);
+                .ReturnsAsync(dcEarnings);            
+            
+            dcMetricsDataContextMock
+                .Setup(x => x.GetNegativeEarnings(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(dcNegativeEarningsResult);
 
             var dcMetricsDataContextFactoryMock = moqer.Mock<IDcMetricsDataContextFactory>();
             dcMetricsDataContextFactoryMock
@@ -113,6 +135,19 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
 
             dcMetricsDataContextMock
                 .Verify(x => x.GetEarnings(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+        [Test,AutoData]
+        public async Task WhenBuildingMetrics_ThenDcNegativeEarningsDataIsRetrieved(long jobId, short academicYear, byte collectionPeriod)
+        {
+            //Arrange
+            var service = moqer.Create<PeriodEndMetricsService>();
+
+            //Act
+            await service.BuildMetrics(jobId, academicYear, collectionPeriod, CancellationToken.None).ConfigureAwait(false);
+
+            //Assert
+            dcMetricsDataContextMock
+                .Verify(x => x.GetNegativeEarnings(academicYear, collectionPeriod, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]
@@ -170,6 +205,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             public bool AddPaymentsYearToDateCalled { get; private set; }
             public bool AddHeldBackCompletionPaymentsCalled { get; private set; }
             public bool AddInLearningCountCalled { get; private set; }
+            public bool AddNegativeEarningsCalled { get; private set; }
 
             public ProviderPeriodEndSummaryModel GetMetrics()
             {
@@ -192,6 +228,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
 
             public void AddHeldBackCompletionPayments(ProviderContractTypeAmounts heldBackCompletionPayments) { AddHeldBackCompletionPaymentsCalled = true; }
             public void AddInLearningCount(ProviderInLearningTotal inLearningTotal) { AddInLearningCountCalled = true; }
+            public void AddNegativeEarnings(List<ProviderNegativeEarningsTotal> providerNegativeEarningsTotal) { AddNegativeEarningsCalled = true; }
         }
         [Test]
         public async Task WhenBuildingMetrics_ThenReturnedDataIsAddedToProvider_ForEachProvider()
@@ -215,6 +252,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             periodEndSummary.AddHeldBackCompletionPaymentsCalled.Should().BeTrue();
             periodEndSummary.AddPeriodEndProviderDataLockTypeCountsCalled.Should().BeTrue();
             periodEndSummary.AddInLearningCountCalled.Should().BeTrue();
+            periodEndSummary.AddNegativeEarningsCalled.Should().BeTrue();
         }
 
         [Test]

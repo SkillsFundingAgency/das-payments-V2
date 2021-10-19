@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
@@ -11,7 +10,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
     class TestHelper
     {
         public static ProviderContractTypeAmounts DefaultYearToDateAmounts => new ProviderContractTypeAmounts
-            {Ukprn = DefaultPeriodEndProviderSummary.Ukprn, ContractType1 = 16300, ContractType2 = 16300};
+        { Ukprn = DefaultPeriodEndProviderSummary.Ukprn, ContractType1 = 16300, ContractType2 = 16300 };
 
         public static PeriodEndProviderSummary DefaultPeriodEndProviderSummary =>
             new PeriodEndProviderSummary(1234, 123, 1, 1920);
@@ -67,8 +66,26 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
                 }
             };
 
+        public static List<ProviderNegativeEarningsTotal> GetDefaultDcNegativeEarnings => new List<ProviderNegativeEarningsTotal>
+        {
+            new ProviderNegativeEarningsTotal
+            {
+                ContractType = ContractType.Act1,
+                NegativeEarningsTotal = 0m,
+                Ukprn = DefaultPeriodEndProviderSummary.Ukprn
+            },
+            new ProviderNegativeEarningsTotal
+            {
+                ContractType = ContractType.Act2,
+                NegativeEarningsTotal = 0m,
+                Ukprn = DefaultPeriodEndProviderSummary.Ukprn
+            }
+
+        };
+
+
         public static ProviderContractTypeAmounts DefaultHeldBackCompletionPayments => new ProviderContractTypeAmounts
-            {Ukprn = DefaultPeriodEndProviderSummary.Ukprn, ContractType1 = 2000, ContractType2 = 1000};
+        { Ukprn = DefaultPeriodEndProviderSummary.Ukprn, ContractType1 = 2000, ContractType2 = 1000 };
 
         public static PeriodEndProviderDataLockTypeCounts DefaultPeriodEndProviderDataLockTypeCounts =>
             new PeriodEndProviderDataLockTypeCounts
@@ -132,15 +149,15 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
                     TransactionType16 = 200,
                 }
             };
-    
 
 
-    public static List<ProviderFundingSourceAmounts> GetPaymentFundingSourceAmounts =>
-            new List<ProviderFundingSourceAmounts>
-            {
+
+        public static List<ProviderFundingSourceAmounts> GetPaymentFundingSourceAmounts =>
+                new List<ProviderFundingSourceAmounts>
+                {
                 new ProviderFundingSourceAmounts
                 {
-                    
+
                     Ukprn = DefaultPeriodEndProviderSummary.Ukprn,
                     ContractType = ContractType.Act1,
                     FundingSource1 = 9900m,
@@ -148,7 +165,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
                     FundingSource3 = 2500m,
                     FundingSource4 = 1000m,
                     FundingSource5 = 300m,
-                    
+
                 },
                 new ProviderFundingSourceAmounts
                 {
@@ -160,8 +177,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
                     FundingSource4 = 1000m,
                     FundingSource5 = 2600m
                 }
-            };
+                };
 
-    public static ProviderContractTypeAmounts GetYearToDatePayments => new ProviderContractTypeAmounts() {ContractType1 = 16300, ContractType2 = 16300, Ukprn = DefaultPeriodEndProviderSummary.Ukprn };
+        public static ProviderContractTypeAmounts GetYearToDatePayments => new ProviderContractTypeAmounts() { ContractType1 = 16300, ContractType2 = 16300, Ukprn = DefaultPeriodEndProviderSummary.Ukprn };
     }
 }

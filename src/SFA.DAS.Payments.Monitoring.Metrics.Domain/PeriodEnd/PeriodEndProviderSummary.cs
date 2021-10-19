@@ -18,6 +18,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         void AddPaymentsYearToDate(ProviderContractTypeAmounts paymentsYearToDate);
         void AddHeldBackCompletionPayments(ProviderContractTypeAmounts heldBackCompletionPayments);
         void AddInLearningCount(ProviderInLearningTotal inLearningTotal);
+        void AddNegativeEarnings(List<ProviderNegativeEarningsTotal> providerNegativeEarningsTotal);
     }
 
     public class PeriodEndProviderSummary : IPeriodEndProviderSummary
@@ -35,6 +36,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         private ProviderContractTypeAmounts providerHeldBackCompletionPayments;
         private PeriodEndProviderDataLockTypeCounts periodEndProviderDataLockTypeCounts;
         private int? inLearning;
+        private NegativeEarningsContractTypeAmounts negativeEarnings;
 
         public PeriodEndProviderSummary(long ukprn, long jobId, byte collectionPeriod, short academicYear)
         {
@@ -48,8 +50,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             providerPaymentsYearToDate = new ProviderContractTypeAmounts();
             providerHeldBackCompletionPayments = new ProviderContractTypeAmounts();
             periodEndProviderDataLockTypeCounts = new PeriodEndProviderDataLockTypeCounts();
+            negativeEarnings = new NegativeEarningsContractTypeAmounts();
         }
-
 
         public ProviderPeriodEndSummaryModel GetMetrics()
         {
@@ -80,7 +82,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 FundingSourceAmounts = GetFundingSourceAmounts(),
                 TransactionTypeAmounts = GetTransactionTypeAmounts(),
                 DataLockTypeCounts = periodEndProviderDataLockTypeCounts,
-                InLearning = inLearning
+                InLearning = inLearning,
+                NegativeEarnings = negativeEarnings 
             };
 
             result.PaymentMetrics = Helpers.CreatePaymentMetrics(result);
@@ -128,6 +131,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 ContractType1 = contractTypes.FirstOrDefault(x => x.ContractType == ContractType.Act1)?.Amount ?? 0,
                 ContractType2 = contractTypes.FirstOrDefault(x => x.ContractType == ContractType.Act2)?.Amount ?? 0
             };
+
+            result.ContractType1 += (negativeEarnings?.ContractType1 ?? 0m);
+            result.ContractType2 += (negativeEarnings?.ContractType2 ?? 0m);
+
             return result;
         }
 
@@ -174,6 +181,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         public void AddInLearningCount(ProviderInLearningTotal inLearningTotal)
         {
             inLearning = inLearningTotal.InLearningCount;
+        }
+
+        public void AddNegativeEarnings(List<ProviderNegativeEarningsTotal> providerNegativeEarningsTotal)
+        {
+            negativeEarnings.ContractType1 = providerNegativeEarningsTotal.FirstOrDefault(x => x.ContractType == ContractType.Act1)?.NegativeEarningsTotal ?? 0m;
+            negativeEarnings.ContractType2 = providerNegativeEarningsTotal.FirstOrDefault(x => x.ContractType == ContractType.Act2)?.NegativeEarningsTotal ?? 0m;
         }
     }
 }
