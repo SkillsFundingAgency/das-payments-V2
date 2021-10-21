@@ -15,8 +15,8 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="7.0.1" />
-    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.2.162" />
-    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="3.2.162" />
+    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.4.664" />
+    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="3.4.664" />
   </ItemGroup>
 
   <ItemGroup>
