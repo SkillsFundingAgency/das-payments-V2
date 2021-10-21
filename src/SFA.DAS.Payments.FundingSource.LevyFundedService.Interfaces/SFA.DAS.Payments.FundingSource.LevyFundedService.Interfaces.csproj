@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.ServiceFabric" Version="6.3.162" />
+    <PackageReference Include="Microsoft.ServiceFabric" Version="6.4.644" />
     <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.2.162" />
   </ItemGroup>
 
