@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Service.Handlers
 
         public async Task Handle(PeriodEndStartedEvent message, IMessageHandlerContext context)
         {
-            await processor.ProcessEasAtMonthEnd(message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period);
+            await processor.ProcessEasAtMonthEnd(message.JobId, message.CollectionPeriod.AcademicYear, message.CollectionPeriod.Period);
         }
     }
 }
