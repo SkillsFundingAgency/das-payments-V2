@@ -45,9 +45,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
                 Context.Set(item, key);
         }
 
-        protected async Task WaitForIt(Func<Task<bool>> lookForIt, string failText)
+        protected async Task WaitForIt(Func<Task<bool>> lookForIt, string failText, TimeSpan? timeToWait = null)
         {
-            var endTime = DateTime.Now.Add(Config.TimeToWait);
+            var endTime = DateTime.Now.Add(timeToWait.GetValueOrDefault(Config.TimeToWait));
             var lastRun = false;
 
             while (DateTime.Now < endTime || lastRun)
@@ -67,9 +67,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             Assert.Fail($"{failText}  Time: {DateTime.Now:G}.  Ukprn: {TestSession.Ukprn}. Job Id: {TestSession.JobId}");
         }
 
-        protected async Task WaitForIt(Func<bool> lookForIt, string failText)
+        protected async Task WaitForIt(Func<bool> lookForIt, string failText, TimeSpan? timeToWait = null)
         {
-            var endTime = DateTime.Now.Add(Config.TimeToWait);
+            var endTime = DateTime.Now.Add(timeToWait.GetValueOrDefault(Config.TimeToWait));
             var lastRun = false;
 
             while (DateTime.Now < endTime || lastRun)

@@ -315,7 +315,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 }
 
                 return payments.Any() && payments.All(p => p.JobId == TestSession.Provider.JobId);
-            },$"Provider Payments failed to cleanup old payments for provider {TestSession.Provider.Ukprn}");
+            },$"Provider Payments failed to cleanup old payments for provider {TestSession.Provider.Ukprn}", TimeSpan.FromMinutes(12));
         }
 
         [Then(@"the payments for the current submission should be removed")]
