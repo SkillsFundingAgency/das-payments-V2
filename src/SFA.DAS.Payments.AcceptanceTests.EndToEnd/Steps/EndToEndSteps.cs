@@ -335,7 +335,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 }
 
                 return payments.Any() && payments.All(p => p.JobId != TestSession.Provider.JobId);
-            }, $"Provider Payments failed to cleanup payments for failed job: {TestSession.Provider.JobId}, Provider: {TestSession.Provider.Ukprn}");
+            }, $"Provider Payments failed to cleanup payments for failed job: {TestSession.Provider.JobId}, Provider: {TestSession.Provider.Ukprn}", TimeSpan.FromMinutes(12));
         }
 
 
