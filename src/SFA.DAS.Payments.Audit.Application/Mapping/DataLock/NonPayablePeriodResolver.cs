@@ -23,7 +23,6 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.DataLock
                         PriceEpisodeIdentifier = item.period.PriceEpisodeIdentifier,
                         SfaContributionPercentage = item.period.SfaContributionPercentage,
                         DataLockEventId = source.EventId,
-                        CensusDate = item.onProgEarning.CensusDate,
                         LearningStartDate = source.LearningAim.StartDate,
                         DataLockEventNonPayablePeriodId = Guid.NewGuid(),
                         Failures = item.period.DataLockFailures?.Select(failure => new DataLockEventNonPayablePeriodFailureModel
@@ -44,7 +43,6 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.DataLock
                         PriceEpisodeIdentifier = item.period.PriceEpisodeIdentifier,
                         SfaContributionPercentage = item.period.SfaContributionPercentage,
                         DataLockEventId = source.EventId,
-                        CensusDate = item.incentiveEarning.CensusDate,
                         LearningStartDate = source.LearningAim.StartDate,
                         DataLockEventNonPayablePeriodId = Guid.NewGuid(),
                         Failures = item.period.DataLockFailures?.Select(failure => new DataLockEventNonPayablePeriodFailureModel
