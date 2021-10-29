@@ -63,6 +63,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
                     FrameworkCode = 1,
                     FundingLineType = "Levy 18+",
                     Reference = "aim ref",
+                    SequenceNumber = 112
                 },
                 OnProgrammeEarnings = new List<OnProgrammeEarning>
                 {
@@ -88,7 +89,9 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
                 {
                     new PriceEpisode
                     {
-                        Identifier = "01-01-29/1234"
+                        Identifier = "01-01-29/1234",
+                        FundingLineType = "Levy 16-18",
+                        LearningAimSequenceNumber = 112
                     },
                     new PriceEpisode
                     {
@@ -130,7 +133,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
             earningEventModel.LearningAimProgrammeType.Should().Be(earningEvent.LearningAim.ProgrammeType);
             earningEventModel.LearningAimStandardCode.Should().Be(earningEvent.LearningAim.StandardCode);
             earningEventModel.LearningAimReference.Should().Be(earningEvent.LearningAim.Reference);
-            earningEventModel.LearningAimFundingLineType.Should().Be(earningEvent.LearningAim.FundingLineType);
+            earningEventModel.LearningAimFundingLineType.Should().Be(earningEvent.PriceEpisodes.Single(x => x.LearningAimSequenceNumber == earningEvent.LearningAim.SequenceNumber).FundingLineType);
         }
 
         private void CompareLearnerDetails(EarningEvents.Messages.Events.EarningEvent earningEvent, EarningEventModel earningEventModel)

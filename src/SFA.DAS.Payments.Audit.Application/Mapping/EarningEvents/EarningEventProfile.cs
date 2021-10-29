@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Audit;
@@ -34,25 +35,41 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                 .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act1))
                 .ForMember(dest => dest.AgreementId, opt => opt.MapFrom(source => source.AgreementId))
                 .ForMember(dest => dest.Periods, opt => opt.ResolveUsing<ApprenticeshipContractTypeEarningPeriodResolver>())
-                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage));
+                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage))
+                .ForMember(dest => dest.LearningAimFundingLineType, opt => opt.ResolveUsing(x => x.PriceEpisodes
+                    .FirstOrDefault(y => y.LearningAimSequenceNumber == x.LearningAim.SequenceNumber)
+                    ?.FundingLineType))
+                ;
 
-           
+
             CreateMap<ApprenticeshipContractType2RedundancyEarningEvent, EarningEventModel>()
                 .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2))
                 .ForMember(dest => dest.Periods, opt => opt.ResolveUsing<ApprenticeshipContractTypeEarningPeriodResolver>())
-                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage));
+                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage))
+                .ForMember(dest => dest.LearningAimFundingLineType, opt => opt.ResolveUsing(x => x.PriceEpisodes
+                    .FirstOrDefault(y => y.LearningAimSequenceNumber == x.LearningAim.SequenceNumber)
+                    ?.FundingLineType))
+                ;
 
 
             CreateMap<ApprenticeshipContractType1EarningEvent, EarningEventModel>()
                 .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act1))
                 .ForMember(dest => dest.AgreementId, opt => opt.MapFrom(source => source.AgreementId))
                 .ForMember(dest => dest.Periods, opt => opt.ResolveUsing<ApprenticeshipContractTypeEarningPeriodResolver>())
-                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage));
+                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage))
+                .ForMember(dest => dest.LearningAimFundingLineType, opt => opt.ResolveUsing(x => x.PriceEpisodes
+                    .FirstOrDefault(y => y.LearningAimSequenceNumber == x.LearningAim.SequenceNumber)
+                    ?.FundingLineType))
+                ;
 
             CreateMap<ApprenticeshipContractType2EarningEvent, EarningEventModel>()
                 .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act2))
                 .ForMember(dest => dest.Periods,opt => opt.ResolveUsing<ApprenticeshipContractTypeEarningPeriodResolver>())
-                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage));
+                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage))
+                .ForMember(dest => dest.LearningAimFundingLineType, opt => opt.ResolveUsing(x => x.PriceEpisodes
+                    .FirstOrDefault(y => y.LearningAimSequenceNumber == x.LearningAim.SequenceNumber)
+                    ?.FundingLineType))
+                ;
 
             CreateMap<Act1FunctionalSkillEarningsEvent, EarningEventModel>()
                 .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act1));

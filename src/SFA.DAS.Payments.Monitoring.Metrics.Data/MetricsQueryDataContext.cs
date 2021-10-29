@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -24,8 +25,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 		Task<decimal> GetAlreadyPaidDataLocksAmount(long ukprn, long jobId, CancellationToken cancellationToken);
 		Task<DataLockTypeCounts> GetDataLockCounts(long ukprn, long jobId, CancellationToken cancellationToken);
 		Task<List<PeriodEndProviderDataLockTypeCounts>> GetPeriodEndProviderDataLockCounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
-		Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
-		Task<List<ProviderTotal>> GetAlreadyPaidDataLockProviderTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+		Task<List<ProviderFundingLineTypeAmounts>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+		Task<List<ProviderFundingLineTypeAmounts>> GetAlreadyPaidDataLockProviderTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
 		Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
 		Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken, IsolationLevel isolationLevel = IsolationLevel.Snapshot);
 	}
@@ -47,7 +48,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 
 		public virtual DbQuery<DataLockCount> DataLockCounts { get; set; }
 		public virtual DbQuery<PeriodEndDataLockCount> PeriodEndDataLockCounts { get; set; }
-		public virtual DbQuery<ProviderTotal> AlreadyPaidDataLockProviderTotals { get; set; }
+		public virtual DbQuery<ProviderFundingLineTypeAmounts> AlreadyPaidDataLockProviderTotals { get; set; }
+        public virtual DbQuery<ProviderFundingLineTypeAmounts> DataLockedEarningsTotals { get; set; }
 		public virtual DbSet<LatestSuccessfulJobModel> LatestSuccessfulJobs { get; set; }
 		public virtual DbSet<EarningEventModel> EarningEvent { get; protected set; }
 		public virtual DbSet<EarningEventPeriodModel> EarningEventPeriods { get; protected set; }
@@ -73,13 +75,23 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 			modelBuilder.ApplyConfiguration(new LatestSuccessfulJobModelConfiguration());
 		}
 
-		public async Task<List<ProviderTotal>> GetAlreadyPaidDataLockProviderTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
-		{
-			var sql = @"
-				Select
+        public async Task<List<ProviderFundingLineTypeAmounts>> GetAlreadyPaidDataLockProviderTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        {
+            var sql = @";WITH unGroupedAmounts AS (Select
 			        dle.ukprn as Ukprn,
-			        sum(p.Amount) as TotalAmount
-	            from Payments2.dataLockEventNonPayablePeriod npp
+                    CASE WHEN p.LearningAimFundingLineType IN (
+							'16 - 18 Apprenticeship(From May 2017) Non - Levy Contract(non - procured)',
+							'16-18 Apprenticeship Non-Levy Contract (procured)',
+							'16-18 Apprenticeship (Employer on App Service)'
+						) THEN p.Amount ELSE 0 END AS FundingLineType16To18Amount,
+					CASE WHEN p.LearningAimFundingLineType IN (
+							'19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)',
+							'19+ Apprenticeship Non-Levy Contract (procured)',
+							'19+ Apprenticeship (Employer on App Service)'
+						) THEN p.Amount ELSE 0 END AS FundingLineType19PlusAmount,
+				    p.Amount AS Total
+
+				from Payments2.dataLockEventNonPayablePeriod npp
 	            join Payments2.dataLockEvent dle on npp.DataLockEventId = dle.EventId 
 	            join Payments2.payment p on dle.ukprn = p.ukprn
 		            AND dle.LearningAimFrameworkCode = P.LearningAimFrameworkCode
@@ -96,13 +108,16 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 		            and npp.Amount <> 0
 		            and dle.IsPayable = 0	
 		            and p.collectionperiod < dle.CollectionPeriod
-                and p.ContractType = 1
-		        group by 
-			        dle.ukprn";
+                and p.ContractType = 1)
+					SELECT Ukprn,
+					SUM(unGroupedAmounts.FundingLineType16To18Amount) AS FundingLineType16To18Amount, 
+					SUM(unGroupedAmounts.FundingLineType19PlusAmount) AS FundingLineType19PlusAmount,
+					SUM(unGroupedAmounts.Total) AS Total
+					FROM unGroupedAmounts
+					GROUP BY unGroupedAmounts.Ukprn";
 
-			return await AlreadyPaidDataLockProviderTotals.FromSql(sql, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod))
-				.ToListAsync(cancellationToken);
-		}
+            return await AlreadyPaidDataLockProviderTotals.FromSql(sql, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod)).ToListAsync(cancellationToken);
+        }
 
 		public async Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
 		{
@@ -271,17 +286,37 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 				.ToList();
 		}
 
-		public async Task<List<ProviderTotal>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
-		{
-			var latestSuccessfulJobIds = LatestSuccessfulJobs.AsNoTracking()
-															.Where(j => j.AcademicYear == academicYear && j.CollectionPeriod == collectionPeriod)
-															.Select(x => x.DcJobId);
-			return await DataLockEventNonPayablePeriods
-				.Where(period => period.Amount != 0 && latestSuccessfulJobIds.Contains(period.DataLockEvent.JobId))
-				.GroupBy(x => x.DataLockEvent.Ukprn)
-				.Select(x => new ProviderTotal() { Ukprn = x.Key, TotalAmount = x.Sum(period => period.Amount) })
-				.ToListAsync(cancellationToken);
-		}
+		public async Task<List<ProviderFundingLineTypeAmounts>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        {
+            var sql = @";WITH unGroupedEarnings AS 
+                        (Select
+	                        dle.ukprn as Ukprn,
+                            CASE WHEN dle.LearningAimFundingLineType IN (
+			                        '16 - 18 Apprenticeship(From May 2017) Non - Levy Contract(non - procured)',
+			                        '16-18 Apprenticeship Non-Levy Contract (procured)',
+			                        '16-18 Apprenticeship (Employer on App Service)'
+		                        ) THEN npp.Amount ELSE 0 END AS FundingLineType16To18Amount,
+	                        CASE WHEN dle.LearningAimFundingLineType IN (
+			                        '19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)',
+			                        '19+ Apprenticeship Non-Levy Contract (procured)',
+			                        '19+ Apprenticeship (Employer on App Service)'
+		                        ) THEN npp.Amount ELSE 0 END AS FundingLineType19PlusAmount,
+	                        npp.Amount AS Total
+                        from Payments2.dataLockEventNonPayablePeriod npp
+                        join Payments2.dataLockEvent dle on npp.DataLockEventId = dle.EventId
+                        where 		
+	                        dle.jobId in (select DcJobid from Payments2.LatestSuccessfulJobs Where AcademicYear = @academicYear AND CollectionPeriod = @collectionPeriod)
+	                        and npp.Amount <> 0
+                        )
+                        SELECT Ukprn,
+	                        SUM(unGroupedEarnings.FundingLineType16To18Amount) AS FundingLineType16To18Amount, 
+	                        SUM(unGroupedEarnings.FundingLineType19PlusAmount) AS FundingLineType19PlusAmount,
+	                        SUM(unGroupedEarnings.Total) AS Total
+	                        FROM unGroupedEarnings
+	                        GROUP BY unGroupedEarnings.Ukprn";
+
+            return await DataLockedEarningsTotals.FromSql(sql, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod)).ToListAsync(cancellationToken);
+        }
 
 		public async Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken, IsolationLevel isolationLevel = IsolationLevel.Snapshot)
 		{
