@@ -27,7 +27,8 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
                             new EarningPeriod{ Period = 1, Amount = 100, PriceEpisodeIdentifier = "pe-1"}
                         }.AsReadOnly()
                     },
-                }.AsReadOnly()
+                }.AsReadOnly(),
+                PriceEpisodes = new List<PriceEpisode> { new PriceEpisode { LearningAimSequenceNumber = 112, FundingLineType = "funding line type" } }
             };
         }
 
