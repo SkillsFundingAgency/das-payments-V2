@@ -7,11 +7,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
 {
     public interface IPeriodEndSummary
     {
-       PeriodEndSummaryModel GetMetrics();
-       void AddProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries);
-       void CalculateIsWithinTolerance(decimal? lowerTolerance, decimal? upperTolerance);
+        PeriodEndSummaryModel GetMetrics();
+        void AddProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries);
+        void CalculateIsWithinTolerance(decimal? lowerTolerance, decimal? upperTolerance);
     }
-    public class PeriodEndSummary :IPeriodEndSummary
+    public class PeriodEndSummary : IPeriodEndSummary
     {
         private readonly long jobId;
         private readonly byte collectionPeriod;
@@ -22,9 +22,15 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         private ContractTypeAmounts yearToDatePayments;
         private ContractTypeAmounts heldBackCompletionPayments;
         private decimal dataLockedEarnings;
+        private decimal dataLockedEarnings16To18;
+        private decimal dataLockedEarnings19Plus;
         private decimal dataLockedAlreadyPaidTotal;
+        private decimal dataLockedAlreadyPaidTotal16To18;
+        private decimal dataLockedAlreadyPaidTotal19Plus;
         private DataLockTypeCounts dataLockTypeCounts;
         private int? inLearning;
+        private NegativeEarningsContractTypeAmounts negativeEarnings;
+
         private PeriodEndSummaryModel periodEndSummary;
 
         public PeriodEndSummary(long jobId, byte collectionPeriod, short academicYear)
@@ -39,7 +45,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         {
             CalculateTotals();
 
-            periodEndSummary =  new PeriodEndSummaryModel
+            periodEndSummary = new PeriodEndSummaryModel
             {
                 CollectionPeriod = collectionPeriod,
                 AcademicYear = academicYear,
@@ -50,10 +56,17 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 Payments = payments,
                 YearToDatePayments = yearToDatePayments,
                 AlreadyPaidDataLockedEarnings = dataLockedAlreadyPaidTotal,
+                AlreadyPaidDataLockedEarnings16To18 = dataLockedAlreadyPaidTotal16To18,
+                AlreadyPaidDataLockedEarnings19Plus = dataLockedAlreadyPaidTotal19Plus,
                 AdjustedDataLockedEarnings = dataLockedEarnings - dataLockedAlreadyPaidTotal,
+                AdjustedDataLockedEarnings16To18 = dataLockedEarnings16To18 - dataLockedAlreadyPaidTotal16To18,
+                AdjustedDataLockedEarnings19Plus = dataLockedEarnings19Plus - dataLockedAlreadyPaidTotal19Plus,
                 TotalDataLockedEarnings = dataLockedEarnings,
+                TotalDataLockedEarnings16To18 = dataLockedEarnings16To18,
+                TotalDataLockedEarnings19Plus = dataLockedEarnings19Plus,
                 DataLockTypeCounts = dataLockTypeCounts,
-                InLearning = inLearning
+                InLearning = inLearning,
+                NegativeEarnings = negativeEarnings
             };
             periodEndSummary.PaymentMetrics = Helpers.CreatePaymentMetrics(periodEndSummary);
             periodEndSummary.Percentage = periodEndSummary.PaymentMetrics.Percentage;
@@ -62,40 +75,52 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
 
         private void CalculateTotals()
         {
-             var allEarnings = allSummaries.Select(x => x.DcEarnings).ToList();
-             dcEarnings = new ContractTypeAmounts()
-             {
-                 ContractType1 = allEarnings.Sum(x => x.ContractType1),
-                 ContractType2 = allEarnings.Sum(x => x.ContractType2)
-             };
+            var allEarnings = allSummaries.Select(x => x.DcEarnings).ToList();
+            dcEarnings = new ContractTypeAmounts()
+            {
+                ContractType1 = allEarnings.Sum(x => x.ContractType1),
+                ContractType2 = allEarnings.Sum(x => x.ContractType2)
+            };
 
-             var allProviderPayments = allSummaries.Select(x => x.Payments).ToList();
-             payments = new ContractTypeAmounts()
-             {
-                 ContractType1 = allProviderPayments.Sum(x => x.ContractType1),
-                 ContractType2 = allProviderPayments.Sum(x => x.ContractType2)
-             };
+            var allProviderPayments = allSummaries.Select(x => x.Payments).ToList();
+            payments = new ContractTypeAmounts()
+            {
+                ContractType1 = allProviderPayments.Sum(x => x.ContractType1),
+                ContractType2 = allProviderPayments.Sum(x => x.ContractType2)
+            };
 
-             var allYearToDatePayments = allSummaries.Select(x => x.YearToDatePayments).ToList();
-             yearToDatePayments = new ContractTypeAmounts()
-             {
-                 ContractType1 = allYearToDatePayments.Sum(x => x.ContractType1),
-                 ContractType2 = allYearToDatePayments.Sum(x => x.ContractType2)
-             };
+            var allYearToDatePayments = allSummaries.Select(x => x.YearToDatePayments).ToList();
+            yearToDatePayments = new ContractTypeAmounts()
+            {
+                ContractType1 = allYearToDatePayments.Sum(x => x.ContractType1),
+                ContractType2 = allYearToDatePayments.Sum(x => x.ContractType2)
+            };
 
-             var allHeldBackCompletionPayments = allSummaries.Select(x => x.HeldBackCompletionPayments).ToList();
-             heldBackCompletionPayments = new ContractTypeAmounts()
-             {
-                 ContractType1 = allHeldBackCompletionPayments.Sum(x=>x.ContractType1),
-                 ContractType2 = allHeldBackCompletionPayments.Sum(x=>x.ContractType2),
-             };
+            var allHeldBackCompletionPayments = allSummaries.Select(x => x.HeldBackCompletionPayments).ToList();
+            heldBackCompletionPayments = new ContractTypeAmounts()
+            {
+                ContractType1 = allHeldBackCompletionPayments.Sum(x => x.ContractType1),
+                ContractType2 = allHeldBackCompletionPayments.Sum(x => x.ContractType2),
+            };
 
-             dataLockedEarnings = allSummaries.Select(x => x.TotalDataLockedEarnings).Sum();
-             dataLockedAlreadyPaidTotal = allSummaries.Select(x => x.AlreadyPaidDataLockedEarnings).Sum();
+            var allNegativeEarnings = allSummaries.Select(x => x.NegativeEarnings).ToList();
+            negativeEarnings = new NegativeEarningsContractTypeAmounts
+            {
+                ContractType1 = allNegativeEarnings.Sum(x => x.ContractType1),
+                ContractType2 = allNegativeEarnings.Sum(x => x.ContractType2)
+            };
 
-             CalculateDataLockTypeCounts();
+            dataLockedEarnings = allSummaries.Select(x => x.TotalDataLockedEarnings).Sum();
+            dataLockedEarnings16To18 = allSummaries.Select(x => x.TotalDataLockedEarnings16To18).Sum();
+            dataLockedEarnings19Plus = allSummaries.Select(x => x.TotalDataLockedEarnings19Plus).Sum();
 
-             inLearning = allSummaries.Sum(x => x.InLearning);
+            dataLockedAlreadyPaidTotal = allSummaries.Select(x => x.AlreadyPaidDataLockedEarnings).Sum();
+            dataLockedAlreadyPaidTotal16To18 = allSummaries.Select(x => x.AlreadyPaidDataLockedEarnings16To18).Sum();
+            dataLockedAlreadyPaidTotal19Plus = allSummaries.Select(x => x.AlreadyPaidDataLockedEarnings19Plus).Sum();
+
+            CalculateDataLockTypeCounts();
+
+            inLearning = allSummaries.Sum(x => x.InLearning);
         }
 
         private void CalculateDataLockTypeCounts()
