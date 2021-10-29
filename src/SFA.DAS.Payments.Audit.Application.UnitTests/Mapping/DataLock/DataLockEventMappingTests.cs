@@ -24,7 +24,8 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
         {
             base.PopulateCommonProperties(paymentEvent);
             paymentEvent.EarningEventId = Guid.NewGuid();
-            paymentEvent.PriceEpisodes = new List<PriceEpisode>(){new PriceEpisode()};
+            paymentEvent.LearningAim.SequenceNumber = 112;
+            paymentEvent.PriceEpisodes = new List<PriceEpisode>(){new PriceEpisode{ LearningAimSequenceNumber = 112, FundingLineType = "funding line type"}};
         }
 
         [Test]
