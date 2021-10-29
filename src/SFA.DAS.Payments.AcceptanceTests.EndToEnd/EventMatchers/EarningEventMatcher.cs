@@ -76,7 +76,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                         FrameworkCode = learnerSpec.Course.FrameworkCode,
                         PathwayCode = learnerSpec.Course.PathwayCode,
                         StandardCode = learnerSpec.Course.StandardCode,
-                        FundingLineType = learnerSpec.Course.FundingLineType,
                         AimReference = learnerSpec.Course.LearnAimRef
                     });
 
@@ -299,7 +298,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                 expectedEvent.Learner.ReferenceNumber != actualEvent.Learner.ReferenceNumber ||
                 expectedEvent.Learner.Uln != actualEvent.Learner.Uln ||
                 expectedEvent.LearningAim.Reference != actualEvent.LearningAim.Reference ||
-                expectedEvent.LearningAim.FundingLineType != actualEvent.LearningAim.FundingLineType ||
                 expectedEvent.LearningAim.FrameworkCode != actualEvent.LearningAim.FrameworkCode ||
                 expectedEvent.LearningAim.PathwayCode != actualEvent.LearningAim.PathwayCode ||
                 expectedEvent.LearningAim.ProgrammeType != actualEvent.LearningAim.ProgrammeType ||

@@ -52,7 +52,8 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
                 StandardCode = 98,
                 PathwayCode = 97,
                 ProgrammeType = 96,
-                Reference = "LA-54321"
+                Reference = "LA-54321",
+                SequenceNumber = 112
             };
             paymentEvent.Ukprn = 23456;
         }
