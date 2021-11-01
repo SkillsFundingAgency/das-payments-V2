@@ -4,6 +4,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
+using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 

@@ -13,6 +13,15 @@ using SFA.DAS.Payments.RequiredPayments.Model.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
 {
+    public interface IPaymentHistoryRepository : IDisposable
+    {
+        Task<List<PaymentHistoryEntity>> GetPaymentHistory(ApprenticeshipKey apprenticeshipKey, byte currentCollectionPeriod, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<decimal> GetEmployerCoInvestedPaymentHistoryTotal(ApprenticeshipKey apprenticeshipKey, CancellationToken cancellationToken = default(CancellationToken));
+        
+        Task<List<IdentifiedRemovedLearningAim>> IdentifyRemovedLearnerAims(short academicYear, byte collectionPeriod, long ukprn, DateTime ilrSubmissionDateTime, CancellationToken cancellationToken);
+    }
+
     public class PaymentHistoryRepository : IPaymentHistoryRepository
     {
         private readonly IPaymentsDataContext dataContext;
@@ -34,7 +43,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                             apprenticeshipKey.StandardCode == payment.LearningAimStandardCode &&
                             apprenticeshipKey.AcademicYear == payment.CollectionPeriod.AcademicYear &&
                             apprenticeshipKey.ContractType == payment.ContractType &&
-                            currentCollectionPeriod > payment.CollectionPeriod.Period)
+                            payment.CollectionPeriod.Period < currentCollectionPeriod)
                 .Select(payment => new PaymentHistoryEntity
                 {
                     ExternalId = payment.EventId,
@@ -78,8 +87,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                                   apprenticeshipKey.PathwayCode == payment.LearningAimPathwayCode &&
                                   apprenticeshipKey.ProgrammeType == payment.LearningAimProgrammeType &&
                                   apprenticeshipKey.StandardCode == payment.LearningAimStandardCode &&
-                                  payment.FundingSource == FundingSourceType.CoInvestedEmployer &&
-                                  apprenticeshipKey.ContractType == payment.ContractType)
+                                  apprenticeshipKey.ContractType == payment.ContractType &&
+                                  payment.TransactionType == TransactionType.Learning &&
+                                  payment.FundingSource == FundingSourceType.CoInvestedEmployer
+                                  )
+                //NOTE: do not remove cast to (int) this is used to remove decimal places from expectedContribution Amount i.e. 123.9997 becomes 123
                 .Select(payment => (int)payment.Amount)
                 .DefaultIfEmpty(0)
                 .SumAsync(cancellationToken);
