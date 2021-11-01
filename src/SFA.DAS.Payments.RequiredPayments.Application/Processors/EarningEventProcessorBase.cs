@@ -206,7 +206,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                     { TelemetryKeys.LearnerRef, earningEvent.Learner.ReferenceNumber },
                     { "LearningAimReference", earningEvent.LearningAim.Reference },
                     { "EarningEventId", earningEvent.EventId.ToString() },
-                    { TelemetryKeys.Ukprn, earningEvent.Ukprn.ToString() },
                     { TelemetryKeys.CollectionPeriod, earningEvent.CollectionPeriod.Period.ToString()},
                     { TelemetryKeys.AcademicYear, earningEvent.CollectionPeriod.AcademicYear.ToString()},
                     { "Completion HoldBack Exemption Code", employerPayments.ToString(CultureInfo.InvariantCulture)},
