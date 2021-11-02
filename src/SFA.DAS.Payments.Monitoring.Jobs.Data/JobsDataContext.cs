@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Monitoring.Jobs.Data.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration;
-using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Data
@@ -28,7 +27,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken);
         Task SaveDcSubmissionStatus(long jobId, bool succeeded, CancellationToken cancellationToken);
         Task<List<OutstandingJobResult>>GetOutstandingOrTimedOutJobs(long? dcJobId,DateTimeOffset startTime, CancellationToken cancellationToken);
-        bool DoSubmissionSummariesExistForJobs(List<OutstandingJobResult> jobs);
+        List<long?> DoSubmissionSummariesExistForJobs(List<OutstandingJobResult> jobs);
     }
 
     public class JobsDataContext : DbContext, IJobsDataContext
@@ -187,13 +186,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                 ToListAsync(cancellationToken);
         }
 
-        public bool DoSubmissionSummariesExistForJobs(List<OutstandingJobResult> jobs)
+        public List<long?> DoSubmissionSummariesExistForJobs(List<OutstandingJobResult> jobs)
         {
             var jobIdsToCheck = jobs
                 .GroupBy(x => x.Ukprn)
                 .Select(grp => grp.OrderByDescending(x => x.IlrSubmissionTime).First().DcJobId); //get the DCJobId that pertains to the latest submission for each ukprn grouping
-
-            return jobIdsToCheck.All(x => SubmissionSummaries.Any(y => y.JobId == x)); //check the summary exists for that job
+            
+            //Select jobId where SubmissionSummaries does not have the same jobId
+            return jobIdsToCheck.Where(x => SubmissionSummaries.Any(y => y.JobId != x)).ToList();
         }
     }
 }
