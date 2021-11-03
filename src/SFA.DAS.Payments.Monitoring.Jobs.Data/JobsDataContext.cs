@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task<List<JobModel>> GetInProgressJobs();
         Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken);
         Task SaveDcSubmissionStatus(long jobId, bool succeeded, CancellationToken cancellationToken);
-        Task<List<OutstandingJobResult>> GetOutstandingOrTimedOutJobs(JobModel startTime, CancellationToken cancellationToken);
+        Task<List<OutstandingJobResult>> GetOutstandingOrTimedOutJobs(JobModel job, CancellationToken cancellationToken);
         List<long?> DoSubmissionSummariesExistForJobs(List<OutstandingJobResult> jobs);
     }
 
