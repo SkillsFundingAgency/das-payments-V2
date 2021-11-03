@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             };
 
             mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.GetOutstandingOrTimedOutJobs(job.DcJobId, job.StartTime, It.IsAny<CancellationToken>()))
+                .Setup(x => x.GetOutstandingOrTimedOutJobs(job, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(outstandingJobs);
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();
@@ -75,7 +75,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             };
 
             mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.GetOutstandingOrTimedOutJobs(job.DcJobId, job.StartTime, It.IsAny<CancellationToken>()))
+                .Setup(x => x.GetOutstandingOrTimedOutJobs(job, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(outstandingJobs);
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();
@@ -105,7 +105,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             };
 
             mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.GetOutstandingOrTimedOutJobs(job.DcJobId, job.StartTime, It.IsAny<CancellationToken>()))
+                .Setup(x => x.GetOutstandingOrTimedOutJobs(job, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(outstandingJobs);
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();
@@ -125,7 +125,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
         public async Task Returns_InProgress_WhenSubmissionSummariesDoNotExist()
         {
             mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.GetOutstandingOrTimedOutJobs(job.DcJobId, job.StartTime, It.IsAny<CancellationToken>()))
+                .Setup(x => x.GetOutstandingOrTimedOutJobs(job, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<OutstandingJobResult>());
 
             mocker.Mock<IJobsDataContext>()
@@ -166,7 +166,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             };
 
             mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.GetOutstandingOrTimedOutJobs(job.DcJobId, job.StartTime, It.IsAny<CancellationToken>()))
+                .Setup(x => x.GetOutstandingOrTimedOutJobs(job, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(outstandingJobs);
 
             mocker.Mock<IJobsDataContext>()

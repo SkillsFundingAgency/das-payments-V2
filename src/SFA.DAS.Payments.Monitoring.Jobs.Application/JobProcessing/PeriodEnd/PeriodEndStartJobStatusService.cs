@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
         public override async Task<(bool IsComplete, JobStatus? OverriddenJobStatus, DateTimeOffset? completionTime)> PerformAdditionalJobChecks(JobModel job, CancellationToken cancellationToken)
         {
-            var outstandingJobs = await context.GetOutstandingOrTimedOutJobs(job.DcJobId, job.StartTime, cancellationToken);
+            var outstandingJobs = await context.GetOutstandingOrTimedOutJobs(job, cancellationToken);
 
             var timeoutsPresent = outstandingJobs.Any(x =>
                 (x.JobStatus == JobStatus.TimedOut ||

@@ -66,7 +66,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                 .Returns(TimeSpan.FromSeconds(20));
 
             mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<long>(), It.IsAny<DateTimeOffset>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<JobModel>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(outstandingOrTimedOutJobs);
 
         }
