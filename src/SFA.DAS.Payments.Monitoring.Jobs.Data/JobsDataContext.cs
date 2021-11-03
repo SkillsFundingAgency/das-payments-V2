@@ -26,7 +26,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task<List<JobModel>> GetInProgressJobs();
         Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken);
         Task SaveDcSubmissionStatus(long jobId, bool succeeded, CancellationToken cancellationToken);
-        Task<List<OutstandingJobResult>>GetOutstandingOrTimedOutJobs(long? dcJobId,DateTimeOffset startTime, CancellationToken cancellationToken);
+        Task<List<OutstandingJobResult>> GetOutstandingOrTimedOutJobs(JobModel startTime, CancellationToken cancellationToken);
         List<long?> DoSubmissionSummariesExistForJobs(List<OutstandingJobResult> jobs);
     }
 
@@ -166,23 +166,24 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 
         public async Task SaveJobStatus(long dcJobId, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var job = await Jobs.FirstOrDefaultAsync(storedJob => storedJob.DcJobId == dcJobId, cancellationToken) 
+            var job = await Jobs.FirstOrDefaultAsync(storedJob => storedJob.DcJobId == dcJobId, cancellationToken)
                       ?? throw new ArgumentException($"Job not found: {dcJobId}");
             job.EndTime = endTime;
             job.Status = status;
             await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<List<OutstandingJobResult>>GetOutstandingOrTimedOutJobs(long? dcJobId,
-                DateTimeOffset startTime, CancellationToken cancellationToken)
+        public async Task<List<OutstandingJobResult>> GetOutstandingOrTimedOutJobs(JobModel job, CancellationToken cancellationToken)
         {
-            var latestValidStartTime = startTime.AddMinutes(ValidStartTimeOffsetMinutes);
+            var latestValidStartTime = job.StartTime.AddMinutes(ValidStartTimeOffsetMinutes);
 
             return await Jobs.Where(x =>
-                x.DcJobId != dcJobId &&
-                 x.JobType == JobType.EarningsJob &&
-                 x.StartTime > latestValidStartTime).
-                Select(x => new OutstandingJobResult(){ DcJobId = x.DcJobId, DcJobSucceeded = x.DcJobSucceeded, JobStatus = x.Status, EndTime = x.EndTime, IlrSubmissionTime = x.IlrSubmissionTime, Ukprn = x.Ukprn }).
+                    x.AcademicYear == job.AcademicYear &&
+                    x.CollectionPeriod == job.CollectionPeriod &&
+                    x.DcJobId != job.DcJobId &&
+                    x.JobType == JobType.EarningsJob &&
+                    x.StartTime > latestValidStartTime).
+                Select(x => new OutstandingJobResult { DcJobId = x.DcJobId, DcJobSucceeded = x.DcJobSucceeded, JobStatus = x.Status, EndTime = x.EndTime, IlrSubmissionTime = x.IlrSubmissionTime, Ukprn = x.Ukprn }).
                 ToListAsync(cancellationToken);
         }
 
@@ -191,7 +192,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             var jobIdsToCheck = jobs
                 .GroupBy(x => x.Ukprn)
                 .Select(grp => grp.OrderByDescending(x => x.IlrSubmissionTime).First().DcJobId); //get the DCJobId that pertains to the latest submission for each ukprn grouping
-            
+
             //Select jobId where SubmissionSummaries does not have the same jobId
             return jobIdsToCheck.Where(x => SubmissionSummaries.Any(y => y.JobId != x)).ToList();
         }
