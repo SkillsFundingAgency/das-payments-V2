@@ -194,7 +194,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                 .Select(grp => grp.OrderByDescending(x => x.IlrSubmissionTime).First().DcJobId); //get the DCJobId that pertains to the latest submission for each ukprn grouping
 
             //Select jobId where SubmissionSummaries does not have the same jobId
-            return jobIdsToCheck.Where(x => SubmissionSummaries.Any(y => y.JobId != x)).ToList();
+            return jobIdsToCheck.Where(x => !SubmissionSummaries.Any(y => y.JobId == x)).ToList();
         }
     }
 }
