@@ -36,7 +36,9 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
                     Completed = true,
                     NumberOfInstalments = 10,
                     PlannedEndDate = DateTime.Today,
-                    EffectiveTotalNegotiatedPriceStartDate = DateTime.Today.AddMonths(-1)
+                    EffectiveTotalNegotiatedPriceStartDate = DateTime.Today.AddMonths(-1),
+                    FundingLineType = "funding line type",
+                    LearningAimSequenceNumber = 112
                 }
             };
         }
