@@ -1,9 +1,11 @@
 ﻿using System;
 using AutoMapper;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
+using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 
@@ -18,7 +20,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             IPaymentHistoryRepository paymentHistoryRepository,
             IApprenticeshipKeyProvider apprenticeshipKeyProvider,
             INegativeEarningService negativeEarningService,
-            IPaymentLogger paymentLogger, IDuplicateEarningEventService duplicateEarningEventService
+            IPaymentLogger paymentLogger, IDuplicateEarningEventService duplicateEarningEventService,
+            ITelemetry telemetry
         ) : base(
             mapper,
             requiredPaymentProcessor,
@@ -26,7 +29,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             paymentHistoryRepository,
             apprenticeshipKeyProvider,
             negativeEarningService,
-            paymentLogger, duplicateEarningEventService
+            paymentLogger, 
+            duplicateEarningEventService,
+            telemetry
         )
         {
         }
