@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.Messages.Core.Events;
@@ -13,6 +15,7 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure;
+using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
@@ -32,6 +35,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         private readonly INegativeEarningService negativeEarningService;
         private readonly IPaymentLogger paymentLogger;
         private readonly IDuplicateEarningEventService duplicateEarningEventService;
+        private readonly ITelemetry telemetry;
 
         protected EarningEventProcessorBase(
             IMapper mapper,
@@ -40,8 +44,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             IPaymentHistoryRepository paymentHistoryRepository,
             IApprenticeshipKeyProvider apprenticeshipKeyProvider,
             INegativeEarningService negativeEarningService,
-            IPaymentLogger paymentLogger, 
-            IDuplicateEarningEventService duplicateEarningEventService)
+            IPaymentLogger paymentLogger,
+            IDuplicateEarningEventService duplicateEarningEventService,
+            ITelemetry telemetry)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.requiredPaymentProcessor = requiredPaymentProcessor ?? throw new ArgumentNullException(nameof(requiredPaymentProcessor));
@@ -51,6 +56,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             this.negativeEarningService = negativeEarningService;
             this.paymentLogger = paymentLogger;
             this.duplicateEarningEventService = duplicateEarningEventService ?? throw new ArgumentNullException(nameof(duplicateEarningEventService));
+            this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
         public async Task<ReadOnlyCollection<PeriodisedRequiredPaymentEvent>> HandleEarningEvent(TEarningEvent earningEvent, IDataCache<PaymentHistoryEntity[]> paymentHistoryCache, CancellationToken cancellationToken)
@@ -69,7 +75,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
                 var cachedPayments = await paymentHistoryCache.TryGet(CacheKeys.PaymentHistoryKey, cancellationToken);
                 var academicYearPayments = cachedPayments.HasValue
                     ? cachedPayments.Value
-                        .Where(p => p.LearnAimReference.Equals(earningEvent.LearningAim.Reference,StringComparison.OrdinalIgnoreCase))
+                        .Where(p => p.LearnAimReference.Equals(earningEvent.LearningAim.Reference, StringComparison.OrdinalIgnoreCase))
                         .Select(p => mapper.Map<PaymentHistoryEntity, Payment>(p))
                         .ToList()
                     : new List<Payment>();
@@ -159,7 +165,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
         private static void AddRefundCommitmentDetails(RequiredPayment requiredPayment, PeriodisedRequiredPaymentEvent requiredPaymentEvent)
         {
             if (requiredPayment.Amount < 0)
-            { 
+            {
                 requiredPaymentEvent.ApprenticeshipId = requiredPayment.ApprenticeshipId;
                 requiredPaymentEvent.ApprenticeshipPriceEpisodeId = requiredPayment.ApprenticeshipPriceEpisodeId;
                 requiredPaymentEvent.ApprenticeshipEmployerType = requiredPayment.ApprenticeshipEmployerType;
@@ -189,7 +195,28 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             var key = apprenticeshipKeyProvider.GetCurrentKey();
             var employerPayments = await paymentHistoryRepository.GetEmployerCoInvestedPaymentHistoryTotal(key, cancellationToken).ConfigureAwait(false);
 
-            return completionPaymentService.ShouldHoldBackCompletionPayment(employerPayments, priceEpisode);
+            var shouldHoldBackCompletionPayment = completionPaymentService.ShouldHoldBackCompletionPayment(employerPayments, priceEpisode);
+
+            if (shouldHoldBackCompletionPayment)
+            {
+                var properties = new Dictionary<string, string>
+                {
+                    { TelemetryKeys.JobId, earningEvent.JobId.ToString()},
+                    { TelemetryKeys.Ukprn, earningEvent.Ukprn.ToString() },
+                    { TelemetryKeys.LearnerRef, earningEvent.Learner.ReferenceNumber },
+                    { "LearningAimReference", earningEvent.LearningAim.Reference },
+                    { "EarningEventId", earningEvent.EventId.ToString() },
+                    { TelemetryKeys.CollectionPeriod, earningEvent.CollectionPeriod.Period.ToString()},
+                    { TelemetryKeys.AcademicYear, earningEvent.CollectionPeriod.AcademicYear.ToString()},
+                    { "Completion HoldBack Exemption Code", employerPayments.ToString(CultureInfo.InvariantCulture)},
+                    { "Expected Employer Contribution", priceEpisode.CompletionHoldBackExemptionCode.ToString()},
+                    { "Reported Employer Contribution", priceEpisode.EmployerContribution.ToString()},
+                };
+
+                telemetry.TrackEvent("Holding Back Completion Payment", properties, new Dictionary<string, double>());
+            }
+
+            return shouldHoldBackCompletionPayment;
         }
 
         protected abstract EarningType GetEarningType(int type);
