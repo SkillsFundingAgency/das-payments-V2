@@ -10,6 +10,7 @@ using AutoMapper;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -18,6 +19,7 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Application.Infrastructure;
 using SFA.DAS.Payments.RequiredPayments.Application.Mapping;
 using SFA.DAS.Payments.RequiredPayments.Application.Processors;
+using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
 using SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
@@ -303,6 +305,89 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
 
             // assert
             actualRequiredPayment.Should().HaveCount(1);
+        }
+
+        [Test]
+        public async Task When_HoldingBackCompletionPayment_Then_Log_a_Custom_Event()
+        {
+            // arrange
+            var period = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2);
+
+            var priceEpisodes = new List<PriceEpisode>(new []
+            {
+                new PriceEpisode
+                {
+                    Identifier = "1",
+                    EmployerContribution = 100,
+                    CompletionHoldBackExemptionCode = 0
+                },
+                new PriceEpisode
+                {
+                    Identifier = "2",
+                    EmployerContribution = 1,
+                    CompletionHoldBackExemptionCode = 2
+                }
+            });
+
+
+            var earningEvent = new PayableEarningEvent
+            {
+                Ukprn = 1,
+                CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2),
+                CollectionYear = period.AcademicYear,
+                Learner = EarningEventDataHelper.CreateLearner(),
+                LearningAim = EarningEventDataHelper.CreateLearningAim(),
+                PriceEpisodes = priceEpisodes,
+                OnProgrammeEarnings = new List<OnProgrammeEarning>
+                {
+                    new OnProgrammeEarning
+                    {
+                        Type = OnProgrammeEarningType.Completion,
+                        Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod>
+                        {
+                            new EarningPeriod
+                            {
+                                Amount = 200,
+                                Period = period.Period,
+                                PriceEpisodeIdentifier = "2",
+                                SfaContributionPercentage = 0.9m,
+                            }
+                        })
+                    }
+                }
+            };
+
+            var requiredPayments = new List<RequiredPayment>
+            {
+                new RequiredPayment
+                {
+                    Amount = 100,
+                    EarningType = EarningType.Levy,
+                },
+            };
+
+            var paymentHistoryEntities = new[] {new PaymentHistoryEntity {CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 2), DeliveryPeriod = 2, LearnAimReference = "ZPROG001"}};
+            var key = new ApprenticeshipKey();
+
+            paymentHistoryCacheMock.Setup(c => c.TryGet(It.Is<string>(k => k == CacheKeys.PaymentHistoryKey),It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ConditionalValue<PaymentHistoryEntity[]>(true, paymentHistoryEntities))
+                .Verifiable();
+            requiredPaymentsService.Setup(p => p.GetRequiredPayments(It.IsAny<Earning>(), It.IsAny<List<Payment>>())).Returns(requiredPayments).Verifiable();
+            apprenticeshipKeyProviderMock.Setup(a => a.GetCurrentKey()).Returns(key).Verifiable();
+            paymentHistoryRepositoryMock.Setup(repo => repo.GetEmployerCoInvestedPaymentHistoryTotal(key, It.IsAny<CancellationToken>())).ReturnsAsync(11).Verifiable();
+            holdingBackCompletionPaymentServiceMock.Setup(h => h.ShouldHoldBackCompletionPayment(11, priceEpisodes[1])).Returns(true).Verifiable();
+
+            // act           
+            var actualRequiredPayment = await processor.HandleEarningEvent(earningEvent, paymentHistoryCacheMock.Object, CancellationToken.None);
+
+            // assert
+            actualRequiredPayment.Should().HaveCount(1);
+
+            mocker.Mock<ITelemetry>().Verify(t => t.TrackEvent("Holding Back Completion Payment",
+                It.Is<Dictionary<string, string>>(d => 
+                    d.Contains(new KeyValuePair<string, string>("Expected Employer Contribution", "2")) &&
+                    d.Contains(new KeyValuePair<string, string>("Reported Employer Contribution", "1"))),
+                It.IsAny<Dictionary<string, double>>()));
         }
 
         [Test]

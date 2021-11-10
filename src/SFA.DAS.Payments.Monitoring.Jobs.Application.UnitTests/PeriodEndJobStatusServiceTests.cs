@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd;
@@ -175,12 +177,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
 
             mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<long?>(), It.IsAny<DateTimeOffset>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<JobModel>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<OutstandingJobResult>());
 
             mocker.Mock<IJobsDataContext>()
                 .Setup(x => x.DoSubmissionSummariesExistForJobs(It.IsAny<List<OutstandingJobResult>>()))
-                .Returns(true);
+                .Returns(new List<long?>());
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();
             await service.ManageStatus(job.Id, CancellationToken.None).ConfigureAwait(false);
@@ -214,7 +216,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
 
             mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<long?>(), It.IsAny<DateTimeOffset>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<JobModel>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<OutstandingJobResult>
                 {
                     new OutstandingJobResult{ DcJobId = 1, DcJobSucceeded = true, JobStatus = JobStatus.Completed }
@@ -222,7 +224,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
 
             mocker.Mock<IJobsDataContext>()
                 .Setup(x => x.DoSubmissionSummariesExistForJobs(It.IsAny<List<OutstandingJobResult>>()))
-                .Returns(true);
+                .Returns(new List<long?>());
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();
             await service.ManageStatus(job.Id, CancellationToken.None).ConfigureAwait(false);
@@ -256,7 +258,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
 
             mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<long?>(), It.IsAny<DateTimeOffset>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<JobModel>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<OutstandingJobResult>
                 {
                     new OutstandingJobResult{ DcJobId = 1, DcJobSucceeded = true, JobStatus = JobStatus.TimedOut, EndTime = DateTimeOffset.Now.AddMinutes(1) }
@@ -295,7 +297,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
 
             mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<long?>(), It.IsAny<DateTimeOffset>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<JobModel>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<OutstandingJobResult>
                 {
                     new OutstandingJobResult{ DcJobId = 1, DcJobSucceeded = true, JobStatus = JobStatus.InProgress }
@@ -307,8 +309,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             mocker.Mock<IJobStatusEventPublisher>()
                 .Verify(publisher => publisher.PeriodEndJobFinished(It.Is<JobModel>(jobModel => jobModel == job),
                     It.IsAny<bool>()), Times.Never);
-        
+
             result.Should().BeFalse();
+
+            mocker.Mock<ITelemetry>().Verify(t => t.TrackEvent(
+                "PeriodEndStart Job Status Update",
+                It.Is<Dictionary<string, string>>(d =>
+                    d.Contains(new KeyValuePair<string, string>("InProgressJobsCount", "1")) &&
+                    d.Contains(new KeyValuePair<string, string>("InProgressJobsList", "{\"DcJobId\":1,\"JobStatus\":1,\"DcJobSucceeded\":true,\"EndTime\":null,\"Ukprn\":null,\"IlrSubmissionTime\":null}"))),
+                It.IsAny<Dictionary<string, double>>()));
         }
 
         [Test]
@@ -332,7 +341,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
 
             mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<long?>(), It.IsAny<DateTimeOffset>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<JobModel>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<OutstandingJobResult>
                 {
                     new OutstandingJobResult{ DcJobId = 1, DcJobSucceeded = false, JobStatus = JobStatus.InProgress }
@@ -346,6 +355,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                     It.IsAny<bool>()), Times.Never);
 
             result.Should().BeFalse();
+
+            mocker.Mock<ITelemetry>().Verify(t => t.TrackEvent(
+                "PeriodEndStart Job Status Update",
+                It.Is<Dictionary<string, string>>(d =>
+                    d.Contains(new KeyValuePair<string, string>("InProgressJobsCount", "1")) &&
+                    d.Contains(new KeyValuePair<string, string>("InProgressJobsList", "{\"DcJobId\":1,\"JobStatus\":1,\"DcJobSucceeded\":false,\"EndTime\":null,\"Ukprn\":null,\"IlrSubmissionTime\":null}"))),
+                It.IsAny<Dictionary<string, double>>()));
+
         }
 
         [Test]
@@ -369,7 +386,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
 
             mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<long?>(), It.IsAny<DateTimeOffset>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<JobModel>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<OutstandingJobResult>
                 {
                     new OutstandingJobResult{ DcJobId = 1, DcJobSucceeded = null, JobStatus = JobStatus.Completed }
@@ -383,6 +400,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                     It.IsAny<bool>()), Times.Never);
 
             result.Should().BeFalse();
+
+            mocker.Mock<ITelemetry>().Verify(t => t.TrackEvent(
+                "PeriodEndStart Job Status Update",
+                It.Is<Dictionary<string, string>>(d =>
+                    d.Contains(new KeyValuePair<string, string>("InProgressJobsCount", "1")) &&
+                    d.Contains(new KeyValuePair<string, string>("InProgressJobsList", "{\"DcJobId\":1,\"JobStatus\":2,\"DcJobSucceeded\":null,\"EndTime\":null,\"Ukprn\":null,\"IlrSubmissionTime\":null}"))),
+                It.IsAny<Dictionary<string, double>>()));
         }
 
         [Test]
@@ -406,7 +430,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
 
             mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<long?>(), It.IsAny<DateTimeOffset>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<JobModel>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<OutstandingJobResult>
                 {
                     new OutstandingJobResult{ DcJobId = 1, DcJobSucceeded = null, JobStatus = JobStatus.InProgress }
@@ -420,6 +444,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                     It.IsAny<bool>()), Times.Never);
 
             result.Should().BeFalse();
+
+            mocker.Mock<ITelemetry>().Verify(t => t.TrackEvent(
+                "PeriodEndStart Job Status Update",
+                It.Is<Dictionary<string, string>>(d =>
+                    d.Contains(new KeyValuePair<string, string>("InProgressJobsCount", "1")) &&
+                    d.Contains(new KeyValuePair<string, string>("InProgressJobsList", "{\"DcJobId\":1,\"JobStatus\":1,\"DcJobSucceeded\":null,\"EndTime\":null,\"Ukprn\":null,\"IlrSubmissionTime\":null}"))),
+                It.IsAny<Dictionary<string, double>>()));
         }
     }
 }
