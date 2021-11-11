@@ -45,6 +45,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         protected void GetFm36LearnerForCollectionPeriod(string collectionPeriodText)
         {
             TestSession.CollectionPeriod = new CollectionPeriodBuilder().WithSpecDate(collectionPeriodText).Build();
+
+            if (TestSession.FM36Global != null)
+            {
+                TestSession.PreviousFm36Global = TestSession.FM36Global;
+            }
+
             TestSession.FM36Global = FM36GlobalDeserialiser.DeserialiseByFeatureForPeriod(featureContext.FeatureInfo.Title, TestSession.CollectionPeriod.Period.ToPeriodText());
             UpdateFm36ToUseLatestDates(TestSession.FM36Global);
         }

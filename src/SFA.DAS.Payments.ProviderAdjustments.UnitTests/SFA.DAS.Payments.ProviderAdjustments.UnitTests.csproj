@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.ProviderAdjustments.Application\SFA.DAS.Payments.ProviderAdjustments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderAdjustments.Domain\SFA.DAS.Payments.ProviderAdjustments.Domain.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderAdjustments.Model\SFA.DAS.Payments.ProviderAdjustments.Model.csproj" />
   </ItemGroup>

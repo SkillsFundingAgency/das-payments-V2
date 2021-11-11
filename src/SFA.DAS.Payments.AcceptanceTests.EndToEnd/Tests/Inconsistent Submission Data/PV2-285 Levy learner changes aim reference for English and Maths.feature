@@ -1,15 +1,13 @@
-﻿@ignore
-#issue with maths and english
-Feature: Levy learner changes aim reference for eng and maths aim and payments are reconciled - PV2-285
+﻿Feature: PV2-285 - Levy learner changes aim reference for eng and maths aim and payments are reconciled
 		As a provider,
 		I want a levy learner, where aim reference for English and Maths is changed and payments are reconciled,
-		So that I am accurately paid my apprenticeship provision - PV2-285
+		So that I am accurately paid my apprenticeship provision
 
-Scenario Outline: Levy learner changes aim reference for eng and maths aim and payments are reconciled - PV2-285
+Scenario Outline: PV2-285 - Levy learner changes aim reference for eng and maths aim and payments are reconciled
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
-        | start date                | end date                     | agreed price | status |
-        | 01/May/Last Academic Year | 01/May/Current Academic Year | 9000         | active |
+        | start date                | end date                     | agreed price | status | Framework Code | Pathway Code | Programme Type |
+        | 01/May/Last Academic Year | 01/May/Current Academic Year | 9000         | active | 593            | 1            | 20             |
 	And the following aims
 		| Aim Type         | Aim Reference | Start Date                | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status |
 		| Programme        | ZPROG001      | 01/May/Last Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        |
@@ -108,20 +106,9 @@ Scenario Outline: Levy learner changes aim reference for eng and maths aim and p
         | Jun/Last Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | 50086832               | Act1          |
         | Jul/Last Academic Year | 0            | 0          | 0         | 39.25                      | 1                   |                          | 50086832               | Act1          |
 
-	## Option 1
-	## -ve and +ve resulted in 0 values - check if we need price episodes here
- #   And at month end only the following payments will be calculated
- #       | Collection Period      | Delivery Period        | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish |
- #       | R12/Last Academic Year | May/Last Academic Year | 0            | 0          | 0         | 0                          |
- #       | R12/Last Academic Year | Jun/Last Academic Year | 0            | 0          | 0         | 0                          |
- #       | R12/Last Academic Year | Jul/Last Academic Year | 600          | 0          | 0         | 39.25                      |
-	
-	# Option 2
     And at month end only the following payments will be calculated
         | Collection Period      | Delivery Period        | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish |
-        | R12/Last Academic Year | May/Last Academic Year | 0            | 0          | 0         | -39.25                     |
         | R12/Last Academic Year | May/Last Academic Year | 0            | 0          | 0         | 39.25                      |
-        | R12/Last Academic Year | Jun/Last Academic Year | 0            | 0          | 0         | -39.25                     |
         | R12/Last Academic Year | Jun/Last Academic Year | 0            | 0          | 0         | 39.25                      |
         | R12/Last Academic Year | Jul/Last Academic Year | 600          | 0          | 0         | 39.25                      |
 

@@ -43,8 +43,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration
                 amounts.Ignore(x => x.Total);
             });
             builder.Property(x => x.AdjustedDataLockedEarnings).HasColumnName(@"AdjustedDataLockedEarnings");
+            builder.Property(x => x.AdjustedDataLockedEarnings16To18).HasColumnName(@"AdjustedDataLockedEarnings16To18");
+            builder.Property(x => x.AdjustedDataLockedEarnings19Plus).HasColumnName(@"AdjustedDataLockedEarnings19Plus");
             builder.Property(x => x.AlreadyPaidDataLockedEarnings).HasColumnName(@"AlreadyPaidDataLockedEarnings");
+            builder.Property(x => x.AlreadyPaidDataLockedEarnings16To18).HasColumnName(@"AlreadyPaidDataLockedEarnings16To18");
+            builder.Property(x => x.AlreadyPaidDataLockedEarnings19Plus).HasColumnName(@"AlreadyPaidDataLockedEarnings19Plus");
             builder.Property(x => x.TotalDataLockedEarnings).HasColumnName(@"TotalDataLockedEarnings");
+            builder.Property(x => x.TotalDataLockedEarnings16To18).HasColumnName(@"TotalDataLockedEarnings16To18");
+            builder.Property(x => x.TotalDataLockedEarnings19Plus).HasColumnName(@"TotalDataLockedEarnings19Plus");
             builder.OwnsOne(x => x.HeldBackCompletionPayments, amounts =>
             {
                 amounts.Property(x => x.ContractType1).HasColumnName(@"HeldBackCompletionPaymentsContractType1");
@@ -58,7 +64,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data.Configuration
                 amounts.Ignore(x => x.Total);
             });
             builder.Property(x => x.InLearning).HasColumnName(@"InLearning");
-
+            builder.OwnsOne(x => x.NegativeEarnings, amounts =>
+            {
+                amounts.Property(x => x.ContractType1).HasColumnName(@"NegativeEarningsContractType1");
+                amounts.Property(x => x.ContractType2).HasColumnName(@"NegativeEarningsContractType2");
+                amounts.Ignore(x => x.Total);
+            });
             builder.HasMany(x => x.FundingSourceAmounts).WithOne(e => e.ProviderPeriodEndSummary).HasForeignKey(e => e.ProviderPeriodEndSummaryId);
             builder.HasMany(x => x.TransactionTypeAmounts).WithOne(d => d.ProviderPeriodEndSummary).HasForeignKey(d => d.ProviderPeriodEndSummaryId);
         
