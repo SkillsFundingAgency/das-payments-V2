@@ -271,6 +271,34 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             result.DcEarnings.ContractType2.Should().Be(expectedAct2DcEarningsTotal);
         }
 
+        [TestCase(1000.00, 700.00)]
+        public void WhenGettingMetrics_ThenNegativeEarningsAreNotAdjusted(decimal act1NegativeEarningsAmount, decimal act2NegativeEarningsAmount)
+        {
+            //Arrange
+            var dcEarningsAct1 = TestHelper.GetDefaultDcEarnings.Where(dc => dc.ContractType == ContractType.Act1).Sum(x => x.Total);
+            var dcEarningsAct2 = TestHelper.GetDefaultDcEarnings.Where(dc => dc.ContractType == ContractType.Act2).Sum(x => x.Total);
+
+
+            var summary = GetPopulatedPeriodEndProviderSummary();
+
+            var negativeEarnings = TestHelper.GetDefaultDcNegativeEarnings;
+            
+            negativeEarnings.FirstOrDefault(x => x.ContractType == ContractType.Act1).NegativeEarningsTotal = act1NegativeEarningsAmount;
+            negativeEarnings.FirstOrDefault(x => x.ContractType == ContractType.Act2).NegativeEarningsTotal = act2NegativeEarningsAmount;
+            
+            summary.AddNegativeEarnings(negativeEarnings);
+
+            //Act
+            var result = summary.GetMetrics();
+
+            //Assert
+            result.DcEarnings.ContractType1.Should().Be(dcEarningsAct1);
+            result.DcEarnings.ContractType2.Should().Be(dcEarningsAct2);
+
+            result.NegativeEarnings.ContractType1.Should().Be(act1NegativeEarningsAmount);
+            result.NegativeEarnings.ContractType2.Should().Be(act2NegativeEarningsAmount);
+        }
+
 
     }
 }
