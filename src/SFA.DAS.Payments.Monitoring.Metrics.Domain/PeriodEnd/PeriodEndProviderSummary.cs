@@ -132,8 +132,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 ContractType2 = contractTypes.FirstOrDefault(x => x.ContractType == ContractType.Act2)?.Amount ?? 0
             };
 
-            result.ContractType1 += (negativeEarnings?.ContractType1 ?? 0m);
-            result.ContractType2 += (negativeEarnings?.ContractType2 ?? 0m);
+            //result.ContractType1 += (negativeEarnings?.ContractType1 ?? 0m);
+            //result.ContractType2 += (negativeEarnings?.ContractType2 ?? 0m);
 
             return result;
         }
@@ -158,9 +158,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             providerDataLockedEarnings = dataLockedEarningsTotal;
         }
 
-        public void AddPeriodEndProviderDataLockTypeCounts(PeriodEndProviderDataLockTypeCounts periodEndProviderDataLockTypeCounts)
+        public void AddPeriodEndProviderDataLockTypeCounts(PeriodEndProviderDataLockTypeCounts providerDataLockTypeCounts)
         {
-            this.periodEndProviderDataLockTypeCounts = periodEndProviderDataLockTypeCounts;
+            this.periodEndProviderDataLockTypeCounts = providerDataLockTypeCounts;
         }
 
         public void AddDataLockedAlreadyPaid(ProviderFundingLineTypeAmounts dataLockedAlreadyPaidTotal)
