@@ -37,6 +37,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                         {
                             PriceEpisodeContractType = "Non-Levy Contract",
                             EpisodeStartDate = new DateTime(2018,8,6),
+                            PriceEpisodeAimSeqNumber = 4
                         },
                         PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>()
                     }
@@ -45,6 +46,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                 {
                     new LearningDelivery
                     {
+                        AimSeqNumber = 4,
                         LearningDeliveryValues = new LearningDeliveryValues
                         {
                             LearnAimRef = "ld1"

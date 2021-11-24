@@ -136,15 +136,6 @@ BEGIN
 END
 GO
 
-RAISERROR('		        Create DisplayDeploymentProperties View.',10,1,'ReleaseName','$(RELEASE_RELEASENAME)') WITH NOWAIT;
-EXEC ('CREATE VIEW [dbo].[DisplayDeploymentProperties_VW]
-AS
-	SELECT name, value 
-	FROM fn_listextendedproperty(default, default, default, default, default, default, default);  
-	');
-
-GO
-
 RAISERROR('		   Update User Account Passwords',10,1) WITH NOWAIT;
 GO
 

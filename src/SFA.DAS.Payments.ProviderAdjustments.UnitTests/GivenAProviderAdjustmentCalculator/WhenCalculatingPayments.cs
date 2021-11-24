@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests.GivenAProviderAdjustmen
                 List<ProviderAdjustment> testEarnings
                 )
             {
-                var actual = sut.CalculateDelta(new List<ProviderAdjustment>(), testEarnings);
+                var actual = sut.CalculateDelta(new List<ProviderAdjustment>(), testEarnings, 0, 0);
 
                 var expectedTotal = testEarnings.Sum(x => x.Amount);
 
@@ -52,11 +52,53 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests.GivenAProviderAdjustmen
                 List<ProviderAdjustment> testEarnings
             )
             {
-                var actual = sut.CalculateDelta(new List<ProviderAdjustment>(), testEarnings).ToList();
+                var actual = sut.CalculateDelta(new List<ProviderAdjustment>(), testEarnings, 0, 0).ToList();
 
                 actual.ShouldContainPaymentMatchingEarning(testEarnings[0]);
                 actual.ShouldContainPaymentMatchingEarning(testEarnings[1]);
                 actual.ShouldContainPaymentMatchingEarning(testEarnings[2]);
+            }
+
+            [Test]
+            [InlineAutoData(1, 2021, 8, 2020, "2021-R01")]
+            [InlineAutoData(2, 2021, 9, 2020, "2021-R02")]
+            [InlineAutoData(3, 2021, 10, 2020, "2021-R03")]
+            [InlineAutoData(4, 2021, 11, 2020, "2021-R04")]
+            [InlineAutoData(5, 2021, 12, 2020, "2021-R05")]
+            [InlineAutoData(6, 2021, 1, 2021, "2021-R06")]
+            [InlineAutoData(7, 2021, 2, 2021, "2021-R07")]
+            [InlineAutoData(8, 2021, 3, 2021, "2021-R08")]
+            [InlineAutoData(9, 2021, 4, 2021, "2021-R09")]
+            [InlineAutoData(10, 2021, 5, 2021, "2021-R10")]
+            [InlineAutoData(11, 2021, 6, 2021, "2021-R11")]
+            [InlineAutoData(12, 2021, 7, 2021, "2021-R12")]
+            [InlineAutoData(13, 2021, 9, 2021, "2021-R13")]
+            [InlineAutoData(14, 2021, 10, 2021, "2021-R14")]
+            [InlineAutoData(1, 2122, 8, 2021, "2122-R01")]
+            [InlineAutoData(2, 2122, 9, 2021, "2122-R02")]
+            [InlineAutoData(3, 2122, 10, 2021, "2122-R03")]
+            [InlineAutoData(4, 2122, 11, 2021, "2122-R04")]
+            [InlineAutoData(5, 2122, 12, 2021, "2122-R05")]
+            [InlineAutoData(6, 2122, 1, 2022, "2122-R06")]
+            [InlineAutoData(7, 2122, 2, 2022, "2122-R07")]
+            [InlineAutoData(8, 2122, 3, 2022, "2122-R08")]
+            [InlineAutoData(9, 2122, 4, 2022, "2122-R09")]
+            [InlineAutoData(10, 2122, 5, 2022, "2122-R10")]
+            [InlineAutoData(11, 2122, 6, 2022, "2122-R11")]
+            [InlineAutoData(12, 2122, 7, 2022, "2122-R12")]
+            [InlineAutoData(13, 2122, 9, 2022, "2122-R13")]
+            [InlineAutoData(14, 2122, 10, 2022, "2122-R14")]
+            public void ThenTheCollectionPeriodDetailsAreCalculatedCorrectly(int collectionPeriod, int academicYear, int expectedMonth, int expectedYear, string expectedName,
+                ProviderAdjustmentCalculator sut,
+                List<ProviderAdjustment> testEarnings
+            )
+            {
+                var actual = sut.CalculateDelta(new List<ProviderAdjustment>(), testEarnings, academicYear, collectionPeriod).ToList();
+
+                actual.Select(x => x.CollectionPeriodMonth).Should().AllBeEquivalentTo(expectedMonth);
+                actual.Select(x => x.CollectionPeriodYear).Should().AllBeEquivalentTo(expectedYear);
+                Assert.That(actual.Select(x => x.CollectionPeriodName).All(x => x == expectedName));
+                actual.Select(x => x.SubmissionAcademicYear).Should().AllBeEquivalentTo(academicYear);
             }
         }
 
@@ -75,7 +117,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests.GivenAProviderAdjustmen
                     AssociatePaymentWithEarning(testPreviousPayments[i], testEarnings[i]);
                 }
 
-                var actual = sut.CalculateDelta(testPreviousPayments, testEarnings);
+                var actual = sut.CalculateDelta(testPreviousPayments, testEarnings, 0, 0);
 
                 var expectedTotal = testEarnings.Sum(x => x.Amount) - testPreviousPayments.Sum(x => x.Amount);
 
@@ -95,7 +137,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests.GivenAProviderAdjustmen
                     AssociatePaymentWithEarning(testPreviousPayments[i], testEarnings[i]);
                 }
 
-                var actual = sut.CalculateDelta(testPreviousPayments, testEarnings).ToList();
+                var actual = sut.CalculateDelta(testPreviousPayments, testEarnings, 0, 0).ToList();
 
                 testEarnings[0].Amount -= testPreviousPayments[0].Amount;
                 testEarnings[1].Amount -= testPreviousPayments[1].Amount;
@@ -120,7 +162,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests.GivenAProviderAdjustmen
                     testPreviousPayments[i].Amount = testEarnings[i].Amount;
                 }
 
-                var actual = sut.CalculateDelta(testPreviousPayments, testEarnings);
+                var actual = sut.CalculateDelta(testPreviousPayments, testEarnings, 0,0);
 
                 actual.Sum(x => x.Amount).Should().Be(0);
             }
@@ -135,7 +177,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests.GivenAProviderAdjustmen
                 List<ProviderAdjustment> testPreviousPayments
             )
             {
-                var actual = sut.CalculateDelta(testPreviousPayments, new List<ProviderAdjustment>());
+                var actual = sut.CalculateDelta(testPreviousPayments, new List<ProviderAdjustment>(), 0, 0);
 
                 var expectedTotal = -1 * testPreviousPayments.Sum(x => x.Amount);
 
@@ -149,7 +191,7 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests.GivenAProviderAdjustmen
                 List<ProviderAdjustment> testPreviousPayments
             )
             {
-                var actual = sut.CalculateDelta(testPreviousPayments, new List<ProviderAdjustment>()).ToList();
+                var actual = sut.CalculateDelta(testPreviousPayments, new List<ProviderAdjustment>(), 0, 0).ToList();
 
                 testPreviousPayments[0].Amount *= -1;
                 testPreviousPayments[1].Amount *= -1;

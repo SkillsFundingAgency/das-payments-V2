@@ -452,7 +452,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [Test]
         public void TestFunctionalSkillsEarningMap()
         {
-            learningAim = new IntermediateLearningAim(processLearnerCommand, fm36Learner.PriceEpisodes,
+            learningAim = new IntermediateLearningAim(processLearnerCommand, new List<PriceEpisode>(),
                 fm36Learner.LearningDeliveries.Where(x => !x.IsMainAim()).ToList());
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, Act2FunctionalSkillEarningsEvent>(learningAim);
             earningEvent.Should().NotBeNull();
@@ -494,6 +494,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                     TNP1 = 7500,
                     TNP2 = 7500,
                     PriceEpisodeCompleted = true,
+                    PriceEpisodeAimSeqNumber = 1
                 },
                 PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
                 {
@@ -546,7 +547,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                     PriceEpisodeInstalmentValue = 500,
                     TNP1 = 7500,
                     TNP2 = 7500,
-                    PriceEpisodeCompleted = true
+                    PriceEpisodeCompleted = true,
+                    PriceEpisodeAimSeqNumber = 2
                 },
                 PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
                 {
@@ -589,7 +591,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
 
             earningEvent.PriceEpisodes.Should().HaveCount(2);
-            earningEvent.PriceEpisodes.Select(x => x.CourseStartDate).Should().AllBeEquivalentTo(DateTime.Today.AddDays(-10));
+            earningEvent.PriceEpisodes.First(x => x.LearningAimSequenceNumber == 1).CourseStartDate.Should().Be(DateTime.Today.AddDays(-5));
+            earningEvent.PriceEpisodes.First(x => x.LearningAimSequenceNumber == 2).CourseStartDate.Should().Be(DateTime.Today.AddDays(-10));
             earningEvent.OnProgrammeEarnings.Should().HaveCount(3); // we generate 3 earnings even if not present in ILR
 
             var learning = earningEvent.OnProgrammeEarnings.Single(e => e.Type == OnProgrammeEarningType.Learning);
@@ -625,6 +628,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                     TNP1 = 7500,
                     TNP2 = 7500,
                     PriceEpisodeCompleted = true,
+                    PriceEpisodeAimSeqNumber = 1
                 },
                 PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
                 {
@@ -677,6 +681,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                     TNP1 = 7500,
                     TNP2 = 7500,
                     PriceEpisodeCompleted = true,
+                    PriceEpisodeAimSeqNumber = 2
                 },
                 PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
                 {
@@ -729,6 +734,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                     TNP1 = 7500,
                     TNP2 = 7500,
                     PriceEpisodeCompleted = true,
+                    PriceEpisodeAimSeqNumber = 3
                 },
                 PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
                 {
@@ -828,6 +834,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                     TNP1 = 7500,
                     TNP2 = 7500,
                     PriceEpisodeCompleted = true,
+                    PriceEpisodeAimSeqNumber = 1
                 },
                 PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
                 {
@@ -920,6 +927,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                     TNP1 = 7500,
                     TNP2 = 7500,
                     PriceEpisodeCompleted = true,
+                    PriceEpisodeAimSeqNumber = 1
                 },
                 PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
                 {

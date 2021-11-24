@@ -30,11 +30,24 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
 
         public async Task TriggerAuditDataCleanup()
         {
-            var submissionJobsToBeDeletedBatches = await GetSubmissionJobsToBeDeletedBatches(config.CollectionPeriod, config.AcademicYear);
+            IEnumerable<SubmissionJobsToBeDeletedBatch> previousSubmissionJobsToBeDeletedBatches = new List<SubmissionJobsToBeDeletedBatch>();
+
+            if (!string.IsNullOrWhiteSpace(config.PreviousAcademicYearCollectionPeriod) && !string.IsNullOrWhiteSpace(config.PreviousAcademicYear))
+            {
+                previousSubmissionJobsToBeDeletedBatches = await GetSubmissionJobsToBeDeletedBatches(config.PreviousAcademicYearCollectionPeriod, config.PreviousAcademicYear);
+            }
+
+            var currentSubmissionJobsToBeDeletedBatches = await GetSubmissionJobsToBeDeletedBatches(config.CurrentCollectionPeriod, config.CurrentAcademicYear);
+
+            var submissionJobsToBeDeletedBatches = previousSubmissionJobsToBeDeletedBatches.Union(currentSubmissionJobsToBeDeletedBatches);
+            var submissionJobsToBeDeletedBatchesList = submissionJobsToBeDeletedBatches.ToList();
 
             var endpointInstance = await endpointInstanceFactory.GetEndpointInstance().ConfigureAwait(false);
 
-            foreach (var batch in submissionJobsToBeDeletedBatches)
+            paymentLogger.LogInfo($"Triggering Audit Data Cleanup for {submissionJobsToBeDeletedBatchesList.Count} submission job batches. " +
+                                  $"DCJobIds: {string.Join(",", submissionJobsToBeDeletedBatchesList.SelectMany(x => x.JobsToBeDeleted.Select(y => y.DcJobId)))}");
+
+            foreach (var batch in submissionJobsToBeDeletedBatchesList)
             {
                 await endpointInstance.Send(config.EarningAuditDataCleanUpQueue, batch).ConfigureAwait(false);
                 await endpointInstance.Send(config.DataLockAuditDataCleanUpQueue, batch).ConfigureAwait(false);
@@ -83,7 +96,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
                 if (e.IsTimeOutException() || e.IsDeadLockException())
                 {
                     paymentLogger.LogWarning($"Starting Audit Data Deletion in Single Item mode");
-                    
+
                     await SplitBatchAndEnqueueMessages(batch, queueName);
                 }
             }
