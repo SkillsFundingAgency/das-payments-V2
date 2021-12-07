@@ -13,5 +13,12 @@
     ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL,
 )
-GO
-CREATE NONCLUSTERED INDEX [IX_DataLockEventPayablePeriod__DataLockEventId] ON [Payments2].[DataLockEventPayablePeriod] ([DataLockEventId]) WITH (ONLINE = ON);
+GO;
+
+CREATE NONCLUSTERED INDEX [IX_DataLockEventPayablePeriod__DataLockEventId] ON [Payments2].[DataLockEventPayablePeriod] ([DataLockEventId]) 
+WITH (ONLINE = ON);
+GO;
+
+CREATE NONCLUSTERED INDEX [DataLockEventPayablePeriod_MatchedLearner_Import] ON [Payments2].[DataLockEventPayablePeriod] ([PriceEpisodeIdentifier],[TransactionType],[Amount])
+INCLUDE ([DataLockEventId],[DeliveryPeriod],[SfaContributionPercentage],[LearningStartDate],[ApprenticeshipId],[ApprenticeshipPriceEpisodeId],[ApprenticeshipEmployerType])
+WITH (ONLINE = ON);

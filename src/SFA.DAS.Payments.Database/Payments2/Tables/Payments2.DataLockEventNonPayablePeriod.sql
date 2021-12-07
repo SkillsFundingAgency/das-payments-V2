@@ -12,12 +12,19 @@
 	LearningStartDate DATETIME2 NULL,
 
 )
-GO
-CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriod__DataLockEventId] ON [Payments2].[DataLockEventNonPayablePeriod] ([DataLockEventId]) INCLUDE (Amount,[DataLockEventNonPayablePeriodId]) WITH (ONLINE = ON);
-GO
+GO;
+
+CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriod__DataLockEventId] ON [Payments2].[DataLockEventNonPayablePeriod] ([DataLockEventId]) 
+INCLUDE (Amount,[DataLockEventNonPayablePeriodId]) 
+WITH (ONLINE = ON);
+GO;
 
 CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriod__TransactionType] ON [Payments2].[DataLockEventNonPayablePeriod] ([TransactionType]) 
 INCLUDE ([DataLockEventId], [DataLockEventNonPayablePeriodId])
 WITH (ONLINE = ON)
+GO;
 
-GO
+CREATE NONCLUSTERED INDEX [DataLockEventNonPayablePeriod_MatchedLearner_Import] ON [Payments2].[DataLockEventNonPayablePeriod] ([PriceEpisodeIdentifier],[TransactionType],[Amount])
+INCLUDE ([DataLockEventId],[DataLockEventNonPayablePeriodId],[DeliveryPeriod],[SfaContributionPercentage],[LearningStartDate])
+WITH (ONLINE = ON)
+GO;
