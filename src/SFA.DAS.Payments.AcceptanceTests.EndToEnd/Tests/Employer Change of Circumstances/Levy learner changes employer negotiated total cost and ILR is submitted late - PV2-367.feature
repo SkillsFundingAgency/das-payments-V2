@@ -7,16 +7,16 @@ Scenario Outline: Levy learner changes employer negotiated total cost and ILR is
 	Given the "employer 1" levy account balance in collection period <Collection_Period> is <Levy Balance for employer 1>
 	And  the "employer 2" levy account balance in collection period <Collection_Period> is <Levy Balance for employer 2>
 	And the following commitments exist
-    | Identifier       | Employer   | start date                   | end date                  | agreed price | status    | effective from               | effective to                 | stop effective from          | Standard Code | Programme Type |
-    | Apprenticeship 1 | employer 1 | 01/Aug/Current Academic Year | 31/Aug/Next Academic Year | 15000        | cancelled | 01/Aug/Current Academic Year | 31/Oct/Current Academic Year | 01/Nov/Current Academic Year | 51            | 25             |
-    | Apprenticeship 2 | employer 2 | 01/Nov/Current Academic Year | 31/Aug/Next Academic Year | 5625         | active    | 01/Nov/Current Academic Year |                              |                              | 51            | 25             |
+    | Identifier       | Employer   | start date                   | end date                     | agreed price | status  | effective from               | effective to                 | stop effective from          | Standard Code | Programme Type |
+    | Apprenticeship 1 | employer 1 | 01/Apr/last Academic Year    | 01/Mar/Current Academic Year | 4200         | stopped | 01/Apr/last Academic Year    | 01/Feb/Current Academic Year | 01/Feb/Current Academic Year | 51            | 25             |
+    | Apprenticeship 2 | employer 2 | 01/Feb/Current Academic Year | 01/Mar/Current Academic Year | 1446         | active  | 01/Feb/Current Academic Year |                              |                              | 51            | 25             |
     And the provider is providing training for the following learners
-		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
-		| 03/Aug/Current Academic Year | 12 months        | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
+		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
+		| 07/Apr/last Academic Year | 12 months        | 12000                | 07/Apr/last Academic Year           | 3000                   | 07/Apr/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 	And price details as follows
         | Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type |
-        | 1st price details | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act1          |
-        | 2nd price details | 12000                | 03/Aug/Current Academic Year        | 3000                   | 03/Aug/Current Academic Year          | 5000                    | 03/Nov/Current Academic Year           | 625                       | 03/Nov/Current Academic Year             | 90%                         | Act1          |
+        | 1st price details | 4200                 | 07/Apr/last Academic Year           | 0                      | 07/Apr/last Academic Year             | 0                       |                                        | 0                         |                                          | 90%                         | Act1          |
+        | 2nd price details | 3360                 | 01/Feb/Current Academic Year        | 840                    | 01/Feb/Current Academic Year          | 606                     | 01/Feb/Current Academic Year           | 840                       | 01/Feb/Current Academic Year             | 90%                         | Act1          |
 	When the ILR file is submitted for the learners for collection period <Collection_Period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
@@ -76,15 +76,13 @@ Scenario Outline: Levy learner changes employer negotiated total cost and ILR is
         | R12/Current Academic Year | Jul/Current Academic Year | 500           | Learning         | employer 2 |
 Examples: 
         | Collection_Period         | Levy Balance for employer 1 | Levy Balance for employer 2 |
-        | R04/Current Academic Year | 15500                       | 7125                        |
-        | R05/Current Academic Year | 12500                       | 5625                        |
-		| R06/Current Academic Year | 12500                       | 5125                        |
-		| R07/Current Academic Year | 12500                       | 4625                        |
-		| R08/Current Academic Year | 12500                       | 4125                        |
-		| R09/Current Academic Year | 12500                       | 3525                        |
-		| R10/Current Academic Year | 12500                       | 3125                        |
-		| R11/Current Academic Year | 12500                       | 2625                        |
-		| R12/Current Academic Year | 12500                       | 2125                        |
+        | R06/Current Academic Year | 999999                      | 999999                      |
+        | R07/Current Academic Year | 999999                      | 999999                      |
+        | R08/Current Academic Year | 999999                      | 999999                      |
+        | R09/Current Academic Year | 999999                      | 999999                      |
+        | R10/Current Academic Year | 999999                      | 999999                      |
+        | R11/Current Academic Year | 999999                      | 999999                      |
+        | R12/Current Academic Year | 999999                      | 999999                      |
 
 
     #Scenario: Earnings and payments for a levy learner, levy available, where total cost changes during the programme, and there is change in employer, and ILR is submitted late
