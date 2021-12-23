@@ -10,79 +10,140 @@ Scenario Outline: Levy learner changes employer negotiated total cost and ILR is
     | Identifier       | Employer   | start date                   | end date                     | agreed price | status  | effective from               | effective to                 | stop effective from          | Standard Code | Programme Type |
     | Apprenticeship 1 | employer 1 | 01/Apr/last Academic Year    | 01/Mar/Current Academic Year | 4200         | stopped | 01/Apr/last Academic Year    | 01/Feb/Current Academic Year | 01/Feb/Current Academic Year | 51            | 25             |
     | Apprenticeship 2 | employer 2 | 01/Feb/Current Academic Year | 01/Mar/Current Academic Year | 1446         | active  | 01/Feb/Current Academic Year |                              |                              | 51            | 25             |
-    And the provider is providing training for the following learners
+    And the provider previously submitted the following learner details
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
 		| 07/Apr/last Academic Year | 12 months        | 12000                | 07/Apr/last Academic Year           | 3000                   | 07/Apr/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
+        #second commitment is produced in feb, so previous submission should be R05, new R06, but we can tweak this
 	And price details as follows
         | Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type |
         | 1st price details | 4200                 | 07/Apr/last Academic Year           | 0                      | 07/Apr/last Academic Year             | 0                       |                                        | 0                         |                                          | 90%                         | Act1          |
-        | 2nd price details | 3360                 | 01/Feb/Current Academic Year        | 840                    | 01/Feb/Current Academic Year          | 606                     | 01/Feb/Current Academic Year           | 840                       | 01/Feb/Current Academic Year             | 90%                         | Act1          |
-	When the ILR file is submitted for the learners for collection period <Collection_Period>
-	Then the following learner earnings should be generated
+        #| 2nd price details | 0                    | 01/Feb/Current Academic Year        | 0                      | 01/Feb/Current Academic Year          | 606                     | 01/Feb/Current Academic Year           | 840                       | 01/Feb/Current Academic Year             | 90%                         | Act1          |
+	#When the ILR file is submitted for the learners for collection period <Collection_Period>
+	And the following earnings had been generated for the learner
 		| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
-		| Aug/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
-		| Sep/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
-		| Oct/Current Academic Year | 1000         | 0          | 0         | 1st price details        |
-		| Nov/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
-		| Dec/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
-		| Jan/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
-		| Feb/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
-		| Mar/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
-		| Apr/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
-		| May/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
-		| Jun/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
-		| Jul/Current Academic Year | 500          | 0          | 0         | 2nd price details        |
+		| Aug/Current Academic Year | 280          | 0          | 0         | 1st price details        |
+		| Sep/Current Academic Year | 280          | 0          | 0         | 1st price details        |
+		| Oct/Current Academic Year | 280          | 0          | 0         | 1st price details        |
+		| Nov/Current Academic Year | 280          | 0          | 0         | 1st price details        |
+		| Dec/Current Academic Year | 280          | 0          | 0         | 1st price details        |
+		| Jan/Current Academic Year | 280          | 0          | 0         | 1st price details        |
+		| Feb/Current Academic Year | 280          | 0          | 0         | 1st price details        |
+		| Mar/Current Academic Year | 280          | 0          | 0         | 1st price details        |
+		| Apr/Current Academic Year | 0            | 0          | 0         | 1st price details        |
+		| May/Current Academic Year | 0            | 0          | 0         | 1st price details        |
+		| Jun/Current Academic Year | 0            | 0          | 0         | 1st price details        |
+		| Jul/Current Academic Year | 0            | 0          | 0         | 1st price details        |
+    And the following provider payments had been generated
+        | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | Levy Payments |
+        | R04/Current Academic Year | Aug/Current Academic Year | 280          | 0          | 0         | 280           |
+        | R04/Current Academic Year | Sep/Current Academic Year | 280          | 0          | 0         | 280           |
+        | R04/Current Academic Year | Oct/Current Academic Year | 280          | 0          | 0         | 280           |
+        | R04/Current Academic Year | Nov/Current Academic Year | 280          | 0          | 0         | 280           |
+        | R05/Current Academic Year | Dec/Current Academic Year | 280          | 0          | 0         | 280           |
+        | R06/Current Academic Year | Jan/Current Academic Year | 280          | 0          | 0         | 280           |
+        | R07/Current Academic Year | Feb/Current Academic Year | 280          | 0          | 0         | 280           |
+        | R08/Current Academic Year | Mar/Current Academic Year | 280          | 0          | 0         | 280           |
+        #| R09/Current Academic Year | Apr/Current Academic Year | 280          | 0          | 0         | 280           |
+        #| R10/Current Academic Year | May/Current Academic Year | 280          | 0          | 0         | 280           |
+        #| R11/Current Academic Year | Jun/Current Academic Year | 280          | 0          | 0         | 280           |
+        #| R12/Current Academic Year | Jul/Current Academic Year | 280          | 0          | 0         | 280           |
+    #below is the same, not sure if this is needed or needs updating
+    But the Provider now changes the Learner details as follows
+    | Employer id | Start Date                | Planned Duration | Actual Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
+    | employer 1  | 07/Apr/last Academic Year | 12 months        | 6 months        | 12000                | 07/Apr/last Academic Year           | 3000                   | 07/Apr/Current Academic Year          |                 | withdrawn         | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
+    | employer 2  | 07/Apr/last Academic Year | 2 months         | 2 months        | 12000                | 07/Apr/last Academic Year           | 3000                   | 07/Apr/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 51            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
+    And price details as follows
+    | Price Episode Id  | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type |
+    | 1st price details | 4200                 | 07/Apr/last Academic Year           | 0                      | 07/Apr/last Academic Year             | 0                       |                                        | 0                         |                                          | 90%                         | Act1          |
+    | 2nd price details | 0                    | 01/Feb/Current Academic Year        | 0                      | 01/Feb/Current Academic Year          | 606                     | 01/Feb/Current Academic Year           | 840                       | 01/Feb/Current Academic Year             | 90%                         | Act1          |
+    When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
+#
+    #need to have a full set here for both price episodes
+    Then the following learner earnings should be generated
+    | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+    | Aug/Current Academic Year | 0            | 0          | 0         | 2nd price details        |
+    | Sep/Current Academic Year | 0            | 0          | 0         | 2nd price details        |
+    | Oct/Current Academic Year | 0            | 0          | 0         | 2nd price details        |
+    | Nov/Current Academic Year | 0            | 0          | 0         | 2nd price details        |
+    | Dec/Current Academic Year | 0            | 0          | 0         | 2nd price details        |
+    | Jan/Current Academic Year | 0            | 0          | 0         | 2nd price details        |
+    | Feb/Current Academic Year | 579          | 0          | 0         | 2nd price details        |
+    | Mar/Current Academic Year | 579          | 0          | 0         | 2nd price details        |
+    | Apr/Current Academic Year | 0            | 0          | 0         | 2nd price details        |
+    | May/Current Academic Year | 0            | 0          | 0         | 2nd price details        |
+    | Jun/Current Academic Year | 0            | 0          | 0         | 2nd price details        |
+    | Jul/Current Academic Year | 0            | 0          | 0         | 2nd price details        |
+    | Aug/Current Academic Year | 280          | 0          | 0         | 1st price details        |
+    | Sep/Current Academic Year | 280          | 0          | 0         | 1st price details        |
+    | Oct/Current Academic Year | 280          | 0          | 0         | 1st price details        |
+    | Nov/Current Academic Year | 280          | 0          | 0         | 1st price details        |
+    | Dec/Current Academic Year | 280          | 0          | 0         | 1st price details        |
+    | Jan/Current Academic Year | 280          | 0          | 0         | 1st price details        |
+    | Feb/Current Academic Year | 280          | 0          | 0         | 1st price details        |
+    | Mar/Current Academic Year | 280          | 0          | 0         | 1st price details        |
+    | Apr/Current Academic Year | 0            | 0          | 0         | 1st price details        |
+    | May/Current Academic Year | 0            | 0          | 0         | 1st price details        |
+    | Jun/Current Academic Year | 0            | 0          | 0         | 1st price details        |
+    | Jul/Current Academic Year | 0            | 0          | 0         | 1st price details        |
+
     And at month end only the following payments will be calculated
-        | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
-		| R04/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
-		| R04/Current Academic Year | Sep/Current Academic Year | 1000         | 0          | 0         |
-		| R04/Current Academic Year | Oct/Current Academic Year | 1000         | 0          | 0         |
-        | R04/Current Academic Year | Nov/Current Academic Year | 500          | 0          | 0         |
-        | R05/Current Academic Year | Dec/Current Academic Year | 500          | 0          | 0         |
-		| R06/Current Academic Year | Jan/Current Academic Year | 500          | 0          | 0         |
-		| R07/Current Academic Year | Feb/Current Academic Year | 500          | 0          | 0         |
-		| R08/Current Academic Year | Mar/Current Academic Year | 500          | 0          | 0         |
-		| R09/Current Academic Year | Apr/Current Academic Year | 500          | 0          | 0         |
-		| R10/Current Academic Year | May/Current Academic Year | 500          | 0          | 0         |
-		| R11/Current Academic Year | Jun/Current Academic Year | 500          | 0          | 0         |
-		| R12/Current Academic Year | Jul/Current Academic Year | 500          | 0          | 0         |
-	And only the following provider payments will be recorded
-        | Collection Period         | Delivery Period           | Levy Payments | Transaction Type | Employer   |
-        | R04/Current Academic Year | Aug/Current Academic Year | 1000          | Learning         | employer 1 |
-        | R04/Current Academic Year | Sep/Current Academic Year | 1000          | Learning         | employer 1 |
-        | R04/Current Academic Year | Oct/Current Academic Year | 1000          | Learning         | employer 1 |
-        | R04/Current Academic Year | Nov/Current Academic Year | 500           | Learning         | employer 2 |
-        | R05/Current Academic Year | Dec/Current Academic Year | 500           | Learning         | employer 2 |
-        | R06/Current Academic Year | Jan/Current Academic Year | 500           | Learning         | employer 2 |
-        | R07/Current Academic Year | Feb/Current Academic Year | 500           | Learning         | employer 2 |
-        | R08/Current Academic Year | Mar/Current Academic Year | 500           | Learning         | employer 2 |
-        | R09/Current Academic Year | Apr/Current Academic Year | 500           | Learning         | employer 2 |
-        | R10/Current Academic Year | May/Current Academic Year | 500           | Learning         | employer 2 |
-        | R11/Current Academic Year | Jun/Current Academic Year | 500           | Learning         | employer 2 |
-        | R12/Current Academic Year | Jul/Current Academic Year | 500           | Learning         | employer 2 |
-	And only the following provider payments will be generated
-        | Collection Period         | Delivery Period           | Levy Payments | Transaction Type | Employer   |
-        | R04/Current Academic Year | Aug/Current Academic Year | 1000          | Learning         | employer 1 |
-        | R04/Current Academic Year | Sep/Current Academic Year | 1000          | Learning         | employer 1 |
-        | R04/Current Academic Year | Oct/Current Academic Year | 1000          | Learning         | employer 1 |
-        | R04/Current Academic Year | Nov/Current Academic Year | 500           | Learning         | employer 2 |
-        | R05/Current Academic Year | Dec/Current Academic Year | 500           | Learning         | employer 2 |
-        | R06/Current Academic Year | Jan/Current Academic Year | 500           | Learning         | employer 2 |
-        | R07/Current Academic Year | Feb/Current Academic Year | 500           | Learning         | employer 2 |
-        | R08/Current Academic Year | Mar/Current Academic Year | 500           | Learning         | employer 2 |
-        | R09/Current Academic Year | Apr/Current Academic Year | 500           | Learning         | employer 2 |
-        | R10/Current Academic Year | May/Current Academic Year | 500           | Learning         | employer 2 |
-        | R11/Current Academic Year | Jun/Current Academic Year | 500           | Learning         | employer 2 |
-        | R12/Current Academic Year | Jul/Current Academic Year | 500           | Learning         | employer 2 |
+    | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
+    | R04/Current Academic Year | Aug/Current Academic Year | 280          | 0          | 0         |
+    | R04/Current Academic Year | Sep/Current Academic Year | 280          | 0          | 0         |
+    | R04/Current Academic Year | Oct/Current Academic Year | 280          | 0          | 0         |
+    | R04/Current Academic Year | Nov/Current Academic Year | 280          | 0          | 0         |
+    | R05/Current Academic Year | Dec/Current Academic Year | 280          | 0          | 0         |
+    | R06/Current Academic Year | Jan/Current Academic Year | 280          | 0          | 0         |
+    | R07/Current Academic Year | Feb/Current Academic Year | 280          | 0          | 0         |
+    | R08/Current Academic Year | Mar/Current Academic Year | 280          | 0          | 0         |
+    | R09/Current Academic Year | Feb/Current Academic Year | 579          | 0          | 0         |
+    | R09/Current Academic Year | Mar/Current Academic Year | 579          | 0          | 0         |
+    #| R09/Current Academic Year | Feb/Current Academic Year | -280         | 0          | 0         |
+    #| R09/Current Academic Year | Mar/Current Academic Year | -280         | 0          | 0         |
+
+		#| R08/Current Academic Year | Mar/Current Academic Year | 500          | 0          | 0         |
+		#| R09/Current Academic Year | Apr/Current Academic Year | 500          | 0          | 0         |
+		#| R10/Current Academic Year | May/Current Academic Year | 500          | 0          | 0         |
+		#| R11/Current Academic Year | Jun/Current Academic Year | 500          | 0          | 0         |
+		#| R12/Current Academic Year | Jul/Current Academic Year | 500          | 0          | 0         |
+#
+#	And only the following provider payments will be recorded
+#        | Collection Period         | Delivery Period           | Levy Payments | Transaction Type | Employer   |
+#        | R04/Current Academic Year | Aug/Current Academic Year | 280           | Learning         | employer 1 |
+#        | R04/Current Academic Year | Sep/Current Academic Year | 280           | Learning         | employer 1 |
+#        | R04/Current Academic Year | Oct/Current Academic Year | 280           | Learning         | employer 1 |
+#        | R04/Current Academic Year | Nov/Current Academic Year | 280           | Learning         | employer 2 |
+#        | R05/Current Academic Year | Dec/Current Academic Year | 280           | Learning         | employer 2 |
+#        | R06/Current Academic Year | Jan/Current Academic Year | 280           | Learning         | employer 2 |
+#        | R07/Current Academic Year | Feb/Current Academic Year | 280           | Learning         | employer 2 |
+#        | R08/Current Academic Year | Mar/Current Academic Year | 280           | Learning         | employer 2 |
+#        | R09/Current Academic Year | Apr/Current Academic Year | 280           | Learning         | employer 2 |
+#        | R10/Current Academic Year | May/Current Academic Year | 280           | Learning         | employer 2 |
+#        | R11/Current Academic Year | Jun/Current Academic Year | 280           | Learning         | employer 2 |
+#        | R12/Current Academic Year | Jul/Current Academic Year | 280           | Learning         | employer 2 |
+#	And only the following provider payments will be generated
+#        | Collection Period         | Delivery Period           | Levy Payments | Transaction Type | Employer   |
+#        | R04/Current Academic Year | Aug/Current Academic Year | 280           | Learning         | employer 1 |
+#        | R04/Current Academic Year | Sep/Current Academic Year | 280           | Learning         | employer 1 |
+#        | R04/Current Academic Year | Oct/Current Academic Year | 280           | Learning         | employer 1 |
+#        | R04/Current Academic Year | Nov/Current Academic Year | 280           | Learning         | employer 2 |
+#        | R05/Current Academic Year | Dec/Current Academic Year | 280           | Learning         | employer 2 |
+#        | R06/Current Academic Year | Jan/Current Academic Year | 280           | Learning         | employer 2 |
+#        | R07/Current Academic Year | Feb/Current Academic Year | 280           | Learning         | employer 2 |
+#        | R08/Current Academic Year | Mar/Current Academic Year | 280           | Learning         | employer 2 |
+#        | R09/Current Academic Year | Apr/Current Academic Year | 280           | Learning         | employer 2 |
+#        | R10/Current Academic Year | May/Current Academic Year | 280           | Learning         | employer 2 |
+#        | R11/Current Academic Year | Jun/Current Academic Year | 280           | Learning         | employer 2 |
+#        | R12/Current Academic Year | Jul/Current Academic Year | 280           | Learning         | employer 2 |
 Examples: 
         | Collection_Period         | Levy Balance for employer 1 | Levy Balance for employer 2 |
-        | R06/Current Academic Year | 999999                      | 999999                      |
-        | R07/Current Academic Year | 999999                      | 999999                      |
-        | R08/Current Academic Year | 999999                      | 999999                      |
+        #| R06/Current Academic Year | 999999                      | 999999                      |
+        #| R07/Current Academic Year | 999999                      | 999999                      |
+        #| R08/Current Academic Year | 999999                      | 999999                      |
         | R09/Current Academic Year | 999999                      | 999999                      |
-        | R10/Current Academic Year | 999999                      | 999999                      |
-        | R11/Current Academic Year | 999999                      | 999999                      |
-        | R12/Current Academic Year | 999999                      | 999999                      |
+        #| R10/Current Academic Year | 999999                      | 999999                      |
+        #| R11/Current Academic Year | 999999                      | 999999                      |
+        #| R12/Current Academic Year | 999999                      | 999999                      |
 
 
     #Scenario: Earnings and payments for a levy learner, levy available, where total cost changes during the programme, and there is change in employer, and ILR is submitted late

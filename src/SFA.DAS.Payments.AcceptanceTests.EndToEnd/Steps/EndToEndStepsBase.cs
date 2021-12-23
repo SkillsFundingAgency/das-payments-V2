@@ -583,7 +583,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     {
                         newValues = new PriceEpisodePeriodisedValues { AttributeName = currentValues.AttributeName };
 
-                        for (var p = 1; p < 13; p++)
+                        for (var p = 1; p < 13; p++) //todo somewhere in here
                         {
                             var earningRow = p - 1;
 
