@@ -22,6 +22,7 @@ using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Abstract;
@@ -436,7 +437,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 }
                 else // maths & english & Learning support don't use price episodes
                 {
-                    learningDelivery.LearningDeliveryPeriodisedValues = SetPeriodisedValues<LearningDeliveryPeriodisedValues>(aim, earnings);
+                    learningDelivery.LearningDeliveryPeriodisedValues = SetPeriodisedValues<LearningDeliveryPeriodisedValues>(aim, earnings, string.Empty);
                 }
 
                 learningDelivery.LearningDeliveryPeriodisedTextValues = SetPeriodisedTextValues(aim, earnings);
@@ -470,7 +471,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         private List<PriceEpisode> GeneratePriceEpisodes(Aim aim, IList<Earning> earnings)
         {
             //TODO: refactor all of this, way too big, too complicated, local methods!!!
-            var aimPeriodisedValues = SetPeriodisedValues<PriceEpisodePeriodisedValues>(aim, earnings);
 
             var priceEpisodePrefix = (aim.StandardCode != 0)
                 ? $"{aim.ProgrammeType}-{aim.StandardCode}"
@@ -572,6 +572,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
                 var episodeLastPeriod = LastOnProgPeriod(currentPriceEpisode);
                 var episodeStart = new CollectionPeriodBuilder().WithDate(currentPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate.Value).Build();
+
+                var aimPeriodisedValues = SetPeriodisedValues<PriceEpisodePeriodisedValues>(aim, earnings, currentPriceEpisode.PriceEpisodeIdentifier);
 
                 foreach (var currentValues in aimPeriodisedValues)
                 {
@@ -681,7 +683,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             return contractType == ContractType.Act1 ? "Contract for services with the employer" : "Contract for services with the ESFA";
         }
 
-        private static List<T> SetPeriodisedValues<T>(Aim aim, IList<Earning> earnings) where T : PeriodisedAttribute, new()
+        private static List<T> SetPeriodisedValues<T>(Aim aim, IList<Earning> earnings, string priceEpisodeIdentifier) where T : PeriodisedAttribute, new()
         {
             var aimPeriodisedValues = new List<T>();
 
@@ -698,7 +700,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (currentEarnings.Any())
             {
-                foreach (var earning in currentEarnings)
+                var priceEpisodeEarnings = currentEarnings.Where(e => string.Equals(e.PriceEpisodeIdentifier, priceEpisodeIdentifier, StringComparison.InvariantCultureIgnoreCase));
+                foreach (var earning in priceEpisodeEarnings)
                 {
                     var period = earning.DeliveryCalendarPeriod;
                     foreach (var earningValue in earning.Values)
@@ -736,6 +739,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 }
             }
 
+            foreach (var periodisedValue in aimPeriodisedValues)
+            {
+                for (byte i = 1; i < 13; i++)
+                {
+                    SetPeriodValueToZeroIfNull(i, periodisedValue, 0);
+                }
+            }
             return aimPeriodisedValues;
         }
 
@@ -805,6 +815,16 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var periodProperty = periodisedValues.GetType().GetProperty("Period" + period);
             periodProperty?.SetValue(periodisedValues, amount);
+        }
+
+        private static void SetPeriodValueToZeroIfNull(int period, PeriodisedAttribute periodisedValues, decimal amount)
+        {
+            var periodProperty = periodisedValues.GetType().GetProperty("Period" + period);
+            var value = periodProperty?.GetValue(periodisedValues);
+            if (value == null)
+            {
+                periodProperty?.SetValue(periodisedValues, decimal.Zero);    
+            }
         }
 
         private static void SetPeriodTextValue(int period, LearningDeliveryPeriodisedTextValues periodisedValues, string value)
