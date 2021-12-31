@@ -72,13 +72,15 @@ Scenario Outline: Levy learner changes employer negotiated total cost and ILR is
         | R04/Current Academic Year | Nov/Current Academic Year | 280          | 0          | 0         |
         | R05/Current Academic Year | Dec/Current Academic Year | 280          | 0          | 0         |
         | R06/Current Academic Year | Jan/Current Academic Year | 280          | 0          | 0         |
+#incorrectly generated payments        
         | R09/Current Academic Year | Feb/Current Academic Year | 299          | 0          | 0         |
-        | R09/Current Academic Year | Mar/Current Academic Year | 299          | 0          | 0         |
-        #| R07/Current Academic Year | Feb/Current Academic Year | 578.40       | 0          | 0         |
-        #| R08/Current Academic Year | Mar/Current Academic Year | 578.40       | 0          | 0         |
-        #| R09/Current Academic Year | Feb/Current Academic Year | -280         | 0          | 0         |
-        #| R09/Current Academic Year | Mar/Current Academic Year | -280         | 0          | 0         |
-
+        | R09/Current Academic Year | Mar/Current Academic Year | 299          | 0          | 0         | 
+#Actual Expected Payments
+        #| R07/Current Academic Year | Feb/Current Academic Year | 578.40       | 0          | 0         | 2nd price details        |
+        #| R08/Current Academic Year | Mar/Current Academic Year | 578.40       | 0          | 0         | 2nd price details        |
+        #| R09/Current Academic Year | Feb/Current Academic Year | -280         | 0          | 0         | 1st price details        |
+        #| R09/Current Academic Year | Mar/Current Academic Year | -280         | 0          | 0         | 1st price details        |
+                                                                                                          
 Examples: 
         | Collection_Period         | Levy Balance for employer 1 | Levy Balance for employer 2 |
         | R09/Current Academic Year | 999999                      | 999999                      |
