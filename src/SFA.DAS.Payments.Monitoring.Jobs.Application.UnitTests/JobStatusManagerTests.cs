@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             cancellationTokenSource.CancelAfter(10000);
             try
             {
-                _ = manager.Start(cancellationTokenSource.Token).ConfigureAwait(false);
+                _ = manager.Start(TODO, cancellationTokenSource.Token).ConfigureAwait(false);
                 manager.StartMonitoringJob(99, JobType.EarningsJob);
                 await Task.Delay(1000, cancellationTokenSource.Token).ConfigureAwait(false);
             }

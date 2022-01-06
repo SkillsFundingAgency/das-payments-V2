@@ -44,36 +44,46 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
         {
             if (!job.DcJobId.HasValue)
                 throw new InvalidOperationException($"No dc job id specified for the job. Job type: {job.JobType:G}");
+
             cancellationToken.ThrowIfCancellationRequested();
+
             var jobCache = await GetJobCollection();
             var cachedJob = await jobCache.TryGetValueAsync(reliableTransactionProvider.Current, job.DcJobId.Value, TransactionTimeout, cancellationToken).ConfigureAwait(false);
+            
             if (cachedJob.HasValue)
             {
-                logger.LogDebug($"Job has already been stored.");
+                logger.LogDebug($"Job has already been stored. Job: {job.DcJobId}");
                 return false;
             }
+
+            logger.LogDebug($"Saving new Job StartTime {job.StartTime}. Job: {job.DcJobId}");
+
+            if (job.Id == 0)
+                await dataContext.SaveNewJob(job, cancellationToken).ConfigureAwait(false);
 
             await jobCache.AddOrUpdateAsync(reliableTransactionProvider.Current, job.DcJobId.Value,
                 id => job, (id, existingJob) => job, TransactionTimeout, cancellationToken)
                 .ConfigureAwait(false);
 
-            if (job.Id == 0)
-                await dataContext.SaveNewJob(job, cancellationToken).ConfigureAwait(false);
             return true;
         }
 
         public async Task SaveJobStatus(long jobId, JobStatus jobStatus, DateTimeOffset endTime, CancellationToken cancellationToken)
         {
             var job = await GetJob(jobId, cancellationToken).ConfigureAwait(false);
+
             if (job == null)
                 throw new InvalidOperationException($"Job not stored in the cache. Job: {jobId}");
+
             job.Status = jobStatus;
             job.EndTime = endTime;
-            var collection = await GetJobCollection().ConfigureAwait(false);
-            await collection.AddOrUpdateAsync(reliableTransactionProvider.Current, jobId, job, (key, value) => job,
-                    TransactionTimeout, cancellationToken)
-                .ConfigureAwait(false);
+
+            logger.LogDebug($"Updating Job Status to {jobStatus} EndTime {endTime}. Job: {job.DcJobId}");
+
             await dataContext.SaveJobStatus(jobId, jobStatus, endTime, cancellationToken).ConfigureAwait(false);
+            
+            var collection = await GetJobCollection().ConfigureAwait(false);
+            await collection.AddOrUpdateAsync(reliableTransactionProvider.Current, jobId, job, (key, value) => job, TransactionTimeout, cancellationToken).ConfigureAwait(false);
         }
         
         public async Task<List<long>> GetCurrentEarningJobs(CancellationToken cancellationToken)
@@ -121,14 +131,18 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             var job = await GetJob(jobId, cancellationToken).ConfigureAwait(false);
             if (job == null)
                 throw new InvalidOperationException($"Job not stored in the cache. Job: {jobId}");
+
             job.DcJobSucceeded = succeeded;
             job.DcJobEndTime = DateTimeOffset.UtcNow;
+
+            logger.LogDebug($"Updating Job DcSubmissionStatus to {job.DcJobSucceeded} DcJobEndTime {job.DcJobEndTime}. Job: {job.DcJobId}");
+
+            await dataContext.SaveDcSubmissionStatus(jobId, succeeded, cancellationToken).ConfigureAwait(false);
+
             var jobCache = await GetJobCollection();
             await jobCache.AddOrUpdateAsync(reliableTransactionProvider.Current, job.DcJobId.Value,
                     id => job, (id, existingJob) => job, TransactionTimeout, cancellationToken)
                 .ConfigureAwait(false);
-
-            await dataContext.SaveDcSubmissionStatus(jobId, succeeded, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<JobModel> GetJob(long jobId, CancellationToken cancellationToken)
@@ -142,8 +156,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         private async Task<IReliableDictionary2<Guid, InProgressMessage>> GetInProgressMessagesCollection(long jobId)
         {
-            return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<Guid, InProgressMessage>>(
-                $"{InProgressMessagesCacheKey}_{jobId}");
+            return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<Guid, InProgressMessage>>($"{InProgressMessagesCacheKey}_{jobId}");
         }
 
         public async Task<List<InProgressMessage>> GetInProgressMessages(long jobId, CancellationToken cancellationToken)
@@ -161,6 +174,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         public async Task RemoveInProgressMessages(long jobId, List<Guid> messageIdentifiers, CancellationToken cancellationToken)
         {
+            logger.LogDebug($"Removing {messageIdentifiers.Count} InProgressMessages. Job: {jobId}");
+
             var inProgressCollection = await GetInProgressMessagesCollection(jobId).ConfigureAwait(false);
             foreach (var messageIdentifier in messageIdentifiers)
             {
@@ -172,6 +187,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         public async Task StoreInProgressMessages(long jobId, List<InProgressMessage> inProgressMessages, CancellationToken cancellationToken)
         {
+            logger.LogDebug($"Storing {inProgressMessages.Count} InProgressMessages. Job: {jobId}");
+
             cancellationToken.ThrowIfCancellationRequested();
             var inProgressMessagesCollection = await GetInProgressMessagesCollection(jobId);
             foreach (var inProgressMessage in inProgressMessages)
@@ -185,8 +202,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         private async Task<IReliableDictionary2<Guid, CompletedMessage>> GetCompletedMessagesCollection(long jobId)
         {
-            return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<Guid, CompletedMessage>>(
-                $"{CompletedMessagesCacheKey}_{jobId}").ConfigureAwait(false);
+            return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<Guid, CompletedMessage>>($"{CompletedMessagesCacheKey}_{jobId}").ConfigureAwait(false);
         }
 
         public async Task<List<CompletedMessage>> GetCompletedMessages(long jobId, CancellationToken cancellationToken)
@@ -204,6 +220,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         public async Task RemoveCompletedMessages(long jobId, List<Guid> completedMessages, CancellationToken cancellationToken)
         {
+            logger.LogDebug($"Removing {completedMessages.Count} CompletedMessages. Job: {jobId}");
+
             var completedMessagesCollection = await GetCompletedMessagesCollection(jobId).ConfigureAwait(false);
             foreach (var completedMessage in completedMessages)
             {
@@ -249,8 +267,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         public async Task SaveDataLocksCompletionTime(long jobId, DateTimeOffset endTime, CancellationToken cancellationToken)
         {
-            await dataContext.SaveDataLocksCompletionTime(jobId, endTime, cancellationToken).ConfigureAwait(
-                false);
+            await dataContext.SaveDataLocksCompletionTime(jobId, endTime, cancellationToken).ConfigureAwait(false);
         }
     }
 }
