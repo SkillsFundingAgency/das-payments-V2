@@ -28,6 +28,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task SaveDcSubmissionStatus(long jobId, bool succeeded, CancellationToken cancellationToken);
         Task<List<OutstandingJobResult>> GetOutstandingOrTimedOutJobs(JobModel job, CancellationToken cancellationToken);
         List<long?> DoSubmissionSummariesExistForJobs(List<OutstandingJobResult> jobs);
+        Task<List<InProgressJobAverageJobCompletionTime>> GetAverageJobCompletionTimesForInProgressJobs(List<long?> inProgressJobsUkprnList, CancellationToken cancellationToken);
     }
 
     public class JobsDataContext : DbContext, IJobsDataContext
@@ -195,6 +196,22 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 
             //Select jobId where SubmissionSummaries does not have the same jobId
             return jobIdsToCheck.Where(x => !SubmissionSummaries.Any(y => y.JobId == x)).ToList();
+        }
+
+        public async Task<List<InProgressJobAverageJobCompletionTime>> GetAverageJobCompletionTimesForInProgressJobs(List<long?> inProgressJobsUkprnList, CancellationToken cancellationToken)
+        {
+            return await Jobs.Where(x =>
+                    x.JobType == JobType.EarningsJob &&
+                    x.DcJobSucceeded == true &&
+                    (x.Status  == JobStatus.Completed || x.Status == JobStatus.CompletedWithErrors) &&
+                    inProgressJobsUkprnList.Contains(x.Ukprn))
+                .GroupBy(g => g.Ukprn)
+                .Select(x => new InProgressJobAverageJobCompletionTime
+                {
+                    Ukprn = x.Key.Value,
+                    AverageJobCompletionTime = x.Average(item => EF.Functions.DateDiffSecond(item.StartTime, item.EndTime)) + (x.Average(item => EF.Functions.DateDiffSecond(item.StartTime, item.EndTime)) * 0.20)
+                })
+                .ToListAsync(cancellationToken);
         }
     }
 }

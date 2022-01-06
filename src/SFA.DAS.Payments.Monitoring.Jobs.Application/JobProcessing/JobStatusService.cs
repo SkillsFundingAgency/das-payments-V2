@@ -51,9 +51,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             var status = JobStatus.TimedOut;
             if (job.DcJobSucceeded.HasValue)
                 status = job.DcJobSucceeded.Value ? JobStatus.CompletedWithErrors : JobStatus.DcTasksFailed;
-                
-            return await CompleteJob(job, status, timedOutTime, cancellationToken)
-                .ConfigureAwait(false);
+
+            if (status != JobStatus.TimedOut) 
+                Logger.LogWarning($"Job {job.DcJobId} has timed out. but because DcJobSucceeded is {job.DcJobSucceeded}, CompleteJob Job as {status}");
+
+            return await CompleteJob(job, status, timedOutTime, cancellationToken).ConfigureAwait(false);
         }
 
         public virtual async Task<bool> ManageStatus(long jobId, CancellationToken cancellationToken)
