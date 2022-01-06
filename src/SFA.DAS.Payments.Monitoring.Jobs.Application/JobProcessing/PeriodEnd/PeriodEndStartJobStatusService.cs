@@ -48,6 +48,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
             if (processingJobsPresent.Any())
             {
                 SendTelemetry(job, processingJobsPresent);
+
+                var completionTimesForInProgressJobs = await context.GetAverageJobCompletionTimesForInProgressJobs(processingJobsPresent.Select(p => p.Ukprn).ToList(), cancellationToken);
+
                 return (false, null, null);
             }
 
