@@ -55,13 +55,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
         private PeriodEndJobFinishedEvent CreatePeriodEndEvent(JobType jobType, bool succeeded)
         {
-                if (jobType  == JobType.PeriodEndStartJob)
-                    return succeeded ? (PeriodEndJobFinishedEvent) new PeriodEndStartJobSucceeded() : new PeriodEndStartJobFailed();
-                if (jobType  == JobType.PeriodEndRunJob)
-                    return succeeded ? (PeriodEndJobFinishedEvent) new PeriodEndRunJobSucceeded() : new PeriodEndRunJobFailed();
-                if (jobType  == JobType.PeriodEndStopJob)
-                    return succeeded ? (PeriodEndJobFinishedEvent) new PeriodEndStopJobSucceeded() : new PeriodEndStopJobFailed();
-                throw new InvalidOperationException($"Unhandled period end job type: {jobType}");
+            if (jobType == JobType.PeriodEndStartJob)
+                return succeeded ? (PeriodEndJobFinishedEvent)new PeriodEndStartJobSucceeded() : new PeriodEndStartJobFailed();
+            if (jobType == JobType.PeriodEndRunJob)
+                return succeeded ? (PeriodEndJobFinishedEvent)new PeriodEndRunJobSucceeded() : new PeriodEndRunJobFailed();
+            if (jobType == JobType.PeriodEndStopJob)
+                return succeeded ? (PeriodEndJobFinishedEvent)new PeriodEndStopJobSucceeded() : new PeriodEndStopJobFailed();
+            throw new InvalidOperationException($"Unhandled period end job type: {jobType}");
         }
     }
 }

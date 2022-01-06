@@ -145,7 +145,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             await JobStorageService.SaveJobStatus(job.DcJobId.Value, status, endTime, cancellationToken).ConfigureAwait(false);
 
             SendTelemetry(job);
-            Logger.LogInfo($"Finished recording completion status of job. Job: {job.Id}, status: {job.Status}, end time: {job.EndTime}");
+            
+            if (job.Status == JobStatus.DcTasksFailed || job.Status == JobStatus.TimedOut)
+            {
+                Logger.LogWarning($"Finished recording completion status of job. Job: {job.Id}, status: {job.Status}, end time: {job.EndTime}");
+            }
+            else
+            {
+                Logger.LogInfo($"Finished recording completion status of job. Job: {job.Id}, status: {job.Status}, end time: {job.EndTime}");
+            }
+            
             return true;
         }
 
