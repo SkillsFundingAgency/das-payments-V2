@@ -205,11 +205,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                     x.DcJobSucceeded == true &&
                     (x.Status  == JobStatus.Completed || x.Status == JobStatus.CompletedWithErrors) &&
                     inProgressJobsUkprnList.Contains(x.Ukprn))
+                .Select(j => new
+                {
+                    j.Ukprn,
+                    AverageJobCompletionTime = EF.Functions.DateDiffMillisecond(j.StartTime, j.EndTime ?? DateTimeOffset.Now)
+                })
                 .GroupBy(g => g.Ukprn)
                 .Select(x => new InProgressJobAverageJobCompletionTime
                 {
                     Ukprn = x.Key.Value,
-                    AverageJobCompletionTime = x.Average(item => EF.Functions.DateDiffSecond(item.StartTime, item.EndTime)) + (x.Average(item => EF.Functions.DateDiffSecond(item.StartTime, item.EndTime)) * 0.20)
+                    AverageJobCompletionTime = x.Average(item => item.AverageJobCompletionTime) + (x.Average(item => item.AverageJobCompletionTime) * 0.20)
                 })
                 .ToListAsync(cancellationToken);
         }
