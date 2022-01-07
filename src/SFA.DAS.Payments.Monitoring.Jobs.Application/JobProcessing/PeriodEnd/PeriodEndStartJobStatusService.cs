@@ -51,6 +51,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
                 var completionTimesForInProgressJobs = await context.GetAverageJobCompletionTimesForInProgressJobs(processingJobsPresent.Select(p => p.Ukprn).ToList(), cancellationToken);
 
+                await CheckAndUpdateProcessingJobsIfRunningLongerThenAverageTime(processingJobsPresent, completionTimesForInProgressJobs, job.DcJobId, cancellationToken);
+
                 return (false, null, null);
             }
 
@@ -92,6 +94,37 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
             }
             
             Telemetry.TrackEvent("PeriodEndStart Job Status Update", properties, new Dictionary<string, double>());
+        }
+
+        private async Task CheckAndUpdateProcessingJobsIfRunningLongerThenAverageTime(
+            List<OutstandingJobResult> processingJobs,
+            List<InProgressJobAverageJobCompletionTime> averageJobCompletionTimes,
+            long? dcJobId,
+            CancellationToken cancellationToken)
+        {
+            foreach (var inProgressJob in processingJobs)
+            {
+                var providerJobTimings = averageJobCompletionTimes.SingleOrDefault(a => a.Ukprn == inProgressJob.Ukprn);
+
+                if (providerJobTimings == null) throw new InvalidOperationException($"Unable to find Average Job Completion Times For {inProgressJob.Ukprn}, Period End Start JobId {dcJobId}");
+
+                if (inProgressJob.JobRunTimeDurationInMillisecond > (providerJobTimings.AverageJobCompletionTime ?? 0))
+                {
+                    Logger.LogWarning(
+                        $"File Processing job {inProgressJob.DcJobId} Started at {inProgressJob.StartTime}. " +
+                        $"it has been running for {inProgressJob.JobRunTimeDurationInMillisecond} Millisecond which is longer then its average duration of {providerJobTimings.AverageJobCompletionTime} Millisecond, " +
+                        $"now updating job status to TimedOut, Period End Start JobId {dcJobId}");
+
+                    await context.SaveJobStatus(inProgressJob.DcJobId.Value, JobStatus.TimedOut, DateTimeOffset.UtcNow, cancellationToken);
+                }
+                else
+                {
+                    Logger.LogDebug(
+                        $"File Processing job {inProgressJob.DcJobId} Started at {inProgressJob.StartTime}. " +
+                        $"it has been running for {inProgressJob.JobRunTimeDurationInMillisecond} Millisecond which is still with in its average duration of {providerJobTimings.AverageJobCompletionTime} Millisecond, " +
+                        $"now updating job status to TimedOut, Period End Start JobId {dcJobId}");
+                }
+            }
         }
     }
 }
