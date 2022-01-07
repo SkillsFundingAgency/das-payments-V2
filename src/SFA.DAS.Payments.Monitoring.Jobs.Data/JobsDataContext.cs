@@ -183,9 +183,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                     x.CollectionPeriod == job.CollectionPeriod &&
                     x.DcJobId != job.DcJobId &&
                     x.JobType == JobType.EarningsJob &&
-                    x.StartTime > latestValidStartTime).
-                Select(x => new OutstandingJobResult { DcJobId = x.DcJobId, DcJobSucceeded = x.DcJobSucceeded, JobStatus = x.Status, EndTime = x.EndTime, IlrSubmissionTime = x.IlrSubmissionTime, Ukprn = x.Ukprn }).
-                ToListAsync(cancellationToken);
+                    x.StartTime > latestValidStartTime)
+                .Select(x => new OutstandingJobResult { DcJobId = x.DcJobId, DcJobSucceeded = x.DcJobSucceeded, JobStatus = x.Status, EndTime = x.EndTime, StartTime = x.StartTime, IlrSubmissionTime = x.IlrSubmissionTime, Ukprn = x.Ukprn })
+                .ToListAsync(cancellationToken);
         }
 
         public List<long?> DoSubmissionSummariesExistForJobs(List<OutstandingJobResult> jobs)
@@ -208,7 +208,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                 .Select(j => new
                 {
                     j.Ukprn,
-                    AverageJobCompletionTime = EF.Functions.DateDiffMillisecond(j.StartTime, j.EndTime ?? DateTimeOffset.Now)
+                    AverageJobCompletionTime = EF.Functions.DateDiffMillisecond(j.StartTime, j.EndTime ?? DateTimeOffset.UtcNow)
                 })
                 .GroupBy(g => g.Ukprn)
                 .Select(x => new InProgressJobAverageJobCompletionTime
