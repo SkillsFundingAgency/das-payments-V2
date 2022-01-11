@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
         protected override async Task<bool> CompleteJob(JobModel job, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken)
         {
-            Logger.LogDebug($"Completing PeriodEndJob Job {job.DcJobId}. JobStatus: {job.Status}");
+            Logger.LogDebug($"Completing PeriodEndJob Job {job.DcJobId}.");
 
             var isComplete = await base.CompleteJob(job, status, endTime, cancellationToken);
 

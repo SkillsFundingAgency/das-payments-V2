@@ -33,15 +33,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
         {
             var outstandingJobs = await context.GetOutstandingOrTimedOutJobs(job, cancellationToken);
 
-            var timeoutsPresent = outstandingJobs.Any(x =>
+            var timeoutsPresent = outstandingJobs.Where(x =>
                 (x.JobStatus == JobStatus.TimedOut ||
                  x.JobStatus == JobStatus.DcTasksFailed) &&
-                x.EndTime > job.StartTime);
+                x.EndTime > job.StartTime).ToList();
 
-            if (timeoutsPresent) //fail fast
+            if (timeoutsPresent.Any()) //fail fast
             {
-                Logger.LogWarning("File Processing jobs with TimedOut or DcTasksFailed Present in last 150 Minutes of Period-End-Start Job " +
+                Logger.LogWarning($"{timeoutsPresent.Count} File Processing jobs {string.Join(" ,", timeoutsPresent.Select(j => j.DcJobId))} with TimedOut or DcTasksFailed and job EndTime after Period-End-Start Job Present. " +
                                   $"now updating job status to CompletedWithErrors, Period End Start JobId {job.DcJobId}");
+
                 return (true, JobStatus.CompletedWithErrors, outstandingJobs.Max(x => x.EndTime));
             }
 
@@ -62,13 +63,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
             if (jobsWithoutSubmissionSummariesPresent.Any())
             {
-                Logger.LogDebug($"File Processing jobs without Submission Summaries Present in last 150 Minutes of Period-End-Start Job, Period End Start JobId {job.DcJobId}");
+                Logger.LogDebug($"{jobsWithoutSubmissionSummariesPresent.Count} File Processing jobs without Submission Summaries Present during Period End Start job, Period End Start JobId {job.DcJobId}");
 
                 SendTelemetry(job, null, jobsWithoutSubmissionSummariesPresent);
+
                 return (false, null, null);
             }
 
-            Logger.LogDebug($"No Outstanding Jobs or jobs Without Submission Summaries in last 150 Minutes of Period-End-Start Job, Now updating Period End Start job status to Completed, JobId {job.DcJobId}");
+            Logger.LogDebug($"No Outstanding Jobs or jobs Without Submission Summaries during Period End Start job, Now updating Period End Start job status to Completed, Period End Start JobId {job.DcJobId}");
 
             return (true, null, DateTimeOffset.UtcNow);
         }
