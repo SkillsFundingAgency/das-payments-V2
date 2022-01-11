@@ -19,11 +19,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
         public PeriodEndStartJobStatusService(
             IJobStorageService jobStorageService,
-            IPaymentLogger logger, 
-            ITelemetry telemetry, 
+            IPaymentLogger logger,
+            ITelemetry telemetry,
             IJobStatusEventPublisher eventPublisher,
-            IJobServiceConfiguration config, 
-            IJobsDataContext context) 
+            IJobServiceConfiguration config,
+            IJobsDataContext context)
             : base(jobStorageService, logger, telemetry, eventPublisher, config)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
@@ -40,6 +40,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
             if (timeoutsPresent) //fail fast
             {
+                Logger.LogWarning("File Processing jobs with TimedOut or DcTasksFailed Present in last 150 Minutes of Period-End-Start Job " +
+                                  $"now updating job status to CompletedWithErrors, Period End Start JobId {job.DcJobId}");
                 return (true, JobStatus.CompletedWithErrors, outstandingJobs.Max(x => x.EndTime));
             }
 
@@ -58,11 +60,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
             var jobsWithoutSubmissionSummariesPresent = context.DoSubmissionSummariesExistForJobs(outstandingJobs);
 
-            if (jobsWithoutSubmissionSummariesPresent.Any()) 
+            if (jobsWithoutSubmissionSummariesPresent.Any())
             {
+                Logger.LogDebug($"File Processing jobs without Submission Summaries Present in last 150 Minutes of Period-End-Start Job, Period End Start JobId {job.DcJobId}");
+
                 SendTelemetry(job, null, jobsWithoutSubmissionSummariesPresent);
                 return (false, null, null);
             }
+
+            Logger.LogDebug($"No Outstanding Jobs or jobs Without Submission Summaries in last 150 Minutes of Period-End-Start Job, Now updating Period End Start job status to Completed, JobId {job.DcJobId}");
 
             return (true, null, DateTimeOffset.UtcNow);
         }
@@ -85,14 +91,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
                 properties.Add("InProgressJobsCount", processingJobsPresent.Count.ToString());
                 properties.Add("InProgressJobsList", string.Join(", ", processingJobsPresent.Select(j => j.ToJson())));
             }
-            
-            
+
+
             if (jobsWithoutSubmissionSummariesPresent != null)
             {
                 properties.Add("jobsWithoutSubmissionSummariesCount", jobsWithoutSubmissionSummariesPresent.Count.ToString());
                 properties.Add("jobsWithoutSubmissionSummaries", string.Join(", ", jobsWithoutSubmissionSummariesPresent.Select(j => j.ToJson())));
             }
-            
+
             Telemetry.TrackEvent("PeriodEndStart Job Status Update", properties, new Dictionary<string, double>());
         }
 
@@ -110,19 +116,17 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
                 if (inProgressJob.JobRunTimeDurationInMillisecond > (providerJobTimings.AverageJobCompletionTime ?? 0))
                 {
-                    Logger.LogWarning(
-                        $"File Processing job {inProgressJob.DcJobId} Started at {inProgressJob.StartTime}. " +
-                        $"it has been running for {inProgressJob.JobRunTimeDurationInMillisecond} Millisecond which is longer then its average duration of {providerJobTimings.AverageJobCompletionTime} Millisecond, " +
-                        $"now updating job status to TimedOut, Period End Start JobId {dcJobId}");
+                    Logger.LogWarning($"File Processing job {inProgressJob.DcJobId} Started at {inProgressJob.StartTime}. " +
+                                      $"it has been running for {inProgressJob.JobRunTimeDurationInMillisecond} Millisecond which is longer then its average duration of {providerJobTimings.AverageJobCompletionTime} Millisecond, " +
+                                      $"now updating job status to TimedOut, Period End Start JobId {dcJobId}");
 
                     await context.SaveJobStatus(inProgressJob.DcJobId.Value, JobStatus.TimedOut, DateTimeOffset.UtcNow, cancellationToken);
                 }
                 else
                 {
-                    Logger.LogDebug(
-                        $"File Processing job {inProgressJob.DcJobId} Started at {inProgressJob.StartTime}. " +
-                        $"it has been running for {inProgressJob.JobRunTimeDurationInMillisecond} Millisecond which is still with in its average duration of {providerJobTimings.AverageJobCompletionTime} Millisecond, " +
-                        $"now updating job status to TimedOut, Period End Start JobId {dcJobId}");
+                    Logger.LogDebug($"File Processing job {inProgressJob.DcJobId} Started at {inProgressJob.StartTime}. " +
+                                    $"it has been running for {inProgressJob.JobRunTimeDurationInMillisecond} Millisecond which is still with in its average duration of {providerJobTimings.AverageJobCompletionTime} Millisecond, " +
+                                    $"Period End Start JobId {dcJobId}");
                 }
             }
         }
