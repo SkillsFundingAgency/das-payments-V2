@@ -50,7 +50,7 @@ Scenario: Provider Period End Start Job waits for submissions to complete before
 	And the monitoring service should notify other services that the period end start job has completed successfully
 
 Scenario: Provider Period End Start Job only waits for latest submissions to complete before finishing
-	Given the earnings event service has received and successfully processed a provider earnings job
+	Given the earnings event service has received and successfully processed a large provider earnings job
 	And the earnings event service has received and is processing a provider earnings job
 	And the period end service has received a period end start job
 	When the period end service notifies the job monitoring service to record the start job
@@ -79,3 +79,13 @@ Scenario: Provider Period End Start Job times out if metrics are not complete
 	Then the job monitoring service should update the status of the job to show that it has timed out
 	And the monitoring service should notify other services that the period end start job has failed
 	
+Scenario: Provider Period End Start Job fails if latest submissions is taking longer to complete
+	Given the earnings event service has received and successfully processed a small provider earnings job
+	And the earnings event service has received and is processing a provider earnings job
+	And the period end service has received a period end start job
+	When the period end service notifies the job monitoring service to record the start job
+	And the submission summary metrics are recorded
+	And the final messages for the job are successfully processed for the Period End Start job
+	Then the period end job should not complete
+	Then the job monitoring service should update the status of the job to show that it has failed
+	And the monitoring service should notify other services that the period end start job has failed
