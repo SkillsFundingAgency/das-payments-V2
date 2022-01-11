@@ -73,6 +73,59 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             result.Should().Be((true, JobStatus.CompletedWithErrors, outstandingJobs.Single().EndTime));
         }
 
+        [TestCase(JobStatus.InProgress)]
+        public async Task ThenTimesOutJob_WhenInProgressJobRunningLongerThanItsAverage(JobStatus status)
+        {
+            var jobId = 932;
+            var outstandingJobs = new List<OutstandingJobResult>
+            {
+                new OutstandingJobResult
+                {
+                    DcJobId = jobId,
+                    JobStatus = status,
+                }
+            };
+
+            mocker.Mock<IJobsDataContext>()
+                .Setup(x => x.GetOutstandingOrTimedOutJobs(job, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(outstandingJobs);
+
+            var service = mocker.Create<PeriodEndStartJobStatusService>();
+            
+            await service.PerformAdditionalJobChecks(job, CancellationToken.None);
+            
+            mocker
+                .Mock<IJobsDataContext>()
+                .Verify(x => x.SaveJobStatus(jobId, JobStatus.TimedOut, It.IsAny<DateTimeOffset>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [TestCase(JobStatus.InProgress)]
+        public async Task ThenDoesNotTimeOut_WhenInProgressJobRunningShorterThanItsAverage(JobStatus status)
+        {
+            var jobId = 932;
+            var outstandingJobs = new List<OutstandingJobResult>
+            {
+                new OutstandingJobResult
+                {
+                    DcJobId = jobId,
+                    JobStatus = status,
+                    StartTime = DateTimeOffset.UtcNow,
+                }
+            };
+
+            mocker.Mock<IJobsDataContext>()
+                .Setup(x => x.GetOutstandingOrTimedOutJobs(job, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(outstandingJobs);
+
+            var service = mocker.Create<PeriodEndStartJobStatusService>();
+            
+            await service.PerformAdditionalJobChecks(job, CancellationToken.None);
+            
+            mocker
+                .Mock<IJobsDataContext>()
+                .Verify(x => x.SaveJobStatus(jobId, JobStatus.TimedOut, It.IsAny<DateTimeOffset>(), It.IsAny<CancellationToken>()), Times.Never);
+        }
+
         [Test]
         public async Task Returns_InProgress_WhenOutstandingJobWithInProgressStatusExists()
         {
