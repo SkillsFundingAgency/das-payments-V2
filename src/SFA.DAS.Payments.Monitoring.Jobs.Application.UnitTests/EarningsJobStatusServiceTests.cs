@@ -394,6 +394,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             var jobId = 99;
             job.LearnerCount = 0;
             job.StartTime = DateTimeOffset.UtcNow.AddSeconds(-2);
+            job.EndTime = DateTimeOffset.UtcNow;
             job.DcJobSucceeded = false;
             mocker.Mock<IJobServiceConfiguration>()
                 .SetupGet(cfg => cfg.EarningsJobTimeout)
@@ -406,8 +407,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                     x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
                         It.Is<JobStatus>(status => status == JobStatus.DcTasksFailed),
                         It.IsAny<DateTimeOffset>(),
-                        It.IsAny<CancellationToken>()),
-                    Times.Once());
+                        It.IsAny<CancellationToken>()));
         }
 
         [Test]
@@ -416,6 +416,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             var jobId = 99;
             job.LearnerCount = 0;
             job.StartTime = DateTimeOffset.UtcNow.AddSeconds(-2);
+            job.EndTime = DateTimeOffset.UtcNow;
             job.DcJobSucceeded = false;
             job.Status = JobStatus.Completed;
             mocker.Mock<IJobServiceConfiguration>()
@@ -429,8 +430,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                     x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
                         It.Is<JobStatus>(status => status == JobStatus.DcTasksFailed),
                         It.IsAny<DateTimeOffset>(),
-                        It.IsAny<CancellationToken>()),
-                    Times.Once());
+                        It.IsAny<CancellationToken>()));
         }
 
         [Test]
