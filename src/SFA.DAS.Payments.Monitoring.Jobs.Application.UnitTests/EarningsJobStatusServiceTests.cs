@@ -407,7 +407,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                     x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
                         It.Is<JobStatus>(status => status == JobStatus.DcTasksFailed),
                         It.IsAny<DateTimeOffset>(),
-                        It.IsAny<CancellationToken>()));
+                        It.IsAny<CancellationToken>()),
+                        Times.Once);
         }
 
         [Test]
@@ -430,7 +431,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                     x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
                         It.Is<JobStatus>(status => status == JobStatus.DcTasksFailed),
                         It.IsAny<DateTimeOffset>(),
-                        It.IsAny<CancellationToken>()));
+                        It.IsAny<CancellationToken>()),
+                        Times.Once);
         }
 
         [Test]

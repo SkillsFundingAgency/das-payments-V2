@@ -37,13 +37,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
 
             if (job.Status != JobStatus.InProgress && job.DcJobSucceeded.HasValue)
             {
-                Logger.LogWarning($"Job {job.DcJobId} has already finished. JobStatus: {job.Status}");
-                
-                var successful = job.DcJobSucceeded.Value && (job.Status == JobStatus.Completed || job.Status == JobStatus.CompletedWithErrors);
+                Logger.LogWarning($"Job {job.DcJobId} has already finished. Status: {job.Status}");
 
-                await JobStorageService.SaveJobStatus(job.DcJobId.Value, job.Status, job.EndTime.Value, cancellationToken).ConfigureAwait(false);
-
-                await EventPublisher.SubmissionFinished(successful, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
+                await EventPublisher.SubmissionFinished(job.DcJobSucceeded.Value, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
                 
                 return true;
             }
