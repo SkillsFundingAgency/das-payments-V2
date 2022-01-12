@@ -150,11 +150,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             
             if (job.Status == JobStatus.DcTasksFailed || job.Status == JobStatus.TimedOut)
             {
-                Logger.LogWarning($"Finished recording completion status of job. Job: {job.Id}, status: {job.Status}, end time: {job.EndTime}");
+                Logger.LogWarning($"Finished recording completion status of job. Job: {job.DcJobId}, status: {job.Status}, end time: {job.EndTime}");
             }
             else
             {
-                Logger.LogInfo($"Finished recording completion status of job. Job: {job.Id}, status: {job.Status}, end time: {job.EndTime}");
+                Logger.LogInfo($"Finished recording completion status of job. Job: {job.DcJobId}, status: {job.Status}, end time: {job.EndTime}");
             }
             
             return true;
