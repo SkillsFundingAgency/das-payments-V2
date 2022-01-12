@@ -87,5 +87,17 @@ Scenario: Provider Period End Start Job fails if latest submissions is taking lo
 	And the submission summary metrics are recorded
 	And the final messages for the job are successfully processed for the Period End Start job
 	Then the period end job should not complete
-	Then the job monitoring service should update the status of the job to show that it has failed
+	And the job monitoring service should update the status of the job to show that it has failed
 	And the monitoring service should notify other services that the period end start job has failed
+
+Scenario: Provider Period End Start Job Completes if latest submissions is taking less time then average to complete
+	Given the earnings event service has received and successfully processed a Large provider earnings job
+	And the earnings event service has received and is processing a provider earnings job
+	And the period end service has received a period end start job
+	When the period end service notifies the job monitoring service to record the start job
+	And the submission summary metrics are recorded
+	And the final messages for the job are successfully processed for the Period End Start job
+	Then the period end job should not complete
+	And when the final messages for the job are successfully processed for the submission job
+	And the job monitoring service should update the status of the job to show that it has completed
+	And the monitoring service should notify other services that the period end start job has completed successfully

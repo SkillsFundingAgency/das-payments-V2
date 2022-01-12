@@ -436,7 +436,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             var jobId = TestSession.GenerateId();
 
             var largeJob = string.Equals(jobSize, "small", StringComparison.InvariantCultureIgnoreCase);
-            var startTime = largeJob ? DateTimeOffset.UtcNow.AddSeconds(-10) : DateTimeOffset.UtcNow.AddSeconds(-20);
+            var startTime = largeJob ? DateTimeOffset.UtcNow.AddSeconds(-10) : DateTimeOffset.UtcNow.AddSeconds(-60);
             var endTime = DateTimeOffset.UtcNow.AddSeconds(-10);
 
             jobIdToBeDeleted.Add(jobId);
