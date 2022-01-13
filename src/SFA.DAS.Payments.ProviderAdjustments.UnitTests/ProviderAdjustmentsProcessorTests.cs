@@ -104,7 +104,8 @@ namespace SFA.DAS.Payments.ProviderAdjustments.UnitTests
                     z["isSuccessful"] == "false"),
 
                 It.Is<Dictionary<string, double>>(y =>
-                    y.Count == 0)));
+                    y["HistoricPayments"] == 0 &&
+                    y["CurrentPayments"] == 0)));
         }
     }
 }
