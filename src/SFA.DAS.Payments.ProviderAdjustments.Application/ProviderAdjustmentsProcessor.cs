@@ -58,21 +58,26 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application
 
                 logger.LogInfo("Finished the Provider Adjustments Processor.");
 
-                var stats = new Dictionary<string, double>
-                {
-                    {"HistoricPayments", historicPayments.Count },
-                    {"CurrentPayments", currentPayments.Count }
-                };
-
-                properties.Add("isSuccessful", "true");
-                telemetry.TrackEvent("Finished processing EAS", properties, stats);
+                SendEASTelemetry(true, properties, historicPayments, currentPayments);
             }
             catch (Exception)
             {
-                properties.Add("isSuccessful", "false");
-                telemetry.TrackEvent("Finished processing EAS", properties, new Dictionary<string, double>());
+                SendEASTelemetry(false, properties);
                 throw;
             }
+        }
+
+        private void SendEASTelemetry(bool isSuccessful, Dictionary<string, string> properties, List<ProviderAdjustment> historicPayments = null, List<ProviderAdjustment> currentPayments = null)
+        {
+            var stats = new Dictionary<string, double>
+            {
+                {"HistoricPayments", historicPayments?.Count ?? default },
+                {"CurrentPayments", currentPayments?.Count ?? default }
+            };
+
+            properties.Add("isSuccessful", isSuccessful.ToString().ToLower());
+
+            telemetry.TrackEvent("Finished processing EAS", properties, stats);
         }
     }
 }
