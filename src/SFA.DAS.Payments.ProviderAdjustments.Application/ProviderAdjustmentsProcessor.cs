@@ -71,8 +71,8 @@ namespace SFA.DAS.Payments.ProviderAdjustments.Application
         {
             var stats = new Dictionary<string, double>
             {
-                {"HistoricPayments", historicPayments?.Count ?? default },
-                {"CurrentPayments", currentPayments?.Count ?? default }
+                {"HistoricPayments", historicPayments?.Count ?? 0 },
+                {"CurrentPayments", currentPayments?.Count ?? 0 }
             };
 
             properties.Add("isSuccessful", isSuccessful.ToString().ToLower());
