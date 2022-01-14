@@ -64,7 +64,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 
         public async Task SaveNewJob(JobModel jobDetails, CancellationToken cancellationToken = default(CancellationToken))
         {
+            var job = await Jobs.FirstOrDefaultAsync(storedJob => storedJob.DcJobId == jobDetails.DcJobId, cancellationToken);
+            
+            if (job != null) return;
+            
             Jobs.Add(jobDetails);
+
             await SaveChangesAsync(cancellationToken);
         }
 
@@ -203,7 +208,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             return await Jobs.Where(x =>
                     x.JobType == JobType.EarningsJob &&
                     x.DcJobSucceeded == true &&
-                    (x.Status  == JobStatus.Completed || x.Status == JobStatus.CompletedWithErrors) &&
+                    (x.Status == JobStatus.Completed || x.Status == JobStatus.CompletedWithErrors) &&
                     inProgressJobsUkprnList.Contains(x.Ukprn))
                 .Select(j => new
                 {

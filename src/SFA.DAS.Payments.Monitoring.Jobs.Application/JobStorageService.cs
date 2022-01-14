@@ -56,14 +56,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 return false;
             }
 
-            logger.LogDebug($"Saving new Job StartTime {job.StartTime}. Job: {job.DcJobId}");
-
             if (job.Id == 0)
                 await dataContext.SaveNewJob(job, cancellationToken).ConfigureAwait(false);
 
             await jobCache.AddOrUpdateAsync(reliableTransactionProvider.Current, job.DcJobId.Value,
                 id => job, (id, existingJob) => job, TransactionTimeout, cancellationToken)
                 .ConfigureAwait(false);
+
+            logger.LogDebug($"Saved new Job to cache and DB, Job StartTime {job.StartTime}. Job: {job.DcJobId}");
 
             return true;
         }
