@@ -24,9 +24,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
         public const string InProgressMessagesCacheKey = "inprogress_messages";
         public const string CompletedMessagesCacheKey = "completed_messages";
 
-        public JobStorageService(IReliableStateManagerProvider stateManagerProvider,
+        public JobStorageService(
+            IReliableStateManagerProvider stateManagerProvider,
             IReliableStateManagerTransactionProvider reliableTransactionProvider,
-            IJobsDataContext dataContext, IPaymentLogger logger)
+            IJobsDataContext dataContext, 
+            IPaymentLogger logger)
         {
             this.stateManagerProvider = stateManagerProvider ?? throw new ArgumentNullException(nameof(stateManagerProvider));
             this.reliableTransactionProvider = reliableTransactionProvider ?? throw new ArgumentNullException(nameof(reliableTransactionProvider));
