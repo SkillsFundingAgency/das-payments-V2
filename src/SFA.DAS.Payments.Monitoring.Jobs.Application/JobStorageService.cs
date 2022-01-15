@@ -27,7 +27,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
         public JobStorageService(
             IReliableStateManagerProvider stateManagerProvider,
             IReliableStateManagerTransactionProvider reliableTransactionProvider,
-            IJobsDataContext dataContext, 
+            IJobsDataContext dataContext,
             IPaymentLogger logger)
         {
             this.stateManagerProvider = stateManagerProvider ?? throw new ArgumentNullException(nameof(stateManagerProvider));
@@ -51,19 +51,19 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
             var jobCache = await GetJobCollection();
             var cachedJob = await jobCache.TryGetValueAsync(reliableTransactionProvider.Current, job.DcJobId.Value, TransactionTimeout, cancellationToken).ConfigureAwait(false);
-            
+
             if (cachedJob.HasValue)
             {
                 logger.LogDebug($"Job has already been stored. Job: {job.DcJobId}");
                 return false;
             }
 
-            if (job.Id == 0)
-                await dataContext.SaveNewJob(job, cancellationToken).ConfigureAwait(false);
-
             await jobCache.AddOrUpdateAsync(reliableTransactionProvider.Current, job.DcJobId.Value,
                 id => job, (id, existingJob) => job, TransactionTimeout, cancellationToken)
                 .ConfigureAwait(false);
+
+            if (job.Id == 0)
+                await dataContext.SaveNewJob(job, cancellationToken).ConfigureAwait(false);
 
             logger.LogDebug($"Saved new Job to cache and DB, Job StartTime {job.StartTime}. Job: {job.DcJobId}");
 
@@ -83,14 +83,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             logger.LogDebug($"Updating Job Status to {jobStatus} EndTime {endTime}. Job: {job.DcJobId}");
 
             await dataContext.SaveJobStatus(jobId, jobStatus, endTime, cancellationToken).ConfigureAwait(false);
-            
+
             var collection = await GetJobCollection().ConfigureAwait(false);
             await collection.AddOrUpdateAsync(reliableTransactionProvider.Current, jobId, job, (key, value) => job, TransactionTimeout, cancellationToken).ConfigureAwait(false);
         }
-        
+
         public async Task<List<long>> GetCurrentEarningJobs(CancellationToken cancellationToken)
         {
-            return await GetCurrentJobs(model => model.JobType == JobType.EarningsJob || model.JobType == JobType.ComponentAcceptanceTestEarningsJob ,cancellationToken);
+            return await GetCurrentJobs(model => model.JobType == JobType.EarningsJob || model.JobType == JobType.ComponentAcceptanceTestEarningsJob, cancellationToken);
         }
 
         public async Task<List<long>> GetCurrentPeriodEndExcludingStartJobs(CancellationToken cancellationToken)
@@ -100,15 +100,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 return model.JobType == JobType.PeriodEndRunJob ||
                        model.JobType == JobType.PeriodEndStopJob ||
                        model.JobType == JobType.ComponentAcceptanceTestMonthEndJob;
-            },cancellationToken);
+            }, cancellationToken);
         }
-        
+
         public async Task<List<long>> GetCurrentPeriodEndStartJobs(CancellationToken cancellationToken)
         {
             return await GetCurrentJobs(model =>
             {
                 return model.JobType == JobType.PeriodEndStartJob;
-            },cancellationToken);
+            }, cancellationToken);
         }
 
         private async Task<List<long>> GetCurrentJobs(Func<JobModel, bool> filter, CancellationToken cancellationToken)
@@ -122,7 +122,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                 cancellationToken.ThrowIfCancellationRequested();
                 var job = enumerator.Current.Value;
                 if (job.Status == JobStatus.InProgress && job.DcJobId.HasValue & filter(job))
-                        jobs.Add(job.DcJobId.Value);
+                    jobs.Add(job.DcJobId.Value);
             }
 
             return jobs;
