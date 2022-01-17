@@ -14,8 +14,7 @@
 	CollectionPeriod TINYINT NOT NULL,
 	DataLocksCompletionTime DATETIMEOFFSET NULL,
 	DCJobSucceeded BIT NULL,
-	DCJobEndTime DATETIMEOFFSET NULL,
-    Constraint UQ_DcJob Unique ([JobType], [DCJobId], [Ukprn], [AcademicYear], [CollectionPeriod])
+	DCJobEndTime DATETIMEOFFSET NULL
 )
 GO
 
