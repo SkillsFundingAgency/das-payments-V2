@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Autofac;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Extras.Moq;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.WindowsAzure.Storage.File.Protocol;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Model.Core;
@@ -24,6 +26,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
         private AutoMock moqer;
         private List<TransactionTypeAmounts> dcEarnings;
         private List<TransactionTypeAmounts> dasEarnings;
+        private LatestSuccessfulJobModel latestSuccessfulJob;
         private DataLockTypeCounts dataLocks;
         private InMemoryMetricsQueryDataContext inMemoryMetricsQueryDataContext;
         private Mock<ISubmissionMetricsRepository> submissionMetricsRepository;
@@ -46,10 +49,24 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 .Setup(factory => factory.CreateContext(It.IsAny<short>()))
                 .Returns(dcMetricsDataContext.Object);
 
+            latestSuccessfulJob = moqer.Mock<LatestSuccessfulJobModel>().Object;
+            latestSuccessfulJob.Ukprn = 1234;
+            latestSuccessfulJob.CollectionPeriod = 1;
+            latestSuccessfulJob.AcademicYear = 1920;
+            latestSuccessfulJob.DcJobId = 123;
+
             moqer.Mock<ISubmissionSummaryFactory>()
                 .Setup(factory =>
                     factory.Create(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>()))
                 .Returns((long ukprn, long jobId, short academicYear, byte collectionPeriod) => new SubmissionSummary(ukprn, jobId, collectionPeriod, academicYear));
+
+            var jobsRepository = moqer.Mock<ISubmissionJobsRepository>();
+
+            jobsRepository.Setup(x =>
+                    x.GetLatestSuccessfulJobForProvider(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>()))
+                .ReturnsAsync(latestSuccessfulJob);
+
+            moqer.Mock<ISubmissionJobsDataContext>();
 
             submissionMetricsRepository = moqer.Mock<ISubmissionMetricsRepository>();
 
@@ -159,6 +176,46 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
 
             submissionMetricsRepository
                 .Verify(x => x.SaveSubmissionMetrics(It.Is<SubmissionSummaryModel>(s => s.RequiredPayments.ContractType1 == 11300 && s.RequiredPayments.ContractType2 == 15300), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task WhenLatestSuccessfulJobExists_AndDoesNotMatchMessageJobId_ThenDoesNotBuildMetrics()
+        {
+
+            latestSuccessfulJob.DcJobId = 999;
+
+            var service = moqer.Create<SubmissionMetricsService>();
+            await service.BuildMetrics(1234, 123, 1920, 1, CancellationToken.None).ConfigureAwait(false);
+
+            moqer.Mock<ISubmissionSummaryFactory>().Verify(x => x.Create(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>()),Times.Never);
+        }
+
+        [Test]
+        public async Task WhenLatestSuccessfulJobExists_AndMessageJobIdMatches_ThenBuildsMetrics()
+        {
+
+            latestSuccessfulJob.DcJobId = 123;
+
+            var service = moqer.Create<SubmissionMetricsService>();
+            await service.BuildMetrics(1234, 123, 1920, 1, CancellationToken.None).ConfigureAwait(false);
+
+            moqer.Mock<ISubmissionSummaryFactory>().Verify(x => x.Create(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>()),Times.Once);
+        }
+
+        [Test]
+        public async Task WhenLatestSuccessfulJobIsNull_ThenBuildsMetrics()
+        {
+            LatestSuccessfulJobModel job = null;
+            var jobsRepository = moqer.Mock<ISubmissionJobsRepository>();
+
+            jobsRepository.Setup(x =>
+                    x.GetLatestSuccessfulJobForProvider(It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>()))
+                .ReturnsAsync(job);
+
+            var service = moqer.Create<SubmissionMetricsService>();
+            await service.BuildMetrics(1234, 123, 1920, 1, CancellationToken.None).ConfigureAwait(false);
+
+            moqer.Mock<ISubmissionSummaryFactory>().Verify(x => x.Create(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<short>(), It.IsAny<byte>()),Times.Once);
         }
     }
 }
