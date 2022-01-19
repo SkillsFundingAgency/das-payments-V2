@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         private readonly ITelemetry telemetry;
 
         public SubmissionMetricsService(IPaymentLogger logger, ISubmissionSummaryFactory submissionSummaryFactory,
-            IDcMetricsDataContextFactory dcMetricsDataContextFactory, ISubmissionMetricsRepository submissionRepository, ITelemetry telemetry, SubmissionJobsRepository submissionJobsRepository)
+            IDcMetricsDataContextFactory dcMetricsDataContextFactory, ISubmissionMetricsRepository submissionRepository, ITelemetry telemetry, ISubmissionJobsRepository submissionJobsRepository)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.submissionSummaryFactory = submissionSummaryFactory ?? throw new ArgumentNullException(nameof(submissionSummaryFactory));
@@ -44,9 +44,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             {
                 var latestSuccessfulJob = await submissionJobsRepository.GetLatestSuccessfulJobForProvider(ukprn, academicYear, collectionPeriod);
 
-                if (latestSuccessfulJob != null && latestSuccessfulJob.JobId != jobId)
+                if (latestSuccessfulJob != null && latestSuccessfulJob.DcJobId != jobId)
                 {
-                    logger.LogWarning($"Submission metrics JobId mismatch for provider: {ukprn}, latestSuccessfulJob jobId: {latestSuccessfulJob.JobId}, GenerateSubmissionSummary message jobId: {jobId}. Academic year: {academicYear}, Collection period: {collectionPeriod}");
+                    logger.LogWarning($"Submission metrics JobId mismatch for provider: {ukprn}, latestSuccessfulJob jobId: {latestSuccessfulJob.DcJobId}, GenerateSubmissionSummary message jobId: {jobId}. Academic year: {academicYear}, Collection period: {collectionPeriod}");
                     return;
                 }
                 
