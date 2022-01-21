@@ -415,7 +415,6 @@
     <Compile Include="Steps\FM36_ILR_Base_Steps.cs" />
     <Compile Include="Steps\FundingSourcePaymentEventsHelper.cs" />
     <Compile Include="Steps\PaymentEventsHelper.cs" />
-    <Compile Include="Steps\PeriodEndSteps.cs" />
     <Compile Include="Steps\ProvidersRequiringResubmissionSteps.cs" />
     <Compile Include="Steps\PV2_1797_Steps.cs" />
     <Compile Include="Steps\PV2_1824_Steps.cs" />
@@ -1590,11 +1589,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Tests\PeriodEnd\Submission Events\PV2-2160 - Month End Automation correctly inform DC if tolerance met.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PV2-2160 - Month End Automation correctly inform DC if tolerance met.feature</DependentUpon>
-    </Compile>
     <Compile Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer and ILR changes after the new commitment_PV2-321.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2734,10 +2728,6 @@
     <None Include="Tests\Non-Levy Learner\Small Employer\Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Tests\PeriodEnd\Submission Events\PV2-2160 - Month End Automation correctly inform DC if tolerance met.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-2160 - Month End Automation correctly inform DC if tolerance met.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Provider Change of Circumstances\One Levy learner changes provider but remains with the same employer and ILR changes after the new commitment_PV2-321.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
