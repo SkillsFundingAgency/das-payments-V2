@@ -216,6 +216,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Period End.feature</DependentUpon>
     </Compile>
+    <Compile Include="PV2-2160 - Month End Automation correctly inform DC if tolerance met.feature.cs">
+      <DependentUpon>PV2-2160 - Month End Automation correctly inform DC if tolerance met.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Steps\PeriodEndSteps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\SuccessfulSubmissionsSteps.cs" />
@@ -242,6 +247,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Period End.feature.cs</LastGenOutput>
     </None>
+    <None Include="PV2-2160 - Month End Automation correctly inform DC if tolerance met.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PV2-2160 - Month End Automation correctly inform DC if tolerance met.feature.cs</LastGenOutput>
+    </None>
     <None Include="Successful Submissions.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Successful Submissions.feature.cs</LastGenOutput>
@@ -255,6 +264,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.AcceptanceTests.Core\SFA.DAS.Payments.AcceptanceTests.Core.csproj">
       <Project>{0f0beb68-7f9f-4d39-b85a-3fe7701bb6cc}</Project>
       <Name>SFA.DAS.Payments.AcceptanceTests.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.AcceptanceTests.EndToEnd\SFA.DAS.Payments.AcceptanceTests.EndToEnd.csproj">
+      <Project>{EA55A5F0-CF98-4A19-A827-5344216974DA}</Project>
+      <Name>SFA.DAS.Payments.AcceptanceTests.EndToEnd</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj">
       <Project>{23551CD8-7554-4F2C-9B42-A67B9E0C261D}</Project>
@@ -271,6 +284,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj">
       <Project>{9274ABB3-9F30-4320-A111-17BA07DBF568}</Project>
       <Name>SFA.DAS.Payments.Monitoring.Jobs.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Model\SFA.DAS.Payments.Monitoring.Jobs.Model.csproj">
+      <Project>{DC3C2DFE-CE0C-4B40-9A80-392B600FCDED}</Project>
+      <Name>SFA.DAS.Payments.Monitoring.Jobs.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.PeriodEnd.Messages\SFA.DAS.Payments.PeriodEnd.Messages.csproj">
       <Project>{07B3D8AE-B2C2-4B87-8256-FD1B7B55FB88}</Project>
