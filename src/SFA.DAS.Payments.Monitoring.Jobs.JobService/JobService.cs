@@ -24,6 +24,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
         private readonly IPeriodEndJobStatusManager periodEndJobStatusManager;
         private readonly IPeriodEndStartJobStatusManager periodEndStartJobStatusManager;
         private readonly ILifetimeScope lifetimeScope;
+        private string partitionEndpointName;
 
         public JobService(StatefulServiceContext context, IPaymentLogger logger, 
             IEarningsJobStatusManager earningsJobStatusManager,
@@ -44,7 +45,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
         {
             try
             {
-                var partitionEndpointName = ((NamedPartitionInformation) Partition.PartitionInfo).Name;
+                partitionEndpointName = ((NamedPartitionInformation) Partition.PartitionInfo).Name;
                 var batchListener = lifetimeScope.Resolve<IServiceBusBatchCommunicationListener>();
                 batchListener.EndpointName += partitionEndpointName;
                 var serviceListener = new ServiceReplicaListener(context => batchListener);
@@ -63,9 +64,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
         protected override Task RunAsync(CancellationToken cancellationToken)
         {
             return Task.WhenAll(RunSendOnlyEndpoint(),
-                earningsJobStatusManager.Start(cancellationToken),
-                periodEndJobStatusManager.Start(cancellationToken),
-                periodEndStartJobStatusManager.Start(cancellationToken));
+                earningsJobStatusManager.Start(partitionEndpointName, cancellationToken),
+                periodEndJobStatusManager.Start(partitionEndpointName, cancellationToken),
+                periodEndStartJobStatusManager.Start(partitionEndpointName, cancellationToken));
         }
 
         private async Task RunSendOnlyEndpoint()

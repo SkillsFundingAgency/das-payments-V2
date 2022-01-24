@@ -10,24 +10,26 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 {
 
     public interface IPeriodEndJobStatusService : IJobStatusService { }
-    
+
     public class PeriodEndJobStatusService : JobStatusService, IPeriodEndJobStatusService
     {
         public PeriodEndJobStatusService(IJobStorageService jobStorageService, IPaymentLogger logger, ITelemetry telemetry, IJobStatusEventPublisher eventPublisher, IJobServiceConfiguration config) : base(jobStorageService, logger, telemetry, eventPublisher, config)
         {
         }
 
-        protected override  Task<bool> CheckSavedJobStatus(JobModel job, CancellationToken cancellationToken)
+        protected override Task<bool> CheckSavedJobStatus(JobModel job, CancellationToken cancellationToken)
         {
-                return Task.FromResult(false);
+            return Task.FromResult(false);
         }
 
         protected override async Task<bool> CompleteJob(JobModel job, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken)
         {
+            Logger.LogDebug($"Completing PeriodEndJob Job {job.DcJobId}.");
+
             var isComplete = await base.CompleteJob(job, status, endTime, cancellationToken);
 
-            if(isComplete && job.Status != JobStatus.TimedOut)
-             await EventPublisher.PeriodEndJobFinished(job, job.Status == JobStatus.Completed);
+            if (isComplete && job.Status != JobStatus.TimedOut)
+                await EventPublisher.PeriodEndJobFinished(job, job.Status == JobStatus.Completed);
 
             return isComplete;
         }

@@ -5,7 +5,6 @@ using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 using NServiceBus;
-using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
@@ -35,7 +34,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             submissionJobFinished.Ukprn = ukprn;
             submissionJobFinished.AcademicYear = academicYear;
             submissionJobFinished.IlrSubmissionDateTime = ilrSubmissionTime;
-            logger.LogDebug($"Publishing {submissionJobFinished.GetType().Name} event. Event: {submissionJobFinished.ToJson()}");
+            logger.LogDebug($"Publishing {submissionJobFinished.GetType().Name} event. Event: {submissionJobFinished.ToJson()}. Job: {jobId}");
             var endpointInstance = await factory.GetEndpointInstance();
             await endpointInstance.Publish(submissionJobFinished).ConfigureAwait(false);
         }
@@ -48,8 +47,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             periodEndEvent.CollectionPeriod = jobModel.CollectionPeriod;
             periodEndEvent.AcademicYear = jobModel.AcademicYear;
 
-            logger.LogDebug(
-                $"Publishing {periodEndEvent.GetType().Name} event. Event: {periodEndEvent.ToJson()}");
+            logger.LogDebug($"Publishing {periodEndEvent.GetType().Name} event. Event: {periodEndEvent.ToJson()}. Job: {jobModel.DcJobId.Value}");
             var endpointInstance = await factory.GetEndpointInstance();
             await endpointInstance.Publish(periodEndEvent).ConfigureAwait(false);
 
@@ -57,15 +55,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
         private PeriodEndJobFinishedEvent CreatePeriodEndEvent(JobType jobType, bool succeeded)
         {
-                if (jobType  == JobType.PeriodEndStartJob)
-                    return succeeded ? (PeriodEndJobFinishedEvent) new PeriodEndStartJobSucceeded() : new PeriodEndStartJobFailed();
-                if (jobType  == JobType.PeriodEndRunJob)
-                    return succeeded ? (PeriodEndJobFinishedEvent) new PeriodEndRunJobSucceeded() : new PeriodEndRunJobFailed();
-                if (jobType  == JobType.PeriodEndStopJob)
-                    return succeeded ? (PeriodEndJobFinishedEvent) new PeriodEndStopJobSucceeded() : new PeriodEndStopJobFailed();
-                throw new InvalidOperationException($"Unhandled period end job type: {jobType}");
+            if (jobType == JobType.PeriodEndStartJob)
+                return succeeded ? (PeriodEndJobFinishedEvent)new PeriodEndStartJobSucceeded() : new PeriodEndStartJobFailed();
+            if (jobType == JobType.PeriodEndRunJob)
+                return succeeded ? (PeriodEndJobFinishedEvent)new PeriodEndRunJobSucceeded() : new PeriodEndRunJobFailed();
+            if (jobType == JobType.PeriodEndStopJob)
+                return succeeded ? (PeriodEndJobFinishedEvent)new PeriodEndStopJobSucceeded() : new PeriodEndStopJobFailed();
+            throw new InvalidOperationException($"Unhandled period end job type: {jobType}");
         }
-
-
     }
 }

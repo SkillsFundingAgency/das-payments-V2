@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships;
-using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Model.Core.Factories;
 
 namespace SFA.DAS.Payments.DataLocks.Application.Repositories
 {
@@ -141,26 +136,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
             await dataContext.SaveChangesAsync().ConfigureAwait(false);
         }
         
-        //public async Task<EarningEventModel> GetLatestProviderApprenticeshipEarnings(long uln, long ukprn, String eventType, CancellationToken cancellationToken)
-        //{
-        //    var apprenticeshipEarning = await dataContext.EarningEvent
-        //        .Include(x => x.Periods)
-        //        .Include(x => x.PriceEpisodes)
-        //        .Where(x => x.Ukprn == ukprn && 
-        //                    x.LearnerUln == uln && 
-        //                    x.ContractType == ContractType.Act1 &&
-        //                    x.EventType == eventType)
-        //        .OrderByDescending(x => x.Id)
-        //        .Take(1)
-        //        .FirstOrDefaultAsync(cancellationToken)
-        //        .ConfigureAwait(false);
-
-        //    return apprenticeshipEarning;
-        //}
-        
         public async Task<List<ApprenticeshipModel>> GetEmployerApprenticeships(long accountId, CancellationToken cancellationToken)
         {
             var employerApprenticeships = await dataContext.Apprenticeship
+                .Include(x => x.ApprenticeshipPriceEpisodes)
                 .Where(x => x.AccountId == accountId)
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
@@ -184,8 +163,6 @@ namespace SFA.DAS.Payments.DataLocks.Application.Repositories
                 .Where(o => !o.Removed)
                 .ToList());
         }
-
-
 
         public void Dispose()
         {
