@@ -47,6 +47,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 AcademicYear = 1920,
                 CollectionPeriod = 01
             };
+
+            var inProgressJobAverageJobCompletionTimeJobList = new List<InProgressJobAverageJobCompletionTime>
+            {
+                new InProgressJobAverageJobCompletionTime
+                {
+                    JobId = 100,
+                    AverageJobCompletionTime = 2
+                }
+            };
+
             mocker.Mock<IJobStorageService>()
                 .Setup(x => x.GetJob(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(job);
@@ -65,6 +75,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             mocker.Mock<IJobServiceConfiguration>()
                 .SetupGet(cfg => cfg.PeriodEndRunJobTimeout)
                 .Returns(TimeSpan.FromSeconds(60));
+            mocker.Mock<IJobsDataContext>()
+                .Setup(x => x.GetAverageJobCompletionTimesForInProgressJobs(It.IsAny<List<long?>>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(inProgressJobAverageJobCompletionTimeJobList);
         }
 
         [TestCase(JobType.PeriodEndRunJob)]
@@ -315,8 +329,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             mocker.Mock<ITelemetry>().Verify(t => t.TrackEvent(
                 "PeriodEndStart Job Status Update",
                 It.Is<Dictionary<string, string>>(d =>
-                    d.Contains(new KeyValuePair<string, string>("InProgressJobsCount", "1")) &&
-                    d.Contains(new KeyValuePair<string, string>("InProgressJobsList", "{\"DcJobId\":1,\"JobStatus\":1,\"DcJobSucceeded\":true,\"EndTime\":null,\"Ukprn\":null,\"IlrSubmissionTime\":null}"))),
+                    d.Contains(new KeyValuePair<string, string>("InProgressJobsCount", "1"))),
                 It.IsAny<Dictionary<string, double>>()));
         }
 
@@ -359,8 +372,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             mocker.Mock<ITelemetry>().Verify(t => t.TrackEvent(
                 "PeriodEndStart Job Status Update",
                 It.Is<Dictionary<string, string>>(d =>
-                    d.Contains(new KeyValuePair<string, string>("InProgressJobsCount", "1")) &&
-                    d.Contains(new KeyValuePair<string, string>("InProgressJobsList", "{\"DcJobId\":1,\"JobStatus\":1,\"DcJobSucceeded\":false,\"EndTime\":null,\"Ukprn\":null,\"IlrSubmissionTime\":null}"))),
+                    d.Contains(new KeyValuePair<string, string>("InProgressJobsCount", "1"))),
                 It.IsAny<Dictionary<string, double>>()));
 
         }
@@ -404,8 +416,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             mocker.Mock<ITelemetry>().Verify(t => t.TrackEvent(
                 "PeriodEndStart Job Status Update",
                 It.Is<Dictionary<string, string>>(d =>
-                    d.Contains(new KeyValuePair<string, string>("InProgressJobsCount", "1")) &&
-                    d.Contains(new KeyValuePair<string, string>("InProgressJobsList", "{\"DcJobId\":1,\"JobStatus\":2,\"DcJobSucceeded\":null,\"EndTime\":null,\"Ukprn\":null,\"IlrSubmissionTime\":null}"))),
+                    d.Contains(new KeyValuePair<string, string>("InProgressJobsCount", "1"))),
                 It.IsAny<Dictionary<string, double>>()));
         }
 
@@ -448,8 +459,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             mocker.Mock<ITelemetry>().Verify(t => t.TrackEvent(
                 "PeriodEndStart Job Status Update",
                 It.Is<Dictionary<string, string>>(d =>
-                    d.Contains(new KeyValuePair<string, string>("InProgressJobsCount", "1")) &&
-                    d.Contains(new KeyValuePair<string, string>("InProgressJobsList", "{\"DcJobId\":1,\"JobStatus\":1,\"DcJobSucceeded\":null,\"EndTime\":null,\"Ukprn\":null,\"IlrSubmissionTime\":null}"))),
+                    d.Contains(new KeyValuePair<string, string>("InProgressJobsCount", "1"))),
                 It.IsAny<Dictionary<string, double>>()));
         }
     }

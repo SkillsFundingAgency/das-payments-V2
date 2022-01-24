@@ -50,7 +50,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             get => Get<JobsCommand>(JobDetailsKey);
             set => Set(value, JobDetailsKey);
         }
-        
+
         public JobsSteps(ScenarioContext context) : base(context)
         {
             var testConfiguration = Scope.Resolve<TestsConfiguration>();
@@ -414,43 +414,49 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         public async Task GivenTheEarningsEventServiceHasReceivedAndIsProcessingAProviderEarningsJob()
         {
             PeriodEndLargeSubmissionJobId = TestSession.GenerateId();
-            
+
             var jobModel = new JobModel
             {
                 Ukprn = TestSession.Ukprn,
                 CollectionPeriod = CollectionPeriod,
-                AcademicYear = 1920,
+                AcademicYear = 1819,
                 DcJobId = PeriodEndLargeSubmissionJobId,
                 JobType = JobType.EarningsJob,
                 StartTime = DateTimeOffset.UtcNow,
                 IlrSubmissionTime = DateTime.UtcNow.AddSeconds(-10),
                 Status = JobStatus.InProgress
             };
-           await DataContext.SaveNewJob(jobModel);
+            await DataContext.SaveNewJob(jobModel);
         }
 
         [Given(@"the earnings event service has received and successfully processed a provider earnings job")]
-        public async Task GivenTheEarningsEventServiceHasReceivedAndSuccessfullyProcessedAProviderEarningsJob()
+        [Given(@"the earnings event service has received and successfully processed a (.*) provider earnings job")]
+        public async Task GivenTheEarningsEventServiceHasReceivedAndSuccessfullyProcessedAProviderEarningsJob(string jobSize)
         {
             var jobId = TestSession.GenerateId();
-            
+
+            var largeJob = string.Equals(jobSize, "small", StringComparison.InvariantCultureIgnoreCase);
+            var startTime = largeJob ? DateTimeOffset.UtcNow.AddSeconds(-10) : DateTimeOffset.UtcNow.AddSeconds(-60);
+            var endTime = DateTimeOffset.UtcNow.AddSeconds(-10);
+
             jobIdToBeDeleted.Add(jobId);
-            
+
             var jobModel = new JobModel
             {
                 Ukprn = TestSession.Ukprn,
                 CollectionPeriod = CollectionPeriod,
-                AcademicYear = 1920,
+                AcademicYear = 1819,
                 DcJobId = jobId,
                 JobType = JobType.EarningsJob,
-                StartTime = DateTimeOffset.UtcNow.AddSeconds(-20),
-                EndTime = DateTimeOffset.UtcNow.AddSeconds(-10),
-                IlrSubmissionTime = DateTime.UtcNow.AddSeconds(-20),
+                StartTime = startTime,
+                EndTime = endTime,
+                IlrSubmissionTime = startTime.DateTime,
                 Status = JobStatus.Completed,
                 DcJobSucceeded = true,
-                DcJobEndTime = DateTimeOffset.UtcNow.AddSeconds(-10)
+                DcJobEndTime = endTime.DateTime
             };
-           await DataContext.SaveNewJob(jobModel);
+
+            await DataContext.SaveNewJob(jobModel);
         }
 
 
@@ -499,13 +505,13 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         }
 
         [When(@"the period end service notifies the job monitoring service to record run job")]
-        public async Task  WhenThePeriodEndServiceNotifiesTheJobMonitoringServiceToRecordRunJob()
+        public async Task WhenThePeriodEndServiceNotifiesTheJobMonitoringServiceToRecordRunJob()
         {
             await NotifyRecordJob<RecordPeriodEndRunJob>();
         }
 
         [When(@"the period end service notifies the job monitoring service to record stop job")]
-        public async Task  WhenThePeriodEndServiceNotifiesTheJobMonitoringServiceToRecordStopJob()
+        public async Task WhenThePeriodEndServiceNotifiesTheJobMonitoringServiceToRecordStopJob()
         {
             await NotifyRecordJob<RecordPeriodEndStopJob>();
         }
@@ -547,7 +553,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 CollectionPeriod = CollectionPeriod,
                 Ukprn = TestSession.Ukprn,
                 AcademicYear = AcademicYear,
-                IlrSubmissionDateTime = ((RecordEarningsJob) JobDetails).IlrSubmissionTime
+                IlrSubmissionDateTime = ((RecordEarningsJob)JobDetails).IlrSubmissionTime
             }).ConfigureAwait(false);
         }
 
@@ -562,7 +568,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 CollectionPeriod = CollectionPeriod,
                 Ukprn = TestSession.Ukprn,
                 AcademicYear = AcademicYear,
-                IlrSubmissionDateTime = ((RecordEarningsJob) JobDetails).IlrSubmissionTime
+                IlrSubmissionDateTime = ((RecordEarningsJob)JobDetails).IlrSubmissionTime
             }).ConfigureAwait(false);
         }
 
@@ -652,24 +658,24 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         [Then(@"when the final messages for the job are successfully processed for the submission job")]
         public async Task WhenTheFinalMessagesForTheJobAreSuccessfullyProcessedForTheSubmissionJob()
         {
-            var job = await DataContext.Jobs.SingleOrDefaultAsync(x=>x.DcJobId == PeriodEndLargeSubmissionJobId);
+            var job = await DataContext.Jobs.SingleOrDefaultAsync(x => x.DcJobId == PeriodEndLargeSubmissionJobId);
             job.Status = JobStatus.Completed;
-            job.EndTime =  job.DcJobEndTime =  DateTimeOffset.UtcNow.AddMinutes(1);
+            job.EndTime = job.DcJobEndTime = DateTimeOffset.UtcNow.AddMinutes(1);
             job.DcJobSucceeded = true;
             await DataContext.SaveChangesAsync();
         }
 
         [When(@"outstanding submission job times out")]
-        public  async Task WhenOutstandingSubmissionJobTimesOut()
+        public async Task WhenOutstandingSubmissionJobTimesOut()
         {
             var job = await DataContext.Jobs.FirstOrDefaultAsync(x => x.DcJobId == PeriodEndLargeSubmissionJobId);
             job.Status = JobStatus.TimedOut;
             job.EndTime = DateTimeOffset.UtcNow.AddSeconds(30);
             await DataContext.SaveChangesAsync();
         }
-        
+
         [Then(@"the job monitoring service should update the status of the job to show that it has failed")]
-        public  async Task ThenTheJobMonitoringServiceShouldUpdateTheStatusOfTheJobToShowThatItHasFailed()
+        public async Task ThenTheJobMonitoringServiceShouldUpdateTheStatusOfTheJobToShowThatItHasFailed()
         {
             await WaitForIt(() =>
             {
@@ -725,7 +731,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                     $"Failed to receive the period end run job succeeded event for job id: {JobDetails.JobId}")
                 .ConfigureAwait(false);
         }
-        
+
         [Then(@"the monitoring service should notify other services that the period end stop job has completed successfully")]
         public async Task ThenTheMonitoringServiceShouldNotifyOtherServicesThatThePeriodEndStopJobHasCompletedSuccessfully()
         {
