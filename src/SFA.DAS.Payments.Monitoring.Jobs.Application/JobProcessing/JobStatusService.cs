@@ -42,21 +42,26 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         protected virtual async Task<bool> IsJobTimedOut(JobModel job, CancellationToken cancellationToken)
         {
             var timedOutTime = DateTimeOffset.UtcNow;
+
             if (job.Status != JobStatus.InProgress || job.StartTime.Add(job.JobType == JobType.PeriodEndRunJob ? Config.PeriodEndRunJobTimeout : Config.EarningsJobTimeout) >= timedOutTime)
                 return false;
-            Logger.LogWarning(
-                    $"Job {job.DcJobId} has timed out.  Start time: {job.StartTime}, timed out at: {timedOutTime}.");
+
+            Logger.LogWarning($"Job {job.DcJobId} has timed out.  Start time: {job.StartTime}, timed out at: {timedOutTime}.");
+
             var status = JobStatus.TimedOut;
             if (job.DcJobSucceeded.HasValue)
                 status = job.DcJobSucceeded.Value ? JobStatus.CompletedWithErrors : JobStatus.DcTasksFailed;
-                
-            return await CompleteJob(job, status, timedOutTime, cancellationToken)
-                .ConfigureAwait(false);
+
+            if (status != JobStatus.TimedOut) 
+                Logger.LogWarning($"Job {job.DcJobId} has timed out. but because DcJobSucceeded is {job.DcJobSucceeded}, CompleteJob Job as {status}");
+
+            return await CompleteJob(job, status, timedOutTime, cancellationToken).ConfigureAwait(false);
         }
 
         public virtual async Task<bool> ManageStatus(long jobId, CancellationToken cancellationToken)
         {
             Logger.LogVerbose($"Now determining if job {jobId} has finished.");
+
             var job = await JobStorageService.GetJob(jobId, cancellationToken).ConfigureAwait(false);
             if (job != null)
             {
@@ -73,13 +78,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 return false;
             }
 
-            var inProgressMessages = await JobStorageService.GetInProgressMessages(jobId, cancellationToken)
-                .ConfigureAwait(false);
+            var inProgressMessages = await JobStorageService.GetInProgressMessages(jobId, cancellationToken).ConfigureAwait(false);
             var completedItems = await GetCompletedMessages(jobId, inProgressMessages, cancellationToken).ConfigureAwait(false);
 
             //TODO: make a little more elegant
-            Logger.LogDebug($"Inprogress count: {inProgressMessages.Count}, completed count: {completedItems.Count}");
-            inProgressMessages.GroupBy(message => message.MessageName).ToList().ForEach(group => Logger.LogDebug($"Inprogress message type: {group.Key}"));
+            Logger.LogDebug($"Inprogress count: {inProgressMessages.Count}, completed count: {completedItems.Count}. Job: {jobId}");
+            inProgressMessages.GroupBy(message => message.MessageName).ToList().ForEach(group => Logger.LogDebug($"Inprogress message type: {group.Key}, count: {group.Count()}. Job: {jobId}"));
+            
             if (!completedItems.Any())
             {
                 Logger.LogVerbose($"Found no completed messages for job: {jobId}");
@@ -87,15 +92,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            await ManageMessageStatus(jobId, completedItems, inProgressMessages, cancellationToken)
-                .ConfigureAwait(false);
 
-            var currentJobStatus =
-                await UpdateJobStatus(jobId, completedItems, cancellationToken).ConfigureAwait(false);
+            await ManageMessageStatus(jobId, completedItems, inProgressMessages, cancellationToken).ConfigureAwait(false);
+
+            var currentJobStatus = await UpdateJobStatus(jobId, completedItems, cancellationToken).ConfigureAwait(false);
 
             if (!inProgressMessages.TrueForAll(inProgress => completedItems.Any(item => item.MessageId == inProgress.MessageId)))
             {
-                Logger.LogDebug($"Found in progress messages for job id: {jobId}.  Cannot set status for job.");
+                Logger.LogDebug($"Found {inProgressMessages.Count} in progress messages for job id: {jobId}. Cannot set status for job.");
                 return false;
             }
 
@@ -106,26 +110,22 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                     ? additionalJobChecksResult.completionTime.Value
                     : currentJobStatus.endTime.Value;
 
-            return await CompleteJob(jobId, jobStatus,
-                endTime, cancellationToken).ConfigureAwait(false);
+            return await CompleteJob(jobId, jobStatus, endTime, cancellationToken).ConfigureAwait(false);
         }
 
 
-        public virtual Task<(bool IsComplete, JobStatus? OverriddenJobStatus, DateTimeOffset? completionTime)> PerformAdditionalJobChecks(JobModel job, 
-            CancellationToken cancellationToken)
+        public virtual Task<(bool IsComplete, JobStatus? OverriddenJobStatus, DateTimeOffset? completionTime)> PerformAdditionalJobChecks(JobModel job, CancellationToken cancellationToken)
         {
             return Task.FromResult((true,(JobStatus?) null, (DateTimeOffset?) null));
         }
 
 
 
-        protected virtual async Task ManageMessageStatus(long jobId, List<CompletedMessage> completedMessages,
-            List<InProgressMessage> inProgressMessages, CancellationToken cancellationToken)
+        protected virtual async Task ManageMessageStatus(long jobId, List<CompletedMessage> completedMessages, List<InProgressMessage> inProgressMessages, CancellationToken cancellationToken)
         {
-            await JobStorageService.RemoveInProgressMessages(jobId, completedMessages.Select(item => item.MessageId).ToList(), cancellationToken)
-                .ConfigureAwait(false);
-            await JobStorageService.RemoveCompletedMessages(jobId, completedMessages.Select(item => item.MessageId).ToList(), cancellationToken)
-                .ConfigureAwait(false);
+            await JobStorageService.RemoveInProgressMessages(jobId, completedMessages.Select(item => item.MessageId).ToList(), cancellationToken).ConfigureAwait(false);
+
+            await JobStorageService.RemoveCompletedMessages(jobId, completedMessages.Select(item => item.MessageId).ToList(), cancellationToken).ConfigureAwait(false);
         }
 
         private async Task<bool> CompleteJob(long jobId, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken)
@@ -147,7 +147,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             await JobStorageService.SaveJobStatus(job.DcJobId.Value, status, endTime, cancellationToken).ConfigureAwait(false);
 
             SendTelemetry(job);
-            Logger.LogInfo($"Finished recording completion status of job. Job: {job.Id}, status: {job.Status}, end time: {job.EndTime}");
+            
+            if (job.Status == JobStatus.DcTasksFailed || job.Status == JobStatus.TimedOut)
+            {
+                Logger.LogWarning($"Finished recording completion status of job. Job: {job.DcJobId}, status: {job.Status}, end time: {job.EndTime}");
+            }
+            else
+            {
+                Logger.LogInfo($"Finished recording completion status of job. Job: {job.DcJobId}, status: {job.Status}, end time: {job.EndTime}");
+            }
+            
             return true;
         }
 

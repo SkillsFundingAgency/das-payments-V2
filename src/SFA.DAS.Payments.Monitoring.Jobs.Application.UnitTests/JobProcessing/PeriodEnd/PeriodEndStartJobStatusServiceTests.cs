@@ -66,6 +66,17 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                 .Returns(TimeSpan.FromSeconds(20));
 
             mocker.Mock<IJobsDataContext>()
+                .Setup(x => x.GetAverageJobCompletionTimesForInProgressJobs(It.IsAny<List<long?>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<InProgressJobAverageJobCompletionTime>
+                {
+                    new InProgressJobAverageJobCompletionTime
+                    {
+                        JobId = 100,
+                        AverageJobCompletionTime = 2
+                    }
+                });
+
+            mocker.Mock<IJobsDataContext>()
                 .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<JobModel>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(outstandingOrTimedOutJobs);
 
@@ -138,10 +149,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             var jobId = 99;
             var completedMessage = CreateCompletedMessage();
             var inProgressMessage = CreateInProgressMessage(completedMessage);
+            var outstandingJob = CreateOutstandingSubmissionJob();
+
             inProgressMessages.Add(inProgressMessage);
             completedMessages.Add(completedMessage);
-
-            outstandingOrTimedOutJobs.Add(CreateOutstandingSubmissionJob());
+            outstandingOrTimedOutJobs.Add(outstandingJob);
 
             mocker.Mock<IJobStorageService>()
                 .Setup(x => x.GetJobStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
@@ -158,10 +170,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             
             result.Should().BeFalse();
 
-            mocker.Mock<ITelemetry>().Verify(t => t.TrackEvent("PeriodEndStart Job Status Update",
-            It.Is<Dictionary<string, string>>(d => d.Contains(new KeyValuePair<string, string>(
-                "InProgressJobsList", "{\"DcJobId\":1,\"JobStatus\":1,\"DcJobSucceeded\":null,\"EndTime\":null,\"Ukprn\":null,\"IlrSubmissionTime\":null}"))),
-                It.IsAny<Dictionary<string, double>>()));
+            mocker.Mock<ITelemetry>()
+                .Verify(t => t.TrackEvent("PeriodEndStart Job Status Update", It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, double>>()));
 
             CompleteJob(outstandingOrTimedOutJobs[0]);
 

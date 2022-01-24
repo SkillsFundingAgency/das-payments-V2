@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 {
     public interface IJobStatusManager
     {
-        Task Start(CancellationToken cancellationToken);
+        Task Start(string partitionEndpointName, CancellationToken cancellationToken);
         void StartMonitoringJob(long jobId, JobType jobType);
     }
 
@@ -33,25 +33,25 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             currentJobs = new ConcurrentDictionary<long, bool>();
         }
 
-        public Task Start(CancellationToken suppliedCancellationToken)
+        public Task Start(string partitionEndpointName, CancellationToken suppliedCancellationToken)
         {
             this.cancellationToken = suppliedCancellationToken;
-            return Run();
+            return Run(partitionEndpointName);
         }
 
-        private async Task Run()
+        private async Task Run(string partitionEndpointName)
         {
             await LoadExistingJobs().ConfigureAwait(false);
             while (!cancellationToken.IsCancellationRequested)
             {
-                var tasks = currentJobs.Select(job => CheckJobStatus(job.Key)).ToList();
+                var tasks = currentJobs.Select(job => CheckJobStatus(partitionEndpointName, job.Key)).ToList();
                 await Task.WhenAll(tasks).ConfigureAwait(false);
                 var completedJobs = currentJobs.Where(item => item.Value).ToList();
                 foreach (var completedJob in completedJobs)
                 {
-                    logger.LogInfo($"Found completed job.  Will now stop monitoring job: {completedJob.Key}");
+                    logger.LogInfo($"Found completed job.  Will now stop monitoring job: {completedJob.Key}, ThreadId {Thread.CurrentThread.ManagedThreadId}, PartitionId {partitionEndpointName}");
                     if (!currentJobs.TryRemove(completedJob.Key, out _))
-                        logger.LogWarning($"Couldn't remove completed job from jobs list.  Job: {completedJob.Key}, status: {completedJob.Value}");
+                        logger.LogWarning($"Couldn't remove completed job from jobs list. ThreadId {Thread.CurrentThread.ManagedThreadId}, PartitionId {partitionEndpointName},  Job: {completedJob.Key}, status: {completedJob.Value}");
                 }
                 await Task.Delay(interval, cancellationToken).ConfigureAwait(false);
             }
@@ -79,11 +79,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
       
 
-        private async Task CheckJobStatus(long jobId)
+        private async Task CheckJobStatus(string partitionEndpointName, long jobId)
         {
             try
             {
-                using (var scope = scopeFactory.Create($"CheckJobStatus:{jobId}"))
+                using (var scope = scopeFactory.Create($"CheckJobStatus:{jobId}, ThreadId {Thread.CurrentThread.ManagedThreadId}, PartitionId {partitionEndpointName}"))
                 {
                     try
                     {
@@ -96,13 +96,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                     catch (Exception ex)
                     {
                         scope.Abort();
-                        logger.LogWarning($"Failed to update job status for job: {jobId}, Error: {ex.Message}. {ex}");
+                        logger.LogWarning($"Failed to update job status for job: {jobId}, ThreadId {Thread.CurrentThread.ManagedThreadId}, PartitionId {partitionEndpointName} Error: {ex.Message}. {ex}");
                     }
                 }
             }
             catch (Exception e)
             {
-                logger.LogError($"Failed to create or abort the scope of the state manager transaction for: {jobId}. Error: {e.Message}", e);
+                logger.LogError($"Failed to create or abort the scope of the state manager transaction for: {jobId}, ThreadId {Thread.CurrentThread.ManagedThreadId}, PartitionId {partitionEndpointName} Error: {e.Message}", e);
                 throw;
             }
         }

@@ -19,11 +19,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
         public PeriodEndStartJobStatusService(
             IJobStorageService jobStorageService,
-            IPaymentLogger logger, 
-            ITelemetry telemetry, 
+            IPaymentLogger logger,
+            ITelemetry telemetry,
             IJobStatusEventPublisher eventPublisher,
-            IJobServiceConfiguration config, 
-            IJobsDataContext context) 
+            IJobServiceConfiguration config,
+            IJobsDataContext context)
             : base(jobStorageService, logger, telemetry, eventPublisher, config)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
@@ -33,13 +33,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
         {
             var outstandingJobs = await context.GetOutstandingOrTimedOutJobs(job, cancellationToken);
 
-            var timeoutsPresent = outstandingJobs.Any(x =>
+            var timeoutsPresent = outstandingJobs.Where(x =>
                 (x.JobStatus == JobStatus.TimedOut ||
                  x.JobStatus == JobStatus.DcTasksFailed) &&
-                x.EndTime > job.StartTime);
+                x.EndTime > job.StartTime).ToList();
 
-            if (timeoutsPresent) //fail fast
+            if (timeoutsPresent.Any()) //fail fast
             {
+                Logger.LogWarning($"{timeoutsPresent.Count} File Processing jobs {string.Join(" ,", timeoutsPresent.Select(j => j.DcJobId))} with TimedOut or DcTasksFailed and job EndTime after Period-End-Start Job Present. " +
+                                  $"now updating job status to CompletedWithErrors, Period End Start JobId {job.DcJobId}");
+
                 return (true, JobStatus.CompletedWithErrors, outstandingJobs.Max(x => x.EndTime));
             }
 
@@ -48,16 +51,26 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
             if (processingJobsPresent.Any())
             {
                 SendTelemetry(job, processingJobsPresent);
+
+                var completionTimesForInProgressJobs = await context.GetAverageJobCompletionTimesForInProgressJobs(processingJobsPresent.Select(p => p.Ukprn).ToList(), cancellationToken);
+
+                await CheckAndUpdateProcessingJobsIfRunningLongerThenAverageTime(processingJobsPresent, completionTimesForInProgressJobs, job.DcJobId, cancellationToken);
+
                 return (false, null, null);
             }
 
             var jobsWithoutSubmissionSummariesPresent = context.DoSubmissionSummariesExistForJobs(outstandingJobs);
 
-            if (jobsWithoutSubmissionSummariesPresent.Any()) 
+            if (jobsWithoutSubmissionSummariesPresent.Any())
             {
+                Logger.LogDebug($"{jobsWithoutSubmissionSummariesPresent.Count} File Processing jobs without Submission Summaries Present during Period End Start job, Period End Start JobId {job.DcJobId}");
+
                 SendTelemetry(job, null, jobsWithoutSubmissionSummariesPresent);
+
                 return (false, null, null);
             }
+
+            Logger.LogDebug($"No Outstanding Jobs or jobs Without Submission Summaries during Period End Start job, Now updating Period End Start job status to Completed, Period End Start JobId {job.DcJobId}");
 
             return (true, null, DateTimeOffset.UtcNow);
         }
@@ -80,15 +93,44 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
                 properties.Add("InProgressJobsCount", processingJobsPresent.Count.ToString());
                 properties.Add("InProgressJobsList", string.Join(", ", processingJobsPresent.Select(j => j.ToJson())));
             }
-            
-            
+
+
             if (jobsWithoutSubmissionSummariesPresent != null)
             {
                 properties.Add("jobsWithoutSubmissionSummariesCount", jobsWithoutSubmissionSummariesPresent.Count.ToString());
                 properties.Add("jobsWithoutSubmissionSummaries", string.Join(", ", jobsWithoutSubmissionSummariesPresent.Select(j => j.ToJson())));
             }
-            
+
             Telemetry.TrackEvent("PeriodEndStart Job Status Update", properties, new Dictionary<string, double>());
+        }
+
+        private async Task CheckAndUpdateProcessingJobsIfRunningLongerThenAverageTime(
+            List<OutstandingJobResult> processingJobs,
+            List<InProgressJobAverageJobCompletionTime> averageJobCompletionTimes,
+            long? dcJobId,
+            CancellationToken cancellationToken)
+        {
+            foreach (var inProgressJob in processingJobs)
+            {
+                var providerJobTimings = averageJobCompletionTimes.SingleOrDefault(a => a.Ukprn == inProgressJob.Ukprn);
+
+                if (providerJobTimings == null) throw new InvalidOperationException($"Unable to find Average Job Completion Times For {inProgressJob.Ukprn}, Period End Start JobId {dcJobId}");
+
+                if (inProgressJob.JobRunTimeDurationInMillisecond > (providerJobTimings.AverageJobCompletionTime ?? 0))
+                {
+                    Logger.LogWarning($"File Processing job {inProgressJob.DcJobId} Started at {inProgressJob.StartTime}. " +
+                                      $"it has been running for {inProgressJob.JobRunTimeDurationInMillisecond} Millisecond which is longer then its average duration of {providerJobTimings.AverageJobCompletionTime} Millisecond, " +
+                                      $"now updating job status to TimedOut, Period End Start JobId {dcJobId}");
+
+                    await context.SaveJobStatus(inProgressJob.DcJobId.Value, JobStatus.TimedOut, DateTimeOffset.UtcNow, cancellationToken);
+                }
+                else
+                {
+                    Logger.LogDebug($"File Processing job {inProgressJob.DcJobId} Started at {inProgressJob.StartTime}. " +
+                                    $"it has been running for {inProgressJob.JobRunTimeDurationInMillisecond} Millisecond which is still with in its average duration of {providerJobTimings.AverageJobCompletionTime} Millisecond, " +
+                                    $"Period End Start JobId {dcJobId}");
+                }
+            }
         }
     }
 }
