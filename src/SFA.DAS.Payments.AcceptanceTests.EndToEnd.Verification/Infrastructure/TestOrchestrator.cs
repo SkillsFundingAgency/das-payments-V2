@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using ESFA.DC.Jobs.Model;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Entities;
@@ -17,7 +15,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
 
         Task DeleteTestFiles(IEnumerable<string> fileList);
 
-        Task VerifyResults(IEnumerable<FileUploadJob> results,
+        Task VerifyResults(IList<FileUploadJob> results,
                            Action<decimal?, decimal, decimal?> verificationAction);
 
     }
@@ -50,29 +48,29 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             return submissionService.DeleteFiles(fileList);
         }
 
-        public async Task VerifyResults(IEnumerable<FileUploadJob> results, Action<decimal?, decimal, decimal?> verificationAction)
+        public async Task VerifyResults(IList<FileUploadJob> results, Action<decimal?, decimal, decimal?> verificationAction)
         {
             var resultsList = results.ToList();
             var ukprnList = resultsList.Select(r => r.Ukprn).ToList();
-            byte collectionPeriod = (byte) resultsList.FirstOrDefault().PeriodNumber;
 
             var groupedResults = resultsList.GroupBy(g => g.CollectionYear);
 
             foreach (var groupedResult in groupedResults)
             {
-                short academicYear = (short) groupedResult.Key;
+                var collectionPeriod = (byte) resultsList.FirstOrDefault().PeriodNumber;
+
+                var academicYear = (short) groupedResult.Key;
 
                 var dasPaymentsData = await ExtractPaymentsData(results.Min(r=>r.DateTimeSubmittedUtc.Value), academicYear, collectionPeriod, ukprnList);
                 var dcEarningsYtd = await ExtractDataStoreData(academicYear, collectionPeriod, ukprnList);
 
-                MetricsCalculator metricsCalculator = new MetricsCalculator(dasPaymentsData, dcEarningsYtd);
+                var metricsCalculator = new MetricsCalculator(dasPaymentsData, dcEarningsYtd);
 
                 var totalDcEarningsYtd = metricsCalculator.DcValues.Total;
                 var dasEarningsYtd =  metricsCalculator.PaymentsValues.DasEarnings;
 
-
                 var settings = await submissionService.ReadSettingsFile();
-                decimal tolerance = settings.Tolerance;
+                var tolerance = settings.Tolerance;
 
                 decimal? actualPercentage = null;
                 if (dasEarningsYtd != 0)
@@ -97,12 +95,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
             return await verificationService.GetDcEarningsData(academicYear, collectionPeriod, ukprnList);
         }
 
-        private async Task<PaymentsValues> ExtractPaymentsData(DateTime runStartDateTime,
-            short academicYear, byte collectionPeriod, IList<long> ukprnList)
+        private async Task<PaymentsValues> ExtractPaymentsData(DateTime runStartDateTime, short academicYear, byte collectionPeriod, IList<long> ukprnList)
         {
-            return await verificationService.GetPaymentsData(runStartDateTime, academicYear, collectionPeriod,
-                true,
-                ukprnList);
+            return await verificationService.GetPaymentsData(runStartDateTime, academicYear, collectionPeriod, true, ukprnList);
         }
     }
 }
