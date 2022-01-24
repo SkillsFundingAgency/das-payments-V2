@@ -27,8 +27,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         private readonly ISubmissionJobsRepository submissionJobsRepository;
         private readonly ITelemetry telemetry;
 
-        public SubmissionMetricsService(IPaymentLogger logger, ISubmissionSummaryFactory submissionSummaryFactory,
-            IDcMetricsDataContextFactory dcMetricsDataContextFactory, ISubmissionMetricsRepository submissionRepository, ITelemetry telemetry, ISubmissionJobsRepository submissionJobsRepository)
+        public SubmissionMetricsService(IPaymentLogger logger, ISubmissionSummaryFactory submissionSummaryFactory, IDcMetricsDataContextFactory dcMetricsDataContextFactory, ISubmissionMetricsRepository submissionRepository, ITelemetry telemetry, ISubmissionJobsRepository submissionJobsRepository)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.submissionSummaryFactory = submissionSummaryFactory ?? throw new ArgumentNullException(nameof(submissionSummaryFactory));
