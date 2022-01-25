@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -15,65 +16,67 @@ using SFA.DAS.Payments.Monitoring.Metrics.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 {
-	public interface IMetricsQueryDataContext
-	{
-		DbSet<EarningEventPeriodModel> EarningEventPeriods { get; }
-		DbSet<DataLockEventNonPayablePeriodModel> DataLockEventNonPayablePeriods { get; }
-		DbSet<RequiredPaymentEventModel> RequiredPaymentEvents { get; }
-		DbSet<PaymentModel> Payments { get; }
-		DbSet<LatestSuccessfulJobModel> LatestSuccessfulJobs { get; }
-		Task<decimal> GetAlreadyPaidDataLocksAmount(long ukprn, long jobId, CancellationToken cancellationToken);
-		Task<DataLockTypeCounts> GetDataLockCounts(long ukprn, long jobId, CancellationToken cancellationToken);
-		Task<List<PeriodEndProviderDataLockTypeCounts>> GetPeriodEndProviderDataLockCounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
-		Task<List<ProviderFundingLineTypeAmounts>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
-		Task<List<ProviderFundingLineTypeAmounts>> GetAlreadyPaidDataLockProviderTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
-		Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
-		Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken, IsolationLevel isolationLevel = IsolationLevel.Snapshot);
-	}
+    public interface IMetricsQueryDataContext
+    {
+        DbSet<EarningEventPeriodModel> EarningEventPeriods { get; }
+        DbSet<DataLockEventNonPayablePeriodModel> DataLockEventNonPayablePeriods { get; }
+        DbSet<RequiredPaymentEventModel> RequiredPaymentEvents { get; }
+        DbSet<PaymentModel> Payments { get; }
+        DbSet<LatestSuccessfulJobModel> LatestSuccessfulJobs { get; }
+        Task<decimal> GetAlreadyPaidDataLocksAmount(long ukprn, long jobId, CancellationToken cancellationToken);
+        Task<DataLockTypeCounts> GetDataLockCounts(long ukprn, long jobId, CancellationToken cancellationToken);
+        Task<List<PeriodEndProviderDataLockTypeCounts>> GetPeriodEndProviderDataLockCounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<ProviderFundingLineTypeAmounts>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<ProviderFundingLineTypeAmounts>> GetAlreadyPaidDataLockProviderTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<ProviderLearnerDataLockEarningsTotal>> GetDataLockedEarningsForLearnersWithNegativeDcEarnings(IList<long> learnersWithNegativeDcEarnings, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken, IsolationLevel isolationLevel = IsolationLevel.Snapshot);
+    }
 
-	public class MetricsQueryDataContext : DbContext, IMetricsQueryDataContext
-	{
-		public class DataLockCount
-		{
-			public int Count { get; set; }
-			public byte DataLockType { get; set; }
-		}
+    public class MetricsQueryDataContext : DbContext, IMetricsQueryDataContext
+    {
+        public class DataLockCount
+        {
+            public int Count { get; set; }
+            public byte DataLockType { get; set; }
+        }
 
-		public class PeriodEndDataLockCount
-		{
-			public long Ukprn { get; set; }
-			public int Count { get; set; }
-			public byte DataLockType { get; set; }
-		}
+        public class PeriodEndDataLockCount
+        {
+            public long Ukprn { get; set; }
+            public int Count { get; set; }
+            public byte DataLockType { get; set; }
+        }
 
-		public virtual DbQuery<DataLockCount> DataLockCounts { get; set; }
-		public virtual DbQuery<PeriodEndDataLockCount> PeriodEndDataLockCounts { get; set; }
-		public virtual DbQuery<ProviderFundingLineTypeAmounts> AlreadyPaidDataLockProviderTotals { get; set; }
+        public virtual DbQuery<DataLockCount> DataLockCounts { get; set; }
+        public virtual DbQuery<PeriodEndDataLockCount> PeriodEndDataLockCounts { get; set; }
+        public virtual DbQuery<ProviderFundingLineTypeAmounts> AlreadyPaidDataLockProviderTotals { get; set; }
         public virtual DbQuery<ProviderFundingLineTypeAmounts> DataLockedEarningsTotals { get; set; }
-		public virtual DbSet<LatestSuccessfulJobModel> LatestSuccessfulJobs { get; set; }
-		public virtual DbSet<EarningEventModel> EarningEvent { get; protected set; }
-		public virtual DbSet<EarningEventPeriodModel> EarningEventPeriods { get; protected set; }
-		public virtual DbSet<DataLockEventModel> DataLockEvent { get; set; }
-		public virtual DbSet<DataLockEventNonPayablePeriodModel> DataLockEventNonPayablePeriods { get; set; }
-		public virtual DbSet<RequiredPaymentEventModel> RequiredPaymentEvents { get; set; }
-		public virtual DbSet<PaymentModel> Payments { get; set; }
+        public virtual DbQuery<ProviderLearnerDataLockEarningsTotal> DataLockedEarningsForLearnersWithNegativeDcEarnings { get; set; }
+        public virtual DbSet<LatestSuccessfulJobModel> LatestSuccessfulJobs { get; set; }
+        public virtual DbSet<EarningEventModel> EarningEvent { get; protected set; }
+        public virtual DbSet<EarningEventPeriodModel> EarningEventPeriods { get; protected set; }
+        public virtual DbSet<DataLockEventModel> DataLockEvent { get; set; }
+        public virtual DbSet<DataLockEventNonPayablePeriodModel> DataLockEventNonPayablePeriods { get; set; }
+        public virtual DbSet<RequiredPaymentEventModel> RequiredPaymentEvents { get; set; }
+        public virtual DbSet<PaymentModel> Payments { get; set; }
 
-		public MetricsQueryDataContext(DbContextOptions contextOptions) : base(contextOptions)
-		{ }
+        public MetricsQueryDataContext(DbContextOptions contextOptions) : base(contextOptions)
+        { }
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
-		{
-			base.OnModelCreating(modelBuilder);
-			modelBuilder.HasDefaultSchema("Payments2");
-			modelBuilder.ApplyConfiguration(new EarningEventModelConfiguration());
-			modelBuilder.ApplyConfiguration(new EarningEventPeriodModelConfiguration());
-			modelBuilder.ApplyConfiguration(new DataLockEventModelConfiguration());
-			modelBuilder.ApplyConfiguration(new DataLockEventNonPayablePeriodModelConfiguration());
-			modelBuilder.ApplyConfiguration(new DataLockEventNonPayablePeriodFailureModelConfiguration());
-			modelBuilder.ApplyConfiguration(new RequiredPaymentEventModelConfiguration());
-			modelBuilder.ApplyConfiguration(new PaymentModelConfiguration());
-			modelBuilder.ApplyConfiguration(new LatestSuccessfulJobModelConfiguration());
-		}
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.HasDefaultSchema("Payments2");
+            modelBuilder.ApplyConfiguration(new EarningEventModelConfiguration());
+            modelBuilder.ApplyConfiguration(new EarningEventPeriodModelConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockEventModelConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockEventNonPayablePeriodModelConfiguration());
+            modelBuilder.ApplyConfiguration(new DataLockEventNonPayablePeriodFailureModelConfiguration());
+            modelBuilder.ApplyConfiguration(new RequiredPaymentEventModelConfiguration());
+            modelBuilder.ApplyConfiguration(new PaymentModelConfiguration());
+            modelBuilder.ApplyConfiguration(new LatestSuccessfulJobModelConfiguration());
+        }
 
         public async Task<List<ProviderFundingLineTypeAmounts>> GetAlreadyPaidDataLockProviderTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
@@ -119,52 +122,52 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             return await AlreadyPaidDataLockProviderTotals.FromSql(sql, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod)).ToListAsync(cancellationToken);
         }
 
-		public async Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
-		{
-			var latestSuccessfulJobIds = LatestSuccessfulJobs.AsNoTracking()
-															.Where(j => j.AcademicYear == academicYear &&
-																		j.CollectionPeriod == collectionPeriod)
-															.Select(x => x.DcJobId);
+        public async Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        {
+            var latestSuccessfulJobIds = LatestSuccessfulJobs.AsNoTracking()
+                                                            .Where(j => j.AcademicYear == academicYear &&
+                                                                        j.CollectionPeriod == collectionPeriod)
+                                                            .Select(x => x.DcJobId);
 
-			var providerMetrics = await RequiredPaymentEvents
-				.AsNoTracking()
-				.Where(rp => latestSuccessfulJobIds.Contains(rp.JobId) &&
-							 rp.NonPaymentReason != null &&
-							 rp.NonPaymentReason == NonPaymentReason.InsufficientEmployerContribution)
-				.GroupBy(rp => new { rp.Ukprn, rp.ContractType })
-				.Select(group => new
-				{
-					group.Key.Ukprn,
-					group.Key.ContractType,
-					Amount = group.Sum(requiredPaymentInGroup => requiredPaymentInGroup.Amount)
-				})
-				.ToListAsync(cancellationToken)
-				.ConfigureAwait(false);
+            var providerMetrics = await RequiredPaymentEvents
+                .AsNoTracking()
+                .Where(rp => latestSuccessfulJobIds.Contains(rp.JobId) &&
+                             rp.NonPaymentReason != null &&
+                             rp.NonPaymentReason == NonPaymentReason.InsufficientEmployerContribution)
+                .GroupBy(rp => new { rp.Ukprn, rp.ContractType })
+                .Select(group => new
+                {
+                    group.Key.Ukprn,
+                    group.Key.ContractType,
+                    Amount = group.Sum(requiredPaymentInGroup => requiredPaymentInGroup.Amount)
+                })
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
 
-			var uniqueUkprns = providerMetrics.Select(x => x.Ukprn).Distinct();
+            var uniqueUkprns = providerMetrics.Select(x => x.Ukprn).Distinct();
 
-			var results = new List<ProviderContractTypeAmounts>();
+            var results = new List<ProviderContractTypeAmounts>();
 
-			foreach (var ukprn in uniqueUkprns)
-			{
-				results.Add(new ProviderContractTypeAmounts
-				{
-					Ukprn = ukprn,
-					ContractType1 = providerMetrics.FirstOrDefault(providerMetric =>
-						providerMetric.ContractType == ContractType.Act1 &&
-						providerMetric.Ukprn == ukprn)?.Amount ?? 0,
-					ContractType2 = providerMetrics.FirstOrDefault(providerMetric =>
-						providerMetric.ContractType == ContractType.Act2 &&
-						providerMetric.Ukprn == ukprn)?.Amount ?? 0,
-				});
-			}
+            foreach (var ukprn in uniqueUkprns)
+            {
+                results.Add(new ProviderContractTypeAmounts
+                {
+                    Ukprn = ukprn,
+                    ContractType1 = providerMetrics.FirstOrDefault(providerMetric =>
+                        providerMetric.ContractType == ContractType.Act1 &&
+                        providerMetric.Ukprn == ukprn)?.Amount ?? 0,
+                    ContractType2 = providerMetrics.FirstOrDefault(providerMetric =>
+                        providerMetric.ContractType == ContractType.Act2 &&
+                        providerMetric.Ukprn == ukprn)?.Amount ?? 0,
+                });
+            }
 
-			return results;
-		}
+            return results;
+        }
 
-		public async Task<decimal> GetAlreadyPaidDataLocksAmount(long ukprn, long jobId, CancellationToken cancellationToken)
-		{
-			var sql = @"
+        public async Task<decimal> GetAlreadyPaidDataLocksAmount(long ukprn, long jobId, CancellationToken cancellationToken)
+        {
+            var sql = @"
 				Select
 					@result = sum(p.Amount)
 			    from Payments2.dataLockEventNonPayablePeriod npp
@@ -187,14 +190,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 				    and p.collectionperiod < dle.CollectionPeriod
                     and p.ContractType = 1
 			";
-			var result = new SqlParameter("@result", SqlDbType.Decimal) { Direction = ParameterDirection.Output };
-			await Database.ExecuteSqlCommandAsync(sql, new[] { new SqlParameter("@jobid", jobId), new SqlParameter("@ukprn", ukprn), result }, cancellationToken);
-			return result.Value as decimal? ?? 0;
-		}
+            var result = new SqlParameter("@result", SqlDbType.Decimal) { Direction = ParameterDirection.Output };
+            await Database.ExecuteSqlCommandAsync(sql, new[] { new SqlParameter("@jobid", jobId), new SqlParameter("@ukprn", ukprn), result }, cancellationToken);
+            return result.Value as decimal? ?? 0;
+        }
 
-		public async Task<DataLockTypeCounts> GetDataLockCounts(long ukprn, long jobId, CancellationToken cancellationToken)
-		{
-			var sql = @"
+        public async Task<DataLockTypeCounts> GetDataLockCounts(long ukprn, long jobId, CancellationToken cancellationToken)
+        {
+            var sql = @"
                 select 
 	                count(*) [Count],
 	                a.DataLockFailureId [DataLockType]
@@ -214,28 +217,28 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 			    group by
                     a.DataLockFailureId
                 ";
-			var dataLockCounts = await DataLockCounts.FromSql(sql, new SqlParameter("@jobId", jobId), new SqlParameter("@ukprn", ukprn))
-				.ToListAsync(cancellationToken);
-			return new DataLockTypeCounts
-			{
-				DataLock1 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_01)?.Count ?? 0,
-				DataLock2 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_02)?.Count ?? 0,
-				DataLock3 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_03)?.Count ?? 0,
-				DataLock4 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_04)?.Count ?? 0,
-				DataLock5 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_05)?.Count ?? 0,
-				DataLock6 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_06)?.Count ?? 0,
-				DataLock7 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_07)?.Count ?? 0,
-				DataLock8 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_08)?.Count ?? 0,
-				DataLock9 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_09)?.Count ?? 0,
-				DataLock10 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_10)?.Count ?? 0,
-				DataLock11 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_11)?.Count ?? 0,
-				DataLock12 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_12)?.Count ?? 0,
-			};
-		}
+            var dataLockCounts = await DataLockCounts.FromSql(sql, new SqlParameter("@jobId", jobId), new SqlParameter("@ukprn", ukprn))
+                .ToListAsync(cancellationToken);
+            return new DataLockTypeCounts
+            {
+                DataLock1 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_01)?.Count ?? 0,
+                DataLock2 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_02)?.Count ?? 0,
+                DataLock3 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_03)?.Count ?? 0,
+                DataLock4 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_04)?.Count ?? 0,
+                DataLock5 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_05)?.Count ?? 0,
+                DataLock6 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_06)?.Count ?? 0,
+                DataLock7 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_07)?.Count ?? 0,
+                DataLock8 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_08)?.Count ?? 0,
+                DataLock9 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_09)?.Count ?? 0,
+                DataLock10 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_10)?.Count ?? 0,
+                DataLock11 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_11)?.Count ?? 0,
+                DataLock12 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_12)?.Count ?? 0,
+            };
+        }
 
-		public async Task<List<PeriodEndProviderDataLockTypeCounts>> GetPeriodEndProviderDataLockCounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
-		{
-			var dataLockCountByUkprnSql = @"
+        public async Task<List<PeriodEndProviderDataLockTypeCounts>> GetPeriodEndProviderDataLockCounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        {
+            var dataLockCountByUkprnSql = @"
                 select
                     count(*) [Count],
 	                a.DataLockFailureId [DataLockType],
@@ -261,32 +264,32 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                     a.DataLockFailureId, a.ukprn
                 ";
 
-			var providerDataLockCounts = await PeriodEndDataLockCounts
-				.FromSql(dataLockCountByUkprnSql, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod))
-				.ToListAsync(cancellationToken);
+            var providerDataLockCounts = await PeriodEndDataLockCounts
+                .FromSql(dataLockCountByUkprnSql, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod))
+                .ToListAsync(cancellationToken);
 
-			return providerDataLockCounts
-				.GroupBy(x => x.Ukprn)
-				.Select(dataLockCounts => new PeriodEndProviderDataLockTypeCounts
-				{
-					Ukprn = dataLockCounts.Key,
-					DataLock1 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_01)?.Count ?? 0,
-					DataLock2 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_02)?.Count ?? 0,
-					DataLock3 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_03)?.Count ?? 0,
-					DataLock4 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_04)?.Count ?? 0,
-					DataLock5 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_05)?.Count ?? 0,
-					DataLock6 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_06)?.Count ?? 0,
-					DataLock7 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_07)?.Count ?? 0,
-					DataLock8 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_08)?.Count ?? 0,
-					DataLock9 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_09)?.Count ?? 0,
-					DataLock10 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_10)?.Count ?? 0,
-					DataLock11 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_11)?.Count ?? 0,
-					DataLock12 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_12)?.Count ?? 0,
-				})
-				.ToList();
-		}
+            return providerDataLockCounts
+                .GroupBy(x => x.Ukprn)
+                .Select(dataLockCounts => new PeriodEndProviderDataLockTypeCounts
+                {
+                    Ukprn = dataLockCounts.Key,
+                    DataLock1 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_01)?.Count ?? 0,
+                    DataLock2 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_02)?.Count ?? 0,
+                    DataLock3 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_03)?.Count ?? 0,
+                    DataLock4 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_04)?.Count ?? 0,
+                    DataLock5 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_05)?.Count ?? 0,
+                    DataLock6 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_06)?.Count ?? 0,
+                    DataLock7 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_07)?.Count ?? 0,
+                    DataLock8 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_08)?.Count ?? 0,
+                    DataLock9 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_09)?.Count ?? 0,
+                    DataLock10 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_10)?.Count ?? 0,
+                    DataLock11 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_11)?.Count ?? 0,
+                    DataLock12 = dataLockCounts.FirstOrDefault(amount => amount.DataLockType == (byte)DataLockErrorCode.DLOCK_12)?.Count ?? 0,
+                })
+                .ToList();
+        }
 
-		public async Task<List<ProviderFundingLineTypeAmounts>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        public async Task<List<ProviderFundingLineTypeAmounts>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
             var sql = @";WITH unGroupedEarnings AS 
                         (Select
@@ -318,9 +321,37 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             return await DataLockedEarningsTotals.FromSql(sql, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod)).ToListAsync(cancellationToken);
         }
 
-		public async Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken, IsolationLevel isolationLevel = IsolationLevel.Snapshot)
-		{
-			return await Database.BeginTransactionAsync(isolationLevel, cancellationToken).ConfigureAwait(false);
-		}
-	}
+        public async Task<List<ProviderLearnerDataLockEarningsTotal>> GetDataLockedEarningsForLearnersWithNegativeDcEarnings(IList<long> learnersWithNegativeDcEarnings, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        {
+
+            var sqlParameters = learnersWithNegativeDcEarnings.Select((item, index) => new SqlParameter($"@uln{index}", item)).ToList();
+            var sqlParamName = string.Join(", ", sqlParameters.Select(pn => pn.ParameterName));
+
+            var sql = $@"Select
+	                        dle.ukprn as Ukprn,
+                            dle.LearnerUln,
+	                        SUM(npp.Amount) AS TotalAmount
+                        from Payments2.dataLockEventNonPayablePeriod npp
+                        join Payments2.dataLockEvent dle 
+                        on npp.DataLockEventId = dle.EventId
+                        where 		
+	                        dle.jobId in (select DcJobid from Payments2.LatestSuccessfulJobs Where AcademicYear = @academicYear AND CollectionPeriod = @collectionPeriod)
+	                        and npp.Amount <> 0
+                            and dle.LearnerUln in ({sqlParamName})
+	                    GROUP BY dle.Ukprn, dle.LearnerUln";
+            
+            var sqlQueryBuilder = new StringBuilder();
+            
+            var sqlQueryWithParameters = sqlQueryBuilder
+                .AppendFormat(sql, sqlParamName)
+                .ToString();
+
+            return await DataLockedEarningsForLearnersWithNegativeDcEarnings.FromSql(sqlQueryWithParameters, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod), sqlParameters).ToListAsync(cancellationToken);
+        }
+
+        public async Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken, IsolationLevel isolationLevel = IsolationLevel.Snapshot)
+        {
+            return await Database.BeginTransactionAsync(isolationLevel, cancellationToken).ConfigureAwait(false);
+        }
+    }
 }
