@@ -37,3 +37,7 @@ GO
 CREATE INDEX IX_Payments2_Job__IlrSubmissionTime
 ON Payments2.Job (IlrSubmissionTime)
 GO
+
+CREATE NONCLUSTERED INDEX [IX_Payments2_Job_Search] 
+ON [Payments2].[Job] ([DCJobId], [AcademicYear], [DCJobSucceeded], [JobType], [Status]) 
+INCLUDE ([IlrSubmissionTime], [Ukprn]) WITH (ONLINE = ON)

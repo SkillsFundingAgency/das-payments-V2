@@ -28,6 +28,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
         Task SaveDcSubmissionStatus(long jobId, bool succeeded, CancellationToken cancellationToken);
         Task<List<OutstandingJobResult>> GetOutstandingOrTimedOutJobs(JobModel job, CancellationToken cancellationToken);
         List<long?> DoSubmissionSummariesExistForJobs(List<OutstandingJobResult> jobs);
+        Task<List<InProgressJobAverageJobCompletionTime>> GetAverageJobCompletionTimesForInProgressJobs(List<long?> inProgressJobsUkprnList, CancellationToken cancellationToken);
     }
 
     public class JobsDataContext : DbContext, IJobsDataContext
@@ -63,7 +64,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 
         public async Task SaveNewJob(JobModel jobDetails, CancellationToken cancellationToken = default(CancellationToken))
         {
+            var job = await Jobs.AsNoTracking().FirstOrDefaultAsync(storedJob => storedJob.DcJobId == jobDetails.DcJobId, cancellationToken);
+            
+            if (job != null) return;
+            
             Jobs.Add(jobDetails);
+
             await SaveChangesAsync(cancellationToken);
         }
 
@@ -182,9 +188,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                     x.CollectionPeriod == job.CollectionPeriod &&
                     x.DcJobId != job.DcJobId &&
                     x.JobType == JobType.EarningsJob &&
-                    x.StartTime > latestValidStartTime).
-                Select(x => new OutstandingJobResult { DcJobId = x.DcJobId, DcJobSucceeded = x.DcJobSucceeded, JobStatus = x.Status, EndTime = x.EndTime, IlrSubmissionTime = x.IlrSubmissionTime, Ukprn = x.Ukprn }).
-                ToListAsync(cancellationToken);
+                    x.StartTime > latestValidStartTime)
+                .Select(x => new OutstandingJobResult { DcJobId = x.DcJobId, DcJobSucceeded = x.DcJobSucceeded, JobStatus = x.Status, EndTime = x.EndTime, StartTime = x.StartTime, IlrSubmissionTime = x.IlrSubmissionTime, Ukprn = x.Ukprn })
+                .ToListAsync(cancellationToken);
         }
 
         public List<long?> DoSubmissionSummariesExistForJobs(List<OutstandingJobResult> jobs)
@@ -195,6 +201,27 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 
             //Select jobId where SubmissionSummaries does not have the same jobId
             return jobIdsToCheck.Where(x => !SubmissionSummaries.Any(y => y.JobId == x)).ToList();
+        }
+
+        public async Task<List<InProgressJobAverageJobCompletionTime>> GetAverageJobCompletionTimesForInProgressJobs(List<long?> inProgressJobsUkprnList, CancellationToken cancellationToken)
+        {
+            return await Jobs.Where(x =>
+                    x.JobType == JobType.EarningsJob &&
+                    x.DcJobSucceeded == true &&
+                    (x.Status == JobStatus.Completed || x.Status == JobStatus.CompletedWithErrors) &&
+                    inProgressJobsUkprnList.Contains(x.Ukprn))
+                .Select(j => new
+                {
+                    j.Ukprn,
+                    AverageJobCompletionTime = EF.Functions.DateDiffMillisecond(j.StartTime, j.EndTime ?? DateTimeOffset.UtcNow)
+                })
+                .GroupBy(g => g.Ukprn)
+                .Select(x => new InProgressJobAverageJobCompletionTime
+                {
+                    Ukprn = x.Key.Value,
+                    AverageJobCompletionTime = x.Average(item => item.AverageJobCompletionTime) + (x.Average(item => item.AverageJobCompletionTime) * 0.20)
+                })
+                .ToListAsync(cancellationToken);
         }
     }
 }
