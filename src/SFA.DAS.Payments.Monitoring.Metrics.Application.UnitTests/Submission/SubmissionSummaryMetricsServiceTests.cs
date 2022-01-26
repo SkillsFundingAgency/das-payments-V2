@@ -137,7 +137,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             submissionMetricsRepository = new Mock<ISubmissionMetricsRepository>();
             submissionsSummary = new Mock<ISubmissionsSummary>();
             telemetry = new Mock<ITelemetry>();
-            sut = new SubmissionWindowValidationService(logger.Object, submissionMetricsRepository.Object, submissionsSummary.Object, telemetry.Object);
+            sut = new SubmissionWindowValidationService(logger.Object, submissionMetricsRepository.Object, TODO, submissionsSummary.Object, telemetry.Object);
 
             getSubmissionsSummaryMetricsResponse = new List<SubmissionSummaryModel>
             {

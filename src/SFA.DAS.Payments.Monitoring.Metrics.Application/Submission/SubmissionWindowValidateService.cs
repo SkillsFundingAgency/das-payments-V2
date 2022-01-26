@@ -13,21 +13,30 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
     public interface ISubmissionWindowValidationService
     {
         Task<SubmissionsSummaryModel> ValidateSubmissionWindow(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task EstimateSubmissionWindowMetrics();
     }
 
     public class SubmissionWindowValidationService : ISubmissionWindowValidationService
     {
         private readonly IPaymentLogger logger;
         private readonly ISubmissionMetricsRepository submissionMetricsRepository;
+        private readonly ISubmissionJobsRepository submissionJobsRepository;
         private readonly ISubmissionsSummary submissionsSummary;
         private readonly ITelemetry telemetry;
 
-        public SubmissionWindowValidationService(IPaymentLogger logger, ISubmissionMetricsRepository submissionMetricsRepository, ISubmissionsSummary submissionsSummary, ITelemetry telemetry)
+        public SubmissionWindowValidationService(IPaymentLogger logger, ISubmissionMetricsRepository submissionMetricsRepository, ISubmissionJobsRepository submissionJobsRepository, ISubmissionsSummary submissionsSummary, ITelemetry telemetry)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.submissionMetricsRepository = submissionMetricsRepository ?? throw new ArgumentNullException(nameof(submissionMetricsRepository));
+            this.submissionJobsRepository = submissionJobsRepository ?? throw new ArgumentNullException(nameof(submissionJobsRepository));
             this.submissionsSummary = submissionsSummary ?? throw new ArgumentNullException(nameof(submissionsSummary));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
+        }
+
+        public async Task EstimateSubmissionWindowMetrics()
+        {
+            var latestCollection = await submissionJobsRepository.GetLatestCollectionPeriod();
+            await ValidateSubmissionWindow(0, latestCollection.AcademicYear, latestCollection.CollectionPeriod, CancellationToken.None);
         }
 
         public async Task<SubmissionsSummaryModel> ValidateSubmissionWindow(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
