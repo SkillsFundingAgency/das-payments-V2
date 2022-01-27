@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         void AddPaymentsYearToDate(ProviderContractTypeAmounts paymentsYearToDate);
         void AddHeldBackCompletionPayments(ProviderContractTypeAmounts heldBackCompletionPayments);
         void AddInLearningCount(ProviderInLearningTotal inLearningTotal);
-        void AddNegativeEarnings(List<ProviderNegativeEarningsTotal> providerNegativeEarningsTotal);
+        void AddNegativeEarnings(NegativeEarningsContractTypeAmounts providerNegativeEarnings);
     }
 
     public class PeriodEndProviderSummary : IPeriodEndProviderSummary
@@ -132,8 +132,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 ContractType2 = contractTypes.FirstOrDefault(x => x.ContractType == ContractType.Act2)?.Amount ?? 0
             };
 
-            //result.ContractType1 += (negativeEarnings?.ContractType1 ?? 0m);
-            //result.ContractType2 += (negativeEarnings?.ContractType2 ?? 0m);
+            result.ContractType1 += (negativeEarnings?.ContractType1 ?? 0m);
+            result.ContractType2 += (negativeEarnings?.ContractType2 ?? 0m);
 
             return result;
         }
@@ -183,10 +183,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             inLearning = inLearningTotal.InLearningCount;
         }
 
-        public void AddNegativeEarnings(List<ProviderNegativeEarningsTotal> providerNegativeEarningsTotal)
+        public void AddNegativeEarnings(NegativeEarningsContractTypeAmounts providerNegativeEarnings)
         {
-            negativeEarnings.ContractType1 = providerNegativeEarningsTotal.FirstOrDefault(x => x.ContractType == ContractType.Act1)?.NegativeEarningsTotal ?? 0m;
-            negativeEarnings.ContractType2 = providerNegativeEarningsTotal.FirstOrDefault(x => x.ContractType == ContractType.Act2)?.NegativeEarningsTotal ?? 0m;
+            negativeEarnings = providerNegativeEarnings;
         }
     }
 }
