@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using SFA.DAS.Payments.Application.Infrastructure.Logging;
+﻿using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 {
@@ -31,8 +31,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             var context = dcMetricsDataContextFactory.CreateContext(academicYear);
 
             return await query(context);
-        } 
-
+        }
 
         public PeriodEndMetricsService(
             IPaymentLogger logger,
@@ -96,6 +95,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 var providersFromEarnings = dcEarningsTask.Result.Select(x => x.Ukprn).Distinct();
                 var distinctProviderUkprns = providersFromEarnings.Union(providersFromPayments);
 
+                var distinctUlnsWithNegativeEarnings = dcNegativeEarningsTask.Result.Select(x => x.Uln).Distinct().ToList();
+                var paymentAmountsForLearnersWithNegativeEarnings = await periodEndMetricsRepository.GetPaymentAmountsForLearnersByContractType(distinctUlnsWithNegativeEarnings, academicYear, cancellationToken);
+                var dataLockedAmountsForLearnersWithNegativeEarnings = await periodEndMetricsRepository.GetDataLockedAmountsForLearners(distinctUlnsWithNegativeEarnings, academicYear, collectionPeriod, cancellationToken);
+
                 var periodEndSummary = periodEndSummaryFactory.CreatePeriodEndSummary(jobId, collectionPeriod, academicYear);
 
                 foreach (var ukprn in distinctProviderUkprns)
@@ -111,7 +114,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                     providerSummary.AddDataLockedAlreadyPaid(dataLockedAlreadyPaidTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderFundingLineTypeAmounts());
                     providerSummary.AddHeldBackCompletionPayments(heldBackCompletionAmountsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderContractTypeAmounts());
                     providerSummary.AddInLearningCount(inLearningCountTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderInLearningTotal());
-                    providerSummary.AddNegativeEarnings(dcNegativeEarningsTask.Result.Where(x => x.Ukprn == ukprn).ToList());
+
+                    var providerLearnerNegativeEarnings = dcNegativeEarningsTask.Result.Where(x => x.Ukprn == ukprn).ToList();
+                    var providerLearnerPayments = paymentAmountsForLearnersWithNegativeEarnings.Where(x => x.Ukprn == ukprn).ToList();
+                    var providerLearnerDataLocks = dataLockedAmountsForLearnersWithNegativeEarnings.Where(x => x.Ukprn == ukprn).ToList();
+
+                    var negativeEarnings = CalculateNegativeEarningsForProvider(providerLearnerNegativeEarnings, providerLearnerPayments, providerLearnerDataLocks);
+
+                    providerSummary.AddNegativeEarnings(negativeEarnings);
 
                     var providerSummaryModel = providerSummary.GetMetrics();
 
@@ -187,7 +197,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 { "DifferenceContractType1", (double) providerMetrics.PaymentMetrics.DifferenceContractType1 },
                 { "DifferenceContractType2", (double) providerMetrics.PaymentMetrics.DifferenceContractType2 },
 
-
                 { "EarningsDCTotal", (double) providerMetrics.DcEarnings.Total },
                 { "EarningsDCContractType1", (double) providerMetrics.DcEarnings.ContractType1 },
                 { "EarningsDCContractType2", (double) providerMetrics.DcEarnings.ContractType2 },
@@ -229,7 +238,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 { "PaymentsYearToDateContractType1", (double) providerMetrics.YearToDatePayments.ContractType1 },
                 { "PaymentsYearToDateContractType2", (double) providerMetrics.YearToDatePayments.ContractType2 },
 
-
                 { "ContractType1FundingSourceTotal", (double) act1FundingSource.Sum(x => x.Total) },
                 { "ContractType1FundingSource1", (double) act1FundingSource.Sum(x => x.FundingSource1) },
                 { "ContractType1FundingSource2", (double) act1FundingSource.Sum(x => x.FundingSource2) },
@@ -243,7 +251,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 { "ContractType2FundingSource3", (double) act2FundingSource.Sum(x => x.FundingSource3) },
                 { "ContractType2FundingSource4", (double) act2FundingSource.Sum(x => x.FundingSource4) },
                 { "ContractType2FundingSource5", (double) act2FundingSource.Sum(x => x.FundingSource5) },
-
 
                 {"ContractType1TransactionTypeTotal", (double) act1TransactionTypes.Sum(x => x.TransactionTypeAmounts.Total)},
                 {"ContractType1TransactionType01", (double) act1TransactionTypes.Sum(x => x.TransactionTypeAmounts.TransactionType1)},
@@ -282,7 +289,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 {"ContractType2TransactionType16", (double) act2TransactionTypes.Sum(x => x.TransactionTypeAmounts.TransactionType16)},
 
                 { "InLearning", (double)providerMetrics.InLearning.GetValueOrDefault() }
-
             };
 
             telemetry.TrackEvent($"Finished Generating Period End Metrics for Provider: {providerMetrics.Ukprn}", properties, stats);
@@ -361,10 +367,48 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 { "PaymentsYearToDateContractType1", (double) metrics.YearToDatePayments.ContractType1 },
                 { "PaymentsYearToDateContractType2", (double) metrics.YearToDatePayments.ContractType2 },
                 { "InLearning", (double)metrics.InLearning.GetValueOrDefault() }
-
             };
 
             telemetry.TrackEvent("Finished Generating Period End Metrics", properties, stats);
+        }
+
+        private NegativeEarningsContractTypeAmounts CalculateNegativeEarningsForProvider(List<ProviderLearnerNegativeEarningsTotal> providerLearnerNegativeEarnings, List<ProviderLearnerContractTypeAmounts> providerLearnerPayments,
+            List<ProviderLearnerDataLockEarningsTotal> providerLearnerDataLocks)
+        {
+            var result = new NegativeEarningsContractTypeAmounts();
+
+            if (providerLearnerNegativeEarnings == null || providerLearnerNegativeEarnings.Count == 0) return result;
+
+            var distinctLearnerUlns = providerLearnerNegativeEarnings.Select(x => x.Uln).Distinct().ToList();
+
+            foreach (var uln in distinctLearnerUlns)
+            {
+                //if learner has payments, then do not add negative earnings to provider summary
+                var learnerPayments = providerLearnerPayments?.Where(x => x.LearnerUln == uln && x.Total > 0m).ToList();
+                if (learnerPayments != null) continue;
+
+                //if learner has data locks, then do not add negative earnings to provider summary
+                var learnerDataLocks = providerLearnerDataLocks?.Where(x => x.LearnerUln == uln).ToList();
+                if (learnerDataLocks != null) continue;
+
+                //add negative earnings to provider summary
+                var learnerNegativeEarnings = providerLearnerNegativeEarnings.Where(x => x.Uln == uln).ToList();
+                learnerNegativeEarnings.ForEach(x =>
+                {
+                    switch (x.ContractType)
+                    {
+                        case ContractType.Act1:
+                            result.ContractType1 += x.NegativeEarningsTotal;
+                            break;
+
+                        case ContractType.Act2:
+                            result.ContractType2 += x.NegativeEarningsTotal;
+                            break;
+                    }
+                });
+            }
+
+            return result;
         }
     }
 }
