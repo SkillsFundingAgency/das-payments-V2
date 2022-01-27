@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using SFA.DAS.Payments.Application.Data.Configurations;
+using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -28,7 +30,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         Task<List<PeriodEndProviderDataLockTypeCounts>> GetPeriodEndProviderDataLockCounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderFundingLineTypeAmounts>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderFundingLineTypeAmounts>> GetAlreadyPaidDataLockProviderTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
-        Task<List<ProviderLearnerDataLockEarningsTotal>> GetDataLockedEarningsForLearnersWithNegativeDcEarnings(IList<long> learnersWithNegativeDcEarnings, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<ProviderLearnerDataLockEarningsTotal>> GetDataLockedAmountsForLearners(List<long> learnerUlns, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken, IsolationLevel isolationLevel = IsolationLevel.Snapshot);
     }
@@ -321,13 +323,17 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             return await DataLockedEarningsTotals.FromSql(sql, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod)).ToListAsync(cancellationToken);
         }
 
-        public async Task<List<ProviderLearnerDataLockEarningsTotal>> GetDataLockedEarningsForLearnersWithNegativeDcEarnings(IList<long> learnersWithNegativeDcEarnings, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        public async Task<List<ProviderLearnerDataLockEarningsTotal>> GetDataLockedAmountsForLearners(List<long> learnerUlns, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
+            var results = new List<ProviderLearnerDataLockEarningsTotal>();
+            var batches = learnerUlns.SplitIntoBatchesOf(2000);
 
-            var sqlParameters = learnersWithNegativeDcEarnings.Select((item, index) => new SqlParameter($"@uln{index}", item)).ToList();
-            var sqlParamName = string.Join(", ", sqlParameters.Select(pn => pn.ParameterName));
+            foreach (var batch in batches)
+            {
+                var sqlParameters = batch.Select((item, index) => new SqlParameter($"@uln{index}", item)).ToList();
+                var sqlParamName = string.Join(", ", sqlParameters.Select(pn => pn.ParameterName));
 
-            var sql = $@"Select
+                var sql = $@"Select
 	                        dle.ukprn as Ukprn,
                             dle.LearnerUln,
 	                        SUM(npp.Amount) AS TotalAmount
@@ -339,14 +345,21 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 	                        and npp.Amount <> 0
                             and dle.LearnerUln in ({sqlParamName})
 	                    GROUP BY dle.Ukprn, dle.LearnerUln";
-            
-            var sqlQueryBuilder = new StringBuilder();
-            
-            var sqlQueryWithParameters = sqlQueryBuilder
-                .AppendFormat(sql, sqlParamName)
-                .ToString();
 
-            return await DataLockedEarningsForLearnersWithNegativeDcEarnings.FromSql(sqlQueryWithParameters, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod), sqlParameters).ToListAsync(cancellationToken);
+                var sqlQueryBuilder = new StringBuilder();
+
+                var sqlQueryWithParameters = sqlQueryBuilder
+                    .AppendFormat(sql, sqlParamName)
+                    .ToString();
+
+                var queryResult = await DataLockedEarningsForLearnersWithNegativeDcEarnings
+                    .FromSql(sqlQueryWithParameters, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod), sqlParameters)
+                    .ToListAsync(cancellationToken);
+
+                results.AddRange(queryResult);
+            }
+
+            return results;
         }
 
         public async Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken, IsolationLevel isolationLevel = IsolationLevel.Snapshot)
