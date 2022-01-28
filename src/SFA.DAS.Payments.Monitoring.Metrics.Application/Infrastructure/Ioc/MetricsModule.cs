@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Core.Configuration;
+using SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Metrics.Application.Submission;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
 
@@ -16,6 +17,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Ioc
 
             builder.RegisterType<SubmissionMetricsService>()
                 .As<ISubmissionMetricsService>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<NegativeEarningsService>()
+                .As<INegativeEarningsService>()
                 .InstancePerLifetimeScope();
 
             builder.Register((c, p) =>
