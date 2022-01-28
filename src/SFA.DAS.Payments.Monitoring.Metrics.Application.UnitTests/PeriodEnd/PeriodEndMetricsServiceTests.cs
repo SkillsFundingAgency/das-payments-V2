@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
         private Mock<IPeriodEndMetricsRepository> periodEndMetricsRepositoryMock;
         private Mock<ITelemetry> telemetryMock;
         private Mock<IPeriodEndSummaryFactory> periodEndSummaryFactory;
-        private List<ProviderNegativeEarningsTotal> dcNegativeEarningsResult;
+        private List<ProviderLearnerNegativeEarningsTotal> dcNegativeEarningsResult;
 
         private CollectionPeriodToleranceModel collectionPeriodTolerance;
 
@@ -44,7 +44,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             var random = new Random();
 
 
-            dcNegativeEarningsResult = fixture.CreateMany<ProviderNegativeEarningsTotal>(10).ToList();
+            dcNegativeEarningsResult = fixture.CreateMany<ProviderLearnerNegativeEarningsTotal>(10).ToList();
             dcNegativeEarningsResult.ForEach(x =>
             {
                 var randomInt = random.Next(0, 2);
@@ -536,7 +536,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
 
             public void AddHeldBackCompletionPayments(ProviderContractTypeAmounts heldBackCompletionPayments) { AddHeldBackCompletionPaymentsCalled = true; }
             public void AddInLearningCount(ProviderInLearningTotal inLearningTotal) { AddInLearningCountCalled = true; }
-            public void AddNegativeEarnings(List<ProviderNegativeEarningsTotal> providerNegativeEarningsTotal) { AddNegativeEarningsCalled = true; }
+            public void AddNegativeEarnings(NegativeEarningsContractTypeAmounts providerNegativeEarnings) { AddNegativeEarningsCalled = true; }
         }
     }
 }

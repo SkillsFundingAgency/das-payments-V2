@@ -66,21 +66,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
                 }
             };
 
-        public static List<ProviderNegativeEarningsTotal> GetDefaultDcNegativeEarnings => new List<ProviderNegativeEarningsTotal>
+        public static NegativeEarningsContractTypeAmounts GetDefaultDcNegativeEarnings => new NegativeEarningsContractTypeAmounts
         {
-            new ProviderNegativeEarningsTotal
-            {
-                ContractType = ContractType.Act1,
-                NegativeEarningsTotal = 0m,
-                Ukprn = DefaultPeriodEndProviderSummary.Ukprn
-            },
-            new ProviderNegativeEarningsTotal
-            {
-                ContractType = ContractType.Act2,
-                NegativeEarningsTotal = 0m,
-                Ukprn = DefaultPeriodEndProviderSummary.Ukprn
-            }
-
+            ContractType1 = 0m,
+            ContractType2 = 0m
         };
 
 

@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summary;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
 {
@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
     public class PeriodEndProviderSummaryTests
     {
         private List<TransactionTypeAmountsByContractType> defaultDcEarnings;
-        private List<ProviderNegativeEarningsTotal> defaultDcNegativeEarnings;
+        private NegativeEarningsContractTypeAmounts defaultDcNegativeEarnings;
         private List<TransactionTypeAmountsByContractType> paymentTransactionTypes;
         private List<ProviderFundingSourceAmounts> paymentFundingSources;
         private ProviderContractTypeAmounts heldBackAmounts;
@@ -30,7 +30,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             paymentFundingSources = TestHelper.GetPaymentFundingSourceAmounts;
             heldBackAmounts = TestHelper.DefaultHeldBackCompletionPayments;
             periodEndProviderDataLockTypeCounts = TestHelper.DefaultPeriodEndProviderDataLockTypeCounts;
-
         }
 
         private PeriodEndProviderSummary GetPopulatedPeriodEndProviderSummary()
@@ -51,7 +50,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
 
             return summary;
         }
-
 
         private ProviderPeriodEndSummaryModel GetSubmissionSummaryMetrics()
         {
@@ -107,7 +105,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             metrics.DcEarnings.ContractType2.Should().Be(57300);
             metrics.DcEarnings.Total.Should().Be(115600);
         }
-
 
         [Test]
         public void Calculates_Correct_HeldBack_Payments_Totals()
@@ -180,8 +177,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
         {
             var metrics = GetSubmissionSummaryMetrics();
             metrics.PaymentMetrics.ContractType1.Should().Be(
-                paymentTransactionTypes.GetTotal(ContractType.Act1) + 
-                TestsHelper.DefaultYearToDateAmounts.ContractType1 + 
+                paymentTransactionTypes.GetTotal(ContractType.Act1) +
+                TestsHelper.DefaultYearToDateAmounts.ContractType1 +
                 (TestsHelper.DefaultDataLockedTotal - TestsHelper.AlreadyPaidDataLockedEarnings) +
                 heldBackAmounts.ContractType1);
             metrics.PaymentMetrics.ContractType2.Should().Be(
@@ -189,18 +186,17 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
                 +TestsHelper.DefaultYearToDateAmounts.ContractType2 +
                 heldBackAmounts.ContractType2);
         }
-        
+
         [Test]
         public void Calculates_Correct_ContractType_Percentages()
         {
             var metrics = GetSubmissionSummaryMetrics();
             var precision = 0.01m;
             metrics.PaymentMetrics.PercentageContractType1.Should().BeApproximately(92.45m, precision);
-            metrics.PaymentMetrics.PercentageContractType2.Should().BeApproximately(87.08m, precision );
+            metrics.PaymentMetrics.PercentageContractType2.Should().BeApproximately(87.08m, precision);
             metrics.PaymentMetrics.Percentage.Should().BeApproximately(89.79m, precision);
         }
 
-        
         [Test]
         public void Calculates_Correct_Percentage()
         {
@@ -217,8 +213,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             var expectedAct2NegativeEarnings = 800m;
             var summary = GetPopulatedPeriodEndProviderSummary();
             var negativeEarnings = TestHelper.GetDefaultDcNegativeEarnings;
-            negativeEarnings.FirstOrDefault(x => x.ContractType == ContractType.Act1).NegativeEarningsTotal = expectedAct1NegativeEarnings;
-            negativeEarnings.FirstOrDefault(x => x.ContractType == ContractType.Act2).NegativeEarningsTotal = expectedAct2NegativeEarnings;
+            negativeEarnings.ContractType1 = expectedAct1NegativeEarnings;
+            negativeEarnings.ContractType2 = expectedAct2NegativeEarnings;
             summary.AddNegativeEarnings(negativeEarnings);
 
             //Act
@@ -251,7 +247,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             var dcEarningsAct1 = TestHelper.GetDefaultDcEarnings.Where(dc => dc.ContractType == ContractType.Act1).Sum(x => x.Total);
             var dcEarningsAct2 = TestHelper.GetDefaultDcEarnings.Where(dc => dc.ContractType == ContractType.Act2).Sum(x => x.Total);
 
-
             //Negative earnings previously lowered DC earnings.
             //To correct for this we add the previously removed earnings back.
             var expectedAct1DcEarningsTotal = dcEarningsAct1 + act1NegativeEarningsAmount;
@@ -259,8 +254,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
 
             var summary = GetPopulatedPeriodEndProviderSummary();
             var negativeEarnings = TestHelper.GetDefaultDcNegativeEarnings;
-            negativeEarnings.FirstOrDefault(x => x.ContractType == ContractType.Act1).NegativeEarningsTotal = act1NegativeEarningsAmount;
-            negativeEarnings.FirstOrDefault(x => x.ContractType == ContractType.Act2).NegativeEarningsTotal = act2NegativeEarningsAmount;
+            negativeEarnings.ContractType1 = act1NegativeEarningsAmount;
+            negativeEarnings.ContractType2 = act2NegativeEarningsAmount;
             summary.AddNegativeEarnings(negativeEarnings);
 
             //Act
@@ -278,14 +273,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             var dcEarningsAct1 = TestHelper.GetDefaultDcEarnings.Where(dc => dc.ContractType == ContractType.Act1).Sum(x => x.Total);
             var dcEarningsAct2 = TestHelper.GetDefaultDcEarnings.Where(dc => dc.ContractType == ContractType.Act2).Sum(x => x.Total);
 
-
             var summary = GetPopulatedPeriodEndProviderSummary();
 
             var negativeEarnings = TestHelper.GetDefaultDcNegativeEarnings;
-            
-            negativeEarnings.FirstOrDefault(x => x.ContractType == ContractType.Act1).NegativeEarningsTotal = act1NegativeEarningsAmount;
-            negativeEarnings.FirstOrDefault(x => x.ContractType == ContractType.Act2).NegativeEarningsTotal = act2NegativeEarningsAmount;
-            
+
+            negativeEarnings.ContractType1 = act1NegativeEarningsAmount;
+            negativeEarnings.ContractType2 = act2NegativeEarningsAmount;
+
             summary.AddNegativeEarnings(negativeEarnings);
 
             //Act
@@ -298,7 +292,5 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             result.NegativeEarnings.ContractType1.Should().Be(act1NegativeEarningsAmount);
             result.NegativeEarnings.ContractType2.Should().Be(act2NegativeEarningsAmount);
         }
-
-
     }
 }
