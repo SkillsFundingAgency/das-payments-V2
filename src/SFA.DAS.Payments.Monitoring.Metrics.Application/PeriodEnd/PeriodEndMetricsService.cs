@@ -59,9 +59,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 var dcEarningsTask = ExecuteDcMetricsQuery(academicYear, x => x.GetEarnings(academicYear, collectionPeriod, cancellationToken));
                 var dcNegativeEarningsTask = ExecuteDcMetricsQuery(academicYear, x => x.GetNegativeEarnings(academicYear, collectionPeriod, cancellationToken));
 
-                var transactionTypesTask = periodEndMetricsRepository.GetTransactionTypesByContractType(academicYear, collectionPeriod, cancellationToken);
+                var currentPaymentsTask = periodEndMetricsRepository.GetTransactionTypesByContractType(academicYear, collectionPeriod, cancellationToken);
                 var fundingSourceTask = periodEndMetricsRepository.GetFundingSourceAmountsByContractType(academicYear, collectionPeriod, cancellationToken);
-                var currentPaymentTotals = periodEndMetricsRepository.GetYearToDatePayments(academicYear, collectionPeriod, cancellationToken);
+                var yearToDatePaymentsTask = periodEndMetricsRepository.GetYearToDatePayments(academicYear, collectionPeriod, cancellationToken);
                 var dataLockedEarningsTask = periodEndMetricsRepository.GetDataLockedEarningsTotals(academicYear, collectionPeriod, cancellationToken);
                 var periodEndProviderDataLockTypeCountsTask = periodEndMetricsRepository.GetPeriodEndProviderDataLockTypeCounts(academicYear, collectionPeriod, cancellationToken);
                 var dataLockedAlreadyPaidTask = periodEndMetricsRepository.GetAlreadyPaidDataLockedEarnings(academicYear, collectionPeriod, cancellationToken);
@@ -71,9 +71,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 var dataTask = Task.WhenAll(
                     dcEarningsTask,
                     dcNegativeEarningsTask,
-                    transactionTypesTask,
+                    currentPaymentsTask,
                     fundingSourceTask,
-                    currentPaymentTotals,
+                    yearToDatePaymentsTask,
                     dataLockedEarningsTask,
                     periodEndProviderDataLockTypeCountsTask,
                     dataLockedAlreadyPaidTask,
@@ -91,7 +91,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 
                 var providerSummaries = new List<ProviderPeriodEndSummaryModel>();
 
-                var providersFromPayments = currentPaymentTotals.Result.Select(x => x.Ukprn).Distinct();
+                var providersFromPayments = yearToDatePaymentsTask.Result.Select(x => x.Ukprn).Distinct();
                 var providersFromEarnings = dcEarningsTask.Result.Select(x => x.Ukprn).Distinct();
                 var distinctProviderUkprns = providersFromEarnings.Union(providersFromPayments);
 
@@ -106,9 +106,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                     var providerSummary = periodEndSummaryFactory.CreatePeriodEndProviderSummary(ukprn, jobId, collectionPeriod, academicYear);
 
                     providerSummary.AddDcEarnings(dcEarningsTask.Result.Where(x => x.Ukprn == ukprn));
-                    providerSummary.AddTransactionTypes(transactionTypesTask.Result.Where(x => x.Ukprn == ukprn));
+                    providerSummary.AddTransactionTypes(currentPaymentsTask.Result.Where(x => x.Ukprn == ukprn));
                     providerSummary.AddFundingSourceAmounts(fundingSourceTask.Result.Where(x => x.Ukprn == ukprn));
-                    providerSummary.AddPaymentsYearToDate(currentPaymentTotals.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderContractTypeAmounts());
+                    providerSummary.AddPaymentsYearToDate(yearToDatePaymentsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderContractTypeAmounts());
                     providerSummary.AddDataLockedEarnings(dataLockedEarningsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderFundingLineTypeAmounts());
                     providerSummary.AddPeriodEndProviderDataLockTypeCounts(periodEndProviderDataLockTypeCountsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new PeriodEndProviderDataLockTypeCounts());
                     providerSummary.AddDataLockedAlreadyPaid(dataLockedAlreadyPaidTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderFundingLineTypeAmounts());
