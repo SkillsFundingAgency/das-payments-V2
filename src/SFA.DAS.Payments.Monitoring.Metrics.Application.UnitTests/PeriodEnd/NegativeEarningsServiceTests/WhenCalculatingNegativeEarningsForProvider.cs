@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using AutoFixture;
+﻿using AutoFixture;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd.NegativeEarningsServiceTests
 {
@@ -134,7 +134,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd.Ne
             //Arrange
             var ulnUnderTest = providerLearnerNegativeEarnings.First().Uln;
             var remainingUlns = providerLearnerNegativeEarnings.Where(x => x.Uln != ulnUnderTest).ToList();
-            
+
             remainingUlns.ForEach(x =>
             {
                 AddDataLockForLearner(x.Uln);
@@ -166,7 +166,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd.Ne
             //Arrange
             var ulnsUnderTest = providerLearnerNegativeEarnings.Take(2).Select(x => x.Uln);
             var remainingUlns = providerLearnerNegativeEarnings.Where(x => !ulnsUnderTest.Contains(x.Uln)).ToList();
-            
+
             remainingUlns.ForEach(x =>
             {
                 AddDataLockForLearner(x.Uln);
