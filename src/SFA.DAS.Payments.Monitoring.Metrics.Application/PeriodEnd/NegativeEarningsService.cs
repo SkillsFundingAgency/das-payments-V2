@@ -28,11 +28,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             {
                 //if learner has payments, then do not add negative earnings to provider summary
                 var learnerPayments = providerLearnerPayments?.Where(x => x.LearnerUln == uln && x.Total > 0m).ToList();
-                if (learnerPayments != null) continue;
+                if (learnerPayments != null && learnerPayments.Count != 0) continue;
 
                 //if learner has data locks, then do not add negative earnings to provider summary
                 var learnerDataLocks = providerLearnerDataLocks?.Where(x => x.LearnerUln == uln).ToList();
-                if (learnerDataLocks != null) continue;
+                if (learnerDataLocks != null && learnerDataLocks.Count != 0) continue;
 
                 //add negative earnings to provider summary
                 var learnerNegativeEarnings = providerLearnerNegativeEarnings.Where(x => x.Uln == uln).ToList();
@@ -41,11 +41,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                     switch (x.ContractType)
                     {
                         case ContractType.Act1:
-                            result.ContractType1 += x.NegativeEarningsTotal;
+                            result.ContractType1 = result.ContractType1.GetValueOrDefault() + x.NegativeEarningsTotal;
                             break;
 
                         case ContractType.Act2:
-                            result.ContractType2 += x.NegativeEarningsTotal;
+                            result.ContractType2 = result.ContractType2.GetValueOrDefault() + x.NegativeEarningsTotal;
                             break;
                     }
                 });
