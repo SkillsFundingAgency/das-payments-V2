@@ -19,10 +19,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Ioc
                 .As<ISubmissionMetricsService>()
                 .InstancePerLifetimeScope();
 
-            builder.RegisterType<NegativeEarningsService>()
-                .As<INegativeEarningsService>()
-                .InstancePerLifetimeScope();
-
             builder.Register((c, p) =>
             {
                 var configHelper = c.Resolve<IConfigurationHelper>();

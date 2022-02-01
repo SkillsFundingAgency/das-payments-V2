@@ -66,12 +66,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
                 }
             };
 
-        public static NegativeEarningsContractTypeAmounts GetDefaultDcNegativeEarnings => new NegativeEarningsContractTypeAmounts
-        {
-            ContractType1 = 0m,
-            ContractType2 = 0m
-        };
-
+        public static List<ProviderLearnerNegativeEarningsTotal> DefaultProviderLearnerNegativeEarnings() => new List<ProviderLearnerNegativeEarningsTotal>();
+        public static List<ProviderLearnerContractTypeAmounts> DefaultLearnerPayments() => new List<ProviderLearnerContractTypeAmounts>();
+        public static List<ProviderLearnerDataLockEarningsTotal> DefaultLearnerDataLockedEarnings() => new List<ProviderLearnerDataLockEarningsTotal>();
 
         public static ProviderContractTypeAmounts DefaultHeldBackCompletionPayments => new ProviderContractTypeAmounts
         { Ukprn = DefaultPeriodEndProviderSummary.Ukprn, ContractType1 = 2000, ContractType2 = 1000 };

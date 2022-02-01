@@ -24,7 +24,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
         private readonly IPeriodEndSummaryFactory periodEndSummaryFactory;
         private readonly IDcMetricsDataContextFactory dcMetricsDataContextFactory;
         private readonly IPeriodEndMetricsRepository periodEndMetricsRepository;
-        private readonly INegativeEarningsService negativeEarningsService;
         private readonly ITelemetry telemetry;
 
         private async Task<T> ExecuteDcMetricsQuery<T>(short academicYear, Func<IDcMetricsDataContext, Task<T>> query)
@@ -39,8 +38,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             IPeriodEndSummaryFactory periodEndSummaryFactory,
             IDcMetricsDataContextFactory dcMetricsDataContextFactory,
             IPeriodEndMetricsRepository periodEndMetricsRepository,
-            ITelemetry telemetry,
-            INegativeEarningsService negativeEarningsService
+            ITelemetry telemetry
         )
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -48,7 +46,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             this.dcMetricsDataContextFactory = dcMetricsDataContextFactory ?? throw new ArgumentNullException(nameof(dcMetricsDataContextFactory));
             this.periodEndMetricsRepository = periodEndMetricsRepository ?? throw new ArgumentNullException(nameof(periodEndMetricsRepository));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
-            this.negativeEarningsService = negativeEarningsService ?? throw new ArgumentNullException(nameof(negativeEarningsService));
         }
 
         public async Task<PeriodEndSummaryModel> BuildMetrics(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
@@ -99,8 +96,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 var distinctProviderUkprns = providersFromEarnings.Union(providersFromPayments);
 
                 var distinctUlnsWithNegativeEarnings = dcNegativeEarningsTask.Result.Select(x => x.Uln).Distinct().ToList();
-                var paymentAmountsForLearnersWithNegativeEarnings = await periodEndMetricsRepository.GetPaymentAmountsForLearnersByContractType(distinctUlnsWithNegativeEarnings, academicYear, cancellationToken);
-                var dataLockedAmountsForLearnersWithNegativeEarnings = await periodEndMetricsRepository.GetDataLockedAmountsForLearners(distinctUlnsWithNegativeEarnings, academicYear, collectionPeriod, cancellationToken);
+                var paymentAmountsForLearnersWithNegativeEarningsTask = periodEndMetricsRepository.GetPaymentAmountsForLearnersByContractType(distinctUlnsWithNegativeEarnings, academicYear, cancellationToken);
+                var dataLockedAmountsForLearnersWithNegativeEarningsTask = periodEndMetricsRepository.GetDataLockedAmountsForLearners(distinctUlnsWithNegativeEarnings, academicYear, collectionPeriod, cancellationToken);
+
+                await Task.WhenAll(paymentAmountsForLearnersWithNegativeEarningsTask, dataLockedAmountsForLearnersWithNegativeEarningsTask);
 
                 var periodEndSummary = periodEndSummaryFactory.CreatePeriodEndSummary(jobId, collectionPeriod, academicYear);
 
@@ -117,14 +116,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                     providerSummary.AddDataLockedAlreadyPaid(dataLockedAlreadyPaidTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderFundingLineTypeAmounts());
                     providerSummary.AddHeldBackCompletionPayments(heldBackCompletionAmountsTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderContractTypeAmounts());
                     providerSummary.AddInLearningCount(inLearningCountTask.Result.FirstOrDefault(x => x.Ukprn == ukprn) ?? new ProviderInLearningTotal());
-
-                    var providerLearnerNegativeEarnings = dcNegativeEarningsTask.Result.Where(x => x.Ukprn == ukprn).ToList();
-                    var providerLearnerPayments = paymentAmountsForLearnersWithNegativeEarnings.Where(x => x.Ukprn == ukprn).ToList();
-                    var providerLearnerDataLocks = dataLockedAmountsForLearnersWithNegativeEarnings.Where(x => x.Ukprn == ukprn).ToList();
-
-                    var negativeEarnings = negativeEarningsService.CalculateNegativeEarningsForProvider(providerLearnerNegativeEarnings, providerLearnerPayments, providerLearnerDataLocks);
-
-                    providerSummary.AddNegativeEarnings(negativeEarnings);
+                    providerSummary.AddLearnerNegativeEarnings(dcNegativeEarningsTask.Result.Where(x => x.Ukprn == ukprn).ToList());
+                    providerSummary.AddLearnerPayments(paymentAmountsForLearnersWithNegativeEarningsTask.Result.Where(x => x.Ukprn == ukprn).ToList());
+                    providerSummary.AddLearnerDataLockedEarnings(dataLockedAmountsForLearnersWithNegativeEarningsTask.Result.Where(x => x.Ukprn == ukprn).ToList());
 
                     var providerSummaryModel = providerSummary.GetMetrics();
 

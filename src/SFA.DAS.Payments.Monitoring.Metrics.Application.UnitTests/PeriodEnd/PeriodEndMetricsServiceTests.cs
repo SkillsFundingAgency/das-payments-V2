@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Remotion.Linq.Utilities;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
 {
@@ -225,7 +226,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             periodEndSummary.AddHeldBackCompletionPaymentsCalled.Should().BeTrue();
             periodEndSummary.AddPeriodEndProviderDataLockTypeCountsCalled.Should().BeTrue();
             periodEndSummary.AddInLearningCountCalled.Should().BeTrue();
-            periodEndSummary.AddNegativeEarningsCalled.Should().BeTrue();
+            periodEndSummary.AddLearnerNegativeEarningsCalled.Should().BeTrue();
+            periodEndSummary.AddLearnerPaymentsCalled.Should().BeTrue();
+            periodEndSummary.AddLearnerDataLockedEarningsCalled.Should().BeTrue();
         }
 
         [Test]
@@ -528,7 +531,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             public bool AddPaymentsYearToDateCalled { get; private set; }
             public bool AddHeldBackCompletionPaymentsCalled { get; private set; }
             public bool AddInLearningCountCalled { get; private set; }
-            public bool AddNegativeEarningsCalled { get; private set; }
+            public bool AddLearnerNegativeEarningsCalled { get; private set; }
+            public bool AddLearnerPaymentsCalled { get; private set; }
+            public bool AddLearnerDataLockedEarningsCalled { get; private set; }
 
             public ProviderPeriodEndSummaryModel GetMetrics()
             {
@@ -552,6 +557,21 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
                 AddPeriodEndProviderDataLockTypeCountsCalled = true;
             }
 
+            public void AddLearnerNegativeEarnings(List<ProviderLearnerNegativeEarningsTotal> negativeLearnerEarnings)
+            {
+                AddLearnerNegativeEarningsCalled = true;
+            }
+
+            public void AddLearnerPayments(List<ProviderLearnerContractTypeAmounts> learnerPayments)
+            {
+                AddLearnerPaymentsCalled = true;
+            }
+
+            public void AddLearnerDataLockedEarnings(List<ProviderLearnerDataLockEarningsTotal> learnerDataLocks)
+            {
+                AddLearnerDataLockedEarningsCalled = true;
+            }
+
             public void AddDataLockedAlreadyPaid(ProviderFundingLineTypeAmounts dataLockedAlreadyPaidTotal)
             { AddDataLockedAlreadyPaidCalled = true; }
 
@@ -563,9 +583,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
 
             public void AddInLearningCount(ProviderInLearningTotal inLearningTotal)
             { AddInLearningCountCalled = true; }
-
-            public void AddNegativeEarnings(NegativeEarningsContractTypeAmounts providerNegativeEarnings)
-            { AddNegativeEarningsCalled = true; }
         }
     }
 }
