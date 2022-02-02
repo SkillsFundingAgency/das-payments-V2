@@ -328,13 +328,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             var results = new List<ProviderLearnerDataLockEarningsTotal>();
             var batches = learnerUlns.SplitIntoBatchesOf(2000);
 
-            foreach (var batch in batches)
-            {
-                var sqlParameters = batch.Select((item, index) => new SqlParameter($"@uln{index}", item)).ToList();
-                var sqlParamName = string.Join(", ", sqlParameters.Select(pn => pn.ParameterName));
-
-                var sql = $@"Select
-	                        dle.ukprn as Ukprn,
+            var sql = @"Select dle.ukprn as Ukprn,
                             dle.LearnerUln,
 	                        SUM(npp.Amount) AS TotalAmount
                         from Payments2.dataLockEventNonPayablePeriod npp
@@ -343,17 +337,21 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                         where 		
 	                        dle.jobId in (select DcJobid from Payments2.LatestSuccessfulJobs Where AcademicYear = @academicYear AND CollectionPeriod = @collectionPeriod)
 	                        and npp.Amount <> 0
-                            and dle.LearnerUln in ({sqlParamName})
+                            and dle.LearnerUln in ({0})
 	                    GROUP BY dle.Ukprn, dle.LearnerUln";
 
-                var sqlQueryBuilder = new StringBuilder();
+            foreach (var batch in batches)
+            {
+                var sqlParameters = batch.Select((item, index) => new SqlParameter($"@uln{index}", item)).ToList();
+                var sqlParamName = string.Join(", ", sqlParameters.Select(pn => pn.ParameterName));
 
-                var sqlQueryWithParameters = sqlQueryBuilder
-                    .AppendFormat(sql, sqlParamName)
-                    .ToString();
+                sqlParameters.Add(new SqlParameter("@academicYear", academicYear));
+                sqlParameters.Add(new SqlParameter("@collectionPeriod", collectionPeriod));
+
+                var batchSqlQuery = string.Format(sql, sqlParamName);
 
                 var queryResult = await DataLockedEarningsForLearnersWithNegativeDcEarnings
-                    .FromSql(sqlQueryWithParameters, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod), sqlParameters)
+                    .FromSql(batchSqlQuery, sqlParameters.ToArray())
                     .ToListAsync(cancellationToken);
 
                 results.AddRange(queryResult);

@@ -105,13 +105,20 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                     var amounts = await QueryDataContext.Payments
                         .AsNoTracking()
                         .Where(p => p.CollectionPeriod.AcademicYear == academicYear && batch.Contains(p.LearnerUln))
-                        .GroupBy(p => new { p.Ukprn, p.LearnerUln, p.ContractType })
-                        .Select(g => new ProviderLearnerContractTypeAmounts
+                        .Select(x => new
                         {
-                            Ukprn = g.Key.Ukprn,
-                            LearnerUln = g.Key.LearnerUln,
-                            ContractType1 = g.Sum(p => g.Key.ContractType == ContractType.Act1 ? p.Amount : 0),
-                            ContractType2 = g.Sum(p => g.Key.ContractType == ContractType.Act2 ? p.Amount : 0)
+                            x.Ukprn,
+                            x.LearnerUln,
+                            ContractType1 = x.ContractType == ContractType.Act1 ? x.Amount : 0,
+                            ContractType2 = x.ContractType == ContractType.Act2 ? x.Amount : 0,
+                        })
+                        .GroupBy(groupBy => new { groupBy.Ukprn, groupBy.LearnerUln})
+                        .Select(select => new ProviderLearnerContractTypeAmounts
+                        {
+                            Ukprn = select.Key.Ukprn,
+                            LearnerUln = select.Key.LearnerUln,
+                            ContractType1 = select.Sum(x => x.ContractType1),
+                            ContractType2 = select.Sum(x => x.ContractType2)
                         })
                         .ToListAsync(cancellationToken)
                         .ConfigureAwait(false);
