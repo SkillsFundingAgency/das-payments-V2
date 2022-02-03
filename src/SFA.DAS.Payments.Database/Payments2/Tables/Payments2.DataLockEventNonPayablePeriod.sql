@@ -23,8 +23,3 @@ CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriod__TransactionType] ON
 INCLUDE ([DataLockEventId], [DataLockEventNonPayablePeriodId])
 WITH (ONLINE = ON)
 GO;
-
-CREATE NONCLUSTERED INDEX [DataLockEventNonPayablePeriod_MatchedLearner_Import] ON [Payments2].[DataLockEventNonPayablePeriod] ([PriceEpisodeIdentifier],[TransactionType],[Amount])
-INCLUDE ([DataLockEventId],[DataLockEventNonPayablePeriodId],[DeliveryPeriod],[SfaContributionPercentage],[LearningStartDate])
-WITH (ONLINE = ON)
-GO;
