@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
     {
         Task<List<TransactionTypeAmounts>> GetEarnings(long ukprn, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderTransactionTypeAmounts>> GetEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
-        Task<List<ProviderLearnerNegativeEarningsTotal>> GetNegativeEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<ProviderNegativeEarningsLearnerDcEarningAmounts>> GetNegativeEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
     }
 
     public class DcMetricsDataContext : DbContext, IDcMetricsDataContext
@@ -248,7 +248,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         public DbQuery<TransactionTypeAmounts> Earnings { get; set; }
 
         public DbQuery<ProviderTransactionTypeAmounts> AllProviderEarnings { get; set; }
-        public DbQuery<ProviderLearnerNegativeEarningsTotal> AllNegativeEarnings { get; set; }
+        public DbQuery<ProviderNegativeEarningsLearnerDcEarningAmounts> AllNegativeEarnings { get; set; }
 
         public async Task<List<TransactionTypeAmounts>> GetEarnings(long ukprn, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
@@ -266,7 +266,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             }
         }
 
-        public async Task<List<ProviderLearnerNegativeEarningsTotal>> GetNegativeEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        public async Task<List<ProviderNegativeEarningsLearnerDcEarningAmounts>> GetNegativeEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
             using (await BeginTransaction(cancellationToken))
             {

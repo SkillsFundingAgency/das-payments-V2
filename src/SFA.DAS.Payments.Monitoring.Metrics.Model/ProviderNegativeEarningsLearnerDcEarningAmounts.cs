@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Model
 {
-    public class ProviderLearnerNegativeEarningsTotal
+    public class ProviderNegativeEarningsLearnerDcEarningAmounts
     {
         public long Ukprn { get; set; }
         public long Uln { get; set; }

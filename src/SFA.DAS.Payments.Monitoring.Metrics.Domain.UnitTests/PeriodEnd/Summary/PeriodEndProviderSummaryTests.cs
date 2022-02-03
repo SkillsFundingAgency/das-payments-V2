@@ -20,9 +20,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
         private List<TransactionTypeAmountsByContractType> defaultDcEarnings;
         private List<TransactionTypeAmountsByContractType> paymentTransactionTypes;
         private List<ProviderFundingSourceAmounts> paymentFundingSources;
-        private List<ProviderLearnerNegativeEarningsTotal> providerLearnerNegativeEarnings;
-        private List<ProviderLearnerContractTypeAmounts> providerLearnerPayments;
-        private List<ProviderLearnerDataLockEarningsTotal> providerLearnerDataLocks;
+        private List<ProviderNegativeEarningsLearnerDcEarningAmounts> providerLearnerNegativeEarnings;
+        private List<ProviderNegativeEarningsLearnerContractTypeAmounts> providerLearnerPayments;
+        private List<ProviderNegativeEarningsLearnerDataLockAmounts> providerLearnerDataLocks;
         private ProviderContractTypeAmounts heldBackAmounts;
         private PeriodEndProviderDataLockTypeCounts periodEndProviderDataLockTypeCounts;
         protected PeriodEndProviderSummary GetPeriodEndProviderSummary => TestHelper.DefaultPeriodEndProviderSummary;
@@ -374,7 +374,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
         
         private void AddDataLockForLearner(long uln)
         {
-            var dataLock = fixture.Create<ProviderLearnerDataLockEarningsTotal>();
+            var dataLock = fixture.Create<ProviderNegativeEarningsLearnerDataLockAmounts>();
             dataLock.LearnerUln = uln;
             dataLock.Ukprn = TestHelper.DefaultPeriodEndProviderSummary.Ukprn;
             providerLearnerDataLocks.Add(dataLock);
@@ -382,15 +382,15 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
 
         private void AddPaymentForLearner(long uln)
         {
-            var payment = fixture.Create<ProviderLearnerContractTypeAmounts>();
+            var payment = fixture.Create<ProviderNegativeEarningsLearnerContractTypeAmounts>();
             payment.LearnerUln = uln;
             payment.Ukprn = TestHelper.DefaultPeriodEndProviderSummary.Ukprn;
             providerLearnerPayments.Add(payment);
         }
 
-        private List<ProviderLearnerNegativeEarningsTotal> CreateLearnerNegativeEarnings()
+        private List<ProviderNegativeEarningsLearnerDcEarningAmounts> CreateLearnerNegativeEarnings()
         {
-            var providerLearnerNegativeEarnings = fixture.CreateMany<ProviderLearnerNegativeEarningsTotal>(5).ToList();
+            var providerLearnerNegativeEarnings = fixture.CreateMany<ProviderNegativeEarningsLearnerDcEarningAmounts>(5).ToList();
             providerLearnerNegativeEarnings.ForEach(x =>
             {
                 x.Ukprn = TestHelper.DefaultPeriodEndProviderSummary.Ukprn;

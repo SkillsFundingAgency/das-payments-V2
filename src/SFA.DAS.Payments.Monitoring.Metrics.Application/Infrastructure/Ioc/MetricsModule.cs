@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Core.Configuration;
-using SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Metrics.Application.Submission;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
 

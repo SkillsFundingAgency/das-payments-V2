@@ -9,17 +9,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.Core;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
 {
     public interface IPeriodEndMetricsRepository
     {
         Task<List<ProviderTransactionTypeAmounts>> GetTransactionTypesByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
-        Task<List<ProviderLearnerContractTypeAmounts>> GetPaymentAmountsForLearnersByContractType(List<long> learnerUlns, short academicYear, CancellationToken cancellationToken);
+        Task<List<ProviderNegativeEarningsLearnerContractTypeAmounts>> GetPaymentAmountsForNegativeEarningsLearnersByContractType(List<long> learnerUlns, short academicYear, CancellationToken cancellationToken);
         Task<List<ProviderFundingSourceAmounts>> GetFundingSourceAmountsByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderFundingLineTypeAmounts>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
-        Task<List<ProviderLearnerDataLockEarningsTotal>> GetDataLockedAmountsForLearners(List<long> learnerUlns, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<ProviderNegativeEarningsLearnerDataLockAmounts>> GetDataLockedAmountsForForNegativeEarningsLearners(List<long> learnerUlns, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<PeriodEndProviderDataLockTypeCounts>> GetPeriodEndProviderDataLockTypeCounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderFundingLineTypeAmounts>> GetAlreadyPaidDataLockedEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
@@ -90,13 +89,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             }
         }
 
-        public async Task<List<ProviderLearnerContractTypeAmounts>> GetPaymentAmountsForLearnersByContractType(List<long> learnerUlns, short academicYear, CancellationToken cancellationToken)
+        public async Task<List<ProviderNegativeEarningsLearnerContractTypeAmounts>> GetPaymentAmountsForNegativeEarningsLearnersByContractType(List<long> learnerUlns, short academicYear, CancellationToken cancellationToken)
         {
             logger.LogDebug($"Getting payment amounts for Learners by ContractType for {academicYear}");
 
             var batches = learnerUlns.SplitIntoBatchesOf(2000);
 
-            var providerLearnerContractTypeAmounts = new List<ProviderLearnerContractTypeAmounts>();
+            var providerLearnerContractTypeAmounts = new List<ProviderNegativeEarningsLearnerContractTypeAmounts>();
 
             foreach (var batch in batches)
             {
@@ -113,7 +112,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                             ContractType2 = x.ContractType == ContractType.Act2 ? x.Amount : 0,
                         })
                         .GroupBy(groupBy => new { groupBy.Ukprn, groupBy.LearnerUln})
-                        .Select(select => new ProviderLearnerContractTypeAmounts
+                        .Select(select => new ProviderNegativeEarningsLearnerContractTypeAmounts
                         {
                             Ukprn = select.Key.Ukprn,
                             LearnerUln = select.Key.LearnerUln,
@@ -173,12 +172,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             }
         }
 
-        public async Task<List<ProviderLearnerDataLockEarningsTotal>> GetDataLockedAmountsForLearners(List<long> learnerUlns, short academicYear, byte collectionPeriod,
+        public async Task<List<ProviderNegativeEarningsLearnerDataLockAmounts>> GetDataLockedAmountsForForNegativeEarningsLearners(List<long> learnerUlns, short academicYear, byte collectionPeriod,
             CancellationToken cancellationToken)
         {
             using (await QueryDataContext.BeginTransaction(cancellationToken))
             {
-                return await QueryDataContext.GetDataLockedAmountsForLearners(learnerUlns, academicYear, collectionPeriod, cancellationToken);
+                return await QueryDataContext.GetDataLockedAmountsForForNegativeEarningsLearners(learnerUlns, academicYear, collectionPeriod, cancellationToken);
             }
         }
 

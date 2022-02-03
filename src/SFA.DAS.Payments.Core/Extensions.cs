@@ -82,13 +82,6 @@ namespace SFA.DAS.Payments.Core
             }
             return period;
         }
-
-        public static List<List<T>> SplitIntoBatchesOf<T>(this List<T> items, int batchSize) => 
-            items
-            .Select((x, i) => new { Index = i, Value = x })
-            .GroupBy(x => x.Index / batchSize)
-            .Select(x => x.Select(v => v.Value).ToList())
-            .ToList();
     }
 }
 

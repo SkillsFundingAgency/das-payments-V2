@@ -96,8 +96,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 var distinctProviderUkprns = providersFromEarnings.Union(providersFromPayments);
 
                 var distinctUlnsWithNegativeEarnings = dcNegativeEarningsTask.Result.Select(x => x.Uln).Distinct().ToList();
-                var paymentAmountsForLearnersWithNegativeEarningsTask = periodEndMetricsRepository.GetPaymentAmountsForLearnersByContractType(distinctUlnsWithNegativeEarnings, academicYear, cancellationToken);
-                var dataLockedAmountsForLearnersWithNegativeEarningsTask = periodEndMetricsRepository.GetDataLockedAmountsForLearners(distinctUlnsWithNegativeEarnings, academicYear, collectionPeriod, cancellationToken);
+                var paymentAmountsForLearnersWithNegativeEarningsTask = periodEndMetricsRepository.GetPaymentAmountsForNegativeEarningsLearnersByContractType(distinctUlnsWithNegativeEarnings, academicYear, cancellationToken);
+                var dataLockedAmountsForLearnersWithNegativeEarningsTask = periodEndMetricsRepository.GetDataLockedAmountsForForNegativeEarningsLearners(distinctUlnsWithNegativeEarnings, academicYear, collectionPeriod, cancellationToken);
 
                 await Task.WhenAll(paymentAmountsForLearnersWithNegativeEarningsTask, dataLockedAmountsForLearnersWithNegativeEarningsTask);
 

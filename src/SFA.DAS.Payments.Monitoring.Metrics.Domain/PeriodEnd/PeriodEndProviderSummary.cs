@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using SFA.DAS.Payments.Model.Core.Entities;
+﻿using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
 {
@@ -14,9 +14,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         void AddFundingSourceAmounts(IEnumerable<ProviderFundingSourceAmounts> fundingSourceAmounts);
         void AddDataLockedEarnings(ProviderFundingLineTypeAmounts dataLockedEarningsTotal);
         void AddPeriodEndProviderDataLockTypeCounts(PeriodEndProviderDataLockTypeCounts periodEndProviderDataLockTypeCounts);
-        void AddLearnerNegativeEarnings(List<ProviderLearnerNegativeEarningsTotal> negativeLearnerEarnings);
-        void AddLearnerPayments(List<ProviderLearnerContractTypeAmounts> learnerPayments);
-        void AddLearnerDataLockedEarnings(List<ProviderLearnerDataLockEarningsTotal> learnerDataLocks);
+        void AddLearnerNegativeEarnings(List<ProviderNegativeEarningsLearnerDcEarningAmounts> negativeLearnerEarnings);
+        void AddLearnerPayments(List<ProviderNegativeEarningsLearnerContractTypeAmounts> learnerPayments);
+        void AddLearnerDataLockedEarnings(List<ProviderNegativeEarningsLearnerDataLockAmounts> learnerDataLocks);
         void AddDataLockedAlreadyPaid(ProviderFundingLineTypeAmounts dataLockedAlreadyPaidTotal);
         void AddPaymentsYearToDate(ProviderContractTypeAmounts paymentsYearToDate);
         void AddHeldBackCompletionPayments(ProviderContractTypeAmounts heldBackCompletionPayments);
@@ -29,9 +29,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         public long JobId { get; }
         public byte CollectionPeriod { get; }
         public short AcademicYear { get; }
-        private List<ProviderLearnerNegativeEarningsTotal> providerLearnerNegativeDcEarnings;
-        private List<ProviderLearnerContractTypeAmounts> providerLearnerPayments;
-        private List<ProviderLearnerDataLockEarningsTotal> providerLearnerDataLockedEarnings;
+        private List<ProviderNegativeEarningsLearnerDcEarningAmounts> providerLearnerNegativeDcEarnings;
+        private List<ProviderNegativeEarningsLearnerContractTypeAmounts> providerLearnerPayments;
+        private List<ProviderNegativeEarningsLearnerDataLockAmounts> providerLearnerDataLockedEarnings;
         private List<TransactionTypeAmountsByContractType> providerDcEarnings;
         private List<TransactionTypeAmountsByContractType> providerTransactionsTypes;
         private List<ProviderFundingSourceAmounts> providerFundingSourceAmounts;
@@ -170,17 +170,17 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             this.periodEndProviderDataLockTypeCounts = providerDataLockTypeCounts;
         }
 
-        public void AddLearnerNegativeEarnings(List<ProviderLearnerNegativeEarningsTotal> negativeLearnerEarnings)
+        public void AddLearnerNegativeEarnings(List<ProviderNegativeEarningsLearnerDcEarningAmounts> negativeLearnerEarnings)
         {
             providerLearnerNegativeDcEarnings = negativeLearnerEarnings;
         }
 
-        public void AddLearnerPayments(List<ProviderLearnerContractTypeAmounts> learnerPayments)
+        public void AddLearnerPayments(List<ProviderNegativeEarningsLearnerContractTypeAmounts> learnerPayments)
         {
             providerLearnerPayments = learnerPayments;
         }
 
-        public void AddLearnerDataLockedEarnings(List<ProviderLearnerDataLockEarningsTotal> learnerDataLocks)
+        public void AddLearnerDataLockedEarnings(List<ProviderNegativeEarningsLearnerDataLockAmounts> learnerDataLocks)
         {
             providerLearnerDataLockedEarnings = learnerDataLocks;
         }
@@ -216,11 +216,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             foreach (var uln in distinctLearnerUlns)
             {
                 //if learner has payments, then do not add negative earnings to provider summary
-                var learnerPayments = providerLearnerPayments?.Where(x => x.LearnerUln == uln && x.Total > 0m).ToList();
+                var learnerPayments = providerLearnerPayments?.Where(x => x.LearnerUln == uln && x.Total != 0m).ToList();
                 if (learnerPayments != null && learnerPayments.Count != 0) continue;
 
                 //if learner has data locks, then do not add negative earnings to provider summary
-                var learnerDataLocks = providerLearnerDataLockedEarnings?.Where(x => x.LearnerUln == uln).ToList();
+                var learnerDataLocks = providerLearnerDataLockedEarnings?.Where(x => x.LearnerUln == uln && x.TotalAmount != 0m).ToList();
                 if (learnerDataLocks != null && learnerDataLocks.Count != 0) continue;
 
                 //add negative earnings to provider summary
@@ -241,5 +241,4 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             }
         }
     }
-
 }

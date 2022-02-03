@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Payments.Monitoring.Metrics.Model
 {
-    public class ProviderLearnerContractTypeAmounts : ProviderContractTypeAmounts
+    public class ProviderNegativeEarningsLearnerContractTypeAmounts : ProviderContractTypeAmounts
     {
         public long LearnerUln { get; set; }
     }
