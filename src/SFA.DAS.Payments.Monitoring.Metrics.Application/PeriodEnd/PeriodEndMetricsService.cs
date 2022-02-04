@@ -89,18 +89,22 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 if (!dataTask.IsCompleted)
                     throw new InvalidOperationException($"Took too long to get data for the period end metrics. job: {jobId}, Collection period: {collectionPeriod}, Academic Year: {academicYear}");
 
-                var providerSummaries = new List<ProviderPeriodEndSummaryModel>();
+                var distinctUlnsWithNegativeEarnings = dcNegativeEarningsTask.Result.Select(x => x.Uln).Distinct().ToList();
+                var paymentAmountsForLearnersWithNegativeEarningsTask = periodEndMetricsRepository.GetPaymentAmountsForNegativeEarningsLearnersByContractType(distinctUlnsWithNegativeEarnings, academicYear, cancellationToken);
+                var dataLockedAmountsForLearnersWithNegativeEarningsTask = periodEndMetricsRepository.GetDataLockedAmountsForForNegativeEarningsLearners(distinctUlnsWithNegativeEarnings, academicYear, collectionPeriod, cancellationToken);
+
+                var negativeEarningDataTask =  Task.WhenAll(paymentAmountsForLearnersWithNegativeEarningsTask, dataLockedAmountsForLearnersWithNegativeEarningsTask);
+
+                Task.WaitAny(negativeEarningDataTask, waitTask);
+
+                if (!negativeEarningDataTask.IsCompleted)
+                    throw new InvalidOperationException($"Took too long to get negative earnings data for the period end metrics. job: {jobId}, Collection period: {collectionPeriod}, Academic Year: {academicYear}");
 
                 var providersFromPayments = yearToDatePaymentsTask.Result.Select(x => x.Ukprn).Distinct();
                 var providersFromEarnings = dcEarningsTask.Result.Select(x => x.Ukprn).Distinct();
                 var distinctProviderUkprns = providersFromEarnings.Union(providersFromPayments);
 
-                var distinctUlnsWithNegativeEarnings = dcNegativeEarningsTask.Result.Select(x => x.Uln).Distinct().ToList();
-                var paymentAmountsForLearnersWithNegativeEarningsTask = periodEndMetricsRepository.GetPaymentAmountsForNegativeEarningsLearnersByContractType(distinctUlnsWithNegativeEarnings, academicYear, cancellationToken);
-                var dataLockedAmountsForLearnersWithNegativeEarningsTask = periodEndMetricsRepository.GetDataLockedAmountsForForNegativeEarningsLearners(distinctUlnsWithNegativeEarnings, academicYear, collectionPeriod, cancellationToken);
-
-                await Task.WhenAll(paymentAmountsForLearnersWithNegativeEarningsTask, dataLockedAmountsForLearnersWithNegativeEarningsTask);
-
+                var providerSummaries = new List<ProviderPeriodEndSummaryModel>();
                 var periodEndSummary = periodEndSummaryFactory.CreatePeriodEndSummary(jobId, collectionPeriod, academicYear);
 
                 foreach (var ukprn in distinctProviderUkprns)

@@ -211,33 +211,24 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
 
             if (providerLearnerNegativeDcEarnings == null || providerLearnerNegativeDcEarnings.Count == 0) return;
 
-            var distinctLearnerUlns = providerLearnerNegativeDcEarnings.Select(x => x.Uln).Distinct().ToList();
-
-            foreach (var uln in distinctLearnerUlns)
+            foreach (var learner in providerLearnerNegativeDcEarnings)
             {
-                //if learner has payments, then do not add negative earnings to provider summary
-                var learnerPayments = providerLearnerPayments?.Where(x => x.LearnerUln == uln && x.Total != 0m).ToList();
+                var learnerPayments = providerLearnerPayments?.Where(x => x.LearnerUln == learner.Uln && x.Total != 0m).ToList();
                 if (learnerPayments != null && learnerPayments.Count != 0) continue;
 
-                //if learner has data locks, then do not add negative earnings to provider summary
-                var learnerDataLocks = providerLearnerDataLockedEarnings?.Where(x => x.LearnerUln == uln && x.TotalAmount != 0m).ToList();
+                var learnerDataLocks = providerLearnerDataLockedEarnings?.Where(x => x.LearnerUln == learner.Uln && x.TotalAmount != 0m).ToList();
                 if (learnerDataLocks != null && learnerDataLocks.Count != 0) continue;
 
-                //add negative earnings to provider summary
-                var learnerNegativeEarnings = providerLearnerNegativeDcEarnings.Where(x => x.Uln == uln).ToList();
-                learnerNegativeEarnings.ForEach(x =>
+                switch (learner.ContractType)
                 {
-                    switch (x.ContractType)
-                    {
-                        case ContractType.Act1:
-                            negativeEarnings.ContractType1 = negativeEarnings.ContractType1.GetValueOrDefault() + x.NegativeEarningsTotal;
-                            break;
+                    case ContractType.Act1:
+                        negativeEarnings.ContractType1 = negativeEarnings.ContractType1.GetValueOrDefault() + learner.NegativeEarningsTotal;
+                        break;
 
-                        case ContractType.Act2:
-                            negativeEarnings.ContractType2 = negativeEarnings.ContractType2.GetValueOrDefault() + x.NegativeEarningsTotal;
-                            break;
-                    }
-                });
+                    case ContractType.Act2:
+                        negativeEarnings.ContractType2 = negativeEarnings.ContractType2.GetValueOrDefault() + learner.NegativeEarningsTotal;
+                        break;
+                }
             }
         }
     }
