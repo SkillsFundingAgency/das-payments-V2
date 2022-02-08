@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
-using ESFA.DC.Jobs.Model;
 using ESFA.DC.Jobs.Model.Enums;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -47,25 +44,26 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification
             // Assert
             using (new AssertionScope())
             {
-                await orchestrator.VerifyResults(resultsList,(actualPercentage, tolerance, earningDifference) =>
-                                                 {
-                                                     TestContext.WriteLine($"Earning difference between DC and DAS: {earningDifference}");
-                                                     earningDifference.Should().Be(0m);
+                await orchestrator.VerifyResults(resultsList, (actualPercentage, tolerance, earningDifference) =>
+                {
+                    TestContext.WriteLine($"Earning difference between DC and DAS: {earningDifference}");
+                    earningDifference.Should().Be(0m);
 
-                                                     if (!actualPercentage.HasValue)
-                                                     {
-                                                         var nullPercentageMessage = "The returned percentage was null";
-                                                         TestContext.WriteLine(nullPercentageMessage);
-                                                         Assert.Inconclusive(nullPercentageMessage);
-                                                     }
-                                                     else
-                                                     {
-                                                         TestContext.WriteLine($"Returned Percentage: {actualPercentage.Value}");
-                                                         actualPercentage.Should().BeLessOrEqualTo(tolerance);
-                                                     }
-                                                 });
+                    if (!actualPercentage.HasValue)
+                    {
+                        var nullPercentageMessage = "The returned percentage was null";
+                        TestContext.WriteLine(nullPercentageMessage);
+                        Assert.Inconclusive(nullPercentageMessage);
+                    }
+                    else
+                    {
+                        TestContext.WriteLine($"Returned Percentage: {actualPercentage.Value}");
+                        actualPercentage.Should().BeLessOrEqualTo(tolerance);
+                    }
 
-                resultsList.Should().OnlyContain(x => x.Status == JobStatusType.Completed, "because all jobs should have completed.");
+                    resultsList.Should().OnlyContain(x => x.Status == JobStatusType.Completed, "because all jobs should have completed.");
+
+                });
             }
         }
     }

@@ -11,6 +11,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
     public interface ISubmissionJobsRepository
     {
         Task<List<LatestSuccessfulJobModel>> GetLatestSuccessfulJobsForCollectionPeriod(short academicYear, byte collectionPeriod);
+        Task<LatestSuccessfulJobModel> GetLatestSuccessfulJobForProvider(long ukrpn, short academicYear, byte collectionPeriod);
         Task<LatestSuccessfulJobModel> GetLatestCollectionPeriod();
     }
 
@@ -37,6 +38,16 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 .Where(x => x.AcademicYear == academicYear &&
                             x.CollectionPeriod == collectionPeriod)
                 .ToListAsync();
+        }
+
+        public async Task<LatestSuccessfulJobModel> GetLatestSuccessfulJobForProvider(long ukprn, short academicYear, byte collectionPeriod)
+        {
+            return await dataContext.LatestSuccessfulJobs
+                .Where(x =>
+                    x.AcademicYear == academicYear &&
+                    x.CollectionPeriod == collectionPeriod &&
+                    x.Ukprn == ukprn)
+                .FirstOrDefaultAsync();
         }
     }
 }
