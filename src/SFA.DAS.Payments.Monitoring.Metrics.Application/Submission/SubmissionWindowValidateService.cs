@@ -43,6 +43,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         {
             try
             {
+                var isEstimatingMetrics = jobId == 0;
+
                 logger.LogDebug($"Building metrics for job: {jobId}, Academic year: {academicYear}, Collection period: {collectionPeriod}");
 
                 var stopwatch = Stopwatch.StartNew();
@@ -61,13 +63,20 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
                 logger.LogDebug($"finished getting data from databases for job: {jobId}, Took: {dataDuration}ms.");
 
-                await submissionMetricsRepository.SaveSubmissionsSummaryMetrics(metrics, cancellationToken);
+                if (!isEstimatingMetrics) await submissionMetricsRepository.SaveSubmissionsSummaryMetrics(metrics, cancellationToken);
 
                 stopwatch.Stop();
 
                 SendTelemetry(metrics, stopwatch.ElapsedMilliseconds);
 
-                logger.LogInfo($"Finished building Submissions Summary Metrics for job: {jobId}, Academic year: {academicYear}, Collection period: {collectionPeriod}. Took: {stopwatch.ElapsedMilliseconds}ms");
+                if (isEstimatingMetrics)
+                {
+                    logger.LogInfo($"Finished estimating Submissions Summary Metrics for Academic year: {academicYear}, Collection period: {collectionPeriod}. Took: {stopwatch.ElapsedMilliseconds}ms");
+                }
+                else
+                {
+                    logger.LogInfo($"Finished building Submissions Summary Metrics for job: {jobId}, Academic year: {academicYear}, Collection period: {collectionPeriod}. Took: {stopwatch.ElapsedMilliseconds}ms");
+                }
 
                 return metrics;
             }
