@@ -108,15 +108,28 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
 
             fixture.Verify_Logger_LogsInfoSubmissionsSummaryMetrics();
         }
+
+        [Test]
+        public async Task WhenGeneratingSubmissionSummaryMetrics_AndJobIdIsZero_ThenDoesntSaveSubmissionSummaries()
+        {
+            fixture
+                .With_DefaultJobId()
+                .With_Returning_Mock_SubmissionSummary();
+
+            await fixture.GenerateSubmissionsSummaryMetrics();
+
+            fixture.Verify_SaveSubmissionSummaryMetrics_WasNotCalled();
+        }
     }
 
     internal class SubmissionSummaryMetricsServiceFixture
     {
-        private readonly long jobId;
+        private long jobId;
         private readonly short academicYear;
         private readonly byte collectionPeriod;
         private readonly Mock<IPaymentLogger> logger;
         private readonly Mock<ISubmissionMetricsRepository> submissionMetricsRepository;
+        private readonly Mock<ISubmissionJobsRepository> submissionJobsRepository;
         private readonly Mock<ISubmissionsSummary> submissionsSummary;
         private readonly Mock<ITelemetry> telemetry;
         private readonly SubmissionWindowValidationService sut;
@@ -135,9 +148,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             collectionPeriod = fixture.Create<byte>();
             logger = new Mock<IPaymentLogger>();
             submissionMetricsRepository = new Mock<ISubmissionMetricsRepository>();
+            submissionJobsRepository = new Mock<ISubmissionJobsRepository>();
             submissionsSummary = new Mock<ISubmissionsSummary>();
             telemetry = new Mock<ITelemetry>();
-            sut = new SubmissionWindowValidationService(logger.Object, submissionMetricsRepository.Object, TODO, submissionsSummary.Object, telemetry.Object);
+            sut = new SubmissionWindowValidationService(logger.Object, submissionMetricsRepository.Object, submissionJobsRepository.Object, submissionsSummary.Object, telemetry.Object);
 
             getSubmissionsSummaryMetricsResponse = new List<SubmissionSummaryModel>
             {
@@ -225,6 +239,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
 
         public Task<SubmissionsSummaryModel> GenerateSubmissionsSummaryMetrics() => sut.ValidateSubmissionWindow(jobId, academicYear, collectionPeriod, It.IsAny<CancellationToken>());
 
+        public SubmissionSummaryMetricsServiceFixture With_DefaultJobId()
+        {
+            jobId = 0L;
+            
+            return this;
+        }
+
         public SubmissionSummaryMetricsServiceFixture With_Returning_Mock_SubmissionSummary()
         {
             submissionMetricsRepository
@@ -301,6 +322,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
         {
             submissionMetricsRepository
                 .Verify(x => x.GetCollectionPeriodTolerance(collectionPeriod, academicYear, It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        public void Verify_SaveSubmissionSummaryMetrics_WasNotCalled()
+        {
+            submissionMetricsRepository
+                .Verify(x => x.SaveSubmissionsSummaryMetrics(It.IsAny<SubmissionsSummaryModel>(), It.IsAny<CancellationToken>()), Times.Never);
         }
 
         public void Verify_CalculateIsWithinTolerance_WasCalled()
