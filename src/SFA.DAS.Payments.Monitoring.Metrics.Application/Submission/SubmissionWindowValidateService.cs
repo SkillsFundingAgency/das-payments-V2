@@ -41,11 +41,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
         public async Task<SubmissionsSummaryModel> ValidateSubmissionWindow(long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
+            var isEstimatingMetrics = jobId == 0;
+            var logMessage = isEstimatingMetrics ? "estimating" : "building";
+
             try
             {
-                var isEstimatingMetrics = jobId == 0;
-
-                logger.LogDebug($"Building metrics for job: {jobId}, Academic year: {academicYear}, Collection period: {collectionPeriod}");
+                logger.LogDebug($"Started {logMessage} metrics for job: {jobId}, Academic year: {academicYear}, Collection period: {collectionPeriod}");
 
                 var stopwatch = Stopwatch.StartNew();
 
@@ -69,26 +70,22 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
                 SendTelemetry(metrics, stopwatch.ElapsedMilliseconds);
 
-                if (isEstimatingMetrics)
-                {
-                    logger.LogInfo($"Finished estimating Submissions Summary Metrics for Academic year: {academicYear}, Collection period: {collectionPeriod}. Took: {stopwatch.ElapsedMilliseconds}ms");
-                }
-                else
-                {
-                    logger.LogInfo($"Finished building Submissions Summary Metrics for job: {jobId}, Academic year: {academicYear}, Collection period: {collectionPeriod}. Took: {stopwatch.ElapsedMilliseconds}ms");
-                }
+                logger.LogInfo($"Finished {logMessage} Submissions Summary Metrics for job: {jobId}, Academic year: {academicYear}, Collection period: {collectionPeriod}. Took: {stopwatch.ElapsedMilliseconds}ms");
 
                 return metrics;
             }
             catch (Exception e)
             {
-                logger.LogWarning($"Error building the Submissions Summary metrics report for job: {jobId}, Error: {e}");
+                logger.LogWarning($"Error {logMessage} the Submissions Summary metrics report for job: {jobId}, Error: {e}");
                 throw;
             }
         }
 
         private void SendTelemetry(SubmissionsSummaryModel metrics, long reportGenerationDuration)
         {
+            var isEstimatingMetrics = metrics.JobId == 0;
+            var logMessage = isEstimatingMetrics ? "Estimating" : "Generating";
+
             if (metrics == null) return;
 
             var properties = new Dictionary<string, string>
@@ -167,7 +164,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 { "RequiredPaymentsDasEarningsPercentageComparison" ,  Math.Round(((double) (metrics.YearToDatePayments.Total + metrics.RequiredPayments.Total) / (double) metrics.DasEarnings.Total) * 100, 2) },
             };
 
-            telemetry.TrackEvent("Finished Generating Submissions Summary Metrics", properties, stats);
+            telemetry.TrackEvent($"Finished {logMessage} Submissions Summary Metrics", properties, stats);
         }
     }
 }
