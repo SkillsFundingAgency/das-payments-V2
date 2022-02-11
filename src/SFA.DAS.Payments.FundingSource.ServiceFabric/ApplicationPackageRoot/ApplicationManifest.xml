@@ -89,6 +89,7 @@
             <Parameter Name="AccountApiTenant" Value="[AccountApiTenant]" />
             <Parameter Name="BatchSize" Value="[LevyAccountBalanceService_BatchSize]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="FailedMessagesQueue" Value="[LevyAccountBalanceService_FailedMessagesQueue]" />
             <Parameter Name="LevyAccountRefreshIntervalInHours" Value="[LevyAccountRefreshIntervalInHours]" />

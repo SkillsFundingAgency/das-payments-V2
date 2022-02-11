@@ -12,6 +12,7 @@
     <Parameter Name="ProviderAdjustmentService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
+    <Parameter Name="ConsoleLogLevel" DefaultValue="" />
     <Parameter Name="DasNServiceBusLicenseKey" DefaultValue="" />
     <Parameter Name="EasApiEndpoint" DefaultValue="" />
     <Parameter Name="EasApiPassword" DefaultValue="" />
@@ -41,6 +42,7 @@
             <Parameter Name="FailedMessagesQueue" Value="[ProviderAdjustmentService_FailedMessagesQueue]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
+            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
             <Parameter Name="EasApiEndpoint" Value="[EasApiEndpoint]" />
             <Parameter Name="EasApiPassword" Value="[EasApiPassword]" />

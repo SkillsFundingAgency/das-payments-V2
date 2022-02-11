@@ -20,6 +20,7 @@
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
     <Parameter Name="ProcessMessageSequentially" Value="false" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
+    <Parameter Name="ConsoleLogLevel" Value="__ConsoleLogLevel__" />
     <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
     <Parameter Name="MaximumCallbackTimeSpan" Value="__MaximumCallbackTimeSpan__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
