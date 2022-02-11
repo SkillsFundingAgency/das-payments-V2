@@ -15,21 +15,10 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register((c, p) =>
-                {
-                    var configHelper = c.Resolve<IConfigurationHelper>();
-                    return new LoggerOptions
-                    {
-                        LoggerConnectionString = configHelper.GetConnectionString("LoggingConnectionString")
-                    };
-                })
-                .As<LoggerOptions>()
-                .SingleInstance();
             builder.RegisterType<VersionInfo>().As<IVersionInfo>().SingleInstance();
             builder.RegisterType<PaymentsLoggerConfigurationBuilder>().As<ILoggerConfigurationBuilder>().InstancePerLifetimeScope();
             builder.Register(c =>
                 {
-                    var loggerOptions = c.Resolve<LoggerOptions>();
                     var versionInfo = c.Resolve<IVersionInfo>();
                     var configHelper = c.Resolve<IConfigurationHelper>();
 
@@ -38,24 +27,13 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                         logLevel = LogLevel.Information;
                     }
 
-                    if (!Enum.TryParse(configHelper.GetSettingOrDefault("ConsoleLogLevel", "Information"), out LogLevel consoleLogLevel))
-                    {
-                        consoleLogLevel = logLevel;
-                    }
-
                     return new ApplicationLoggerSettings
                     {
                         ApplicationLoggerOutputSettingsCollection = new List<IApplicationLoggerOutputSettings>
                         {
-                            new MsSqlServerApplicationLoggerOutputSettings
-                            {
-                                MinimumLogLevel = logLevel,
-                                ConnectionString = loggerOptions.LoggerConnectionString,
-                            },
-
                             new ConsoleApplicationLoggerOutputSettings
                             {
-                                MinimumLogLevel = consoleLogLevel
+                                MinimumLogLevel = logLevel
                             },
                         },
                         TaskKey = versionInfo.ServiceReleaseVersion
