@@ -11,7 +11,6 @@
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
-    <Parameter Name="ConsoleLogLevel" DefaultValue="" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
     <Parameter Name="NonLevyFundedService_EndpointName" DefaultValue="sfa-das-payments-fundingsource-nonlevy" />
     <Parameter Name="LevyFundedService_EndpointName" DefaultValue="sfa-das-payments-fundingsource-levy" />
@@ -57,7 +56,6 @@
             <Parameter Name="EndpointName" Value="[LevyTransactionService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[LevyTransactionService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
@@ -89,7 +87,6 @@
             <Parameter Name="AccountApiTenant" Value="[AccountApiTenant]" />
             <Parameter Name="BatchSize" Value="[LevyAccountBalanceService_BatchSize]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="FailedMessagesQueue" Value="[LevyAccountBalanceService_FailedMessagesQueue]" />
             <Parameter Name="LevyAccountRefreshIntervalInHours" Value="[LevyAccountRefreshIntervalInHours]" />
@@ -117,7 +114,6 @@
             <Parameter Name="EndpointName" Value="[NonLevyFundedService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[NonLevyFundedService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
@@ -145,7 +141,6 @@
             <Parameter Name="EndpointName" Value="[LevyFundedService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[LevyFundedService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
@@ -172,7 +167,6 @@
           <Section Name="Settings">
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
             <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
             <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />

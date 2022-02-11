@@ -12,7 +12,6 @@
     <Parameter Name="EndpointName" Value="" />
     <Parameter Name="FailedMessagesQueue" Value="" />
     <Parameter Name="LogLevel" Value="Information" />
-    <Parameter Name="ConsoleLogLevel" Value="Information" />
     <Parameter Name="ProcessMessageSequentially" Value="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="" />

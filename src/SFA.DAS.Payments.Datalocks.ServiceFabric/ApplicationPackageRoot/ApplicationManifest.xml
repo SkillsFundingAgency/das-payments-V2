@@ -24,7 +24,6 @@
     <Parameter Name="BatchIntervalInSeconds" DefaultValue="10" />
     <Parameter Name="Audit_BatchFailureTimeoutInSeconds" DefaultValue="60" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
-    <Parameter Name="ConsoleLogLevel" DefaultValue="Fatal" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
     <Parameter Name="ApprovalsService_EndpointName" DefaultValue="sfa-das-payments-datalock-approvals" />
     <Parameter Name="ApprovalsService_FailedMessagesQueue" DefaultValue="sfa-das-payments-datalock-approvals-errors" />
@@ -58,7 +57,6 @@
             <Parameter Name="EndpointName" Value="[DataLockEventService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[DataLockEventService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="BatchIntervalInSeconds" Value="[BatchIntervalInSeconds]" />
@@ -89,7 +87,6 @@
             <Parameter Name="EndpointName" Value="[ApprovalsService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[ApprovalsService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
@@ -117,7 +114,6 @@
             <Parameter Name="EndpointName" Value="[DataLockStatusChangedService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[DataLockStatusChangedService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
@@ -145,7 +141,6 @@
             <Parameter Name="EndpointName" Value="[DataLockService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[DataLockService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />

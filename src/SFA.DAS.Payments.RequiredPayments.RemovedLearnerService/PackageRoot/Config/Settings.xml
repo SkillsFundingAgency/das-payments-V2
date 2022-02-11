@@ -6,7 +6,6 @@
   </Section>
   <Section Name="Settings">
     <Parameter Name="LogLevel" Value="Information" />
-    <Parameter Name="ConsoleLogLevel" Value="Information" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="" />
     <Parameter Name="ImmediateMessageRetries" Value="" />

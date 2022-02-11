@@ -21,7 +21,6 @@
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="" />
-    <Parameter Name="ConsoleLogLevel" DefaultValue="" />
     <Parameter Name="Audit_EarningEvents_EndpointName" DefaultValue="sfa-das-payments-audit-earningevents" />
     <Parameter Name="Audit_EarningEvents_FailedMessagesQueue" DefaultValue="sfa-das-payments-audit-earningevents-errors" />
     <Parameter Name="Audit_DataLock_EndpointName" DefaultValue="sfa-das-payments-audit-datalock" />
@@ -59,7 +58,6 @@
             <Parameter Name="BatchFailureTimeoutInSeconds" Value="[Audit_BatchFailureTimeoutInSeconds]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
             <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
             <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
@@ -87,7 +85,6 @@
             <Parameter Name="BatchFailureTimeoutInSeconds" Value="[Audit_BatchFailureTimeoutInSeconds]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
             <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
             <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
@@ -115,7 +112,6 @@
             <Parameter Name="BatchFailureTimeoutInSeconds" Value="[Audit_BatchFailureTimeoutInSeconds]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
             <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
             <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
@@ -143,7 +139,6 @@
             <Parameter Name="BatchFailureTimeoutInSeconds" Value="[Audit_BatchFailureTimeoutInSeconds]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
             <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
             <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />

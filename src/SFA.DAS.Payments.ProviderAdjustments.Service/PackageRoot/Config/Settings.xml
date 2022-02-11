@@ -18,7 +18,6 @@
   <Section Name="Settings">
     
     <Parameter Name="LogLevel" Value="Information" />
-    <Parameter Name="ConsoleLogLevel" Value="Information" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
     <Parameter Name="EndpointName" Value="" />
     <Parameter Name="FailedMessagesQueue" Value="" />

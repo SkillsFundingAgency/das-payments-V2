@@ -27,7 +27,6 @@
     <Parameter Name="TopicName" DefaultValue="dc" />
     <Parameter Name="TopicName2021" DefaultValue="dc2021" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
-    <Parameter Name="ConsoleLogLevel" DefaultValue="Information" />
     <Parameter Name="LogLevel" DefaultValue="Information" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
     <Parameter Name="TimeToPauseBetweenChecks" DefaultValue="00:00:10" />
@@ -69,7 +68,6 @@
             <Parameter Name="TopicName" Value="[TopicName2021]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="TimeToPauseBetweenChecks" Value="[TimeToPauseBetweenChecks]" />
             <Parameter Name="TimeToWaitForJobToComplete" Value="[TimeToWaitForJobToComplete]" />
@@ -109,7 +107,6 @@
             <Parameter Name="TopicName" Value="[TopicName]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="TimeToPauseBetweenChecks" Value="[TimeToPauseBetweenChecks]" />
             <Parameter Name="TimeToWaitForJobToComplete" Value="[TimeToWaitForJobToComplete]" />
@@ -150,7 +147,6 @@
             <Parameter Name="TopicName" Value="[TopicName]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="TimeToPauseBetweenChecks" Value="[TimeToPauseBetweenChecks]" />
             <Parameter Name="TimeToWaitForJobToComplete" Value="[TimeToWaitForJobToComplete]" />
@@ -191,7 +187,6 @@
             <Parameter Name="TopicName" Value="[TopicName]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="TimeToPauseBetweenChecks" Value="[TimeToPauseBetweenChecks]" />
             <Parameter Name="TimeToWaitForJobToComplete" Value="[TimeToWaitForJobToComplete]" />
