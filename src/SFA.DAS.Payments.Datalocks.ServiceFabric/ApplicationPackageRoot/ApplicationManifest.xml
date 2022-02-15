@@ -169,7 +169,6 @@
             <Parameter Name="EndpointName" Value="[DataLockService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[DataLockService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
-            <Parameter Name="ConsoleLogLevel" Value="[ConsoleLogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
