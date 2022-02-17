@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         void AddPeriodEndProviderDataLockTypeCounts(PeriodEndProviderDataLockTypeCounts periodEndProviderDataLockTypeCounts);
         void AddLearnerNegativeEarnings(List<ProviderNegativeEarningsLearnerDcEarningAmounts> negativeLearnerEarnings);
         void AddLearnerPayments(List<ProviderNegativeEarningsLearnerContractTypeAmounts> learnerPayments);
-        void AddLearnerDataLockedEarnings(List<ProviderNegativeEarningsLearnerDataLockAmounts> learnerDataLocks);
+        void AddLearnerDataLockedEarnings(List<ProviderLearnerNegativeEarningsDataLockFundingLineTypeAmounts> learnerDataLocks);
         void AddDataLockedAlreadyPaid(ProviderFundingLineTypeAmounts dataLockedAlreadyPaidTotal);
         void AddPaymentsYearToDate(ProviderContractTypeAmounts paymentsYearToDate);
         void AddHeldBackCompletionPayments(ProviderContractTypeAmounts heldBackCompletionPayments);
@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         public short AcademicYear { get; }
         private List<ProviderNegativeEarningsLearnerDcEarningAmounts> providerLearnerNegativeDcEarnings;
         private List<ProviderNegativeEarningsLearnerContractTypeAmounts> providerLearnerPayments;
-        private List<ProviderNegativeEarningsLearnerDataLockAmounts> providerLearnerDataLockedEarnings;
+        private List<ProviderLearnerNegativeEarningsDataLockFundingLineTypeAmounts> providerLearnerDataLockedEarnings;
         private List<TransactionTypeAmountsByContractType> providerDcEarnings;
         private List<TransactionTypeAmountsByContractType> providerTransactionsTypes;
         private List<ProviderFundingSourceAmounts> providerFundingSourceAmounts;
@@ -180,7 +180,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             providerLearnerPayments = learnerPayments;
         }
 
-        public void AddLearnerDataLockedEarnings(List<ProviderNegativeEarningsLearnerDataLockAmounts> learnerDataLocks)
+        public void AddLearnerDataLockedEarnings(List<ProviderLearnerNegativeEarningsDataLockFundingLineTypeAmounts> learnerDataLocks)
         {
             providerLearnerDataLockedEarnings = learnerDataLocks;
         }

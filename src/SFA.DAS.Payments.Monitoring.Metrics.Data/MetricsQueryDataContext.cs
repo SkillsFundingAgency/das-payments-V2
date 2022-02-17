@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         Task<List<PeriodEndProviderDataLockTypeCounts>> GetPeriodEndProviderDataLockCounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderFundingLineTypeAmounts>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderFundingLineTypeAmounts>> GetAlreadyPaidDataLockProviderTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
-        Task<List<ProviderNegativeEarningsLearnerDataLockAmounts>> GetDataLockedAmountsForForNegativeEarningsLearners(List<long> learnerUlns, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<ProviderLearnerNegativeEarningsDataLockFundingLineTypeAmounts>> GetDataLockedAmountsForForNegativeEarningsLearners(List<long> learnerUlns, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken, IsolationLevel isolationLevel = IsolationLevel.Snapshot);
     }
@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
         public virtual DbQuery<PeriodEndDataLockCount> PeriodEndDataLockCounts { get; set; }
         public virtual DbQuery<ProviderFundingLineTypeAmounts> AlreadyPaidDataLockProviderTotals { get; set; }
         public virtual DbQuery<ProviderFundingLineTypeAmounts> DataLockedEarningsTotals { get; set; }
-        public virtual DbQuery<ProviderNegativeEarningsLearnerDataLockAmounts> DataLockedEarningsForLearnersWithNegativeDcEarnings { get; set; }
+        public virtual DbQuery<ProviderLearnerNegativeEarningsDataLockFundingLineTypeAmounts> DataLockedEarningsForLearnersWithNegativeDcEarnings { get; set; }
         public virtual DbSet<LatestSuccessfulJobModel> LatestSuccessfulJobs { get; set; }
         public virtual DbSet<EarningEventModel> EarningEvent { get; protected set; }
         public virtual DbSet<EarningEventPeriodModel> EarningEventPeriods { get; protected set; }
@@ -321,9 +321,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             return await DataLockedEarningsTotals.FromSql(sql, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod)).ToListAsync(cancellationToken);
         }
 
-        public async Task<List<ProviderNegativeEarningsLearnerDataLockAmounts>> GetDataLockedAmountsForForNegativeEarningsLearners(List<long> learnerUlns, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
+        public async Task<List<ProviderLearnerNegativeEarningsDataLockFundingLineTypeAmounts>> GetDataLockedAmountsForForNegativeEarningsLearners(List<long> learnerUlns, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            var results = new List<ProviderNegativeEarningsLearnerDataLockAmounts>();
+            var results = new List<ProviderLearnerNegativeEarningsDataLockFundingLineTypeAmounts>();
             var batches = learnerUlns.SplitIntoBatchesOf(2000);
 
             var sql = @";WITH unGroupedEarnings AS 
@@ -355,6 +355,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 	                        SUM(unGroupedEarnings.Total) AS Total
 	                        FROM unGroupedEarnings
 	                        GROUP BY unGroupedEarnings.Ukprn, LearnerUln";
+
 
             foreach (var batch in batches)
             {

@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
         Task<List<ProviderNegativeEarningsLearnerContractTypeAmounts>> GetPaymentAmountsForNegativeEarningsLearnersByContractType(List<long> learnerUlns, short academicYear, CancellationToken cancellationToken);
         Task<List<ProviderFundingSourceAmounts>> GetFundingSourceAmountsByContractType(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderFundingLineTypeAmounts>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
-        Task<List<ProviderNegativeEarningsLearnerDataLockAmounts>> GetDataLockedAmountsForForNegativeEarningsLearners(List<long> learnerUlns, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
+        Task<List<ProviderLearnerNegativeEarningsDataLockFundingLineTypeAmounts>> GetDataLockedAmountsForForNegativeEarningsLearners(List<long> learnerUlns, short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<PeriodEndProviderDataLockTypeCounts>> GetPeriodEndProviderDataLockTypeCounts(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderFundingLineTypeAmounts>> GetAlreadyPaidDataLockedEarnings(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
         Task<List<ProviderContractTypeAmounts>> GetHeldBackCompletionPaymentsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken);
@@ -172,7 +172,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             }
         }
 
-        public async Task<List<ProviderNegativeEarningsLearnerDataLockAmounts>> GetDataLockedAmountsForForNegativeEarningsLearners(List<long> learnerUlns, short academicYear, byte collectionPeriod,
+        public async Task<List<ProviderLearnerNegativeEarningsDataLockFundingLineTypeAmounts>> GetDataLockedAmountsForForNegativeEarningsLearners(List<long> learnerUlns, short academicYear, byte collectionPeriod,
             CancellationToken cancellationToken)
         {
             using (await QueryDataContext.BeginTransaction(cancellationToken))
