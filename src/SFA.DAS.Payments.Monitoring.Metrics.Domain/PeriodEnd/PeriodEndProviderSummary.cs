@@ -218,8 +218,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 var learnerDataLocks = providerLearnerDataLockedEarnings?.Where(x => x.LearnerUln == learnerNegativeEarning.Uln && x.Total != 0m).ToList();
                 var hasDataLocks = learnerDataLocks != null && learnerDataLocks.Count != 0;
 
-                if (!hasPayments && !hasDataLocks) AddNegativeEarnings(learnerNegativeEarning); //Scenario 1
-                if (!hasPayments && hasDataLocks) AddNegativeDataLocks(learnerDataLocks); //Scenario 2
+                if (!hasPayments && !hasDataLocks) AddNegativeEarnings(learnerNegativeEarning);
+
+                if (!hasPayments && hasDataLocks)
+                {
+                    AddNegativeEarnings(learnerNegativeEarning); 
+                    AddNegativeDataLocks(learnerDataLocks);
+                }
             }
 
             void AddNegativeEarnings(ProviderNegativeEarningsLearnerDcEarningAmounts learnerNegativeEarning)
