@@ -78,6 +78,37 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             modelBuilder.ApplyConfiguration(new LatestSuccessfulJobModelConfiguration());
         }
 
+        public string GetDataLockedEarningsTotalsSqlQuery(bool shouldGroupByLearner = false) => $@";WITH unGroupedEarnings AS 
+                        (Select
+	                        dle.ukprn as Ukprn,
+							{(shouldGroupByLearner ? "dle.LearnerULn," : "")}
+                            CASE WHEN dle.LearningAimFundingLineType IN (
+			                        '16 - 18 Apprenticeship(From May 2017) Non - Levy Contract(non - procured)',
+			                        '16-18 Apprenticeship Non-Levy Contract (procured)',
+			                        '16-18 Apprenticeship (Employer on App Service)'
+		                        ) THEN npp.Amount ELSE 0 END AS FundingLineType16To18Amount,
+	                        CASE WHEN dle.LearningAimFundingLineType IN (
+			                        '19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)',
+			                        '19+ Apprenticeship Non-Levy Contract (procured)',
+			                        '19+ Apprenticeship (Employer on App Service)'
+		                        ) THEN npp.Amount ELSE 0 END AS FundingLineType19PlusAmount,
+	                        npp.Amount AS Total
+                        from Payments2.dataLockEventNonPayablePeriod npp
+                        join Payments2.dataLockEvent dle on npp.DataLockEventId = dle.EventId
+                        where 		
+	                        dle.jobId in (select DcJobid from Payments2.LatestSuccessfulJobs Where AcademicYear = @academicYear AND CollectionPeriod = @collectionPeriod)
+	                        and npp.Amount <> 0
+							{(shouldGroupByLearner ? "and dle.LearnerUln in ({0})" : "")}
+                        )
+                        SELECT Ukprn,
+						{(shouldGroupByLearner ? "LearnerUln," : "" )}
+	                        SUM(unGroupedEarnings.FundingLineType16To18Amount) AS FundingLineType16To18Amount, 
+	                        SUM(unGroupedEarnings.FundingLineType19PlusAmount) AS FundingLineType19PlusAmount,
+	                        SUM(unGroupedEarnings.Total) AS Total
+	                        FROM unGroupedEarnings
+	                        GROUP BY unGroupedEarnings.Ukprn
+                            {(shouldGroupByLearner ? ", LearnerUln" : "")}";
+
         public async Task<List<ProviderFundingLineTypeAmounts>> GetAlreadyPaidDataLockProviderTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
             var sql = @";WITH unGroupedAmounts AS (Select
@@ -291,32 +322,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 
         public async Task<List<ProviderFundingLineTypeAmounts>> GetDataLockedEarningsTotals(short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
         {
-            var sql = @";WITH unGroupedEarnings AS 
-                        (Select
-	                        dle.ukprn as Ukprn,
-                            CASE WHEN dle.LearningAimFundingLineType IN (
-			                        '16 - 18 Apprenticeship(From May 2017) Non - Levy Contract(non - procured)',
-			                        '16-18 Apprenticeship Non-Levy Contract (procured)',
-			                        '16-18 Apprenticeship (Employer on App Service)'
-		                        ) THEN npp.Amount ELSE 0 END AS FundingLineType16To18Amount,
-	                        CASE WHEN dle.LearningAimFundingLineType IN (
-			                        '19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)',
-			                        '19+ Apprenticeship Non-Levy Contract (procured)',
-			                        '19+ Apprenticeship (Employer on App Service)'
-		                        ) THEN npp.Amount ELSE 0 END AS FundingLineType19PlusAmount,
-	                        npp.Amount AS Total
-                        from Payments2.dataLockEventNonPayablePeriod npp
-                        join Payments2.dataLockEvent dle on npp.DataLockEventId = dle.EventId
-                        where 		
-	                        dle.jobId in (select DcJobid from Payments2.LatestSuccessfulJobs Where AcademicYear = @academicYear AND CollectionPeriod = @collectionPeriod)
-	                        and npp.Amount <> 0
-                        )
-                        SELECT Ukprn,
-	                        SUM(unGroupedEarnings.FundingLineType16To18Amount) AS FundingLineType16To18Amount, 
-	                        SUM(unGroupedEarnings.FundingLineType19PlusAmount) AS FundingLineType19PlusAmount,
-	                        SUM(unGroupedEarnings.Total) AS Total
-	                        FROM unGroupedEarnings
-	                        GROUP BY unGroupedEarnings.Ukprn";
+            var sql = GetDataLockedEarningsTotalsSqlQuery();
 
             return await DataLockedEarningsTotals.FromSql(sql, new SqlParameter("@academicYear", academicYear), new SqlParameter("@collectionPeriod", collectionPeriod)).ToListAsync(cancellationToken);
         }
@@ -326,36 +332,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
             var results = new List<ProviderNegativeEarningsLearnerDataLockFundingLineTypeAmounts>();
             var batches = learnerUlns.SplitIntoBatchesOf(2000);
 
-            var sql = @";WITH unGroupedEarnings AS 
-                        (Select
-	                        dle.ukprn as Ukprn,
-							dle.LearnerULn,
-                            CASE WHEN dle.LearningAimFundingLineType IN (
-			                        '16 - 18 Apprenticeship(From May 2017) Non - Levy Contract(non - procured)',
-			                        '16-18 Apprenticeship Non-Levy Contract (procured)',
-			                        '16-18 Apprenticeship (Employer on App Service)'
-		                        ) THEN npp.Amount ELSE 0 END AS FundingLineType16To18Amount,
-	                        CASE WHEN dle.LearningAimFundingLineType IN (
-			                        '19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)',
-			                        '19+ Apprenticeship Non-Levy Contract (procured)',
-			                        '19+ Apprenticeship (Employer on App Service)'
-		                        ) THEN npp.Amount ELSE 0 END AS FundingLineType19PlusAmount,
-	                        npp.Amount AS Total
-                        from Payments2.dataLockEventNonPayablePeriod npp
-                        join Payments2.dataLockEvent dle on npp.DataLockEventId = dle.EventId
-                        where 		
-	                        dle.jobId in (select DcJobid from Payments2.LatestSuccessfulJobs Where AcademicYear = @academicYear AND CollectionPeriod = @collectionPeriod)
-	                        and npp.Amount <> 0
-							and dle.LearnerUln in ({0})
-                        )
-                        SELECT Ukprn,
-						LearnerUln,
-	                        SUM(unGroupedEarnings.FundingLineType16To18Amount) AS FundingLineType16To18Amount, 
-	                        SUM(unGroupedEarnings.FundingLineType19PlusAmount) AS FundingLineType19PlusAmount,
-	                        SUM(unGroupedEarnings.Total) AS Total
-	                        FROM unGroupedEarnings
-	                        GROUP BY unGroupedEarnings.Ukprn, LearnerUln";
-
+            var sql = GetDataLockedEarningsTotalsSqlQuery(true);
 
             foreach (var batch in batches)
             {
