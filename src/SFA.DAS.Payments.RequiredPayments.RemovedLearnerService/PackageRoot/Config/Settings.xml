@@ -5,8 +5,7 @@
     <Parameter Name="PaymentsConnectionString" Value="" />
   </Section>
   <Section Name="Settings">
-    <Parameter Name="LogLevel" Value="" />
-    <Parameter Name="ConsoleLogLevel" Value="" />
+    <Parameter Name="LogLevel" Value="Information" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="" />
     <Parameter Name="ImmediateMessageRetries" Value="" />
