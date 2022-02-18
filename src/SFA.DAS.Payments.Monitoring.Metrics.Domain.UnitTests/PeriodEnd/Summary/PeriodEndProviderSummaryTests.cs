@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
         private List<ProviderFundingSourceAmounts> paymentFundingSources;
         private List<ProviderNegativeEarningsLearnerDcEarningAmounts> providerLearnerNegativeEarnings;
         private List<ProviderNegativeEarningsLearnerContractTypeAmounts> providerLearnerPayments;
-        private List<ProviderLearnerNegativeEarningsDataLockFundingLineTypeAmounts> providerLearnerDataLocks;
+        private List<ProviderNegativeEarningsLearnerDataLockFundingLineTypeAmounts> providerLearnerDataLocks;
         private ProviderContractTypeAmounts heldBackAmounts;
         private PeriodEndProviderDataLockTypeCounts periodEndProviderDataLockTypeCounts;
         protected PeriodEndProviderSummary GetPeriodEndProviderSummary => TestHelper.DefaultPeriodEndProviderSummary;
@@ -374,7 +374,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
         
         private void AddDataLockForLearner(long uln)
         {
-            var dataLock = fixture.Create<ProviderLearnerNegativeEarningsDataLockFundingLineTypeAmounts>();
+            var dataLock = fixture.Create<ProviderNegativeEarningsLearnerDataLockFundingLineTypeAmounts>();
             dataLock.LearnerUln = uln;
             dataLock.Ukprn = TestHelper.DefaultPeriodEndProviderSummary.Ukprn;
             providerLearnerDataLocks.Add(dataLock);

@@ -114,7 +114,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
                 .ReturnsAsync(new List<ProviderNegativeEarningsLearnerContractTypeAmounts>());
             periodEndMetricsRepositoryMock
                 .Setup(x => x.GetDataLockedAmountsForForNegativeEarningsLearners(It.IsAny<List<long>>(), It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ProviderLearnerNegativeEarningsDataLockFundingLineTypeAmounts>());
+                .ReturnsAsync(new List<ProviderNegativeEarningsLearnerDataLockFundingLineTypeAmounts>());
             periodEndMetricsRepositoryMock
                 .Setup(x => x.GetDataLockedEarningsTotals(It.IsAny<short>(), It.IsAny<byte>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ProviderFundingLineTypeAmounts>());
@@ -567,7 +567,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
                 AddLearnerPaymentsCalled = true;
             }
 
-            public void AddLearnerDataLockedEarnings(List<ProviderLearnerNegativeEarningsDataLockFundingLineTypeAmounts> learnerDataLocks)
+            public void AddLearnerDataLockedEarnings(List<ProviderNegativeEarningsLearnerDataLockFundingLineTypeAmounts> learnerDataLocks)
             {
                 AddLearnerDataLockedEarningsCalled = true;
             }

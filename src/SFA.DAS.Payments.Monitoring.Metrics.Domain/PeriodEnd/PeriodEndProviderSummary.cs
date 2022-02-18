@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         void AddPeriodEndProviderDataLockTypeCounts(PeriodEndProviderDataLockTypeCounts periodEndProviderDataLockTypeCounts);
         void AddLearnerNegativeEarnings(List<ProviderNegativeEarningsLearnerDcEarningAmounts> negativeLearnerEarnings);
         void AddLearnerPayments(List<ProviderNegativeEarningsLearnerContractTypeAmounts> learnerPayments);
-        void AddLearnerDataLockedEarnings(List<ProviderLearnerNegativeEarningsDataLockFundingLineTypeAmounts> learnerDataLocks);
+        void AddLearnerDataLockedEarnings(List<ProviderNegativeEarningsLearnerDataLockFundingLineTypeAmounts> learnerDataLocks);
         void AddDataLockedAlreadyPaid(ProviderFundingLineTypeAmounts dataLockedAlreadyPaidTotal);
         void AddPaymentsYearToDate(ProviderContractTypeAmounts paymentsYearToDate);
         void AddHeldBackCompletionPayments(ProviderContractTypeAmounts heldBackCompletionPayments);
@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         public short AcademicYear { get; }
         private List<ProviderNegativeEarningsLearnerDcEarningAmounts> providerLearnerNegativeDcEarnings;
         private List<ProviderNegativeEarningsLearnerContractTypeAmounts> providerLearnerPayments;
-        private List<ProviderLearnerNegativeEarningsDataLockFundingLineTypeAmounts> providerLearnerDataLockedEarnings;
+        private List<ProviderNegativeEarningsLearnerDataLockFundingLineTypeAmounts> providerLearnerDataLockedEarnings;
         private List<TransactionTypeAmountsByContractType> providerDcEarnings;
         private List<TransactionTypeAmountsByContractType> providerTransactionsTypes;
         private List<ProviderFundingSourceAmounts> providerFundingSourceAmounts;
@@ -180,7 +180,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
             providerLearnerPayments = learnerPayments;
         }
 
-        public void AddLearnerDataLockedEarnings(List<ProviderLearnerNegativeEarningsDataLockFundingLineTypeAmounts> learnerDataLocks)
+        public void AddLearnerDataLockedEarnings(List<ProviderNegativeEarningsLearnerDataLockFundingLineTypeAmounts> learnerDataLocks)
         {
             providerLearnerDataLockedEarnings = learnerDataLocks;
         }
@@ -236,7 +236,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 }
             }
 
-            void AddNegativeDataLocks(List<ProviderLearnerNegativeEarningsDataLockFundingLineTypeAmounts> learnerDataLocks)
+            void AddNegativeDataLocks(List<ProviderNegativeEarningsLearnerDataLockFundingLineTypeAmounts> learnerDataLocks)
             {
                 negativeDataLocks.FundingLineType16To18Amount += learnerDataLocks.Sum(x => x.FundingLineType16To18Amount);
                 negativeDataLocks.FundingLineType19PlusAmount += learnerDataLocks.Sum(x => x.FundingLineType19PlusAmount);
