@@ -22,7 +22,6 @@
     <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
     <Parameter Name="PaymentsConnectionString" Value="__PaymentsConnectionString__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
-    <Parameter Name="ConsoleLogLevel" Value="__ConsoleLogLevel__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
   </Parameters>

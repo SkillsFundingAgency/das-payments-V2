@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.ScheduledJobs
     public static class LevyAccountImport
     {
         [FunctionName("LevyAccountImport")]
-        public static async Task Run([TimerTrigger("%LevyAccountSchedule%", RunOnStartup=true)]TimerInfo myTimer, [Inject]IEndpointInstanceFactory endpointInstanceFactory, [Inject]IScheduledJobsConfiguration config, [Inject]IPaymentLogger log)
+        public static async Task Run([TimerTrigger("%LevyAccountSchedule%", RunOnStartup=false)]TimerInfo myTimer, [Inject]IEndpointInstanceFactory endpointInstanceFactory, [Inject]IScheduledJobsConfiguration config, [Inject]IPaymentLogger log)
         {
             await RunLevyAccountImport(endpointInstanceFactory, config, log);
         }
