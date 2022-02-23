@@ -26,7 +26,6 @@
     <Parameter Name="DelayedMessageRetries" Value="" />
     <Parameter Name="DelayedMessageRetryDelay" Value="" />
     <Parameter Name="LogLevel" Value="Information" />
-    <Parameter Name="ConsoleLogLevel" Value="Information" />
     <Parameter Name="DasNServiceBusLicenseKey" Value=""/>
   </Section>
 </Settings>

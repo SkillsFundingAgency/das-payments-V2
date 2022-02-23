@@ -18,7 +18,7 @@
     <Parameter Name="SubscriptionName" Value="" />
     <Parameter Name="JobStatusQueueName" Value="" />
     <Parameter Name="TopicName" Value="" />
-    <Parameter Name="LogLevel" Value="" />
+    <Parameter Name="LogLevel" Value="Information" />
     <Parameter Name="ProcessMessageSequentially" Value="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
     <Parameter Name="TimeToPauseBetweenChecks" Value=""/>

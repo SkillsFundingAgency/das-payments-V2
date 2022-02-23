@@ -26,7 +26,6 @@
     <Parameter Name="Monitoring_Metrics_PeriodEndService_EndpointName" Value="__Monitoring_Metrics_PeriodEndService_EndpointName__" />
     <Parameter Name="Monitoring_Metrics_PeriodEndService_FailedMessagesQueue" Value="__Monitoring_Metrics_PeriodEndService_FailedMessagesQueue__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
-    <Parameter Name="ConsoleLogLevel" Value="__ConsoleLogLevel__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Monitoring_Placement_Constraints__" />
     <Parameter Name="JobStatusCheck_Interval" Value="__Monitoring_JobStatusCheck_Interval__" />
     <Parameter Name="TimeToWaitForJobToComplete" Value="__TimeToWaitForJobToComplete__" />

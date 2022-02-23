@@ -17,7 +17,7 @@
 
   <Section Name="Settings">
     
-    <Parameter Name="LogLevel" Value="" />
+    <Parameter Name="LogLevel" Value="Information" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
     <Parameter Name="EndpointName" Value="" />
     <Parameter Name="FailedMessagesQueue" Value="" />

@@ -12,6 +12,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
     {
         Task<List<LatestSuccessfulJobModel>> GetLatestSuccessfulJobsForCollectionPeriod(short academicYear, byte collectionPeriod);
         Task<LatestSuccessfulJobModel> GetLatestSuccessfulJobForProvider(long ukrpn, short academicYear, byte collectionPeriod);
+        Task<LatestSuccessfulJobModel> GetLatestCollectionPeriod();
     }
 
     public class SubmissionJobsRepository : ISubmissionJobsRepository
@@ -23,9 +24,17 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
         }
 
-        public Task<List<LatestSuccessfulJobModel>> GetLatestSuccessfulJobsForCollectionPeriod(short academicYear, byte collectionPeriod)
+        public async Task<LatestSuccessfulJobModel> GetLatestCollectionPeriod()
         {
-            return dataContext.LatestSuccessfulJobs
+            return await dataContext.LatestSuccessfulJobs
+                .OrderByDescending(l => l.AcademicYear)
+                .ThenByDescending(l => l.CollectionPeriod)
+                .Take(1)
+                .FirstOrDefaultAsync();
+        }
+        public async Task<List<LatestSuccessfulJobModel>> GetLatestSuccessfulJobsForCollectionPeriod(short academicYear, byte collectionPeriod)
+        {
+            return await dataContext.LatestSuccessfulJobs
                 .Where(x => x.AcademicYear == academicYear &&
                             x.CollectionPeriod == collectionPeriod)
                 .ToListAsync();
