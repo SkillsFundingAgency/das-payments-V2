@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
         private List<ProviderFundingSourceAmounts> paymentFundingSources;
         private List<ProviderNegativeEarningsLearnerDcEarningAmounts> providerLearnerNegativeEarnings;
         private List<ProviderNegativeEarningsLearnerContractTypeAmounts> providerLearnerPayments;
-        private List<ProviderNegativeEarningsLearnerDataLockAmounts> providerLearnerDataLocks;
+        private List<ProviderNegativeEarningsLearnerDataLockFundingLineTypeAmounts> providerLearnerDataLocks;
         private ProviderContractTypeAmounts heldBackAmounts;
         private PeriodEndProviderDataLockTypeCounts periodEndProviderDataLockTypeCounts;
         protected PeriodEndProviderSummary GetPeriodEndProviderSummary => TestHelper.DefaultPeriodEndProviderSummary;
@@ -263,18 +263,49 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
         }
         
         [Test]
-        public void WhenProviderHasSingleLearnerWithNegativeEarnings_AndLearnerHasNoPayments_AndLearnerHasDataLocks_ThenNegativeEarningsNull()
+        public void WhenProviderHasSingleLearnerWithNegativeEarnings_AndLearnerHasNoPayments_AndLearnerHasDataLocks_ThenNegativeEarningsAdded()
         {
             //Arrange
             providerLearnerNegativeEarnings.RemoveRange(1, providerLearnerNegativeEarnings.Count - 1);
             AddDataLockForLearner(providerLearnerNegativeEarnings.First().Uln);
 
+            var expectedAct1NegativeEarningsTotal = providerLearnerNegativeEarnings.Where(x => x.ContractType == ContractType.Act1).Sum(x => x.NegativeEarningsTotal);
+            var expectedAct2NegativeEarningsTotal = providerLearnerNegativeEarnings.Where(x => x.ContractType == ContractType.Act2).Sum(x => x.NegativeEarningsTotal);
+
             //Act
             var result = GetSubmissionSummaryMetrics();
 
             //Assert
-            result.NegativeEarnings.ContractType1.Should().BeNull();
-            result.NegativeEarnings.ContractType2.Should().BeNull();
+            if (expectedAct1NegativeEarningsTotal == 0m)
+            {
+                result.NegativeEarnings.ContractType1.Should().BeNull();
+                result.NegativeEarnings.ContractType2.Should().Be(expectedAct2NegativeEarningsTotal);
+            }
+            else
+            {
+                result.NegativeEarnings.ContractType1.Should().Be(expectedAct1NegativeEarningsTotal);
+                result.NegativeEarnings.ContractType2.Should().BeNull();
+            }
+        }
+        
+        [Test]
+        public void WhenProviderHasSingleLearnerWithNegativeEarnings_AndLearnerHasNoPayments_AndLearnerHasDataLocks_ThenNegativeDataLocksAdjustedCorrectly()
+        {
+            //Arrange
+            providerLearnerNegativeEarnings.RemoveRange(1, providerLearnerNegativeEarnings.Count - 1);
+            AddDataLockForLearner(providerLearnerNegativeEarnings.First().Uln);
+
+            var expectedNegativeDataLocksTotal = TestHelper.DefaultDataLockedTotal.Total - providerLearnerDataLocks.Sum(x => x.Total);
+            var expectedNegativeDataLocks16To18Total = TestHelper.DefaultDataLockedTotal.FundingLineType16To18Amount - providerLearnerDataLocks.Sum(x => x.FundingLineType16To18Amount);
+            var expectedNegativeDataLocks19PlusTotal = TestHelper.DefaultDataLockedTotal.FundingLineType19PlusAmount - providerLearnerDataLocks.Sum(x => x.FundingLineType19PlusAmount);
+
+            //Act
+            var result = GetSubmissionSummaryMetrics();
+
+            //Assert
+            result.TotalDataLockedEarnings.Should().Be(expectedNegativeDataLocksTotal);
+            result.TotalDataLockedEarnings16To18.Should().Be(expectedNegativeDataLocks16To18Total);
+            result.TotalDataLockedEarnings19Plus.Should().Be(expectedNegativeDataLocks19PlusTotal);
         }
         
         [Test]
@@ -374,7 +405,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
         
         private void AddDataLockForLearner(long uln)
         {
-            var dataLock = fixture.Create<ProviderNegativeEarningsLearnerDataLockAmounts>();
+            var dataLock = fixture.Create<ProviderNegativeEarningsLearnerDataLockFundingLineTypeAmounts>();
             dataLock.LearnerUln = uln;
             dataLock.Ukprn = TestHelper.DefaultPeriodEndProviderSummary.Ukprn;
             providerLearnerDataLocks.Add(dataLock);
