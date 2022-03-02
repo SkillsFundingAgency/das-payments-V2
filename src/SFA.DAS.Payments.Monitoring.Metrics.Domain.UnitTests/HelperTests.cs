@@ -33,16 +33,16 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests
                                                      summaryModel.HeldBackCompletionPayments.ContractType2);
 
             paymentMetrics.DifferenceContractType1.Should()
-                .Be(Math.Round(paymentMetrics.ContractType1 - summaryModel.DcEarnings.ContractType1, 2));
+                .Be(Math.Round(paymentMetrics.ContractType1 - summaryModel.DcEarnings.ContractType1, 5));
             paymentMetrics.DifferenceContractType2.Should()
-                .Be(Math.Round(paymentMetrics.ContractType2 - summaryModel.DcEarnings.ContractType2, 2));
+                .Be(Math.Round(paymentMetrics.ContractType2 - summaryModel.DcEarnings.ContractType2, 5));
 
             paymentMetrics.PercentageContractType1.Should()
-                .Be(Math.Round(paymentMetrics.ContractType1 / summaryModel.DcEarnings.ContractType1 * 100, 2));
+                .Be(Math.Round(paymentMetrics.ContractType1 / summaryModel.DcEarnings.ContractType1 * 100, 5));
             paymentMetrics.PercentageContractType2.Should()
-                .Be(Math.Round(paymentMetrics.ContractType2 / summaryModel.DcEarnings.ContractType2 * 100, 2));
+                .Be(Math.Round(paymentMetrics.ContractType2 / summaryModel.DcEarnings.ContractType2 * 100, 5));
 
-            paymentMetrics.Percentage.Should().Be(Math.Round(paymentMetrics.Total / summaryModel.DcEarnings.Total * 100, 2));
+            paymentMetrics.Percentage.Should().Be(Math.Round(paymentMetrics.Total / summaryModel.DcEarnings.Total * 100, 5));
         }
     }
 }
