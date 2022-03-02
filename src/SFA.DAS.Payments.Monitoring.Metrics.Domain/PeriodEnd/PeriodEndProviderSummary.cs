@@ -79,10 +79,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 AlreadyPaidDataLockedEarnings16To18 = providerDataLockedAlreadyPaidTotals.FundingLineType16To18Amount,
                 AlreadyPaidDataLockedEarnings19Plus = providerDataLockedAlreadyPaidTotals.FundingLineType19PlusAmount,
 
-                AdjustedDataLockedEarnings = providerDataLockedEarnings.Total - providerDataLockedAlreadyPaidTotals.Total,
-                AdjustedDataLockedEarnings16To18 = providerDataLockedEarnings.FundingLineType16To18Amount - providerDataLockedAlreadyPaidTotals.FundingLineType16To18Amount,
-                AdjustedDataLockedEarnings19Plus = providerDataLockedEarnings.FundingLineType19PlusAmount - providerDataLockedAlreadyPaidTotals.FundingLineType19PlusAmount,
-
                 TotalDataLockedEarnings = providerDataLockedEarnings.Total,
                 TotalDataLockedEarnings16To18 = providerDataLockedEarnings.FundingLineType16To18Amount,
                 TotalDataLockedEarnings19Plus = providerDataLockedEarnings.FundingLineType19PlusAmount,
@@ -93,8 +89,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
                 InLearning = inLearning,
                 NegativeEarnings = negativeEarnings
             };
-
+            
             ApplyNegativeEarningsAdjustments(result);
+            CalculateAdjustedDataLocks(result);
 
             result.PaymentMetrics = Helpers.CreatePaymentMetrics(result);
             result.Percentage = result.PaymentMetrics.Percentage;
@@ -204,6 +201,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd
         {
             inLearning = inLearningTotal.InLearningCount;
 
+        }
+
+        private void CalculateAdjustedDataLocks(ProviderPeriodEndSummaryModel model)
+        {
+            model.AdjustedDataLockedEarnings = model.TotalDataLockedEarnings - model.AlreadyPaidDataLockedEarnings;
+            model.AdjustedDataLockedEarnings16To18 = model.TotalDataLockedEarnings16To18 - model.AlreadyPaidDataLockedEarnings16To18;
+            model.AdjustedDataLockedEarnings19Plus = model.TotalDataLockedEarnings19Plus - model.AlreadyPaidDataLockedEarnings19Plus;
         }
 
         private void CalculateNegativeEarnings()
