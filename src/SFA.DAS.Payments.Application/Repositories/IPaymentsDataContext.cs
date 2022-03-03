@@ -11,6 +11,7 @@ namespace SFA.DAS.Payments.Application.Repositories
     public interface IPaymentsDataContext
     {
         DbSet<LevyAccountModel> LevyAccount { get; }
+        DbSet<LevyAccountAuditModel> LevyAccountAudits { get; }
         DbSet<PaymentModel> Payment { get; }
         DbSet<ApprenticeshipModel> Apprenticeship { get; }
         DbSet<ApprenticeshipPriceEpisodeModel> ApprenticeshipPriceEpisode { get; }
