@@ -12,5 +12,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Interfaces
         Task<List<Tuple<long, long?>>> GetEmployerAccountsByUkprn(long ukprn, CancellationToken cancellationToken = default(CancellationToken));
         Task<List<long>> GetEmployerAccounts(CancellationToken cancellationToken);
         Task<List<(long AccountId, bool IsLevyPayer)>> GetCurrentEmployerStatus(List<long> employerIds, CancellationToken cancellationToken);
+        Task SaveLevyAccountAuditModel(long accountId, short academicYear, byte collectionPeriod, decimal levyAccountBalance, decimal remainingTransferAllowance, bool isLevyPayer);
     }
 }
