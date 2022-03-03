@@ -182,6 +182,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         }
 
         [Test]
+        public async Task HandleMonthEnd_ShouldSaveToLevyAccountAuditTable()
+        {
+            await service.HandleMonthEnd(employerAccountId, jobId, collectionPeriod);
+
+            levyFundingSourceRepository.Verify(x => x.SaveLevyAccountAuditModel(levyAccount.AccountId, collectionPeriod.AcademicYear, collectionPeriod.Period, remainingBalance, remainingTransferAllowance, levyAccount.IsLevyPayer));
+        }
+
+        [Test]
         public async Task HandleMonthEnd_ShouldGetEmployerProviderPriorities()
         {
             await service.HandleMonthEnd(employerAccountId, jobId, collectionPeriod);
