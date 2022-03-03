@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             var levyAccount = await levyFundingSourceRepository.GetLevyAccount(employerAccountId);
             levyBalanceService.Initialise(levyAccount.Balance, levyAccount.TransferAllowance);
 
-            await levyFundingSourceRepository.SaveLevyAccountAuditModel(levyAccount.AccountId, collectionPeriod.AcademicYear, collectionPeriod.Period, levyAccount.Balance, levyBalanceService.RemainingTransferAllowance, levyAccount.IsLevyPayer);
+            await levyFundingSourceRepository.SaveLevyAccountAuditModel(levyAccount.AccountId, collectionPeriod.AcademicYear, collectionPeriod.Period, levyBalanceService.RemainingBalance, levyBalanceService.RemainingTransferAllowance, levyAccount.IsLevyPayer);
 
             logger.LogInfo($"Saved levy account audit model to database for account: {employerAccountId}, jobId: {jobId}");
 
