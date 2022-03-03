@@ -51,9 +51,13 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             var levyAccount = await levyFundingSourceRepository.GetLevyAccount(employerAccountId);
             levyBalanceService.Initialise(levyAccount.Balance, levyAccount.TransferAllowance);
 
+            await levyFundingSourceRepository.SaveLevyAccountAuditModel(levyAccount.AccountId, collectionPeriod.AcademicYear, collectionPeriod.Period, levyAccount.Balance, levyBalanceService.RemainingTransferAllowance, levyAccount.IsLevyPayer);
+
+            logger.LogInfo($"Saved levy account audit model to database for account: {employerAccountId}, jobId: {jobId}");
+
             var orderedRequiredLevyPayments = await GetOrderedCalculatedRequiredLevyAmounts(employerAccountId, collectionPeriod).ConfigureAwait(false);
 
-            logger.LogDebug($"Processing {orderedRequiredLevyPayments.Count} required payments, levy balance {levyAccount.Balance}, account {employerAccountId}, job id {jobId}");
+            logger.LogDebug($"Processing {orderedRequiredLevyPayments.Count} required payments, levy balance {levyAccount.Balance}, account {employerAccountId}, job id {jobId}, academicYear: {collectionPeriod.AcademicYear}, collectionPeriod: {collectionPeriod.Period}");
             var fundingSourceEvents = new List<FundingSourcePaymentEvent>();
             fundingSourceEvents.AddRange(orderedRequiredLevyPayments.SelectMany(payment =>
                 fundingSourcePaymentEventBuilder.BuildFundingSourcePaymentsForRequiredPayment(payment, employerAccountId, jobId)));
