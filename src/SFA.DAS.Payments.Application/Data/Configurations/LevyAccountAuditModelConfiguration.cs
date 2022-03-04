@@ -12,7 +12,9 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
         public void Configure(EntityTypeBuilder<LevyAccountAuditModel> builder)
         {
             builder.ToTable("LevyAccountAudit", "Payments2");
-            builder.HasKey(x => x.AccountId);
+            builder.HasKey(x => x.Id);
+
+            builder.Property(x => x.Id).HasColumnName("Id").IsRequired();
             builder.Property(x => x.AccountId).HasColumnName("AccountId").IsRequired();
             builder.Property(x => x.AcademicYear).HasColumnName("AcademicYear").IsRequired();
             builder.Property(x => x.CollectionPeriod).HasColumnName("CollectionPeriod").IsRequired();

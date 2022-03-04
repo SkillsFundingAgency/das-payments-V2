@@ -6,6 +6,7 @@ namespace SFA.DAS.Payments.Model.Core.Entities
 {
     public class LevyAccountAuditModel
     {
+        public long Id { get; set; }
         public long AccountId { get; set; }
         public short AcademicYear { get; set; }
         public byte CollectionPeriod { get; set; }
