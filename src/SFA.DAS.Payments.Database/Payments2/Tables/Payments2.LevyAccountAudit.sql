@@ -7,5 +7,5 @@
 	[LevyAccountBalance] DECIMAL(18, 4) NOT NULL,
 	[RemainingTransferAllowance] DECIMAL(18, 4) NOT NULL,
 	[IsLevyPayer] BIT NOT NULL,
-	[CreationDate] DATETIMEOFFSET NOT NULL CONSTRAINT DF_LevyAccountAudit__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
+	[CreationDate] DATETIMEOFFSET NOT NULL CONSTRAINT DF_LevyAccountAudit__CreationDate DEFAULT (SYSDATETIMEOFFSET())
 )
