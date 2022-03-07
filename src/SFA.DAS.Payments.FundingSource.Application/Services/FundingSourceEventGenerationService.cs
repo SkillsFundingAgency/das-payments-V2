@@ -51,9 +51,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             var levyAccount = await levyFundingSourceRepository.GetLevyAccount(employerAccountId);
             levyBalanceService.Initialise(levyAccount.Balance, levyAccount.TransferAllowance);
 
-            await levyFundingSourceRepository.SaveLevyAccountAuditModel(levyAccount.AccountId, collectionPeriod.AcademicYear, collectionPeriod.Period, levyAccount.Balance, levyAccount.TransferAllowance, levyAccount.IsLevyPayer);
+            await levyFundingSourceRepository.SaveLevyAccountAuditModel(levyAccount.AccountId, collectionPeriod.AcademicYear, collectionPeriod.Period, levyAccount.Balance, levyBalanceService.RemainingBalance,
+                levyAccount.TransferAllowance, levyBalanceService.RemainingTransferAllowance, levyAccount.IsLevyPayer);
 
-            logger.LogInfo($"Saved levy account audit model to database for account: {employerAccountId}, jobId: {jobId}, remainingBalance: {levyBalanceService.RemainingBalance}, remainingTransferAllowance: {levyBalanceService.RemainingTransferAllowance}, isLevyPayer: {levyAccount.IsLevyPayer}");
+            logger.LogInfo($"Saved levy account audit model to database for account: {employerAccountId}, jobId: {jobId}, sourceLevyAccountBalance: {levyAccount.Balance}, adjustedLevyAccountBalance: {levyBalanceService.RemainingBalance}, " +
+                           $"sourceTransferAllowance: {levyAccount.TransferAllowance}, adjustedTransferAllowance: {levyBalanceService.RemainingTransferAllowance}, isLevyPayer: {levyAccount.IsLevyPayer}");
 
             var orderedRequiredLevyPayments = await GetOrderedCalculatedRequiredLevyAmounts(employerAccountId, collectionPeriod).ConfigureAwait(false);
 

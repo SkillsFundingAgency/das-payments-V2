@@ -18,7 +18,10 @@ namespace SFA.DAS.Payments.Application.Data.Configurations
             builder.Property(x => x.AccountId).HasColumnName("AccountId").IsRequired();
             builder.Property(x => x.AcademicYear).HasColumnName("AcademicYear").IsRequired();
             builder.Property(x => x.CollectionPeriod).HasColumnName("CollectionPeriod").IsRequired();
-            builder.Property(x => x.LevyAccountBalance).HasColumnName("LevyAccountBalance").IsRequired();
+            builder.Property(x => x.SourceLevyAccountBalance).HasColumnName("SourceLevyAccountBalance").IsRequired();
+            builder.Property(x => x.AdjustedLevyAccountBalance).HasColumnName("AdjustedLevyAccountBalance").IsRequired();
+            builder.Property(x => x.SourceTransferAllowance).HasColumnName("SourceTransferAllowance").IsRequired();
+            builder.Property(x => x.AdjustedTransferAllowance).HasColumnName("AdjustedTransferAllowance").IsRequired();
             builder.Property(x => x.IsLevyPayer).HasColumnName("IslevyPayer").IsRequired();
         }
     }

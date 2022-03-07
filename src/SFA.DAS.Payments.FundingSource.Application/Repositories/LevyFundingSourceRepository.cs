@@ -59,15 +59,17 @@ namespace SFA.DAS.Payments.FundingSource.Application.Repositories
             return accountStatuses.Select(x => (x.AccountId, x.IsLevyPayer)).ToList();
         }
 
-        public async Task SaveLevyAccountAuditModel(long accountId, short academicYear, byte collectionPeriod, decimal levyAccountBalance, decimal remainingTransferAllowance, bool isLevyPayer)
+        public async Task SaveLevyAccountAuditModel(long accountId, short academicYear, byte collectionPeriod, decimal sourceLevyAccountBalance, decimal adjustedLevyAccountBalance, decimal sourceTransferAllowance, decimal adjustedTransferAllowance, bool isLevyPayer)
         {
             var model = new LevyAccountAuditModel
             {
                 AccountId = accountId,
                 AcademicYear = academicYear,
                 CollectionPeriod = collectionPeriod,
-                LevyAccountBalance = levyAccountBalance,
-                RemainingTransferAllowance = remainingTransferAllowance,
+                SourceLevyAccountBalance = sourceLevyAccountBalance,
+                AdjustedLevyAccountBalance = adjustedLevyAccountBalance,
+                SourceTransferAllowance = sourceTransferAllowance,
+                AdjustedTransferAllowance = adjustedTransferAllowance,
                 IsLevyPayer = isLevyPayer
             };
 
