@@ -186,7 +186,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         {
             await service.HandleMonthEnd(employerAccountId, jobId, collectionPeriod);
 
-            levyFundingSourceRepository.Verify(x => x.SaveLevyAccountAuditModel(levyAccount.AccountId, collectionPeriod.AcademicYear, collectionPeriod.Period, remainingBalance, remainingTransferAllowance, levyAccount.IsLevyPayer));
+            levyFundingSourceRepository.Verify(x => x.SaveLevyAccountAuditModel(levyAccount.AccountId, collectionPeriod.AcademicYear, collectionPeriod.Period, initialLevyBalance,remainingBalance, initialTransferAllowance, remainingTransferAllowance, levyAccount.IsLevyPayer));
         }
 
         [Test]
