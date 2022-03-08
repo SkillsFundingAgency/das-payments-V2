@@ -18,6 +18,8 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.DataLock
                     .Select(item => new DataLockEventNonPayablePeriodModel
                     {
                         TransactionType = (TransactionType)item.earning.Type,
+                        AcademicYear = source.CollectionPeriod.AcademicYear,
+                        CollectionPeriod = source.CollectionPeriod.Period,
                         DeliveryPeriod = item.period.Period,
                         Amount = item.period.Amount,
                         PriceEpisodeIdentifier = item.period.PriceEpisodeIdentifier,
@@ -29,6 +31,8 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.DataLock
                         {
                             ApprenticeshipId = failure.ApprenticeshipId,
                             DataLockFailure = failure.DataLockError,
+                            AcademicYear = source.CollectionPeriod.AcademicYear,
+                            CollectionPeriod = source.CollectionPeriod.Period
                         }).ToList() ?? new List<DataLockEventNonPayablePeriodFailureModel>(),
                     }) ?? new List<DataLockEventNonPayablePeriodModel>()
             );

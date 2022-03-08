@@ -13,7 +13,12 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
             var priceEpisodeModels = source.PriceEpisodes?
                 .Select(priceEpisode => context.Mapper.Map<EarningEventPriceEpisodeModel>(priceEpisode))
                 .ToList() ?? new List<EarningEventPriceEpisodeModel>();
-            priceEpisodeModels.ForEach(model => model.EarningEventId = source.EventId);
+            priceEpisodeModels.ForEach(model =>
+            {
+                 model.EarningEventId = source.EventId;
+                 model.AcademicYear = source.CollectionPeriod.AcademicYear;
+                 model.CollectionPeriod = source.CollectionPeriod.Period;
+            });
             return priceEpisodeModels;
         }
     }

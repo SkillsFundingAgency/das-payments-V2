@@ -17,13 +17,15 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                 .Select(item => new EarningEventPeriodModel
                 {
                     TransactionType = (TransactionType)item.onProgEarning.Type,
+                    AcademicYear = source.CollectionPeriod.AcademicYear,
+                    CollectionPeriod = source.CollectionPeriod.Period,
                     DeliveryPeriod = item.period.Period,
                     Amount = item.period.Amount,
                     PriceEpisodeIdentifier = item.period.PriceEpisodeIdentifier,
                     SfaContributionPercentage = item.period.SfaContributionPercentage,
                     EarningEventId = source.EventId,
                     CensusDate = item.onProgEarning.CensusDate
-                }) ?? new List<EarningEventPeriodModel>()
+        }) ?? new List<EarningEventPeriodModel>()
             );
 
             periods.AddRange(source.IncentiveEarnings?
@@ -31,6 +33,8 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
                 .Select(item => new EarningEventPeriodModel
                 {
                     TransactionType = (TransactionType)item.incentiveEarning.Type,
+                    AcademicYear = source.CollectionPeriod.AcademicYear,
+                    CollectionPeriod = source.CollectionPeriod.Period,
                     DeliveryPeriod = item.period.Period,
                     Amount = item.period.Amount,
                     PriceEpisodeIdentifier = item.period.PriceEpisodeIdentifier,
