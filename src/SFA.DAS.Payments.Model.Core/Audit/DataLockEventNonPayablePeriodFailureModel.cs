@@ -11,5 +11,7 @@ namespace SFA.DAS.Payments.Model.Core.Audit
         public DataLockErrorCode DataLockFailure { get; set; }
         //public virtual ApprenticeshipModel Apprenticeship { get; set; }
         public long? ApprenticeshipId { get; set; }
+        public short AcademicYear { get; set; }
+        public byte CollectionPeriod { get; set; }
     }
 }
