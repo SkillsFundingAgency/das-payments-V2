@@ -18,6 +18,8 @@
 	Completed BIT NOT NULL,
     EmployerContribution DECIMAL(15,5) NULL,
     CompletionHoldBackExemptionCode INT NULL,
+	AcademicYear SMALLINT NULL,
+	CollectionPeriod TINYINT NULL,
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_DataLockEventPriceEpisode__CreationDate DEFAULT (SYSDATETIMEOFFSET())	
 )
 

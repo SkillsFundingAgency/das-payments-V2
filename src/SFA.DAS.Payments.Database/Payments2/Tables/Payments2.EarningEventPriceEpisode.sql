@@ -21,6 +21,8 @@
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_EarningEventPriceEpisode__CreationDate DEFAULT (SYSDATETIMEOFFSET())	,
 	AgreedPrice DECIMAL(15, 5) NULL,
 	CourseStartDate DATETIME2  NULL,
+	AcademicYear SMALLINT NULL,
+	CollectionPeriod TINYINT NULL,
 	INDEX IX_EarningEventPriceEpisode__EarningEventId (EarningEventId),
 	INDEX IX_EarningEventPriceEpisode__Search (EarningEventId, PriceEpisodeIdentifier, StartDate, CourseStartDate, AgreedPrice) 
 )
