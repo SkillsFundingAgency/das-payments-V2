@@ -85,7 +85,10 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
                     ApprenticeshipPriceEpisodeId = earningPeriod.ApprenticeshipPriceEpisodeId,
                     DataLockEventId = PaymentEvent.EventId,
                     LearningStartDate = PaymentEvent.LearningAim.StartDate,
-                    PriceEpisodeIdentifier = earningPeriod.PriceEpisodeIdentifier});
+                    PriceEpisodeIdentifier = earningPeriod.PriceEpisodeIdentifier,
+                    AcademicYear = PaymentEvent.CollectionPeriod.AcademicYear,
+                    CollectionPeriod = PaymentEvent.CollectionPeriod.Period
+                });
         }
 
         [Test]
@@ -102,7 +105,9 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
                     period.ApprenticeshipPriceEpisodeId == earningPeriod.ApprenticeshipPriceEpisodeId &&
                     period.DataLockEventId == PaymentEvent.EventId &&
                     period.LearningStartDate == PaymentEvent.LearningAim.StartDate &&
-                    period.PriceEpisodeIdentifier == earningPeriod.PriceEpisodeIdentifier)
+                    period.PriceEpisodeIdentifier == earningPeriod.PriceEpisodeIdentifier &&
+                    period.AcademicYear == PaymentEvent.CollectionPeriod.AcademicYear &&
+                    period.CollectionPeriod == PaymentEvent.CollectionPeriod.Period)
                 .Should()
                 .BeTrue();
 

@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
     public class EarningEventMapperTests
     {
         protected IMapper Mapper { get; private set; }
-        
+
         [OneTimeSetUp]
         public void InitialiseMapper()
         {
@@ -100,8 +100,8 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
                 },
                 StartDate = DateTime.Now
             };
-             
-            
+
+
 
             var mapper = new EarningEventMapper(Mapper);
             var earningEventModel = mapper.Map(earningEvent);
@@ -140,38 +140,6 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
         {
             earningEventModel.LearnerReferenceNumber.Should().Be(earningEvent.Learner.ReferenceNumber);
             earningEventModel.LearnerUln.Should().Be(earningEvent.Learner.Uln);
-        }
-
-        private void ComparePriceEpisodes(EarningEvents.Messages.Events.EarningEvent earningEvent,
-            EarningEventModel earningEventModel)
-        {
-            if (earningEvent.PriceEpisodes.IsNullOrEmpty())
-                return;
-            earningEventModel.PriceEpisodes.Should().NotBeNullOrEmpty();
-
-            foreach (var priceEpisode in earningEvent.PriceEpisodes)
-            {
-                var priceEpisodeModel = earningEventModel.PriceEpisodes.FirstOrDefault(x => x.PriceEpisodeIdentifier == priceEpisode.Identifier);
-                priceEpisodeModel.Should().NotBeNull();
-                priceEpisodeModel.ActualEndDate.Should().Be(priceEpisode.ActualEndDate);
-                priceEpisodeModel.AgreedPrice.Should().Be(priceEpisode.AgreedPrice);
-                priceEpisodeModel.Completed.Should().Be(priceEpisode.Completed);
-                priceEpisodeModel.CompletionAmount.Should().Be(priceEpisode.CompletionAmount);
-                priceEpisodeModel.CompletionHoldBackExemptionCode.Should().Be(priceEpisode.CompletionHoldBackExemptionCode);
-                priceEpisodeModel.CourseStartDate.Should().Be(priceEpisode.CourseStartDate);
-                priceEpisodeModel.EarningEventId.Should().Be(earningEvent.EventId);
-                priceEpisodeModel.EffectiveTotalNegotiatedPriceStartDate.Should().Be(priceEpisode.EffectiveTotalNegotiatedPriceStartDate);
-                priceEpisodeModel.EmployerContribution.Should().Be(priceEpisode.EmployerContribution);
-                priceEpisodeModel.InstalmentAmount.Should().Be(priceEpisode.InstalmentAmount);
-                priceEpisodeModel.NumberOfInstalments.Should().Be(priceEpisode.NumberOfInstalments);
-                priceEpisodeModel.PlannedEndDate.Should().Be(priceEpisode.PlannedEndDate);
-                priceEpisodeModel.SfaContributionPercentage.Should().Be(priceEpisode.EmployerContribution);
-                priceEpisodeModel.StartDate.Should().Be(priceEpisode.StartDate);
-                priceEpisodeModel.TotalNegotiatedPrice1.Should().Be(priceEpisode.TotalNegotiatedPrice1);
-                priceEpisodeModel.TotalNegotiatedPrice2.Should().Be(priceEpisode.TotalNegotiatedPrice2);
-                priceEpisodeModel.TotalNegotiatedPrice3.Should().Be(priceEpisode.TotalNegotiatedPrice3);
-                priceEpisodeModel.TotalNegotiatedPrice4.Should().Be(priceEpisode.TotalNegotiatedPrice4);
-            }
         }
     }
 }

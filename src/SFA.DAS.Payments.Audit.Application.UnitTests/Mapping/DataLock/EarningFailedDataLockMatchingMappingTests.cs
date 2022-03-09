@@ -80,10 +80,14 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
             periodToTest.DataLockEventId.Should().Be(PaymentEvent.EventId);
             periodToTest.LearningStartDate.Should().Be(PaymentEvent.LearningAim.StartDate);
             periodToTest.PriceEpisodeIdentifier.Should().Be(earningPeriod.PriceEpisodeIdentifier);
+            periodToTest.CollectionPeriod.Should().Be(PaymentEvent.CollectionPeriod.Period);
+            periodToTest.AcademicYear.Should().Be(PaymentEvent.CollectionPeriod.AcademicYear);
 
             periodToTest.Failures.Should().NotBeNullOrEmpty();
             periodToTest.Failures.FirstOrDefault().ApprenticeshipId.Should().Be(123456);
             periodToTest.Failures.FirstOrDefault().DataLockFailure.Should().Be(DataLockErrorCode.DLOCK_07);
+            periodToTest.Failures.FirstOrDefault().CollectionPeriod.Should().Be(PaymentEvent.CollectionPeriod.Period);
+            periodToTest.Failures.FirstOrDefault().AcademicYear.Should().Be(PaymentEvent.CollectionPeriod.AcademicYear);
         }
 
         [Test]
@@ -101,9 +105,14 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
             periodToTest.DataLockEventId.Should().Be(PaymentEvent.EventId);
             periodToTest.LearningStartDate.Should().Be(PaymentEvent.LearningAim.StartDate);
             periodToTest.PriceEpisodeIdentifier.Should().Be(earningPeriod.PriceEpisodeIdentifier);
+            periodToTest.CollectionPeriod.Should().Be(PaymentEvent.CollectionPeriod.Period);
+            periodToTest.AcademicYear.Should().Be(PaymentEvent.CollectionPeriod.AcademicYear);
+
             periodToTest.Failures.Should().NotBeNullOrEmpty();
             periodToTest.Failures.FirstOrDefault().ApprenticeshipId.Should().Be(123456);
             periodToTest.Failures.FirstOrDefault().DataLockFailure.Should().Be(DataLockErrorCode.DLOCK_07);
+            periodToTest.Failures.FirstOrDefault().CollectionPeriod.Should().Be(PaymentEvent.CollectionPeriod.Period);
+            periodToTest.Failures.FirstOrDefault().AcademicYear.Should().Be(PaymentEvent.CollectionPeriod.AcademicYear);
         }
     }
 }
