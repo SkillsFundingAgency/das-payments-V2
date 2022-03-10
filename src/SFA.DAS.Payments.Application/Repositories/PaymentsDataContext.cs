@@ -28,6 +28,7 @@ namespace SFA.DAS.Payments.Application.Repositories
         public virtual DbSet<DataLockEventNonPayablePeriodFailureModel> DataLockEventNonPayablePeriodFailure { get; set; }
         public virtual DbSet<RequiredPaymentEventModel> RequiredPaymentEvent { get; set; }
         public virtual DbSet<CollectionPeriodModel> CollectionPeriod { get; protected set; }
+        public virtual DbSet<LevyAccountAuditModel> LevyAccountAudits { get; protected set; }
 
 
 
@@ -68,6 +69,7 @@ namespace SFA.DAS.Payments.Application.Repositories
             modelBuilder.ApplyConfiguration(new RequiredPaymentEventModelConfiguration());
             modelBuilder.ApplyConfiguration(new ProviderAdjustmentsModelConfiguration());
             modelBuilder.ApplyConfiguration(new CollectionPeriodModelConfiguration());
+            modelBuilder.ApplyConfiguration(new LevyAccountAuditModelConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

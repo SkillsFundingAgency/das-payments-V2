@@ -131,6 +131,7 @@
     <Build Include="Payments2\Tables\Payments2.ProviderRequiringReprocessing.sql" />
     <Build Include="Payments2\Tables\Payments2.CollectionPeriod.sql" />
     <Build Include="dbo\Stored Procedures\dbo.usp_DisplayDeploymentProperties.sql" />
+    <Build Include="Payments2\Tables\Payments2.LevyAccountAudit.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />
