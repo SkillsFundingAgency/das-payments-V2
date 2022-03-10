@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -7,16 +6,23 @@ using SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.Submission.Summary;
 using SFA.DAS.Payments.Monitoring.Metrics.Model;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
+using System.Collections.Generic;
+using System.Linq;
+using AutoFixture;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
 {
     [TestFixture]
     public class PeriodEndProviderSummaryTests
     {
+        private Fixture fixture;
+        private Random random;
         private List<TransactionTypeAmountsByContractType> defaultDcEarnings;
-        private List<ProviderNegativeEarningsTotal> defaultDcNegativeEarnings;
         private List<TransactionTypeAmountsByContractType> paymentTransactionTypes;
         private List<ProviderFundingSourceAmounts> paymentFundingSources;
+        private List<ProviderNegativeEarningsLearnerDcEarningAmounts> providerLearnerNegativeEarnings;
+        private List<ProviderNegativeEarningsLearnerContractTypeAmounts> providerLearnerPayments;
+        private List<ProviderNegativeEarningsLearnerDataLockFundingLineTypeAmounts> providerLearnerDataLocks;
         private ProviderContractTypeAmounts heldBackAmounts;
         private PeriodEndProviderDataLockTypeCounts periodEndProviderDataLockTypeCounts;
         protected PeriodEndProviderSummary GetPeriodEndProviderSummary => TestHelper.DefaultPeriodEndProviderSummary;
@@ -24,13 +30,16 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
         [SetUp]
         public void SetUp()
         {
+            fixture = new Fixture();
+            random = new Random();
+            providerLearnerNegativeEarnings = CreateLearnerNegativeEarnings();
+            providerLearnerPayments = TestHelper.DefaultLearnerPayments();
+            providerLearnerDataLocks = TestHelper.DefaultLearnerDataLockedEarnings();
             defaultDcEarnings = TestHelper.GetDefaultDcEarnings;
-            defaultDcNegativeEarnings = TestHelper.GetDefaultDcNegativeEarnings;
             paymentTransactionTypes = TestHelper.GetPaymentTransactionTypes;
             paymentFundingSources = TestHelper.GetPaymentFundingSourceAmounts;
             heldBackAmounts = TestHelper.DefaultHeldBackCompletionPayments;
             periodEndProviderDataLockTypeCounts = TestHelper.DefaultPeriodEndProviderDataLockTypeCounts;
-
         }
 
         private PeriodEndProviderSummary GetPopulatedPeriodEndProviderSummary()
@@ -47,11 +56,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             summary.AddFundingSourceAmounts(paymentFundingSources);
             summary.AddHeldBackCompletionPayments(heldBackAmounts);
             summary.AddPeriodEndProviderDataLockTypeCounts(periodEndProviderDataLockTypeCounts);
-            summary.AddNegativeEarnings(defaultDcNegativeEarnings);
+            summary.AddLearnerNegativeEarnings(providerLearnerNegativeEarnings);
+            summary.AddLearnerPayments(providerLearnerPayments);
+            summary.AddLearnerDataLockedEarnings(providerLearnerDataLocks);
 
             return summary;
         }
-
 
         private ProviderPeriodEndSummaryModel GetSubmissionSummaryMetrics()
         {
@@ -107,7 +117,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             metrics.DcEarnings.ContractType2.Should().Be(57300);
             metrics.DcEarnings.Total.Should().Be(115600);
         }
-
 
         [Test]
         public void Calculates_Correct_HeldBack_Payments_Totals()
@@ -180,8 +189,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
         {
             var metrics = GetSubmissionSummaryMetrics();
             metrics.PaymentMetrics.ContractType1.Should().Be(
-                paymentTransactionTypes.GetTotal(ContractType.Act1) + 
-                TestsHelper.DefaultYearToDateAmounts.ContractType1 + 
+                paymentTransactionTypes.GetTotal(ContractType.Act1) +
+                TestsHelper.DefaultYearToDateAmounts.ContractType1 +
                 (TestsHelper.DefaultDataLockedTotal - TestsHelper.AlreadyPaidDataLockedEarnings) +
                 heldBackAmounts.ContractType1);
             metrics.PaymentMetrics.ContractType2.Should().Be(
@@ -189,116 +198,238 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
                 +TestsHelper.DefaultYearToDateAmounts.ContractType2 +
                 heldBackAmounts.ContractType2);
         }
-        
+
         [Test]
         public void Calculates_Correct_ContractType_Percentages()
         {
+            providerLearnerNegativeEarnings.Clear();
             var metrics = GetSubmissionSummaryMetrics();
             var precision = 0.01m;
             metrics.PaymentMetrics.PercentageContractType1.Should().BeApproximately(92.45m, precision);
-            metrics.PaymentMetrics.PercentageContractType2.Should().BeApproximately(87.08m, precision );
+            metrics.PaymentMetrics.PercentageContractType2.Should().BeApproximately(87.08m, precision);
             metrics.PaymentMetrics.Percentage.Should().BeApproximately(89.79m, precision);
         }
 
-        
         [Test]
         public void Calculates_Correct_Percentage()
         {
+            providerLearnerNegativeEarnings.Clear();
             var metrics = GetSubmissionSummaryMetrics();
             var precision = 0.01m;
             metrics.Percentage.Should().BeApproximately(89.79m, precision);
         }
 
         [Test]
-        public void WhenGettingMetrics_AndThereAreNegativeEarnings_ThenNegativeEarningContractTypePropertiesArePopulated()
+        public void WhenProviderLearnerNegativeEarningsEmpty_ThenNegativeEarningsNull()
         {
             //Arrange
-            var expectedAct1NegativeEarnings = 1000m;
-            var expectedAct2NegativeEarnings = 800m;
-            var summary = GetPopulatedPeriodEndProviderSummary();
-            var negativeEarnings = TestHelper.GetDefaultDcNegativeEarnings;
-            negativeEarnings.FirstOrDefault(x => x.ContractType == ContractType.Act1).NegativeEarningsTotal = expectedAct1NegativeEarnings;
-            negativeEarnings.FirstOrDefault(x => x.ContractType == ContractType.Act2).NegativeEarningsTotal = expectedAct2NegativeEarnings;
-            summary.AddNegativeEarnings(negativeEarnings);
+            providerLearnerNegativeEarnings.Clear();
 
             //Act
-            var metrics = summary.GetMetrics();
+            var result = GetSubmissionSummaryMetrics();
 
             //Assert
-            metrics.NegativeEarnings.ContractType1.Should().Be(expectedAct1NegativeEarnings);
-            metrics.NegativeEarnings.ContractType2.Should().Be(expectedAct2NegativeEarnings);
+            result.NegativeEarnings.ContractType1.Should().BeNull();
+            result.NegativeEarnings.ContractType2.Should().BeNull();
         }
-
+        
         [Test]
-        public void WhenGettingMetrics_AndThereAreNoNegativeEarnings_ThenNegativeEarningContractTypeProptertiesAreZero()
+        public void WhenProviderLearnerNegativeEarningsNull_ThenNegativeEarningsNull()
         {
             //Arrange
-            var summary = GetPopulatedPeriodEndProviderSummary();
+            providerLearnerNegativeEarnings = null;
 
             //Act
-            var metrics = summary.GetMetrics();
+            var result = GetSubmissionSummaryMetrics();
 
             //Assert
-            metrics.NegativeEarnings.ContractType1.Should().Be(0m);
-            metrics.NegativeEarnings.ContractType2.Should().Be(0m);
+            result.NegativeEarnings.ContractType1.Should().BeNull();
+            result.NegativeEarnings.ContractType2.Should().BeNull();
         }
-
-        //[TestCase(1000.00, 700.00)]
-        [TestCase(0.0, 0.0)]
-        public void WhenGettingMetrics_ThenNegativeEarningsAreAdjustedCorrectly(decimal act1NegativeEarningsAmount, decimal act2NegativeEarningsAmount)
+        
+        [Test]
+        public void WhenProviderHasSingleLearnerWithNegativeEarnings_AndLearnerHasPayments_ThenNegativeEarningsNull()
         {
             //Arrange
-            var dcEarningsAct1 = TestHelper.GetDefaultDcEarnings.Where(dc => dc.ContractType == ContractType.Act1).Sum(x => x.Total);
-            var dcEarningsAct2 = TestHelper.GetDefaultDcEarnings.Where(dc => dc.ContractType == ContractType.Act2).Sum(x => x.Total);
-
-
-            //Negative earnings previously lowered DC earnings.
-            //To correct for this we add the previously removed earnings back.
-            var expectedAct1DcEarningsTotal = dcEarningsAct1 + act1NegativeEarningsAmount;
-            var expectedAct2DcEarningsTotal = dcEarningsAct2 + act2NegativeEarningsAmount;
-
-            var summary = GetPopulatedPeriodEndProviderSummary();
-            var negativeEarnings = TestHelper.GetDefaultDcNegativeEarnings;
-            negativeEarnings.FirstOrDefault(x => x.ContractType == ContractType.Act1).NegativeEarningsTotal = act1NegativeEarningsAmount;
-            negativeEarnings.FirstOrDefault(x => x.ContractType == ContractType.Act2).NegativeEarningsTotal = act2NegativeEarningsAmount;
-            summary.AddNegativeEarnings(negativeEarnings);
+            providerLearnerNegativeEarnings.RemoveRange(1, providerLearnerNegativeEarnings.Count - 1);
+            AddPaymentForLearner(providerLearnerNegativeEarnings.First().Uln);
 
             //Act
-            var result = summary.GetMetrics();
+            var result = GetSubmissionSummaryMetrics();
 
             //Assert
-            result.DcEarnings.ContractType1.Should().Be(expectedAct1DcEarningsTotal);
-            result.DcEarnings.ContractType2.Should().Be(expectedAct2DcEarningsTotal);
+            result.NegativeEarnings.ContractType1.Should().BeNull();
+            result.NegativeEarnings.ContractType2.Should().BeNull();
         }
-
-        [TestCase(1000.00, 700.00)]
-        public void WhenGettingMetrics_ThenNegativeEarningsAreNotAdjusted(decimal act1NegativeEarningsAmount, decimal act2NegativeEarningsAmount)
+        
+        [Test]
+        public void WhenProviderHasSingleLearnerWithNegativeEarnings_AndLearnerHasNoPayments_AndLearnerHasDataLocks_ThenNegativeEarningsAdded()
         {
             //Arrange
-            var dcEarningsAct1 = TestHelper.GetDefaultDcEarnings.Where(dc => dc.ContractType == ContractType.Act1).Sum(x => x.Total);
-            var dcEarningsAct2 = TestHelper.GetDefaultDcEarnings.Where(dc => dc.ContractType == ContractType.Act2).Sum(x => x.Total);
+            providerLearnerNegativeEarnings.RemoveRange(1, providerLearnerNegativeEarnings.Count - 1);
+            AddDataLockForLearner(providerLearnerNegativeEarnings.First().Uln);
+
+            var expectedAct1NegativeEarningsTotal = providerLearnerNegativeEarnings.Where(x => x.ContractType == ContractType.Act1).Sum(x => x.NegativeEarningsTotal);
+            var expectedAct2NegativeEarningsTotal = providerLearnerNegativeEarnings.Where(x => x.ContractType == ContractType.Act2).Sum(x => x.NegativeEarningsTotal);
+
+            //Act
+            var result = GetSubmissionSummaryMetrics();
+
+            //Assert
+            if (expectedAct1NegativeEarningsTotal == 0m)
+            {
+                result.NegativeEarnings.ContractType1.Should().BeNull();
+                result.NegativeEarnings.ContractType2.Should().Be(expectedAct2NegativeEarningsTotal);
+            }
+            else
+            {
+                result.NegativeEarnings.ContractType1.Should().Be(expectedAct1NegativeEarningsTotal);
+                result.NegativeEarnings.ContractType2.Should().BeNull();
+            }
+        }
+        
+        [Test]
+        public void WhenProviderHasSingleLearnerWithNegativeEarnings_AndLearnerHasNoPayments_AndLearnerHasDataLocks_ThenNegativeDataLocksAdjustedCorrectly()
+        {
+            //Arrange
+            providerLearnerNegativeEarnings.RemoveRange(1, providerLearnerNegativeEarnings.Count - 1);
+            AddDataLockForLearner(providerLearnerNegativeEarnings.First().Uln);
+
+            var expectedNegativeDataLocksTotal = TestHelper.DefaultDataLockedTotal.Total - providerLearnerDataLocks.Sum(x => x.Total);
+            var expectedNegativeDataLocks16To18Total = TestHelper.DefaultDataLockedTotal.FundingLineType16To18Amount - providerLearnerDataLocks.Sum(x => x.FundingLineType16To18Amount);
+            var expectedNegativeDataLocks19PlusTotal = TestHelper.DefaultDataLockedTotal.FundingLineType19PlusAmount - providerLearnerDataLocks.Sum(x => x.FundingLineType19PlusAmount);
+
+            //Act
+            var result = GetSubmissionSummaryMetrics();
+
+            //Assert
+            result.TotalDataLockedEarnings.Should().Be(expectedNegativeDataLocksTotal);
+            result.TotalDataLockedEarnings16To18.Should().Be(expectedNegativeDataLocks16To18Total);
+            result.TotalDataLockedEarnings19Plus.Should().Be(expectedNegativeDataLocks19PlusTotal);
+        }
+        
+        [Test]
+        public void WhenProviderHasSingleLearnerWithNegativeEarnings_AndLearnerHasNoPayments_AndLearnerNoDataLocks_ThenNegativeEarningsCorrectlyCalculated()
+        {
+            //Arrange
+            providerLearnerNegativeEarnings.RemoveRange(1, providerLearnerNegativeEarnings.Count - 1);
+
+            var expectedAct1NegativeEarningsTotal = providerLearnerNegativeEarnings.Where(x => x.ContractType == ContractType.Act1).Sum(x => x.NegativeEarningsTotal);
+            var expectedAct2NegativeEarningsTotal = providerLearnerNegativeEarnings.Where(x => x.ContractType == ContractType.Act2).Sum(x => x.NegativeEarningsTotal);
+
+            //Act
+            var result = GetSubmissionSummaryMetrics();
+
+            //Assert
+            if (expectedAct1NegativeEarningsTotal == 0m)
+            {
+                result.NegativeEarnings.ContractType1.Should().BeNull();
+                result.NegativeEarnings.ContractType2.Should().Be(expectedAct2NegativeEarningsTotal);
+            }
+            else
+            {
+                result.NegativeEarnings.ContractType1.Should().Be(expectedAct1NegativeEarningsTotal);
+                result.NegativeEarnings.ContractType2.Should().BeNull();
+            }
+        }
+        
+        [Test]
+        public void WhenProviderHasMultipleLearnersWithNegativeEarnings_AndOnlyOneHasNoPaymentsAndNoDataLocks_ThenNegativeEarningsCorrectlyCalculated()
+        {
+            //Arrange
+            var ulnUnderTest = providerLearnerNegativeEarnings.First().Uln;
+            var remainingUlns = providerLearnerNegativeEarnings.Where(x => x.Uln != ulnUnderTest).ToList();
+
+            remainingUlns.ForEach(x =>
+            {
+                AddDataLockForLearner(x.Uln);
+                AddPaymentForLearner(x.Uln);
+            });
+
+            var expectedAct1NegativeEarningsTotal = providerLearnerNegativeEarnings.Where(x => x.ContractType == ContractType.Act1 && x.Uln == ulnUnderTest).Sum(x => x.NegativeEarningsTotal);
+            var expectedAct2NegativeEarningsTotal = providerLearnerNegativeEarnings.Where(x => x.ContractType == ContractType.Act2 && x.Uln == ulnUnderTest).Sum(x => x.NegativeEarningsTotal);
 
 
-            var summary = GetPopulatedPeriodEndProviderSummary();
+            //Act
+            var result = GetSubmissionSummaryMetrics();
 
-            var negativeEarnings = TestHelper.GetDefaultDcNegativeEarnings;
+            //Assert
+            if (expectedAct1NegativeEarningsTotal == 0m)
+            {
+                result.NegativeEarnings.ContractType1.Should().BeNull();
+                result.NegativeEarnings.ContractType2.Should().Be(expectedAct2NegativeEarningsTotal);
+            }
+            else
+            {
+                result.NegativeEarnings.ContractType1.Should().Be(expectedAct1NegativeEarningsTotal);
+                result.NegativeEarnings.ContractType2.Should().BeNull();
+            }
+        }
+        
+        [Test]
+        public void WhenProviderHasMultipleLearnersWithNegativeEarnings_AndManyLearnersHaveNoPaymentsAndNoDataLocks_ThenNegativeEarningsCorrectlyCalculated()
+        {
+            //Arrange
+            var ulnsUnderTest = providerLearnerNegativeEarnings.Take(2).Select(x => x.Uln);
+            var remainingUlns = providerLearnerNegativeEarnings.Where(x => !ulnsUnderTest.Contains(x.Uln)).ToList();
+
+            remainingUlns.ForEach(x =>
+            {
+                AddDataLockForLearner(x.Uln);
+                AddPaymentForLearner(x.Uln);
+            });
+
+            var expectedAct1NegativeEarningsTotal = providerLearnerNegativeEarnings.Where(x => x.ContractType == ContractType.Act1 && ulnsUnderTest.Contains(x.Uln)).Sum(x => x.NegativeEarningsTotal);
+            var expectedAct2NegativeEarningsTotal = providerLearnerNegativeEarnings.Where(x => x.ContractType == ContractType.Act2 && ulnsUnderTest.Contains(x.Uln)).Sum(x => x.NegativeEarningsTotal);
+
+            //Act
+            var result = GetSubmissionSummaryMetrics();
+
+            //Assert
+            if (expectedAct1NegativeEarningsTotal == 0m)
+            {
+                result.NegativeEarnings.ContractType1.Should().BeNull();
+                result.NegativeEarnings.ContractType2.Should().Be(expectedAct2NegativeEarningsTotal);
+            }
+            else if (expectedAct2NegativeEarningsTotal == 0m)
+            {
+                result.NegativeEarnings.ContractType1.Should().Be(expectedAct1NegativeEarningsTotal);
+                result.NegativeEarnings.ContractType2.Should().BeNull();
+            }
+            else
+            {
+                result.NegativeEarnings.ContractType1.Should().Be(expectedAct1NegativeEarningsTotal);
+                result.NegativeEarnings.ContractType2.Should().Be(expectedAct2NegativeEarningsTotal);
+            }
+        }
+        
+        private void AddDataLockForLearner(long uln)
+        {
+            var dataLock = fixture.Create<ProviderNegativeEarningsLearnerDataLockFundingLineTypeAmounts>();
+            dataLock.LearnerUln = uln;
+            dataLock.Ukprn = TestHelper.DefaultPeriodEndProviderSummary.Ukprn;
+            providerLearnerDataLocks.Add(dataLock);
+        }
+
+        private void AddPaymentForLearner(long uln)
+        {
+            var payment = fixture.Create<ProviderNegativeEarningsLearnerContractTypeAmounts>();
+            payment.LearnerUln = uln;
+            payment.Ukprn = TestHelper.DefaultPeriodEndProviderSummary.Ukprn;
+            providerLearnerPayments.Add(payment);
+        }
+
+        private List<ProviderNegativeEarningsLearnerDcEarningAmounts> CreateLearnerNegativeEarnings()
+        {
+            var providerLearnerNegativeEarnings = fixture.CreateMany<ProviderNegativeEarningsLearnerDcEarningAmounts>(5).ToList();
+            providerLearnerNegativeEarnings.ForEach(x =>
+            {
+                x.Ukprn = TestHelper.DefaultPeriodEndProviderSummary.Ukprn;
+                x.ContractType = random.Next(0, 2) == 1 ? ContractType.Act1 : ContractType.Act2;
+                x.NegativeEarningsTotal = random.Next(1, 100000);
+            });
             
-            negativeEarnings.FirstOrDefault(x => x.ContractType == ContractType.Act1).NegativeEarningsTotal = act1NegativeEarningsAmount;
-            negativeEarnings.FirstOrDefault(x => x.ContractType == ContractType.Act2).NegativeEarningsTotal = act2NegativeEarningsAmount;
-            
-            summary.AddNegativeEarnings(negativeEarnings);
-
-            //Act
-            var result = summary.GetMetrics();
-
-            //Assert
-            result.DcEarnings.ContractType1.Should().Be(dcEarningsAct1);
-            result.DcEarnings.ContractType2.Should().Be(dcEarningsAct2);
-
-            result.NegativeEarnings.ContractType1.Should().Be(act1NegativeEarningsAmount);
-            result.NegativeEarnings.ContractType2.Should().Be(act2NegativeEarningsAmount);
+            return providerLearnerNegativeEarnings;
         }
-
-
     }
 }
