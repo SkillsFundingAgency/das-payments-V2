@@ -76,26 +76,14 @@ CREATE UNIQUE INDEX UX_RequiredPaymentEvent_LogicalDuplicates ON Payments2.Requi
 )
 GO
 
-CREATE INDEX [IX_RequiredPaymentEvent__Audit] ON [Payments2].[RequiredPaymentEvent]
+CREATE NONCLUSTERED INDEX [IX_RequiredPaymentEvent_Audit] ON [Payments2].[RequiredPaymentEvent] 
 (
-  [EarningEventId]
-)  
-GO
-
-CREATE NONCLUSTERED INDEX [IX_RequiredPaymentEvent_Submission] ON [Payments2].[RequiredPaymentEvent] 
-([AcademicYear], [CollectionPeriod], [Ukprn], [IlrSubmissionDateTime]) 
+	[Ukprn],
+	[LearnerUln],
+	[CollectionPeriod],
+	[AcademicYear],
+	[DeliveryPeriod],
+	[JobId]
+)
 WITH (ONLINE = ON)
-GO
-
-Create NONCLUSTERED INDEX [IX_RequiredPaymentEvent__Metrics] ON [Payments2].[RequiredPaymentEvent] 
-(
-	Ukprn,
-	JobId,
-	NonPaymentReason
-) include (ContractType, TransactionType, Amount)
-Go
-
-CREATE INDEX IX_RequiredPaymentEvent__AcademicYear_CollectionPeriod_JobId
-ON Payments2.RequiredPaymentEvent (AcademicYear, CollectionPeriod, JobId)
-INCLUDE (EventId)
 GO

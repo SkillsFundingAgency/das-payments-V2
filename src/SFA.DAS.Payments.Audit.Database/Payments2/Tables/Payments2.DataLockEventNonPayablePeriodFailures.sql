@@ -9,4 +9,11 @@
     [ApprenticeshipId] BIGINT NULL
 )
 GO
-CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriodFailures__DataLockEventNonPayablePeriodId] ON [Payments2].[DataLockEventNonPayablePeriodFailures] ([DataLockEventNonPayablePeriodId]) INCLUDE ([DataLockFailureId]) WITH (ONLINE = ON);
+
+CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriodFailures__DataLockEventNonPayablePeriodId] ON [Payments2].[DataLockEventNonPayablePeriodFailures] 
+(
+	[DataLockEventNonPayablePeriodId]
+) 
+INCLUDE ([DataLockFailureId]) 
+WITH (ONLINE = ON);
+GO

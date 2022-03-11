@@ -75,7 +75,6 @@
     <Build Include="Security\Role_DataProcessing.sql" />
     <Build Include="Security\Role_DataViewer.sql" />
     <Build Include="Security\RoleMemberships.sql" />
-    <Build Include="Security\User_DsciUser.sql" />
     <Build Include="Payments2\Tables\Payments2.Payment.sql" />
     <Build Include="Security\Schema_Payments2.sql" />
     <Build Include="Payments2\Tables\Payments2.EarningEvent.sql" />

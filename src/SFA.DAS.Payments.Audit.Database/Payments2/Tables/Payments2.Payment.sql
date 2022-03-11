@@ -79,66 +79,14 @@ CREATE UNIQUE INDEX UX_Payment_LogicalDuplicates ON Payments2.Payment
 )
 GO
 
-CREATE NONCLUSTERED INDEX [IX_Payment__ApprenticeshipKey] ON [Payments2].[Payment]
-(
-	[Ukprn] ASC,
-  [AcademicYear] ASC,
-  [LearnerReferenceNumber] ASC,
-  [LearningAimReference] ASC,
-  [LearningAimProgrammeType] ASC,
-  [LearningAimStandardCode] ASC,
-  [LearningAimFrameworkCode] ASC,
-  [LearningAimPathwayCode] ASC,
-  [ContractType] ASC,
-  [LearnerUln] ASC
-)
-
-GO
-
 CREATE INDEX [IX_Payment__UkprnPeriodSearch] ON [Payments2].[Payment]
 (
  [Ukprn],
+ [LearnerUln],
  CollectionPeriod,
  AcademicYear,
  DeliveryPeriod,
  JobId
 ) 
 
-GO
-
-CREATE INDEX [IX_Payment__Audit] ON [Payments2].[Payment]
-(
- [EarningEventId],
- FundingSourceEventId
-) 
-
-GO
-
-CREATE NONCLUSTERED INDEX [IX_Payment__Metrics_Paid_DataLocks] ON [Payments2].[Payment]
-(
-	[Ukprn],
-  [LearnerReferenceNumber] ASC,
-  [LearningAimReference] ASC,
-  [LearningAimProgrammeType] ASC,
-  [LearningAimStandardCode] ASC,
-  [LearningAimFrameworkCode] ASC,
-  [LearningAimPathwayCode] ASC,
-	[CollectionPeriod]
-)
-include(Amount, [TransactionType], [DeliveryPeriod])
-
-GO
-
-CREATE NONCLUSTERED INDEX [IX_Payment__CollectionPeriodCompletionPayments] on [Payments2].[Payment] 
-(
-	[Ukprn],
-	[ContractType],
-	[TransactionType]
-)
-
-GO
-
-CREATE NONCLUSTERED INDEX [UX_Payment_ProviderEvents]
-ON [Payments2].[Payment] ([CollectionPeriod],[AcademicYear],[AccountId],[FundingSource],[TransferSenderAccountId],[ApprenticeshipId])
-INCLUDE ([EventId],[RequiredPaymentEventId],[DeliveryPeriod],[Ukprn],[LearnerUln],[Amount],[LearningAimProgrammeType],[LearningAimStandardCode],[LearningAimFrameworkCode],[LearningAimPathwayCode],[TransactionType],[IlrSubmissionDateTime],[EarningsStartDate],[EarningsPlannedEndDate],[EarningsActualEndDate],[EarningsCompletionStatus],[EarningsCompletionAmount],[EarningsInstalmentAmount],[EarningsNumberOfInstalments],[ContractType])
 GO

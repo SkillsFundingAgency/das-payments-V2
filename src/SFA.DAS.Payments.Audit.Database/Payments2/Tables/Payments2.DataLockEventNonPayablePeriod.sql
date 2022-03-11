@@ -13,14 +13,12 @@
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_DataLockEventNonPayablePeriod__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
 	LearningStartDate DATETIME2 NULL
 )
-GO;
+GO
 
-CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriod__DataLockEventId] ON [Payments2].[DataLockEventNonPayablePeriod] ([DataLockEventId]) 
-INCLUDE (Amount,[DataLockEventNonPayablePeriodId]) 
+CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriod__DataLockEventId] ON [Payments2].[DataLockEventNonPayablePeriod] 
+(
+	[DataLockEventId],
+	[DataLockEventNonPayablePeriodId]
+) 
 WITH (ONLINE = ON);
-GO;
-
-CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriod__TransactionType] ON [Payments2].[DataLockEventNonPayablePeriod] ([TransactionType]) 
-INCLUDE ([DataLockEventId], [DataLockEventNonPayablePeriodId])
-WITH (ONLINE = ON)
-GO;
+GO

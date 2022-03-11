@@ -22,7 +22,14 @@
 	AgreedPrice DECIMAL(15, 5) NULL,
 	CourseStartDate DATETIME2  NULL,
 	AcademicYear SMALLINT NULL,
-	CollectionPeriod TINYINT NULL,
-	INDEX IX_EarningEventPriceEpisode__EarningEventId (EarningEventId),
-	INDEX IX_EarningEventPriceEpisode__Search (EarningEventId, PriceEpisodeIdentifier, StartDate, CourseStartDate, AgreedPrice) 
+	CollectionPeriod TINYINT NULL
 )
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_EarningEventPriceEpisode__EarningEventId] ON [Payments2].[EarningEventPriceEpisode]
+(
+	[EarningEventId]
+)
+WITH (ONLINE = ON)
+GO

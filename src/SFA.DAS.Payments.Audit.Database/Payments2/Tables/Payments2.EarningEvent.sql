@@ -30,26 +30,13 @@
 )
 GO
 
-CREATE INDEX IX_EarningEvent_ApprenticeshipEarningQuery ON [Payments2].[EarningEvent]
+CREATE INDEX IX_EarningEvent_Audit ON [Payments2].[EarningEvent]
 (
-   Ukprn,
-   LearnerUln,
-   EventType,
-   JobId,
-   ContractType,
-   CollectionPeriod,
-   AcademicYear,
-   IlrSubmissionDateTime,
-   CreationDate
+	[Ukprn],
+	[LearnerUln],
+	[CollectionPeriod],
+	[AcademicYear],
+	[JobId]
 )
-GO
-
-CREATE NONCLUSTERED INDEX IX_EarningEvent__AcademicYear_CollectionPeriod_JobId
-	ON [Payments2].[EarningEvent] (AcademicYear, CollectionPeriod, JobId)
-	INCLUDE ([EventId])
-GO
-
-CREATE NONCLUSTERED INDEX [IX_EarningEvent__Ukprn_JobId]
-	ON [Payments2].[EarningEvent] ([Ukprn],[JobId])
-	INCLUDE ([EventId],[ContractType])
+WITH (ONLINE = ON)
 GO
