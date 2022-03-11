@@ -5,13 +5,13 @@
 	DataLockEventNonPayablePeriodId UNIQUEIDENTIFIER NOT NULL CONSTRAINT UQ_DataLockEventNonPayablePeriod__DataLockEventNonPayablePeriodId UNIQUE,
 	PriceEpisodeIdentifier NVARCHAR(50) NULL,
 	TransactionType TINYINT NOT NULL,
-	CollectionPeriod TINYINT NULL,
-	AcademicYear SMALLINT NULL,
 	DeliveryPeriod TINYINT NOT NULL, 
 	Amount DECIMAL(15,5) NOT NULL,
 	SfaContributionPercentage DECIMAL(15,5) NULL,
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_DataLockEventNonPayablePeriod__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
-	LearningStartDate DATETIME2 NULL
+	LearningStartDate DATETIME2 NULL,
+	AcademicYear SMALLINT NULL,
+	CollectionPeriod TINYINT NULL,
 )
 GO
 

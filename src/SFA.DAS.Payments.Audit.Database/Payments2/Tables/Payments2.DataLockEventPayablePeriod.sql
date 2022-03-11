@@ -4,8 +4,6 @@
 	DataLockEventId UNIQUEIDENTIFIER NOT NULL CONSTRAINT FK_DataLockEventPayablePeriod__DataLockEvent FOREIGN KEY REFERENCES [Payments2].[DataLockEvent] (EventId) ON DELETE CASCADE, 
 	PriceEpisodeIdentifier NVARCHAR(50) NULL,
 	TransactionType TINYINT NOT NULL,
-	AcademicYear SMALLINT NULL,
-	CollectionPeriod TINYINT NULL,
 	DeliveryPeriod TINYINT NOT NULL, 
 	Amount DECIMAL(15,5) NOT NULL,
 	SfaContributionPercentage DECIMAL(15,5) NULL,
@@ -13,7 +11,9 @@
 	LearningStartDate DATETIME2 NULL,
     ApprenticeshipId BIGINT NULL,
     ApprenticeshipPriceEpisodeId BIGINT NULL,
-	ApprenticeshipEmployerType TINYINT NULL
+	ApprenticeshipEmployerType TINYINT NULL,
+	AcademicYear SMALLINT NULL,
+	CollectionPeriod TINYINT NULL,
 )
 GO
 
