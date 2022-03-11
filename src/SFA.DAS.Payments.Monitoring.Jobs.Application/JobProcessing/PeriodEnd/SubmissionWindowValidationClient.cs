@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
         public async Task<bool> Validate(long jobId, short academicYear, byte collectionPeriod)
         {
-            var result = await new HttpClient().GetAsync(BuildUriFromParameters(jobId, academicYear, collectionPeriod));
+            var result = await new HttpClient { Timeout = TimeSpan.FromSeconds(270) }.GetAsync(BuildUriFromParameters(jobId, academicYear, collectionPeriod));
 
             if (!result.IsSuccessStatusCode) return false;
 

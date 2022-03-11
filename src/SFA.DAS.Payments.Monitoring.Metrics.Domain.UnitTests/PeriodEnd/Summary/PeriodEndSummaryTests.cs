@@ -1,17 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Domain.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
 {
     [TestFixture]
     public class PeriodEndSummaryTests
     {
-
         private PeriodEndProviderSummary GetPopulatedPeriodEndProviderSummary(bool shouldIncludeNegativeEarnings = false)
         {
             var summary = TestHelper.DefaultPeriodEndProviderSummary;
@@ -26,7 +24,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             summary.AddFundingSourceAmounts(TestHelper.GetPaymentFundingSourceAmounts);
             summary.AddHeldBackCompletionPayments(TestHelper.DefaultHeldBackCompletionPayments);
             summary.AddPeriodEndProviderDataLockTypeCounts(TestHelper.DefaultPeriodEndProviderDataLockTypeCounts);
-            summary.AddNegativeEarnings(TestHelper.GetDefaultDcNegativeEarnings);
 
             return summary;
         }
@@ -127,7 +124,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             //Arrange
             var periodEndSummary = TestHelper.DefaultPeriodEndSummary;
             var providerSummariesList = new List<ProviderPeriodEndSummaryModel>();
-            
+
             var providerSummary = GetPopulatedPeriodEndProviderSummary(true);
             providerSummariesList.Add(providerSummary.GetMetrics());
 
@@ -139,8 +136,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Domain.UnitTests.PeriodEnd.Summary
             //Assert
             result.NegativeEarnings.ContractType1
                 .Should()
-                .Be(providerSummariesList.Sum(x => x.NegativeEarnings.ContractType1));            
-            
+                .Be(providerSummariesList.Sum(x => x.NegativeEarnings.ContractType1));
+
             result.NegativeEarnings.ContractType2
                 .Should()
                 .Be(providerSummariesList.Sum(x => x.NegativeEarnings.ContractType2));
