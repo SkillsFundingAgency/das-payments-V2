@@ -79,14 +79,14 @@ CREATE UNIQUE INDEX UX_Payment_LogicalDuplicates ON Payments2.Payment
 )
 GO
 
-CREATE INDEX [IX_Payment__UkprnPeriodSearch] ON [Payments2].[Payment]
+CREATE INDEX [IX_Payment__Audit] ON [Payments2].[Payment]
 (
- [Ukprn],
- [LearnerUln],
- CollectionPeriod,
- AcademicYear,
- DeliveryPeriod,
- JobId
+	[Ukprn],
+	[LearnerUln],
+	[CollectionPeriod],
+	[AcademicYear],
+	[DeliveryPeriod],
+	[JobId]
 ) 
-
+WITH (ONLINE = ON)
 GO
