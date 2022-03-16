@@ -1,7 +1,7 @@
-﻿CREATE USER [DASPaymentROUser]
-    WITH PASSWORD = N'$(ROUserPassword)';
+﻿CREATE USER [DASPaymentAuditROUser]
+    WITH PASSWORD = N'$(AuditROUserPassword)';
 GO
-GRANT CONNECT TO [DASPaymentROUser]
+GRANT CONNECT TO [DASPaymentAuditROUser]
 GO
 
 

@@ -1,7 +1,7 @@
-﻿CREATE USER [DASPaymentRWUser]
-    WITH PASSWORD = N'$(RWUserPassword)';
+﻿CREATE USER [DASPaymentAuditRWUser]
+    WITH PASSWORD = N'$(AuditRWUserPassword)';
 GO
-GRANT CONNECT TO [DASPaymentRWUser]
+GRANT CONNECT TO [DASPaymentAuditRWUser]
 GO
 
 
