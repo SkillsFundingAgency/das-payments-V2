@@ -74,3 +74,12 @@ INCLUDE([EventId],[LearnerReferenceNumber], [LearningAimReference],
     [LearningAimFrameworkCode],
     [LearningAimPathwayCode] ) 
 go
+
+CREATE NONCLUSTERED INDEX [IX_DataLockEvent_MatchedLearnerApi] ON [Payments2].[DataLockEvent]
+(
+	[LearningAimReference],
+	[Ukprn],
+	[LearnerUln],
+	[JobId]
+)
+GO
