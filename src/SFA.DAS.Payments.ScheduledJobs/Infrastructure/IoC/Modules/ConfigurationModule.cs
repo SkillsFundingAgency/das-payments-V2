@@ -47,6 +47,22 @@ namespace SFA.DAS.Payments.ScheduledJobs.Infrastructure.IoC.Modules
                    })
                    .As<IAccountApiConfiguration>()
                    .SingleInstance();
+
+            builder.Register((c, p) =>
+                   {
+                       var configHelper = c.Resolve<IConfigurationHelper>();
+
+                       return new CommitmentApiConfiguration
+                       {
+                           ApiBaseUrl = configHelper.GetSetting("CommitmentApiBaseUrl"),
+                           ClientId = configHelper.GetSetting("CommitmentApiClientId"),
+                           ClientSecret = configHelper.GetSetting("CommitmentApiClientSecret"),
+                           IdentifierUri = configHelper.GetSetting("CommitmentApiIdentifierUri"),
+                           Tenant = configHelper.GetSetting("CommitmentApiTenant")
+                       };
+                   })
+                   .As<ICommitmentApiConfiguration>()
+                   .SingleInstance();
         }
     }
 }
