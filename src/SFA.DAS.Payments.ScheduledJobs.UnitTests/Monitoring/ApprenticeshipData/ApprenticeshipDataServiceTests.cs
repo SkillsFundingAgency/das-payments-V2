@@ -17,7 +17,6 @@ namespace SFA.DAS.Payments.ScheduledJobs.UnitTests.Monitoring.ApprenticeshipData
     public class ApprenticeshipDataServiceTests
     {
         private IPaymentsDataContext paymentsDataContext;
-        private ICommitmentsDataContext commitmentsDataContext;
         private Mock<ITelemetry> telemetry;
         private ApprenticeshipDataService service;
 
