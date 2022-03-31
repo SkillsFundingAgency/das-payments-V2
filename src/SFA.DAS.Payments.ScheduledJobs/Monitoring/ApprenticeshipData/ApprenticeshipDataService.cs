@@ -25,12 +25,15 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
         private const string ApprovalsReferenceDataComparisonEvent = "ApprovalsReferenceDataComparisonEvent";
 
         private readonly IPaymentsDataContextFactory paymentsDataContextFactory;
+        private readonly ICommitmentsApiClient commitmentsApiClient;
         private readonly ITelemetry telemetry;
 
         private IPaymentsDataContext PaymentsDataContext => paymentsDataContextFactory.Create();
 
+        public ApprenticeshipDataService(IPaymentsDataContextFactory paymentsDataContextFactory, ICommitmentsApiClient commitmentsApiClient, ITelemetry telemetry)
         {
             this.paymentsDataContextFactory = paymentsDataContextFactory;
+            this.commitmentsApiClient = commitmentsApiClient;
             this.telemetry = telemetry;
         }
 
@@ -38,6 +41,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
         {
             var pastThirtyDays = DateTime.UtcNow.AddDays(-30).Date;
 
+            var commitmentsTask = commitmentsApiClient.GetStats(30);
 
             var paymentsApprovedTask = PaymentsDataContext.Apprenticeship
                 .CountAsync(paymentsApprenticeship => paymentsApprenticeship.CreationDate > pastThirtyDays);
@@ -50,10 +54,13 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
             var paymentsPausedTask = PaymentsDataContext.Apprenticeship.Include(x => x.ApprenticeshipPauses)
                 .CountAsync(paymentsApprenticeship =>
                     paymentsApprenticeship.Status == ApprenticeshipStatus.Paused
+                    && paymentsApprenticeship.ApprenticeshipPauses.Any(pause =>
                         pause.PauseDate > pastThirtyDays
                         && pause.ResumeDate == null));
 
+            await Task.WhenAll(commitmentsTask, paymentsApprovedTask, paymentsStoppedTask, paymentsPausedTask).ConfigureAwait(false);
 
+            var commitmentsCount = commitmentsTask.Result;
 
             var paymentsApprovedCount = paymentsApprovedTask.Result;
             var paymentsStoppedCount = paymentsStoppedTask.Result;
@@ -61,6 +68,9 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
 
             telemetry.TrackEvent(ApprovalsReferenceDataComparisonEvent, new Dictionary<string, double>
             {
+                { DasApproved, commitmentsCount.Approved },
+                { DasStopped, commitmentsCount.Stopped },
+                { DasPaused, commitmentsCount.Paused },
                 { PaymentsApproved, paymentsApprovedCount },
                 { PaymentsStopped, paymentsStoppedCount },
                 { PaymentsPaused, paymentsPausedCount },
