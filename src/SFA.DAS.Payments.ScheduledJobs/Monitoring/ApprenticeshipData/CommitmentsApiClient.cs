@@ -39,7 +39,7 @@ namespace SFA.DAS.Payments.ScheduledJobs.Monitoring.ApprenticeshipData
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authenticationResult.AccessToken);
 
-            var httpResponseMessage = await httpClient.GetAsync($"api/apprenticeshipstatistics/stats?{lastNumberOfDays}");
+            var httpResponseMessage = await httpClient.GetAsync($"api/apprenticeshipstatistics/stats?lastNumberOfDays={lastNumberOfDays}");
 
             httpResponseMessage.EnsureSuccessStatusCode();
 
