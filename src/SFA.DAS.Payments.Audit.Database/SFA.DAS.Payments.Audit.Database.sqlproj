@@ -109,11 +109,11 @@
       <DefaultValue>From Local Machine</DefaultValue>
       <Value>$(SqlCmdVar__5)</Value>
     </SqlCmdVariable>
-    <SqlCmdVariable Include="ROUserPassword">
+    <SqlCmdVariable Include="AuditROUserPassword">
       <DefaultValue>NotUsedLocally!</DefaultValue>
       <Value>$(SqlCmdVar__1)</Value>
     </SqlCmdVariable>
-    <SqlCmdVariable Include="RWUserPassword">
+    <SqlCmdVariable Include="AuditRWUserPassword">
       <DefaultValue>NotUsedLocally!!</DefaultValue>
       <Value>$(SqlCmdVar__2)</Value>
     </SqlCmdVariable>
