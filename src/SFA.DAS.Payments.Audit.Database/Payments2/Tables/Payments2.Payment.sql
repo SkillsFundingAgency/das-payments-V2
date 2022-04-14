@@ -81,11 +81,11 @@ GO
 
 CREATE INDEX [IX_Payment__Audit] ON [Payments2].[Payment]
 (
+	[AcademicYear],
+	[CollectionPeriod],
+	[DeliveryPeriod],
 	[Ukprn],
 	[LearnerUln],
-	[CollectionPeriod],
-	[AcademicYear],
-	[DeliveryPeriod],
 	[JobId]
 ) 
 WITH (ONLINE = ON)

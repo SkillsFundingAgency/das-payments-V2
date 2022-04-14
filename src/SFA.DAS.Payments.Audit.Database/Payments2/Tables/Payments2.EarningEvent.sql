@@ -24,18 +24,36 @@
 	[SfaContributionPercentage] [decimal](15, 5) NULL,
 	IlrFileName  NVARCHAR(400) NULL,
 	EventType NVARCHAR(4000) NULL,
-    Constraint UQ_EarningEvent Unique ([JobId], [Ukprn], [AcademicYear], [CollectionPeriod], [ContractType], [LearnerUln], [LearnerReferenceNumber], 
-        [LearningAimReference], [LearningAimProgrammeType], [LearningAimStandardCode], [LearningAimFrameworkCode], [LearningAimPathwayCode], [LearningAimFundingLineType],
-        [LearningAimSequenceNumber], [LearningStartDate], [EventType])
+)
+GO
+
+CREATE UNIQUE INDEX UQ_EarningEvent ON [Payments2].[EarningEvent] 
+(
+[JobId], 
+[Ukprn], 
+[AcademicYear], 
+[CollectionPeriod], 
+[ContractType], 
+[LearnerUln], 
+[LearnerReferenceNumber], 
+[LearningAimReference], 
+[LearningAimProgrammeType], 
+[LearningAimStandardCode], 
+[LearningAimFrameworkCode], 
+[LearningAimPathwayCode], 
+[LearningAimFundingLineType],
+[LearningAimSequenceNumber], 
+[LearningStartDate], 
+[EventType]
 )
 GO
 
 CREATE INDEX IX_EarningEvent_Audit ON [Payments2].[EarningEvent]
 (
+	[AcademicYear],
+	[CollectionPeriod],
 	[Ukprn],
 	[LearnerUln],
-	[CollectionPeriod],
-	[AcademicYear],
 	[JobId]
 )
 WITH (ONLINE = ON)

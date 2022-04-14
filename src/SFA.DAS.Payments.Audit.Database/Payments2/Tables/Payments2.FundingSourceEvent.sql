@@ -78,11 +78,11 @@ GO
 
 CREATE NONCLUSTERED INDEX [IX_FundingSourceEvent__Audit] ON [Payments2].[FundingSourceEvent] 
 (
+	[AcademicYear],
+	[CollectionPeriod],
+	[DeliveryPeriod],
 	[Ukprn],
 	[LearnerUln],
-	[CollectionPeriod],
-	[AcademicYear],
-	[DeliveryPeriod],
 	[JobId]
 )
 WITH (ONLINE = ON)

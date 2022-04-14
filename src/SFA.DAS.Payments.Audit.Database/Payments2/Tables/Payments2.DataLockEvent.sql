@@ -51,11 +51,12 @@ GO
 
 CREATE INDEX [IX_DataLockEvent_Audit] ON [Payments2].[DataLockEvent] 
 (
+	[AcademicYear],
+	[CollectionPeriod],
 	[Ukprn],
 	[LearnerUln],
-	[CollectionPeriod],
-	[AcademicYear],
 	[JobId]
 ) 
 WITH (ONLINE = ON)
 GO
+

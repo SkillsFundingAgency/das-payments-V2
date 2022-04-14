@@ -74,3 +74,11 @@ INCLUDE([EventId],[LearnerReferenceNumber], [LearningAimReference],
     [LearningAimFrameworkCode],
     [LearningAimPathwayCode] ) 
 go
+
+CREATE INDEX [IX_DataLockEvent_DeleteAuditData] ON [Payments2].[DataLockEvent] 
+(
+	[AcademicYear],
+	[CollectionPeriod]
+) 
+WITH (ONLINE = ON)
+GO

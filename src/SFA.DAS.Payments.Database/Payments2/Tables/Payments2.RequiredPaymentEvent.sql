@@ -99,3 +99,11 @@ CREATE INDEX IX_RequiredPaymentEvent__AcademicYear_CollectionPeriod_JobId
 ON Payments2.RequiredPaymentEvent (AcademicYear, CollectionPeriod, JobId)
 INCLUDE (EventId)
 GO
+
+CREATE NONCLUSTERED INDEX [IX_RequiredPaymentEvent_DeleteAuditData] ON [Payments2].[RequiredPaymentEvent] 
+(
+	[AcademicYear],
+	[CollectionPeriod]
+)
+WITH (ONLINE = ON)
+GO

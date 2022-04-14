@@ -53,3 +53,12 @@ CREATE NONCLUSTERED INDEX [IX_EarningEvent__Ukprn_JobId]
 	ON [Payments2].[EarningEvent] ([Ukprn],[JobId])
 	INCLUDE ([EventId],[ContractType])
 GO
+
+
+CREATE INDEX [IX_EarningEvent_DeleteAuditData] ON [Payments2].[EarningEvent]
+(
+	[AcademicYear],
+	[CollectionPeriod]
+)
+WITH (ONLINE = ON)
+GO
