@@ -553,7 +553,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-1824-DLock09-One-Price-Episode-UnHappy-Path.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Employer Stops\PV2-2898 Levy learner, the course completion Date is changed, with a Balancing payment. Completion and Balancing is paid.feature.cs">
+    <Compile Include="Tests\Learner Change of Circumstances\PV2-2898 Levy learner, the course completion Date is changed, with a Balancing payment. Completion and Balancing is paid.feature.cs">
       <DependentUpon>PV2-2898 Levy learner, the course completion Date is changed, with a Balancing payment. Completion and Balancing is paid.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2086,7 +2086,7 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>E2E -PV2-945 - Levy learner, Employer stops commitment before the day the course is completed, completion payment not paid .feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Employer Stops\PV2-2898 Levy learner, the course completion Date is changed, with a Balancing payment. Completion and Balancing is paid.feature">
+    <None Include="Tests\Learner Change of Circumstances\PV2-2898 Levy learner, the course completion Date is changed, with a Balancing payment. Completion and Balancing is paid.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-2898 Levy learner, the course completion Date is changed, with a Balancing payment. Completion and Balancing is paid.feature.cs</LastGenOutput>
     </None>

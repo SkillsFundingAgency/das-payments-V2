@@ -6,10 +6,10 @@ Scenario Outline: Levy learner, the course completion Date is changed, with a Ba
 		| 593            | 20             | 1            | 17500        | 01/Aug/Last Academic Year | 01/Oct/Current Academic Year | stopped | 01/Aug/Last Academic Year | 15/Oct/Current Academic Year |		
 	And the provider previously submitted the following learner details
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                | SFA Contribution Percentage |
-		| 01/Aug/Last Academic Year | 14 months        | 17500                | 01/Aug/Last Academic Year           |                        | 01/Sep/Current Academic Year          | 14 months       | completed         | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |
+		| 01/Aug/Last Academic Year | 14 months        | 17500                | 01/Aug/Last Academic Year           |                        | 01/Sep/Last Academic Year             | 14 months       | completed         | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |
     And price details are changed as follows        
 		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-		| pe-1             | 17500                | 01/Aug/Current Academic Year        |                        | 01/Sep/Current Academic Year          | Act1          | 1                   | 90%                         |
+		| pe-1             | 17500                | 01/Aug/Last Academic Year           |                        | 01/Sep/Last Academic Year             | Act1          | 1                   | 90%                         |
     And the following earnings had been generated for the learner
         | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
         | Aug/Last Academic Year    | 1000         | 0          | 0         | pe-1                     |
@@ -45,7 +45,7 @@ Scenario Outline: Levy learner, the course completion Date is changed, with a Ba
         | R02/Current Academic Year | Sep/Current Academic Year | 3500          | Completion       |
     But the Provider now changes the Learner details as follows
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                | SFA Contribution Percentage |
-		| 01/Aug/Last Academic Year | 14 months        | 17500                | 01/Aug/Last Academic Year           |                        |                                       | 14 months       | completed         | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |
+		| 01/Aug/Last Academic Year | 14 months        | 17500                | 01/Aug/Current Academic Year        |                        |                                       | 14 months       | completed         | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |
 	
 	And price details are changed as follows        
 		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
