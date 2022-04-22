@@ -32,6 +32,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                     pe.CourseStartDate = intermediateLearningAim.Aims
                         .First(x => x.AimSeqNumber == pe.LearningAimSequenceNumber).LearningDeliveryValues
                         .LearnStartDate))
+                .AfterMap((intermediateLearningAim, earningEvent) => earningEvent.LearningAim.FundingLineType = earningEvent.PriceEpisodes.First(p => p.LearningAimSequenceNumber == earningEvent.LearningAim.SequenceNumber)?.FundingLineType)
                 ;
 
             CreateMap<IntermediateLearningAim, ApprenticeshipContractTypeEarningsEvent>()
