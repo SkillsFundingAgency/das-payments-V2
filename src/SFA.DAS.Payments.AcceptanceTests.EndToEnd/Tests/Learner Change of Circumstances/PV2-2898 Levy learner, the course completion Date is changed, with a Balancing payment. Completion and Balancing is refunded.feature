@@ -1,5 +1,5 @@
-Feature: PV2-2898 course completion Date is changed Completion payment Paid
-Scenario Outline: Levy learner, the course completion Date is changed, with a Balancing payment. Completion and Balancing is paid
+Feature: PV2-2898 course completion Date is changed Completion payment refunded
+Scenario Outline: Levy learner, the course completion Date is changed, with a Balancing payment. Completion and Balancing is refunded
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following apprenticeships exist
 		| framework code | programme type | pathway code | agreed price | start date                | end date                     | status  | effective from            | stop effective from          |
@@ -26,6 +26,7 @@ Scenario Outline: Levy learner, the course completion Date is changed, with a Ba
         | Jul/Last Academic Year    | 1000         | 0          | 0         | pe-1             |
         | Aug/Current Academic Year | 1000         | 0          | 0         | pe-1             |
         | Sep/Current Academic Year | 1000         | 3500       | 0         | pe-1             |
+        | Oct/Current Academic Year | 1000         | 3500       | 0         | pe-1             |
     And the following provider payments had been generated
         | Collection Period         | Delivery Period           | Levy Payments | Transaction Type | Price Episode Id |
         | R01/Last Academic Year    | Aug/Last Academic Year    | 1000          | Learning         | pe-1             |
@@ -43,6 +44,8 @@ Scenario Outline: Levy learner, the course completion Date is changed, with a Ba
         | R01/Current Academic Year | Aug/Current Academic Year | 1000          | Learning         | pe-1             |
         | R02/Current Academic Year | Sep/Current Academic Year | 1000          | Balancing        | pe-1             |
         | R02/Current Academic Year | Sep/Current Academic Year | 3500          | Completion       | pe-1             |
+        | R03/Current Academic Year | Oct/Current Academic Year | 1000          | Balancing        | pe-1             |
+        | R03/Current Academic Year | Oct/Current Academic Year | 3500          | Completion       | pe-1             |
     But the Provider now changes the Learner details as follows
 		| Start Date                | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                | SFA Contribution Percentage |
 		| 01/Aug/Last Academic Year | 14 months        | 17500                | 01/Aug/Current Academic Year        |                        |                                       | 14 months       | completed         | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |
@@ -69,22 +72,16 @@ Scenario Outline: Levy learner, the course completion Date is changed, with a Ba
 		| Jul/Current Academic Year | 0            | 0          | 0         | pe-2                     |
     And at month end only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
-        | R03/Current Academic Year | Sep/Current Academic Year | 0            | 0          | -1000     |
-        | R03/Current Academic Year | Sep/Current Academic Year | 0            | -3500      | 0         |
-        | R03/Current Academic Year | Oct/Current Academic Year | 0            | 0          | 1000      |
-        | R03/Current Academic Year | Oct/Current Academic Year | 0            | 3500       | 0         |
+        | R04/Current Academic Year | Sep/Current Academic Year | 0            | 0          | -1000     |
+        | R04/Current Academic Year | Sep/Current Academic Year | 0            | -3500      | 0         |
 	And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
-        | R03/Current Academic Year | Sep/Current Academic Year | -1000         | Balancing        |
-        | R03/Current Academic Year | Sep/Current Academic Year | -3500         | Completion       |
-        | R03/Current Academic Year | Oct/Current Academic Year | 1000          | Balancing        |
-        | R03/Current Academic Year | Oct/Current Academic Year | 3500          | Completion       |
+        | R04/Current Academic Year | Sep/Current Academic Year | -1000         | Balancing        |
+        | R04/Current Academic Year | Sep/Current Academic Year | -3500         | Completion       |
 	And only the following provider payments will be generated
         | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
-        | R03/Current Academic Year | Sep/Current Academic Year | -1000         | Balancing        |
-        | R03/Current Academic Year | Sep/Current Academic Year | -3500         | Completion       |
-        | R03/Current Academic Year | Oct/Current Academic Year | 1000          | Balancing        |
-        | R03/Current Academic Year | Oct/Current Academic Year | 3500          | Completion       |
+        | R04/Current Academic Year | Sep/Current Academic Year | -1000         | Balancing        |
+        | R04/Current Academic Year | Sep/Current Academic Year | -3500         | Completion       |
 Examples: 
         | Collection_Period         | Levy Balance |
-        | R03/Current Academic Year | 5000         |
+        | R04/Current Academic Year | 5000         |
