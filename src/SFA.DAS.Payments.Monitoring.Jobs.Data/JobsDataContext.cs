@@ -147,6 +147,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 
             job.DcJobEndTime = DateTimeOffset.UtcNow;
             job.DcJobSucceeded = succeeded;
+            job.Status = job.DcJobSucceeded.Value ? JobStatus.CompletedWithErrors : JobStatus.DcTasksFailed;
+            job.EndTime = DateTimeOffset.Now;
+
             await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
