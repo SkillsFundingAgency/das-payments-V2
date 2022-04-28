@@ -1,16 +1,16 @@
 CREATE TABLE [Payments2].[Payment]
 (
 	Id BIGINT NOT NULL IDENTITY(1,1) CONSTRAINT PK_Payment PRIMARY KEY,
-	EventId UNIQUEIDENTIFIER NOT NULL CONSTRAINT DF_Payment__EventId DEFAULT(NEWID()), CONSTRAINT UQ_Payment__EventId UNIQUE([EventId]), 
+	EventId UNIQUEIDENTIFIER NOT NULL, 
 	EarningEventId UNIQUEIDENTIFIER NOT NULL,
 	FundingSourceEventId UNIQUEIDENTIFIER NOT NULL,
 	RequiredPaymentEventId UNIQUEIDENTIFIER NULL,
-	[ClawbackSourcePaymentEventId] UNIQUEIDENTIFIER NULL,
+	ClawbackSourcePaymentEventId UNIQUEIDENTIFIER NULL,
 	EventTime DATETIMEOFFSET NOT NULL,
 	JobId BIGINT NOT NULL,
 	DeliveryPeriod TINYINT NOT NULL,
 	CollectionPeriod TINYINT NOT NULL,
-	AcademicYear SMALLINT CONSTRAINT DF_Payment__AcademicYear DEFAULT ((0)) NOT NULL,
+	AcademicYear SMALLINT,
 	Ukprn BIGINT NOT NULL,
 	LearnerReferenceNumber NVARCHAR(50) NOT NULL,
 	LearnerUln BIGINT NOT NULL,
@@ -28,9 +28,9 @@ CREATE TABLE [Payments2].[Payment]
 	IlrSubmissionDateTime DATETIME2 NOT NULL,
 	SfaContributionPercentage DECIMAL(15,5) NOT NULL,
 	AgreementId NVARCHAR(255) NULL, 
-	[AccountId] BIGINT NULL , 
+	AccountId BIGINT NULL , 
 	TransferSenderAccountId BIGINT NULL , 
-	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_Payment__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
+	CreationDate DATETIMEOFFSET NOT NULL,
 	EarningsStartDate DATETIME NOT NULL,
 	EarningsPlannedEndDate DATETIME NULL,
 	EarningsActualEndDate DATETIME NULL,
@@ -43,50 +43,125 @@ CREATE TABLE [Payments2].[Payment]
 	ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL,
 	ReportingAimFundingLineType NVARCHAR(120) NULL, 
-	[NonPaymentReason] TINYINT NULL,
-	[DuplicateNumber] INT NULL,
-	[LearningAimSequenceNumber] BIGINT NULL
-);
-GO
-
-CREATE UNIQUE INDEX UX_Payment_LogicalDuplicates ON Payments2.Payment 
-(
-	[JobId]
-	,[Ukprn]
-	,[AcademicYear]
-	,[CollectionPeriod]
-	,[DeliveryPeriod]
-	,[ContractType]
-	,[TransactionType]
-	,[Amount]
-	,[SfaContributionPercentage]
-	,[LearnerUln]
-	,[LearnerReferenceNumber]
-	,[LearningAimReference]
-	,[LearningAimProgrammeType]
-	,[LearningAimStandardCode]
-	,[LearningAimFrameworkCode]
-	,[LearningAimPathwayCode]
-	,[LearningAimFundingLineType]
-	,[LearningStartDate]
-	,[FundingSource]
-	,[ApprenticeshipId]
-	,[AccountId]
-	,[TransferSenderAccountId]
-	,[ApprenticeshipEmployerType]
-	,[ClawbackSourcePaymentEventId]
-	,DuplicateNumber
+	NonPaymentReason TINYINT NULL,
+	DuplicateNumber INT NULL,
+	LearningAimSequenceNumber BIGINT NULL
 )
 GO
 
-CREATE INDEX [IX_Payment__Audit] ON [Payments2].[Payment]
+--CREATE NONCLUSTERED INDEX [IX_Payment__ApprenticeshipKey] ON [Payments2].[Payment]
+--(
+--	[Ukprn] ASC,
+--	[AcademicYear] ASC,
+--	[LearnerReferenceNumber] ASC,
+--	[LearningAimReference] ASC,
+--	[LearningAimProgrammeType] ASC,
+--	[LearningAimStandardCode] ASC,
+--	[LearningAimFrameworkCode] ASC,
+--	[LearningAimPathwayCode] ASC,
+--	[ContractType] ASC,
+--	[LearnerUln] ASC
+--)
+--WITH (ONLINE = ON)
+--GO
+
+--CREATE NONCLUSTERED INDEX [IX_Payment__UkprnPeriodSearch] ON [Payments2].[Payment]
+--(
+--	[Ukprn],
+--	[CollectionPeriod],
+--	[AcademicYear],
+--	[DeliveryPeriod],
+--	[JobId]
+--) 
+--WITH (ONLINE = ON)
+--GO
+
+--CREATE NONCLUSTERED INDEX [IX_Payment__Audit] ON [Payments2].[Payment]
+--(
+--	[EarningEventId],
+--	[FundingSourceEventId]
+--) 
+--WITH (ONLINE = ON)
+--GO
+
+--CREATE NONCLUSTERED INDEX [IX_Payment__Metrics_Paid_DataLocks] ON [Payments2].[Payment]
+--(
+--	[Ukprn],
+--	[LearnerReferenceNumber] ASC,
+--	[LearningAimReference] ASC,
+--	[LearningAimProgrammeType] ASC,
+--	[LearningAimStandardCode] ASC,
+--	[LearningAimFrameworkCode] ASC,
+--	[LearningAimPathwayCode] ASC,
+--	[CollectionPeriod]
+--)
+--INCLUDE
+--(
+--	[Amount], 
+--	[TransactionType], 
+--	[DeliveryPeriod]
+--)
+--WITH (ONLINE = ON)
+--GO
+
+--CREATE NONCLUSTERED INDEX [IX_Payment__CollectionPeriodCompletionPayments] on [Payments2].[Payment] 
+--(
+--	[Ukprn],
+--	[ContractType],
+--	[TransactionType]
+--)
+--WITH (ONLINE = ON)
+--GO
+
+--CREATE NONCLUSTERED INDEX [UX_Payment_ProviderEvents] ON [Payments2].[Payment] 
+--(
+--	[CollectionPeriod],
+--	[AcademicYear],
+--	[AccountId],
+--	[FundingSource],
+--	[TransferSenderAccountId],
+--	[ApprenticeshipId]
+--)
+--INCLUDE 
+--(
+--	[EventId],
+--	[RequiredPaymentEventId],
+--	[DeliveryPeriod],
+--	[Ukprn],
+--	[LearnerUln],
+--	[Amount],
+--	[LearningAimProgrammeType],
+--	[LearningAimStandardCode],
+--	[LearningAimFrameworkCode],
+--	[LearningAimPathwayCode],
+--	[TransactionType],
+--	[IlrSubmissionDateTime],
+--	[EarningsStartDate],
+--	[EarningsPlannedEndDate],
+--	[EarningsActualEndDate],
+--	[EarningsCompletionStatus],
+--	[EarningsCompletionAmount],
+--	[EarningsInstalmentAmount],
+--	[EarningsNumberOfInstalments],
+--	[ContractType]
+--)
+--WITH (ONLINE = ON)
+--GO
+
+
+--CREATE NONCLUSTERED INDEX [IX_Payment__AcademicYear_CollectionPeriod_JobId] ON [Payments2].[Payment]
+--(
+--	[AcademicYear],
+--	[CollectionPeriod], 
+--	[JobId]
+--) 
+--WITH (ONLINE = ON)
+--GO
+
+CREATE NONCLUSTERED INDEX [IX_Payment__AuditDataFactory] ON [Payments2].[Payment] 
 (
 	[AcademicYear],
-	[CollectionPeriod],
-	[DeliveryPeriod],
-	[Ukprn],
-	[LearnerUln],
-	[JobId]
-) 
+	[CollectionPeriod]
+)
 WITH (ONLINE = ON)
 GO
