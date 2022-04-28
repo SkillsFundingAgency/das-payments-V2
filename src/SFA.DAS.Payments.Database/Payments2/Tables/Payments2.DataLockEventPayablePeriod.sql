@@ -15,8 +15,19 @@
 	AcademicYear SMALLINT NULL,
 	CollectionPeriod TINYINT NULL
 )
-GO;
+GO
 
-CREATE NONCLUSTERED INDEX [IX_DataLockEventPayablePeriod__DataLockEventId] ON [Payments2].[DataLockEventPayablePeriod] ([DataLockEventId]) 
+CREATE NONCLUSTERED INDEX [IX_DataLockEventPayablePeriod__DataLockEventId] ON [Payments2].[DataLockEventPayablePeriod] 
+(
+	[DataLockEventId]
+) 
 WITH (ONLINE = ON);
-GO;
+GO
+
+CREATE NONCLUSTERED INDEX [IX_DataLockEventPayablePeriod_AuditDataFactory] ON [Payments2].[DataLockEventPayablePeriod] 
+(
+	[AcademicYear],
+	[CollectionPeriod]
+) 
+WITH (ONLINE = ON)
+GO

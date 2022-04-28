@@ -4,7 +4,7 @@ CREATE TABLE [Payments2].[FundingSourceEvent]
 	EventId UNIQUEIDENTIFIER NOT NULL,
 	EarningEventId UNIQUEIDENTIFIER NOT NULL,
 	RequiredPaymentEventId UNIQUEIDENTIFIER NOT NULL, 
-	[ClawbackSourcePaymentEventId] UNIQUEIDENTIFIER NULL,
+	ClawbackSourcePaymentEventId UNIQUEIDENTIFIER NULL,
 	EventTime DATETIMEOFFSET NOT NULL,
 	JobId BIGINT NOT NULL,
 	DeliveryPeriod TINYINT NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE [Payments2].[FundingSourceEvent]
 	IlrSubmissionDateTime DATETIME2 NOT NULL,
 	SfaContributionPercentage DECIMAL(15,5) NOT NULL,
 	AgreementId NVARCHAR(255) NULL, 
-	[AccountId] BIGINT NULL, 
+	AccountId BIGINT NULL, 
 	TransferSenderAccountId BIGINT NULL, 
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_FundingSourceEvent__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
 	EarningsStartDate DATETIME NOT NULL,
@@ -41,47 +41,47 @@ CREATE TABLE [Payments2].[FundingSourceEvent]
 	ApprenticeshipId BIGINT NULL,
 	ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL, 
-	[NonPaymentReason] TINYINT NULL,
-	[DuplicateNumber] INT NULL
+	NonPaymentReason TINYINT NULL,
+	DuplicateNumber INT NULL
 )
 GO
 
-CREATE UNIQUE INDEX UX_FundingSourceEvent_LogicalDuplicates ON Payments2.FundingSourceEvent 
+CREATE UNIQUE INDEX [UX_FundingSourceEvent_LogicalDuplicates] ON [Payments2].[FundingSourceEvent]
 (
-	[JobId]
-	,[Ukprn]
-	,[AcademicYear]
-	,[CollectionPeriod]
-	,[DeliveryPeriod]
-	,[ContractType]
-	,[TransactionType]
-	,[Amount]
-	,[SfaContributionPercentage]
-	,[LearnerUln]
-	,[LearnerReferenceNumber]
-	,[LearningAimReference]
-	,[LearningAimProgrammeType]
-	,[LearningAimStandardCode]
-	,[LearningAimFrameworkCode]
-	,[LearningAimPathwayCode]
-	,[LearningAimFundingLineType]
-	,[LearningStartDate]
-	,[FundingSourceType]
-	,[ApprenticeshipId]
-	,[AccountId]
-	,[TransferSenderAccountId]
-	,[ApprenticeshipEmployerType]
-	,[ClawbackSourcePaymentEventId]
-	,DuplicateNumber
+	[JobId],
+	[Ukprn],
+	[AcademicYear],
+	[CollectionPeriod],
+	[DeliveryPeriod],
+	[ContractType],
+	[TransactionType],
+	[Amount],
+	[SfaContributionPercentage],
+	[LearnerUln],
+	[LearnerReferenceNumber],
+	[LearningAimReference],
+	[LearningAimProgrammeType],
+	[LearningAimStandardCode],
+	[LearningAimFrameworkCode],
+	[LearningAimPathwayCode],
+	[LearningAimFundingLineType],
+	[LearningStartDate],
+	[FundingSourceType],
+	[ApprenticeshipId],
+	[AccountId],
+	[TransferSenderAccountId],
+	[ApprenticeshipEmployerType],
+	[ClawbackSourcePaymentEventId],
+	[DuplicateNumber]
 )
 GO
 
-CREATE INDEX [IX_FundingSourceEvent__Audit] ON [Payments2].[FundingSourceEvent]
+CREATE NONCLUSTERED INDEX [IX_FundingSourceEvent__Audit] ON [Payments2].[FundingSourceEvent]
 (
- [EarningEventId],
- RequiredPaymentEventId
+	[EarningEventId],
+	[RequiredPaymentEventId]
 ) 
-
+WITH (ONLINE = ON)
 GO
 
 CREATE NONCLUSTERED INDEX [IX_FundingSourceEvent__Submission] ON [Payments2].[FundingSourceEvent] 
@@ -99,10 +99,9 @@ CREATE NONCLUSTERED INDEX [IX_FundingSourceEvent__JobId] ON [Payments2].[Funding
 	[JobId]
 ) 
 WITH (ONLINE = ON)
-
 GO
 
-CREATE NONCLUSTERED INDEX [IX_FundingSourceEvent__DeleteAuditData] ON [Payments2].[FundingSourceEvent] 
+CREATE NONCLUSTERED INDEX [IX_FundingSourceEvent__AuditDataFactory] ON [Payments2].[FundingSourceEvent] 
 (
 	[AcademicYear],
 	[CollectionPeriod]

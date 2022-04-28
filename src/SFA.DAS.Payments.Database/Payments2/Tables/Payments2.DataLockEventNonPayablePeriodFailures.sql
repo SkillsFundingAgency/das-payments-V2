@@ -4,9 +4,27 @@
 	DataLockEventNonPayablePeriodId UNIQUEIDENTIFIER NOT NULL CONSTRAINT FK_DataLockEventNonPayablePeriodFailures__DataLockEventNonPayablePeriod FOREIGN KEY REFERENCES [Payments2].[DataLockEventNonPayablePeriod] (DataLockEventNonPayablePeriodId) ON DELETE CASCADE, 
 	DataLockFailureId TINYINT NOT NULL,
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_DataLockEventNonPayablePeriodFailures__CreationDate DEFAULT (SYSDATETIMEOFFSET()), 
-    [ApprenticeshipId] BIGINT NULL,
+    ApprenticeshipId BIGINT NULL,
 	AcademicYear SMALLINT NULL,
 	CollectionPeriod TINYINT NULL,
 )
 GO
-CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriodFailures__DataLockEventNonPayablePeriodId] ON [Payments2].[DataLockEventNonPayablePeriodFailures] ([DataLockEventNonPayablePeriodId]) INCLUDE ([DataLockFailureId]) WITH (ONLINE = ON);
+
+CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriodFailures__DataLockEventNonPayablePeriodId] ON [Payments2].[DataLockEventNonPayablePeriodFailures] 
+(
+	[DataLockEventNonPayablePeriodId]
+)
+INCLUDE 
+(
+	[DataLockFailureId]
+)
+WITH (ONLINE = ON);
+GO
+
+CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriodFailures__AuditDataFactory] ON [Payments2].[DataLockEventNonPayablePeriodFailures] 
+(
+	[AcademicYear],
+	[CollectionPeriod]
+) 
+WITH (ONLINE = ON)
+GO

@@ -23,6 +23,31 @@
 	CourseStartDate DATETIME2  NULL,
 	AcademicYear SMALLINT NULL,
 	CollectionPeriod TINYINT NULL,
-	INDEX IX_EarningEventPriceEpisode__EarningEventId (EarningEventId),
-	INDEX IX_EarningEventPriceEpisode__Search (EarningEventId, PriceEpisodeIdentifier, StartDate, CourseStartDate, AgreedPrice) 
 )
+GO
+
+CREATE NONCLUSTERED INDEX [IX_EarningEventPriceEpisode__EarningEventId]	ON [Payments2].[EarningEventPriceEpisode] 
+(
+	[EarningEventId]
+)
+WITH (ONLINE = ON)
+GO
+
+CREATE NONCLUSTERED INDEX [IX_EarningEventPriceEpisode__Search]	ON [Payments2].[EarningEventPriceEpisode] 
+(
+	[EarningEventId], 
+	[PriceEpisodeIdentifier], 
+	[StartDate], 
+	[CourseStartDate], 
+	[AgreedPrice]
+)
+WITH (ONLINE = ON)
+GO
+
+CREATE NONCLUSTERED INDEX [IX_EarningEventPriceEpisode__AuditDataFactory] ON [Payments2].[EarningEventPriceEpisode]
+(
+	[AcademicYear],
+	[CollectionPeriod]
+)
+WITH (ONLINE = ON)
+GO
