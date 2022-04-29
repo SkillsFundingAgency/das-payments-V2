@@ -26,12 +26,12 @@
 )
 GO
 
---CREATE NONCLUSTERED INDEX [IX_EarningEventPriceEpisode__EarningEventId]	ON [Payments2].[EarningEventPriceEpisode] 
---(
---	[EarningEventId]
---)
---WITH (ONLINE = ON)
---GO
+CREATE NONCLUSTERED INDEX [IX_EarningEventPriceEpisode__EarningEventId]	ON [Payments2].[EarningEventPriceEpisode] 
+(
+	[EarningEventId]
+)
+WITH (ONLINE = ON)
+GO
 
 --CREATE NONCLUSTERED INDEX [IX_EarningEventPriceEpisode__Search]	ON [Payments2].[EarningEventPriceEpisode] 
 --(

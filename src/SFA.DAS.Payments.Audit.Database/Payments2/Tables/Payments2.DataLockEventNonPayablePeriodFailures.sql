@@ -10,6 +10,13 @@
 )
 GO
 
+CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriodFailures__DataLockEventNonPayablePeriodId] ON [Payments2].[DataLockEventNonPayablePeriodFailures] 
+(
+	[DataLockEventNonPayablePeriodId]
+)
+WITH (ONLINE = ON);
+GO
+
 --CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriodFailures__DataLockEventNonPayablePeriodId] ON [Payments2].[DataLockEventNonPayablePeriodFailures] 
 --(
 --	[DataLockEventNonPayablePeriodId]
