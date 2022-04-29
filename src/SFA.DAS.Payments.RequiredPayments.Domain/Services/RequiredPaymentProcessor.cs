@@ -1,24 +1,25 @@
-﻿using System;
+﻿using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 {
     public class RequiredPaymentProcessor : IRequiredPaymentProcessor
     {
-        private readonly IPaymentDueProcessor paymentsDue;
+        private readonly IPaymentDueProcessor paymentsDueProcessor;
         private readonly IRefundService refundService;
 
-        public RequiredPaymentProcessor(IPaymentDueProcessor paymentsDue, IRefundService refundService)
+        public RequiredPaymentProcessor(IPaymentDueProcessor paymentsDueProcessor, IRefundService refundService)
         {
-            this.paymentsDue = paymentsDue;
+            this.paymentsDueProcessor = paymentsDueProcessor;
             this.refundService = refundService;
         }
 
         public List<RequiredPayment> GetRequiredPayments(Earning earning, List<Payment> paymentHistory)
         {
             var result = new List<RequiredPayment>();
+
             if (earning.EarningType != EarningType.Incentive && earning.SfaContributionPercentage.HasValue)
                 result.AddRange(RefundPaymentsWithDifferentSfaContribution(earning.SfaContributionPercentage.Value, paymentHistory));
 
@@ -28,15 +29,30 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                             p.SfaContributionPercentage == earning.SfaContributionPercentage)
                 .ToList();
 
-            var amount = paymentsDue.CalculateRequiredPaymentAmount(earning.Amount, validPaymentHistory);
+            var previousEmployersPaymentHistory = validPaymentHistory
+                .Where(x => x.AccountId != earning.AccountId)
+                .ToList();
 
-            if (amount < 0)
+            var currentEmployerPaymentHistory = validPaymentHistory
+                .Where(x => x.AccountId == earning.AccountId)
+                .ToList();
+
+            if (previousEmployersPaymentHistory.Any())
             {
-                result.AddRange(refundService.GetRefund(amount, validPaymentHistory));
+                var previousEmployersRequiredPaymentAmount = paymentsDueProcessor.CalculateRequiredPaymentAmount(0m, previousEmployersPaymentHistory);
+
+                if (previousEmployersRequiredPaymentAmount < 0) result.AddRange(refundService.GetRefund(previousEmployersRequiredPaymentAmount, previousEmployersPaymentHistory));
+            }
+
+            var currentEmployerRequiredPaymentAmount = paymentsDueProcessor.CalculateRequiredPaymentAmount(earning.Amount, currentEmployerPaymentHistory);
+
+            if (currentEmployerRequiredPaymentAmount < 0)
+            {
+                result.AddRange(refundService.GetRefund(currentEmployerRequiredPaymentAmount, validPaymentHistory));
                 return result;
             }
 
-            if (amount == 0)
+            if (currentEmployerRequiredPaymentAmount == 0)
             {
                 return result;
             }
@@ -48,7 +64,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 
             result.Add(new RequiredPayment
             {
-                Amount = amount,
+                Amount = currentEmployerRequiredPaymentAmount,
                 EarningType = earning.EarningType,
                 SfaContributionPercentage = earning.SfaContributionPercentage.Value,
                 PriceEpisodeIdentifier = earning.PriceEpisodeIdentifier,
