@@ -133,7 +133,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             {
                 ilrLearner.Ukprn = ukprn;
                 var learner = TestSession.GetLearner(ukprn, ilrLearner.LearnerId);
-                learner.Course.AimSeqNumber = (short) ilrLearner.AimSequenceNumber;
+                learner.Course.AimSeqNumber = (short)ilrLearner.AimSequenceNumber;
                 learner.Course.StandardCode = ilrLearner.StandardCode;
                 learner.Course.FundingLineType = ilrLearner.FundingLineType;
                 learner.Course.LearnAimRef = ilrLearner.AimReference;
@@ -700,7 +700,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             if (currentEarnings.Any())
             {
-                var priceEpisodeEarnings = currentEarnings.Where(e => string.Equals(e.PriceEpisodeIdentifier, priceEpisodeIdentifier, StringComparison.InvariantCultureIgnoreCase));
+                var priceEpisodeEarnings = string.IsNullOrWhiteSpace(priceEpisodeIdentifier) ? currentEarnings :
+                    currentEarnings.Where(e => string.Equals(e.PriceEpisodeIdentifier, priceEpisodeIdentifier, StringComparison.InvariantCultureIgnoreCase));
+
                 foreach (var earning in priceEpisodeEarnings)
                 {
                     var period = earning.DeliveryCalendarPeriod;
@@ -739,11 +741,14 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 }
             }
 
-            foreach (var periodisedValue in aimPeriodisedValues)
+            if (!string.IsNullOrWhiteSpace(priceEpisodeIdentifier))
             {
-                for (byte i = 1; i < 13; i++)
+                foreach (var periodisedValue in aimPeriodisedValues)
                 {
-                    SetPeriodValueToZeroIfNull(i, periodisedValue, 0);
+                    for (byte i = 1; i < 13; i++)
+                    {
+                        SetPeriodValueToZeroIfNull(i, periodisedValue, 0);
+                    }
                 }
             }
             return aimPeriodisedValues;
@@ -823,7 +828,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             var value = periodProperty?.GetValue(periodisedValues);
             if (value == null)
             {
-                periodProperty?.SetValue(periodisedValues, decimal.Zero);    
+                periodProperty?.SetValue(periodisedValues, decimal.Zero);
             }
         }
 
