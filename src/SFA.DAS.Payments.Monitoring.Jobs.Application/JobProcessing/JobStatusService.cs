@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         Task<bool> ManageStatus(long jobId, CancellationToken cancellationToken);
     }
 
-    
+
 
     public abstract class JobStatusService : IJobStatusService
     {
@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             if (job.DcJobSucceeded.HasValue)
                 status = job.DcJobSucceeded.Value ? JobStatus.CompletedWithErrors : JobStatus.DcTasksFailed;
 
-            if (status != JobStatus.TimedOut) 
+            if (status != JobStatus.TimedOut)
                 Logger.LogWarning($"Job {job.DcJobId} has timed out. but because DcJobSucceeded is {job.DcJobSucceeded}, CompleteJob Job as {status}");
 
             return await CompleteJob(job, status, timedOutTime, cancellationToken).ConfigureAwait(false);
@@ -84,7 +84,19 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             //TODO: make a little more elegant
             Logger.LogDebug($"Inprogress count: {inProgressMessages.Count}, completed count: {completedItems.Count}. Job: {jobId}");
             inProgressMessages.GroupBy(message => message.MessageName).ToList().ForEach(group => Logger.LogDebug($"Inprogress message type: {group.Key}, count: {group.Count()}. Job: {jobId}"));
-            
+
+            if (job != null && job.JobType == JobType.PeriodEndRunJob)
+            {
+                Telemetry.TrackEvent($"Period-End-Run Job: {jobId}", new Dictionary<string, double>
+                {
+                    {"InprogressCount", inProgressMessages.Count},
+                    {"CompletedCount", completedItems.Count},
+                    {TelemetryKeys.CollectionPeriod, job.CollectionPeriod},
+                    {TelemetryKeys.AcademicYear, job.AcademicYear},
+                    {TelemetryKeys.JobId, jobId},
+                });
+            }
+
             if (!completedItems.Any())
             {
                 Logger.LogVerbose($"Found no completed messages for job: {jobId}");
@@ -116,7 +128,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
         public virtual Task<(bool IsComplete, JobStatus? OverriddenJobStatus, DateTimeOffset? completionTime)> PerformAdditionalJobChecks(JobModel job, CancellationToken cancellationToken)
         {
-            return Task.FromResult((true,(JobStatus?) null, (DateTimeOffset?) null));
+            return Task.FromResult((true, (JobStatus?)null, (DateTimeOffset?)null));
         }
 
 
@@ -147,7 +159,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             await JobStorageService.SaveJobStatus(job.DcJobId.Value, status, endTime, cancellationToken).ConfigureAwait(false);
 
             SendTelemetry(job);
-            
+
             if (job.Status == JobStatus.DcTasksFailed || job.Status == JobStatus.TimedOut)
             {
                 Logger.LogWarning($"Finished recording completion status of job. Job: {job.DcJobId}, status: {job.Status}, end time: {job.EndTime}");
@@ -156,7 +168,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             {
                 Logger.LogInfo($"Finished recording completion status of job. Job: {job.DcJobId}, status: {job.Status}, end time: {job.EndTime}");
             }
-            
+
             return true;
         }
 
@@ -171,7 +183,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             return completedItems;
         }
 
-        protected virtual async Task<(bool hasFailedMessages, DateTimeOffset? endTime)> UpdateJobStatus(long jobId, List<CompletedMessage> completedItems, 
+        protected virtual async Task<(bool hasFailedMessages, DateTimeOffset? endTime)> UpdateJobStatus(long jobId, List<CompletedMessage> completedItems,
             CancellationToken cancellationToken)
         {
             var statusChanged = false;

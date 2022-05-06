@@ -4,6 +4,7 @@ using NServiceBus;
 using SFA.DAS.CommitmentsV2.Messages.Events;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.DataLocks.Application.Services;
 
@@ -11,7 +12,7 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Handlers
 {
     public class ApprenticeshipCreatedHandler : BaseApprovalsMessageHandler<ApprenticeshipCreatedEvent>
     {
-        public ApprenticeshipCreatedHandler(IPaymentLogger logger, IContainerScopeFactory factory) : base(logger, factory)
+        public ApprenticeshipCreatedHandler(ITelemetry telemetry, IPaymentLogger logger, IContainerScopeFactory factory) : base(telemetry, logger, factory)
         {
         }
 
