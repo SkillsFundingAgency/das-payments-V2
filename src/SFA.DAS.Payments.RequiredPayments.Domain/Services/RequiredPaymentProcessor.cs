@@ -29,20 +29,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                             p.SfaContributionPercentage == earning.SfaContributionPercentage)
                 .ToList();
 
-            var previousEmployersPaymentHistory = validPaymentHistory
-                .Where(x => x.AccountId != earning.AccountId)
-                .ToList();
+            result.AddRange(GenerateRefundsForPreviousEmployers(earning, validPaymentHistory));
 
             var currentEmployerPaymentHistory = validPaymentHistory
                 .Where(x => x.AccountId == earning.AccountId)
                 .ToList();
-
-            if (previousEmployersPaymentHistory.Any())
-            {
-                var previousEmployersRequiredPaymentAmount = paymentsDueProcessor.CalculateRequiredPaymentAmount(0m, previousEmployersPaymentHistory);
-
-                if (previousEmployersRequiredPaymentAmount < 0) result.AddRange(refundService.GetRefund(previousEmployersRequiredPaymentAmount, previousEmployersPaymentHistory));
-            }
 
             var currentEmployerRequiredPaymentAmount = paymentsDueProcessor.CalculateRequiredPaymentAmount(earning.Amount, currentEmployerPaymentHistory);
 
@@ -73,6 +64,22 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
             });
 
             return result;
+        }
+
+        private List<RequiredPayment> GenerateRefundsForPreviousEmployers(Earning earning, List<Payment> paymentHistory)
+        {
+            var previousEmployersPaymentHistory = paymentHistory
+                .Where(x => x.AccountId != earning.AccountId)
+                .ToList();
+
+            if (previousEmployersPaymentHistory.Any())
+            {
+                var previousEmployersRequiredPaymentAmount = paymentsDueProcessor.CalculateRequiredPaymentAmount(0m, previousEmployersPaymentHistory);
+
+                if (previousEmployersRequiredPaymentAmount < 0) return refundService.GetRefund(previousEmployersRequiredPaymentAmount, previousEmployersPaymentHistory);
+            }
+
+            return new List<RequiredPayment>();
         }
 
         private List<RequiredPayment> RefundPaymentsWithDifferentSfaContribution(decimal currentSfaContributionPercentage, List<Payment> paymentHistory)
