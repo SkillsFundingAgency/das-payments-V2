@@ -73,29 +73,41 @@ Scenario Outline: Levy learner changes employer provider retrospectively submitt
         
 	And at month end only the following payments will be calculated
 		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
+		| R09/Current Academic Year | Feb/Current Academic Year | -1000        | 0          | 0         | pe-1                     |
+		| R09/Current Academic Year | Mar/Current Academic Year | -1000        | 0          | 0         | pe-1                     |
 		| R09/Current Academic Year | Feb/Current Academic Year | 750          | 0          | 0         | pe-2                     |
 		| R09/Current Academic Year | Mar/Current Academic Year | 750          | 0          | 0         | pe-2                     |
 		| R09/Current Academic Year | Apr/Current Academic Year | 750          | 0          | 0         | pe-2                     |
-		| R09/Current Academic Year | Feb/Current Academic Year | -1000        | 0          | 0         | pe-1                     |
-		| R09/Current Academic Year | Mar/Current Academic Year | -1000        | 0          | 0         | pe-1                     |
+		| R10/Current Academic Year | May/Current Academic Year | 750          | 0          | 0         | pe-2                     |
+		| R11/Current Academic Year | Jun/Current Academic Year | 750          | 0          | 0         | pe-2                     |
+		| R12/Current Academic Year | Jul/Current Academic Year | 750          | 0          | 0         | pe-2                     |
 
 	And only the following provider payments will be recorded
 		| Collection Period         | Delivery Period           | Levy Payments | Transaction Type | Employer      |
+		| R09/Current Academic Year | Feb/Current Academic Year | -1000         | Learning         | test employer |
+		| R09/Current Academic Year | Mar/Current Academic Year | -1000         | Learning         | test employer |
 		| R09/Current Academic Year | Feb/Current Academic Year | 750           | Learning         | employer 2    |
 		| R09/Current Academic Year | Mar/Current Academic Year | 750           | Learning         | employer 2    |
 		| R09/Current Academic Year | Apr/Current Academic Year | 750           | Learning         | employer 2    |
-		| R09/Current Academic Year | Feb/Current Academic Year | -1000         | Learning         | test employer |
-		| R09/Current Academic Year | Mar/Current Academic Year | -1000         | Learning         | test employer |
+		| R10/Current Academic Year | May/Current Academic Year | 750           | Learning         | employer 2    |
+		| R11/Current Academic Year | Jun/Current Academic Year | 750           | Learning         | employer 2    |
+		| R12/Current Academic Year | Jul/Current Academic Year | 750           | Learning         | employer 2    |
 
 	And only the following provider payments will be generated
 		| Collection Period         | Delivery Period           | Levy Payments | Transaction Type | Employer      |
+		| R09/Current Academic Year | Feb/Current Academic Year | -1000         | Learning         | test employer |
+		| R09/Current Academic Year | Mar/Current Academic Year | -1000         | Learning         | test employer |
 		| R09/Current Academic Year | Feb/Current Academic Year | 750           | Learning         | employer 2    |
 		| R09/Current Academic Year | Mar/Current Academic Year | 750           | Learning         | employer 2    |
 		| R09/Current Academic Year | Apr/Current Academic Year | 750           | Learning         | employer 2    |
-		| R09/Current Academic Year | Feb/Current Academic Year | -1000         | Learning         | test employer |
-		| R09/Current Academic Year | Mar/Current Academic Year | -1000         | Learning         | test employer |
+		| R10/Current Academic Year | May/Current Academic Year | 750           | Learning         | employer 2    |
+		| R11/Current Academic Year | Jun/Current Academic Year | 750           | Learning         | employer 2    |
+		| R12/Current Academic Year | Jul/Current Academic Year | 750           | Learning         | employer 2    |
 
 Examples:
 	| Collection_Period         | Levy Balance for test employer | Levy Balance for employer 2 |
 	| R09/Current Academic Year | 999999                         | 999999                      |
+	| R10/Current Academic Year | 999999                         | 999999                      |
+	| R11/Current Academic Year | 999999                         | 999999                      |
+	| R12/Current Academic Year | 999999                         | 999999                      |
         
