@@ -381,7 +381,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FlexiPaymentsAdapter", "Fle
 EndProject
 Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "SFA.DAS.Payments.FlexiPaymentsAdapter.ServiceFabric", "SFA.DAS.Payments.FlexiPaymentsAdapter.ServiceFabric\SFA.DAS.Payments.FlexiPaymentsAdapter.ServiceFabric.sfproj", "{A8E5BFDC-7C51-46D8-8053-89F1009C590A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.FlexiPaymentsAdapter.FlexiPaymentsAdapterService", "SFA.DAS.Payments.FlexiPaymentsAdapter.FlexiPaymentsAdapterService\SFA.DAS.Payments.FlexiPaymentsAdapter.FlexiPaymentsAdapterService.csproj", "{2FC621EB-C4D0-4225-85AC-D04F2F8EF804}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.FlexiPaymentsAdapter.FlexiPaymentsAdapterService", "SFA.DAS.Payments.FlexiPaymentsAdapter.FlexiPaymentsAdapterService\SFA.DAS.Payments.FlexiPaymentsAdapter.FlexiPaymentsAdapterService.csproj", "{2FC621EB-C4D0-4225-85AC-D04F2F8EF804}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.FlexiPaymentsAdapter.Messages", "SFA.DAS.Payments.FlexiPaymentsAdapter.Messages\SFA.DAS.Payments.FlexiPaymentsAdapter.Messages.csproj", "{9B6C8A05-FD5E-461C-A358-0206D1645C2A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1549,6 +1551,14 @@ Global
 		{2FC621EB-C4D0-4225-85AC-D04F2F8EF804}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2FC621EB-C4D0-4225-85AC-D04F2F8EF804}.Release|x64.ActiveCfg = Release|Any CPU
 		{2FC621EB-C4D0-4225-85AC-D04F2F8EF804}.Release|x64.Build.0 = Release|Any CPU
+		{9B6C8A05-FD5E-461C-A358-0206D1645C2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B6C8A05-FD5E-461C-A358-0206D1645C2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B6C8A05-FD5E-461C-A358-0206D1645C2A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9B6C8A05-FD5E-461C-A358-0206D1645C2A}.Debug|x64.Build.0 = Debug|Any CPU
+		{9B6C8A05-FD5E-461C-A358-0206D1645C2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B6C8A05-FD5E-461C-A358-0206D1645C2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B6C8A05-FD5E-461C-A358-0206D1645C2A}.Release|x64.ActiveCfg = Release|Any CPU
+		{9B6C8A05-FD5E-461C-A358-0206D1645C2A}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1705,6 +1715,7 @@ Global
 		{56BE8D57-BF1B-47EC-8958-76588BF4A4B9} = {0CA32AC5-24E0-4D96-9D31-AA51556A64D5}
 		{A8E5BFDC-7C51-46D8-8053-89F1009C590A} = {1B475705-4A84-45A7-B3B8-CED589B27277}
 		{2FC621EB-C4D0-4225-85AC-D04F2F8EF804} = {1B475705-4A84-45A7-B3B8-CED589B27277}
+		{9B6C8A05-FD5E-461C-A358-0206D1645C2A} = {1B475705-4A84-45A7-B3B8-CED589B27277}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E9E6D1E-3C3C-41C9-AED4-9B6DC9118F1F}
