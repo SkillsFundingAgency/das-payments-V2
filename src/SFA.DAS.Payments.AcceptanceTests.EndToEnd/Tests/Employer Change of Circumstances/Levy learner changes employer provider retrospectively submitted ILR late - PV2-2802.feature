@@ -35,15 +35,16 @@ Scenario Outline: Levy learner changes employer provider retrospectively submitt
 		| Jul/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
 	
 	And the following provider payments had been generated
-		| Collection Period         | Delivery Period           | Levy Payments | Transaction Type | Price Episode Identifier |
-		| R01/Current Academic Year | Aug/Current Academic Year | 1000          | Learning         | pe-1                     |
-		| R02/Current Academic Year | Sep/Current Academic Year | 1000          | Learning         | pe-1                     |
-		| R03/Current Academic Year | Oct/Current Academic Year | 1000          | Learning         | pe-1                     |
-		| R04/Current Academic Year | Nov/Current Academic Year | 1000          | Learning         | pe-1                     |
-		| R05/Current Academic Year | Dec/Current Academic Year | 1000          | Learning         | pe-1                     |
-		| R06/Current Academic Year | Jan/Current Academic Year | 1000          | Learning         | pe-1                     |
-		| R07/Current Academic Year | Feb/Current Academic Year | 1000          | Learning         | pe-1                     |
-		| R08/Current Academic Year | Mar/Current Academic Year | 1000          | Learning         | pe-1                     |
+		| Collection Period         | Delivery Period           | Levy Payments | Transaction Type | Price Episode Identifier | Employer      |
+		| R01/Current Academic Year | Aug/Current Academic Year | 1000          | Learning         | pe-1                     | test employer |
+		| R02/Current Academic Year | Sep/Current Academic Year | 1000          | Learning         | pe-1                     | test employer |
+		| R03/Current Academic Year | Oct/Current Academic Year | 1000          | Learning         | pe-1                     | test employer |
+		| R04/Current Academic Year | Nov/Current Academic Year | 1000          | Learning         | pe-1                     | test employer |
+		| R05/Current Academic Year | Dec/Current Academic Year | 1000          | Learning         | pe-1                     | test employer |
+		| R06/Current Academic Year | Jan/Current Academic Year | 1000          | Learning         | pe-1                     | test employer |
+		| R07/Current Academic Year | Feb/Current Academic Year | -1000         | Learning         | pe-1                     | test employer |
+		| R08/Current Academic Year | Mar/Current Academic Year | -1000         | Learning         | pe-1                     | test employer |
+		| R08/Current Academic Year | Mar/Current Academic Year | 2000          | Learning         | pe-2                     | employer 2    |
 	
 	But the Provider now changes the Learner details as follows
 		| Employer id | Start Date                   | Planned Duration | Actual Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
