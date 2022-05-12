@@ -6,15 +6,15 @@ using Microsoft.ServiceFabric.Services.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.ServiceFabric.Core;
 
-namespace SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService
+namespace SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerService
 {
-    public class ClawbackRemovedLearnerAimsService : StatelessService
+    public class ClawbackRemovedLearnerService : StatelessService
     {
         private IStatelessEndpointCommunicationListener listener;
         private readonly ILifetimeScope lifetimeScope;
         private readonly IPaymentLogger paymentLogger;
 
-        public ClawbackRemovedLearnerAimsService(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger paymentLogger) : base(context)
+        public ClawbackRemovedLearnerService(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger paymentLogger) : base(context)
         {
             this.lifetimeScope = lifetimeScope;
             this.paymentLogger = paymentLogger;
@@ -22,7 +22,7 @@ namespace SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService
 
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
-            paymentLogger.LogInfo("Creating Service Instance Listeners For ClawbackRemovedLearnerAimsService");
+            paymentLogger.LogInfo("Creating Service Instance Listeners For ClawbackRemovedLearnerService");
 
             return new List<ServiceInstanceListener>
             {

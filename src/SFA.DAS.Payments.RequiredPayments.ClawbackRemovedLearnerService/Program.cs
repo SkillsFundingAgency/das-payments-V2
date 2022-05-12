@@ -6,7 +6,7 @@ using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc;
 
 [assembly: InternalsVisibleTo(InternalsVisible.ToDynamicProxyGenAssembly2)]
 
-namespace SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService
+namespace SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerService
 {
     internal static class Program
     {
@@ -14,7 +14,7 @@ namespace SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService
         {
             try
             {
-                using (ServiceFabricContainerFactory.CreateContainerForStatelessService<ClawbackRemovedLearnerAimsService>())
+                using (ServiceFabricContainerFactory.CreateContainerForStatelessService<ClawbackRemovedLearnerService>())
                 {
                     Thread.Sleep(Timeout.Infinite);
                 }
