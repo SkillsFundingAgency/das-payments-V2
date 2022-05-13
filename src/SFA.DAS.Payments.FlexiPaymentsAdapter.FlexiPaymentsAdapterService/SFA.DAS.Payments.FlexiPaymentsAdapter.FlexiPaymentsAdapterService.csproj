@@ -10,7 +10,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="4.1.416" />
+    <!--<PackageReference Include="Microsoft.ServiceFabric.Services" Version="4.1.416" />-->
+    <PackageReference Include="NServiceBus" Version="7.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.FlexiPaymentsAdapter.Messages\SFA.DAS.Payments.FlexiPaymentsAdapter.Messages.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Messages\SFA.DAS.Payments.RequiredPayments.Messages.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.ServiceFabric.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj" />
   </ItemGroup>
 
 </Project>
