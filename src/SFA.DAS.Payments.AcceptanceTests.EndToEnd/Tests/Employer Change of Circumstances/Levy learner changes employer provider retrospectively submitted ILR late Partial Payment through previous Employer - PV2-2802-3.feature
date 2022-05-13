@@ -79,10 +79,8 @@ Scenario Outline: Levy learner changes employer provider retrospectively submitt
 		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
 		| R10/Current Academic Year | Feb/Current Academic Year | -1000        | 0          | 0         | pe-1                     |
 		| R10/Current Academic Year | Mar/Current Academic Year | -1000        | 0          | 0         | pe-1                     |
-
 		| R10/Current Academic Year | Feb/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
 		| R10/Current Academic Year | Mar/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
-		
 		| R10/Current Academic Year | May/Current Academic Year | 1050         | 0          | 0         | pe-2                     |
 		| R11/Current Academic Year | Jun/Current Academic Year | 1050         | 0          | 0         | pe-2                     |
 		| R12/Current Academic Year | Jul/Current Academic Year | 1050         | 0          | 0         | pe-2                     |
@@ -91,10 +89,8 @@ Scenario Outline: Levy learner changes employer provider retrospectively submitt
 		| Collection Period         | Delivery Period           | Levy Payments | Transaction Type | Employer      |
 		| R10/Current Academic Year | Feb/Current Academic Year | -1000         | Learning         | test employer |
 		| R10/Current Academic Year | Mar/Current Academic Year | -1000         | Learning         | test employer |
-
-		| R10/Current Academic Year | Feb/Current Academic Year | 1000         | Learning         | employer 2 |
-		| R10/Current Academic Year | Mar/Current Academic Year | 1000         | Learning         | employer 2 |
-
+		| R10/Current Academic Year | Feb/Current Academic Year | 1000          | Learning         | employer 2    |
+		| R10/Current Academic Year | Mar/Current Academic Year | 1000          | Learning         | employer 2    |
 		| R10/Current Academic Year | May/Current Academic Year | 1050          | Learning         | employer 2    |
 		| R11/Current Academic Year | Jun/Current Academic Year | 1050          | Learning         | employer 2    |
 		| R12/Current Academic Year | Jul/Current Academic Year | 1050          | Learning         | employer 2    |
@@ -103,10 +99,8 @@ Scenario Outline: Levy learner changes employer provider retrospectively submitt
 		| Collection Period         | Delivery Period           | Levy Payments | Transaction Type | Employer      |
 		| R10/Current Academic Year | Feb/Current Academic Year | -1000         | Learning         | test employer |
 		| R10/Current Academic Year | Mar/Current Academic Year | -1000         | Learning         | test employer |
-
-		| R10/Current Academic Year | Feb/Current Academic Year | 1000         | Learning         | employer 2 |
-		| R10/Current Academic Year | Mar/Current Academic Year | 1000         | Learning         | employer 2 |
-
+		| R10/Current Academic Year | Feb/Current Academic Year | 1000          | Learning         | employer 2    |
+		| R10/Current Academic Year | Mar/Current Academic Year | 1000          | Learning         | employer 2    |
 		| R10/Current Academic Year | May/Current Academic Year | 1050          | Learning         | employer 2    |
 		| R11/Current Academic Year | Jun/Current Academic Year | 1050          | Learning         | employer 2    |
 		| R12/Current Academic Year | Jul/Current Academic Year | 1050          | Learning         | employer 2    |

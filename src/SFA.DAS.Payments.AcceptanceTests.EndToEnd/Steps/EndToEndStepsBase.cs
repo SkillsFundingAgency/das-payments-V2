@@ -1121,12 +1121,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                                : expectedPayment.Employer.ToLowerInvariant() == "no employer"
                                    ? default(long?)
                                    : TestSession.GetEmployer(expectedPayment.Employer).AccountId;
+
                 expectedPayment.IsEmployerLevyPayer = string.IsNullOrWhiteSpace(expectedPayment.Employer)
                     ? TestSession.Employer.IsLevyPayer : TestSession.GetEmployer(expectedPayment.Employer).IsLevyPayer;
 
-                expectedPayment.SendingAccountId = !string.IsNullOrWhiteSpace(expectedPayment.SendingEmployer)
-                    ? TestSession.GetEmployer(expectedPayment.SendingEmployer).AccountId
-                    : TestSession.Employer.AccountId;
+                if (!string.IsNullOrWhiteSpace(expectedPayment.SendingEmployer))
+                    expectedPayment.SendingAccountId = TestSession.GetEmployer(expectedPayment.SendingEmployer).AccountId;
             }
         }
 

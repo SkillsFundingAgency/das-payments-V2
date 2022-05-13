@@ -74,10 +74,10 @@ Scenario Outline: Levy learner changes employer provider retrospectively submitt
         
 	And at month end only the following payments will be calculated
 		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
-		| R09/Current Academic Year | Feb/Current Academic Year | -1000        | 0          | 0         | pe-1                     |
-		| R09/Current Academic Year | Mar/Current Academic Year | -1000        | 0          | 0         | pe-1                     |
+		| R09/Current Academic Year | Feb/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| R09/Current Academic Year | Mar/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
 		| R09/Current Academic Year | Feb/Current Academic Year | 750          | 0          | 0         | pe-2                     |
-		| R09/Current Academic Year | Mar/Current Academic Year | 750          | 0          | 0         | pe-2                     |
+		| R09/Current Academic Year | Mar/Current Academic Year | -1250        | 0          | 0         | pe-2                     |
 		| R09/Current Academic Year | Apr/Current Academic Year | 750          | 0          | 0         | pe-2                     |
 		| R10/Current Academic Year | May/Current Academic Year | 750          | 0          | 0         | pe-2                     |
 		| R11/Current Academic Year | Jun/Current Academic Year | 750          | 0          | 0         | pe-2                     |
