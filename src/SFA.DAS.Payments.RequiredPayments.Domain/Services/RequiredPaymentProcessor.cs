@@ -29,57 +29,40 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
                             p.SfaContributionPercentage == earning.SfaContributionPercentage)
                 .ToList();
 
-            result.AddRange(GenerateRefundsForPreviousEmployers(earning, validPaymentHistory));
+            var previousEmployersPaymentHistory = paymentHistory
+                .Where(x => x.AccountId != earning.AccountId)
+                .ToList();
+
+            result.AddRange(GenerateRequiredPaymentForEmployer(earning, 0m, previousEmployersPaymentHistory));
 
             var currentEmployerPaymentHistory = validPaymentHistory
                 .Where(x => x.AccountId == earning.AccountId)
                 .ToList();
 
-            var currentEmployerRequiredPaymentAmount = paymentsDueProcessor.CalculateRequiredPaymentAmount(earning.Amount, currentEmployerPaymentHistory);
+            result.AddRange(GenerateRequiredPaymentForEmployer(earning, earning.Amount, currentEmployerPaymentHistory));
 
-            if (currentEmployerRequiredPaymentAmount < 0)
-            {
-                result.AddRange(refundService.GetRefund(currentEmployerRequiredPaymentAmount, validPaymentHistory));
-                return result;
-            }
+            return result;
+        }
 
-            if (currentEmployerRequiredPaymentAmount == 0)
-            {
-                return result;
-            }
+        private List<RequiredPayment> GenerateRequiredPaymentForEmployer(Earning earning, decimal amountDue, List<Payment> employersPaymentHistory)
+        {
+            var employersRequiredPaymentAmount = paymentsDueProcessor.CalculateRequiredPaymentAmount(amountDue, employersPaymentHistory);
 
-            if (!earning.SfaContributionPercentage.HasValue)
-            {
-                throw new ArgumentException("Trying to use a null SFA Contribution % for a positive earning");
-            }
+            if (employersRequiredPaymentAmount == 0) return new List<RequiredPayment>();
 
-            result.Add(new RequiredPayment
+            if (employersRequiredPaymentAmount < 0) return refundService.GetRefund(employersRequiredPaymentAmount, employersPaymentHistory);
+
+            if (!earning.SfaContributionPercentage.HasValue) throw new ArgumentException($"Trying to use a null SFA Contribution % for a positive earning, Earning Details: Amount: {employersRequiredPaymentAmount}, EarningType : {earning.EarningType}, PriceEpisodeIdentifier : {earning.PriceEpisodeIdentifier}");
+
+            return new List<RequiredPayment> { new RequiredPayment
             {
-                Amount = currentEmployerRequiredPaymentAmount,
+                Amount = employersRequiredPaymentAmount,
                 EarningType = earning.EarningType,
                 SfaContributionPercentage = earning.SfaContributionPercentage.Value,
                 PriceEpisodeIdentifier = earning.PriceEpisodeIdentifier,
                 AccountId = earning.AccountId,
                 TransferSenderAccountId = earning.TransferSenderAccountId
-            });
-
-            return result;
-        }
-
-        private List<RequiredPayment> GenerateRefundsForPreviousEmployers(Earning earning, List<Payment> paymentHistory)
-        {
-            var previousEmployersPaymentHistory = paymentHistory
-                .Where(x => x.AccountId != earning.AccountId)
-                .ToList();
-
-            if (previousEmployersPaymentHistory.Any())
-            {
-                var previousEmployersRequiredPaymentAmount = paymentsDueProcessor.CalculateRequiredPaymentAmount(0m, previousEmployersPaymentHistory);
-
-                if (previousEmployersRequiredPaymentAmount < 0) return refundService.GetRefund(previousEmployersRequiredPaymentAmount, previousEmployersPaymentHistory);
-            }
-
-            return new List<RequiredPayment>();
+            }};
         }
 
         private List<RequiredPayment> RefundPaymentsWithDifferentSfaContribution(decimal currentSfaContributionPercentage, List<Payment> paymentHistory)
