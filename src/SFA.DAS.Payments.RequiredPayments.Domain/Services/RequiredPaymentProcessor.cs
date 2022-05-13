@@ -54,6 +54,20 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 
             if (!earning.SfaContributionPercentage.HasValue) throw new ArgumentException($"Trying to use a null SFA Contribution % for a positive earning, Earning Details: Amount: {employersRequiredPaymentAmount}, EarningType : {earning.EarningType}, PriceEpisodeIdentifier : {earning.PriceEpisodeIdentifier}");
 
+            if (amountDue == 0 && employersPaymentHistory.Any())
+            {
+                var employerPayment = employersPaymentHistory.First();
+                return new List<RequiredPayment> { new RequiredPayment
+                {
+                    Amount = employersRequiredPaymentAmount,
+                    EarningType = earning.EarningType,
+                    SfaContributionPercentage = employerPayment.SfaContributionPercentage,
+                    PriceEpisodeIdentifier = employerPayment.PriceEpisodeIdentifier,
+                    AccountId = employerPayment.AccountId,
+                    TransferSenderAccountId = employerPayment.TransferSenderAccountId
+                }};
+            }
+
             return new List<RequiredPayment> { new RequiredPayment
             {
                 Amount = employersRequiredPaymentAmount,

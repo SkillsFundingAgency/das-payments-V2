@@ -9,7 +9,7 @@ Scenario Outline: Levy learner changes employer provider retrospectively submitt
 	And the following commitments exist
 		| Identifier       | Employer      | start date                   | end date                     | agreed price | status  | effective from               | effective to                 | stop effective from          | Standard Code | Programme Type |
 		| Apprenticeship 1 | test employer | 01/Aug/Current Academic Year | 31/Aug/Next Academic Year    | 15000        | stopped | 01/Aug/Current Academic Year | 01/Feb/Current Academic Year | 01/Feb/Current Academic Year | 51            | 25             |
-		| Apprenticeship 2 | employer 2    | 01/Feb/Current Academic Year | 31/Aug/Current Academic Year | 5625         | active  | 01/Feb/Current Academic Year |                              |                              | 51            | 25             |
+		| Apprenticeship 2 | employer 2    | 01/Feb/Current Academic Year | 31/Aug/Current Academic Year | 7625         | active  | 01/Feb/Current Academic Year |                              |                              | 51            | 25             |
 	
 	And the provider previously submitted the following learner details
 		| Employer id   | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
