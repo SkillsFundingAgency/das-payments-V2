@@ -1,9 +1,9 @@
-Feature: Levy learner changes employer provider retrospectively submitted ILR late - PV2-2802
+Feature: Levy learner changes employer provider retrospectively submitted ILR late - PV2-2802-1
 		As a provider,
 		I want earnings and payments for a levy learner, levy available, when there is a change of employer during the programme and ILR is submitted late, to be paid the correct amount
 		So that I am accurately paid my apprenticeship provision
 
-Scenario Outline: Levy learner changes employer provider retrospectively submitted ILR late - PV2-2802
+Scenario Outline: Levy learner changes employer provider retrospectively submitted ILR late - PV2-2802-1
 	Given the "test employer" levy account balance in collection period <Collection_Period> is <Levy Balance for test employer>
 	And the "employer 2" levy account balance in collection period <Collection_Period> is <Levy Balance for employer 2>
 	And the following commitments exist
@@ -42,9 +42,8 @@ Scenario Outline: Levy learner changes employer provider retrospectively submitt
 		| R04/Current Academic Year | Nov/Current Academic Year | 1000          | Learning         | pe-1                     | test employer |
 		| R05/Current Academic Year | Dec/Current Academic Year | 1000          | Learning         | pe-1                     | test employer |
 		| R06/Current Academic Year | Jan/Current Academic Year | 1000          | Learning         | pe-1                     | test employer |
-		| R07/Current Academic Year | Feb/Current Academic Year | -1000         | Learning         | pe-1                     | test employer |
-		| R08/Current Academic Year | Mar/Current Academic Year | -1000         | Learning         | pe-1                     | test employer |
-		| R08/Current Academic Year | Mar/Current Academic Year | 2000          | Learning         | pe-2                     | employer 2    |
+		| R07/Current Academic Year | Feb/Current Academic Year | 1000          | Learning         | pe-1                     | test employer |
+		| R08/Current Academic Year | Mar/Current Academic Year | 1000          | Learning         | pe-1                     | test employer |
 	
 	But the Provider now changes the Learner details as follows
 		| Employer id | Start Date                   | Planned Duration | Actual Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |

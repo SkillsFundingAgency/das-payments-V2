@@ -553,8 +553,18 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-1824-DLock09-One-Price-Episode-UnHappy-Path.feature</DependentUpon>
     </Compile>
-    <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer provider retrospectively submitted ILR late - PV2-2802.feature.cs">
-      <DependentUpon>Levy learner changes employer provider retrospectively submitted ILR late - PV2-2802.feature</DependentUpon>
+    <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer provider retrospectively submitted ILR late bad previous payment History - PV2-2802-2.feature.cs">
+      <DependentUpon>Levy learner changes employer provider retrospectively submitted ILR late bad previous payment History - PV2-2802-2.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer provider retrospectively submitted ILR late Partial Payment through previous Employer - PV2-2802-3.feature.cs">
+      <DependentUpon>Levy learner changes employer provider retrospectively submitted ILR late Partial Payment through previous Employer - PV2-2802-3.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer provider retrospectively submitted ILR late - PV2-2802-1.feature.cs">
+      <DependentUpon>Levy learner changes employer provider retrospectively submitted ILR late - PV2-2802-1.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -2016,9 +2026,17 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>16-18 Levy Learner, changes employer, earns incentive in the transfer month and is recorded retrospectively_PV2-373 .feature.cs</LastGenOutput>
     </None>
-    <None Include="Tests\Employer Change of Circumstances\Levy learner changes employer provider retrospectively submitted ILR late - PV2-2802.feature">
+    <None Include="Tests\Employer Change of Circumstances\Levy learner changes employer provider retrospectively submitted ILR late bad previous payment History - PV2-2802-2.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Levy learner changes employer provider retrospectively submitted ILR late - PV2-2802.feature.cs</LastGenOutput>
+      <LastGenOutput>Levy learner changes employer provider retrospectively submitted ILR late bad previous payment History - PV2-2802-2.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Levy learner changes employer provider retrospectively submitted ILR late Partial Payment through previous Employer - PV2-2802-3.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes employer provider retrospectively submitted ILR late Partial Payment through previous Employer - PV2-2802-3.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Employer Change of Circumstances\Levy learner changes employer provider retrospectively submitted ILR late - PV2-2802-1.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy learner changes employer provider retrospectively submitted ILR late - PV2-2802-1.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Employer Change of Circumstances\PV2-378- No payment if commitment has gap and while changing employers no change in employment status specified.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
