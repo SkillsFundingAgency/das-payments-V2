@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Services.Runtime;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc;
 
-namespace SFA.DAS.Payments.FlexiPaymentsAdapter.FlexiPaymentsAdapterService
+namespace SFA.DAS.Payments.FPA.FlexiPaymentsAdapterService
 {
     internal static class Program
     {

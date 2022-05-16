@@ -10,7 +10,7 @@ using Microsoft.ServiceFabric.Services.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.ServiceFabric.Core;
 
-namespace SFA.DAS.Payments.FlexiPaymentsAdapter.FlexiPaymentsAdapterService
+namespace SFA.DAS.Payments.FPA.FlexiPaymentsAdapterService
 {
     /// <summary>
     /// An instance of this class is created for each service instance by the Service Fabric runtime.

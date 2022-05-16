@@ -3,7 +3,7 @@ using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
-namespace SFA.DAS.Payments.FlexiPaymentsAdapter.Messages.InboundEvents
+namespace SFA.DAS.Payments.FPA.Messages.InboundEvents
 {
     //NB this may be an event owned by the Apprenticeship Payments Service but for the spike this will do
     public class LearningPaymentEvent

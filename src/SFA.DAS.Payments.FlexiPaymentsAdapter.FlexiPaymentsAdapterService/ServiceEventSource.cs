@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Services.Runtime;
 
-namespace SFA.DAS.Payments.FlexiPaymentsAdapter.FlexiPaymentsAdapterService
+namespace SFA.DAS.Payments.FPA.FlexiPaymentsAdapterService
 {
-    [EventSource(Name = "MyCompany-SFA.DAS.Payments.FlexiPaymentsAdapter.ServiceFabric-SFA.DAS.Payments.FlexiPaymentsAdapter.FlexiPaymentsAdapterService")]
+    [EventSource(Name = "MyCompany-SFA.DAS.Payments.FPA.ServiceFabric-SFA.DAS.Payments.FPA.FlexiPaymentsAdapterService")]
 internal sealed class ServiceEventSource : EventSource
 {
     public static readonly ServiceEventSource Current = new ServiceEventSource();

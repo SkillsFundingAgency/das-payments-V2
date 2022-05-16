@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using SFA.DAS.Payments.Model.Core;
 
-namespace SFA.DAS.Payments.FlexiPaymentsAdapter.Messages.Events
+namespace SFA.DAS.Payments.FPA.Messages.Events
 {
     public class FlexiPaymentsReadyForProcessingEvent
     {

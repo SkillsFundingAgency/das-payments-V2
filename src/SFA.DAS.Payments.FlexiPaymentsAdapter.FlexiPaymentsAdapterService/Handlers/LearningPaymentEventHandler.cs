@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using NServiceBus;
-using SFA.DAS.Payments.FlexiPaymentsAdapter.Messages.InboundEvents;
+using SFA.DAS.Payments.FPA.Messages.InboundEvents;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
-namespace SFA.DAS.Payments.FlexiPaymentsAdapter.FlexiPaymentsAdapterService.Handlers
+namespace SFA.DAS.Payments.FPA.FlexiPaymentsAdapterService.Handlers
 {
     public class LearningPaymentEventHandler : IHandleMessages<LearningPaymentEvent>
     {

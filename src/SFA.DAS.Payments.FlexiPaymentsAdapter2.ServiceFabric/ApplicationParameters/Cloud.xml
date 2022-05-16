@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.FPA.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <Parameters>
+    <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
+    <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
+    <Parameter Name="DCServiceBusConnectionString" Value="__DCServiceBusConnectionString__" />
+    <Parameter Name="SubscriptionName" Value="__SubscriptionName__" />
+    <Parameter Name="JobStatusQueueName" Value="__JobStatusQueue__" />
+    <Parameter Name="AuditQueueName" Value="__AuditQueue__" />
+    <Parameter Name="StorageConnectionString" Value="__StorageConnectionString__" />
+    <Parameter Name="LoggingConnectionString" Value="__LoggingConnectionString__" />
+    <Parameter Name="DcStorageConnectionString" Value="__DcStorageConnectionString__" />
+    <Parameter Name="PaymentsConnectionString" Value="__DasPaymentsConnectionStringRW__" />
+    <Parameter Name="PaymentsMonitoringConnectionString" Value="__PaymentsMonitoringConnectionString__" />
+    <Parameter Name="TopicName" Value="__TopicName__" />
+    <Parameter Name="TopicName2021" Value="__TopicName2021__" />
+    <Parameter Name="LogLevel" Value="__LogLevel__" />
+    <Parameter Name="ProcessMessageSequentially" Value="false" />
+    <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
+    <Parameter Name="TimeToPauseBetweenChecks" Value="__TimeToPauseBetweenChecks__" />
+    <Parameter Name="TimeToWaitForJobToComplete" Value="__TimeToWaitForJobToComplete__" />
+    <Parameter Name="MaximumCallbackTimeSpan" Value="__TimeToWaitForJobToComplete__" />
+    <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
+    <Parameter Name="DoNotGenerateACT1TransactionType4To16Payments" Value="__DoNotGenerateACT1TransactionType4To16Payments__" />
+    <Parameter Name="DoNotGenerateACT2Payments" Value="__DoNotGenerateACT2Payments__" />
+    <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
+    <Parameter Name="ImmediateMessageRetries" Value="__ImmediateMessageRetries__" />
+    <Parameter Name="DelayedMessageRetries" Value="__DelayedMessageRetries__" />
+    <Parameter Name="DelayedMessageRetryDelay" Value="__DelayedMessageRetryDelay__" />
+  </Parameters>
+</Application>
