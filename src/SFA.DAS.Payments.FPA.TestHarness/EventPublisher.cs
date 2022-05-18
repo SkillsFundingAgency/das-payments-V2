@@ -20,11 +20,9 @@ namespace SFA.DAS.Payments.FPA.TestHarness
     [TestFixture]
     public class EventPublisher
     {
-        public static ContainerBuilder Builder { get; protected set; } // -1
-        public static IContainer Container { get; protected set; } // 50
+        public static ContainerBuilder Builder { get; protected set; }
+        public static IContainer Container { get; protected set; }
         public static IMessageSession MessageSession { get; protected set; }
-        //public static TestsConfiguration Config => Container.Resolve<TestsConfiguration>();
-        //public static string Environment => Config.GetAppSetting("Environment");
 
         private static readonly string StorageConnectionString = SettingsHelper.GetConnectionString("StorageConnectionString");
         private static readonly string ServiceBusConnectionString = SettingsHelper.GetConnectionString("ServiceBusConnectionString");
@@ -37,7 +35,6 @@ namespace SFA.DAS.Payments.FPA.TestHarness
         public void SetUpEndpoint()
         {
             Builder = new ContainerBuilder();
-            //var config = new TestsConfiguration();
             endpointConfiguration = new EndpointConfiguration(FPAEndpointName);
 
             Builder.RegisterInstance(endpointConfiguration)
@@ -92,7 +89,7 @@ namespace SFA.DAS.Payments.FPA.TestHarness
         {
             var learningPaymentEvent = new LearningPaymentEvent()
             {
-                AccountId = 3351373715752677169,
+                AccountId = 3351373715752677169, //this must match a levy account in [Payments2].[LevyAccount]
                 ActualEndDate = null,
                 AgreedOnDate = DateTime.Now,
                 AgreementId = "114",
