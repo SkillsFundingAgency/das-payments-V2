@@ -8,7 +8,7 @@ namespace SFA.DAS.Payments.FPA.Messages.InboundEvents
     //NB this may be an event owned by the Apprenticeship Payments Service but for the spike this will do
     public class LearningPaymentEvent
     {
-        protected LearningPaymentEvent()
+        public LearningPaymentEvent()
         {
             EventId = Guid.NewGuid();
             EventTime = DateTimeOffset.UtcNow;

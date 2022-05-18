@@ -15,7 +15,7 @@ namespace SFA.DAS.Payments.FPA.FlexiPaymentsAdapterService
     /// <summary>
     /// An instance of this class is created for each service instance by the Service Fabric runtime.
     /// </summary>
-    internal sealed class FlexiPaymentsAdapterService : StatelessService
+    public class FlexiPaymentsAdapterService : StatelessService
     {
         private IStatelessEndpointCommunicationListener listener;
         private readonly ILifetimeScope lifetimeScope;

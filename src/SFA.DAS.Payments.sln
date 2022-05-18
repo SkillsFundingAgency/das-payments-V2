@@ -385,6 +385,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FPA", "FPA", "{5BB7BC6D-A6B
 EndProject
 Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "SFA.DAS.Payments.FPA.ServiceFabric", "SFA.DAS.Payments.FlexiPaymentsAdapter2.ServiceFabric\SFA.DAS.Payments.FPA.ServiceFabric.sfproj", "{1569751E-4790-40E6-AF6E-0B44D6F57D67}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.FPA.TestHarness", "SFA.DAS.Payments.FPA.TestHarness\SFA.DAS.Payments.FPA.TestHarness.csproj", "{EEB7E2B6-188A-47C4-95A0-60CE4FB26696}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1559,6 +1561,14 @@ Global
 		{1569751E-4790-40E6-AF6E-0B44D6F57D67}.Release|x64.ActiveCfg = Release|x64
 		{1569751E-4790-40E6-AF6E-0B44D6F57D67}.Release|x64.Build.0 = Release|x64
 		{1569751E-4790-40E6-AF6E-0B44D6F57D67}.Release|x64.Deploy.0 = Release|x64
+		{EEB7E2B6-188A-47C4-95A0-60CE4FB26696}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEB7E2B6-188A-47C4-95A0-60CE4FB26696}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEB7E2B6-188A-47C4-95A0-60CE4FB26696}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EEB7E2B6-188A-47C4-95A0-60CE4FB26696}.Debug|x64.Build.0 = Debug|Any CPU
+		{EEB7E2B6-188A-47C4-95A0-60CE4FB26696}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEB7E2B6-188A-47C4-95A0-60CE4FB26696}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEB7E2B6-188A-47C4-95A0-60CE4FB26696}.Release|x64.ActiveCfg = Release|Any CPU
+		{EEB7E2B6-188A-47C4-95A0-60CE4FB26696}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1716,6 +1726,7 @@ Global
 		{2FC621EB-C4D0-4225-85AC-D04F2F8EF804} = {5BB7BC6D-A6B1-435E-90A5-45F307613EC3}
 		{9B6C8A05-FD5E-461C-A358-0206D1645C2A} = {5BB7BC6D-A6B1-435E-90A5-45F307613EC3}
 		{1569751E-4790-40E6-AF6E-0B44D6F57D67} = {5BB7BC6D-A6B1-435E-90A5-45F307613EC3}
+		{EEB7E2B6-188A-47C4-95A0-60CE4FB26696} = {5BB7BC6D-A6B1-435E-90A5-45F307613EC3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E9E6D1E-3C3C-41C9-AED4-9B6DC9118F1F}
