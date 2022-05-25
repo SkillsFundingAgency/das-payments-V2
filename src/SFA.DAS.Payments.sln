@@ -375,7 +375,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.PeriodEnd.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.PeriodEnd.Function", "SFA.DAS.Payments.PeriodEnd.Function\SFA.DAS.Payments.PeriodEnd.Function.csproj", "{28C9290E-1D39-4C60-9518-38456307B3A0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService", "SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService\SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService.csproj", "{56BE8D57-BF1B-47EC-8958-76588BF4A4B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerService", "SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerService\SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerService.csproj", "{56BE8D57-BF1B-47EC-8958-76588BF4A4B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

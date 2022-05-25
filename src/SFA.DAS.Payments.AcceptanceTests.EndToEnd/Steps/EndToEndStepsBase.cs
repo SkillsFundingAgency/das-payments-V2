@@ -323,7 +323,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                 list.Add(CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime,
                     sfaContributionPercentage, providerPayment.SfaCoFundedPayments, FundingSourceType.CoInvestedSfa, ukprn, providerPayment.AccountId, providerPayment.SendingAccountId));
 
-            if (providerPayment.LevyPayments > 0)
+            if (providerPayment.LevyPayments != 0)
             {
                 var payment = CreatePaymentModel(providerPayment, onProgTraining, jobId, submissionTime,
                     sfaContributionPercentage, providerPayment.LevyPayments, FundingSourceType.Levy, ukprn, providerPayment.AccountId, providerPayment.SendingAccountId);
@@ -358,7 +358,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                     sfaContributionPercentage ?? (learnerTraining.SfaContributionPercentage).ToPercent(),
                 TransactionType = providerPayment.TransactionType,
                 ContractType = learnerTraining.ContractType,
-                PriceEpisodeIdentifier = learnerTraining.AimReference == "ZPROG001" ? "pe-1" : string.Empty,
+                PriceEpisodeIdentifier = learnerTraining.AimReference == "ZPROG001" ? string.IsNullOrWhiteSpace(providerPayment.PriceEpisodeIdentifier) ? "pe-1" : providerPayment.PriceEpisodeIdentifier : string.Empty,
                 FundingSource = fundingSourceType,
                 LearningAimPathwayCode = learnerTraining.PathwayCode,
                 LearnerReferenceNumber = TestSession.GetLearner(ukprn, learnerTraining.LearnerId).LearnRefNumber,
@@ -1121,12 +1121,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                                : expectedPayment.Employer.ToLowerInvariant() == "no employer"
                                    ? default(long?)
                                    : TestSession.GetEmployer(expectedPayment.Employer).AccountId;
+
                 expectedPayment.IsEmployerLevyPayer = string.IsNullOrWhiteSpace(expectedPayment.Employer)
                     ? TestSession.Employer.IsLevyPayer : TestSession.GetEmployer(expectedPayment.Employer).IsLevyPayer;
 
-                expectedPayment.SendingAccountId = string.IsNullOrWhiteSpace(expectedPayment.SendingEmployer)
-                    ? TestSession.Employer.AccountId
-                    : TestSession.GetEmployer(expectedPayment.SendingEmployer).AccountId;
+                if (!string.IsNullOrWhiteSpace(expectedPayment.SendingEmployer))
+                    expectedPayment.SendingAccountId = TestSession.GetEmployer(expectedPayment.SendingEmployer).AccountId;
             }
         }
 
