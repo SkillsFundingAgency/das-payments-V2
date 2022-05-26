@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.RequiredPayments.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="ClawbackRemovedLearnerAimsService_InstanceCount" Value="__ClawbackRemovedLearnerAimsService_InstanceCount__" />
+    <Parameter Name="ClawbackRemovedLearnerService_InstanceCount" Value="__ClawbackRemovedLearnerService_InstanceCount__" />
     <Parameter Name="RequiredPaymentsProxyService_InstanceCount" Value="__RequiredPaymentsProxyService_InstanceCount__" />
     <Parameter Name="RequiredPaymentsServiceActorService_PartitionCount" Value="__RequiredPaymentsServiceActorService_PartitionCount__" />
     <Parameter Name="RequiredPaymentsServiceActorService_TargetReplicaSetSize" Value="__RequiredPaymentsServiceActorService_TargetReplicaSetSize__" />
@@ -15,8 +15,8 @@
     <Parameter Name="ProcessMessageSequentially" Value="false" />
     <Parameter Name="RequiredPaymentsService_EndpointName" Value="__RequiredPaymentsService_EndpointName__" />
     <Parameter Name="RequiredPaymentsService_FailedMessagesQueue" Value="__RequiredPaymentsService_FailedMessagesQueue__" />
-    <Parameter Name="ClawbackRemovedLearnerAimsService_EndpointName" Value="__ClawbackRemovedLearnerAimsService_EndpointName__" />
-    <Parameter Name="ClawbackRemovedLearnerAimsService_FailedMessagesQueue" Value="__ClawbackRemovedLearnerAimsService_FailedMessagesQueue__" />
+    <Parameter Name="ClawbackRemovedLearnerService_EndpointName" Value="__ClawbackRemovedLearnerService_EndpointName__" />
+    <Parameter Name="ClawbackRemovedLearnerService_FailedMessagesQueue" Value="__ClawbackRemovedLearnerService_FailedMessagesQueue__" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
     <Parameter Name="Placement_Constraints" Value="__DASPayments_Placement_Constraints__" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />

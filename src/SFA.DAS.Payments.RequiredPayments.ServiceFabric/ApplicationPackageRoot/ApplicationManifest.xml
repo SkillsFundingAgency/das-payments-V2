@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.RequiredPayments.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="ClawbackRemovedLearnerAimsService_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="ClawbackRemovedLearnerService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="RequiredPaymentsProxyService_InstanceCount" DefaultValue="-1" />
     <Parameter Name="RequiredPaymentsServiceActorService_PartitionCount" DefaultValue="10" />
     <Parameter Name="RequiredPaymentsServiceActorService_MinReplicaSetSize" DefaultValue="3" />
@@ -15,8 +15,8 @@
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
     <Parameter Name="RequiredPaymentsService_EndpointName" DefaultValue="sfa-das-payments-requiredpayments" />
     <Parameter Name="RequiredPaymentsService_FailedMessagesQueue" DefaultValue="sfa-das-payments-requiredpayments-errors" />
-    <Parameter Name="ClawbackRemovedLearnerAimsService_EndpointName" DefaultValue="sfa-das-payments-requiredpayments-clawback" />
-    <Parameter Name="ClawbackRemovedLearnerAimsService_FailedMessagesQueue" DefaultValue="sfa-das-payments-requiredpayments-clawback-errors" />
+    <Parameter Name="ClawbackRemovedLearnerService_EndpointName" DefaultValue="sfa-das-payments-requiredpayments-clawback" />
+    <Parameter Name="ClawbackRemovedLearnerService_FailedMessagesQueue" DefaultValue="sfa-das-payments-requiredpayments-clawback-errors" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="RemovedLearnerServiceActorService_PartitionCount" DefaultValue="10" />
     <Parameter Name="RemovedLearnerServiceActorService_MinReplicaSetSize" DefaultValue="1" />
@@ -31,7 +31,7 @@
        should match the Name and Version attributes of the ServiceManifest element defined in the 
        ServiceManifest.xml file. -->
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsServicePkg" ServiceManifestVersion="1.0.0" />
+    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerServicePkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides>
       <ConfigOverride Name="Config">
         <Settings>
@@ -43,8 +43,8 @@
             <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
           </Section>
           <Section Name="Settings">
-            <Parameter Name="EndpointName" Value="[ClawbackRemovedLearnerAimsService_EndpointName]" />
-            <Parameter Name="FailedMessagesQueue" Value="[ClawbackRemovedLearnerAimsService_FailedMessagesQueue]" />
+            <Parameter Name="EndpointName" Value="[ClawbackRemovedLearnerService_EndpointName]" />
+            <Parameter Name="FailedMessagesQueue" Value="[ClawbackRemovedLearnerService_FailedMessagesQueue]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
@@ -127,8 +127,8 @@
     </ConfigOverrides>
   </ServiceManifestImport>
   <DefaultServices>
-    <Service Name="SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsServiceType" InstanceCount="[ClawbackRemovedLearnerAimsService_InstanceCount]">
+    <Service Name="SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerService" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerServiceType" InstanceCount="[ClawbackRemovedLearnerService_InstanceCount]">
         <SingletonPartition />
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>

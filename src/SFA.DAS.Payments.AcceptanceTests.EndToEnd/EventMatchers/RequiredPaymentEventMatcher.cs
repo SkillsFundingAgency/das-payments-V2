@@ -61,6 +61,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers
                     x.LearningAim.Reference,
                     x.LearningAim.FrameworkCode,
                     x.LearningAim.StandardCode,
+                    x.PriceEpisodeIdentifier
                 });
             foreach (var aggregatedEvent in aggregatedOnProgEvents)
             {

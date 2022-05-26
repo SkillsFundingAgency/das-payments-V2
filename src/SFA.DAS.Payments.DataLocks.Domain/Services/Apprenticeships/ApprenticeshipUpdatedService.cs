@@ -68,6 +68,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.Apprenticeships
                 else
                 {
                     currentPriceEpisode.EndDate = updatedPriceEpisode.EndDate;
+                    if (currentPriceEpisode.Removed) currentPriceEpisode.Removed = false;
                 }
             }
 

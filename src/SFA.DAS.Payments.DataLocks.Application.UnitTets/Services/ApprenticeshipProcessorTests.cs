@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
 
 namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
 {
@@ -83,7 +84,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 TrainingType = ProgrammeType.Standard,
                 TransferSenderId = 123456,
                 Uln = "123456",
-                PriceEpisodes = new [] { new PriceEpisode { FromDate = DateTime.Today, Cost = 1000M } }
+                PriceEpisodes = new[] { new PriceEpisode { FromDate = DateTime.Today, Cost = 1000M } }
             };
             mocker.Mock<IApprenticeshipService>()
                 .Setup(svc => svc.NewApprenticeship(It.IsAny<ApprenticeshipModel>()))
@@ -119,7 +120,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 TrainingType = ProgrammeType.Standard,
                 TransferSenderId = 123456,
                 Uln = "123456",
-                PriceEpisodes = new [] { new PriceEpisode { FromDate = DateTime.Today, Cost = 1000M } }
+                PriceEpisodes = new[] { new PriceEpisode { FromDate = DateTime.Today, Cost = 1000M } }
             };
             mocker.Mock<IApprenticeshipService>()
                 .Setup(svc => svc.NewApprenticeship(It.IsAny<ApprenticeshipModel>()))
@@ -155,7 +156,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 TrainingType = ProgrammeType.Standard,
                 TransferSenderId = 123456,
                 Uln = "123456",
-                PriceEpisodes = new [] { new PriceEpisode { FromDate = DateTime.Today, Cost = 1000M } }
+                PriceEpisodes = new[] { new PriceEpisode { FromDate = DateTime.Today, Cost = 1000M } }
             };
             mocker.Mock<IApprenticeshipService>()
                 .Setup(svc => svc.NewApprenticeship(It.IsAny<ApprenticeshipModel>()))
@@ -197,7 +198,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 ApprovedOn = DateTime.Today,
                 TrainingCode = "98",
                 TrainingType = ProgrammeType.Standard,
-                PriceEpisodes = new []
+                PriceEpisodes = new[]
                 {
                     new PriceEpisode
                     {
@@ -226,7 +227,215 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                         && ev.Uln.ToString() == approvalsEvent.Uln),
                     It.IsAny<PublishOptions>()), Times.Once);
         }
-        
+
+        [Test]
+        public async Task Processes_UpdatedApprenticeship_When_PriceEpisode_With_same_Cost_Already_Exists()
+        {
+            var approvalsEvent = new ApprenticeshipUpdatedApprovedEvent()
+            {
+                Uln = "12345",
+                ApprenticeshipId = 1,
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today.AddYears(1),
+                ApprovedOn = DateTime.Today,
+                TrainingCode = "98",
+                TrainingType = ProgrammeType.Standard,
+                PriceEpisodes = new[]
+                {
+                    new PriceEpisode
+                    {
+                        FromDate = DateTime.Today,
+                        ToDate = DateTime.Today.AddYears(1),
+                        Cost = 1000m
+                    }
+                }
+            };
+
+            var repo = mocker.Mock<IApprenticeshipRepository>();
+            var apprenticeshipApprovedUpdatedService = new ApprenticeshipApprovedUpdatedService(repo.Object);
+
+            repo
+                .Setup(svc => svc.Get(It.IsAny<long>()))
+                .ReturnsAsync(() => new ApprenticeshipModel
+                {
+                    Uln = 12345,
+                    Id = 1,
+                    EstimatedStartDate = DateTime.Today,
+                    EstimatedEndDate = DateTime.Today.AddYears(1),
+                    AgreedOnDate = DateTime.Today,
+                    PathwayCode = 98,
+                    ProgrammeType = 1,
+                    FrameworkCode = 1,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            StartDate = DateTime.Today,
+                            EndDate = DateTime.Today.AddYears(1),
+                            Cost = 1000m,
+                            Removed = true,
+                        }
+                    }
+                });
+
+            var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>(new NamedParameter("apprenticeshipApprovedUpdatedService", apprenticeshipApprovedUpdatedService));
+            await apprenticeshipProcessor.ProcessUpdatedApprenticeship(approvalsEvent);
+
+            mocker.Mock<IApprenticeshipRepository>().Verify(x => x.UpdateApprenticeship(It.Is<ApprenticeshipModel>(a => a.ApprenticeshipPriceEpisodes.Count == 1 && a.ApprenticeshipPriceEpisodes.First().Removed == false)));
+            mocker.Mock<IEndpointInstance>()
+                .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev =>
+                        ev.Id == approvalsEvent.ApprenticeshipId
+                        && ev.Uln.ToString() == approvalsEvent.Uln),
+                    It.IsAny<PublishOptions>()), Times.Once);
+        }
+
+        [Test]
+        public async Task Processes_UpdatedApprenticeship_When_Price_Flip_flop()
+        {
+            var approvalsEvent = new ApprenticeshipUpdatedApprovedEvent
+            {
+                Uln = "12345",
+                ApprenticeshipId = 1,
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today.AddYears(1),
+                ApprovedOn = DateTime.Today,
+                TrainingCode = "98",
+                TrainingType = ProgrammeType.Standard,
+                PriceEpisodes = new[]
+                {
+                    new PriceEpisode
+                    {
+                        FromDate = DateTime.Today,
+                        ToDate = DateTime.Today.AddYears(1),
+                        Cost = 1000m
+                    }
+                }
+            };
+
+            var repo = mocker.Mock<IApprenticeshipRepository>();
+            var apprenticeshipApprovedUpdatedService = new ApprenticeshipApprovedUpdatedService(repo.Object);
+
+            repo
+                .Setup(svc => svc.Get(It.IsAny<long>()))
+                .ReturnsAsync(() => new ApprenticeshipModel
+                {
+                    Uln = 12345,
+                    Id = 1,
+                    EstimatedStartDate = DateTime.Today,
+                    EstimatedEndDate = DateTime.Today.AddYears(1),
+                    AgreedOnDate = DateTime.Today,
+                    PathwayCode = 98,
+                    ProgrammeType = 1,
+                    FrameworkCode = 1,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>()
+                });
+
+            var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>(new NamedParameter("apprenticeshipApprovedUpdatedService", apprenticeshipApprovedUpdatedService));
+            await apprenticeshipProcessor.ProcessUpdatedApprenticeship(approvalsEvent);
+
+            mocker.Mock<IApprenticeshipRepository>().Verify(x => x.UpdateApprenticeship(It.Is<ApprenticeshipModel>(a => a.ApprenticeshipPriceEpisodes.Count == 1 && a.ApprenticeshipPriceEpisodes.First().Removed == false && a.ApprenticeshipPriceEpisodes.First().Cost == 1000m)));
+
+            repo
+                .Setup(svc => svc.Get(It.IsAny<long>()))
+                .ReturnsAsync(() => new ApprenticeshipModel
+                {
+                    Uln = 12345,
+                    Id = 1,
+                    EstimatedStartDate = DateTime.Today,
+                    EstimatedEndDate = DateTime.Today.AddYears(1),
+                    AgreedOnDate = DateTime.Today,
+                    PathwayCode = 98,
+                    ProgrammeType = 1,
+                    FrameworkCode = 1,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            StartDate = DateTime.Today,
+                            EndDate = DateTime.Today.AddYears(1),
+                            Cost = 1000m,
+                            Removed = false,
+                        }
+                    }
+                });
+
+            await apprenticeshipProcessor.ProcessUpdatedApprenticeship(new ApprenticeshipUpdatedApprovedEvent
+            {
+                Uln = "12345",
+                ApprenticeshipId = 1,
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today.AddYears(1),
+                ApprovedOn = DateTime.Today,
+                TrainingCode = "98",
+                TrainingType = ProgrammeType.Standard,
+                PriceEpisodes = new[]
+                {
+                    new PriceEpisode
+                    {
+                        FromDate = DateTime.Today,
+                        ToDate = DateTime.Today.AddYears(1),
+                        Cost = 2000m
+                    }
+                }
+            });
+
+            mocker.Mock<IApprenticeshipRepository>().Verify(x => x.UpdateApprenticeship(It.Is<ApprenticeshipModel>(a => a.ApprenticeshipPriceEpisodes.Count == 2 && a.ApprenticeshipPriceEpisodes.First(p => p.Cost == 1000).Removed == true && a.ApprenticeshipPriceEpisodes.First(p => p.Cost == 2000).Removed == false)));
+
+            repo
+                .Setup(svc => svc.Get(It.IsAny<long>()))
+                .ReturnsAsync(() => new ApprenticeshipModel
+                {
+                    Uln = 12345,
+                    Id = 1,
+                    EstimatedStartDate = DateTime.Today,
+                    EstimatedEndDate = DateTime.Today.AddYears(1),
+                    AgreedOnDate = DateTime.Today,
+                    PathwayCode = 98,
+                    ProgrammeType = 1,
+                    FrameworkCode = 1,
+                    ApprenticeshipPriceEpisodes = new List<ApprenticeshipPriceEpisodeModel>
+                    {
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            StartDate = DateTime.Today,
+                            EndDate = DateTime.Today.AddYears(1),
+                            Cost = 1000m,
+                            Removed = true,
+                        },
+                        new ApprenticeshipPriceEpisodeModel
+                        {
+                            StartDate = DateTime.Today,
+                            EndDate = DateTime.Today.AddYears(1),
+                            Cost = 2000m,
+                            Removed = false,
+                        }
+                    }
+                });
+
+            await apprenticeshipProcessor.ProcessUpdatedApprenticeship(new ApprenticeshipUpdatedApprovedEvent
+            {
+                Uln = "12345",
+                ApprenticeshipId = 1,
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today.AddYears(1),
+                ApprovedOn = DateTime.Today,
+                TrainingCode = "98",
+                TrainingType = ProgrammeType.Standard,
+                PriceEpisodes = new[]
+                {
+                    new PriceEpisode
+                    {
+                        FromDate = DateTime.Today,
+                        ToDate = DateTime.Today.AddYears(1),
+                        Cost = 1000m
+                    }
+                }
+            });
+
+            mocker.Mock<IApprenticeshipRepository>().Verify(x => x.UpdateApprenticeship(It.Is<ApprenticeshipModel>(a => a.ApprenticeshipPriceEpisodes.Count == 2 && a.ApprenticeshipPriceEpisodes.First(p => p.Cost == 1000).Removed == false && a.ApprenticeshipPriceEpisodes.First(p => p.Cost == 2000).Removed == true)));
+
+        }
+
         [Test]
         public async Task Process_Apprenticeship_DataLock_Triage()
         {
@@ -236,7 +445,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 ApprovedOn = DateTime.Today,
                 TrainingCode = "98",
                 TrainingType = ProgrammeType.Standard,
-                PriceEpisodes = new []
+                PriceEpisodes = new[]
                 {
                     new PriceEpisode
                     {
@@ -376,10 +585,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         {
             var paymentOrderChangedEvent = new PaymentOrderChangedEvent()
             {
-              AccountId = 1,
-              PaymentOrder = new []{300, 100, 200}
+                AccountId = 1,
+                PaymentOrder = new[] { 300, 100, 200 }
             };
-            
+
             var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
             await apprenticeshipProcessor.ProcessPaymentOrderChange(paymentOrderChangedEvent);
 
@@ -389,7 +598,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                                                                      ev.OrderedProviders.Count == 3 &&
                                                                      ev.OrderedProviders[0] == paymentOrderChangedEvent.PaymentOrder[0] &&
                                                                      ev.OrderedProviders[1] == paymentOrderChangedEvent.PaymentOrder[1] &&
-                                                                     ev.OrderedProviders[2] == paymentOrderChangedEvent.PaymentOrder[2] ),
+                                                                     ev.OrderedProviders[2] == paymentOrderChangedEvent.PaymentOrder[2]),
                     It.IsAny<PublishOptions>()),
                     Times.Once);
         }
@@ -410,13 +619,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
             };
 
             mocker.Mock<IApprenticeshipService>()
-                .Setup(svc => svc.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(apprenticeships[0].AccountId,  isLevyPayer,
+                .Setup(svc => svc.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(apprenticeships[0].AccountId, isLevyPayer,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(apprenticeships);
-            
+
             var apprenticeshipProcessor = mocker.Create<ApprenticeshipProcessor>();
             await apprenticeshipProcessor.ProcessIsLevyPayerFlagForEmployer(1, isLevyPayer);
-            
+
             mocker.Mock<IEndpointInstance>()
                 .Verify(svc => svc.Publish(It.Is<ApprenticeshipUpdated>(ev => ev.Id == apprenticeships[0].Id &&
                                                                               ev.EmployerAccountId == apprenticeships[0].AccountId &&
@@ -429,7 +638,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
         public async Task Apprenticeship_Update_Message_Is_Not_Published_If_No_Apprenticeship_Is_Found()
         {
             var apprenticeships = new List<ApprenticeshipModel>();
-         
+
             mocker.Mock<IApprenticeshipService>()
                 .Setup(svc => svc.GetUpdatedApprenticeshipEmployerIsLevyPayerFlag(1, false,
                     It.IsAny<CancellationToken>()))

@@ -8,6 +8,7 @@ using NServiceBus.Features;
 using SFA.DAS.CommitmentsV2.Messages.Events;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.ServiceFabric.Core;
@@ -22,14 +23,16 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Infrastructure
         private readonly IApplicationConfiguration config;
         private readonly IPaymentLogger logger;
         private readonly ILifetimeScope lifetimeScope;
+        private readonly ITelemetry telemetry;
         private IEndpointInstance endpointInstance;
 
-        public DasStatelessEndpointCommunicationListener(IConfigurationHelper configHelper, IApplicationConfiguration config, IPaymentLogger logger, ILifetimeScope lifetimeScope)
+        public DasStatelessEndpointCommunicationListener(IConfigurationHelper configHelper, IApplicationConfiguration config, IPaymentLogger logger, ILifetimeScope lifetimeScope, ITelemetry telemetry)
         {
             this.configHelper = configHelper ?? throw new ArgumentNullException(nameof(configHelper));
             this.config = config ?? throw new ArgumentNullException(nameof(config));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
+            this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
         /// <summary>
@@ -110,9 +113,9 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Infrastructure
 
             if (config.ProcessMessageSequentially) endpointConfiguration.LimitMessageProcessingConcurrencyTo(1);
 
-            endpointConfiguration.Pipeline.Register(typeof(ExceptionHandlingBehavior),
-                "Logs exceptions to the payments logger");
+            endpointConfiguration.Pipeline.Register(typeof(ExceptionHandlingBehavior), "Logs exceptions to the payments logger");
             endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton((IPaymentLogger)logger));
+            endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton((ITelemetry)telemetry));
             endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton(lifetimeScope.Resolve<IContainerScopeFactory>()));
             endpointConfiguration.RegisterComponents(cfg => cfg.RegisterSingleton(lifetimeScope.Resolve<IEndpointInstanceFactory>()));
             

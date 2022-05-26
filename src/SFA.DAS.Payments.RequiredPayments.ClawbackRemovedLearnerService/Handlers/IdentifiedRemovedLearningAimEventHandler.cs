@@ -9,7 +9,7 @@ using SFA.DAS.Payments.RequiredPayments.Application.Processors;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using ExecutionContext = ESFA.DC.Logging.ExecutionContext;
 
-namespace SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerAimsService.Handlers
+namespace SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerService.Handlers
 {
     public class IdentifiedRemovedLearningAimEventHandler : IHandleMessages<IdentifiedRemovedLearningAim>
     {
