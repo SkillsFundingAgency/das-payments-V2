@@ -116,29 +116,33 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Repositories
                     ContractType
                 from (
                     select
-                        p.LearnerReferenceNumber,
-                        p.LearningAimReference,
-                        p.LearningAimFrameworkCode,
-                        p.LearningAimPathwayCode,
-                        p.LearningAimProgrammeType,
-                        p.LearningAimStandardCode,
-                        p.ContractType
-                    from [Payments2].[Payment] p
-                    left outer join [Payments2].[SubmittedLearnerAim] sla
-	           		on p.LearnerReferenceNumber = sla.LearnerReferenceNumber
-                       and p.LearningAimReference = sla.LearningAimReference
-                       and p.LearningAimFrameworkCode = sla.LearningAimFrameworkCode
-                       and p.LearningAimPathwayCode = sla.LearningAimPathwayCode
-                       and p.LearningAimProgrammeType = sla.LearningAimProgrammeType
-                       and p.LearningAimStandardCode = sla.LearningAimStandardCode
-                       and p.ContractType = sla.ContractType
-	           		   and P.Ukprn = SLA.Ukprn
-                       and p.AcademicYear = sla.AcademicYear
-                       and sla.CollectionPeriod = {collectionPeriod}
+                        LearnerReferenceNumber,
+                        LearningAimReference,
+                        LearningAimFrameworkCode,
+                        LearningAimPathwayCode,
+                        LearningAimProgrammeType,
+                        LearningAimStandardCode,
+                        ContractType
+                    from
+                        [Payments2].[Payment]
                     where
-	                    p.AcademicYear = {academicYear}
-	                    and p.Ukprn = {ukprn}
-	                	and sla.id is null
+					    AcademicYear = {academicYear}
+                        and Ukprn = {ukprn}
+                    except
+				    select
+					    LearnerReferenceNumber,
+					    LearningAimReference,
+					    LearningAimFrameworkCode,
+					    LearningAimPathwayCode,
+					    LearningAimProgrammeType,
+					    LearningAimStandardCode,
+                        ContractType
+				    from
+					    [Payments2].[SubmittedLearnerAim]
+				    where
+					    AcademicYear = {academicYear}
+					    and Ukprn = {ukprn}
+					    and CollectionPeriod = {collectionPeriod}
                 ) as a
                 group by
                     LearnerReferenceNumber,
