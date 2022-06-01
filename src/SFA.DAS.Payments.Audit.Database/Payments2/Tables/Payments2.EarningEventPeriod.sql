@@ -14,12 +14,12 @@
 )
 GO
 
-CREATE NONCLUSTERED INDEX [IX_EarningEventPeriod__EarningEventId] ON [Payments2].[EarningEventPeriod]
-(
-	[EarningEventId]
-)
-WITH (ONLINE = ON)
-GO
+--CREATE NONCLUSTERED INDEX [IX_EarningEventPeriod__EarningEventId] ON [Payments2].[EarningEventPeriod]
+--(
+--	[EarningEventId]
+--)
+--WITH (ONLINE = ON)
+--GO
 
 --CREATE NONCLUSTERED INDEX [IX_EarningEventPeriod__Metrics] ON [Payments2].[EarningEventPeriod]
 --(
@@ -34,6 +34,10 @@ GO
 --GO
 
 CREATE INDEX [IX_EarningEventPeriod__AuditDataFactory] ON [Payments2].[EarningEventPeriod]
+(
+	[EarningEventId]
+)
+INCLUDE
 (
 	[AcademicYear],
 	[CollectionPeriod]
