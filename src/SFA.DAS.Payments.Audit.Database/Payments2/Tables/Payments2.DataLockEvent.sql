@@ -99,12 +99,9 @@ GO
 
 CREATE NONCLUSTERED INDEX [IX_DataLockEvent__AuditDataFactory] ON [Payments2].[DataLockEvent] 
 (
+	[AcademicYear],
+	[CollectionPeriod],
 	[EventId]
 )
-INCLUDE
-(
-	[AcademicYear],
-	[CollectionPeriod]
-) 
 WITH (ONLINE = ON)
 GO

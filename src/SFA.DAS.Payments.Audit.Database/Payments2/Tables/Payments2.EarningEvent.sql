@@ -70,12 +70,9 @@ GO
 
 CREATE NONCLUSTERED INDEX [IX_EarningEvent__AuditDataFactory] ON [Payments2].[EarningEvent]
 (
-	[EventId]
-)
-INCLUDE
-(
 	[AcademicYear],
-	[CollectionPeriod]
+	[CollectionPeriod],
+	[EventId]
 )
 WITH (ONLINE = ON)
 GO

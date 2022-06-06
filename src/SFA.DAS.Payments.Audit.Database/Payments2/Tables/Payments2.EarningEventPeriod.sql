@@ -35,12 +35,9 @@ GO
 
 CREATE INDEX [IX_EarningEventPeriod__AuditDataFactory] ON [Payments2].[EarningEventPeriod]
 (
-	[EarningEventId]
-)
-INCLUDE
-(
 	[AcademicYear],
-	[CollectionPeriod]
+	[CollectionPeriod],
+	[EarningEventId]
 )
 WITH (ONLINE = ON)
 GO

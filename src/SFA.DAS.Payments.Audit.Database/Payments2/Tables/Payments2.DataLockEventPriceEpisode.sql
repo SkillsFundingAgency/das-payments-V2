@@ -33,12 +33,9 @@ GO
 
 CREATE INDEX [IX_DataLockEventPriceEpisode_AuditDataFactory] ON [Payments2].[DataLockEventPriceEpisode] 
 (
+	[AcademicYear],
+	[CollectionPeriod],
 	[DataLockEventId]
 )
-INCLUDE
-(
-	[AcademicYear],
-	[CollectionPeriod]
-) 
 WITH (ONLINE = ON)
 GO
