@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         string EndpointName { get; set; }
     }
 
-    public class ServiceBusBatchCommunicationListener: IServiceBusBatchCommunicationListener
+    public class ServiceBusBatchCommunicationListener : IServiceBusBatchCommunicationListener
     {
         //private readonly IApplicationConfiguration config;
         private readonly IPaymentLogger logger;
@@ -48,7 +48,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
             this.connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             EndpointName = endpointName ?? throw new ArgumentNullException(nameof(endpointName));
-            this.errorQueueName = errorQueueName ?? endpointName+"-Errors";
+            this.errorQueueName = errorQueueName ?? endpointName + "-Errors";
         }
 
         public Task<string> OpenAsync(CancellationToken cancellationToken)
@@ -164,30 +164,30 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             }
         }
 
-        private void RecordBatchProcessTelemetry(long elapsedMilliseconds, int count)
-        {
-            RecordMetric("BatchedServiceBusCommunicationListener.ProcessBatches", elapsedMilliseconds, count);
-        }
+        //private void RecordBatchProcessTelemetry(long elapsedMilliseconds, int count)
+        //{
+        //    RecordMetric("BatchedServiceBusCommunicationListener.ProcessBatches", elapsedMilliseconds, count);
+        //}
 
-        private void RecordAllBatchProcessTelemetry(long elapsedMilliseconds, int count)
-        {
-            RecordMetric("BatchedServiceBusCommunicationListener.ProcessAllBatches", elapsedMilliseconds, count);
-        }
+        //private void RecordAllBatchProcessTelemetry(long elapsedMilliseconds, int count)
+        //{
+        //    RecordMetric("BatchedServiceBusCommunicationListener.ProcessAllBatches", elapsedMilliseconds, count);
+        //}
 
-        private void RecordPipelineTelemetry(long elapsedMilliseconds, int count)
-        {
-            RecordMetric("BatchedServiceBusCommunicationListener.Pipeline", elapsedMilliseconds, count);
-        }
+        //private void RecordPipelineTelemetry(long elapsedMilliseconds, int count)
+        //{
+        //    RecordMetric("BatchedServiceBusCommunicationListener.Pipeline", elapsedMilliseconds, count);
+        //}
 
-        private void RecordMetric(string eventName, long elapsedMilliseconds, int count)
-        {
-            var metrics = new Dictionary<string, double>
-            {
-                {TelemetryKeys.Duration, elapsedMilliseconds},
-                {TelemetryKeys.Count, count}
-            };
-            telemetry.TrackEvent(eventName, metrics);
-        }
+        //private void RecordMetric(string eventName, long elapsedMilliseconds, int count)
+        //{
+        //    var metrics = new Dictionary<string, double>
+        //    {
+        //        {TelemetryKeys.Duration, elapsedMilliseconds},
+        //        {TelemetryKeys.Count, count}
+        //    };
+        //    telemetry.TrackEvent(eventName, metrics);
+        //}
 
         private object DeserializeMessage(Message message)
         {
@@ -203,18 +203,17 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             return deserialisedMessage;
         }
 
-        protected async Task ProcessMessages(Type groupType, List<(string, object)> messages, MessageReceiver receiver,
-            CancellationToken cancellationToken)
+        protected async Task ProcessMessages(Type groupType, List<(string, object)> messages, MessageReceiver receiver, CancellationToken cancellationToken)
         {
             try
             {
                 using (var containerScope = scopeFactory.CreateScope())
                 {
-                    var stopwatch = Stopwatch.StartNew();
+                    //var stopwatch = Stopwatch.StartNew();
                     var unitOfWork = containerScope.Resolve<IStateManagerUnitOfWork>();
                     try
                     {
-                        await unitOfWork.Begin().ConfigureAwait(false); 
+                        await unitOfWork.Begin().ConfigureAwait(false);
                         if (!containerScope.TryResolve(typeof(IHandleMessageBatches<>).MakeGenericType(groupType),
                             out object handler))
                         {
@@ -231,9 +230,9 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                         var list = (IList)Activator.CreateInstance(listType);
                         messages.Select(msg => msg.Item2).ToList().ForEach(message => list.Add(message));
 
-                        var handlerStopwatch = Stopwatch.StartNew();
+                        //var handlerStopwatch = Stopwatch.StartNew();
                         await (Task)methodInfo.Invoke(handler, new object[] { list, cancellationToken });
-                        RecordMetric(handler.GetType().FullName, handlerStopwatch.ElapsedMilliseconds, list.Count);
+                        //RecordMetric(handler.GetType().FullName, handlerStopwatch.ElapsedMilliseconds, list.Count);
                         await unitOfWork.End();
                         await receiver.CompleteAsync(messages.Select(message =>
                             message.Item1));
@@ -243,12 +242,12 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                         await unitOfWork.End(e);
                         throw;
                     }
-                    RecordAllBatchProcessTelemetry(stopwatch.ElapsedMilliseconds, messages.Count);
+                    //RecordAllBatchProcessTelemetry(stopwatch.ElapsedMilliseconds, messages.Count);
                 }
             }
             catch (Exception e)
             {
-                logger.LogError($"Error processing messages. Error: {e.Message}", e);
+                logger.LogError($"Error in ServiceBusBatchCommunicationListener, Message Type: {messages.First().Item2.GetType().Name}, message Count {messages.Count} Error: {e.Message}", e);
                 await Task.WhenAll(messages.Select(message => receiver.AbandonAsync(message.Item1)));
             }
         }
@@ -295,7 +294,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                     logger.LogInfo($"Queue '{queuePath}' already exists, skipping queue creation.");
                     return;
                 }
-                  
+
                 logger.LogInfo($"Creating queue '{queuePath}' with properties: TimeToLive: 7 days, Lock Duration: 5 Minutes, Max Delivery Count: 50, Max Size: 5Gb.");
                 var queueDescription = new QueueDescription(queuePath)
                 {
