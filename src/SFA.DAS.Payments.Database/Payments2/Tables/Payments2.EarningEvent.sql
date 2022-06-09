@@ -20,7 +20,7 @@
 	JobId  BIGINT NOT NULL,
 	EventTime DATETIMEOFFSET NOT NULL,
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_EarningEvent__CreationDate DEFAULT (SYSDATETIMEOFFSET()), 
-    LearningAimSequenceNumber BIGINT NULL,
+    	LearningAimSequenceNumber BIGINT NULL,
 	SfaContributionPercentage DECIMAL(15, 5) NULL,
 	IlrFileName  NVARCHAR(400) NULL,
 	EventType NVARCHAR(4000) NULL,
@@ -85,14 +85,6 @@ INCLUDE
 (
 	[EventId],
 	[ContractType]
-)
-WITH (ONLINE = ON)
-GO
-
-CREATE NONCLUSTERED INDEX [IX_EarningEvent__AuditDataFactory] ON [Payments2].[EarningEvent]
-(
-	[AcademicYear],
-	[CollectionPeriod]
 )
 WITH (ONLINE = ON)
 GO

@@ -16,8 +16,8 @@
 	InstalmentAmount DECIMAL(15,5) NOT NULL,
 	CompletionAmount DECIMAL(15,5) NOT NULL,
 	Completed BIT NOT NULL,
-    EmployerContribution DECIMAL(15,5) NULL,
-    CompletionHoldBackExemptionCode INT NULL,
+    	EmployerContribution DECIMAL(15,5) NULL,
+    	CompletionHoldBackExemptionCode INT NULL,
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_EarningEventPriceEpisode__CreationDate DEFAULT (SYSDATETIMEOFFSET())	,
 	AgreedPrice DECIMAL(15, 5) NULL,
 	CourseStartDate DATETIME2  NULL,
@@ -40,14 +40,6 @@ CREATE NONCLUSTERED INDEX [IX_EarningEventPriceEpisode__Search]	ON [Payments2].[
 	[StartDate], 
 	[CourseStartDate], 
 	[AgreedPrice]
-)
-WITH (ONLINE = ON)
-GO
-
-CREATE NONCLUSTERED INDEX [IX_EarningEventPriceEpisode__AuditDataFactory] ON [Payments2].[EarningEventPriceEpisode]
-(
-	[AcademicYear],
-	[CollectionPeriod]
 )
 WITH (ONLINE = ON)
 GO

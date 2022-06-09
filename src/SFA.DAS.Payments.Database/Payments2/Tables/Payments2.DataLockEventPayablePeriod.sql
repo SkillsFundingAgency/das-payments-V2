@@ -9,8 +9,8 @@
 	SfaContributionPercentage DECIMAL(15,5) NULL,
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_DataLockEventPayablePeriod__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
 	LearningStartDate DATETIME2 NULL,
-    ApprenticeshipId BIGINT NULL,
-    ApprenticeshipPriceEpisodeId BIGINT NULL,
+    	ApprenticeshipId BIGINT NULL,
+    	ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL,
 	AcademicYear SMALLINT NULL,
 	CollectionPeriod TINYINT NULL
@@ -22,12 +22,4 @@ CREATE NONCLUSTERED INDEX [IX_DataLockEventPayablePeriod__DataLockEventId] ON [P
 	[DataLockEventId]
 ) 
 WITH (ONLINE = ON);
-GO
-
-CREATE NONCLUSTERED INDEX [IX_DataLockEventPayablePeriod_AuditDataFactory] ON [Payments2].[DataLockEventPayablePeriod] 
-(
-	[AcademicYear],
-	[CollectionPeriod]
-) 
-WITH (ONLINE = ON)
 GO

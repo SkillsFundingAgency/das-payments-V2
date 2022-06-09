@@ -16,8 +16,8 @@
 	InstalmentAmount DECIMAL(15,5) NOT NULL,
 	CompletionAmount DECIMAL(15,5) NOT NULL,
 	Completed BIT NOT NULL,
-    EmployerContribution DECIMAL(15,5) NULL,
-    CompletionHoldBackExemptionCode INT NULL,
+    	EmployerContribution DECIMAL(15,5) NULL,
+    	CompletionHoldBackExemptionCode INT NULL,
 	CreationDate DATETIMEOFFSET NOT NULL,
 	AgreedPrice DECIMAL(15, 5) NULL,
 	CourseStartDate DATETIME2  NULL,
@@ -26,29 +26,20 @@
 )
 GO
 
---CREATE NONCLUSTERED INDEX [IX_EarningEventPriceEpisode__EarningEventId]	ON [Payments2].[EarningEventPriceEpisode] 
---(
---	[EarningEventId]
---)
---WITH (ONLINE = ON)
---GO
-
---CREATE NONCLUSTERED INDEX [IX_EarningEventPriceEpisode__Search]	ON [Payments2].[EarningEventPriceEpisode] 
---(
---	[EarningEventId], 
---	[PriceEpisodeIdentifier], 
---	[StartDate], 
---	[CourseStartDate], 
---	[AgreedPrice]
---)
---WITH (ONLINE = ON)
---GO
-
-CREATE NONCLUSTERED INDEX [IX_EarningEventPriceEpisode__AuditDataFactory] ON [Payments2].[EarningEventPriceEpisode]
+CREATE NONCLUSTERED INDEX [IX_EarningEventPriceEpisode__EarningEventId]	ON [Payments2].[EarningEventPriceEpisode] 
 (
-	[AcademicYear],
-	[CollectionPeriod],
 	[EarningEventId]
+)
+WITH (ONLINE = ON)
+GO
+
+CREATE NONCLUSTERED INDEX [IX_EarningEventPriceEpisode__Search]	ON [Payments2].[EarningEventPriceEpisode] 
+(
+	[EarningEventId], 
+	[PriceEpisodeIdentifier], 
+	[StartDate], 
+	[CourseStartDate], 
+	[AgreedPrice]
 )
 WITH (ONLINE = ON)
 GO

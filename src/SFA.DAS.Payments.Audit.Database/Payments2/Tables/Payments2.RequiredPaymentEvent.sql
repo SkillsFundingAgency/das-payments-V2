@@ -45,55 +45,47 @@ CREATE TABLE [Payments2].[RequiredPaymentEvent]
 )
 GO
 
---CREATE NONCLUSTERED INDEX [IX_RequiredPaymentEvent__Audit] ON [Payments2].[RequiredPaymentEvent]
---(
---	[EarningEventId]
---)  
---WITH (ONLINE = ON)
---GO
-
---CREATE NONCLUSTERED INDEX [IX_RequiredPaymentEvent_Submission] ON [Payments2].[RequiredPaymentEvent] 
---(
---	[AcademicYear], 
---	[CollectionPeriod], 
---	[Ukprn], 
---	[IlrSubmissionDateTime]
---) 
---WITH (ONLINE = ON)
---GO
-
---CREATE NONCLUSTERED INDEX [IX_RequiredPaymentEvent__Metrics] ON [Payments2].[RequiredPaymentEvent] 
---(
---	[Ukprn],
---	[JobId],
---	[NonPaymentReason]
---) 
---INCLUDE 
---(
---	[ContractType],
---	[TransactionType],
---	[Amount]
---)
---WITH (ONLINE = ON)
---Go
-
---CREATE NONCLUSTERED INDEX [IX_RequiredPaymentEvent__AcademicYear_CollectionPeriod_JobId] ON [Payments2].[RequiredPaymentEvent] 
---(
---	[AcademicYear], 
---	[CollectionPeriod], 
---	[JobId]
---)
---INCLUDE 
---(
---	[EventId]
---)
---WITH (ONLINE = ON)
---GO
-
-CREATE NONCLUSTERED INDEX [IX_RequiredPaymentEvent__AuditDataFactory] ON [Payments2].[RequiredPaymentEvent] 
+CREATE NONCLUSTERED INDEX [IX_RequiredPaymentEvent__Audit] ON [Payments2].[RequiredPaymentEvent]
 (
-	[AcademicYear],
-	[CollectionPeriod]
+	[EarningEventId]
+)  
+WITH (ONLINE = ON)
+GO
+
+CREATE NONCLUSTERED INDEX [IX_RequiredPaymentEvent_Submission] ON [Payments2].[RequiredPaymentEvent] 
+(
+	[AcademicYear], 
+	[CollectionPeriod], 
+	[Ukprn], 
+	[IlrSubmissionDateTime]
+) 
+WITH (ONLINE = ON)
+GO
+
+CREATE NONCLUSTERED INDEX [IX_RequiredPaymentEvent__Metrics] ON [Payments2].[RequiredPaymentEvent] 
+(
+	[Ukprn],
+	[JobId],
+	[NonPaymentReason]
+) 
+INCLUDE 
+(
+	[ContractType],
+	[TransactionType],
+	[Amount]
+)
+WITH (ONLINE = ON)
+Go
+
+CREATE NONCLUSTERED INDEX [IX_RequiredPaymentEvent__AcademicYear_CollectionPeriod_JobId] ON [Payments2].[RequiredPaymentEvent] 
+(
+	[AcademicYear], 
+	[CollectionPeriod], 
+	[JobId]
+)
+INCLUDE 
+(
+	[EventId]
 )
 WITH (ONLINE = ON)
 GO

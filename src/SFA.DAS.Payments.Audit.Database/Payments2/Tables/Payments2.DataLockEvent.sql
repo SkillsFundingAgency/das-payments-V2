@@ -27,81 +27,72 @@
 )
 GO
 
---CREATE NONCLUSTERED INDEX [IX_DataLockEvent_Submission] ON [Payments2].[DataLockEvent] 
---(
---	[Ukprn], 
---	[AcademicYear], 
---	[CollectionPeriod], 
---	[IlrSubmissionDateTime]
---) WITH (ONLINE = ON)
---GO
-
---CREATE NONCLUSTERED INDEX [IX_DataLockEvent__Metrics] ON [Payments2].[DataLockEvent] 
---(
---	[AcademicYear], 
---	[CollectionPeriod], 
---	[IsPayable], 
---	[LearningAimReference], 
---	[Ukprn], 
---	[JobId]
---) 
---INCLUDE 
---(
---	[DataLockSourceId], 
---	[EarningEventId], 
---	[EventId], 
---	[IlrSubmissionDateTime], 
---	[LearnerReferenceNumber], 
---	[LearnerUln]
---)
---WITH (ONLINE = ON)
---Go
-
---CREATE NONCLUSTERED INDEX [IX_DataLockEvent__Metrics_Paid_DataLocks] ON [Payments2].[DataLockEvent] 
---( 
---	[JobId],
---	[Ukprn],
---	[IsPayable] 
---) 
---INCLUDE
---(
---	[CollectionPeriod], 
---	[EventId], 
---	[LearnerReferenceNumber], 
---	[LearningAimFrameworkCode], 
---	[LearningAimPathwayCode], 
---	[LearningAimProgrammeType], 
---	[LearningAimReference], 
---	[LearningAimStandardCode]
---) 
---WITH (ONLINE = ON)
---GO
-
---CREATE NONCLUSTERED INDEX [IX_DataLockEvent__Manual_Metrics_Paid_DataLocks] ON [Payments2].[DataLockEvent]
---(
---	[Ukprn] ,
---	[CollectionPeriod],
---	[JobId],
---	[IsPayable]
---)
---INCLUDE
---(
---	[EventId],
---	[LearnerReferenceNumber], 
---	[LearningAimReference],
---    [LearningAimProgrammeType] ,
---    [LearningAimStandardCode] ,
---    [LearningAimFrameworkCode],
---    [LearningAimPathwayCode] 
---) 
---WITH (ONLINE = ON)
---go
-
-CREATE NONCLUSTERED INDEX [IX_DataLockEvent__AuditDataFactory] ON [Payments2].[DataLockEvent] 
+CREATE NONCLUSTERED INDEX [IX_DataLockEvent_Submission] ON [Payments2].[DataLockEvent] 
 (
-	[AcademicYear],
-	[CollectionPeriod],
-	[EventId]
+	[Ukprn], 
+	[AcademicYear], 
+	[CollectionPeriod], 
+	[IlrSubmissionDateTime]
+) WITH (ONLINE = ON)
+GO
+
+CREATE NONCLUSTERED INDEX [IX_DataLockEvent__Metrics] ON [Payments2].[DataLockEvent] 
+(
+	[AcademicYear], 
+	[CollectionPeriod], 
+	[IsPayable], 
+	[LearningAimReference], 
+	[Ukprn], 
+	[JobId]
+) 
+INCLUDE 
+(
+	[DataLockSourceId], 
+	[EarningEventId], 
+	[EventId], 
+	[IlrSubmissionDateTime], 
+	[LearnerReferenceNumber], 
+	[LearnerUln]
 )
 WITH (ONLINE = ON)
+Go
+
+CREATE NONCLUSTERED INDEX [IX_DataLockEvent__Metrics_Paid_DataLocks] ON [Payments2].[DataLockEvent] 
+( 
+	[JobId],
+	[Ukprn],
+	[IsPayable] 
+) 
+INCLUDE
+(
+	[CollectionPeriod], 
+	[EventId], 
+	[LearnerReferenceNumber], 
+	[LearningAimFrameworkCode], 
+	[LearningAimPathwayCode], 
+	[LearningAimProgrammeType], 
+	[LearningAimReference], 
+	[LearningAimStandardCode]
+) 
+WITH (ONLINE = ON)
 GO
+
+CREATE NONCLUSTERED INDEX [IX_DataLockEvent__Manual_Metrics_Paid_DataLocks] ON [Payments2].[DataLockEvent]
+(
+	[Ukprn] ,
+	[CollectionPeriod],
+	[JobId],
+	[IsPayable]
+)
+INCLUDE
+(
+	[EventId],
+	[LearnerReferenceNumber], 
+	[LearningAimReference],
+    	[LearningAimProgrammeType] ,
+    	[LearningAimStandardCode] ,
+    	[LearningAimFrameworkCode],
+    	[LearningAimPathwayCode] 
+) 
+WITH (ONLINE = ON)
+go

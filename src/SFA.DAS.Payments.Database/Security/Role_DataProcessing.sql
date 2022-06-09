@@ -10,6 +10,7 @@ GRANT
 	REFERENCES, 
 	SELECT, 
 	UPDATE, 
+	ALTER,
 	VIEW DEFINITION 
 ON SCHEMA::[Payments2]
 	TO [DataProcessing]

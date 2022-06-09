@@ -16,26 +16,17 @@
 	InstalmentAmount DECIMAL(15,5) NOT NULL,
 	CompletionAmount DECIMAL(15,5) NOT NULL,
 	Completed BIT NOT NULL,
-    EmployerContribution DECIMAL(15,5) NULL,
-    CompletionHoldBackExemptionCode INT NULL,
+    	EmployerContribution DECIMAL(15,5) NULL,
+    	CompletionHoldBackExemptionCode INT NULL,
 	CreationDate DATETIMEOFFSET NOT NULL,
 	AcademicYear SMALLINT NULL,
 	CollectionPeriod TINYINT NULL
 )
 GO
 
---CREATE NONCLUSTERED INDEX [IX_DataLockEventPriceEpisode__DataLockEventId] ON [Payments2].[DataLockEventPriceEpisode] 
---(	
---	[DataLockEventId]
---) 
---WITH (ONLINE = ON)
---GO
-
-CREATE INDEX [IX_DataLockEventPriceEpisode_AuditDataFactory] ON [Payments2].[DataLockEventPriceEpisode] 
-(
-	[AcademicYear],
-	[CollectionPeriod],
+CREATE NONCLUSTERED INDEX [IX_DataLockEventPriceEpisode__DataLockEventId] ON [Payments2].[DataLockEventPriceEpisode] 
+(	
 	[DataLockEventId]
-)
+) 
 WITH (ONLINE = ON)
 GO

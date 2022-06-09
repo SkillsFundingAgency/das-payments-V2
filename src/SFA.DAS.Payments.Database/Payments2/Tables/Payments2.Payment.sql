@@ -187,11 +187,3 @@ CREATE NONCLUSTERED INDEX [IX_Payment__AcademicYear_CollectionPeriod_JobId] ON [
 ) 
 WITH (ONLINE = ON)
 GO
-
-CREATE NONCLUSTERED INDEX [IX_Payment__AuditDataFactory] ON [Payments2].[Payment] 
-(
-	[AcademicYear],
-	[CollectionPeriod]
-)
-WITH (ONLINE = ON)
-GO

@@ -109,18 +109,10 @@ INCLUDE
 	[EventId],
 	[LearnerReferenceNumber], 
 	[LearningAimReference],
-    [LearningAimProgrammeType] ,
-    [LearningAimStandardCode] ,
-    [LearningAimFrameworkCode],
-    [LearningAimPathwayCode] 
+    	[LearningAimProgrammeType] ,
+    	[LearningAimStandardCode] ,
+    	[LearningAimFrameworkCode],
+    	[LearningAimPathwayCode] 
 ) 
 WITH (ONLINE = ON)
 go
-
-CREATE NONCLUSTERED INDEX [IX_DataLockEvent__AuditDataFactory] ON [Payments2].[DataLockEvent] 
-(
-	[AcademicYear],
-	[CollectionPeriod]
-) 
-WITH (ONLINE = ON)
-GO

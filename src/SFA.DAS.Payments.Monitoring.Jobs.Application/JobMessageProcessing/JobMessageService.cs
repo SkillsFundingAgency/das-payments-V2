@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobMessageProcessing
 {
     public interface IJobMessageService
     {
-        Task RecordCompletedJobMessageStatus(RecordJobMessageProcessingStatus jobMessageStatus, CancellationToken cancellationToken);
+        Task RecordCompletedJobMessageStatus(IList<RecordJobMessageProcessingStatus> statusMessages, CancellationToken cancellationToken);
     }
 
     public class JobMessageService : IJobMessageService
@@ -27,25 +28,37 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobMessageProcessing
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
-        public async Task RecordCompletedJobMessageStatus(RecordJobMessageProcessingStatus jobMessageStatus, CancellationToken cancellationToken)
+        public async Task RecordCompletedJobMessageStatus(IList<RecordJobMessageProcessingStatus> statusMessages, CancellationToken cancellationToken)
         {
+            var groupedStatusMessages = statusMessages.GroupBy(st => st.JobId).ToList();
 
-            var completedMessage = new CompletedMessage
+            foreach(var messages in  groupedStatusMessages)
             {
-                MessageId = jobMessageStatus.Id, JobId = jobMessageStatus.JobId,
-                CompletedTime = jobMessageStatus.EndTime, Succeeded = jobMessageStatus.Succeeded
-            };
-            logger.LogVerbose($"Now storing the completed message. Message id: {completedMessage.MessageId}, Job: {completedMessage.JobId}, End time: {completedMessage.CompletedTime}, Succeeded: {completedMessage.Succeeded}");
-            await jobStorageService.StoreCompletedMessage(completedMessage,cancellationToken);
+                var completedMessage = messages.First();
 
-            logger.LogVerbose($"Stored completed message. Now storing {jobMessageStatus.GeneratedMessages.Count} in progress messages generated while processing message: {completedMessage.MessageId} for job: {completedMessage.JobId}");
-            await jobStorageService.StoreInProgressMessages(jobMessageStatus.JobId,
-                jobMessageStatus.GeneratedMessages.Select(message => new InProgressMessage
+                logger.LogVerbose($"Now storing the completed message. Message id: {completedMessage.Id}, Job: {completedMessage.JobId}, End time: {completedMessage.EndTime}, Succeeded: {completedMessage.Succeeded}");
+
+                await jobStorageService.StoreCompletedMessage(messages.Select(completedMessages => new CompletedMessage
                 {
-                    MessageId = message.MessageId, JobId = jobMessageStatus.JobId, MessageName = message.MessageName
-                }).ToList(), cancellationToken);
+                    MessageId = completedMessages.Id, 
+                    JobId = completedMessages.JobId, 
+                    CompletedTime = completedMessages.EndTime, 
+                    Succeeded = completedMessages.Succeeded
+                }), cancellationToken);
 
-            logger.LogDebug($"Recorded completion of message processing.  Job Id: {jobMessageStatus.JobId}, Message id: {jobMessageStatus.Id}.");
+                var generatedMessages = messages.SelectMany(s => s.GeneratedMessages).ToList();
+
+                logger.LogVerbose($"Stored completed message. Now storing {generatedMessages.Count} in progress messages generated while processing message: {completedMessage.Id} for job: {completedMessage.JobId}");
+
+                await jobStorageService.StoreInProgressMessages(completedMessage.JobId, generatedMessages.Select(message => new InProgressMessage
+                    {
+                        MessageId = message.MessageId,
+                        JobId = completedMessage.JobId,
+                        MessageName = message.MessageName
+                    }).ToList(), cancellationToken);
+
+                logger.LogDebug($"Recorded completion of message processing.  Job Id: {completedMessage.JobId}, Message id: {completedMessage.Id}.");
+            }
         }
     }
 }

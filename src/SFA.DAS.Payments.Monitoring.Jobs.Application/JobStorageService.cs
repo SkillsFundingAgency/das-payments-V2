@@ -232,7 +232,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             }
         }
 
-        public async Task StoreCompletedMessage(CompletedMessage completedMessage, CancellationToken cancellationToken)
+        public async Task StoreCompletedMessage(IEnumerable<CompletedMessage> completedMessage,
+            CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var completedMessagesCollection =

@@ -25,11 +25,3 @@ INCLUDE
 )
 WITH (ONLINE = ON)
 GO
-
-CREATE INDEX [IX_EarningEventPeriod__AuditDataFactory] ON [Payments2].[EarningEventPeriod]
-(
-	[AcademicYear],
-	[CollectionPeriod]
-)
-WITH (ONLINE = ON)
-GO

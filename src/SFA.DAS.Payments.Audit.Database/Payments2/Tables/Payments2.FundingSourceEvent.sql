@@ -46,35 +46,27 @@ CREATE TABLE [Payments2].[FundingSourceEvent]
 )
 GO
 
---CREATE NONCLUSTERED INDEX [IX_FundingSourceEvent__Audit] ON [Payments2].[FundingSourceEvent]
---(
---	[EarningEventId],
---	[RequiredPaymentEventId]
---) 
---WITH (ONLINE = ON)
---GO
-
---CREATE NONCLUSTERED INDEX [IX_FundingSourceEvent__Submission] ON [Payments2].[FundingSourceEvent] 
---(
---	[AcademicYear], 
---	[CollectionPeriod], 
---	[Ukprn], 
---	[IlrSubmissionDateTime]
---) 
---WITH (ONLINE = ON)
---GO
-
---CREATE NONCLUSTERED INDEX [IX_FundingSourceEvent__JobId] ON [Payments2].[FundingSourceEvent] 
---(
---	[JobId]
---) 
---WITH (ONLINE = ON)
---GO
-
-CREATE NONCLUSTERED INDEX [IX_FundingSourceEvent__AuditDataFactory] ON [Payments2].[FundingSourceEvent] 
+CREATE NONCLUSTERED INDEX [IX_FundingSourceEvent__Audit] ON [Payments2].[FundingSourceEvent]
 (
-	[AcademicYear],
-	[CollectionPeriod]
-)
+	[EarningEventId],
+	[RequiredPaymentEventId]
+) 
+WITH (ONLINE = ON)
+GO
+
+CREATE NONCLUSTERED INDEX [IX_FundingSourceEvent__Submission] ON [Payments2].[FundingSourceEvent] 
+(
+	[AcademicYear], 
+	[CollectionPeriod], 
+	[Ukprn], 
+	[IlrSubmissionDateTime]
+) 
+WITH (ONLINE = ON)
+GO
+
+CREATE NONCLUSTERED INDEX [IX_FundingSourceEvent__JobId] ON [Payments2].[FundingSourceEvent] 
+(
+	[JobId]
+) 
 WITH (ONLINE = ON)
 GO

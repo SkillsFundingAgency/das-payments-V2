@@ -100,11 +100,3 @@ CREATE NONCLUSTERED INDEX [IX_FundingSourceEvent__JobId] ON [Payments2].[Funding
 ) 
 WITH (ONLINE = ON)
 GO
-
-CREATE NONCLUSTERED INDEX [IX_FundingSourceEvent__AuditDataFactory] ON [Payments2].[FundingSourceEvent] 
-(
-	[AcademicYear],
-	[CollectionPeriod]
-)
-WITH (ONLINE = ON)
-GO

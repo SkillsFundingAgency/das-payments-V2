@@ -15,42 +15,26 @@
 )
 GO
 
---CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriod__DataLockEventId] ON [Payments2].[DataLockEventNonPayablePeriod] 
---(
---	[DataLockEventId]
---)
---WITH (ONLINE = ON);
---GO
-
---CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriod__DataLockEventId] ON [Payments2].[DataLockEventNonPayablePeriod] 
---(
---	[DataLockEventId]
---) 
---INCLUDE 
---(
---	[Amount],
---	[DataLockEventNonPayablePeriodId]
---) 
---WITH (ONLINE = ON);
---GO
-
---CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriod__TransactionType] ON [Payments2].[DataLockEventNonPayablePeriod] 
---(
---	[TransactionType]
---) 
---INCLUDE 
---(
---	[DataLockEventId], 
---	[DataLockEventNonPayablePeriodId]
---)
---WITH (ONLINE = ON)
---GO
-
-CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriod__AuditDataFactory] ON [Payments2].[DataLockEventNonPayablePeriod] 
+CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriod__DataLockEventId] ON [Payments2].[DataLockEventNonPayablePeriod] 
 (
-	[AcademicYear],
-	[CollectionPeriod],
 	[DataLockEventId]
+) 
+INCLUDE 
+(
+	[Amount],
+	[DataLockEventNonPayablePeriodId]
+) 
+WITH (ONLINE = ON);
+GO
+
+CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriod__TransactionType] ON [Payments2].[DataLockEventNonPayablePeriod] 
+(
+	[TransactionType]
+) 
+INCLUDE 
+(
+	[DataLockEventId], 
+	[DataLockEventNonPayablePeriodId]
 )
 WITH (ONLINE = ON)
 GO

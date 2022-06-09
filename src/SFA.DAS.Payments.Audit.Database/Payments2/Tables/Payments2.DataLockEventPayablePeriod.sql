@@ -9,26 +9,17 @@
 	SfaContributionPercentage DECIMAL(15,5) NULL,
 	CreationDate DATETIMEOFFSET NOT NULL,
 	LearningStartDate DATETIME2 NULL,
-    ApprenticeshipId BIGINT NULL,
-    ApprenticeshipPriceEpisodeId BIGINT NULL,
+    	ApprenticeshipId BIGINT NULL,
+    	ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL,
 	AcademicYear SMALLINT NULL,
 	CollectionPeriod TINYINT NULL
 )
 GO
 
---CREATE NONCLUSTERED INDEX [IX_DataLockEventPayablePeriod__DataLockEventId] ON [Payments2].[DataLockEventPayablePeriod] 
---(
---	[DataLockEventId]
---) 
---WITH (ONLINE = ON);
---GO
-
-CREATE NONCLUSTERED INDEX [IX_DataLockEventPayablePeriod_AuditDataFactory] ON [Payments2].[DataLockEventPayablePeriod] 
+CREATE NONCLUSTERED INDEX [IX_DataLockEventPayablePeriod__DataLockEventId] ON [Payments2].[DataLockEventPayablePeriod] 
 (
-	[AcademicYear],
-	[CollectionPeriod],
 	[DataLockEventId]
 ) 
-WITH (ONLINE = ON)
+WITH (ONLINE = ON);
 GO

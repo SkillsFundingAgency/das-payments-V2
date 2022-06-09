@@ -119,11 +119,3 @@ INCLUDE
 )
 WITH (ONLINE = ON)
 GO
-
-CREATE NONCLUSTERED INDEX [IX_RequiredPaymentEvent__AuditDataFactory] ON [Payments2].[RequiredPaymentEvent] 
-(
-	[AcademicYear],
-	[CollectionPeriod]
-)
-WITH (ONLINE = ON)
-GO
