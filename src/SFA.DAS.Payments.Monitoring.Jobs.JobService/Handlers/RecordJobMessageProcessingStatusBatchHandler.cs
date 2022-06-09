@@ -24,9 +24,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers
 
         public async Task Handle(IList<RecordJobMessageProcessingStatus> messages, CancellationToken cancellationToken)
         {
-
-            cancellationToken.ThrowIfCancellationRequested();
-            await jobMessageService.RecordCompletedJobMessageStatus(messages, cancellationToken).ConfigureAwait(false);
+            foreach (var message in messages)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await jobMessageService.RecordCompletedJobMessageStatus(message, cancellationToken).ConfigureAwait(false);
+            }
         }
     }
 }
