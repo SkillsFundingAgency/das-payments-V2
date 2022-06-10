@@ -16,6 +16,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
         private readonly IReliableStateManagerTransactionProvider transactionProvider;
         private readonly ITelemetry telemetry;
         private readonly IOperationHolder<RequestTelemetry> operation;
+        private readonly IPaymentLogger logger;
 
         public UnitOfWorkScope(ILifetimeScope lifetimeScope, string operationName)
         {
@@ -25,7 +26,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
             var shouldLog = string.Compare(operationName, "AuditBatchProcessing",
                 StringComparison.InvariantCultureIgnoreCase) == 0;
 
-            var logger = lifetimeScope.Resolve<IPaymentLogger>();
+            logger = lifetimeScope.Resolve<IPaymentLogger>();
             
             if (!shouldLog) logger.LogVerbose($"Creating UnitOfWork transaction for {operationName}.");
             
@@ -56,11 +57,13 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
 
         public void Abort()
         {
+            logger.LogWarning($"Aborting UnitOfWork transaction. Transaction Id: {transactionProvider.Current.TransactionId}");
             transactionProvider.Current.Abort();
         }
 
         public async Task Commit()
         {
+            logger.LogVerbose($"Commiting UnitOfWork transaction.Transaction Id: {transactionProvider.Current.TransactionId}");
             await transactionProvider.Current.CommitAsync();
         }
     }
