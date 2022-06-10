@@ -10,8 +10,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc.Modules
         {
             builder.RegisterType<UnitOfWorkScope>().As<IUnitOfWorkScope>().InstancePerLifetimeScope();
             builder.RegisterType<UnitOfWorkScopeFactory>().As<IUnitOfWorkScopeFactory>().InstancePerLifetimeScope();
-            builder.RegisterType<StateManagerUnitOfWork>().As<IStateManagerUnitOfWork, StateManagerUnitOfWork>()
-                .InstancePerLifetimeScope();
+            builder.RegisterType<StateManagerUnitOfWork>().As<IStateManagerUnitOfWork>().InstancePerLifetimeScope();
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -16,9 +15,7 @@ using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Newtonsoft.Json;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
-using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core
@@ -30,22 +27,19 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
 
     public class ServiceBusBatchCommunicationListener : IServiceBusBatchCommunicationListener
     {
-        //private readonly IApplicationConfiguration config;
+        public string EndpointName { get; set; }
+        
         private readonly IPaymentLogger logger;
         private readonly IContainerScopeFactory scopeFactory;
-        private readonly ITelemetry telemetry;
         private readonly string connectionString;
-        public string EndpointName { get; set; }
         private readonly string errorQueueName;
+        
         private CancellationToken startingCancellationToken;
 
-        public ServiceBusBatchCommunicationListener(string connectionString, string endpointName, string errorQueueName, IPaymentLogger logger,
-            IContainerScopeFactory scopeFactory, ITelemetry telemetry)
+        public ServiceBusBatchCommunicationListener(string connectionString, string endpointName, string errorQueueName, IPaymentLogger logger, IContainerScopeFactory scopeFactory)
         {
-            //this.config = config ?? throw new ArgumentNullException(nameof(config));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
-            this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
             this.connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             EndpointName = endpointName ?? throw new ArgumentNullException(nameof(endpointName));
             this.errorQueueName = errorQueueName ?? endpointName + "-Errors";
@@ -80,16 +74,15 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         private async Task Listen(CancellationToken cancellationToken)
         {
             var connection = new ServiceBusConnection(connectionString);
-            var messageReceiver = new MessageReceiver(connection, EndpointName, ReceiveMode.PeekLock,
-                RetryPolicy.Default, 0);
-            var errorQueueSender = new MessageSender(connection, errorQueueName, RetryPolicy.Default);
+            var messageReceiver = new MessageReceiver(connection, EndpointName, ReceiveMode.PeekLock, RetryPolicy.Default);
+
             try
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     try
                     {
-                        var pipeLineStopwatch = Stopwatch.StartNew();
+                        //var pipeLineStopwatch = Stopwatch.StartNew();
                         var messages = new List<Message>();
                         for (var i = 0; i < 10 && messages.Count <= 200; i++)
                         {
@@ -130,12 +123,11 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                             }
                         }
 
-                        var stopwatch = Stopwatch.StartNew();
-                        await Task.WhenAll(groupedMessages.Select(group =>
-                            ProcessMessages(group.Key, group.Value, messageReceiver, cancellationToken)));
-                        stopwatch.Stop();
+                        //var stopwatch = Stopwatch.StartNew();
+                        await Task.WhenAll(groupedMessages.Select(group => ProcessMessages(group.Key, group.Value, messageReceiver, cancellationToken)));
+                        //stopwatch.Stop();
                         //RecordAllBatchProcessTelemetry(stopwatch.ElapsedMilliseconds, messages.Count);
-                        pipeLineStopwatch.Stop();
+                        //pipeLineStopwatch.Stop();
                         //RecordPipelineTelemetry(pipeLineStopwatch.ElapsedMilliseconds, messages.Count);
 
                     }
@@ -193,13 +185,17 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         {
             if (!message.UserProperties.ContainsKey(NServiceBus.Headers.EnclosedMessageTypes))
                 throw new InvalidOperationException($"Cannot deserialise the message, no 'enclosed message types' header was found. Message id: {message.MessageId}, label: {message.Label}");
+
             var enclosedTypes = (string)message.UserProperties[NServiceBus.Headers.EnclosedMessageTypes];
             var typeName = enclosedTypes.Split(';').FirstOrDefault();
+
             if (string.IsNullOrEmpty(typeName))
                 throw new InvalidOperationException($"Message type not found when trying to deserialise the message.  Message id: {message.MessageId}, label: {message.Label}");
+
             var messageType = Type.GetType(typeName);
             var sanitisedMessageJson = GetMessagePayload(message);
             var deserialisedMessage = JsonConvert.DeserializeObject(sanitisedMessageJson, messageType);
+
             return deserialisedMessage;
         }
 
@@ -214,8 +210,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                     try
                     {
                         await unitOfWork.Begin().ConfigureAwait(false);
-                        if (!containerScope.TryResolve(typeof(IHandleMessageBatches<>).MakeGenericType(groupType),
-                            out object handler))
+                        if (!containerScope.TryResolve(typeof(IHandleMessageBatches<>).MakeGenericType(groupType), out var handler))
                         {
                             logger.LogError($"No handler found for message: {groupType.FullName}");
                             await Task.WhenAll(messages.Select(message => receiver.DeadLetterAsync(message.Item1)));
@@ -234,8 +229,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                         await (Task)methodInfo.Invoke(handler, new object[] { list, cancellationToken });
                         //RecordMetric(handler.GetType().FullName, handlerStopwatch.ElapsedMilliseconds, list.Count);
                         await unitOfWork.End();
-                        await receiver.CompleteAsync(messages.Select(message =>
-                            message.Item1));
+                        await receiver.CompleteAsync(messages.Select(message => message.Item1));
                     }
                     catch (Exception e)
                     {
