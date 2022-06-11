@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
         {
             logger.LogVerbose("Creating StateManager transaction.");
             ((ReliableStateManagerTransactionProvider)transactionProvider).Current = stateManager.CreateTransaction();
-            logger.LogWarning($"Creating StateManager transaction.Transaction Id: {transactionProvider.Current.TransactionId}");
+            logger.LogDebug($"Creating StateManager transaction.Transaction Id: {transactionProvider.Current.TransactionId}");
             return Task.CompletedTask;
         }
 

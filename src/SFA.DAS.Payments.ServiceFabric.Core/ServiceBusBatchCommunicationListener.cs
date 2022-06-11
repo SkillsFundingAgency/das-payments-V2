@@ -100,7 +100,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                             continue;
                         }
 
-                        var groupedMessages = new Dictionary<Type, List<(string, object)>>();
+                        var groupedMessages = new Dictionary<Type, List<(string, int, object)>>();
                         foreach (var message in messages)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
@@ -110,8 +110,8 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                                 var key = applicationMessage.GetType();
                                 var applicationMessages = groupedMessages.ContainsKey(key)
                                     ? groupedMessages[key]
-                                    : groupedMessages[key] = new List<(string, object)>();
-                                applicationMessages.Add((message.SystemProperties.LockToken, applicationMessage));
+                                    : groupedMessages[key] = new List<(string, int, object)>();
+                                applicationMessages.Add((message.SystemProperties.LockToken, message.SystemProperties.DeliveryCount, applicationMessage));
 
                             }
                             catch (Exception e)
@@ -199,7 +199,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             return deserialisedMessage;
         }
 
-        protected async Task ProcessMessages(Type groupType, List<(string, object)> messages, MessageReceiver receiver, CancellationToken cancellationToken)
+        protected async Task ProcessMessages(Type groupType, List<(string, int, object)> messages, MessageReceiver receiver, CancellationToken cancellationToken)
         {
             try
             {
@@ -223,7 +223,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
 
                         var listType = typeof(List<>).MakeGenericType(groupType);
                         var list = (IList)Activator.CreateInstance(listType);
-                        messages.Select(msg => msg.Item2).ToList().ForEach(message => list.Add(message));
+                        messages.Select(msg => msg.Item3).ToList().ForEach(message => list.Add(message));
 
                         //var handlerStopwatch = Stopwatch.StartNew();
                         await (Task)methodInfo.Invoke(handler, new object[] { list, cancellationToken });
@@ -241,7 +241,16 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             }
             catch (Exception e)
             {
-                logger.LogError($"Error in ServiceBusBatchCommunicationListener, Message Type: {messages.First().Item2.GetType().Name}, message Count {messages.Count} Error: {e.Message}", e);
+                if (e.GetType().IsAssignableFrom(typeof(TimeoutException)))
+                {
+                    messages.Where(m => m.Item2 > 50).ToList().ForEach( msg => 
+                    logger.LogError($"Error in ServiceBusBatchCommunicationListener, MaxDelivery count exceeded, Message Type: {msg.Item2.GetType().Name}, Error: {e.Message}"));
+                }
+                else
+                {
+                    logger.LogError($"Error in ServiceBusBatchCommunicationListener, Message Type: {messages.First().Item2.GetType().Name}, message Count {messages.Count} Error: {e.Message}", e);
+                }
+
                 await Task.WhenAll(messages.Select(message => receiver.AbandonAsync(message.Item1)));
             }
         }
