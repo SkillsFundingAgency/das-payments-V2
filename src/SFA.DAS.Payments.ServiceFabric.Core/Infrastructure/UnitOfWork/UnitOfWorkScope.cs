@@ -23,19 +23,17 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
             LifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
             
             transactionProvider = lifetimeScope.Resolve<IReliableStateManagerTransactionProvider>();
-            var shouldLog = string.Compare(operationName, "AuditBatchProcessing",
-                StringComparison.InvariantCultureIgnoreCase) == 0;
 
             logger = lifetimeScope.Resolve<IPaymentLogger>();
             
-            if (!shouldLog) logger.LogVerbose($"Creating UnitOfWork transaction for {operationName}.");
+            logger.LogVerbose($"Creating UnitOfWork transaction for {operationName}.");
             
             var stateManager = lifetimeScope.Resolve<IReliableStateManagerProvider>().Current;
             ((ReliableStateManagerTransactionProvider)transactionProvider).Current = stateManager.CreateTransaction();
             
-            if (shouldLog) return;
+            if (string.Compare(operationName, "AuditBatchProcessing", StringComparison.InvariantCultureIgnoreCase) == 0) return;
 
-            logger.LogWarning($"Creating UnitOfWork transaction for {operationName}.Transaction Id: {transactionProvider.Current.TransactionId}");
+            logger.LogDebug($"Creating UnitOfWork transaction for {operationName}.Transaction Id: {transactionProvider.Current.TransactionId}");
             
             telemetry = lifetimeScope.Resolve<ITelemetry>();
             operation = telemetry.StartOperation(operationName);
@@ -63,7 +61,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
 
         public async Task Commit()
         {
-            logger.LogVerbose($"Commiting UnitOfWork transaction.Transaction Id: {transactionProvider.Current.TransactionId}");
+            logger.LogDebug($"Commiting UnitOfWork transaction.Transaction Id: {transactionProvider.Current.TransactionId}");
             await transactionProvider.Current.CommitAsync();
         }
     }

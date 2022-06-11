@@ -80,7 +80,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             var completedItems = await GetCompletedMessages(jobId, inProgressMessages, cancellationToken).ConfigureAwait(false);
 
             //TODO: make a little more elegant
-            Telemetry.TrackEvent($"ManageJobStatus JobId : {job.DcJobId}, JobType: {job.JobType} Inprogress count: {inProgressMessages.Count}, completed count: {completedItems.Count}.");
+            Logger.LogDebug($"ManageJobStatus JobId : {job.DcJobId}, JobType: {job.JobType} Inprogress count: {inProgressMessages.Count}, completed count: {completedItems.Count}.");
             inProgressMessages.GroupBy(message => message.MessageName).ToList().ForEach(group => Logger.LogDebug($"Inprogress message type: {group.Key}, count: {group.Count()}. Job: {jobId}"));
 
             if (!completedItems.Any())

@@ -28,18 +28,9 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
             payments.ForEach(p =>
             {
-                DateTime expectedLearnStartDate;
+                var expectedLearnStartDate = GetExpectedLearningStartDate(p.CollectionPeriod.Period == 4 ? TestSession.FM36Global : TestSession.PreviousFm36Global, p);
 
-                if (p.CollectionPeriod.Period == 4)
-                {
-                    expectedLearnStartDate = GetExpectedLearningStartDate(TestSession.FM36Global, p);
-                }
-                else
-                {
-                    expectedLearnStartDate = GetExpectedLearningStartDate(TestSession.PreviousFm36Global,p);
-                }
-
-                p.LearningStartDate.Should().Be(expectedLearnStartDate, $"Payment AimSeqNumber: {p.LearningAimSequenceNumber}");
+                p.LearningStartDate?.ToUniversalTime().Should().Be(expectedLearnStartDate.ToUniversalTime(), $"Payment AimSeqNumber: {p.LearningAimSequenceNumber}");
             });
         }
 

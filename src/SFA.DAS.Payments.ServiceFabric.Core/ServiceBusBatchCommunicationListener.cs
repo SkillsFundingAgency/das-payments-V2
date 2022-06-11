@@ -243,8 +243,8 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             {
                 if (e.GetType().IsAssignableFrom(typeof(TimeoutException)))
                 {
-                    messages.Where(m => m.Item2 > 50).ToList().ForEach( msg => 
-                    logger.LogError($"Error in ServiceBusBatchCommunicationListener, MaxDelivery count exceeded, Message Type: {msg.Item2.GetType().Name}, Error: {e.Message}"));
+                    messages.Where(m => m.Item2 >= 50).ToList().ForEach( msg => 
+                    logger.LogError($"Error in ServiceBusBatchCommunicationListener, Message Type: {msg.Item2.GetType().Name}, Error: {e.Message}"));
                 }
                 else
                 {
