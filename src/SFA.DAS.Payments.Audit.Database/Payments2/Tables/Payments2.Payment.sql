@@ -49,111 +49,11 @@ CREATE TABLE [Payments2].[Payment]
 )
 GO
 
-CREATE NONCLUSTERED INDEX [IX_Payment__ApprenticeshipKey] ON [Payments2].[Payment]
+CREATE NONCLUSTERED INDEX [IX_Payment__AuditDataFactory] ON [Payments2].[Payment]
 (
-	[Ukprn] ASC,
-	[AcademicYear] ASC,
-	[LearnerReferenceNumber] ASC,
-	[LearningAimReference] ASC,
-	[LearningAimProgrammeType] ASC,
-	[LearningAimStandardCode] ASC,
-	[LearningAimFrameworkCode] ASC,
-	[LearningAimPathwayCode] ASC,
-	[ContractType] ASC,
-	[LearnerUln] ASC
-)
-WITH (ONLINE = ON)
-GO
-
-CREATE NONCLUSTERED INDEX [IX_Payment__UkprnPeriodSearch] ON [Payments2].[Payment]
-(
-	[Ukprn],
+	[AcademicYear],
 	[CollectionPeriod],
-	[AcademicYear],
-	[DeliveryPeriod],
-	[JobId]
-) 
-WITH (ONLINE = ON)
-GO
-
-CREATE NONCLUSTERED INDEX [IX_Payment__Audit] ON [Payments2].[Payment]
-(
-	[EarningEventId],
-	[FundingSourceEventId]
-) 
-WITH (ONLINE = ON)
-GO
-
-CREATE NONCLUSTERED INDEX [IX_Payment__Metrics_Paid_DataLocks] ON [Payments2].[Payment]
-(
-	[Ukprn],
-	[LearnerReferenceNumber] ASC,
-	[LearningAimReference] ASC,
-	[LearningAimProgrammeType] ASC,
-	[LearningAimStandardCode] ASC,
-	[LearningAimFrameworkCode] ASC,
-	[LearningAimPathwayCode] ASC,
-	[CollectionPeriod]
+	[EventId]
 )
-INCLUDE
-(
-	[Amount], 
-	[TransactionType], 
-	[DeliveryPeriod]
-)
-WITH (ONLINE = ON)
-GO
-
-CREATE NONCLUSTERED INDEX [IX_Payment__CollectionPeriodCompletionPayments] on [Payments2].[Payment] 
-(
-	[Ukprn],
-	[ContractType],
-	[TransactionType]
-)
-WITH (ONLINE = ON)
-GO
-
-CREATE NONCLUSTERED INDEX [UX_Payment_ProviderEvents] ON [Payments2].[Payment] 
-(
-	[CollectionPeriod],
-	[AcademicYear],
-	[AccountId],
-	[FundingSource],
-	[TransferSenderAccountId],
-	[ApprenticeshipId]
-)
-INCLUDE 
-(
-	[EventId],
-	[RequiredPaymentEventId],
-	[DeliveryPeriod],
-	[Ukprn],
-	[LearnerUln],
-	[Amount],
-	[LearningAimProgrammeType],
-	[LearningAimStandardCode],
-	[LearningAimFrameworkCode],
-	[LearningAimPathwayCode],
-	[TransactionType],
-	[IlrSubmissionDateTime],
-	[EarningsStartDate],
-	[EarningsPlannedEndDate],
-	[EarningsActualEndDate],
-	[EarningsCompletionStatus],
-	[EarningsCompletionAmount],
-	[EarningsInstalmentAmount],
-	[EarningsNumberOfInstalments],
-	[ContractType]
-)
-WITH (ONLINE = ON)
-GO
-
-
-CREATE NONCLUSTERED INDEX [IX_Payment__AcademicYear_CollectionPeriod_JobId] ON [Payments2].[Payment]
-(
-	[AcademicYear],
-	[CollectionPeriod], 
-	[JobId]
-) 
 WITH (ONLINE = ON)
 GO
