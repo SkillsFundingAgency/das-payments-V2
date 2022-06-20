@@ -177,13 +177,3 @@ INCLUDE
 )
 WITH (ONLINE = ON)
 GO
-
-
-CREATE NONCLUSTERED INDEX [IX_Payment__AcademicYear_CollectionPeriod_JobId] ON [Payments2].[Payment]
-(
-	[AcademicYear],
-	[CollectionPeriod], 
-	[JobId]
-) 
-WITH (ONLINE = ON)
-GO
