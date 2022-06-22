@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
@@ -15,28 +16,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
     public class JobMessageServiceTests
     {
         private AutoMock mocker;
-        private Dictionary<JobStepStatus, int> stepsStatuses;
-        private DateTimeOffset? lastJobStepEndTime;
-        private JobModel job;
 
         [SetUp]
         public void SetUp()
         {
-            stepsStatuses = new Dictionary<JobStepStatus, int>()
-            {
-                {JobStepStatus.Completed, 10 }
-            };
             mocker = AutoMock.GetLoose();
-            lastJobStepEndTime = DateTimeOffset.UtcNow;
 
-            job = new JobModel
-            {
-                Id = 1,
-                StartTime = DateTimeOffset.UtcNow.AddSeconds(-10),
-                Status = JobStatus.InProgress
-            };
             mocker.Mock<IJobStorageService>()
-                .Setup(x => x.GetInProgressMessages( It.IsAny<long>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.GetInProgressMessages(It.IsAny<long>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<InProgressMessage>());
         }
 
@@ -52,11 +39,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 Succeeded = true
             };
             var service = mocker.Create<JobMessageService>();
-            await service.RecordCompletedJobMessageStatus(jobStatusMessage, default(CancellationToken));
+            await service.RecordCompletedJobMessageStatus(new List<RecordJobMessageProcessingStatus> { jobStatusMessage }, default(CancellationToken));
             mocker.Mock<IJobStorageService>()
                 .Verify(
-                    x => x.StoreCompletedMessage(It.Is<CompletedMessage>(msg =>
-                        msg.MessageId == jobStatusMessage.Id && msg.CompletedTime == jobStatusMessage.EndTime),It.IsAny<CancellationToken>()),
+                    x => x.StoreCompletedMessage(It.IsAny<long>(), It.Is<IEnumerable<CompletedMessage>>(msg =>
+                        msg.First().MessageId == jobStatusMessage.Id && msg.First().CompletedTime == jobStatusMessage.EndTime), It.IsAny<CancellationToken>()),
                     Times.Once);
         }
 
@@ -81,13 +68,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             {
                 Id = Guid.NewGuid(),
                 JobId = 1,
-                GeneratedMessages = new List<GeneratedMessage>{ generatedMessageA, generatedMessageB },
+                GeneratedMessages = new List<GeneratedMessage> { generatedMessageA, generatedMessageB },
                 EndTime = DateTime.UtcNow,
                 Succeeded = true
             };
 
             var service = mocker.Create<JobMessageService>();
-            await service.RecordCompletedJobMessageStatus(jobStatusMessage, CancellationToken.None);
+            await service.RecordCompletedJobMessageStatus(new List<RecordJobMessageProcessingStatus> { jobStatusMessage }, CancellationToken.None);
 
             mocker.Mock<IJobStorageService>()
                 .Verify(x => x.StoreInProgressMessages(It.Is<long>(jobId => jobId == jobStatusMessage.JobId), It.Is<List<InProgressMessage>>(identifiers =>

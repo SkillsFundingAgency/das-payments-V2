@@ -78,6 +78,8 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
             mappedPeriod.DataLockEventId.Should().Be(PaymentEvent.EventId);
             mappedPeriod.LearningStartDate.Should().Be(PaymentEvent.LearningAim.StartDate);
             mappedPeriod.PriceEpisodeIdentifier.Should().Be(earningPeriod.PriceEpisodeIdentifier);
+            mappedPeriod.AcademicYear.Should().Be(PaymentEvent.CollectionPeriod.AcademicYear);
+            mappedPeriod.CollectionPeriod.Should().Be(PaymentEvent.CollectionPeriod.Period);
         }
     }
 }

@@ -22,6 +22,7 @@ namespace SFA.DAS.Payments.Model.Core.Audit
         public DateTime? EffectiveTotalNegotiatedPriceStartDate { get; set; }
         public decimal? EmployerContribution { get; set; }
         public int? CompletionHoldBackExemptionCode { get; set; }
-
+        public short AcademicYear { get; set; }
+        public byte CollectionPeriod { get; set; }
     }
 }

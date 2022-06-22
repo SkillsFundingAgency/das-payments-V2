@@ -17,6 +17,8 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.DataLock
                     .Select(item => new DataLockEventPayablePeriodModel
                     {
                         TransactionType = (TransactionType)item.onProgEarning.Type,
+                        AcademicYear = source.CollectionPeriod.AcademicYear,
+                        CollectionPeriod = source.CollectionPeriod.Period,
                         DeliveryPeriod = item.period.Period,
                         Amount = item.period.Amount,
                         PriceEpisodeIdentifier = item.period.PriceEpisodeIdentifier,
@@ -35,6 +37,8 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.DataLock
                     .Select(item => new DataLockEventPayablePeriodModel
                     {
                         TransactionType = (TransactionType)item.incentiveEarning.Type,
+                        AcademicYear = source.CollectionPeriod.AcademicYear,
+                        CollectionPeriod = source.CollectionPeriod.Period,
                         DeliveryPeriod = item.period.Period,
                         Amount = item.period.Amount,
                         PriceEpisodeIdentifier = item.period.PriceEpisodeIdentifier,

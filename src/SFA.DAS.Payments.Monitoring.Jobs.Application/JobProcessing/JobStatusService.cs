@@ -15,8 +15,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         Task<bool> ManageStatus(long jobId, CancellationToken cancellationToken);
     }
 
-
-
     public abstract class JobStatusService : IJobStatusService
     {
         public IJobServiceConfiguration Config { get; }
@@ -82,24 +80,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             var completedItems = await GetCompletedMessages(jobId, inProgressMessages, cancellationToken).ConfigureAwait(false);
 
             //TODO: make a little more elegant
-            Logger.LogDebug($"Inprogress count: {inProgressMessages.Count}, completed count: {completedItems.Count}. Job: {jobId}");
+            Logger.LogDebug($"ManageJobStatus JobId : {job.DcJobId}, JobType: {job.JobType} Inprogress count: {inProgressMessages.Count}, completed count: {completedItems.Count}.");
             inProgressMessages.GroupBy(message => message.MessageName).ToList().ForEach(group => Logger.LogDebug($"Inprogress message type: {group.Key}, count: {group.Count()}. Job: {jobId}"));
-
-            if (job != null && job.JobType == JobType.PeriodEndRunJob)
-            {
-                Telemetry.TrackEvent($"Period-End-Run Job: {jobId}", new Dictionary<string, double>
-                {
-                    {"InprogressCount", inProgressMessages.Count},
-                    {"CompletedCount", completedItems.Count},
-                    {TelemetryKeys.CollectionPeriod, job.CollectionPeriod},
-                    {TelemetryKeys.AcademicYear, job.AcademicYear},
-                    {TelemetryKeys.JobId, jobId},
-                });
-            }
 
             if (!completedItems.Any())
             {
-                Logger.LogVerbose($"Found no completed messages for job: {jobId}");
+                Telemetry.TrackEvent($"ManageJobStatus JobId : {job.DcJobId}, JobType: {job.JobType} Inprogress count: {inProgressMessages.Count}, completed count: {completedItems.Count}. Found no completed messages");
                 return false;
             }
 
@@ -109,9 +95,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
             var currentJobStatus = await UpdateJobStatus(jobId, completedItems, cancellationToken).ConfigureAwait(false);
 
-            if (!inProgressMessages.TrueForAll(inProgress => completedItems.Any(item => item.MessageId == inProgress.MessageId)))
+            if (!inProgressMessages.All(inProgress => completedItems.Any(item => item.MessageId == inProgress.MessageId)))
             {
-                Logger.LogDebug($"Found {inProgressMessages.Count} in progress messages for job id: {jobId}. Cannot set status for job.");
+                Telemetry.TrackEvent($"ManageJobStatus JobId : {job.DcJobId}, JobType: {job.JobType} Inprogress count: {inProgressMessages.Count}, completed count: {completedItems.Count}. Cannot set status for job.");
                 return false;
             }
 
@@ -125,13 +111,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             return await CompleteJob(jobId, jobStatus, endTime, cancellationToken).ConfigureAwait(false);
         }
 
-
         public virtual Task<(bool IsComplete, JobStatus? OverriddenJobStatus, DateTimeOffset? completionTime)> PerformAdditionalJobChecks(JobModel job, CancellationToken cancellationToken)
         {
             return Task.FromResult((true, (JobStatus?)null, (DateTimeOffset?)null));
         }
-
-
 
         protected virtual async Task ManageMessageStatus(long jobId, List<CompletedMessage> completedMessages, List<InProgressMessage> inProgressMessages, CancellationToken cancellationToken)
         {
@@ -183,8 +166,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             return completedItems;
         }
 
-        protected virtual async Task<(bool hasFailedMessages, DateTimeOffset? endTime)> UpdateJobStatus(long jobId, List<CompletedMessage> completedItems,
-            CancellationToken cancellationToken)
+        protected async Task<(bool hasFailedMessages, DateTimeOffset? endTime)> UpdateJobStatus(long jobId, List<CompletedMessage> completedItems, CancellationToken cancellationToken)
         {
             var statusChanged = false;
             var currentJobStatus = await JobStorageService.GetJobStatus(jobId, cancellationToken).ConfigureAwait(false);
@@ -232,8 +214,5 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 metrics.Add("Learner Count", job.LearnerCount ?? 0);
             Telemetry.TrackEvent("Finished Job", properties, metrics);
         }
-
-
-
     }
 }

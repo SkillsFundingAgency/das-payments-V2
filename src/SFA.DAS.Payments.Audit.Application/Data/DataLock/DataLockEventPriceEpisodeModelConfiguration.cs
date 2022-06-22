@@ -28,7 +28,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data.DataLock
             builder.Property(x => x.Completed).HasColumnName(@"Completed");
             builder.Property(x => x.EmployerContribution).HasColumnName(@"EmployerContribution");
             builder.Property(x => x.CompletionHoldBackExemptionCode).HasColumnName(@"CompletionHoldBackExemptionCode");
-
+            builder.Property(x => x.AcademicYear).HasColumnName(@"AcademicYear");
+            builder.Property(x => x.CollectionPeriod).HasColumnName(@"CollectionPeriod");
         }
     }
 }

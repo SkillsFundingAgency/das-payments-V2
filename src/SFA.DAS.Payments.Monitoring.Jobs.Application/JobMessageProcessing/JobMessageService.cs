@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
@@ -11,41 +11,53 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobMessageProcessing
 {
     public interface IJobMessageService
     {
-        Task RecordCompletedJobMessageStatus(RecordJobMessageProcessingStatus jobMessageStatus, CancellationToken cancellationToken);
+        Task RecordCompletedJobMessageStatus(IList<RecordJobMessageProcessingStatus> jobMessages, CancellationToken cancellationToken);
     }
 
     public class JobMessageService : IJobMessageService
     {
         private readonly IJobStorageService jobStorageService;
         private readonly IPaymentLogger logger;
-        private readonly ITelemetry telemetry;
 
-        public JobMessageService(IJobStorageService jobStorageService, IPaymentLogger logger, ITelemetry telemetry)
+        public JobMessageService(IJobStorageService jobStorageService, IPaymentLogger logger)
         {
             this.jobStorageService = jobStorageService ?? throw new ArgumentNullException(nameof(jobStorageService));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
 
-        public async Task RecordCompletedJobMessageStatus(RecordJobMessageProcessingStatus jobMessageStatus, CancellationToken cancellationToken)
+        public async Task RecordCompletedJobMessageStatus(IList<RecordJobMessageProcessingStatus> jobMessages, CancellationToken cancellationToken)
         {
+            var jobGroup = jobMessages.GroupBy(g => g.JobId).ToList();
 
-            var completedMessage = new CompletedMessage
+            foreach (var jobMessage in jobGroup)
             {
-                MessageId = jobMessageStatus.Id, JobId = jobMessageStatus.JobId,
-                CompletedTime = jobMessageStatus.EndTime, Succeeded = jobMessageStatus.Succeeded
-            };
-            logger.LogVerbose($"Now storing the completed message. Message id: {completedMessage.MessageId}, Job: {completedMessage.JobId}, End time: {completedMessage.CompletedTime}, Succeeded: {completedMessage.Succeeded}");
-            await jobStorageService.StoreCompletedMessage(completedMessage,cancellationToken);
+                var first = jobMessage.First();
 
-            logger.LogVerbose($"Stored completed message. Now storing {jobMessageStatus.GeneratedMessages.Count} in progress messages generated while processing message: {completedMessage.MessageId} for job: {completedMessage.JobId}");
-            await jobStorageService.StoreInProgressMessages(jobMessageStatus.JobId,
-                jobMessageStatus.GeneratedMessages.Select(message => new InProgressMessage
+                var completedMessages = jobMessages.Select(statusMessage => new CompletedMessage
                 {
-                    MessageId = message.MessageId, JobId = jobMessageStatus.JobId, MessageName = message.MessageName
-                }).ToList(), cancellationToken);
+                    MessageId = statusMessage.Id,
+                    JobId = statusMessage.JobId,
+                    CompletedTime = statusMessage.EndTime,
+                    Succeeded = statusMessage.Succeeded
+                });
 
-            logger.LogDebug($"Recorded completion of message processing.  Job Id: {jobMessageStatus.JobId}, Message id: {jobMessageStatus.Id}.");
+                logger.LogVerbose($"Now storing the completed messages. Job Id: {first.JobId}");
+
+                await jobStorageService.StoreCompletedMessage(first.JobId, completedMessages, cancellationToken);
+
+                var inProgressMessages = jobMessages.SelectMany(sm => sm.GeneratedMessages.Select(message => new InProgressMessage
+                {
+                    MessageId = message.MessageId,
+                    JobId = first.JobId,
+                    MessageName = message.MessageName
+                })).ToList();
+
+                logger.LogVerbose($"Stored completed message. Now storing {inProgressMessages.Count} in progress messages generated while processing message. job Id: {first.JobId}");
+
+                await jobStorageService.StoreInProgressMessages(first.JobId, inProgressMessages, cancellationToken);
+
+                logger.LogDebug($"Recorded completion of message processing. Job Id: {first.JobId}.");
+            }
         }
     }
 }

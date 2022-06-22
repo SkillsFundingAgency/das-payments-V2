@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
     public class EarningEventMapperTests
     {
         protected IMapper Mapper { get; private set; }
-        
+
         [OneTimeSetUp]
         public void InitialiseMapper()
         {
@@ -108,8 +108,8 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
                 },
                 StartDate = DateTime.Now
             };
-             
-            
+
+
 
             var mapper = new EarningEventMapper(Mapper);
             var earningEventModel = mapper.Map(earningEvent);

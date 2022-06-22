@@ -133,7 +133,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 
         public async Task SaveDataLocksCompletionTime(long dcJobId, DateTimeOffset endTime, CancellationToken cancellationToken)
         {
-            var job = await Jobs.FirstOrDefaultAsync(storedJob => storedJob.DcJobId == dcJobId) ??
+            var job = await Jobs.FirstOrDefaultAsync(storedJob => storedJob.DcJobId == dcJobId, cancellationToken) ??
                       throw new InvalidOperationException($"Job not found: {dcJobId}");
 
             job.DataLocksCompletionTime = endTime;
@@ -147,6 +147,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
 
             job.DcJobEndTime = DateTimeOffset.UtcNow;
             job.DcJobSucceeded = succeeded;
+
             await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
