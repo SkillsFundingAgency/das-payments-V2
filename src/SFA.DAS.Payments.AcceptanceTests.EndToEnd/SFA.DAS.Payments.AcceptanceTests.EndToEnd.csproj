@@ -50,6 +50,9 @@
     <Reference Include="ESFA.DC.CollectionsManagement.Models, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.CollectionsManagement.Models.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.CollectionsManagement.Models.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model">
+      <HintPath>..\packages\ESFA.DC.ILR.2223.FundingService.FM36.FundingOutput.Model.0.17.2\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.ILR.Model.Loose, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.1819.Model.Loose.0.1.5-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Loose.dll</HintPath>
     </Reference>

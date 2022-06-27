@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using ESFA.DC.FileService;
 using ESFA.DC.FileService.Config;
 using ESFA.DC.FileService.Config.Interface;
 using ESFA.DC.FileService.Interface;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.JobContext.Interface;
-using ESFA.DC.Queueing.Interface;
-using ESFA.DC.Queueing.Interface.Configuration;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Automation
 {
