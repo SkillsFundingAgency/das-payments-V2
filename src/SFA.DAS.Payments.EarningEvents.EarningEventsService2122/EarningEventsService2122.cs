@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Fabric;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Autofac;
 using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
@@ -11,16 +5,21 @@ using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.ServiceFabric.Core;
+using System;
+using System.Collections.Generic;
+using System.Fabric;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace SFA.DAS.Payments.EarningEvents.EarningEventsService2021
+namespace SFA.DAS.Payments.EarningEvents.EarningEventsService2122
 {
-    public class EarningEventsService2021 : StatelessService
+    public class EarningEventsService2122 : StatelessService
     {
         private readonly ILifetimeScope lifetimeScope;
         private IJobContextManager<JobContextMessage> jobContextManager;
         private readonly IPaymentLogger logger;
 
-        public EarningEventsService2021(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger logger)
+        public EarningEventsService2122(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger logger)
             : base(context)
         {
             this.lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
