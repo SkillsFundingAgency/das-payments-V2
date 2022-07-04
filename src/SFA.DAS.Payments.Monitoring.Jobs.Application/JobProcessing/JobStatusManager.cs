@@ -89,9 +89,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                     {
                         var jobStatusService = GetJobStatusService(scope);
                         var finished = await jobStatusService.ManageStatus(jobId, cancellationToken).ConfigureAwait(false);
-                        logger.LogVerbose($"Job: {jobId},  finished: {finished}");
                         await scope.Commit();
                         currentJobs[jobId] = finished;
+                        logger.LogInfo($"Job: {jobId},  finished: {finished}");
                     }
                     catch (Exception ex)
                     {

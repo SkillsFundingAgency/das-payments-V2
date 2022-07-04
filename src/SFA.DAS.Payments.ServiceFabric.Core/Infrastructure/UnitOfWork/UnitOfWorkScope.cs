@@ -26,14 +26,12 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
 
             logger = lifetimeScope.Resolve<IPaymentLogger>();
             
-            logger.LogVerbose($"Creating UnitOfWork transaction for {operationName}.");
-            
             var stateManager = lifetimeScope.Resolve<IReliableStateManagerProvider>().Current;
             ((ReliableStateManagerTransactionProvider)transactionProvider).Current = stateManager.CreateTransaction();
             
             if (string.Compare(operationName, "AuditBatchProcessing", StringComparison.InvariantCultureIgnoreCase) == 0) return;
 
-            logger.LogDebug($"Creating UnitOfWork transaction for {operationName}.Transaction Id: {transactionProvider.Current.TransactionId}");
+            logger.LogVerbose($"Creating UnitOfWork transaction for {operationName}.Transaction Id: {transactionProvider.Current.TransactionId}");
             
             telemetry = lifetimeScope.Resolve<ITelemetry>();
             operation = telemetry.StartOperation(operationName);
@@ -61,7 +59,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
 
         public async Task Commit()
         {
-            logger.LogDebug($"Commiting UnitOfWork transaction.Transaction Id: {transactionProvider.Current.TransactionId}");
+            logger.LogVerbose($"Commiting UnitOfWork transaction.Transaction Id: {transactionProvider.Current.TransactionId}");
             await transactionProvider.Current.CommitAsync();
         }
     }

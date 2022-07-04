@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             await service.RecordCompletedJobMessageStatus(new List<RecordJobMessageProcessingStatus> { jobStatusMessage }, default(CancellationToken));
             mocker.Mock<IJobStorageService>()
                 .Verify(
-                    x => x.StoreCompletedMessage(It.IsAny<long>(), It.Is<IEnumerable<CompletedMessage>>(msg =>
+                    x => x.StoreCompletedMessage(It.IsAny<long>(), It.Is<IList<CompletedMessage>>(msg =>
                         msg.First().MessageId == jobStatusMessage.Id && msg.First().CompletedTime == jobStatusMessage.EndTime), It.IsAny<CancellationToken>()),
                     Times.Once);
         }
