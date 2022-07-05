@@ -10,7 +10,7 @@
     <Parameter Name="MonitoringServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
-    <Parameter Name="LogLevel" DefaultValue="Information" />
+    <Parameter Name="LogLevel" DefaultValue="Debug" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
     <Parameter Name="NonLevyFundedService_EndpointName" DefaultValue="sfa-das-payments-fundingsource-nonlevy" />
     <Parameter Name="LevyFundedService_EndpointName" DefaultValue="sfa-das-payments-fundingsource-levy" />

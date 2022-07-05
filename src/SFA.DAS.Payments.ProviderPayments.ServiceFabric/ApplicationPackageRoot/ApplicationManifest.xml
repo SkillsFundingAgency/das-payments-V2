@@ -13,7 +13,7 @@
     <Parameter Name="MonitoringServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
-    <Parameter Name="LogLevel" DefaultValue="Information" />
+    <Parameter Name="LogLevel" DefaultValue="Debug" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
     <Parameter Name="ProviderPaymentsService_EndpointName" DefaultValue="sfa-das-payments-providerpayments" />
     <Parameter Name="ProviderPaymentsService_FailedMessagesQueue" DefaultValue="sfa-das-payments-providerpayments-errors" />

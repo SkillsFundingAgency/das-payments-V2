@@ -26,7 +26,7 @@
     <Parameter Name="DelayedMessageRetries" Value="" />
     <Parameter Name="DelayedMessageRetryDelay" Value="" />
     <Parameter Name="DelayedRetryTimeInSeconds" Value="120" />
-    <Parameter Name="LogLevel" Value="Information" />
+    <Parameter Name="LogLevel" Value="Debug" />
     <Parameter Name="JobStatusCheck_Interval" Value="00:00:10" />
     <Parameter Name="TimeToWaitForJobToComplete" Value="01:00:00" />
     <Parameter Name="TimeToWaitForPeriodEndRunJobToComplete" Value="01:00:00" />

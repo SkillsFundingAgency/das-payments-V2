@@ -12,7 +12,7 @@
     <Parameter Name="ProviderAdjustmentService_EndpointName" DefaultValue="" />
     <Parameter Name="ProviderAdjustmentService_FailedMessagesQueue" DefaultValue="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
-    <Parameter Name="LogLevel" DefaultValue="Information" />
+    <Parameter Name="LogLevel" DefaultValue="Debug" />
     <Parameter Name="DasNServiceBusLicenseKey" DefaultValue="" />
     <Parameter Name="EasApiEndpoint" DefaultValue="" />
     <Parameter Name="EasApiPassword" DefaultValue="" />

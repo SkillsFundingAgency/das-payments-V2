@@ -15,7 +15,7 @@
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="TopicName" DefaultValue="dc" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
-    <Parameter Name="LogLevel" DefaultValue="Information" />
+    <Parameter Name="LogLevel" DefaultValue="Debug" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
     <Parameter Name="TimeToPauseBetweenChecks" DefaultValue="00:00:10" />
     <Parameter Name="TimeToWaitForJobToComplete" DefaultValue="00:02:00" />

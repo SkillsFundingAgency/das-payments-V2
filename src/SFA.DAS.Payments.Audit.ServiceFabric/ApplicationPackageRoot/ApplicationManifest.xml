@@ -20,7 +20,7 @@
     <Parameter Name="MonitoringServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
-    <Parameter Name="LogLevel" DefaultValue="" />
+    <Parameter Name="LogLevel" DefaultValue="Debug" />
     <Parameter Name="Audit_EarningEvents_EndpointName" DefaultValue="sfa-das-payments-audit-earningevents" />
     <Parameter Name="Audit_EarningEvents_FailedMessagesQueue" DefaultValue="sfa-das-payments-audit-earningevents-errors" />
     <Parameter Name="Audit_DataLock_EndpointName" DefaultValue="sfa-das-payments-audit-datalock" />

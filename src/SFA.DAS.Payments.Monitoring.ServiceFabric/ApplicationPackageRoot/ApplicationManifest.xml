@@ -29,7 +29,7 @@
     <Parameter Name="Placement_Constraints" DefaultValue="" />
     <Parameter Name="NumberOfNServiceBusThreads" DefaultValue="4" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
-    <Parameter Name="LogLevel" DefaultValue="Information" />
+    <Parameter Name="LogLevel" DefaultValue="Debug" />
     <Parameter Name="DelayedRetryTimeInSeconds" DefaultValue="5" />
     <Parameter Name="JobStatusCheck_Interval" DefaultValue="00:00:10" />
     <Parameter Name="TimeToWaitForJobToComplete" DefaultValue="01:00:00" />
