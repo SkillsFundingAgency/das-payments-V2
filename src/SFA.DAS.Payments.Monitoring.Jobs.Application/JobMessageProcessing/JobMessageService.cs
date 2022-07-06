@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobMessageProcessing
                 JobId = jobMessageStatus.JobId,
                 CompletedTime = jobMessageStatus.EndTime, 
                 Succeeded = jobMessageStatus.Succeeded
-            },cancellationToken);
+            },cancellationToken).ConfigureAwait(false);
 
             logger.LogVerbose($"Stored completed message. Now storing {jobMessageStatus.GeneratedMessages.Count} in progress messages generated while processing message: {jobMessageStatus.Id} for job: {jobMessageStatus.JobId}");
             
@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobMessageProcessing
                 jobMessageStatus.GeneratedMessages.Select(message => new InProgressMessage
                 {
                     MessageId = message.MessageId, JobId = jobMessageStatus.JobId, MessageName = message.MessageName
-                }).ToList(), cancellationToken);
+                }).ToList(), cancellationToken).ConfigureAwait(false);
 
             logger.LogDebug($"Recorded completion of message processing.  Job Id: {jobMessageStatus.JobId}, Message id: {jobMessageStatus.Id}.");
         }

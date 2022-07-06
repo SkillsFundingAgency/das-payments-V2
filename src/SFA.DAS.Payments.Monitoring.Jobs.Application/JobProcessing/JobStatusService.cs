@@ -61,14 +61,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             
             if (job != null)
             {
-                if (await CheckSavedJobStatus(job, cancellationToken))
+                if (await CheckSavedJobStatus(job, cancellationToken).ConfigureAwait(false))
                     return true;
 
-                if (await IsJobTimedOut(job, cancellationToken))
+                if (await IsJobTimedOut(job, cancellationToken).ConfigureAwait(false))
                     return true;
             }
 
-            var additionalJobChecksResult = await PerformAdditionalJobChecks(job, cancellationToken);
+            var additionalJobChecksResult = await PerformAdditionalJobChecks(job, cancellationToken).ConfigureAwait(false);
             if (!additionalJobChecksResult.IsComplete)
             {
                 return false;
@@ -123,7 +123,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
         private async Task<bool> CompleteJob(long jobId, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken)
         {
-            var job = await JobStorageService.GetJob(jobId, cancellationToken);
+            var job = await JobStorageService.GetJob(jobId, cancellationToken).ConfigureAwait(false);
             if (job == null)
             {
                 Logger.LogWarning($"Attempting to record completion status for job {jobId} but the job has not been persisted to database.");

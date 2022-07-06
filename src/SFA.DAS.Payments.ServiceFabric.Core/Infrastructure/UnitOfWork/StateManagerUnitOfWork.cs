@@ -42,7 +42,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
             {
                 if (ex != null)
                 {
-                    logger.LogWarning($"Aborting StateManager transaction. Transaction Id: {transactionProvider.Current.TransactionId}, Exception: {ex.Message}");
+                    logger.LogWarning($"Aborting StateManager transaction. Transaction Id: {transactionProvider.Current.TransactionId}, Exception: {ex}");
                     transactionProvider.Current.Abort();
                     return;
                 }

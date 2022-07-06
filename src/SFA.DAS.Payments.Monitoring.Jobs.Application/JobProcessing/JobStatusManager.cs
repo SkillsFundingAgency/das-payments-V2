@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 using (var scope = scopeFactory.Create("LoadExistingJobs"))
                 {
                     var jobStorage = scope.Resolve<IJobStorageService>();
-                    var jobs = await GetCurrentJobs(jobStorage);
+                    var jobs = await GetCurrentJobs(jobStorage).ConfigureAwait(false);
                     foreach (var job in jobs)
                     {
                         StartMonitoringJob(job, JobType.EarningsJob);
@@ -88,7 +88,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                     {
                         var jobStatusService = GetJobStatusService(scope);
                         var finished = await jobStatusService.ManageStatus(jobId, cancellationToken).ConfigureAwait(false);
-                        await scope.Commit();
+                        await scope.Commit().ConfigureAwait(false);
                         currentJobs[jobId] = finished;
                         logger.LogInfo($"Job: {jobId},  finished: {finished}");
                     }
