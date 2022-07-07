@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Azure.Amqp.Framing;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
@@ -48,7 +49,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             if (job.DcJobSucceeded.HasValue)
                 status = job.DcJobSucceeded.Value ? JobStatus.CompletedWithErrors : JobStatus.DcTasksFailed;
 
-            Logger.LogWarning($"Job {job.DcJobId} has timed out. {(status != JobStatus.TimedOut ? $"but because DcJobSucceeded is {job.DcJobSucceeded}, ": "")}Setting JobStatus as {status}");
+            Logger.LogWarning($"Job {job.DcJobId} has timed out. {(status != JobStatus.TimedOut ? $"but because DcJobSucceeded is {job.DcJobSucceeded}, " : "")}Setting JobStatus as {status}");
 
             return await CompleteJob(job, status, timedOutTime, cancellationToken).ConfigureAwait(false);
         }
@@ -58,7 +59,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             Logger.LogInfo($"Now determining if job {jobId} has finished. ");
 
             var job = await JobStorageService.GetJob(jobId, cancellationToken).ConfigureAwait(false);
-            
+
             if (job != null)
             {
                 if (await CheckSavedJobStatus(job, cancellationToken).ConfigureAwait(false))
@@ -93,7 +94,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
             if (!inProgressMessages.All(inProgress => completedItems.Any(item => item.MessageId == inProgress.MessageId)))
             {
-                Telemetry.TrackEvent($"ManageJobStatus JobId : {job.DcJobId}, JobType: {job.JobType} Inprogress count: {inProgressMessages.Count}, completed count: {completedItems.Count}. Cannot set status for job.");
+                Telemetry.TrackEvent(
+                    $"ManageJobStatus JobId : {job.DcJobId}, JobType: {job.JobType} Inprogress count: {inProgressMessages.Count}, completed count: {completedItems.Count}. Cannot set status for job.",
+                    new Dictionary<string, string> { { "In-Progress-messageIds", string.Join(", ", inProgressMessages.Select(j => j.MessageId.ToString())) } },
+                    new Dictionary<string, double> { { "Inprogress count", inProgressMessages.Count }, { "completed count", completedItems.Count } }
+                );
                 return false;
             }
 
