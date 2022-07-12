@@ -24,8 +24,8 @@
     <Parameter Name="DcStorageConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsMonitoringConnectionString" DefaultValue="" />
-    <Parameter Name="TopicName" DefaultValue="dc" />
-    <Parameter Name="TopicName2122" DefaultValue="dc2122" />
+    <Parameter Name="TopicName" DefaultValue="" />
+    <Parameter Name="TopicName2122" DefaultValue="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Debug" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
