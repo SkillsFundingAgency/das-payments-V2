@@ -20,6 +20,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Verification.Infrastructure
         public TimeSpan DcJobEventCheckDelay => TimeSpan.Parse(GetAppSetting("DcJobEventCheckDelay") ?? "00:00:05");
 
         public bool ClearPaymentsData => bool.Parse(GetAppSetting("ValidateDcAndDasServices") ?? "false");
+        public bool EnableRollOverTesting => bool.Parse(GetAppSetting("EnableRollOverTesting") ?? "false");
 
         public string SettingsFileName => GetAppSetting("JsonSettingsFileName");
 
