@@ -11,6 +11,7 @@ using SFA.DAS.Payments.Tests.Core;
 using SFA.DAS.Payments.Tests.Core.Builders;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
@@ -349,7 +350,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
 
         private int GetCurrentAcademicYear()
         {
+            string GetAppSetting(string keyName)
+            {
+                return ConfigurationManager.AppSettings[keyName] ?? throw new InvalidOperationException($"{keyName} not found in app settings.");
+            }
+
+            var enableRollOverTesting = bool.Parse(GetAppSetting("EnableRollOverTesting") ?? "false");
+
             var year = DateTime.Now.Month < 8 ? DateTime.Now.Year - 1 : DateTime.Now.Year;
+
+            if (enableRollOverTesting) year += 1;
+
             var academicYear = string.Concat(year - 2000, year - 1999);
             return Convert.ToInt32(academicYear);
         }
