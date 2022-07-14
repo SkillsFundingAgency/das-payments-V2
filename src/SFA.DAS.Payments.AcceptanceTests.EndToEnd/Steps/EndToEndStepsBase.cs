@@ -33,6 +33,7 @@ using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 using Payment = SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Payment;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Helpers;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
 
@@ -1324,10 +1325,11 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         {
             var monthEndJobId = TestSession.GenerateId();
             var submissionDate = DateTime.UtcNow;
-            Console.WriteLine($"Month end job id: {monthEndJobId}");
-
+            var telemetry = Scope.Resolve<ITelemetry>();
             foreach (var employer in TestSession.Employers)
             {
+                telemetry.TrackEvent($"Sending Levy MonthEnd for Ukprn: {TestSession.Ukprn} Job ID: {TestSession.JobId} Month end job id: {monthEndJobId} Month end employer Id: {employer.AccountId}");
+
                 var processLevyFundsAtMonthEndCommand = new ProcessLevyPaymentsOnMonthEndCommand
                 {
                     JobId = monthEndJobId,
