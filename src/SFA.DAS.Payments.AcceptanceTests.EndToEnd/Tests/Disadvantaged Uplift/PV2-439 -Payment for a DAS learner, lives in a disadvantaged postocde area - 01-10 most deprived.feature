@@ -66,7 +66,7 @@ Then the following learner earnings should be generated
 	| Jun/Current Academic Year | 0            | 0          | 0         | 0                         | pe-1                     |
 	| Jul/Current Academic Year | 0            | 0          | 0         | 0                         | pe-1                     |
 
-And at month end only the following payments will be calculated
+And only the following payments will be calculated
 	| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | SecondDisadvantagePayment |
 	| R01/Current Academic Year | Aug/Current Academic Year | 0            | 0          | 0         | 300                       |
 

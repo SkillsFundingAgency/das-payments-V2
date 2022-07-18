@@ -39,11 +39,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 Succeeded = true
             };
             var service = mocker.Create<JobMessageService>();
-            await service.RecordCompletedJobMessageStatus(new List<RecordJobMessageProcessingStatus> { jobStatusMessage }, default(CancellationToken));
+            await service.RecordCompletedJobMessageStatus(jobStatusMessage, default(CancellationToken));
             mocker.Mock<IJobStorageService>()
                 .Verify(
-                    x => x.StoreCompletedMessage(It.IsAny<long>(), It.Is<IEnumerable<CompletedMessage>>(msg =>
-                        msg.First().MessageId == jobStatusMessage.Id && msg.First().CompletedTime == jobStatusMessage.EndTime), It.IsAny<CancellationToken>()),
+                    x => x.StoreCompletedMessage(It.Is<CompletedMessage>(msg =>
+                        msg.MessageId == jobStatusMessage.Id && msg.CompletedTime == jobStatusMessage.EndTime), It.IsAny<CancellationToken>()),
                     Times.Once);
         }
 
@@ -74,7 +74,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
             };
 
             var service = mocker.Create<JobMessageService>();
-            await service.RecordCompletedJobMessageStatus(new List<RecordJobMessageProcessingStatus> { jobStatusMessage }, CancellationToken.None);
+            await service.RecordCompletedJobMessageStatus(jobStatusMessage, CancellationToken.None);
 
             mocker.Mock<IJobStorageService>()
                 .Verify(x => x.StoreInProgressMessages(It.Is<long>(jobId => jobId == jobStatusMessage.JobId), It.Is<List<InProgressMessage>>(identifiers =>

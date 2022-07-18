@@ -20,7 +20,7 @@
     <Parameter Name="AccountApiIdentifierUri" Value="" />
     <Parameter Name="AccountApiTenant" Value="" />
     <Parameter Name="BatchSize" Value="1000" />
-    <Parameter Name="LogLevel" Value="Information" />
+    <Parameter Name="LogLevel" Value="Debug" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
     <Parameter Name="ImmediateMessageRetries" Value="" />
     <Parameter Name="DelayedMessageRetries" Value="" />

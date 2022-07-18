@@ -11,7 +11,7 @@
   <Section Name="Settings">
     <Parameter Name="EndpointName" Value="sfa-das-payments-fundingsource-nonlevy"/>
     <Parameter Name="FailedMessagesQueue" Value=""/>
-    <Parameter Name="LogLevel" Value="" />
+    <Parameter Name="LogLevel" Value="Debug" />
     <Parameter Name="ProcessMessageSequentially" Value="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value=""/>
     <Parameter Name="DasNServiceBusLicenseKey" Value=""/>

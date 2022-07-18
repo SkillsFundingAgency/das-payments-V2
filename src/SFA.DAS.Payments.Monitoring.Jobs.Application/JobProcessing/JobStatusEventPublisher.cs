@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             submissionJobFinished.Ukprn = ukprn;
             submissionJobFinished.AcademicYear = academicYear;
             submissionJobFinished.IlrSubmissionDateTime = ilrSubmissionTime;
-            logger.LogDebug($"Publishing {submissionJobFinished.GetType().Name} event. Event: {submissionJobFinished.ToJson()}. Job: {jobId}");
+            logger.LogInfo($"Publishing {submissionJobFinished.GetType().Name} event. Event: {submissionJobFinished.ToJson()}. Job: {jobId}");
             var endpointInstance = await factory.GetEndpointInstance();
             await endpointInstance.Publish(submissionJobFinished).ConfigureAwait(false);
         }
@@ -47,7 +47,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             periodEndEvent.CollectionPeriod = jobModel.CollectionPeriod;
             periodEndEvent.AcademicYear = jobModel.AcademicYear;
 
-            logger.LogDebug($"Publishing {periodEndEvent.GetType().Name} event. Event: {periodEndEvent.ToJson()}. Job: {jobModel.DcJobId.Value}");
+            logger.LogInfo($"Publishing {periodEndEvent.GetType().Name} event. Event: {periodEndEvent.ToJson()}. Job: {jobModel.DcJobId.Value}");
             var endpointInstance = await factory.GetEndpointInstance();
             await endpointInstance.Publish(periodEndEvent).ConfigureAwait(false);
 

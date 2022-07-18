@@ -241,15 +241,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             }
             catch (Exception e)
             {
-                if (e.GetType().IsAssignableFrom(typeof(TimeoutException)))
-                {
-                    messages.Where(m => m.Item2 >= 50).ToList().ForEach( msg => 
-                    logger.LogError($"Error in ServiceBusBatchCommunicationListener, Message Type: {msg.Item2.GetType().Name}, Error: {e.Message}"));
-                }
-                else
-                {
-                    logger.LogError($"Error in ServiceBusBatchCommunicationListener, Message Type: {messages.First().Item2.GetType().Name}, message Count {messages.Count} Error: {e.Message}", e);
-                }
+                logger.LogError($"Error in ServiceBusBatchCommunicationListener, DeliveryCount: {messages.Last().Item2}, Message Type: {messages.First().Item3.GetType().Name}, message Count {messages.Count}, Error: {e.Message}", e);
 
                 await Task.WhenAll(messages.Select(message => receiver.AbandonAsync(message.Item1)));
             }
@@ -277,10 +269,11 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             return sanitisedMessageJson;
         }
 
-        public async Task CloseAsync(CancellationToken cancellationToken)
+        public Task CloseAsync(CancellationToken cancellationToken)
         {
             if (!startingCancellationToken.IsCancellationRequested)
                 startingCancellationToken = cancellationToken;
+            return Task.CompletedTask;
         }
 
         public void Abort()

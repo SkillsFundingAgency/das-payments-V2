@@ -31,9 +31,8 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
 
         public Task Begin()
         {
-            logger.LogVerbose("Creating StateManager transaction.");
             ((ReliableStateManagerTransactionProvider)transactionProvider).Current = stateManager.CreateTransaction();
-            logger.LogDebug($"Creating StateManager transaction.Transaction Id: {transactionProvider.Current.TransactionId}");
+            logger.LogVerbose($"Created StateManager transaction.Transaction Id: {transactionProvider.Current.TransactionId}");
             return Task.CompletedTask;
         }
 
@@ -43,13 +42,12 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork
             {
                 if (ex != null)
                 {
-                    logger.LogWarning($"Rolling back the StateManager transaction due to exception during message handling. Transaction Id: {transactionProvider.Current.TransactionId}, Exception: {ex.Message}");
+                    logger.LogWarning($"Aborting StateManager transaction. Transaction Id: {transactionProvider.Current.TransactionId}, Exception: {ex}");
                     transactionProvider.Current.Abort();
                     return;
                 }
-                logger.LogVerbose($"Completing state manager transaction. Transaction Id: {transactionProvider.Current.TransactionId}");
                 await transactionProvider.Current.CommitAsync().ConfigureAwait(false);
-                logger.LogDebug($"Completed StateManager transaction. TransactionId: {transactionProvider.Current.TransactionId}");
+                logger.LogVerbose($"Completed StateManager transaction. TransactionId: {transactionProvider.Current.TransactionId}");
             }
             finally
             {

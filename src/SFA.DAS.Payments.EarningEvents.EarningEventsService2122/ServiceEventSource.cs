@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Services.Runtime;
 
-namespace SFA.DAS.Payments.EarningEvents.EarningEventsService2021
+namespace SFA.DAS.Payments.EarningEvents.EarningEventsService2122
 {
-    [EventSource(Name = "MyCompany-SFA.DAS.Payments.EarningEvents.ServiceFabric-SFA.DAS.Payments.EarningEvents.EarningEventsService2021")]
+    [EventSource(Name = "MyCompany-SFA.DAS.Payments.EarningEvents.ServiceFabric-SFA.DAS.Payments.EarningEvents.EarningEventsService2122")]
 internal sealed class ServiceEventSource : EventSource
 {
     public static readonly ServiceEventSource Current = new ServiceEventSource();

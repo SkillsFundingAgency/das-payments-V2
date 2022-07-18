@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Autofac;
+using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
@@ -42,8 +43,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
                         { "StartTime", testRunStartTime.ToString("O") },
                         { "TestRunId", TestRunId}
                     },
-                    new Dictionary<string, double> { }
-                );
+                    new Dictionary<string, double>());
             }
         }
 
@@ -87,9 +87,10 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure
             var startTime = context.Get<DateTime>("feature_start_time");
             var numberOfScenariosInFeature = context.Get<int>("number_of_scenarios_in_feature");
             var duration = DateTime.Now - startTime;
-            var telemetry = context.Get<ILifetimeScope>("container_scope")
-                .Resolve<ITelemetry>();
-            telemetry.TrackEvent($"Finished Feature: {context.FeatureInfo.Title}",
+            var telemetry = context.Get<ILifetimeScope>("container_scope").Resolve<ITelemetry>();
+            var testSession = context.Get<TestSession>();
+
+            telemetry.TrackEvent($"Finished Feature: {context.FeatureInfo.Title} with Ukprn: {testSession.Ukprn} Job ID: {testSession.JobId}",
                 new Dictionary<string, string>
                 {
                     { "Type", "Feature" },

@@ -10,7 +10,7 @@
   <Section Name="Settings">
     <Parameter Name="EndpointName" Value="" />
     <Parameter Name="FailedMessagesQueue" Value="" />
-    <Parameter Name="LogLevel" Value="Information" />
+    <Parameter Name="LogLevel" Value="Debug" />
     <Parameter Name="ProcessMessageSequentially" Value="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="" />

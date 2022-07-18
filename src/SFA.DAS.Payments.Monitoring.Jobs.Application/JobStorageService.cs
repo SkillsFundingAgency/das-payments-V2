@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Data.Collections;
@@ -38,7 +39,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         private async Task<IReliableDictionary2<long, JobModel>> GetJobCollection()
         {
-            return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<long, JobModel>>(JobCacheKey);
+            return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<long, JobModel>>(JobCacheKey).ConfigureAwait(false);
         }
 
         public async Task<bool> StoreNewJob(JobModel job, CancellationToken cancellationToken)
@@ -48,7 +49,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var jobCache = await GetJobCollection();
+            var jobCache = await GetJobCollection().ConfigureAwait(false);
             var cachedJob = await jobCache.TryGetValueAsync(reliableTransactionProvider.Current, job.DcJobId.Value, TransactionTimeout, cancellationToken).ConfigureAwait(false);
 
             if (cachedJob.HasValue)
@@ -64,7 +65,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             if (job.Id == 0)
                 await dataContext.SaveNewJob(job, cancellationToken).ConfigureAwait(false);
 
-            logger.LogDebug($"Saved new Job to cache and DB, Job StartTime {job.StartTime}. Job: {job.DcJobId}");
+            logger.LogInfo($"Saved new Job to cache and DB, Job StartTime {job.StartTime}. Job: {job.DcJobId}");
 
             return true;
         }
@@ -89,28 +90,28 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         public async Task<List<long>> GetCurrentEarningJobs(CancellationToken cancellationToken)
         {
-            return await GetCurrentJobs(model => model.JobType == JobType.EarningsJob || model.JobType == JobType.ComponentAcceptanceTestEarningsJob, cancellationToken);
+            return await GetCurrentJobs(model => model.JobType == JobType.EarningsJob || model.JobType == JobType.ComponentAcceptanceTestEarningsJob, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<List<long>> GetCurrentPeriodEndExcludingStartJobs(CancellationToken cancellationToken)
         {
             return await GetCurrentJobs(model => model.JobType == JobType.PeriodEndRunJob ||
                                                  model.JobType == JobType.PeriodEndStopJob ||
-                                                 model.JobType == JobType.ComponentAcceptanceTestMonthEndJob, cancellationToken);
+                                                 model.JobType == JobType.ComponentAcceptanceTestMonthEndJob, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<List<long>> GetCurrentPeriodEndStartJobs(CancellationToken cancellationToken)
         {
-            return await GetCurrentJobs(model => model.JobType == JobType.PeriodEndStartJob, cancellationToken);
+            return await GetCurrentJobs(model => model.JobType == JobType.PeriodEndStartJob, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task<List<long>> GetCurrentJobs(Func<JobModel, bool> filter, CancellationToken cancellationToken)
         {
             var collection = await GetJobCollection().ConfigureAwait(false);
             var jobs = new List<long>();
-            var enumerator = (await collection.CreateEnumerableAsync(reliableTransactionProvider.Current))
+            var enumerator = (await collection.CreateEnumerableAsync(reliableTransactionProvider.Current).ConfigureAwait(false))
                 .GetAsyncEnumerator();
-            while (await enumerator.MoveNextAsync(cancellationToken))
+            while (await enumerator.MoveNextAsync(cancellationToken).ConfigureAwait(false))
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 var job = enumerator.Current.Value;
@@ -134,7 +135,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
             await dataContext.SaveDcSubmissionStatus(jobId, succeeded, cancellationToken).ConfigureAwait(false);
 
-            var jobCache = await GetJobCollection();
+            var jobCache = await GetJobCollection().ConfigureAwait(false);
             await jobCache.AddOrUpdateAsync(reliableTransactionProvider.Current, job.DcJobId.Value,
                     id => job, (id, existingJob) => job, TransactionTimeout, cancellationToken)
                 .ConfigureAwait(false);
@@ -151,19 +152,25 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
 
         private async Task<IReliableDictionary2<Guid, InProgressMessage>> GetInProgressMessagesCollection(long jobId)
         {
-            return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<Guid, InProgressMessage>>($"{InProgressMessagesCacheKey}_{jobId}");
+            return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<Guid, InProgressMessage>>($"{InProgressMessagesCacheKey}_{jobId}", TransactionTimeout).ConfigureAwait(false);
         }
 
         public async Task<List<InProgressMessage>> GetInProgressMessages(long jobId, CancellationToken cancellationToken)
         {
+            logger.LogDebug($"Getting InProgressMessages. Job: {jobId}");
+
+            var stopwatch = Stopwatch.StartNew();
             var inProgressCollection = await GetInProgressMessagesCollection(jobId).ConfigureAwait(false);
-            var enumerator = (await inProgressCollection.CreateEnumerableAsync(reliableTransactionProvider.Current)).GetAsyncEnumerator();
+            var enumerator = (await inProgressCollection.CreateEnumerableAsync(reliableTransactionProvider.Current).ConfigureAwait(false)).GetAsyncEnumerator();
             var identifiers = new List<InProgressMessage>();
 
-            while (await enumerator.MoveNextAsync(cancellationToken))
+            while (await enumerator.MoveNextAsync(cancellationToken).ConfigureAwait(false))
             {
                 identifiers.Add(enumerator.Current.Value);
             }
+
+            logger.LogInfo($"Finished Getting {identifiers.Count} InProgressMessages, Elapsed Time {TimeSpan.FromTicks(stopwatch.ElapsedTicks).TotalSeconds} Seconds.");
+
             return identifiers;
         }
 
@@ -171,6 +178,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
         {
             logger.LogDebug($"Removing {messageIdentifiers.Count} InProgressMessages. Job: {jobId}");
 
+            var stopwatch = Stopwatch.StartNew();
             var inProgressCollection = await GetInProgressMessagesCollection(jobId).ConfigureAwait(false);
             foreach (var messageIdentifier in messageIdentifiers)
             {
@@ -178,14 +186,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                         TransactionTimeout, cancellationToken)
                     .ConfigureAwait(false);
             }
+
+            logger.LogInfo($"Finished Removing {messageIdentifiers.Count} InProgressMessages, Elapsed Time {TimeSpan.FromTicks(stopwatch.ElapsedTicks).TotalSeconds} Seconds.");
         }
 
         public async Task StoreInProgressMessages(long jobId, List<InProgressMessage> inProgressMessages, CancellationToken cancellationToken)
         {
             logger.LogDebug($"Storing {inProgressMessages.Count} InProgressMessages. Job: {jobId}");
 
-            cancellationToken.ThrowIfCancellationRequested();
-            var inProgressMessagesCollection = await GetInProgressMessagesCollection(jobId);
+            var stopwatch = Stopwatch.StartNew();
+            var inProgressMessagesCollection = await GetInProgressMessagesCollection(jobId).ConfigureAwait(false);
             foreach (var inProgressMessage in inProgressMessages)
             {
                 await inProgressMessagesCollection.AddOrUpdateAsync(reliableTransactionProvider.Current, inProgressMessage.MessageId,
@@ -193,55 +203,62 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
                         cancellationToken)
                     .ConfigureAwait(false);
             }
+
+            logger.LogInfo($"Finished Storing {inProgressMessages.Count} InProgressMessages, Elapsed Time {TimeSpan.FromTicks(stopwatch.ElapsedTicks).TotalSeconds} Seconds.");
         }
 
         private async Task<IReliableDictionary2<Guid, CompletedMessage>> GetCompletedMessagesCollection(long jobId)
         {
-            return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<Guid, CompletedMessage>>($"{CompletedMessagesCacheKey}_{jobId}").ConfigureAwait(false);
+            return await stateManagerProvider.Current.GetOrAddAsync<IReliableDictionary2<Guid, CompletedMessage>>($"{CompletedMessagesCacheKey}_{jobId}", TransactionTimeout).ConfigureAwait(false);
         }
 
         public async Task<List<CompletedMessage>> GetCompletedMessages(long jobId, CancellationToken cancellationToken)
         {
-            logger.LogDebug($"Store CompletedMessages. Job: {jobId}");
+            logger.LogDebug($"Getting CompletedMessages. Job: {jobId}");
 
+            var stopwatch = Stopwatch.StartNew();
             var completedMessageCollection = await GetCompletedMessagesCollection(jobId).ConfigureAwait(false);
-            var enumerator = (await completedMessageCollection.CreateEnumerableAsync(reliableTransactionProvider.Current)).GetAsyncEnumerator();
+            var enumerator = (await completedMessageCollection.CreateEnumerableAsync(reliableTransactionProvider.Current).ConfigureAwait(false)).GetAsyncEnumerator();
             var identifiers = new List<CompletedMessage>();
 
-            while (await enumerator.MoveNextAsync(cancellationToken))
+            while (await enumerator.MoveNextAsync(cancellationToken).ConfigureAwait(false))
             {
                 identifiers.Add(enumerator.Current.Value);
             }
+
+            logger.LogInfo($"Finished Getting {identifiers.Count} CompletedMessages, Elapsed Time {TimeSpan.FromTicks(stopwatch.ElapsedTicks).TotalSeconds} Seconds.");
+
             return identifiers;
         }
 
         public async Task RemoveCompletedMessages(long jobId, List<Guid> completedMessages, CancellationToken cancellationToken)
         {
+            logger.LogDebug($"Removing {completedMessages.Count} CompletedMessages. Job: {jobId}");
+
+            var stopwatch = Stopwatch.StartNew();
             var completedMessagesCollection = await GetCompletedMessagesCollection(jobId).ConfigureAwait(false);
             foreach (var completedMessage in completedMessages)
             {
-                logger.LogDebug($"Removing {completedMessages.Count} CompletedMessages. MessageId {completedMessage} Job: {jobId} TransactionId: {reliableTransactionProvider.Current}");
                 await completedMessagesCollection.TryRemoveAsync(reliableTransactionProvider.Current, completedMessage, TransactionTimeout, cancellationToken).ConfigureAwait(false);
             }
+
+            logger.LogInfo($"Finished Removing {completedMessages.Count} CompletedMessages, Elapsed Time {TimeSpan.FromTicks(stopwatch.ElapsedTicks).TotalSeconds} Seconds.");
         }
 
-        public async Task StoreCompletedMessage(long jobId, IEnumerable<CompletedMessage> completedMessages, CancellationToken cancellationToken)
+        public async Task StoreCompletedMessage(CompletedMessage completedMessage, CancellationToken cancellationToken)
         {
-            var completedMessagesCollection = await GetCompletedMessagesCollection(jobId).ConfigureAwait(false);
+            logger.LogDebug($"Storing CompletedMessage {completedMessage.MessageId}. Job: {completedMessage.JobId}");
 
-            foreach (var completedMessage in completedMessages)
-            {
-                logger.LogDebug($"Store CompletedMessages. MessageId {completedMessage.MessageId} Job: {completedMessage.JobId} TransactionId: {reliableTransactionProvider.Current}");
+            var stopwatch = Stopwatch.StartNew();
+            var completedMessagesCollection = await GetCompletedMessagesCollection(completedMessage.JobId).ConfigureAwait(false);
 
-                cancellationToken.ThrowIfCancellationRequested();
+            await completedMessagesCollection.AddOrUpdateAsync(reliableTransactionProvider.Current,
+                    completedMessage.MessageId,
+                    completedMessage, (key, value) => completedMessage, TransactionTimeout, cancellationToken)
+                .ConfigureAwait(false);
 
-                await completedMessagesCollection.AddOrUpdateAsync(reliableTransactionProvider.Current,
-                        completedMessage.MessageId,
-                        completedMessage, (key, value) => completedMessage, TransactionTimeout, cancellationToken)
-                    .ConfigureAwait(false);
-            }
+            logger.LogInfo($"Finished Storing CompletedMessages {completedMessage.MessageId}, Elapsed Time {TimeSpan.FromTicks(stopwatch.ElapsedTicks).TotalSeconds} Seconds.");
         }
-
 
         private async Task<IReliableDictionary2<long, (bool hasFailedMessages, DateTimeOffset? endTime)>> GetJobStatusCollection()
         {

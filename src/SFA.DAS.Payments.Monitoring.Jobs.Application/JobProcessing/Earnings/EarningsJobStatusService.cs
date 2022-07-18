@@ -67,7 +67,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
                 ? JobStatus.DcTasksFailed
                 : status;
 
-            Logger.LogDebug($"Completing Earnings Job {job.DcJobId}. JobStatus: {status}");
+            Logger.LogInfo($"Completing Earnings Job {job.DcJobId}. JobStatus: {status}");
 
             if (!await base.CompleteJob(job, status, endTime, cancellationToken))
                 return false;

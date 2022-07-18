@@ -11,7 +11,10 @@ namespace SFA.DAS.Payments.Model.Core.Factories
 
         public static CollectionPeriod CreateFromAcademicYearAndPeriod(short academicYear, byte period)
         {
-            if (academicYear < 1600 || academicYear > 2200)
+            var previousAcademicYear = 2000 + (academicYear / 100);
+            var currentAcademicYear = 2000 + (academicYear % 100);
+            
+            if (previousAcademicYear < 2016 || currentAcademicYear > 2099 || currentAcademicYear - previousAcademicYear != 1)
             {
                 throw new ArgumentException(nameof(academicYear), $"Invalid academic year: '{academicYear}'.  Please ensure that the academic year is in the correct format e.g. '1819'");
             }
