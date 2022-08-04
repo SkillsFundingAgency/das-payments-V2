@@ -20,8 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ApplicationPackageRoot\ApplicationManifest.xml" />
-    <Content Include="ApplicationParameters\Local.1Node.xml" />
-    <Content Include="ApplicationParameters\Local.5Node.xml" />
     <None Include="ApplicationParameters\Cloud.xml" />
     <None Include="PublishProfiles\Cloud.xml" />
     <None Include="PublishProfiles\Local.1Node.xml" />

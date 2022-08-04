@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.UnitOfWork;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
-using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
