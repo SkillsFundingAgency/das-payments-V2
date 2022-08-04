@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.Model.Core.Factories;
 
@@ -22,6 +23,17 @@ namespace SFA.DAS.Payments.Model.Core.UnitTests.Tests.GivenACollectionPeriod
             var actual = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(academicYear, period);
 
             actual.AcademicYear.Should().Be(expected);
+        }
+
+        [TestCase(1516, 1)] //before beginning of time
+        [TestCase(2022, 1)] //two years gap
+        [TestCase(2221, 1)] //invalid year order negative 1 year gap
+        [TestCase(1924, 1)] //invalid year positive 4 years gap
+        public void AcademicYearIsInvalid(short academicYear, byte period)
+        {
+            Func<CollectionPeriod> actual = () => CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(academicYear, period);
+
+            actual.Should().Throw<ArgumentException>();
         }
 
         [TestCase(1819, 1, 1)]
