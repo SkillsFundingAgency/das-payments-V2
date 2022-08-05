@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
 using NUnit.Framework;
@@ -10,8 +6,11 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.AcceptanceTests.Data;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Tests.Core.Builders;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -83,7 +82,6 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
                     Act2EarningEvent = act2EarningEvent;
                     Console.WriteLine($"Found learner earning event: {Act2EarningEvent.ToJson()}");
                     return true;
-
                 }, $"Failed to find the ACT2 earning event for learner {TestSession.Learner.LearnRefNumber}");
         }
 
@@ -113,11 +111,11 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
         private List<FM36Learner> CreateLearners()
         {
             var learners = TestSession.Learners.Select(testLearner => new FM36Learner
-                {
-                    LearnRefNumber = TestSession.Learner.LearnRefNumber,
-                    PriceEpisodes = new List<PriceEpisode>(),
-                    LearningDeliveries = new List<LearningDelivery>()
-                })
+            {
+                LearnRefNumber = TestSession.Learner.LearnRefNumber,
+                PriceEpisodes = new List<PriceEpisode>(),
+                LearningDeliveries = new List<LearningDelivery>()
+            })
                 .ToList();
 
             learners.ForEach(learner =>

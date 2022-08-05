@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.UnitOfWork;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
-using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
@@ -64,7 +63,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 using (var scope = scopeFactory.Create("LoadExistingJobs"))
                 {
                     var jobStorage = scope.Resolve<IJobStorageService>();
-                    var jobs = await GetCurrentJobs(jobStorage);
+                    var jobs = await GetCurrentJobs(jobStorage).ConfigureAwait(false);
                     foreach (var job in jobs)
                     {
                         StartMonitoringJob(job, JobType.EarningsJob);
@@ -89,9 +88,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                     {
                         var jobStatusService = GetJobStatusService(scope);
                         var finished = await jobStatusService.ManageStatus(jobId, cancellationToken).ConfigureAwait(false);
-                        logger.LogVerbose($"Job: {jobId},  finished: {finished}");
-                        await scope.Commit();
+                        await scope.Commit().ConfigureAwait(false);
                         currentJobs[jobId] = finished;
+                        logger.LogInfo($"Job: {jobId},  finished: {finished}");
                     }
                     catch (Exception ex)
                     {

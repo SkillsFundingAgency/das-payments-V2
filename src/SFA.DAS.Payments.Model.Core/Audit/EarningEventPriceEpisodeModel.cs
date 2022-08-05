@@ -24,6 +24,8 @@ namespace SFA.DAS.Payments.Model.Core.Audit
         public int? CompletionHoldBackExemptionCode { get; set; }
         public decimal AgreedPrice { get; set; }
         public DateTime CourseStartDate { get; set; }
+        public short AcademicYear { get; set; }
+        public byte CollectionPeriod { get; set; }
 
     }
 }

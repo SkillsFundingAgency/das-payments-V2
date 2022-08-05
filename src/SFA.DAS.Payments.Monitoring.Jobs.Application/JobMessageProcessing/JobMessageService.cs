@@ -29,21 +29,23 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobMessageProcessing
 
         public async Task RecordCompletedJobMessageStatus(RecordJobMessageProcessingStatus jobMessageStatus, CancellationToken cancellationToken)
         {
-
-            var completedMessage = new CompletedMessage
+            logger.LogVerbose($"Now storing the completed message. Message id: {jobMessageStatus.Id}, Job: {jobMessageStatus.JobId}, End time: {jobMessageStatus.EndTime}, Succeeded: {jobMessageStatus.Succeeded}");
+            
+            await jobStorageService.StoreCompletedMessage(new CompletedMessage
             {
-                MessageId = jobMessageStatus.Id, JobId = jobMessageStatus.JobId,
-                CompletedTime = jobMessageStatus.EndTime, Succeeded = jobMessageStatus.Succeeded
-            };
-            logger.LogVerbose($"Now storing the completed message. Message id: {completedMessage.MessageId}, Job: {completedMessage.JobId}, End time: {completedMessage.CompletedTime}, Succeeded: {completedMessage.Succeeded}");
-            await jobStorageService.StoreCompletedMessage(completedMessage,cancellationToken);
+                MessageId = jobMessageStatus.Id, 
+                JobId = jobMessageStatus.JobId,
+                CompletedTime = jobMessageStatus.EndTime, 
+                Succeeded = jobMessageStatus.Succeeded
+            },cancellationToken).ConfigureAwait(false);
 
-            logger.LogVerbose($"Stored completed message. Now storing {jobMessageStatus.GeneratedMessages.Count} in progress messages generated while processing message: {completedMessage.MessageId} for job: {completedMessage.JobId}");
+            logger.LogVerbose($"Stored completed message. Now storing {jobMessageStatus.GeneratedMessages.Count} in progress messages generated while processing message: {jobMessageStatus.Id} for job: {jobMessageStatus.JobId}");
+            
             await jobStorageService.StoreInProgressMessages(jobMessageStatus.JobId,
                 jobMessageStatus.GeneratedMessages.Select(message => new InProgressMessage
                 {
                     MessageId = message.MessageId, JobId = jobMessageStatus.JobId, MessageName = message.MessageName
-                }).ToList(), cancellationToken);
+                }).ToList(), cancellationToken).ConfigureAwait(false);
 
             logger.LogDebug($"Recorded completion of message processing.  Job Id: {jobMessageStatus.JobId}, Message id: {jobMessageStatus.Id}.");
         }

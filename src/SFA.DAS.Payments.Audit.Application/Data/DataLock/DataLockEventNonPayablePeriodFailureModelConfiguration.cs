@@ -14,6 +14,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data.DataLock
             builder.Property(x => x.DataLockFailure).HasColumnName(@"DataLockFailureId").HasColumnType("TinyInt").IsRequired();
             builder.Property(x => x.DataLockEventNonPayablePeriodId).HasColumnName(@"DataLockEventNonPayablePeriodId").IsRequired();
             builder.Property(x => x.ApprenticeshipId).HasColumnName(@"ApprenticeshipId");
+            builder.Property(x => x.AcademicYear).HasColumnName(@"AcademicYear");
+            builder.Property(x => x.CollectionPeriod).HasColumnName(@"CollectionPeriod");
 
             builder.HasOne(nppf => nppf.DataLockEventNonPayablePeriod)
                 .WithMany(npp => npp.Failures)

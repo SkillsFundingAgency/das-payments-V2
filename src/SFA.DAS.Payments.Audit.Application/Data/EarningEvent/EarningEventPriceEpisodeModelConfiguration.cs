@@ -30,6 +30,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
             builder.Property(x => x.CompletionHoldBackExemptionCode).HasColumnName(@"CompletionHoldBackExemptionCode");
             builder.Property(x => x.AgreedPrice).HasColumnName(@"AgreedPrice");
             builder.Property(x => x.CourseStartDate).HasColumnName(@"CourseStartDate");
+            builder.Property(x => x.AcademicYear).HasColumnName(@"AcademicYear");
+            builder.Property(x => x.CollectionPeriod).HasColumnName(@"CollectionPeriod");
         }
     }
 }

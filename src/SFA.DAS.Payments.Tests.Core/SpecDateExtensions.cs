@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Globalization;
 
 namespace SFA.DAS.Payments.Tests.Core
@@ -22,13 +23,20 @@ namespace SFA.DAS.Payments.Tests.Core
             }
             return ParseTwoPartDescription(dateText);
         }
-        
+
         public static DateTime? ToNullableDate(this string dateText)
         {
-           return string.IsNullOrWhiteSpace(dateText) ? default(DateTime?) : dateText.ToDate();
+            return string.IsNullOrWhiteSpace(dateText) ? default(DateTime?) : dateText.ToDate();
         }
         private static DateTime ParseTwoPartDescription(string dateText)
         {
+            string GetAppSetting(string keyName)
+            {
+                return ConfigurationManager.AppSettings[keyName] ?? throw new InvalidOperationException($"{keyName} not found in app settings.");
+            }
+
+            var enableRollOverTesting = bool.Parse(GetAppSetting("EnableRollOverTesting") ?? "false");
+
             switch (dateText.ToLower())
             {
                 case "today":
@@ -48,8 +56,7 @@ namespace SFA.DAS.Payments.Tests.Core
                 default:
                     var parts = dateText.Split('/');
                     if (parts.Length != 2)
-                        throw new Exception(
-                            $"Invalid period format found.  Expected month or period followed by year text e.g. R01/current Academic Year or Aug/Last Academic Year but found: {dateText}");
+                        throw new Exception($"Invalid period format found.  Expected month or period followed by year text e.g. R01/current Academic Year or Aug/Last Academic Year but found: {dateText}");
                     int period;
                     var returnPeriodPart = parts[0];
                     if (returnPeriodPart.StartsWith("R", StringComparison.OrdinalIgnoreCase))
@@ -62,9 +69,16 @@ namespace SFA.DAS.Payments.Tests.Core
                         period = parts[0].ToMonthPeriod();
                     }
 
-                    var date = new DateTime(DateTime.Today.Month >= 8 ? DateTime.Today.Year : DateTime.Today.Year - 1, 8, 1);
+                    var year = (DateTime.Today.Month >= 8 ? DateTime.Today.Year : DateTime.Today.Year - 1);
+
+                    if (enableRollOverTesting) year += 1;
+
+                    var date = new DateTime(year, 8, 1);
+
                     date = date.AddMonths(period - 1);
+
                     var yearText = parts[1].ToLower();
+
                     if (yearText.Equals("last academic year"))
                         date = date.AddYears(-1);
                     else if (yearText.Equals("next academic year"))

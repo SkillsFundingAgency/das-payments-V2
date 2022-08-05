@@ -1,12 +1,8 @@
-using System;
-using System.Diagnostics;
-using System.Fabric;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.ServiceFabric.Services.Runtime;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc;
+using System;
+using System.Threading;
 
-namespace SFA.DAS.Payments.EarningEvents.EarningEventsService2021
+namespace SFA.DAS.Payments.EarningEvents.EarningEventsService2122
 {
     internal static class Program
     {
@@ -14,7 +10,7 @@ namespace SFA.DAS.Payments.EarningEvents.EarningEventsService2021
         {
             try
             {
-                using (ServiceFabricContainerFactory.CreateContainerForStatelessService<EarningEventsService2021>())
+                using (ServiceFabricContainerFactory.CreateContainerForStatelessService<EarningEventsService2122>())
                 {
                     Thread.Sleep(Timeout.Infinite);
                 }

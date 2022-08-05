@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.EarningEvents.AcceptanceTests.Data;
 using SFA.DAS.Payments.Tests.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
@@ -14,12 +14,12 @@ namespace SFA.DAS.Payments.EarningEvents.AcceptanceTests.Steps
     public abstract class EarningEventsStepsBase : StepsBase
     {
         public List<PriceEpisode> PriceEpisodes { get => Get<List<PriceEpisode>>(); set => Set(value); }
+
         protected EarningEventsStepsBase(ScenarioContext scenarioContext) : base(scenarioContext)
         {
         }
 
         protected List<LearnerEarnings> IlrLearnerEarnings { get => Get<List<LearnerEarnings>>(); set => Set(value); }
-
 
         protected void AddLearnerEarnings(FM36Learner learner, LearnerEarnings learnerEarnings)
         {

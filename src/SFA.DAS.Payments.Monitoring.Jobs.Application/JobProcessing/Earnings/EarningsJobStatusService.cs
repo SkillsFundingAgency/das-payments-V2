@@ -39,7 +39,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
             {
                 Logger.LogWarning($"Job {job.DcJobId} has already finished. Status: {job.Status}");
 
-                await EventPublisher.SubmissionFinished(job.DcJobSucceeded.Value, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
+                var success = (job.Status == JobStatus.Completed || job.Status == JobStatus.CompletedWithErrors) && job.DcJobSucceeded.Value;
+
+                await EventPublisher.SubmissionFinished(success, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
                 
                 return true;
             }
@@ -65,7 +67,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
                 ? JobStatus.DcTasksFailed
                 : status;
 
-            Logger.LogDebug($"Completing Earnings Job {job.DcJobId}. JobStatus: {status}");
+            Logger.LogInfo($"Completing Earnings Job {job.DcJobId}. JobStatus: {status}");
 
             if (!await base.CompleteJob(job, status, endTime, cancellationToken))
                 return false;

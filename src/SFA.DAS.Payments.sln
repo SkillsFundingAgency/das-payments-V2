@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29409.12
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Core", "SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj", "{F6E38368-C397-488B-B041-D3E8423C1CE1}"
 EndProject
@@ -363,7 +363,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.ScheduledJ
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.ScheduledJobs.UnitTests", "SFA.DAS.Payments.ScheduledJobs.UnitTests\SFA.DAS.Payments.ScheduledJobs.UnitTests.csproj", "{60C4FE2F-2879-4D5E-ACB8-3DC0E0CE438F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.EarningEvents.EarningEventsService2021", "SFA.DAS.Payments.EarningEvents.EarningEventsService2021\SFA.DAS.Payments.EarningEvents.EarningEventsService2021.csproj", "{61E3BC96-0B10-4BD7-83AA-D5D4EE96F070}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.EarningEvents.EarningEventsService2122", "SFA.DAS.Payments.EarningEvents.EarningEventsService2122\SFA.DAS.Payments.EarningEvents.EarningEventsService2122.csproj", "{61E3BC96-0B10-4BD7-83AA-D5D4EE96F070}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.Metrics.Data.UnitTests", "SFA.DAS.Payments.Monitoring.Metrics.Data.UnitTests\SFA.DAS.Payments.Monitoring.Metrics.Data.UnitTests.csproj", "{0F8FB2FA-637C-4CD1-AEB9-23481F273772}"
 EndProject
@@ -376,6 +376,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.PeriodEnd.Function", "SFA.DAS.Payments.PeriodEnd.Function\SFA.DAS.Payments.PeriodEnd.Function.csproj", "{28C9290E-1D39-4C60-9518-38456307B3A0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerService", "SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerService\SFA.DAS.Payments.RequiredPayments.ClawbackRemovedLearnerService.csproj", "{56BE8D57-BF1B-47EC-8958-76588BF4A4B9}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SFA.DAS.Payments.Audit.Database", "SFA.DAS.Payments.Audit.Database\SFA.DAS.Payments.Audit.Database.sqlproj", "{EC15FDBA-CCA7-4245-93B1-04506A09BABA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1527,6 +1529,18 @@ Global
 		{56BE8D57-BF1B-47EC-8958-76588BF4A4B9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{56BE8D57-BF1B-47EC-8958-76588BF4A4B9}.Release|x64.ActiveCfg = Release|Any CPU
 		{56BE8D57-BF1B-47EC-8958-76588BF4A4B9}.Release|x64.Build.0 = Release|Any CPU
+		{EC15FDBA-CCA7-4245-93B1-04506A09BABA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC15FDBA-CCA7-4245-93B1-04506A09BABA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC15FDBA-CCA7-4245-93B1-04506A09BABA}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{EC15FDBA-CCA7-4245-93B1-04506A09BABA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EC15FDBA-CCA7-4245-93B1-04506A09BABA}.Debug|x64.Build.0 = Debug|Any CPU
+		{EC15FDBA-CCA7-4245-93B1-04506A09BABA}.Debug|x64.Deploy.0 = Debug|Any CPU
+		{EC15FDBA-CCA7-4245-93B1-04506A09BABA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC15FDBA-CCA7-4245-93B1-04506A09BABA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC15FDBA-CCA7-4245-93B1-04506A09BABA}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{EC15FDBA-CCA7-4245-93B1-04506A09BABA}.Release|x64.ActiveCfg = Release|Any CPU
+		{EC15FDBA-CCA7-4245-93B1-04506A09BABA}.Release|x64.Build.0 = Release|Any CPU
+		{EC15FDBA-CCA7-4245-93B1-04506A09BABA}.Release|x64.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

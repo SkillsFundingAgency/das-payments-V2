@@ -20,36 +20,71 @@
 	JobId  BIGINT NOT NULL,
 	EventTime DATETIMEOFFSET NOT NULL,
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_EarningEvent__CreationDate DEFAULT (SYSDATETIMEOFFSET()), 
-    [LearningAimSequenceNumber] BIGINT NULL,
-	[SfaContributionPercentage] [decimal](15, 5) NULL,
+    	LearningAimSequenceNumber BIGINT NULL,
+	SfaContributionPercentage DECIMAL(15, 5) NULL,
 	IlrFileName  NVARCHAR(400) NULL,
 	EventType NVARCHAR(4000) NULL,
-    Constraint UQ_EarningEvent Unique ([JobId], [Ukprn], [AcademicYear], [CollectionPeriod], [ContractType], [LearnerUln], [LearnerReferenceNumber], 
-        [LearningAimReference], [LearningAimProgrammeType], [LearningAimStandardCode], [LearningAimFrameworkCode], [LearningAimPathwayCode], [LearningAimFundingLineType],
-        [LearningAimSequenceNumber], [LearningStartDate], [EventType])
 )
 GO
 
-CREATE INDEX IX_EarningEvent_ApprenticeshipEarningQuery ON [Payments2].[EarningEvent]
+CREATE UNIQUE INDEX UQ_EarningEvent ON [Payments2].[EarningEvent] 
 (
-   Ukprn,
-   LearnerUln,
-   EventType,
-   JobId,
-   ContractType,
-   CollectionPeriod,
-   AcademicYear,
-   IlrSubmissionDateTime,
-   CreationDate
+	[JobId], 
+	[Ukprn], 
+	[AcademicYear], 
+	[CollectionPeriod], 
+	[ContractType], 
+	[LearnerUln], 
+	[LearnerReferenceNumber], 
+	[LearningAimReference], 
+	[LearningAimProgrammeType], 
+	[LearningAimStandardCode], 
+	[LearningAimFrameworkCode], 
+	[LearningAimPathwayCode], 
+	[LearningAimFundingLineType],
+	[LearningAimSequenceNumber], 
+	[LearningStartDate], 
+	[EventType]
 )
 GO
 
-CREATE NONCLUSTERED INDEX IX_EarningEvent__AcademicYear_CollectionPeriod_JobId
-	ON [Payments2].[EarningEvent] (AcademicYear, CollectionPeriod, JobId)
-	INCLUDE ([EventId])
+CREATE NONCLUSTERED INDEX [IX_EarningEvent_ApprenticeshipEarningQuery] ON [Payments2].[EarningEvent]
+(
+   [Ukprn],
+   [LearnerUln],
+   [EventType],
+   [JobId],
+   [ContractType],
+   [CollectionPeriod],
+   [AcademicYear],
+   [IlrSubmissionDateTime],
+   [CreationDate]
+)
+WITH (ONLINE = ON)
 GO
 
-CREATE NONCLUSTERED INDEX [IX_EarningEvent__Ukprn_JobId]
-	ON [Payments2].[EarningEvent] ([Ukprn],[JobId])
-	INCLUDE ([EventId],[ContractType])
+CREATE NONCLUSTERED INDEX [IX_EarningEvent__AcademicYear_CollectionPeriod_JobId] ON [Payments2].[EarningEvent] 
+(
+	[AcademicYear],
+	[CollectionPeriod],
+	[JobId]
+)
+INCLUDE 
+(
+	[EventId]
+)
+WITH (ONLINE = ON)
+GO
+
+CREATE NONCLUSTERED INDEX [IX_EarningEvent__Ukprn_JobId] ON [Payments2].[EarningEvent] 
+(
+	[Ukprn],
+	[JobId]
+)
+INCLUDE 
+(
+	[EventId],
+	[ContractType]
+)
+WITH (ONLINE = ON)
 GO

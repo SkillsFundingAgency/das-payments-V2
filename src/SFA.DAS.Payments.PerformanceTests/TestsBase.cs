@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using NUnit.Framework;
 using SFA.DAS.Payments.AcceptanceTests.Core.Automation;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Learner = SFA.DAS.Payments.AcceptanceTests.Core.Data.Learner;
 using PriceEpisode = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode;
 
@@ -14,6 +14,7 @@ namespace SFA.DAS.Payments.PerformanceTests
     public class TestsBase
     {
         public static TestsConfiguration Config => new TestsConfiguration();
+
         protected FM36Learner CreateFM36Learner(TestSession session, Learner testLearner, DateTime startDate)
         {
             var learner = new FM36Learner { LearnRefNumber = testLearner.LearnRefNumber, ULN = testLearner.Uln };

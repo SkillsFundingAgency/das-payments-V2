@@ -10,6 +10,8 @@ namespace SFA.DAS.Payments.Model.Core.Audit
         public Guid DataLockEventId { get; set; }
         public string PriceEpisodeIdentifier { get; set; }
         public TransactionType TransactionType { get; set; }
+        public short AcademicYear { get; set; }
+        public byte CollectionPeriod { get; set; }
         public byte DeliveryPeriod { get; set; }
         public decimal Amount { get; set; }
         public decimal? SfaContributionPercentage { get; set; }

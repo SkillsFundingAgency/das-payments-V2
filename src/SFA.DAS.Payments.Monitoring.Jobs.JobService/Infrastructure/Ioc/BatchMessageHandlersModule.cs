@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers;
@@ -24,8 +23,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Infrastructure.Ioc
                         appConfig.EndpointName,
                         appConfig.FailedMessagesQueue, 
                         c.Resolve<IPaymentLogger>(),
-                        c.Resolve<IContainerScopeFactory>(),
-                        c.Resolve<ITelemetry>());
+                        c.Resolve<IContainerScopeFactory>());
                 })
                 .As<IServiceBusBatchCommunicationListener>()
                 .SingleInstance();

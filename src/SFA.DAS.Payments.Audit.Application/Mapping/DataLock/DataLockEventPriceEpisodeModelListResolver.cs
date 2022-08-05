@@ -13,7 +13,12 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.DataLock
             var priceEpisodeModels = source.PriceEpisodes?
                 .Select(priceEpisode => context.Mapper.Map<DataLockEventPriceEpisodeModel>(priceEpisode))
                 .ToList() ?? new List<DataLockEventPriceEpisodeModel>();
-            priceEpisodeModels.ForEach(model => model.DataLockEventId = source.EventId);
+            priceEpisodeModels.ForEach(model =>
+            {
+                model.DataLockEventId = source.EventId;
+                model.AcademicYear = source.CollectionPeriod.AcademicYear;
+                model.CollectionPeriod = source.CollectionPeriod.Period;
+            });
             return priceEpisodeModels;
         }
     }

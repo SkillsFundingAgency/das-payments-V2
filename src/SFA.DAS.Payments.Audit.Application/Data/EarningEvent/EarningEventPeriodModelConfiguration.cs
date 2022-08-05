@@ -14,6 +14,8 @@ namespace SFA.DAS.Payments.Audit.Application.Data.EarningEvent
             builder.Property(x => x.EarningEventId).HasColumnName(@"EarningEventId");
             builder.Property(x => x.PriceEpisodeIdentifier).HasColumnName(@"PriceEpisodeIdentifier");
             builder.Property(x => x.TransactionType).HasColumnName(@"TransactionType");
+            builder.Property(x => x.AcademicYear).HasColumnName(@"AcademicYear");
+            builder.Property(x => x.CollectionPeriod).HasColumnName(@"CollectionPeriod");
             builder.Property(x => x.DeliveryPeriod).HasColumnName(@"DeliveryPeriod");
             builder.Property(x => x.Amount).HasColumnName(@"Amount");
             builder.Property(x => x.SfaContributionPercentage).HasColumnName(@"SfaContributionPercentage");
