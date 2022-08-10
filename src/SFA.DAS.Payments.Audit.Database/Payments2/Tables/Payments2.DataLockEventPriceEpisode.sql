@@ -32,3 +32,20 @@ CREATE NONCLUSTERED INDEX [IX_DataLockEventPriceEpisode__AuditDataFactory] ON [P
 )
 WITH (ONLINE = ON)
 GO
+
+CREATE NONCLUSTERED INDEX [IX_DataLockEventPriceEpisode_IdentifyDataLocksTool] ON [Payments2].[DataLockEventPriceEpisode] 
+(
+	[DataLockEventId], 
+	[PriceEpisodeIdentifier]
+) 
+INCLUDE 
+(
+	[ActualEndDate], 
+	[EffectiveTotalNegotiatedPriceStartDate], 
+	[PlannedEndDate], 
+	[StartDate], 
+	[TotalNegotiatedPrice1], 
+	[TotalNegotiatedPrice2], 
+	[TotalNegotiatedPrice3], 
+	[TotalNegotiatedPrice4]
+) WITH (ONLINE = ON)

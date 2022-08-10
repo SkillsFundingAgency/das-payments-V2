@@ -35,3 +35,9 @@ CREATE NONCLUSTERED INDEX [IX_DataLockEvent__AuditDataFactory] ON [Payments2].[D
 )
 WITH (ONLINE = ON)
 GO
+
+CREATE NONCLUSTERED INDEX [IX_DataLockEvent_IdentifyDataLocksTool] ON [Payments2].[DataLockEvent] 
+(
+	[LearnerUln], 
+	[AcademicYear]
+) WITH (ONLINE = ON)

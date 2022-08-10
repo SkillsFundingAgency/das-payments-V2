@@ -18,3 +18,13 @@ CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriodFailures__AuditDataFa
 )
 WITH (ONLINE = ON)
 GO
+
+CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriodFailures_IdentifyDataLocksTool] ON [Payments2].[DataLockEventNonPayablePeriodFailures] 
+(
+	[DataLockEventNonPayablePeriodId]
+) 
+INCLUDE 
+(
+	[ApprenticeshipId], 
+	[DataLockFailureId]
+) WITH (ONLINE = ON)
