@@ -1,20 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using AutoMapper;
 using Castle.Components.DictionaryAdapter;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
-using Microsoft.Extensions.FileProviders;
 using Moq;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.Payments.EarningEvents.Application.Interfaces;
 using SFA.DAS.Payments.EarningEvents.Application.Mapping;
 using SFA.DAS.Payments.EarningEvents.Application.UnitTests.Builders;
-using SFA.DAS.Payments.EarningEvents.Application.UnitTests.Helpers;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -28,7 +23,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
     {
         private IMapper mapper;
         private ProcessLearnerCommand learnerSubmission;
-        private  Mock<IRedundancyEarningService> redundancyEarningService;
+        private Mock<IRedundancyEarningService> redundancyEarningService;
 
         [OneTimeSetUp]
         public void InitialiseDependencies()
@@ -146,7 +141,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                             },
                             LearningDeliveryPeriodisedTextValues = new EditableList<LearningDeliveryPeriodisedTextValues>
                             {
-                                new LearningDeliveryPeriodisedTextValues 
+                                new LearningDeliveryPeriodisedTextValues
                                 {
                                     AttributeName = "LearnDelContType",
                                     Period1 = "None",
@@ -337,10 +332,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         public void TestBuild()
         {
             // arrange
-            var expectedResult = new Act1FunctionalSkillEarningsEvent
-            {
-                Earnings = new List<FunctionalSkillEarning>().AsReadOnly()
-            };
             var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningService.Object);
             var learnerSubmissionModel = new ProcessLearnerCommand
             {
@@ -577,7 +568,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                             }
                         },
                     },
-                    PriceEpisodes = new EditableList<PriceEpisode> { }
+                    PriceEpisodes = new EditableList<PriceEpisode>()
                 }
             };
 
@@ -594,7 +585,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             events[1].Should().BeAssignableTo<Act2FunctionalSkillEarningsEvent>();
             events[1].ContractType.Should().Be(ContractType.Act2);
         }
-        
+
         [Test]
         public void FunctionalSkillBuild()
         {
@@ -812,7 +803,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
         {
             // arrange
             var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningService.Object);
-            
+
             // act
             var events = builder.Build(learnerSubmission);
 
@@ -838,7 +829,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var processLearnerCommand = new ProcessLearnerCommandBuilder().WithExtendedLearningSupport().Build();
 
             var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningService.Object);
-            
+
             // act
             var events = builder.Build(processLearnerCommand);
 
@@ -847,32 +838,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             events.Should().HaveCount(1);
             events.Single().Earnings.Should().HaveCount(3);
             events.Single().Earnings.Single(x => x.Type == FunctionalSkillType.LearningSupport).Periods.Should().HaveCount(12);
-        }
-
-        [Test]
-        public void SumsDoubleMathEngEarnings()
-        {
-            // arrange
-            var builder = new FunctionalSkillEarningEventBuilder(mapper, redundancyEarningService.Object);
-            
-            var embeddedProvider = new EmbeddedFileProvider(Assembly.GetExecutingAssembly());
-            using (var reader = embeddedProvider.GetFileInfo($"DataFiles\\DoubleMathEngEarnings.json").CreateReadStream())
-            {
-                using (var sr = new StreamReader(reader))
-                {
-                    var fm36Global = JsonConvert.DeserializeObject<ProcessLearnerCommand>(sr.ReadToEnd());
-
-                    // act
-                    var events = builder.Build(fm36Global);
-
-                    // assert
-                    events.Should().NotBeNull();
-                    events.Should().HaveCount(1);
-                    events.Single().Earnings.Should().HaveCount(3);
-                    events.Single().Earnings.Single(x => x.Type == FunctionalSkillType.OnProgrammeMathsAndEnglish).Periods.Should().HaveCount(12);
-                    events.Single().Earnings.Single(x => x.Type == FunctionalSkillType.OnProgrammeMathsAndEnglish).Periods.Single(p => p.Period == 4).Amount.Should().Be(507.23077M);
-                }
-            }
         }
     }
 }

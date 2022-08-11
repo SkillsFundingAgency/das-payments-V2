@@ -34,3 +34,21 @@ INCLUDE
 	[LearnerUln]
 )
 Go
+
+CREATE NONCLUSTERED INDEX [IX_SubmittedLearnerAim_RemovedLearningAim] ON [Payments2].[SubmittedLearnerAim]
+(
+    [Ukprn],
+    [CollectionPeriod],
+    [AcademicYear]
+)
+INCLUDE
+(
+    [LearnerReferenceNumber],
+    [LearningAimFrameworkCode],
+    [LearningAimPathwayCode],
+    [LearningAimProgrammeType], 
+    [LearningAimStandardCode],
+    [LearningAimReference],
+    [ContractType]
+)
+GO

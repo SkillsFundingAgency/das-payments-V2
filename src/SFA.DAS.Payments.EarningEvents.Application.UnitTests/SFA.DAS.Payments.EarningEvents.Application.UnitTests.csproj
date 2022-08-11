@@ -10,13 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="DataFiles\DoubleMathEngEarnings.json" />
     <None Remove="DataFiles\PV21683_FM36OutputOnRestart.json" />
     <None Remove="DataFiles\Redundancy.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="DataFiles\DoubleMathEngEarnings.json" />
     <EmbeddedResource Include="DataFiles\PV21683_FM36OutputOnRestart.json" />
     <EmbeddedResource Include="DataFiles\Redundancy.json" />
   </ItemGroup>

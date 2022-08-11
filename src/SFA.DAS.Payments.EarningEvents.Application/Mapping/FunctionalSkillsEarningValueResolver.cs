@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using AutoMapper;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Payments.Core;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
@@ -49,12 +47,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             for (byte i = 1; i <= 12; i++)
             {
                 var periodValues = allPeriods.Select(p => p.GetPeriodValue(i)).ToArray();
-                //var periodValue = periodValues.SingleOrDefault(v => v.GetValueOrDefault(0) != 0).GetValueOrDefault(0);
-                var periodValue = periodValues.Sum(v =>
-                {
-                    var currentValue = v.GetValueOrDefault(0);
-                    return currentValue != 0 ? currentValue : 0;
-                });
+                var periodValue = periodValues.SingleOrDefault(v => v.GetValueOrDefault(0) != 0).GetValueOrDefault(0);
 
                 periods[i - 1] = new EarningPeriod
                 {
