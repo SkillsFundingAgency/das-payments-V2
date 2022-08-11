@@ -34,3 +34,31 @@ CREATE NONCLUSTERED INDEX [IX_EarningEventPriceEpisode__AuditDataFactory] ON [Pa
 )
 WITH (ONLINE = ON)
 GO
+
+CREATE NONCLUSTERED INDEX [IX_EarningEventPriceEpisode_IdentifyDataLocksTool] ON [Payments2].[EarningEventPriceEpisode] 
+(
+	[EarningEventId]
+) 
+INCLUDE 
+(
+	[ActualEndDate], 
+	[AgreedPrice], 
+	[Completed], 
+	[CompletionAmount], 
+	[CompletionHoldBackExemptionCode], 
+	[CourseStartDate], 
+	[EffectiveTotalNegotiatedPriceStartDate], 
+	[EmployerContribution], 
+	[InstalmentAmount], 
+	[NumberOfInstalments], 
+	[PlannedEndDate], 
+	[PriceEpisodeIdentifier], 
+	[SfaContributionPercentage], 
+	[StartDate], 
+	[TotalNegotiatedPrice1], 
+	[TotalNegotiatedPrice2], 
+	[TotalNegotiatedPrice3], 
+	[TotalNegotiatedPrice4]
+) 
+WITH (ONLINE = ON)
+GO

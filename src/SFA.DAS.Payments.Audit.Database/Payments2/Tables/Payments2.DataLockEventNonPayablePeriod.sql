@@ -23,3 +23,18 @@ CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriod__AuditDataFactory] O
 )
 WITH (ONLINE = ON)
 GO
+
+CREATE NONCLUSTERED INDEX [IX_DataLockEventNonPayablePeriod_IdentifyDataLocksTool] ON [Payments2].[DataLockEventNonPayablePeriod] 
+(
+	[DataLockEventId]
+) 
+INCLUDE 
+(
+	[Amount], 
+	[DataLockEventNonPayablePeriodId], 
+	[DeliveryPeriod], 
+	[LearningStartDate], 
+	[PriceEpisodeIdentifier], 
+	[SfaContributionPercentage], 
+	[TransactionType]
+) WITH (ONLINE = ON)
