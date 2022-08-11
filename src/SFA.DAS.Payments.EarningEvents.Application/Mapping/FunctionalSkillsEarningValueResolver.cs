@@ -47,16 +47,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             for (byte i = 1; i <= 12; i++)
             {
                 var periodValues = allPeriods.Select(p => p.GetPeriodValue(i)).ToArray();
-
-                var periodValue = 0m;
-                try
-                {
-                    periodValue = periodValues.SingleOrDefault(v => v.GetValueOrDefault(0) != 0).GetValueOrDefault(0);
-                }
-                catch
-                {
-                    // ignored
-                }
+                var periodValue = periodValues.SingleOrDefault(v => v.GetValueOrDefault(0) != 0).GetValueOrDefault(0);
 
                 periods[i - 1] = new EarningPeriod
                 {
