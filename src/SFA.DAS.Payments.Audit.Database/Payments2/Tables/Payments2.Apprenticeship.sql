@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [Payments2].[Apprenticeship]
 (	
-	Id BIGINT NOT NULL  CONSTRAINT PK_Apprenticeship PRIMARY KEY,
+	Id BIGINT NOT NULL  CONSTRAINT PK_Apprenticeship PRIMARY KEY CLUSTERED,
 	AccountId BIGINT NOT NULL,
 	AgreementId CHAR(6) NULL, 
 	AgreedOnDate Date not null,
@@ -20,5 +20,39 @@
     [IsLevyPayer] BIT NOT NULL,
 	CreationDate DATETIMEOFFSET NOT NULL, 
     [ApprenticeshipEmployerType] TINYINT NOT NULL,
-
 )
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_Apprenticeship_Ukprn] ON [Payments2].[Apprenticeship]
+(
+	[Ukprn] ASC
+) INCLUDE (
+	[Uln]
+)
+
+GO
+
+CREATE INDEX [IX_Apprenticeship__AccountSearch] ON [Payments2].[Apprenticeship]
+(
+  [Ukprn],
+  AccountId,
+  TransferSendingEmployerAccountId,
+  IsLevyPayer
+) 
+GO
+
+CREATE NONCLUSTERED INDEX [IX_Apprenticeship_Uln] ON [Payments2].[Apprenticeship]
+(
+	[Uln] ASC
+)
+GO
+
+
+CREATE NONCLUSTERED INDEX [IX_Apprenticeship__Search] ON [Payments2].[Apprenticeship] 
+([AccountId]) 
+INCLUDE ([AgreedOnDate], [AgreementId], [ApprenticeshipEmployerType], [EstimatedEndDate], 
+	[EstimatedStartDate], [FrameworkCode], [IsLevyPayer], [LegalEntityName], [PathwayCode], 
+	[Priority], [ProgrammeType], [StandardCode], [Status], [StopDate], [TransferSendingEmployerAccountId], 
+	[Ukprn], [Uln]) 
+WITH (ONLINE = ON)
