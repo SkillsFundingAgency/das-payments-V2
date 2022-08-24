@@ -6,7 +6,7 @@
 );
 GO
 
-CREATE INDEX [IX_ApprenticeshipPause__ApprenticeshipId] ON [Payments2].[ApprenticeshipPriceEpisode]
+CREATE INDEX [IX_ApprenticeshipPause__ApprenticeshipId] ON [Payments2].[ApprenticeshipPause]
 (
   ApprenticeshipId
 ) 
