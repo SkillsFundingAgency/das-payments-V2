@@ -8,7 +8,7 @@ GO
 
 CREATE INDEX [IX_ApprenticeshipPause__ApprenticeshipId] ON [Payments2].[ApprenticeshipPause]
 (
-  ApprenticeshipId
+	[ApprenticeshipId]
 ) 
 GO
 
