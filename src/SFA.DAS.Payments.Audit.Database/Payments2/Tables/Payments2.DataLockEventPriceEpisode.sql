@@ -16,8 +16,8 @@
 	InstalmentAmount DECIMAL(15,5) NOT NULL,
 	CompletionAmount DECIMAL(15,5) NOT NULL,
 	Completed BIT NOT NULL,
-    	EmployerContribution DECIMAL(15,5) NULL,
-    	CompletionHoldBackExemptionCode INT NULL,
+    EmployerContribution DECIMAL(15,5) NULL,
+    CompletionHoldBackExemptionCode INT NULL,
 	CreationDate DATETIMEOFFSET NOT NULL,
 	AcademicYear SMALLINT NULL,
 	CollectionPeriod TINYINT NULL
