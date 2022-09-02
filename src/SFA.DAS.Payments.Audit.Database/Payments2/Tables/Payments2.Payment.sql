@@ -10,7 +10,7 @@ CREATE TABLE [Payments2].[Payment]
 	JobId BIGINT NOT NULL,
 	DeliveryPeriod TINYINT NOT NULL,
 	CollectionPeriod TINYINT NOT NULL,
-	AcademicYear SMALLINT NOT NULL,
+	AcademicYear SMALLINT,
 	Ukprn BIGINT NOT NULL,
 	LearnerReferenceNumber NVARCHAR(50) NOT NULL,
 	LearnerUln BIGINT NOT NULL,
