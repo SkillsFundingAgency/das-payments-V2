@@ -20,7 +20,7 @@
 	JobId  BIGINT NOT NULL,
 	EventTime DATETIMEOFFSET NOT NULL,
 	CreationDate DATETIMEOFFSET NOT NULL, 
-    	LearningAimSequenceNumber BIGINT NULL,
+    LearningAimSequenceNumber BIGINT NULL,
 	SfaContributionPercentage DECIMAL(15, 5) NULL,
 	IlrFileName  NVARCHAR(400) NULL,
 	EventType NVARCHAR(4000) NULL,

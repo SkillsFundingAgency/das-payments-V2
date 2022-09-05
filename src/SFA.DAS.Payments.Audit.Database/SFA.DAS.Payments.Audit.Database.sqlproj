@@ -88,6 +88,17 @@
     <Build Include="Payments2\Tables\Payments2.DataLockEventNonPayablePeriod.sql" />
     <Build Include="Payments2\Tables\Payments2.DataLockEventNonPayablePeriodFailures.sql" />
     <Build Include="dbo\Stored Procedures\dbo.usp_DisplayDeploymentProperties.sql" />
+    <Build Include="Payments2\Views\Payments2.DataMatchReport.sql" />
+    <Build Include="Payments2\Views\Payments2.LatestSuccessfulDataLockJobs.sql" />
+    <Build Include="Payments2\Views\Payments2.LatestSuccessfulJobs.sql" />
+    <Build Include="Payments2\Tables\Payments2.Job.sql" />
+    <Build Include="Payments2\Tables\Payments2.Apprenticeship.sql" />
+    <Build Include="Payments2\Tables\Payments2.ApprenticeshipDuplicate.sql" />
+    <Build Include="Payments2\Tables\Payments2.ApprenticeshipPause.sql" />
+    <Build Include="Payments2\Tables\Payments2.ApprenticeshipPriceEpisode.sql" />
+    <Build Include="Payments2\Tables\Payments2.LevyAccount.sql" />
+    <Build Include="Payments2\Tables\Payments2.LevyAccountAudit.sql" />
+    <Build Include="Payments2\Tables\Payments2.ProviderAdjustmentPayments.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="zzz.Script.PostDeployment.sql" />

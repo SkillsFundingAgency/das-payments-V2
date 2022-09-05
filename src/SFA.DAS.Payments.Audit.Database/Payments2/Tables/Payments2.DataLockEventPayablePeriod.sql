@@ -9,8 +9,8 @@
 	SfaContributionPercentage DECIMAL(15,5) NULL,
 	CreationDate DATETIMEOFFSET NOT NULL,
 	LearningStartDate DATETIME2 NULL,
-    	ApprenticeshipId BIGINT NULL,
-    	ApprenticeshipPriceEpisodeId BIGINT NULL,
+    ApprenticeshipId BIGINT NULL,
+    ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL,
 	AcademicYear SMALLINT NULL,
 	CollectionPeriod TINYINT NULL
