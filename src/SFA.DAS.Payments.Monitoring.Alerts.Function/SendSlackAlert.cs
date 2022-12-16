@@ -35,7 +35,7 @@ namespace SFA.DAS.Monitoring.Alerts.Function
             log.LogInformation($"Alert name: {alert.data?.essentials?.alertRule}");
 
             HttpClient apiInsightsClient = GetAppInsightsClient();
-            alert.data.alertContext.SearchResults = GetAppInsightsSearchResults(alert, apiInsightsClient);
+            alert.data.alertContext.SearchResults = await GetAppInsightsSearchResults(alert, apiInsightsClient);
 
             string alertEmoji = GetEmoji(alert);
             var appInsightsSearchResultsUiLink = alert.data.alertContext.condition.allOf[0].linkToSearchResultsUI;
@@ -75,7 +75,7 @@ namespace SFA.DAS.Monitoring.Alerts.Function
         private HttpClient GetAppInsightsClient()
         {
             var apiInsightsClient = _factory.CreateClient("pollyClient");
-            var appInsightsAPIKeyHeader = GetEnvironmentVariable("AppInsightsAuthKey");
+            var appInsightsAPIKeyHeader = GetEnvironmentVariable("AppInsightsAuthHeader");
             var appInsightsAPIKeyValue = GetEnvironmentVariable("AppInsightsAuthValue");
 
             apiInsightsClient.DefaultRequestHeaders.Accept.Clear();
@@ -104,7 +104,13 @@ namespace SFA.DAS.Monitoring.Alerts.Function
             var slackPayload = new
             {
                 text = alertTitle,
-                blocks = ExtractFields(alertEmoji, timestamp, alertVariables["jobId"], alertVariables["academicYear"], alertVariables["collectionPeriod"], alertTitle, appInsightsSearchResultsUiLink)
+                blocks = ExtractFields(alertEmoji,
+                                       timestamp,
+                                       alertVariables["JobId"],
+                                       alertVariables["AcademicYear"],
+                                       alertVariables["CollectionPeriod"],
+                                       alertTitle,
+                                       appInsightsSearchResultsUiLink)
             };
 
             var slackChannelResource = GetEnvironmentVariable("SlackChannelUri");
@@ -140,47 +146,14 @@ namespace SFA.DAS.Monitoring.Alerts.Function
                     },
                     fields = new List<object>
                     {
-                        new
-                        {
-                            type = "mrkdwn",
-                            text = "*Timestamp*"
-                        },
-                        new
-                        {
-                            type = "mrkdwn",
-                            text = "*Job*"
-                        },
-                        new
-                        {
-                            type = "plain_text",
-                            text = timestamp.ToString("f")
-                        },
-                        new
-                        {
-                            type = "plain_text",
-                            text = jobId.ToString()
-                        },
-                        new
-                        {
-                            type = "mrkdwn",
-                            text = "*Academic Year*"
-                        },
-                        new
-                        {
-                            type = "mrkdwn",
-                            text = "*Collection Period*"
-                        },
-                        new
-                        {
-                            type = "plain_text",
-                            text = academicYear.ToString()
-                        },
-                        new
-                        {
-                            type = "plain_text",
-                            text = collectionPeriod.ToString()
-                        },
-
+                        new { type = "mrkdwn", text = "*Timestamp*" },
+                        new { type = "mrkdwn", text = "*Job*" },
+                        new { type = "plain_text", text = timestamp.ToString("f") },
+                        new { type = "plain_text", text = jobId.ToString() },
+                        new { type = "mrkdwn", text = "*Academic Year*" },
+                        new { type = "mrkdwn", text = "*Collection Period*" },
+                        new { type = "plain_text", text = academicYear.ToString() },
+                        new { type = "plain_text", text = collectionPeriod.ToString() },
                     }
                 }
             };
