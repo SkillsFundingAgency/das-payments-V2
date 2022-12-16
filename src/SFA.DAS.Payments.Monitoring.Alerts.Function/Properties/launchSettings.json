@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "SFA.DAS.Monitoring.Alerts.Function": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7126",
+      "launchBrowser": false
+    }
+  }
+}
