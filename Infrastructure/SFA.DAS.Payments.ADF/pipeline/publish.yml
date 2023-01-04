@@ -1,0 +1,30 @@
+jobs:
+- job: publishAdfFiles
+  displayName: Publish ADF Files
+  pool:
+    name: DCT Build Pool
+    demands:
+    - IsBuildServerDas
+    workspace:
+      clean: all
+  steps:
+  - task: gittools.gitversion.gitversion-task.GitVersion@5
+    displayName: GitVersion
+    inputs:
+      updateAssemblyInfo: true
+
+  - task: CopyFiles@2
+    displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+    inputs:
+      Contents: |
+        SFA.DAS.Payments.ADF/azure/**
+        SFA.DAS.Payments.ADF/scripts/**
+        SFA.DAS.Payments.ADF/DCOL-DAS-DataFactoryDAS-WEU/**
+        das-at-dfac-df/**
+      TargetFolder: '$(build.artifactstagingdirectory)/publish'
+      OverWrite: true
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)/publish'

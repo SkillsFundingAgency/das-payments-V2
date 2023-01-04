@@ -1,0 +1,71 @@
+parameters:
+  pool:
+  azureSubscription:
+  location: 'West Europe'
+  environmentName:
+  deployFactory: false
+
+jobs:
+- deployment: DeployADF
+  pool:
+    name: ${{ parameters.pool }}
+    demands:
+    - ReleaseEnvironment -equals ${{ parameters.environmentName }}
+  environment: ${{ parameters.environmentName }}
+  variables: 
+    - name: resourceGroupName
+      value: '$(Service)-${{ parameters.environmentName }}-DataFactoryDAS-$(RegionPrimaryCode)'
+    - name: dataFactoryName
+      value: '$(Service)-${{ parameters.environmentName }}-DataFactoryDAS-$(RegionPrimaryCode)'
+    - name: keyVaultName
+      ${{ if eq( parameters['environmentName'], 'SDW') }}:
+        value: '$(Service)-${{ parameters.environmentName }}-KVaultDAS-$(RegionPrimaryCode)'
+      ${{ if ne( parameters['environmentName'], 'SDW') }}:
+        value: '$(Service)-${{ parameters.environmentName }}-KeyVaultDAS-$(RegionPrimaryCode)'
+    - name: dasPaymentDataFactoryConnectionString
+      value: '$(DasPaymentsConnectionStringRW)'
+    - name: dasPaymentAuditDataFactoryConnectionString
+      value: '$(DASPaymentAuditConnectionStringRW)'
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - task: AzurePowerShell@5
+          displayName: Create solution resource group
+          inputs:
+            azureSubscription: '${{ parameters.azureSubscription }}'
+            ScriptType: 'InlineScript'
+            Inline: 'New-AzResourceGroup -Name ${{ variables.resourceGroupName }} -Location "${{ parameters.location }}" -Tag $(tags) -Force'
+            azurePowerShellVersion: 'LatestVersion'
+
+        - task: AzurePowerShell@5
+          displayName: Set subscription id variable
+          inputs:
+            azureSubscription: '${{ parameters.azureSubscription }}'
+            ScriptType: 'InlineScript'
+            Inline: |
+              $subscriptionId = (Get-AzSubscription).SubscriptionId
+              Write-Host "variable=subscriptionId: $subscriptionId"
+              Write-Host "##vso[task.setvariable variable=subscriptionId;]$subscriptionId"
+            azurePowerShellVersion: 'LatestVersion'
+
+        - task: AzureResourceGroupDeployment@2
+          displayName: Deploy Solution Resources
+          inputs:
+            azureSubscription: '${{ parameters.azureSubscription }}'
+            resourceGroupName: '${{ variables.resourceGroupName }}'
+            location: '${{ parameters.location }}'
+            csmFile: '$(Pipeline.Workspace)/drop/SFA.DAS.Payments.ADF/azure/template.json'
+            overrideParameters: '-resourceEnvironmentName "${{ parameters.environmentName }}" -paymentsConnectionString "${{ variables.dasPaymentDataFactoryConnectionString }}" -paymentsAuditConnectionString "${{ variables.dasPaymentAuditDataFactoryConnectionString }}" -dataFactoryName "${{ variables.dataFactoryName }}" -keyVaultName "${{ variables.keyVaultName }}"'
+            deploymentOutputs: armoutputs
+
+        - ${{ if eq(parameters.deployFactory, true) }}:
+            - template: ./deploy-factory.yml
+              parameters:
+                azureSubscription: '${{ parameters.azureSubscription }}'
+                resourceGroupName: '${{ variables.resourceGroupName }}'
+                location: '${{ parameters.location }}'
+                dataFactoryName: '${{ variables.dataFactoryName }}'
+                keyVaultName: '${{ variables.keyVaultName }}'
+                sharedSqlPrivateEndpoint: '/subscriptions/$(subscriptionId)/resourceGroups/$(Service)-${{ parameters.environmentName }}-SqlServer/providers/Microsoft.Sql/servers/$(Service)-${{ parameters.environmentName }}-sqlserver-weu'
+                sharedSqlPrivateEndpointFqdns: '$(Service)-${{ parameters.environmentName }}-sqlserver-weu.database.windows.net'
