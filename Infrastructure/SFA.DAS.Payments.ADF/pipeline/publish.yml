@@ -9,7 +9,7 @@ jobs:
       clean: all
   steps:
   #- task: gittools.gitversion.gitversion-task.GitVersion@5
-   - task: gitversion/setup@0
+  - task: gitversion/setup@0
     displayName: GitVersion
     inputs:
       updateAssemblyInfo: true
