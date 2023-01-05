@@ -55,7 +55,7 @@ jobs:
             azureSubscription: '${{ parameters.azureSubscription }}'
             resourceGroupName: '${{ variables.resourceGroupName }}'
             location: '${{ parameters.location }}'
-            csmFile: '$(Pipeline.Workspace)/drop/SFA.DAS.Payments.ADF/azure/template.json'
+            csmFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.ADF/azure/template.json'
             overrideParameters: '-resourceEnvironmentName "${{ parameters.environmentName }}" -paymentsConnectionString "${{ variables.dasPaymentDataFactoryConnectionString }}" -paymentsAuditConnectionString "${{ variables.dasPaymentAuditDataFactoryConnectionString }}" -dataFactoryName "${{ variables.dataFactoryName }}" -keyVaultName "${{ variables.keyVaultName }}"'
             deploymentOutputs: armoutputs
 

@@ -12,7 +12,7 @@ steps:
   displayName: Disable Triggers
   inputs:
     azureSubscription: '${{ parameters.azureSubscription }}'
-    ScriptPath: '$(Pipeline.Workspace)/drop/SFA.DAS.Payments.ADF/scripts/Set-AzDataFactoryTriggerState.ps1'
+    ScriptPath: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.ADF/scripts/Set-AzDataFactoryTriggerState.ps1'
     ScriptArguments: '-DataFactoryName "${{ parameters.dataFactoryName }}" -ResourceGroupName "${{ parameters.resourceGroupName }}" -TriggerState disable'
     azurePowerShellVersion: LatestVersion
 
@@ -22,13 +22,13 @@ steps:
     azureSubscription: '${{ parameters.azureSubscription }}'
     resourceGroupName: '${{ parameters.resourceGroupName }}'
     location: ${{ parameters.location }}
-    csmFile: '$(Pipeline.Workspace)/drop/SFA.DAS.Payments.ADF/DCOL-DAS-DataFactoryDAS-WEU/arm_template.json'
+    csmFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.ADF/DCOL-DAS-DataFactoryDAS-WEU/arm_template.json'
     overrideParameters: '-factoryName "${{ parameters.dataFactoryName }}" -AzureKeyVault1_properties_typeProperties_baseUrl "https://${{ parameters.keyVaultName }}.vault.azure.net/" -shared_sql_private_endpoint_properties_privateLinkResourceId "${{ parameters.sharedSqlPrivateEndpoint }}" -shared_sql_private_endpoint_properties_fqdns ["${{ parameters.sharedSqlPrivateEndpointFqdns }}"]'
 
 - task: AzurePowerShell@4
   displayName: Enable Triggers
   inputs:
     azureSubscription: '${{ parameters.azureSubscription }}'
-    ScriptPath: '$(Pipeline.Workspace)/drop/SFA.DAS.Payments.ADF/scripts/Set-AzDataFactoryTriggerState.ps1'
+    ScriptPath: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.ADF/scripts/Set-AzDataFactoryTriggerState.ps1'
     ScriptArguments: '-DataFactoryName "${{ parameters.dataFactoryName }}" -ResourceGroupName "${{ parameters.resourceGroupName }}" -TriggerState enable'
     azurePowerShellVersion: LatestVersion
