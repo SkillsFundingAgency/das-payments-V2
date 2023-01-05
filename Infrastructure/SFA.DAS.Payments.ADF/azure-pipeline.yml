@@ -7,7 +7,7 @@ variables:
 resources:
   repositories:
   - repository: self
-    fetchDepth: 15
+    fetchDepth: 0
 
 stages:
 - stage: Publish_ADF
