@@ -12,6 +12,7 @@ jobs:
     displayName: GitVersion
     inputs:
       updateAssemblyInfo: true
+      versionSpec: '5.x'
 
   - task: CopyFiles@2
     displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
