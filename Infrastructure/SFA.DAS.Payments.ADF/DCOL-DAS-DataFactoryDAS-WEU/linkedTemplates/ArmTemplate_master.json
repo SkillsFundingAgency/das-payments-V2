@@ -1,0 +1,86 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "factoryName": {
+            "type": "string",
+            "metadata": "Data Factory name",
+            "defaultValue": "DCOL-DAS-DataFactoryDAS-WEU"
+        },
+        "AzureKeyVault1_properties_typeProperties_baseUrl": {
+            "type": "string",
+            "defaultValue": "https://DCOL-DAS-KeyVaultDAS-WEU.vault.azure.net/"
+        },
+        "DASPayments_properties_typeProperties_connectionString_secretName": {
+            "type": "string",
+            "defaultValue": "DASPaymentDataFactoryConnectionString"
+        },
+        "DASPayments_Audit_properties_typeProperties_connectionString_secretName": {
+            "type": "string",
+            "defaultValue": "DASPaymentAuditDataFactoryConnectionString"
+        },
+        "shared_sql_private_endpoint_properties_privateLinkResourceId": {
+            "type": "string",
+            "defaultValue": "/subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourceGroups/DCOL-DAS-SqlServer/providers/Microsoft.Sql/servers/dcol-das-sqlserver-weu"
+        },
+        "shared_sql_private_endpoint_properties_groupId": {
+            "type": "string",
+            "defaultValue": "sqlServer"
+        },
+        "shared_sql_private_endpoint_properties_fqdns": {
+            "type": "array",
+            "defaultValue": [
+                "dcol-das-sqlserver-weu.database.windows.net"
+            ]
+        },
+        "containerUri": {
+            "type": "string",
+            "metadata": "URI to storage account containing linked ARM templates"
+        },
+        "containerSasToken": {
+            "type": "string",
+            "metadata": "Sas token to storage account containing linked ARM templates"
+        }
+    },
+    "variables": {
+        "factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+    },
+    "resources": [
+        {
+            "name": "DCOL-DAS-DataFactoryDAS-WEU_ArmTemplate_0",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2018-02-01",
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "factoryName": {
+                        "value": "[parameters('factoryName')]"
+                    },
+                    "AzureKeyVault1_properties_typeProperties_baseUrl": {
+                        "value": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+                    },
+                    "DASPayments_properties_typeProperties_connectionString_secretName": {
+                        "value": "[parameters('DASPayments_properties_typeProperties_connectionString_secretName')]"
+                    },
+                    "DASPayments_Audit_properties_typeProperties_connectionString_secretName": {
+                        "value": "[parameters('DASPayments_Audit_properties_typeProperties_connectionString_secretName')]"
+                    },
+                    "shared_sql_private_endpoint_properties_privateLinkResourceId": {
+                        "value": "[parameters('shared_sql_private_endpoint_properties_privateLinkResourceId')]"
+                    },
+                    "shared_sql_private_endpoint_properties_groupId": {
+                        "value": "[parameters('shared_sql_private_endpoint_properties_groupId')]"
+                    },
+                    "shared_sql_private_endpoint_properties_fqdns": {
+                        "value": "[parameters('shared_sql_private_endpoint_properties_fqdns')]"
+                    }
+                }
+            },
+            "dependsOn": []
+        }
+    ]
+}

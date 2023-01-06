@@ -1,0 +1,124 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceEnvironmentName": {
+      "type": "string"
+    },
+    "paymentsConnectionString": {
+      "type": "securestring"
+    },
+    "paymentsAuditConnectionString": {
+      "type": "securestring"
+    },
+    "dataFactoryName": {
+      "type": "string"
+    },
+    "keyVaultName": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
+    "resourceNamePrefix": "[concat('DCOL-', parameters('resourceEnvironmentName'))]",
+    "dataFactoryName": "[concat(variables('resourceNamePrefix'),'-DataFactoryDAS-WEU')]",
+    "keyVaultName": "[concat(variables('resourceNamePrefix'), '-KeyVaultDAS-WEU')]",
+    "location": "[resourceGroup().location]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2020-06-01",
+      "name": "data-factory",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'data-factory.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "dataFactoryName": {
+            "value": "[parameters('dataFactoryName')]"
+          },
+          "location": {
+            "value": "[variables('location')]"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "2020-06-01",
+      "name": "key-vault",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'keyvault.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "keyVaultName": {
+            "value": "[parameters('keyVaultName')]"
+          },
+          "keyVaultAccessPolicies": {
+            "value": "[reference('data-factory').outputs.datafactoryKeyVaultAccessPolicy.value]"
+          }
+        }
+      },
+      "dependsOn": []
+    },
+    {
+      "apiVersion": "2020-06-01",
+      "name": "key-vault-secret-das-payments",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'keyvault-secret.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "keyVaultName": {
+            "value": "[parameters('keyVaultName')]"
+          },
+          "secretName": {
+            "value": "DASPaymentDataFactoryConnectionString"
+          },
+          "secretValue": {
+            "value": "[parameters('paymentsConnectionString')]"
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'key-vault')]"
+      ]
+    },
+    {
+      "apiVersion": "2020-06-01",
+      "name": "key-vault-secret-das-payments-audit",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'keyvault-secret.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "keyVaultName": {
+            "value": "[parameters('keyVaultName')]"
+          },
+          "secretName": {
+            "value": "DASPaymentAuditDataFactoryConnectionString"
+          },
+          "secretValue": {
+            "value": "[parameters('paymentsAuditConnectionString')]"
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'key-vault')]"
+      ]
+    }
+  ],
+  "outputs": {}
+}
