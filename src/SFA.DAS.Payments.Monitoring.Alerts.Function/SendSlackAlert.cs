@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Net.Http.Headers;
 using System.Net.Http;
+using Azure.Core;
 
 namespace SFA.DAS.Monitoring.Alerts.Function
 {
@@ -24,10 +25,9 @@ namespace SFA.DAS.Monitoring.Alerts.Function
         }
 
         [FunctionName("HttpTrigger1")]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req, ILogger log)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get","post", Route = null)] HttpRequest req, ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             log.LogInformation($"Request: {requestBody}.");
@@ -57,7 +57,7 @@ namespace SFA.DAS.Monitoring.Alerts.Function
         private static async Task<dynamic> GetAppInsightsSearchResults(dynamic alert, HttpClient client)
         {
             var appInsightsSearchResultsUri = alert.data.alertContext.condition.allOf[0].linkToSearchResultsAPI;
-            
+
 
             var appInsightsApiResultJson = await client.GetStringAsync(new Uri(appInsightsSearchResultsUri));
             dynamic appInsightsResult = JsonConvert.DeserializeObject<ExpandoObject>(appInsightsApiResultJson);
@@ -113,9 +113,13 @@ namespace SFA.DAS.Monitoring.Alerts.Function
                                        appInsightsSearchResultsUiLink)
             };
 
+            var payloadText = JsonConvert.SerializeObject(slackPayload);
+
             var slackChannelResource = GetEnvironmentVariable("SlackChannelUri");
 
             var response = await httpClient.PostAsJsonAsync(slackChannelResource, slackPayload);
+
+            var x = await response.Content.ReadAsStringAsync();
         }
 
         private static string GetEnvironmentVariable(string variableName)
@@ -179,42 +183,42 @@ namespace SFA.DAS.Monitoring.Alerts.Function
             var academicYear = customDimensions.ContainsKey("AcademicYear") ? customDimensions["AcademicYear"] : string.Empty;
             var collectionPeriod = customDimensions.ContainsKey("CollectionPeriod") ? customDimensions["CollectionPeriod"] : string.Empty;
 
-            dynamic dcEarningsTotal = customMeasurements.ContainsKey("DcEarningsTotal") ? 
-                                      customMeasurements["DcEarningsTotal"].ToString() : 
-                                        customMeasurements.ContainsKey("EarningsDCTotal") ? 
-                                        customMeasurements["EarningsDCTotal"].ToString() : 
+            dynamic dcEarningsTotal = customMeasurements.ContainsKey("DcEarningsTotal") ?
+                                      customMeasurements["DcEarningsTotal"].ToString() :
+                                        customMeasurements.ContainsKey("EarningsDCTotal") ?
+                                        customMeasurements["EarningsDCTotal"].ToString() :
                                         string.Empty;
 
-            dynamic dasEarningsTotal = customMeasurements.ContainsKey("DasEarningsTotal") ? 
+            dynamic dasEarningsTotal = customMeasurements.ContainsKey("DasEarningsTotal") ?
                                        customMeasurements["DasEarningsTotal"].ToString() :
                                        string.Empty;
 
-            dynamic adjustedDataLockedEarnings = customMeasurements.ContainsKey("DataLockedEarningsAmount") ? 
-                                                 customMeasurements["DataLockedEarningsAmount"].ToString() : 
-                                                    customMeasurements.ContainsKey("DataLockedEarnings") ? 
-                                                    customMeasurements["DataLockedEarnings"].ToString() : 
+            dynamic adjustedDataLockedEarnings = customMeasurements.ContainsKey("DataLockedEarningsAmount") ?
+                                                 customMeasurements["DataLockedEarningsAmount"].ToString() :
+                                                    customMeasurements.ContainsKey("DataLockedEarnings") ?
+                                                    customMeasurements["DataLockedEarnings"].ToString() :
                                                     string.Empty;
 
             dynamic differenceTotal = customMeasurements.ContainsKey("DifferenceTotal") ?
                                       customMeasurements["DifferenceTotal"].ToString() :
                                       string.Empty;
 
-            dynamic heldBackCompletionPayments = customMeasurements.ContainsKey("HeldBackCompletionPayments") ? 
-                                                 customMeasurements["HeldBackCompletionPayments"].ToString() : 
+            dynamic heldBackCompletionPayments = customMeasurements.ContainsKey("HeldBackCompletionPayments") ?
+                                                 customMeasurements["HeldBackCompletionPayments"].ToString() :
                                                  string.Empty;
 
-            dynamic requiredPayments = customMeasurements.ContainsKey("RequiredPaymentsTotal") ? 
-                                       customMeasurements["RequiredPaymentsTotal"].ToString() : 
+            dynamic requiredPayments = customMeasurements.ContainsKey("RequiredPaymentsTotal") ?
+                                       customMeasurements["RequiredPaymentsTotal"].ToString() :
                                        string.Empty;
 
             dynamic colectionPeriodPayments = customMeasurements.ContainsKey("PaymentsTotal") ?
                                               customMeasurements["PaymentsTotal"].ToString() :
                                               string.Empty;
 
-            dynamic yearToDatePayments = customMeasurements.ContainsKey("YearToDatePaymentsTotal") ? 
-                                         customMeasurements["YearToDatePaymentsTotal"].ToString() : 
-                                            customMeasurements.ContainsKey("PaymentsYearToDateTotal") ? 
-                                            customMeasurements["PaymentsYearToDateTotal"].ToString() : 
+            dynamic yearToDatePayments = customMeasurements.ContainsKey("YearToDatePaymentsTotal") ?
+                                         customMeasurements["YearToDatePaymentsTotal"].ToString() :
+                                            customMeasurements.ContainsKey("PaymentsYearToDateTotal") ?
+                                            customMeasurements["PaymentsYearToDateTotal"].ToString() :
                                             string.Empty;
 
             return new Dictionary<string, string>
