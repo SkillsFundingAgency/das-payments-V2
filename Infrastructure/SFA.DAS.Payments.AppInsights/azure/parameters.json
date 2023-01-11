@@ -1,0 +1,24 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "name": {
+        "value": "my_workspace_based_resource"
+      },
+      "type": {
+        "value": "web"
+      },
+      "regionId": {
+        "value": "West Europe"
+      },
+      "tagsArray": {
+        "value": {}
+      },
+      "requestSource": {
+        "value": "CustomDeployment"
+      },
+      "workspaceResourceId": {
+        "value": "/subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourcegroups/dcol-dev-oms-weu/providers/microsoft.operationalinsights/workspaces/dcol-dev-oms-weu"
+      }
+    }
+  }

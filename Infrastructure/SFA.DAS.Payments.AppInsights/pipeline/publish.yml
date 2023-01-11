@@ -1,0 +1,32 @@
+jobs:
+- job: publishAppInsightFiles
+  displayName: Publish AppInsights Files
+  pool:
+    name: DCT Build Pool
+    demands:
+    - IsBuildServerDas
+    workspace:
+      clean: all
+  steps:
+  #- task: gittools.gitversion.gitversion-task.GitVersion@5
+  - task: gitversion/setup@0
+    displayName: GitVersion
+    inputs:
+      updateAssemblyInfo: true
+      versionSpec: '5.x'
+
+  - task: CopyFiles@2
+    displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+    inputs:
+      Contents: |
+        Infrastructure/SFA.DAS.Payments.AppInsights/azure/**
+        Infrastructure/SFA.DAS.Payments.AppInsights/scripts/**
+        Infrastructure/SFA.DAS.Payments.AppInsights/xxxxx/**
+        das-at-dfac-df/**
+      TargetFolder: '$(build.artifactstagingdirectory)/publish'
+      OverWrite: true
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)/publish'
