@@ -228,7 +228,7 @@ namespace SFA.DAS.Monitoring.Alerts.Function
                 { "AcademicYear", academicYear },
                 { "CollectionPeriod", collectionPeriod },
                 { "Timestamp", timestamp.ToString("F") },
-                { "Accuracy", percentage > 0 ? percentage.ToString() : string.Empty },
+                { "Accuracy", percentage >= 0 ? percentage.ToString() : string.Empty },
                 { "Duration", duration > 0 ? duration.ToString() : string.Empty },
                 { "DcEarningsTotal", dcEarningsTotal },
                 { "DasEarningsTotal", dasEarningsTotal },
