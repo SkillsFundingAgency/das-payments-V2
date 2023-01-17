@@ -9,14 +9,14 @@ resources:
   - repository: self
 
 stages:
-- stage: Publish_AppInsight
-  displayName: Publish AppInsights
+- stage: Publish_MonitoringMetrics
+  displayName: Publish MonitoringMetrics
 
   jobs:
   - template: pipeline/publish.yml
 
 - stage: Deploy_DAS
-  dependsOn: Publish_AppInsight
+  dependsOn: Publish_MonitoringMetrics
   displayName: Deploy to DAS
   variables:
   - name: tagEnvironment
@@ -28,6 +28,7 @@ stages:
       pool: DCT Build Pool
       environmentName: DAS
       azureSubscription: DCT-VSO
+      workspaceResourceId: /subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourcegroups/dcol-dev-oms-weu/providers/microsoft.operationalinsights/workspaces/dcol-dev-oms-weu
 
 #- stage: Deploy_DST
 #  dependsOn: Publish_ADF

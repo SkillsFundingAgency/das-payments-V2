@@ -3,10 +3,11 @@ parameters:
   azureSubscription:
   location: 'West Europe'
   environmentName:
+  workspaceResourceId:
   
 
 jobs:
-- deployment: DeployAPPInsight
+- deployment: DeployMonitoringMetrics
   pool:
     name: ${{ parameters.pool }}
     demands:
@@ -15,8 +16,16 @@ jobs:
   variables: 
     - name: resourceGroupName
       value: '$(Service)-${{ parameters.environmentName }}-ServiceFabricDAS-$(RegionPrimaryCode)'
-    - name: name
+    - name: applicationInsightsName
       value: '$(Service)-${{ parameters.environmentName }}-DasPayments-AI-$(RegionPrimaryCode)'
+    - name: functionAppName
+      value: '$(Service)-${{ parameters.environmentName }}-MonitoringAlerts-$(RegionPrimaryCode)'
+    - name: storageAccountName
+      value: '$(Service)-${{ parameters.environmentName }}-Storage-MonitoringAlerts-$(RegionPrimaryCode)'
+    - name: storageAccountType
+      value: 'Standard_LRS'
+    - name: workspaceResourceId
+      value: ${{ parameters.workspaceResourceId }}
     #- name: keyVaultName
     #  ${{ if eq( parameters['environmentName'], 'SDW') }}:
     #    value: '$(Service)-${{ parameters.environmentName }}-KVaultDAS-$(RegionPrimaryCode)'
@@ -55,6 +64,6 @@ jobs:
             azureSubscription: '${{ parameters.azureSubscription }}'
             resourceGroupName: '${{ variables.resourceGroupName }}'
             location: '${{ parameters.location }}'
-            csmFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.AppInsights/azure/template.json'
-            overrideParameters: '-resourceEnvironmentName "${{ parameters.environmentName }}" -name "${{ variables.name }}"'
+            csmFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.Monitoring.Metrics/azure/azuredeploy.json'
+            overrideParameters: '-resourceEnvironmentName "${{ parameters.environmentName }}" -applicationInsightsName "${{ variables.applicationInsightsName }}" -functionAppName "${{ variables.functionAppName }}" -storageAccountName "${{ variables.storageAccountName }}" -storageAccountType "${{ variables.storageAccountType }}" -workspaceResourceId "${{ variables.workspaceResourceId }}"
             deploymentOutputs: armoutputs

@@ -19,9 +19,9 @@ jobs:
     displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
     inputs:
       Contents: |
-        Infrastructure/SFA.DAS.Payments.AppInsights/azure/**
-        Infrastructure/SFA.DAS.Payments.AppInsights/scripts/**
-        Infrastructure/SFA.DAS.Payments.AppInsights/xxxxx/**
+        Infrastructure/SFA.DAS.Payments.Monitoring.Metrics/azure/**
+        Infrastructure/SFA.DAS.Payments.Monitoring.Metrics/scripts/**
+        Infrastructure/SFA.DAS.Payments.Monitoring.Metrics/xxxxx/**
         das-at-dfac-df/**
       TargetFolder: '$(build.artifactstagingdirectory)/publish'
       OverWrite: true

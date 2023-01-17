@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-      "name": {
+      "applicationInsightsName": {
         "value": "my_workspace_based_resource"
       },
       "type": {
@@ -18,7 +18,19 @@
         "value": "CustomDeployment"
       },
       "workspaceResourceId": {
-        "value": "/subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourcegroups/dcol-dev-oms-weu/providers/microsoft.operationalinsights/workspaces/dcol-dev-oms-weu"
+        "value": ""
+      },
+      "functionAppName": {
+        "value": "my_workspace_based_functionapp_resource"
+      },
+      "storageAccountType": {
+        "value": ""
+      },
+      "storageAccountName": {
+        "value": "my_workspace_based_storage_resource"
+      },
+      "location": {
+        "value": ""
       }
     }
   }
