@@ -1,7 +1,7 @@
 parameters:
   pool:
   azureSubscription:
-  location: 'WestEurope'
+  location: 'westeurope'
   environmentName:
   workspaceResourceId:
   
