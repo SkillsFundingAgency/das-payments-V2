@@ -21,7 +21,7 @@ jobs:
     - name: functionAppName
       value: '$(Service)-${{ parameters.environmentName }}-MonitoringAlerts-$(RegionPrimaryCode)'
     - name: storageAccountName
-      value: '$(Service)-${{ parameters.environmentName }}-StorageMonitor-$(RegionPrimaryCode)'
+      value: '$(Service)-${{ parameters.environmentName }}-Storage-$(RegionPrimaryCode)'
     - name: storageAccountType
       value: 'Standard_LRS'
     - name: workspaceResourceId
