@@ -39,13 +39,7 @@
         "description": "Location for all resources."
       }
     },
-	"tagsArray": {
-      "type": "object",
-      "metadata": {
-        "description": "See documentation on tags: https://learn.microsoft.com/azure/azure-resource-manager/management/tag-resources."
-      }
-    },
-    "requestSource": {
+	  "requestSource": {
       "type": "string",
       "metadata": {
         "description": "Source of Azure Resource Manager deployment"
@@ -96,7 +90,6 @@
       "apiVersion": "2020-02-02",
       "name": "[parameters('applicationInsightsName')]",
       "location": "[parameters('location')]",
-      "tags": "[parameters('tagsArray')]",
       "properties": {
         "Application_Type": "web",
 		"Flow_Type": "Bluefield",

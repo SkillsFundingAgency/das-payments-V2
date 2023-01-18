@@ -11,9 +11,6 @@
       "regionId": {
         "value": "West Europe"
       },
-      "tagsArray": {
-        "value": {}
-      },
       "requestSource": {
         "value": "CustomDeployment"
       },
