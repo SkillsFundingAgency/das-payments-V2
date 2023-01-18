@@ -5,12 +5,6 @@
       "applicationInsightsName": {
         "value": "my_workspace_based_resource"
       },
-      "type": {
-        "value": "web"
-      },
-      "regionId": {
-        "value": "West Europe"
-      },
       "requestSource": {
         "value": "CustomDeployment"
       },
