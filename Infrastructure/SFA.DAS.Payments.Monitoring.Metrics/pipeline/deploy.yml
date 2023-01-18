@@ -22,7 +22,7 @@ jobs:
       value: '$(Service)-${{ parameters.environmentName }}-MonitoringAlerts-$(RegionPrimaryCode)'
     - name: storageAccountName
       #value: '$(Service)-${{ parameters.environmentName }}-Storage-$(RegionPrimaryCode)'
-      value: '$(Service)-DAS-Storage-$(RegionPrimaryCode)'
+      value: 'dcoldasstorageweu'
     - name: storageAccountType
       value: 'Standard_LRS'
     - name: workspaceResourceId
