@@ -61,7 +61,7 @@
   "variables": {
     "hostingPlanName": "[parameters('functionAppName')]",
     "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
-    "resourceNamePrefix": "[concat('DCOL-', parameters('resourceEnvironmentName'))]",
+    "resourceNamePrefix": "[concat('DCOL-', parameters('EnvironmentName'))]",
     "keyVaultName": "[concat(variables('resourceNamePrefix'), '-KeyVaultDAS-WEU')]",
     "location": "[resourceGroup().location]"
   },
