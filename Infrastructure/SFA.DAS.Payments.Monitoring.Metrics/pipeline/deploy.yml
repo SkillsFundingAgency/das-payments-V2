@@ -4,6 +4,7 @@ parameters:
   location: 'westeurope'
   environmentName:
   workspaceResourceId:
+  storageAccountName:
   
 
 jobs:
@@ -21,8 +22,7 @@ jobs:
     - name: functionAppName
       value: '$(Service)-${{ parameters.environmentName }}-MonitoringAlerts1-$(RegionPrimaryCode)'
     - name: storageAccountName
-      #value: '$(Service)-${{ parameters.environmentName }}-Storage-$(RegionPrimaryCode)'
-      value: 'dcoldasstorageweu'
+      value: '${{ parameters.storageAccountName }}'
     - name: storageAccountType
       value: 'Standard_LRS'
     - name: workspaceResourceId

@@ -28,6 +28,7 @@ stages:
       pool: DCT Build Pool
       environmentName: DAS
       azureSubscription: DCT-VSO
+      storageAccountName: dcoldasstoragemonitorweu
       workspaceResourceId: /subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourcegroups/dcol-dev-oms-weu/providers/microsoft.operationalinsights/workspaces/dcol-dev-oms-weu
 
 #- stage: Deploy_DST
