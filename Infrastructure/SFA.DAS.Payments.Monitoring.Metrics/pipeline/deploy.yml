@@ -19,7 +19,7 @@ jobs:
     - name: applicationInsightsName
       value: '$(Service)-${{ parameters.environmentName }}-DasPayments-AI-$(RegionPrimaryCode)'
     - name: functionAppName
-      value: '$(Service)-${{ parameters.environmentName }}-MonitoringAlerts-$(RegionPrimaryCode)'
+      value: '$(Service)-${{ parameters.environmentName }}-MonitoringAlerts1-$(RegionPrimaryCode)'
     - name: storageAccountName
       #value: '$(Service)-${{ parameters.environmentName }}-Storage-$(RegionPrimaryCode)'
       value: 'dcoldasstorageweu'
