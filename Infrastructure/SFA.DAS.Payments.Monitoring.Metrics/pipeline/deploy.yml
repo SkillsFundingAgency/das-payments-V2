@@ -65,5 +65,6 @@ jobs:
             resourceGroupName: '${{ variables.resourceGroupName }}'
             location: '${{ parameters.location }}'
             csmFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.Monitoring.Metrics/azure/azuredeploy.json'
+            csmParametersFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.Monitoring.Metrics/azure/parameters.json'
             overrideParameters: '-applicationInsightsName "${{ variables.applicationInsightsName }}" -functionAppName "${{ variables.functionAppName }}" -storageAccountName "${{ variables.storageAccountName }}" -storageAccountType "${{ variables.storageAccountType }}" -workspaceResourceId "${{ variables.workspaceResourceId }}"'
             deploymentOutputs: armoutputs
