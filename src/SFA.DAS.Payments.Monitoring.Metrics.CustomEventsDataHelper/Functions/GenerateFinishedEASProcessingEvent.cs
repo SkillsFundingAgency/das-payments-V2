@@ -20,7 +20,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.CustomEventsDataHelper.Functions
             ILogger log,
             [Inject] ITelemetry telemetry)
         {
-
             Dictionary<string, string> properties = Helpers.ExtractGenericProperties(req);
 
             var isSuccessful = Helpers.ExtractQueryParameterOrDefault(req, "isSuccessful", "false");
