@@ -22,6 +22,30 @@
       },
       "location": {
         "value": ""
+      },
+      "dasAlertsActionGroupName": {
+        "value": ""
+      },
+      "dasAlertsActionGroupNameShort": {
+        "value": ""
+      },
+      "dasActionGroupWebhookUri": {
+        "value": ""
+      },
+      "mgDasAlertsActionGroupName": {
+        "value": ""
+      },
+      "mgDasAlertsActionGroupNameShort": {
+        "value": ""
+      },
+      "mgDasActionGroupWebhookUri": {
+        "value": ""
+      },
+      "smartDetectionActionGroupId": {
+        "value": ""
+      },
+      "serviceBusActionGroupId": {
+        "value": ""
       }
     }
-  }
+}

@@ -1,0 +1,778 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+	"parameters": {
+		"functionAppName": {
+			"type": "string",
+			"metadata": {
+				"description": "The name of the Azure Function app."
+			}
+		},
+		"applicationInsightsName": {
+			"type": "string",
+			"metadata": {
+				"description": "The name of the Application Insights instance."
+			}
+		},
+		"storageAccountType": {
+			"type": "string",
+			"defaultValue": "Standard_LRS",
+			"allowedValues": [
+				"Standard_LRS",
+				"Standard_GRS",
+				"Standard_RAGRS"
+			],
+			"metadata": {
+				"description": "Storage Account type"
+			}
+		},
+		"storageAccountName": {
+			"type": "string",
+			"metadata": {
+				"description": "Storage Account Name"
+			}
+		},
+		"location": {
+			"type": "string",
+			"defaultValue": "[resourceGroup().location]",
+			"metadata": {
+				"description": "Location for all resources."
+			}
+		},
+		"requestSource": {
+			"type": "string",
+			"metadata": {
+				"description": "Source of Azure Resource Manager deployment"
+			}
+		},
+		"workspaceResourceId": {
+			"type": "string",
+			"metadata": {
+				"description": "Log Analytics workspace ID to associate with your Application Insights resource."
+			}
+		},
+		"dasAlertsActionGroupName": {
+			"defaultValue": "",
+			"type": "string"
+		},
+		"dasAlertsActionGroupNameShort": {
+			"defaultValue": "",
+			"type": "string"
+		},
+		"dasActionGroupWebhookUri": {
+			"type": "string",
+			"defaultValue": ""
+		},
+		"mgDasAlertsActionGroupName": {
+			"defaultValue": "",
+			"type": "string"
+		},
+		"mgDasAlertsActionGroupNameShort": {
+			"defaultValue": "",
+			"type": "string"
+		},
+		"mgDasActionGroupWebhookUri": {
+			"type": "string",
+			"defaultValue": ""
+		},
+		"smartDetectionActionGroupId": {
+			"type": "string",
+			"defaultValue": ""
+		},
+		"serviceBusActionGroupId": {
+			"type": "string",
+			"defaultValue": ""
+		}
+	},
+  "variables": {
+    "hostingPlanName": "[parameters('functionAppName')]",
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2022-05-01",
+      "name": "[parameters('storageAccountName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('storageAccountType')]"
+      },
+      "kind": "Storage"
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2022-03-01",
+      "name": "[variables('hostingPlanName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Y1",
+        "tier": "Dynamic",
+        "size": "Y1",
+        "family": "Y"
+      },
+      "properties": {
+        "computeMode": "Dynamic"
+      }
+    },
+    {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02",
+      "name": "[parameters('applicationInsightsName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "Application_Type": "web",
+		"Flow_Type": "Bluefield",
+        "Request_Source": "[parameters('requestSource')]",
+        "WorkspaceResourceId": "[parameters('workspaceResourceId')]"
+      },
+      "kind": "other"
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2022-03-01",
+      "name": "[parameters('functionAppName')]",
+      "location": "[parameters('location')]",
+      "kind": "functionapp",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2020-02-02').InstrumentationKey]"
+            },
+            {
+              "name": "AzureWebJobsStorage",
+              "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', parameters('storageAccountName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-09-01').keys[0].value)]"
+            },
+            {
+              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+              "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', parameters('storageAccountName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-09-01').keys[0].value)]"
+            },
+            {
+              "name": "WEBSITE_CONTENTSHARE",
+              "value": "[toLower(parameters('functionAppName'))]"
+            },
+            {
+              "name": "FUNCTIONS_EXTENSION_VERSION",
+              "value": "~4"
+            },
+            {
+              "name": "FUNCTIONS_WORKER_RUNTIME",
+              "value": "dotnet"
+            },
+            {
+              "name": "WEBSITE_NODE_DEFAULT_VERSION",
+              "value": "~14"
+            },
+            {
+              "name": "WEBSITE_RUN_FROM_PACKAGE",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+      ]
+    },
+	{
+		"type": "microsoft.insights/actionGroups",
+		"apiVersion": "2022-06-01",
+		"name": "[parameters('dasAlertsActionGroupName')]",
+		"location": "Global",
+		"properties": {
+			"groupShortName": "[parameters('dasAlertsActionGroupNameShort')]",
+			"enabled": true,
+			"emailReceivers": [],
+			"smsReceivers": [],
+			"webhookReceivers": [
+				{
+					"name": "[concat(parameters('dasAlertsActionGroupName'), '-webhook-action')]",
+					"serviceUri": "[parameters('dasActionGroupWebhookUri')]",
+					"useCommonAlertSchema": true,
+					"useAadAuth": false
+				}
+			],
+			"eventHubReceivers": [],
+			"itsmReceivers": [],
+			"azureAppPushReceivers": [],
+			"automationRunbookReceivers": [],
+			"voiceReceivers": [],
+			"logicAppReceivers": [],
+			"azureFunctionReceivers": [],
+			"armRoleReceivers": []
+		}
+    },
+	{
+		"type": "microsoft.insights/actionGroups",
+		"apiVersion": "2022-06-01",
+		"name": "[parameters('mgDasAlertsActionGroupName')]",
+		"location": "Global",
+		"properties": {
+			"groupShortName": "[parameters('mgDasAlertsActionGroupNameShort')]",
+			"enabled": true,
+			"emailReceivers": [],
+			"smsReceivers": [],
+			"webhookReceivers": [
+				{
+					"name": "[concat(parameters('mgDasAlertsActionGroupName'), '-webhook-action')]",
+					"serviceUri": "[parameters('mgDasActionGroupWebhookUri')]",
+					"useCommonAlertSchema": true,
+					"useAadAuth": false
+				}
+			],
+			"eventHubReceivers": [],
+			"itsmReceivers": [],
+			"azureAppPushReceivers": [],
+			"automationRunbookReceivers": [],
+			"voiceReceivers": [],
+			"logicAppReceivers": [],
+			"azureFunctionReceivers": [],
+			"armRoleReceivers": []
+		}
+    },
+	{
+		"type": "microsoft.insights/scheduledqueryrules",
+		"apiVersion": "2022-06-15",
+		"name": "Actual Accuracy Just Outside Tolerance",
+		"location": "[parameters('location')]",
+		"properties": {
+			"displayName": "Actual Accuracy Just Outside Tolerance",
+			"description": "Actual period end accuracy is {Accuracy}% for collection period {CollectionPeriod}. This is marginally outside accepted tolerance.",
+			"severity": 1,
+			"enabled": true,
+			"evaluationFrequency": "PT5M",
+			"scopes": [
+				"[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]"
+			],
+			"targetResourceTypes": [
+				"microsoft.insights/components"
+			],
+			"windowSize": "PT5M",
+			"criteria": {
+				"allOf": [
+					{
+						"query": "union isfuzzy=true customEvents\n| extend\n    percentage = todouble(customMeasurements[\"Percentage\"])\n| where name in (\"Event: Finished Generating Period End Metrics\")\n    and ((percentage >= 99.90 and percentage < 99.92) or (percentage > 100.08 and percentage <= 100.10))\n| order by timestamp desc\n",
+						"timeAggregation": "Count",
+						"dimensions": [],
+						"operator": "GreaterThan",
+						"threshold": 0,
+						"failingPeriods": {
+							"numberOfEvaluationPeriods": 1,
+							"minFailingPeriodsToAlert": 1
+						}
+					}
+				]
+			},
+			"autoMitigate": false,
+			"actions": {
+				"actionGroups": [
+					"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+				],
+				"customProperties": {}
+			}
+		}
+	},
+	{
+		"type": "microsoft.insights/scheduledqueryrules",
+		"apiVersion": "2022-06-15",
+		"name": "Actual Accuracy Outside Tolerance",
+		"location": "[parameters('location')]",
+		"properties": {
+			"displayName": "Actual Accuracy Outside Tolerance",
+			"description": "Actual overall accuracy is outside tolerance. Accuracy was calculated to be {Accuracy}% for collection period {CollectionPeriod}.",
+			"severity": 0,
+			"enabled": true,
+			"evaluationFrequency": "PT5M",
+			"scopes": [
+				"[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]"
+			],
+			"targetResourceTypes": [
+				"microsoft.insights/components"
+			],
+			"windowSize": "PT5M",
+			"criteria": {
+				"allOf": [
+					{
+						"query": "union isfuzzy=true customEvents\n| extend\n    percentage = todouble(customMeasurements[\"Percentage\"])\n| where name in (\"Event: Finished Generating Period End Metrics\")\n    and (percentage < 99.92 or percentage > 100.08)\n| order by timestamp desc\n",
+						"timeAggregation": "Count",
+						"operator": "GreaterThan",
+						"threshold": 0,
+						"failingPeriods": {
+							"numberOfEvaluationPeriods": 1,
+							"minFailingPeriodsToAlert": 1
+						}
+					}
+				]
+			},
+			"actions": {
+				"actionGroups": [
+					"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
+					"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+				]
+			}
+		}
+    },
+		{
+			"type": "microsoft.insights/scheduledqueryrules",
+			"apiVersion": "2022-06-15",
+			"name": "Actual Accuracy Within Tolerance",
+			"location": "[parameters('location')]",
+			"properties": {
+				"displayName": "Actual Accuracy Within Tolerance",
+				"description": "Actual period end accuracy within tolerance :party-cat:. Accuracy is {Accuracy}% for period {CollectionPeriod}, academic year {AcademicYear}.",
+				"severity": 3,
+				"enabled": true,
+				"evaluationFrequency": "PT5M",
+				"scopes": [
+					"[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]"
+				],
+				"targetResourceTypes": [
+					"microsoft.insights/components"
+				],
+				"windowSize": "PT5M",
+				"criteria": {
+					"allOf": [
+						{
+							"query": "union isfuzzy=true customEvents\n| extend\n    percentage = todouble(customMeasurements[\"Percentage\"])\n| where name in (\"Event: Finished Generating Period End Metrics\")\n    and (percentage >= 99.92 and percentage <= 100.08)\n| order by timestamp desc\n",
+							"timeAggregation": "Count",
+							"operator": "GreaterThan",
+							"threshold": 0,
+							"failingPeriods": {
+								"numberOfEvaluationPeriods": 1,
+								"minFailingPeriodsToAlert": 1
+							}
+						}
+					]
+				},
+				"actions": {
+					"actionGroups": [
+						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
+						"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+					]
+				}
+			}
+		},
+		{
+			"type": "microsoft.insights/scheduledqueryrules",
+			"apiVersion": "2022-06-15",
+			"name": "Actual Provider Accuracy Outside Tolerance",
+			"location": "[parameters('location')]",
+			"properties": {
+				"displayName": "Actual Provider Accuracy Outside Tolerance",
+				"description": "Actual period end accuracy for provider {Ukprn} is outside tolerance.  Accuracy is {Accuracy}% for collection period {CollectionPeriod}, academic year {AcademicYear}. ",
+				"severity": 0,
+				"enabled": true,
+				"evaluationFrequency": "PT5M",
+				"scopes": [
+					"[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]"
+				],
+				"targetResourceTypes": [
+					"microsoft.insights/components"
+				],
+				"windowSize": "PT5M",
+				"criteria": {
+					"allOf": [
+						{
+							"query": "union isfuzzy=true customEvents\n| extend\n    percentage = todouble(customMeasurements[\"Percentage\"])\n| where name startswith \"Event: Finished Generating Period End Metrics for Provider\"\n    and (percentage < 99.92 or percentage > 100.08)\n| order by timestamp desc\n",
+							"timeAggregation": "Count",
+							"operator": "GreaterThan",
+							"threshold": 0,
+							"failingPeriods": {
+								"numberOfEvaluationPeriods": 1,
+								"minFailingPeriodsToAlert": 1
+							}
+						}
+					]
+				},
+				"actions": {
+					"actionGroups": [
+						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+					]
+				}
+			}
+		},
+		{
+			"type": "microsoft.insights/scheduledqueryrules",
+			"apiVersion": "2022-06-15",
+			"name": "EAS Processing Completed Successfully",
+			"location": "[parameters('location')]",
+			"properties": {
+				"displayName": "EAS Processing Completed Successfully",
+				"description": "EAS processing completed successfully for collection period {CollectionPeriod}, academic year {AcademicYear}",
+				"severity": 3,
+				"enabled": true,
+				"evaluationFrequency": "PT5M",
+				"scopes": [
+					"[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]"
+				],
+				"targetResourceTypes": [
+					"microsoft.insights/components"
+				],
+				"windowSize": "PT5M",
+				"criteria": {
+					"allOf": [
+						{
+							"query": "union isfuzzy=true customEvents\n| extend     \n    jobStatus = tostring(customDimensions[\"isSuccessful\"])\n| where \n    name in (\"Event: Finished processing EAS\")    \n    and jobStatus == \"true\"\n",
+							"timeAggregation": "Count",
+							"operator": "GreaterThan",
+							"threshold": 0,
+							"failingPeriods": {
+								"numberOfEvaluationPeriods": 1,
+								"minFailingPeriodsToAlert": 1
+							}
+						}
+					]
+				},
+				"actions": {
+					"actionGroups": [
+						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
+						"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+					]
+				}
+			}
+		},
+		{
+			"type": "microsoft.insights/scheduledqueryrules",
+			"apiVersion": "2022-06-15",
+			"name": "EAS Processing Failed",
+			"location": "[parameters('location')]",
+			"properties": {
+				"displayName": "EAS Processing Failed",
+				"description": "EAS processing failed for collection period {CollectionPeriod}, academic year {AcademicYear}",
+				"severity": 1,
+				"enabled": true,
+				"evaluationFrequency": "PT5M",
+				"scopes": [
+					"[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]"
+				],
+				"targetResourceTypes": [
+					"microsoft.insights/components"
+				],
+				"windowSize": "PT5M",
+				"criteria": {
+					"allOf": [
+						{
+							"query": "union isfuzzy=true customEvents\n| extend\n    jobStatus = tostring(customDimensions[\"isSuccessful\"])\n| where\n    name in (\"Event: Finished processing EAS\")\n    and jobStatus == \"false\"\n| top 1 by timestamp desc nulls last",
+							"timeAggregation": "Count",
+							"operator": "GreaterThan",
+							"threshold": 0,
+							"failingPeriods": {
+								"numberOfEvaluationPeriods": 1,
+								"minFailingPeriodsToAlert": 1
+							}
+						}
+					]
+				},
+				"actions": {
+					"actionGroups": [
+						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
+						"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+					]
+				}
+			}
+		},
+		{
+			"type": "microsoft.insights/scheduledqueryrules",
+			"apiVersion": "2022-06-15",
+			"name": "Estimated Provider Accuracy Outside Tolerance",
+			"location": "[parameters('location')]",
+			"properties": {
+				"displayName": "Estimated Provider Accuracy Outside Tolerance",
+				"description": "Estimated period end accuracy of {Accuracy}% for provider {Ukprn} is outside configured tolerance.",
+				"severity": 2,
+				"enabled": true,
+				"evaluationFrequency": "PT5M",
+				"scopes": [
+					"[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]"
+				],
+				"targetResourceTypes": [
+					"microsoft.insights/components"
+				],
+				"windowSize": "PT5M",
+				"criteria": {
+					"allOf": [
+						{
+							"query": "union isfuzzy=true customEvents\n| extend\n    percentage = todouble(customMeasurements[\"Percentage\"])\n| where name in (\"Event: Finished Generating Submission Metrics\")\n    and (percentage < 99.00 or percentage > 101.00)\n| order by timestamp desc",
+							"timeAggregation": "Count",
+							"operator": "GreaterThan",
+							"threshold": 0,
+							"failingPeriods": {
+								"numberOfEvaluationPeriods": 1,
+								"minFailingPeriodsToAlert": 1
+							}
+						}
+					]
+				},
+				"actions": {
+					"actionGroups": [
+						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+					]
+				}
+			}
+		},
+		{
+			"type": "microsoft.insights/scheduledqueryrules",
+			"apiVersion": "2022-06-15",
+			"name": "Period End Processing Completed Successfully",
+			"location": "[parameters('location')]",
+			"properties": {
+				"displayName": "Period End Processing Completed Successfully",
+				"description": "Period end processing successful for collection period {CollectionPeriod}, academic year {AcademicYear}.",
+				"severity": 3,
+				"enabled": true,
+				"evaluationFrequency": "PT5M",
+				"scopes": [
+					"[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]"
+				],
+				"targetResourceTypes": [
+					"microsoft.insights/components"
+				],
+				"windowSize": "PT5M",
+				"criteria": {
+					"allOf": [
+						{
+							"query": "union isfuzzy=true customEvents\n| extend \n    jobType = tostring(customDimensions[\"JobType\"])\n    ,jobStatus = tostring(customDimensions[\"Status\"])\n| where customDimensions[\"ProcessName\"] in (\"SFA.DAS.Payments.Monitoring.Jobs.JobService\")\n    and name in (\"Event: Finished Job\")\n    and jobType == \"PeriodEndRunJob\"\n    and (jobStatus == \"Completed\" or jobStatus == \"CompletedWithErrors\")\n\n",
+							"timeAggregation": "Count",
+							"operator": "GreaterThan",
+							"threshold": 0,
+							"failingPeriods": {
+								"numberOfEvaluationPeriods": 1,
+								"minFailingPeriodsToAlert": 1
+							}
+						}
+					]
+				},
+				"actions": {
+					"actionGroups": [
+						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
+						"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+					]
+				}
+			}
+		},
+		{
+			"type": "microsoft.insights/scheduledqueryrules",
+			"apiVersion": "2022-06-15",
+			"name": "Period End Processing Failed",
+			"location": "[parameters('location')]",
+			"properties": {
+				"displayName": "Period End Processing Failed",
+				"description": "Period end processing failed for collection period {CollectionPeriod}, academic year {AcademicYear}!",
+				"severity": 1,
+				"enabled": true,
+				"evaluationFrequency": "PT5M",
+				"scopes": [
+					"[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]"
+				],
+				"targetResourceTypes": [
+					"microsoft.insights/components"
+				],
+				"windowSize": "PT5M",
+				"criteria": {
+					"allOf": [
+						{
+							"query": "union isfuzzy=true customEvents\n| extend \n    jobType = tostring(customDimensions[\"JobType\"])\n    ,jobStatus = tostring(customDimensions[\"Status\"])\n| where customDimensions[\"ProcessName\"] in (\"SFA.DAS.Payments.Monitoring.Jobs.JobService\")\n    and name in (\"Event: Finished Job\")\n    and jobType == \"PeriodEndRunJob\"\n    and (jobStatus != \"Completed\" and jobStatus != \"CompletedWithErrors\")\n\n",
+							"timeAggregation": "Count",
+							"operator": "GreaterThan",
+							"threshold": 0,
+							"failingPeriods": {
+								"numberOfEvaluationPeriods": 1,
+								"minFailingPeriodsToAlert": 1
+							}
+						}
+					]
+				},
+				"actions": {
+					"actionGroups": [
+						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+					]
+				}
+			}
+		},
+		{
+			"type": "microsoft.insights/scheduledqueryrules",
+			"apiVersion": "2022-06-15",
+			"name": "Submission Job Failed",
+			"location": "[parameters('location')]",
+			"properties": {
+				"displayName": "Submission Job Failed",
+				"description": "Provider submission processing failed. Ukprn: {Ukprn}, Job: {JobId}.",
+				"severity": 2,
+				"enabled": true,
+				"evaluationFrequency": "PT5M",
+				"scopes": [
+					"[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]"
+				],
+				"targetResourceTypes": [
+					"microsoft.insights/components"
+				],
+				"windowSize": "PT5M",
+				"criteria": {
+					"allOf": [
+						{
+							"query": "union isfuzzy=true customEvents\n| extend \n    jobType = todouble(customDimensions[\"JobType\"])\n    ,jobStatus = tostring(customDimensions[\"Status\"])\n| where customDimensions[\"ProcessName\"] in (\"SFA.DAS.Payments.Monitoring.Jobs.JobService\")\n    and name in (\"Event: Finished Job\")\n    and jobType == \"EarningsJob\"\n    and (jobStatus == \"TimedOut\" or jobStatus == \"DcTasksFailed\")\n\n",
+							"timeAggregation": "Count",
+							"operator": "GreaterThan",
+							"threshold": 0,
+							"failingPeriods": {
+								"numberOfEvaluationPeriods": 1,
+								"minFailingPeriodsToAlert": 1
+							}
+						}
+					]
+				},
+				"actions": {
+					"actionGroups": [
+						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+					]
+				}
+			}
+		},
+		{
+			"type": "microsoft.insights/scheduledqueryrules",
+			"apiVersion": "2022-06-15",
+			"name": "Submission Window Failed Validation Checks",
+			"location": "[parameters('location')]",
+			"properties": {
+				"displayName": "Submission Window Failed Validation Checks",
+				"description": "Submission window failed validation checks. Estimated period end accuracy is {Accuracy}%.",
+				"severity": 2,
+				"enabled": true,
+				"evaluationFrequency": "PT5M",
+				"scopes": [
+					"[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]"
+				],
+				"targetResourceTypes": [
+					"microsoft.insights/components"
+				],
+				"windowSize": "PT5M",
+				"criteria": {
+					"allOf": [
+						{
+							"query": "union isfuzzy=true customEvents\n| extend\n    percentage = todouble(customMeasurements[\"Percentage\"])\n| where name in (\"Event: Finished Generating Submissions Summary Metrics\")\n    and (percentage < 99.92 or percentage > 100.08)\n| order by timestamp desc\n",
+							"timeAggregation": "Count",
+							"operator": "GreaterThan",
+							"threshold": 0,
+							"failingPeriods": {
+								"numberOfEvaluationPeriods": 1,
+								"minFailingPeriodsToAlert": 1
+							}
+						}
+					]
+				},
+				"actions": {
+					"actionGroups": [
+						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+					]
+				}
+			}
+		},
+		{
+			"type": "microsoft.insights/scheduledqueryrules",
+			"apiVersion": "2022-06-15",
+			"name": "Submission Window Passed Validation Checks",
+			"location": "[parameters('location')]",
+			"properties": {
+				"displayName": "Submission Window Passed Validation Checks",
+				"description": "Submission window passed validation checks. Estimated period end accuracy is {Accuracy}%.",
+				"severity": 3,
+				"enabled": true,
+				"evaluationFrequency": "PT5M",
+				"scopes": [
+					"[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]"
+				],
+				"targetResourceTypes": [
+					"microsoft.insights/components"
+				],
+				"windowSize": "PT5M",
+				"criteria": {
+					"allOf": [
+						{
+							"query": "union isfuzzy=true customEvents\n| extend\n    percentage = todouble(customMeasurements[\"Percentage\"])\n| where name in (\"Event: Finished Generating Submissions Summary Metrics\")\n    and (percentage >= 99.92 and percentage <= 100.08)\n| order by timestamp desc\n",
+							"timeAggregation": "Count",
+							"operator": "GreaterThan",
+							"threshold": 0,
+							"failingPeriods": {
+								"numberOfEvaluationPeriods": 1,
+								"minFailingPeriodsToAlert": 1
+							}
+						}
+					]
+				},
+				"actions": {
+					"actionGroups": [
+						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+					]
+				}
+			}
+		},
+		{
+			"type": "microsoft.alertsmanagement/smartdetectoralertrules",
+			"apiVersion": "2021-04-01",
+			"name": "Failure anomalies",
+			"location": "global",
+			"properties": {
+				"description": "Failure Anomalies notifies you of an unusual rise in the rate of failed HTTP requests or dependency calls.",
+				"state": "Enabled",
+				"severity": "Sev3",
+				"frequency": "PT1M",
+				"detector": {
+					"id": "FailureAnomaliesDetector"
+				},
+				"scopes": [
+					"[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]"
+				],
+				"targetResourceTypes": [
+					"microsoft.insights/components"
+				],
+				"actionGroups": {
+					"groupIds": [
+						"[parameters('smartDetectionActionGroupId')]"
+					]
+				}
+			}
+		},
+		{
+			"type": "microsoft.insights/scheduledqueryrules",
+			"apiVersion": "2022-06-15",
+			"name": "Levy Funding Source Slowdown PD",
+			"location": "[parameters('location')]",
+			"properties": {
+				"displayName": "Levy Funding Source Slowdown PD",
+				"description": "Production Levy Funding Source Slow Down\nCheck Levy source funding queue size",
+				"severity": 3,
+				"enabled": true,
+				"evaluationFrequency": "PT5M",
+				"scopes": [
+					"[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]"
+				],
+				"targetResourceTypes": [
+					"microsoft.insights/components"
+				],
+				"windowSize": "PT15M",
+				"criteria": {
+					"allOf": [
+						{
+							"query": "customEvents\r\n| extend itemType = iif(itemType == 'customEvent',itemType,\"\"),\r\n    duration = todouble(customMeasurements.Duration),\r\n    processName = tostring(customDimensions['ProcessName'])\r\n| where itemType == 'customEvent'\r\n    and (timestamp >= ago(1h))\r\n    and processName == 'SFA.DAS.Payments.FundingSource.LevyFundedProxyService'\r\n    and duration > 60000\r\n| summarize avg(duration) by processName, bin(timestamp, 10s)\n",
+							"timeAggregation": "Count",
+							"operator": "GreaterThan",
+							"threshold": 1,
+							"failingPeriods": {
+								"numberOfEvaluationPeriods": 1,
+								"minFailingPeriodsToAlert": 1
+							}
+						}
+					]
+				},
+				"actions": {
+					"actionGroups": [
+						"[parameters('serviceBusActionGroupId')]"
+					]
+				}
+			}
+		}
+  ]
+}

@@ -5,6 +5,9 @@ parameters:
   environmentName:
   workspaceResourceId:
   storageAccountName:
+  dasActionGroupWebhookUri:
+  smartDetectionActionGroupId:
+  serviceBusActionGroupId:
   
 
 jobs:
@@ -27,6 +30,16 @@ jobs:
       value: 'Standard_LRS'
     - name: workspaceResourceId
       value: ${{ parameters.workspaceResourceId }}
+    - name: dasAlertsActionGroupName
+      value: '$(Service)-${{ parameters.environmentName }}-dasalerts-actiongroup-$(RegionPrimaryCode)'
+    - name: dasAlertsActionGroupNameShort
+      value: '$(Service)-${{ parameters.environmentName }}-alert'
+    - name: dasActionGroupWebhookUri
+      value: '${{ parameters.dasActionGroupWebhookUri }}'
+    - name: smartDetectionActionGroupId
+      value: '${{ parameters.smartDetectionActionGroupId }}'
+    - name: serviceBusActionGroupId
+      value: '${{ parameters.serviceBusActionGroupId }}'
     #- name: keyVaultName
     #  ${{ if eq( parameters['environmentName'], 'SDW') }}:
     #    value: '$(Service)-${{ parameters.environmentName }}-KVaultDAS-$(RegionPrimaryCode)'
@@ -65,7 +78,7 @@ jobs:
             azureSubscription: '${{ parameters.azureSubscription }}'
             resourceGroupName: '${{ variables.resourceGroupName }}'
             location: '${{ parameters.location }}'
-            csmFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.Monitoring.Metrics/azure/azuredeploy.json'
+            csmFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.Monitoring.Metrics/azure/armdeploy.json'
             csmParametersFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.Monitoring.Metrics/azure/parameters.json'
-            overrideParameters: '-applicationInsightsName "${{ variables.applicationInsightsName }}" -functionAppName "${{ variables.functionAppName }}" -storageAccountName "${{ variables.storageAccountName }}" -storageAccountType "${{ variables.storageAccountType }}" -workspaceResourceId "${{ variables.workspaceResourceId }}" -location "${{ parameters.location }}"'
+            overrideParameters: '-applicationInsightsName "${{ variables.applicationInsightsName }}" -functionAppName "${{ variables.functionAppName }}" -storageAccountName "${{ variables.storageAccountName }}" -storageAccountType "${{ variables.storageAccountType }}" -workspaceResourceId "${{ variables.workspaceResourceId }}" -location "${{ parameters.location }}" -serviceBusActionGroupId "${{ parameters.serviceBusActionGroupId }}" -smartDetectionActionGroupId "${{ parameters.smartDetectionActionGroupId }}" -dasActionGroupWebhookUri "${{ parameters.dasActionGroupWebhookUri }}" -dasAlertsActionGroupNameShort "${{ parameters.dasAlertsActionGroupNameShort }}" -dasAlertsActionGroupName "${{ parameters.dasAlertsActionGroupName }}"'
             deploymentOutputs: armoutputs
