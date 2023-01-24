@@ -6,12 +6,11 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using System.Text.Json;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Net.Http.Headers;
 using System.Net.Http;
-using Azure.Core;
 
 namespace SFA.DAS.Monitoring.Alerts.Function
 {
@@ -50,7 +49,7 @@ namespace SFA.DAS.Monitoring.Alerts.Function
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             log.LogInformation($"Request: {requestBody}.");
-            dynamic alert = JsonConvert.DeserializeObject<ExpandoObject>(requestBody);
+            dynamic alert = JsonSerializer.Deserialize<ExpandoObject>(requestBody);
             log.LogInformation($"Alert name: {alert.data?.essentials?.alertRule}");
 
             HttpClient apiInsightsClient = GetAppInsightsClient();
@@ -75,9 +74,8 @@ namespace SFA.DAS.Monitoring.Alerts.Function
         {
             var appInsightsSearchResultsUri = alert.data.alertContext.condition.allOf[0].linkToSearchResultsAPI;
 
-
             var appInsightsApiResultJson = await client.GetStringAsync(new Uri(appInsightsSearchResultsUri));
-            dynamic appInsightsResult = JsonConvert.DeserializeObject<ExpandoObject>(appInsightsApiResultJson);
+            dynamic appInsightsResult = JsonSerializer.Deserialize<ExpandoObject>(appInsightsApiResultJson);
 
             return appInsightsResult;
         }
@@ -103,8 +101,8 @@ namespace SFA.DAS.Monitoring.Alerts.Function
 
         private static async Task PostSlackAlert(HttpClient httpClient, string slackChannelUri, dynamic alert, string alertEmoji, dynamic row, string appInsightsSearchResultsUiLink)
         {
-            var customDimensions = JsonConvert.DeserializeObject<Dictionary<string, string>>(row[3]);
-            var customMeasurements = JsonConvert.DeserializeObject<Dictionary<string, double>>(row[4]);
+            var customDimensions = JsonSerializer.Deserialize<Dictionary<string, string>>(row[3]);
+            var customMeasurements = JsonSerializer.Deserialize<Dictionary<string, double>>(row[4]);
             DateTime timestamp = row[0];
 
             var alertVariables = ExtractAlertVariables(customMeasurements, customDimensions, timestamp);
