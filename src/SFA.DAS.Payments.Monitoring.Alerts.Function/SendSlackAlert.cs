@@ -25,7 +25,26 @@ namespace SFA.DAS.Monitoring.Alerts.Function
         }
 
         [FunctionName("HttpTrigger1")]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get","post", Route = null)] HttpRequest req, ILogger log)
+        public async Task<IActionResult> SendToChannelOne([HttpTrigger(AuthorizationLevel.Function, "get","post", Route = null)] HttpRequest req, ILogger log)
+        {
+            var slackChannelUri = GetEnvironmentVariable("SlackChannelUri");
+
+            await PostSlackAlert(req, log, slackChannelUri);
+
+            return new OkObjectResult("");
+        }
+
+        [FunctionName("HttpTrigger2")]
+        public async Task<IActionResult> SendToChannelTwo([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req, ILogger log)
+        {
+            var slackChannelUri = GetEnvironmentVariable("SlackChannelUri2");
+
+            await PostSlackAlert(req, log, slackChannelUri);
+
+            return new OkObjectResult("");
+        }
+
+        private async Task PostSlackAlert(HttpRequest req, ILogger log, string slackChannelUri)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
@@ -47,11 +66,9 @@ namespace SFA.DAS.Monitoring.Alerts.Function
                 Console.WriteLine($"{table.rows}");
                 foreach (var row in table.rows)
                 {
-                    await PostSlackAlert(slackApiClient, alert, alertEmoji, row, appInsightsSearchResultsUiLink);
+                    await PostSlackAlert(slackApiClient, slackChannelUri, alert, alertEmoji, row, appInsightsSearchResultsUiLink);
                 }
             }
-
-            return new OkObjectResult("");
         }
 
         private static async Task<dynamic> GetAppInsightsSearchResults(dynamic alert, HttpClient client)
@@ -84,7 +101,7 @@ namespace SFA.DAS.Monitoring.Alerts.Function
             return apiInsightsClient;
         }
 
-        private static async Task PostSlackAlert(HttpClient httpClient, dynamic alert, string alertEmoji, dynamic row, string appInsightsSearchResultsUiLink)
+        private static async Task PostSlackAlert(HttpClient httpClient, string slackChannelUri, dynamic alert, string alertEmoji, dynamic row, string appInsightsSearchResultsUiLink)
         {
             var customDimensions = JsonConvert.DeserializeObject<Dictionary<string, string>>(row[3]);
             var customMeasurements = JsonConvert.DeserializeObject<Dictionary<string, double>>(row[4]);
@@ -113,13 +130,7 @@ namespace SFA.DAS.Monitoring.Alerts.Function
                                        appInsightsSearchResultsUiLink)
             };
 
-            var payloadText = JsonConvert.SerializeObject(slackPayload);
-
-            var slackChannelResource = GetEnvironmentVariable("SlackChannelUri");
-
-            var response = await httpClient.PostAsJsonAsync(slackChannelResource, slackPayload);
-
-            var x = await response.Content.ReadAsStringAsync();
+            await httpClient.PostAsJsonAsync(slackChannelUri, slackPayload);
         }
 
         private static string GetEnvironmentVariable(string variableName)
