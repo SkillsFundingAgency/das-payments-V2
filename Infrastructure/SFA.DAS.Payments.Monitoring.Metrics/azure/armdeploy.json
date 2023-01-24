@@ -172,7 +172,7 @@
       ]
     },
 	{
-		"type": "microsoft.insights/actionGroups",
+		"type": "Microsoft.Insights/actionGroups",
 		"apiVersion": "2022-06-01",
 		"name": "[parameters('dasAlertsActionGroupName')]",
 		"location": "Global",
@@ -200,7 +200,7 @@
 		}
     },
 	{
-		"type": "microsoft.insights/actionGroups",
+		"type": "Microsoft.Insights/actionGroups",
 		"apiVersion": "2022-06-01",
 		"name": "[parameters('mgDasAlertsActionGroupName')]",
 		"location": "Global",

@@ -24,28 +24,28 @@
         "value": ""
       },
       "dasAlertsActionGroupName": {
-        "value": ""
+        "value": "my_workspace_based_ActionGroup_resource"
       },
       "dasAlertsActionGroupNameShort": {
-        "value": ""
+        "value": "my_workspace_ActionGroupShort_resource"
       },
       "dasActionGroupWebhookUri": {
-        "value": ""
+        "value": "WebhookURI"
       },
       "mgDasAlertsActionGroupName": {
-        "value": ""
+        "value": "mgworkspace_based_ActionGroup_resource"
       },
       "mgDasAlertsActionGroupNameShort": {
-        "value": ""
+        "value": "mgworkspace_DAS_ActionGroup_resource"
       },
       "mgDasActionGroupWebhookUri": {
-        "value": ""
+        "value": "mgWebHookURI"
       },
       "smartDetectionActionGroupId": {
-        "value": ""
+        "value": "Smart-Detect-Action-Group"
       },
       "serviceBusActionGroupId": {
-        "value": ""
+        "value": "ServiceBus-Action-Group"
       }
     }
 }
