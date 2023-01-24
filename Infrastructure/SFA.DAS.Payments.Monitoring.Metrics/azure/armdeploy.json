@@ -52,36 +52,28 @@
 			}
 		},
 		"dasAlertsActionGroupName": {
-			"defaultValue": "",
 			"type": "string"
 		},
 		"dasAlertsActionGroupNameShort": {
-			"defaultValue": "",
 			"type": "string"
 		},
 		"dasActionGroupWebhookUri": {
-			"type": "string",
-			"defaultValue": ""
+			"type": "string"
 		},
 		"mgDasAlertsActionGroupName": {
-			"defaultValue": "",
 			"type": "string"
 		},
 		"mgDasAlertsActionGroupNameShort": {
-			"defaultValue": "",
 			"type": "string"
 		},
 		"mgDasActionGroupWebhookUri": {
-			"type": "string",
-			"defaultValue": ""
+			"type": "string"
 		},
 		"smartDetectionActionGroupId": {
-			"type": "string",
-			"defaultValue": ""
+			"type": "string"
 		},
 		"serviceBusActionGroupId": {
-			"type": "string",
-			"defaultValue": ""
+			"type": "string"
 		}
 	},
   "variables": {
