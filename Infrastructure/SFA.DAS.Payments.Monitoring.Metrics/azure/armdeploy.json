@@ -52,28 +52,54 @@
 			}
 		},
 		"dasAlertsActionGroupName": {
-			"type": "string"
+			"type": "string",
+			"defaultValue": "Default DAS Action Group Name",
+			"metadata": {
+				"description": "DAS ActionGroup Name"
+			}
 		},
 		"dasAlertsActionGroupNameShort": {
-			"type": "string"
+			"type": "string",
+			"metadata": {
+				"description": "DAS ActionGroup Short Name"
+			}
 		},
 		"dasActionGroupWebhookUri": {
-			"type": "string"
+			"type": "string",
+			"metadata": {
+				"description": "DAS ActionGroup WebHookURI"
+			}
 		},
 		"mgDasAlertsActionGroupName": {
-			"type": "string"
+			"type": "string",
+			"defaultValue": "Default mgDAS Action Group Name",
+			"metadata": {
+				"description": "DAS mgDASAlerts Action Group Name"
+			}
 		},
 		"mgDasAlertsActionGroupNameShort": {
-			"type": "string"
+			"type": "string",
+			"metadata": {
+				"description": "DAS mgActionGroup Short Name"
+			}
 		},
 		"mgDasActionGroupWebhookUri": {
-			"type": "string"
+			"type": "string",
+			"metadata": {
+				"description": "mgDAS ActionGroup WebHookURI"
+			}
 		},
 		"smartDetectionActionGroupId": {
-			"type": "string"
+			"type": "string",
+			"metadata": {
+				"description": "Smart Detection Action GroupID"
+			}
 		},
 		"serviceBusActionGroupId": {
-			"type": "string"
+			"type": "string",
+			"metadata": {
+				"description": "ServiceBUS Action GroupID"
+			}
 		}
 	},
   "variables": {
