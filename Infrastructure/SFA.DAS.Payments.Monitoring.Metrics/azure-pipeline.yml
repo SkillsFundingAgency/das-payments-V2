@@ -32,8 +32,8 @@ stages:
       workspaceResourceId: /subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourcegroups/dcol-dev-oms-weu/providers/microsoft.operationalinsights/workspaces/dcol-dev-oms-weu
       dasActionGroupWebhookUri: https://dcol-ete-monitoringalerts-weu.azurewebsites.net/api/HttpTrigger1?code=psdMwRn/a4D7l5Rx/l5orF0dptv8AR8uUZediTPAU4dHhmLaSd/nuA==&name=Bob
       mgDasActionGroupWebhookUri: https://dcol-ete-monitoringalerts-weu.azurewebsites.net/api/HttpTrigger1?code=psdMwRn/a4D7l5Rx/l5orF0dptv8AR8uUZediTPAU4dHhmLaSd/nuA==&name=Bob
-      smartDetectionActionGroupId: /subscriptions/6c93f7dc-6c36-4ea6-8de3-3f4574f88027/resourceGroups/citizendigital-cds-prod-we/providers/microsoft.insights/actiongroups/application%20insights%20smart%20detection
-      serviceBusActionGroupId: /subscriptions/6c93f7dc-6c36-4ea6-8de3-3f4574f88027/resourceGroups/dcol-pd-ops-weu/providers/microsoft.insights/actiongroups/dcol-pd-servicebus-das-actiongroup
+      smartDetectionActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/dcol-dev-sqlserver/providers/microsoft.insights/actionGroups/Migration_AG2
+      serviceBusActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/dcol-dev-sqlserver/providers/microsoft.insights/actionGroups/Migration_AG2
 
 
 #- stage: Deploy_DST
