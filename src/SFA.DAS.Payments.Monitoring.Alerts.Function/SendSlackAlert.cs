@@ -6,11 +6,15 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Azure.Core.Pipeline;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers;
+using SFA.DAS.Payments.Monitoring.Alerts.Function.JsonHelpers;
+using SFA.DAS.Payments.Monitoring.Alerts.Function.TypedClients;
 
 namespace SFA.DAS.Monitoring.Alerts.Function
 {
@@ -49,9 +53,15 @@ namespace SFA.DAS.Monitoring.Alerts.Function
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             log.LogInformation($"Request: {requestBody}.");
-            dynamic alert = JsonSerializer.Deserialize<ExpandoObject>(requestBody);
-            log.LogInformation($"Alert name: {alert.data?.essentials?.alertRule}");
 
+            var options = new JsonSerializerOptions
+            {
+                Converters = { new ObjectAsPrimitiveConverter(floatFormat: FloatFormat.Double, unknownNumberFormat: UnknownNumberFormat.Error) },
+                WriteIndented = true,
+            };
+
+            dynamic alert = JsonSerializer.Deserialize<dynamic>(requestBody, options);
+            
             HttpClient apiInsightsClient = GetAppInsightsClient();
             alert.data.alertContext.SearchResults = await GetAppInsightsSearchResults(alert, apiInsightsClient);
 
@@ -62,7 +72,6 @@ namespace SFA.DAS.Monitoring.Alerts.Function
 
             foreach (var table in alert.data.alertContext.SearchResults.tables)
             {
-                Console.WriteLine($"{table.rows}");
                 foreach (var row in table.rows)
                 {
                     await PostSlackAlert(slackApiClient, slackChannelUri, alert, alertEmoji, row, appInsightsSearchResultsUiLink);
@@ -75,7 +84,14 @@ namespace SFA.DAS.Monitoring.Alerts.Function
             var appInsightsSearchResultsUri = alert.data.alertContext.condition.allOf[0].linkToSearchResultsAPI;
 
             var appInsightsApiResultJson = await client.GetStringAsync(new Uri(appInsightsSearchResultsUri));
-            dynamic appInsightsResult = JsonSerializer.Deserialize<ExpandoObject>(appInsightsApiResultJson);
+
+            var options = new JsonSerializerOptions
+            {
+                Converters = { new ObjectAsPrimitiveConverter(floatFormat: FloatFormat.Double, unknownNumberFormat: UnknownNumberFormat.Error) },
+                WriteIndented = true,
+            };
+
+            dynamic appInsightsResult = JsonSerializer.Deserialize<dynamic>(appInsightsApiResultJson, options);
 
             return appInsightsResult;
         }
@@ -103,7 +119,11 @@ namespace SFA.DAS.Monitoring.Alerts.Function
         {
             var customDimensions = JsonSerializer.Deserialize<Dictionary<string, string>>(row[3]);
             var customMeasurements = JsonSerializer.Deserialize<Dictionary<string, double>>(row[4]);
-            DateTime timestamp = row[0];
+            //var customDimensions = JsonSerializer.Deserialize<dynamic>(row[3],options );
+            //var customDimensions = JsonToDictionary(row[3].ToString());
+            //var customMeasurements = JsonToDictionary(row[4].ToString());
+            //var customMeasurements = JsonSerializer.Deserialize<Dictionary<string, double>>(row[4]);
+            DateTime timestamp = DateTime.Parse(row[0]);
 
             var alertVariables = ExtractAlertVariables(customMeasurements, customDimensions, timestamp);
 
@@ -128,7 +148,9 @@ namespace SFA.DAS.Monitoring.Alerts.Function
                                        appInsightsSearchResultsUiLink)
             };
 
-            await httpClient.PostAsJsonAsync(slackChannelUri, slackPayload);
+            var result = await httpClient.PostAsJsonAsync(slackChannelUri, slackPayload);
+
+            var message = await result.Content.ReadAsStringAsync();
         }
 
         private static string GetEnvironmentVariable(string variableName)
@@ -181,6 +203,31 @@ namespace SFA.DAS.Monitoring.Alerts.Function
                 "Sev3" => ":information_source:",
                 _ => string.Empty,
             };
+        }
+
+        private static Dictionary<string,string> JsonToDictionary(string json)
+        {
+            var dictionary = new Dictionary<string, string>();
+            var elements = json.Split(',');
+
+            foreach(var property in elements)
+            {
+                var nameValue = property.Split(':');
+                string name = SanitiseDictionaryValues(nameValue[0]);
+                var value = SanitiseDictionaryValues(nameValue[1]);
+
+                dictionary[name] = value;
+            }
+
+            return dictionary;
+        }
+
+        private static string SanitiseDictionaryValues(string value)
+        {
+            return value
+                .Replace("{", "")
+                .Replace("\"", "")
+                .Replace("}", "");
         }
 
         private static Dictionary<string, string> ExtractAlertVariables(dynamic customMeasurements, dynamic customDimensions, DateTime timestamp)
