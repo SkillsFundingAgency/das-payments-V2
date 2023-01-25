@@ -191,7 +191,7 @@
 	{
 		"type": "Microsoft.Insights/actionGroups",
 		"apiVersion": "2022-06-01",
-		"name": "TestDASActionGroupName",
+		"name": "[parameters('dasAlertsActionGroupName')]",
 		"location": "Global",
 		"properties": {
 			"groupShortName": "[parameters('dasAlertsActionGroupNameShort')]",
@@ -219,7 +219,7 @@
 	{
 		"type": "Microsoft.Insights/actionGroups",
 		"apiVersion": "2022-06-01",
-		"name": "TestmgDASActionGroupName",
+		"name": "[parameters('mgDasAlertsActionGroupName')]",
 		"location": "Global",
 		"properties": {
 			"groupShortName": "[parameters('mgDasAlertsActionGroupNameShort')]",
