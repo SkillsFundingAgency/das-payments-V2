@@ -36,9 +36,9 @@ jobs:
     - name: mgDasAlertsActionGroupName
       value: '$(Service)-${{ parameters.environmentName }}-mgdasalerts-actiongroup-$(RegionPrimaryCode)'
     - name: dasAlertsActionGroupNameShort
-      value: '$(Service)-${{ parameters.environmentName }}-alert'
+      value: '$(Service)-${{ parameters.environmentName }}'
     - name: mgDasAlertsActionGroupNameShort
-      value: '$(Service)-${{ parameters.environmentName }}-mgalert'
+      value: '$(Service)-${{ parameters.environmentName }}-MGD'
     - name: dasActionGroupWebhookUri
       value: '${{ parameters.dasActionGroupWebhookUri }}'
     - name: mgDasActionGroupWebhookUri
