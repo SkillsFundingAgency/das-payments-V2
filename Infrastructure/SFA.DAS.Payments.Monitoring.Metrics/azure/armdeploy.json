@@ -287,7 +287,7 @@
 		},
 		"dependsOn": [
         	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
-     ]
+        ]
 	},
 	{
 		"type": "microsoft.insights/scheduledqueryrules",
@@ -375,7 +375,7 @@
 			"dependsOn": [
         	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
 			"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
-		]
+		    ]
 		},
 		{
 			"type": "microsoft.insights/scheduledqueryrules",
