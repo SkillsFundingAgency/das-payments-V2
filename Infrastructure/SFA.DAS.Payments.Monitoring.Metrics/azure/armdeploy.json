@@ -284,7 +284,10 @@
 				],
 				"customProperties": {}
 			}
-		}
+		},
+		"dependsOn": [
+        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+     ]
 	},
 	{
 		"type": "microsoft.insights/scheduledqueryrules",
@@ -324,7 +327,11 @@
 					"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
 				]
 			}
-		}
+		},
+		"dependsOn": [
+        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
+			"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+		]
     },
 		{
 			"type": "microsoft.insights/scheduledqueryrules",
@@ -364,7 +371,11 @@
 						"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
 					]
 				}
-			}
+			},
+			"dependsOn": [
+        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
+			"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+		]
 		},
 		{
 			"type": "microsoft.insights/scheduledqueryrules",
@@ -403,7 +414,10 @@
 						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
 					]
 				}
-			}
+			},
+			"dependsOn": [
+        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+			]
 		},
 		{
 			"type": "microsoft.insights/scheduledqueryrules",
@@ -443,7 +457,11 @@
 						"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
 					]
 				}
-			}
+			},
+			"dependsOn": [
+        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
+			"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+			]
 		},
 		{
 			"type": "microsoft.insights/scheduledqueryrules",
@@ -483,7 +501,11 @@
 						"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
 					]
 				}
-			}
+			},
+			"dependsOn": [
+        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
+			"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+			]
 		},
 		{
 			"type": "microsoft.insights/scheduledqueryrules",
@@ -522,7 +544,10 @@
 						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
 					]
 				}
-			}
+			},
+			"dependsOn": [
+        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+			]
 		},
 		{
 			"type": "microsoft.insights/scheduledqueryrules",
@@ -562,7 +587,11 @@
 						"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
 					]
 				}
-			}
+			},
+			"dependsOn": [
+        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
+			"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+			]
 		},
 		{
 			"type": "microsoft.insights/scheduledqueryrules",
@@ -601,7 +630,10 @@
 						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
 					]
 				}
-			}
+			},
+			"dependsOn": [
+        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+			]
 		},
 		{
 			"type": "microsoft.insights/scheduledqueryrules",
@@ -640,7 +672,10 @@
 						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
 					]
 				}
-			}
+			},
+			"dependsOn": [
+        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+			]
 		},
 		{
 			"type": "microsoft.insights/scheduledqueryrules",
@@ -679,7 +714,10 @@
 						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
 					]
 				}
-			}
+			},
+			"dependsOn": [
+        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+			]
 		},
 		{
 			"type": "microsoft.insights/scheduledqueryrules",
@@ -718,7 +756,10 @@
 						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
 					]
 				}
-			}
+			},
+			"dependsOn": [
+        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+			]
 		},
 		{
 			"type": "microsoft.alertsmanagement/smartdetectoralertrules",
