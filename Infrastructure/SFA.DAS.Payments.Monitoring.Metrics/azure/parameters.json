@@ -24,7 +24,7 @@
         "value": ""
       },
       "dasAlertsActionGroupName": {
-        "value": ""
+        "value": "DASAlertsActionGroupName"
       },
       "dasAlertsActionGroupNameShort": {
         "value": "my_workspace_ActionGroupShort_resource"
@@ -33,7 +33,7 @@
         "value": "WebhookURI"
       },
       "mgDasAlertsActionGroupName": {
-        "value": ""
+        "value": "mgDASAlertsActionGroupName"
       },
       "mgDasAlertsActionGroupNameShort": {
         "value": "mgworkspace_DAS_ActionGroup_resource"

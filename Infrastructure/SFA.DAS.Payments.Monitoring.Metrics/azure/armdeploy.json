@@ -17,11 +17,6 @@
 		"storageAccountType": {
 			"type": "string",
 			"defaultValue": "Standard_LRS",
-			"allowedValues": [
-				"Standard_LRS",
-				"Standard_GRS",
-				"Standard_RAGRS"
-			],
 			"metadata": {
 				"description": "Storage Account type"
 			}
@@ -103,10 +98,8 @@
 		}
 	},
   "variables": {
-    "hostingPlanName": "[parameters('functionAppName')]",
-	"deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
-    "location": "[resourceGroup().location]"
-  },
+    "hostingPlanName": "[parameters('functionAppName')]"
+	},
   "resources": [
     {
       "type": "Microsoft.Storage/storageAccounts",
