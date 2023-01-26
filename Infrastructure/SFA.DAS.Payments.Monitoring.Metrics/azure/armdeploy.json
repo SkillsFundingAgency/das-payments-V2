@@ -280,13 +280,13 @@
 			"autoMitigate": false,
 			"actions": {
 				"actionGroups": [
-					"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+					"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]"
 				],
 				"customProperties": {}
 			}
 		},
 		"dependsOn": [
-        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+        	"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]"
         ]
 	},
 	{
@@ -323,14 +323,14 @@
 			},
 			"actions": {
 				"actionGroups": [
-					"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
-					"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+					"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]",
+					"[resourceId('Microsoft.Insights/actionGroups', parameters('mgDasAlertsActionGroupName'))]"
 				]
 			}
 		},
 		"dependsOn": [
-        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
-			"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+        	"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]",
+			"[resourceId('Microsoft.Insights/actionGroups', parameters('mgDasAlertsActionGroupName'))]"
 		]
     },
 		{
@@ -367,14 +367,14 @@
 				},
 				"actions": {
 					"actionGroups": [
-						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
-						"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+						"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]",
+						"[resourceId('Microsoft.Insights/actionGroups', parameters('mgDasAlertsActionGroupName'))]"
 					]
 				}
 			},
 			"dependsOn": [
-        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
-			"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+        	"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]",
+			"[resourceId('Microsoft.Insights/actionGroups', parameters('mgDasAlertsActionGroupName'))]"
 		    ]
 		},
 		{
@@ -411,12 +411,12 @@
 				},
 				"actions": {
 					"actionGroups": [
-						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+						"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]"
 					]
 				}
 			},
 			"dependsOn": [
-        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+        	"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]"
 			]
 		},
 		{
@@ -453,14 +453,14 @@
 				},
 				"actions": {
 					"actionGroups": [
-						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
-						"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+						"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]",
+						"[resourceId('Microsoft.Insights/actionGroups', parameters('mgDasAlertsActionGroupName'))]"
 					]
 				}
 			},
 			"dependsOn": [
-        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
-			"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+        	"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]",
+			"[resourceId('Microsoft.Insights/actionGroups', parameters('mgDasAlertsActionGroupName'))]"
 			]
 		},
 		{
@@ -497,14 +497,14 @@
 				},
 				"actions": {
 					"actionGroups": [
-						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
-						"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+						"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]",
+						"[resourceId('Microsoft.Insights/actionGroups', parameters('mgDasAlertsActionGroupName'))]"
 					]
 				}
 			},
 			"dependsOn": [
-        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
-			"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+        	"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]",
+			"[resourceId('Microsoft.Insights/actionGroups', parameters('mgDasAlertsActionGroupName'))]"
 			]
 		},
 		{
@@ -541,12 +541,12 @@
 				},
 				"actions": {
 					"actionGroups": [
-						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+						"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]"
 					]
 				}
 			},
 			"dependsOn": [
-        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+        	"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]"
 			]
 		},
 		{
@@ -583,14 +583,14 @@
 				},
 				"actions": {
 					"actionGroups": [
-						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
-						"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+						"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]",
+						"[resourceId('Microsoft.Insights/actionGroups', parameters('mgDasAlertsActionGroupName'))]"
 					]
 				}
 			},
 			"dependsOn": [
-        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]",
-			"[resourceId('Microsoft.Insights/components', parameters('mgDasAlertsActionGroupName'))]"
+        	"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]",
+			"[resourceId('Microsoft.Insights/actionGroups', parameters('mgDasAlertsActionGroupName'))]"
 			]
 		},
 		{
@@ -627,12 +627,12 @@
 				},
 				"actions": {
 					"actionGroups": [
-						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+						"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]"
 					]
 				}
 			},
 			"dependsOn": [
-        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+        	"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]"
 			]
 		},
 		{
@@ -669,12 +669,12 @@
 				},
 				"actions": {
 					"actionGroups": [
-						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+						"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]"
 					]
 				}
 			},
 			"dependsOn": [
-        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+        	"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]"
 			]
 		},
 		{
@@ -711,12 +711,12 @@
 				},
 				"actions": {
 					"actionGroups": [
-						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+						"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]"
 					]
 				}
 			},
 			"dependsOn": [
-        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+        	"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]"
 			]
 		},
 		{
@@ -753,12 +753,12 @@
 				},
 				"actions": {
 					"actionGroups": [
-						"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+						"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]"
 					]
 				}
 			},
 			"dependsOn": [
-        	"[resourceId('Microsoft.Insights/components', parameters('dasAlertsActionGroupName'))]"
+        	"[resourceId('Microsoft.Insights/actionGroups', parameters('dasAlertsActionGroupName'))]"
 			]
 		},
 		{
