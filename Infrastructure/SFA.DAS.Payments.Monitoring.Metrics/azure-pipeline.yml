@@ -36,20 +36,27 @@ stages:
       serviceBusActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-DAS-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
 
 
-#- stage: Deploy_DST
-#  dependsOn: Publish_ADF
-#  displayName: Deploy to DST
-#  variables:
-#  - name: tagEnvironment
-#    value: Dev/Test
-#  - group: DCOL-DST - Environment Key Vault Secrets
-#  jobs:
-#  - template: pipeline/deploy.yml
-#    parameters:
-#      pool: DCT Build Pool
-#      environmentName: DST
-#      azureSubscription: DCT-VSO
-#      deployFactory: true
+- stage: Deploy_DST
+  dependsOn: Publish_MonitoringMetrics
+  displayName: Deploy to DST
+  variables:
+  - name: tagEnvironment
+    value: Dev/Test
+  - group: DCOL-DST - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: DST
+      azureSubscription: DCT-VSO
+      storageAccountName: dcoldststoragemonitorweu
+      workspaceResourceId: /subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourcegroups/dcol-dev-oms-weu/providers/microsoft.operationalinsights/workspaces/dcol-dev-oms-weu
+      dasActionGroupWebhookUri: https://dcol-ete-monitoringalerts-weu.azurewebsites.net/api/HttpTrigger1?code=psdMwRn/a4D7l5Rx/l5orF0dptv8AR8uUZediTPAU4dHhmLaSd/nuA==
+      mgDasActionGroupWebhookUri: https://dcol-ete-monitoringalerts-weu.azurewebsites.net/api/HttpTrigger1?code=psdMwRn/a4D7l5Rx/l5orF0dptv8AR8uUZediTPAU4dHhmLaSd/nuA==
+      smartDetectionActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-DST-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
+      serviceBusActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-DST-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
+       
+#      
 
 #- stage: Deploy_SIT
 #  dependsOn: 
