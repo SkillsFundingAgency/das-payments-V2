@@ -765,8 +765,9 @@
 			"type": "microsoft.alertsmanagement/smartdetectoralertrules",
 			"apiVersion": "2021-04-01",
 			"name": "Failure anomalies",
-			"location": "global",
+			"location": "[parameters('location')]",
 			"properties": {
+				"displayName": "Failure anomalies",
 				"description": "Failure Anomalies notifies you of an unusual rise in the rate of failed HTTP requests or dependency calls.",
 				"state": "Enabled",
 				"severity": "Sev3",
