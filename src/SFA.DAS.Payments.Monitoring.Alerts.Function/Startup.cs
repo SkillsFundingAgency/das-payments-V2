@@ -3,6 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Extensions.Http;
+using SFA.DAS.Payments.Monitoring.Alerts.Function;
+using SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers;
+using SFA.DAS.Payments.Monitoring.Alerts.Function.Services;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.TypedClients;
 using System;
 using System.Net.Http;
@@ -36,6 +39,10 @@ namespace SFA.DAS.Monitoring.Alerts.Function
                 {
                     x.BaseAddress = new Uri(GetEnvironmentVariable("SlackBaseUrl"));
                 });
+
+            builder.Services.AddTransient<ISlackAlertHelper, SlackAlertHelper>();
+            builder.Services.AddTransient<IAppInsightsService, AppInsightsService >();
+            builder.Services.AddTransient<ISlackService, SlackService>();
         }
 
         static IAsyncPolicy<HttpResponseMessage> GetDefaultRetryPolicy()

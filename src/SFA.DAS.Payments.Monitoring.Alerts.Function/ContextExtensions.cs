@@ -1,22 +1,25 @@
 ﻿using Microsoft.Extensions.Logging;
 using Polly;
 
-public static class ContextExtensions
+namespace SFA.DAS.Payments.Monitoring.Alerts.Function
 {
-    private static readonly string LoggerKey = "LoggerKey";
-
-    public static Context WithLogger(this Context context, ILogger logger)
+    public static class ContextExtensions
     {
-        context[LoggerKey] = logger;
-        return context;
-    }
+        private static readonly string LoggerKey = "LoggerKey";
 
-    public static ILogger GetLogger(this Context context)
-    {
-        if (context.TryGetValue(LoggerKey, out object logger))
+        public static Context WithLogger(this Context context, ILogger logger)
         {
-            return logger as ILogger;
+            context[LoggerKey] = logger;
+            return context;
         }
-        return null;
+
+        public static ILogger GetLogger(this Context context)
+        {
+            if (context.TryGetValue(LoggerKey, out object logger))
+            {
+                return logger as ILogger;
+            }
+            return null;
+        }
     }
 }

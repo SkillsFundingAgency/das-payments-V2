@@ -1,9 +1,7 @@
-﻿using SFA.DAS.Payments.Monitoring.Alerts.Function.TypedClients;
-using System;
-using System.Dynamic;
-using System.Net.Http;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers;
+using SFA.DAS.Payments.Monitoring.Alerts.Function.TypedClients;
 
 namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Services
 {
@@ -18,8 +16,18 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Services
 
         public async Task<dynamic> GetAppInsightsSearchResults(string linkToSearchResultsAPI)
         {
-            var appInsightsApiResultJson = await _client.Get<string>(linkToSearchResultsAPI);
-            dynamic appInsightsResult = JsonSerializer.Deserialize<ExpandoObject>(appInsightsApiResultJson);
+            var apiResultJsonString = await _client.GetAsJson<string>(linkToSearchResultsAPI);
+
+            var options = new JsonSerializerOptions
+            {
+                Converters = 
+                { 
+                    new ObjectAsPrimitiveConverter() 
+                },
+                WriteIndented = true,
+            };
+
+            dynamic appInsightsResult = JsonSerializer.Deserialize<dynamic>(apiResultJsonString, options);
 
             return appInsightsResult;
         }

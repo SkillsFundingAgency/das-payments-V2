@@ -1,5 +1,4 @@
-﻿using SFA.DAS.Payments.Monitoring.Alerts.Function.JsonHelpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Text.Json;
@@ -9,16 +8,6 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
 {
     public class ObjectAsPrimitiveConverter : JsonConverter<object>
     {
-        FloatFormat FloatFormat { get; init; }
-        UnknownNumberFormat UnknownNumberFormat { get; init; }
-        
-        public ObjectAsPrimitiveConverter() : this(FloatFormat.Double, UnknownNumberFormat.Error) { }
-        public ObjectAsPrimitiveConverter(FloatFormat floatFormat, UnknownNumberFormat unknownNumberFormat)
-        {
-            FloatFormat = floatFormat;
-            UnknownNumberFormat = unknownNumberFormat;
-        }
-
         public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
         {
             if (value.GetType() == typeof(object))
@@ -50,13 +39,11 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
                             return i;
                         if (reader.TryGetInt64(out var l))
                             return l;
-                        if (FloatFormat == FloatFormat.Decimal && reader.TryGetDecimal(out var m))
-                            return m;
-                        else if (FloatFormat == FloatFormat.Double && reader.TryGetDouble(out var d))
+                        else if (reader.TryGetDouble(out var d))
                             return d;
                         using var doc = JsonDocument.ParseValue(ref reader);
-                        if (UnknownNumberFormat == UnknownNumberFormat.JsonElement)
-                            return doc.RootElement.Clone();
+                        return doc.RootElement.Clone();
+
                         throw new JsonException(string.Format("Cannot parse number {0}", doc.RootElement.ToString()));
                     }
                 case JsonTokenType.StartArray:
