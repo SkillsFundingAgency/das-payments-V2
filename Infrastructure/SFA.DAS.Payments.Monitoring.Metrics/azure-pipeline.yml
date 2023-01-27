@@ -56,24 +56,30 @@ stages:
       smartDetectionActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-DST-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
       serviceBusActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-DST-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
        
-#      
+      
 
-#- stage: Deploy_SIT
-#  dependsOn: 
-#  - Publish_ADF
-#  - Deploy_DST
-#  displayName: Deploy to SIT
-#  variables:
-#  - name: tagEnvironment
-#    value: Dev/Test
-#  - group: DCOL-SIT - Environment Key Vault Secrets
-#  jobs:
-#  - template: pipeline/deploy.yml
-#    parameters:
-#      pool: DCT Build Pool
-#      environmentName: SIT
-#      azureSubscription: DCT-VSO
-#      deployFactory: true
+- stage: Deploy_SIT
+  dependsOn: 
+  - Publish_MonitoringMetrics
+  - Deploy_DST
+  displayName: Deploy to SIT
+  variables:
+  - name: tagEnvironment
+    value: Dev/Test
+  - group: DCOL-SIT - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: SIT
+      azureSubscription: DCT-VSO
+      storageAccountName: dcolsitstoragemonitorweu
+      workspaceResourceId: /subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourcegroups/dcol-dev-oms-weu/providers/microsoft.operationalinsights/workspaces/dcol-dev-oms-weu
+      dasActionGroupWebhookUri: https://dcol-ete-monitoringalerts-weu.azurewebsites.net/api/HttpTrigger1?code=psdMwRn/a4D7l5Rx/l5orF0dptv8AR8uUZediTPAU4dHhmLaSd/nuA==
+      mgDasActionGroupWebhookUri: https://dcol-ete-monitoringalerts-weu.azurewebsites.net/api/HttpTrigger1?code=psdMwRn/a4D7l5Rx/l5orF0dptv8AR8uUZediTPAU4dHhmLaSd/nuA==
+      smartDetectionActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-SIT-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
+      serviceBusActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-OPS-OPS-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
+      
 
 #- stage: Deploy_SDW
 #  dependsOn: 
