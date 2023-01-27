@@ -10,15 +10,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
     {
         public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
         {
-            if (value.GetType() == typeof(object))
-            {
-                writer.WriteStartObject();
-                writer.WriteEndObject();
-            }
-            else
-            {
-                JsonSerializer.Serialize(writer, value, value.GetType(), options);
-            }
+            throw new NotImplementedException();
         }
 
         public override object Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

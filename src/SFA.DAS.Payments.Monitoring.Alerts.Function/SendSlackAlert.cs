@@ -1,16 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.Services;
 
 namespace SFA.DAS.Monitoring.Alerts.Function
