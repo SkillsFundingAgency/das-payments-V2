@@ -5,7 +5,13 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
 {
     public class SlackAlertHelper : ISlackAlertHelper
     {
-        public List<object> BuildSlackPayload(string alertEmoji, DateTime timestamp, string jobId, string academicYear, string collectionPeriod, string alertTitle, string appInsightsSearchResultsUiLink)
+        public List<object> BuildSlackPayload(string alertEmoji,
+                                              DateTime timestamp,
+                                              string jobId,
+                                              string academicYear,
+                                              string collectionPeriod,
+                                              string alertTitle,
+                                              string appInsightsSearchResultsUiLink)
         {
             return new List<object>
             {
@@ -31,11 +37,11 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
                         new { type = "mrkdwn", text = "*Timestamp*" },
                         new { type = "mrkdwn", text = "*Job*" },
                         new { type = "plain_text", text = timestamp.ToString("f") },
-                        new { type = "plain_text", text = jobId.ToString() },
+                        new { type = "plain_text", text = jobId },
                         new { type = "mrkdwn", text = "*Academic Year*" },
                         new { type = "mrkdwn", text = "*Collection Period*" },
-                        new { type = "plain_text", text = academicYear.ToString() },
-                        new { type = "plain_text", text = collectionPeriod.ToString() },
+                        new { type = "plain_text", text = academicYear },
+                        new { type = "plain_text", text = collectionPeriod },
                     }
                 }
             };

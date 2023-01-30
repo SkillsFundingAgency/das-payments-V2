@@ -4,6 +4,6 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.TypedClients
 {
     public interface IAppInsightsClient
     {
-        public Task<string> GetAsJson<TResponse>(string requestUrl);
+        public Task<dynamic> GetSearchResultsAsync(string requestUrl);
     }
 }

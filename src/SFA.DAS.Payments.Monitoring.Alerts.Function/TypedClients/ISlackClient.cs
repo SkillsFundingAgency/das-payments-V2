@@ -5,6 +5,6 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.TypedClients
 {
     public interface ISlackClient
     {
-        public Task<HttpResponseMessage> PostAsJson(string requestUrl, object jsonPayload);
+        public Task<HttpResponseMessage> PostAsJsonAsync(string requestUrl, object jsonPayload);
     }
 }

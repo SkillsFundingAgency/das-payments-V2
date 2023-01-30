@@ -3,35 +3,35 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers;
+using SFA.DAS.Payments.Monitoring.Alerts.Function.JsonHelpers;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.TypedClients;
 
 namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Services
 {
     public class SlackService : ISlackService
     {
-        private readonly IAppInsightsService _appInsightsService;
+        private readonly IAppInsightsClient _appInsightsClient;
         private readonly ISlackAlertHelper _slackAlertHelper;
         private readonly ISlackClient _slackClient;
+        private readonly IDynamicJsonDeserializer _deserializer;
 
-        public SlackService(IAppInsightsService appInsightsService, ISlackAlertHelper slackAlertHelper, ISlackClient slackClient)
+        public SlackService(IDynamicJsonDeserializer deserializer,
+                            ISlackAlertHelper slackAlertHelper,
+                            ISlackClient slackClient,
+                            IAppInsightsClient appInsightsClient)
         {
-            _appInsightsService = appInsightsService;
+            _deserializer = deserializer;
             _slackAlertHelper = slackAlertHelper;
+            _appInsightsClient = appInsightsClient;
             _slackClient = slackClient; 
         }
 
         public async Task PostSlackAlert(string appInsightsAlertPayload, string slackChannelUri)
         {
-            var options = new JsonSerializerOptions
-            {
-                Converters = { new ObjectAsPrimitiveConverter() },
-                WriteIndented = true,
-            };
+            dynamic alert = _deserializer.Deserialize(appInsightsAlertPayload);
 
-            dynamic alert = JsonSerializer.Deserialize<dynamic>(appInsightsAlertPayload, options);
-            
             string searchResultApiUrl = alert.data.alertContext.condition.allOf[0].linkToSearchResultsAPI;
-            alert.data.alertContext.SearchResults = await _appInsightsService.GetAppInsightsSearchResults(searchResultApiUrl);
+            alert.data.alertContext.SearchResults = await _appInsightsClient.GetSearchResultsAsync(searchResultApiUrl);
 
             var severity = alert.data.essentials.severity;
             string alertEmoji = _slackAlertHelper.GetEmoji(severity);
@@ -73,7 +73,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Services
                                        appInsightsSearchResultsUiLink)
             };
 
-            await _slackClient.PostAsJson(slackChannelUri, slackPayload);
+            await _slackClient.PostAsJsonAsync(slackChannelUri, slackPayload);
         }
     }
 }

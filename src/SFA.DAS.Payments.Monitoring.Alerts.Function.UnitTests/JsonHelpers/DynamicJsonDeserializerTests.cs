@@ -13,17 +13,32 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.JsonHelpers
 
         }
 
+        [Test]  
+        public void NullArgumentReturnsNull()
+        {
+            //Arrange
+            var deserializer = new DynamicJsonDeserializer();
+            string? input = null;
+
+            //Act
+            var result = deserializer.Deserialize(input);
+            var castedObject = (object)result;
+
+            //Assert
+            castedObject.Should().BeNull();
+        }
+
         [Test]
         public void ReturnsExpandoObject()
         {
             //Arrange
             var deserializer = new DynamicJsonDeserializer();
-
             var input = "{\"property\": \"value\"}";
 
             //Act
             var result = deserializer.Deserialize(input);
             var castedObject = (object)result;
+
             //Assert
             castedObject.Should().BeOfType<ExpandoObject>();
         }
@@ -313,6 +328,274 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.JsonHelpers
             castedIntProperty.Should().BeOfType<int>().Which.Should().Be(42);
             castedLongProperty.Should().BeOfType<long>().Which.Should().Be(2147483649);
             castedDoubleProperty.Should().BeOfType<double>().Which.Should().Be(3.1415);
+        }
+
+        [Test]
+        public void DeserializesSimpleNestedObjectAsExpandoObject()
+        {
+            //Arrange 
+            var deserializer = new DynamicJsonDeserializer();
+
+            var input = @"
+            {
+                ""nestedObject"": 
+                {
+                    ""property"": ""textValue""
+                }
+            }";
+
+            //Act
+            var result = deserializer.Deserialize(input);
+
+            //Assert
+            var castedNestedObject = (object)result.nestedObject;
+
+            castedNestedObject.Should().BeOfType<ExpandoObject>();
+        }
+
+        [Test]
+        public void DeserializesSimpleNestedObjectStringPropertyValueSetGetsType()
+        {
+            //Arrange 
+            var deserializer = new DynamicJsonDeserializer();
+
+            var input = @"
+            {
+                ""nestedObject"": 
+                {
+                    ""property"": ""textValue""
+                }
+            }";
+
+            //Act
+            var result = deserializer.Deserialize(input);
+
+            //Assert
+            var nestedObjectTextProperty = (object)result.nestedObject.property;
+
+            nestedObjectTextProperty.Should().BeOfType<string>();
+        }
+
+        [Test]
+        public void DeserializesSimpleNestedObjectStringPropertyValueSetGetsValue()
+        {
+            //Arrange 
+            var deserializer = new DynamicJsonDeserializer();
+
+            var input = @"
+            {
+                ""nestedObject"": 
+                {
+                    ""property"": ""textValue""
+                }
+            }";
+
+            //Act
+            var result = deserializer.Deserialize(input);
+
+            //Assert
+            var nestedObjectTextProperty = (object)result.nestedObject.property;
+
+            nestedObjectTextProperty.Should().Be("textValue");
+        }
+
+        [Test]
+        public void DeserializesSimpleNestedObjectNullPropertyValueEmptyGetsType()
+        {
+            //Arrange 
+            var deserializer = new DynamicJsonDeserializer();
+
+            var input = @"
+            {
+                ""nestedObject"": 
+                {
+                    ""property"": null
+                }
+            }";
+
+            //Act
+            var result = deserializer.Deserialize(input);
+
+            //Assert
+            var nestedObjectTextProperty = (object)result.nestedObject.property;
+
+            nestedObjectTextProperty.Should().BeNull();
+        }
+
+        [Test]
+        public void DeserializesSimpleNestedObjectStringPropertyValueEmptyGetsType()
+        {
+            //Arrange 
+            var deserializer = new DynamicJsonDeserializer();
+
+            var input = @"
+            {
+                ""nestedObject"": 
+                {
+                    ""property"": """"
+                }
+            }";
+
+            //Act
+            var result = deserializer.Deserialize(input);
+
+            //Assert
+            var nestedObjectTextProperty = (object)result.nestedObject.property;
+
+            nestedObjectTextProperty.Should().BeOfType<string>();
+        }
+
+        [Test]
+        public void DeserializesSimpleNestedObjectStringPropertyValueEmptyGetsValue()
+        {
+            //Arrange 
+            var deserializer = new DynamicJsonDeserializer();
+
+            var input = @"
+            {
+                ""nestedObject"": 
+                {
+                    ""property"": """"
+                }
+            }";
+
+            //Act
+            var result = deserializer.Deserialize(input);
+
+            //Assert
+            var nestedObjectTextProperty = (object)result.nestedObject.property;
+            nestedObjectTextProperty.Should().Be(string.Empty);
+        }
+
+        [Test]
+        public void DeserializesSimpleNestedObjectIntPropertyGetsType()
+        {
+            //Arrange 
+            var deserializer = new DynamicJsonDeserializer();
+
+            var input = @"
+            {
+                ""nestedObject"": 
+                {
+                    ""property"": 42
+                }
+            }";
+
+            //Act
+            var result = deserializer.Deserialize(input);
+
+            //Assert
+            var nestedObjectTextProperty = (object)result.nestedObject.property;
+            nestedObjectTextProperty.Should().BeOfType<int>();
+        }
+
+        [Test]
+        public void DeserializesSimpleNestedObjectIntPropertyGetsValue()
+        {
+            //Arrange 
+            var deserializer = new DynamicJsonDeserializer();
+
+            var input = @"
+            {
+                ""nestedObject"": 
+                {
+                    ""property"": 42
+                }
+            }";
+
+            //Act
+            var result = deserializer.Deserialize(input);
+
+            //Assert
+            var nestedObjectTextProperty = (object)result.nestedObject.property;
+            nestedObjectTextProperty.Should().Be(42);
+        }
+
+        [Test]
+        public void DeserializesSimpleNestedObjectDoublePropertyGetsType()
+        {
+            //Arrange 
+            var deserializer = new DynamicJsonDeserializer();
+
+            var input = @"
+            {
+                ""nestedObject"": 
+                {
+                    ""property"": 3.1415
+                }
+            }";
+
+            //Act
+            var result = deserializer.Deserialize(input);
+
+            //Assert
+            var nestedObjectTextProperty = (object)result.nestedObject.property;
+            nestedObjectTextProperty.Should().BeOfType<double>();
+        }
+
+        [Test]
+        public void DeserializesSimpleNestedObjectDoublePropertyGetsValue()
+        {
+            //Arrange 
+            var deserializer = new DynamicJsonDeserializer();
+
+            var input = @"
+            {
+                ""nestedObject"": 
+                {
+                    ""property"": 3.1415
+                }
+            }";
+
+            //Act
+            var result = deserializer.Deserialize(input);
+
+            //Assert
+            var nestedObjectTextProperty = (object)result.nestedObject.property;
+            nestedObjectTextProperty.Should().Be(3.1415);
+        }
+
+        public void DeserializesSimpleNestedObjectBoolPropertyGetsType()
+        {
+            //Arrange 
+            var deserializer = new DynamicJsonDeserializer();
+
+            var input = @"
+            {
+                ""nestedObject"": 
+                {
+                    ""property"": true
+                }
+            }";
+
+            //Act
+            var result = deserializer.Deserialize(input);
+
+            //Assert
+            var nestedObjectTextProperty = (object)result.nestedObject.property;
+            nestedObjectTextProperty.Should().BeOfType<bool>();
+        }
+
+        [Test]
+        public void DeserializesSimpleNestedObjectBoolPropertyGetsValue()
+        {
+            //Arrange 
+            var deserializer = new DynamicJsonDeserializer();
+
+            var input = @"
+            {
+                ""nestedObject"": 
+                {
+                    ""property"": true
+                }
+            }";
+
+            //Act
+            var result = deserializer.Deserialize(input);
+
+            //Assert
+            var nestedObjectTextProperty = (object)result.nestedObject.property;
+            nestedObjectTextProperty.Should().Be(true);
         }
     }
 }

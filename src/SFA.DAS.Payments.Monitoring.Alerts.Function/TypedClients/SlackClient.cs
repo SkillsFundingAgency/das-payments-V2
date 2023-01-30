@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.TypedClients
             _httpClient = httpClient;
         }
 
-        public async Task<HttpResponseMessage> PostAsJson(string requestUrl, object jsonPayload)
+        public async Task<HttpResponseMessage> PostAsJsonAsync(string requestUrl, object jsonPayload)
         {
             if (string.IsNullOrEmpty(requestUrl)) 
             {
