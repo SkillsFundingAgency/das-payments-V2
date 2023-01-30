@@ -5,8 +5,6 @@ parameters:
   environmentName:
   workspaceResourceId:
   storageAccountName:
-  dasActionGroupWebhookUri:
-  mgDasActionGroupWebhookUri:
   smartDetectionActionGroupId:
   serviceBusActionGroupId:
   
@@ -40,9 +38,9 @@ jobs:
     - name: mgDasAlertsActionGroupNameShort
       value: '$(Service)-${{ parameters.environmentName }}-MGD'
     - name: dasActionGroupWebhookUri
-      value: '${{ parameters.dasActionGroupWebhookUri }}'
+      value: '$(dasActionGroupWebhookUri)'
     - name: mgDasActionGroupWebhookUri
-      value: '${{ parameters.mgDasActionGroupWebhookUri }}'
+      value: '$(mgDasActionGroupWebhookUri)'
     - name: smartDetectionActionGroupId
       value: '${{ parameters.smartDetectionActionGroupId }}'
     - name: serviceBusActionGroupId
