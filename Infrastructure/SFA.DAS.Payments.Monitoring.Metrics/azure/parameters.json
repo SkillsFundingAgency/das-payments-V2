@@ -30,7 +30,12 @@
         "value": "my_workspace_ActionGroupShort_resource"
       },
       "dasActionGroupWebhookUri": {
-        "value": "WebhookURI"
+           "reference": {
+           "keyVault": {
+              "id": "/subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourceGroups/DCOL-DAS-KeyVault-WEU/providers/Microsoft.KeyVault/vaults/DCOL-DAS-KeyVault-WEU"
+            },
+            "secretName": "dasActionGroupWebhookUri"
+          }
       },
       "mgDasAlertsActionGroupName": {
         "value": "mgDASAlertsActionGroupName"
