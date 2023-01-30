@@ -59,7 +59,7 @@
 			}
 		},
 		"dasActionGroupWebhookUri": {
-			"type": "string",
+			"type": "securestring",
 			"metadata": {
 				"description": "DAS ActionGroup WebHookURI"
 			}
@@ -77,7 +77,7 @@
 			}
 		},
 		"mgDasActionGroupWebhookUri": {
-			"type": "string",
+			"type": "securestring",
 			"metadata": {
 				"description": "mgDAS ActionGroup WebHookURI"
 			}
