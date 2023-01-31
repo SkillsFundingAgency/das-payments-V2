@@ -2,6 +2,8 @@
 using NUnit.Framework;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
 {
