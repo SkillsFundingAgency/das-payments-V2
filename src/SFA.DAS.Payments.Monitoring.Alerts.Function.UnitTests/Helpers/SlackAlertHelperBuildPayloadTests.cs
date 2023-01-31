@@ -496,7 +496,5 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 text = "collectionPeriod"
             });
         }
-
-        #endregion
     }
 }
