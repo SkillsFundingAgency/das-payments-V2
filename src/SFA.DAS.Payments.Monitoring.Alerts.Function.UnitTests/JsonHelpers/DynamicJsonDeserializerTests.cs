@@ -8,12 +8,6 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.JsonHelpers
 {
     public class Tests
     {
-        [SetUp]
-        public void Setup()
-        {
-
-        }
-
         [Test]  
         public void NullArgumentReturnsNull()
         {
