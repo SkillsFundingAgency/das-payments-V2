@@ -4,6 +4,10 @@ using Moq;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.TypedClients;
 using FluentAssertions;
 using NUnit.Framework;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using System;
 
 namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.TypedClients
 {
