@@ -30,12 +30,7 @@
         "value": "my_workspace_ActionGroupShort_resource"
       },
       "dasActionGroupWebhookUri": {
-           "reference": {
-           "keyVault": {
-              "id": "/subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourceGroups/DCOL-DAS-KeyVault-WEU/providers/Microsoft.KeyVault/vaults/DCOL-DAS-KeyVault-WEU"
-            },
-            "secretName": "dasActionGroupWebhookUri"
-          }
+        "value": "WebhookUri"
       },
       "mgDasAlertsActionGroupName": {
         "value": "mgDASAlertsActionGroupName"
@@ -44,12 +39,7 @@
         "value": "mgworkspace_DAS_ActionGroup_resource"
       },
       "mgDasActionGroupWebhookUri": {
-        "reference": {
-          "keyVault": {
-             "id": "/subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourceGroups/DCOL-DAS-KeyVault-WEU/providers/Microsoft.KeyVault/vaults/DCOL-DAS-KeyVault-WEU"
-           },
-           "secretName": "mgDasActionGroupWebhookUri"
-         }
+        "value": "mgWebhookUri"
       },
       "smartDetectionActionGroupId": {
         "value": "Smart-Detect-Action-Group"
