@@ -132,7 +132,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.TypedClients
             //Act
             var jsonPayload = @"{ ""property"": ""value"" }";
             var postUri = "http://someurl.com/somepath";
-            var act = async () => await slackClient.PostAsJsonAsync(postUri, jsonPayload);
+            Func<Task<HttpResponseMessage>> act = async () => await slackClient.PostAsJsonAsync(postUri, jsonPayload);
 
             //Assert
             await act
