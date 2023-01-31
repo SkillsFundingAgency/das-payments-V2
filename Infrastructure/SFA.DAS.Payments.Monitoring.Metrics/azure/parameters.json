@@ -44,7 +44,12 @@
         "value": "mgworkspace_DAS_ActionGroup_resource"
       },
       "mgDasActionGroupWebhookUri": {
-        "value": "mgWebHookURI"
+        "reference": {
+          "keyVault": {
+             "id": "/subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourceGroups/DCOL-DAS-KeyVault-WEU/providers/Microsoft.KeyVault/vaults/DCOL-DAS-KeyVault-WEU"
+           },
+           "secretName": "mgDasActionGroupWebhookUri"
+         }
       },
       "smartDetectionActionGroupId": {
         "value": "Smart-Detect-Action-Group"

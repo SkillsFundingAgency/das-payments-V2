@@ -37,10 +37,6 @@ jobs:
       value: '$(Service)-${{ parameters.environmentName }}'
     - name: mgDasAlertsActionGroupNameShort
       value: '$(Service)-${{ parameters.environmentName }}-MGD'
-    - name: dasActionGroupWebhookUri
-      value: '$(dasActionGroupWebhookUri)'
-    - name: mgDasActionGroupWebhookUri
-      value: '$(mgDasActionGroupWebhookUri)'
     - name: smartDetectionActionGroupId
       value: '${{ parameters.smartDetectionActionGroupId }}'
     - name: serviceBusActionGroupId
@@ -85,5 +81,5 @@ jobs:
             location: '${{ parameters.location }}'
             csmFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.Monitoring.Metrics/azure/armdeploy.json'
             csmParametersFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.Monitoring.Metrics/azure/parameters.json'
-            overrideParameters: '-applicationInsightsName "${{ variables.applicationInsightsName }}" -functionAppName "${{ variables.functionAppName }}" -storageAccountName "${{ variables.storageAccountName }}" -storageAccountType "${{ variables.storageAccountType }}" -workspaceResourceId "${{ variables.workspaceResourceId }}" -location "${{ parameters.location }}" -serviceBusActionGroupId "${{ variables.serviceBusActionGroupId }}" -smartDetectionActionGroupId "${{ variables.smartDetectionActionGroupId }}" -dasActionGroupWebhookUri "${{ variables.dasActionGroupWebhookUri }}" -dasAlertsActionGroupNameShort "${{ variables.dasAlertsActionGroupNameShort }}" -dasAlertsActionGroupName "${{ variables.dasAlertsActionGroupName }}" -mgDasAlertsActionGroupName "${{ variables.mgDasAlertsActionGroupName }}" -mgDasAlertsActionGroupNameShort "${{ variables.mgDasAlertsActionGroupNameShort }}" -mgDasActionGroupWebhookUri "${{ variables.mgDasActionGroupWebhookUri }}"'
+            overrideParameters: '-applicationInsightsName "${{ variables.applicationInsightsName }}" -functionAppName "${{ variables.functionAppName }}" -storageAccountName "${{ variables.storageAccountName }}" -storageAccountType "${{ variables.storageAccountType }}" -workspaceResourceId "${{ variables.workspaceResourceId }}" -location "${{ parameters.location }}" -serviceBusActionGroupId "${{ variables.serviceBusActionGroupId }}" -smartDetectionActionGroupId "${{ variables.smartDetectionActionGroupId }}" -dasAlertsActionGroupNameShort "${{ variables.dasAlertsActionGroupNameShort }}" -dasAlertsActionGroupName "${{ variables.dasAlertsActionGroupName }}" -mgDasAlertsActionGroupName "${{ variables.mgDasAlertsActionGroupName }}" -mgDasAlertsActionGroupNameShort "${{ variables.mgDasAlertsActionGroupNameShort }}"'
             deploymentOutputs: armoutputs
