@@ -13,12 +13,10 @@ namespace SFA.DAS.Monitoring.Alerts.Function
 {
     public class SendSlackAlert
     {
-        private readonly IHttpClientFactory _factory;
         private readonly ISlackService _slackService;
 
-        public SendSlackAlert(IHttpClientFactory factory, ISlackService slackService)
+        public SendSlackAlert(ISlackService slackService)
         {
-            _factory = factory;
             _slackService = slackService;
         }
 
