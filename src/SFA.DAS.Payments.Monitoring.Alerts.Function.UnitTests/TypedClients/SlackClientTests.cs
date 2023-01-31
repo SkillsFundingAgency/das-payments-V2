@@ -3,6 +3,7 @@ using Moq.Protected;
 using Moq;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.TypedClients;
 using FluentAssertions;
+using NUnit.Framework;
 
 namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.TypedClients
 {

@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Moq;
 using Moq.Protected;
+using NUnit.Framework;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.JsonHelpers;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.TypedClients;
 
