@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.TypedClients
             var appInsightsClient = new AppInsightsClient(httpClientObject, _defaultSimpleDeserializer);
 
             //Act
-            var act = () => appInsightsClient.GetSearchResultsAsync(null);
+            System.Func<Task<dynamic>> act = () => appInsightsClient.GetSearchResultsAsync(null);
 
             //Assert
             await act.Should().ThrowAsync<ArgumentNullException>();
@@ -81,7 +81,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.TypedClients
             var appInsightsClient = new AppInsightsClient(httpClientObject, _defaultSimpleDeserializer);
 
             //Act
-            var act = () => appInsightsClient.GetSearchResultsAsync("http://someurl.com/somepath");
+            Func<Task<dynamic>> act = () => appInsightsClient.GetSearchResultsAsync("http://someurl.com/somepath");
 
             //Assert
             await act.Should().ThrowAsync<HttpRequestException>();

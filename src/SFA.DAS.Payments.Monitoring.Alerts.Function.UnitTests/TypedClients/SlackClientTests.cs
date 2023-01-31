@@ -43,7 +43,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.TypedClients
 
             //Act
             var jsonPayload = @"{ ""property"": ""value"" }";
-            var act = () => slackClient.PostAsJsonAsync(null, jsonPayload);
+            Func<Task<HttpResponseMessage>> act = () => slackClient.PostAsJsonAsync(null, jsonPayload);
 
             //Assert
             await act
@@ -60,7 +60,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.TypedClients
             var slackClient = new SlackClient(httpClient);
 
             //Act
-            var act = () => slackClient.PostAsJsonAsync("http://someurl.com/somepath", null);
+            Func<Task<HttpResponseMessage>> act = () => slackClient.PostAsJsonAsync("http://someurl.com/somepath", null);
 
             //Assert
             await act

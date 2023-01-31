@@ -46,7 +46,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.JsonHelpers
             var input = "{property: \"\"}";
 
             //Act 
-            var act = () => deserializer.Deserialize(input);
+            System.Func<dynamic> act = () => deserializer.Deserialize(input);
 
             //Assert
             act.Should()
@@ -125,7 +125,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.JsonHelpers
 
             var input = "{\"property\": null}";
 
-            //Acts
+            //Act
             var result = deserializer.Deserialize(input);
             var castedObject = (object)result.property;
 
@@ -238,7 +238,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.JsonHelpers
             var input = "{\"property\": 3.1415.12}";
 
             //Act
-            var act = () => deserializer.Deserialize(input);
+            System.Func<dynamic> act = () => deserializer.Deserialize(input);
 
             //Assert
             act.Should()
@@ -287,7 +287,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.JsonHelpers
             var input = "{\"property\": falsetrue}";
 
             //Act
-            var act = () => deserializer.Deserialize(input);
+            System.Func<dynamic> act = () => deserializer.Deserialize(input);
 
             //Assert
             act.Should().Throw<JsonException>();
