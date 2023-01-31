@@ -2,84 +2,12 @@
 using NUnit.Framework;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
 {
-    public class SlackAlertHelperTests
+    public class SlackAlertHelperBuildPayloadTests
     {
-        #region GetEmojiTests
-
-        [Test]
-        public void GetEmojiSeverity0ReturnsCorrectEmojiCode()
-        {
-            //Arrange
-            var helper = new SlackAlertHelper();
-
-            //Act
-            var act = helper.GetEmoji("Sev0");
-
-            //Assert
-            act.Should().Be(":alert:");
-        }
-
-        [Test]
-        public void GetEmojiSeverity1ReturnsCorrectEmojiCode()
-        {
-            //Arrange
-            var helper = new SlackAlertHelper();
-
-            //Act
-            var act = helper.GetEmoji("Sev1");
-
-            //Assert
-            act.Should().Be(":alert:");
-        }
-
-        [Test]
-        public void GetEmojiSeverity2ReturnsCorrectEmojiCode()
-        {
-            //Arrange
-            var helper = new SlackAlertHelper();
-
-            //Act
-            var act = helper.GetEmoji("Sev2");
-
-            //Assert
-            act.Should().Be(":warning:");
-        }
-
-        [Test]
-        public void GetEmojiSeverity3ReturnsCorrectEmojiCode()
-        {
-            //Arrange
-            var helper = new SlackAlertHelper();
-
-            //Act
-            var act = helper.GetEmoji("Sev3");
-
-            //Assert
-            act.Should().Be(":information_source:");
-        }
-
-        [Test]
-        public void GetEmojiSeverityUnknownReturnsCorrectEmojiCode()
-        {
-            //Arrange
-            var helper = new SlackAlertHelper();
-
-            //Act
-            var act = helper.GetEmoji("Sev28");
-
-            //Assert
-            act.Should().Be(string.Empty);
-        }
-
-        #endregion
-
-        #region BuildSlackPayloadTests
-
         [Test]
         public void BuildSlackPayloadConstructsObjectList()
         {
