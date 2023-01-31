@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+﻿using FluentAssertions;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers;
 
 namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers

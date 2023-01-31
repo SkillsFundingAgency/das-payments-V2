@@ -3,7 +3,6 @@ using Moq.Protected;
 using Moq;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.TypedClients;
 using FluentAssertions;
-using System.Web.Http;
 
 namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.TypedClients
 {
