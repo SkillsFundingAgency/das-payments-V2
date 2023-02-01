@@ -8,6 +8,15 @@ resources:
   repositories:
   - repository: self
 
+trigger:
+  branches:
+    include:
+    - master
+    - PP-3008-ApplicationInsights
+  paths:
+    include:
+    - Infrastruture/SFA.DAS.Payments.Monitoring.Metrics/**
+
 stages:
 - stage: Publish_MonitoringMetrics
   displayName: Publish MonitoringMetrics
