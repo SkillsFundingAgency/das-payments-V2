@@ -51,8 +51,8 @@ stages:
       azureSubscription: DCT-VSO
       storageAccountName: dcoldststoragemonitorweu
       workspaceResourceId: /subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourcegroups/dcol-dev-oms-weu/providers/microsoft.operationalinsights/workspaces/dcol-dev-oms-weu
-      dasActionGroupWebhookUri: https://dcol-ete-monitoringalerts-weu.azurewebsites.net/api/HttpTrigger1?code=psdMwRn/a4D7l5Rx/l5orF0dptv8AR8uUZediTPAU4dHhmLaSd/nuA==
-      mgDasActionGroupWebhookUri: https://dcol-ete-monitoringalerts-weu.azurewebsites.net/api/HttpTrigger1?code=psdMwRn/a4D7l5Rx/l5orF0dptv8AR8uUZediTPAU4dHhmLaSd/nuA==
+      dasActionGroupWebhookUri1: $(dasActionGroupWebhookUri)
+      mgDasActionGroupWebhookUri1: $(mgDasActionGroupWebhookUri)
       smartDetectionActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-DST-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
       serviceBusActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-DST-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
        
