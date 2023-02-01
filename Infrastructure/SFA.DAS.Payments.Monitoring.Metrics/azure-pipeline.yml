@@ -15,7 +15,7 @@ trigger:
     - PP-3008-ApplicationInsights
   paths:
     include:
-    - Infrastruture/SFA.DAS.Payments.Monitoring.Metrics/**
+    - $(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.Monitoring.Metrics/*
 
 stages:
 - stage: Publish_MonitoringMetrics
