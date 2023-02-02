@@ -13,6 +13,7 @@ trigger:
   branches:
     include:
     - master
+    - PP-3008-ApplicationInsights
   batch: true
   paths:
     include:
