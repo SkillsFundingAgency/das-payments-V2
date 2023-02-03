@@ -93,22 +93,30 @@ stages:
       serviceBusActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-OPS-OPS-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
       
 
-#- stage: Deploy_SDW
-#  dependsOn: 
-#  - Publish_ADF
-#  - Deploy_SIT
-#  displayName: Deploy to SDW
-#  variables:
-#  - name: tagEnvironment
-#    value: Dev/Test
-#  - group: DCOL-SDW - Environment Key Vault Secrets
-#  jobs:
-#  - template: pipeline/deploy.yml
-#    parameters:
-#      pool: DCT Build Pool
-#      environmentName: SDW
-#      azureSubscription: DCOL-Shadow
-#      deployFactory: true
+- stage: Deploy_SDW
+  dependsOn: 
+  - Publish_ADF
+  - Deploy_SIT
+  displayName: Deploy to SDW
+  variables:
+  - name: tagEnvironment
+    value: Dev/Test
+  - group: DCOL-SDW - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: SDW
+      azureSubscription: DCOL-Shadow
+      storageAccountName: dcolsdwstoragemonitorweu
+      workspaceResourceId: /subscriptions/4ff47917-ac4e-432a-b314-a6525434afcb/resourcegroups/dcol-sdw-ops-weu/providers/microsoft.operationalinsights/workspaces/dcol-sdw-ops-weu-workspace
+      dasActionGroupWebhookUri1: $(dasActionGroupWebhookUri)
+      mgDasActionGroupWebhookUri1: $(mgDasActionGroupWebhookUri)
+      smartDetectionActionGroupId: /subscriptions/4FF47917-AC4E-432A-B314-A6525434AFCB/resourceGroups/DCOL-SDW-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
+      serviceBusActionGroupId: /subscriptions/4FF47917-AC4E-432A-B314-A6525434AFCB/resourceGroups/DCOL-SDW-OPS-WEU/providers/microsoft.insights/actionGroups/DCOL-SDW-Monitor-Perf
+      
+
+
 #- stage: Deploy_MO
 #  dependsOn: 
 #  - Publish_ADF
