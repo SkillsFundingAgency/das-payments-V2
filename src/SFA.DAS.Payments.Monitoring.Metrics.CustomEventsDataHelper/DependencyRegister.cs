@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using AzureFunctions.Autofac.Configuration;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules;
+using SFA.DAS.Payments.Monitoring.Metrics.CustomEventsDataHelper.Telemetry;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.CustomEventsDataHelper
 {
@@ -14,7 +15,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.CustomEventsDataHelper
         private static void RegisterModules(ContainerBuilder builder)
         {
             builder.RegisterModule<TelemetryModule>();
-            builder.RegisterModule<Function.Infrastructure.IoC.Modules.ConfigurationModule>();
+            builder.RegisterModule<ConfigurationModule>();
         }
     }
 }

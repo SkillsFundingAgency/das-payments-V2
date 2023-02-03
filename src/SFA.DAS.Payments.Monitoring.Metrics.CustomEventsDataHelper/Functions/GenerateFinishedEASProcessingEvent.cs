@@ -5,9 +5,9 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.WebJobs;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using System.Collections.Generic;
 using System;
+using SFA.DAS.Payments.Monitoring.Metrics.CustomEventsDataHelper.Telemetry;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.CustomEventsDataHelper.Functions
 {

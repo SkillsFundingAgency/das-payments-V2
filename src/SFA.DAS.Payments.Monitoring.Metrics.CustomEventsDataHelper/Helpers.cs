@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
-using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
+using SFA.DAS.Payments.Monitoring.Metrics.CustomEventsDataHelper.Telemetry;
 using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.CustomEventsDataHelper

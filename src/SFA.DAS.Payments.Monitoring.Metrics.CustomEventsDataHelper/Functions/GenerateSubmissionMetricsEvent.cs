@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
+using SFA.DAS.Payments.Monitoring.Metrics.CustomEventsDataHelper.Telemetry;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.CustomEventsDataHelper.Functions
 {

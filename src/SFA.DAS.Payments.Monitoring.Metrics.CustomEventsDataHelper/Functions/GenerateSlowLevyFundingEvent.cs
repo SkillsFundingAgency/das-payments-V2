@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs;
-using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Payments.Monitoring.Metrics.CustomEventsDataHelper.Telemetry;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.CustomEventsDataHelper.Functions
 {
