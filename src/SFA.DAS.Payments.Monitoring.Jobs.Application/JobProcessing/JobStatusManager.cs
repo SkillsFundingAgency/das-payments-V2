@@ -40,11 +40,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
         private async Task Run(string partitionEndpointName)
         {
-            await LoadExistingJobs().ConfigureAwait(false);
+            await LoadExistingJobs();
             while (!cancellationToken.IsCancellationRequested)
             {
                 var tasks = currentJobs.Select(job => CheckJobStatus(partitionEndpointName, job.Key)).ToList();
-                await Task.WhenAll(tasks).ConfigureAwait(false);
+                await Task.WhenAll(tasks);
                 var completedJobs = currentJobs.Where(item => item.Value).ToList();
                 foreach (var completedJob in completedJobs)
                 {
@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                     if (!currentJobs.TryRemove(completedJob.Key, out _))
                         logger.LogWarning($"Couldn't remove completed job from jobs list. ThreadId {Thread.CurrentThread.ManagedThreadId}, PartitionId {partitionEndpointName},  Job: {completedJob.Key}, status: {completedJob.Value}");
                 }
-                await Task.Delay(interval, cancellationToken).ConfigureAwait(false);
+                await Task.Delay(interval, cancellationToken);
             }
         }
 
@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 using (var scope = scopeFactory.Create("LoadExistingJobs"))
                 {
                     var jobStorage = scope.Resolve<IJobStorageService>();
-                    var jobs = await GetCurrentJobs(jobStorage).ConfigureAwait(false);
+                    var jobs = await GetCurrentJobs(jobStorage);
                     foreach (var job in jobs)
                     {
                         StartMonitoringJob(job, JobType.EarningsJob);
@@ -87,8 +87,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                     try
                     {
                         var jobStatusService = GetJobStatusService(scope);
-                        var finished = await jobStatusService.ManageStatus(jobId, cancellationToken).ConfigureAwait(false);
-                        await scope.Commit().ConfigureAwait(false);
+                        var finished = await jobStatusService.ManageStatus(jobId, cancellationToken);
+                        await scope.Commit();
                         currentJobs[jobId] = finished;
                         logger.LogInfo($"Job: {jobId},  finished: {finished}");
                     }
