@@ -93,6 +93,24 @@
 			"metadata": {
 				"description": "ServiceBUS Action GroupID"
 			}
+		},
+		"appInsightsApiKey": {
+			"type": "string",
+			"metadata": {
+				"description": "App Insights API key, used by the function to retrieve individual Search Results"
+			}
+		},
+		"dasAlertSlackChannelUri": {
+			"type": "string",
+			"metadata": {
+				"description": "DAS Alerts Slack Channel Uri"
+			}
+		},
+		"mngAlertSlackChannelUri": {
+			"type": "string",
+			"metadata": {
+				"description": "Management Alerts Slack Channel Uri"
+			}
 		}
 	},
   "variables": {
@@ -178,7 +196,27 @@
             {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
               "value": "1"
-            }
+            },
+			{
+			  "name": "AppInsightsAuthHeader",
+			  "value": "x-api-key"
+			},
+			{
+			  "name": "AppInsightsAuthValue",
+			  "value": "[parameters('appInsightsApiKey')]"
+			},
+			{
+			  "name": "SlackBaseUrl",
+			  "value": "https://hooks.slack.com/"
+			},
+			{
+			  "name": "SlackChannelUri",
+			  "value": "[parameters('dasAlertSlackChannelUri')]"
+			},
+			{
+			  "name": "SlackChannelUri2",
+			  "value": "[parameters('mngAlertSlackChannelUri')]"
+			}
           ]
         }
       },
