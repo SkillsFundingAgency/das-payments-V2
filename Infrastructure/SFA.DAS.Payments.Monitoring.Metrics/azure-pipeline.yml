@@ -70,6 +70,9 @@ stages:
       mgDasActionGroupWebhookUri1: $(mgDasActionGroupWebhookUri)
       smartDetectionActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-DST-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
       serviceBusActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-DST-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
+      dasAlertSlackChannelUri: NoValue
+      mngAlertSlackChannelUri: NoValue
+      appInsightsApiKey: $(AppInsightsAuthValue)
        
       
 
