@@ -46,6 +46,9 @@ stages:
       workspaceResourceId: /subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourcegroups/dcol-dev-oms-weu/providers/microsoft.operationalinsights/workspaces/dcol-dev-oms-weu
       smartDetectionActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-DAS-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
       serviceBusActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-DAS-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
+      dasAlertSlackChannelUri: NoValue
+      mngAlertSlackChannelUri: NoValue
+      appInsightsApiKey: $(AppInsightsAuthValue)
 
 
 - stage: Deploy_DST
