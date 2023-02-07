@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "SFA.DAS.Payments.Monitoring.Metrics.CustomEventsDataHelper": {
-      "commandName": "Project",
-      "commandLineArgs": "--port 7166",
-      "launchBrowser": false
-    }
-  }
-}
