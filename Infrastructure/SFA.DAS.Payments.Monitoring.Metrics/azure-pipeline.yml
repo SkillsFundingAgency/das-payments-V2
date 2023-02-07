@@ -97,6 +97,9 @@ stages:
       mgDasActionGroupWebhookUri1: $(mgDasActionGroupWebhookUri)
       smartDetectionActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-SIT-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
       serviceBusActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-OPS-OPS-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
+      dasAlertSlackChannelUri: NoValue
+      mngAlertSlackChannelUri: NoValue
+      appInsightsApiKey: $(AppInsightsAuthValue)
       
 
 - stage: Deploy_SDW
@@ -120,6 +123,9 @@ stages:
       mgDasActionGroupWebhookUri1: $(mgDasActionGroupWebhookUri)
       smartDetectionActionGroupId: /subscriptions/4FF47917-AC4E-432A-B314-A6525434AFCB/resourceGroups/DCOL-SDW-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
       serviceBusActionGroupId: /subscriptions/4FF47917-AC4E-432A-B314-A6525434AFCB/resourceGroups/DCOL-SDW-OPS-WEU/providers/microsoft.insights/actionGroups/DCOL-SDW-Monitor-Perf
+      dasAlertSlackChannelUri: $(SlackChannelUri)
+      mngAlertSlackChannelUri: $(SlackChannelUri2)
+      appInsightsApiKey: $(AppInsightsAuthValue)
       
 
 
