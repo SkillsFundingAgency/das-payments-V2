@@ -235,18 +235,22 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             logger.LogInfo($"Finished Removing {completedMessages.Count} CompletedMessages, Elapsed Time {TimeSpan.FromTicks(stopwatch.ElapsedTicks).TotalSeconds} Seconds.");
         }
 
-        public async Task StoreCompletedMessage(CompletedMessage completedMessage, CancellationToken cancellationToken)
+        public async Task StoreCompletedMessage(long jobId, IList<CompletedMessage> completedMessages, CancellationToken cancellationToken)
         {
-            logger.LogDebug($"Storing CompletedMessage {completedMessage.MessageId}. Job: {completedMessage.JobId}");
+            logger.LogDebug($"Storing {completedMessages.Count} CompletedMessages. Job: {jobId}");
 
             var stopwatch = Stopwatch.StartNew();
-            var completedMessagesCollection = await GetCompletedMessagesCollection(completedMessage.JobId);
+            var completedMessagesCollection = await GetCompletedMessagesCollection(jobId).ConfigureAwait(false);
 
-            await completedMessagesCollection.AddOrUpdateAsync(reliableTransactionProvider.Current,
-                    completedMessage.MessageId,
-                    completedMessage, (key, value) => completedMessage, TransactionTimeout, cancellationToken);
+            foreach (var completedMessage in completedMessages)
+            {
+                await completedMessagesCollection.AddOrUpdateAsync(reliableTransactionProvider.Current,
+                        completedMessage.MessageId,
+                        completedMessage, (key, value) => completedMessage, TransactionTimeout, cancellationToken)
+                    .ConfigureAwait(false);
+            }
 
-            logger.LogInfo($"Finished Storing CompletedMessages {completedMessage.MessageId}, Elapsed Time {TimeSpan.FromTicks(stopwatch.ElapsedTicks).TotalSeconds} Seconds.");
+            logger.LogInfo($"Finished Storing {completedMessages.Count} CompletedMessages, Elapsed Time {TimeSpan.FromTicks(stopwatch.ElapsedTicks).TotalSeconds} Seconds.");
         }
 
         private async Task<IReliableDictionary2<long, (bool hasFailedMessages, DateTimeOffset? endTime)>> GetJobStatusCollection()
