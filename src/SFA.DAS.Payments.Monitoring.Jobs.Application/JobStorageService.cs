@@ -240,14 +240,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             logger.LogDebug($"Storing {completedMessages.Count} CompletedMessages. Job: {jobId}");
 
             var stopwatch = Stopwatch.StartNew();
-            var completedMessagesCollection = await GetCompletedMessagesCollection(jobId).ConfigureAwait(false);
+            var completedMessagesCollection = await GetCompletedMessagesCollection(jobId);
 
             foreach (var completedMessage in completedMessages)
             {
                 await completedMessagesCollection.AddOrUpdateAsync(reliableTransactionProvider.Current,
                         completedMessage.MessageId,
-                        completedMessage, (key, value) => completedMessage, TransactionTimeout, cancellationToken)
-                    .ConfigureAwait(false);
+                        completedMessage, (key, value) => completedMessage, TransactionTimeout, cancellationToken);
             }
 
             logger.LogInfo($"Finished Storing {completedMessages.Count} CompletedMessages, Elapsed Time {TimeSpan.FromTicks(stopwatch.ElapsedTicks).TotalSeconds} Seconds.");
