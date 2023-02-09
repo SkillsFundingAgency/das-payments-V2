@@ -172,8 +172,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                     group.Key.ContractType,
                     Amount = group.Sum(requiredPaymentInGroup => requiredPaymentInGroup.Amount)
                 })
-                .ToListAsync(cancellationToken)
-                .ConfigureAwait(false);
+                .ToListAsync(cancellationToken);
 
             var uniqueUkprns = providerMetrics.Select(x => x.Ukprn).Distinct();
 
@@ -356,7 +355,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 
         public async Task<IDbContextTransaction> BeginTransaction(CancellationToken cancellationToken, IsolationLevel isolationLevel = IsolationLevel.Snapshot)
         {
-            return await Database.BeginTransactionAsync(isolationLevel, cancellationToken).ConfigureAwait(false);
+            return await Database.BeginTransactionAsync(isolationLevel, cancellationToken);
         }
     }
 }

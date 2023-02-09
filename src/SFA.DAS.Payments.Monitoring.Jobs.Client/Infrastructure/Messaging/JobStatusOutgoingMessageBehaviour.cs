@@ -11,7 +11,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging
     {
         public override async Task Invoke(IOutgoingLogicalMessageContext context, Func<Task> next)
         {
-            await next().ConfigureAwait(false);
+            await next();
 
             if (context.Message.Instance is IMonitoredMessage &&
                 context.Extensions.TryGet(JobStatusBehaviourConstants.GeneratedMessagesKey, out List<GeneratedMessage> generatedMessages))

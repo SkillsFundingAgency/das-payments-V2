@@ -111,7 +111,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                             ContractType1 = x.ContractType == ContractType.Act1 ? x.Amount : 0,
                             ContractType2 = x.ContractType == ContractType.Act2 ? x.Amount : 0,
                         })
-                        .GroupBy(groupBy => new { groupBy.Ukprn, groupBy.LearnerUln})
+                        .GroupBy(groupBy => new { groupBy.Ukprn, groupBy.LearnerUln })
                         .Select(select => new ProviderNegativeEarningsLearnerContractTypeAmounts
                         {
                             Ukprn = select.Key.Ukprn,
@@ -119,8 +119,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                             ContractType1 = select.Sum(x => x.ContractType1),
                             ContractType2 = select.Sum(x => x.ContractType2)
                         })
-                        .ToListAsync(cancellationToken)
-                        .ConfigureAwait(false);
+                        .ToListAsync(cancellationToken);
 
                     providerLearnerContractTypeAmounts.AddRange(amounts);
                 }

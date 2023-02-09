@@ -29,10 +29,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
         {
             foreach (var message in messages)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 logger.LogInfo($"Handling period end start job: {message.ToJson()}");
-               await periodEndJobService.RecordPeriodEndJob(message, cancellationToken);
-               jobStatusManager.StartMonitoringJob(message.JobId, JobType.PeriodEndStartJob);
-               logger.LogInfo($"Handled period end start job: {message.JobId}");
+                await periodEndJobService.RecordPeriodEndJob(message, cancellationToken);
+                jobStatusManager.StartMonitoringJob(message.JobId, JobType.PeriodEndStartJob);
+                logger.LogInfo($"Handled period end start job: {message.JobId}");
             }
         }
     }

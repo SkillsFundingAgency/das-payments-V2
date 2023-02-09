@@ -137,7 +137,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                       throw new InvalidOperationException($"Job not found: {dcJobId}");
 
             job.DataLocksCompletionTime = endTime;
-            await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await SaveChangesAsync(cancellationToken);
         }
 
         public async Task SaveDcSubmissionStatus(long dcJobId, bool succeeded, CancellationToken cancellationToken)
@@ -148,7 +148,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
             job.DcJobEndTime = DateTimeOffset.UtcNow;
             job.DcJobSucceeded = succeeded;
 
-            await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await SaveChangesAsync(cancellationToken);
         }
 
         public async Task<DateTimeOffset?> GetLastJobStepEndTime(long jobId)
@@ -177,7 +177,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Data
                       ?? throw new ArgumentException($"Job not found: {dcJobId}");
             job.EndTime = endTime;
             job.Status = status;
-            await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await SaveChangesAsync(cancellationToken);
         }
 
         public async Task<List<OutstandingJobResult>> GetOutstandingOrTimedOutJobs(JobModel job, CancellationToken cancellationToken)

@@ -52,7 +52,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 
         public async Task Save(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken)
         {
-            var transaction = await Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
+            var transaction = await Database.BeginTransactionAsync(cancellationToken);
             try
             {
                 await Database.ExecuteSqlCommandAsync($@"
@@ -65,7 +65,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                     "
                     , cancellationToken);
                 await SubmissionSummaries.AddAsync(submissionSummary, cancellationToken);
-                await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                await SaveChangesAsync(cancellationToken);
                 transaction.Commit();
             }
             catch
@@ -77,7 +77,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 
         public async Task SaveProviderSummaries(List<ProviderPeriodEndSummaryModel> providerSummaries, PeriodEndSummaryModel overallPeriodEndSummary, CancellationToken cancellationToken)
         {
-            var transaction = await Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
+            var transaction = await Database.BeginTransactionAsync(cancellationToken);
             try
             {
                 await Database.ExecuteSqlCommandAsync($@"
@@ -101,7 +101,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                     , cancellationToken);
                 await ProviderPeriodEndSummaries.AddRangeAsync(providerSummaries, cancellationToken);
 
-                await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                await SaveChangesAsync(cancellationToken);
                 transaction.Commit();
             }
             catch
@@ -113,7 +113,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 
         public async Task SaveSubmissionsSummaryMetrics(SubmissionsSummaryModel submissionsSummary, CancellationToken cancellationToken)
         {
-            var transaction = await Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
+            var transaction = await Database.BeginTransactionAsync(cancellationToken);
             try
             {
                 await Database.ExecuteSqlCommandAsync($@"
@@ -127,7 +127,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 
                 await SubmissionsSummaries.AddAsync(submissionsSummary, cancellationToken);
 
-                await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                await SaveChangesAsync(cancellationToken);
 
                 transaction.Commit();
             }

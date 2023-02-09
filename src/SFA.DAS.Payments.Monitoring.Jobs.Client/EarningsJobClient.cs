@@ -76,8 +76,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 
         public async Task RecordJobFailure(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod)
         {
-            await RecordJobStatus<RecordEarningsJobFailed>(jobId, ukprn, ilrSubmissionTime, collectionYear, collectionPeriod)
-                .ConfigureAwait(false);
+            await RecordJobStatus<RecordEarningsJobFailed>(jobId, ukprn, ilrSubmissionTime, collectionYear, collectionPeriod);
         }
 
         private async Task RecordJobStatus<T>(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod) where T : RecordEarningsJobStatus, new()
@@ -94,7 +93,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                     IlrSubmissionDateTime = ilrSubmissionTime
                 };
                 var partitionedEndpointName = GetMonitoringEndpointForJob(jobId, ukprn);
-                await messageSession.Send(partitionedEndpointName, recordJobStatus);
+                await messageSession.Send(partitionedEndpointName, recordJobStatus).ConfigureAwait(false);
                 logger.LogDebug($"Sent record job status event for job: {jobId}, ukprn: {ukprn}. Status command: {typeof(T).Name}");
             }
             catch (Exception e)
@@ -106,8 +105,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 
         public async Task RecordJobSuccess(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod)
         {
-            await RecordJobStatus<RecordEarningsJobSucceeded>(jobId, ukprn, ilrSubmissionTime, collectionYear, collectionPeriod)
-                .ConfigureAwait(false);
+            await RecordJobStatus<RecordEarningsJobSucceeded>(jobId, ukprn, ilrSubmissionTime, collectionYear, collectionPeriod);
         }
 
         public string GetMonitoringEndpointForJob(long jobId, long ukprn)

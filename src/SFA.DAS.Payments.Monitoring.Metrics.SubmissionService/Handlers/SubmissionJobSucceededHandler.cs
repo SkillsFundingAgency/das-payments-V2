@@ -32,8 +32,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.SubmissionService.Handlers
             options.DelayDeliveryWith(delay);
             await context.Send(new GenerateSubmissionSummary
             {
-                CollectionPeriod = message.
-                    CollectionPeriod, 
+                CollectionPeriod = message.CollectionPeriod, 
                 JobId = message.JobId, 
                 Ukprn = message.Ukprn, 
                 AcademicYear = message.AcademicYear

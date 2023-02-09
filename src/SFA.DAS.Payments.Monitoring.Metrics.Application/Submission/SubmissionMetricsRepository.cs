@@ -117,8 +117,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         {
             using (await QueryDataContext.BeginTransaction(cancellationToken))
             {
-                return await QueryDataContext.GetAlreadyPaidDataLocksAmount(ukprn, jobId, cancellationToken)
-                    .ConfigureAwait(false);
+                return await QueryDataContext.GetAlreadyPaidDataLocksAmount(ukprn, jobId, cancellationToken);
             }
         }
 
@@ -136,8 +135,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                         ContractType = group.Key,
                         Amount = group.Sum(rp => rp.Amount)
                     })
-                    .ToListAsync(cancellationToken)
-                    .ConfigureAwait(false);
+                    .ToListAsync(cancellationToken);
 
                 return new ContractTypeAmounts
                 {
@@ -227,8 +225,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                                 p.CollectionPeriod.Period < currentCollectionPeriod)
                     .GroupBy(p => p.ContractType)
                     .Select(g => new { ContractType = g.Key, Amount = g.Sum(p => p.Amount) })
-                    .ToListAsync(cancellationToken)
-                    .ConfigureAwait(false);
+                    .ToListAsync(cancellationToken);
 
                 return new ContractTypeAmounts
                 {
@@ -240,7 +237,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
         public async Task SaveSubmissionMetrics(SubmissionSummaryModel submissionSummary, CancellationToken cancellationToken)
         {
-            await persistenceDataContext.Save(submissionSummary, cancellationToken).ConfigureAwait(false);
+            await persistenceDataContext.Save(submissionSummary, cancellationToken);
         }
 
         public async Task<IList<SubmissionSummaryModel>> GetSubmissionsSummaryMetrics(long jobId, short academicYear, byte currentCollectionPeriod, CancellationToken cancellationToken)

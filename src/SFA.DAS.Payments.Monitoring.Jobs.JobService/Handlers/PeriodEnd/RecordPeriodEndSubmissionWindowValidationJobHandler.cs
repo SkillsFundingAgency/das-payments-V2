@@ -36,6 +36,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
         {
             foreach (var message in messages)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
 

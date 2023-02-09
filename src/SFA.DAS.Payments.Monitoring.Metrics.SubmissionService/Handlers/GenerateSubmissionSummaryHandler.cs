@@ -23,8 +23,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.SubmissionService.Handlers
         public async Task Handle(GenerateSubmissionSummary message, IMessageHandlerContext context)
         {
             logger.LogDebug($"Handling message to build metrics for: {message.ToJson()}");
+
             await submissionMetricsService.BuildMetrics(message.Ukprn, message.JobId, message.AcademicYear,
-                message.CollectionPeriod, CancellationToken.None).ConfigureAwait(false);
+                                                        message.CollectionPeriod, CancellationToken.None);
+
             logger.LogInfo($"Finished handling the SubmissionJobSucceeded event: {message.ToJson()}");
         }
     }

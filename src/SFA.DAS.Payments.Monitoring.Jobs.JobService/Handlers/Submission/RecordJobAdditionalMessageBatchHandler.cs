@@ -25,7 +25,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.Submission
         {
             foreach (var message in messages)
             {
-                await commonJobService.RecordNewJobAdditionalMessages(message, cancellationToken).ConfigureAwait(false);
+                cancellationToken.ThrowIfCancellationRequested();
+                await commonJobService.RecordNewJobAdditionalMessages(message, cancellationToken);
             }
         }
     }
