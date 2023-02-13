@@ -46,6 +46,15 @@
       },
       "serviceBusActionGroupId": {
         "value": "ServiceBus-Action-Group"
+      },
+      "appInsightsApiKey": {
+        "value": ""
+      },
+      "dasAlertSlackChannelUri": {
+        "value": ""
+      },
+      "mngAlertSlackChannelUri": {
+        "value": ""
       }
     }
 }
