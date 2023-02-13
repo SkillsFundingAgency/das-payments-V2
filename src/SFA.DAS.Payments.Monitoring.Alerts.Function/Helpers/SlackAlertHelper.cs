@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
             {
                 "Sev0" or "Sev1" => ":alert:",
                 "Sev2" => ":warning:",
-                "Sev3" => ":information_source:",
+                "Sev3" => ":+1:",
                 _ => string.Empty,
             };
         }
