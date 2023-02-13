@@ -378,7 +378,7 @@
 			"location": "[parameters('location')]",
 			"properties": {
 				"displayName": "Actual Accuracy Within Tolerance",
-				"description": "Actual period end accuracy within tolerance :party-cat:. Accuracy is {Accuracy}% for period {CollectionPeriod}, academic year {AcademicYear}.",
+				"description": "Actual period end accuracy is within accepted tolerance range :party-cat:. Accuracy is {Accuracy}% for collection period {CollectionPeriod}, academic year {AcademicYear}.",
 				"severity": 3,
 				"enabled": true,
 				"evaluationFrequency": "PT5M",
@@ -694,7 +694,7 @@
 				"criteria": {
 					"allOf": [
 						{
-							"query": "union isfuzzy=true customEvents\n| extend \n    jobType = todouble(customDimensions[\"JobType\"])\n    ,jobStatus = tostring(customDimensions[\"Status\"])\n| where customDimensions[\"ProcessName\"] in (\"SFA.DAS.Payments.Monitoring.Jobs.JobService\")\n    and name in (\"Event: Finished Job\")\n    and jobType == \"EarningsJob\"\n    and (jobStatus == \"TimedOut\" or jobStatus == \"DcTasksFailed\")\n\n",
+							"query": "union isfuzzy=true customEvents\n| extend \n    jobType = tostring(customDimensions[\"JobType\"])\n    ,jobStatus = tostring(customDimensions[\"Status\"])\n| where customDimensions[\"ProcessName\"] in (\"SFA.DAS.Payments.Monitoring.Jobs.JobService\")\n    and name in (\"Event: Finished Job\")\n    and jobType == \"EarningsJob\"\n    and (jobStatus == \"TimedOut\" or jobStatus == \"DcTasksFailed\")\n\n",
 							"timeAggregation": "Count",
 							"operator": "GreaterThan",
 							"threshold": 0,
