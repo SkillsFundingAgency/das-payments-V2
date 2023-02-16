@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
         [TestCase("Sev0", ":alert:")]
         [TestCase("Sev1", ":alert:")]
         [TestCase("Sev2", ":warning:")]
-        [TestCase("Sev3", ":information_source:")]
+        [TestCase("Sev3", ":+1:")]
         [TestCase("Sev28", "")]
         public void GetEmojiSeverity0ReturnsCorrectEmojiCode(string input, string expectedOutput)
         {
