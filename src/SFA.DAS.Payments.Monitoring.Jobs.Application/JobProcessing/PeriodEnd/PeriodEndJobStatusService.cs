@@ -28,6 +28,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
             var isComplete = await base.CompleteJob(job, status, endTime, cancellationToken);
 
+            cancellationToken.ThrowIfCancellationRequested();
+
             if (isComplete && job.Status != JobStatus.TimedOut)
                 await EventPublisher.PeriodEndJobFinished(job, job.Status == JobStatus.Completed);
 
@@ -37,6 +39,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
         protected override async Task<bool> IsJobTimedOut(JobModel job, CancellationToken cancellationToken)
         {
             var isJobTimedOut = await base.IsJobTimedOut(job, cancellationToken);
+
+            cancellationToken.ThrowIfCancellationRequested();
+
             if (isJobTimedOut)
             {
                 await EventPublisher.PeriodEndJobFinished(job, false);

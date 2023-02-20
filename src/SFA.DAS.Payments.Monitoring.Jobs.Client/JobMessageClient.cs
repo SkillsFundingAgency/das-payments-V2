@@ -50,7 +50,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 };
 
                 var partitionedEndpointName = config.GetMonitoringEndpointName(jobId);
-                await messageSession.Send(partitionedEndpointName, itemProcessedEvent).ConfigureAwait(false);
+                await messageSession.Send(partitionedEndpointName, itemProcessedEvent);
             
                 var skip = batchSize;
                 while ((batch = generatedMessages.Skip(skip).Take(batchSize).ToList()).Count > 0)
@@ -61,7 +61,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                         JobId = jobId,
                         GeneratedMessages = batch,
                     };
-                    await messageSession.Send(partitionedEndpointName, providerEarningsAdditionalMessages).ConfigureAwait(false);
+                    await messageSession.Send(partitionedEndpointName, providerEarningsAdditionalMessages);
                 }
                 logger.LogDebug(
                     $"Sent request to record successful processing of event. Job Id: {jobId}, Event: id: {messageId} ");
@@ -108,7 +108,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 };
 
                 var partitionedEndpointName = config.GetMonitoringEndpointName(jobId);
-                await messageSession.Send(partitionedEndpointName, itemProcessedEvent).ConfigureAwait(false);
+                await messageSession.Send(partitionedEndpointName, itemProcessedEvent);
             }
             catch (Exception ex)
             {

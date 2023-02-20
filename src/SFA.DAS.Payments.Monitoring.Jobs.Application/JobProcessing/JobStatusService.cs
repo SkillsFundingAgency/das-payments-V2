@@ -51,32 +51,32 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
             Logger.LogWarning($"Job {job.DcJobId} has timed out. {(status != JobStatus.TimedOut ? $"but because DcJobSucceeded is {job.DcJobSucceeded}, " : "")}Setting JobStatus as {status}");
 
-            return await CompleteJob(job, status, timedOutTime, cancellationToken).ConfigureAwait(false);
+            return await CompleteJob(job, status, timedOutTime, cancellationToken);
         }
 
         public virtual async Task<bool> ManageStatus(long jobId, CancellationToken cancellationToken)
         {
             Logger.LogInfo($"Now determining if job {jobId} has finished. ");
 
-            var job = await JobStorageService.GetJob(jobId, cancellationToken).ConfigureAwait(false);
+            var job = await JobStorageService.GetJob(jobId, cancellationToken);
 
             if (job != null)
             {
-                if (await CheckSavedJobStatus(job, cancellationToken).ConfigureAwait(false))
+                if (await CheckSavedJobStatus(job, cancellationToken))
                     return true;
 
-                if (await IsJobTimedOut(job, cancellationToken).ConfigureAwait(false))
+                if (await IsJobTimedOut(job, cancellationToken))
                     return true;
             }
 
-            var additionalJobChecksResult = await PerformAdditionalJobChecks(job, cancellationToken).ConfigureAwait(false);
+            var additionalJobChecksResult = await PerformAdditionalJobChecks(job, cancellationToken);
             if (!additionalJobChecksResult.IsComplete)
             {
                 return false;
             }
 
-            var inProgressMessages = await JobStorageService.GetInProgressMessages(jobId, cancellationToken).ConfigureAwait(false);
-            var completedItems = await GetCompletedMessages(jobId, inProgressMessages, cancellationToken).ConfigureAwait(false);
+            var inProgressMessages = await JobStorageService.GetInProgressMessages(jobId, cancellationToken);
+            var completedItems = await GetCompletedMessages(jobId, inProgressMessages, cancellationToken);
 
             Logger.LogInfo($"ManageJobStatus JobId : {job.DcJobId}, JobType: {job.JobType} Inprogress count: {inProgressMessages.Count}, completed count: {completedItems.Count}.");
 
@@ -88,9 +88,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            await ManageMessageStatus(jobId, completedItems, inProgressMessages, cancellationToken).ConfigureAwait(false);
+            await ManageMessageStatus(jobId, completedItems, inProgressMessages, cancellationToken);
 
-            var currentJobStatus = await UpdateJobStatus(jobId, completedItems, cancellationToken).ConfigureAwait(false);
+            var currentJobStatus = await UpdateJobStatus(jobId, completedItems, cancellationToken);
 
             if (!inProgressMessages.All(inProgress => completedItems.Any(item => item.MessageId == inProgress.MessageId)))
             {
@@ -111,7 +111,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
             Telemetry.TrackEvent($"ManageJobStatus JobId : {job.DcJobId}, JobType: {job.JobType} jobStatus: {jobStatus}, endTime: {endTime}, Inprogress count: {inProgressMessages.Count}, completed count: {completedItems.Count}. Now Completing job.");
 
-            return await CompleteJob(jobId, jobStatus, endTime, cancellationToken).ConfigureAwait(false);
+            return await CompleteJob(jobId, jobStatus, endTime, cancellationToken);
         }
 
         public virtual Task<(bool IsComplete, JobStatus? OverriddenJobStatus, DateTimeOffset? completionTime)> PerformAdditionalJobChecks(JobModel job, CancellationToken cancellationToken)
@@ -121,28 +121,28 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
         protected virtual async Task ManageMessageStatus(long jobId, List<CompletedMessage> completedMessages, List<InProgressMessage> inProgressMessages, CancellationToken cancellationToken)
         {
-            await JobStorageService.RemoveInProgressMessages(jobId, completedMessages.Select(item => item.MessageId).ToList(), cancellationToken).ConfigureAwait(false);
+            await JobStorageService.RemoveInProgressMessages(jobId, completedMessages.Select(item => item.MessageId).ToList(), cancellationToken);
 
-            await JobStorageService.RemoveCompletedMessages(jobId, completedMessages.Select(item => item.MessageId).ToList(), cancellationToken).ConfigureAwait(false);
+            await JobStorageService.RemoveCompletedMessages(jobId, completedMessages.Select(item => item.MessageId).ToList(), cancellationToken);
         }
 
         private async Task<bool> CompleteJob(long jobId, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken)
         {
-            var job = await JobStorageService.GetJob(jobId, cancellationToken).ConfigureAwait(false);
+            var job = await JobStorageService.GetJob(jobId, cancellationToken);
             if (job == null)
             {
                 Logger.LogWarning($"Attempting to record completion status for job {jobId} but the job has not been persisted to database.");
                 return false;
             }
 
-            return await CompleteJob(job, status, endTime, cancellationToken).ConfigureAwait(false);
+            return await CompleteJob(job, status, endTime, cancellationToken);
         }
 
         protected virtual async Task<bool> CompleteJob(JobModel job, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken)
         {
             job.Status = status;
             job.EndTime = endTime;
-            await JobStorageService.SaveJobStatus(job.DcJobId.Value, status, endTime, cancellationToken).ConfigureAwait(false);
+            await JobStorageService.SaveJobStatus(job.DcJobId.Value, status, endTime, cancellationToken);
 
             SendTelemetry(job);
 
@@ -160,8 +160,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
         private async Task<List<CompletedMessage>> GetCompletedMessages(long jobId, List<InProgressMessage> inProgressMessages, CancellationToken cancellationToken)
         {
-            var completedMessages = await JobStorageService.GetCompletedMessages(jobId, cancellationToken)
-                .ConfigureAwait(false);
+            var completedMessages = await JobStorageService.GetCompletedMessages(jobId, cancellationToken);
 
             var completedItems = completedMessages
                 .Where(completedMessage => inProgressMessages.Any(inProgress => inProgress.MessageId == completedMessage.MessageId)).ToList();
@@ -172,7 +171,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         protected async Task<(bool hasFailedMessages, DateTimeOffset? endTime)> UpdateJobStatus(long jobId, List<CompletedMessage> completedItems, CancellationToken cancellationToken)
         {
             var statusChanged = false;
-            var currentJobStatus = await JobStorageService.GetJobStatus(jobId, cancellationToken).ConfigureAwait(false);
+            var currentJobStatus = await JobStorageService.GetJobStatus(jobId, cancellationToken);
             var completedItemsEndTime = completedItems.Max(item => item.CompletedTime);
             if (!currentJobStatus.endTime.HasValue || completedItemsEndTime > currentJobStatus.endTime)
             {
@@ -189,8 +188,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             if (statusChanged)
             {
                 Logger.LogInfo($"Detected change in job status for job: {jobId}. Has failed messages: {currentJobStatus.hasFailedMessages}, End time: {currentJobStatus.endTime}");
-                await JobStorageService.StoreJobStatus(jobId, currentJobStatus.hasFailedMessages, currentJobStatus.endTime, cancellationToken)
-                    .ConfigureAwait(false);
+                await JobStorageService.StoreJobStatus(jobId, currentJobStatus.hasFailedMessages, currentJobStatus.endTime, cancellationToken);
             }
 
             return currentJobStatus;

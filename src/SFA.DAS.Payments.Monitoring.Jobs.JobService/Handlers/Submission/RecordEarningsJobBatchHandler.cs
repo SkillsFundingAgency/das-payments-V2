@@ -29,7 +29,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.Submission
             foreach (var message in messages)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await earningsJobService.RecordNewJob(message, CancellationToken.None).ConfigureAwait(false);
+                await earningsJobService.RecordNewJob(message, cancellationToken);
                 jobStatusManager.StartMonitoringJob(message.JobId, JobType.EarningsJob);
             }
         }

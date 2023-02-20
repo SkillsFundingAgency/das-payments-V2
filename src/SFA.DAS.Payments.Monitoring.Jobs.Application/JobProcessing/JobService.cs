@@ -33,9 +33,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             if (!jobDetails.DcJobId.HasValue)
                 throw new InvalidOperationException("No DcJob Id found on the job.");
 
-            var isNewJob = await JobStorageService.StoreNewJob(jobDetails, CancellationToken.None);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var isNewJob = await JobStorageService.StoreNewJob(jobDetails, cancellationToken);
             Logger.LogDebug($"Finished storing new job: {jobDetails.Id} for dc job id: {jobDetails.DcJobId}. Now storing the job messages.");
-            await RecordJobInProgressMessages(jobDetails.DcJobId.Value, generatedMessages, cancellationToken).ConfigureAwait(false);
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await RecordJobInProgressMessages(jobDetails.DcJobId.Value, generatedMessages, cancellationToken);
             Logger.LogDebug($"Finished storing new job messages for job: {jobDetails.Id} for dc job id: {jobDetails.DcJobId}.");
             if (isNewJob)
                 SendTelemetry(jobDetails);
@@ -45,7 +50,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
         public async Task RecordNewJobAdditionalMessages(RecordJobAdditionalMessages jobRequest, CancellationToken cancellationToken)
         {
-            await RecordJobInProgressMessages(jobRequest.JobId, jobRequest.GeneratedMessages, cancellationToken).ConfigureAwait(false);
+            await RecordJobInProgressMessages(jobRequest.JobId, jobRequest.GeneratedMessages, cancellationToken);
             Logger.LogInfo($"Finished storing new job messages for job: {jobRequest.JobId}");
         }
 

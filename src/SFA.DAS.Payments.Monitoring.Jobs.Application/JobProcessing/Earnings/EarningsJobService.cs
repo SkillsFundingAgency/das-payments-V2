@@ -36,8 +36,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
                 Status = JobStatus.InProgress,
                 LearnerCount = earningsJobRequest.LearnerCount
             };
-            await RecordNewJob(jobDetails, earningsJobRequest.GeneratedMessages, cancellationToken)
-                .ConfigureAwait(false);
+
+            await RecordNewJob(jobDetails, earningsJobRequest.GeneratedMessages, cancellationToken);
         }
 
      
@@ -45,7 +45,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
         public async Task RecordDcJobCompleted(long jobId, bool succeeded, CancellationToken cancellationToken)
         {
             Logger.LogDebug($"Now storing the completion status of the submission job. Id: {jobId}, succeeded: {succeeded}");
-            await JobStorageService.StoreDcJobStatus(jobId, succeeded, cancellationToken).ConfigureAwait(false);
+            await JobStorageService.StoreDcJobStatus(jobId, succeeded, cancellationToken);
             Logger.LogInfo($"Finished storing the completion status of the submission job. Id: {jobId}, succeeded: {succeeded}");
         }
     }

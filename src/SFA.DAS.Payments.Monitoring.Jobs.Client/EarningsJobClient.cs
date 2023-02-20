@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                 };
                 var partitionedEndpointName = GetMonitoringEndpointForJob(jobId, ukprn);
                 logger.LogVerbose($"Endpoint for RecordEarningsJob for Job Id {jobId} is `{partitionedEndpointName}`");
-                await messageSession.Send(partitionedEndpointName, providerEarningsEvent).ConfigureAwait(false);
+                await messageSession.Send(partitionedEndpointName, providerEarningsEvent);
 
                 var skip = batchSize;
 
@@ -63,7 +63,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
                         JobId = jobId,
                         GeneratedMessages = batch,
                     };
-                    await messageSession.Send(partitionedEndpointName, providerEarningsAdditionalMessages).ConfigureAwait(false);
+                    await messageSession.Send(partitionedEndpointName, providerEarningsAdditionalMessages);
                 }
                 logger.LogDebug($"Sent request(s) to record start of earnings job. Job Id: {jobId}, Ukprn: {ukprn}");
             }
@@ -76,8 +76,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 
         public async Task RecordJobFailure(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod)
         {
-            await RecordJobStatus<RecordEarningsJobFailed>(jobId, ukprn, ilrSubmissionTime, collectionYear, collectionPeriod)
-                .ConfigureAwait(false);
+            await RecordJobStatus<RecordEarningsJobFailed>(jobId, ukprn, ilrSubmissionTime, collectionYear, collectionPeriod);
         }
 
         private async Task RecordJobStatus<T>(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod) where T : RecordEarningsJobStatus, new()
@@ -106,8 +105,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 
         public async Task RecordJobSuccess(long jobId, long ukprn, DateTime ilrSubmissionTime, short collectionYear, byte collectionPeriod)
         {
-            await RecordJobStatus<RecordEarningsJobSucceeded>(jobId, ukprn, ilrSubmissionTime, collectionYear, collectionPeriod)
-                .ConfigureAwait(false);
+            await RecordJobStatus<RecordEarningsJobSucceeded>(jobId, ukprn, ilrSubmissionTime, collectionYear, collectionPeriod);
         }
 
         public string GetMonitoringEndpointForJob(long jobId, long ukprn)

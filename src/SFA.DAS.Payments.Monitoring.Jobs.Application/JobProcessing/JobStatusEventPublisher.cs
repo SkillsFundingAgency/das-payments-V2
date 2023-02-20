@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             submissionJobFinished.IlrSubmissionDateTime = ilrSubmissionTime;
             logger.LogInfo($"Publishing {submissionJobFinished.GetType().Name} event. Event: {submissionJobFinished.ToJson()}. Job: {jobId}");
             var endpointInstance = await factory.GetEndpointInstance();
-            await endpointInstance.Publish(submissionJobFinished).ConfigureAwait(false);
+            await endpointInstance.Publish(submissionJobFinished);
         }
 
 
@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
             logger.LogInfo($"Publishing {periodEndEvent.GetType().Name} event. Event: {periodEndEvent.ToJson()}. Job: {jobModel.DcJobId.Value}");
             var endpointInstance = await factory.GetEndpointInstance();
-            await endpointInstance.Publish(periodEndEvent).ConfigureAwait(false);
+            await endpointInstance.Publish(periodEndEvent);
 
         }
 

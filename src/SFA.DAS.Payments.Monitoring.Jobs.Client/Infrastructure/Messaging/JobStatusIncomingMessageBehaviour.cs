@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging
             var generatedMessages = new List<GeneratedMessage>();
             context.Extensions.Set(JobStatusBehaviourConstants.GeneratedMessagesKey, generatedMessages);
 
-            await next().ConfigureAwait(false);
+            await next();
 
             if(context.Message.Instance is IMonitoredMessage paymentMessage)
             {

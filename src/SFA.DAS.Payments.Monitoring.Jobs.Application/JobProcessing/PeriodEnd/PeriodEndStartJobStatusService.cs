@@ -112,6 +112,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
         {
             foreach (var inProgressJob in processingJobs)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 var providerJobTimings = averageJobCompletionTimes.SingleOrDefault(a => a.Ukprn == inProgressJob.Ukprn);
 
                 if (providerJobTimings == null) throw new InvalidOperationException($"Unable to find Average Job Completion Times For {inProgressJob.Ukprn}, Period End Start JobId {dcJobId}");

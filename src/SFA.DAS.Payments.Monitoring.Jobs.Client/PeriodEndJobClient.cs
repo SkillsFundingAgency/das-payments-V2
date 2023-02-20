@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Client
 
             logger.LogVerbose($"Endpoint for PeriodEndJobClient for {jobName} with Job Id {periodEndJob.JobId} is `{partitionedEndpointName}`");
 
-            await messageSession.Send(partitionedEndpointName, periodEndJob).ConfigureAwait(false);
+            await messageSession.Send(partitionedEndpointName, periodEndJob);
 
             logger.LogInfo($"Sent request to record period end job: {jobName}. Job Id: {periodEndJob.JobId}, collection period: {periodEndJob.CollectionYear}-{periodEndJob.CollectionPeriod}");
         }

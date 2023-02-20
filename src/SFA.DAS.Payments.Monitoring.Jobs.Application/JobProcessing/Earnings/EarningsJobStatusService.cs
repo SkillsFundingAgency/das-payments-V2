@@ -32,7 +32,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
             {
                 job.Status = JobStatus.DcTasksFailed;
                 
-                await JobStorageService.SaveJobStatus(job.DcJobId.Value, JobStatus.DcTasksFailed, job.StartTime, cancellationToken).ConfigureAwait(false);
+                await JobStorageService.SaveJobStatus(job.DcJobId.Value, JobStatus.DcTasksFailed, job.StartTime, cancellationToken);
             }
 
             if (job.Status != JobStatus.InProgress && job.DcJobSucceeded.HasValue)
@@ -41,14 +41,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
 
                 var success = (job.Status == JobStatus.Completed || job.Status == JobStatus.CompletedWithErrors) && job.DcJobSucceeded.Value;
 
-                await EventPublisher.SubmissionFinished(success, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
+                await EventPublisher.SubmissionFinished(success, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value);
                 
                 return true;
             }
 
             if (job.LearnerCount.HasValue && job.LearnerCount.Value == 0)
             {
-                await JobStorageService.SaveJobStatus(job.DcJobId.Value, JobStatus.Completed, job.StartTime, cancellationToken).ConfigureAwait(false);
+                await JobStorageService.SaveJobStatus(job.DcJobId.Value, JobStatus.Completed, job.StartTime, cancellationToken);
             }
 
             return false;
@@ -56,9 +56,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
 
         protected override async Task ManageMessageStatus(long jobId, List<CompletedMessage> completedMessages, List<InProgressMessage> inProgressMessages, CancellationToken cancellationToken)
         {
-            await CompleteDataLocks(jobId, completedMessages, inProgressMessages, cancellationToken).ConfigureAwait(false);
+            await CompleteDataLocks(jobId, completedMessages, inProgressMessages, cancellationToken);
 
-            await base.ManageMessageStatus(jobId, completedMessages, inProgressMessages, cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await base.ManageMessageStatus(jobId, completedMessages, inProgressMessages, cancellationToken);
         }
 
         protected override async Task<bool> CompleteJob(JobModel job, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken)
@@ -76,14 +78,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
                 return false;
 
             if (job.JobType == JobType.EarningsJob || job.JobType == JobType.ComponentAcceptanceTestEarningsJob)
-                await EventPublisher.SubmissionFinished(status == JobStatus.Completed || status == JobStatus.CompletedWithErrors, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value).ConfigureAwait(false);
+                await EventPublisher.SubmissionFinished(status == JobStatus.Completed || status == JobStatus.CompletedWithErrors, job.DcJobId.Value, job.Ukprn.Value, job.AcademicYear, job.CollectionPeriod, job.IlrSubmissionTime.Value);
             
             return true;
         }
 
         private async Task CompleteDataLocks(long jobId, List<CompletedMessage> completedMessages, List<InProgressMessage> inProgressMessages, CancellationToken cancellationToken)
         {
-            var job = await JobStorageService.GetJob(jobId, cancellationToken).ConfigureAwait(false);
+            var job = await JobStorageService.GetJob(jobId, cancellationToken);
             if (job == null)
                 return;
 
@@ -113,7 +115,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
                 .Where(completed => inProgressDataLocks.Exists(inProgress => inProgress.MessageId == completed.MessageId))
                 .Max(completed => completed.CompletedTime);
 
-            await JobStorageService.SaveDataLocksCompletionTime(job.DcJobId.Value, completionTime, cancellationToken).ConfigureAwait(false);
+            await JobStorageService.SaveDataLocksCompletionTime(job.DcJobId.Value, completionTime, cancellationToken);
 
             var properties = new Dictionary<string, string>
             {

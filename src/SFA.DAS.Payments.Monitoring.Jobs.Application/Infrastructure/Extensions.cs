@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure
             var options = new SendOptions();
             options.DelayDeliveryWith(delay);
             options.SetHeader(retriesKey, retries.ToString());
-            await context.Send(message, options).ConfigureAwait(false);
+            await context.Send(message, options);
             context.DoNotContinueDispatchingCurrentMessageToHandlers();
             return true;
         }
