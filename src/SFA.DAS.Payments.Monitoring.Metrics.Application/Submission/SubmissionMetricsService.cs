@@ -9,6 +9,8 @@ using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
+using SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd;
+using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 {
@@ -25,9 +27,16 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         private readonly IDcMetricsDataContextFactory dcMetricsDataContextFactory;
         private readonly ISubmissionMetricsRepository submissionRepository;
         private readonly ISubmissionJobsRepository submissionJobsRepository;
+        private readonly IPeriodEndMetricsRepository periodEndMetricsRepository;
         private readonly ITelemetry telemetry;
 
-        public SubmissionMetricsService(IPaymentLogger logger, ISubmissionSummaryFactory submissionSummaryFactory, IDcMetricsDataContextFactory dcMetricsDataContextFactory, ISubmissionMetricsRepository submissionRepository, ITelemetry telemetry, ISubmissionJobsRepository submissionJobsRepository)
+        public SubmissionMetricsService(IPaymentLogger logger,
+                                        ISubmissionSummaryFactory submissionSummaryFactory,
+                                        IDcMetricsDataContextFactory dcMetricsDataContextFactory,
+                                        ISubmissionMetricsRepository submissionRepository,
+                                        ITelemetry telemetry,
+                                        ISubmissionJobsRepository submissionJobsRepository,
+                                        IPeriodEndMetricsRepository periodEndMetricsRepository)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.submissionSummaryFactory = submissionSummaryFactory ?? throw new ArgumentNullException(nameof(submissionSummaryFactory));
@@ -35,6 +44,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             this.submissionRepository = submissionRepository ?? throw new ArgumentNullException(nameof(submissionRepository));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
             this.submissionJobsRepository = submissionJobsRepository ?? throw new ArgumentNullException(nameof(submissionJobsRepository));
+            this.periodEndMetricsRepository = periodEndMetricsRepository ?? throw new ArgumentNullException(nameof(periodEndMetricsRepository));
         }
 
         public async Task BuildMetrics(long ukprn, long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
@@ -85,11 +95,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
                 var metrics = submissionSummary.GetMetrics();
 
+                var collectionPeriodTolerance = await periodEndMetricsRepository.GetCollectionPeriodTolerance(collectionPeriod, academicYear, cancellationToken);
+
                 await submissionRepository.SaveSubmissionMetrics(metrics, cancellationToken);
 
                 stopwatch.Stop();
 
-                SendMetricsTelemetry(metrics, stopwatch.ElapsedMilliseconds);
+                SendMetricsTelemetry(metrics, stopwatch.ElapsedMilliseconds, collectionPeriodTolerance);
 
                 logger.LogInfo($"Finished building metrics for submission job: {jobId}, provider: {ukprn}, Academic year: {academicYear}, Collection period: {collectionPeriod}. Took: {stopwatch.ElapsedMilliseconds}ms");
             }
@@ -100,7 +112,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             }
         }
 
-        private void SendMetricsTelemetry(SubmissionSummaryModel metrics, long reportGenerationDuration)
+        private void SendMetricsTelemetry(SubmissionSummaryModel metrics, long reportGenerationDuration, CollectionPeriodToleranceModel tolerance)
         {
             var properties = new Dictionary<string, string>
             {
@@ -122,12 +134,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
             var stats = new Dictionary<string, double>
             {
-                { "ReportGenerationDuration", reportGenerationDuration },
-
+                { "ReportGenerationDuration",            reportGenerationDuration },
+                
                 { "Percentage" ,                         (double) submissionMetrics.Percentage },
                 { "ContractType1Percentage" ,            (double) submissionMetrics.PercentageContractType1 },
                 { "ContractType2Percentage" ,            (double) submissionMetrics.PercentageContractType2 },
-                
+                { "LowerTolerance",                      tolerance == null ? (double)99.92 : (double)tolerance.SubmissionToleranceLower },
+                { "UpperTolerance",                      tolerance == null ? (double)100.08 : (double)tolerance.SubmissionToleranceUpper },
+
                 { "DifferenceTotal" ,                    (double) submissionMetrics.DifferenceTotal },
                 { "DifferenceContractType1" ,            (double) submissionMetrics.DifferenceContractType1 },
                 { "DifferenceContractType2" ,            (double) submissionMetrics.DifferenceContractType2 },

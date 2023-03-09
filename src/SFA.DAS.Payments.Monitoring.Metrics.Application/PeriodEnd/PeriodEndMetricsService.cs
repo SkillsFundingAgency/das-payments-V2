@@ -142,8 +142,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 var dataDuration = stopwatch.ElapsedMilliseconds;
 
                 await periodEndMetricsRepository.SaveProviderSummaries(providerSummaries, overallPeriodEndSummary, cancellationToken);
-                SendSummaryMetricsTelemetry(overallPeriodEndSummary, stopwatch.ElapsedMilliseconds);
-                SendAllProviderMetricsTelemetry(providerSummaries, overallPeriodEndSummary);
+                SendSummaryMetricsTelemetry(overallPeriodEndSummary, stopwatch.ElapsedMilliseconds, collectionPeriodTolerance);
+                SendAllProviderMetricsTelemetry(providerSummaries, overallPeriodEndSummary, collectionPeriodTolerance);
 
                 logger.LogInfo($"Finished building period end metrics for {academicYear}, {collectionPeriod} using job id {jobId}, DataDuration: {dataDuration} milliseconds");
 
@@ -156,7 +156,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             }
         }
 
-        private void SendProviderMetricsTelemetry(ProviderPeriodEndSummaryModel providerMetrics, PeriodEndSummaryModel overallMetrics)
+        private void SendProviderMetricsTelemetry(ProviderPeriodEndSummaryModel providerMetrics, PeriodEndSummaryModel overallMetrics, CollectionPeriodToleranceModel tolerance)
         {
             var properties = new Dictionary<string, string>
             {
@@ -184,11 +184,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
                 .Where(x => x.TransactionTypeAmounts.ContractType == ContractType.Act2)
                 .ToList();
 
+
             var stats = new Dictionary<string, double>
             {
                 { "Percentage",    (double) providerMetrics.PaymentMetrics.Percentage },
-                { "PercentageContractType1", (double) providerMetrics.PaymentMetrics.PercentageContractType1 },
-                { "PercentageContractType2", (double) providerMetrics.PaymentMetrics.PercentageContractType2 },
+                { "PercentageContractType1",  (double) providerMetrics.PaymentMetrics.PercentageContractType1 },
+                { "PercentageContractType2",  (double) providerMetrics.PaymentMetrics.PercentageContractType2 },
+                { "LowerTolerance", tolerance == null ? (double)99.92 : (double)tolerance.SubmissionToleranceLower },
+                { "UpperTolerance", tolerance == null ? (double)100.08 : (double)tolerance.SubmissionToleranceUpper },
 
                 { "Total", (double) providerMetrics.PaymentMetrics.Total },
                 { "ContractType1", (double) providerMetrics.PaymentMetrics.ContractType1 },
@@ -295,15 +298,15 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             telemetry.TrackEvent($"Finished Generating Period End Metrics for Provider: {providerMetrics.Ukprn}", properties, stats);
         }
 
-        private void SendAllProviderMetricsTelemetry(List<ProviderPeriodEndSummaryModel> providerMetrics, PeriodEndSummaryModel metrics)
+        private void SendAllProviderMetricsTelemetry(List<ProviderPeriodEndSummaryModel> providerMetrics, PeriodEndSummaryModel metrics, CollectionPeriodToleranceModel tolerance)
         {
             foreach (var providerMetric in providerMetrics)
             {
-                SendProviderMetricsTelemetry(providerMetric, metrics);
+                SendProviderMetricsTelemetry(providerMetric, metrics, tolerance);
             }
         }
 
-        private void SendSummaryMetricsTelemetry(PeriodEndSummaryModel metrics, long reportGenerationDuration)
+        private void SendSummaryMetricsTelemetry(PeriodEndSummaryModel metrics, long reportGenerationDuration, CollectionPeriodToleranceModel tolerance)
         {
             var properties = new Dictionary<string, string>
             {
@@ -315,6 +318,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.PeriodEnd
             var stats = new Dictionary<string, double>
             {
                 { "Percentage",    (double) metrics.Percentage },
+
+                { "LowerTolerance", tolerance == null ? (double)99.92 : (double)tolerance.PeriodEndToleranceLower },
+                { "UpperTolerance", tolerance == null ? (double)100.08 : (double) tolerance.PeriodEndToleranceUpper },
 
                 { "ContractType1", (double) metrics.PaymentMetrics.ContractType1 },
                 { "ContractType2", (double) metrics.PaymentMetrics.ContractType2 },
