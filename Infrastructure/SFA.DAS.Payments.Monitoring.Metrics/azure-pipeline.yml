@@ -146,13 +146,13 @@ stages:
       azureSubscription: DCOL-MO-VSTS
       storageAccountName: dcolmostoragemonitorweu
       workspaceResourceId: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourcegroups/dcol-mo-ops-weu/providers/microsoft.operationalinsights/workspaces/dcol-mo-oms-weu
-      dasActionGroupWebhookUri1: 
-      mgDasActionGroupWebhookUri1: 
-      smartDetectionActionGroupId: 
-      serviceBusActionGroupId: 
-      dasAlertSlackChannelUri: 
-      mngAlertSlackChannelUri: 
-      appInsightsApiKey: 
+      dasActionGroupWebhookUri1: test1
+      mgDasActionGroupWebhookUri1: test2
+      smartDetectionActionGroupId: /subscriptions/2F538936-0715-4DFD-83DA-6B8C5A399D6A/resourceGroups/DCOL-MO-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
+      serviceBusActionGroupId: /subscriptions/2F538936-0715-4DFD-83DA-6B8C5A399D6A/resourceGroups/DCOL-MO-OPS-WEU/providers/microsoft.insights/actionGroups/DCOL-MO-DASALERTS-ACTIONGROUP
+      dasAlertSlackChannelUri: test1
+      mngAlertSlackChannelUri: test2
+      appInsightsApiKey: dummy
 
 #- stage: Deploy_PD
 #  dependsOn: 
