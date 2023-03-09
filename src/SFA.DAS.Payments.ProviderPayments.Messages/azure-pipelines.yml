@@ -4,6 +4,17 @@ resources:
 - repo: self
   fetchDepth: 15
 
+trigger:
+  branches:
+    include:
+    - master
+  batch: true
+  paths:
+    include:
+    - src/SFA.DAS.Payments.ProviderPayments.Messages
+    exclude:
+    - Infrastructure
+
 variables:  
   VersionNumberMajor: '0'
   VersionNumberMinor: '0'

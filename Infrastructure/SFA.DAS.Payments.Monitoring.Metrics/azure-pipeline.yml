@@ -1,0 +1,172 @@
+variables:
+- group: Common - Project Level
+- group: Common - Connection String
+- group: Common - Database Names
+- group: Common - Database Usernames
+
+resources:
+  repositories:
+  - repository: self
+
+trigger:
+  branches:
+    include:
+    - master
+    - PP-3008-ApplicationInsights
+  batch: true
+  paths:
+    include:
+    - Infrastructure/SFA.DAS.Payments.Monitoring.Metrics
+    exclude:
+    - Infrastructure/SFA.DAS.Payments.ADF
+
+stages:
+- stage: Publish_MonitoringMetrics
+  displayName: Publish MonitoringMetrics
+
+  jobs:
+  - template: pipeline/publish.yml
+
+- stage: Deploy_DAS
+  dependsOn: Publish_MonitoringMetrics
+  displayName: Deploy to DAS
+  variables:
+  - name: tagEnvironment
+    value: Dev/Test
+  - group: DCOL-DAS - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: DAS
+      azureSubscription: DCT-VSO
+      storageAccountName: dcoldasstoragemonitorweu
+      dasActionGroupWebhookUri1: $(dasActionGroupWebhookUri)
+      mgDasActionGroupWebhookUri1: $(mgDasActionGroupWebhookUri)
+      workspaceResourceId: /subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourcegroups/dcol-dev-oms-weu/providers/microsoft.operationalinsights/workspaces/dcol-dev-oms-weu
+      smartDetectionActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-DAS-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
+      serviceBusActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-DAS-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
+      dasAlertSlackChannelUri: NoValue
+      mngAlertSlackChannelUri: NoValue
+      appInsightsApiKey: $(AppInsightsAuthValue)
+
+
+- stage: Deploy_DST
+  dependsOn: Publish_MonitoringMetrics
+  displayName: Deploy to DST
+  variables:
+  - name: tagEnvironment
+    value: Dev/Test
+  - group: DCOL-DST - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: DST
+      azureSubscription: DCT-VSO
+      storageAccountName: dcoldststoragemonitorweu
+      workspaceResourceId: /subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourcegroups/dcol-dev-oms-weu/providers/microsoft.operationalinsights/workspaces/dcol-dev-oms-weu
+      dasActionGroupWebhookUri1: $(dasActionGroupWebhookUri)
+      mgDasActionGroupWebhookUri1: $(mgDasActionGroupWebhookUri)
+      smartDetectionActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-DST-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
+      serviceBusActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-DST-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
+      dasAlertSlackChannelUri: NoValue
+      mngAlertSlackChannelUri: NoValue
+      appInsightsApiKey: $(AppInsightsAuthValue)
+       
+      
+
+- stage: Deploy_SIT
+  dependsOn: 
+  - Publish_MonitoringMetrics
+  - Deploy_DST
+  displayName: Deploy to SIT
+  variables:
+  - name: tagEnvironment
+    value: Dev/Test
+  - group: DCOL-SIT - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: SIT
+      azureSubscription: DCT-VSO
+      storageAccountName: dcolsitstoragemonitorweu
+      workspaceResourceId: /subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourcegroups/dcol-dev-oms-weu/providers/microsoft.operationalinsights/workspaces/dcol-dev-oms-weu
+      dasActionGroupWebhookUri1: $(dasActionGroupWebhookUri)
+      mgDasActionGroupWebhookUri1: $(mgDasActionGroupWebhookUri)
+      smartDetectionActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-SIT-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
+      serviceBusActionGroupId: /subscriptions/12F72527-6622-45D3-90A4-0A5D3644C45C/resourceGroups/DCOL-OPS-OPS-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
+      dasAlertSlackChannelUri: NoValue
+      mngAlertSlackChannelUri: NoValue
+      appInsightsApiKey: $(AppInsightsAuthValue)
+      
+
+- stage: Deploy_SDW
+  dependsOn: 
+  - Publish_MonitoringMetrics
+  - Deploy_SIT
+  displayName: Deploy to SDW
+  variables:
+  - name: tagEnvironment
+    value: Dev/Test
+  - group: DCOL-SDW - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: SDW
+      azureSubscription: DCOL-Shadow
+      storageAccountName: dcolsdwstoragemonitorweu
+      workspaceResourceId: /subscriptions/4ff47917-ac4e-432a-b314-a6525434afcb/resourcegroups/dcol-sdw-ops-weu/providers/microsoft.operationalinsights/workspaces/dcol-sdw-ops-weu-workspace
+      dasActionGroupWebhookUri1: $(dasActionGroupWebhookUri)
+      mgDasActionGroupWebhookUri1: $(mgDasActionGroupWebhookUri)
+      smartDetectionActionGroupId: /subscriptions/4FF47917-AC4E-432A-B314-A6525434AFCB/resourceGroups/DCOL-SDW-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
+      serviceBusActionGroupId: /subscriptions/4FF47917-AC4E-432A-B314-A6525434AFCB/resourceGroups/DCOL-SDW-OPS-WEU/providers/microsoft.insights/actionGroups/DCOL-SDW-Monitor-Perf
+      dasAlertSlackChannelUri: $(SlackChannelUri)
+      mngAlertSlackChannelUri: $(SlackChannelUri2)
+      appInsightsApiKey: $(AppInsightsAuthValue)
+      
+
+ 
+- stage: Deploy_MO
+  dependsOn: 
+  - Publish_MonitoringMetrics
+  - Deploy_SDW
+  displayName: Deploy to MO
+  variables:
+  - name: tagEnvironment
+    value: Dev/Test
+  - group: DCOL-MO - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: MO
+      azureSubscription: DCOL-MO-VSTS
+      storageAccountName: dcolmostoragemonitorweu
+      workspaceResourceId: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourcegroups/dcol-mo-ops-weu/providers/microsoft.operationalinsights/workspaces/dcol-mo-oms-weu
+      dasActionGroupWebhookUri1: 
+      mgDasActionGroupWebhookUri1: 
+      smartDetectionActionGroupId: 
+      serviceBusActionGroupId: 
+      dasAlertSlackChannelUri: 
+      mngAlertSlackChannelUri: 
+      appInsightsApiKey: 
+
+#- stage: Deploy_PD
+#  dependsOn: 
+#  - Publish_ADF
+#  - Deploy_MO
+#  displayName: Deploy to PD
+#  variables:
+#  - name: tagEnvironment
+#    value: Production
+#  - group: DCOL-PD - Environment Key Vault Secrets
+#  jobs:
+#  - template: pipeline/deploy.yml
+#    parameters:
+#      pool: DCT Build Pool
+#      environmentName: PD
+#      azureSubscription: DCOLPDVSTS
+#      deployFactory: true
