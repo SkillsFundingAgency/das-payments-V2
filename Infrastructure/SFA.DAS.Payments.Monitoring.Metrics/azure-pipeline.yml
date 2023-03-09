@@ -128,23 +128,31 @@ stages:
       appInsightsApiKey: $(AppInsightsAuthValue)
       
 
-
-#- stage: Deploy_MO
-#  dependsOn: 
-#  - Publish_ADF
-#  - Deploy_SDW
-#  displayName: Deploy to MO
-#  variables:
-#  - name: tagEnvironment
-#    value: Dev/Test
-#  - group: DCOL-MO - Environment Key Vault Secrets
-#  jobs:
-#  - template: pipeline/deploy.yml
-#    parameters:
-#      pool: DCT Build Pool
-#      environmentName: MO
-#      azureSubscription: DCOL-MO-VSTS
-#      deployFactory: true
+ 
+- stage: Deploy_MO
+  dependsOn: 
+  - Publish_MonitoringMetrics
+  - Deploy_SDW
+  displayName: Deploy to MO
+  variables:
+  - name: tagEnvironment
+    value: Dev/Test
+  - group: DCOL-MO - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: MO
+      azureSubscription: DCOL-MO-VSTS
+      storageAccountName: dcolmostoragemonitorweu
+      workspaceResourceId: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourcegroups/dcol-mo-ops-weu/providers/microsoft.operationalinsights/workspaces/dcol-mo-oms-weu
+      dasActionGroupWebhookUri1: 
+      mgDasActionGroupWebhookUri1: 
+      smartDetectionActionGroupId: 
+      serviceBusActionGroupId: 
+      dasAlertSlackChannelUri: 
+      mngAlertSlackChannelUri: 
+      appInsightsApiKey: 
 
 #- stage: Deploy_PD
 #  dependsOn: 
