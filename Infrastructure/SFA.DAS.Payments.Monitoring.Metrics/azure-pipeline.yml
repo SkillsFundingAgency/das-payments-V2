@@ -171,8 +171,8 @@ stages:
       azureSubscription: DCOLPPVSTS
       storageAccountName: dcolppstoragemonitorweu
       workspaceResourceId: /subscriptions/931bc9f6-359c-4f65-a753-1ee191a1fd6c/resourcegroups/dcol-pp-ops-weu/providers/microsoft.operationalinsights/workspaces/dcol-pp-oms-weu
-      dasActionGroupWebhookUri1: test
-      mgDasActionGroupWebhookUri1: test2
+      dasActionGroupWebhookUri1: https://dcol-pp-monitoringalerts-weu.azurewebsites.net/api/HttpTrigger2?code=a36ivQyFakiqcXxDoTa0RGiW9B3YETZf/5Gz1ZfbdD5SdDv8sudGRA==
+      mgDasActionGroupWebhookUri1: https://dcol-pp-monitoringalerts-weu.azurewebsites.net/api/HttpTrigger1?code=aNaAcdgFCP1SDzTsgiyaY/8QCMaRPDQsgSHzbAMnhdFtu1RX0AdakA==
       smartDetectionActionGroupId: /subscriptions/931BC9F6-359C-4F65-A753-1EE191A1FD6C/resourceGroups/DCOL-PP-OPS-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
       serviceBusActionGroupId: /subscriptions/931BC9F6-359C-4F65-A753-1EE191A1FD6C/resourceGroups/DCOL-PP-OPS-WEU/providers/microsoft.insights/actionGroups/DCOL-PP-DASALERTS-ACTIONGROUP
       dasAlertSlackChannelUri: test1
