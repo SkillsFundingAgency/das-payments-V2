@@ -188,7 +188,7 @@ stages:
   - name: tagEnvironment
     value: Production
   - group: DCOL-PD - Environment Key Vault Secrets
- jobs:
+  jobs:
   - template: pipeline/deploy.yml
     parameters:
       pool: DCT Build Pool
