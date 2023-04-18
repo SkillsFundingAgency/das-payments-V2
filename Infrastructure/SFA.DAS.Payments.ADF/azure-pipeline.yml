@@ -9,6 +9,17 @@ resources:
   - repository: self
     fetchDepth: 0
 
+trigger:
+  branches:
+    include:
+    - master
+  batch: true
+  paths:
+    include:
+    - Infrastructure/SFA.DAS.Payments.ADF
+    exclude:
+    - Infrastructure/SFA.DAS.Payments.Monitoring.Metrics
+
 stages:
 - stage: Publish_ADF
   displayName: Publish ADF

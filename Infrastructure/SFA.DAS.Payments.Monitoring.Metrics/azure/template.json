@@ -1,0 +1,64 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of Application Insights resource."
+      }
+    },
+    "type": {
+      "type": "string",
+      "metadata": {
+        "description": "Type of app you are deploying. This field is for legacy reasons and will not impact the type of App Insights resource you deploy."
+      }
+    },
+    "regionId": {
+      "type": "string",
+      "metadata": {
+        "description": "Which Azure Region to deploy the resource to. This must be a valid Azure regionId."
+      }
+    },
+    "tagsArray": {
+      "type": "object",
+      "metadata": {
+        "description": "See documentation on tags: https://learn.microsoft.com/azure/azure-resource-manager/management/tag-resources."
+      }
+    },
+    "requestSource": {
+      "type": "string",
+      "metadata": {
+        "description": "Source of Azure Resource Manager deployment"
+      }
+    },
+    "workspaceResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Log Analytics workspace ID to associate with your Application Insights resource."
+      }
+    }
+  },
+  "variables": {
+    "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
+    "resourceNamePrefix": "[concat('DCOL-', parameters('resourceEnvironmentName'))]",
+    "keyVaultName": "[concat(variables('resourceNamePrefix'), '-KeyVaultDAS-WEU')]",
+    "location": "[resourceGroup().location]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02",
+      "name": "[parameters('name')]",
+      "location": "[parameters('regionId')]",
+      "tags": "[parameters('tagsArray')]",
+      "kind": "other",
+      "properties": {
+        "Application_Type": "[parameters('type')]",
+        "Flow_Type": "Bluefield",
+        "Request_Source": "[parameters('requestSource')]",
+        "WorkspaceResourceId": "[parameters('workspaceResourceId')]"
+      }
+    }
+  ]
+}
