@@ -1,15 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.Fabric;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.ServiceFabric.Services.Runtime;
 
-namespace SFA.DAS.Payments.EarningEvents.EarningEventsService2122
+namespace SFA.DAS.Payments.EarningEvents.EarningEventsService
 {
-    [EventSource(Name = "MyCompany-SFA.DAS.Payments.EarningEvents.ServiceFabric-SFA.DAS.Payments.EarningEvents.EarningEventsService2122")]
+    [EventSource(Name = "MyCompany-SFA.DAS.Payments.EarningEvents.ServiceFabric-SFA.DAS.Payments.EarningEvents.EarningEventsService")]
 internal sealed class ServiceEventSource : EventSource
 {
     public static readonly ServiceEventSource Current = new ServiceEventSource();
