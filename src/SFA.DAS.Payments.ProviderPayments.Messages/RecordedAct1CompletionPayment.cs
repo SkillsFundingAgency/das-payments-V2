@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Messages
         public long Ukprn { get; set; }
         public Learner Learner { get; set; }
         public LearningAim LearningAim { get; set; }
-        public DateTime IlrSubmissionDateTime { get; set; }
+        public DateTime? IlrSubmissionDateTime { get; set; }
         public CollectionPeriod CollectionPeriod { get; set; }
         public decimal AmountDue { get; set; }
         public byte DeliveryPeriod { get; set; }

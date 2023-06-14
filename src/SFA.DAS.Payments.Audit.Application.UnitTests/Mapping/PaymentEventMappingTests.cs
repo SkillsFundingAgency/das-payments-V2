@@ -96,7 +96,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
         [Test]
         public void Maps_IlrSubmissionDateTime()
         {
-            Mapper.Map<TDest>(PaymentEvent).IlrSubmissionDateTime.Should().Be(PaymentEvent.IlrSubmissionDateTime);
+            Mapper.Map<TDest>(PaymentEvent).IlrSubmissionDateTime.Should().Be(PaymentEvent.IlrSubmissionDateTime.Value);
         }
 
         [Test]

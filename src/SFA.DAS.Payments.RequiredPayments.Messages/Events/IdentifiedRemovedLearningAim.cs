@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
         public long Ukprn { get; set; }
         public Learner Learner { get; set; }
         public LearningAim LearningAim { get; set; }
-        public DateTime IlrSubmissionDateTime { get; set; }
+        public DateTime? IlrSubmissionDateTime { get; set; }
         public CollectionPeriod CollectionPeriod { get; set; }
         public ContractType ContractType { get; set; }
     }

@@ -171,7 +171,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.FundingSource
         [Test]
         public void Maps_IlrSubmissionDateTime()
         {
-            Mapper.Map<FundingSourceEventModel>(PaymentEvent).IlrSubmissionDateTime.Should().Be(PaymentEvent.IlrSubmissionDateTime);
+            Mapper.Map<FundingSourceEventModel>(PaymentEvent).IlrSubmissionDateTime.Should().Be(PaymentEvent.IlrSubmissionDateTime.Value);
         }
 
         [Test]

@@ -141,7 +141,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                     IlrPathwayCode = dataLock.LearningAim.PathwayCode,
                     IlrProgrammeType = dataLock.LearningAim.ProgrammeType,
                     IlrStandardCode = dataLock.LearningAim.StandardCode,
-                    SubmittedDateTime = dataLock.IlrSubmissionDateTime,
+                    SubmittedDateTime = dataLock.IlrSubmissionDateTime.Value,
 
                     CommitmentId = apprenticeship.Id,
                     EmployerAccountId = apprenticeship.AccountId,

@@ -67,7 +67,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.Amount.Should().Be(employerCoInvested.AmountDue);
             payment.FundingSource.Should().Be(employerCoInvested.FundingSourceType);
             payment.JobId.Should().Be(employerCoInvested.JobId);
-            payment.IlrSubmissionDateTime.Should().Be(employerCoInvested.IlrSubmissionDateTime);
+            payment.IlrSubmissionDateTime.Should().Be(employerCoInvested.IlrSubmissionDateTime.Value);
             payment.AccountId.Should().Be(employerCoInvested.AccountId);
             payment.ApprenticeshipEmployerType.Should().Be(employerCoInvested.ApprenticeshipEmployerType);
             payment.RequiredPaymentEventId.Should().Be(employerCoInvested.RequiredPaymentEventId);
@@ -122,7 +122,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.Amount.Should().Be(levy.AmountDue);
             payment.FundingSource.Should().Be(levy.FundingSourceType);
             payment.JobId.Should().Be(levy.JobId);
-            payment.IlrSubmissionDateTime.Should().Be(levy.IlrSubmissionDateTime);
+            payment.IlrSubmissionDateTime.Should().Be(levy.IlrSubmissionDateTime.Value);
             payment.AccountId.Should().Be(levy.AccountId);
             payment.ApprenticeshipEmployerType.Should().Be(levy.ApprenticeshipEmployerType);
             payment.RequiredPaymentEventId.Should().Be(levy.RequiredPaymentEventId);
@@ -177,7 +177,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.Amount.Should().Be(transfer.AmountDue);
             payment.FundingSource.Should().Be(transfer.FundingSourceType);
             payment.JobId.Should().Be(transfer.JobId);
-            payment.IlrSubmissionDateTime.Should().Be(transfer.IlrSubmissionDateTime);
+            payment.IlrSubmissionDateTime.Should().Be(transfer.IlrSubmissionDateTime.Value);
             payment.AccountId.Should().Be(transfer.AccountId);
             payment.ApprenticeshipEmployerType.Should().Be(transfer.ApprenticeshipEmployerType);
             payment.RequiredPaymentEventId.Should().Be(transfer.RequiredPaymentEventId);

@@ -88,7 +88,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             clawbackPayment.Amount *= -1;
             clawbackPayment.JobId = message.JobId;
             clawbackPayment.CollectionPeriod = message.CollectionPeriod.Clone();
-            clawbackPayment.IlrSubmissionDateTime = message.IlrSubmissionDateTime;
+            clawbackPayment.IlrSubmissionDateTime = message.IlrSubmissionDateTime.Value;
             clawbackPayment.EventTime = DateTimeOffset.UtcNow;
 
             clawbackPayment.RequiredPaymentEventId = Guid.Empty;

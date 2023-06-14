@@ -124,7 +124,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
             earningEventModel.EventTime.Should().Be(earningEvent.EventTime);
             earningEventModel.JobId.Should().Be(earningEvent.JobId);
             earningEventModel.IlrFileName.Should().Be(earningEvent.IlrFileName);
-            earningEventModel.IlrSubmissionDateTime.Should().Be(earningEvent.IlrSubmissionDateTime);
+            earningEventModel.IlrSubmissionDateTime.Should().Be(earningEvent.IlrSubmissionDateTime.Value);
             earningEventModel.AcademicYear.Should().Be(earningEvent.CollectionPeriod.AcademicYear);
             earningEventModel.CollectionPeriod.Should().Be(earningEvent.CollectionPeriod.Period);
             CompareCourseDetails(earningEvent, earningEventModel);
