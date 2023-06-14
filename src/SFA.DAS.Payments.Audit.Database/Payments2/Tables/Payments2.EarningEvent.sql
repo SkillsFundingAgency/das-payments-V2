@@ -16,7 +16,7 @@
 	LearningAimFundingLineType  NVARCHAR(100) NULL,
 	LearningStartDate DATETIME2 NULL,
 	AgreementId NVARCHAR(255) NULL, 
-	IlrSubmissionDateTime DATETIME2 NOT NULL,
+	IlrSubmissionDateTime DATETIME2 NULL,
 	JobId  BIGINT NOT NULL,
 	EventTime DATETIMEOFFSET NOT NULL,
 	CreationDate DATETIMEOFFSET NOT NULL, 

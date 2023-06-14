@@ -17,7 +17,7 @@
 	LearningAimFundingLineType  NVARCHAR(100) NULL,
 	LearningStartDate DATETIME2 NULL,
 	AgreementId NVARCHAR(255) NULL, 
-	IlrSubmissionDateTime DATETIME2 NOT NULL,
+	IlrSubmissionDateTime DATETIME2 NULL,
 	IsPayable BIT NOT NULL,
 	DataLockSourceId TINYINT NOT NULL CONSTRAINT DF_DataLockEvent__DataLockSourceId DEFAULT (1),
 	JobId  BIGINT NOT NULL,

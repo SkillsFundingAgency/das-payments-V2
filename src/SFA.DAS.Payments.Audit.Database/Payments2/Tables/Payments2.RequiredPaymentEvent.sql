@@ -22,7 +22,7 @@ CREATE TABLE [Payments2].[RequiredPaymentEvent]
 	LearningAimPathwayCode INT NOT NULL,
 	LearningAimFundingLineType  NVARCHAR(100) NOT NULL,
 	AgreementId NVARCHAR(255) NULL, 
-	IlrSubmissionDateTime DATETIME2 NOT NULL,
+	IlrSubmissionDateTime DATETIME2 NULL,
 	JobId  BIGINT NOT NULL,
 	EventTime DATETIMEOFFSET NOT NULL,
 	AccountId BIGINT NULL , 

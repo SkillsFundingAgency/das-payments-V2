@@ -24,7 +24,7 @@ CREATE TABLE [Payments2].[FundingSourceEvent]
 	ContractType TINYINT NOT NULL,
 	TransactionType TINYINT NOT NULL, 
 	FundingSourceType TINYINT NOT NULL,
-	IlrSubmissionDateTime DATETIME2 NOT NULL,
+	IlrSubmissionDateTime DATETIME2 NULL,
 	SfaContributionPercentage DECIMAL(15,5) NOT NULL,
 	AgreementId NVARCHAR(255) NULL, 
 	AccountId BIGINT NULL, 
