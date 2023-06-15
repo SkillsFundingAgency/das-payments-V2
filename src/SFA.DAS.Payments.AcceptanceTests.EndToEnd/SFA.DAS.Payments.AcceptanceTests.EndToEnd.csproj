@@ -411,6 +411,7 @@
     <Compile Include="Steps\EndToEndSteps.cs" />
     <Compile Include="Steps\EndToEndStepsBase.cs" />
     <Compile Include="Extensions\FeatureInfoNumberExtractor.cs" />
+    <Compile Include="Steps\FLP_347_Spike_Steps.cs" />
     <Compile Include="Steps\FM36BreakInLearningBaseSteps.cs" />
     <Compile Include="Steps\FM36_ILR_Base_Steps.cs" />
     <Compile Include="Steps\FundingSourcePaymentEventsHelper.cs" />
@@ -565,6 +566,11 @@
     </Compile>
     <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer provider retrospectively submitted ILR late - PV2-2802-1.feature.cs">
       <DependentUpon>Levy learner changes employer provider retrospectively submitted ILR late - PV2-2802-1.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\FLP Spike\FLP-347-Spike.feature.cs">
+      <DependentUpon>FLP-347-Spike.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -2117,6 +2123,10 @@
     <None Include="Tests\Employer Stops\E2E -PV2-945 - Levy learner, Employer stops commitment before the day the course is completed, completion payment not paid .feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>E2E -PV2-945 - Levy learner, Employer stops commitment before the day the course is completed, completion payment not paid .feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\FLP Spike\FLP-347-Spike.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>FLP-347-Spike.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Learner Change of Circumstances\PV2-2898 Levy learner, the course completion Date is changed, with a Balancing payment. Completion and Balancing is refunded.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
