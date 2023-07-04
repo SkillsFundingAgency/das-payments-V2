@@ -12,7 +12,9 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="ESFA.DC.Logging" Version="0.1.4-beta0001" />
-    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.2.162" />
+    <PackageReference Include="Microsoft.ServiceFabric" Version="9.1.1833" />
+    <PackageReference Include="Microsoft.ServiceFabric.Diagnostics.Internal" Version="6.1.1833" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="6.1.1833" />
     <PackageReference Include="WindowsAzure.ServiceBus" Version="5.0.0" />
   </ItemGroup>
 
