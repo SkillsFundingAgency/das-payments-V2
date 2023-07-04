@@ -9,7 +9,6 @@
             <ReplicatorEndpoint Name="DataLockServiceActorServiceReplicatorEndpoint" />
             <ReplicatorConfigSection Name="DataLockServiceActorServiceReplicatorConfig" />
             <ReplicatorSecurityConfigSection Name="DataLockServiceActorServiceReplicatorSecurityConfig" />
-            <StoreConfigSection Name="DataLockServiceActorServiceLocalStoreConfig" />
             <ServiceEndpointV2_1 Name="DataLockServiceActorServiceEndpointV2_1" />
           </GeneratedNames>
         </Extension>

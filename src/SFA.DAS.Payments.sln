@@ -389,6 +389,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{BDD16D67-A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests", "SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests\SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.csproj", "{BA7515D8-A0E2-488D-854B-E4BA56ED8875}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{C2F26D4B-C46E-41DC-8782-EBEAF90B0B8C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
