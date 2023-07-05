@@ -39,6 +39,7 @@ namespace SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules
                 var persistence = endpointConfiguration.UsePersistence<AzureStoragePersistence>();
                 persistence.ConnectionString(config.StorageConnectionString);
 
+                
                 endpointConfiguration.DisableFeature<TimeoutManager>();
                 if (!string.IsNullOrEmpty(config.NServiceBusLicense))
                 {

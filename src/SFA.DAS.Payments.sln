@@ -387,9 +387,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{BDD16D67-A2E4-4537-AC5B-2A856D752D84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests", "SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests\SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.csproj", "{BA7515D8-A0E2-488D-854B-E4BA56ED8875}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{C2F26D4B-C46E-41DC-8782-EBEAF90B0B8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests", "SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests\SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.csproj", "{BA7515D8-A0E2-488D-854B-E4BA56ED8875}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
