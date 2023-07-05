@@ -1,9 +1,9 @@
-﻿using Microsoft.Azure.ServiceBus;
+﻿using Azure.Messaging.ServiceBus;
 
 namespace SFA.DAS.Payments.Messaging.Serialization
 {
     public interface IMessageDeserializer
     {
-        object DeserializeMessage(Message message);
+        object DeserializeMessage(Azure.Messaging.ServiceBus.ServiceBusReceivedMessage message);
     }
 }

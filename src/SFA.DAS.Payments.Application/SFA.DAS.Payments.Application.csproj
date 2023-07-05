@@ -15,9 +15,9 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.1" />
     <PackageReference Include="NServiceBus" Version="8.1.1" />
-    <PackageReference Include="NServiceBus.Callbacks" Version="3.0.0" />
-    <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="2.1.0" />
-    <PackageReference Include="NServiceBus.Persistence.AzureStorage" Version="2.2.0" />
+    <PackageReference Include="NServiceBus.Callbacks" Version="4.0.0" />
+    <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="3.0.0" />
+    <PackageReference Include="NServiceBus.Persistence.AzureTable" Version="5.0.1" />
     <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="3.2.1" />
     <PackageReference Include="Polly" Version="6.1.2" />
     <PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="2.6.0" />
