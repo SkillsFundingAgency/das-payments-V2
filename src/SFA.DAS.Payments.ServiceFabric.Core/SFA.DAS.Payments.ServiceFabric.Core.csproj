@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+	  <!--<TargetFramework>netstandard2.0</TargetFramework>-->
+	  <TargetFrameworks>net472;net6</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -25,26 +26,25 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.8.1" />
-    <PackageReference Include="Autofac.ServiceFabric" Version="2.0.0" />
-    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="3.2.162" />
-    <PackageReference Include="Microsoft.ServiceFabric.Data.Interfaces" Version="3.2.162" />
-    <PackageReference Include="Microsoft.ServiceFabric.Diagnostics.Internal" Version="3.2.162" />
-    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.2.162" />
+    <!--<PackageReference Include="Autofac" Version="4.8.1" />
+    <PackageReference Include="Autofac.ServiceFabric" Version="2.0.0" />-->
+    <PackageReference Include="Microsoft.ServiceFabric" Version="10.0.1010" />
+    <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="7.0.1001" />
+    <PackageReference Include="Microsoft.ServiceFabric.Data.Interfaces" Version="7.0.1010" />
+    <PackageReference Include="Microsoft.ServiceFabric.Diagnostics.Internal" Version="7.0.1010" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="7.0.1001" />
     <!--<PackageReference Include="NServiceBus" Version="7.1.5" />
     <PackageReference Include="NServiceBus.Autofac" Version="7.0.0" />
     <PackageReference Include="NServiceBus.Azure.Transports.WindowsAzureStorageQueues" Version="8.1.0" />
     <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="2.1.0" />
     <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.0.0" />-->
 
-    <PackageReference Include="NServiceBus" Version="7.8.2" />
-    <PackageReference Include="NServiceBus.Autofac" Version="7.0.0" />
+    <!--<PackageReference Include="NServiceBus" Version="7.8.2" />
     <PackageReference Include="NServiceBus.Callbacks" Version="3.0.0" />
     <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="2.1.0" />
-    <PackageReference Include="NServiceBus.Persistence.AzureStorage" Version="2.2.0" />
-    <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="2.0.6" />
+    <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="2.0.6" />-->
 
-	  <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+	  <!--<PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />-->
   </ItemGroup>
 
   <ItemGroup>
