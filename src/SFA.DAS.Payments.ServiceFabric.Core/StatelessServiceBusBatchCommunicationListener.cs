@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
+using Azure.Messaging.ServiceBus;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Management;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
@@ -202,10 +203,18 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
 
         private async Task Listen(CancellationToken cancellationToken)
         {
-            var connection = new ServiceBusConnection(connectionString);
+            var clientOptions = new ServiceBusClientOptions
+            {
+//                RetryOptions = new ServiceBusRetryOptions(){}
+            };
+            var serviceBusClient = new ServiceBusClient(connectionString, clientOptions);
+
+
+
+            //var connection = new ServiceBusConnection(connectionString);
             var messageReceivers = new List<BatchMessageReceiver>();
             messageReceivers.AddRange(Enumerable.Range(0, 3)
-                .Select(i => new BatchMessageReceiver(connection, EndpointName)));
+                .Select(i => new BatchMessageReceiver(serviceBusClient, EndpointName)));
             //var errorQueueSender = new MessageSender(connection, errorQueueName, RetryPolicy.Default);
             try
             {
@@ -266,8 +275,11 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             finally
             {
                 await Task.WhenAll(messageReceivers.Select(receiver => receiver.Close())).ConfigureAwait(false);
-                if (!connection.IsClosedOrClosing)
-                    await connection.CloseAsync();
+                //if (!connection.IsClosedOrClosing)
+                //    await connection.CloseAsync();
+                if (serviceBusClient.IsClosed)
+                    await serviceBusClient.DisposeAsync().ConfigureAwait(false);
+
             }
         }
 

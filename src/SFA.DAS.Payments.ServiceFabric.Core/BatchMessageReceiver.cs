@@ -4,25 +4,28 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure.Core.Pipeline;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
+using Azure.Messaging.ServiceBus;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core
 {
     public class BatchMessageReceiver
     {
         private readonly MessageReceiver messageReceiver;
-        private readonly List<Message> messages;
+        private readonly List<ServiceBusReceivedMessage> messages;
         public BatchMessageReceiver(ServiceBusConnection connection, string endpointName)
         {
             if (connection == null) throw new ArgumentNullException(nameof(connection));
             if (endpointName == null) throw new ArgumentNullException(nameof(endpointName));
+            var r = new Azure.Messaging.ServiceBus.ServiceBusReceiver()
             messageReceiver = new MessageReceiver(connection, endpointName, ReceiveMode.PeekLock,
                 RetryPolicy.Default, 0);
             messages = new List<Message>();
         }
 
-        public async Task<ReadOnlyCollection<Message>> ReceiveMessages(int batchSize, CancellationToken cancellationToken)
+        public async Task<ReadOnlyCollection<ServiceBusReceivedMessage>> ReceiveMessages(int batchSize, CancellationToken cancellationToken)
         {
             messages.Clear();
             for (var i = 0; i < 10 && messages.Count <= batchSize; i++)
@@ -58,13 +61,13 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             await messageReceiver.AbandonAsync(lockToken);
         }
 
-        public async Task DeadLetter(Message message)
+        public async Task DeadLetter(ServiceBusReceivedMessage message)
         {
             var failedMessage =
-                messages.FirstOrDefault(msg => msg.SystemProperties.LockToken == message.SystemProperties.LockToken);
+                messages.FirstOrDefault(msg => msg.LockToken == message.LockToken);
             if (failedMessage == null)
                 throw new InvalidOperationException($"Cannot move the message to the dead letter queue Message not found in list of received messages");
-            await messageReceiver.DeadLetterAsync(failedMessage.SystemProperties.LockToken).ConfigureAwait(false);
+            await messageReceiver.DeadLetterAsync(failedMessage.LockToken).ConfigureAwait(false);
         }
 
         public async Task Close()
