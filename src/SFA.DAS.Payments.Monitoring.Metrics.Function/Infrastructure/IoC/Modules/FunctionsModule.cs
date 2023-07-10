@@ -18,13 +18,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.Infrastructure.IoC.Module
             builder.RegisterType<SubmissionsSummary>().As<ISubmissionsSummary>().InstancePerLifetimeScope();
 
             builder.Register((c, p) =>
-                {
-                    var config = c.Resolve<ISubmissionMetricsConfiguration>();
-                    var dbContextOptions = new DbContextOptionsBuilder()
-                        .UseSqlServer(config.PaymentsConnectionString, 
-                  optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
-                    return new MetricsPersistenceDataContext(dbContextOptions);
-                })
+            {
+                var config = c.Resolve<ISubmissionMetricsConfiguration>();
+                var dbContextOptions = new DbContextOptionsBuilder()
+                    .UseSqlServer(config.PaymentsConnectionString,
+              optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
+                return new MetricsPersistenceDataContext(dbContextOptions);
+            })
                 .As<IMetricsPersistenceDataContext>()
                 .InstancePerLifetimeScope();
 
@@ -36,13 +36,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.Infrastructure.IoC.Module
             builder.RegisterType<SubmissionJobsService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<SubmissionJobsRepository>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.Register((c, p) =>
-                {
-                    var config = c.Resolve<ISubmissionMetricsConfiguration>();
-                    var dbContextOptions = new DbContextOptionsBuilder()
-                        .UseSqlServer(config.PaymentsConnectionString, 
-                            optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
-                    return new SubmissionJobsDataContext(dbContextOptions);
-                })
+            {
+                var config = c.Resolve<ISubmissionMetricsConfiguration>();
+                var dbContextOptions = new DbContextOptionsBuilder()
+                    .UseSqlServer(config.PaymentsConnectionString,
+                        optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
+                return new SubmissionJobsDataContext(dbContextOptions);
+            })
                 .As<ISubmissionJobsDataContext>()
                 .InstancePerLifetimeScope();
 
@@ -52,54 +52,41 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.Infrastructure.IoC.Module
             builder.RegisterType<PeriodEndMetricsRepository>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             builder.Register((c, p) =>
-                {
-                    var configHelper = c.Resolve<IConfigurationHelper>();
+            {
+                var configHelper = c.Resolve<IConfigurationHelper>();
 
-                    var dbContextOptions = new DbContextOptionsBuilder().UseSqlServer(
-                        configHelper.GetConnectionString("DcEarnings2324ConnectionString"),
-                        optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
+                var dbContextOptions = new DbContextOptionsBuilder().UseSqlServer(
+                    configHelper.GetConnectionString("DcEarnings2324ConnectionString"),
+                    optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
 
-                    return new DcMetricsDataContext(dbContextOptions);
-                })
+                return new DcMetricsDataContext(dbContextOptions);
+            })
                 .Named<IDcMetricsDataContext>("DcEarnings2324DataContext")
                 .InstancePerDependency();
 
             builder.Register((c, p) =>
-                {
-                    var configHelper = c.Resolve<IConfigurationHelper>();
+            {
+                var configHelper = c.Resolve<IConfigurationHelper>();
 
-                    var dbContextOptions = new DbContextOptionsBuilder().UseSqlServer(
-                        configHelper.GetConnectionString("DcEarnings2223ConnectionString"),
-                        optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
+                var dbContextOptions = new DbContextOptionsBuilder().UseSqlServer(
+                    configHelper.GetConnectionString("DcEarnings2223ConnectionString"),
+                    optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
 
-                    return new DcMetricsDataContext(dbContextOptions);
-                })
-                .Named<IDcMetricsDataContext>("DcEarnings2324DataContext")
-                .InstancePerDependency();
-
-            builder.Register((c, p) =>
-                {
-                    var configHelper = c.Resolve<IConfigurationHelper>();
-
-                    var dbContextOptions = new DbContextOptionsBuilder().UseSqlServer(
-                        configHelper.GetConnectionString("DcEarnings2223ConnectionString"),
-                        optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
-
-                    return new DcMetricsDataContext(dbContextOptions);
-                })
+                return new DcMetricsDataContext(dbContextOptions);
+            })
                 .Named<IDcMetricsDataContext>("DcEarnings2223DataContext")
                 .InstancePerDependency();
 
             builder.Register((c, p) =>
-                {
-                    var configHelper = c.Resolve<IConfigurationHelper>();
-                    var dbContextOptions = new DbContextOptionsBuilder().UseSqlServer(
-                        configHelper.GetConnectionString("PaymentsMetricsConnectionString"),
-                        optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
-                    return new MetricsQueryDataContext(dbContextOptions);
-                })
-                .As<IMetricsQueryDataContext>()
-                .InstancePerDependency();
+            {
+                var configHelper = c.Resolve<IConfigurationHelper>();
+                var dbContextOptions = new DbContextOptionsBuilder().UseSqlServer(
+                    configHelper.GetConnectionString("PaymentsMetricsConnectionString"),
+                    optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
+                return new MetricsQueryDataContext(dbContextOptions);
+            })
+                        .As<IMetricsQueryDataContext>()
+                        .InstancePerDependency();
         }
     }
 }
