@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ServiceManifest Name="SFA.DAS.Payments.EarningEvents.EarningEventsServicePkg"
+<ServiceManifest Name="SFA.DAS.Payments.EarningEvents.EarningEventsService2223Pkg"
                  Version="1.0.0"
                  xmlns="http://schemas.microsoft.com/2011/01/fabric"
                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
@@ -7,14 +7,14 @@
   <ServiceTypes>
     <!-- This is the name of your ServiceType. 
          This name must match the string used in the RegisterServiceAsync call in Program.cs. -->
-    <StatelessServiceType ServiceTypeName="SFA.DAS.Payments.EarningEvents.EarningEventsServiceType" />
+    <StatelessServiceType ServiceTypeName="SFA.DAS.Payments.EarningEvents.EarningEventsService2223Type" />
   </ServiceTypes>
 
   <!-- Code package is your service executable. -->
   <CodePackage Name="Code" Version="1.0.0">
     <EntryPoint>
       <ExeHost>
-        <Program>SFA.DAS.Payments.EarningEvents.EarningEventsService.exe</Program>
+        <Program>SFA.DAS.Payments.EarningEvents.EarningEventsService2223.exe</Program>
       </ExeHost>
     </EntryPoint>
   </CodePackage>

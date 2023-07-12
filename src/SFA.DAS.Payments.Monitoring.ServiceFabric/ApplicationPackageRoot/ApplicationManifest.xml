@@ -13,8 +13,8 @@
     <Parameter Name="MonitoringServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="LoggingConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
-    <Parameter Name="DcEarnings2122ConnectionString" DefaultValue="" />
     <Parameter Name="DcEarnings2223ConnectionString" DefaultValue="" />
+    <Parameter Name="DcEarnings2324ConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsMonitoringConnectionString" DefaultValue="" />
     <Parameter Name="Monitoring_JobsService_EndpointName" DefaultValue="sfa-das-payments-monitoring-jobs" />
     <Parameter Name="Monitoring_JobsService_FailedMessagesQueue" DefaultValue="sfa-das-payments-monitoring-jobs-errors" />
@@ -48,8 +48,8 @@
       <ConfigOverride Name="Config">
         <Settings>
           <Section Name="ConnectionStringsSection">
-            <Parameter Name="DcEarnings2122ConnectionString" Value="[DcEarnings2122ConnectionString]" />
             <Parameter Name="DcEarnings2223ConnectionString" Value="[DcEarnings2223ConnectionString]" />
+            <Parameter Name="DcEarnings2324ConnectionString" Value="[DcEarnings2324ConnectionString]" />
             <Parameter Name="StorageConnectionString" Value="[StorageConnectionString]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="MonitoringServiceBusConnectionString" Value="[MonitoringServiceBusConnectionString]" />
