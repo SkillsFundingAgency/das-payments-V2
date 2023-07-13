@@ -19,9 +19,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Infrastructure.Ioc
                 {
                     var appConfig = c.Resolve<IApplicationConfiguration>();
                     var configHelper = c.Resolve<IConfigurationHelper>();
-                    return new  ServiceBusBatchCommunicationListener(configHelper.GetConnectionString("MonitoringServiceBusConnectionString"),
+                    return new ServiceBusBatchCommunicationListener(
+                        configHelper.GetConnectionString("MonitoringServiceBusConnectionString"),
                         appConfig.EndpointName,
-                        appConfig.FailedMessagesQueue, 
+                        appConfig.FailedMessagesQueue,
                         c.Resolve<IPaymentLogger>(),
                         c.Resolve<IContainerScopeFactory>());
                 })
@@ -50,6 +51,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Infrastructure.Ioc
 
             builder.RegisterType<RecordPeriodEndStartJobHandler>()
                 .As<IHandleMessageBatches<RecordPeriodEndStartJob>>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<RecordPeriodEndIlrReprocessingStartedJobHandler>()
+                .As<IHandleMessageBatches<RecordPeriodEndIlrReprocessingStartedJob>>()
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<RecordPeriodEndSubmissionWindowValidationJobHandler>()
