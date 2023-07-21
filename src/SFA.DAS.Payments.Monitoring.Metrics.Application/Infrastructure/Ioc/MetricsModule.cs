@@ -6,6 +6,7 @@ using SFA.DAS.Payments.Monitoring.Metrics.Data;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Ioc
 {
+    //Test Comment
     public class MetricsModule : Module
     {
         protected override void Load(ContainerBuilder builder)
