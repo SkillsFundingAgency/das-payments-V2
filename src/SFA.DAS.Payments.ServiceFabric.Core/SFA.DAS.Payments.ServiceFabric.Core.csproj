@@ -23,6 +23,8 @@
     <Compile Remove="EndpointCommunicationBase.cs" />
     <Compile Remove="EndpointCommunicationSender.cs" />
     <Compile Remove="IEndpointCommunicationSender.cs" />
+    <Compile Remove="ServiceBusBatchCommunicationListener.cs" />
+    <Compile Remove="StatelessServiceBusBatchCommunicationListener.cs" />
   </ItemGroup>
 
   <ItemGroup>
