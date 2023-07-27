@@ -21,6 +21,16 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             messages = new List<ServiceBusReceivedMessage>();
         }
 
+        //public BatchMessageReceiver(ServiceBusConnection connection, string endpointName)
+        //{
+        //    if (connection == null) throw new ArgumentNullException(nameof(connection));
+        //    if (endpointName == null) throw new ArgumentNullException(nameof(endpointName));
+        //    var r = new Azure.Messaging.ServiceBus.ServiceBusReceiver();
+        //    messageReceiver = new MessageReceiver(connection, endpointName, ReceiveMode.PeekLock,
+        //        RetryPolicy.Default, 0);
+        //    messages = new List<Message>();
+        //}
+
         public async Task<ReadOnlyCollection<ServiceBusReceivedMessage>> ReceiveMessages(int batchSize, CancellationToken cancellationToken)
         {
             messages.Clear();
@@ -45,8 +55,8 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                 await messageReceiver.CompleteMessageAsync(serviceBusReceivedMessage).ConfigureAwait(false);
             }
         }
-
-        public async Task Complete(string lockToken)
+        
+        public async Task Abandon(ServiceBusReceivedMessage message, CancellationToken cancellationToken)
         {
             var receivedMessage = messages.FirstOrDefault(message => message.LockToken.Equals(lockToken));
             if (receivedMessage == null)
@@ -62,7 +72,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             }
         }
 
-        public async Task Abandon(string lockToken)
+        public async Task DeadLetter(string lockToken, CancellationToken cancellationToken)
         {
             var receivedMessage = messages.FirstOrDefault(message => message.LockToken.Equals(lockToken));
             if (receivedMessage == null)
@@ -70,7 +80,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             await messageReceiver.AbandonMessageAsync(receivedMessage).ConfigureAwait(false);
         }
 
-        public async Task DeadLetter(ServiceBusReceivedMessage message)
+        public async Task DeadLetter(ServiceBusReceivedMessage failedMessage, CancellationToken cancellationToken)
         {
             var failedMessage =
                 messages.FirstOrDefault(msg => msg.LockToken == message.LockToken);

@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             var enclosedTypes = (string)message.ApplicationProperties[NServiceBus.Headers.EnclosedMessageTypes];
             var typeName = enclosedTypes.Split(';').FirstOrDefault();
             if (string.IsNullOrEmpty(typeName))
-                throw new InvalidOperationException($"Message type not found when trying to deserialise the message.  Message id: {message.MessageId}, label: {message.Label}");
+                throw new InvalidOperationException($"Message type not found when trying to deserialise the message.  Message id: {message.MessageId}");
             var messageType = Type.GetType(typeName, assemblyName => { assemblyName.Version = null; return Assembly.Load(assemblyName); }, null);
             var sanitisedMessageJson = GetMessagePayload(message);
             var deserialisedMessage = JsonConvert.DeserializeObject(sanitisedMessageJson, messageType);
@@ -52,10 +52,23 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
                     .ToCharArray());
 
             return sanitisedMessageJson;
+
+            //byte[] messageBody;
+            //if (transportEncoding.Equals("wcf/byte-array", StringComparison.OrdinalIgnoreCase))
+            //{
+            //    throw new InvalidOperationException("Legacy Xml messages not supported for ")
+                 
+            //    //var doc = receivedMessage.GetBody<XmlElement>();
+            //    //messageBody = Convert.FromBase64String(doc.InnerText);
+            //}
+            //else
+            //    messageBody = receivedMessage.Body;
+
+            //var monitoringMessageJson = Encoding.UTF8.GetString(messageBody);
+            //var sanitisedMessageJson = monitoringMessageJson
+            //    .Trim(Encoding.UTF8.GetString(Encoding.UTF8.GetPreamble())
+            //        .ToCharArray());
+            //return sanitisedMessageJson;
         }
     }
-
-    
-
-    //public class Default
 }

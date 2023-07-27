@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Autofac;
+using Azure.Messaging.ServiceBus;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
 using Microsoft.Azure.ServiceBus.InteropExtensions;
@@ -73,7 +74,8 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
 
         private async Task Listen(CancellationToken cancellationToken)
         {
-            var connection = new ServiceBusConnection(connectionString);
+            var serviceBusClient = new ServiceBusClient(connectionString);
+            //var connection = new ServiceBusConnection(connectionString);
             var messageReceiver = new MessageReceiver(connection, EndpointName, ReceiveMode.PeekLock, RetryPolicy.Default);
 
             try
