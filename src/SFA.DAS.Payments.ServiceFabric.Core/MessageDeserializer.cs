@@ -4,8 +4,7 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using Autofac;
-using Microsoft.Azure.ServiceBus;
-using Microsoft.Azure.ServiceBus.InteropExtensions;
+using Azure.Messaging.ServiceBus;
 using Newtonsoft.Json;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core
@@ -18,11 +17,11 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         }
 
 
-        public object DeserializeMessage(Message message)
+        public object DeserializeMessage(ServiceBusReceivedMessage message)
         {
-            if (!message.UserProperties.ContainsKey(NServiceBus.Headers.EnclosedMessageTypes))
+            if (!message.ApplicationProperties.ContainsKey(NServiceBus.Headers.EnclosedMessageTypes))
                 throw new InvalidOperationException($"Cannot deserialise the message, no 'enclosed message types' header was found. Message id: {message.MessageId}, label: {message.Label}");
-            var enclosedTypes = (string)message.UserProperties[NServiceBus.Headers.EnclosedMessageTypes];
+            var enclosedTypes = (string)message.ApplicationProperties[NServiceBus.Headers.EnclosedMessageTypes];
             var typeName = enclosedTypes.Split(';').FirstOrDefault();
             if (string.IsNullOrEmpty(typeName))
                 throw new InvalidOperationException($"Message type not found when trying to deserialise the message.  Message id: {message.MessageId}, label: {message.Label}");
@@ -32,25 +31,26 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
             return deserialisedMessage;
         }
 
-        private string GetMessagePayload(Message receivedMessage)
+        private string GetMessagePayload(ServiceBusReceivedMessage receivedMessage)
         {
             const string transportEncodingHeaderKey = "NServiceBus.Transport.Encoding";
-            var transportEncoding = receivedMessage.UserProperties.ContainsKey(transportEncodingHeaderKey)
-                ? (string)receivedMessage.UserProperties[transportEncodingHeaderKey]
+            var transportEncoding = receivedMessage.ApplicationProperties.ContainsKey(transportEncodingHeaderKey)
+                ? (string)receivedMessage.ApplicationProperties[transportEncodingHeaderKey]
                 : "application/octet-stream";
+            
             byte[] messageBody;
+            var monitoringMessageJson = receivedMessage.ToString();
             if (transportEncoding.Equals("wcf/byte-array", StringComparison.OrdinalIgnoreCase))
             {
-                var doc = receivedMessage.GetBody<XmlElement>();
-                messageBody = Convert.FromBase64String(doc.InnerText);
+                var document = new XmlDocument();
+                document.LoadXml(receivedMessage.ToString());
+                monitoringMessageJson = Encoding.UTF8.GetString( Convert.FromBase64String(document.InnerText));
             }
-            else
-                messageBody = receivedMessage.Body;
 
-            var monitoringMessageJson = Encoding.UTF8.GetString(messageBody);
             var sanitisedMessageJson = monitoringMessageJson
                 .Trim(Encoding.UTF8.GetString(Encoding.UTF8.GetPreamble())
                     .ToCharArray());
+
             return sanitisedMessageJson;
         }
     }
