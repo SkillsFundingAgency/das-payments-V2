@@ -16,12 +16,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
         RecordPeriodEndIlrReprocessingStartedJobHandler : IHandleMessageBatches<
             RecordPeriodEndIlrReprocessingStartedJob>
     {
-        private readonly IPeriodEndStartJobStatusManager jobStatusManager;
+        private readonly IPeriodEndJobIlrReprocessingStatusManager jobStatusManager;
         private readonly IPaymentLogger logger;
         private readonly IPeriodEndJobService periodEndJobService;
 
         public RecordPeriodEndIlrReprocessingStartedJobHandler(IPaymentLogger logger,
-            IPeriodEndJobService periodEndJobService, IPeriodEndStartJobStatusManager jobStatusManager)
+            IPeriodEndJobService periodEndJobService, IPeriodEndJobIlrReprocessingStatusManager jobStatusManager)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.periodEndJobService =
@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
             {
                 logger.LogInfo($"Handling period end Ilr reprocessing job: {message.ToJson()}");
                 await periodEndJobService.RecordPeriodEndJob(message, cancellationToken);
-                jobStatusManager.StartMonitoringJob(message.JobId, JobType.PeriodEndStartJob);
+                jobStatusManager.StartMonitoringJob(message.JobId, JobType.PeriodEndIlrReprocessingJob);
                 logger.LogInfo($"Handled period end Ilr reprocessing job: {message.JobId}");
             }
         }
