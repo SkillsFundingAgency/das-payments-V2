@@ -239,7 +239,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                     return JobType.PeriodEndStopJob;
 
                 case PeriodEndTaskType.PeriodEndIlrReprocessing:
-                    return JobType.PeriodEndIlrReprocessing;
+                    return JobType.PeriodEndIlrReprocessingJob;
 
                 default:
                     throw new InvalidOperationException($"Cannot handle period end task type: '{periodEndTaskType:G}'");

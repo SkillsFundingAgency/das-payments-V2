@@ -10,6 +10,6 @@
         PeriodEndStopJob,
         PeriodEndSubmissionWindowValidationJob,
         PeriodEndRequestReportsJob,
-        PeriodEndIlrReprocessing
+        PeriodEndIlrReprocessingJob
     }
 }
