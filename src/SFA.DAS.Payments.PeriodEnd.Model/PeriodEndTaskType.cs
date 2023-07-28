@@ -6,6 +6,7 @@
         PeriodEndRun,
         PeriodEndStop,
         PeriodEndSubmissionWindowValidation,
-        PeriodEndReports
+        PeriodEndReports,
+        PeriodEndFcsHandoverComplete
     }
 }
