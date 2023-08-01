@@ -98,17 +98,19 @@ namespace SFA.DAS.Payments.DataLocks.ApprovalsService.Infrastructure
                     t.IsAssignableTo<PaymentOrderChangedEvent>()
                 );
                 
-            var persistence = endpointConfiguration.UsePersistence<AzureStoragePersistence>();
-            persistence.ConnectionString(config.StorageConnectionString);
+            //var persistence = endpointConfiguration.UsePersistence<AzureStoragePersistence>();
+            //persistence.ConnectionString(config.StorageConnectionString);
 
-            endpointConfiguration.DisableFeature<TimeoutManager>();
+            //endpointConfiguration.DisableFeature<TimeoutManager>();
             var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
             transport
                 .ConnectionString(configHelper.GetConnectionString("DASServiceBusConnectionString"))
                 .Transactions(TransportTransactionMode.ReceiveOnly)
-                .RuleNameShortener(ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
+                    //                .RuleNameShortener(ruleName => ruleName.Split('.').LastOrDefault() ?? ruleName);
+                .SubscriptionRuleNamingConvention(messageType =>
+                    messageType.FullName?.Split('.').LastOrDefault() ?? messageType.Name);
             endpointConfiguration.SendFailedMessagesTo(config.FailedMessagesQueue);
-            endpointConfiguration.UseSerialization<NewtonsoftSerializer>();
+            endpointConfiguration.UseSerialization<NewtonsoftJsonSerializer>();
             endpointConfiguration.EnableInstallers();
 
             if (config.ProcessMessageSequentially) endpointConfiguration.LimitMessageProcessingConcurrencyTo(1);
