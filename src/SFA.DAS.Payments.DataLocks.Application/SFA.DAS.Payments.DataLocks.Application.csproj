@@ -1,14 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+	  <!--<TargetFramework>netstandard2.0</TargetFramework>-->
+	  <TargetFrameworks>net472;net6</TargetFrameworks>  
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.8.1" />
-    <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <!--<PackageReference Include="Autofac" Version="4.8.1" />-->
+    <!--<PackageReference Include="AutoMapper" Version="7.0.1" />
 
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />-->
+
+    <PackageReference Include="Autofac" Version="7.0.1" />
 
     <PackageReference Include="SFA.DAS.CommitmentsV2.Messages" Version="4.1.70" />
 
