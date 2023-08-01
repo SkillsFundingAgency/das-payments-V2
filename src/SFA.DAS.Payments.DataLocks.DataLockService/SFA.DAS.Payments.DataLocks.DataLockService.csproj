@@ -17,12 +17,12 @@
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="Microsoft.ServiceFabric" Version="10.0.1010" />
     <PackageReference Include="Microsoft.ServiceFabric.Actors" Version="7.0.1001" />
-    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="7.0.1010" />
+    <!--<PackageReference Include="Microsoft.ServiceFabric.Data" Version="7.0.1010" />-->
     <PackageReference Include="Microsoft.ServiceFabric.Data.Interfaces" Version="7.0.1010" />
     <!--<PackageReference Include="Microsoft.ServiceFabric.Actors" Version="6.1.1833" />
     <PackageReference Include="Microsoft.ServiceFabric.Data" Version="6.1.1833" />-->
     <PackageReference Include="Microsoft.ServiceFabric.Diagnostics.Internal" Version="7.0.1010" />
-    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="7.0.1001" />
+    <!--<PackageReference Include="Microsoft.ServiceFabric.Services" Version="7.0.1001" />-->
   </ItemGroup>
 
   <ItemGroup>
