@@ -1,18 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+	  <!--<TargetFramework>netstandard2.0</TargetFramework>-->
+	  <TargetFrameworks>net472;net6</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.8.1" />
-    <PackageReference Include="NServiceBus" Version="7.1.5" />
+    <Compile Remove="Infrastructure\Ioc\JobStatusClientModule.cs" />
+    <Compile Remove="PeriodEndJobClient.cs" />
+  </ItemGroup>
+
+  <ItemGroup><!--<PackageReference Include="Autofac" Version="4.8.1" />
+    <PackageReference Include="NServiceBus" Version="7.1.5" />-->
+  
+    <Folder Include="Infrastructure\Ioc\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Data\SFA.DAS.Payments.Monitoring.Jobs.Data.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj" />
   </ItemGroup>
 
