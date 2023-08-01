@@ -20,7 +20,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core
         public object DeserializeMessage(ServiceBusReceivedMessage message)
         {
             if (!message.ApplicationProperties.ContainsKey(NServiceBus.Headers.EnclosedMessageTypes))
-                throw new InvalidOperationException($"Cannot deserialise the message, no 'enclosed message types' header was found. Message id: {message.MessageId}, label: {message.Label}");
+                throw new InvalidOperationException($"Cannot deserialise the message, no 'enclosed message types' header was found. Message id: {message.MessageId}");
             var enclosedTypes = (string)message.ApplicationProperties[NServiceBus.Headers.EnclosedMessageTypes];
             var typeName = enclosedTypes.Split(';').FirstOrDefault();
             if (string.IsNullOrEmpty(typeName))

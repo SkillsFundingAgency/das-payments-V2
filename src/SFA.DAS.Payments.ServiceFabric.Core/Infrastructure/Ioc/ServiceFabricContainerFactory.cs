@@ -47,18 +47,18 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
             if (resolveEndpointConfig)
             {
                 var endpointConfiguration = container.Resolve<EndpointConfiguration>();
-                endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>
-                {
-                    customizations.ExistingLifetimeScope(container);
-                });
+                //endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>
+                //{
+                //    customizations.ExistingLifetimeScope(container);
+                //});
             }
-            else
-            {
-                EndpointConfigurationEvents.EndpointConfigured += (sender, e) =>
-                {
-                    e.UseContainer<AutofacBuilder>(customizations => customizations.ExistingLifetimeScope(container));
-                };
-            }
+            //else
+            //{
+            //    EndpointConfigurationEvents.EndpointConfigured += (sender, e) =>
+            //    {
+            //        e.UseContainer<AutofacBuilder>(customizations => customizations.ExistingLifetimeScope(container));
+            //    };
+            //}
             return container;
         }
 
@@ -72,10 +72,10 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
             var builder = CreateBuilderForStatelessService<TStatelessService>();
             var container = ContainerFactory.CreateContainer(builder);
             var endpointConfiguration = container.Resolve<EndpointConfiguration>();
-            endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>
-            {
-                customizations.ExistingLifetimeScope(container);
-            });
+            //endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>
+            //{
+            //    customizations.ExistingLifetimeScope(container);
+            //});
             return container;
         }
 

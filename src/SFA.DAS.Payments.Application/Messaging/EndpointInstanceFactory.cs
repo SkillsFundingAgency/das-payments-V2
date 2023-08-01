@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using NServiceBus;
+using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 
 namespace SFA.DAS.Payments.Application.Messaging
 {
@@ -32,7 +35,12 @@ namespace SFA.DAS.Payments.Application.Messaging
                 //Locker.EnterWriteLock();
                 try
                 {
-                    endpointInstance = await Endpoint.Start(endpointConfiguration).ConfigureAwait(false);
+                    var startableEndpoint =
+                        EndpointWithExternallyManagedContainer.Create(endpointConfiguration, new ServiceCollection());
+
+                    endpointInstance =
+                        await startableEndpoint.Start(new AutofacServiceProvider(ContainerFactory.Container));
+//                    endpointInstance = await Endpoint.Start(endpointConfiguration).ConfigureAwait(false);
                 }
                 finally
                 {
