@@ -10,10 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.8.1" />
-    <PackageReference Include="Autofac.ServiceFabric" Version="2.0.0" />
-    <PackageReference Include="Microsoft.ServiceFabric" Version="9.1.1833" />
-    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="6.1.1833" />
+    <PackageReference Include="Autofac" Version="7.0.1" />
+    <PackageReference Include="Microsoft.ServiceFabric" Version="10.0.1010" />
   </ItemGroup>
 
   <ItemGroup>
