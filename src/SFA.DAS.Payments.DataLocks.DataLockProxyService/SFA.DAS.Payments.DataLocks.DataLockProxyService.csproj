@@ -10,12 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.8.1" />
-    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.15.0" />
+    <!--<PackageReference Include="Autofac" Version="4.8.1" />-->
+    <!--<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.15.0" />-->
     <PackageReference Include="ESFA.DC.Logging" Version="0.1.4-beta0001" />
-    <PackageReference Include="Microsoft.ServiceFabric" Version="9.1.1833" />
+    <!--<PackageReference Include="Microsoft.ServiceFabric" Version="9.1.1833" />
     <PackageReference Include="Microsoft.ServiceFabric.Diagnostics.Internal" Version="6.1.1833" />
-    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="6.1.1833" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="6.1.1833"/> -->
   </ItemGroup>
 
   <ItemGroup>
