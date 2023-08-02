@@ -9,6 +9,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
 {
@@ -24,7 +25,6 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         [SetUp]
         public void Prepare()
         {
-            mocker = AutoMock.GetStrict();
             var earningPeriod = new EarningPeriod
             {
                 Period = 1
@@ -54,7 +54,8 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
                 negotiatedPriceValidator.Object,
                 apprenticeshipPauseValidator.Object,
             };
-            mocker.Provide<List<ICourseValidator>>(courseValidators);
+            mocker = AutoMock.GetStrict(cfg => cfg.RegisterInstance(courseValidators).As<List<ICourseValidator>>());
+//            mocker.Provide<List<ICourseValidator>>(courseValidators);
         }
 
         [Test]
