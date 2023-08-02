@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autofac;
 using Autofac.Extras.Moq;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -25,16 +26,27 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         [SetUp]
         public void SetUp()
         {
-            mocker = AutoMock.GetLoose();
-            mocker.Provide<IStartDateValidator>(new StartDateValidator(false));
-            mocker.Provide<ICalculatePeriodStartAndEndDate, CalculatePeriodStartAndEndDate>();
-            mocker.Provide<IOnProgrammeAndIncentiveStoppedValidator, OnProgrammeAndIncentiveStoppedValidator>();
-            mocker.Provide<ICompletionStoppedValidator, CompletionStoppedValidator>();
-            mocker.Provide<ICourseValidationProcessor>(new CourseValidationProcessor(new List<ICourseValidator>
+            mocker = AutoMock.GetLoose(cfg =>
             {
-                new StandardCodeValidator(),
-                new ProgrammeTypeValidator()
-            }));
+                cfg.RegisterInstance(new StartDateValidator(false)).As<IStartDateValidator>();
+                cfg.RegisterInstance(new CalculatePeriodStartAndEndDate()).As<ICalculatePeriodStartAndEndDate>();
+                cfg.RegisterType<OnProgrammeAndIncentiveStoppedValidator>().As<IOnProgrammeAndIncentiveStoppedValidator>();
+                cfg.RegisterType<CompletionStoppedValidator>().As<ICompletionStoppedValidator>();
+                cfg.RegisterInstance(new CourseValidationProcessor(new List<ICourseValidator>
+                {
+                    new StandardCodeValidator(),
+                    new ProgrammeTypeValidator()
+                })).As<ICourseValidationProcessor>(); ;
+            });
+            //mocker.Provide<IStartDateValidator>(new StartDateValidator(false));
+            //mocker.Provide<ICalculatePeriodStartAndEndDate, CalculatePeriodStartAndEndDate>();
+            //mocker.Provide<IOnProgrammeAndIncentiveStoppedValidator, OnProgrammeAndIncentiveStoppedValidator>();
+            //mocker.Provide<ICompletionStoppedValidator, CompletionStoppedValidator>();
+            //mocker.Provide<ICourseValidationProcessor>(new CourseValidationProcessor(new List<ICourseValidator>
+            //{
+            //    new StandardCodeValidator(),
+            //    new ProgrammeTypeValidator()
+            //}));
         }
 
         [Test]

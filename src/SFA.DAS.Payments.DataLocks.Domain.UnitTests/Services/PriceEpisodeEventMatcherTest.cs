@@ -116,13 +116,14 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
             };
 
             var r = sut.Calculate(currentPriceEpisodes, priceEpisodes);
-
-            r.Should().BeEquivalentTo(
+            var t = new List<(string, PriceEpisodeStatus)>()
+            {
                 (priceEpisodes[0].Identifier, PriceEpisodeStatus.New),
                 (priceEpisodes[1].Identifier, PriceEpisodeStatus.New),
                 (priceEpisodes[2].Identifier, PriceEpisodeStatus.Updated),
                 (leftOverPriceEpisodeId, PriceEpisodeStatus.Removed)
-                );
+            };
+            r.Should().BeEquivalentTo(t);
         }
     }
 }

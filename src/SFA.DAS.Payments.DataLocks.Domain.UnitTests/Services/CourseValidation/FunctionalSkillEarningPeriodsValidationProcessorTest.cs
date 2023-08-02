@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Autofac;
 using Autofac.Extras.Moq;
 using FluentAssertions;
 using Moq;
@@ -25,12 +26,19 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services.CourseValidation
         [SetUp]
         public void SetUp()
         {
-            mocker = AutoMock.GetLoose();
-            mocker.Provide<ICalculatePeriodStartAndEndDate, CalculatePeriodStartAndEndDate>();
-            mocker.Provide<IFunctionalSkillValidationProcessor>(new FunctionalSkillValidationProcessor(new List<ICourseValidator>
+            mocker = AutoMock.GetLoose(cfg =>
             {
-                new ApprenticeshipPauseValidator()
-            }));
+                cfg.RegisterInstance(new CalculatePeriodStartAndEndDate()).As<ICalculatePeriodStartAndEndDate>();
+                cfg.RegisterInstance(new FunctionalSkillValidationProcessor(new List<ICourseValidator>
+                {
+                    new ApprenticeshipPauseValidator()
+                })).As<IFunctionalSkillValidationProcessor>();
+            });
+            //mocker.Provide<ICalculatePeriodStartAndEndDate, CalculatePeriodStartAndEndDate>();
+            //mocker.Provide<IFunctionalSkillValidationProcessor>(new FunctionalSkillValidationProcessor(new List<ICourseValidator>
+            //{
+            //    new ApprenticeshipPauseValidator()
+            //}));
         }
 
         [Test]
