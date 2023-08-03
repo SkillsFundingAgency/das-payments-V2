@@ -1,13 +1,17 @@
 ﻿using System;
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Autofac.Integration.ServiceFabric;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 using NServiceBus;
 using NServiceBus.UnitOfWork;
+using SFA.DAS.Payments.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.ServiceFabric.Core.Batch;
+using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Configuration;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.UnitOfWork;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
@@ -44,14 +48,14 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
                     ((ReliableStateManagerProvider)e.Context.Resolve<IReliableStateManagerProvider>()).Current = e.Instance.StateManager;
                 });
             var container = ContainerFactory.CreateContainer(builder);
-            if (resolveEndpointConfig)
-            {
-                var endpointConfiguration = container.Resolve<EndpointConfiguration>();
-                //endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>
-                //{
-                //    customizations.ExistingLifetimeScope(container);
-                //});
-            }
+            //if (resolveEndpointConfig)
+            //{
+            //    var endpointConfiguration = container.Resolve<EndpointConfiguration>();
+            //    //endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>
+            //    //{
+            //    //    customizations.ExistingLifetimeScope(container);
+            //    //});
+            //}
             //else
             //{
             //    EndpointConfigurationEvents.EndpointConfigured += (sender, e) =>
@@ -69,9 +73,19 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
 
         public static IContainer CreateContainerForStatelessService<TStatelessService>() where TStatelessService : StatelessService
         {
+            var serviceCollection = new ServiceCollection();
+            var endpointConfig =
+                EndpointConfigurationFactory.Create(
+                    ApplicationConfiguration.Create(new ServiceFabricConfigurationHelper()));
+            var startableEndpoint = EndpointWithExternallyManagedContainer.Create(endpointConfig, serviceCollection);
+
             var builder = CreateBuilderForStatelessService<TStatelessService>();
+
+            builder.Populate(serviceCollection);
+
             var container = ContainerFactory.CreateContainer(builder);
-            var endpointConfiguration = container.Resolve<EndpointConfiguration>();
+            EndpointInstanceFactory.Initialise(startableEndpoint);
+            //var endpointConfiguration = container.Resolve<EndpointConfiguration>();
             //endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>
             //{
             //    customizations.ExistingLifetimeScope(container);
