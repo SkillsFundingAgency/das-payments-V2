@@ -73,18 +73,10 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
 
         public static IContainer CreateContainerForStatelessService<TStatelessService>() where TStatelessService : StatelessService
         {
-            var serviceCollection = new ServiceCollection();
-            var endpointConfig =
-                EndpointConfigurationFactory.Create(
-                    ApplicationConfiguration.Create(new ServiceFabricConfigurationHelper()));
-            var startableEndpoint = EndpointWithExternallyManagedContainer.Create(endpointConfig, serviceCollection);
-
             var builder = CreateBuilderForStatelessService<TStatelessService>();
-
-            builder.Populate(serviceCollection);
+            EndpointInstanceFactory.Initialise(ApplicationConfiguration.Create(new ServiceFabricConfigurationHelper()));
 
             var container = ContainerFactory.CreateContainer(builder);
-            EndpointInstanceFactory.Initialise(startableEndpoint);
             //var endpointConfiguration = container.Resolve<EndpointConfiguration>();
             //endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>
             //{

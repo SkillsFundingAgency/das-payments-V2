@@ -5,6 +5,7 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
+using SFA.DAS.Payments.Core.Configuration;
 
 namespace SFA.DAS.Payments.Application.Messaging
 {
@@ -17,21 +18,23 @@ namespace SFA.DAS.Payments.Application.Messaging
 
     public class EndpointInstanceFactory: IEndpointInstanceFactory
     {
-        private readonly EndpointConfiguration endpointConfiguration;
+        //private readonly EndpointConfiguration endpointConfiguration;
         private static IEndpointInstance endpointInstance;
         //private static readonly SemaphoreSlim LockObject = new SemaphoreSlim(1, 1);
         private static readonly ReaderWriterLockSlim Locker = new ReaderWriterLockSlim();
         private static IStartableEndpointWithExternallyManagedContainer startableEndpoint;
 
-        public EndpointInstanceFactory(EndpointConfiguration endpointConfiguration)
-        {
-            this.endpointConfiguration = endpointConfiguration ?? throw new ArgumentNullException(nameof(endpointConfiguration));
-        }
+        //public EndpointInstanceFactory(EndpointConfiguration endpointConfiguration)
+        //{
+        //    this.endpointConfiguration = endpointConfiguration ?? throw new ArgumentNullException(nameof(endpointConfiguration));
+        //}
 
         //TODO: Hack to cope with the new NSB config API.  Will refactor. 
-        public static void Initialise(IStartableEndpointWithExternallyManagedContainer endpoint)
+        public static void Initialise(IApplicationConfiguration config)
         {
-            startableEndpoint = endpoint;
+
+            var endpointConfig = EndpointConfigurationFactory.Create(config);
+            startableEndpoint = EndpointWithExternallyManagedContainer.Create(endpointConfig, ContainerFactory.ServiceCollection);
         }
 
         public async Task<IEndpointInstance> GetEndpointInstance()
