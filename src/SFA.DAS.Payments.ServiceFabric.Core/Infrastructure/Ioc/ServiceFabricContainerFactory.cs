@@ -39,6 +39,7 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
         public static IContainer CreateContainerForStatefulService<TStatefulService>(bool resolveEndpointConfig = true) where TStatefulService : StatefulService
         {
             var builder = ContainerFactory.CreateBuilder();
+            EndpointInstanceFactory.Initialise(ApplicationConfiguration.Create(new ServiceFabricConfigurationHelper()));
 
             builder.RegisterType<StateManagerUnitOfWork>().As<IManageUnitsOfWork>().InstancePerLifetimeScope();
 
@@ -48,21 +49,6 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc
                     ((ReliableStateManagerProvider)e.Context.Resolve<IReliableStateManagerProvider>()).Current = e.Instance.StateManager;
                 });
             var container = ContainerFactory.CreateContainer(builder);
-            //if (resolveEndpointConfig)
-            //{
-            //    var endpointConfiguration = container.Resolve<EndpointConfiguration>();
-            //    //endpointConfiguration.UseContainer<AutofacBuilder>(customizations =>
-            //    //{
-            //    //    customizations.ExistingLifetimeScope(container);
-            //    //});
-            //}
-            //else
-            //{
-            //    EndpointConfigurationEvents.EndpointConfigured += (sender, e) =>
-            //    {
-            //        e.UseContainer<AutofacBuilder>(customizations => customizations.ExistingLifetimeScope(container));
-            //    };
-            //}
             return container;
         }
 
