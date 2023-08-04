@@ -12,12 +12,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SFA.DAS.Payments.AcceptanceTests.EndToEnd</RootNamespace>
     <AssemblyName>SFA.DAS.Payments.AcceptanceTests.EndToEnd</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <LangVersion>7.0</LangVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -553,6 +554,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PV2-1824-DLock09-One-Price-Episode-UnHappy-Path.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\DataLocks\PV2-2083-Data-Locks-prevented-from-appearing-on-the-Data-Match-Report1.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-2083-Data-Locks-prevented-from-appearing-on-the-Data-Match-Report.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Employer Change of Circumstances\Levy learner changes employer provider retrospectively submitted ILR late bad previous payment History - PV2-2802-2.feature.cs">
       <DependentUpon>Levy learner changes employer provider retrospectively submitted ILR late bad previous payment History - PV2-2802-2.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -567,6 +573,11 @@
       <DependentUpon>Levy learner changes employer provider retrospectively submitted ILR late - PV2-2802-1.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\Holding Back Completion Payments\PV2-1653 Employer payments rounded down1.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1653 Employer payments rounded down.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\Learner Change of Circumstances\PV2-2898 Levy learner, the course completion Date is changed, with a Balancing payment. Completion and Balancing is refunded.feature.cs">
       <DependentUpon>PV2-2898 Levy learner, the course completion Date is changed, with a Balancing payment. Completion and Balancing is refunded.feature</DependentUpon>
@@ -1455,7 +1466,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner finishes early balancing and completion payments made PV2-3351.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Non-Levy Learner finishes early balancing and completion payments made PV2-335.feature</DependentUpon>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late PV2-336.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>One Non-Levy Learner Finishes Late PV2-336.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late PV2-3361.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>One Non-Levy Learner Finishes Late PV2-336.feature</DependentUpon>
@@ -1614,6 +1635,16 @@
       <DependentUpon>Non-Levy 19-24 learner with EHC plan with a small employer at start PV2-328.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Tests\PeriodEnd\Submission Events\PV2-1395 - Successful submission removes previous submission payments1.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1395 - Successful submission removes previous submission payments.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\PeriodEnd\Submission Events\PV2-1396 - Failed submission job removes payments for failed job1.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PV2-1396 - Failed submission job removes payments for failed job.feature</DependentUpon>
     </Compile>
     <Compile Include="Tests\PeriodEnd\Submission Events\PV2-2160 - Month End Automation correctly inform DC if tolerance met.feature.cs">
       <AutoGen>True</AutoGen>
@@ -1940,7 +1971,7 @@
     </None>
     <None Include="Tests\DataLocks\PV2-2083-Data-Locks-prevented-from-appearing-on-the-Data-Match-Report.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>PV2-2083-Data-Locks-prevented-from-appearing-on-the-Data-Match-Report.cs</LastGenOutput>
+      <LastGenOutput>PV2-2083-Data-Locks-prevented-from-appearing-on-the-Data-Match-Report1.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\DataLocks\PV2-1826-DLock09-Two-Price-Episodes-Unhappy-Path.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
