@@ -11,6 +11,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Teronis.MSBuild.Packaging.ProjectBuildInPackage" Version="1.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj" />
   </ItemGroup>
 
