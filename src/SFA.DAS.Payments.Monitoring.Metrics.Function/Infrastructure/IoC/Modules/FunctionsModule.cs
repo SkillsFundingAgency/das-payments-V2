@@ -56,12 +56,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.Infrastructure.IoC.Module
                     var configHelper = c.Resolve<IConfigurationHelper>();
 
                     var dbContextOptions = new DbContextOptionsBuilder().UseSqlServer(
-                        configHelper.GetConnectionString("DcEarnings2223ConnectionString"),
+                        configHelper.GetConnectionString("DcEarnings2324ConnectionString"),
                         optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
 
                     return new DcMetricsDataContext(dbContextOptions);
                 })
-                .Named<IDcMetricsDataContext>("DcEarnings2223DataContext")
+                .Named<IDcMetricsDataContext>("DcEarnings2324DataContext")
                 .InstancePerDependency();
 
             builder.Register((c, p) =>
@@ -69,12 +69,12 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.Infrastructure.IoC.Module
                     var configHelper = c.Resolve<IConfigurationHelper>();
 
                     var dbContextOptions = new DbContextOptionsBuilder().UseSqlServer(
-                        configHelper.GetConnectionString("DcEarnings2122ConnectionString"),
+                        configHelper.GetConnectionString("DcEarnings2223ConnectionString"),
                         optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
 
                     return new DcMetricsDataContext(dbContextOptions);
                 })
-                .Named<IDcMetricsDataContext>("DcEarnings2122DataContext")
+                .Named<IDcMetricsDataContext>("DcEarnings2223DataContext")
                 .InstancePerDependency();
 
             builder.Register((c, p) =>
