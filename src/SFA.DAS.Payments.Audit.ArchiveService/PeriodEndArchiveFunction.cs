@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 using Azure.Identity;
 using Azure.ResourceManager;
 using Azure.ResourceManager.DataFactory;
-using Azure.ResourceManager.DataFactory.Models;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Extensions.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Logging;
 
 namespace SFA.DAS.Payments.Audit.ArchiveService;
 
@@ -32,32 +31,8 @@ public static class PeriodEndArchiveFunction
 
         try
         {
-            // Generated from example definition: specification/datafactory/resource-manager/Microsoft.DataFactory/stable/2018-06-01/examples/Pipelines_CreateRun.json
-            // this example is just showing the usage of "Pipelines_CreateRun" operation, for the dependent resources, they will have to be created separately.
+            var result = await context.CallActivityAsync<bool>(nameof(PeriodEndArchive), null);
 
-            // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
-            var cred = new DefaultAzureCredential();
-            // authenticate your client
-            var client = new ArmClient(cred);
-
-            // this example assumes you already have this DataFactoryPipelineResource created on azure
-            // for more information of creating DataFactoryPipelineResource, please refer to the document of DataFactoryPipelineResource
-            var dataFactoryPipelineResourceId =
-                DataFactoryPipelineResource.CreateResourceIdentifier(SubscriptionId, ResourceGroup,
-                    AzureDataFactoryName,
-                    PipeLine);
-            var dataFactoryPipeline = client.GetDataFactoryPipelineResource(dataFactoryPipelineResourceId);
-
-            // invoke the operation
-            IDictionary<string, BinaryData> parameterValueSpecification = new Dictionary<string, BinaryData>
-            {
-                ["OutputBlobNameList"] = BinaryData.FromObjectAsJson(new object[] { "exampleoutput.csv" })
-            };
-            string referencePipelineRunId = null;
-            PipelineCreateRunResult result =
-                await dataFactoryPipeline.CreateRunAsync(parameterValueSpecification, referencePipelineRunId);
-
-            Console.WriteLine($"Succeeded: {result}");
 
             return true;
         }
@@ -68,18 +43,43 @@ public static class PeriodEndArchiveFunction
         return false;
     }
 
+    [FunctionName(nameof(PeriodEndArchive))]
+    public static async Task<bool> PeriodEndArchive()
+    {
+        //May not be needed
+        var cred = new DefaultAzureCredential();
+        // authenticate your client
+        var client = new ArmClient(cred);
+
+        var dataFactoryPipelineResourceId =
+            DataFactoryPipelineResource.CreateResourceIdentifier(SubscriptionId, ResourceGroup,
+                AzureDataFactoryName,
+                PipeLine);
+        var dataFactoryPipeline = client.GetDataFactoryPipelineResource(dataFactoryPipelineResourceId);
+
+        // invoke the operation
+        var parameterValueSpecification = new Dictionary<string, BinaryData>();
+        string referencePipelineRunId = null;
+        var result =
+            await dataFactoryPipeline.CreateRunAsync(parameterValueSpecification, referencePipelineRunId);
+
+        Console.WriteLine($"Succeeded: {result}");
+
+        return true;
+    }
+
     [FunctionName("PeriodEndArchive_HttpStart")]
     public static async Task<HttpResponseMessage> HttpStart(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")]
         HttpRequestMessage req,
-        [DurableClient] IDurableOrchestrationClient starter,
-        ILogger log)
+        [DurableClient] IDurableOrchestrationClient client,
+        IPaymentLogger logger)
     {
         // Function input comes from the request content.
-        var instanceId = await starter.StartNewAsync("PeriodEndArchive");
+        var instanceId = await client.StartNewAsync(nameof(RunOrchestrator));
 
-        log.LogInformation($"Started PeriodEndArchive orchestration with ID = '{instanceId}'.");
+        logger.LogInfo($"Started PeriodEndArchive orchestration with ID = '{instanceId}'.");
 
-        return starter.CreateCheckStatusResponse(req, instanceId);
+        return client.CreateCheckStatusResponse(req, instanceId);
     }
 }
