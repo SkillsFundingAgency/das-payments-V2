@@ -1,0 +1,66 @@
+name: $(VersionNumberMajor).$(VersionNumberMinor)$(Rev:.rrrr)
+
+resources:
+- repo: self
+  fetchDepth: 15
+
+trigger:
+  branches:
+    include:
+    - master
+  batch: true
+  paths:
+    include:
+    - src/SFA.DAS.Payments.RequiredPayments.Messages
+    exclude:
+    - Infrastructure
+
+variables:  
+  VersionNumberMajor: '0'
+  VersionNumberMinor: '0'
+  BuildConfiguration: 'Release'
+  BuildPlatform: 'Any CPU'
+  BuildPlatformX64: 'x64'  
+
+pool:
+  name: DCT Build Pool
+  demands:
+  - IsBuildServer
+  - IsBuildServerDAS
+  - msbuild
+
+steps:
+- task: DotNetCoreInstaller@0
+  displayName: 'Use .NET Core sdk 2.2.106'
+  inputs:
+    version: 2.2.106
+
+- task: DotNetCoreCLI@2
+  displayName: 'Restore Required Payments Messages'
+  inputs:
+    command: restore
+    projects: src/SFA.DAS.Payments.RequiredPayments.Messages/SFA.DAS.Payments.RequiredPayments.Messages.csproj
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build Required Payments Messages'
+  inputs:
+    projects: src/SFA.DAS.Payments.RequiredPayments.Messages/SFA.DAS.Payments.RequiredPayments.Messages.csproj
+  enabled: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Pack Required Payments Messages'
+  inputs:
+    command: pack
+    packagesToPack: src/SFA.DAS.Payments.RequiredPayments.Messages/SFA.DAS.Payments.RequiredPayments.Messages.csproj
+    versioningScheme: byBuildNumber
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    Contents: '**/*.nupkg'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/RequiredPayments'    
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Packages'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
