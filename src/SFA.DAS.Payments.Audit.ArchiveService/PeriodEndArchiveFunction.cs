@@ -67,19 +67,4 @@ public static class PeriodEndArchiveFunction
 
         return true;
     }
-
-    [FunctionName("PeriodEndArchive_HttpStart")]
-    public static async Task<HttpResponseMessage> HttpStart(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")]
-        HttpRequestMessage req,
-        [DurableClient] IDurableOrchestrationClient client,
-        IPaymentLogger logger)
-    {
-        // Function input comes from the request content.
-        var instanceId = await client.StartNewAsync(nameof(RunOrchestrator));
-
-        logger.LogInfo($"Started PeriodEndArchive orchestration with ID = '{instanceId}'.");
-
-        return client.CreateCheckStatusResponse(req, instanceId);
-    }
 }
