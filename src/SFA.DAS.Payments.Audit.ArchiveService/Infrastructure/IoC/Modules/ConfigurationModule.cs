@@ -3,7 +3,7 @@ using SFA.DAS.Payments.Audit.ArchiveService.Infrastructure.Configuration;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.PeriodEnd.Function.Infrastructure.Configuration;
 
-namespace SFA.DAS.Payments.PeriodEnd.Function.Infrastructure.IoC.Modules;
+namespace SFA.DAS.Payments.Audit.ArchiveService.Infrastructure.IoC.Modules;
 
 public class ConfigurationModule : Module
 {
