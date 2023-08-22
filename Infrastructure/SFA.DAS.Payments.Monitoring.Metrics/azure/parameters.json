@@ -1,0 +1,60 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "applicationInsightsName": {
+        "value": "my_workspace_based_resource"
+      },
+      "requestSource": {
+        "value": "CustomDeployment"
+      },
+      "workspaceResourceId": {
+        "value": ""
+      },
+      "functionAppName": {
+        "value": "my_workspace_based_functionapp_resource"
+      },
+      "storageAccountType": {
+        "value": ""
+      },
+      "storageAccountName": {
+        "value": "my_workspace_based_storage_resource"
+      },
+      "location": {
+        "value": ""
+      },
+      "dasAlertsActionGroupName": {
+        "value": "DASAlertsActionGroupName"
+      },
+      "dasAlertsActionGroupNameShort": {
+        "value": "my_workspace_ActionGroupShort_resource"
+      },
+      "dasActionGroupWebhookUri": {
+        "value": "WebhookUri"
+      },
+      "mgDasAlertsActionGroupName": {
+        "value": "mgDASAlertsActionGroupName"
+      },
+      "mgDasAlertsActionGroupNameShort": {
+        "value": "mgworkspace_DAS_ActionGroup_resource"
+      },
+      "mgDasActionGroupWebhookUri": {
+        "value": "mgWebhookUri"
+      },
+      "smartDetectionActionGroupId": {
+        "value": "Smart-Detect-Action-Group"
+      },
+      "serviceBusActionGroupId": {
+        "value": "ServiceBus-Action-Group"
+      },
+      "appInsightsApiKey": {
+        "value": ""
+      },
+      "dasAlertSlackChannelUri": {
+        "value": ""
+      },
+      "mngAlertSlackChannelUri": {
+        "value": ""
+      }
+    }
+}

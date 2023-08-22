@@ -31,6 +31,17 @@ variables:
   VersionNumberMajor: '0'
   VersionNumberMinor: '0'
 
+trigger:
+  branches:
+    include:
+    - master
+  batch: true
+  paths:
+    include:
+    - src/SFA.DAS.Payments.Monitoring.Jobs.Messages
+    exclude:
+    - Infrastructure
+
 stages:
 - stage: Build
   displayName: Build stage

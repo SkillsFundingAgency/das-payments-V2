@@ -1,0 +1,100 @@
+parameters:
+  pool:
+  azureSubscription:
+  location: 'westeurope'
+  environmentName:
+  workspaceResourceId:
+  storageAccountName:
+  smartDetectionActionGroupId:
+  serviceBusActionGroupId:
+  dasActionGroupWebhookUri1:
+  mgDasActionGroupWebhookUri1:
+  appInsightsApiKey:
+  mngAlertSlackChannelUri:
+  dasAlertSlackChannelUri:
+  
+
+jobs:
+- deployment: DeployMonitoringMetrics
+  pool:
+    name: ${{ parameters.pool }}
+    demands:
+    - ReleaseEnvironment -equals ${{ parameters.environmentName }}
+  environment: ${{ parameters.environmentName }}
+  variables: 
+    - name: resourceGroupName
+      value: '$(Service)-${{ parameters.environmentName }}-ServiceFabricDAS-$(RegionPrimaryCode)'
+    - name: applicationInsightsName
+      value: '$(Service)-${{ parameters.environmentName }}-DasPayments-AI-$(RegionPrimaryCode)'
+    - name: functionAppName
+      value: '$(Service)-${{ parameters.environmentName }}-MonitoringAlerts1-$(RegionPrimaryCode)'
+    - name: storageAccountName
+      value: '${{ parameters.storageAccountName }}'
+    - name: storageAccountType
+      value: 'Standard_LRS'
+    - name: workspaceResourceId
+      value: ${{ parameters.workspaceResourceId }}
+    - name: dasAlertsActionGroupName
+      value: '$(Service)-${{ parameters.environmentName }}-dasalerts-actiongroup-$(RegionPrimaryCode)'
+    - name: mgDasAlertsActionGroupName
+      value: '$(Service)-${{ parameters.environmentName }}-mgdasalerts-actiongroup-$(RegionPrimaryCode)'
+    - name: dasAlertsActionGroupNameShort
+      value: '$(Service)-${{ parameters.environmentName }}'
+    - name: dasActionGroupWebhookUri1
+      value: '${{ parameters.dasActionGroupWebhookUri1 }}'
+    - name: mgDasActionGroupWebhookUri1
+      value: '${{ parameters.mgDasActionGroupWebhookUri1 }}'
+    - name: mgDasAlertsActionGroupNameShort
+      value: '$(Service)-${{ parameters.environmentName }}-MGD'
+    - name: smartDetectionActionGroupId
+      value: '${{ parameters.smartDetectionActionGroupId }}'
+    - name: serviceBusActionGroupId
+      value: '${{ parameters.serviceBusActionGroupId }}'
+    - name: dasAlertSlackChannelUri
+      value: '${{ parameters.dasAlertSlackChannelUri }}'
+    - name: mngAlertSlackChannelUri
+      value: '${{ parameters.mngAlertSlackChannelUri }}'
+    - name: appInsightsApiKey
+      value: '${{ parameters.appInsightsApiKey }}'
+    #- name: keyVaultName
+    #  ${{ if eq( parameters['environmentName'], 'SDW') }}:
+    #    value: '$(Service)-${{ parameters.environmentName }}-KVaultDAS-$(RegionPrimaryCode)'
+    #  ${{ if ne( parameters['environmentName'], 'SDW') }}:
+    #    value: '$(Service)-${{ parameters.environmentName }}-KeyVaultDAS-$(RegionPrimaryCode)'
+    #- name: dasPaymentDataFactoryConnectionString
+    #  value: '$(DasPaymentsConnectionStringRW)'
+    #- name: dasPaymentAuditDataFactoryConnectionString
+    #  value: '$(DASPaymentAuditConnectionStringRW)'
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - task: AzurePowerShell@5
+          displayName: Create solution resource group
+          inputs:
+            azureSubscription: '${{ parameters.azureSubscription }}'
+            ScriptType: 'InlineScript'
+            Inline: 'New-AzResourceGroup -Name ${{ variables.resourceGroupName }} -Location "${{ parameters.location }}" -Tag $(tags) -Force'
+            azurePowerShellVersion: 'LatestVersion'
+
+        - task: AzurePowerShell@5
+          displayName: Set subscription id variable
+          inputs:
+            azureSubscription: '${{ parameters.azureSubscription }}'
+            ScriptType: 'InlineScript'
+            Inline: |
+              $subscriptionId = (Get-AzSubscription).SubscriptionId
+              Write-Host "variable=subscriptionId: $subscriptionId"
+              Write-Host "##vso[task.setvariable variable=subscriptionId;]$subscriptionId"
+            azurePowerShellVersion: 'LatestVersion'
+
+        - task: AzureResourceGroupDeployment@2
+          displayName: Deploy Solution Resources
+          inputs:
+            azureSubscription: '${{ parameters.azureSubscription }}'
+            resourceGroupName: '${{ variables.resourceGroupName }}'
+            location: '${{ parameters.location }}'
+            csmFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.Monitoring.Metrics/azure/armdeploy.json'
+            csmParametersFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.Monitoring.Metrics/azure/parameters.json'
+            overrideParameters: '-applicationInsightsName "${{ variables.applicationInsightsName }}" -functionAppName "${{ variables.functionAppName }}" -storageAccountName "${{ variables.storageAccountName }}" -storageAccountType "${{ variables.storageAccountType }}" -workspaceResourceId "${{ variables.workspaceResourceId }}" -location "${{ parameters.location }}" -serviceBusActionGroupId "${{ variables.serviceBusActionGroupId }}" -smartDetectionActionGroupId "${{ variables.smartDetectionActionGroupId }}" -dasAlertsActionGroupNameShort "${{ variables.dasAlertsActionGroupNameShort }}" -dasAlertsActionGroupName "${{ variables.dasAlertsActionGroupName }}" -mgDasAlertsActionGroupName "${{ variables.mgDasAlertsActionGroupName }}" -mgDasAlertsActionGroupNameShort "${{ variables.mgDasAlertsActionGroupNameShort }}" -dasActionGroupWebhookUri "${{ variables.dasActionGroupWebhookUri1 }}" -mgDasActionGroupWebhookUri "${{ variables.mgDasActionGroupWebhookUri1 }}" -appInsightsApiKey "${{ variables.appInsightsApiKey }}" -dasAlertSlackChannelUri "${{ variables.dasAlertSlackChannelUri }}" -mngAlertSlackChannelUri "${{ variables.mngAlertSlackChannelUri }}"'
+            deploymentOutputs: armoutputs

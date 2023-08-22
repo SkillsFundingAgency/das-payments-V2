@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         
         public override async Task<List<long>> GetCurrentJobs(IJobStorageService jobStorage)
         {
-            return await jobStorage.GetCurrentPeriodEndStartJobs(cancellationToken).ConfigureAwait(false);
+            return await jobStorage.GetCurrentPeriodEndStartJobs(cancellationToken);
         }
     }
 }
