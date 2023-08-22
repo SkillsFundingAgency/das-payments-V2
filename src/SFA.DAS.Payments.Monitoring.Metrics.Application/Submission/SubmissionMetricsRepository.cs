@@ -69,7 +69,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                     })
                     .ToListAsync(cancellationToken);
 
-                return transactionAmounts
+                var retval = transactionAmounts
                     .GroupBy(x => x.ContractType)
                     .Select(group => new TransactionTypeAmounts
                     {
@@ -92,6 +92,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                         TransactionType16 = group.Where(x => x.TransactionType == TransactionType.CareLeaverApprenticePayment).Sum(x => (decimal?)x.Amount) ?? 0,
                     })
                     .ToList();
+
+                logger.LogInfo("PV2-3100 -- GetDasEarningsCompleted");
+                return retval;
             }
         }
 
@@ -99,7 +102,9 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         {
             using (await QueryDataContext.BeginTransaction(cancellationToken))
             {
-                return await QueryDataContext.GetDataLockCounts(ukprn, jobId, cancellationToken).ConfigureAwait(false);
+                var retval = await QueryDataContext.GetDataLockCounts(ukprn, jobId, cancellationToken).ConfigureAwait(false);
+                logger.LogInfo("PV2-3100 GetDataLockedEarnings Completed");
+                return retval;
             }
         }
 
@@ -107,9 +112,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         {
             using (await QueryDataContext.BeginTransaction(cancellationToken))
             {
-                return await QueryDataContext.DataLockEventNonPayablePeriods
+                var retval =  await QueryDataContext.DataLockEventNonPayablePeriods
                 .Where(period => period.Amount != 0 && period.DataLockEvent.Ukprn == ukprn && period.DataLockEvent.JobId == jobId)
                 .SumAsync(period => period.Amount, cancellationToken);
+
+                logger.LogInfo("PV2-3100 GetDataLockedEarningsTotal Completed");
+
+                return retval;
             }
         }
 
@@ -117,8 +126,11 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         {
             using (await QueryDataContext.BeginTransaction(cancellationToken))
             {
-                return await QueryDataContext.GetAlreadyPaidDataLocksAmount(ukprn, jobId, cancellationToken)
+                var retval = await QueryDataContext.GetAlreadyPaidDataLocksAmount(ukprn, jobId, cancellationToken)
                     .ConfigureAwait(false);
+
+                logger.LogInfo("PV2-3100 GetAlreadyPaidDataLockedEarnings Completed");
+                return retval;
             }
         }
 
@@ -139,11 +151,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                     .ToListAsync(cancellationToken)
                     .ConfigureAwait(false);
 
-                return new ContractTypeAmounts
+                var retval = new ContractTypeAmounts
                 {
                     ContractType1 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act1)?.Amount ?? 0,
                     ContractType2 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act2)?.Amount ?? 0,
                 };
+
+                logger.LogInfo("PV2-3100 GetHeldBackCompletionPaymentsTotal Completed");
+                return retval;
             }
         }
 
@@ -181,7 +196,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                     })
                     .ToListAsync(cancellationToken);
 
-                return transactionAmounts.Concat(clawBackTransactionAmounts)
+                var retval = transactionAmounts.Concat(clawBackTransactionAmounts)
                     .GroupBy(x => x.ContractType)
                     .Select(group => new TransactionTypeAmounts
                     {
@@ -204,6 +219,10 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                         TransactionType16 = group.Where(x => x.TransactionType == TransactionType.CareLeaverApprenticePayment).Sum(x => (decimal?)x.Amount) ?? 0,
                     })
                     .ToList();
+
+                logger.LogInfo("PV2-3100 GetRequiredPayments Completed");
+
+                return retval;
             }
         }
 
@@ -230,11 +249,14 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                     .ToListAsync(cancellationToken)
                     .ConfigureAwait(false);
 
-                return new ContractTypeAmounts
+                var retval = new ContractTypeAmounts
                 {
                     ContractType1 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act1)?.Amount ?? 0,
                     ContractType2 = amounts.FirstOrDefault(amount => amount.ContractType == ContractType.Act2)?.Amount ?? 0,
                 };
+
+                logger.LogInfo("PV2-3100 GetYearToDatePaymentsTotal Completed");
+                return retval;
             }
         }
 
