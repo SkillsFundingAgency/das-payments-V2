@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using AzureFunctions.Autofac.Configuration;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc.Modules;
+using ConfigurationModule = SFA.DAS.Payments.Audit.ArchiveService.Infrastructure.IoC.Modules.ConfigurationModule;
 
 namespace SFA.DAS.Payments.Audit.ArchiveService.Infrastructure.IoC;
 

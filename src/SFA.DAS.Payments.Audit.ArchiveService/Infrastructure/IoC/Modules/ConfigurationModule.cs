@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using SFA.DAS.Payments.Audit.ArchiveService.Infrastructure.Configuration;
 using SFA.DAS.Payments.Core.Configuration;
-using SFA.DAS.Payments.PeriodEnd.Function.Infrastructure.Configuration;
 
 namespace SFA.DAS.Payments.Audit.ArchiveService.Infrastructure.IoC.Modules;
 
@@ -14,12 +13,15 @@ public class ConfigurationModule : Module
         builder.Register((c, p) =>
             {
                 var configHelper = c.Resolve<IConfigurationHelper>();
-                return new ProvidersRequiringReprocessingConfiguration
+                return new PeriodEndArchiveConfiguration
                 {
-                    PaymentsConnectionString = configHelper.GetSetting("PaymentsConnectionString")
+                    ResourceGroup = configHelper.GetSetting("ResourceGroup"),
+                    AzureDataFactoryName = configHelper.GetSetting("AzureDataFactoryName"),
+                    PipeLine = configHelper.GetSetting("PipeLine"),
+                    SubscriptionId = configHelper.GetSetting("SubscriptionId")
                 };
             })
-            .As<IProvidersRequiringReprocessingConfiguration>()
+            .As<IPeriodEndArchiveConfiguration>()
             .SingleInstance();
     }
 }
