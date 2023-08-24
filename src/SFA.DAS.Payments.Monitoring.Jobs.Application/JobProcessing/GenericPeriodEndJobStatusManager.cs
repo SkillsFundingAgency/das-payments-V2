@@ -36,7 +36,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             return await jobStorage.GetCurrentPeriodEndExcludingStartJobs(cancellationToken);
         }
 
-        public void StartMonitoringArchivePipeline(long jobId, JobType jobType)
+        public async void StartMonitoringArchivePipeline(long jobId, JobType jobType)
         {
             // Set variables
             var tenantID = "<your tenant ID>";
