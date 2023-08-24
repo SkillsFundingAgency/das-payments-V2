@@ -12,15 +12,15 @@ using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 {
-    public interface IGenericPeriodEndJobService : IJobStatusService
+    public interface IGenericPeriodEndJobStatusService : IJobStatusService
     {
     }
 
-    public class GenericPeriodEndJobService : JobStatusService, IGenericPeriodEndJobService
+    public class GenericPeriodEndJobStatusService : JobStatusService, IGenericPeriodEndJobStatusService
     {
         private readonly IJobsDataContext context;
 
-        public GenericPeriodEndJobService(IJobStorageService jobStorageService, IPaymentLogger logger,
+        public GenericPeriodEndJobStatusService(IJobStorageService jobStorageService, IPaymentLogger logger,
             ITelemetry telemetry, IJobStatusEventPublisher eventPublisher, IJobServiceConfiguration config,
             IJobsDataContext context) : base(
             jobStorageService, logger, telemetry, eventPublisher, config)
