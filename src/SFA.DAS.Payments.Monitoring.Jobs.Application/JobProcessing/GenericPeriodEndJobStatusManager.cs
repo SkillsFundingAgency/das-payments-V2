@@ -42,11 +42,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             var tenantID = "<your tenant ID>";
             var applicationId = "<your application ID>";
             var authenticationKey = "<your authentication key for the application>";
-            var subscriptionId = "<your subscription ID where the data factory resides>";
-            var resourceGroup = "<your resource group where the data factory resides>";
-            var region = "<the location of your resource group>";
+            var subscriptionId = "12f72527-6622-45d3-90a4-0a5d3644c45c";
+            var resourceGroup = "DCOL-DAS-DataFactoryDAS-WEU";
+            var region = "West Europe";
             var dataFactoryName =
-                "<specify the name of data factory to create. It must be globally unique.>";
+                "DCOL-DAS-DataFactoryDAS-WEU";
             var storageAccount = "<your storage account name to copy data>";
             var storageKey = "<your storage account key>";
             // specify the container and input folder from which all files 
@@ -60,7 +60,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             // name of the Azure Storage linked service, blob dataset, and the pipeline
             var storageLinkedServiceName = "AzureStorageLinkedService";
             var blobDatasetName = "BlobDataset";
-            var pipelineName = "Adfv2QuickStartPipeline";
+            var pipelineName = "CopyPaymentsToArchive";
 
             // Authenticate and create a data factory management client
             var app = ConfidentialClientApplicationBuilder.Create(applicationId)
@@ -79,6 +79,19 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             {
                 SubscriptionId = subscriptionId
             };
+
+            // Create a pipeline run
+            Console.WriteLine("Creating pipeline run...");
+            var parameters = new Dictionary<string, object>
+            {
+                { "inputPath", inputBlobPath },
+                { "outputPath", outputBlobPath }
+            };
+            var runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
+                resourceGroup, dataFactoryName, pipelineName, parameters: parameters
+            ).Result.Body;
+            Console.WriteLine("Pipeline run ID: " + runResponse.RunId);
+
             // Monitor the pipeline run
             Console.WriteLine("Checking pipeline run status...");
             PipelineRun pipelineRun;
@@ -93,7 +106,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             }
 
             // Check the copy activity run details
-            logger.LogInfo("Checking copy activity run details...");
 
             var filterParams = new RunFilterParameters(
                 DateTime.UtcNow.AddMinutes(-10), DateTime.UtcNow.AddMinutes(10));
