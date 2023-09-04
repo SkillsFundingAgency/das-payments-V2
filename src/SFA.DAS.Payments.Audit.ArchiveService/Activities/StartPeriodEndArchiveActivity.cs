@@ -2,29 +2,28 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AzureFunctions.Autofac;
 using Microsoft.Azure.Management.DataFactory;
 using Microsoft.Azure.Management.DataFactory.Models;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Identity.Client;
 using Microsoft.Rest;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Audit.ArchiveService.Extensions;
 using SFA.DAS.Payments.Audit.ArchiveService.Infrastructure.Configuration;
-using SFA.DAS.Payments.Audit.ArchiveService.Infrastructure.IoC;
 
-namespace SFA.DAS.Payments.Audit.ArchiveService;
+namespace SFA.DAS.Payments.Audit.ArchiveService.Activities;
 
-[DependencyInjectionConfig(typeof(DependencyRegister))]
-public static class PeriodEndArchiveFunction
+public static class StartPeriodEndArchiveActivity
 {
     private static readonly IPeriodEndArchiveConfiguration Config = new PeriodEndArchiveConfiguration();
 
-    public static async Task<DataFactoryManagementClient> CreateClient(string applicationId, string tenantId,
-        string authenticationKey, string subscriptionId)
+    public static async Task<DataFactoryManagementClient> CreateClient()
     {
         // Authenticate and create a data factory management client
-        var app = ConfidentialClientApplicationBuilder.Create(applicationId)
-            .WithAuthority("https://login.microsoftonline.com/" + tenantId)
-            .WithClientSecret(authenticationKey)
+        var app = ConfidentialClientApplicationBuilder.Create(Config.ApplicationId)
+            .WithAuthority("https://login.microsoftonline.com/" + Config.TenantId)
+            .WithClientSecret(Config.AuthenticationKey)
             .WithLegacyCacheCompatibility(false)
             .WithCacheOptions(CacheOptions.EnableSharedCacheOptions)
             .Build();
@@ -36,13 +35,20 @@ public static class PeriodEndArchiveFunction
 
         return new DataFactoryManagementClient(cred)
         {
-            SubscriptionId = subscriptionId
+            SubscriptionId = Config.SubscriptionId
         };
     }
 
-    public static async Task StartArchivePipeline(IPaymentLogger logger)
+    [FunctionName(nameof(StartPeriodEndArchiveActivity))]
+    public static async Task Run([ActivityTrigger] IPaymentLogger logger,
+        [DurableClient] IDurableEntityClient entityClient)
     {
-        // Set variables
+        var sleepTimer = 15000;
+        var currentJobId =
+            new EntityId(nameof(HandleCurrentJobId.Handle), HandleCurrentJobId.PeriodEndArchiveEntityName);
+
+
+        /*// Set variables
         var tenantId = "<your tenant ID>";
         var applicationId = "<your application ID>";
         var authenticationKey = "<your authentication key for the application>";
@@ -51,54 +57,61 @@ public static class PeriodEndArchiveFunction
 
         var dataFactoryName =
             "DCOL-DAS-DataFactoryDAS-WEU";
-        var pipelineName = "CopyPaymentsToArchive";
+        var pipelineName = "CopyPaymentsToArchive";*/
 
-        var client = await CreateClient(Config.ApplicationId, Config.TenantId, Config.AuthenticationKey,
-            Config.SubscriptionId);
+        var client = await CreateClient();
 
         // Create a pipeline run
         logger.LogInfo("Creating pipeline run...");
 
         var runResponse = client.Pipelines.CreateRunWithHttpMessagesAsync(
-            resourceGroup, dataFactoryName, pipelineName
+            Config.ResourceGroup, Config.AzureDataFactoryName, Config.PipeLine
         ).Result.Body;
         logger.LogInfo("Pipeline run ID: " + runResponse.RunId);
+
+        await entityClient.SignalEntityAsync(currentJobId, "add", new RunInformation
+        {
+            JobId = runResponse.RunId,
+            Status = "Started"
+        });
 
         PipelineRun pipelineRun;
         while (true)
         {
             pipelineRun = await client.PipelineRuns.GetAsync(
-                resourceGroup, dataFactoryName, runResponse.RunId);
+                Config.ResourceGroup, Config.AzureDataFactoryName, runResponse.RunId);
+
             logger.LogInfo("Period End Archive Status: " + pipelineRun.Status);
             if (pipelineRun.Status is "InProgress" or "Queued")
-                Thread.Sleep(15000);
+            {
+                await entityClient.SignalEntityAsync(currentJobId, "add", new RunInformation
+                {
+                    JobId = runResponse.RunId,
+                    Status = pipelineRun.Status
+                });
+                Thread.Sleep(sleepTimer);
+            }
             else
+            {
                 break;
+            }
         }
 
         var filterParams = new RunFilterParameters(
             DateTime.UtcNow.AddMinutes(-10), DateTime.UtcNow.AddMinutes(10));
         var queryResponse = await client.ActivityRuns.QueryByPipelineRunAsync(
-            resourceGroup, dataFactoryName, runResponse.RunId, filterParams);
+            Config.ResourceGroup, Config.AzureDataFactoryName, runResponse.RunId, filterParams);
 
         if (pipelineRun.Status != "Succeeded")
             logger.LogError(queryResponse.Value.First().Error.ToString());
+
         else
             logger.LogInfo(queryResponse.Value.First().Output.ToString());
-    }
 
-    public static async Task<string> MonitorArchivePipeline(string runId, [Inject] IPaymentLogger logger)
-    {
-        var client = await CreateClient(Config.ApplicationId, Config.TenantId, Config.AuthenticationKey,
-            Config.SubscriptionId);
-
-        // Monitor the pipeline run
-        logger.LogInfo("Checking pipeline run status...");
-
-
-        var pipelineRun = await client.PipelineRuns.GetAsync(Config.ResourceGroup, Config.AzureDataFactoryName, runId);
-        logger.LogInfo("Status: " + pipelineRun.Status);
-
-        return pipelineRun.Status;
+        await entityClient.SignalEntityAsync(currentJobId, "add", new RunInformation
+        {
+            JobId = runResponse.RunId,
+            Status = pipelineRun.Status
+        });
     }
 }
