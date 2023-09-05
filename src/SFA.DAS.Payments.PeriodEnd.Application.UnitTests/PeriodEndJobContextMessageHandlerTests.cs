@@ -416,7 +416,8 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
             var handler = mocker.Create<PeriodEndJobContextMessageHandler>();
             await handler.HandleAsync(jobContextMessage, CancellationToken.None);
             mocker.Mock<IEndpointInstance>()
-                .Verify(x => x.Publish(It.Is<PeriodEndIlrReprocessingStartedEvent>(startedEvent => startedEvent.JobId == 1
+                .Verify(x => x.Publish(It.Is<PeriodEndIlrReprocessingStartedEvent>(startedEvent =>
+                        startedEvent.JobId == 1
                         && startedEvent.CollectionPeriod.Period == 10
                         && startedEvent.CollectionPeriod.AcademicYear == 1819),
                     It.IsAny<PublishOptions>()), Times.Once);
