@@ -49,9 +49,9 @@ public static class StartPeriodEndArchiveActivity
 
 
         /*// Set variables
-        var tenantId = "<your tenant ID>";
-        var applicationId = "<your application ID>";
-        var authenticationKey = "<your authentication key for the application>";
+        var tenantId = "1a92889b-8ea1-4a16-8132-347814051567";
+        var applicationId = "35d05f13-18ff-402a-8839-08fd3d60cf37";
+        var authenticationKey = "1f13a132-1d08-410b-b797-4cb295bb7590";
         var subscriptionId = "12f72527-6622-45d3-90a4-0a5d3644c45c";
         var resourceGroup = "DCOL-DAS-DataFactoryDAS-WEU";
 

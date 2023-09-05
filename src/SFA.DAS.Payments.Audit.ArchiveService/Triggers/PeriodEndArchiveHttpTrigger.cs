@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using AzureFunctions.Autofac;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -8,10 +9,12 @@ using Newtonsoft.Json.Linq;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.ArchiveService.Extensions;
 using SFA.DAS.Payments.Audit.ArchiveService.Helpers;
+using SFA.DAS.Payments.Audit.ArchiveService.Infrastructure.IoC;
 using SFA.DAS.Payments.Audit.ArchiveService.Orchestrators;
 
 namespace SFA.DAS.Payments.Audit.ArchiveService.Triggers;
 
+[DependencyInjectionConfig(typeof(DependencyRegister))]
 public static class PeriodEndArchiveHttpTrigger
 {
     [FunctionName(nameof(PeriodEndArchiveHttpTrigger))]
@@ -20,7 +23,7 @@ public static class PeriodEndArchiveHttpTrigger
         HttpRequestMessage req,
         [DurableClient] IDurableOrchestrationClient starter,
         [DurableClient] IDurableEntityClient client,
-        IPaymentLogger log
+        [Inject] IPaymentLogger log
     )
     {
         if (req.Method == HttpMethod.Post)
