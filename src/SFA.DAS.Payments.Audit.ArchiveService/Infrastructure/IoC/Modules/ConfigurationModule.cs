@@ -19,7 +19,7 @@ public class ConfigurationModule : Module
                     SubscriptionId = configHelper.GetSetting("SubscriptionId")
                 };
             })
-            .As<PeriodEndArchiveConfiguration>();
+            .As<IPeriodEndArchiveConfiguration>().SingleInstance();
         builder.RegisterType<FunctionsConfigurationHelper>().As<IConfigurationHelper>().SingleInstance();
     }
 }

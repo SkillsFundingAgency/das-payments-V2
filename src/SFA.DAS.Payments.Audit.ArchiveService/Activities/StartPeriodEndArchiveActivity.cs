@@ -44,7 +44,8 @@ public static class StartPeriodEndArchiveActivity
 
     [FunctionName(nameof(StartPeriodEndArchiveActivity))]
     public static async Task Run([ActivityTrigger] IDurableEntityClient entityClient,
-        [Inject] IPaymentLogger logger)
+        [Inject] IPaymentLogger logger,
+        [Inject] IPeriodEndArchiveConfiguration config4)
     {
         var sleepTimer = 15000;
         var currentJobId =
