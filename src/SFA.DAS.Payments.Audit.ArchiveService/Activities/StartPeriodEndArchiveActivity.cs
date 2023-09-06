@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AzureFunctions.Autofac;
 using Microsoft.Azure.Management.DataFactory;
 using Microsoft.Azure.Management.DataFactory.Models;
 using Microsoft.Azure.WebJobs;
@@ -11,9 +12,11 @@ using Microsoft.Rest;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.ArchiveService.Extensions;
 using SFA.DAS.Payments.Audit.ArchiveService.Infrastructure.Configuration;
+using SFA.DAS.Payments.Audit.ArchiveService.Infrastructure.IoC;
 
 namespace SFA.DAS.Payments.Audit.ArchiveService.Activities;
 
+[DependencyInjectionConfig(typeof(DependencyRegister))]
 public static class StartPeriodEndArchiveActivity
 {
     private static readonly IPeriodEndArchiveConfiguration Config = new PeriodEndArchiveConfiguration();
@@ -40,21 +43,22 @@ public static class StartPeriodEndArchiveActivity
     }
 
     [FunctionName(nameof(StartPeriodEndArchiveActivity))]
-    public static async Task Run([ActivityTrigger] IPaymentLogger logger,
-        [DurableClient] IDurableEntityClient entityClient)
+    public static async Task Run([ActivityTrigger] IDurableEntityClient entityClient,
+        [Inject] IPaymentLogger logger)
     {
         var sleepTimer = 15000;
         var currentJobId =
             new EntityId(nameof(HandleCurrentJobId.Handle), HandleCurrentJobId.PeriodEndArchiveEntityName);
 
 
+        var config2 = new PeriodEndArchiveConfiguration();
         /*// Set variables
         var tenantId = "1a92889b-8ea1-4a16-8132-347814051567";
         var applicationId = "35d05f13-18ff-402a-8839-08fd3d60cf37";
         var authenticationKey = "1f13a132-1d08-410b-b797-4cb295bb7590";
         var subscriptionId = "12f72527-6622-45d3-90a4-0a5d3644c45c";
         var resourceGroup = "DCOL-DAS-DataFactoryDAS-WEU";
-
+    
         var dataFactoryName =
             "DCOL-DAS-DataFactoryDAS-WEU";
         var pipelineName = "CopyPaymentsToArchive";*/

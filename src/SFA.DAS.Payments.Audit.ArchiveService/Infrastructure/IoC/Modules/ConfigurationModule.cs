@@ -8,8 +8,6 @@ public class ConfigurationModule : Module
 {
     protected override void Load(ContainerBuilder builder)
     {
-        builder.RegisterType<FunctionsConfigurationHelper>().As<IConfigurationHelper>().SingleInstance();
-
         builder.Register((c, p) =>
             {
                 var configHelper = c.Resolve<IConfigurationHelper>();
@@ -21,7 +19,7 @@ public class ConfigurationModule : Module
                     SubscriptionId = configHelper.GetSetting("SubscriptionId")
                 };
             })
-            .As<IPeriodEndArchiveConfiguration>()
-            .SingleInstance();
+            .As<PeriodEndArchiveConfiguration>();
+        builder.RegisterType<FunctionsConfigurationHelper>().As<IConfigurationHelper>().SingleInstance();
     }
 }
