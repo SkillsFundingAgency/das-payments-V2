@@ -2,6 +2,7 @@
 
 public class PeriodEndArchiveConfiguration : IPeriodEndArchiveConfiguration
 {
+    public int SleepDelay { get; set; }
     public string TenantId { get; set; }
     public string ApplicationId { get; set; }
     public string AuthenticationKey { get; set; }

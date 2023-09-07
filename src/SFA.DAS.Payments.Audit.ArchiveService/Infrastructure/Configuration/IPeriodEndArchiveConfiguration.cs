@@ -9,4 +9,5 @@ public interface IPeriodEndArchiveConfiguration
     string TenantId { get; set; }
     string ApplicationId { get; set; }
     string AuthenticationKey { get; set; }
+    int SleepDelay { get; set; }
 }

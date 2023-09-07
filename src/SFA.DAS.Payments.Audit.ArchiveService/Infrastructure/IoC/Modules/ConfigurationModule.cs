@@ -16,7 +16,11 @@ public class ConfigurationModule : Module
                     ResourceGroup = configHelper.GetSetting("ResourceGroup"),
                     AzureDataFactoryName = configHelper.GetSetting("AzureDataFactoryName"),
                     PipeLine = configHelper.GetSetting("PipeLine"),
-                    SubscriptionId = configHelper.GetSetting("SubscriptionId")
+                    SubscriptionId = configHelper.GetSetting("SubscriptionId"),
+                    TenantId = configHelper.GetSetting("TenantId"),
+                    ApplicationId = configHelper.GetSetting("ApplicationId"),
+                    AuthenticationKey = configHelper.GetSetting("AuthenticationKey"),
+                    SleepDelay = int.Parse(configHelper.GetSetting("SleepDelay"))
                 };
             })
             .As<IPeriodEndArchiveConfiguration>().SingleInstance();
