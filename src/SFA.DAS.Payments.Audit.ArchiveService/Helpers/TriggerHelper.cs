@@ -15,13 +15,11 @@ public class TriggerHelper : ITriggerHelper
         HttpRequestMessage req,
         IDurableOrchestrationClient starter,
         IPaymentLogger log,
-        ITriggerHelper triggerHelper,
         string orchestratorName,
         string triggerName
     )
     {
-        var existingInstances =
-            await triggerHelper.GetRunningInstances(triggerName, orchestratorName, starter, log);
+        var existingInstances = await GetRunningInstances(triggerName, orchestratorName, starter, log);
 
         if (existingInstances != null && existingInstances.DurableOrchestrationState.Any())
         {
