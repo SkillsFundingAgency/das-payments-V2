@@ -42,7 +42,7 @@ public static class StartPeriodEndArchiveActivity
     }
 
     [FunctionName(nameof(StartPeriodEndArchiveActivity))]
-    public static async Task Run([ActivityTrigger] IDurableEntityClient entityClient,
+    public static async Task Run([DurableClient] IDurableEntityClient entityClient,
         [Inject] IPaymentLogger logger,
         [Inject] IPeriodEndArchiveConfiguration config)
     {

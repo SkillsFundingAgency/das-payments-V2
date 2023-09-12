@@ -21,7 +21,7 @@ public class TriggerHelper : ITriggerHelper
     )
     {
         var existingInstances =
-            await triggerHelper.GetRunningInstances(triggerName, orchestratorName, starter, log);
+            await GetRunningInstances(triggerName, orchestratorName, starter, log);
 
         if (existingInstances != null && existingInstances.DurableOrchestrationState.Any())
         {
