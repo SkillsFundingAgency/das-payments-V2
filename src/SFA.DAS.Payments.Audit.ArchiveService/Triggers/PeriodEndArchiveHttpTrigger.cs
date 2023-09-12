@@ -29,8 +29,7 @@ public static class PeriodEndArchiveHttpTrigger
         if (req.Method == HttpMethod.Post)
         {
             ITriggerHelper triggerHelper = new TriggerHelper();
-            return await triggerHelper.StartOrchestrator(req, starter, log, triggerHelper,
-                nameof(PeriodEndArchiveOrchestrator), nameof(PeriodEndArchiveHttpTrigger));
+            return await triggerHelper.StartOrchestrator(req, starter, log, nameof(PeriodEndArchiveOrchestrator), nameof(PeriodEndArchiveHttpTrigger));
         }
 
         var entityId = new EntityId(nameof(HandleCurrentJobId.PeriodEndArchiveEntityName),
