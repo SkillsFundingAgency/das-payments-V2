@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Messaging
 
         private const string TopicPath = "bundle-1";
 
-        public JobBatchCommunicationListener (string connectionString, string endpointName, string errorQueueName, IPaymentLogger logger,
+        public JobBatchCommunicationListener(string connectionString, string endpointName, string errorQueueName, IPaymentLogger logger,
             IContainerScopeFactory scopeFactory, ITelemetry telemetry, IMessageDeserializer messageDeserializer, IApplicationMessageModifier messageModifier)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -225,7 +225,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Messaging
                             messageReceivers.Select(receiver => ReceiveMessages(receiver, cancellationToken)).ToList();
                         await Task.WhenAll(receiveTasks).ConfigureAwait(false);
 
-                        var messageReceiverResults  = receiveTasks.SelectMany(task => task.Result).ToList();
+                        var messageReceiverResults = receiveTasks.SelectMany(task => task.Result).ToList();
                         //receiveTimer.Stop();
                         if (!messageReceiverResults.Any())
                         {
@@ -239,22 +239,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Messaging
                                 MessageReceiver, Message ReceivedMessage)>>>();
 
 
-                        var list = messageReceiverResults.GroupBy(received => GetMessageJob(received.ReceivedMessage),
+                        var messagesByJob = messageReceiverResults
+                            .GroupBy(received => GetMessageJob(received.ReceivedMessage),
                             received => received);
 
-                        var messageByJob =  list.Select(item =>
-                        new {
-                            JobId = item.Key, 
-                            MessagesByType = item.GroupBy(received => received.Message.GetType(), received => received)
+                        await Task.WhenAll(messagesByJob.Select(job => ProcessJob(job.Key, job.Select(received => received).ToList(), cancellationToken)));
 
-                        });
-
-   
-                        foreach (var item in list)
-                        {
-                            item.GroupBy(received => received.Message.GetType(), received => received)
-                                ;
-                        }
 
                         foreach (var messageReceiverResult in messageReceiverResults)
                         {
@@ -262,7 +252,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Messaging
                             var jobId = GetMessageJob(messageReceiverResult.Message);
                             var messageType = messageReceiverResult.Message.GetType();
                             var jobMessages = receiverResultsByJob[jobId] ?? (receiverResultsByJob[jobId] = new Dictionary<Type, List<(object Message, BatchMessageReceiver MessageReceiver, Message ReceivedMessage)>>());
-                            if (jobMessages.ContainsKey(messageType))
+                            //if (jobMessages.ContainsKey(messageType))
 
                             //var applicationMessages = groupedMessageReceiverResults.ContainsKey(key)
                             //    ? groupedMessageReceiverResults[key]
@@ -308,12 +298,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Messaging
             return jobMessage?.JobId ?? 0;
         }
 
-        private async Task ProcessJobs(long jobId,
-            List<(Type MessageType,
-                    List<(object Message, BatchMessageReceiver MessageReceiver, Message ReceivedMessage)> Messages)>
-                messagesByType, CancellationToken cancellationToken)
+        private async Task ProcessJob(long jobId,
+            List<(object Message, BatchMessageReceiver MessageReceiver, Message ReceivedMessage)> messages,
+            CancellationToken cancellationToken)
         {
-            await Task.WhenAll( messagesByType.Select(group => ProcessMessages(jobId,group.MessageType,group.Messages, cancellationToken)));
+            var messagesByType = messages.GroupBy(message => message.Message.GetType(), message => message);
+            await Task.WhenAll(messagesByType.Select(type =>
+                ProcessMessages(jobId, type.Key, type.Select(received => received).ToList(), cancellationToken)));
         }
 
 
