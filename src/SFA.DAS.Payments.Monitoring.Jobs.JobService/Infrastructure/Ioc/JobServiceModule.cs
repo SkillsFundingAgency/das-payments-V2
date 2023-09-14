@@ -28,6 +28,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Infrastructure.Ioc
                 })
                 .As<IPeriodEndRequestReportsClient>()
                 .InstancePerLifetimeScope();
+
+            builder.Register((c, p) =>
+                {
+                    var configHelper = c.Resolve<IConfigurationHelper>();
+                    return new PeriodEndArchiverClient(configHelper.GetSetting("ArchiveFunctionApiKey"), configHelper.GetSetting("ArchiveFunctionBaseUrl"));
+                })
+                .As<IPeriodEndArchiverClient>()
+                .InstancePerLifetimeScope();
         }
     }
 }
