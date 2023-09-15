@@ -41,8 +41,5 @@ public static class PeriodEndArchiveHttpTrigger
         {
             Content = new StringContent(JsonConvert.SerializeObject(stateResponse), Encoding.UTF8, "application/json")
         };
-        var response = req.CreateResponse(HttpStatusCode.OK, "{}");
-        return response;
-        return req.CreateResponse(HttpStatusCode.OK, stateResponse.EntityState);
     }
 }
