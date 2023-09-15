@@ -234,12 +234,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Messaging
                         }
                         //RecordMetric("ReceiveMessages", receiveTimer.ElapsedMilliseconds, messages.Count);
 
-
                         var messagesByJob = messageReceiverResults
                             .GroupBy(received => GetMessageJob(received.ReceivedMessage),
                             received => received);
 
                         await Task.WhenAll(messagesByJob.Select(job => ProcessJob(job.Key, job.Select(received => received).ToList(), cancellationToken)));
+
 
                         //var stopwatch = Stopwatch.StartNew();
                         //await Task.WhenAll(groupedMessageReceiverResults.Select(group =>
@@ -283,9 +283,18 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Messaging
             List<(object Message, BatchMessageReceiver MessageReceiver, Message ReceivedMessage)> messages,
             CancellationToken cancellationToken)
         {
-            var messagesByType = messages.GroupBy(message => message.Message.GetType(), message => message);
-            await Task.WhenAll(messagesByType.Select(type =>
-                ProcessMessages(jobId, type.Key, type.Select(received => received).ToList(), cancellationToken)));
+            try
+            {
+                var messagesByType = messages.GroupBy(message => message.Message.GetType(), message => message);
+                await Task.WhenAll(messagesByType.Select(type =>
+                    ProcessMessages(jobId, type.Key, type.Select(received => received).ToList(), cancellationToken)));
+
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"Error processing batch of messages with job: {jobId}. Error: {e.Message}",e);
+                throw;
+            }
         }
 
 
@@ -371,7 +380,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Messaging
             }
             catch (Exception e)
             {
-                logger.LogError($"Error in StatelessServiceBusBatchCommunicationListener, Message Type: {messages.First().Message.GetType().Name}, Message Count: {messages.Count}, Error: {e.Message}", e);
+                logger.LogError($"Error in JobBatchCommunicationListener, Message Type: {messages.First().Message.GetType().Name}, Message Count: {messages.Count}, Error: {e.Message}", e);
                 await Task.WhenAll(messages.Where(msg => msg.ReceivedMessage.SystemProperties.DeliveryCount < 10).GroupBy(msg => msg.MessageReceiver).Select(group =>
                         group.Key.Abandon(group.Select(msg => msg.ReceivedMessage.SystemProperties.LockToken)
                             .ToList())))
