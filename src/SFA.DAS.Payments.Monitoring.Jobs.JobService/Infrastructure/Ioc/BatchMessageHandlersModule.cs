@@ -1,8 +1,11 @@
 ﻿using Autofac;
 using SFA.DAS.Payments.Application.Infrastructure.Ioc;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
+using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core.Configuration;
+using SFA.DAS.Payments.Messaging.Serialization;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Messaging;
 using SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers;
 using SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.Submission;
@@ -26,6 +29,23 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Infrastructure.Ioc
                         c.Resolve<IContainerScopeFactory>());
                 })
                 .As<IServiceBusBatchCommunicationListener>()
+                .SingleInstance();
+
+            builder.Register(c =>
+                {
+                    var appConfig = c.Resolve<IApplicationConfiguration>();
+                    var configHelper = c.Resolve<IConfigurationHelper>();
+                    return new JobBatchCommunicationListener(configHelper.GetConnectionString("MonitoringServiceBusConnectionString"),
+                        appConfig.EndpointName,
+                        appConfig.FailedMessagesQueue,
+                        c.Resolve<IPaymentLogger>(),
+                        c.Resolve<IContainerScopeFactory>(),
+                        c.Resolve<ITelemetry>(),
+                        c.Resolve<IMessageDeserializer>(),
+                    c.Resolve<IApplicationMessageModifier>()
+                        );
+                })
+                .As<IJobBatchCommunicationListener>()
                 .SingleInstance();
 
             builder.RegisterType<RecordJobMessageProcessingStatusBatchHandler>()
