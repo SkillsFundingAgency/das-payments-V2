@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using SFA.DAS.Payments.Monitoring.Metrics.Model.PeriodEnd;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -9,6 +8,18 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
     public interface IPeriodEndArchiverClient
     {
         Task<bool> ArchiveStatus();
+    }
+
+    public class EntityState
+    {
+        public string JobId { get; set; }
+        public string Status { get; set; }
+    }
+
+    public class PeriodEndArchiverStatusSummary
+    {
+        public bool EntityExists { get; set; }
+        public EntityState EntityState { get; set; }
     }
 
     public class PeriodEndArchiverClient : IPeriodEndArchiverClient
@@ -29,9 +40,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
             if (!result.IsSuccessStatusCode) return false;
 
             var content = await result.Content.ReadAsStringAsync();
-            
-            // TODO: Talk to Liam about what's coming back to see if we need to parse anything
-            return true;
+
+            var periodEndArchiverStatusSummary = JsonConvert.DeserializeObject<PeriodEndArchiverStatusSummary>(content);
+            return periodEndArchiverStatusSummary.EntityState.Status == "Succeeded";
         }
 
         private string BuildUriFromParameters()
