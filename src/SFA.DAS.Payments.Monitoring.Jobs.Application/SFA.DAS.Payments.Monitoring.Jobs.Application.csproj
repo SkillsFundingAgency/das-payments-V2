@@ -6,7 +6,10 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
+    <PackageReference Include="Microsoft.Azure.Management.DataFactory" Version="9.3.0" />
+    <PackageReference Include="Microsoft.Azure.Management.ResourceManager" Version="3.17.4-preview" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.1" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.55.0" />
     <PackageReference Include="NServiceBus" Version="7.1.5" />
   </ItemGroup>
 

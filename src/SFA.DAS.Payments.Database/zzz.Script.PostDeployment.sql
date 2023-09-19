@@ -78,6 +78,14 @@ IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 8)
 	INSERT INTO [Payments2].[JobType] values (8,'Period end request reports job')
 GO 
 
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 9)
+	INSERT INTO [Payments2].[JobType] values (9,'Period end Ilr reprocessing job')
+GO 
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 10)
+	INSERT INTO [Payments2].[JobType] values (10,'Period end Fcs handover job')
+GO 
+
 MERGE INTO [Payments2].[ApprenticeshipStatus]	 AS Target
 USING (VALUES
 (1	, N'Active'),

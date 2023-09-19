@@ -12,23 +12,25 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
     {
         Task RecordPeriodEndJob(RecordPeriodEndJob periodEndJob, CancellationToken cancellationToken);
     }
-    
-    public class PeriodEndJobService : JobService,IPeriodEndJobService
+
+    public class PeriodEndJobService : JobService, IPeriodEndJobService
     {
         private readonly IPaymentLogger logger;
 
-        public PeriodEndJobService(IPaymentLogger logger, IJobStorageService jobStorageService, ITelemetry telemetry) : base(logger, jobStorageService, telemetry)
+        public PeriodEndJobService(IPaymentLogger logger, IJobStorageService jobStorageService, ITelemetry telemetry) :
+            base(logger, jobStorageService, telemetry)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-       
+
         public async Task RecordPeriodEndJob(RecordPeriodEndJob periodEndJob, CancellationToken cancellationToken)
         {
-            logger.LogDebug($"Sending request to record {periodEndJob.GetType().Name}. Job Id: {periodEndJob.JobId}, collection period: {periodEndJob.CollectionYear}-{periodEndJob.CollectionPeriod}");
+            logger.LogDebug(
+                $"Sending request to record {periodEndJob.GetType().Name}. Job Id: {periodEndJob.JobId}, collection period: {periodEndJob.CollectionYear}-{periodEndJob.CollectionPeriod}");
             var jobDetails = new JobModel
             {
                 JobType = GetJobType(periodEndJob),
-                CollectionPeriod =periodEndJob.CollectionPeriod,
+                CollectionPeriod = periodEndJob.CollectionPeriod,
                 AcademicYear = periodEndJob.CollectionYear,
                 DcJobId = periodEndJob.JobId,
                 Status = JobStatus.InProgress,
@@ -36,8 +38,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
             };
 
             await RecordNewJob(jobDetails, periodEndJob.GeneratedMessages, cancellationToken);
-            logger.LogInfo($"Sent request to record {periodEndJob.GetType().Name}. Job Id: {periodEndJob.JobId}, collection period: {periodEndJob.CollectionYear}-{periodEndJob.CollectionPeriod}");
-
+            logger.LogInfo(
+                $"Sent request to record {periodEndJob.GetType().Name}. Job Id: {periodEndJob.JobId}, collection period: {periodEndJob.CollectionYear}-{periodEndJob.CollectionPeriod}");
         }
 
         private JobType GetJobType(RecordPeriodEndJob periodEndJob)
@@ -52,6 +54,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
                 return JobType.PeriodEndSubmissionWindowValidationJob;
             if (periodEndJob is RecordPeriodEndRequestReportsJob)
                 return JobType.PeriodEndRequestReportsJob;
+            if (periodEndJob is RecordPeriodEndFcsHandOverCompleteJob)
+                return JobType.PeriodEndFcsHandOverCompleteJob;
             throw new InvalidOperationException($"Unhandled period end job type: {periodEndJob.GetType().Name}");
         }
     }
