@@ -32,6 +32,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
+                    return new PeriodEndArchiveConfiguration(
+                        configHelper.GetSetting("ArchiveFunctionUrl"),
+                        int.Parse(configHelper.GetSetting("ArchiveTimeout")),
+                        configHelper.GetSetting("ArchiveApiKey"));
+                })
+                .As<IPeriodEndArchiveConfiguration>()
+                .SingleInstance();
+            builder.Register((c, p) =>
+                {
+                    var configHelper = c.Resolve<IConfigurationHelper>();
                     return new JobServiceConfiguration(
                         TimeSpan.Parse(configHelper.GetSettingOrDefault("JobStatusCheck_Interval", "00:00:10")),
                         TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForJobToComplete", "00:20:00")),
@@ -39,7 +49,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
                             "00:20:00")),
                         TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitToReceivePeriodEndILRSubmissions",
                             "00:10:00")),
-                    TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForPeriodEndStartJobToComplete", "00:10:00"))
+                        TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForPeriodEndStartJobToComplete",
+                            "00:10:00"))
                     );
                 })
                 .As<IJobServiceConfiguration>()
@@ -74,6 +85,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.RegisterType<PeriodEndStartJobStatusService>()
                 .As<IPeriodEndStartJobStatusService>()
                 .InstancePerLifetimeScope();
+            builder.RegisterType<PeriodEndArchiveStatusService>()
+                .As<IPeriodEndArchiveStatusService>()
+                .InstancePerLifetimeScope();
+
 
             builder.Register((c, p) => new MemoryCache(new MemoryCacheOptions()))
                 .As<IMemoryCache>()

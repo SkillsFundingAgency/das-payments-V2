@@ -39,6 +39,8 @@
     <Parameter Name="DasNServiceBusLicenseKey" Value=""/>
     <Parameter Name="MetricsFunctionApiKey" Value="" />
     <Parameter Name="MetricsFunctionBaseUrl" Value="" />
-
+    <Parameter Name="ArchiveFunctionUrl" Value="" />
+    <Parameter Name="ArchiveTimeout" Value="18000" />
+    <Parameter Name="ArchiveApiKey" Value="" />
   </Section>
 </Settings>

@@ -5,7 +5,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Infrastructure.Ioc
 {
-    public class JobServiceModule: Module
+    public class JobServiceModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
@@ -16,7 +16,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Infrastructure.Ioc
             builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
-                    return new SubmissionWindowValidationClient(configHelper.GetSetting("MetricsFunctionApiKey"), configHelper.GetSetting("MetricsFunctionBaseUrl"));
+                    return new SubmissionWindowValidationClient(configHelper.GetSetting("MetricsFunctionApiKey"),
+                        configHelper.GetSetting("MetricsFunctionBaseUrl"));
                 })
                 .As<ISubmissionWindowValidationClient>()
                 .InstancePerLifetimeScope();
@@ -24,7 +25,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Infrastructure.Ioc
             builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
-                    return new PeriodEndRequestReportsClient(configHelper.GetSetting("MetricsFunctionApiKey"), configHelper.GetSetting("MetricsFunctionBaseUrl"));
+                    return new PeriodEndRequestReportsClient(configHelper.GetSetting("MetricsFunctionApiKey"),
+                        configHelper.GetSetting("MetricsFunctionBaseUrl"));
                 })
                 .As<IPeriodEndRequestReportsClient>()
                 .InstancePerLifetimeScope();

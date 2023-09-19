@@ -6,13 +6,12 @@ using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 {
-
     public interface IJobStatusServiceFactory
     {
         IJobStatusService Create(IUnitOfWorkScope scope, JobType jobType);
     }
 
-    public class JobStatusServiceFactory: IJobStatusServiceFactory
+    public class JobStatusServiceFactory : IJobStatusServiceFactory
     {
         public IJobStatusService Create(IUnitOfWorkScope scope, JobType jobType)
         {
@@ -25,9 +24,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                     return scope.Resolve<IPeriodEndStartJobStatusService>();
                 case JobType.PeriodEndIlrReprocessingJob:
                     return scope.Resolve<IIlrReprocessingJobStatusService>();
+                case JobType.PeriodEndFcsHandOverCompleteJob:
+                    return scope.Resolve<IPeriodEndArchiveStatusService>();
                 case JobType.PeriodEndRunJob:
                 case JobType.PeriodEndStopJob:
                 case JobType.ComponentAcceptanceTestMonthEndJob:
+
                     return scope.Resolve<IPeriodEndJobStatusService>();
                 //SubmissionWindow and Reports jobs are handled using a different pattern. The message handlers process those types in-line.
                 default:

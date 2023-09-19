@@ -7,7 +7,7 @@
         PeriodEndStop,
         PeriodEndSubmissionWindowValidation,
         PeriodEndReports,
-        PeriodEndIlrReprocessing
-
+        PeriodEndIlrReprocessing,
+        PeriodEndFcsHandoverComplete
     }
 }

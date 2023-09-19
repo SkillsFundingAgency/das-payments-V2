@@ -77,6 +77,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 return succeeded
                     ? (PeriodEndJobFinishedEvent)new PeriodEndIlrReprocessingSucceeded()
                     : new PeriodEndIlrReprocessingFailed();
+            if (jobType == JobType.PeriodEndFcsHandOverCompleteJob)
+                return succeeded
+                    ? (PeriodEndJobFinishedEvent)new PeriodEndFcsHandoverCompleteSucceeded()
+                    : new PeriodEndFcsHandoverFailed();
             throw new InvalidOperationException($"Unhandled period end job type: {jobType}");
         }
     }
