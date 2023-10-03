@@ -20,9 +20,6 @@
          "metricAlerts_VM_Availability_Alert_name": {
             "value": null
         },
-        "actionGroups_DCOL_SDW_dasalerts_actiongroup_WEU_externalid": {
-            "value": null
-        },
         "actionGroups_SFCluster_VMAlerts_externalid": {
             "value": null
         }
