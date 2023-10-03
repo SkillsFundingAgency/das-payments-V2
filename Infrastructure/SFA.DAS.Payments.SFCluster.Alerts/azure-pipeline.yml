@@ -12,7 +12,7 @@ trigger:
   branches:
     include:
     - master
-    - PP-3008-ApplicationInsights
+    - PV2-3091
   batch: true
   paths:
     include:
