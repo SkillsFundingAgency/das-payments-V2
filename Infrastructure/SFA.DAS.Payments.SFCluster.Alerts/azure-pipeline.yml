@@ -103,7 +103,7 @@ stages:
 
 - stage: Deploy_SDW
   dependsOn: 
-  - Publish_MonitoringMetrics
+  - Publish_SFClusterAlerts
 # - Deploy_SIT
   displayName: Deploy to SDW
   variables:
