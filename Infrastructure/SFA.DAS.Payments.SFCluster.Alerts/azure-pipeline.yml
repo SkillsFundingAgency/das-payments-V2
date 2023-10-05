@@ -118,38 +118,36 @@ stages:
       azureSubscription: DCOL-Shadow
       metricAlerts_VM_CPU_Alert_name: VM-SDW-CPU-Alert
       virtualMachineScaleSets_monitor_externalid: /subscriptions/4ff47917-ac4e-432a-b314-a6525434afcb/resourceGroups/DCOL-SDW-ServiceFabricDas-WEU/providers/Microsoft.Compute/virtualMachineScaleSets/monitor
-      actionGroups_dcol_sdw_dasalerts_actiongroup_externalid: /subscriptions/4FF47917-AC4E-432A-B314-A6525434AFCB/resourceGroups/dcol-sdw-ops-weu/providers/microsoft.insights/actionGroups/dcol-sdw-dasalerts-actiongroup
+      actionGroups_dcol_dasalerts_actiongroup_externalid: /subscriptions/4FF47917-AC4E-432A-B314-A6525434AFCB/resourceGroups/dcol-sdw-ops-weu/providers/microsoft.insights/actionGroups/dcol-sdw-dasalerts-actiongroup
       metricAlerts_VM_Available_Memory_Alert_name: VM-SDW-Available-Memory-Alert
-      actiongroups_dcol_sdw_dasalerts_actiongroup_weu_externalid: /subscriptions/4ff47917-ac4e-432a-b314-a6525434afcb/resourceGroups/dcol-sdw-servicefabricdas-weu/providers/microsoft.insights/actiongroups/dcol-sdw-dasalerts-actiongroup-weu
+      actiongroups_dcol_dasalerts_actiongroup_weu_externalid: /subscriptions/4ff47917-ac4e-432a-b314-a6525434afcb/resourceGroups/dcol-sdw-servicefabricdas-weu/providers/microsoft.insights/actiongroups/dcol-sdw-dasalerts-actiongroup-weu
       metricAlerts_VM_Availability_Alert_name: VM-SDW-Availability-Alert
       actionGroups_SFCluster_VMAlerts_externalid: /subscriptions/4FF47917-AC4E-432A-B314-A6525434AFCB/resourceGroups/DCOL-SDW-ServiceFabricDas-WEU/providers/microsoft.insights/actionGroups/SFCluster-VMAlerts
       
 
  
-#- stage: Deploy_MO
-#  dependsOn: 
-#  - Publish_MonitoringMetrics
-#  - Deploy_SDW
-#  displayName: Deploy to MO
-#  variables:
-#  - name: tagEnvironment
-#    value: Dev/Test
-#  - group: DCOL-MO - Environment Key Vault Secrets
-#  jobs:
-#  - template: pipeline/deploy.yml
-#    parameters:
-#      pool: DCT Build Pool
-#      environmentName: MO
-#      azureSubscription: DCOL-MO-VSTS
-#      storageAccountName: dcolmostoragemonitorweu
-#      workspaceResourceId: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourcegroups/dcol-mo-ops-weu/providers/microsoft.operationalinsights/workspaces/dcol-mo-oms-weu
-#      dasActionGroupWebhookUri1: $(dasActionGroupWebhookUri)
-#      mgDasActionGroupWebhookUri1: $(mgDasActionGroupWebhookUri)
-#      smartDetectionActionGroupId: /subscriptions/2F538936-0715-4DFD-83DA-6B8C5A399D6A/resourceGroups/DCOL-MO-ServiceFabric-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
-#      serviceBusActionGroupId: /subscriptions/2F538936-0715-4DFD-83DA-6B8C5A399D6A/resourceGroups/DCOL-MO-ServiceFabricDAS-WEU/providers/microsoft.insights/actionGroups/DCOL-MO-dasalerts-actiongroup-WEU
-#      dasAlertSlackChannelUri: $(SlackChannelUri)
-#      mngAlertSlackChannelUri: $(SlackChannelUri2)
-#      appInsightsApiKey: $(AppInsightsAuthValue)
+- stage: Deploy_MO
+  dependsOn: 
+  - Publish_SFClusterAlerts
+  - Deploy_SDW
+  displayName: Deploy to MO
+  variables:
+  - name: tagEnvironment
+    value: Dev/Test
+  - group: DCOL-MO - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: MO
+      azureSubscription: DCOL-MO-VSTS
+      metricAlerts_VM_CPU_Alert_name: VM-MO-CPU-Alert
+      virtualMachineScaleSets_monitor_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/dcol-mo-servicefabricdas-weu/providers/Microsoft.Compute/virtualMachineScaleSets/monitor
+      actionGroups_dcol_dasalerts_actiongroup_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/DCOL-MO-ServiceFabricDAS-WEU/providers/microsoft.insights/actionGroups/DCOL-MO-dasalerts-actiongroup-WEU
+      metricAlerts_VM_Available_Memory_Alert_name: VM-MO-Available-Memory-Alert
+      actiongroups_dcol_dasalerts_actiongroup_weu_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/DCOL-MO-ServiceFabricDAS-WEU/providers/microsoft.insights/actiongroups/DCOL-MO-mgdasalerts-actiongroup-WEU
+      metricAlerts_VM_Availability_Alert_name: VM-MO-Availability-Alert
+      actionGroups_SFCluster_VMAlerts_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/DCOL-MO-ServiceFabricDas-WEU/providers/microsoft.insights/actionGroups/SFCluster-MO-VMAlerts
 
 #- stage: Deploy_PP
 #  dependsOn: 

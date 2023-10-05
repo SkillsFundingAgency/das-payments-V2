@@ -8,13 +8,13 @@
         "virtualMachineScaleSets_monitor_externalid": {
             "value": null
         },
-        "actionGroups_dcol_sdw_dasalerts_actiongroup_externalid": {
+        "actionGroups_dcol_dasalerts_actiongroup_externalid": {
             "value": null
         },
         "metricAlerts_VM_Available_Memory_Alert_name": {
             "value": null
         },
-        "actiongroups_dcol_sdw_dasalerts_actiongroup_weu_externalid": {
+        "actiongroups_dcol_dasalerts_actiongroup_weu_externalid": {
             "value": null
         },
          "metricAlerts_VM_Availability_Alert_name": {
@@ -23,6 +23,7 @@
         "actionGroups_SFCluster_VMAlerts_externalid": {
             "value": null
         }
+        
     }
 }
 

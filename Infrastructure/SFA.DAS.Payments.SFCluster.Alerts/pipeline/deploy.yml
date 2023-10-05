@@ -5,9 +5,9 @@ parameters:
   environmentName:
   metricAlerts_VM_CPU_Alert_name:
   virtualMachineScaleSets_monitor_externalid:
-  actionGroups_dcol_sdw_dasalerts_actiongroup_externalid:
+  actionGroups_dcol_dasalerts_actiongroup_externalid:
   metricAlerts_VM_Available_Memory_Alert_name:
-  actiongroups_dcol_sdw_dasalerts_actiongroup_weu_externalid:
+  actiongroups_dcol_dasalerts_actiongroup_weu_externalid:
   metricAlerts_VM_Availability_Alert_name:
   actionGroups_SFCluster_VMAlerts_externalid:
   
@@ -27,12 +27,12 @@ jobs:
       value: '${{ parameters.metricAlerts_VM_CPU_Alert_name }}'
     - name: virtualMachineScaleSets_monitor_externalid
       value: ${{ parameters.virtualMachineScaleSets_monitor_externalid }}
-    - name: actionGroups_dcol_sdw_dasalerts_actiongroup_externalid
-      value: ${{ parameters.actionGroups_dcol_sdw_dasalerts_actiongroup_externalid }}
+    - name: actionGroups_dcol_dasalerts_actiongroup_externalid
+      value: ${{ parameters.actionGroups_dcol_dasalerts_actiongroup_externalid }}
     - name: metricAlerts_VM_Available_Memory_Alert_name
       value: ${{ parameters.metricAlerts_VM_Available_Memory_Alert_name }}
-    - name: actiongroups_dcol_sdw_dasalerts_actiongroup_weu_externalid
-      value: ${{ parameters.actiongroups_dcol_sdw_dasalerts_actiongroup_weu_externalid }}
+    - name: actiongroups_dcol_dasalerts_actiongroup_weu_externalid
+      value: ${{ parameters.actiongroups_dcol_dasalerts_actiongroup_weu_externalid }}
     - name: metricAlerts_VM_Availability_Alert_name
       value: ${{ parameters.metricAlerts_VM_Availability_Alert_name }}
     - name: actionGroups_SFCluster_VMAlerts_externalid
@@ -70,5 +70,5 @@ jobs:
             location: '${{ parameters.location }}'
             csmFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.SFCluster.Alerts/azure/template.json'
             csmParametersFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.SFCluster.Alerts/azure/parameters.json'
-            overrideParameters: '-metricAlerts_VM_CPU_Alert_name "${{ variables.metricAlerts_VM_CPU_Alert_name }}" -virtualMachineScaleSets_monitor_externalid "${{ variables.virtualMachineScaleSets_monitor_externalid }}" -actionGroups_dcol_sdw_dasalerts_actiongroup_externalid "${{ variables.actionGroups_dcol_sdw_dasalerts_actiongroup_externalid }}" -metricAlerts_VM_Available_Memory_Alert_name "${{ variables.metricAlerts_VM_Available_Memory_Alert_name }}" -actiongroups_dcol_sdw_dasalerts_actiongroup_weu_externalid "${{ variables.actiongroups_dcol_sdw_dasalerts_actiongroup_weu_externalid }}" -metricAlerts_VM_Availability_Alert_name "${{ parameters.metricAlerts_VM_Availability_Alert_name }}" -actionGroups_SFCluster_VMAlerts_externalid "${{ variables.actionGroups_SFCluster_VMAlerts_externalid }}"'
+            overrideParameters: '-metricAlerts_VM_CPU_Alert_name "${{ variables.metricAlerts_VM_CPU_Alert_name }}" -virtualMachineScaleSets_monitor_externalid "${{ variables.virtualMachineScaleSets_monitor_externalid }}" -actionGroups_dcol_dasalerts_actiongroup_externalid "${{ variables.actionGroups_dcol_dasalerts_actiongroup_externalid }}" -metricAlerts_VM_Available_Memory_Alert_name "${{ variables.metricAlerts_VM_Available_Memory_Alert_name }}" -actiongroups_dcol_dasalerts_actiongroup_weu_externalid "${{ variables.actiongroups_dcol_dasalerts_actiongroup_weu_externalid }}" -metricAlerts_VM_Availability_Alert_name "${{ parameters.metricAlerts_VM_Availability_Alert_name }}" -actionGroups_SFCluster_VMAlerts_externalid "${{ variables.actionGroups_SFCluster_VMAlerts_externalid }}"'
             deploymentOutputs: armoutputs

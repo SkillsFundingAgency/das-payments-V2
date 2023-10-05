@@ -10,7 +10,7 @@
             "defaultValue": "/subscriptions/4ff47917-ac4e-432a-b314-a6525434afcb/resourceGroups/DCOL-SDW-ServiceFabricDas-WEU/providers/Microsoft.Compute/virtualMachineScaleSets/monitor",
             "type": "String"
         },
-        "actionGroups_dcol_sdw_dasalerts_actiongroup_externalid": {
+        "actionGroups_dcol_dasalerts_actiongroup_externalid": {
             "defaultValue": "/subscriptions/4FF47917-AC4E-432A-B314-A6525434AFCB/resourceGroups/dcol-sdw-ops-weu/providers/microsoft.insights/actionGroups/dcol-sdw-dasalerts-actiongroup",
             "type": "String"
         },
@@ -18,7 +18,7 @@
             "defaultValue": "VM-Available-Memory-Alert",
             "type": "String"
         },
-        "actiongroups_dcol_sdw_dasalerts_actiongroup_weu_externalid": {
+        "actiongroups_dcol_dasalerts_actiongroup_weu_externalid": {
             "defaultValue": "/subscriptions/4ff47917-ac4e-432a-b314-a6525434afcb/resourceGroups/dcol-sdw-servicefabricdas-weu/providers/microsoft.insights/actiongroups/dcol-sdw-dasalerts-actiongroup-weu",
             "type": "String"
         },
@@ -72,7 +72,7 @@
                 "targetResourceRegion": "westeurope",
                 "actions": [
                     {
-                        "actionGroupId": "[parameters('actionGroups_dcol_sdw_dasalerts_actiongroup_externalid')]",
+                        "actionGroupId": "[parameters('actionGroups_dcol_dasalerts_actiongroup_externalid')]",
                         "webHookProperties": {}
                     }
                 ]
@@ -116,7 +116,7 @@
                 "targetResourceRegion": "westeurope",
                 "actions": [
                     {
-                        "actionGroupId": "[parameters('actiongroups_dcol_sdw_dasalerts_actiongroup_weu_externalid')]",
+                        "actionGroupId": "[parameters('actiongroups_dcol_dasalerts_actiongroup_weu_externalid')]",
                         "webHookProperties": {}
                     }
                 ]
@@ -160,7 +160,7 @@
                 "targetResourceRegion": "westeurope",
                 "actions": [
                     {
-                        "actionGroupId": "[parameters('actionGroups_DCOL_SDW_dasalerts_actiongroup_WEU_externalid')]",
+                        "actionGroupId": "[parameters('actionGroups_DCOL_dasalerts_actiongroup_WEU_externalid')]",
                         "webHookProperties": {}
                     },
                     {
