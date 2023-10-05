@@ -143,9 +143,9 @@ stages:
       azureSubscription: DCOL-MO-VSTS
       metricAlerts_VM_CPU_Alert_name: VM-MO-CPU-Alert
       virtualMachineScaleSets_monitor_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/dcol-mo-servicefabricdas-weu/providers/Microsoft.Compute/virtualMachineScaleSets/monitor
-      actionGroups_dcol_dasalerts_actiongroup_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/DCOL-MO-ServiceFabricDAS-WEU/providers/microsoft.insights/actionGroups/DCOL-MO-dasalerts-actiongroup-WEU
+      actionGroups_dcol_dasalerts_actiongroup_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/DCOL-MO-ServiceFabricDas-WEU/providers/microsoft.insights/actionGroups/SFCluster-MO-VMAlerts
       metricAlerts_VM_Available_Memory_Alert_name: VM-MO-Available-Memory-Alert
-      actiongroups_dcol_dasalerts_actiongroup_weu_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/DCOL-MO-ServiceFabricDAS-WEU/providers/microsoft.insights/actiongroups/DCOL-MO-mgdasalerts-actiongroup-WEU
+      actiongroups_dcol_dasalerts_actiongroup_weu_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/DCOL-MO-ServiceFabricDas-WEU/providers/microsoft.insights/actionGroups/SFCluster-MO-VMAlerts
       metricAlerts_VM_Availability_Alert_name: VM-MO-Availability-Alert
       actionGroups_SFCluster_VMAlerts_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/DCOL-MO-ServiceFabricDas-WEU/providers/microsoft.insights/actionGroups/SFCluster-MO-VMAlerts
 
