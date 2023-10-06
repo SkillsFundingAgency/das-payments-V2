@@ -135,6 +135,7 @@ stages:
   - name: tagEnvironment
     value: Dev/Test
   - group: DCOL-MO - Environment Key Vault Secrets
+  - group: Common - tags MO
   jobs:
   - template: pipeline/deploy.yml
     parameters:
