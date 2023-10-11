@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Services
+namespace SFA.DAS.Payments.Slack.Services
 {
     public interface ISlackService
     {

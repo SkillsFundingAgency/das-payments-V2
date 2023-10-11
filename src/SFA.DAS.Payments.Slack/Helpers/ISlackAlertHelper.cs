@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
+namespace SFA.DAS.Payments.Slack.Helpers
 {
     public interface ISlackAlertHelper
     {
-        public string GetEmoji(string severity);
+        string GetEmoji(string severity);
 
-        public List<object> BuildSlackPayload(string alertEmoji,
+        List<object> BuildSlackPayload(string alertEmoji,
                                               DateTime timestamp,
                                               string jobId,
                                               string academicYear,
@@ -15,17 +15,17 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
                                               string alertTitle,
                                               string appInsightsSearchResultsUiLink);
 
-        public List<object> BuildSlackPayload(string alertEmoji,
+        List<object> BuildSlackPayload(string alertEmoji,
                                               DateTime timestamp,
                                               string jobId,
                                               string academicYear,
                                               string collectionPeriod,
                                               string alertTitle);
 
-        public Dictionary<string, string> ExtractAlertVariables(dynamic customMeasurements, dynamic customDimensions, DateTime timestamp);
+        Dictionary<string, string> ExtractAlertVariables(dynamic customMeasurements, dynamic customDimensions, DateTime timestamp);
 
-        public string GetSlackAlertTitle(string alertTitleFormat, Dictionary<string, string> alertVariables);
+        string GetSlackAlertTitle(string alertTitleFormat, Dictionary<string, string> alertVariables);
 
-        public string GetSlackAlertText(string alertTextFormat, Dictionary<string, string> alertVariables);
+        string GetSlackAlertText(string alertTextFormat, Dictionary<string, string> alertVariables);
     }
 }

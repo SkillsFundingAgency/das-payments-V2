@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers;
-using SFA.DAS.Payments.Monitoring.Alerts.Function.JsonHelpers;
-using SFA.DAS.Payments.Monitoring.Alerts.Function.TypedClients;
+using SFA.DAS.Payments.Slack.Helpers;
+using SFA.DAS.Payments.Slack.JsonHelpers;
+using SFA.DAS.Payments.Slack.TypedClients;
 
-namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Services
+namespace SFA.DAS.Payments.Slack.Services
 {
     public class SlackService : ISlackService
     {

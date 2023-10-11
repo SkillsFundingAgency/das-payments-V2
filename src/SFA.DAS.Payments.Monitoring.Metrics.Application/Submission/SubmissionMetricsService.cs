@@ -28,6 +28,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         private readonly ISubmissionJobsRepository submissionJobsRepository;
         private readonly ITelemetry telemetry;
         private readonly IConfigurationHelper configurationHelper;
+        private readonly ISlackService slackService;
 
         public SubmissionMetricsService(IPaymentLogger logger, ISubmissionSummaryFactory submissionSummaryFactory, IDcMetricsDataContextFactory dcMetricsDataContextFactory, ISubmissionMetricsRepository submissionRepository, ITelemetry telemetry, ISubmissionJobsRepository submissionJobsRepository, IConfigurationHelper configurationHelper)
         {

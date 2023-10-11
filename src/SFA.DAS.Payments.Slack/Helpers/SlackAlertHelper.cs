@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
+namespace SFA.DAS.Payments.Slack.Helpers
 {
     public class SlackAlertHelper : ISlackAlertHelper
     {

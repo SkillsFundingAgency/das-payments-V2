@@ -389,6 +389,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{BDD16D67-A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests", "SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests\SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.csproj", "{BA7515D8-A0E2-488D-854B-E4BA56ED8875}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Slack", "SFA.DAS.Payments.Slack\SFA.DAS.Payments.Slack.csproj", "{A175E092-6468-4680-B967-609F0A64DBF0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1575,6 +1577,14 @@ Global
 		{BA7515D8-A0E2-488D-854B-E4BA56ED8875}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BA7515D8-A0E2-488D-854B-E4BA56ED8875}.Release|x64.ActiveCfg = Release|Any CPU
 		{BA7515D8-A0E2-488D-854B-E4BA56ED8875}.Release|x64.Build.0 = Release|Any CPU
+		{A175E092-6468-4680-B967-609F0A64DBF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A175E092-6468-4680-B967-609F0A64DBF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A175E092-6468-4680-B967-609F0A64DBF0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A175E092-6468-4680-B967-609F0A64DBF0}.Debug|x64.Build.0 = Debug|Any CPU
+		{A175E092-6468-4680-B967-609F0A64DBF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A175E092-6468-4680-B967-609F0A64DBF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A175E092-6468-4680-B967-609F0A64DBF0}.Release|x64.ActiveCfg = Release|Any CPU
+		{A175E092-6468-4680-B967-609F0A64DBF0}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
