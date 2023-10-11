@@ -47,43 +47,6 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
             };
         }
 
-        public List<object> BuildSlackPayload(string alertEmoji,
-                                              DateTime timestamp,
-                                              string jobId,
-                                              string academicYear,
-                                              string collectionPeriod,
-                                              string alertTitle)
-        {
-            return new List<object>
-            {
-                new
-                {
-                    type ="header",
-                    text = new
-                    {
-                        type= "plain_text",
-                        text = $"{alertEmoji} {alertTitle}."
-                    }
-                },
-                new
-                {
-                    type = "section",
-                    fields = new List<object>
-                    {
-                        new { type = "mrkdwn", text = "*Timestamp*" },
-                        new { type = "mrkdwn", text = "*Job*" },
-                        new { type = "plain_text", text = timestamp.ToString("f") },
-                        new { type = "plain_text", text = jobId },
-                        new { type = "mrkdwn", text = "*Academic Year*" },
-                        new { type = "mrkdwn", text = "*Collection Period*" },
-                        new { type = "plain_text", text = academicYear },
-                        new { type = "plain_text", text = collectionPeriod },
-                    }
-                }
-            };
-        }
-
-
         public string GetEmoji(string severity)
         {
             return severity switch

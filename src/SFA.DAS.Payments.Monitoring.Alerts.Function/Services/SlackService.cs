@@ -52,27 +52,6 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Services
             }
         }
 
-        public async Task PostSlackAlert(Dictionary<string, string> alertVariables,
-                                          string slackChannelUri,
-                                          string alertDescription,
-                                          string alertEmoji,
-                                          DateTime timestamp,
-                                          string alertTitle) 
-        {
-            var slackPayload = new
-            {
-                text = alertTitle,
-                blocks = _slackAlertHelper.BuildSlackPayload(alertEmoji,
-                    timestamp,
-                    alertVariables["JobId"],
-                    alertVariables["AcademicYear"],
-                    alertVariables["CollectionPeriod"],
-                    alertTitle)
-            };
-
-            await _slackClient.PostAsJsonAsync(slackChannelUri, slackPayload);
-        }
-
         private async Task PostSlackAlert(Dictionary<string, string> alertVariables,
                                           string slackChannelUri,
                                           string alertDescription,

@@ -15,13 +15,6 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
                                               string alertTitle,
                                               string appInsightsSearchResultsUiLink);
 
-        public List<object> BuildSlackPayload(string alertEmoji,
-                                              DateTime timestamp,
-                                              string jobId,
-                                              string academicYear,
-                                              string collectionPeriod,
-                                              string alertTitle);
-
         public Dictionary<string, string> ExtractAlertVariables(dynamic customMeasurements, dynamic customDimensions, DateTime timestamp);
 
         public string GetSlackAlertTitle(string alertTitleFormat, Dictionary<string, string> alertVariables);
