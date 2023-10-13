@@ -142,12 +142,12 @@ stages:
       pool: DCT Build Pool
       environmentName: MO
       azureSubscription: DCOL-MO-VSTS
-      metricAlerts_VM_CPU_Alert_name: VM-MO-CPU-Alert
+      metricAlerts_VM_CPU_Alert_name: VM-CPU-Alert-MO
       virtualMachineScaleSets_monitor_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/dcol-mo-servicefabricdas-weu/providers/Microsoft.Compute/virtualMachineScaleSets/monitor
       actionGroups_dcol_dasalerts_actiongroup_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/DCOL-MO-OPS-WEU/providers/microsoft.insights/actionGroups/SFA-FCS-MO-PV2
-      metricAlerts_VM_Available_Memory_Alert_name: VM-MO-Available-Memory-Alert
+      metricAlerts_VM_Available_Memory_Alert_name: VM-Available-Memory-Alert-MO
       actiongroups_dcol_dasalerts_actiongroup_weu_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/DCOL-MO-OPS-WEU/providers/microsoft.insights/actionGroups/SFA-FCS-MO-PV2
-      metricAlerts_VM_Availability_Alert_name: VM-MO-Availability-Alert
+      metricAlerts_VM_Availability_Alert_name: VM-Availability-Alert-MO
       actionGroups_SFCluster_VMAlerts_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/DCOL-MO-OPS-WEU/providers/microsoft.insights/actionGroups/SFA-FCS-MO-PV2
 
 #- stage: Deploy_PP
@@ -175,27 +175,25 @@ stages:
 #      mngAlertSlackChannelUri: $(SlackChannelUri2)
 #      appInsightsApiKey: $(AppInsightsAuthValue)
 
-#- stage: Deploy_PD
-#  dependsOn: 
-#  - Publish_MonitoringMetrics
-#  - Deploy_PP
-#  displayName: Deploy to PD
-#  variables:
-#  - name: tagEnvironment
-#    value: Production
-#  - group: DCOL-PD - Environment Key Vault Secrets
-#  jobs:
-#  - template: pipeline/deploy.yml
-#    parameters:
-#      pool: DCT Build Pool
-#      environmentName: PD
-#      azureSubscription: DCOLPDVSTS
-#      storageAccountName: dcolpdstoragemonitorweu
-#      workspaceResourceId: /subscriptions/6c93f7dc-6c36-4ea6-8de3-3f4574f88027/resourcegroups/dcol-pd-ops-weu/providers/microsoft.operationalinsights/workspaces/dcol-pd-oms-weu
-#      dasActionGroupWebhookUri1: $(dasActionGroupWebhookUri)
-#      mgDasActionGroupWebhookUri1: $(mgDasActionGroupWebhookUri)
-#      smartDetectionActionGroupId: /subscriptions/6C93F7DC-6C36-4EA6-8DE3-3F4574F88027/resourceGroups/DCOL-PD-AppSrvEnv-WEU/providers/microsoft.insights/actionGroups/application%20insights%20smart%20detection
-#      serviceBusActionGroupId: /subscriptions/6C93F7DC-6C36-4EA6-8DE3-3F4574F88027/resourceGroups/dcol-pd-ops-weu/providers/microsoft.insights/actionGroups/DCOL-PD-ServiceBus-DAS-ActionGroup
-#      dasAlertSlackChannelUri: $(SlackChannelUri)
-#      mngAlertSlackChannelUri: $(SlackChannelUri2)
-#      appInsightsApiKey: $(AppInsightsAuthValue)
+- stage: Deploy_PD
+  dependsOn: 
+  - Publish_MonitoringMetrics
+  - Deploy_MO
+  displayName: Deploy to PD
+  variables:
+  - name: tagEnvironment
+    value: Production
+  - group: DCOL-PD - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: PD
+      azureSubscription: DCOLPDVSTS
+      metricAlerts_VM_CPU_Alert_name: VM-CPU-Alert-PD
+      virtualMachineScaleSets_monitor_externalid: /subscriptions/6C93F7DC-6C36-4EA6-8DE3-3F4574F88027/DCOL-PD-ServiceFabricDas-WEU/providers/Microsoft.Compute/virtualMachineScaleSets/monitor
+      actionGroups_dcol_dasalerts_actiongroup_externalid: /subscriptions/6C93F7DC-6C36-4EA6-8DE3-3F4574F88027/resourceGroups/DCOL-PD-ServiceFabricDAS-WEU/providers/microsoft.insights/actionGroups/DCOL-PD-dasalerts-actiongroup-WEU
+      metricAlerts_VM_Available_Memory_Alert_name: VM-Available-Memory-Alert-PD
+      actiongroups_dcol_dasalerts_actiongroup_weu_externalid: /subscriptions/6C93F7DC-6C36-4EA6-8DE3-3F4574F88027/resourceGroups/DCOL-PD-ServiceFabricDAS-WEU/providers/microsoft.insights/actionGroups/DCOL-PD-dasalerts-actiongroup-WEU
+      metricAlerts_VM_Availability_Alert_name: VM-Availability-Alert-PD
+      actionGroups_SFCluster_VMAlerts_externalid: /subscriptions/6C93F7DC-6C36-4EA6-8DE3-3F4574F88027/resourceGroups/DCOL-PD-ServiceFabricDAS-WEU/providers/microsoft.insights/actionGroups/DCOL-PD-dasalerts-actiongroup-WEU
