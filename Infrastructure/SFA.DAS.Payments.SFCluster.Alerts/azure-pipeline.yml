@@ -191,7 +191,7 @@ stages:
       environmentName: PD
       azureSubscription: DCOLPDVSTS
       metricAlerts_VM_CPU_Alert_name: VM-CPU-Alert-PD
-      virtualMachineScaleSets_monitor_externalid: /subscriptions/6C93F7DC-6C36-4EA6-8DE3-3F4574F88027/DCOL-PD-ServiceFabricDas-WEU/providers/Microsoft.Compute/virtualMachineScaleSets/monitor
+      virtualMachineScaleSets_monitor_externalid: /subscriptions/6c93f7dc-6c36-4ea6-8de3-3f4574f88027/resourceGroups/DCOL-PD-ServiceFabricDas-WEU/providers/Microsoft.Compute/virtualMachineScaleSets/monitor
       actionGroups_dcol_dasalerts_actiongroup_externalid: /subscriptions/6C93F7DC-6C36-4EA6-8DE3-3F4574F88027/resourceGroups/DCOL-PD-ServiceFabricDAS-WEU/providers/microsoft.insights/actionGroups/DCOL-PD-dasalerts-actiongroup-WEU
       metricAlerts_VM_Available_Memory_Alert_name: VM-Available-Memory-Alert-PD
       actiongroups_dcol_dasalerts_actiongroup_weu_externalid: /subscriptions/6C93F7DC-6C36-4EA6-8DE3-3F4574F88027/resourceGroups/DCOL-PD-ServiceFabricDAS-WEU/providers/microsoft.insights/actionGroups/DCOL-PD-dasalerts-actiongroup-WEU
