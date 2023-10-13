@@ -177,7 +177,7 @@ stages:
 
 - stage: Deploy_PD
   dependsOn: 
-  - Publish_MonitoringMetrics
+  - Publish_SFClusterAlerts
   - Deploy_MO
   displayName: Deploy to PD
   variables:
