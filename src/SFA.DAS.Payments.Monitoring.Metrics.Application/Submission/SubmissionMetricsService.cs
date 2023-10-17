@@ -78,9 +78,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
                 if (!dataTask.IsCompleted)
                 {
-                    // raise Slack alert
-
-                    throw new InvalidOperationException(
+                    throw new SubmissionMetricsTimeoutException(
                         $"Took too long to get data for the submission metrics. Ukprn: {ukprn}, job: {jobId}, Collection period: {collectionPeriod}");
                 }
 
