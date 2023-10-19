@@ -21,7 +21,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
         private Fixture _fixture;
         private TestableIncomingLogicalMessageContext _context;
         private GenerateSubmissionSummary _message;
-        private SubmissionMetricsGenerationTimeoutBehaviour _sut;
+        private SubmissionMetricsGenerationFailureBehaviour _sut;
         private AutoMock moqer;
         private Mock<ITelemetry> _telemetry;
 
@@ -41,13 +41,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             _telemetry.Setup(x => x.TrackEvent(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(),
                 It.IsAny<Dictionary<string, double>>()));
 
-            _sut = new SubmissionMetricsGenerationTimeoutBehaviour(_telemetry.Object);
+            _sut = new SubmissionMetricsGenerationFailureBehaviour(_telemetry.Object);
         }
 
         [Test]
-        public async Task Handles_Submission_Metrics_Timeout_Exception()
+        public async Task Handles_Submission_Metrics_Failure_Exception()
         {
-            Func<Task> next = () => throw new SubmissionMetricsTimeoutException("Timed out");
+            Func<Task> next = () => throw new SubmissionMetricsGenerationException("Metrics generation failed");
 
             await _sut.Invoke(_context, next);
 

@@ -8,11 +8,11 @@ using SFA.DAS.Payments.Monitoring.Metrics.Messages.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Messaging
 {
-    public class SubmissionMetricsGenerationTimeoutBehaviour : Behavior<IIncomingLogicalMessageContext>
+    public class SubmissionMetricsGenerationFailureBehaviour : Behavior<IIncomingLogicalMessageContext>
     {
         private readonly ITelemetry telemetry;
 
-        public SubmissionMetricsGenerationTimeoutBehaviour(ITelemetry telemetry)
+        public SubmissionMetricsGenerationFailureBehaviour(ITelemetry telemetry)
         {
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
         }
@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Messagi
             {
                 await next().ConfigureAwait(false);
             }
-            catch (SubmissionMetricsTimeoutException timeoutException)
+            catch (SubmissionMetricsGenerationException timeoutException)
             {
                 if (context.Message?.MessageType == typeof(GenerateSubmissionSummary))
                 {

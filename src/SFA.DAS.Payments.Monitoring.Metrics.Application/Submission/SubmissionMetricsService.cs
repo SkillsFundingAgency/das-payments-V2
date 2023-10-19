@@ -78,7 +78,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
 
                 if (!dataTask.IsCompleted)
                 {
-                    throw new SubmissionMetricsTimeoutException(
+                    throw new SubmissionMetricsGenerationException(
                         $"Took too long to get data for the submission metrics. Ukprn: {ukprn}, job: {jobId}, Collection period: {collectionPeriod}");
                 }
 

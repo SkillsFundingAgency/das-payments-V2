@@ -6,7 +6,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Messagi
     {
         public void Customize(EndpointConfiguration endpointConfiguration)
         {
-            endpointConfiguration.Pipeline.Register(typeof(SubmissionMetricsGenerationTimeoutBehaviour), "Logs telemetry when submission metrics generation times out");
+            endpointConfiguration.Pipeline.Register(typeof(SubmissionMetricsGenerationFailureBehaviour), "Logs telemetry on submission metrics generation failure");
         }
     }
 }
