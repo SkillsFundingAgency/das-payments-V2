@@ -28,7 +28,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Messagi
                 if (context.Message?.MessageType == typeof(GenerateSubmissionSummary))
                 {
                     var message = context.Message.Instance as GenerateSubmissionSummary;
-                    var errorMessage = $"Submission metrics generation timed out for UKPRN {message.Ukprn}";
+                    var errorMessage = $"Submission metrics generation failed for Provider: {message.Ukprn}";
 
                     var properties = new Dictionary<string, string>
                     {

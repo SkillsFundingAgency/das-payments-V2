@@ -51,7 +51,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
 
             await _sut.Invoke(_context, next);
 
-            var expectedMessage = $"Submission metrics generation timed out for UKPRN {_message.Ukprn}";
+            var expectedMessage = $"Submission metrics generation failed for Provider: {_message.Ukprn}";
             _telemetry.Verify(x => x.TrackEvent(expectedMessage, 
                 It.IsAny<Dictionary<string, string>>(), 
                 It.IsAny<Dictionary<string, double>>()), Times.Once);
