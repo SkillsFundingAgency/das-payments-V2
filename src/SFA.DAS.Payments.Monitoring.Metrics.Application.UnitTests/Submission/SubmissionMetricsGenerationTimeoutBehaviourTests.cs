@@ -53,9 +53,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
 
             var expectedMessage = $"Submission metrics generation failed for Provider: {_message.Ukprn}";
             _telemetry.Verify(x => x.TrackEvent(expectedMessage, 
-                It.IsAny<Dictionary<string, string>>(), 
-                It.IsAny<Dictionary<string, double>>()), Times.Once);
-            _telemetry.Verify(x => x.TrackEvent(expectedMessage, 
                 It.Is<Dictionary<string, string>>(y => DictionaryContainsValues(y, _message)), 
                 It.IsAny<Dictionary<string,double>>()), Times.Once);
         }
