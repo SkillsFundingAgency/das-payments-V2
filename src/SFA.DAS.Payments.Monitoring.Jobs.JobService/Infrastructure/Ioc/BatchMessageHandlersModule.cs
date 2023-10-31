@@ -18,18 +18,18 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Infrastructure.Ioc
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register(c =>
-                {
-                    var appConfig = c.Resolve<IApplicationConfiguration>();
-                    var configHelper = c.Resolve<IConfigurationHelper>();
-                    return new  ServiceBusBatchCommunicationListener(configHelper.GetConnectionString("MonitoringServiceBusConnectionString"),
-                        appConfig.EndpointName,
-                        appConfig.FailedMessagesQueue, 
-                        c.Resolve<IPaymentLogger>(),
-                        c.Resolve<IContainerScopeFactory>());
-                })
-                .As<IServiceBusBatchCommunicationListener>()
-                .SingleInstance();
+            //builder.Register(c =>
+            //    {
+            //        var appConfig = c.Resolve<IApplicationConfiguration>();
+            //        var configHelper = c.Resolve<IConfigurationHelper>();
+            //        return new  ServiceBusBatchCommunicationListener(configHelper.GetConnectionString("MonitoringServiceBusConnectionString"),
+            //            appConfig.EndpointName,
+            //            appConfig.FailedMessagesQueue, 
+            //            c.Resolve<IPaymentLogger>(),
+            //            c.Resolve<IContainerScopeFactory>());
+            //    })
+            //    .As<IServiceBusBatchCommunicationListener>()
+            //    .SingleInstance();
 
             builder.Register(c =>
                 {

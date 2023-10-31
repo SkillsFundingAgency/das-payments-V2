@@ -62,13 +62,14 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         [AfterScenario]
         public async Task ClearTestData()
         {
-            await ClearTestJobs();
-            ClearTestSubmissionMetrics();
+            //await ClearTestJobs();
+            //ClearTestSubmissionMetrics();
         }
 
         private async Task ClearTestJobs()
         {
-            DataContext.Jobs.Remove(Job);
+            //if (Context.ContainsKey(typeof(JobModel).FullName))
+            //    DataContext.Jobs.Remove(Job);
 
             if (jobIdToBeDeleted.Any())
             {
