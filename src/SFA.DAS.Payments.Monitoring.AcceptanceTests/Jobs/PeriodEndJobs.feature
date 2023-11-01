@@ -101,3 +101,11 @@ Scenario: Provider Period End Start Job Completes if latest submissions is takin
 	And when the final messages for the job are successfully processed for the submission job
 	And the job monitoring service should update the status of the job to show that it has completed
 	And the monitoring service should notify other services that the period end start job has completed successfully
+
+Scenario: Provider Period End ILR Start Job Completed
+	Given the period end service has received a period end Ilr reprocessing job
+	When the period end service notifies the job monitoring service to record the Ilr reprocessing job
+	And the submission summary metrics are recorded
+	And the final messages for the job are successfully processed
+	Then the job monitoring service should update the status of the job to show that it has completed	
+	And the monitoring service should notify other services that the period end start job has completed successfully
