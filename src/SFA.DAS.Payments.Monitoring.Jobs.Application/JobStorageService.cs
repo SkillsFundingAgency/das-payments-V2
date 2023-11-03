@@ -122,7 +122,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
         {
             var job = await GetJob(jobId, cancellationToken);
             if (job == null)
-                throw new InvalidOperationException($"Job not stored in the cache. Job: {jobId}");
+                throw new InvalidOperationException($"Cannot store DC Jobs Status, DC Job: {jobId} not found in the cache.");
 
             job.DcJobSucceeded = succeeded;
             job.DcJobEndTime = DateTimeOffset.UtcNow;

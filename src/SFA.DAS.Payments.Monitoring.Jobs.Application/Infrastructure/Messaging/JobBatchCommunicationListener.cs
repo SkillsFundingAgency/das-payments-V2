@@ -65,7 +65,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Messaging
         protected virtual async Task ListenForMessages(CancellationToken cancellationToken)
         {
             await EnsureQueue(EndpointName).ConfigureAwait(false);
-            await EnsureSubscriptions(EndpointName, cancellationToken).ConfigureAwait(false);
+            //await EnsureSubscriptions(EndpointName, cancellationToken).ConfigureAwait(false);
             await EnsureQueue(errorQueueName).ConfigureAwait(false);
             try
             {
@@ -283,8 +283,18 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Messaging
             try
             {
                 var messagesByType = messages.GroupBy(message => message.Message.GetType(), message => message);
-                await Task.WhenAll(messagesByType.Select(type =>
-                    ProcessMessages(jobId, type.Key, type.Select(received => received).ToList(), cancellationToken)));
+
+                //process job message types sequentially to avoid clashes on access to same reliable cache for current job 
+                foreach (var messageBatch in messagesByType)
+                {
+                    //TODO: check if the messages have already expired before processing
+
+                    await ProcessMessages(jobId, messageBatch.Key, messageBatch.Select(received => received).ToList(),
+                        cancellationToken);
+                }
+                
+                //await Task.WhenAll(messagesByType.Select(type =>
+                //    ProcessMessages(jobId, type.Key, type.Select(received => received).ToList(), cancellationToken)));
 
             }
             catch (Exception e)
@@ -358,6 +368,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Messaging
 
                         var listType = typeof(List<>).MakeGenericType(groupType);
                         var list = (IList)Activator.CreateInstance(listType);
+
                         messages.ForEach(message => list.Add(message.Message));
 
                         var handlerStopwatch = Stopwatch.StartNew();
