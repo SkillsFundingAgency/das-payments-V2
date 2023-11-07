@@ -10,6 +10,9 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
                                               string jobId,
                                               string academicYear,
                                               string collectionPeriod,
+                                              string collectionPeriodPayments,
+                                              string yearToDatePayments,
+                                              string numberOfLearners,
                                               string alertTitle,
                                               string appInsightsSearchResultsUiLink)
         {
@@ -40,8 +43,14 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
                         new { type = "plain_text", text = jobId },
                         new { type = "mrkdwn", text = "*Academic Year*" },
                         new { type = "mrkdwn", text = "*Collection Period*" },
+                        new { type = "mrkdwn", text = "*Previous Payments Year To Date*" },
+                        new { type = "mrkdwn", text = "*Collection Period Payments*" },
+                        new { type = "mrkdwn", text = "*In Learning*" },
                         new { type = "plain_text", text = academicYear },
                         new { type = "plain_text", text = collectionPeriod },
+                        new { type = "plain_text", text = yearToDatePayments },
+                        new { type = "plain_text", text = collectionPeriodPayments },
+                        new { type = "plain_text", text = numberOfLearners },
                     }
                 }
             };
@@ -95,7 +104,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
                                        customMeasurements["RequiredPaymentsTotal"].ToString() :
                                        string.Empty;
 
-            string colectionPeriodPayments = customMeasurements.ContainsKey("PaymentsTotal") ?
+            string collectionPeriodPayments = customMeasurements.ContainsKey("PaymentsTotal") ?
                                               customMeasurements["PaymentsTotal"].ToString() :
                                               string.Empty;
 
@@ -104,6 +113,10 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
                                             customMeasurements.ContainsKey("PaymentsYearToDateTotal") ?
                                             customMeasurements["PaymentsYearToDateTotal"].ToString() :
                                             string.Empty;
+
+            string numberOfLearners = customMeasurements.ContainsKey("InLearning") ?
+                                       customMeasurements["InLearning"].ToString() :
+                                       string.Empty;
 
             return new Dictionary<string, string>
             {
@@ -120,8 +133,9 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
                 { "DifferenceTotal", differenceTotal },
                 { "HeldBackCompletionPayments", heldBackCompletionPayments },
                 { "RequiredPayments", requiredPayments },
-                { "CollectionPeriodPayments", colectionPeriodPayments },
-                { "YearToDatePayments", yearToDatePayments }
+                { "CollectionPeriodPayments", collectionPeriodPayments },
+                { "YearToDatePayments", yearToDatePayments },
+                { "NumberOfLearners", numberOfLearners }
             };
         }
 

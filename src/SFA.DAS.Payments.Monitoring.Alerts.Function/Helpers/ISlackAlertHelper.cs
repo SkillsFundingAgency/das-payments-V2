@@ -12,6 +12,9 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
                                               string jobId,
                                               string academicYear,
                                               string collectionPeriod,
+                                              string collectionPeriodPayments,
+                                              string yearToDatePayments,
+                                              string numberOfLearners,
                                               string alertTitle,
                                               string appInsightsSearchResultsUiLink);
 
