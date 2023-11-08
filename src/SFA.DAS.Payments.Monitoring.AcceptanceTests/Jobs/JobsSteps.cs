@@ -740,6 +740,18 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 .ConfigureAwait(false);
         }
 
+
+        [Then(
+            @"the monitoring service should notify other services that the period end Ilr Reprocessing job has completed successfully")]
+        public async Task
+            ThenTheMonitoringServiceShouldNotifyOtherServicesThatThePeriodEndIlrReprocessingHasCompletedSuccessfully()
+        {
+            await WaitForIt(
+                    () => PeriodEndIlrReprocessingSuccessHandler.ReceivedEvents.Any(ev => ev.JobId == JobDetails.JobId),
+                    $"Failed to receive the period end Ilr reprocessing job succeeded event for job id: {JobDetails.JobId}")
+                .ConfigureAwait(false);
+        }
+
         [Then(
             @"the monitoring service should notify other services that the period end run job has completed successfully")]
         public async Task

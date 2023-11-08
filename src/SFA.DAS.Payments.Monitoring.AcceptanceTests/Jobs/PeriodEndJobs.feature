@@ -108,4 +108,4 @@ Scenario: Provider Period End ILR Start Job Completed
 	And the submission summary metrics are recorded
 	And the final messages for the job are successfully processed
 	Then the job monitoring service should update the status of the job to show that it has completed	
-	And the monitoring service should notify other services that the period end start job has completed successfully
+	And the monitoring service should notify other services that the period end Ilr Reprocessing job has completed successfully
