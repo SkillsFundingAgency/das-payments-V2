@@ -51,7 +51,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                             ProgType = 300,
                             PwayCode = 400,
                             LearnDelInitialFundLineType = "Funding Line Type",
-                            LearnStartDate = DateTime.Today.AddDays(-5)
+                            LearnStartDate = DateTime.Today.AddDays(-5),
+                            AgeAtProgStart = 16
                         },
                         LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValues>
                         {
@@ -72,7 +73,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                             ProgType = 300,
                             PwayCode = 400,
                             LearnDelInitialFundLineType = "Funding Line Type",
-                            LearnStartDate = DateTime.Today.AddDays(-10)
+                            LearnStartDate = DateTime.Today.AddDays(-10),
+                            AgeAtProgStart = 18
                         },
                         LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValues>
                         {
@@ -136,7 +138,8 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
                             FworkCode = 200,
                             ProgType = 300,
                             PwayCode = 400,
-                            LearnStartDate = DateTime.Today.AddDays(-10)
+                            LearnStartDate = DateTime.Today.AddDays(-10),
+                            AgeAtProgStart = 18
                         },
                         LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValues>
                         {
@@ -308,6 +311,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             earningEvent.Learner.ReferenceNumber.Should().Be(fm36Learner.LearnRefNumber);
         }
 
+
         [Test]
         public void Maps_Price_Episodes()
         {
@@ -447,6 +451,14 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             earningEvent.Should().NotBeNull();
             earningEvent.StartDate.Should().Be(DateTime.Today.AddDays(-5));
+        }
+
+        [Test]
+        public void Maps_Learner_Age_At_Start_Of_Apprenticeship()
+        {
+            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
+            earningEvent.Learner.Should().NotBeNull();
+            earningEvent.AgeAtStart.Should().Be(16);
         }
 
         [Test]

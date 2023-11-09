@@ -11,6 +11,7 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
         public virtual bool IsPayable => true;
         public decimal SfaContributionPercentage { get; set; }
         public DateTime StartDate { get; set; }
+        public int AgeAtStart { get; set; }
         public List<OnProgrammeEarning> OnProgrammeEarnings { get; set; }
         public List<IncentiveEarning> IncentiveEarnings { get; set; }
     }
