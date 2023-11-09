@@ -429,7 +429,6 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             await DataContext.SaveNewJob(jobModel);
         }
 
-        [Given(@"the earnings event service has received and successfully processed a provider earnings job")]
         [Given(@"the earnings event service has received and successfully processed a (.*) provider earnings job")]
         public async Task GivenTheEarningsEventServiceHasReceivedAndSuccessfullyProcessedAProviderEarningsJob(string jobSize)
         {
