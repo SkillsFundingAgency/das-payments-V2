@@ -41,7 +41,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(destinationMember => destinationMember.OnProgrammeEarnings, opt => opt.ResolveUsing<OnProgrammeEarningValueResolver>())
                 .ForMember(destinationMember => destinationMember.IncentiveEarnings, opt => opt.ResolveUsing<IncentiveEarningValueResolver>())
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.Aims.Min(aim => aim.LearningDeliveryValues.LearnStartDate)))
-                .ForMember(dest => dest.AgeAtStart, opt => opt.MapFrom(src => src.Aims.Select(aim => aim.LearningDeliveryValues.AgeAtProgStart).FirstOrDefault()))
+                .ForMember(dest => dest.AgeAtStart, opt => opt.MapFrom(src => src.Aims.Select(aim => aim.LearningDeliveryValues.AgeAtProgStart ?? 0).FirstOrDefault()))
                 .Ignore(dest => dest.SfaContributionPercentage)
                 ;
 

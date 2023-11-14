@@ -406,6 +406,7 @@
     <Compile Include="LearnerMutators\NonLevy\SmallEmployer\Framework403LearnerWithEHCPlanAndSmallEmployer.cs" />
     <Compile Include="LearnerMutators\Standard57Learner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Steps\PV2_3165_1_NonLevy16_240PercentConinvestmentStepDefinitions.cs" />
     <Compile Include="Steps\ApprovalsInterfaceSteps.cs" />
     <Compile Include="Steps\EarningEventsHelper.cs" />
     <Compile Include="Steps\EndToEndSteps.cs" />
@@ -2118,6 +2119,7 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>E2E -PV2-945 - Levy learner, Employer stops commitment before the day the course is completed, completion payment not paid .feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Five Percent Funding\PV2-3165-1 - NonLevy 16-24 0 percent Coninvestment.feature" />
     <None Include="Tests\Learner Change of Circumstances\PV2-2898 Levy learner, the course completion Date is changed, with a Balancing payment. Completion and Balancing is refunded.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PV2-2898 Levy learner, the course completion Date is changed, with a Balancing payment. Completion and Balancing is refunded.feature.cs</LastGenOutput>
