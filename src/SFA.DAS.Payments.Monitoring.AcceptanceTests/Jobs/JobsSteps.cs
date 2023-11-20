@@ -429,14 +429,13 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             await DataContext.SaveNewJob(jobModel);
         }
 
-        [Given(@"the earnings event service has received and successfully processed a provider earnings job")]
         [Given(@"the earnings event service has received and successfully processed a (.*) provider earnings job")]
         public async Task GivenTheEarningsEventServiceHasReceivedAndSuccessfullyProcessedAProviderEarningsJob(string jobSize)
         {
             var jobId = TestSession.GenerateId();
 
-            var largeJob = string.Equals(jobSize, "small", StringComparison.InvariantCultureIgnoreCase);
-            var startTime = largeJob ? DateTimeOffset.UtcNow.AddSeconds(-10) : DateTimeOffset.UtcNow.AddSeconds(-60);
+            var largeJob = string.Equals(jobSize, "large", StringComparison.InvariantCultureIgnoreCase);
+            var startTime = largeJob ? DateTimeOffset.UtcNow.AddSeconds(-60) : DateTimeOffset.UtcNow.AddSeconds(-10);
             var endTime = DateTimeOffset.UtcNow.AddSeconds(-10);
 
             jobIdToBeDeleted.Add(jobId);

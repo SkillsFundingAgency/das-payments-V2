@@ -42,6 +42,6 @@ Scenario: Large Provider Earnings Job Finished
 	Given the earnings event service has received a large provider earnings job
 	When the earnings event service notifies the job monitoring service to record the job
 	And the final messages for the job are successfully processed
-	#Then the job monitoring service should update the status of the job to show that it has completed
+	Then the job monitoring service should update the status of the job to show that it has completed
 	
 
