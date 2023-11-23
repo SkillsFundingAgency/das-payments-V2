@@ -413,10 +413,10 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _appInsightsSearchResultsUiLink);
 
             //Assert
-            var fieldsObject = result[1].GetType().GetProperty("fields").GetValue(result[1], null);
+            var fieldsObject = result[2].GetType().GetProperty("fields").GetValue(result[2], null);
             var castedFieldsObject = (List<object>)fieldsObject;
 
-            castedFieldsObject[6].Should().BeEquivalentTo(new
+            castedFieldsObject[0].Should().BeEquivalentTo(new
             {
                 type = "mrkdwn",
                 text = "*Previous Payments Year To Date*"
@@ -442,10 +442,10 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _appInsightsSearchResultsUiLink);
 
             //Assert
-            var fieldsObject = result[1].GetType().GetProperty("fields").GetValue(result[1], null);
+            var fieldsObject = result[2].GetType().GetProperty("fields").GetValue(result[2], null);
             var castedFieldsObject = (List<object>)fieldsObject;
 
-            castedFieldsObject[7].Should().BeEquivalentTo(new
+            castedFieldsObject[1].Should().BeEquivalentTo(new
             {
                 type = "mrkdwn",
                 text = "*Collection Period Payments*"
@@ -471,13 +471,43 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _appInsightsSearchResultsUiLink);
 
             //Assert
-            var fieldsObject = result[1].GetType().GetProperty("fields").GetValue(result[1], null);
+            var fieldsObject = result[2].GetType().GetProperty("fields").GetValue(result[2], null);
             var castedFieldsObject = (List<object>)fieldsObject;
 
-            castedFieldsObject[8].Should().BeEquivalentTo(new
+            castedFieldsObject[4].Should().BeEquivalentTo(new
             {
                 type = "mrkdwn",
                 text = "*In Learning*"
+            });
+        }
+
+
+        [Test]
+        public void BuildSlackPayloadConstructsSectionObjectNumberOfLearnersSpacerMarkdownItem()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            var fieldsObject = result[2].GetType().GetProperty("fields").GetValue(result[2], null);
+            var castedFieldsObject = (List<object>)fieldsObject;
+
+            castedFieldsObject[5].Should().BeEquivalentTo(new
+            {
+                type = "mrkdwn",
+                text = " "
             });
         }
 
@@ -503,7 +533,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
             var fieldsObject = result[1].GetType().GetProperty("fields").GetValue(result[1], null);
             var castedFieldsObject = (List<object>)fieldsObject;
 
-            castedFieldsObject[9].Should().BeEquivalentTo(new
+            castedFieldsObject[6].Should().BeEquivalentTo(new
             {
                 type = "plain_text",
                 text = _academicYear
@@ -532,7 +562,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
             var fieldsObject = result[1].GetType().GetProperty("fields").GetValue(result[1], null);
             var castedFieldsObject = (List<object>)fieldsObject;
 
-            castedFieldsObject[10].Should().BeEquivalentTo(new
+            castedFieldsObject[7].Should().BeEquivalentTo(new
             {
                 type = "plain_text",
                 text = _collectionPeriod
@@ -558,10 +588,10 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _appInsightsSearchResultsUiLink);
 
             //Assert
-            var fieldsObject = result[1].GetType().GetProperty("fields").GetValue(result[1], null);
+            var fieldsObject = result[2].GetType().GetProperty("fields").GetValue(result[2], null);
             var castedFieldsObject = (List<object>)fieldsObject;
 
-            castedFieldsObject[11].Should().BeEquivalentTo(new
+            castedFieldsObject[2].Should().BeEquivalentTo(new
             {
                 type = "plain_text",
                 text = _yearToDatePayments
@@ -587,10 +617,10 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _appInsightsSearchResultsUiLink);
 
             //Assert
-            var fieldsObject = result[1].GetType().GetProperty("fields").GetValue(result[1], null);
+            var fieldsObject = result[2].GetType().GetProperty("fields").GetValue(result[2], null);
             var castedFieldsObject = (List<object>)fieldsObject;
 
-            castedFieldsObject[12].Should().BeEquivalentTo(new
+            castedFieldsObject[3].Should().BeEquivalentTo(new
             {
                 type = "plain_text",
                 text = _collectionPeriodPayments
@@ -616,10 +646,10 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _appInsightsSearchResultsUiLink);
 
             //Assert
-            var fieldsObject = result[1].GetType().GetProperty("fields").GetValue(result[1], null);
+            var fieldsObject = result[2].GetType().GetProperty("fields").GetValue(result[2], null);
             var castedFieldsObject = (List<object>)fieldsObject;
 
-            castedFieldsObject[13].Should().BeEquivalentTo(new
+            castedFieldsObject[6].Should().BeEquivalentTo(new
             {
                 type = "plain_text",
                 text = _numberOfLearners

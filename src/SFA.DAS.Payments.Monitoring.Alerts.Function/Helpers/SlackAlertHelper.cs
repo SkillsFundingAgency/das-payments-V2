@@ -43,13 +43,26 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
                         new { type = "plain_text", text = jobId },
                         new { type = "mrkdwn", text = "*Academic Year*" },
                         new { type = "mrkdwn", text = "*Collection Period*" },
+                        new { type = "plain_text", text = academicYear },
+                        new { type = "plain_text", text = collectionPeriod }
+                    }
+                },
+                new
+                {
+                    type = "section",
+                    text = new
+                    {
+                        text = " ",
+                        type = "mrkdwn"
+                    },
+                    fields = new List<object>
+                    {
                         new { type = "mrkdwn", text = "*Previous Payments Year To Date*" },
                         new { type = "mrkdwn", text = "*Collection Period Payments*" },
-                        new { type = "mrkdwn", text = "*In Learning*" },
-                        new { type = "plain_text", text = academicYear },
-                        new { type = "plain_text", text = collectionPeriod },
                         new { type = "plain_text", text = yearToDatePayments },
                         new { type = "plain_text", text = collectionPeriodPayments },
+                        new { type = "mrkdwn", text = "*In Learning*" },
+                        new { type = "mrkdwn", text = " " },
                         new { type = "plain_text", text = numberOfLearners },
                     }
                 }
