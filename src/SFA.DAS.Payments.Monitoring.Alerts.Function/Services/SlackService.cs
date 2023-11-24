@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.JsonHelpers;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.TypedClients;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Services
 {
@@ -14,16 +16,19 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Services
         private readonly ISlackAlertHelper _slackAlertHelper;
         private readonly ISlackClient _slackClient;
         private readonly IDynamicJsonDeserializer _deserializer;
+        private readonly ILogger<SlackService> _logger;
 
         public SlackService(IDynamicJsonDeserializer deserializer,
                             ISlackAlertHelper slackAlertHelper,
                             ISlackClient slackClient,
-                            IAppInsightsClient appInsightsClient)
+                            IAppInsightsClient appInsightsClient,
+                            ILogger<SlackService> logger)
         {
             _deserializer = deserializer;
             _slackAlertHelper = slackAlertHelper;
             _appInsightsClient = appInsightsClient;
             _slackClient = slackClient; 
+            _logger = logger;
         }
 
         public async Task PostSlackAlert(string appInsightsAlertPayload, string slackChannelUri)
@@ -75,6 +80,9 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Services
                                        alertTitle,
                                        appInsightsSearchResultsUiLink)
             };
+
+            var json = JsonConvert.SerializeObject(slackPayload);
+            _logger.LogInformation($"Slack API payload: {json}");
 
             await _slackClient.PostAsJsonAsync(slackChannelUri, slackPayload);
         }
