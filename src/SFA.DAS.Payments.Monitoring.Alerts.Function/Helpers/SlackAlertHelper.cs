@@ -119,17 +119,17 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
 
             string collectionPeriodPayments = customMeasurements.ContainsKey("PaymentsTotal") ?
                                               customMeasurements["PaymentsTotal"].ToString() :
-                                              string.Empty;
+                                              "n/a";
 
             string yearToDatePayments = customMeasurements.ContainsKey("YearToDatePaymentsTotal") ?
                                          customMeasurements["YearToDatePaymentsTotal"].ToString() :
                                             customMeasurements.ContainsKey("PaymentsYearToDateTotal") ?
                                             customMeasurements["PaymentsYearToDateTotal"].ToString() :
-                                            string.Empty;
+                                            "n/a";
 
             string numberOfLearners = customMeasurements.ContainsKey("InLearning") ?
                                        customMeasurements["InLearning"].ToString() :
-                                       string.Empty;
+                                       "n/a";
 
             return new Dictionary<string, string>
             {
