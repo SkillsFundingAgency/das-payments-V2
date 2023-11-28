@@ -4,6 +4,8 @@ using SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers;
 using System;
 using System.Collections.Generic;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.Models;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
 {
@@ -636,6 +638,40 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
             //Assert
             result.Count.Should().Be(3);
             result[2].Fields.Count.Should().Be(4);
+        }
+
+        [Test]
+        public void SlackPayloadSerializesInFormatExpectedByApi()
+        {
+            // Arrange
+            var serializeOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            };
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            var jsonString = JsonSerializer.Serialize(result, serializeOptions);
+
+            // Assert
+            jsonString.Should().Contain("type");
+            jsonString.Should().Contain("text");
+            jsonString.Should().Contain("fields");
+            jsonString.Should().NotContain("Type");
+            jsonString.Should().NotContain("Text");
+            jsonString.Should().NotContain("Fields");
         }
     }
 }

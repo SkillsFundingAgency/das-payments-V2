@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.JsonHelpers;
@@ -76,8 +77,15 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Services
                                        alertTitle,
                                        appInsightsSearchResultsUiLink)
             };
+            
+            var serializeOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            };
+            var jsonData = JsonSerializer.Serialize(slackPayload, serializeOptions);
 
-            await _slackClient.PostAsJsonAsync(slackChannelUri, slackPayload);
+            await _slackClient.PostAsJsonAsync(slackChannelUri, jsonData);
         }
     }
 }
