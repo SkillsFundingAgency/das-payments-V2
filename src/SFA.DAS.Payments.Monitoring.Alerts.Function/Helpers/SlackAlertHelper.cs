@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.Payments.Monitoring.Alerts.Function.Models;
 
 namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
 {
     public class SlackAlertHelper : ISlackAlertHelper
     {
-        public List<object> BuildSlackPayload(string alertEmoji,
+        public List<Block> BuildSlackPayload(string alertEmoji,
                                               DateTime timestamp,
                                               string jobId,
                                               string academicYear,
@@ -16,57 +17,96 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
                                               string alertTitle,
                                               string appInsightsSearchResultsUiLink)
         {
-            return new List<object>
+            var blocks = new List<Block>
             {
-                new
+                new Block
                 {
-                    type ="header",
-                    text = new
+                    Type = "header",
+                    Text = new BlockData
                     {
-                        type= "plain_text",
-                        text = $"{alertEmoji} {alertTitle}."
+                        Type = "plain_text",
+                        Text = $"{alertEmoji} {alertTitle}."
                     }
                 },
-                new
+                new Block
                 {
-                    type = "section",
-                    text = new
+                    Type = "section",
+                    Text = new BlockData
                     {
-                        text = $"<{appInsightsSearchResultsUiLink}|View in Azure App Insights>",
-                        type = "mrkdwn"
+                        Type = "mrkdwn",
+                        Text = $"<{appInsightsSearchResultsUiLink}|View in Azure App Insights>"
                     },
-                    fields = new List<object>
+                    Fields = new List<BlockData>
                     {
-                        new { type = "mrkdwn", text = "*Timestamp*" },
-                        new { type = "mrkdwn", text = "*Job*" },
-                        new { type = "plain_text", text = timestamp.ToString("f") },
-                        new { type = "plain_text", text = jobId },
-                        new { type = "mrkdwn", text = "*Academic Year*" },
-                        new { type = "mrkdwn", text = "*Collection Period*" },
-                        new { type = "plain_text", text = academicYear },
-                        new { type = "plain_text", text = collectionPeriod }
-                    }
-                },
-                new
-                {
-                    type = "section",
-                    text = new
-                    {
-                        text = " ",
-                        type = "mrkdwn"
-                    },
-                    fields = new List<object>
-                    {
-                        new { type = "mrkdwn", text = "*Previous Payments Year To Date*" },
-                        new { type = "mrkdwn", text = "*Collection Period Payments*" },
-                        new { type = "plain_text", text = yearToDatePayments },
-                        new { type = "plain_text", text = collectionPeriodPayments },
-                        new { type = "mrkdwn", text = "*In Learning*" },
-                        new { type = "mrkdwn", text = " " },
-                        new { type = "plain_text", text = numberOfLearners },
+                        new BlockData { Type = "mrkdwn", Text = "*Timestamp*" },
+                        new BlockData { Type = "mrkdwn", Text = "*Job*" },
+                        new BlockData { Type = "plain_text", Text = timestamp.ToString("f") },
+                        new BlockData { Type = "plain_text", Text = jobId },
+                        new BlockData { Type = "mrkdwn", Text = "*Academic Year*" },
+                        new BlockData { Type = "mrkdwn", Text = "*Collection Period*" },
+                        new BlockData { Type = "plain_text", Text = academicYear },
+                        new BlockData { Type = "plain_text", Text = collectionPeriod }
                     }
                 }
             };
+
+            if (!string.IsNullOrWhiteSpace(yearToDatePayments) || !string.IsNullOrWhiteSpace(collectionPeriodPayments) || !string.IsNullOrWhiteSpace(numberOfLearners))
+            {
+                var optionalBlock = AddOptionalBlockFields(collectionPeriodPayments, yearToDatePayments, numberOfLearners);
+
+                blocks.Add(optionalBlock);
+            }
+
+
+            return blocks;
+        }
+
+        private static Block AddOptionalBlockFields(string collectionPeriodPayments, string yearToDatePayments,
+            string numberOfLearners)
+        {
+            var optionalBlock = new Block
+            {
+                Type = "section",
+                Text = new BlockData
+                {
+                    Type = "mrkdwn",
+                    Text = " "
+                },
+                Fields = new List<BlockData>()
+            };
+
+            if (!string.IsNullOrWhiteSpace(yearToDatePayments))
+            {
+                optionalBlock.Fields.Add(new BlockData { Type = "mrkdwn", Text = "*Previous Payments Year To Date*" });
+            }
+
+            if (!string.IsNullOrWhiteSpace(collectionPeriodPayments))
+            {
+                optionalBlock.Fields.Add(new BlockData { Type = "mrkdwn", Text = "*Collection Period Payments*" });
+            }
+
+            if (!string.IsNullOrWhiteSpace(yearToDatePayments))
+            {
+                var yearToDatePaymentsValue = Convert.ToDecimal(yearToDatePayments);
+                optionalBlock.Fields.Add(new BlockData
+                    { Type = "plain_text", Text = $"£{yearToDatePaymentsValue.ToString("N2")}" });
+            }
+
+            if (!string.IsNullOrWhiteSpace(collectionPeriodPayments))
+            {
+                var collectionPeriodPaymentsValue = Convert.ToDecimal(collectionPeriodPayments);
+                optionalBlock.Fields.Add(new BlockData
+                    { Type = "plain_text", Text = $"£{collectionPeriodPaymentsValue.ToString("N2")}" });
+            }
+
+            if (!string.IsNullOrEmpty(numberOfLearners))
+            {
+                optionalBlock.Fields.Add(new BlockData { Type = "mrkdwn", Text = "*In Learning*" });
+                optionalBlock.Fields.Add(new BlockData { Type = "mrkdwn", Text = " " });
+                optionalBlock.Fields.Add(new BlockData { Type = "plain_text", Text = numberOfLearners });
+            }
+
+            return optionalBlock;
         }
 
         public string GetEmoji(string severity)

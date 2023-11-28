@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.JsonHelpers;
+using SFA.DAS.Payments.Monitoring.Alerts.Function.Models;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.TypedClients;
 
 namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Services
@@ -61,10 +62,10 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Services
         {
             string alertTitle = _slackAlertHelper.GetSlackAlertTitle(alertDescription, alertVariables);
             
-            var slackPayload = new
+            var slackPayload = new SlackPayload
             {
-                text = alertTitle,
-                blocks = _slackAlertHelper.BuildSlackPayload(alertEmoji,
+                Text = alertTitle,
+                Blocks = _slackAlertHelper.BuildSlackPayload(alertEmoji,
                                        timestamp,
                                        alertVariables["JobId"],
                                        alertVariables["AcademicYear"],

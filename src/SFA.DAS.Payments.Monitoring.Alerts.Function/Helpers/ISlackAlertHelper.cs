@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SFA.DAS.Payments.Monitoring.Alerts.Function.Models;
+using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
@@ -7,7 +8,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
     {
         public string GetEmoji(string severity);
 
-        public List<object> BuildSlackPayload(string alertEmoji,
+        public List<Block> BuildSlackPayload(string alertEmoji,
                                               DateTime timestamp,
                                               string jobId,
                                               string academicYear,
