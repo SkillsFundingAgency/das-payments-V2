@@ -87,16 +87,32 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
 
             if (!string.IsNullOrWhiteSpace(yearToDatePayments))
             {
-                var yearToDatePaymentsValue = Convert.ToDecimal(yearToDatePayments);
-                optionalBlock.Fields.Add(new BlockData
-                    { Type = "plain_text", Text = $"£{yearToDatePaymentsValue.ToString("N2")}" });
+                var yearTodatePaymentsText = string.Empty;
+                try
+                {
+                    var yearToDatePaymentsValue = Convert.ToDecimal(yearToDatePayments);
+                    yearTodatePaymentsText = yearToDatePaymentsValue.ToString("N2");
+                }
+                catch (FormatException)
+                {
+                    yearTodatePaymentsText = yearToDatePayments;
+                }
+                optionalBlock.Fields.Add(new BlockData { Type = "plain_text", Text = $"£{yearTodatePaymentsText}" });
             }
 
             if (!string.IsNullOrWhiteSpace(collectionPeriodPayments))
             {
-                var collectionPeriodPaymentsValue = Convert.ToDecimal(collectionPeriodPayments);
-                optionalBlock.Fields.Add(new BlockData
-                    { Type = "plain_text", Text = $"£{collectionPeriodPaymentsValue.ToString("N2")}" });
+                var collectionPeriodPaymentsText = string.Empty;
+                try
+                {
+                    var collectionPeriodPaymentsValue = Convert.ToDecimal(collectionPeriodPayments);
+                    collectionPeriodPaymentsText = collectionPeriodPaymentsValue.ToString("N2");
+                }
+                catch (FormatException)
+                {
+                    collectionPeriodPaymentsText = collectionPeriodPayments;
+                }
+                optionalBlock.Fields.Add(new BlockData { Type = "plain_text", Text = $"£{collectionPeriodPaymentsText}" });
             }
 
             if (!string.IsNullOrEmpty(numberOfLearners))

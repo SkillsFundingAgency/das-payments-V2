@@ -497,6 +497,29 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
         }
 
         [Test]
+        public void PaymentsYearToDateIsRenderedVerbatimIfCannotFormatAsCurrency()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                "nil",
+                _numberOfLearners,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            result[2].Fields[2].Type.Should().Be("plain_text");
+            result[2].Fields[2].Text.Should().Be("£nil");
+        }
+
+        [Test]
         public void BuildSlackPayloadConstructsSectionObjectCollectionPeriodPaymentsPlainTextItem()
         {
             //Arrange
@@ -519,7 +542,30 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
             result[2].Fields[3].Type.Should().Be("plain_text");
             result[2].Fields[3].Text.Should().Be($"£{decimalValue.ToString("N2")}");
         }
-        
+
+        [Test]
+        public void CollectionPeriodPaymentsRenderedVerbatimIfCannotFormatAsCurrency()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                "nil",
+                _yearToDatePayments,
+                _numberOfLearners,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            result[2].Fields[3].Type.Should().Be("plain_text");
+            result[2].Fields[3].Text.Should().Be("£nil");
+        }
+
         [Test]
         public void BuildSlackPayloadConstructsSectionObjectNumberOfLearnersPlainTextItem()
         {
